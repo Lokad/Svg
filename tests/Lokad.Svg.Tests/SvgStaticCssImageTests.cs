@@ -39,6 +39,12 @@ public sealed class SvgStaticCssImageTests
     public void Filter_output_clips_release_source_and_clip_owners_after_denial_and_retry(string identity)
         => AssertResourceLifecycle(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "effects-marker-sheet", identity + ".svg")));
 
+    [Theory]
+    [InlineData("nested-filter-source")]
+    [InlineData("nested-filter-halo")]
+    public void Nested_filter_sources_release_intermediate_owners_after_denial_and_retry(string identity)
+        => AssertResourceLifecycle(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "effects-marker-sheet", identity + ".svg")));
+
     [Fact]
     public void Missing_output_clip_releases_the_decoded_image_and_does_not_publish_output()
     {

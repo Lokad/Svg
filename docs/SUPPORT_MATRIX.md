@@ -1,3 +1,24 @@
+## Nested filter source capture (2026-10-15)
+
+The [effects/marker bank](../tests/Research/effects-marker-sheet/README.md) has
+**7/8 exact controls / 0/1 completed document** on Windows/Linux. The retained
+same-space nested graph and its non-identity outer-blur control are exact.
+A bounded source stack preserves unfiltered object bounds; existing source replay
+includes child filtered output and halos. Graph capture and integer-offset
+capture share child extents. Bounded backward requests prevent conservative child
+regions from creating unbounded intermediate captures. Intermediate source-in
+image subsets preserve native offset-edge coverage; ordinary offsets remain
+nearest-sampled and final-device results are unchanged.
+
+The original nested rejection input now has positive bounds/cleanup acceptance;
+new lifecycle controls protect storage denial, pre-cancellation and exact retry.
+Existing work-denial and active-cancellation regressions remain protected.
+The whole sheet reaches **mixed primitive filter color spaces**. Affine regions,
+wider mask/viewport/text/use crossings, colored linearRGB shadows and known
+identity/restoration diagnostics remain required. Earlier blanket nested-source
+rejections below are superseded for these qualified paths, without G8 closure.
+[Qualification](../artifacts/maintenance-review-20261012/nested-source-qualified-results.json).
+
 ## Filter output clips and bounded source requests (2026-10-15)
 
 The [effects/marker bank](../tests/Research/effects-marker-sheet/README.md) has

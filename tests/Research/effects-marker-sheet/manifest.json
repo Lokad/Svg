@@ -9,7 +9,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "One required whole effects/marker sheet remains incomplete; five of six controls are exact. Original declarations and reference bytes stay frozen while shared source/output-clip mechanisms advance the document.",
+  "purpose": "One required whole effects/marker sheet remains incomplete; seven of eight controls are exact. Original declarations and reference bytes stay frozen while shared bounded source replay advances the document.",
   "cases": [
     {
       "id": "effects-marker-sheet",
@@ -60,8 +60,8 @@
       "licenseEvidence": "README.md",
       "platformReferencesByteIdentical": true,
       "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Nested filter sources are not implemented.",
-      "remainingRequiredBehavior": "Image source and outer clip/filter controls are exact separately; the unchanged whole document still needs nested filters, mixed primitive color spaces and affine regions."
+      "expectedMessage": "Mixed primitive filter color spaces are not implemented.",
+      "remainingRequiredBehavior": "Image source, output-clip and nested-source controls are exact separately; the unchanged whole document still needs mixed primitive color spaces and affine regions."
     },
     {
       "id": "marker-overflow-cascade",
@@ -355,6 +355,104 @@
         },
         {
           "pngSha256": "92b61fdd29173840c57664733cf9cc0c50575827199f3ea4b746ea9bfb02bdf0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "nested-filter-source",
+      "input": "nested-filter-source.svg",
+      "width": 144,
+      "height": 108,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "bb65c24e5e7e7a457fe0aa569c0c7fa2404156b177ffd222c18d21e265bc4b85",
+      "selection": "Retained inner flood/composite/offset/screen graph under outer blur, with both graphs held in sRGB to isolate nested SourceGraphic capture before mixed primitive-space changes.",
+      "reference": "references/nested-filter-source.png",
+      "referenceSha256": "e6c81608b6c01b81fbf97963f319d60f84200d315f3d56b7604e41ae26fd5730",
+      "licenseEvidence": "README.md",
+      "platformReferencesByteIdentical": true,
+      "captures": [
+        {
+          "pngSha256": "e6c81608b6c01b81fbf97963f319d60f84200d315f3d56b7604e41ae26fd5730",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e6c81608b6c01b81fbf97963f319d60f84200d315f3d56b7604e41ae26fd5730",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e6c81608b6c01b81fbf97963f319d60f84200d315f3d56b7604e41ae26fd5730",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "e6c81608b6c01b81fbf97963f319d60f84200d315f3d56b7604e41ae26fd5730",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e6c81608b6c01b81fbf97963f319d60f84200d315f3d56b7604e41ae26fd5730",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e6c81608b6c01b81fbf97963f319d60f84200d315f3d56b7604e41ae26fd5730",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "nested-filter-halo",
+      "input": "nested-filter-halo.svg",
+      "width": 144,
+      "height": 108,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "d7317eb61e46156f7915569296caca4571cf0983b1af195f4617a20189fd288b",
+      "selection": "The retained nested source graph with a non-identity 1.125 outer Gaussian protects child output extent and blur halo, complementing the original .625 outer identity-kernel witness.",
+      "reference": "references/nested-filter-halo.png",
+      "referenceSha256": "97148e416dc8a0f639bfd733216965e398bf7b2906f4036cbaa43cdab35d5fdd",
+      "licenseEvidence": "README.md",
+      "platformReferencesByteIdentical": true,
+      "captures": [
+        {
+          "pngSha256": "97148e416dc8a0f639bfd733216965e398bf7b2906f4036cbaa43cdab35d5fdd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "97148e416dc8a0f639bfd733216965e398bf7b2906f4036cbaa43cdab35d5fdd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "97148e416dc8a0f639bfd733216965e398bf7b2906f4036cbaa43cdab35d5fdd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "97148e416dc8a0f639bfd733216965e398bf7b2906f4036cbaa43cdab35d5fdd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "97148e416dc8a0f639bfd733216965e398bf7b2906f4036cbaa43cdab35d5fdd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "97148e416dc8a0f639bfd733216965e398bf7b2906f4036cbaa43cdab35d5fdd",
           "startupHealth": "healthy",
           "profileCleaned": true
         }

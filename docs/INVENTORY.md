@@ -22,11 +22,11 @@ owns finished-correction evidence. Dated sections below are checkpoint history;
 completed gates are superseded by later qualified witnesses.
 
 The next [effects/marker bank](../tests/Research/effects-marker-sheet/README.md)
-remains **0/1 completed document / 5/6 exact controls**. Two marker controls,
-the image source, image/circle and vector/group output-clip controls are exact
-on Windows/Linux; the original CSS-overflow fixture also stays exact. The whole
-sheet now reaches nested filters; affine and mixed/nested effects remain required.
-The [clip correction receipt](../artifacts/maintenance-review-20261012/filter-output-clips-qualified-results.json)
+remains **0/1 completed document / 7/8 exact controls**. Two marker controls,
+the image source, image/circle and vector/group output clips, and two nested-source
+controls are exact on Windows/Linux; the original CSS-overflow fixture stays exact.
+The whole sheet now reaches mixed primitive color spaces; affine regions also
+remain required. The [nested-source receipt](../artifacts/maintenance-review-20261012/nested-source-qualified-results.json)
 records preserved preceding outputs and unchanged assets. This adds no completed
 document to the nine.
 

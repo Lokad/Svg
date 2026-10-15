@@ -1,0 +1,4 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="144" height="108">
+<defs><filter id="inner" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB"><feFlood flood-color="#c85240" flood-opacity=".625" result="ink"/><feComposite in="ink" in2="SourceAlpha" operator="in" result="colored"/><feOffset in="colored" dx="3.25" dy="2.5" result="moved"/><feBlend in="SourceGraphic" in2="moved" mode="screen"/></filter><filter id="outer" x="-25%" y="-25%" width="150%" height="150%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation=".625"/></filter></defs><g transform="translate(0 0)"><g filter="url(#outer)"><path d="M18 16H99V79H18Z" fill="#718cba" filter="url(#inner)"/></g></g>
+</svg>

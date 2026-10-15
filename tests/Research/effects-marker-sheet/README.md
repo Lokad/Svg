@@ -1,10 +1,10 @@
 # Retained effects and marker sheet
 
-The bank remains **0/1 completed document / 5/6 exact controls** on Windows/Linux.
+The bank remains **0/1 completed document / 7/8 exact controls** on Windows/Linux.
 The unchanged whole sheet is required and incomplete. Its
 four original CC0 sources/options and healthy Windows/Linux reference triples
 were frozen before correction at `4c4b4a22`. The [manifest](manifest.json)
-records current nested-filter and affine-filter rejection gates as remaining work,
+records current mixed-color-space and affine-filter rejection gates as remaining work,
 without a feature deferral, reference replacement or a new completed document.
 
 The two marker controls are separately exact against their unchanged references:
@@ -34,8 +34,20 @@ share forward fractional rectangle clips, and a later sibling protects scope
 termination. Existing command replay applies these clips after filtering and
 outer opacity, preserving uncut source input and native coverage rounding.
 Backward graph requests retain displaced blur halos and both merge branches;
-primitive-region rules are shared with playback. The sheet's affine/mixed/nested
+primitive-region rules are shared with playback. The sheet's affine/mixed
 effects and wider G8 boundaries remain required; no completed document is added.
+
+The separately frozen `nested-filter-source` is exact, including the retained
+inner flood/source-in/offset/screen graph captured under an outer filter. Its
+`.625` Gaussian is a native identity kernel. `nested-filter-halo` uses a real
+`1.125` outer blur and is also exact. Original sources/references are retained;
+the halo diagnostic's first native reference preceded the image-subset correction.
+A bounded scope stack aggregates unfiltered object bounds. Existing recursive
+source replay retains child filter output regions, bounded backward input demand
+and halos in both graph and integer-offset capture. Native intermediate source-in
+image subsets remain distinct from final-device restoration and nearest texel
+sampling. The unchanged whole sheet now reaches mixed primitive color spaces;
+affine placement and the remaining finite G8 boundaries stay required.
 
 These authored fixtures and the unchanged tiny embedded PNG reused from the
 existing static-CSS/image assets are dedicated to the public domain under
@@ -44,24 +56,18 @@ captures with cleaned profiles; all corresponding PNG bytes are identical.
 Detailed declaration/capture/baseline evidence stays in the existing ignored
 [study](../../../artifacts/effects-marker-sheet-20261015/).
 
-The [qualified receipt](../../../artifacts/maintenance-review-20261012/marker-units-overflow-qualified-results.json)
-records all **7,724 tests/platform**, no removed preceding rows and the explicit
-promotion of the original CSS-overflow fixture. The first broad CSS gate was
-corrected to preserve existing pattern attributes; their reference bytes and
-expectations remain unchanged. Normal complete qualification took
-**84.3s Windows / 261.8s Linux**.
+The [nested-source receipt](../../../artifacts/maintenance-review-20261012/nested-source-qualified-results.json)
+records **7,740 tests/platform** and complete normal qualification in
+**77.5s Windows / 238.0s Linux**. One obsolete nested rejection is promoted to
+positive rendering, original object bounds and cleanup acceptance with unchanged
+input bytes. Every other preceding displayed row is preserved. All nine sources,
+declared options, references and 54 healthy stable captures remain consistent;
+no previous asset or default resource limit changes. Approximate-memory and
+measured-maintenance clauses remain unchanged.
 
-The [image-source receipt](../../../artifacts/maintenance-review-20261012/image-filter-source-qualified-results.json)
-records the next correction's complete checks, preceding-case preservation and
-image bounds/CSS/resource regressions: **7,729 tests/platform**, with complete
-normal qualification in **78.3s Windows / 239.8s Linux**. Original four-case declarations and all
-their source/reference bytes remain unchanged; the fifth entry has its own
-pre-correction declaration and six healthy stable captures.
-
-The [output-clip receipt](../../../artifacts/maintenance-review-20261012/filter-output-clips-qualified-results.json)
-records **7,735 tests/platform**, no removed preceding rows, late-reference
-cleanup and bounded graph halo/branch checks. Normal complete qualification took
-**102.6s Windows / 283.0s Linux**. The two new sources/references match their
-separate declarations and twelve healthy stable captures byte for byte; all
-preceding inputs/options/references and approximate-memory/maintenance clauses
-are unchanged. The whole sheet now reaches nested filter sources.
+Earlier [marker](../../../artifacts/maintenance-review-20261012/marker-units-overflow-qualified-results.json),
+[image-source](../../../artifacts/maintenance-review-20261012/image-filter-source-qualified-results.json)
+and [output-clip](../../../artifacts/maintenance-review-20261012/filter-output-clips-qualified-results.json)
+receipts own their checkpoint measurements and preservation evidence. The whole
+sheet remains required at the mixed-primitive-space gate, followed by affine
+placement and any rendering mismatches; none is a feature deferral.

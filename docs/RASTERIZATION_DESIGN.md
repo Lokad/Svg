@@ -1,3 +1,40 @@
+## Nested sources and intermediate image subsets (2026-10-15)
+
+The retained [nested controls](../tests/Research/effects-marker-sheet/README.md)
+are exact on Windows/Linux. Source aggregation uses a bounded, budget-owned stack
+instead of one active group. A completed child contributes its unfiltered geometry
+bounds to its parent's object box. At playback, the nearest child filter's final
+region bounds its contribution to the parent source. Both existing graph and
+integer-offset capture retain that contribution; the graph path clips conservative
+regions to shared backward source demand. Deeper child effects cannot escape
+the nearest child's final region. No effect expansion changes SVG object bounds.
+[Qualification](../artifacts/maintenance-review-20261012/nested-source-qualified-results.json).
+
+Admitting nested commands alone left 564 differing pixels because child displaced
+ink was cut to the original geometry. Retaining the child output reduced that to
+144. The inner graph alone was exact; the difference appeared in the intermediate
+source's fractional offset edges. Native command tracing confirmed two ordered
+filter layers and distinct content hints; its white-background replay was used
+for ordering, never as an accepted reference.
+
+The intermediate source-in result retains the intersection of its input image
+subsets. That subset controls the antialiased nearest-offset image boundary,
+separately from texel sampling and final-device allocated bounds. This makes both
+the original `.625` outer identity-kernel witness and the separate real `1.125`
+blur exact. Forcing bilinear ordinary offsets would erase an established native
+distinction and is not the implementation. A translation-equivalence regression
+protects child blur ink beyond geometry in the integer-offset capture route.
+
+Original nested-rejection bytes remain as positive object-bound/owner acceptance.
+Shared lifecycle tests cover storage denial, pre-cancellation and exact retry;
+existing work/active-cancellation checks remain protected. Parser stack owners
+release on all exits. The whole sheet now reaches mixed primitive
+spaces, followed by required affine filtering. Wider finite G8 requirements and
+known identity/zero-offset colored-source diagnostics remain open. Original
+inputs/options/references/default limits and the existing approximate-memory and
+maintenance contracts are unchanged. Detailed native observations stay in the
+ignored [study](../artifacts/effects-marker-sheet-20261015/).
+
 ## Output clips through shared filter/layer replay (2026-10-15)
 
 Two separately frozen [effects controls](../tests/Research/effects-marker-sheet/README.md)

@@ -1688,42 +1688,51 @@ internal sealed class SvgSceneBuilder : IDisposable
 
         void ResolveGroupSources(SvgFilterArena filters)
         {
-            int active = -1, depth = 0;
-            SvgPaintBounds? objectBounds = null, visualBounds = null;
+            int depth = 0;
+            using BudgetedParserList<SvgFilterSourceScope> sources = new(_budget, SvgMemoryCategory.Parser, _workCounter, _cancellationToken);
             foreach (SvgDrawCommand command in _commands.Items)
             {
                 _workCounter.Consume(_cancellationToken);
                 if (command.Kind == SvgDrawCommandKind.BeginGroup)
                 {
+                    depth++;
                     if (command.RegionKind == SvgLayerRegionKind.Filter)
-                    {
-                        if (active >= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested filter sources are not implemented.");
-                        if (filters.IsGroupSource(command.MaskContentIndex))
-                        { active = command.MaskContentIndex; depth = 0; objectBounds = null; visualBounds = null; }
-                    }
-                    else if (active >= 0)
+                        sources.Add(new(command.MaskContentIndex, depth, null, null));
+                    else if (sources.Count > 0)
                     {
                         if (command.MaskRegion is not null || command.MaskContentIndex >= 0 || command.MaskAlpha != 255)
                             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masked or clipped filter descendants are not implemented.");
-                        depth++;
                     }
                 }
-                else if (active >= 0 && command.Kind == SvgDrawCommandKind.EndGroup)
+                else if (command.Kind == SvgDrawCommandKind.EndGroup)
                 {
-                    if (depth > 0) depth--;
-                    else { filters.SetGroupBounds(active, objectBounds ?? default, visualBounds ?? objectBounds ?? default); active = -1; }
+                    if (sources.Count > 0 && sources[^1].Depth == depth)
+                    {
+                        SvgFilterSourceScope source = sources[^1];
+                        sources.RemoveLast();
+                        if (filters.IsGroupSource(source.Binding))
+                            filters.SetGroupBounds(source.Binding, source.ObjectBounds ?? default, source.VisualBounds ?? source.ObjectBounds ?? default);
+                        if (source.ObjectBounds is {} box) Include(box, source.VisualBounds ?? box);
+                    }
+                    depth--;
                 }
-                else if (active >= 0 && command.Kind == SvgDrawCommandKind.Geometry)
+                else if (sources.Count > 0 && command.Kind == SvgDrawCommandKind.Geometry)
                 {
                     SvgGeometry geometry = _geometries[command.GeometryIndex];
                     if (geometry.LeafMask is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masked filter descendants are not implemented.");
                     SvgRecordedPaintValue paint = GetRecordedPaintValue(geometry.RecordedPaint);
                     if (paint.ObjectBounds is not {} box) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group filter descendants require retained source bounds.");
-                    objectBounds = Union(objectBounds, box);
-                    visualBounds = Union(visualBounds, paint.VisualBounds ?? box);
+                    Include(box, paint.VisualBounds ?? box);
                 }
             }
-            if (active >= 0) throw new SvgException(SvgErrorCode.MalformedInput, "Filter group source is unbalanced.");
+            if (sources.Count > 0 || depth != 0) throw new SvgException(SvgErrorCode.MalformedInput, "Filter group source is unbalanced.");
+
+            void Include(SvgPaintBounds box, SvgPaintBounds visual)
+            {
+                if (sources.Count == 0) return;
+                SvgFilterSourceScope parent = sources[^1];
+                sources[^1] = parent with { ObjectBounds = Union(parent.ObjectBounds, box), VisualBounds = Union(parent.VisualBounds, visual) };
+            }
 
             static SvgPaintBounds Union(SvgPaintBounds? previous, SvgPaintBounds next) => previous is {} box
                 ? new(Math.Min(box.Left, next.Left), Math.Min(box.Top, next.Top), Math.Max(box.Right, next.Right), Math.Max(box.Bottom, next.Bottom)) : next;
@@ -1770,6 +1779,9 @@ internal sealed class SvgSceneBuilder : IDisposable
         _filters?.Dispose();
     }
 }
+
+/// <summary>Retains one bounded filter source while scene commands aggregate descendant geometry.</summary>
+internal readonly record struct SvgFilterSourceScope(int Binding, int Depth, SvgPaintBounds? ObjectBounds, SvgPaintBounds? VisualBounds);
 
 /// <summary>Identifies the parallel retained-scene entries reserved for a deferred reference.</summary>
 internal readonly record struct SvgSceneSlot(int GeometryIndex, int CommandIndex);

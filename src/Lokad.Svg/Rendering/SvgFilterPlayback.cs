@@ -22,6 +22,8 @@ internal readonly record struct SvgFilterRegionContext(SvgAffineTransform Coordi
     internal SvgPaintBounds? SourceBounds { get; init; }
     /// <summary>Places this cropped source grid in its destination bitmap for native image sampling.</summary>
     internal SvgFilterRasterPlacement? RasterPlacement { get; init; }
+    /// <summary>Identifies restoration into another filter's source bitmap, where native source-in retains its input image subset.</summary>
+    internal bool IntermediateOutput { get; init; }
 }
 
 /// <summary>Owns the graph output and optional unquantized final shader samples until composition.</summary>
@@ -316,6 +318,20 @@ internal static class SvgFilterPlayback
                     { ConvertColor(second, secondConversion.Pixels, resource.ColorSpace); second = secondConversion.Pixels; }
                     ComposeInputs(input, second, output, primitive.Composition);
                     linear[index] = destinationLinear;
+                    if (primitive.Composition == SvgFilterComposition.In && map.Regions is { IntermediateOutput: true } intermediate)
+                    {
+                        // A source-in result drawn into another filter's source retains
+                        // the material input subset. Its nearest-offset image boundary
+                        // is antialiased independently of the sampled texels. The final
+                        // device route retains its existing broader allocated region.
+                        SvgPaintBounds firstBounds = primitive.Input.Index >= 0 ? imageBounds[primitive.Input.Index]
+                            : intermediate.SourceBounds ?? intermediate.FilterRegion;
+                        SvgPaintBounds secondBounds = primitive.SecondInput.Index >= 0 ? imageBounds[primitive.SecondInput.Index]
+                            : intermediate.SourceBounds ?? intermediate.FilterRegion;
+                        SvgPaintBounds current = imageBounds[index];
+                        imageBounds[index] = new(MathF.Max(current.Left, MathF.Max(firstBounds.Left, secondBounds.Left)), MathF.Max(current.Top, MathF.Max(firstBounds.Top, secondBounds.Top)),
+                            MathF.Min(current.Right, MathF.Min(firstBounds.Right, secondBounds.Right)), MathF.Min(current.Bottom, MathF.Min(firstBounds.Bottom, secondBounds.Bottom)));
+                    }
                 }
                 else if (primitive.Kind == SvgFilterPrimitiveKind.Offset)
                 {

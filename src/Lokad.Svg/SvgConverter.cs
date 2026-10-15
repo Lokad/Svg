@@ -363,15 +363,38 @@ public static class SvgConverter
             SvgFilterResource resource = arena.ResourceAt(binding.ResourceIndex);
             if (binding.Transform.B != 0 || binding.Transform.C != 0)
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filters under rotated or skewed placement are not implemented.");
-            int end = first, depth = 0;
+            int end = first, depth = 0, nestedDepth = -1;
+            SvgPaintBounds? nestedSourceBounds = null;
             for (; end < root.Commands.Length; end++)
             {
                 if (workUnits == options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source traversal exceeds the work limit.");
                 workUnits++;
                 cancellationToken.ThrowIfCancellationRequested();
                 SvgDrawCommand item = root.Commands[end];
-                if (item.Kind == SvgDrawCommandKind.EndGroup && depth-- == 0) break;
-                if (item.Kind == SvgDrawCommandKind.BeginGroup) depth++;
+                if (item.Kind == SvgDrawCommandKind.EndGroup)
+                {
+                    if (depth-- == 0) break;
+                    if (nestedDepth == depth) nestedDepth = -1;
+                }
+                if (item.Kind == SvgDrawCommandKind.BeginGroup)
+                {
+                    if (item.RegionKind == SvgLayerRegionKind.Filter && nestedDepth < 0)
+                    {
+                        // A filtered child's output, including its halo or displaced ink,
+                        // is this source's input. Descendants cannot escape that child's
+                        // final filter region. Keep object bounds independent of effects.
+                        SvgFilterBinding child = arena.BindingAt(item.MaskContentIndex);
+                        ParserWorkCounter childRegionWork = new(options.Limits.MaximumWorkUnits - workUnits);
+                        SvgPaintBounds childRegion = FilterRegion(child, arena.ResourceAt(child.ResourceIndex), childRegionWork);
+                        workUnits += childRegionWork.Used;
+                        if (childRegion.Right > childRegion.Left && childRegion.Bottom > childRegion.Top)
+                            nestedSourceBounds = nestedSourceBounds is {} previous
+                                ? new(MathF.Min(previous.Left, childRegion.Left), MathF.Min(previous.Top, childRegion.Top), MathF.Max(previous.Right, childRegion.Right), MathF.Max(previous.Bottom, childRegion.Bottom))
+                                : childRegion;
+                        nestedDepth = depth;
+                    }
+                    depth++;
+                }
             }
             if (end == root.Commands.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Filter source scope is unbalanced.");
             ParserWorkCounter regionWork = new(options.Limits.MaximumWorkUnits - workUnits);
@@ -381,6 +404,14 @@ public static class SvgConverter
             double primitiveScaleX = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox ? binding.ObjectBounds.Right - binding.ObjectBounds.Left : binding.Transform.A;
             double primitiveScaleY = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox ? binding.ObjectBounds.Bottom - binding.ObjectBounds.Top : binding.Transform.D;
             SvgFilterDeviceMap primitiveMap = new(primitiveScaleX * horizontalScale, primitiveScaleY * verticalScale);
+            SvgPaintBounds visual = binding.VisualBounds;
+            double sourceLeft = Math.Floor(visual.Left * horizontalScale + horizontalOffset), sourceTop = Math.Floor(visual.Top * verticalScale + verticalOffset);
+            double sourceRight = Math.Ceiling(visual.Right * horizontalScale + horizontalOffset), sourceBottom = Math.Ceiling(visual.Bottom * verticalScale + verticalOffset);
+            if (nestedSourceBounds is {} nested)
+            {
+                sourceLeft = Math.Min(sourceLeft, Math.Floor(nested.Left)); sourceTop = Math.Min(sourceTop, Math.Floor(nested.Top));
+                sourceRight = Math.Max(sourceRight, Math.Ceiling(nested.Right)); sourceBottom = Math.Max(sourceBottom, Math.Ceiling(nested.Bottom));
+            }
             if (TryRenderOffsetSources()) return end + 1;
             double paddingX = 0, paddingY = 0;
             double offsetPaddingX = 0, offsetPaddingY = 0;
@@ -394,9 +425,7 @@ public static class SvgConverter
                 offsetPaddingX += Math.Ceiling(Math.Abs(primitive.OffsetX * primitiveMap.ScaleX));
                 offsetPaddingY += Math.Ceiling(Math.Abs(primitive.OffsetY * primitiveMap.ScaleY));
             }
-            SvgPaintBounds visual = binding.VisualBounds;
-            double left = Math.Floor(visual.Left * horizontalScale + horizontalOffset), top = Math.Floor(visual.Top * verticalScale + verticalOffset);
-            double right = Math.Ceiling(visual.Right * horizontalScale + horizontalOffset), bottom = Math.Ceiling(visual.Bottom * verticalScale + verticalOffset);
+            double left = sourceLeft, top = sourceTop, right = sourceRight, bottom = sourceBottom;
             // The source grid only needs the captured image and requested output.
             // Kernel samples beyond this union are transparent; allocating the
             // entire halo makes large blurs needlessly exhaust work and storage.
@@ -409,7 +438,7 @@ public static class SvgConverter
             }
             if (requestedRight <= requestedLeft || requestedBottom <= requestedTop) return end + 1;
             if (right + paddingX < requestedLeft || bottom + paddingY < requestedTop || left - paddingX > requestedRight || top - paddingY > requestedBottom) return end + 1;
-            if (activeViewportBounds is not null)
+            if (activeViewportBounds is not null || nestedSourceBounds is not null)
             {
                 bool objectSourceUnits = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox;
                 SvgAffineTransform sourceCoordinates = objectSourceUnits
@@ -450,7 +479,7 @@ public static class SvgConverter
                 (float)(region.Right - frameLeft), (float)(region.Bottom - frameTop));
             primitiveMap = primitiveMap with { Regions = new(primitiveCoordinates,
                 objectPrimitiveUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), gridRegion)
-                { RasterPlacement = new(new((int)frameLeft, (int)frameTop), rasterGrid, layerBounds), SourceBounds = new((float)(left - frameLeft), (float)(top - frameTop), (float)(right - frameLeft), (float)(bottom - frameTop)) } };
+                { RasterPlacement = new(new((int)frameLeft, (int)frameTop), rasterGrid, layerBounds), SourceBounds = new((float)(left - frameLeft), (float)(top - frameTop), (float)(right - frameLeft), (float)(bottom - frameTop)), IntermediateOutput = surfaceMode == RasterSurfaceMode.PremultipliedFilter } };
             long copyWork = (long)sw * sh * 4 + end - first;
             if (copyWork >= options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source capture exceeds the work limit.");
             workUnits += copyWork;
@@ -541,9 +570,6 @@ public static class SvgConverter
                 Charge(draws.Length);
                 for (int index = first; index < end; index++) draws[index - first] = root.Commands[index];
                 SvgRoot scene = root with { Commands = draws, ParserWorkUnits = 0 };
-                SvgPaintBounds sourceBounds = binding.VisualBounds;
-                double sourceLeft = Math.Floor(sourceBounds.Left * horizontalScale + horizontalOffset), sourceTop = Math.Floor(sourceBounds.Top * verticalScale + verticalOffset);
-                double sourceRight = Math.Ceiling(sourceBounds.Right * horizontalScale + horizontalOffset), sourceBottom = Math.Ceiling(sourceBounds.Bottom * verticalScale + verticalOffset);
                 // The native saveLayer hint includes drawable source and filtered
                 // output bounds. A branch without source ink may still enlarge the
                 // shared capture; pruning it changes clipped curve construction.

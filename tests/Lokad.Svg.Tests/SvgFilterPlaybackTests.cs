@@ -96,7 +96,6 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Theory]
-    [InlineData("<g filter='url(#f)'><rect width='4' height='4' filter='url(#f)'/></g>")]
     [InlineData("<g filter='url(#f)' clip-path='url(#c)'><rect width='4' height='4'/></g>")]
     [InlineData("<g filter='url(#f)' mask='url(#m)'><rect width='4' height='4'/></g>")]
     public void Pending_filter_group_combinations_reject_without_output_and_release_parser_owners(string content)
@@ -108,6 +107,41 @@ public sealed class SvgFilterPlaybackTests
         using MemoryStream stream = new();
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, stream, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, stream.Length);
+    }
+
+    [Fact]
+    public void Nested_filter_groups_keep_unfiltered_object_bounds_and_release_source_owners()
+    {
+        // Retains the original nested-source rejection input as positive acceptance.
+        byte[] input = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='3'/></filter></defs>"
+            + "<g filter='url(#f)'><rect width='4' height='4' filter='url(#f)'/></g>");
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        {
+            SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
+            SvgDrawCommand[] filters = scene.Commands.Where(c => c.Kind == SvgDrawCommandKind.BeginGroup && c.RegionKind == SvgLayerRegionKind.Filter).ToArray();
+            Assert.Equal(2, filters.Length);
+            foreach (SvgDrawCommand command in filters)
+                Assert.Equal(new SvgPaintBounds(0, 0, 4, 4), arena.BindingAt(command.MaskContentIndex).ObjectBounds);
+            using SvgConverter.RasterizedSurface result = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None);
+            Assert.Contains(result.Pixels, value => value != 0);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Outer_integer_offset_preserves_the_child_blur_outside_its_geometry_bounds()
+    {
+        const string shape = "<rect x='20.25' y='24.5' width='34.75' height='29.25' fill='#428365' fill-opacity='.7' filter='url(#inner)'/>";
+        byte[] expected = Input("<g transform='translate(13 7)'>" + shape + "</g>");
+        byte[] nested = Input("<g filter='url(#outer)'>" + shape + "</g>");
+        Assert.Equal(SvgConverter.ConvertToPng(expected, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(nested, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+
+        static byte[] Input(string content) => System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='108'><defs>"
+            + "<filter id='inner' filterUnits='userSpaceOnUse' x='0' y='0' width='128' height='108' color-interpolation-filters='sRGB'><feGaussianBlur stdDeviation='2'/></filter>"
+            + "<filter id='outer' filterUnits='userSpaceOnUse' x='0' y='0' width='128' height='108' color-interpolation-filters='sRGB'><feOffset dx='13' dy='7'/></filter>"
+            + "</defs>" + content + "</svg>");
     }
 
     [Theory]

@@ -61,3 +61,6 @@ tests/Research/root-resource-cascade/*.svg -text whitespace=cr-at-eol
 
 # Frozen supplied-font sheet source bytes, including the original line endings.
 tests/Research/remaining-label-path-sheet/*.svg -text
+
+# Preserve frozen effects-sheet/control bytes, including authored CRLF endings.
+tests/Research/effects-marker-sheet/*.svg -text whitespace=cr-at-eol
