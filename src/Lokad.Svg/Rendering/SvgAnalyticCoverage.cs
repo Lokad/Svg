@@ -57,18 +57,6 @@ internal ref partial struct SvgAnalyticCoverage
         public int InitialQSnappedX;
     }
 
-    private sealed class EdgeOrder : IComparer<AnalyticEdge>
-    {
-        public static readonly EdgeOrder Instance = new();
-        public int Compare(AnalyticEdge? left, AnalyticEdge? right)
-        {
-            if (left is null || right is null) throw new ArgumentOutOfRangeException(nameof(left));
-            if (left.UpperY != right.UpperY) return left.UpperY < right.UpperY ? -1 : 1;
-            if (left.X != right.X) return left.X < right.X ? -1 : 1;
-            if (left.DX != right.DX) return left.DX < right.DX ? -1 : 1;
-            return 0;
-        }
-    }
     private const int Fixed1 = 1 << 16;
     private const int MaxRange = 32767;
     private const int SnapDigit = Fixed1 >> 4;
@@ -1610,7 +1598,7 @@ internal ref partial struct SvgAnalyticCoverage
                 if (constructionPoints.IsBitmapLocal)
                     foreach (AnalyticEdge edge in multiKept) TranslateConstructedEdge(edge, bitmapOrigin, ref setupWork, maximumSetupWork, cancellationToken);
                 AnalyticEdge[] multiEdges = multiKept.ToArray();
-                System.Array.Sort(multiEdges, EdgeOrder.Instance);
+                SortEdges(multiEdges, cancellationToken);
                 AnalyticEdge multiHead = new() { UpperY = int.MinValue, LowerY = int.MinValue, X = int.MinValue, UpperX = int.MinValue, DY = int.MaxValue };
                 AnalyticEdge multiTail = new() { UpperY = int.MaxValue, LowerY = int.MaxValue, X = int.MaxValue, UpperX = int.MaxValue, DY = int.MaxValue };
                 multiHead.Next = multiEdges.Length > 0 ? multiEdges[0] : multiTail;
@@ -1778,7 +1766,7 @@ internal ref partial struct SvgAnalyticCoverage
             if (constructionPoints.IsBitmapLocal)
                 foreach (AnalyticEdge edge in kept) TranslateConstructedEdge(edge, bitmapOrigin, ref setupWork, maximumSetupWork, cancellationToken);
             AnalyticEdge[] edges = kept.ToArray();
-            System.Array.Sort(edges, EdgeOrder.Instance);
+            SortEdges(edges, cancellationToken);
             AnalyticEdge head = new() { UpperY = int.MinValue, LowerY = int.MinValue, X = int.MinValue, UpperX = int.MinValue, DY = int.MaxValue };
             AnalyticEdge tail = new() { UpperY = int.MaxValue, LowerY = int.MaxValue, X = int.MaxValue, UpperX = int.MaxValue, DY = int.MaxValue };
             head.Next = edges.Length > 0 ? edges[0] : tail;

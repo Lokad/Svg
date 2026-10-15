@@ -61,7 +61,7 @@ internal static partial class OpenTypeFont
         if (structure.CompositeHeader is not null)
         {
             (TrueTypeHintProfile compositeProfile, OpenTypeTableRange compositeCvt, OpenTypeTableRange compositeFont, OpenTypeTableRange compositePrep) = ReadHintTables();
-            using CompositeTrueTypeHinting fitting = new(bytes, metrics, compositeProfile, compositeCvt, compositeFont, compositePrep, checked((int)Math.Floor(deviceSize + .5)), deviceScale, target, budget, work, token);
+            using CompositeTrueTypeHinting fitting = new(bytes, metrics, compositeProfile, compositeCvt, compositeFont, compositePrep, checked((int)Math.Floor(deviceSize + .5)), deviceScale, horizontalSize, target, budget, work, token);
             using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, fitting, null, budget, work, token);
             MapPoints(outline.Points);
             using OpenTypeSegmentAccumulator compositeSegments = new(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, work, token);
@@ -123,7 +123,11 @@ internal static partial class OpenTypeFont
         }
 
         int Scale(int value) => ScaleWith(value, scale);
-        int ScaleHorizontal(int value) => ScaleWith(value, horizontalScale);
+        int ScaleHorizontal(int value)
+        {
+            if ((target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) == 0) return ScaleWith(value, horizontalScale);
+            return ScaleWindowsHorizontalPoint(value, horizontalSize, metrics.UnitsPerEm);
+        }
         int ScaleWith(int value, int factor)
         {
             long product = (long)value * factor;
@@ -159,5 +163,15 @@ internal static partial class OpenTypeFont
                 throw new SvgException(SvgErrorCode.LimitExceeded, "A TrueType hint table exceeds its supported byte bound.");
             return (new(ReadUInt16(data, maxp.Offset + 24), ReadUInt16(data, maxp.Offset + 18), ReadUInt16(data, maxp.Offset + 20), ReadUInt16(data, maxp.Offset + 16)), cvt, fpgm, prep);
         }
+    }
+
+    /// <summary>Retains native initial horizontal point precision separately from the fixed-point interpreter scale.</summary>
+    private static int ScaleWindowsHorizontalPoint(int value, double size, ushort unitsPerEm)
+    {
+        float scaled = value * ((float)size / unitsPerEm) * 64;
+        double rounded = Math.Round(scaled, MidpointRounding.AwayFromZero);
+        if (!double.IsFinite(rounded) || rounded < int.MinValue || rounded > int.MaxValue)
+            throw new SvgException(SvgErrorCode.LimitExceeded, "A horizontal glyph point exceeds its fixed-point bound.");
+        return (int)rounded;
     }
 }

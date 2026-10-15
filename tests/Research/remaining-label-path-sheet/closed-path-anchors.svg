@@ -1,0 +1,11 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="224">
+<rect width="400" height="224" fill="white"/>
+<defs><path id="loop" d="M24 104 C80 16 302 16 376 104 C304 190 96 190 24 104 Z"/><path id="edge" d="M20 204 H176 V166 Z"/></defs>
+<path d="M24 104 C80 16 302 16 376 104 C304 190 96 190 24 104 Z" fill="none" stroke="#bed3de"/>
+<g font-family="Example" font-size="16" fill="#294258">
+<text><textPath href="#loop" startOffset="4%">start AV</textPath></text>
+<text text-anchor="middle"><textPath href="#loop" startOffset="50%">middle AV</textPath></text>
+<text text-anchor="end"><textPath href="#loop" startOffset="98%">end AV</textPath></text>
+<text font-size="12"><textPath href="#edge" startOffset="78%">closing edge</textPath></text>
+</g></svg>

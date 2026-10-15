@@ -12,6 +12,7 @@ internal static partial class OpenTypeFont
         private readonly ReadOnlyMemory<byte> _bytes;
         private readonly OpenTypeFontMetrics _metrics;
         private readonly TrueTypeHintDeviceScale _scale;
+        private readonly double _horizontalSize;
         internal double HorizontalRatio => _target.HorizontalRatio;
         private readonly TrueTypeHintTarget _target;
         private readonly RenderBudget _budget;
@@ -20,9 +21,9 @@ internal static partial class OpenTypeFont
         private readonly TrueTypeHinting _machine;
         private readonly RenderBudget.BudgetReservation _reservation;
 
-        internal CompositeTrueTypeHinting(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, TrueTypeHintProfile profile, OpenTypeTableRange cvtRange, OpenTypeTableRange fontProgram, OpenTypeTableRange preparation, int ppem, TrueTypeHintDeviceScale scale, TrueTypeHintTarget target, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        internal CompositeTrueTypeHinting(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, TrueTypeHintProfile profile, OpenTypeTableRange cvtRange, OpenTypeTableRange fontProgram, OpenTypeTableRange preparation, int ppem, TrueTypeHintDeviceScale scale, double horizontalSize, TrueTypeHintTarget target, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
         {
-            _bytes = bytes; _metrics = metrics; _scale = scale; _target = target; _budget = budget; _work = work; _token = token;
+            _bytes = bytes; _metrics = metrics; _scale = scale; _horizontalSize = horizontalSize; _target = target; _budget = budget; _work = work; _token = token;
             _reservation = budget.Reserve(192, SvgMemoryCategory.Geometry);
             try
             {
@@ -102,7 +103,8 @@ internal static partial class OpenTypeFont
             return (int)rounded;
         }
 
-        private int ScaleHorizontal(int value) => Scale(value, _scale.Horizontal);
+        private int ScaleHorizontal(int value) => (_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) == 0
+            ? Scale(value, _scale.Horizontal) : ScaleWindowsHorizontalPoint(value, _horizontalSize, _metrics.UnitsPerEm);
         private static int Scale(int value, int factor)
         {
             long product = (long)value * factor;

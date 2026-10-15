@@ -11,6 +11,8 @@ internal enum SvgGlyphMetricTarget { Windows, Linux }
 /// <summary>Maps bounded font advances and SVG fragments through the output grid without rounding authored origins.</summary>
 internal readonly record struct SvgGlyphDeviceMetrics(double Scale, SvgGlyphMetricTarget Target, bool IsTextPath)
 {
+    internal bool UsesTextLengthSpacing { get; init; }
+    internal bool UsesCharacterAdvances => IsTextPath || UsesTextLengthSpacing;
     /// <summary>Resolves the native element font scale before character-local maps.</summary>
     internal static double GetScreenScale(SvgAffineTransform placement)
     {
@@ -51,7 +53,7 @@ internal readonly record struct SvgGlyphDeviceMetrics(double Scale, SvgGlyphMetr
         else throw new ArgumentOutOfRangeException(nameof(Target));
         if (!double.IsFinite(deviceAdvance) || deviceAdvance * 65536 > int.MaxValue || deviceAdvance * 65536 < int.MinValue)
             throw new SvgException(SvgErrorCode.LimitExceeded, "The text advance exceeds the device range.");
-        return (IsTextPath ? Math.Ceiling(deviceAdvance * 64) / 64 : deviceAdvance) / Scale;
+        return (UsesCharacterAdvances ? Math.Ceiling(deviceAdvance * 64) / 64 : deviceAdvance) / Scale;
     }
 
     internal double RoundOffset(double offset) => MathF.Floor((float)(offset * Scale) * 64) / (Scale * 64);

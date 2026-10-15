@@ -551,7 +551,6 @@ internal static class SvgRenderedLeafParser
                         InlineStyle styleSheet = SvgDocumentStyleResolver.Resolve(subtree, false, state, workCounter, cancellationToken);
                         if (!SvgTextSyntax.TryParseTspanStyle(subtree, inheritedStyle, styleSheet, workCounter, cancellationToken, out childStyle)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bounded whitespace, scalar positioning and solid-paint tspan children are implemented.");
                         if (textPath is not null && childStyle.PositionOffset is SvgTextPositionOffset pathOffset && (pathOffset.X is not null || pathOffset.Y is not null)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Absolute span coordinates on text paths are not implemented.");
-                        if (textPath is not null && childStyle.PositionLists.Rotate is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Span rotation on text paths requires the pending path propagation correction.");
                     }
                     if (!subtree.IsEmptyElement)
                     {

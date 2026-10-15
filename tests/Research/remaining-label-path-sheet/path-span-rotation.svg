@@ -1,0 +1,8 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="128">
+<rect width="400" height="128" fill="white"/>
+<defs><path id="curve" d="M12 54 Q200 12 388 54"/><path id="line" d="M12 106 H388"/></defs>
+<g font-family="Example" font-size="18" fill="#294258">
+<text><textPath href="#curve" startOffset="2%">AV <tspan font-size="14" rotate="-8 8 0">path</tspan> label</textPath></text>
+<text><textPath href="#line">AV <tspan rotate="0 12 -12">path</tspan> label</textPath></text>
+</g></svg>

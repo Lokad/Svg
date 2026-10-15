@@ -118,7 +118,7 @@ public sealed class SvgSuppliedFontTextPathTests
     [Theory]
     [InlineData("<text font-family='Example' font-size='16'><textPath href='#missing'>A</textPath></text>", SvgErrorCode.UnresolvedResource)]
     [InlineData("<defs><rect id='p' width='40' height='40'/></defs><text font-family='Example' font-size='16'><textPath href='#p'>A</textPath></text>", SvgErrorCode.UnresolvedResource)]
-    [InlineData("<defs><path id='p' d='M8 48 Q32 16 56 48 Z'/></defs><text font-family='Example' font-size='16'><textPath href='#p'>A</textPath></text>", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("<defs><path id='p' d='M8 48 Q32 16 56 48 Z M8 48 H16'/></defs><text font-family='Example' font-size='16'><textPath href='#p'>A</textPath></text>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<defs><path id='p' d='M8 48 H56'/></defs><text font-family='Example' font-size='16'>A<textPath href='#p'>A</textPath></text>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<defs><path id='p' d='M8 48 H56'/></defs><text font-family='Example' font-size='16'><textPath href='#p'>A</textPath>A</text>", SvgErrorCode.UnsupportedFeature)]
     public async Task Reference_and_layout_failures_release_queued_runs_and_leave_output_untouched(string body, SvgErrorCode category)
@@ -136,6 +136,23 @@ public sealed class SvgSuppliedFontTextPathTests
         using MemoryStream output = new();
         Assert.Equal(category, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, output, options, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, output.Length);
+    }
+
+    [Fact]
+    public async Task Closed_contour_keeps_the_original_curved_prefix_and_releases_queued_runs()
+    {
+        // This original valid input previously asserted UnsupportedFeature.
+        byte[] input = Document("<defs><path id='p' d='M8 48 Q32 16 56 48 Z'/></defs><text font-family='Example' font-size='16'><textPath href='#p'>A</textPath></text>");
+        byte[] open = Document("<defs><path id='p' d='M8 48 Q32 16 56 48'/></defs><text font-family='Example' font-size='16'><textPath href='#p'>A</textPath></text>");
+        using SvgFontSnapshot snapshot = await Prepare(input);
+        RenderBudget budget = new(long.MaxValue);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
+            Assert.True(budget.Snapshot().CurrentBytes > 0);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] actual = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
+        Assert.Equal(SvgConverter.ConvertToPng(open, options, CancellationToken.None).ToArray(), actual);
+        Assert.Contains(PngRgbaDecoder.Decode(actual, 4_096).Pixels, value => value != 0);
     }
 
     [Theory]

@@ -442,6 +442,11 @@ internal sealed class TrueTypeHinting : IDisposable
                         if (original <= originalA) value = checked(original + currentA - originalA);
                         else if (original >= originalB) value = checked(original + currentB - originalB);
                         else if (unscaledA == unscaledB || currentA == currentB) value = currentA;
+                        // Windows interpolates the design-unit ratio before rounding
+                        // the resulting device coordinate. A 16.16 slope can lose
+                        // an exact half-unit, especially in fitted accent contours.
+                        else if ((_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0)
+                            value = checked(currentA + Divide(checked(Unscaled(_glyph[i]) - unscaledA), checked(unscaledB - unscaledA), checked(currentB - currentA)));
                         else value = checked(currentA + Divide(checked(Unscaled(_glyph[i]) - unscaledA), 65536, scale));
                         if (axis == TrueTypeHintAxis.X) _glyph[i].X = value; else _glyph[i].Y = value;
                     }

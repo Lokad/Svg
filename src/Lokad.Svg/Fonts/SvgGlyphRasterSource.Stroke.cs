@@ -1,3 +1,5 @@
+// Adapts pinned SkDWriteGeometrySink.cpp and SkFloatUtils.h.
+// Copyright 2012 Google Inc. See THIRD_PARTY_NOTICES.txt.
 namespace Lokad.Svg.Fonts;
 
 using Lokad.Svg.Parsing;
@@ -58,20 +60,21 @@ internal sealed partial class SvgGlyphRasterSource
                 OpenTypeQuadraticSegment segment = decoded.Segments[index];
                 SvgDevicePoint target = Local(segment.End);
                 if (segment.Control == segment.End) source.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, target, default, default));
-                // Measure dashes on retained TrueType quadratics; solid Windows
-                // stroke replay keeps its established cubic construction.
+                // Measure dashes on retained TrueType quadratics. The Windows
+                // sink recovers quadratic controls from its rounded cubics.
                 else if (windows && dashes is null)
                 {
-                    const float twoThirds = 2f / 3;
-                    const float oneThird = 1 - twoThirds;
+                    const float oneThird = 1f / 3;
+                    const float twoThirds = 1 - oneThird;
                     // DirectWrite constructs cubics before Skia maps the outline.
                     // Preserve that float order in solid outline construction.
                     SvgDevicePoint a = Scaled(segment.Start), b = Scaled(segment.Control), c = Scaled(segment.End);
-                    SvgDevicePoint firstControl = Unmap(SvgNativePathStroke.MapPoint(strike.RemainingMap,
-                        new((float)a.X * oneThird + (float)b.X * twoThirds, (float)a.Y * oneThird + (float)b.Y * twoThirds)));
-                    SvgDevicePoint secondControl = Unmap(SvgNativePathStroke.MapPoint(strike.RemainingMap,
-                        new((float)c.X * oneThird + (float)b.X * twoThirds, (float)c.Y * oneThird + (float)b.Y * twoThirds)));
-                    source.Add(new(SvgAuthoredPathVerb.Cubic, SvgAuthoredArcFlags.None, firstControl, secondControl, target));
+                    SvgDevicePoint firstControl = new((float)a.X * oneThird + (float)b.X * twoThirds, (float)a.Y * oneThird + (float)b.Y * twoThirds);
+                    SvgDevicePoint secondControl = new((float)c.X * oneThird + (float)b.X * twoThirds, (float)c.Y * oneThird + (float)b.Y * twoThirds);
+                    if (TryRecoverQuadratic(a, firstControl, secondControl, c, out SvgDevicePoint quadratic))
+                        source.Add(new(SvgAuthoredPathVerb.Quadratic, SvgAuthoredArcFlags.None, Unmap(SvgNativePathStroke.MapPoint(strike.RemainingMap, quadratic)), target, default));
+                    else
+                        source.Add(new(SvgAuthoredPathVerb.Cubic, SvgAuthoredArcFlags.None, Unmap(SvgNativePathStroke.MapPoint(strike.RemainingMap, firstControl)), Unmap(SvgNativePathStroke.MapPoint(strike.RemainingMap, secondControl)), target));
                 }
                 else source.Add(new(SvgAuthoredPathVerb.Quadratic, SvgAuthoredArcFlags.None, Local(segment.Control), target, default));
             }
@@ -105,5 +108,25 @@ internal sealed partial class SvgGlyphRasterSource
         SvgDevicePoint Device(OpenTypeOutlinePoint point) => SvgNativePathStroke.MapPoint(strike.RemainingMap, Scaled(point));
         SvgDevicePoint Unmap(SvgDevicePoint point) => SvgNativePathStroke.MapPoint(inverse, new((float)point.X + phaseX, (float)point.Y + phaseY));
         SvgDevicePoint Local(OpenTypeOutlinePoint point) => Unmap(Device(point));
+
+        static bool TryRecoverQuadratic(SvgDevicePoint a, SvgDevicePoint b, SvgDevicePoint c, SvgDevicePoint d, out SvgDevicePoint control)
+        {
+            float x = (float)a.X + ((float)b.X - (float)a.X) * 3 / 2;
+            float otherX = ((float)c.X - (float)d.X) * 3 / 2 + (float)d.X;
+            float y = (float)a.Y + ((float)b.Y - (float)a.Y) * 3 / 2;
+            float otherY = ((float)c.Y - (float)d.Y) * 3 / 2 + (float)d.Y;
+            control = new(x, y);
+            return Near(x, otherX) && Near(y, otherY);
+
+            static bool Near(float first, float second)
+                => !float.IsNaN(first) && !float.IsNaN(second) && Math.Abs(Biased(first) - Biased(second)) <= 10;
+
+            static long Biased(float value)
+            {
+                uint bits = BitConverter.SingleToUInt32Bits(value);
+                long magnitude = bits & 0x7FFFFFFFu;
+                return 0x80000000L + ((bits & 0x80000000u) == 0 ? magnitude : -magnitude);
+            }
+        }
     }
 }

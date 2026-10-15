@@ -13224,3 +13224,54 @@ prior float cases: denied work/storage, cancellation, retry, cleanup and unchang
 borrowed input. Shared packed interpolation retains existing image regressions.
 See the [bank](../tests/Research/filter-regions/manifest.json) and
 [qualification receipt](../artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json).
+
+
+### Complete remaining label/path sheet (2026-10-15)
+
+The retained whole sheet and eight focused controls match their unchanged
+Windows/Linux references. The three added controls isolate span rotation on
+paths, closed anchors and mixed-face length policies; each retains pre-correction
+licensed bytes and healthy stable platform triples. Existing direct positioning,
+spacing, decoration and stroke controls remain exact. The original closed-path
+negative inputs now have positive regressions; multiple contours remain negative.
+The whole-sheet manifest graduates its obsolete rejection to exact acceptance.
+
+Measured paths add the implicit closing edge and combine character rotation with
+the tangent. Glyph stretching applies in local coordinates after native fragment
+placement. Direct spacing-only textLength uses rounded character advances while
+spacingAndGlyphs retains its distinct established metric route. Existing source
+measurement, glyph mapping and replay own these operations and their resources.
+
+Windows symmetric fitting scales initial horizontal points at native float
+precision while retaining the interpreter's full-precision fixed scale. IUP
+interpolates its design-unit ratio before final device rounding; the retained
+18px doubled-width accent exposes the exact-half distinction. One-sided directions
+at flat curve endpoints close winding before dropout selection. The preceding
+contour-neighbor scan is no longer needed. Independent complete native masks
+preserve ordinary W/B/D, the accent and closed-path i controls.
+
+Solid Windows strokes follow the pinned DirectWrite geometry sink: construct its
+rounded cubic controls, then recover a quadratic when both reconstructed controls
+are within its ten-ULP representation bound. This internal representation choice
+precedes mapping/stroking and changes no pixel comparison tolerance. Dash
+measurement retains the original quadratic source. The two Windows path-stroke
+pixels close with this shared correction, without a paint/preblend adjustment.
+
+The final Linux pixel isolates to a fontless 12×17 replay of the actual stroke
+outline. Native and managed construction produce the same 63 analytic edge
+states. Array.Sort reverses a tied opposite-winding pair relative to native
+SkTSort.h; the resulting transient empty winding splits one filled interval and
+rounds its 64 coverage into 12+51. The native order retains 64. Bounded native
+introsort now serves all three analytic edge-preparation routes, including clipped
+construction. It sorts in place, limits recursion with a heap fallback and checks
+cancellation during partition/insertion/heap work. Existing setup allowances and
+owners remain; no special glyph, coordinate or pixel predicate is used. The full
+Linux preblend table independently agrees at all 256 entries.
+
+Temporary trace instrumentation has been removed. Source/bitmap/native edge traces
+and rejected duplicate-phase diagnostics remain under
+`artifacts/remaining-label-path-20261015/`. Complete platform results, original
+asset identities and explicit assertion migrations are in the
+[qualification receipt](../artifacts/maintenance-review-20261012/path-sheet-qualified-results.json).
+This is the eighth additional authored document, separate from the selected and
+corporate cohorts; wider G9 and S17 remain open.

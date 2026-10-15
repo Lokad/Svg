@@ -1,0 +1,11 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="432" height="220">
+<rect width="432" height="220" fill="white"/>
+<defs><path id="loop" d="M48 120 C96 36 274 36 368 120 C284 188 120 188 48 120 Z"/></defs>
+<g font-family="Example" font-size="18" fill="#19334c">
+<text x="24" y="30" textLength="180" lengthAdjust="spacing">Wide <tspan font-family="Mono" font-weight="700" font-size="16">span lists</tspan></text>
+<text x="232" y="30" textLength="172" lengthAdjust="spacingAndGlyphs">Mixed <tspan font-size="16">é AV</tspan></text>
+<path d="M48 120 C96 36 274 36 368 120 C284 188 120 188 48 120 Z" fill="none" stroke="#bed3de"/>
+<text font-size="15" textLength="144" lengthAdjust="spacing"><textPath href="#loop" startOffset="4%">AV <tspan font-family="Mono" font-weight="700" font-size="13" rotate="-8 8 0">path spans</tspan></textPath></text>
+<text font-size="17" text-anchor="middle" word-spacing="4" textLength="132" lengthAdjust="spacingAndGlyphs"><textPath href="#loop" startOffset="60%">é AV labels</textPath></text>
+</g></svg>

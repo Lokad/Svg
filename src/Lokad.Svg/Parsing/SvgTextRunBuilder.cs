@@ -32,6 +32,8 @@ internal static class SvgTextRunBuilder
     /// <summary>Resolves normalized font intervals from the caller snapshot once, then shares their faces with continuous layout and glyph replay.</summary>
     internal static SvgTextRun Create(SvgTextStyle style, string text, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, ReadOnlySpan<SvgTextPaintSpan> paintSpans, ReadOnlySpan<SvgTextFontSpan> fontSpans, SvgTextGlyphPaint? defaultPaint, SvgGlyphDeviceMetrics? deviceMetrics, SvgFontSnapshot snapshot, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
+        if (style.TextLength is not null && style.LengthAdjust == SvgTextLengthAdjust.Spacing && deviceMetrics is {} metrics)
+            deviceMetrics = metrics with { UsesTextLengthSpacing = true };
         ArgumentNullException.ThrowIfNull(text);
         ArgumentNullException.ThrowIfNull(snapshot);
         using BudgetedParserList<SvgTextResolvedFontSpan> resolvedFonts = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -210,6 +212,7 @@ internal sealed class SvgTextRun : IDisposable
     internal SvgGlyphDeviceMetrics? DeviceMetrics => _deviceMetrics;
     internal SvgGlyphFontStyle GetGlyphFont(int index) => _glyphs.GlyphFonts.IsEmpty ? new(Font, Style.FontSize) : _glyphs.GlyphFonts[index];
     internal SvgTextGlyphPaint GetGlyphPaint(int index, SvgColor fallbackColor) => _glyphs.GlyphPaints.IsEmpty ? _defaultPaint ?? new(fallbackColor, true) : _glyphs.GlyphPaints[index];
+    internal double GetGlyphRotation(int index) => _glyphs.GlyphRotations.IsEmpty ? 0 : _glyphs.GlyphRotations[index];
 
     /// <summary>Composes character-local rotation with the existing glyph and element placement.</summary>
     internal (SvgPositionedGlyph Position, SvgAffineTransform Map) GetGlyphPlacement(int index, SvgAffineTransform placement)
@@ -221,7 +224,7 @@ internal sealed class SvgTextRun : IDisposable
     private (SvgPositionedGlyph Position, SvgAffineTransform Map) GetPlacement(int index, SvgAffineTransform placement, bool stretch)
     {
         SvgPositionedGlyph glyph = Glyphs[index];
-        double angle = _glyphs.GlyphRotations.IsEmpty ? 0 : _glyphs.GlyphRotations[index];
+        double angle = GetGlyphRotation(index);
         double glyphStretch = stretch ? GlyphStretch : 1;
         if (angle == 0 && glyphStretch == 1) return placement.IsTranslation ? (glyph.Translate(placement), SvgAffineTransform.Identity) : (glyph, placement);
         SvgAffineTransform map = SvgAffineTransform.FromTranslation(glyph.X, glyph.Y)

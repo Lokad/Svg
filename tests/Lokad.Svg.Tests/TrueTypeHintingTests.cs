@@ -169,6 +169,30 @@ public sealed class TrueTypeHintingTests
         Assert.Equal(150, points[1].OriginalX);
     }
 
+    [Theory]
+    [InlineData(false, 793)]
+    [InlineData(true, 794)]
+    public void Windows_interpolation_rounds_the_final_device_coordinate_at_an_exact_half(bool symmetric, int expected)
+    {
+        // The original 18px Noto Sans accent has touched Y endpoints 704/883
+        // at design coordinates 606/756. Its middle control at 681 is exactly
+        // halfway: Windows rounds 704 + 179/2 up; a 16.16 slope loses that half.
+        TrueTypeHintPoint[] points = [new(0, 871, 0, 756), new(0, 785, 0, 681), new(0, 698, 0, 606)];
+        points[0].Y = 883; points[2].Y = 704;
+        points[0].TouchedY = points[2].TouchedY = true;
+        RenderBudget budget = new(long.MaxValue);
+        TrueTypeHintTarget target = new(42, symmetric ? TrueTypeHintQueryFlags.Symmetric : TrueTypeHintQueryFlags.None,
+            TrueTypeHintControlScale.FullPrecision, TrueTypeHintPreparation.Single);
+        using (TrueTypeHinting machine = TrueTypeHinting.Create(new(0, 0, 0, 0), [], points, [2], 18, new(75497, 75497), target, budget, new(long.MaxValue), CancellationToken.None))
+        {
+            machine.Run(new byte[] { 0x30 }, TrueTypeHintProgramKind.Glyph);
+            Assert.Equal(expected, points[1].Y);
+            Assert.Equal(785, points[1].OriginalY);
+            Assert.False(points[1].TouchedY);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     [Fact]
     public void Preparation_restores_cvt_but_retains_storage_functions_and_explicit_queries()
     {

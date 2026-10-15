@@ -2,7 +2,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Owns bounded native distance records for one open text baseline.</summary>
+/// <summary>Owns bounded native distance records for one open or closed text baseline.</summary>
 /// <remarks>The parser owns this temporary object and disposes it after placing a run. Commands are borrowed
 /// only during construction. Each command, knot, lookup and evaluation charges work and checks cancellation.
 /// Failed construction releases all arrays; readers and disposal are confined to one conversion thread.</remarks>
@@ -59,7 +59,7 @@ internal sealed class SvgMeasuredTextPath : IDisposable
             }
             using BudgetedParserList<Curve> curves = new(budget, SvgMemoryCategory.Geometry, work, token);
             using BudgetedParserList<SvgCurveMeasureStep> steps = new(budget, SvgMemoryCategory.Geometry, work, token);
-            SvgDevicePoint current = default, start = default, horizontalEnd = default;
+            SvgDevicePoint current = default, first = default, start = default, horizontalEnd = default;
             bool hasStart = false, horizontal = true;
             float distance = 0;
             Span<SvgDevicePoint> points = stackalloc SvgDevicePoint[4];
@@ -70,14 +70,22 @@ internal sealed class SvgMeasuredTextPath : IDisposable
                 if (command.Verb == SvgAuthoredPathVerb.End) continue;
                 if (command.Verb == SvgAuthoredPathVerb.Move && !hasStart)
                 {
-                    current = command.First;
+                    current = first = command.First;
                     start = horizontalEnd = map.Apply(current.X, current.Y);
                     hasStart = true;
                     continue;
                 }
-                if (!hasStart || command.Verb is SvgAuthoredPathVerb.Move or SvgAuthoredPathVerb.Close)
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only one open text-path contour is implemented.");
+                if (!hasStart || command.Verb == SvgAuthoredPathVerb.Move)
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only one text-path contour is implemented.");
                 points[0] = current;
+                if (command.Verb == SvgAuthoredPathVerb.Close)
+                {
+                    points[1] = first;
+                    AddCurve(SvgMeasuredCurveKind.Line, points[..2], 1);
+                    current = first;
+                    horizontal = false;
+                    continue;
+                }
                 if (command.Verb == SvgAuthoredPathVerb.Arc)
                 {
                     horizontal = false;
@@ -144,12 +152,21 @@ internal sealed class SvgMeasuredTextPath : IDisposable
     /// <summary>Returns a glyph-local map about its advance midpoint and the measured tangent.</summary>
     internal SvgAffineTransform GlyphMap(double midpoint, double halfAdvance, double baselineShift,
         ParserWorkCounter work, CancellationToken token)
+        => GlyphMap(midpoint, halfAdvance, baselineShift, 0, work, token);
+
+    /// <summary>Combines a normalized character rotation with the path tangent before midpoint placement.</summary>
+    internal SvgAffineTransform GlyphMap(double midpoint, double halfAdvance, double baselineShift, double rotation,
+        ParserWorkCounter work, CancellationToken token)
     {
         work.Consume(token);
         if (_owner is null) throw new InvalidOperationException("The measured text path is disposed.");
         if (!double.IsFinite(midpoint) || midpoint < 0 || midpoint > Baseline.Length)
             throw new ArgumentOutOfRangeException(nameof(midpoint));
-        if (IsHorizontal) return SvgAffineTransform.FromTranslation(Baseline.X + midpoint - halfAdvance, Baseline.Y + baselineShift);
+        if (IsHorizontal)
+            return rotation == 0 ? SvgAffineTransform.FromTranslation(Baseline.X + midpoint - halfAdvance, Baseline.Y + baselineShift)
+                : SvgAffineTransform.FromTranslation(Baseline.X + midpoint, Baseline.Y)
+                    .ComposeChecked(SvgAffineTransform.FromRotationDegrees(rotation))
+                    .ComposeChecked(SvgAffineTransform.FromTranslation(-halfAdvance, baselineShift));
         ReadOnlySpan<Curve> curves = _curves.Items;
         int low = 0, high = curves.Length - 1;
         float distance = (float)midpoint;
@@ -168,6 +185,7 @@ internal sealed class SvgMeasuredTextPath : IDisposable
         if (!double.IsFinite(position.X) || !double.IsFinite(position.Y) || !double.IsFinite(tangent.X) || !double.IsFinite(tangent.Y))
             throw new SvgException(SvgErrorCode.LimitExceeded, "The text-path position or tangent exceeds the supported range.");
         double angle = Math.Atan2(tangent.Y, tangent.X) * (180 / Math.PI);
+        if (rotation != 0) angle = (float)angle + (float)rotation;
         return SvgAffineTransform.FromTranslation(position.X, position.Y)
             .ComposeChecked(SvgAffineTransform.FromRotationDegrees(angle))
             .ComposeChecked(SvgAffineTransform.FromTranslation(-halfAdvance, baselineShift));

@@ -11,7 +11,7 @@ internal readonly record struct SvgPendingTextPath(SvgTextRun Run, SvgTextPathRe
     internal SvgLeafMaskBinding? ViewportClip { get; init; }
 }
 
-/// <summary>Describes a measured open baseline and its authored offset calibration.</summary>
+/// <summary>Describes a measured baseline and its authored offset calibration.</summary>
 internal readonly record struct SvgTextPathBaseline(double X, double Y, double Length)
 {
     /// <summary>Scales authored numeric start offsets; percentages and glyph advances retain their separate coordinates.</summary>
@@ -66,31 +66,39 @@ internal static class SvgTextPathLayout
             {
                 work.Consume(token);
                 SvgGlyphFontStyle glyphFont = pending.Run.GetGlyphFont(glyphIndex);
+                double rotation = pending.Run.GetGlyphRotation(glyphIndex);
                 SvgTextGlyphPaint paint = pending.Run.GetGlyphPaint(glyphIndex++, pending.Color);
                 if (!paint.IsPainted) { placements.Add(default); continue; }
                 double distance = offset + glyph.X;
                 double midpoint = distance + glyph.Advance / 2;
-                if (!measured.IsHorizontal)
+                if (!measured.IsHorizontal || rotation != 0)
                     // Native SVG adds the device character offset and inline
                     // half-width before scalar division and the path offset.
                     midpoint = ((float)(glyph.X * state.OutputTextScale) + (float)(glyph.Advance * state.OutputTextScale) / 2) / (float)state.OutputTextScale + (float)offset;
                 if (!double.IsFinite(distance) || !double.IsFinite(midpoint)) throw new SvgException(SvgErrorCode.LimitExceeded, "Text-path placement exceeds the supported range.");
                 if (baseline.Length == 0 || midpoint < 0 || midpoint > baseline.Length) { placements.Add(default); continue; }
-                SvgPositionedGlyph placed = measured.IsHorizontal
+                bool horizontalPlacement = measured.IsHorizontal && rotation == 0;
+                SvgPositionedGlyph placed = horizontalPlacement
                     ? glyph with { X = baseline.X + distance, Y = baseline.Y + glyph.Y }
                     : glyph with { X = 0, Y = 0 };
-                SvgAffineTransform glyphMap = measured.IsHorizontal ? SvgAffineTransform.Identity
-                    : measured.GlyphMap(midpoint, glyph.Advance / 2, glyph.Y, work, token);
+                SvgAffineTransform glyphMap = horizontalPlacement ? SvgAffineTransform.Identity
+                    : measured.GlyphMap(midpoint, glyph.Advance / 2, glyph.Y, rotation, work, token);
                 // A zero tangent angle uses the native horizontal strike, even on a curved baseline.
-                if (!measured.IsHorizontal && glyphMap.A == 1 && glyphMap.B == 0 && glyphMap.C == 0 && glyphMap.D == 1)
+                if (!horizontalPlacement && glyphMap.A == 1 && glyphMap.B == 0 && glyphMap.C == 0 && glyphMap.D == 1)
                 {
                     placed = placed with { X = glyphMap.E, Y = glyphMap.F };
                     glyphMap = SvgAffineTransform.Identity;
                 }
-                else if (!measured.IsHorizontal && (OperatingSystem.IsWindows() || OperatingSystem.IsLinux()))
+                else if (!horizontalPlacement && (OperatingSystem.IsWindows() || OperatingSystem.IsLinux()))
                 {
                     SvgGlyphDeviceMetrics metrics = new(state.OutputTextScale, OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, true);
                     glyphMap = metrics.PlaceTextPathPaint(glyphMap, glyph.Advance / 2, glyph.Y, glyphFont.FontSize, glyphFont.Font.Metrics);
+                }
+                if (pending.Run.GlyphStretch != 1)
+                {
+                    SvgAffineTransform stretch = SvgAffineTransform.FromScale(pending.Run.GlyphStretch, 1);
+                    glyphMap = (glyphMap == SvgAffineTransform.Identity ? SvgAffineTransform.FromTranslation(placed.X, placed.Y) : glyphMap).ComposeChecked(stretch);
+                    placed = placed with { X = 0, Y = 0 };
                 }
                 if (pending.Placement != SvgAffineTransform.Identity)
                 {

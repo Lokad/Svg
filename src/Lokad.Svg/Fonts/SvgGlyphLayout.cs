@@ -263,7 +263,7 @@ internal static class SvgGlyphLayout
                     && ReferenceEquals(glyphPaints[index].Decoration, glyphPaints[index + 1].Decoration);
                 int pairAdjustment = chunkEnds || !sameFont ? 0 : OpenTypeFont.GetPairAdjustment(font.Bytes, glyph.GlyphIndex, glyphs[index + 1].GlyphIndex, font.Metrics, workCounter, cancellationToken);
                 double kerning = pairAdjustment * scale;
-                if (pairAdjustment != 0 && deviceMetrics is { IsTextPath: true } pathMetrics)
+                if (pairAdjustment != 0 && deviceMetrics is { UsesCharacterAdvances: true } pathMetrics)
                 {
                     ushort advance = OpenTypeFont.GetAdvanceWidth(font.Bytes, glyph.GlyphIndex, font.Metrics, workCounter, cancellationToken);
                     glyph = glyph with { Advance = pathMetrics.GetAdvance(advance, pairAdjustment, font.UnitsPerEm, fontSize) };

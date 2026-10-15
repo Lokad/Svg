@@ -1,3 +1,25 @@
+## Complete supplied-font label/path sheet (2026-10-15)
+
+The unchanged [whole sheet](../tests/Research/remaining-label-path-sheet/README.md)
+and eight independent controls are exact on Windows/Linux. Character rotations
+compose with the measured tangent; a single closed contour includes its closing
+edge without wrapping out-of-range glyphs. Both textLength policies propagate
+through direct/path layout with mixed supplied faces. Absolute span x/y on text
+paths and multiple path contours retain their explicit boundaries.
+
+Windows initial point scaling, rational interpolation and one-sided curve-end
+coverage preserve native fitting. Solid Windows strokes recover quadratics from
+the rounded DirectWrite cubics before mapping. Shared analytic edge construction
+uses the pinned native sort so coincident opposite-winding edges preserve native
+coverage. These mechanisms reuse bounded geometry, fitting and raster ownership;
+no native runtime dependency or pixel-specific rule is introduced.
+
+The [qualification receipt](../artifacts/maintenance-review-20261012/path-sheet-qualified-results.json)
+owns completed platform checks and retained negative boundaries. Earlier
+span-rotation, closed-contour and accent blockers below are superseded. Stroked
+decorations, decorated paths, wider admitted maps, queued composite flags and
+private validation remain required; this document does not close G9 or S17.
+
 ## Ordered, dashed and non-scaling label/path strokes (2026-10-15)
 
 The two new [label/path controls](../tests/Research/remaining-label-path-sheet/README.md)

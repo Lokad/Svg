@@ -222,6 +222,9 @@ public sealed class SvgFontLayoutDiagramTests
     [InlineData("solid-decorations")]
     [InlineData("stroke-paint-order")]
     [InlineData("stroke-modes")]
+    [InlineData("path-span-rotation")]
+    [InlineData("closed-path-anchors")]
+    [InlineData("mixed-length-layout")]
     public async Task Remaining_label_path_outputs_preserve_frozen_inputs_and_platform_references(string identity)
     {
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", "remaining-label-path-sheet");

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Retained whole CC0 label/path sheet plus orthogonal positioning, spacing, decoration and direct/path stroke controls for the finite G9 exit. References precede each production correction; whole-sheet gaps remain required.",
+  "purpose": "Retained whole CC0 label/path sheet plus orthogonal positioning, spacing, decoration and direct/path stroke controls for the finite G9 exit. References precede each production correction; the complete sheet is exact while wider G9 remains required.",
   "fontPack": "../font-layout-diagram/font-pack.json",
   "fontPrograms": [
     {
@@ -27,7 +27,6 @@
       "license": "CC0-1.0",
       "sourceSha256": "e80afc08a4462fef2c6abbc395ab38cfa586ce6a36fcf704c3e05632fbf7bff2",
       "selection": "Declared before shared nested-list/rotation correction; every retained byte, program, option and platform reference stays frozen. The whole sheet owns remaining finite G9 semantics; this control only diagnoses inherited character positioning.",
-      "expectedError": "UnsupportedFeature",
       "reference": "references/remaining-label-path-sheet.png",
       "referenceSha256": "e848f3d4cdaf509e64cac165f3cf15eeb238cfe1391bbc60c711bfe1d5b6619f",
       "captures": [
@@ -307,6 +306,153 @@
         },
         {
           "pngSha256": "1622b30c1fbe5fc3d2e186e1eaf28110c0cdd70bec746021b1d8f578b9cb9fb7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "path-span-rotation",
+      "width": 400,
+      "height": 128,
+      "license": "CC0-1.0",
+      "sourceSha256": "07faf1b807512319dd8835203feb8eb662b0d1a13376092509a1cd196e286bbe",
+      "selection": "Focused control for the retained whole sheet next rejection: scalar span rotations on curved and straight text paths, with an independent size interval and the unchanged supplied face. References precede path propagation changes.",
+      "input": "path-span-rotation.svg",
+      "background": "transparent",
+      "role": "mechanism-control",
+      "reference": "references/path-span-rotation.png",
+      "referenceSha256": "ee151a66464e9d150bc1abe9b5c9303b96737aeafde0974fc8a86cf353d8fc85",
+      "captures": [
+        {
+          "pngSha256": "ee151a66464e9d150bc1abe9b5c9303b96737aeafde0974fc8a86cf353d8fc85",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ee151a66464e9d150bc1abe9b5c9303b96737aeafde0974fc8a86cf353d8fc85",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ee151a66464e9d150bc1abe9b5c9303b96737aeafde0974fc8a86cf353d8fc85",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/path-span-rotation.png",
+      "linuxReferenceSha256": "8873328fbec408a8e39bf9a9573b5b667071a3bb49458fc7a9422b31991e7afb",
+      "linuxCaptures": [
+        {
+          "pngSha256": "8873328fbec408a8e39bf9a9573b5b667071a3bb49458fc7a9422b31991e7afb",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8873328fbec408a8e39bf9a9573b5b667071a3bb49458fc7a9422b31991e7afb",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8873328fbec408a8e39bf9a9573b5b667071a3bb49458fc7a9422b31991e7afb",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "closed-path-anchors",
+      "width": 400,
+      "height": 224,
+      "license": "CC0-1.0",
+      "sourceSha256": "05e3501339bf4432a8b93e8340ebecdf66b72645de6324ec4cfff2e8f012a576",
+      "selection": "Focused control for the retained whole sheet closed-contour rejection: start/middle/end anchors on a closed cubic path and an implicit closing edge, with the unchanged supplied face. References precede closed-contour changes.",
+      "input": "closed-path-anchors.svg",
+      "background": "transparent",
+      "role": "mechanism-control",
+      "reference": "references/closed-path-anchors.png",
+      "referenceSha256": "819b76ca971c1a4c0e5f7d0d86b5d04cfc8b7c13d8f45c0a249c3258676d2398",
+      "captures": [
+        {
+          "pngSha256": "819b76ca971c1a4c0e5f7d0d86b5d04cfc8b7c13d8f45c0a249c3258676d2398",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "819b76ca971c1a4c0e5f7d0d86b5d04cfc8b7c13d8f45c0a249c3258676d2398",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "819b76ca971c1a4c0e5f7d0d86b5d04cfc8b7c13d8f45c0a249c3258676d2398",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/closed-path-anchors.png",
+      "linuxReferenceSha256": "5523b615787d6e813bb5e5aea597333a05a4291927d8ff97c2ef8258582ba97f",
+      "linuxCaptures": [
+        {
+          "pngSha256": "5523b615787d6e813bb5e5aea597333a05a4291927d8ff97c2ef8258582ba97f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5523b615787d6e813bb5e5aea597333a05a4291927d8ff97c2ef8258582ba97f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5523b615787d6e813bb5e5aea597333a05a4291927d8ff97c2ef8258582ba97f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "mixed-length-layout",
+      "width": 432,
+      "height": 220,
+      "license": "CC0-1.0",
+      "sourceSha256": "9c2025b5d377caca5d668c33572fab7ff729b8d0108ce3b4d0be63702f8e2ccc",
+      "selection": "Focused control for identified whole-sheet mixed-face textLength differences: spacing and spacingAndGlyphs on direct labels and closed text paths, including required rotated spans and anchors. Same supplied programs; references precede length propagation changes.",
+      "input": "mixed-length-layout.svg",
+      "background": "transparent",
+      "role": "mechanism-control",
+      "reference": "references/mixed-length-layout.png",
+      "referenceSha256": "c9ea38cf6e111f528cb9aa32c26b4f4dd6a90a739f111abda948ab0fcfa732e7",
+      "captures": [
+        {
+          "pngSha256": "c9ea38cf6e111f528cb9aa32c26b4f4dd6a90a739f111abda948ab0fcfa732e7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c9ea38cf6e111f528cb9aa32c26b4f4dd6a90a739f111abda948ab0fcfa732e7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c9ea38cf6e111f528cb9aa32c26b4f4dd6a90a739f111abda948ab0fcfa732e7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/mixed-length-layout.png",
+      "linuxReferenceSha256": "ae78bb5f1ecb00ba54d0ec058436fa44795934ec202f470ef79d8d102f08983f",
+      "linuxCaptures": [
+        {
+          "pngSha256": "ae78bb5f1ecb00ba54d0ec058436fa44795934ec202f470ef79d8d102f08983f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ae78bb5f1ecb00ba54d0ec058436fa44795934ec202f470ef79d8d102f08983f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ae78bb5f1ecb00ba54d0ec058436fa44795934ec202f470ef79d8d102f08983f",
           "startupHealth": "healthy",
           "profileCleaned": true
         }

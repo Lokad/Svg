@@ -103,8 +103,7 @@ internal static class SvgFontRequestDiscovery
                     if (insideDirectText && isSvgElement && reader.LocalName == "tspan" && SvgTextSyntax.TryParseTspanStyle(reader, new SvgTextSpanStyle(inheritedWhitespaceMode, 0) { Paint = inheritedLevels[^1].TextPaint, Font = inheritedLevels[^1].Text }, tspanStyleSheet, workCounter, cancellationToken, out SvgTextSpanStyle spanStyle))
                     {
                         childWhitespaceMode = spanStyle.WhitespaceMode;
-                        admittedTextSpan = textPathDepth < 0 || spanStyle.PositionLists.Rotate is null
-                            && (spanStyle.PositionOffset is not SvgTextPositionOffset offset || offset.X is null && offset.Y is null);
+                        admittedTextSpan = textPathDepth < 0 || spanStyle.PositionOffset is not SvgTextPositionOffset offset || offset.X is null && offset.Y is null;
                         if (admittedTextSpan) parsedTextSpan = spanStyle;
                     }
                     if (insideDirectText && isSvgElement && reader.LocalName == "textPath" && reader.Depth == rootDepth + activeCandidateLevel + 1)

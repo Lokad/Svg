@@ -58,6 +58,7 @@ public sealed class SvgTextPathTests
 
     [Theory]
     [InlineData("M8 48 H56", "", 8, 48, 48)]
+    [InlineData("M8 48 H56 Z", "", 8, 48, 96)]
     [InlineData("m8 48 h4 l12 0 H56", "", 8, 48, 48)]
     [InlineData("M0 0 L24 0", "transform='translate(8 48) scale(2)'", 8, 48, 48)]
     [InlineData("M8 48", "", 8, 48, 0)]
@@ -78,7 +79,7 @@ public sealed class SvgTextPathTests
     }
 
     [Theory]
-    [InlineData("M8 48 H56 Z", "")]
+    [InlineData("M8 48 H56 Z M8 48 H16", "")]
     [InlineData("M8 48 H16 M24 48 H56", "")]
     [InlineData("M8 48 H56", "pathLength='0'")]
     public void Unimplemented_contours_and_calibration_release_temporary_commands(string data, string attributes)
@@ -112,6 +113,30 @@ public sealed class SvgTextPathTests
                 SvgAffineTransform shifted = path.GlyphMap(length / 2, 2, 3, new(long.MaxValue), CancellationToken.None);
                 SvgDevicePoint midpoint = shifted.Apply(2, -3);
                 Assert.Equal(x, midpoint.X, 5); Assert.Equal(y, midpoint.Y, 5);
+            }
+            Assert.Equal(retained, budget.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Closing_edge_retains_its_tangent_and_composes_character_rotation()
+    {
+        RenderBudget budget = new(long.MaxValue);
+        using (SvgDocumentState state = new(budget, new(long.MaxValue), CancellationToken.None))
+        {
+            SvgDefinitionLeafSource source = Capture("M8 48 H56 Z", "", state);
+            long retained = budget.Snapshot().CurrentBytes;
+            using (SvgMeasuredTextPath path = SvgTextPathLayout.ReadMeasured(source, 100, budget, new(long.MaxValue), CancellationToken.None))
+            {
+                Assert.False(path.IsHorizontal);
+                SvgAffineTransform tangent = path.GlyphMap(72, 0, 0, new(long.MaxValue), CancellationToken.None);
+                Assert.Equal(32, tangent.E, 6); Assert.Equal(48, tangent.F, 6);
+                Assert.Equal(-1, tangent.A, 6); Assert.Equal(0, tangent.B, 6);
+                SvgAffineTransform rotated = path.GlyphMap(72, 2, 3, 90, new(long.MaxValue), CancellationToken.None);
+                SvgDevicePoint midpoint = rotated.Apply(2, -3);
+                Assert.Equal(32, midpoint.X, 6); Assert.Equal(48, midpoint.Y, 6);
+                Assert.Equal(0, rotated.A, 6); Assert.Equal(-1, rotated.B, 6);
             }
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
         }

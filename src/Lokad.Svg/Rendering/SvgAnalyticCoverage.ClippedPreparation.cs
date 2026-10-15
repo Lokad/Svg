@@ -162,7 +162,7 @@ internal ref partial struct SvgAnalyticCoverage
             for (int level = kept.Count; level > 0; level >>= 1) levels++;
             ChargeClippedSetupWork(ref setupWork, (long)kept.Count * (levels + 3) + (useRunBlitter ? width : 0), maximumWork, token);
             AnalyticEdge[] edges = kept.ToArray();
-            Array.Sort(edges, EdgeOrder.Instance);
+            SortEdges(edges, token);
             AnalyticEdge head = new() { UpperY = int.MinValue, LowerY = int.MinValue, X = int.MinValue, UpperX = int.MinValue, DY = int.MaxValue };
             AnalyticEdge tail = new() { UpperY = int.MaxValue, LowerY = int.MaxValue, X = int.MaxValue, UpperX = int.MaxValue, DY = int.MaxValue };
             head.Next = edges.Length > 0 ? edges[0] : tail;
