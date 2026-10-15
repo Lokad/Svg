@@ -284,10 +284,13 @@ internal sealed class SvgDocumentState : IDisposable
     internal SvgPaintableElementContext PatternRectangleContext { get; set; }
     internal int PatternUseStart { get; set; }
     internal int PatternUseCount { get; set; }
+    internal int PatternClipStart { get; set; }
+    internal BudgetedParserList<SvgPatternContentClip>? PatternClips { get; set; }
 
     internal string? MaskId { get; set; }
 
     internal bool MaskIsAlpha { get; set; }
+    internal bool MaskObjectBoundingBoxContent { get; set; }
 
     internal byte? MaskValue { get; set; }
 
@@ -431,6 +434,7 @@ internal sealed class SvgDocumentState : IDisposable
         PatternContentBuilder?.Dispose();
         foreach (SvgDeferredPatternContent content in DeferredPatternContents.AsSpan()) content.Builder.Dispose();
         DeferredPatternContents.Dispose();
+        PatternClips?.Dispose();
         PatternUses.Dispose();
         Patterns.Dispose();
         PatternDefinitions.Dispose();

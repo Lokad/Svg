@@ -866,6 +866,7 @@ internal static class SvgReferenceResolver
         if ((maskReference is null && mask is null) || geometries.IsEmpty) return;
         string? maskId = maskReference is null ? null : SvgMaskSyntax.ParseMaskId(maskReference);
         int contentIndex = -1;
+        SvgMaskContent? spatialContent = null;
         if (mask is null)
         {
             string id = maskId ?? throw new InvalidOperationException("An unresolved mask requires its source reference.");
@@ -873,7 +874,7 @@ internal static class SvgReferenceResolver
             {
                 if (!state.MaskContents.TryGetValue(id, out SvgMaskContent spatial)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
                 if (!placement.IsAxisAligned || placement.A == 0 || placement.D == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonsingular axis-aligned spatial mask target maps are implemented.");
-                contentIndex = state.Scene.AddMaskContent(spatial with { CoordinateMap = placement.ComposeChecked(spatial.CoordinateMap) });
+                spatialContent = spatial;
                 value = 255;
             }
             mask = value;
@@ -893,6 +894,8 @@ internal static class SvgReferenceResolver
             right = Math.Max(right, box.X + box.Width); bottom = Math.Max(bottom, box.Y + box.Height);
         }
         SvgRectangle fallback = new(left, top, right - left, bottom - top, default, false, null);
+        if (spatialContent is {} placedContent)
+            contentIndex = state.Scene.AddMaskContent(placedContent.PlaceForTarget(placement, fallback, workCounter, cancellationToken));
         bool resolvedUniform = false;
         if (contentIndex < 0 && maskId is not null && state.MaskContents.TryGetValue(maskId, out SvgMaskContent uniform)
             && uniform.UniformSource is not null && state.MaskContentBoxes.TryGetValue(maskId, out SvgClipBox uniformBox))

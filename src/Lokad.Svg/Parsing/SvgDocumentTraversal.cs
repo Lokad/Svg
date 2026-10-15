@@ -307,6 +307,7 @@ internal static class SvgDocumentTraversal
                     state.PatternRectangleContext = default;
                     state.PatternUseStart = 0;
                     state.PatternUseCount = 0;
+                    state.PatternClipStart = 0;
                     state.PatternTemplate = default;
                     state.PatternDepth = -1;
                     state.PatternId = null;
@@ -333,6 +334,7 @@ internal static class SvgDocumentTraversal
                     state.MaskDepth = -1;
                     state.MaskId = null;
                     state.MaskIsAlpha = false;
+                    state.MaskObjectBoundingBoxContent = false;
                     state.MaskValue = null;
                     state.MaskContentGeometries = null;
                     state.MaskContentBuilder?.Dispose();
@@ -436,9 +438,9 @@ internal static class SvgDocumentTraversal
                     if (state.DeferredTextFailure is {} textFailure) throw textFailure;
                     SvgTextPathLayout.Resolve(state, limits, workCounter, cancellationToken);
                     state.ValidateSymbolReferences(workCounter, cancellationToken);
-                    SvgPatternUseReplay.Resolve(state, workCounter, cancellationToken);
                     SvgResourceUseReplay.Resolve(state, workCounter, cancellationToken);
                     SvgMaskContentReplay.Resolve(root, state, workCounter, cancellationToken);
+                    SvgPatternUseReplay.Resolve(state, workCounter, cancellationToken);
                     SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, state, workCounter, cancellationToken);
                     SvgClipPathSyntax.ResolvePendingLeafClips(state, workCounter, cancellationToken);
                     SvgClipPathSyntax.ResolvePendingGroupClips(state, workCounter, cancellationToken);

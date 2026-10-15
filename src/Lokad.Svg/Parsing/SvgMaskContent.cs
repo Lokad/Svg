@@ -25,4 +25,22 @@ internal readonly record struct SvgMaskContent(SvgGeometry[] Geometries, byte Lu
 
     /// <summary>Retains the masked target coordinate map independently of borrowed source content.</summary>
     internal SvgAffineTransform CoordinateMap { get; init; } = SvgAffineTransform.Identity;
+
+    /// <summary>Resolves normalized content coordinates against each referencing target independently.</summary>
+    internal bool IsObjectBoundingBox { get; init; }
+
+    /// <summary>Binds borrowed mask content to one target without copying its scene or changing its region units.</summary>
+    /// <remarks>Pure bounded mapping; the caller retains source ownership and charges target-bound collection.
+    /// Empty bounds paint nothing. Existing axis-map admission remains explicit; no staging owner escapes.</remarks>
+    internal SvgMaskContent PlaceForTarget(SvgAffineTransform target, SvgRectangle bounds, ParserWorkCounter work, CancellationToken token)
+    {
+        work.Consume(token);
+        if (!IsObjectBoundingBox) return this with { CoordinateMap = target.ComposeChecked(CoordinateMap) };
+        if (bounds.Width <= 0 || bounds.Height <= 0) return new([], 255, IsAlpha);
+        if (!target.IsAxisAligned || !target.TryInvert(out SvgAffineTransform inverse))
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Bounding-box mask content requires a nonsingular axis-aligned target map.");
+        SvgRectangle local = inverse.Apply(bounds);
+        SvgAffineTransform box = SvgAffineTransform.FromScaleOffset(local.Width, local.Height, local.X, local.Y);
+        return this with { CoordinateMap = target.ComposeChecked(box).ComposeChecked(CoordinateMap) };
+    }
 }

@@ -5,6 +5,32 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgMaskContentReplayTests
 {
+    [Theory]
+    [InlineData("<rect x='2' y='2' width='8' height='4' fill='red' mask='url(#m)'/>", 2, 4)]
+    [InlineData("<use href='#r' x='2' y='2' mask='url(#m)'/>", 2, 4)]
+    [InlineData("<g mask='url(#m)'><use href='#r' x='2' y='2'/></g>", 2, 4)]
+    [InlineData("<rect x='2' y='2' width='8' height='4' fill='red' transform='translate(20 0) scale(-1 1)' mask='url(#m)'/>", 14, 4)]
+    [InlineData("<rect x='2' y='2' width='0' height='4' fill='red' mask='url(#m)'/>", 2, 0)]
+    public void Object_box_content_percentages_bind_to_leaf_group_use_and_empty_targets(string target, int left, int paintedWidth)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='24' height='12'><defs>"
+            + "<rect id='r' width='8' height='4' fill='red'/><mask id='m' maskContentUnits='objectBoundingBox'>"
+            + "<rect width='50%' height='100%' fill='white'/></mask></defs>" + target
+            + "<rect x='22' y='10' width='2' height='2' fill='blue'/></svg>");
+        RenderBudget sceneBudget = new(1_000_000), rasterBudget = new(1_000_000);
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, rasterBudget, CancellationToken.None))
+            for (int y = 0; y < 12; y++) for (int x = 0; x < 24; x++)
+            {
+                int offset = (y * 24 + x) * 4;
+                byte red = x >= left && x < left + paintedWidth && y is >= 2 and < 6 ? (byte)255 : (byte)0;
+                byte blue = x >= 22 && y >= 10 ? (byte)255 : (byte)0;
+                Assert.Equal(red, surface.Pixels[offset]); Assert.Equal(0, surface.Pixels[offset + 1]);
+                Assert.Equal(blue, surface.Pixels[offset + 2]); Assert.Equal(Math.Max(red, blue), surface.Pixels[offset + 3]);
+            }
+        Assert.Equal(0, sceneBudget.Snapshot().CurrentBytes); Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
+    }
+
     [Fact]
     public void Canceled_ordered_mask_replay_preserves_source_curves_and_identical_retry()
     {

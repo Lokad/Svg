@@ -1,26 +1,39 @@
 # Composition and resource exit sheet
 
-This bank starts at **0/1 complete document / 1/3 exact controls** on Windows/Linux.
-It retains one 480 by 160 CC0 document and three independent controls for finite
-C3-C5 requirements. It adds no completed document to the eighteen authored
-documents, either cohort or the sourced W3C document.
+This bank is **1/1 complete document / 3/3 exact controls** on Windows/Linux,
+from **0/1 / 1/3** at declaration. The unchanged 480 by 160 CC0 document and
+mask-unit, active xMin image and mixed tile controls all match their original
+platform references. This is the nineteenth authored document (eighteenth CC0),
+separate from both cohorts and the sourced W3C document.
 
-The whole document and two-panel mask-unit control reject on object-box mask
-content units. The mixed image/vector tile rejects on its group clip. The active
-horizontal xMin image control is already exact on both platforms; it establishes
-the missing C4 witness without a production fix. Existing CSS/resource witnesses
-remain reusable rather than another required combination grid.
+The [manifest](manifest.json) fixes original SVG/reference bytes, scale one,
+transparent backgrounds and default resource limits. Assets were frozen at
+`327832b9`, from twenty-four healthy stable fresh-process captures with successful
+profile cleanup. The [receipt](../../../artifacts/maintenance-review-20261012/composition-resource-qualified-results.json)
+records full qualification, every prior test case and original asset/option/limit
+preservation. No renderer/source/build/report hashes are used.
 
-The [manifest](manifest.json) fixes original licensed SVG/reference bytes, scale
-one, transparent backgrounds and default resource limits. Twenty-four healthy,
-stable fresh-process captures were retained at clean revision `a5912fc2`, with
-successful profile cleanup. The [preflight](../../../artifacts/composition-resource-exits-20261015/frozen-preflight-results.json)
-and original baseline/health records stay in the existing ignored study.
-No renderer, source-code, build or report hashes are used.
+Normalized mask children use the existing vector scene and a unit percentage
+base. Each leaf/group/use target binds its content map independently from the
+mask-region units. Reflection preserves direction; empty target bounds paint
+nothing without allocating a zero-length geometry owner. The original rejected
+gray mask now protects positive coverage/cleanup, and the original gradient-mask
+boundary matches its unchanged transparent reference. Six fresh native captures
+cross-check that old reference without regeneration.
 
-Completion requires the unchanged whole document and all three controls to be
-exact on both platforms, with affected unit/scope/resource protections. Preserve
-the original mask-content boundary, previously qualified mask restoration and
-pattern/image witnesses, and every earlier exact result. [PLAN](../../../PLAN.md)
-owns remaining C3/C5 and any uncovered applicable presentation acceptance; font,
-effect and S17 exits stay required. No feature promise is deferred.
+Tile-local group clips retain source identities through forward use expansion,
+then bind through ordinary native resource clips before the existing scene seals.
+Clip-only markers do not introduce an opacity surface; authored opacity groups
+retain isolation. This preserves exact blending of transparent image samples
+over the tile background. Independent forward-reference/sibling and missing-clip
+checks protect the scope; literal-color controls protect pattern CSS inline and
+important priority plus child overrides. Existing clip/mask presentation witnesses
+remain reusable.
+
+The canonical visual API requires exact decoded pixels for all four outputs.
+Existing representative resource checks cover the complete document and both
+changed controls: meaningful denial, cancellation, cleanup, immutable input and
+identical retry. [PLAN](../../../PLAN.md) retains required colored/general affine
+mask acceptance, glyph/composite/private fonts, effects/markers and S17 without
+feature deferral. The existing ignored [study](../../../artifacts/composition-resource-exits-20261015/)
+retains the admission rejections, captures and exact comparisons.

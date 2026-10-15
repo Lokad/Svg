@@ -14045,3 +14045,35 @@ Glyphs reuse the enclosing emitted clip instead of applying it twice. Both sibli
 scopes and zero-sized nonpainting are protected. Existing owners/work counters
 bound curve and clip preparation; the extended representative resource regression
 covers all three outputs without another API or combination matrix.
+
+
+## Normalized mask content and bounded tile-local clips (2026-10-15)
+
+The unchanged [composition/resource sheet](../tests/Research/composition-resource-exit-sheet/README.md)
+is **1/1 complete document / 3/3 exact controls** on Windows/Linux. Its
+[receipt](../artifacts/maintenance-review-20261012/composition-resource-qualified-results.json)
+retains full qualification, original bytes/options/default limits, every prior
+case and twenty-four healthy stable captures. The original gradient-mask boundary
+now matches its unchanged reference, independently cross-checked by six native
+captures. Remaining G5 colored/general affine masks and later font/effect/release
+exits stay required; this document does not establish those boundaries.
+
+Object-box mask children retain their original ordered vector scene under the
+existing parent owner. Percentage bases are one; content-unit metadata survives
+deferred replay. Leaf, group and instance consumers bind the same borrowed scene
+against their own recorded object bounds, independently of region-unit selection.
+Axis reflection retains direction through inverse target/bounding-box composition;
+shared rectangle preparation normalizes reflected device edges and clips. Empty
+bounds use empty scene content without a zero-byte array reservation. Existing
+budget/work/token and staging/sealed-scene lifetimes provide failure cleanup.
+
+Clipped pattern groups retain bounded source identities alongside existing deferred
+tile uses. Identities survive command expansion; at resolution each group binds
+ordinary resource clip operations before the existing mask emitter seals the tile.
+Clip-only markers are then removed, preserving native image blending directly over
+the tile background; an artificial opacity layer changes RGB rounding. Authored
+opacity groups remain isolated. The clip registry is lazy and scene/staging owners
+remain separate. Resource references resolve before deferred tile clips; no second
+renderer or production dependency is added. Forward aliases, missing clips, sibling
+restoration and literal-color CSS priority have independent controls. Representative
+existing resource checks now cover the unchanged whole document and changed panels.

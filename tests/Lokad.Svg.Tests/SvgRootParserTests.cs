@@ -7242,11 +7242,18 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_non_user_space_mask_content_units()
+    public void Original_object_box_mask_content_preserves_gray_coverage_and_cleanup()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='window' maskContentUnits='objectBoundingBox'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><rect width='8' height='8' fill='red' mask='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='window' maskContentUnits='objectBoundingBox'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><rect width='8' height='8' fill='red' mask='url(#window)'/></svg>"u8.ToArray();
+        RenderBudget sceneBudget = new(1_000_000), rasterBudget = new(1_000_000);
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), rasterBudget, CancellationToken.None))
+            for (int pixel = 0; pixel < 64; pixel++)
+            {
+                Assert.Equal(255, surface.Pixels[pixel * 4]); Assert.Equal(0, surface.Pixels[pixel * 4 + 1]);
+                Assert.Equal(0, surface.Pixels[pixel * 4 + 2]); Assert.Equal(128, surface.Pixels[pixel * 4 + 3]);
+            }
+        Assert.Equal(0, sceneBudget.Snapshot().CurrentBytes); Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
     }
 
     [Fact]

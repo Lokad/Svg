@@ -6,6 +6,29 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgPatternContentTests
 {
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Pattern_container_cascade_preserves_inline_priority_and_child_override(bool important)
+    {
+        string priority = important ? "!important" : "";
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='4'><style>.tile{fill:blue" + priority
+            + "} #p{fill:yellow}</style><defs><pattern id='p' class='tile' patternUnits='userSpaceOnUse' width='4' height='4' fill='black' style='fill:green'>"
+            + "<rect width='2' height='4'/><rect x='2' width='2' height='4' fill='red'/></pattern></defs><rect width='8' height='4' fill='url(#p)'/></svg>");
+        RenderBudget sceneBudget = new(1_000_000), rasterBudget = new(1_000_000);
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, rasterBudget, CancellationToken.None))
+            for (int y = 0; y < 4; y++) for (int x = 0; x < 8; x++)
+            {
+                int offset = (y * 8 + x) * 4;
+                Assert.Equal(x % 4 >= 2 ? (byte)255 : (byte)0, surface.Pixels[offset]);
+                Assert.Equal(x % 4 < 2 && !important ? (byte)128 : (byte)0, surface.Pixels[offset + 1]);
+                Assert.Equal(x % 4 < 2 && important ? (byte)255 : (byte)0, surface.Pixels[offset + 2]);
+                Assert.Equal(255, surface.Pixels[offset + 3]);
+            }
+        Assert.Equal(0, sceneBudget.Snapshot().CurrentBytes); Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
+    }
+
     [Fact]
     public void Tile_filter_references_bind_forward_without_copying_resource_owners()
     {

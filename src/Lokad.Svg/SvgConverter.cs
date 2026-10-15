@@ -3579,18 +3579,20 @@ public static class SvgConverter
             if (setupVisits > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle preparation exceeds the configured work limit.");
             workUnits += setupVisits;
             cancellationToken.ThrowIfCancellationRequested();
-            double left = MapRectangleEdge(rectangle.X, horizontalScale, horizontalOffset);
-            double top = MapRectangleEdge(rectangle.Y, verticalScale, verticalOffset);
-            double right = MapRectangleEdge(rectangle.X + rectangle.Width, horizontalScale, horizontalOffset);
-            double bottom = MapRectangleEdge(rectangle.Y + rectangle.Height, verticalScale, verticalOffset);
+            double x1 = MapRectangleEdge(rectangle.X, horizontalScale, horizontalOffset);
+            double y1 = MapRectangleEdge(rectangle.Y, verticalScale, verticalOffset);
+            double x2 = MapRectangleEdge(rectangle.X + rectangle.Width, horizontalScale, horizontalOffset);
+            double y2 = MapRectangleEdge(rectangle.Y + rectangle.Height, verticalScale, verticalOffset);
+            double left = Math.Min(x1, x2), top = Math.Min(y1, y2);
+            double right = Math.Max(x1, x2), bottom = Math.Max(y1, y2);
             SvgRectangleCoverage coverage = SvgRectangleCoverage.Create(left, top, right, bottom, outputWidth, outputHeight);
             SvgClipBox? clip = null;
             if (rectangle.Clip is {} sourceClip)
             {
-                double clipLeft = MapEdge(sourceClip.X, horizontalScale, horizontalOffset);
-                double clipTop = MapEdge(sourceClip.Y, verticalScale, verticalOffset);
-                double clipRight = MapEdge(sourceClip.Right, horizontalScale, horizontalOffset);
-                double clipBottom = MapEdge(sourceClip.Bottom, verticalScale, verticalOffset);
+                double cx1 = MapEdge(sourceClip.X, horizontalScale, horizontalOffset), cy1 = MapEdge(sourceClip.Y, verticalScale, verticalOffset);
+                double cx2 = MapEdge(sourceClip.Right, horizontalScale, horizontalOffset), cy2 = MapEdge(sourceClip.Bottom, verticalScale, verticalOffset);
+                double clipLeft = Math.Min(cx1, cx2), clipTop = Math.Min(cy1, cy2);
+                double clipRight = Math.Max(cx1, cx2), clipBottom = Math.Max(cy1, cy2);
                 clip = new SvgClipBox(clipLeft, clipTop, Math.Max(0, clipRight - clipLeft), Math.Max(0, clipBottom - clipTop)) { Antialiasing = sourceClip.Antialiasing };
                 left = Math.Max(left, clipLeft); top = Math.Max(top, clipTop);
                 right = Math.Min(right, clipRight); bottom = Math.Min(bottom, clipBottom);

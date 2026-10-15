@@ -1,3 +1,23 @@
+## Object-box mask content and tile-local clips (2026-10-15)
+
+The [composition/resource bank](../tests/Research/composition-resource-exit-sheet/README.md)
+is **1/1 complete document / 3/3 exact controls** on Windows/Linux. Normalized
+mask content uses a unit percentage base and per-target mapping independently of
+region units; leaf/group/use, reflection, empty bounds and sibling restoration
+have focused protection. Bounded mixed image/vector tiles admit local group clips
+through shared native replay, including forward sources. Clip-only groups preserve
+native blending without an artificial opacity surface.
+
+The [receipt](../artifacts/maintenance-review-20261012/composition-resource-qualified-results.json)
+records 7,873 passing tests/platform, unchanged originals/options/default limits
+and all prior cases preserved. The original mask-content rejection now requires
+exact pixels against its unchanged reference, cross-checked by six healthy native
+captures. Applicable resource presentation reuses existing clip/mask/pattern banks
+and analytic pattern CSS priority controls. Earlier object-content/tile-clip gates
+below are superseded. Colored luminance and general affine mask target maps remain
+required under [PLAN](../PLAN.md); font/effect and S17 exits remain open. No feature
+scope is deferred or new runtime dependency introduced.
+
 ## Native child clip unions and larger mask fallback (2026-10-15)
 
 The [clip union bank](../tests/Research/clip-union-exit-sheet/README.md) is

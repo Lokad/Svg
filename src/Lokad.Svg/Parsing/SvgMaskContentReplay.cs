@@ -12,7 +12,7 @@ internal readonly record struct SvgMaskReplayChild(SvgDefinitionLeafSource Sourc
     internal SvgSymbolContentRange? GroupContent { get; init; }
 }
 
-internal readonly record struct SvgDeferredMaskContent(string Id, int FirstChild, int ChildCount, bool IsAlpha);
+internal readonly record struct SvgDeferredMaskContent(string Id, int FirstChild, int ChildCount, bool IsAlpha, bool IsObjectBoundingBox);
 
 /// <summary>Promotes multi-child masks to bounded ordered vector scenes without changing legacy single-child routes.</summary>
 /// <remarks>Source snapshots belong to the document; the containing scene owns sealed vector content.
@@ -52,7 +52,7 @@ internal static class SvgMaskContentReplay
             if (reader.IsEmptyElement) SvgDefinitionParser.RegisterSymbol(state, work, token);
             else state.SymbolDepth = reader.Depth;
         }
-        if (!group && state.MaskReplayChildCount == 1 && (reader.LocalName is "use" or "rect" or "circle"
+        if (!state.MaskObjectBoundingBoxContent && !group && state.MaskReplayChildCount == 1 && (reader.LocalName is "use" or "rect" or "circle"
             || SvgGradientSyntax.IsGradientFill(context.ResolveStyle(reader).Fill))) return false;
         if (!state.MaskHasReplayContent)
         {
@@ -77,7 +77,7 @@ internal static class SvgMaskContentReplay
             throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
         if (state.MaskCustomRegion is {} region && !state.MaskRegions.TryAdd(id, region)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
         if (state.MaskFractionRegion is {} fractions && !state.MaskFractionRegions.TryAdd(id, fractions)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
-        state.DeferredMaskContents.Add(new(id, state.MaskReplayChildStart, state.MaskReplayChildCount, state.MaskIsAlpha));
+        state.DeferredMaskContents.Add(new(id, state.MaskReplayChildStart, state.MaskReplayChildCount, state.MaskIsAlpha, state.MaskObjectBoundingBoxContent));
     }
 
     internal static void Resolve(SvgRootAttributes root, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
@@ -131,7 +131,7 @@ internal static class SvgMaskContentReplay
             SvgVectorContent content = SvgVectorContent.Create(builder.Build(), state.Budget);
             try { state.Scene.AdoptVectorContent(content); }
             catch { content.Dispose(); throw; }
-            state.MaskContents.Replace(pending.Id, new([], 255, pending.IsAlpha) { VectorContent = content });
+            state.MaskContents.Replace(pending.Id, new([], 255, pending.IsAlpha) { VectorContent = content, IsObjectBoundingBox = pending.IsObjectBoundingBox });
         }
     }
 

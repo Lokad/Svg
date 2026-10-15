@@ -1622,7 +1622,7 @@ internal sealed class SvgSceneBuilder : IDisposable
     /// <summary>Copies one mask content evaluation under scene ownership, returning its command index.</summary>
     internal int AddMaskContent(SvgMaskContent content)
     {
-        if (content.VectorContent is not null)
+        if (content.VectorContent is not null || content.Geometries.Length == 0)
         {
             int borrowedIndex = _maskContents.Count;
             _maskContents.Add(content);

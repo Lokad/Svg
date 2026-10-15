@@ -9,7 +9,7 @@ The frozen selection and measured outcomes are recorded below.
 
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
-variants**. **Eighteen additional authored documents** (seventeen CC0 and the MIT
+variants**. **Nineteen additional authored documents** (eighteen CC0 and the MIT
 tile sheet) are complete and counted separately. Preserve the delivered
 [effects sheet](../tests/Research/effects-marker-sheet/README.md),
 [composition sheet](../tests/Research/composition-sheet/README.md) and
@@ -37,16 +37,20 @@ bounds/scope/ownership checks. This is the eighteenth authored document
 (seventeenth CC0), separate from both cohorts and the W3C document. C1/C2 are
 complete; [PLAN](../PLAN.md) keeps C3-C5, font/effect and S17 exits required.
 
-The frozen [composition/resource sheet](../tests/Research/composition-resource-exit-sheet/README.md)
-starts at **0/1 complete document / 1/3 exact controls** on both platforms. Its
-whole output and mask/tile controls retain measured C3/C5 rejections; its active
-horizontal xMin image control is exact. Twenty-four healthy stable captures and
-original assets/options predate correction. This closes C4 without a renderer
-change and adds no completed-document count. C3/C5 and later exits remain required.
+The [composition/resource sheet](../tests/Research/composition-resource-exit-sheet/README.md)
+is **1/1 complete document / 3/3 exact controls** on Windows/Linux, from
+**0/1 / 1/3** at declaration. Object-box mask content and mixed image/vector tile
+clipping match unchanged references; active xMin already matched before correction.
+The [receipt](../artifacts/maintenance-review-20261012/composition-resource-qualified-results.json)
+records 7,873 passing tests/platform, all prior semantics and original
+assets/options/limits preserved, twenty-four healthy captures and six unchanged
+native cross-checks of the original mask-content boundary. This is the nineteenth
+authored document (eighteenth CC0), separate from both cohorts and W3C.
+Remaining colored/general affine masks, font/effect and S17 exits stay required.
 
 One additional sourced [W3C decoration document](../tests/Research/stroked-decorations/README.md)
 is **1/1 exact** on Windows/Linux at its frozen 1200×400 output, separately from
-both cohorts and the eighteen authored documents. All **4/4 controls** are exact,
+both cohorts and the nineteen authored documents. All **4/4 controls** are exact,
 including curved, three-line/stroke-only and positioned/stretched paths.
 The original 974-byte SVG, supplied Noto program and platform references are
 unchanged. The [receipt](../artifacts/maintenance-review-20261012/decorated-path-qualified-results.json)

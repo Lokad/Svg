@@ -19,8 +19,6 @@ internal static class SvgMaskSyntax
     {
         ArgumentNullException.ThrowIfNull(reader);
         string? units = reader.GetAttribute("maskUnits");
-        string? contentUnits = reader.GetAttribute("maskContentUnits");
-        if (contentUnits is not null && !contentUnits.Equals("userSpaceOnUse", StringComparison.Ordinal)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse mask content units are implemented.");
         string? x = reader.GetAttribute("x");
         string? y = reader.GetAttribute("y");
         string? width = reader.GetAttribute("width");
@@ -111,19 +109,27 @@ internal static class SvgMaskSyntax
         {
             workCounter.Consume(cancellationToken);
             PendingLeafMask pending = state.PendingLeafMasks[pendingIndex];
+            SvgMaskContent? spatialContent = null;
+            SvgAffineTransform spatialMap = SvgAffineTransform.Identity;
             if (!state.Masks.TryGetValue(pending.MaskId, out byte value))
             {
                 if (!state.MaskContents.TryGetValue(pending.MaskId, out SvgMaskContent spatial)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
                 SvgAffineTransform map = pending.Transform;
                 if (pending.Parent is {} parent) map = SvgAffineTransform.FromScaleOffset(parent.ScaleX, parent.ScaleY, parent.OffsetX, parent.OffsetY).ComposeChecked(map);
                 if (!map.IsAxisAligned || map.A == 0 || map.D == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonsingular axis-aligned spatial mask target maps are implemented.");
-                pending.Operation.ContentIndex = state.Scene.AddMaskContent(spatial with { CoordinateMap = map.ComposeChecked(spatial.CoordinateMap) });
+                spatialContent = spatial;
+                spatialMap = map;
                 value = 255;
             }
             pending.Operation.Value = value;
             pending.Operation.Resolved = true;
             if (pending.GeometryCount == 0) continue;
             SvgRectangle fallback = UnionBounds(state, pending, workCounter, cancellationToken);
+            SvgGeometry first = state.Scene.GeometryAt(pending.FirstGeometryIndex);
+            SvgRectangle objectBox = state.Scene.GetRecordedPaintValue(first.RecordedPaint).ObjectBounds is not null
+                ? RecordedObjectBox(first, state) : fallback;
+            if (spatialContent is {} placedContent)
+                pending.Operation.ContentIndex = state.Scene.AddMaskContent(placedContent.PlaceForTarget(spatialMap, objectBox, workCounter, cancellationToken));
             if (pending.Operation.ContentIndex < 0 && state.MaskContents.TryGetValue(pending.MaskId, out SvgMaskContent uniform)
                 && uniform.UniformSource is not null && state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox uniformBox))
             {
@@ -138,9 +144,6 @@ internal static class SvgMaskSyntax
                 }
             }
             if (pending.Operation.ContentIndex < 0 && state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox content) && !content.Contains(fallback.X, fallback.Y, fallback.X + fallback.Width, fallback.Y + fallback.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering the masked geometry is implemented.");
-            SvgGeometry first = state.Scene.GeometryAt(pending.FirstGeometryIndex);
-            SvgRectangle objectBox = state.Scene.GetRecordedPaintValue(first.RecordedPaint).ObjectBounds is not null
-                ? RecordedObjectBox(first, state) : fallback;
             SvgClipBox region = ResolveDeferredRegion(state, pending, objectBox);
             pending.Operation.Region = region;
             for (int geometryIndex = pending.FirstGeometryIndex; geometryIndex < pending.FirstGeometryIndex + pending.GeometryCount; geometryIndex++)
@@ -268,9 +271,12 @@ internal static class SvgMaskSyntax
             if (!state.Masks.TryGetValue(pending.MaskId, out byte value))
             {
                 if (!state.MaskContents.TryGetValue(pending.MaskId, out SvgMaskContent content)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
-                if (pending.Parent is not null && !pending.Parent.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Spatial mask content in transformed viewports is not implemented.");
+                if (!content.IsObjectBoundingBox && pending.Parent is not null && !pending.Parent.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Spatial mask content in transformed viewports is not implemented.");
                 ValidateNoGlyphText(state, pending, workCounter, cancellationToken);
-                int contentIndex = state.Scene.AddMaskContent(content with { CoordinateMap = pending.Transform.ComposeChecked(content.CoordinateMap) });
+                SvgAffineTransform map = pending.Transform;
+                if (content.IsObjectBoundingBox && pending.Parent is {} parent)
+                    map = SvgAffineTransform.FromScaleOffset(parent.ScaleX, parent.ScaleY, parent.OffsetX, parent.OffsetY).ComposeChecked(map);
+                int contentIndex = state.Scene.AddMaskContent(content.PlaceForTarget(map, GroupChildrenUnion(state, pending, workCounter, cancellationToken), workCounter, cancellationToken));
                 RewriteGroupMaskScope(state, pending, 255, maskRegion, contentIndex);
                 continue;
             }

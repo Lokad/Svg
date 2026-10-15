@@ -1,6 +1,6 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-15 at the completed cubic/viewport-sheet checkpoint.
+Updated 2026-10-15 at the completed composition/resource-sheet checkpoint.
 Preserve the current implementation work, qualified `inv-146` correction and every
 established exact result, original SVG/font/reference bytes, options and default
 resource limits. This file owns delivery order, required exits and scope
@@ -22,20 +22,20 @@ Optional maintenance below adds no feature-completion prerequisite.
 | Frozen corporate cohort | **27/27 documents / 258/258 variants exact on Windows/Linux**, including 13/13 marks and 14/14 outlined wordmarks. Preserve membership, original bytes, options, backgrounds and references in the [manifest](tests/References/inventory/corporate-cohort-v1.json) and [measurement](tests/References/inventory/corporate-cohort-current.json). |
 | Selected development documents and original fixtures | **50/50 complete**, including whole `inv-146`; original marker/drop-shadow fixtures **2/2**, supplied-font label/path fixtures **2/2**, SVG Translate, `inv-127` and `inv-145`. Preserve the [gap ledger](tests/References/inventory/svg-gap-cases.json), [supplied-font banks](tests/Research/supplied-font-documents/README.md), [curved labels](tests/Research/curved-font-documents/README.md) and [inventory](docs/INVENTORY.md). Failure-selected inputs establish no representative success rate. |
 | `inv-146`, paint recording and retained libraries | Preserve whole `inv-146`, eight oval/text controls and four [merge controls](tests/Research/filter-merges/README.md), with the [qualification receipt](artifacts/maintenance-review-20261012/merge-qualified-results.json). Paint recording is **149/149 exact**; I Ching is **24 exact / one out-of-scope animation boundary**. |
-| Additional complete documents | **Eighteen authored documents** (seventeen CC0, one MIT) and **one sourced W3C decoration document**, each exact on both platforms and separate from both cohorts. [INVENTORY](docs/INVENTORY.md) and bank manifests own their controls and immutable assets/options. Preserve the [composition sheet](tests/Research/composition-sheet/README.md) **4/4**, [effects sheet](tests/Research/effects-marker-sheet/README.md) **11/11**, [tile sheet](tests/Research/pattern-tile-sheet/README.md) **10/10**, [shared map sheet](tests/Research/shared-paint-map-sheet/README.md) **3/3**, [primitive-stroke sheet](tests/Research/primitive-stroke-sheet/README.md) **4/4**, [stroke/style exit sheet](tests/Research/stroke-style-exit-sheet/README.md) **4/4**, [shared map exit sheet](tests/Research/shared-map-exit-sheet/README.md) **5/5**, [clip union sheet](tests/Research/clip-union-exit-sheet/README.md) **5/5**, [cubic/viewport sheet](tests/Research/cubic-viewport-exit-sheet/README.md) **2/2** and [W3C decorations](tests/Research/stroked-decorations/README.md) **4/4 controls**. Direct/curved decorations and their phase/positioning/paint boundaries are complete. |
-| Shared geometry, paint and scope dependencies | Fractional use widths and symbol frames, nonuniform curves/affine oval strokes, non-scaling conics, composed cubic clips, custom mask regions/container opacity, inherited symbol strokes, cubic-pair clip unions and axis/affine ancestry at nested viewports are qualified. Reuse [geometry/scope evidence](docs/INVENTORY.md), [existing map witnesses](artifacts/shared-stroke-pattern-maps-20261015/existing-map-witnesses.json), [tile-content qualification](artifacts/maintenance-review-20261012/pattern-content-qualified-results.json) and [shared-map qualification](artifacts/maintenance-review-20261012/shared-maps-qualified-results.json). These are available dependencies, not blockers to repeat. |
+| Additional complete documents | **Nineteen authored documents** (eighteen CC0, one MIT) and **one sourced W3C decoration document**, each exact on both platforms and separate from both cohorts. [INVENTORY](docs/INVENTORY.md) and bank manifests own their controls and immutable assets/options. Preserve the [composition sheet](tests/Research/composition-sheet/README.md) **4/4**, [effects sheet](tests/Research/effects-marker-sheet/README.md) **11/11**, [tile sheet](tests/Research/pattern-tile-sheet/README.md) **10/10**, [shared map sheet](tests/Research/shared-paint-map-sheet/README.md) **3/3**, [primitive-stroke sheet](tests/Research/primitive-stroke-sheet/README.md) **4/4**, [stroke/style exit sheet](tests/Research/stroke-style-exit-sheet/README.md) **4/4**, [shared map exit sheet](tests/Research/shared-map-exit-sheet/README.md) **5/5**, [clip union sheet](tests/Research/clip-union-exit-sheet/README.md) **5/5**, [cubic/viewport sheet](tests/Research/cubic-viewport-exit-sheet/README.md) **2/2**, [composition/resource sheet](tests/Research/composition-resource-exit-sheet/README.md) **3/3** and [W3C decorations](tests/Research/stroked-decorations/README.md) **4/4 controls**. Direct/curved decorations and their phase/positioning/paint boundaries are complete. |
+| Shared geometry, paint and scope dependencies | Fractional use widths and symbol frames, nonuniform curves/affine oval strokes, non-scaling conics, composed cubic clips, custom mask regions/container opacity, inherited symbol strokes, cubic-pair clip unions, normalized mask content, tile-local clips and axis/affine ancestry at nested viewports are qualified. Reuse [geometry/scope evidence](docs/INVENTORY.md), [existing map witnesses](artifacts/shared-stroke-pattern-maps-20261015/existing-map-witnesses.json), [tile-content qualification](artifacts/maintenance-review-20261012/pattern-content-qualified-results.json) and [shared-map qualification](artifacts/maintenance-review-20261012/shared-maps-qualified-results.json). These are available dependencies, not blockers to repeat. |
 | Filters and font infrastructure | Preserve [filter-region results](tests/Research/filter-regions/manifest.json) **26/26**, [colored-effects bounds/restoration](tests/Research/colored-effects-markers/README.md), [affine effect qualification](artifacts/maintenance-review-20261012/affine-filters-qualified-results.json), intended-font/metrics proof, catalog conformance and the implemented [FontProbe host](tools/Lokad.Svg.FontProbe/README.md) with six transport/input regressions. Private deployment validation remains required. |
 | API/resource/package contracts | Preserve bounded preparation/raster/encoding, size/work denial, cancellation/retry, partial cleanup, immutable borrowed bytes, single-use prepared ownership and output integrity. Existing [API contracts](docs/API_CONTRACT.md), package and installed-consumer protections remain required. |
 
-The latest complete local [qualification](artifacts/maintenance-review-20261012/cubic-viewport-qualified-results.json)
-is **7,861 tests/platform**, normal incremental Release build plus full tests in
-**80.5s Windows / 243.7s Linux**. The same receipt owns the substantive revision's
+The latest complete local [qualification](artifacts/maintenance-review-20261012/composition-resource-qualified-results.json)
+is **7,873 tests/platform**, normal incremental Release build plus full tests in
+**75.3s Windows / 242.1s Linux**. The same receipt owns the substantive revision's
 hosted CI, package and installed-consumer checks. Reuse closed exact-revision
 audits without repolling; unchanged documentation does not reopen qualification.
 Completed work stays closed under the existing coverage/accounting policy.
 
 C1/C2 are complete under the unchanged [cubic/viewport bank](tests/Research/cubic-viewport-exit-sheet/README.md).
-C3-C5 composition/resource exits and the font/effect exits keep G2-G9/S17 open;
+The remaining C3 mask color/general-map exits and font/effect exits keep G2-G9/S17 open;
 completing this document introduces no feature deferral.
 
 <a id="delivery-order"></a>
@@ -50,26 +50,27 @@ Bring a later dependency forward only when it blocks the selected document.
 Each item closes against its acceptance and the common validation policy; no
 exhaustive G2 or shape × paint × instance prerequisite applies.
 
-**Current item-3 checkpoint:** the 384 by 160 CC0 cubic/viewport sheet is
-**1/1 complete document / 2/2 exact controls** on Windows/Linux. Its
-[receipt](artifacts/maintenance-review-20261012/cubic-viewport-qualified-results.json)
-retains eighteen unchanged healthy captures, original assets/options/default limits
-and affected bounds, scope, ownership, denial, cancellation and retry checks.
-
-**Next complete document within item 3:** the frozen 480 by 160
+**Current item-3 checkpoint:** the unchanged 480 by 160 CC0
 [composition/resource sheet](tests/Research/composition-resource-exit-sheet/README.md)
-starts at **0/1 document / 1/3 exact controls** on Windows/Linux. Twenty-four
-healthy stable captures predate correction. C3 object-box mask content units and
-C5 mixed image/vector tile-local clipping are measured rejections. The active
-horizontal xMin image control is already exact and closes C4 without a renderer
-change. Finish the unchanged document and all controls, reusing existing
-CSS/resource witnesses and affected scope/resource checks.
+is **1/1 complete document / 3/3 exact controls** on Windows/Linux. Its
+[receipt](artifacts/maintenance-review-20261012/composition-resource-qualified-results.json)
+retains original assets/options/limits, twenty-four healthy captures, six native
+cross-checks of the original mask boundary and all prior test semantics. The named
+mask-unit/restoration, active xMin and mixed tile-local clip acceptances are complete.
+
+**Next selected document within item 3:** the 480 by 160
+[mask color/affine sheet](artifacts/mask-color-affine-exits-20261015/mask-color-affine-sheet.svg),
+with three finite C3 controls: colored luminance, a general affine user-space mask,
+and general affine object-box content. These retain the promised G5 color/transform
+boundary before item 3 closes; completing the current document does not prove them.
+Declare/measure and freeze healthy references before correction; no additional
+shape, map or API combination quota applies.
 
 | Required item, in order | Missing behavior and dependencies | Acceptance and completion condition |
 | --- | --- | --- |
 | [x] 1. Cap/dash/join/alpha routes R1–R3 (G2–G4) | Completed through existing native stroke constructors, source-coordinate paint binding and recorded stroke alpha. | Unchanged [document and four controls](tests/Research/stroke-style-exit-sheet/manifest.json) exact on Windows/Linux, plus three retained inherited shader controls. Original cap/dash/dot inputs and affected denial/cancellation/cleanup/retry pass; [full qualification](artifacts/maintenance-review-20261012/stroke-style-exits-qualified-results.json). Item 2 records the completed shared-map exits. |
 | [x] 2. Shared pattern and non-scaling maps (G2–G4/G6) | Completed reflected basic rectangle/use fills, scaled viewport rectangle strokes, stroked tile content under root scaling and nonuniform dashed non-scaling strokes through shared host maps and native replay. | Unchanged [document and five controls](tests/Research/shared-map-exit-sheet/manifest.json) exact on both platforms. Original inputs, offscreen nonpainting/device-width checks and affected denial/cancellation/cleanup/retry pass; [full qualification](artifacts/maintenance-review-20261012/shared-map-exits-qualified-results.json). Wider resource/scoping exits remain required. |
-| [ ] 3. Composition and resource presentation (G5–G7) | Remaining C3/C5: mask units/restoration and resource cascade/content scopes. C1/C2/C4 are complete. Reuse completed composition, clip/mask and item-2 maps. | Finish a complete retained document using these mechanisms; every C1–C5 independent semantic has exact platform acceptance or a linked existing witness, plus affected scope/cleanup checks. The completed composition sheet stays exact. |
+| [ ] 3. Composition and resource presentation (G5–G7) | Remaining C3 color/general-map masks below. C1/C2/C4/C5 and the named unit/restoration panels are complete. Reuse completed composition, clip/mask and item-2 maps. | Finish a complete retained document using these mechanisms; every C1–C5 independent semantic has exact platform acceptance or a linked existing witness, plus affected scope/cleanup checks. The completed composition sheet stays exact. |
 | [ ] 4. Glyph maps, composites and private validation (G9) | Finite T1–T3 below: remaining glyph maps, three component flags and four private requests. Reuse qualified layout/fitting/decorations and shared maps from items 1–3 where needed. | Exact public map/component witnesses on both platforms, measured degenerate outcomes and affected ownership checks; sanitized outcomes for the fixed private request set, with public reproductions of in-scope defects resolved. |
 | [ ] 5. Static effects and markers (G8) | Finite E1–E4 below: non-solid affine sources, named linearRGB restoration/shadows, object-box/source boundaries and marker size/tangent/style semantics. Reuse bounded capture, item-1/2 paint maps and item-3 scopes. | Every E1–E4 case is exact on both platforms, including the retained standalone linear-image defect; affected graph/region/resource checks pass. Preserve the whole effects sheet and eleven controls. |
 | [ ] 6. Release (S17) | Finished revision after items 1–5, retaining the product/font contracts below. | All [release conditions](#release-completion-s17) hold together. Document/test counts alone cannot establish completion. |
@@ -141,9 +142,9 @@ and [template](tests/Lokad.Svg.Tests/SvgPatternTemplateTests.cs) tests need no n
 | --- | --- |
 | C1. Clip unions — complete | The [original sheet and five controls](tests/Research/clip-union-exit-sheet/README.md) close mixed rectangle/path, overlapping conics, independent compound/concave winding and 43-child fallback, including applicable C5 clip-rule cascade. The unchanged [cubic document/control](tests/Research/cubic-viewport-exit-sheet/README.md) now close the cubic-pair solver on both platforms, with analytic crossing/coincident/degree-nine and degenerate cubic-line checks plus affected resource protection. Reuse this qualified dependency. |
 | C2. Affine ancestor at a nested viewport — complete | The same whole document and 192 by 160 ancestor/viewport control are exact on both platforms. Physical clipping and unaffected siblings inside/after the ancestor are protected, with zero-size nonpainting/cleanup controls. Ancestor/viewBox rebasing and the existing native physical clip machinery are shared dependencies. |
-| C3. Mask units and restoration | Reuse [local-reference](tests/Research/mask-local-references/manifest.json), [group-mask](tests/Research/mask-group-documents/README.md) and custom-region/container-opacity witnesses. Exact two-panel object-box region/user-space content and user-space region/object-box content; nested leaf/group/use mask followed by an unmasked sibling. Reuse covered panels; qualify only missing unit/restoration semantics and affected cleanup. |
+| C3. Mask units, color and general maps | Unit/restoration acceptance is complete in the [composition/resource bank](tests/Research/composition-resource-exit-sheet/README.md), reusing existing [mask groups](tests/Research/mask-group-documents/README.md) and local-reference witnesses. Both region/content unit directions, percentages, leaf/group/use targets, reflection, empty bounds and unaffected siblings are protected. Remaining original G5 acceptance is the next sheet's colored luminance and general affine user-space/object-box mask controls: use correct source object bounds, composed region/content maps and native replay; make the complete unchanged document/controls exact on both platforms with affected ownership checks. Existing grayscale-only/general-map gates cannot count as completion or a scope deferral. |
 | C4. Independent image alignment offsets — complete | Existing [active-axis witnesses](artifacts/shared-map-exits-20261015/existing-image-alignments.json) cover xMid/xMax and yMin/yMid/yMax. The frozen [active xMin control](tests/Research/composition-resource-exit-sheet/image-horizontal-min.svg) now matches healthy platform triples through the canonical visual API; its wider meet viewport has a real horizontal alignment choice. Existing [aspect tests](tests/Lokad.Svg.Tests/SvgAspectRatioTests.cs) preserve all nine spellings, `none` and omitted-meet equivalence. No production fix or alignment/placement census is required. |
-| C5. Applicable clipPath/mask/pattern presentation and tile-local scopes | Reuse [root/resource cascade](tests/Research/root-resource-cascade/manifest.json), [selectors](tests/Lokad.Svg.Tests/SvgCssSelectorTests.cs) and [paint order](tests/Lokad.Svg.Tests/SvgPaintOrderTests.cs). Exact inherited/container paint versus child override and stylesheet/inline priority at each uncovered applicable resource boundary; one bounded mixed image/vector tile with a local content clip/mask. Preserve scope/cleanup. Marker/filter presentation belongs to E3/E4 and text/span paint to T1, with no duplicate case sets. |
+| C5. Applicable resource presentation and tile-local scopes — complete | The unchanged [mixed tile/document](tests/Research/composition-resource-exit-sheet/README.md) qualifies bounded image/vector content with a native local group clip and forward-source/sibling regressions. Reuse clip-rule container/child stylesheet/inline priority from the [clip bank](tests/Research/clip-union-exit-sheet/README.md), [mask presentation](tests/Research/mask-presentation/manifest.json), [inline pattern inheritance/override](tests/Research/paint-order/pattern-presentation-alias.svg), and the two analytic [pattern CSS priority](tests/Lokad.Svg.Tests/SvgPatternContentTests.cs) controls. [Root/resource cascade](tests/Research/root-resource-cascade/manifest.json), selectors and paint-order witnesses stay qualified. Marker/filter presentation belongs to E3/E4 and text/span paint to T1. |
 
 Qualified CSS, varied/affine image pixels, source-cropped slice, partial image-use
 masks, tile content and scoped composition remain closed; use the evidence table.
@@ -262,7 +263,7 @@ open-ended representativeness quota delays this release.
   failure/publication and cleanup in [PublicContractTests](tests/Lokad.Svg.Tests/PublicContractTests.cs)
   and [PngEncoderTests](tests/Lokad.Svg.Tests/PngEncoderTests.cs).
 - **Routine incremental Release build plus complete tests must stay below ten
-  minutes per platform.** The qualified 80.5s/243.7s checkpoint above meets this.
+  minutes per platform.** The qualified 75.3s/242.1s checkpoint above meets this.
   Include normal build/startup; avoid forced compiler shutdown. Measure before/
   after only when routine cost materially changes. Remove redundant API work if
   needed while preserving distinct semantics. Browser captures, optional benchmarks

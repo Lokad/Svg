@@ -315,6 +315,12 @@ internal static class SvgDefinitionParser
             };
             state.MaskId = reader.GetAttribute("id");
             state.MaskIsAlpha = SvgMaskSyntax.ParseMaskType(reader.GetAttribute("mask-type"));
+            state.MaskObjectBoundingBoxContent = reader.GetAttribute("maskContentUnits") switch
+            {
+                null or "userSpaceOnUse" => false,
+                "objectBoundingBox" => true,
+                _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse and objectBoundingBox mask content units are implemented.")
+            };
             state.MaskValue = null;
             state.MaskContentBox = null;
             state.MaskFractionRegion = SvgMaskSyntax.ParseMaskFractionRegion(reader);
@@ -335,6 +341,7 @@ internal static class SvgDefinitionParser
                 state.MaskCustomRegion = null;
                 state.MaskFractionRegion = null;
                 state.MaskDefaultUserSpaceRegion = false;
+                state.MaskObjectBoundingBoxContent = false;
             }
             else
             {
@@ -432,6 +439,7 @@ internal static class SvgDefinitionParser
                 workCounter.ConsumeText(fill.Length, cancellationToken);
                 inherited = inherited with { Presentation = inherited.Presentation with { PaintServerFill = state.Strings.Copy(fill) } };
             }
+            state.PatternClipStart = state.PatternClips?.Count ?? 0;
             state.Groups.Add(new(reader.Depth, SvgGroupKind.Pattern, inherited.Presentation with { Transform = SvgAffineTransform.Identity }, inherited.TextStyle, false, false, inherited.Stroke, inherited.FillRule)
                 { RecordingScope = patternContext.RecordingScope, ClipRule = style.ClipRule ?? patternContext.InheritedClipRule });
             if (!reader.IsEmptyElement) state.PatternDepth = reader.Depth;
@@ -455,14 +463,20 @@ internal static class SvgDefinitionParser
             }
             if (reader.LocalName == "g")
             {
-                if (reader.GetAttribute("mask") is not null || reader.GetAttribute("clip-path") is not null || reader.GetAttribute("filter") is not null)
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clips, masks and filters on pattern groups are not implemented.");
+                if (reader.GetAttribute("mask") is not null || reader.GetAttribute("filter") is not null)
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks and filters on pattern groups are not implemented.");
                 SvgParsedGroup group = SvgGroupParser.Parse(reader, false, root, state, namedColors, workCounter, cancellationToken);
                 if (!reader.IsEmptyElement)
                 {
                     SvgSceneBuilder builder = GetPatternContentBuilder(state, workCounter, cancellationToken);
-                    if (group.Scope.IsolatesOpacity) builder.BeginSourceOpacityScope(group.SourceOpacity, group.RecordingScope);
-                    state.Groups.Add(group.Scope with { Kind = SvgGroupKind.PatternGroup });
+                    bool clip = group.Scope.ClipPathId is not null;
+                    if (group.Scope.IsolatesOpacity || clip) builder.BeginSourceOpacityScope(group.SourceOpacity, group.RecordingScope);
+                    if (group.Scope.ClipPathId is {} id)
+                    {
+                        state.PatternClips ??= new(state.Budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+                        state.PatternClips.Add(new(id, group.Scope.InheritedPresentation.Transform, group.RecordingScope, group.Scope.IsolatesOpacity));
+                    }
+                    state.Groups.Add(group.Scope with { Kind = SvgGroupKind.PatternGroup, IsolatesOpacity = group.Scope.IsolatesOpacity || clip });
                     state.GroupDepth++;
                 }
                 return true;
@@ -1604,7 +1618,9 @@ internal static class SvgDefinitionParser
         if (state.PatternContentBuilder is {} builder)
         {
             SvgVectorContent content;
-            if (state.PatternUseCount == 0)
+            int clipCount = (state.PatternClips?.Count ?? 0) - state.PatternClipStart;
+            bool deferred = state.PatternUseCount != 0 || clipCount != 0;
+            if (!deferred)
             {
                 SvgLeafMaskComposition.Emit(state, builder, workCounter, cancellationToken);
                 content = SvgVectorContent.Create(builder.Build(), state.Budget);
@@ -1612,9 +1628,9 @@ internal static class SvgDefinitionParser
             else content = SvgVectorContent.CreatePending(state.Budget);
             try { state.Scene.AdoptVectorContent(content); }
             catch { content.Dispose(); throw; }
-            if (state.PatternUseCount != 0)
+            if (deferred)
             {
-                state.DeferredPatternContents.Add(new(builder, content, state.PatternUseStart, state.PatternUseCount));
+                state.DeferredPatternContents.Add(new(builder, content, state.PatternUseStart, state.PatternUseCount, state.PatternClipStart, clipCount));
                 state.PatternContentBuilder = null;
             }
             tile = tile with { Content = null, VectorContent = content };

@@ -24,8 +24,7 @@
       "reference": "references/composition-resource-sheet.png",
       "referenceSha256": "f88f14b7079d8d949b8cb0a2f9c57c3eed8ef43e833b7552393846468c7e636e",
       "linuxReference": "references/linux64/composition-resource-sheet.png",
-      "linuxReferenceSha256": "f88f14b7079d8d949b8cb0a2f9c57c3eed8ef43e833b7552393846468c7e636e",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "f88f14b7079d8d949b8cb0a2f9c57c3eed8ef43e833b7552393846468c7e636e"
     },
     {
       "id": "mask-unit-scopes",
@@ -42,8 +41,7 @@
       "reference": "references/mask-unit-scopes.png",
       "referenceSha256": "a412aa2b9a449150259d20050137dabbcc875c9d6958d782dc3c3aa8d91af200",
       "linuxReference": "references/linux64/mask-unit-scopes.png",
-      "linuxReferenceSha256": "a412aa2b9a449150259d20050137dabbcc875c9d6958d782dc3c3aa8d91af200",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "a412aa2b9a449150259d20050137dabbcc875c9d6958d782dc3c3aa8d91af200"
     },
     {
       "id": "image-horizontal-min",
@@ -77,8 +75,7 @@
       "reference": "references/mixed-tile-local-scope.png",
       "referenceSha256": "464c89c5de8e7390594b8f82aae09557a5d7480f93411f76ee289205d4a4fb6a",
       "linuxReference": "references/linux64/mixed-tile-local-scope.png",
-      "linuxReferenceSha256": "464c89c5de8e7390594b8f82aae09557a5d7480f93411f76ee289205d4a4fb6a",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "464c89c5de8e7390594b8f82aae09557a5d7480f93411f76ee289205d4a4fb6a"
     }
   ]
 }
