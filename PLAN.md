@@ -42,9 +42,11 @@ The complete image correction is locally qualified: **7,686 tests/platform**
 **3/3 separate controls** exact on Windows/Linux. The
 [receipt](artifacts/maintenance-review-20261012/affine-image-qualified-results.json)
 owns preservation, assertion migrations, bounded-failure evidence and timings.
-Hosted qualification follows the substantive commit/push. The preceding
-[terminal green path-sheet CI](https://github.com/Lokad/Svg/actions/runs/38672544792)
-for `5a331751` stays closed; do not repoll it to qualify new image code.
+[Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38677568140)
+for exact implementation revision `4c4b4a22`, including package/consumer, memory,
+browser/setup, font and validator checks. Its build plus complete tests took
+**119s Windows / 114s Linux**, separately from local timings. Reuse this completed
+evidence for unchanged documentation; do not poll this or preceding green runs.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
