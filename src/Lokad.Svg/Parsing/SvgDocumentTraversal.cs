@@ -183,7 +183,7 @@ internal static class SvgDocumentTraversal
                         state.GroupSnapshotStarts.Add(new SvgGroupSnapshotStart(groupId is null ? null : state.Strings.Copy(groupId), reader.GetAttribute("clip-path") is not null, reader.GetAttribute("mask") is not null));
                         if (parsedGroup.Scope.Kind == SvgGroupKind.Switch) state.Switches.Add(new SwitchScope(reader.Depth, false));
                         string? groupClipId = parsedGroup.Scope.ClipPathId;
-                        if (groupClipId is not null)
+                        if (groupClipId is not null && !parsedGroup.Scope.HasFilter)
                         {
                             if (state.Clips.TryGetValue(groupClipId, out SvgClipBox clipBox))
                             {
@@ -222,7 +222,7 @@ internal static class SvgDocumentTraversal
                             if (parsedGroup.FilterId is {} filterId)
                             {
                                 int binding = state.Scene.Filters.AddBinding(filterId, default, default,
-                                    parsedGroup.Scope.InheritedPresentation.Transform, parsedGroup.LengthBases, true);
+                                    parsedGroup.Scope.InheritedPresentation.Transform, parsedGroup.LengthBases, true, groupClipId);
                                 int position = state.Scene.CommandCount - 1;
                                 state.Scene.ReplaceCommand(position, state.Scene.CommandAt(position) with
                                 { RegionKind = SvgLayerRegionKind.Filter, MaskContentIndex = binding });

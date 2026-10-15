@@ -9,7 +9,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "One required whole effects/marker sheet remains incomplete; three of four controls are exact. The separately declared image-filter source preserves its original healthy platform triples.",
+  "purpose": "One required whole effects/marker sheet remains incomplete; five of six controls are exact. Original declarations and reference bytes stay frozen while shared source/output-clip mechanisms advance the document.",
   "cases": [
     {
       "id": "effects-marker-sheet",
@@ -60,8 +60,8 @@
       "licenseEvidence": "README.md",
       "platformReferencesByteIdentical": true,
       "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Filters combined with local clips, masks, nested viewports, markers or text are not implemented.",
-      "remainingRequiredBehavior": "Image filter source admission is qualified separately; outer clip/effect order, affine regions and mixed/nested effects remain required for this unchanged whole document."
+      "expectedMessage": "Nested filter sources are not implemented.",
+      "remainingRequiredBehavior": "Image source and outer clip/filter controls are exact separately; the unchanged whole document still needs nested filters, mixed primitive color spaces and affine regions."
     },
     {
       "id": "marker-overflow-cascade",
@@ -257,6 +257,104 @@
         },
         {
           "pngSha256": "99b4daa407a20f62392ab83020af6e3dc5643b02bb9602b16f223880eaa50c40",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "image-filter-clip",
+      "input": "image-filter-clip.svg",
+      "width": 144,
+      "height": 108,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "e4458c99e391db7753e929bc4eb1b536397d34ddaf6c3ae7df100b79b43b9519",
+      "selection": "The retained source/shadow/slice/opacity gains its original circle clip. This isolates the next whole-document boundary: apply local clipping after filtering, preserving native coverage and opacity order.",
+      "reference": "references/image-filter-clip.png",
+      "referenceSha256": "2f8ebfd9dd61e93a8fce017a2999f84e74f53cf2fb3e34c421a43f4278d320b8",
+      "licenseEvidence": "README.md",
+      "platformReferencesByteIdentical": true,
+      "captures": [
+        {
+          "pngSha256": "2f8ebfd9dd61e93a8fce017a2999f84e74f53cf2fb3e34c421a43f4278d320b8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2f8ebfd9dd61e93a8fce017a2999f84e74f53cf2fb3e34c421a43f4278d320b8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2f8ebfd9dd61e93a8fce017a2999f84e74f53cf2fb3e34c421a43f4278d320b8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "2f8ebfd9dd61e93a8fce017a2999f84e74f53cf2fb3e34c421a43f4278d320b8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2f8ebfd9dd61e93a8fce017a2999f84e74f53cf2fb3e34c421a43f4278d320b8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2f8ebfd9dd61e93a8fce017a2999f84e74f53cf2fb3e34c421a43f4278d320b8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "vector-filter-clips",
+      "input": "vector-filter-clips.svg",
+      "width": 144,
+      "height": 108,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "a1b1a85a3a060391fbc7644547cca4eb89094d50c22cb88cbb2e973d4e92ce90",
+      "selection": "Filtered solid leaf and overlapping group use forward local fractional rectangle clips; a later unfiltered sibling protects scope termination. Complements the retained image/circle clip without a shape/paint/API product.",
+      "reference": "references/vector-filter-clips.png",
+      "referenceSha256": "92b61fdd29173840c57664733cf9cc0c50575827199f3ea4b746ea9bfb02bdf0",
+      "licenseEvidence": "README.md",
+      "platformReferencesByteIdentical": true,
+      "captures": [
+        {
+          "pngSha256": "92b61fdd29173840c57664733cf9cc0c50575827199f3ea4b746ea9bfb02bdf0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "92b61fdd29173840c57664733cf9cc0c50575827199f3ea4b746ea9bfb02bdf0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "92b61fdd29173840c57664733cf9cc0c50575827199f3ea4b746ea9bfb02bdf0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "92b61fdd29173840c57664733cf9cc0c50575827199f3ea4b746ea9bfb02bdf0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "92b61fdd29173840c57664733cf9cc0c50575827199f3ea4b746ea9bfb02bdf0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "92b61fdd29173840c57664733cf9cc0c50575827199f3ea4b746ea9bfb02bdf0",
           "startupHealth": "healthy",
           "profileCleaned": true
         }

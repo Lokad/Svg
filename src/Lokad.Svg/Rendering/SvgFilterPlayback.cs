@@ -39,6 +39,130 @@ internal readonly record struct SvgFilterResult(SvgConverter.RasterizedSurface F
 /// the caller. Work includes every copy, conversion, blur pass and composition. Calls are independent.</remarks>
 internal static class SvgFilterPlayback
 {
+    /// <summary>Back-propagates a bounded output through earlier local results to the dynamic source.</summary>
+    /// <remarks>Resources are borrowed and immutable. Temporary request/region arrays share the conversion
+    /// budget and release on every exit; all graph visits charge work and observe cancellation. Coordinates
+    /// use the caller's device grid. No pixels or caller storage are changed.</remarks>
+    internal static SvgPaintBounds RequiredSourceBounds(SvgFilterResource resource, SvgFilterDeviceMap map,
+        SvgFilterRegionContext context, SvgPaintBounds requested, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    {
+        token.ThrowIfCancellationRequested();
+        int count = resource.Primitives.Items.Length;
+        if (count == 0) return requested;
+        using RenderBudget.BudgetReservation owner = budget.Reserve(2 * ParserCollectionMemory.GetArrayByteCount<SvgPaintBounds>(count), SvgMemoryCategory.Temporary);
+        SvgPaintBounds[] regions = new SvgPaintBounds[count], requests = new SvgPaintBounds[count];
+        PrepareRegions(resource, regions, context, work, token);
+        requests[count - 1] = requested;
+        SvgPaintBounds source = default;
+        for (int index = count - 1; index >= 0; index--)
+        {
+            work.Consume(token);
+            SvgFilterPrimitive primitive = resource.Primitives.Items[index];
+            SvgPaintBounds pending = requests[index], region = regions[index];
+            SvgPaintBounds output = new(MathF.Floor(MathF.Max(pending.Left, region.Left)), MathF.Floor(MathF.Max(pending.Top, region.Top)),
+                MathF.Ceiling(MathF.Min(pending.Right, region.Right)), MathF.Ceiling(MathF.Min(pending.Bottom, region.Bottom)));
+            if (pending.Right <= pending.Left || pending.Bottom <= pending.Top || output.Right <= output.Left || output.Bottom <= output.Top) continue;
+            if (primitive.Kind == SvgFilterPrimitiveKind.Flood) continue;
+            SvgPaintBounds input = output;
+            if (primitive.Kind is SvgFilterPrimitiveKind.Offset or SvgFilterPrimitiveKind.DropShadow)
+            {
+                float dx = (float)(primitive.OffsetX * map.ScaleX), dy = (float)(primitive.OffsetY * map.ScaleY);
+                if (!float.IsFinite(dx) || !float.IsFinite(dy)) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source offset exceeds the coordinate range.");
+                input = new(MathF.Floor(input.Left - dx), MathF.Floor(input.Top - dy), MathF.Ceiling(input.Right - dx), MathF.Ceiling(input.Bottom - dy));
+            }
+            if (primitive.Kind is SvgFilterPrimitiveKind.GaussianBlur or SvgFilterPrimitiveKind.DropShadow)
+            {
+                float radiusX = MathF.Ceiling(3f * (float)Math.Min(532, Math.Abs(primitive.SigmaX * map.ScaleX)));
+                float radiusY = MathF.Ceiling(3f * (float)Math.Min(532, Math.Abs(primitive.SigmaY * map.ScaleY)));
+                input = new(input.Left - radiusX, input.Top - radiusY, input.Right + radiusX, input.Bottom + radiusY);
+            }
+            if (primitive.Kind == SvgFilterPrimitiveKind.Merge)
+                foreach (SvgFilterInput merged in resource.MergeInputs.Items.AsSpan(primitive.MergeFirst, primitive.MergeCount)) Add(merged, output);
+            else
+            {
+                Add(primitive.Input, input);
+                if (primitive.Kind == SvgFilterPrimitiveKind.DropShadow) Add(primitive.Input, output);
+                if (primitive.Kind is SvgFilterPrimitiveKind.Composite or SvgFilterPrimitiveKind.Blend) Add(primitive.SecondInput, output);
+            }
+
+            void Add(SvgFilterInput target, SvgPaintBounds bounds)
+            {
+                work.Consume(token);
+                if (target.Index < 0) source = Union(source, bounds);
+                else if (target.Index < index) requests[target.Index] = Union(requests[target.Index], bounds);
+                else throw new SvgException(SvgErrorCode.MalformedInput, "Filter source requests must refer to earlier results.");
+            }
+        }
+        return source;
+
+        static SvgPaintBounds Union(SvgPaintBounds first, SvgPaintBounds second)
+            => first.Right <= first.Left || first.Bottom <= first.Top ? second
+                : new(MathF.Min(first.Left, second.Left), MathF.Min(first.Top, second.Top), MathF.Max(first.Right, second.Right), MathF.Max(first.Bottom, second.Bottom));
+    }
+
+    private static void PrepareRegions(SvgFilterResource resource, Span<SvgPaintBounds> regions,
+        SvgFilterRegionContext context, ParserWorkCounter work, CancellationToken token)
+    {
+        for (int index = 0; index < resource.Primitives.Items.Length; index++)
+        {
+            token.ThrowIfCancellationRequested();
+            SvgFilterPrimitive primitive = resource.Primitives.Items[index];
+            if (primitive.Input.Index < -2 || primitive.Input.Index >= index
+                || primitive.Kind is SvgFilterPrimitiveKind.Composite or SvgFilterPrimitiveKind.Blend
+                    && (primitive.SecondInput.Index < -2 || primitive.SecondInput.Index >= index))
+                throw new SvgException(SvgErrorCode.MalformedInput, "Filter inputs must refer to the source or earlier results.");
+            SvgPaintBounds defaults = primitive.Input.Index >= 0 ? regions[primitive.Input.Index] : context.FilterRegion;
+            if (primitive.Kind == SvgFilterPrimitiveKind.Flood) defaults = context.FilterRegion;
+            if (primitive.Kind is SvgFilterPrimitiveKind.Composite or SvgFilterPrimitiveKind.Blend)
+            {
+                SvgPaintBounds secondRegion = primitive.SecondInput.Index >= 0
+                    ? regions[primitive.SecondInput.Index] : context.FilterRegion;
+                defaults = new(Math.Min(defaults.Left, secondRegion.Left), Math.Min(defaults.Top, secondRegion.Top),
+                    Math.Max(defaults.Right, secondRegion.Right), Math.Max(defaults.Bottom, secondRegion.Bottom));
+            }
+            if (primitive.Kind == SvgFilterPrimitiveKind.Merge && primitive.MergeCount > 0)
+            {
+                bool first = true;
+                foreach (SvgFilterInput merged in resource.MergeInputs.Items.AsSpan(primitive.MergeFirst, primitive.MergeCount))
+                {
+                    work.Consume(token);
+                    if (merged.Index < 0) { defaults = context.FilterRegion; break; }
+                    if ((uint)merged.Index >= (uint)index) throw new SvgException(SvgErrorCode.MalformedInput, "Filter merge input is outside its earlier results.");
+                    SvgPaintBounds region = regions[merged.Index];
+                    if (first) { defaults = region; first = false; }
+                    else defaults = new(Math.Min(defaults.Left, region.Left), Math.Min(defaults.Top, region.Top),
+                        Math.Max(defaults.Right, region.Right), Math.Max(defaults.Bottom, region.Bottom));
+                }
+            }
+            regions[index] = ResolveRegion(primitive.Region, defaults, context, work, token);
+        }
+
+        static SvgPaintBounds ResolveRegion(SvgFilterPrimitiveRegion? authored, SvgPaintBounds defaults, SvgFilterRegionContext context, ParserWorkCounter work, CancellationToken token)
+        {
+            if (authored is not {} region) return defaults;
+            for (int component = 0; component < 4; component++) work.Consume(token);
+            double x = region.X is {} rx ? Position(rx, context.LengthBases.Width, context.Coordinates.A, context.Coordinates.E) : defaults.Left;
+            double y = region.Y is {} ry ? Position(ry, context.LengthBases.Height, context.Coordinates.D, context.Coordinates.F) : defaults.Top;
+            double authoredWidth = region.Width is {} rw ? Length(rw, context.LengthBases.Width) : defaults.Right - defaults.Left;
+            double authoredHeight = region.Height is {} rh ? Length(rh, context.LengthBases.Height) : defaults.Bottom - defaults.Top;
+            if (authoredWidth <= 0 || authoredHeight <= 0) return default;
+            double w = region.Width is not null ? authoredWidth * context.Coordinates.A : authoredWidth;
+            double h = region.Height is not null ? authoredHeight * context.Coordinates.D : authoredHeight;
+            if (w < 0) { x += w; w = -w; }
+            if (h < 0) { y += h; h = -h; }
+            if (Math.Abs(x) > float.MaxValue || Math.Abs(y) > float.MaxValue || Math.Abs(x + w) > float.MaxValue || Math.Abs(y + h) > float.MaxValue
+                || !double.IsFinite(x) || !double.IsFinite(y) || !double.IsFinite(x + w) || !double.IsFinite(y + h))
+                throw new SvgException(SvgErrorCode.LimitExceeded, "Primitive region exceeds the finite coordinate range.");
+            return new((float)Math.Max(x, context.FilterRegion.Left), (float)Math.Max(y, context.FilterRegion.Top),
+                (float)Math.Min(x + w, context.FilterRegion.Right), (float)Math.Min(y + h, context.FilterRegion.Bottom));
+
+            static double Position(SvgFilterLength length, double? basis, double scale, double offset) => Length(length, basis) * scale + offset;
+            static double Length(SvgFilterLength length, double? basis) => length.Percentage
+                ? length.Value * (basis ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Primitive percentages require known viewport extents.")) / 100 : length.Value;
+        }
+
+    }
+
     private enum CropRounding { PixelCenter, Outward }
     internal static SvgFilterResult Apply(ReadOnlySpan<byte> source, int width, int height,
         SvgFilterResource resource, SvgFilterDeviceMap map, RenderBudget budget, long availableWork, CancellationToken token)
@@ -62,6 +186,12 @@ internal static class SvgFilterPlayback
         int finalIndex = count == 0 ? 0 : count - 1;
         try
         {
+            if (map.Regions is {} regionContext)
+            {
+                ParserWorkCounter regionWork = new(availableWork);
+                PrepareRegions(resource, regions, regionContext, regionWork, token);
+                work += regionWork.Used;
+            }
             ReadOnlySpan<byte> graphic = source;
             // Regions crop evaluated outputs. Retain the painted source halo
             // so a blur can sample strokes outside the requested output region.
@@ -81,32 +211,8 @@ internal static class SvgFilterPlayback
                 outputs[index] = Allocate();
                 Span<byte> output = outputs[index].Pixels;
                 imageBounds[index] = new(0, 0, width, height);
-                if (map.Regions is {} coordinates)
+                if (map.Regions is not null)
                 {
-                    SvgPaintBounds defaults = primitive.Input.Index >= 0 ? regions[primitive.Input.Index] : coordinates.FilterRegion;
-                    if (primitive.Kind == SvgFilterPrimitiveKind.Flood) defaults = coordinates.FilterRegion;
-                    if (primitive.Kind is SvgFilterPrimitiveKind.Composite or SvgFilterPrimitiveKind.Blend)
-                    {
-                        SvgPaintBounds secondRegion = primitive.SecondInput.Index >= 0
-                            ? regions[primitive.SecondInput.Index] : coordinates.FilterRegion;
-                        defaults = new(Math.Min(defaults.Left, secondRegion.Left), Math.Min(defaults.Top, secondRegion.Top),
-                            Math.Max(defaults.Right, secondRegion.Right), Math.Max(defaults.Bottom, secondRegion.Bottom));
-                    }
-                    if (primitive.Kind == SvgFilterPrimitiveKind.Merge && primitive.MergeCount > 0)
-                    {
-                        bool first = true;
-                        foreach (SvgFilterInput merged in resource.MergeInputs.Items.AsSpan(primitive.MergeFirst, primitive.MergeCount))
-                        {
-                            Charge(1);
-                            if (merged.Index < 0) { defaults = coordinates.FilterRegion; break; }
-                            if ((uint)merged.Index >= (uint)index) throw new SvgException(SvgErrorCode.MalformedInput, "Filter merge input is outside its earlier results.");
-                            SvgPaintBounds region = regions[merged.Index];
-                            if (first) { defaults = region; first = false; }
-                            else defaults = new(Math.Min(defaults.Left, region.Left), Math.Min(defaults.Top, region.Top),
-                                Math.Max(defaults.Right, region.Right), Math.Max(defaults.Bottom, region.Bottom));
-                        }
-                    }
-                    regions[index] = ResolveRegion(primitive.Region, defaults, coordinates);
                     imageBounds[index] = regions[index];
                     if (regions[index].Right <= regions[index].Left || regions[index].Bottom <= regions[index].Top) continue;
                 }
@@ -435,29 +541,6 @@ internal static class SvgFilterPlayback
             static byte Quantize(float value, byte alpha) => (byte)Math.Clamp((int)MathF.Round(value * 255f, MidpointRounding.ToEven), 0, alpha);
         }
 
-        SvgPaintBounds ResolveRegion(SvgFilterPrimitiveRegion? authored, SvgPaintBounds defaults, SvgFilterRegionContext context)
-        {
-            if (authored is not {} region) return defaults;
-            Charge(4);
-            double x = region.X is {} rx ? Position(rx, context.LengthBases.Width, context.Coordinates.A, context.Coordinates.E) : defaults.Left;
-            double y = region.Y is {} ry ? Position(ry, context.LengthBases.Height, context.Coordinates.D, context.Coordinates.F) : defaults.Top;
-            double authoredWidth = region.Width is {} rw ? Length(rw, context.LengthBases.Width) : defaults.Right - defaults.Left;
-            double authoredHeight = region.Height is {} rh ? Length(rh, context.LengthBases.Height) : defaults.Bottom - defaults.Top;
-            if (authoredWidth <= 0 || authoredHeight <= 0) return default;
-            double w = region.Width is not null ? authoredWidth * context.Coordinates.A : authoredWidth;
-            double h = region.Height is not null ? authoredHeight * context.Coordinates.D : authoredHeight;
-            if (w < 0) { x += w; w = -w; }
-            if (h < 0) { y += h; h = -h; }
-            if (Math.Abs(x) > float.MaxValue || Math.Abs(y) > float.MaxValue || Math.Abs(x + w) > float.MaxValue || Math.Abs(y + h) > float.MaxValue
-                || !double.IsFinite(x) || !double.IsFinite(y) || !double.IsFinite(x + w) || !double.IsFinite(y + h))
-                throw new SvgException(SvgErrorCode.LimitExceeded, "Primitive region exceeds the finite coordinate range.");
-            return new((float)Math.Max(x, context.FilterRegion.Left), (float)Math.Max(y, context.FilterRegion.Top),
-                (float)Math.Min(x + w, context.FilterRegion.Right), (float)Math.Min(y + h, context.FilterRegion.Bottom));
-
-            static double Position(SvgFilterLength length, double? basis, double scale, double offset) => Length(length, basis) * scale + offset;
-            static double Length(SvgFilterLength length, double? basis) => length.Percentage
-                ? length.Value * (basis ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Primitive percentages require known viewport extents.")) / 100 : length.Value;
-        }
 
         void Clip(Span<byte> pixels, SvgPaintBounds region, CropRounding rounding)
         {

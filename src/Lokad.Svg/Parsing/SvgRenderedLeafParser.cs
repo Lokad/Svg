@@ -57,16 +57,24 @@ internal static class SvgRenderedLeafParser
         if (style.Filter is not string filter || filter.Trim() == "none")
             return ParseContent(reader, context, root, state, limits, budget, fontSnapshot, workCounter, cancellationToken);
         if (!SvgLocalUrl.TryParseId(filter, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local filter url references are implemented.");
-        if (reader.LocalName is "text" || reader.GetAttribute("clip-path") is not null || reader.GetAttribute("mask") is not null || state.EffectiveFrame is not null
+        if (reader.LocalName is "text" || reader.GetAttribute("mask") is not null || state.EffectiveFrame is not null
             || SvgMarkerStyle.Resolve(style, context.InheritedPresentation.Markers).HasMarkers)
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filters combined with local clips, masks, nested viewports, markers or text are not implemented.");
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filters combined with masks, nested viewports, markers or text are not implemented.");
         int start = state.Scene.CommandCount, firstGeometry = state.Scene.GeometryCount;
-        bool parsed = ParseContent(reader, context with { AuthoredStyle = style with { Filter = null, Opacity = null } }, root,
-            state, limits, budget, fontSnapshot, workCounter, cancellationToken);
+        string? clip = SvgClipPathSyntax.ResolveClipId(reader, state);
+        bool previousFilterClip = state.DeferringFilterClip;
+        bool parsed;
+        state.DeferringFilterClip = clip is not null;
+        try
+        {
+            parsed = ParseContent(reader, context with { AuthoredStyle = style with { Filter = null, Opacity = null } }, root,
+                state, limits, budget, fontSnapshot, workCounter, cancellationToken);
+        }
+        finally { state.DeferringFilterClip = previousFilterClip; }
         if (state.Scene.GeometryCount == firstGeometry) return parsed;
         SvgRecordedPaintValue paint = state.Scene.GetRecordedPaintValue(state.Scene.GeometryAt(firstGeometry).RecordedPaint);
         if (paint.ObjectBounds is not {} objectBounds) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filter source requires retained object bounds.");
-        int binding = state.Scene.Filters.AddBinding(id, objectBounds, paint.VisualBounds ?? objectBounds, context.ResolveTransform(reader), context.LengthBases, false);
+        int binding = state.Scene.Filters.AddBinding(id, objectBounds, paint.VisualBounds ?? objectBounds, context.ResolveTransform(reader), context.LengthBases, false, clip);
         SvgDrawCommand begin = new(SvgDrawCommandKind.BeginGroup, 0, style.GetOpacity(), null, binding, 255) { RegionKind = SvgLayerRegionKind.Filter };
         state.Scene.InsertCommands(state.Scene.CommandCount, [new(SvgDrawCommandKind.EndGroup, 0, 255, null, -1, 255)]);
         state.Scene.InsertCommands(start, [begin]);

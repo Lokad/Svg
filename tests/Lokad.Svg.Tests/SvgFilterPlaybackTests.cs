@@ -7,6 +7,36 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgFilterPlaybackTests
 {
     [Fact]
+    public void Required_source_bounds_preserve_both_branches_and_the_displaced_blur_halo()
+    {
+        byte[] input = Document("<defs><filter id='f' filterUnits='userSpaceOnUse' x='-100' y='-100' width='200' height='200'>"
+            + "<feGaussianBlur stdDeviation='1' result='b'/><feOffset in='b' dx='5' dy='-3' result='m'/>"
+            + "<feMerge><feMergeNode in='SourceGraphic'/><feMergeNode in='m'/></feMerge></filter></defs><rect width='4' height='4' filter='url(#f)'/>");
+        RenderBudget parser = new(1_000_000);
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None))
+        {
+            SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
+            SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
+            SvgFilterRegionContext context = new(SvgAffineTransform.Identity, new(200, 200), new(-100, -100, 100, 100));
+            RenderBudget budget = new(1_000_000);
+            // The direct branch needs [10,20,30,40]. The shifted blur needs
+            // [5,23,25,43] expanded by its native three-sigma radius of 3.
+            Assert.Equal(new SvgPaintBounds(2, 20, 30, 46), SvgFilterPlayback.RequiredSourceBounds(resource,
+                new(1, 1), context, new(10, 20, 30, 40), budget, new(1_000), CancellationToken.None));
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFilterPlayback.RequiredSourceBounds(resource,
+                new(1, 1), context, new(10, 20, 30, 40), budget, new(1), CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+            using CancellationTokenSource cancellation = new();
+            cancellation.Cancel();
+            Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgFilterPlayback.RequiredSourceBounds(resource,
+                new(1, 1), context, new(10, 20, 30, 40), budget, new(1_000), cancellation.Token)).CancellationToken);
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, parser.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public void Rescaled_blur_keeps_offscreen_intermediate_pixels_needed_by_a_later_offset()
     {
         const int width = 128, height = 96;

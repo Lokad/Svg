@@ -1,3 +1,35 @@
+## Output clips through shared filter/layer replay (2026-10-15)
+
+Two separately frozen [effects controls](../tests/Research/effects-marker-sheet/README.md)
+are exact on Windows/Linux: the retained image/circle shadow and vector leaf/group
+fractional-rectangle clips. Forward references bind through the existing registry;
+clip commands enclose each filter source wrapper and its restoration. The source
+keeps its uncut geometry/image input. No new shape-specific filter renderer is
+introduced. Missing late references release decoded images before publication.
+[Qualification](../artifacts/maintenance-review-20261012/filter-output-clips-qualified-results.json).
+
+The initial image clip had 201 edge differences, maximum alpha error one.
+Reusing the existing stored-layer packed opacity and AA run/destination arithmetic
+removed them. The vector/group witness initially had 38 RGB differences with
+exact alpha. Native command tracing showed clip, outer opacity layer, inner filter
+layer, then geometry. The trace established ordering; its white-background replay
+was not a reference replacement. Forcing antialiased source blending reduced the
+count to two but was rejected as a source-routing approximation.
+
+The accepted route uses the active clip bounds, which fast native clip tapes keep
+separate from layer bounds. Backward demand propagation through the bounded local
+filter DAG retains three-sigma blur input, inverse-offset demand and all branches;
+forward primitive-region evaluation is shared with playback. Original source
+coverage distinctions, padded capture, parent-device rounding and resource limits
+remain intact. A focused merge/offset/blur bound test protects halo and branch
+retention, denial, cancellation and release. Rejected diagnostics and native trace
+ordering stay in the ignored [study](../artifacts/effects-marker-sheet-20261015/).
+
+The whole sheet still rejects nested source capture, followed by required mixed
+primitive spaces and affine placement. Known identity/zero-offset colored-source
+differences and wider finite G8 boundaries remain open. No reference, authored
+input, option or default limit changes; no whole-document or group closure.
+
 ## Image SourceGraphic and fractional shadow sampling (2026-10-15)
 
 The separately frozen `image-filter-source` control is exact on Windows/Linux

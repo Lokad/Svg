@@ -5,6 +5,7 @@ namespace Lokad.Svg.Parsing;
 internal readonly record struct SvgLeafMaskOwner(IDisposable Owner);
 internal readonly record struct SvgLeafMaskOperationReference(SvgLeafMaskOperation Operation);
 internal readonly record struct SvgLeafMaskBindingReference(SvgLeafMaskBinding Binding);
+internal readonly record struct SvgFilterClipScope(int Depth, SvgLeafMaskBinding Binding);
 internal readonly record struct SvgNativeClipReference(string Id, SvgAffineTransform Map);
 
 /// <summary>Stores one parser-owned mask value/region, or a lazily mapped instance of an earlier operation.</summary>
@@ -207,9 +208,12 @@ internal static class SvgLeafMaskComposition
     /// <summary>Compiles leaf scopes into the specified scene, retaining the document's bounded shared operation registry.</summary>
     internal static void Emit(SvgDocumentState state, SvgSceneBuilder scene, ParserWorkCounter work, CancellationToken token)
     {
+        scene.ResolveFilterOutputClips(state);
         if (state.LeafMaskOwners.Count == 0) return;
         BudgetedSceneList<SvgDrawCommand> commands = new(state.Budget, work, token);
         bool transferred = false;
+        int depth = 0;
+        BudgetedParserList<SvgFilterClipScope>? filterClips = null;
         using BudgetedParserList<SvgLeafMaskOperationReference> active = new(state.Budget, SvgMemoryCategory.Parser, work, token);
         using BudgetedParserList<SvgLeafMaskOperationReference> desired = new(state.Budget, SvgMemoryCategory.Parser, work, token);
         using BudgetedParserList<SvgLeafMaskOperationReference> unresolved = new(state.Budget, SvgMemoryCategory.Parser, work, token);
@@ -221,51 +225,19 @@ internal static class SvgLeafMaskComposition
                 work.Consume(token);
                 desired.Clear();
                 SvgDrawCommand command = index < count ? scene.CommandAt(index) : default;
-                if (index < count && command.Kind == SvgDrawCommandKind.Geometry)
+                if (index < count && command.Kind == SvgDrawCommandKind.BeginGroup)
                 {
-                    for (SvgLeafMaskBinding? binding = scene.GeometryAt(command.GeometryIndex).LeafMask; binding is not null; binding = binding.Inner)
+                    depth++;
+                    if (command.RegionKind == SvgLayerRegionKind.Filter && scene.FilterOutputClipAt(command.MaskContentIndex) is {} clip)
                     {
-                        work.Consume(token);
-                        SvgLeafMaskOperation operation = binding.Operation;
-                        unresolved.Clear();
-                        for (SvgLeafMaskOperation? current = operation; current is not null && !current.Resolved; current = current.Source)
-                        {
-                            work.Consume(token);
-                            unresolved.Add(new(current));
-                        }
-                        for (int pending = unresolved.Count - 1; pending >= 0; pending--)
-                        {
-                            work.Consume(token);
-                            SvgLeafMaskOperation mapped = unresolved[pending].Operation;
-                            SvgLeafMaskOperation source = mapped.Source ?? throw new InvalidOperationException("Leaf mask was not resolved.");
-                            mapped.Value = source.Value;
-                            mapped.SourceOpacity = source.SourceOpacity;
-                            mapped.RegionKind = source.RegionKind;
-                            if (source.NativeClip is {} native)
-                                mapped.NativeClip = native with { Map = mapped.Map.ComposeChecked(native.Map) };
-                            if (source.AffineViewport is {} affine)
-                                mapped.AffineViewport = affine with { Map = mapped.Map.ComposeChecked(affine.Map) };
-                            else if (source.RegionKind == SvgLayerRegionKind.Viewport && !mapped.Map.IsAxisAligned && source.Region is SvgClipBox viewport)
-                            {
-                                mapped.AffineViewport = new(viewport, mapped.Map);
-                                mapped.RegionKind = SvgLayerRegionKind.AffineViewport;
-                            }
-                            else mapped.Region = source.Region is SvgClipBox region ? mapped.Map.Apply(region) : null;
-                            mapped.Resolved = true;
-                        }
-                        if (operation.AffineViewport is {} clip && operation.ContentIndex < 0)
-                            (operation.Region, operation.ContentIndex) = clip.Register(state, scene, work, token);
-                        if (operation.NativeClip is {} nativeClip && operation.ContentIndex < 0)
-                        {
-                            if (!state.ClipPolygons.TryGetValue(nativeClip.Id, out SvgClipPolygon content))
-                                throw new InvalidOperationException("Retained native clip content is missing.");
-                            (operation.Region, operation.ContentIndex) = SvgAffineViewportClip.RegisterContour(content.Points, content.ContourEnds,
-                                nativeClip.Map, content.IsOval ? SvgClipContentKind.OvalClipPath : SvgClipContentKind.ClipPath,
-                                content.UsesNativeReplay ? content.SourcePath : null, content.ResourceBounds, content.IsEvenOdd, state, scene, work, token);
-                        }
-                        if (operation.Value != 255 || operation.Region is not null || operation.ContentIndex >= 0 || operation.SourceOpacity.Value != 1) desired.Add(new(operation));
+                        filterClips ??= new(state.Budget, SvgMemoryCategory.Parser, work, token);
+                        filterClips.Add(new(depth, clip));
                     }
                 }
+                if (filterClips is not null)
+                    foreach (SvgFilterClipScope scope in filterClips.AsSpan()) AppendBindings(scope.Binding);
+                if (index < count && command.Kind == SvgDrawCommandKind.Geometry)
+                    AppendBindings(scene.GeometryAt(command.GeometryIndex).LeafMask);
                 int common = 0;
                 while (common < active.Count && common < desired.Count && ReferenceEquals(active[common].Operation, desired[common].Operation))
                 {
@@ -281,6 +253,11 @@ internal static class SvgLeafMaskComposition
                 active.Clear();
                 active.AddRange(desired.AsSpan());
                 if (index < count) commands.Add(command);
+                if (index < count && command.Kind == SvgDrawCommandKind.EndGroup)
+                {
+                    if (filterClips is { Count: > 0 } && filterClips[filterClips.Count - 1].Depth == depth) filterClips.RemoveLast();
+                    depth--;
+                }
             }
             scene.AdoptCommands(commands);
             transferred = true;
@@ -290,6 +267,52 @@ internal static class SvgLeafMaskComposition
                 scene.AssignLeafMask(index, null);
             }
         }
-        finally { if (!transferred) commands.Dispose(); }
+        finally { filterClips?.Dispose(); if (!transferred) commands.Dispose(); }
+
+        void AppendBindings(SvgLeafMaskBinding? first)
+        {
+            for (SvgLeafMaskBinding? binding = first; binding is not null; binding = binding.Inner)
+            {
+                work.Consume(token);
+                SvgLeafMaskOperation operation = binding.Operation;
+                unresolved.Clear();
+                for (SvgLeafMaskOperation? current = operation; current is not null && !current.Resolved; current = current.Source)
+                {
+                    work.Consume(token);
+                    unresolved.Add(new(current));
+                }
+                for (int pending = unresolved.Count - 1; pending >= 0; pending--)
+                {
+                    work.Consume(token);
+                    SvgLeafMaskOperation mapped = unresolved[pending].Operation;
+                    SvgLeafMaskOperation source = mapped.Source ?? throw new InvalidOperationException("Leaf mask was not resolved.");
+                    mapped.Value = source.Value;
+                    mapped.SourceOpacity = source.SourceOpacity;
+                    mapped.RegionKind = source.RegionKind;
+                    if (source.NativeClip is {} native)
+                        mapped.NativeClip = native with { Map = mapped.Map.ComposeChecked(native.Map) };
+                    if (source.AffineViewport is {} affine)
+                        mapped.AffineViewport = affine with { Map = mapped.Map.ComposeChecked(affine.Map) };
+                    else if (source.RegionKind == SvgLayerRegionKind.Viewport && !mapped.Map.IsAxisAligned && source.Region is SvgClipBox viewport)
+                    {
+                        mapped.AffineViewport = new(viewport, mapped.Map);
+                        mapped.RegionKind = SvgLayerRegionKind.AffineViewport;
+                    }
+                    else mapped.Region = source.Region is SvgClipBox region ? mapped.Map.Apply(region) : null;
+                    mapped.Resolved = true;
+                }
+                if (operation.AffineViewport is {} clip && operation.ContentIndex < 0)
+                    (operation.Region, operation.ContentIndex) = clip.Register(state, scene, work, token);
+                if (operation.NativeClip is {} nativeClip && operation.ContentIndex < 0)
+                {
+                    if (!state.ClipPolygons.TryGetValue(nativeClip.Id, out SvgClipPolygon content))
+                        throw new InvalidOperationException("Retained native clip content is missing.");
+                    (operation.Region, operation.ContentIndex) = SvgAffineViewportClip.RegisterContour(content.Points, content.ContourEnds,
+                        nativeClip.Map, content.IsOval ? SvgClipContentKind.OvalClipPath : SvgClipContentKind.ClipPath,
+                        content.UsesNativeReplay ? content.SourcePath : null, content.ResourceBounds, content.IsEvenOdd, state, scene, work, token);
+                }
+                if (operation.Value != 255 || operation.Region is not null || operation.ContentIndex >= 0 || operation.SourceOpacity.Value != 1) desired.Add(new(operation));
+            }
+        }
     }
 }

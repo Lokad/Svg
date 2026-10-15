@@ -402,8 +402,31 @@ public static class SvgConverter
             // entire halo makes large blurs needlessly exhaust work and storage.
             double requestedLeft = Math.Max(region.Left, layerBounds.Left), requestedTop = Math.Max(region.Top, layerBounds.Top);
             double requestedRight = Math.Min(region.Right, layerBounds.Right), requestedBottom = Math.Min(region.Bottom, layerBounds.Bottom);
+            if (activeViewportBounds is {} filterClip)
+            {
+                requestedLeft = Math.Max(requestedLeft, filterClip.Left); requestedTop = Math.Max(requestedTop, filterClip.Top);
+                requestedRight = Math.Min(requestedRight, filterClip.Right); requestedBottom = Math.Min(requestedBottom, filterClip.Bottom);
+            }
             if (requestedRight <= requestedLeft || requestedBottom <= requestedTop) return end + 1;
             if (right + paddingX < requestedLeft || bottom + paddingY < requestedTop || left - paddingX > requestedRight || top - paddingY > requestedBottom) return end + 1;
+            if (activeViewportBounds is not null)
+            {
+                bool objectSourceUnits = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox;
+                SvgAffineTransform sourceCoordinates = objectSourceUnits
+                    ? SvgAffineTransform.FromScaleOffset(primitiveMap.ScaleX, primitiveMap.ScaleY,
+                        binding.ObjectBounds.Left * horizontalScale + horizontalOffset, binding.ObjectBounds.Top * verticalScale + verticalOffset)
+                    : SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset).ComposeChecked(binding.Transform);
+                SvgFilterRegionContext sourceContext = new(sourceCoordinates,
+                    objectSourceUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), region);
+                ParserWorkCounter sourceRequestWork = new(options.Limits.MaximumWorkUnits - workUnits);
+                SvgPaintBounds needed = SvgFilterPlayback.RequiredSourceBounds(resource, primitiveMap, sourceContext,
+                    new((float)requestedLeft, (float)requestedTop, (float)requestedRight, (float)requestedBottom), budget, sourceRequestWork, cancellationToken);
+                workUnits += sourceRequestWork.Used;
+                double captureLeft = Math.Max(left, needed.Left), captureTop = Math.Max(top, needed.Top);
+                double captureRight = Math.Min(right, needed.Right), captureBottom = Math.Min(bottom, needed.Bottom);
+                if (captureRight > captureLeft && captureBottom > captureTop)
+                    (left, top, right, bottom) = (captureLeft, captureTop, captureRight, captureBottom);
+            }
             // Shifted and chained results may feed visible pixels from outside the
             // final output window. A single blur needs only the complete source;
             // graphs retain conservative intermediate halo/shift allowances.
@@ -479,13 +502,14 @@ public static class SvgConverter
                     // A stored filter image uses native packed-lane alpha modulation;
                     // unquantized shader results above retain their separate float route.
                     int opacityScale = Math.Clamp((int)MathF.Floor(opacity * 255 + .5f), 0, 255) + 1;
-                    int red = filtered.Pixels[origin] * opacityScale >> 8, green = filtered.Pixels[origin + 1] * opacityScale >> 8;
-                    int blue = filtered.Pixels[origin + 2] * opacityScale >> 8, alpha = filtered.Pixels[origin + 3] * opacityScale >> 8;
                     if (activeViewportClip.Length != 0)
                     {
-                        int clip = activeViewportClip[target + 3];
-                        red = (red * clip + 127) / 255; green = (green * clip + 127) / 255; blue = (blue * clip + 127) / 255; alpha = (alpha * clip + 127) / 255;
+                        byte clip = activeViewportClip[target + 3];
+                        if (clip != 0) BlendClippedLayerPixel(destination.AsSpan(target, 4), filtered.Pixels.AsSpan(origin, 4), (byte)(opacityScale - 1), 255, clip);
+                        continue;
                     }
+                    int red = filtered.Pixels[origin] * opacityScale >> 8, green = filtered.Pixels[origin + 1] * opacityScale >> 8;
+                    int blue = filtered.Pixels[origin + 2] * opacityScale >> 8, alpha = filtered.Pixels[origin + 3] * opacityScale >> 8;
                     BlendPremultipliedOver(destination.AsSpan(target, 4), red, green, blue, alpha);
                 }
             }
@@ -1205,20 +1229,22 @@ public static class SvgConverter
                     destination[lane] = (byte)((MultiplyAlpha(source[lane], maskAlpha) * sourceScale + destination[lane] * destinationScale) >> 8);
             }
 
-            static void BlendClippedLayerPixel(Span<byte> destination, ReadOnlySpan<byte> source, byte opacity, byte maskAlpha, byte coverage)
+
+        }
+
+        static void BlendClippedLayerPixel(Span<byte> destination, ReadOnlySpan<byte> source, byte opacity, byte maskAlpha, byte coverage)
+        {
+            // SkBitmapProcState's unfiltered shader scales each premultiplied lane
+            // before SkARGB32_Shader_Blitter applies the AA run through SkBlendARGB32.
+            int opacityScale = opacity + 1;
+            int alpha = MultiplyAlpha(source[3], maskAlpha) * opacityScale >> 8;
+            int sourceScale = coverage + 1;
+            int inverse = 65535 - alpha * sourceScale;
+            int destinationScale = (inverse + (inverse >> 8)) >> 8;
+            for (int lane = 0; lane < 4; lane++)
             {
-                // SkBitmapProcState's unfiltered shader scales each premultiplied lane
-                // before SkARGB32_Shader_Blitter applies the AA run through SkBlendARGB32.
-                int opacityScale = opacity + 1;
-                int alpha = MultiplyAlpha(source[3], maskAlpha) * opacityScale >> 8;
-                int sourceScale = coverage + 1;
-                int inverse = 65535 - alpha * sourceScale;
-                int destinationScale = (inverse + (inverse >> 8)) >> 8;
-                for (int lane = 0; lane < 4; lane++)
-                {
-                    int shaded = MultiplyAlpha(source[lane], maskAlpha) * opacityScale >> 8;
-                    destination[lane] = (byte)((shaded * sourceScale + destination[lane] * destinationScale) >> 8);
-                }
+                int shaded = MultiplyAlpha(source[lane], maskAlpha) * opacityScale >> 8;
+                destination[lane] = (byte)((shaded * sourceScale + destination[lane] * destinationScale) >> 8);
             }
         }
 

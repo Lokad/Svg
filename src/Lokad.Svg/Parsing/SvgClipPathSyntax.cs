@@ -25,6 +25,7 @@ internal static class SvgClipPathSyntax
     /// callers retain it only when needed. Root inheritance has the initial empty reference.</remarks>
     internal static string? ResolveClipId(XmlReader reader, SvgDocumentState state)
     {
+        if (state.DeferringFilterClip) return null;
         string? reference = reader.GetAttribute("clip-path");
         if (reference is null) return null;
         if (reference.Trim().Equals("inherit", StringComparison.Ordinal))

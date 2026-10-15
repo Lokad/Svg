@@ -34,6 +34,25 @@ public sealed class SvgStaticCssImageTests
         => AssertResourceLifecycle(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "effects-marker-sheet", "image-filter-source.svg")));
 
     [Theory]
+    [InlineData("image-filter-clip")]
+    [InlineData("vector-filter-clips")]
+    public void Filter_output_clips_release_source_and_clip_owners_after_denial_and_retry(string identity)
+        => AssertResourceLifecycle(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "effects-marker-sheet", identity + ".svg")));
+
+    [Fact]
+    public void Missing_output_clip_releases_the_decoded_image_and_does_not_publish_output()
+    {
+        string source = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "TestData", "effects-marker-sheet", "image-filter-clip.svg"));
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(source.Replace("clip-path=\"url(#effectCircle)\"", "clip-path='url(#missing)'", StringComparison.Ordinal));
+        RenderBudget budget = new(8_000_000);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        using MemoryStream output = new();
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, output, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, output.Length);
+    }
+
+    [Theory]
     [InlineData("style='filter:url(#shadow)!important;filter:none'")]
     [InlineData("class='filtered-image'")]
     public void Image_filter_cascade_uses_the_same_bounded_source_as_the_attribute(string declaration)

@@ -1,3 +1,22 @@
+## Filter output clips and bounded source requests (2026-10-15)
+
+The [effects/marker bank](../tests/Research/effects-marker-sheet/README.md) has
+**5/6 exact controls / 0/1 completed document** on Windows/Linux. The separately
+frozen image/circle and vector/group fractional-rectangle controls qualify local
+user-space clips on filtered leaves and groups, including forward clip references,
+outer opacity and scope termination. They reuse existing clip replay; source
+capture remains uncut and clipping restores after the filter. Stored filtered
+pixels share existing packed layer/coverage arithmetic. Backward bounded graph
+requests preserve blur/offset halos and branch inputs with playback's own
+primitive-region rules. Existing resource/work/cancellation and cleanup checks
+cover these paths.
+
+The whole sheet now reaches **nested filter sources**. Its mixed primitive color
+spaces and affine filter region control remain required, as do object-box effect
+clips and other still-unqualified G8 boundaries. Earlier outer-clip rejection
+statements below are checkpoint history, superseded only for the qualified paths.
+[Qualification receipt](../artifacts/maintenance-review-20261012/filter-output-clips-qualified-results.json).
+
 ## Image filter sources and fractional shadows (2026-10-15)
 
 The separately frozen [image-filter source](../tests/Research/effects-marker-sheet/README.md)

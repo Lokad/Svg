@@ -1477,6 +1477,13 @@ internal sealed class SvgSceneBuilder : IDisposable
     }
     internal void AssignLeafMask(int index, SvgLeafMaskBinding? binding) => _geometries[index] = _geometries[index] with { LeafMask = binding };
 
+    /// <summary>Resolves filter-owned output clips before the shared command emitter consumes their borrowed operations.</summary>
+    internal void ResolveFilterOutputClips(SvgDocumentState state) => _filters?.ResolveOutputClips(state);
+
+    /// <summary>Borrows one filter's resolved output clip during single-threaded scene command emission.</summary>
+    internal SvgLeafMaskBinding? FilterOutputClipAt(int index)
+        => (_filters ?? throw new InvalidOperationException("Filter resources are missing.")).OutputClipAt(index);
+
     /// <summary>Adopts reserved replacement commands, releasing the former array; the caller must stop disposing the replacement.</summary>
     internal void AdoptCommands(BudgetedSceneList<SvgDrawCommand> commands)
     {

@@ -1,10 +1,10 @@
 # Retained effects and marker sheet
 
-The bank remains **0/1 completed document / 3/4 exact controls** on Windows/Linux.
+The bank remains **0/1 completed document / 5/6 exact controls** on Windows/Linux.
 The unchanged whole sheet is required and incomplete. Its
 four original CC0 sources/options and healthy Windows/Linux reference triples
 were frozen before correction at `4c4b4a22`. The [manifest](manifest.json)
-records current clip/filter and affine-filter rejection gates as remaining work,
+records current nested-filter and affine-filter rejection gates as remaining work,
 without a feature deferral, reference replacement or a new completed document.
 
 The two marker controls are separately exact against their unchanged references:
@@ -28,8 +28,14 @@ colored shadow and outer opacity. Image SourceGraphic reuses bounded filter
 capture with retained image viewport bounds. Fractional shadow displacement uses
 the existing Q15 image interpolation; its source-in flood constant is independently
 quantized after interpolation. Ordinary `feOffset` retains nearest sampling.
-The whole panel's outer clip and the sheet's affine/mixed/nested effects remain
-required; the reduced control adds no completed document or G8 closure.
+The separately frozen `image-filter-clip` is now exact with the panel's original
+circle clip. `vector-filter-clips` is also exact: a leaf and overlapping group
+share forward fractional rectangle clips, and a later sibling protects scope
+termination. Existing command replay applies these clips after filtering and
+outer opacity, preserving uncut source input and native coverage rounding.
+Backward graph requests retain displaced blur halos and both merge branches;
+primitive-region rules are shared with playback. The sheet's affine/mixed/nested
+effects and wider G8 boundaries remain required; no completed document is added.
 
 These authored fixtures and the unchanged tiny embedded PNG reused from the
 existing static-CSS/image assets are dedicated to the public domain under
@@ -51,3 +57,11 @@ image bounds/CSS/resource regressions: **7,729 tests/platform**, with complete
 normal qualification in **78.3s Windows / 239.8s Linux**. Original four-case declarations and all
 their source/reference bytes remain unchanged; the fifth entry has its own
 pre-correction declaration and six healthy stable captures.
+
+The [output-clip receipt](../../../artifacts/maintenance-review-20261012/filter-output-clips-qualified-results.json)
+records **7,735 tests/platform**, no removed preceding rows, late-reference
+cleanup and bounded graph halo/branch checks. Normal complete qualification took
+**102.6s Windows / 283.0s Linux**. The two new sources/references match their
+separate declarations and twelve healthy stable captures byte for byte; all
+preceding inputs/options/references and approximate-memory/maintenance clauses
+are unchanged. The whole sheet now reaches nested filter sources.

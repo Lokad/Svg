@@ -203,6 +203,9 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal bool DeferringLeafClip { get; set; }
 
+    /// <summary>Defers the current filtered leaf's local clip to the filter output, keeping its source uncut.</summary>
+    internal bool DeferringFilterClip { get; set; }
+
     /// <summary>Gets or sets whether a gradient href drain is already running, guarding reentrant drains during nested registration.</summary>
     internal bool DrainingGradientHrefs { get; set; }
 

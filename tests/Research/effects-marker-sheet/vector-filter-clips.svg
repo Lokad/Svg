@@ -1,0 +1,8 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="144" height="108">
+<defs><filter id="soft" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="1.125"/></filter></defs>
+<rect x="8.25" y="12.5" width="56.5" height="72.75" fill="#c64c48" opacity=".7" filter="url(#soft)" clip-path="url(#leafClip)"/>
+<g transform="translate(68.5 6.25)" filter="url(#soft)" clip-path="url(#groupClip)" opacity=".625"><rect x="2.25" y="4.5" width="56.5" height="72.75" fill="#428365"/><ellipse cx="34.5" cy="46.25" rx="25.25" ry="29.5" fill="#5e78b8" fill-opacity=".7"/></g>
+<rect x="130" y="94" width="8" height="8" fill="#35485c"/>
+<defs><clipPath id="leafClip"><rect x="18.5" y="21.25" width="40.25" height="52.5"/></clipPath><clipPath id="groupClip"><rect x="10.5" y="12.25" width="43.75" height="59.5"/></clipPath></defs>
+</svg>
