@@ -2,7 +2,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-internal enum SvgClipContentKind { AffineViewport, ClipPath, OvalClipPath, BinaryViewport }
+internal enum SvgClipContentKind { AffineViewport, ClipPath, OvalClipPath, BinaryViewport, BinaryExclusion }
 
 /// <summary>Retains a rectangular viewport, optional exclusions and its composed map until clip command emission.</summary>
 /// <remarks>Placement borrows exclusion storage. Emission reserves source contours and registers a copy
@@ -10,6 +10,7 @@ internal enum SvgClipContentKind { AffineViewport, ClipPath, OvalClipPath, Binar
 internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineTransform Map)
 {
     internal bool IsBinary { get; init; }
+    internal bool IsExclusion { get; init; }
     /// <summary>Borrows disjoint rectangular exclusions until the parser emits one bounded compound clip.</summary>
     internal ReadOnlyMemory<SvgClipBox> ExcludedBoxes { get; init; }
     internal (SvgClipBox Bounds, int ContentIndex) Register(SvgDocumentState state, SvgSceneBuilder scene, ParserWorkCounter work, CancellationToken token)
@@ -18,9 +19,9 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
         {
             using BudgetedParserList<SvgDevicePoint> vertices = new(state.Budget, SvgMemoryCategory.Geometry, work, token);
             using BudgetedParserList<int> ends = new(state.Budget, SvgMemoryCategory.Geometry, work, token);
-            Append(Box, vertices, ends);
+            if (!IsExclusion) Append(Box, vertices, ends);
             foreach (SvgClipBox hole in ExcludedBoxes.Span) Append(hole, vertices, ends);
-            return RegisterContour(vertices.AsSpan(), ends.AsSpan(), Map, IsBinary ? SvgClipContentKind.BinaryViewport : SvgClipContentKind.AffineViewport, null, null, true, state, scene, work, token);
+            return RegisterContour(vertices.AsSpan(), ends.AsSpan(), Map, IsExclusion ? SvgClipContentKind.BinaryExclusion : IsBinary ? SvgClipContentKind.BinaryViewport : SvgClipContentKind.AffineViewport, null, null, true, state, scene, work, token);
         }
         float left = (float)Box.X, top = (float)Box.Y, right = (float)(Box.X + Box.Width), bottom = (float)(Box.Y + Box.Height);
         ReadOnlySpan<SvgDevicePoint> points = stackalloc SvgDevicePoint[] { new(left, bottom), new(left, top), new(right, top), new(right, bottom) };

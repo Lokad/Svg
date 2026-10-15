@@ -83,6 +83,34 @@ internal static class SvgTextPathLayout
                     : glyph with { X = 0, Y = 0 };
                 SvgAffineTransform glyphMap = horizontalPlacement ? SvgAffineTransform.Identity
                     : measured.GlyphMap(midpoint, glyph.Advance / 2, glyph.Y, rotation, work, token);
+                SvgTextDecorationPlacement decoration = default;
+                if (paint.Decoration is not null)
+                {
+                    double stretch = pending.Run.GlyphStretch;
+                    if (glyphMap.IsTranslation)
+                    {
+                        SvgDevicePoint origin = glyphMap.Apply(placed.X, placed.Y);
+                        decoration = new(origin, SvgAffineTransform.FromScaleOffset(stretch, 1, origin.X - stretch * origin.X, 0));
+                    }
+                    else
+                    {
+                        double scale = state.OutputTextScale;
+                        SvgDevicePoint center = glyphMap.Apply(glyph.Advance / 2, -glyph.Y);
+                        float cx = (float)center.X * (float)scale, cy = (float)center.Y * (float)scale;
+                        float size = SvgGlyphDeviceMetrics.GetEffectiveFontSize(glyphFont.FontSize * scale);
+                        float ascent = OperatingSystem.IsWindows()
+                            ? size * glyphFont.Font.Metrics.LineMetrics.WindowsAscender / glyphFont.Font.UnitsPerEm
+                            : glyphFont.Font.Metrics.LineMetrics.Ascender * (size / glyphFont.Font.UnitsPerEm);
+                        ascent = MathF.Floor(ascent + .5f);
+                        // Decoration rectangles use the physical fragment origin
+                        // (truncated layout units), separately from glyph fitting.
+                        SvgDevicePoint origin = new(MathF.Truncate(cx * 64) / (64 * scale), (MathF.Truncate((cy - ascent) * 64) / 64 + ascent) / scale);
+                        SvgAffineTransform map = glyphMap.ComposeChecked(SvgAffineTransform.FromScale(stretch, 1))
+                            .ComposeChecked(SvgAffineTransform.FromTranslation(-cx / scale, -cy / scale));
+                        decoration = new(origin, map);
+                    }
+                    decoration = decoration with { Map = pending.Placement.ComposeChecked(decoration.Map) };
+                }
                 // A zero tangent angle uses the native horizontal strike, even on a curved baseline.
                 if (!horizontalPlacement && glyphMap.A == 1 && glyphMap.B == 0 && glyphMap.C == 0 && glyphMap.D == 1)
                 {
@@ -105,9 +133,9 @@ internal static class SvgTextPathLayout
                     if (glyphMap == SvgAffineTransform.Identity) placed = placed.Translate(pending.Placement);
                     else glyphMap = pending.Placement.ComposeChecked(glyphMap);
                 }
-                placements.Add(new(placed, glyphMap, true));
+                placements.Add(new(placed, glyphMap, true) { Decoration = decoration });
             }
-            SvgTextGlyphPainter.Emit(pending.Run, pending.Placement, placements.AsSpan(), pending.ViewportClip, pending.Color, state, state.Budget, work, token);
+            SvgTextGlyphPainter.Emit(pending.Run, pending.Placement, placements.AsSpan(), pending.ViewportClip, pending.Color, state, limits.MaximumPathCommands, state.Budget, work, token);
             int inserted = state.Scene.ResolvePaintPlaceholder(pending.CommandIndex, tail);
             SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.CommandIndex + 1, inserted, true, work, token);
             for (int useIndex = 0; inserted != 0 && useIndex < state.PendingUses.Count; useIndex++)

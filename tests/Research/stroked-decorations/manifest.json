@@ -285,8 +285,6 @@
       "selection": "Focused promised direct/path stroked-decoration mechanism for the retained W3C document and finite G9 exit.",
       "explicitViewport": true,
       "licenseEvidence": "curved-stroked-decoration.svg",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Decorations on retained text paths are not implemented.",
       "reference": "references/curved-stroked-decoration.png",
       "referenceSha256": "bee7dd8ce58b25aaaf0e96f3859083415d22ccce883d5f6ad0020c00d10060f3",
       "captures": [
@@ -412,8 +410,6 @@
       "selection": "Independent remaining decorated-path semantics: three line types, straight/curved path and stroke-only paint order.",
       "explicitViewport": true,
       "licenseEvidence": "curved-stroked-decoration.svg",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Decorations on retained text paths are not implemented.",
       "reference": "references/path-decoration-lines.png",
       "referenceSha256": "4855391c0fd63090cabcb2a5b360df2269640d0ff8c28d7431aba211d3a3369f",
       "captures": [
@@ -541,8 +537,6 @@
       "selection": "Independent remaining decorated-path semantics: out-of-range start, character rotation and textLength glyph stretching.",
       "explicitViewport": true,
       "licenseEvidence": "curved-stroked-decoration.svg",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Decorations on retained text paths are not implemented.",
       "reference": "references/path-decoration-positioning.png",
       "referenceSha256": "ed297ade40d69860df795a29cd175532912ad0542ee290b227b2b22ae0db9279",
       "captures": [

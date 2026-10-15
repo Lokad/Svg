@@ -319,7 +319,6 @@ internal static class SvgRenderedLeafParser
                             hasDecoration |= span.Paint.Decoration is not null;
                         }
                         if (!hasFill && !hasStroke && !hasDecoration) continue;
-                        if (textPath is not null && hasDecoration) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Decorations on retained text paths are not implemented.");
                         if (fontSnapshot is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG text requires a prepared font snapshot.");
                         SvgTextStyle runStyle = textPath is {} anchoredPath ? textStyle with { Y = 0, Anchor = anchoredPath.Anchor ?? textStyle.Anchor } : textStyle;
                         RenderBudget.BudgetReservation? pendingTextOwner = textPath is null ? null : budget.Reserve(256, SvgMemoryCategory.Parser);
@@ -345,9 +344,9 @@ internal static class SvgRenderedLeafParser
                         }
                         using (run)
                         {
-                            SvgTextDecorationRenderer.Emit(run, textPlacement, state, textElement.Presentation.Color, false, limits.MaximumPathCommands, budget, workCounter, cancellationToken);
-                            SvgTextGlyphPainter.Emit(run, textPlacement, [], null, textElement.Presentation.Color, state, budget, workCounter, cancellationToken);
-                            SvgTextDecorationRenderer.Emit(run, textPlacement, state, textElement.Presentation.Color, true, limits.MaximumPathCommands, budget, workCounter, cancellationToken);
+                            SvgTextDecorationRenderer.Emit(run, run.PaintFragments, textPlacement, [], null, state, textElement.Presentation.Color, false, limits.MaximumPathCommands, budget, workCounter, cancellationToken);
+                            SvgTextGlyphPainter.Emit(run, textPlacement, [], null, textElement.Presentation.Color, state, limits.MaximumPathCommands, budget, workCounter, cancellationToken);
+                            SvgTextDecorationRenderer.Emit(run, run.PaintFragments, textPlacement, [], null, state, textElement.Presentation.Color, true, limits.MaximumPathCommands, budget, workCounter, cancellationToken);
                         }
                     }
                     return true;

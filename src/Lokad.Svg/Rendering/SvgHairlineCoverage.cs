@@ -14,8 +14,9 @@ internal ref struct SvgHairlineCoverage
     private readonly int _width, _height, _bitmapWidth, _bitmapHeight;
     private readonly SvgCpuBitmapOrigin _origin;
     private readonly SvgAnalyticClipBounds _interior;
-    private readonly bool _regionClipping;
+    private readonly bool _regionClipping, _binaryViewport;
     private readonly SvgAnalyticPaint _paint;
+    private SvgAnalyticClipBounds? _binaryBounds;
     private readonly (double Left, double Top, double Right, double Bottom)? _clip;
     private readonly SvgClipAntialiasing _antialiasing;
     private readonly ReadOnlySpan<byte> _viewportMask;
@@ -30,7 +31,7 @@ internal ref struct SvgHairlineCoverage
     internal SvgHairlineCoverage(Span<byte> destination, int width, int height, SvgAnalyticPaint paint,
         (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing, ReadOnlySpan<byte> viewportMask,
         ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        : this(destination, width, height, paint, clip, antialiasing, viewportMask,
+        : this(destination, width, height, paint, clip, antialiasing, viewportMask, false,
             new(new(0, 0, width, height), new(0, 0, width, height)), workCounter, cancellationToken)
     {
         // The compiled coverage-kernel vectors use a scalar bitmap clip and record pair
@@ -40,16 +41,17 @@ internal ref struct SvgHairlineCoverage
 
     /// <summary>Borrows a canvas while constructing local coverage in one bordered bitmap and painting only its owned interior.</summary>
     internal SvgHairlineCoverage(Span<byte> destination, int width, int height, SvgAnalyticPaint paint,
-        (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing, ReadOnlySpan<byte> viewportMask,
+        (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing, ReadOnlySpan<byte> viewportMask, bool binaryViewport,
         SvgCpuRasterContext context, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         _origin = new(context.BitmapClip.Left, context.BitmapClip.Top);
+        _binaryBounds = null;
         _regionClipping = true;
         _interior = context.Interior;
         _bitmapWidth = context.BitmapClip.Right - context.BitmapClip.Left;
         _bitmapHeight = context.BitmapClip.Bottom - context.BitmapClip.Top;
         if (!viewportMask.IsEmpty && viewportMask.Length != checked(width * height * 4)) throw new ArgumentException("Viewport mask must match the destination canvas.", nameof(viewportMask));
-        _viewportMask = viewportMask;
+        _viewportMask = viewportMask; _binaryViewport = binaryViewport;
         _destination = destination; _width = width; _height = height; _paint = paint;
         _clip = clip; _antialiasing = antialiasing; _work = workCounter; _token = cancellationToken;
     }
@@ -67,6 +69,21 @@ internal ref struct SvgHairlineCoverage
         bool clipped = bounds.Left < 0 || bounds.Top < 0 || bounds.Right > _bitmapWidth || bounds.Bottom > _bitmapHeight;
         if (clipped) bounds = new(Math.Max(bounds.Left, 0), Math.Max(bounds.Top, 0), Math.Min(bounds.Right, _bitmapWidth), Math.Min(bounds.Bottom, _bitmapHeight));
         if (!_regionClipping) { clipped = true; bounds = new(0, 0, _bitmapWidth, _bitmapHeight); }
+        if (_binaryViewport && !_viewportMask.IsEmpty)
+        {
+            SvgAnalyticClipBounds bitmap = new(_origin.X, _origin.Y, _origin.X + _bitmapWidth, _origin.Y + _bitmapHeight);
+            SvgAnalyticClipBounds area = new(bounds.Left + _origin.X, bounds.Top + _origin.Y, bounds.Right + _origin.X, bounds.Bottom + _origin.Y);
+            SvgBinaryClipRectangles regions = new(_viewportMask, _width, _height, bitmap, area, _work, _token);
+            while (regions.MoveNext())
+            {
+                SvgAnalyticClipBounds region = regions.Current;
+                SvgAnalyticClipBounds local = new(region.Left - _origin.X, region.Top - _origin.Y, region.Right - _origin.X, region.Bottom - _origin.Y);
+                _binaryBounds = local;
+                DrawFixed(fixedX0, fixedY0, fixedX1, fixedY1, true, local);
+                _binaryBounds = null;
+            }
+            return;
+        }
         DrawFixed(fixedX0, fixedY0, fixedX1, fixedY1, clipped, bounds);
     }
 
@@ -145,6 +162,7 @@ internal ref struct SvgHairlineCoverage
     {
         _work.Consume(_token);
         if (alpha == 0 || (uint)x >= (uint)_bitmapWidth || (uint)y >= (uint)_bitmapHeight) return;
+        if (_binaryBounds is {} bounds && (x < bounds.Left || x >= bounds.Right || y < bounds.Top || y >= bounds.Bottom)) return;
         x += _origin.X; y += _origin.Y;
         if (x < _interior.Left || x >= _interior.Right || y < _interior.Top || y >= _interior.Bottom) return;
         if (_clip is { } clip)
@@ -157,7 +175,7 @@ internal ref struct SvgHairlineCoverage
         if (!_viewportMask.IsEmpty)
         {
             alpha = (byte)((alpha * _viewportMask[(y * _width + x) * 4 + 3] + 127) / 255);
-            kind = SvgAnalyticPaintKind.Direct;
+            if (!_binaryViewport) kind = SvgAnalyticPaintKind.Direct;
         }
         _paint.Blend(_destination.Slice((y * _width + x) * 4, 4), alpha, kind);
     }

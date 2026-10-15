@@ -340,8 +340,6 @@ internal static class SvgFontRequestDiscovery
                         if (hasRenderable)
                         {
                             paint.ValidateEmission();
-                            if (textPathDepth >= 0 && paint.Decoration is not null)
-                                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Decorations on retained text paths are not implemented.");
                             activeTextPainted |= paint.GlyphPaint.IsPainted;
                             // Displayed hidden/unpainted glyphs still advance later
                             // painted spans. Acquire their metrics only when the

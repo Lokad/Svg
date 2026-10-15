@@ -13745,3 +13745,51 @@ The [receipt](../artifacts/maintenance-review-20261012/stroked-decorations-quali
 records complete platform checks, original assets/font-use proof and preservation.
 The curved decorated-path control still rejects and remains required; this whole
 document milestone does not close G9 or S17.
+
+## Decorated paths through shared binary regions (2026-10-15)
+
+The [five frozen outputs](../tests/Research/stroked-decorations/README.md) are
+exact on Windows/Linux: one unchanged W3C document and four independent controls.
+Two path-boundary controls were frozen before implementation; the original curved
+control and all preceding source/font/reference bytes remain unchanged.
+
+Measured paths reuse per-glyph paint replay for decorations. Their rectangles use
+physical fragment origins and widths truncated to layout units, separately from
+the fitted glyph origin. Horizontal stretch stays in the decoration map, and the
+declaring element retains decoration colors while the painted text supplies paint
+order. Out-of-range glyphs retain the existing nonpainting outcome. Native tangent
+normalization, scalar atan2 and scalar degree conversion precede the existing
+matrix construction; double-angle evaluation changed a curved fringe pixel.
+
+Skip-ink interception reuses unhinted canonical-size contours and scalar interval
+mapping. Exclusion rectangles stay in source coordinates until binary mapping.
+The inverse binary clip removes the artificial stripe enclosure; under/overline
+exclusions persist within their shared paint phase, while line-through keeps its
+separate post-glyph phase. Existing mask/source owners bound storage and cleanup.
+
+Rectangle and hairline consumers share a stack-only iterator over borrowed binary
+coverage. It keeps the native full-bitmap horizontal bands, even when a row change
+lies outside the drawing area. Each disjoint region clips rectangle geometry before
+AA reconstruction; multiplying a completed rectangle by a mask missed two pixels
+in one-pixel-wide surviving strips. Hairlines retain their per-region pair/scalar
+paint dispatch and restrict fringe paint to that region, avoiding repeated blending.
+Ordinary antialiased masks and rectangle-frame stroke geometry keep their own routes.
+
+Pinned native mechanisms are Skia `SkContourMeasure.cpp`, `SkPoint.cpp`,
+`SkTextBlob.cpp`, `SkGlyph.cpp` and `SkScan_Antihair.cpp` at the revision in
+[THIRD_PARTY_NOTICES](../THIRD_PARTY_NOTICES.txt), and Chromium 153.0.8010.52
+`path.cc`, `math_extras.h`, `fragment_item.cc`, `text_painter.cc` and
+`text_decoration_painter.cc`. Sources and rejected diagnostic models remain in the
+existing ignored [study](../artifacts/stroked-decorations-20261015/). Single native
+observations diagnose mechanisms; the frozen healthy triples alone own acceptance.
+
+Focused band/work/cancellation tests and extended existing layout resource tests
+protect the shared correction. The independent native DOM geometry assertion keeps
+its original Windows/Linux [measured placement values](../tests/Research/curved-font-documents/diagnostics/curved-midpoint-linux-native-placement.json)
+and now compares exact exposed scalars, including each platform's scalar angle,
+rather than decimal rounding of a composed double. The retained platform angles
+differ by one scalar ULP; no new native capture or tolerance is introduced.
+The [receipt](../artifacts/maintenance-review-20261012/decorated-path-qualified-results.json)
+records complete platform qualification, all prior test semantics, immutable assets
+and the unchanged approximate-memory/maintenance clauses. PLAN item 1 is complete;
+wider G2–G9/S17 remain open.

@@ -15,7 +15,7 @@ internal static class SvgHairlineStroke
 {
     internal static bool TryRasterize(SvgAuthoredPath path, SvgAffineTransform outputMap, SvgColor color, SvgConstantShaderPaint? constantPaint,
         (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing,
-        ReadOnlySpan<byte> viewportMask, Span<byte> destination, int width, int height, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        ReadOnlySpan<byte> viewportMask, bool binaryViewport, Span<byte> destination, int width, int height, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (path.StrokeStyle is not SvgAuthoredStrokeStyle style) return false;
         workCounter.Consume(cancellationToken);
@@ -67,7 +67,7 @@ internal static class SvgHairlineStroke
         {
             workCounter.Consume(cancellationToken);
             SvgCpuBitmapOrigin origin = new(context.BitmapClip.Left, context.BitmapClip.Top);
-            SvgHairlineCoverage raster = new(destination, width, height, paint, clip, antialiasing, viewportMask, context, workCounter, cancellationToken);
+            SvgHairlineCoverage raster = new(destination, width, height, paint, clip, antialiasing, viewportMask, binaryViewport, context, workCounter, cancellationToken);
             SvgDevicePoint current = default, contourStart = default, first = default, last = default;
             bool firstSegment = false, closed = false;
             for (int index = 0; index < commands.Length; index++)

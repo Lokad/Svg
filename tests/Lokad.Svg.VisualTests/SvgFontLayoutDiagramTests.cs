@@ -147,8 +147,26 @@ public sealed class SvgFontLayoutDiagramTests
         byte[] unchanged = original.ToArray();
         byte[] affine = System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(original).Replace("<text ", "<text transform='rotate(7 100 40)' ", StringComparison.Ordinal));
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
-        foreach (byte[] input in new[] { original, affine })
+        byte[][] pathInputs = new[] { "curved-stroked-decoration.svg", "path-decoration-lines.svg", "path-decoration-positioning.svg" }
+            .Select(name => File.ReadAllBytes(Path.Combine(directory, name))).ToArray();
+        foreach (byte[] input in new[] { original, affine }.Concat(pathInputs))
         {
+            byte[] unchangedInput = input.ToArray();
+            RenderBudget parsed = new(16_000_000);
+            ParserWorkCounter parseWork = new(100_000_000);
+            using (SvgRoot measured = SvgRootParser.Parse(input, SvgRenderLimits.Default, parsed, snapshot, parseWork, CancellationToken.None))
+                Assert.NotEmpty(measured.Geometries.ToArray());
+            Assert.Equal(0, parsed.Snapshot().CurrentBytes);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+                SvgRootParser.Parse(input, SvgRenderLimits.Default, parsed, snapshot, new(parseWork.Used - 1), CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, parsed.Snapshot().CurrentBytes);
+            using (CancellationTokenSource parseCancellation = new())
+            {
+                using (GlyphExpansionProbe.Observe(parseCancellation.Cancel))
+                    Assert.Equal(parseCancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() =>
+                        SvgRootParser.Parse(input, SvgRenderLimits.Default, parsed, snapshot, parseCancellation.Token)).CancellationToken);
+                Assert.Equal(0, parsed.Snapshot().CurrentBytes);
+            }
             RenderBudget sceneBudget = new(16_000_000);
             using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, snapshot, CancellationToken.None))
             {
@@ -166,6 +184,7 @@ public sealed class SvgFontLayoutDiagramTests
                 Assert.Equal(0, accepted.Snapshot().CurrentBytes);
             }
             Assert.Equal(0, sceneBudget.Snapshot().CurrentBytes);
+            Assert.Equal(unchangedInput, input);
         }
         Assert.Equal(unchanged, original);
     }

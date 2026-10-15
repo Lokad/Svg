@@ -1,10 +1,10 @@
 # Retained stroked-decoration document
 
 This bank retains one unchanged W3C SVG document and four authored CC0 controls
-for the remaining finite G9 decoration promises. The whole document and direct
-control are exact on Windows/Linux: **1/1 complete document / 1/4 exact controls**.
-The curved, three-line/stroke-only and positioned/stretched path controls still
-reject decorated text paths and remain required.
+for the finite G9 decoration promises. All five declared outputs are exact on
+Windows/Linux: **1/1 complete document / 4/4 exact controls**. The controls cover
+direct and curved decoration, three lines with stroke-only glyphs/reversed paint
+order, and signed/percentage offsets with rotation, anchoring and horizontal stretch.
 [PLAN.md](../../../PLAN.md) owns delivery and wider support closure.
 
 The original [W3C example](https://www.w3.org/TR/2026/CR-SVG2-20261006/images/text/textdecoration01.svg)
@@ -12,8 +12,8 @@ retains all 974 bytes, including its physical dimensions, viewBox, four labels,
 painted spans and blue frame. Its declared output is 1200×400 transparent.
 The [source record](source-provenance.json) and [full W3C notice](LICENSE.txt)
 retain attribution, publication status and software-license terms. This is a
-redistributable W3C markup code example, not a public-domain dedication. The two
-independent controls carry their own CC0-1.0 headers; no original asset is
+redistributable W3C markup code example, not a public-domain dedication. All four
+controls carry their own CC0-1.0 headers; no original asset is
 relicensed or edited to insert a notice.
 
 The caller supplies the unchanged public Noto Sans Regular face 0 under the
@@ -36,10 +36,13 @@ full captures and health logs remain in the existing ignored
 [study](../../../artifacts/stroked-decorations-20261015/). A control denominator is
 separate from the complete document. No wider G9 or release completion is claimed.
 
-The [qualification receipt](../../../artifacts/maintenance-review-20261012/stroked-decorations-qualified-results.json)
+The [qualification receipt](../../../artifacts/maintenance-review-20261012/decorated-path-qualified-results.json)
 records complete platform checks and asset preservation. Declaring fill/stroke
 paint reuses native rectangle/stroke replay; bounded compound binary clips retain
-skip-ink exclusions without clipping the upper stroke fringe. Paint changes also
-end native shaping-width fragments. Filled decorations and earlier supplied-font
-results remain protected. The W3C document is counted separately from the 50
+skip-ink exclusions without clipping the upper stroke fringe. Path decorations
+retain physical fragment origins separately from fitted glyph origins, scalar
+tangent precision, and under/overline clip ordering. Rectangle and hairline replay
+share binary-region bands; clipped narrow fills reconstruct native fringe coverage.
+Paint changes also end native shaping-width fragments. Filled decorations and
+earlier supplied-font results remain protected. The W3C document is counted separately from the 50
 selected development documents, corporate cohort and twelve authored documents.

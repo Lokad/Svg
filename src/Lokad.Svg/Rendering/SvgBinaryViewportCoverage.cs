@@ -13,7 +13,7 @@ internal static class SvgBinaryViewportCoverage
 
     internal static long Rasterize(SvgAuthoredPath source, SvgAffineTransform outputMap, SvgCpuRasterGrid grid,
         SvgAnalyticClipBounds bounds, byte[] destination, int width, SvgCpuClipCoverage coverage,
-        bool evenOdd, RenderBudget budget, long maximumWork, CancellationToken token)
+        bool evenOdd, bool inverse, RenderBudget budget, long maximumWork, CancellationToken token)
     {
         long work = 0;
         Charge(source.Commands.Length);
@@ -75,21 +75,27 @@ internal static class SvgBinaryViewportCoverage
                     while (at > 0 && active[at - 1].X > current.X) { Charge(1); active[at] = active[at - 1]; at--; }
                     active[at] = current;
                 }
-                int winding = 0, start = left;
+                int winding = inverse ? 1 : 0, start = left;
                 for (int index = 0; index < activeCount; index++)
                 {
                     int x = (int)Math.Clamp(((active[index].X + 32768) >> 16) + origin.X, left, right);
                     if (winding == 0) start = x;
                     winding = evenOdd ? winding ^ 1 : winding + active[index].Winding;
                     if (winding != 0) continue;
-                    Charge(x - start);
-                    for (int pixel = start; pixel < x; pixel++)
+                    Fill(start, x);
+                }
+                if (inverse && winding != 0) Fill(start, right);
+
+                void Fill(int first, int end)
+                {
+                    Charge(end - first);
+                    for (int pixel = first; pixel < end; pixel++)
                     {
                         coverage.SetBorderAlpha(bitmap, pixel, y, 255);
                         if (pixel >= context.Interior.Left && pixel < context.Interior.Right && y >= context.Interior.Top && y < context.Interior.Bottom)
                             destination[(y * width + pixel) * 4 + 3] = 255;
                     }
-                    if (x > start) { keptLeft = Math.Min(keptLeft, start); keptTop = Math.Min(keptTop, y); keptRight = Math.Max(keptRight, x); keptBottom = y + 1; }
+                    if (end > first) { keptLeft = Math.Min(keptLeft, first); keptTop = Math.Min(keptTop, y); keptRight = Math.Max(keptRight, end); keptBottom = y + 1; }
                 }
             }
             coverage.SetBounds(bitmap, keptRight > keptLeft && keptBottom > keptTop

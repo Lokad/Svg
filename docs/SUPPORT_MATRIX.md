@@ -1,3 +1,24 @@
+## Decorated paths and binary clip regions (2026-10-15)
+
+The [decoration bank](../tests/Research/stroked-decorations/README.md) is
+**1/1 complete W3C document / 4/4 exact controls** on Windows/Linux. Solid
+underline/overline/line-through retain declaring fill/stroke on direct and
+measured curved paths, including stroke-only glyphs, reversed paint order,
+signed/percentage offsets, rotation, anchoring and horizontal stretch. Existing
+glyph and filled-decoration results remain exact.
+
+Physical decoration origins remain separate from glyph fitting. Bounded inverse
+binary ink exclusions retain under/overline phase ordering; shared region bands
+preserve narrow rectangle and hairline coverage. Affected parsing/render denial,
+cancellation, borrowed-byte integrity, cleanup and retry are protected by the
+existing layout resource tests and focused region tests.
+
+The [qualification receipt](../artifacts/maintenance-review-20261012/decorated-path-qualified-results.json)
+preserves all previous tests, sources/options/default limits and healthy native
+font-use proof. This closes PLAN item 1 and supersedes the historical direct/path
+decoration gates below. Wider glyph maps, composite flags and private validation
+remain required in item 4; G9/S17 stay open.
+
 ## Complete affine effects/marker sheet (2026-10-15)
 
 The [effects/marker bank](../tests/Research/effects-marker-sheet/README.md) is now

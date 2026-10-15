@@ -4,7 +4,13 @@ using Lokad.Svg.Rendering;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Borrows one resolved path placement; invisible entries preserve source/glyph indexing without painting out-of-range characters.</summary>
-internal readonly record struct SvgPlacedTextGlyph(SvgPositionedGlyph Position, SvgAffineTransform Map, bool Visible);
+internal readonly record struct SvgPlacedTextGlyph(SvgPositionedGlyph Position, SvgAffineTransform Map, bool Visible)
+{
+    internal SvgTextDecorationPlacement Decoration { get; init; }
+}
+
+/// <summary>Retains the native fragment origin separately from its tangent map for rectangle paint precision.</summary>
+internal readonly record struct SvgTextDecorationPlacement(SvgDevicePoint Origin, SvgAffineTransform Map);
 
 /// <summary>Replays fill and stroke in normalized fragment order using the existing platform glyph sources.</summary>
 /// <remarks>All inputs remain borrowed. Each emitted geometry transfers to the scene; temporary decoded contours
@@ -12,7 +18,7 @@ internal readonly record struct SvgPlacedTextGlyph(SvgPositionedGlyph Position, 
 internal static class SvgTextGlyphPainter
 {
     internal static void Emit(SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> pathPlacements,
-        SvgLeafMaskBinding? pathClip, SvgColor fallback, SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        SvgLeafMaskBinding? pathClip, SvgColor fallback, SvgDocumentState state, int maximumCommands, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         if (!pathPlacements.IsEmpty && pathPlacements.Length != run.Glyphs.Length) throw new ArgumentException("Path placements must cover every source glyph.", nameof(pathPlacements));
         if (run.PaintFragments.IsEmpty)
@@ -31,9 +37,15 @@ internal static class SvgTextGlyphPainter
                 int end = pathPlacements.IsEmpty ? fragment.End : start + 1;
                 SvgTextGlyphPaint paint = run.GetGlyphPaint(start, fallback);
                 bool strokeFirst = paint.Stroke?.PaintOrder.StrokeFirst() == true;
+                double decorationWidth = run.GlyphStretch == 0 ? 0 : (float)run.Glyphs[start].Advance / (float)run.GlyphStretch;
+                ReadOnlySpan<SvgTextPaintFragment> decoration = [new(start, end, decorationWidth)];
+                if (!pathPlacements.IsEmpty)
+                    SvgTextDecorationRenderer.Emit(run, decoration, placement, pathPlacements, pathClip, state, fallback, false, maximumCommands, budget, work, token);
                 if (strokeFirst && paint.HasStroke) Stroke(run, placement, pathPlacements, pathClip, fallback, start, end, state, budget, work, token);
                 if (paint.HasFill) Fill(run, placement, pathPlacements, pathClip, fallback, start, end, state, budget, work, token);
                 if (!strokeFirst && paint.HasStroke) Stroke(run, placement, pathPlacements, pathClip, fallback, start, end, state, budget, work, token);
+                if (!pathPlacements.IsEmpty)
+                    SvgTextDecorationRenderer.Emit(run, decoration, placement, pathPlacements, pathClip, state, fallback, true, maximumCommands, budget, work, token);
                 start = end;
             }
         }

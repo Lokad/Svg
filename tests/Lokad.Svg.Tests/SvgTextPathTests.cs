@@ -153,9 +153,14 @@ public sealed class SvgTextPathTests
         SvgDefinitionLeafSource source = Capture("M8 72 C24 8 104 8 120 72", "", state);
         using SvgMeasuredTextPath path = SvgTextPathLayout.ReadMeasured(source, 100, budget, new(long.MaxValue), CancellationToken.None);
         SvgAffineTransform map = path.GlyphMap(24 + 12.78125 / 2, 12.78125 / 2, 0, new(long.MaxValue), CancellationToken.None);
-        Assert.Equal(17.154211044311523, map.E, 6);
-        Assert.InRange(Math.Abs(49.75111770629883 - map.F), 0, .000001);
-        Assert.Equal(-50.969764709472656, Math.Atan2(map.B, map.A) * 180 / Math.PI, 4);
+        // The independent DOM geometry exposes native scalars. Compare in that
+        // representation rather than rounding a double at a decimal boundary.
+        Assert.Equal(17.154211044311523f, (float)map.E);
+        Assert.Equal(49.75111770629883f, (float)map.F);
+        // Existing Windows/Linux placement diagnostics retain the native libm
+        // difference of one scalar ULP; both expected angles stay unchanged.
+        float nativeAngle = OperatingSystem.IsWindows() ? -50.969764709472656f : -50.96976852416992f;
+        Assert.Equal(nativeAngle, (float)(Math.Atan2(map.B, map.A) * 180 / Math.PI));
         Assert.InRange(path.Baseline.Length, 159.22885, 159.22886);
     }
 

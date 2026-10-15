@@ -8,16 +8,20 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Emits bounded solid decoration fragments through ordinary retained rectangle geometry and the active scene scopes.</summary>
 internal static class SvgTextDecorationRenderer
 {
-    internal static void Emit(SvgTextRun run, SvgAffineTransform placement, SvgDocumentState state, SvgColor fallbackColor,
+    internal static void Emit(SvgTextRun run, ReadOnlySpan<SvgTextPaintFragment> fragments, SvgAffineTransform placement,
+        ReadOnlySpan<SvgPlacedTextGlyph> pathPlacements, SvgLeafMaskBinding? pathClip, SvgDocumentState state, SvgColor fallbackColor,
         bool lineThrough, int maximumCommands, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
-        if (run.PaintFragments.IsEmpty) return;
+        if (fragments.IsEmpty) return;
+        if (!pathPlacements.IsEmpty && (!pathPlacements[fragments[0].Start].Visible || run.GetGlyphPaint(fragments[0].Start, fallbackColor).Decoration is null)) return;
+        SvgLeafMaskBinding? baseClip = pathPlacements.IsEmpty ? SvgViewportFrame.ResolveGlyphClip(state, work, token) : pathClip;
+        double inkStretch = pathPlacements.IsEmpty ? run.GlyphStretch : 1;
         using BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, work, token);
         using BudgetedParserList<int> ends = new(budget, SvgMemoryCategory.Geometry, work, token);
         SvgOrthogonalGeometryLowering lowering = new(points, ends, "text decoration", false, false, maximumCommands, budget, work, token);
         try
         {
-            foreach (SvgTextPaintFragment fragment in run.PaintFragments)
+            foreach (SvgTextPaintFragment fragment in fragments)
             {
                 work.Consume(token);
                 SvgTextGlyphPaint glyphPaint = run.GetGlyphPaint(fragment.Start, fallbackColor);
@@ -33,109 +37,76 @@ internal static class SvgTextDecorationRenderer
                     : font.Font.Metrics.LineMetrics.Ascender * (size / font.Font.UnitsPerEm);
                 ascent = MathF.Floor(ascent + .5f);
                 float thickness = size / 10f;
-                (SvgPositionedGlyph first, SvgAffineTransform map) = run.GetDecorationPlacement(fragment.Start, placement);
-                double width = metrics.RoundWidth(fragment.Width);
+                (SvgPositionedGlyph first, SvgAffineTransform map) = pathPlacements.IsEmpty
+                    ? run.GetDecorationPlacement(fragment.Start, placement)
+                    : (pathPlacements[fragment.Start].Position with { X = pathPlacements[fragment.Start].Decoration.Origin.X, Y = pathPlacements[fragment.Start].Decoration.Origin.Y }, pathPlacements[fragment.Start].Decoration.Map);
+                double width = pathPlacements.IsEmpty ? metrics.RoundWidth(fragment.Width)
+                    : MathF.Truncate((float)(fragment.Width * metrics.Scale) * 64) / (64 * metrics.Scale);
                 float top = MathF.Truncate(((float)(first.Y * metrics.Scale) - ascent) * 64) / 64;
                 double x = MathF.Truncate((float)(first.X * metrics.Scale) * 64) / (64 * metrics.Scale);
                 if (width <= 0 || thickness <= 0) continue;
+                SvgLeafMaskBinding? phaseClip = baseClip;
                 SvgTextGlyphPaint paint = decoration.Paint;
+                if (paint.Stroke is {} decorationStroke && glyphPaint.Stroke is {} glyphStroke)
+                    paint = paint with { Stroke = decorationStroke with { PaintOrder = glyphStroke.PaintOrder } };
                 if ((lines & SvgTextDecorationLine.Underline) != 0)
                 for (int line = 0; line < decoration.UnderlineCount; line++)
-                    Line(ref lowering, run, fragment, first, x, (top + ascent + MathF.Max(1, MathF.Ceiling(thickness / 2))) / metrics.Scale, width, thickness / metrics.Scale, metrics.Scale, map, paint, state, budget, work, token);
+                    phaseClip = Line(ref lowering, run, fragment, first, x, (top + ascent + MathF.Max(1, MathF.Ceiling(thickness / 2))) / metrics.Scale, width, thickness / metrics.Scale, metrics.Scale, inkStretch, map, paint, phaseClip, state, budget, work, token);
                 if ((lines & SvgTextDecorationLine.Overline) != 0)
                 for (int line = 0; line < decoration.OverlineCount; line++)
-                    Line(ref lowering, run, fragment, first, x, (top - MathF.Floor(thickness)) / metrics.Scale, width, thickness / metrics.Scale, metrics.Scale, map, paint, state, budget, work, token);
+                    phaseClip = Line(ref lowering, run, fragment, first, x, (top - MathF.Floor(thickness)) / metrics.Scale, width, thickness / metrics.Scale, metrics.Scale, inkStretch, map, paint, phaseClip, state, budget, work, token);
                 if ((lines & SvgTextDecorationLine.LineThrough) != 0)
                 for (int line = 0; line < decoration.LineThroughCount; line++)
-                    Rectangle(ref lowering, x, (top + 2 * ascent / 3 - thickness / 2) / metrics.Scale, width, thickness / metrics.Scale, map, paint, null, state, budget, work, token);
+                    Rectangle(ref lowering, x, (top + 2 * ascent / 3 - thickness / 2) / metrics.Scale, width, thickness / metrics.Scale, map, paint, baseClip, state, budget, work, token);
             }
         }
         finally { lowering.Dispose(); }
 
-        static void Line(ref SvgOrthogonalGeometryLowering lowering, SvgTextRun run, SvgTextPaintFragment fragment, SvgPositionedGlyph first,
-            double x, double y, double width, double height, double scale, SvgAffineTransform map, SvgTextGlyphPaint paint,
-            SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        static SvgLeafMaskBinding? Line(ref SvgOrthogonalGeometryLowering lowering, SvgTextRun run, SvgTextPaintFragment fragment, SvgPositionedGlyph first,
+            double x, double y, double width, double height, double scale, double inkStretch, SvgAffineTransform map, SvgTextGlyphPaint paint,
+            SvgLeafMaskBinding? baseClip, SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
         {
             using BudgetedParserList<SvgTextInkGap> gaps = new(budget, SvgMemoryCategory.Geometry, work, token);
             double inset = Math.Min(height / 2, .5 / scale);
-            SvgTextInkIntercepts.Collect(run, fragment, first, y + inset, y + height - inset, Math.Min(height, 13 / scale), gaps, budget, work, token);
+            SvgTextInkIntercepts.Collect(run, fragment, first, y + inset, y + height - inset, Math.Min(height, 13 / scale), inkStretch, gaps, budget, work, token);
             if (gaps.Count == 0)
             {
-                Rectangle(ref lowering, x, y, width, height, map, paint, null, state, budget, work, token);
-                return;
+                Rectangle(ref lowering, x, y, width, height, map, paint, baseClip, state, budget, work, token);
+                return baseClip;
             }
-            if (paint.HasStroke)
+            RenderBudget.BudgetReservation owner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgClipBox>(gaps.Count), SvgMemoryCategory.Geometry);
+            SvgClipBox[] holes;
+            int count = 0;
+            try
             {
-                RenderBudget.BudgetReservation owner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgClipBox>(gaps.Count), SvgMemoryCategory.Geometry);
-                SvgClipBox[] holes;
-                int count = 0;
-                try
+                holes = new SvgClipBox[gaps.Count];
+                // Native ink exclusions retain the stripe's upper stroke fringe,
+                // but cover the lower half-pixel and the end glyph's full intercept.
+                double top = y - .5 / scale, bottom = y + height + .5 / scale;
+                foreach (SvgTextInkGap gap in gaps.AsSpan())
                 {
-                    holes = new SvgClipBox[gaps.Count];
-                    // Native ink exclusions retain the stripe's upper stroke fringe,
-                    // but cover the lower half-pixel and the end glyph's full intercept.
-                    double top = Math.Floor(y * scale) / scale, bottom = Math.Ceiling((y + height) * scale + .5) / scale;
-                    foreach (SvgTextInkGap gap in gaps.AsSpan())
-                    {
-                        work.Consume(token);
-                        double left = gap.Left, right = gap.Right;
-                        if (right <= left) continue;
-                        if (count > 0 && left <= holes[count - 1].Right)
-                            holes[count - 1] = holes[count - 1] with { Width = Math.Max(holes[count - 1].Right, right) - holes[count - 1].X };
-                        else holes[count++] = new(left, top, right - left, bottom - top);
-                    }
-                    state.DefinitionReservations.Add(owner);
+                    work.Consume(token);
+                    double left = gap.Left, right = gap.Right;
+                    if (right <= left) continue;
+                    if (count > 0 && left <= holes[count - 1].Right)
+                        holes[count - 1] = holes[count - 1] with { Width = Math.Max(holes[count - 1].Right, right) - holes[count - 1].X };
+                    else holes[count++] = new(left, top, right - left, bottom - top);
                 }
-                catch { owner.Dispose(); throw; }
-                SvgLeafMaskBinding? clip = SvgViewportFrame.ResolveGlyphClip(state, work, token);
-                if (count > 0)
-                {
-                    SvgAffineTransform device = state.OutputMap.ComposeChecked(map);
-                    if (!device.TryInvert(out SvgAffineTransform inverse)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Singular text decoration clipping maps are not implemented.");
-                    double stroke = (paint.Stroke?.Resolve()?.Width ?? 0) / 2;
-                    double outsetX = stroke + 2 * (Math.Abs(inverse.A) + Math.Abs(inverse.C));
-                    double outsetY = stroke + 2 * (Math.Abs(inverse.B) + Math.Abs(inverse.D));
-                    SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
-                    operation.Resolved = true; operation.Value = 255;
-                    operation.AffineViewport = new(new(x - outsetX, y - outsetY, width + 2 * outsetX, height + 2 * outsetY), map)
-                    { IsBinary = true, ExcludedBoxes = holes.AsMemory(0, count) };
-                    operation.RegionKind = SvgLayerRegionKind.AffineViewport;
-                    clip = SvgLeafMaskComposition.NewBinding(state, operation, clip);
-                }
-                Rectangle(ref lowering, x, y, width, height, map, paint, clip, state, budget, work, token);
-                return;
+                state.DefinitionReservations.Add(owner);
             }
-            double cursor = x, end = x + width;
-            foreach (SvgTextInkGap gap in gaps.AsSpan())
+            catch { owner.Dispose(); throw; }
+            SvgLeafMaskBinding? clip = baseClip;
+            if (count > 0)
             {
-                work.Consume(token);
-                double next = Math.Min(gap.Left, end);
-                if (next > cursor) Piece(cursor, next, ref lowering, x, y, width, height, map, paint, state, budget, work, token);
-                cursor = Math.Max(cursor, gap.Right);
-                if (cursor >= end) return;
+                SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
+                operation.Resolved = true; operation.Value = 255;
+                operation.AffineViewport = new(default, map)
+                { IsBinary = true, IsExclusion = true, ExcludedBoxes = holes.AsMemory(0, count) };
+                operation.RegionKind = SvgLayerRegionKind.AffineViewport;
+                clip = SvgLeafMaskComposition.NewBinding(state, operation, clip);
             }
-            if (cursor < end) Piece(cursor, end, ref lowering, x, y, width, height, map, paint, state, budget, work, token);
-        }
-
-        static void Piece(double left, double right, ref SvgOrthogonalGeometryLowering lowering, double x, double y, double width, double height,
-            SvgAffineTransform map, SvgTextGlyphPaint paint, SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
-        {
-            SvgAffineTransform device = state.OutputMap.ComposeChecked(map);
-            if (!device.TryInvert(out SvgAffineTransform inverse))
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Singular text decoration clipping maps are not implemented.");
-            // Keep the rectangle's own antialiased outer fringe. Only interior
-            // ink boundaries use binary clipping; the outer clip is two device
-            // pixels beyond the paint, mapped back through the same affine map.
-            double outsetX = 2 * (Math.Abs(inverse.A) + Math.Abs(inverse.C));
-            double outsetY = 2 * (Math.Abs(inverse.B) + Math.Abs(inverse.D));
-            double clipLeft = left == x ? left - outsetX : left;
-            double clipRight = right == x + width ? right + outsetX : right;
-            SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
-            operation.Resolved = true; operation.Value = 255;
-            operation.AffineViewport = new(new(clipLeft, y - outsetY, clipRight - clipLeft, height + 2 * outsetY), map) { IsBinary = true };
-            operation.RegionKind = SvgLayerRegionKind.AffineViewport;
-            SvgLeafMaskBinding clip = SvgLeafMaskComposition.NewBinding(state, operation, SvgViewportFrame.ResolveGlyphClip(state, work, token));
             Rectangle(ref lowering, x, y, width, height, map, paint, clip, state, budget, work, token);
+            return clip;
         }
 
         static void Rectangle(ref SvgOrthogonalGeometryLowering lowering, double x, double y, double width, double height,
@@ -197,7 +168,7 @@ internal static class SvgTextDecorationRenderer
         static SvgGeometry Prepare(SvgGeometry geometry, double x, double y, double width, double height, SvgAffineTransform map,
             SvgColor color, double strokeOutset, SvgLeafMaskBinding? clip, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
         {
-            geometry = geometry with { LeafMask = clip ?? SvgViewportFrame.ResolveGlyphClip(state, work, token) };
+            geometry = geometry with { LeafMask = clip };
             if (state.FilterGroupDepth > 0)
             {
                 SvgDevicePoint first = map.Apply(x, y), second = map.Apply(x + width, y), third = map.Apply(x, y + height), fourth = map.Apply(x + width, y + height);

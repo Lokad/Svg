@@ -184,7 +184,11 @@ internal sealed class SvgMeasuredTextPath : IDisposable
         SvgDevicePoint tangent = SvgCurveMeasure.Tangent(curve.Kind, points, curve.Weight, parameter, work, token);
         if (!double.IsFinite(position.X) || !double.IsFinite(position.Y) || !double.IsFinite(tangent.X) || !double.IsFinite(tangent.Y))
             throw new SvgException(SvgErrorCode.LimitExceeded, "The text-path position or tangent exceeds the supported range.");
-        double angle = Math.Atan2(tangent.Y, tangent.X) * (180 / Math.PI);
+        // Native path measurement normalizes scalar components before scalar
+        // atan2 and degree conversion; a double angle changes fringe coverage.
+        SvgCurveStroke.Point vector = new((float)tangent.X, (float)tangent.Y);
+        _ = vector.SetLength(1, out SvgCurveStroke.Point direction);
+        double angle = MathF.Atan2(direction.Y, direction.X) * (180f / MathF.PI);
         if (rotation != 0) angle = (float)angle + (float)rotation;
         return SvgAffineTransform.FromTranslation(position.X, position.Y)
             .ComposeChecked(SvgAffineTransform.FromRotationDegrees(angle))

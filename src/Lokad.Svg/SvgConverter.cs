@@ -1278,7 +1278,7 @@ public static class SvgConverter
                         byte[] previousClip = activeViewportClip;
                         bool previousBinary = activeViewportIsBinary;
                         SvgMaskContent clipContent = root.SceneStorage.MaskContents[command.MaskContentIndex];
-                        using SvgCpuClipCoverage? clipCoverage = RasterizeMaskContent(clipContent, clipPixels, true, clipContent.ClipKind is SvgClipContentKind.AffineViewport or SvgClipContentKind.BinaryViewport ? layer : previousLayer);
+                        using SvgCpuClipCoverage? clipCoverage = RasterizeMaskContent(clipContent, clipPixels, true, clipContent.ClipKind is SvgClipContentKind.AffineViewport or SvgClipContentKind.BinaryViewport or SvgClipContentKind.BinaryExclusion ? layer : previousLayer);
                         if (previousClip.Length != 0 && clipContent.BoundsClipContentIndex < 0)
                         {
                             if (pixelCount > options.Limits.MaximumWorkUnits - workUnits)
@@ -1302,7 +1302,7 @@ public static class SvgConverter
                         SvgCpuClipCoverage? previousCoverage = activeViewportCoverage;
                         activeViewportCoverage = clipCoverage;
                         activeViewportClip = clipPixels;
-                        activeViewportIsBinary = clipContent.ClipKind == SvgClipContentKind.BinaryViewport && previousBinary;
+                        activeViewportIsBinary = (clipContent.ClipKind is SvgClipContentKind.BinaryViewport or SvgClipContentKind.BinaryExclusion) && previousBinary;
                         activeViewportBounds = layer;
                         try { index = RenderCommands(index, destination, true); }
                         finally { activeViewportClip = previousClip; activeViewportIsBinary = previousBinary; activeViewportBounds = previousBounds; activeViewportCoverage = previousCoverage; }
@@ -1543,13 +1543,13 @@ public static class SvgConverter
                     root = root with { Geometries = scene.Geometries, Commands = scene.Commands, SceneStorage = scene };
                     RenderCommands(0, destination, false);
                 }
-                else if (content.ClipKind == SvgClipContentKind.BinaryViewport)
+                else if (content.ClipKind is SvgClipContentKind.BinaryViewport or SvgClipContentKind.BinaryExclusion)
                 {
                     if (content.Geometries.Length != 1 || content.Geometries[0].AuthoredPath is not {} viewportPath || coverage is null)
                         throw new SvgException(SvgErrorCode.MalformedInput, "A binary viewport requires retained rectangle geometry.");
                     workUnits += SvgBinaryViewportCoverage.Rasterize(viewportPath,
                         SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset), rasterGrid,
-                        contentBounds, destination, outputWidth, coverage, content.Geometries[0].Polygon.IsEvenOdd, budget, options.Limits.MaximumWorkUnits - workUnits, cancellationToken);
+                        contentBounds, destination, outputWidth, coverage, content.Geometries[0].Polygon.IsEvenOdd, content.ClipKind == SvgClipContentKind.BinaryExclusion, budget, options.Limits.MaximumWorkUnits - workUnits, cancellationToken);
                 }
                 else foreach (SvgGeometry geometry in content.Geometries) RasterizeGeometry(geometry, destination);
                 if (boundsPixels.Length != 0)
@@ -1624,7 +1624,7 @@ public static class SvgConverter
                 bool rendered = stroke.HasFill && SvgHairlineStroke.TryRasterize(centerline,
                     SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset), ResolveSolidColor(stroke.Color), surfaceMode == RasterSurfaceMode.PremultipliedPattern ? PatternSolidPaint(stroke.Color) : null,
                     stroke.Clip is SvgClipBox clip ? MapClipBounds(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : null,
-                    stroke.Clip?.Antialiasing ?? SvgClipAntialiasing.None, activeViewportClip, destination, outputWidth, outputHeight, hairlineWork, cancellationToken);
+                    stroke.Clip?.Antialiasing ?? SvgClipAntialiasing.None, activeViewportClip, activeViewportIsBinary, destination, outputWidth, outputHeight, hairlineWork, cancellationToken);
                 workUnits += hairlineWork.Used;
                 if (rendered) return;
             }
@@ -3537,6 +3537,30 @@ public static class SvgConverter
             SvgRectangleRaster raster = PrepareRectangle(rectangle);
             int startX = raster.Left, endX = raster.Right, startY = raster.Top, endY = raster.Bottom;
             SvgAnalyticPaint rectanglePaint = ResolveSolidPaint(rectangle.Color);
+            if (activeViewportClip.Length != 0 && activeViewportIsBinary)
+            {
+                ParserWorkCounter clippingWork = new(options.Limits.MaximumWorkUnits - workUnits);
+                SvgBinaryClipRectangles regions = new(activeViewportClip, outputWidth, outputHeight, new(0, 0, outputWidth, outputHeight),
+                    new(startX, startY, endX, endY), clippingWork, cancellationToken);
+                while (regions.MoveNext())
+                {
+                    SvgAnalyticClipBounds region = regions.Current;
+                    // Native binary regions clip rectangle geometry before AA:
+                    // a surviving one-pixel strip has its own fringe coverage.
+                    SvgRectangleCoverage coverage = raster.Coverage;
+                    coverage = new(Math.Max(coverage.Left, (long)region.Left * 256), Math.Max(coverage.Top, (long)region.Top * 256),
+                        Math.Min(coverage.Right, (long)region.Right * 256), Math.Min(coverage.Bottom, (long)region.Bottom * 256));
+                    SvgRectangleRaster clipped = raster with { Coverage = coverage };
+                    for (int y = region.Top; y < region.Bottom; y++)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        for (int x = region.Left; x < region.Right; x++)
+                            rectanglePaint.Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), clipped.GetAlpha(x, y), SvgAnalyticPaintKind.Direct);
+                    }
+                }
+                workUnits += clippingWork.Used;
+                return;
+            }
             for (int y = startY; y < endY; y++)
             {
             cancellationToken.ThrowIfCancellationRequested();

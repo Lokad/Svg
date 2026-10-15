@@ -302,7 +302,10 @@ internal static class SvgLeafMaskComposition
                     mapped.Resolved = true;
                 }
                 if (operation.AffineViewport is {} clip && operation.ContentIndex < 0)
+                {
                     (operation.Region, operation.ContentIndex) = clip.Register(state, scene, work, token);
+                    if (clip.IsExclusion) operation.Region = null;
+                }
                 if (operation.NativeClip is {} nativeClip && operation.ContentIndex < 0)
                 {
                     if (!state.ClipPolygons.TryGetValue(nativeClip.Id, out SvgClipPolygon content))

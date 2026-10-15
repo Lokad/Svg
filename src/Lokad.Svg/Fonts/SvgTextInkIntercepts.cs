@@ -14,7 +14,7 @@ internal readonly record struct SvgTextInkGap(double Left, double Right) : IComp
 internal static class SvgTextInkIntercepts
 {
     internal static void Collect(SvgTextRun run, SvgTextPaintFragment fragment, SvgPositionedGlyph first,
-        double stripeTop, double stripeBottom, double dilation, BudgetedParserList<SvgTextInkGap> gaps,
+        double stripeTop, double stripeBottom, double dilation, double glyphStretch, BudgetedParserList<SvgTextInkGap> gaps,
         RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         for (int index = fragment.Start; index < fragment.End; index++)
@@ -22,7 +22,10 @@ internal static class SvgTextInkIntercepts
             work.Consume(token);
             SvgGlyphFontStyle font = run.GetGlyphFont(index);
             SvgPositionedGlyph glyph = run.Glyphs[index];
-            using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(font.Font, glyph with { X = 0, Y = 0 }, font.FontSize, budget, work, token);
+            // Native path intercepts use an unhinted canonical 64px strike,
+            // then scale the resulting interval back to the requested font size.
+            float pathScale = (float)font.FontSize / 64;
+            using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(font.Font, glyph with { X = 0, Y = 0 }, 64, budget, work, token);
             double originX = first.X + glyph.X - run.Glyphs[fragment.Start].X;
             double originY = first.Y + glyph.Y - run.Glyphs[fragment.Start].Y;
             double left = double.PositiveInfinity, right = double.NegativeInfinity;
@@ -30,8 +33,9 @@ internal static class SvgTextInkIntercepts
             foreach (SvgGlyphQuadraticSegment segment in contour.Segments)
             {
                 work.Consume(token);
-                SvgGlyphOutlinePoint p = segment.Start, q = segment.Control, r = segment.End;
-                double top = stripeTop - originY, bottom = stripeBottom - originY;
+                SvgGlyphOutlinePoint p = new((float)segment.Start.X, (float)segment.Start.Y),
+                    q = new((float)segment.Control.X, (float)segment.Control.Y), r = new((float)segment.End.X, (float)segment.End.Y);
+                double top = ((float)stripeTop - (float)originY) / pathScale, bottom = ((float)stripeBottom - (float)originY) / pathScale;
                 if (Math.Min(p.Y, Math.Min(q.Y, r.Y)) > bottom || Math.Max(p.Y, Math.Max(q.Y, r.Y)) < top) continue;
                 Intersect(p, q, r, top, ref left, ref right);
                 Intersect(p, q, r, bottom, ref left, ref right);
@@ -39,7 +43,15 @@ internal static class SvgTextInkIntercepts
                 if (top < q.Y && q.Y < bottom) Include(q.X, ref left, ref right);
                 if (top < r.Y && r.Y < bottom) Include(r.X, ref left, ref right);
             }
-            if (left < right) gaps.Add(new(originX + left * run.GlyphStretch - dilation, originX + right * run.GlyphStretch + dilation));
+            if (left < right)
+            {
+                float begin = (float)left * pathScale, end = (float)right * pathScale;
+                float start = (float)originX + begin * (float)glyphStretch;
+                float width = (end - begin) * (float)glyphStretch;
+                float x = start - (float)dilation;
+                float extent = width + 2 * (float)dilation;
+                gaps.Add(new(x, x + extent));
+            }
         }
         gaps.Sort(work, token);
 

@@ -19,10 +19,10 @@ These failure-selected cases establish declared outcomes, not a general SVG succ
 
 One additional sourced [W3C decoration document](../tests/Research/stroked-decorations/README.md)
 is **1/1 exact** on Windows/Linux at its frozen 1200×400 output, separately from
-both cohorts and the twelve authored documents. Its direct control is exact;
-the curved-path control still rejects and remains required (**1/4 controls**, including two newly frozen path-boundary controls).
+both cohorts and the twelve authored documents. All **4/4 controls** are exact,
+including curved, three-line/stroke-only and positioned/stretched paths.
 The original 974-byte SVG, supplied Noto program and platform references are
-unchanged. The [receipt](../artifacts/maintenance-review-20261012/stroked-decorations-qualified-results.json)
+unchanged. The [receipt](../artifacts/maintenance-review-20261012/decorated-path-qualified-results.json)
 owns qualification, intended-font proof and preservation; adjacent W3C notices
 retain the original code-example license. This is not a CC0 document.
 [PLAN](../PLAN.md#ordered-delivery-checklist) owns the remaining finite exits.
