@@ -62,6 +62,11 @@ exits below provide available dependencies, including the unchanged
 Document success does not close remaining tile, affine clip, glyph or effect
 boundaries. No exhaustive G2 or shape × paint × instance prerequisite applies.
 
+The next [tile-mask sheet](tests/Research/tile-mask-exit-sheet/README.md) is frozen
+at **0/1 document / 0/2 exact controls** on both platforms. It preserves the
+original rejected leaf input and a spatially masked group/local-use witness;
+eighteen healthy stable captures predate correction. No completed count changes.
+
 | Required item, in order | Missing behavior and dependencies | Acceptance and completion condition |
 | --- | --- | --- |
 | [ ] 3. Composition and resource presentation (G5–G7) | Remaining C5b tile-mask and C6c affine user-space rectangle-clip bridges below. C1–C4, C5a, C6a and C6b acceptances are complete. Reuse source replay, tight bounds and viewport rebasing; glyph-specific boundaries belong to item 4. | The retained tile document, original C5b mask input and original C6c rotated-stroke input are exact on both platforms, with sibling restoration and affected scope/cleanup checks. Preserve every completed C1–C5 witness. |
