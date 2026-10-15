@@ -43,10 +43,11 @@ The label/path correction is locally qualified: **7,676 tests/platform**
 [receipt](artifacts/maintenance-review-20261012/path-sheet-qualified-results.json)
 owns preservation checks, timings and explicit migration of the original closed
 path and whole-sheet rejection assertions, retaining useful negative boundaries.
-The complete sheet is closed; the wider G9 exit remains required. Hosted CI for
-this substantive correction is pending. The preceding implementation's
-[terminal green CI](https://github.com/Lokad/Svg/actions/runs/38661188777) remains
-historical evidence; do not poll that completed run again.
+The complete sheet is closed; the wider G9 exit remains required.
+[Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38672544792)
+for exact implementation revision `5a331751`, including package/consumer, memory,
+browser/setup, font and validator checks. Reuse this completed evidence for
+unchanged documentation; do not poll the run again.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
@@ -74,6 +75,16 @@ IDs, source coordinates or observed failure pixels may become renderer predicate
 | 4. Patterns (G6) | Remaining unit/map/combined and grouped opacity; image/text/filter tile content. Reuse bounded replay and only the G7–G9 slices each tile needs. | Graduate [combined tile opacity](tests/Research/paint-recording/pattern-tile-tile-fill-stroke-element.svg) and [group opacity](tests/Research/pattern-vector-content/group-opacity-promotion.svg), then use a tile sheet for missing unit/viewBox/phase/reflection and dependent content. Complete when finite G6 mechanisms are qualified with recursive/size/work cleanup outcomes; preserve the eight complete pattern documents. |
 | 5. Remaining labels and paths (G9) | Stroked decorations, decorated paths, remaining admitted glyph maps, the three named composite flags and private validation. Reuse the qualified complete sheet, lists/spacing, fragment painting/strokes, supplied-font preparation and G3–G5 maps. | Use focused decoration/composite witnesses, measured degenerate-path outcomes and sanitized private validation for these finite mechanisms. Complete when each has linked exact acceptance and affected bounded-failure checks at a qualified checkpoint. Preserve the completed sheet, its eight controls and intended-program proofs; repeat none merely to refresh documentation. |
 | 6. Release (S17) | Finished-revision contracts and delivery evidence after items 1–5. | Meet every release condition below: no unresolved required mechanism, all established exact results preserved, complete platform/API/resource/package/consumer/CI checks green and representative measurements reported. Document counts alone cannot establish completion. |
+
+The next image sheet and three focused controls are now
+[declared and frozen](artifacts/affine-image-sheet-20261015/declaration.json)
+with healthy stable Windows/Linux capture triples. Current
+[Windows](artifacts/affine-image-sheet-20261015/baseline-windows.json) and
+[Linux](artifacts/affine-image-sheet-20261015/baseline-linux.json) comparisons
+identify uniform fractional aspect edges, affine image bounds and local image-use
+replay as separate gates. Start with the shared uniform placement correction;
+then advance this unchanged document through the other gates. No image production
+code has changed at this declaration checkpoint.
 
 The image/effects/composition/tile sheets are bounded acceptance recipes, not new
 feature promises or acquisition quotas. Before implementation, bind each missing
@@ -351,8 +362,9 @@ representativeness quota delays this finite release.
   and **270.1s Linux**, including normal incremental build and command startup.
   Both meet the target. These timings include the newly exact whole sheet and
   focused controls; no universal speedup or regression claim follows from a
-  different workload and environment. Hosted results for this correction are
-  pending; preceding completed runs need no further polling.
+  different workload and environment. Exact-revision hosted build plus complete
+  tests took **106s Windows / 111s Linux**, separately from local timings.
+  The terminal CI result is recorded above; no further polling is needed.
   Prior hosted observations and the local Linux compiler
   overrun remain in the [preceding receipt](artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json),
   with their distinct timing definitions; they are not a new execution task.
