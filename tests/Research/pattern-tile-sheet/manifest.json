@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "declarationBaseRevision": "5d61f27a067845e44bc1856ff0ca9a65de292fb3",
-  "purpose": "One required whole tile document, six independent missing-mechanism controls and two unchanged opacity controls reused in their original banks. Native references precede production changes.",
+  "purpose": "One required whole tile document, seven independent controls (including a discovered affine/unit interaction) and three unchanged controls reused in their original banks. Native references precede their corrections.",
   "fontPack": "../font-layout-diagram/font-pack.json",
   "fontPrograms": [
     {
@@ -72,7 +72,7 @@
       "oracleInputSha256": "bddf3b97f8826e71673307f56d3eb1f59bfb10fbd66bc317d74b7023f12b9039",
       "platformReferencesByteIdentical": false,
       "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Pattern fills in scaled viewports are not implemented.",
+      "expectedMessage": "Filters on retained definition content are not implemented.",
       "fontUseProof": {
         "windows": [
           {
@@ -195,9 +195,7 @@
       ],
       "linuxReference": "references/linux64/object-box-tile.png",
       "linuxReferenceSha256": "2238b14534536e1edd6d85b44309a1221aab729c453723cdb4c658e5e6744963",
-      "platformReferencesByteIdentical": true,
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Only userSpaceOnUse pattern units are implemented."
+      "platformReferencesByteIdentical": true
     },
     {
       "id": "object-box-content",
@@ -248,9 +246,7 @@
       ],
       "linuxReference": "references/linux64/object-box-content.png",
       "linuxReferenceSha256": "77f2b79d2d585fcf045e915583607d36c8400cec433bf593dc80864433fc95ae",
-      "platformReferencesByteIdentical": true,
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Only userSpaceOnUse pattern content units are implemented without a viewBox."
+      "platformReferencesByteIdentical": true
     },
     {
       "id": "reflected-fractional-map",
@@ -535,6 +531,58 @@
           }
         ]
       }
+    },
+    {
+      "id": "object-box-affine-map",
+      "input": "object-box-affine-map.svg",
+      "width": 96,
+      "height": 80,
+      "background": "transparent",
+      "role": "discovered-unit-map-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "f7e6b868fc08190b6f39ed3c7e3714599a9705200ceaa3c1cb7faca17677ed70",
+      "selection": "Discovered object-box tile units plus nontrivial patternTransform ordering defect: retained initial conjugation model differs by 2762 pixels. Freeze this independent interaction before correcting the shared map.",
+      "licenseEvidence": "README.md",
+      "reference": "references/object-box-affine-map.png",
+      "referenceSha256": "75b759fa660e94dde14c558d3b47185851094e100ce0f701fb8f086173ed1cc2",
+      "captures": [
+        {
+          "pngSha256": "75b759fa660e94dde14c558d3b47185851094e100ce0f701fb8f086173ed1cc2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "75b759fa660e94dde14c558d3b47185851094e100ce0f701fb8f086173ed1cc2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "75b759fa660e94dde14c558d3b47185851094e100ce0f701fb8f086173ed1cc2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/object-box-affine-map.png",
+      "linuxReferenceSha256": "75b759fa660e94dde14c558d3b47185851094e100ce0f701fb8f086173ed1cc2",
+      "linuxCaptures": [
+        {
+          "pngSha256": "75b759fa660e94dde14c558d3b47185851094e100ce0f701fb8f086173ed1cc2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "75b759fa660e94dde14c558d3b47185851094e100ce0f701fb8f086173ed1cc2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "75b759fa660e94dde14c558d3b47185851094e100ce0f701fb8f086173ed1cc2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": true,
+      "discoveredModelChangedPixels": 2762
     }
   ],
   "reusedControls": [
@@ -597,6 +645,34 @@
           "profileCleaned": true
         }
       ]
+    },
+    {
+      "id": "object-units-template-boundary",
+      "input": "object-units-template-boundary.svg",
+      "reference": "references/object-units-template-boundary.png",
+      "sourceSha256": "e4244e93cc2e9027aae70f2bab93e88bbe6246f26144fe0ec10ac07db26f8f97",
+      "referenceSha256": "053098d51d497a563fdf25df9302901d982daac8fc44dcf22d417a05b6d1031c",
+      "license": "CC0-1.0",
+      "selection": "Declared before implementation and capture; isolates pattern inheritance or fractional tile mapping needed by complete inv-104.",
+      "bank": "pattern-inheritance",
+      "linuxCaptures": [
+        {
+          "pngSha256": "053098d51d497a563fdf25df9302901d982daac8fc44dcf22d417a05b6d1031c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "053098d51d497a563fdf25df9302901d982daac8fc44dcf22d417a05b6d1031c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "053098d51d497a563fdf25df9302901d982daac8fc44dcf22d417a05b6d1031c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": true
     }
   ]
 }

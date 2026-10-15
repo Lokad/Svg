@@ -235,9 +235,7 @@
       "width": 48,
       "height": 40,
       "background": "transparent",
-      "role": "admission-gate",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Only userSpaceOnUse pattern units are implemented."
+      "role": "fidelity"
     },
     {
       "id": "alias-paint-in-retained-leaf",

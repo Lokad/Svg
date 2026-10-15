@@ -13628,3 +13628,37 @@ work denial, active cancellation after layer creation, immutable input and exact
 retry. The [receipt](../artifacts/maintenance-review-20261012/pattern-opacity-qualified-results.json)
 owns checkpoint qualification. Object-box units, scaled viewport placement,
 image/filter/font tile content and other finite exits remain required.
+
+
+## Pattern viewport and object-box coordinates (2026-10-15)
+
+The [coordinate receipt](../artifacts/maintenance-review-20261012/pattern-units-qualified-results.json)
+qualifies **7/10 tile controls**, preserving original opacity results. The whole
+sheet remains rejected at filtered definition content. Its first five panels
+are exact in a derived diagnostic; that diagnostic is not document acceptance.
+
+Pattern metadata binds each target's original local, unclipped object box before
+publication. Tile units scale origin/size; content units reuse the existing
+bounded content-viewBox map, overridden by an authored viewBox. Bounds remain
+separate from visual stroke extents and mapped/clip bounds. Immutable descriptors
+own no geometry or pixels and use aggregate metadata allowances. Empty boxes
+return without texture allocation. Existing dimension/work limits, tile cache,
+cancellation and scene ownership apply. Cache identity includes units and native
+matrix stages so different target boxes cannot share the wrong raster.
+
+Native drawing and shader-local matrices must remain separate through bitmap
+origin/scale inversion. Precomposing them in doubles left three RGB differences
+in the reflected panel under its nested viewport; float-concatenating them left
+four. Retaining the two stages makes the five-panel diagnostic exact. Likewise,
+conjugating patternTransform by the object box differed in 2,762 pixels in the
+discovered affine/unit control. Keeping the native ordering is exact against
+its separately frozen healthy triples. These rejected models and native matrix
+observations remain in the existing ignored study; no fixture/pixel predicates
+or new arithmetic kernel are introduced.
+
+Original rejection inputs become positive parsing/font-discovery regressions;
+no SVG/reference bytes change. Focused controls protect different target boxes,
+clipping/stroke independence, empty boxes, meaningful texture/work/memory denial,
+active cancellation, cleanup, input immutability and exact retry. Remaining
+image/filter/font tile content and finite target/stroke/instance maps stay open
+in PLAN.md. Historical named gates are superseded only as qualified here.

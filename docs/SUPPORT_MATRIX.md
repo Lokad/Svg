@@ -1649,3 +1649,23 @@ reflected fractional map. Scaled nested viewport placement, both object-box unit
 gates and image/filter/supplied-font content remain required. The
 [receipt](../artifacts/maintenance-review-20261012/pattern-opacity-qualified-results.json)
 owns complete platform/preservation checks; no G6 or release closure is claimed.
+
+
+## Qualified pattern coordinates (2026-10-15)
+
+The [tile bank](../tests/Research/pattern-tile-sheet/README.md) is **0/1 complete
+document / 7/10 exact controls** on unchanged Windows/Linux references. Scaled
+nested-viewport rectangle fills, object-box tile/content units, inherited default
+units and the affine/unit interaction reuse bounded vector-content replay.
+Original unclipped local object bounds determine units; strokes/clips do not
+change them. Drawing and shader-local matrix stages stay distinct for native
+fractional/reflected sampling. Empty object boxes do not allocate a texture.
+The original template control remains in its original bank and is now positive.
+
+This supersedes the named unit gates and scaled-viewport rectangle-fill gate.
+The unchanged whole sheet still rejects filtered definition content; its image,
+filter and supplied-font controls remain required. Patterned strokes/instances
+under scaled viewports and skewed oval targets retain explicit boundaries and
+remain required G4/G6 work. No G6/release closure or feature deferral is claimed.
+The [receipt](../artifacts/maintenance-review-20261012/pattern-units-qualified-results.json)
+owns full regression, asset preservation, resource and timing evidence.

@@ -49,6 +49,8 @@ internal sealed class SvgPatternTileCache : IDisposable
     internal static bool SameTile(SvgPatternGeometry first, SvgPatternGeometry second)
         => first.Content == second.Content
             && ReferenceEquals(first.VectorContent, second.VectorContent)
+            && Equals(first.Coordinates, second.Coordinates)
+            && Equals(first.PaintMatrices, second.PaintMatrices)
             && first.ContentViewBox == second.ContentViewBox
             && first.OriginX == second.OriginX && first.OriginY == second.OriginY
             && first.TileWidth == second.TileWidth && first.TileHeight == second.TileHeight

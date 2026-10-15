@@ -6,6 +6,17 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgStaticCssImageTests
 {
     [Theory]
+    [InlineData("object-box-tile")]
+    [InlineData("object-box-content")]
+    [InlineData("object-box-affine-map")]
+    public void Pattern_unit_replay_preserves_sources_and_releases_owners_after_denial_and_retry(string identity)
+        => AssertResourceLifecycle(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "pattern-tile-sheet", identity + ".svg")));
+
+    [Fact]
+    public void Object_relative_tile_replay_cancellation_and_work_denial_release_temporary_owners()
+        => AssertActiveRasterLifecycle("<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><defs><pattern id='p' width='.5' height='.5' patternUnits='objectBoundingBox' patternContentUnits='objectBoundingBox'><circle cx='.33' cy='.33' r='.25' fill='#025bc7'/></pattern></defs><rect width='256' height='256' fill='url(#p)'/></svg>"u8.ToArray());
+
+    [Theory]
     [InlineData("paint-recording", "pattern-tile-tile-fill-stroke-element")]
     [InlineData("pattern-vector-content", "group-opacity-promotion")]
     public void Pattern_opacity_replay_preserves_sources_and_releases_owners_after_denial_and_retry(string family, string identity)

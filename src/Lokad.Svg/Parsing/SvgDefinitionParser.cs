@@ -425,8 +425,7 @@ internal static class SvgDefinitionParser
             SvgElementAttributePolicy.ValidatePattern(reader, workCounter, cancellationToken);
             state.PatternId = reader.GetAttribute("id");
             state.PatternTemplate = SvgPatternSyntax.ParsePatternElement(reader, state, workCounter, cancellationToken);
-            if (state.PatternTemplate.Href is null) state.PatternTemplate.ValidateUnits();
-            else state.HasPatternTemplateReferences = true;
+            if (state.PatternTemplate.Href is not null) state.HasPatternTemplateReferences = true;
             state.PatternTile = state.PatternTemplate.Grid;
             SvgPaintableElementContext patternContext = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
             InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);

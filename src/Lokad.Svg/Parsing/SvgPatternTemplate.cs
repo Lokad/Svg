@@ -19,21 +19,22 @@ internal readonly record struct SvgPatternTemplate(double? X, double? Y, double?
             SvgViewBox? viewport = ViewBox;
             if (viewport is {} box && AspectRatio is {} aspect)
                 viewport = box with { HorizontalAlignment = aspect.HorizontalAlignment, VerticalAlignment = aspect.VerticalAlignment, Fit = aspect.Fit };
-            return new(null, X ?? 0, Y ?? 0, Width ?? 0, Height ?? 0, Transform ?? SvgAffineTransform.Identity) { ContentViewBox = viewport };
+            SvgAffineTransform transform = Transform ?? SvgAffineTransform.Identity;
+            bool objectBoxTiles = UserSpaceUnits != true;
+            bool objectBoxContent = UserSpaceContentUnits == false && viewport is null;
+            return new(null, X ?? 0, Y ?? 0, Width ?? 0, Height ?? 0, transform)
+            {
+                ContentViewBox = viewport,
+                Coordinates = objectBoxTiles || objectBoxContent ? new(objectBoxTiles, objectBoxContent) : null
+            };
         }
     }
 
-    internal bool KeepsLegacyRectangle => Href is null && ViewBox is null && UserSpaceUnits == true
+    internal bool KeepsLegacyRectangle => Href is null && ViewBox is null && UserSpaceUnits == true && UserSpaceContentUnits != false
         && Grid.Transform.IsAxisAligned && Grid.Transform.A == 1 && Grid.Transform.D == 1
         && Grid.OriginX == Math.Truncate(Grid.OriginX) && Grid.OriginY == Math.Truncate(Grid.OriginY)
         && Grid.TileWidth == Math.Truncate(Grid.TileWidth) && Grid.TileHeight == Math.Truncate(Grid.TileHeight)
         && Grid.ShiftX == Math.Truncate(Grid.ShiftX) && Grid.ShiftY == Math.Truncate(Grid.ShiftY);
-
-    internal void ValidateUnits()
-    {
-        if (UserSpaceUnits != true) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse pattern units are implemented.");
-        if (UserSpaceContentUnits == false && ViewBox is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse pattern content units are implemented without a viewBox.");
-    }
 }
 
 /// <summary>Borrowed definition content and its bounded graph state; the parent scene owns all tile scenes.</summary>

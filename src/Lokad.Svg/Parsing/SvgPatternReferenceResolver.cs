@@ -51,7 +51,6 @@ internal static class SvgPatternReferenceResolver
                     }
                     if (!state.PatternDefinitions.TryGetValue(target, out SvgPatternDefinition source)) throw new InvalidOperationException("Resolved patterns retain their template metadata.");
                     template = template.Inherit(source.Template);
-                    template.ValidateUnits();
                     SvgPatternTile grid = template.Grid;
                     if (!tile.HasContent)
                     {
@@ -66,7 +65,6 @@ internal static class SvgPatternReferenceResolver
                     }
                     else tile = grid with { Content = tile.Content, VectorContent = tile.VectorContent };
                 }
-                template.ValidateUnits();
                 state.PatternDefinitions.Replace(id, definition with { Template = template, Tile = tile, IsVisiting = false });
                 if (!state.Patterns.TryAdd(id, tile)) throw new InvalidOperationException("Resolved patterns register once.");
                 path.RemoveLast();

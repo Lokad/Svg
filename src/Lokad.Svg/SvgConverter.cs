@@ -2499,11 +2499,11 @@ public static class SvgConverter
 
         void RasterizePatternPolygon(SvgPatternPolygon outline, SvgAuthoredPath? authoredPath, byte[] destination)
         {
-            if (!outline.HasFill || outline.Points.Length < 3) return;
+            if (!outline.HasFill || outline.Points.Length < 3 || outline.Coordinates?.IsEmpty == true) return;
             using MappedPolygon raster = MapPolygon(outline.Points, outline.ContourEnds, outline.Signs, outline.IsEvenOdd, outline.QuadSpans, outline.CubicSpans, outline.Mapping, outline.Clip, authoredPath, PathCoordinateSpace.User);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             using RenderBudget.BudgetReservation sourcePatternOwner = budget.Reserve(512, SvgMemoryCategory.Geometry);
-            SvgPatternGeometry source = new(outline.Content, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, default, outline.Opacity, null) { ContentPaint = outline.ContentPaint, VectorContent = outline.VectorContent, ContentViewBox = outline.ContentViewBox, ShaderPlacement = outline.ShaderPlacement };
+            SvgPatternGeometry source = new(outline.Content, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, default, outline.Opacity, null) { ContentPaint = outline.ContentPaint, VectorContent = outline.VectorContent, ContentViewBox = outline.ContentViewBox, Coordinates = outline.Coordinates, PaintMatrices = outline.PaintMatrices, ShaderPlacement = outline.ShaderPlacement };
             using RenderBudget.BudgetReservation? mappedPatternOwner = NeedsPatternMapping(source) ? budget.Reserve(512, SvgMemoryCategory.Geometry) : null;
             if (!TryMapPatternTile(source, out SvgPatternGeometry? mappedTile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
             SvgPatternGeometry tile = mappedTile ?? source;
@@ -2583,26 +2583,37 @@ public static class SvgConverter
         }
 
         bool NeedsPatternMapping(SvgPatternGeometry pattern)
-            => pattern.VectorContent is not null || horizontalScale != 1 || verticalScale != 1 || horizontalOffset != 0 || verticalOffset != 0 || pattern.ShaderPlacement != SvgAffineTransform.Identity;
+            => pattern.Coordinates is not null || pattern.VectorContent is not null || horizontalScale != 1 || verticalScale != 1 || horizontalOffset != 0 || verticalOffset != 0 || pattern.ShaderPlacement != SvgAffineTransform.Identity;
 
         bool TryMapPatternTile(SvgPatternGeometry pattern, out SvgPatternGeometry? mapped)
         {
             mapped = null;
-            SvgAffineTransform shader = pattern.ShaderPlacement;
+            if (pattern.Coordinates?.IsEmpty == true) return true;
+            SvgPatternMappedCoordinates coordinates = pattern.Coordinates is {} units
+                ? units.Resolve(pattern.OriginX, pattern.OriginY, pattern.TileWidth, pattern.TileHeight, pattern.ShaderPlacement, pattern.ContentViewBox)
+                : new(pattern.OriginX, pattern.OriginY, pattern.TileWidth, pattern.TileHeight, pattern.ShaderPlacement, pattern.ContentViewBox);
+            SvgAffineTransform shader = coordinates.Placement;
             if (horizontalScale == 1 && verticalScale == 1 && horizontalOffset == 0 && verticalOffset == 0 && shader == SvgAffineTransform.Identity && pattern.VectorContent is null) return true;
             bool positiveAxis = shader.IsAxisAligned && shader.A > 0 && shader.D > 0;
             if (pattern.VectorContent is null && !positiveAxis) return false;
             double scaleX = shader.A * horizontalScale, scaleY = shader.D * verticalScale;
             if (pattern.Content.Stroke is not null && (scaleX != 1 || scaleY != 1)) return false;
-            double originX = (pattern.OriginX * shader.A + shader.E) * horizontalScale + horizontalOffset;
-            double originY = (pattern.OriginY * shader.D + shader.F) * verticalScale + verticalOffset;
-            double tileWidth = pattern.TileWidth * scaleX, tileHeight = pattern.TileHeight * scaleY;
+            double originX = (coordinates.OriginX * shader.A + shader.E) * horizontalScale + horizontalOffset;
+            double originY = (coordinates.OriginY * shader.D + shader.F) * verticalScale + verticalOffset;
+            double tileWidth = coordinates.Width * scaleX, tileHeight = coordinates.Height * scaleY;
             if (pattern.VectorContent is not null)
             {
-                float width = (float)pattern.TileWidth, height = (float)pattern.TileHeight;
+                float width = (float)coordinates.Width, height = (float)coordinates.Height;
                 SvgShaderMatrix outputMap = new((float)horizontalScale, 0, (float)horizontalOffset, 0, (float)verticalScale, (float)verticalOffset);
                 SvgShaderMatrix localMap = new((float)shader.A, (float)shader.C, (float)shader.E, (float)shader.B, (float)shader.D, (float)shader.F);
-                SvgShaderMatrix map = SvgShaderMatrix.Concat(outputMap, localMap);
+                SvgShaderMatrix drawMap = outputMap;
+                if (pattern.PaintMatrices is {} stages)
+                {
+                    SvgAffineTransform target = stages.Target, local = stages.Pattern;
+                    drawMap = SvgShaderMatrix.Concat(outputMap, new((float)target.A, (float)target.C, (float)target.E, (float)target.B, (float)target.D, (float)target.F));
+                    localMap = new((float)local.A, (float)local.C, (float)local.E, (float)local.B, (float)local.D, (float)local.F);
+                }
+                SvgShaderMatrix map = SvgShaderMatrix.Concat(drawMap, localMap);
                 // Picture tiles retain their source axes. Rotation/reflection change the
                 // sampling matrix, while column lengths choose the bounded texture scale.
                 (float rasterScaleX, float rasterScaleY) = positiveAxis
@@ -2611,15 +2622,15 @@ public static class SvgConverter
                 if (pixelsX <= 0 || pixelsY <= 0 || pixelsX > options.Limits.MaximumDimension || pixelsY > options.Limits.MaximumDimension)
                     throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern tile dimensions exceed the configured limit.");
                 float tileScaleX = (float)pixelsX / width, tileScaleY = (float)pixelsY / height;
-                SvgShaderMatrix imageLocal = SvgShaderMatrix.Concat(localMap, new(1f / tileScaleX, 0, (float)pattern.OriginX, 0, 1f / tileScaleY, (float)pattern.OriginY));
-                SvgShaderMatrix imageMap = SvgShaderMatrix.Concat(outputMap, imageLocal);
+                SvgShaderMatrix imageLocal = SvgShaderMatrix.Concat(localMap, new(1f / tileScaleX, 0, (float)coordinates.OriginX, 0, 1f / tileScaleY, (float)coordinates.OriginY));
+                SvgShaderMatrix imageMap = SvgShaderMatrix.Concat(drawMap, imageLocal);
                 if (!imageMap.TryInvert(out _)) return false;
                 mapped = new(default, 0, 0, pixelsX, pixelsY, pattern.Fill, pattern.Opacity, pattern.Stroke)
                 {
-                    VectorContent = pattern.VectorContent, ContentViewBox = pattern.ContentViewBox,
+                    VectorContent = pattern.VectorContent, ContentViewBox = coordinates.ContentViewBox,
                     ShaderPlacement = SvgAffineTransform.FromScaleOffset(1, 1, originX, originY),
                     RasterSourceBox = new(0, 0, width, height, SvgViewBoxAlignment.None, SvgViewBoxAlignment.None, SvgViewBoxFit.None),
-                    NativeImageMap = positiveAxis && IsDeviceInteger(tileWidth) && IsDeviceInteger(tileHeight) ? null : outputMap,
+                    NativeImageMap = positiveAxis && IsDeviceInteger(tileWidth) && IsDeviceInteger(tileHeight) ? null : drawMap,
                     NativeImageLocal = positiveAxis && IsDeviceInteger(tileWidth) && IsDeviceInteger(tileHeight) ? null : imageLocal,
                 };
                 return true;
@@ -2639,7 +2650,7 @@ public static class SvgConverter
 
         void RasterizePatternFill(SvgPatternGeometry pattern, byte[] destination, SvgPaintPass pass)
         {
-            if (!pattern.Fill.HasFill && pattern.Stroke is null) return;
+            if ((!pattern.Fill.HasFill && pattern.Stroke is null) || pattern.Coordinates?.IsEmpty == true) return;
             using RenderBudget.BudgetReservation? mappedPatternOwner = NeedsPatternMapping(pattern) ? budget.Reserve(512, SvgMemoryCategory.Geometry) : null;
             if (!TryMapPatternTile(pattern, out SvgPatternGeometry? mapped)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
             SvgPatternGeometry source = mapped ?? pattern;

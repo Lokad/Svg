@@ -1,7 +1,7 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-15 at the shared pattern-opacity checkpoint.
-The tile document is still rejected; its two retained opacity controls are exact.
+Updated 2026-10-15 at the shared pattern-coordinate checkpoint.
+The tile document is still rejected; viewport/unit controls now join the exact opacity controls.
 This plan owns remaining work and completion decisions;
 [SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md)
 owns admission, [INVENTORY](docs/INVENTORY.md) owns document evidence,
@@ -40,18 +40,19 @@ Completed work remains closed. Final-release qualification covers the finished
 revision without reopening unchanged mechanisms for a new accounting or coverage
 policy.
 
-The [pattern-opacity receipt](artifacts/maintenance-review-20261012/pattern-opacity-qualified-results.json)
-records **7,776 tests/platform** in **70.8s Windows / 224.6s Linux** for normal
-incremental Release build plus complete tests. Prior visual cases, assets/options/
-default limits and test semantics are preserved. Two obsolete rejection cases
-retain their original SVG inputs as positive admission/ownership regressions.
-The original opacity controls are **2/2 exact**; the whole tile document remains
-**0/1**, with **3/8 exact controls** including its baseline reflected map.
-[Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38721429867)
-for `d720fa08`, first attempt, including memory, browser/setup, font, validator,
-package and installed-consumer checks. The receipt owns the exact-revision step
-audit. Reuse terminal evidence for unchanged documentation; do not repoll this or
-preceding completed runs. The document and remaining finite support exits stay open.
+The [latest coordinate receipt](artifacts/maintenance-review-20261012/pattern-units-qualified-results.json)
+records finished platform checks, preserved regressions and routine duration.
+The original opacity controls, object-box tile/content units, inherited default
+units and reflected fractional map are exact against unchanged references.
+The tile bank remains **0/1 complete document / 7/10 exact controls**; image,
+filtered and supplied-font content remain required. The additional affine/unit
+control protects a discovered ordering defect; the original template control
+stays in its original bank. A diagnostic of the first five whole-sheet panels
+is exact, but does not count as document acceptance. The
+[preceding opacity receipt](artifacts/maintenance-review-20261012/pattern-opacity-qualified-results.json)
+and its [terminal CI](https://github.com/Lokad/Svg/actions/runs/38721429867)
+remain valid historical evidence; do not repoll completed runs. Current-revision
+CI is pending. G2–G9 and S17 remain open.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
@@ -74,19 +75,20 @@ witness across groups and APIs rather than opening a second checklist.
 
 | Required checklist | Missing behavior and dependencies | Concrete acceptance / completion condition |
 | --- | --- | --- |
-| [ ] 1. Pattern tile sheet (G6; active next) | Scaled viewport placement; remaining tile/content units and affine phase/maps; image/filter/supplied-font content. Reuse bounded replay/layers and only the needed composition/effects/font dependencies. | Preserve unchanged exact [combined opacity](tests/Research/paint-recording/pattern-tile-tile-fill-stroke-element.svg) and [group opacity](tests/Research/pattern-vector-content/group-opacity-promotion.svg). Complete the frozen sheet joining missing units/maps/content. Complete when every finite G6 row below has exact Windows/Linux acceptance and affected recursion/size/work/cancellation cleanup checks pass. Preserve the eight complete pattern documents. |
+| [ ] 1. Pattern tile sheet (G6; active next) | Image/filter/supplied-font tile content; uncovered target/stroke/instance maps. Viewport fills, both unit systems and retained affine phase are completed dependencies. Reuse bounded replay/layers and only the needed composition/effects/font dependencies. | Preserve unchanged exact [combined opacity](tests/Research/paint-recording/pattern-tile-tile-fill-stroke-element.svg) and [group opacity](tests/Research/pattern-vector-content/group-opacity-promotion.svg). Complete the frozen sheet joining missing units/maps/content. Complete when every finite G6 row below has exact Windows/Linux acceptance and affected recursion/size/work/cancellation cleanup checks pass. Preserve the eight complete pattern documents. |
 | [ ] 2. Remaining labels, paths and font validation (G9) | Stroked decorations/paths; uncovered glyph maps; three composite flag semantics; private deployment validation. Reuse qualified layout, fitting and paint/source maps. | Direct and curved-path stroked decorations, bounded overlapping/transformed-offset composites, and only uncovered affine glyph semantics. Complete when each is exact on both platforms, valid degenerates have measured outcomes, affected failure checks pass and the finite private request set has sanitized outcomes. Preserve completed label/path and intended-font evidence. |
 | [ ] 3. Remaining composition acceptance (G2–G5; G7 placement/style) | Unwitnessed stroke/paint maps; heterogeneous/curved clip-child unions and larger fallback; remaining mask units/nested restoration; image offsets and resource presentation. Reuse the completed [composition sheet](tests/Research/composition-sheet/README.md), geometry and native source replay. | The finite cases below cover dashed curved shader caps/alpha, reflected pattern maps, remaining child-union and unit/restoration boundaries, independent image offsets and applicable resource style. Complete when each missing semantic is exact on both platforms, with measured degenerate outcomes and affected cleanup. Percentage-use, convex overlap and partial-use-mask controls are completed dependencies. |
 | [ ] 4. Remaining finite effects/markers (G8) | Colored/translucent linearRGB shadows; identity/linear-image restoration; uncovered affine paint/source maps, object-box clips, source crossings and marker semantics. Reuse qualified bounded capture, transfer and restore. | Preserve the delivered [whole sheet and eleven controls](tests/Research/effects-marker-sheet/README.md). Complete each named finite G8 acceptance below, including the retained standalone linear-image defect, with affected graph/region/resource checks. Whole-sheet completion alone does not close this row. |
 | [ ] 5. Release (S17) | Finished-revision contracts and evidence after rows 1–4. | Close all finite G2–G9 exits; preserve established exact results; pass complete platform/API/resource/package/consumer checks and exact-revision CI; report representative measurements. Every [release condition](#release-completion-s17) must hold. Counts alone cannot establish completion. |
 
-**Next correction:** take the frozen [pattern tile sheet](tests/Research/pattern-tile-sheet/README.md)
-through scaled nested viewport placement, then its object-box tile/content units
-and image/filter/supplied-font content gates. The whole document remains **0/1**;
-controls are **3/8 exact**, including the two unchanged original opacity controls
-and baseline reflected fractional map. Reuse the qualified source layers, packed
-shader coverage, geometry and decode/font/filter machinery. Bring forward only
-the shared dependencies this document needs; no new scope or exhaustive product.
+**Next correction:** reuse bounded definition-content replay to admit the frozen
+image/filter/supplied-font panels, starting with the whole sheet's explicit
+retained-filter rejection. Preserve **7/10 exact controls** and the first-five-
+panel diagnostic while taking the original whole document to exact Windows/Linux
+outputs. Reuse existing decode, filter and supplied-font preparation; do not
+introduce another scene, raster or measurement framework. Then qualify the
+remaining independent G6 target/stroke/instance boundaries below. The whole
+sheet and finite G6 exit are separate completion conditions.
 
 The effects/composition/tile sheets are bounded acceptance recipes, not new
 feature promises or acquisition quotas. Before implementation, bind each missing
@@ -185,15 +187,19 @@ supplied-font content remain required. Preserve tile borders, phase, alpha,
 transformed fill/stroke and inheritance without unbounded repeat-count work.
 Recursive pattern/paint dependencies reject explicitly. Qualified native first
 linear/radial/rounded payloads, fractional phase and border clipping stay closed.
-The unchanged element/group opacity controls are now exact on both platforms: the
-[opacity receipt](artifacts/maintenance-review-20261012/pattern-opacity-qualified-results.json)
-links bounded recorded layers, shader coverage restoration and affected lifecycle
-checks. Preserve them as completed dependencies; G6 and the whole tile sheet remain open.
+Qualified dependencies are linked from the
+[tile bank](tests/Research/pattern-tile-sheet/README.md) and
+[coordinate receipt](artifacts/maintenance-review-20261012/pattern-units-qualified-results.json):
+unchanged element/group opacity, scaled nested-viewport rectangle fills, both
+object-box unit systems without viewBox, inherited default units and the retained
+fractional reflected map. Use original local object bounds, separate from clip/
+stroke extents, and retain native drawing/shader-local matrix stages. These
+mechanisms are completed dependencies; G6 and the whole sheet remain open.
 
 | Required remaining behavior | Dependency / concrete acceptance / completion |
 | --- | --- |
-| Scaled nested viewport placement, object-box tile units and object-box content units without viewBox; uncovered viewBox/phase maps | The whole sheet now reaches the scaled-viewport gate. `SvgPatternTemplate.ValidateUnits` still gates both named unit cases. Reuse [viewBox](tests/Research/pattern-viewbox/manifest.json), [vector](tests/Research/pattern-vector-content/manifest.json) and [instance](tests/Research/pattern-instance-content/manifest.json) evidence; the frozen tile-sheet panels cover both unit gates and reflected fractional mapping, which is already exact. Reuse it; add no duplicate map witness. Complete when scaled viewport placement, both unit gates and independent maps are exact with bounded tile work. |
-| Image, filtered and supplied-font tile content | Reuse qualified G7–G9 decode/capture/font preparation and the three frozen image/filter/font panels. Complete when each content route is exact with recursive/size/work denial, cancellation and partial cleanup protected. No exhaustive content/paint/instance product. |
+| Image, filtered and supplied-font tile content | Existing decode/capture/font preparation and the three frozen tile-sheet controls. Start at the whole document's retained-filter gate. Complete when each control and the unchanged whole sheet are exact on both platforms, with affected recursive/size/work denial, cancellation and partial cleanup protected. No content × paint × instance product. |
+| Uncovered target/stroke/instance maps and viewBox/phase interactions | Reuse qualified [viewBox](tests/Research/pattern-viewbox/manifest.json), [vector](tests/Research/pattern-vector-content/manifest.json), [instances](tests/Research/pattern-instance-content/manifest.json) and new unit/map witnesses. Retained boundaries still include scaled-viewport patterned strokes/uses and skewed oval targets; they are required G4/G6 work, not approved deferrals. Bind each independent missing map to the row-3 curved shader/stroke case or one focused existing control before correction. Complete when each missing map is exact, finite degenerates have measured outcomes and tile work remains bounded; no exhaustive geometry/location census. |
 
 <a id="g7-embedded-pngs-and-static-css"></a>
 
@@ -375,8 +381,8 @@ representativeness quota delays this finite release.
   visual by every API or require all combinations before advancing a document.
 - Keep **routine incremental Release build plus complete tests below ten minutes
   per platform**.
-  The [latest receipt](artifacts/maintenance-review-20261012/pattern-opacity-qualified-results.json)
-  records **7,776 tests/platform** in **70.8s Windows / 224.6s Linux**, including
+  The [latest receipt](artifacts/maintenance-review-20261012/pattern-units-qualified-results.json)
+  records **7,792 tests/platform** in **69.0s Windows / 224.5s Linux**, including
   normal build/startup and complete tests. Both meet the target. Keep each
   receipt's workload/methodology limits; these are no speedup claims.
   Use normal incremental builds without forced compiler shutdown. No rerun is
@@ -559,7 +565,7 @@ The earlier one-program format inspection establishes no whole-pack or rendering
 qualification; its historical detail stays in Git. The host and catalog are
 implemented. Preserve them rather than rebuilding them as another S7 queue.
 
-**Required private validation, attached to row 4 (G9):** freeze one regular, one
+**Required private validation, attached to row 2 (G9):** freeze one regular, one
 bold, one italic and one fallback request before execution. Use the unchanged
 deployed manifest to prepare their required programs; inventory their relevant
 formats, coverage, composites and positioning
@@ -602,7 +608,7 @@ fallback, pair positioning and admitted ligatures. Their evidence is in the
 [catalog tests](tests/Lokad.Svg.Tests/SvgFontPackCatalogTests.cs) and qualified
 supplied-font document banks. Existing fallback/preparation is implemented;
 general shaping is outside scope. Qualified positioning, spacing, baselines,
-length policies and the complete path sheet stay closed. Only row 4 and its
+length policies and the complete path sheet stay closed. Only row 2 and its
 finite G9 boundary own remaining text work; historical rejection wording in
 linked checkpoint records does not reopen completed mechanisms.
 
