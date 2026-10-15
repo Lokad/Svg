@@ -1,0 +1,20 @@
+{
+  "pinnedSourceUrl": "https://www.w3.org/TR/2026/CR-SVG2-20261006/images/text/textdecoration01.svg",
+  "sourcePublication": "SVG 2 Candidate Recommendation Snapshot, 06 October 2026",
+  "copyright": "Copyright 2026 World Wide Web Consortium",
+  "sourceSha256": "2eb8b91cd641955bc348cfa56cb32888599ef809fecdcb82e946bd959021b285",
+  "sourceBytes": 974,
+  "licenseEvidence": [
+    "https://github.com/w3c/svgwg/blob/main/LICENSE.md",
+    "https://www.w3.org/copyright/document-license-2023/",
+    "https://www.w3.org/copyright/software-license/"
+  ],
+  "licensingNote": "Repository documents use the W3C Document License; that license expressly covers clearly marked code components under the W3C Software License. This SVG is the linked markup code example. Retain complete original attribution/license notices beside unmodified asset before redistribution.",
+  "fontContract": {
+    "pack": "tests/Research/offset-merge-document/font-pack.json",
+    "packId": "public-noto-sans",
+    "requestedFamily": "serif",
+    "program": "tests/Research/supplied-font-labels/fonts/NotoSans-Regular.ttf",
+    "faceIndex": 0
+  }
+}

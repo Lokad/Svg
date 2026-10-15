@@ -86,10 +86,12 @@ witness across groups and APIs rather than opening a second checklist.
 [W3C text-decoration example](https://www.w3.org/TR/2026/CR-SVG2-20261006/images/text/textdecoration01.svg)
 at **1200×400 transparent**, with the existing public Noto program supplied under
 its initial `serif` request. Its [source/admission record](artifacts/stroked-decorations-20261015/sourcing.json)
-records the named stroked-decoration rejection and license evidence. Healthy
-platform references and intended-font proof are **pending**, not qualified.
-Freeze those before correction, then finish this whole document. Use a focused
-curved decorated-path case for the independent remaining path semantic. Preserve
+records the named stroked-decoration rejection and license evidence. The
+[retained bank](tests/Research/stroked-decorations/README.md) now freezes the whole
+reference and two controls: **0/1 complete document / 0/2 exact controls**, all
+rejected at the named stroke gate on Windows/Linux. Its 18 intended and 54
+font-use captures are healthy stable triples at declared viewports. Finish the
+unchanged whole and the independent curved-path control against these references. Preserve
 the complete tile sheet and all other row-2 obligations; G6 maps/presentation stay
 required on row 3. No feature promise is deferred to advance this document.
 

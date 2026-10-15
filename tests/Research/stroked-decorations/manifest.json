@@ -1,0 +1,407 @@
+{
+  "schemaVersion": 1,
+  "purpose": "One unchanged licensed W3C decoration document and two CC0 controls for promised G9 direct/path stroked decoration behavior. References and font-use triples precede renderer changes.",
+  "declarationBaseRevision": "3dc00785",
+  "fontPack": "../offset-merge-document/font-pack.json",
+  "fontPackId": "public-noto-sans",
+  "fontProgram": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontProgramSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "fontLicense": "../supplied-font-labels/fonts/OFL.txt",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "oracleFontTransport": {
+    "family": "LokadSuppliedSerif",
+    "sourceAlias": "serif",
+    "cssAliasMapping": ":root,[font-family=\"serif\"]{font-family:\"LokadSuppliedSerif\"}",
+    "reason": "A generic family cannot be bound by @font-face alone; map only the declared initial/explicit serif alias inside the SVG image. Converter source bytes remain unchanged.",
+    "xmlTreeCheck": "Remove the appended defs/style insertion and restore original root width/height; original tree otherwise remains equal.",
+    "rootDimensions": "For the W3C document only, replace native root width/height with the explicitly declared 1200x400 output viewport; retain converter bytes and viewBox."
+  },
+  "cases": [
+    {
+      "id": "w3c-textdecoration01",
+      "input": "w3c-textdecoration01.svg",
+      "width": 1200,
+      "height": 400,
+      "scale": 1,
+      "background": "transparent",
+      "role": "document-output",
+      "license": "LicenseRef-W3C-Software-2023",
+      "sourceSha256": "2eb8b91cd641955bc348cfa56cb32888599ef809fecdcb82e946bd959021b285",
+      "selection": "Original W3C whole stroked-decoration example.",
+      "explicitViewport": true,
+      "licenseEvidence": "LICENSE.txt",
+      "expectedError": "UnsupportedFeature",
+      "observedGate": "Stroked text decorations are not implemented.",
+      "reference": "references/w3c-textdecoration01.png",
+      "referenceSha256": "f32576b1b543bd45b0b3ff3944b9e1765019e6ae20985b99a94b4e107060e0c2",
+      "captures": [
+        {
+          "pngSha256": "f32576b1b543bd45b0b3ff3944b9e1765019e6ae20985b99a94b4e107060e0c2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f32576b1b543bd45b0b3ff3944b9e1765019e6ae20985b99a94b4e107060e0c2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f32576b1b543bd45b0b3ff3944b9e1765019e6ae20985b99a94b4e107060e0c2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "fontUseProof": {
+        "windows": [
+          {
+            "id": "w3c-textdecoration01",
+            "mode": "missing",
+            "changedPixels": 69032,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "13d2a9643ec55af00ad95a402d8432df6b4a769040b553d2a11e1481d252f823",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "w3c-textdecoration01",
+            "mode": "corrupt",
+            "changedPixels": 69032,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "13d2a9643ec55af00ad95a402d8432df6b4a769040b553d2a11e1481d252f823",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "w3c-textdecoration01",
+            "mode": "substituted",
+            "changedPixels": 82275,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "bf638af41303bc80a199653f6faf79bf8e5b3795f92560cffedfdc557549dbff",
+            "inputFontProgramChangedOnly": true
+          }
+        ],
+        "linux": [
+          {
+            "id": "w3c-textdecoration01",
+            "mode": "missing",
+            "changedPixels": 60457,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "59cea8592320c8fac1c93216686f904233440eaae07b360620c98c840d04a9c0",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "w3c-textdecoration01",
+            "mode": "corrupt",
+            "changedPixels": 60457,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "59cea8592320c8fac1c93216686f904233440eaae07b360620c98c840d04a9c0",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "w3c-textdecoration01",
+            "mode": "substituted",
+            "changedPixels": 73014,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "6a4f8461fc04f20a17a88b0faa24b28aa20123c5024c99fcf08075823c045269",
+            "inputFontProgramChangedOnly": true
+          }
+        ]
+      },
+      "linuxReference": "references/linux64/w3c-textdecoration01.png",
+      "linuxReferenceSha256": "5f2e72426147da7a8192e968e8028266c5c4380a263d5cbbd63b93f056e1be99",
+      "linuxCaptures": [
+        {
+          "pngSha256": "5f2e72426147da7a8192e968e8028266c5c4380a263d5cbbd63b93f056e1be99",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5f2e72426147da7a8192e968e8028266c5c4380a263d5cbbd63b93f056e1be99",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5f2e72426147da7a8192e968e8028266c5c4380a263d5cbbd63b93f056e1be99",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "oracleInputSha256": "e72dd37347f6b18d637c866d720bfe1ba3fe0ec5d1d4b54a2a6f518f5daa8beb"
+    },
+    {
+      "id": "direct-stroked-decoration",
+      "input": "direct-stroked-decoration.svg",
+      "width": 240,
+      "height": 80,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "3ae731f9248abbea3528aeb6c843d782a6971c07cf316911bee7fee6e9c2ce70",
+      "selection": "Focused promised direct/path stroked-decoration mechanism for the retained W3C document and finite G9 exit.",
+      "explicitViewport": true,
+      "licenseEvidence": "direct-stroked-decoration.svg",
+      "expectedError": "UnsupportedFeature",
+      "observedGate": "Stroked text decorations are not implemented.",
+      "reference": "references/direct-stroked-decoration.png",
+      "referenceSha256": "fa6829c8f48306e31f7c438ff8310fa2824c5f0e3ffb6f68f380e28679add994",
+      "captures": [
+        {
+          "pngSha256": "fa6829c8f48306e31f7c438ff8310fa2824c5f0e3ffb6f68f380e28679add994",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fa6829c8f48306e31f7c438ff8310fa2824c5f0e3ffb6f68f380e28679add994",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fa6829c8f48306e31f7c438ff8310fa2824c5f0e3ffb6f68f380e28679add994",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "fontUseProof": {
+        "windows": [
+          {
+            "id": "direct-stroked-decoration",
+            "mode": "missing",
+            "changedPixels": 2942,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "481c95a2b534cd401f0af41a18ff035aa9ea8eeb63f9602f74dbf97c07edf65d",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "direct-stroked-decoration",
+            "mode": "corrupt",
+            "changedPixels": 2942,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "481c95a2b534cd401f0af41a18ff035aa9ea8eeb63f9602f74dbf97c07edf65d",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "direct-stroked-decoration",
+            "mode": "substituted",
+            "changedPixels": 2192,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "646463667ea70881ac732a750fddb2247f60f2ddb48048a5ee6308a56db6379d",
+            "inputFontProgramChangedOnly": true
+          }
+        ],
+        "linux": [
+          {
+            "id": "direct-stroked-decoration",
+            "mode": "missing",
+            "changedPixels": 2872,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "c4af96125e63f4fe642d3ae75d90909b0e3fb737de396d0023a189b7258b7a3f",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "direct-stroked-decoration",
+            "mode": "corrupt",
+            "changedPixels": 2872,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "c4af96125e63f4fe642d3ae75d90909b0e3fb737de396d0023a189b7258b7a3f",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "direct-stroked-decoration",
+            "mode": "substituted",
+            "changedPixels": 1995,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "fd1aca5345a312ac55d0f4ea233f63dc95f717c1c30db65237ff469663a013fb",
+            "inputFontProgramChangedOnly": true
+          }
+        ]
+      },
+      "linuxReference": "references/linux64/direct-stroked-decoration.png",
+      "linuxReferenceSha256": "015ad35397889b5d7e3020aec12e62a37af0d909d0e3cb74b87815f541973614",
+      "linuxCaptures": [
+        {
+          "pngSha256": "015ad35397889b5d7e3020aec12e62a37af0d909d0e3cb74b87815f541973614",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "015ad35397889b5d7e3020aec12e62a37af0d909d0e3cb74b87815f541973614",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "015ad35397889b5d7e3020aec12e62a37af0d909d0e3cb74b87815f541973614",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "oracleInputSha256": "515a07f4a0fefac88d66833e2a1dd801e3ba206b1a9bb4d60d3310a5862121af"
+    },
+    {
+      "id": "curved-stroked-decoration",
+      "input": "curved-stroked-decoration.svg",
+      "width": 256,
+      "height": 144,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "b950f36f2bb0bf03afc86a72fcabf2582f1772426c55008ecd70ff393c0b603b",
+      "selection": "Focused promised direct/path stroked-decoration mechanism for the retained W3C document and finite G9 exit.",
+      "explicitViewport": true,
+      "licenseEvidence": "curved-stroked-decoration.svg",
+      "expectedError": "UnsupportedFeature",
+      "observedGate": "Stroked text decorations are not implemented.",
+      "reference": "references/curved-stroked-decoration.png",
+      "referenceSha256": "bee7dd8ce58b25aaaf0e96f3859083415d22ccce883d5f6ad0020c00d10060f3",
+      "captures": [
+        {
+          "pngSha256": "bee7dd8ce58b25aaaf0e96f3859083415d22ccce883d5f6ad0020c00d10060f3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bee7dd8ce58b25aaaf0e96f3859083415d22ccce883d5f6ad0020c00d10060f3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bee7dd8ce58b25aaaf0e96f3859083415d22ccce883d5f6ad0020c00d10060f3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "fontUseProof": {
+        "windows": [
+          {
+            "id": "curved-stroked-decoration",
+            "mode": "missing",
+            "changedPixels": 2207,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "adea11f6d1ba1d015e5e42746ee876665248a7c9ffc66f8cbb72ac24537e1a77",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "curved-stroked-decoration",
+            "mode": "corrupt",
+            "changedPixels": 2207,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "adea11f6d1ba1d015e5e42746ee876665248a7c9ffc66f8cbb72ac24537e1a77",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "curved-stroked-decoration",
+            "mode": "substituted",
+            "changedPixels": 2790,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "b548297003fc374ffe704a6338612899acc5860d0a4be21da064e8b0aa6a2e6f",
+            "inputFontProgramChangedOnly": true
+          }
+        ],
+        "linux": [
+          {
+            "id": "curved-stroked-decoration",
+            "mode": "missing",
+            "changedPixels": 1964,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "16ceb33aa266d7f409c6cb6d70c45597f2f7e78e6e9794e16bd8ab9c34a5e7b5",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "curved-stroked-decoration",
+            "mode": "corrupt",
+            "changedPixels": 1964,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "16ceb33aa266d7f409c6cb6d70c45597f2f7e78e6e9794e16bd8ab9c34a5e7b5",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "curved-stroked-decoration",
+            "mode": "substituted",
+            "changedPixels": 2526,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "888c385678c8ce89cc49b386fba0a314a59faa5e7a2d41817f975bb1ee6f47f3",
+            "inputFontProgramChangedOnly": true
+          }
+        ]
+      },
+      "linuxReference": "references/linux64/curved-stroked-decoration.png",
+      "linuxReferenceSha256": "27bc7e0f6baf25024cb5ad21fcc9b4392cfc220b077b54d23b2c056a39dc26d0",
+      "linuxCaptures": [
+        {
+          "pngSha256": "27bc7e0f6baf25024cb5ad21fcc9b4392cfc220b077b54d23b2c056a39dc26d0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "27bc7e0f6baf25024cb5ad21fcc9b4392cfc220b077b54d23b2c056a39dc26d0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "27bc7e0f6baf25024cb5ad21fcc9b4392cfc220b077b54d23b2c056a39dc26d0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "oracleInputSha256": "e4d87aa0c0ff4b4353febb1a2a92ae4df7b4782440aab5da20e3702e71a32c1e"
+    }
+  ]
+}

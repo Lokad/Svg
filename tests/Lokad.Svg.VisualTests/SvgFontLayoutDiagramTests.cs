@@ -238,6 +238,9 @@ public sealed class SvgFontLayoutDiagramTests
     public static IEnumerable<object[]> PatternTileCases()
         => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "pattern-tile-sheet"));
 
+    public static IEnumerable<object[]> StrokedDecorationCases()
+        => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "stroked-decorations"));
+
     private static IEnumerable<object[]> ReadCases(string directory)
     {
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
@@ -305,6 +308,11 @@ public sealed class SvgFontLayoutDiagramTests
     public Task Declared_pattern_tile_outputs_preserve_original_sources_and_platform_references(string identity)
         => ValidateDeclared(Path.Combine(AppContext.BaseDirectory, "Research", "pattern-tile-sheet"), identity, [new("Example", 400, false)]);
 
+    [Theory]
+    [MemberData(nameof(StrokedDecorationCases))]
+    public Task Declared_stroked_decoration_outputs_preserve_original_sources_and_platform_references(string identity)
+        => ValidateDeclared(Path.Combine(AppContext.BaseDirectory, "Research", "stroked-decorations"), identity, [new("serif", 400, false)]);
+
     private static async Task ValidateDeclared(string directory, string identity, SvgFontFaceRequest[] requests)
     {
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
@@ -314,8 +322,10 @@ public sealed class SvgFontLayoutDiagramTests
         byte[] unchanged = input.ToArray();
         Assert.Equal(Required(item, "sourceSha256"), Convert.ToHexStringLower(SHA256.HashData(input)));
         string license = Required(item, "license");
-        Assert.Contains(license, new[] { "CC0-1.0", "MIT" });
-        Assert.True(input.AsSpan().IndexOf(System.Text.Encoding.UTF8.GetBytes("SPDX-License-Identifier: " + license)) >= 0);
+        Assert.Contains(license, new[] { "CC0-1.0", "MIT", "LicenseRef-W3C-Software-2023" });
+        if (license == "LicenseRef-W3C-Software-2023")
+            Assert.True(File.Exists(Path.Combine(directory, Required(item, "licenseEvidence"))));
+        else Assert.True(input.AsSpan().IndexOf(System.Text.Encoding.UTF8.GetBytes("SPDX-License-Identifier: " + license)) >= 0);
         string referenceKey = OperatingSystem.IsLinux() ? "linuxReference" : "reference";
         byte[] reference = File.ReadAllBytes(Path.Combine(directory, Required(item, referenceKey)));
         Assert.Equal(Required(item, referenceKey + "Sha256"), Convert.ToHexStringLower(SHA256.HashData(reference)));
@@ -327,7 +337,8 @@ public sealed class SvgFontLayoutDiagramTests
             Assert.True(capture.GetProperty("profileCleaned").GetBoolean());
             Assert.Equal(Required(item, referenceKey + "Sha256"), Required(capture, "pngSha256"));
         }
-        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, Required(root, "fontPack"))), "public-noto-layout");
+        string packId = root.TryGetProperty("fontPackId", out JsonElement declaredPack) ? declaredPack.GetString() ?? throw new InvalidDataException() : "public-noto-layout";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, Required(root, "fontPack"))), packId);
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(catalog,
             requests, new Provider(), CancellationToken.None);
         SvgRenderOptions options = new(new SvgViewport(item.GetProperty("width").GetInt32(), item.GetProperty("height").GetInt32()), 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
