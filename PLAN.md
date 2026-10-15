@@ -29,10 +29,11 @@ Optional maintenance below adds no feature-completion prerequisite.
 
 The latest complete local [qualification](artifacts/maintenance-review-20261012/stroke-style-exits-qualified-results.json)
 is **7,832 tests/platform**, normal incremental Release build plus full tests in
-**94.7s Windows / 314.9s Linux**. Exact-revision hosted CI for this correction is
-pending push. The preceding [primitive-stroke CI](https://github.com/Lokad/Svg/actions/runs/38769781171)
-is terminal green for `816db741`; reuse that closed audit without repolling.
-Completed work stays closed under the existing coverage/accounting policy.
+**94.7s Windows / 314.9s Linux**. [Hosted Windows/Linux CI](https://github.com/Lokad/Svg/actions/runs/38774729533)
+is terminal green for `19324557`, first attempt, with all required resource,
+browser/setup, font, validator, package and installed-consumer checks. Reuse the
+closed exact-revision audit without repolling. Completed work stays closed under
+the existing coverage/accounting policy.
 
 The [stroke/style exit bank](tests/Research/stroke-style-exit-sheet/README.md) is
 **1/1 complete document / 4/4 exact controls**, from admission **0/1 / 0/4**,
