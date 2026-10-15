@@ -1,6 +1,6 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-15 at the completed clip-union-exit-sheet checkpoint.
+Updated 2026-10-15 after clip-union qualification and next-document preflight.
 Preserve the current implementation work, qualified `inv-146` correction and every
 established exact result, original SVG/font/reference bytes, options and default
 resource limits. This file owns delivery order, required exits and scope
@@ -34,22 +34,10 @@ hosted CI, package and installed-consumer checks. Reuse closed exact-revision
 audits without repolling; unchanged documentation does not reopen qualification.
 Completed work stays closed under the existing coverage/accounting policy.
 
-The [shared map exit bank](tests/Research/shared-map-exit-sheet/README.md) is
-**1/1 complete document / 5/5 exact controls**, from admission **0/1 / 0/5**,
-against unchanged Windows/Linux references. This is the sixteenth authored
-document. All five named map routes in item 2 are complete, with visible phase
-acceptance, original offscreen nonpainting, device-width checks and affected
-ownership protections. Existing stroke/style, shader-inheritance and every earlier
-exact result stay complete. Remaining composition/resource/font/effect exits keep
-G2–G9/S17 open.
-
-The [clip union sheet](tests/Research/clip-union-exit-sheet/README.md) is now
-**1/1 complete document / 5/5 exact controls** on both platforms, including native
-curves, independent compound winding, clip-rule cascade and the original 42/43
-boundary. It is the seventeenth authored document. The existing G3/G5 cubic-pair
-intersection dependency still rejects: document counts do not close that boundary.
-Its next acceptance is specified in C1; C2-C4, remaining C5 and font/effect exits
-stay required without feature deferral.
+The completed [clip union sheet](tests/Research/clip-union-exit-sheet/README.md)
+does not establish cubic-pair intersections. That measured rejection and the
+affine-ancestor viewport difference are the next C1/C2 dependencies below;
+remaining composition/resource/font/effect exits keep G2–G9/S17 open.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
@@ -62,6 +50,16 @@ stroke/style and shared map exits in items 1–2 are complete.
 Bring a later dependency forward only when it blocks the selected document.
 Each item closes against its acceptance and the common validation policy; no
 exhaustive G2 or shape × paint × instance prerequisite applies.
+
+**Next complete document within item 3:** the declared CC0
+[cubic/viewport sheet](artifacts/cubic-viewport-exits-20261015/declaration.json),
+384×160, with two independent controls. Its
+[preflight](artifacts/cubic-viewport-exits-20261015/frozen-preflight-results.json)
+retains eighteen healthy, stable captures across Windows/Linux. The sheet and
+cubic control reject; the viewport control renders with 7,866 differing pixels
+on each platform. Freeze these unchanged assets/options and reference triples in
+the existing test-bank format before correction. Complete the whole document and
+both controls exactly on both platforms; this advances C1/C2 without closing C3–C5.
 
 | Required item, in order | Missing behavior and dependencies | Acceptance and completion condition |
 | --- | --- | --- |
@@ -109,29 +107,13 @@ features require an explicit scope decision.
   fill/stroke opacity, dashed curved paints and nonuniform placement. Use shared
   stroke/paint machinery while preserving native geometry distinctions.
 
-The completed [stroke/style exit sheet](tests/Research/stroke-style-exit-sheet/README.md)
-closes R1 solid-line caps/dashes/alpha, R2 sharp-rectangle bevel joins and R3 curved
-shader alpha. Its [receipt](artifacts/maintenance-review-20261012/stroke-style-exits-qualified-results.json)
-records unchanged whole-sheet acceptance, four controls, three inherited shader
-controls, original regression inputs and full platform/resource qualification.
-The 18-pixel translated-panel difference was resolved by shared source-coordinate
-paint binding; native conic/rectangle construction stays shared.
-
-The completed [shared map exit sheet](tests/Research/shared-map-exit-sheet/README.md)
-closes the five item-2 map cases against its original document and five controls.
-Parent-owned tile promotion sees the complete host/output map, including
-reconstructed instances; stroked tiles retain replay before output scale is known.
-Scaled viewport rectangles and nonuniform dashed non-scaling strokes reuse the
-existing native constructors. The [receipt](artifacts/maintenance-review-20261012/shared-map-exits-qualified-results.json)
-retains original inputs/default limits, all prior tests, thirty-six unchanged
-native captures and affected ownership/work checks.
-
-Original singly/doubly reflected offscreen rectangles now paint nothing; the
-visible reflected controls separately establish phase. The original non-scaling
-input checks device width. Root viewBox scaling, pattern-content viewBox and
-stroke host maps retain their distinct coordinate stages. Items 1–2 are complete;
-remaining composition and resource locations belong to item 3, glyph maps to
-item 4 and filtered/marker sources to item 5. No feature promise is deferred.
+Items 1–2 are complete under their linked acceptance/qualification records.
+Preserve the original cap/dash/dot inputs, inherited shader controls, reflected
+offscreen nonpainting, visible pattern phase and device-width checks. Root
+viewBox scaling, pattern-content viewBox and stroke host maps retain their
+distinct coordinate stages; the [design record](docs/RASTERIZATION_DESIGN.md)
+owns implementation history. Remaining composition/resource locations belong
+to item 3, glyph maps to item 4 and filtered/marker sources to item 5.
 
 Completed inherited-symbol, reflected-phase, curved-target and viewport-map
 witnesses remain closed. Zero-size oval/object-box nonpainting and categorized
@@ -153,8 +135,8 @@ and [template](tests/Lokad.Svg.Tests/SvgPatternTemplateTests.cs) tests need no n
 
 | Required exit (item 3) | Concrete acceptance, dependency and completion |
 | --- | --- |
-| C1. Clip unions and their remaining cubic primitive | The [sheet and five controls](tests/Research/clip-union-exit-sheet/README.md) are complete against unchanged references: mixed rectangle/path, overlapping conics, independent compound/concave winding and 43-child mask fallback, including applicable C5 clip-rule cascade. The remaining promised G3 cubic-segment pair solver is a [measured rejection](artifacts/clip-union-exits-20261015/cubic-pair-pending-results-windows.json), with a declared CC0 64×48 [input](artifacts/clip-union-exits-20261015/cubic-pair-pending.svg). Freeze healthy native triples before correction, then make that unchanged cubic control exact on both platforms with affected bounds/ownership checks. Reuse existing native source/root/boundary machinery; no child-count, shape or API census. |
-| C2. Affine ancestor at a nested viewport | Axis ancestry is qualified. One rotated or skewed ancestor containing a scaled viewport and an unaffected sibling must be exact, with physical clipping and scope termination protected. Reuse viewport placement/affine clip machinery. |
+| C1. Clip unions and their remaining cubic primitive | The [sheet and five controls](tests/Research/clip-union-exit-sheet/README.md) close mixed rectangle/path, overlapping conics, independent compound/concave winding and 43-child fallback, including applicable C5 clip-rule cascade. The promised G3 cubic-pair solver still rejects in the [next document and 64×48 control](artifacts/cubic-viewport-exits-20261015/declaration.json). Freeze their healthy native references, then make both exact on Windows/Linux with affected bounds/ownership checks. Reuse existing native source/root/boundary machinery; no child-count, shape or API census. |
+| C2. Affine ancestor at a nested viewport | Axis ancestry is qualified. The declared 192×160 rotated/skewed ancestor and scaled-viewport [control](artifacts/cubic-viewport-exits-20261015/affine-ancestor-viewport.svg) has 7,866 differing pixels on each platform. Reuse viewport placement/affine clip machinery; make that control and the whole next sheet exact, protecting physical clipping and unaffected siblings inside and after the ancestor. C1 is required to finish the sheet, not to diagnose this independent control. |
 | C3. Mask units and restoration | Reuse [local-reference](tests/Research/mask-local-references/manifest.json), [group-mask](tests/Research/mask-group-documents/README.md) and custom-region/container-opacity witnesses. Exact two-panel object-box region/user-space content and user-space region/object-box content; nested leaf/group/use mask followed by an unmasked sibling. Reuse covered panels; qualify only missing unit/restoration semantics and affected cleanup. |
 | C4. Independent image alignment offsets | The [existing qualified active-axis witnesses](artifacts/shared-map-exits-20261015/existing-image-alignments.json) cover xMid/xMax and yMin/yMid/yMax through portrait/landscape meet/slice images. All nine spellings, `none` and omitted-meet equivalence are implemented in [aspect tests](tests/Lokad.Svg.Tests/SvgAspectRatioTests.cs). Add only one active horizontal xMin witness (portrait image in a wider meet viewport, or equivalent slice crop); preserve existing PNG/resource checks. Inactive axes establish no offset coverage. No alignment × placement census. |
 | C5. Applicable clipPath/mask/pattern presentation and tile-local scopes | Reuse [root/resource cascade](tests/Research/root-resource-cascade/manifest.json), [selectors](tests/Lokad.Svg.Tests/SvgCssSelectorTests.cs) and [paint order](tests/Lokad.Svg.Tests/SvgPaintOrderTests.cs). Exact inherited/container paint versus child override and stylesheet/inline priority at each uncovered applicable resource boundary; one bounded mixed image/vector tile with a local content clip/mask. Preserve scope/cleanup. Marker/filter presentation belongs to E3/E4 and text/span paint to T1, with no duplicate case sets. |
