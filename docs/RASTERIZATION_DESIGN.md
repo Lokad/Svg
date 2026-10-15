@@ -13842,3 +13842,35 @@ names actual legacy rejection assertions still required for G4/G6. Completing
 this document does not close those routes or wider G2–G9/S17. Rejected models,
 healthy stable captures and source/clip diagnostics remain in the existing ignored
 [study](../artifacts/shared-stroke-pattern-maps-20261015/).
+
+## Complete primitive stroke sheet through native replay (2026-10-15)
+
+The unchanged [primitive-stroke sheet](../tests/Research/primitive-stroke-sheet/README.md)
+and four controls are exact on Windows/Linux. All five outputs were rejected at
+admission; thirty healthy stable native captures and their first frozen references
+remain unchanged. The [qualification receipt](../artifacts/maintenance-review-20261012/primitive-strokes-qualified-results.json)
+records complete platform tests and prior-result/input preservation.
+
+Ellipse strokes now pass the validated cap to the existing conic stroker.
+Rounded rectangles use the existing admitted stroke style and rounded path,
+including dashes and independent alpha. Straight point lists use the existing
+native device-width calculation with their full affine map. Source geometry and
+paint-coordinate matrices remain distinct.
+
+Shader-painted lines share ordinary native path strokes and existing linear,
+radial or pattern outline repainting. The local lowering binds source object
+bounds before cap/dash expansion, retains the authored centerline and transfers
+its owners to repainted geometry. Inherited shader strokes resolve before the
+solid-shape fallback. Zero-area object-box gradients produce nonpainting strokes;
+single-stop paints retain their exact solid color. The superseded paint-line
+band/disc kernels and their unused admission records/helpers are removed; the
+established solid axis-line route retains its existing arithmetic.
+
+Core regressions preserve original SVGs, source vectors and dash/cap extents
+across the representation change. Two original negative inputs have missing
+trailing XML; after admitting their stroke styles they correctly report
+`MalformedInput`. Affected resource tests preserve parser/raster denial,
+cancellation, retry, borrowed-input integrity and output publication. Full
+qualification passes **7,826 tests/platform** in **70.9s Windows / 236.5s Linux**,
+including normal incremental builds. R1–R3 and the basic pattern routes in PLAN
+remain required; this document does not close wider G4 or release.

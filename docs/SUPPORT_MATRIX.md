@@ -1,3 +1,24 @@
+## Native primitive stroke/style replay (2026-10-15)
+
+The [primitive-stroke bank](../tests/Research/primitive-stroke-sheet/README.md) is
+**1/1 complete document / 4/4 exact controls** on Windows/Linux. Dashed oval caps,
+rounded-rectangle dashes with independent alpha, translucent capped line shaders
+and nonuniform radial point-list strokes now use the existing native geometry and
+shared source/paint maps. Shader lines retain their authored endpoints and object
+bounds through caps/dashes; their superseded band/disc repaint kernels are removed.
+
+The [qualification receipt](../artifacts/maintenance-review-20261012/primitive-strokes-qualified-results.json)
+records all **7,826 passing tests/platform**, unchanged sources/options/references/
+default limits and preserved preceding results. Original tests retain dash/cap
+bounds, gradient vectors, denial/cancellation/cleanup/retry and output publication.
+Zero-area object-box line gradients paint nothing; original malformed radial and
+bevel-polygon inputs still fail XML validation after style admission.
+
+This supersedes the former primitive/line gates below. Solid-line round/zero-square
+dash boundaries, sharp-rectangle bevel joins and curved shader-alpha acceptance
+remain required, alongside the four basic pattern routes in [PLAN](../PLAN.md#g2g4-instances-geometry-maps-and-strokes).
+No G2–G9/S17 closure or feature deferral is claimed.
+
 ## Shared paint maps and nested viewport ancestry (2026-10-15)
 
 The [shared map bank](../tests/Research/shared-paint-map-sheet/README.md) is

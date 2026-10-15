@@ -47,16 +47,25 @@ public sealed class SvgAffineOvalStrokeTests
     [Theory]
     [InlineData("round")]
     [InlineData("square")]
-    public void Unsupported_dashed_oval_shader_caps_release_the_preceding_owner_before_output(string cap)
+    public void Dashed_oval_shader_caps_release_owners_and_preserve_output_on_cancellation(string cap)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><rect width='32' height='32' fill='red'/><ellipse cx='16' cy='16' rx='12' ry='8' fill='none' stroke='url(#g)' stroke-width='2' stroke-dasharray='4 2' stroke-linecap='" + cap + "'/></svg>");
         RenderBudget budget = new(1_000_000);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
-            SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+            Assert.NotEmpty(scene.Geometries);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        RenderBudget denied = new(budget.Snapshot().PeakBytes / 2);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+            SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, denied.Snapshot().CurrentBytes);
         using MemoryStream output = new();
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
-            SvgConverter.ConvertToPng(input, output, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
-        Assert.Equal(0, output.Length);
+        SvgConverter.ConvertToPng(input, output, SvgRenderOptions.Default, CancellationToken.None);
+        Assert.Equal(SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray(), output.ToArray());
+        using CancellationTokenSource cancellation = new();
+        cancellation.Cancel();
+        using MemoryStream cancelledOutput = new();
+        Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() =>
+            SvgConverter.ConvertToPng(input, cancelledOutput, SvgRenderOptions.Default, cancellation.Token)).CancellationToken);
+        Assert.Equal(0, cancelledOutput.Length);
     }
 }

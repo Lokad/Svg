@@ -7,31 +7,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Validates the admitted stroke style subset shared by attributes and style declarations.</summary>
 internal static class SvgStrokeStyleSyntax
 {
-    /// <summary>Prepares the shared paint-line geometry gate, preserving authored validation before effective dash style.</summary>
-    internal static SvgPaintLineStrokeAdmission PreparePaintLineGeometry(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgLineSyntax syntax, SvgViewportFrame? frame)
-    {
-        int strokeWidth = SvgGeometrySyntax.ParseInteger(style.Width ?? syntax.StrokeWidth ?? "1");
-        // Zero width returns before cap, dash, transform, viewport or paint handling.
-        if (strokeWidth == 0) return new(0, SvgAffineTransform.Identity);
-        if (ParseDasharray(reader.GetAttribute("stroke-dasharray")) is not null || ParseLinecap(reader.GetAttribute("stroke-linecap")) != SvgStrokeCap.Round)
-            RequireButtOrSquareCapJoin(reader, "line", context.WorkCounter, context.CancellationToken);
-        SvgAffineTransform transform = context.ResolveTransform(reader);
-        if (transform != SvgAffineTransform.Identity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
-        if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
-        if ((syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2) || (syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
-        if (strokeWidth <= 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width line strokes are implemented.");
-        return new(strokeWidth, transform);
-    }
 
-    /// <summary>Parses effective line dash/cap/path-length values after geometry admission and any paint-specific dispatch.</summary>
-    internal static SvgPaintLineStrokeStyle PreparePaintLineStyle(XmlReader reader, SvgComputedStyle style, SvgLineSyntax syntax, int strokeWidth)
-    {
-        double[]? dashEntries = ParseDasharray(style.Dasharray);
-        SvgStrokeCap linecap = ParseLinecap(style.Linecap);
-        if (linecap == SvgStrokeCap.Square && dashEntries is null) syntax = syntax.WithSquareCaps(strokeWidth);
-        double? pathLength = dashEntries is null ? null : ParsePathLength(style.PathLength ?? reader.GetAttribute("pathLength"));
-        return new(syntax, dashEntries, linecap, pathLength);
-    }
 
     /// <summary>Validates one stroke style attribute value, ignoring namespaces already cleared by the caller.</summary>
     internal static void ValidateAttribute(string localName, string value)
@@ -348,5 +324,4 @@ internal static class SvgStrokeStyleSyntax
     }
 }
 
-internal readonly record struct SvgPaintLineStrokeAdmission(int Width, SvgAffineTransform Transform);
 internal readonly record struct SvgPaintLineStrokeStyle(SvgLineSyntax Syntax, double[]? DashEntries, SvgStrokeCap Linecap, double? PathLength);

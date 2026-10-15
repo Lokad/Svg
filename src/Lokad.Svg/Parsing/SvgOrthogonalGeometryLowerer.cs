@@ -401,7 +401,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Measures, cuts and strokes original oval conics through the shared native source route.</summary>
-    /// <remarks>Caller admission supplies finite affine placement and butt caps. Commands, dash measurements, cuts and generated outlines share bounded work/cancellation and owned storage; empty native bounds paint nothing.</remarks>
+    /// <remarks>Caller admission supplies finite affine placement and validated cap styles. Commands, dash measurements, cuts and generated outlines share bounded work/cancellation and owned storage; empty native bounds paint nothing.</remarks>
     internal SvgParsedGeometry LowerNativeEllipseStroke(double centerX, double centerY, double radiusX, double radiusY,
         SvgResolvedPaintableElement element, SvgStroke stroke, double[]? dashes, double dashOffset, double? pathLength,
         double miterLimit, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
@@ -415,7 +415,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             return new(empty.Detach(), 0);
         }
         return LowerNativeStrokeCommands(commands, deviceMap, deviceWidth, stroke.Width, miterLimit,
-            SvgStrokeCap.Butt, SvgStrokeJoin.Miter, dashes, dashOffset, pathLength, nonScaling, stroke.Color,
+            SvgStrokeStyleSyntax.ParseLinecap(element.Style.Linecap), SvgStrokeJoin.Miter, dashes, dashOffset, pathLength, nonScaling, stroke.Color,
             element.Presentation.IsPainted, element.OutputMagnification, element.StrokeHostMap, frame, budget, SvgAuthoredStrokeShape.Path, SvgNativeStrokeResolution.MappedPath);
 
     }
@@ -868,10 +868,10 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(budget);
         if (points.Count >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _elementName + " stroke point count exceeds the configured path-command limit.");
         if (points.Count < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed fractional " + _elementName + " contours are implemented.");
-        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, true);
+        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, hasCurves);
         if (!hasCurves)
         {
-            double deviceWidth = StrokeDeviceWidth(width, element.Transform, frame, nonScaling);
+            double deviceWidth = NativeStrokeDeviceWidth(width, element.Transform, deviceMap, frame, nonScaling);
             using RenderBudget.BudgetReservation sourceOwner = budget.Reserve(128, SvgMemoryCategory.Geometry);
             using BudgetedParserList<SvgAuthoredPathCommand> authored = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
             for (int index = 0; index < points.Count; index++)
@@ -910,8 +910,8 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(budget);
         if (points.Count >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _isPath ? "Path stroke point count exceeds the configured path-command limit." : _elementName + " stroke point count exceeds the configured path-command limit.");
-        double deviceWidth = StrokeDeviceWidth(width, element.Transform, frame, nonScaling);
-        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, true);
+        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, false);
+        double deviceWidth = NativeStrokeDeviceWidth(width, element.Transform, deviceMap, frame, nonScaling);
         using RenderBudget.BudgetReservation sourceOwner = budget.Reserve(128, SvgMemoryCategory.Geometry);
         using BudgetedParserList<SvgAuthoredPathCommand> authored = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
         for (int index = 0; index < points.Count; index++)

@@ -710,21 +710,30 @@ public sealed class SvgStrokeFillTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0.5,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' stroke-linejoin='bevel'/></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' stroke-miterlimit='0.5'/></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' style='stroke-miterlimit:0.5'/>")]
-    public void Non_admitted_stroke_styles_stay_unsupported(string svg)
+    public void Stroke_styles_preserve_admitted_bevel_joins_and_invalid_miter_limit_errors(string svg)
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        if (svg.Contains("stroke-linejoin='bevel'", StringComparison.Ordinal))
+        {
+            byte[] pixels = RenderPixels(svg, out _, out _);
+            Assert.NotEqual(0, AlphaSum(pixels));
+        }
+        else
+        {
+            SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        }
     }
 
     [Fact]
-    public void Stroke_under_anisotropic_transform_stays_unsupported()
+    public void Stroke_under_anisotropic_transform_preserves_source_width()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><g transform='scale(2,1)'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2'/></g></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        byte[] pixels = RenderPixels(System.Text.Encoding.UTF8.GetString(input), out int width, out int height);
+        Assert.Equal(16, width);
+        Assert.Equal(8, height);
+        Assert.Equal(255, Pixel(pixels, width, 0, 4).Alpha);
+        Assert.Equal(0, Pixel(pixels, width, 8, 4).Alpha);
     }
 
     [Fact]
@@ -1229,16 +1238,13 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
-    public void Stylesheet_neutralized_dasharray_on_rectangle_stroke_stays_unsupported()
+    public void Stylesheet_neutralized_dasharray_on_rectangle_stroke_matches_solid()
     {
-        // R36: stylesheet rules resolve after attribute validation, so a
-        // stylesheet-neutralized rejected spelling stays explicitly unsupported
-        // while lowering would already honor the cascaded value.
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><style>rect { stroke-dasharray: none; }</style><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2' stroke-dasharray='2,2'/></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        byte[] plain = System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(input).Replace("stroke-dasharray='2,2'", "stroke-dasharray='none'", StringComparison.Ordinal));
+        Assert.Equal(SvgConverter.ConvertToPng(plain, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Fact]
@@ -2229,13 +2235,12 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
-    public void Bevel_join_on_polygons_stays_unsupported()
+    public void Validates_trailing_XML_after_bevel_polygon_strokes()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><polygon points=\"8,8 32,8 32,32\" fill=\"none\" stroke=\"red\" stroke-width=\"8\" stroke-linejoin=\"bevel\"/>");
         SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Only miter and round stroke linejoins are implemented.", rejected.Message);
+        Assert.Equal(SvgErrorCode.MalformedInput, rejected.ErrorCode);
     }
 
     [Fact]

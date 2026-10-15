@@ -1,6 +1,6 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-15 at a documentation checkpoint during the primitive-stroke correction.
+Updated 2026-10-15 at the completed primitive-stroke-sheet checkpoint.
 Preserve the current implementation work, qualified `inv-146` correction and every
 established exact result, original SVG/font/reference bytes, options and default
 resource limits. This file owns delivery order, required exits and scope
@@ -22,24 +22,24 @@ Optional maintenance below adds no feature-completion prerequisite.
 | Frozen corporate cohort | **27/27 documents / 258/258 variants exact on Windows/Linux**, including 13/13 marks and 14/14 outlined wordmarks. Preserve membership, original bytes, options, backgrounds and references in the [manifest](tests/References/inventory/corporate-cohort-v1.json) and [measurement](tests/References/inventory/corporate-cohort-current.json). |
 | Selected development documents and original fixtures | **50/50 complete**, including whole `inv-146`; original marker/drop-shadow fixtures **2/2**, supplied-font label/path fixtures **2/2**, SVG Translate, `inv-127` and `inv-145`. Preserve the [gap ledger](tests/References/inventory/svg-gap-cases.json), [supplied-font banks](tests/Research/supplied-font-documents/README.md), [curved labels](tests/Research/curved-font-documents/README.md) and [inventory](docs/INVENTORY.md). Failure-selected inputs establish no representative success rate. |
 | `inv-146`, paint recording and retained libraries | Preserve whole `inv-146`, eight oval/text controls and four [merge controls](tests/Research/filter-merges/README.md), with the [qualification receipt](artifacts/maintenance-review-20261012/merge-qualified-results.json). Paint recording is **149/149 exact**; I Ching is **24 exact / one out-of-scope animation boundary**. |
-| Additional complete documents | **Thirteen authored documents** (twelve CC0, one MIT) and **one sourced W3C decoration document**, each exact on both platforms and separate from both cohorts. [INVENTORY](docs/INVENTORY.md) and bank manifests own their controls and immutable assets/options. Preserve the [composition sheet](tests/Research/composition-sheet/README.md) **4/4**, [effects sheet](tests/Research/effects-marker-sheet/README.md) **11/11**, [tile sheet](tests/Research/pattern-tile-sheet/README.md) **10/10**, [shared map sheet](tests/Research/shared-paint-map-sheet/README.md) **3/3** and [W3C decorations](tests/Research/stroked-decorations/README.md) **4/4 controls**. Direct/curved decorations and their phase/positioning/paint boundaries are complete. |
+| Additional complete documents | **Fourteen authored documents** (thirteen CC0, one MIT) and **one sourced W3C decoration document**, each exact on both platforms and separate from both cohorts. [INVENTORY](docs/INVENTORY.md) and bank manifests own their controls and immutable assets/options. Preserve the [composition sheet](tests/Research/composition-sheet/README.md) **4/4**, [effects sheet](tests/Research/effects-marker-sheet/README.md) **11/11**, [tile sheet](tests/Research/pattern-tile-sheet/README.md) **10/10**, [shared map sheet](tests/Research/shared-paint-map-sheet/README.md) **3/3**, [primitive-stroke sheet](tests/Research/primitive-stroke-sheet/README.md) **4/4** and [W3C decorations](tests/Research/stroked-decorations/README.md) **4/4 controls**. Direct/curved decorations and their phase/positioning/paint boundaries are complete. |
 | Shared geometry, paint and scope dependencies | Fractional use widths and symbol frames, nonuniform curves/affine oval strokes, non-scaling conics, composed cubic clips, custom mask regions/container opacity, inherited symbol strokes and axis ancestry at nested viewports are qualified. Reuse [geometry/scope evidence](docs/INVENTORY.md), [existing map witnesses](artifacts/shared-stroke-pattern-maps-20261015/existing-map-witnesses.json), [tile-content qualification](artifacts/maintenance-review-20261012/pattern-content-qualified-results.json) and [shared-map qualification](artifacts/maintenance-review-20261012/shared-maps-qualified-results.json). These are available dependencies, not blockers to repeat. |
 | Filters and font infrastructure | Preserve [filter-region results](tests/Research/filter-regions/manifest.json) **26/26**, [colored-effects bounds/restoration](tests/Research/colored-effects-markers/README.md), [affine effect qualification](artifacts/maintenance-review-20261012/affine-filters-qualified-results.json), intended-font/metrics proof, catalog conformance and the implemented [FontProbe host](tools/Lokad.Svg.FontProbe/README.md) with six transport/input regressions. Private deployment validation remains required. |
 | API/resource/package contracts | Preserve bounded preparation/raster/encoding, size/work denial, cancellation/retry, partial cleanup, immutable borrowed bytes, single-use prepared ownership and output integrity. Existing [API contracts](docs/API_CONTRACT.md), package and installed-consumer protections remain required. |
 
-The last complete qualification is `c73d3474`: **7,820 tests/platform**, normal
-incremental Release build plus full tests in **72.6s Windows / 228.5s Linux**.
-The [receipt](artifacts/maintenance-review-20261012/shared-maps-qualified-results.json)
-includes preservation and [terminal green exact-revision CI](https://github.com/Lokad/Svg/actions/runs/38761622532).
-Reuse that closed evidence; do not repoll it or reopen completed work for a new
-coverage/accounting policy. G2–G9 and S17 remain open for the exits below.
+The latest complete local [qualification](artifacts/maintenance-review-20261012/primitive-strokes-qualified-results.json)
+is **7,826 tests/platform**, normal incremental Release build plus full tests in
+**70.9s Windows / 236.5s Linux**. Exact-revision hosted CI for this correction is
+pending push. The preceding [shared-map CI](https://github.com/Lokad/Svg/actions/runs/38761622532)
+is terminal green for `c73d3474`; reuse that closed audit without repolling.
+Completed work stays closed under the existing coverage/accounting policy.
 
-**In progress, not yet qualified:** the [primitive-stroke bank](tests/Research/primitive-stroke-sheet/README.md)
-was frozen at **0/1 document / 0/4 controls**. Current Windows/Linux
-[candidate comparisons](artifacts/primitive-stroke-sheet-20261015/) are exact for
-all five outputs; the retained visual-family development check passes. Core
-regression reconciliation and complete checkpoint qualification remain. Do not
-count this as a fourteenth authored document until item 1 is complete.
+The [primitive-stroke bank](tests/Research/primitive-stroke-sheet/README.md) is now
+**1/1 complete document / 4/4 exact controls**, from admission **0/1 / 0/4**,
+against unchanged Windows/Linux references. This is the fourteenth authored
+document. Original Core inputs, useful contour/vector checks, affected ownership
+and every preceding result are preserved. Remaining R1–R3 boundaries below keep
+item 1 and wider G2–G9/S17 open; this document does not close G4.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
@@ -47,14 +47,14 @@ count this as a fourteenth authored document until item 1 is complete.
 ## Ordered delivery checklist
 
 **The next three deliverables are items 1, 2 and 3.** Finish the current shared
-stroke correction, then basic pattern routing, then composition/resource scopes.
+stroke/style boundaries R1–R3, then basic pattern routing, then composition/resource scopes.
 Bring a later dependency forward only when it blocks the selected document.
 Each item closes against its acceptance and the common validation policy; no
 exhaustive G2 or shape × paint × instance prerequisite applies.
 
 | Required item, in order | Missing behavior and dependencies | Acceptance and completion condition |
 | --- | --- | --- |
-| [ ] 1. Primitive stroke/style routing (G2–G4) — current | Dashed oval caps, rounded-rectangle dashes/alpha, translucent capped line shaders and nonuniform radial point-list strokes. Reuse native geometry/source replay and the completed map sheet. | Finish the unchanged [primitive-stroke document and four controls](tests/Research/primitive-stroke-sheet/manifest.json), exact on Windows/Linux. Reconcile original Core inputs/assertions against supported semantics, retaining useful geometry/vector and pixel protections; affected denial/cancellation/cleanup and full checkpoint qualification pass. Preserve native geometry/paint distinctions. |
+| [ ] 1. Remaining stroke/style routes (G2–G4) | R1 solid-line dash/cap/alpha routing, R2 sharp-rectangle bevel joins and R3 curved shader alpha, defined below. Reuse the completed primitive/map sheets and shared native geometry/source replay. | Resolve each R1–R3 gate against frozen native acceptance, retaining original inputs and useful contour/vector, denial/cancellation/cleanup checks. Finish the selected integration document and all declared controls exactly on both platforms, then qualify the shared correction. Preserve the completed primitive document and native geometry/paint distinctions. |
 | [ ] 2. Basic pattern maps (G2–G4/G6) | Reflected basic rectangle/use fills, a stroked rectangle in a scaled viewport and stroked tile content under viewBox scaling: four original cases in the [qualified rejection audit](artifacts/shared-stroke-pattern-maps-20261015/remaining-map-boundaries.json). Depends on shared stroke/frame/paint maps and completed tile content. | Retain those original inputs; freeze any missing native acceptance before correction and finish their complete integration document. All four routes and declared document outputs are exact on both platforms, preserving phase, local bounds and bounded tile work. Graduate the original rejection assertions; protect affected cleanup. |
 | [ ] 3. Composition and resource presentation (G5–G7) | The finite C1–C5 cases below: clip unions/affine ancestry, mask units/restoration, independent image offsets and resource cascade/content scopes. Reuse completed composition, clip/mask and item-2 maps. | Finish a complete retained document using these mechanisms; every C1–C5 independent semantic has exact platform acceptance or a linked existing witness, plus affected scope/cleanup checks. The completed composition sheet stays exact. |
 | [ ] 4. Glyph maps, composites and private validation (G9) | Finite T1–T3 below: remaining glyph maps, three component flags and four private requests. Reuse qualified layout/fitting/decorations and shared maps from items 1–3 where needed. | Exact public map/component witnesses on both platforms, measured degenerate outcomes and affected ownership checks; sanitized outcomes for the fixed private request set, with public reproductions of in-scope defects resolved. |
@@ -98,8 +98,20 @@ features require an explicit scope decision.
   fill/stroke opacity, dashed curved paints and nonuniform placement. Use shared
   stroke/paint machinery while preserving native geometry distinctions.
 
-Items 1–2 own the remaining implementation exits. The [last qualified audit](artifacts/shared-stroke-pattern-maps-20261015/remaining-map-boundaries.json)
-records their original rejection inputs, not the current in-progress admission.
+Item 1 owns R1–R3 below; item 2 owns the four basic pattern cases in the
+[current rejection audit](artifacts/primitive-stroke-sheet-20261015/remaining-map-boundaries.json).
+The completed primitive bank resolves the former oval/rounded dash and shader-line
+routes; its valid radial point list supplies affine acceptance. The original radial
+negative input has missing trailing XML and now correctly reports `MalformedInput`.
+The [receipt](artifacts/maintenance-review-20261012/primitive-strokes-qualified-results.json)
+records that distinction and preserves the unchanged test input.
+
+| Required residual stroke exit (item 1) | Concrete acceptance, dependency and completion |
+| --- | --- |
+| R1. Solid-line cap/dash/alpha routing | The original `Rejects_round_caps_with_dashed_lines` and `Rejects_zero_length_square_capped_dashes` assertions still pass in full qualification. Freeze their native outputs, plus round-solid and square-dashed solid lines with independent stroke alpha. Reuse ordinary native line/path strokes; complete when those cap/zero-dash/alpha semantics are exact, with meaningful work/cleanup boundaries. |
+| R2. Bevel joins on sharp rectangles | The original `Rejects_bevel_joins_on_sharp_rectangles` input still rejects. Freeze that output and extend the existing native rectangle stroke route. Complete with its bevel geometry exact on both platforms, preserving miter/round and rounded-rectangle results. |
+| R3. Curved shader-stroke alpha | Explicit alpha guards remain in [rounded/oval paint lowering](src/Lokad.Svg/Parsing/SvgLeafParser.cs). Freeze one translucent-stop shader stroke on a rounded rectangle and one on an oval before correction; these are planned acceptance, not qualified failures. Reuse shared stroke/paint replay and qualify independent fill/stroke alpha and affected cleanup, preserving native conic/rounded geometry. No shape × paint × style census. |
+
 Completed inherited-symbol, reflected-phase, curved-target and viewport-map
 witnesses remain closed. Zero-size oval/object-box nonpainting and categorized
 singular-pattern/cleanup outcomes in the existing [coordinate](tests/Lokad.Svg.Tests/SvgPatternCoordinateTests.cs)
@@ -243,7 +255,7 @@ open-ended representativeness quota delays this release.
   failure/publication and cleanup in [PublicContractTests](tests/Lokad.Svg.Tests/PublicContractTests.cs)
   and [PngEncoderTests](tests/Lokad.Svg.Tests/PngEncoderTests.cs).
 - **Routine incremental Release build plus complete tests must stay below ten
-  minutes per platform.** The qualified 72.6s/228.5s checkpoint above meets this.
+  minutes per platform.** The qualified 70.9s/236.5s checkpoint above meets this.
   Include normal build/startup; avoid forced compiler shutdown. Measure before/
   after only when routine cost materially changes. Remove redundant API work if
   needed while preserving distinct semantics. Browser captures, optional benchmarks

@@ -23,8 +23,6 @@
       "selection": "Finite existing G4 primitive/line stroke-style and point-list paint boundaries, declared and captured before production changes.",
       "reference": "references/primitive-stroke-sheet.png",
       "referenceSha256": "884cd22f86e4d0ecc1add116ad568903abe1d5e1d83030fa78bfecf921d5e38c",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Round caps with dashed circle strokes are not implemented.",
       "linuxReference": "references/linux64/primitive-stroke-sheet.png",
       "linuxReferenceSha256": "884cd22f86e4d0ecc1add116ad568903abe1d5e1d83030fa78bfecf921d5e38c"
     },
@@ -42,8 +40,6 @@
       "selection": "Finite existing G4 primitive/line stroke-style and point-list paint boundaries, declared and captured before production changes.",
       "reference": "references/oval-dash-caps.png",
       "referenceSha256": "bcc9e8d155dedc3d42b5f5d9e4765475dc8140798ca776fb38462fde74ed3c6a",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Round caps with dashed circle strokes are not implemented.",
       "linuxReference": "references/linux64/oval-dash-caps.png",
       "linuxReferenceSha256": "bcc9e8d155dedc3d42b5f5d9e4765475dc8140798ca776fb38462fde74ed3c6a"
     },
@@ -61,8 +57,6 @@
       "selection": "Finite existing G4 primitive/line stroke-style and point-list paint boundaries, declared and captured before production changes.",
       "reference": "references/rounded-dash-alpha.png",
       "referenceSha256": "330770bc2881508529773c12928c7876dacc3a80e8515f2d84bdffe79498ff78",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Only solid (none) stroke dash arrays are implemented.",
       "linuxReference": "references/linux64/rounded-dash-alpha.png",
       "linuxReferenceSha256": "330770bc2881508529773c12928c7876dacc3a80e8515f2d84bdffe79498ff78"
     },
@@ -80,8 +74,6 @@
       "selection": "Finite existing G4 primitive/line stroke-style and point-list paint boundaries, declared and captured before production changes.",
       "reference": "references/line-shader-alpha.png",
       "referenceSha256": "0b16a85f2628994cf29578ed64af01f4a6ae1596592fce6e75fbd2e3f9a858c3",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Pattern and gradient strokes on line elements are not implemented.",
       "linuxReference": "references/linux64/line-shader-alpha.png",
       "linuxReferenceSha256": "0b16a85f2628994cf29578ed64af01f4a6ae1596592fce6e75fbd2e3f9a858c3"
     },
@@ -99,8 +91,6 @@
       "selection": "Finite existing G4 primitive/line stroke-style and point-list paint boundaries, declared and captured before production changes.",
       "reference": "references/point-list-radial-map.png",
       "referenceSha256": "e3d5da8449cb1c6654a4555a574eb68ef344454efc8a712d27186f6232d49787",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Only miter and round stroke linejoins are implemented.",
       "linuxReference": "references/linux64/point-list-radial-map.png",
       "linuxReferenceSha256": "e3d5da8449cb1c6654a4555a574eb68ef344454efc8a712d27186f6232d49787"
     }

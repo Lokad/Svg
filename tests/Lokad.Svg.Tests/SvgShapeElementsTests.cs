@@ -1464,13 +1464,14 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
-    public void Rejects_dashed_rounded_rectangles_in_definitions()
+    public void Renders_dashed_rounded_rectangles_in_definitions()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><defs><rect id=\"r\" x=\"8\" y=\"8\" width=\"48\" height=\"48\" rx=\"12\" fill=\"red\" stroke=\"blue\" stroke-width=\"8\" stroke-dasharray=\"2 2\"/></defs><use href=\"#r\"/></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
+        Assert.False(scene.HasUnsupportedChild);
+        Assert.NotEmpty(scene.Geometries);
+        Assert.False(SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).IsEmpty);
     }
 
     [Fact]
