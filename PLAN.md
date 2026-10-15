@@ -76,6 +76,11 @@ retains forty-two healthy captures, original inputs and affected resource checks
 Three fractional clipped-frame backgrounds and nested cropped opacity also match
 their unchanged references. C6a is closed; reuse those dependencies.
 
+The next [forward/object-box clip sheet](tests/Research/forward-bbox-clip-exit-sheet/README.md)
+is frozen at **0/1 document / 0/6 exact controls** on both platforms. Six original
+C6b test SVGs, two valid nonpainting outcomes and forty-two healthy stable captures
+predate production correction. This adds no completed-document count.
+
 | Required item, in order | Missing behavior and dependencies | Acceptance and completion condition |
 | --- | --- | --- |
 | [ ] 3. Composition and resource presentation (G5–G7) | Remaining C6b forward/object-box clip binding and C5b tile-mask bridges below. C1–C4, C5a and C6a acceptances are complete. Reuse source replay, tight bounds and viewport rebasing; glyph-specific boundaries belong to item 4. | Complete retained documents, the six C6b inputs and the C5b tile-mask witness are exact on both platforms, with sibling restoration and affected scope/cleanup checks. Preserve every completed C1–C5 witness. |

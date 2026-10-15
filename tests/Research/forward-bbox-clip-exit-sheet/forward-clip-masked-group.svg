@@ -1,0 +1,1 @@
+<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='0' y='0' width='16' height='16' fill='#ffffff'/></mask></defs><g mask='url(#fade)' clip-path='url(#later)'><rect width='16' height='16' fill='red'/></g><defs><clipPath id='later'><rect x='4' y='4' width='8' height='8'/></clipPath></defs></svg>
