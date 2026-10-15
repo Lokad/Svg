@@ -873,7 +873,6 @@ internal static class SvgReferenceResolver
             if (!state.Masks.TryGetValue(id, out byte value))
             {
                 if (!state.MaskContents.TryGetValue(id, out SvgMaskContent spatial)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
-                if (!placement.IsAxisAligned || placement.A == 0 || placement.D == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonsingular axis-aligned spatial mask target maps are implemented.");
                 spatialContent = spatial;
                 value = 255;
             }
@@ -894,8 +893,19 @@ internal static class SvgReferenceResolver
             right = Math.Max(right, box.X + box.Width); bottom = Math.Max(bottom, box.Y + box.Height);
         }
         SvgRectangle fallback = new(left, top, right - left, bottom - top, default, false, null);
+        SvgMaskTarget? nativeTarget = null;
+        if (!placement.IsAxisAligned && maskId is not null)
+        {
+            SvgObjectBoundingClip collector = new(placement, null);
+            foreach (SvgGeometry geometry in geometries) collector.Add(geometry, workCounter, cancellationToken);
+            nativeTarget = SvgMaskTarget.Create(maskId, placement, collector.SourceBounds, state);
+            if (state.MaskContents.TryGetValue(maskId, out SvgMaskContent retained)) spatialContent = retained;
+        }
         if (spatialContent is {} placedContent)
-            contentIndex = state.Scene.AddMaskContent(placedContent.PlaceForTarget(placement, fallback, workCounter, cancellationToken));
+        {
+            contentIndex = state.Scene.AddMaskContent(SvgMaskContentReplay.PlaceForTarget(placedContent, placement, fallback, nativeTarget, state, workCounter, cancellationToken));
+            mask = 255;
+        }
         bool resolvedUniform = false;
         if (contentIndex < 0 && maskId is not null && state.MaskContents.TryGetValue(maskId, out SvgMaskContent uniform)
             && uniform.UniformSource is not null && state.MaskContentBoxes.TryGetValue(maskId, out SvgClipBox uniformBox))
@@ -917,11 +927,11 @@ internal static class SvgReferenceResolver
                 workCounter.Consume(cancellationToken);
                 SvgMaskSyntax.ValidateMaskCoverage(maskReference, state, SvgMaskSyntax.BoundingBox(geometry));
             }
-        SvgClipBox region = ResolveInstanceMaskRegion(maskReference, frame, state, fallback);
+        SvgClipBox region = nativeTarget is {} native ? native.SceneBounds(workCounter, cancellationToken) : ResolveInstanceMaskRegion(maskReference, frame, state, fallback);
         SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
         operation.Value = mask.Value; operation.Resolved = true;
         operation.ContentIndex = contentIndex;
-        operation.Region = contentIndex >= 0 && maskReference is not null && state.MaskRegions.TryGetValue(SvgMaskSyntax.ParseMaskId(maskReference), out _) ? placement.Apply(region) : region;
+        operation.Region = nativeTarget is null && contentIndex >= 0 && maskReference is not null && state.MaskRegions.TryGetValue(SvgMaskSyntax.ParseMaskId(maskReference), out _) ? placement.Apply(region) : region;
         using BudgetedParserDictionary<SvgLeafMaskBinding, SvgLeafMaskBindingReference> bindings = new(state.Budget, SvgMemoryCategory.Parser, 96);
         SvgLeafMaskBinding? noInner = null;
         for (int index = 0; index < geometries.Length; index++)

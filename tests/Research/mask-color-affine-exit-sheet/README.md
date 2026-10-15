@@ -1,23 +1,28 @@
 # Mask color and affine exit sheet
 
-This bank starts at **0/1 complete document / 0/3 exact controls** on Windows/Linux.
-The 480 by 160 CC0 document and independent colored-luminance, affine user-space
-and affine object-box mask controls retain the remaining original G5/C3 boundary.
-They add no completed document to the nineteen authored documents, either cohort
-or the sourced W3C document.
+The unchanged 480 by 160 CC0 document is **1/1 complete / 3/3 exact controls**
+on Windows/Linux, from **0/1 / 0/3** at declaration. Colored luminance and general
+affine user-space/object-box mask targets now match every frozen pixel. This is
+the twentieth authored document (nineteenth CC0), separate from both cohorts and
+the sourced W3C decoration document.
 
-The whole document and colored control reject on grayscale-only luminance. Both
-affine controls reject on axis-only target maps. The [manifest](manifest.json)
-fixes original SVG/reference bytes, scale one, transparent backgrounds and default
-resource limits. Twenty-four healthy stable fresh-process captures, with successful
-profile cleanup, predate correction at clean revision `c5f7ef86`. The original
+The [manifest](manifest.json) retains original SVG/reference bytes, scale one,
+transparent backgrounds and default limits. Twenty-four healthy stable fresh-
+process captures with successful profile cleanup predate correction at clean
+revision `c5f7ef86`; assets were committed separately at `a43f2c98`. The
 [preflight](../../../artifacts/mask-color-affine-exits-20261015/frozen-preflight-results.json)
-and baseline/health records stay in the existing ignored study. No renderer,
-source-code, build or report hashes are used.
+and [qualification](../../../artifacts/maintenance-review-20261012/mask-color-affine-qualified-results.json)
+own baseline, capture, comparison and full-test evidence. No renderer/source/build
+or report hashes are used.
 
-Completion requires the unchanged whole document and all three controls to be
-exact on both platforms. Preserve source object bounds separately from transformed
-axis bounds, region/content units and native paint/clip arithmetic, with affected
-resource and sibling-scope checks. The completed [composition/resource bank](../composition-resource-exit-sheet/README.md)
-and every earlier exact result stay protected. [PLAN](../../../PLAN.md) owns the
-finite remaining exits; no feature scope is deferred.
+Mask sources share native leaf/group/use replay at each target's complete map.
+Tight source object bounds remain distinct from device axis bounds, and mask
+region/content units stay independent. Binary source-region clipping, affine
+target AA paint and luminance-layer coverage pairs retain their native arithmetic.
+Focused tests protect colored strokes, independent fill/stroke luminance, mapped
+curve extrema, leaf/group/use regions, siblings and denial/cancellation/cleanup/retry.
+
+[PLAN](../../../PLAN.md) keeps nested-viewport mask boundaries, glyph clip/mask
+scopes, font/composite/private validation, effects/markers and S17 required.
+Completing this document introduces no feature-scope deferral. Every established
+exact result remains protected.

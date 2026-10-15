@@ -18,8 +18,8 @@ internal struct SvgObjectBoundingClip
         _map = parent is {} frame
             ? SvgAffineTransform.FromScaleOffset(frame.ScaleX, frame.ScaleY, frame.OffsetX, frame.OffsetY).ComposeChecked(transform)
             : transform;
-        if (!_map.IsAxisAligned || !_map.TryInvert(out _inverse))
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Bounding-box curved clips require a nonsingular axis-aligned referencing map.");
+        if (!_map.TryInvert(out _inverse))
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Bounding-box resources require a nonsingular referencing map.");
         _left = _top = double.PositiveInfinity;
         _right = _bottom = double.NegativeInfinity;
         _hasGeometry = false;
@@ -31,26 +31,41 @@ internal struct SvgObjectBoundingClip
         SvgRectangle bounds;
         if (geometry.AuthoredPath is {} source)
         {
-            if (!source.SceneMap.IsAxisAligned)
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Bounding-box curved clips require axis-aligned source geometry maps.");
-            bounds = source.SceneMap.Apply(source.StrokeStyle?.SourceBounds ?? SvgPathBounds.Compute(source.Commands, work, token));
+            if (_map.IsAxisAligned && source.SceneMap.IsAxisAligned)
+                bounds = _inverse.Apply(source.SceneMap.Apply(source.StrokeStyle?.SourceBounds ?? SvgPathBounds.Compute(source.Commands, work, token)));
+            else
+            {
+                SvgAffineTransform local = source.SceneMap == _map ? SvgAffineTransform.Identity : _inverse.ComposeChecked(source.SceneMap);
+                bounds = source.StrokeStyle?.SourceBounds is {} retained && local.IsAxisAligned
+                    ? local.Apply(retained) : SvgPathBounds.Compute(source.Commands, local, work, token);
+            }
         }
         else if (geometry.Kind == SvgGeometryKind.AxisAlignedLine)
         {
             SvgAxisAlignedLine line = geometry.AxisAlignedLine;
             bounds = new(Math.Min(line.X1, line.X2), Math.Min(line.Y1, line.Y2),
                 Math.Abs(line.X2 - line.X1), Math.Abs(line.Y2 - line.Y1), default, true, null);
+            bounds = MapBox(bounds, _inverse, work, token);
         }
         else if (geometry.Kind is SvgGeometryKind.Rectangle or SvgGeometryKind.PatternFill or SvgGeometryKind.GradientFill or SvgGeometryKind.RadialGradient)
-            bounds = SvgMaskSyntax.BoundingBox(geometry);
+            bounds = MapBox(SvgMaskSyntax.BoundingBox(geometry), _inverse, work, token);
         else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Bounding-box curved clips require retained source geometry bounds.");
-        bounds = _inverse.Apply(bounds);
         if (!double.IsFinite(bounds.X) || !double.IsFinite(bounds.Y) || !double.IsFinite(bounds.Width) || !double.IsFinite(bounds.Height))
             throw new SvgException(SvgErrorCode.LimitExceeded, "Bounding-box clip coordinates exceed the finite range.");
         _left = Math.Min(_left, bounds.X); _top = Math.Min(_top, bounds.Y);
         _right = Math.Max(_right, bounds.X + bounds.Width); _bottom = Math.Max(_bottom, bounds.Y + bounds.Height);
         _hasGeometry = true;
+
+        static SvgRectangle MapBox(SvgRectangle box, SvgAffineTransform map, ParserWorkCounter work, CancellationToken token)
+        {
+            if (map.IsAxisAligned) return map.Apply(box);
+            SvgPaintBounds bounds = new((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height));
+            SvgPaintBounds mapped = bounds.Map(map, work, token);
+            return new(mapped.Left, mapped.Top, mapped.Right - mapped.Left, mapped.Bottom - mapped.Top, default, true, null);
+        }
     }
+
+    internal SvgRectangle SourceBounds => _hasGeometry ? new(_left, _top, Math.Max(0, _right - _left), Math.Max(0, _bottom - _top), default, true, null) : default;
 
     internal SvgLeafMaskOperation Register(SvgClipPolygon content, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {

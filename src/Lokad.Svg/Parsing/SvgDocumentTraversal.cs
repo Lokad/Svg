@@ -322,6 +322,8 @@ internal static class SvgDocumentTraversal
                         else if (state.MaskContentBuilder is not null) RegisterMaskScene(state, workCounter, cancellationToken);
                         else if (state.MaskContentGeometries is not null) SvgDefinitionParser.RegisterMaskContent(state, workCounter, cancellationToken);
                         else SvgDefinitionParser.RegisterMask(state, workCounter, cancellationToken);
+                        if (state.MaskReplayChildCount > 0 && state.MaskContents.TryGetValue(state.MaskId, out SvgMaskContent source))
+                            state.MaskContents.Replace(state.MaskId, source with { ReplaySource = new(state.MaskReplayChildStart, state.MaskReplayChildCount) });
                     }
                     if (state.MaskContentGeometries is {} anonymousMask && state.MaskId is null)
                         foreach (SvgGeometry geometry in anonymousMask) geometry.Dispose();

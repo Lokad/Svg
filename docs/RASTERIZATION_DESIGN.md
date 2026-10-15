@@ -1,3 +1,26 @@
+## Native affine mask replay and luminance consumers (2026-10-15)
+
+General-affine mask targets replay document-owned source snapshots through the
+existing leaf/group/use constructors during preparation. Target object bounds
+come from retained geometry in local coordinates; mapped curves evaluate extrema
+after transforming controls instead of mapping an axis-bound rectangle. Region
+and content unit systems compose independently. Returned scenes own their lowered
+geometry, retain no staging ranges and use the existing memory/work/cancellation
+and cleanup machinery.
+
+The unchanged [document and three controls](../tests/Research/mask-color-affine-exit-sheet/README.md)
+are exact on Windows/Linux. A fully white affine mask still changes the native
+target's AA paint consumer relative to an unmasked target. Inside its luminance
+save-layer, a binary source-region clip preserves coverage-pair arithmetic rather
+than forcing direct runs. Keeping both distinctions resolves one-byte gray and
+white edge errors without tolerances. Colored solid strokes and independent fill/
+stroke replay use the same composited luminance route. Original single-paint and
+chromatic rejection inputs now protect positive output and source cleanup.
+
+[Qualification](../artifacts/maintenance-review-20261012/mask-color-affine-qualified-results.json)
+owns complete tests and preservation. Nested-viewport mask and glyph boundaries
+remain required in PLAN.md; this mechanism does not establish their acceptance.
+
 ## Per-primitive transfer and native image seeds (2026-10-15)
 
 Three frozen [mixed-space controls](../tests/Research/effects-marker-sheet/README.md)

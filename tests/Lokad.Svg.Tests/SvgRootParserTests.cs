@@ -7308,11 +7308,13 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_chromatic_luminance_mask_content()
+    public void Original_chromatic_mask_preserves_nonoverlapping_empty_output_and_releases_sources()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='8' y='8' width='48' height='48' fill='#ff0000'/></mask></defs><rect width='8' height='8' fill='red' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        RenderBudget budget = new(8_000_000);
+        using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='8' y='8' width='48' height='48' fill='#ff0000'/></mask></defs><rect width='8' height='8' fill='red' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
+            Assert.All(surface.Pixels, value => Assert.Equal(0, value));
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]

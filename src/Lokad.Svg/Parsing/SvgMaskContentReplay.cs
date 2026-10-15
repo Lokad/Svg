@@ -52,7 +52,16 @@ internal static class SvgMaskContentReplay
             if (reader.IsEmptyElement) SvgDefinitionParser.RegisterSymbol(state, work, token);
             else state.SymbolDepth = reader.Depth;
         }
-        if (!state.MaskObjectBoundingBoxContent && !group && state.MaskReplayChildCount == 1 && (reader.LocalName is "use" or "rect" or "circle"
+        bool requiresVectorPaint = false;
+        if (reader.LocalName is "rect" or "circle" && !SvgGradientSyntax.IsGradientFill(source.AuthoredStyle.Fill))
+        {
+            SvgResolvedShapePresentation paint = context.ResolveShape(reader, true).Presentation;
+            SvgColor fill = paint.Color;
+            requiresVectorPaint = paint.HasFill && paint.StrokeColor is not null
+                || !state.MaskIsAlpha && (fill.Red != fill.Green || fill.Red != fill.Blue
+                    || paint.StrokeColor is {} stroke && (stroke.Red != stroke.Green || stroke.Red != stroke.Blue));
+        }
+        if (!requiresVectorPaint && !state.MaskObjectBoundingBoxContent && !group && state.MaskReplayChildCount == 1 && (reader.LocalName is "use" or "rect" or "circle"
             || SvgGradientSyntax.IsGradientFill(context.ResolveStyle(reader).Fill))) return false;
         if (!state.MaskHasReplayContent)
         {
@@ -82,57 +91,101 @@ internal static class SvgMaskContentReplay
 
     internal static void Resolve(SvgRootAttributes root, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
-        for (int index = 0; index < state.DeferredMaskContents.Count; index++)
+        state.MaskReplayBases = new(root.UserViewportWidth, root.UserViewportHeight);
+        foreach (SvgDeferredMaskContent pending in state.DeferredMaskContents.AsSpan())
         {
             work.Consume(token);
-            SvgDeferredMaskContent pending = state.DeferredMaskContents[index];
-            using SvgSceneBuilder builder = new(state.Budget, work, token);
-            for (int childIndex = pending.FirstChild; childIndex < pending.FirstChild + pending.ChildCount; childIndex++)
-            {
-                work.Consume(token);
-                SvgMaskReplayChild child = state.MaskReplayChildren[childIndex];
-                if (child.GroupContent is {} group)
-                {
-                    SvgPaintableElementContext context = child.Context;
-                    SvgUseReference reference = new(string.Empty, 0, 0, null, null,
-                        context.InheritedPresentation.Transform, SvgAffineTransform.Identity, 255,
-                        context.InheritedPresentation.IsDisplayed && context.InheritedPresentation.IsVisible, null, null, null)
-                    {
-                        InheritedFill = context.InheritedPresentation.Paint,
-                        PaintServerFill = context.InheritedPresentation.PaintServerFill,
-                        PaintServerId = context.InheritedPresentation.PaintServerFill is {} fill ? SvgGradientSyntax.ParsePaintId(fill) : null,
-                        InheritedStroke = context.InheritedStroke,
-                        InheritedStrokeOpacity = context.InheritedStroke.StrokeOpacity is {} strokeOpacity ? SvgColorParser.ParsePaintOpacity(strokeOpacity) : SvgPaintOpacity.Opaque,
-                        InheritedFillRule = context.InheritedFillRule,
-                        InheritedPaintOrder = context.InheritedPresentation.PaintOrder,
-                        InheritedMarkers = context.InheritedPresentation.Markers,
-                        ParentElementOpacity = context.InheritedPresentation.ElementOpacity,
-                        NonScalingStroke = context.InheritedPresentation.NonScalingStroke,
-                        RecordingScope = state.NewRecordingScope(),
-                        AllowsSolidPaintAnalysis = true,
-                        IsDisplayed = context.InheritedPresentation.IsDisplayed,
-                        IsVisible = context.InheritedPresentation.IsVisible
-                    };
-                    SvgGeometry[] mapped = SvgReferenceResolver.Apply(new([], false, null, null) { SymbolContent = group }, reference, null, state, work, token);
-                    SvgPaintRecording.AdoptLeafScene(new(mapped, false, null, null), builder, state);
-                }
-                else if (child.Source.LocalName == "use")
-                {
-                    SvgResourceUse reference = SvgResourceUseReplay.Retain(child.Source, child.Context, root, state);
-                    SvgResourceUseReplay.AppendMaskUse(reference, builder, state, work, token);
-                }
-                else
-                {
-                    SvgDefinition lowered = SvgDefinitionParser.LowerInstanceSource(child.Source, child.Context, state);
-                    SvgPaintRecording.AdoptLeafScene(lowered, builder, state);
-                }
-            }
-            SvgLeafMaskComposition.Emit(state, builder, work, token);
-            SvgVectorContent content = SvgVectorContent.Create(builder.Build(), state.Budget);
-            try { state.Scene.AdoptVectorContent(content); }
-            catch { content.Dispose(); throw; }
-            state.MaskContents.Replace(pending.Id, new([], 255, pending.IsAlpha) { VectorContent = content, IsObjectBoundingBox = pending.IsObjectBoundingBox });
+            SvgMaskSourceRange source = new(pending.FirstChild, pending.ChildCount);
+            SvgMaskContent content = Build(source, SvgAffineTransform.Identity, pending.IsAlpha, null, state, work, token);
+            state.MaskContents.Replace(pending.Id, content with { IsObjectBoundingBox = pending.IsObjectBoundingBox, ReplaySource = source });
         }
+    }
+
+    /// <summary>Replays borrowed source commands into one parent-owned mask scene at the complete target map.</summary>
+    /// <remarks>Preparation alone borrows snapshots. Native constructors retain curve/paint distinctions;
+    /// partial builders and owners release on failure, and all traversal observes shared work/token.</remarks>
+    private static SvgMaskContent Build(SvgMaskSourceRange range, SvgAffineTransform placement, bool isAlpha, SvgAffineViewportClip? region,
+        SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        using SvgSceneBuilder builder = new(state.Budget, work, token);
+        for (int childIndex = range.FirstChild; childIndex < range.FirstChild + range.ChildCount; childIndex++)
+        {
+            work.Consume(token);
+            SvgMaskReplayChild child = state.MaskReplayChildren[childIndex];
+            SvgPaintableElementContext context = child.Context with { InheritedPresentation = child.Context.InheritedPresentation with { Transform = placement.ComposeChecked(child.Context.InheritedPresentation.Transform) } };
+            if (child.GroupContent is {} group)
+            {
+                SvgUseReference reference = new(string.Empty, 0, 0, null, null,
+                    context.InheritedPresentation.Transform, SvgAffineTransform.Identity, 255,
+                    context.InheritedPresentation.IsDisplayed && context.InheritedPresentation.IsVisible, null, null, null)
+                {
+                    InheritedFill = context.InheritedPresentation.Paint,
+                    PaintServerFill = context.InheritedPresentation.PaintServerFill,
+                    PaintServerId = context.InheritedPresentation.PaintServerFill is {} fill ? SvgGradientSyntax.ParsePaintId(fill) : null,
+                    InheritedStroke = context.InheritedStroke,
+                    InheritedStrokeOpacity = context.InheritedStroke.StrokeOpacity is {} strokeOpacity ? SvgColorParser.ParsePaintOpacity(strokeOpacity) : SvgPaintOpacity.Opaque,
+                    InheritedFillRule = context.InheritedFillRule,
+                    InheritedPaintOrder = context.InheritedPresentation.PaintOrder,
+                    InheritedMarkers = context.InheritedPresentation.Markers,
+                    ParentElementOpacity = context.InheritedPresentation.ElementOpacity,
+                    NonScalingStroke = context.InheritedPresentation.NonScalingStroke,
+                    RecordingScope = state.NewRecordingScope(),
+                    AllowsSolidPaintAnalysis = true,
+                    IsDisplayed = context.InheritedPresentation.IsDisplayed,
+                    IsVisible = context.InheritedPresentation.IsVisible
+                };
+                SvgGeometry[] mapped = SvgReferenceResolver.Apply(new([], false, null, null) { SymbolContent = group }, reference, null, state, work, token);
+                SvgPaintRecording.AdoptLeafScene(new(mapped, false, null, null), builder, state);
+            }
+            else if (child.Source.LocalName == "use")
+            {
+                SvgResourceUse reference = SvgResourceUseReplay.Retain(child.Source, context, state.MaskReplayBases, state);
+                SvgResourceUseReplay.AppendMaskUse(reference, builder, state, work, token);
+            }
+            else
+            {
+                SvgDefinition lowered = SvgDefinitionParser.LowerInstanceSource(child.Source, context, state);
+                SvgPaintRecording.AdoptLeafScene(lowered, builder, state);
+            }
+        }
+        if (region is {} clip)
+        {
+            (SvgClipBox bounds, int index) = clip.Register(state, builder, work, token);
+            builder.InsertCommands(0, [new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, bounds, index, 255) { RegionKind = SvgLayerRegionKind.AffineViewport }]);
+            builder.EndOpacityScope();
+        }
+        SvgLeafMaskComposition.Emit(state, builder, work, token);
+        SvgVectorContent content = SvgVectorContent.Create(builder.Build(), state.Budget);
+        try { state.Scene.AdoptVectorContent(content); }
+        catch { content.Dispose(); throw; }
+        return new([], 255, isAlpha) { VectorContent = content };
+    }
+
+    /// <summary>Places one borrowed mask through existing source replay when an affine map requires native reconstruction.</summary>
+    /// <remarks>Only preparation borrows source slots. Returned scenes own independent geometry and no staging
+    /// reference; partial lowering, clips and scene owners release on failure under shared work/cancellation.</remarks>
+    internal static SvgMaskContent PlaceForTarget(SvgMaskContent source, SvgAffineTransform map, SvgRectangle bounds,
+        SvgMaskTarget? target, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        work.Consume(token);
+        if (source.IsObjectBoundingBox)
+        {
+            if (bounds.Width <= 0 || bounds.Height <= 0) return new([], 255, source.IsAlpha);
+            SvgRectangle local;
+            if (target is {} native) local = native.ObjectBounds;
+            else
+            {
+                if (!map.IsAxisAligned || !map.TryInvert(out SvgAffineTransform inverse))
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Bounding-box mask content requires nonsingular target bounds.");
+                local = inverse.Apply(bounds);
+            }
+            map = map.ComposeChecked(SvgAffineTransform.FromScaleOffset(local.Width, local.Height, local.X, local.Y));
+        }
+        map = map.ComposeChecked(source.CoordinateMap);
+        if (map.IsAxisAligned) return source with { CoordinateMap = map, ReplaySource = null };
+        SvgMaskSourceRange range = source.ReplaySource ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine mask content requires retained native sources.");
+        SvgAffineViewportClip? region = target is {} clipped ? new(clipped.Region, clipped.Map) { IsBinary = true } : null;
+        return Build(range, map, source.IsAlpha, region, state, work, token) with { UsesAffineTarget = true };
     }
 
     /// <summary>Materializes one uniform rectangle's native spatial paint when its scalar value cannot cover the target.</summary>

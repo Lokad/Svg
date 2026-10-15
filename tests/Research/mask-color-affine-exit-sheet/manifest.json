@@ -24,8 +24,7 @@
       "reference": "references/mask-color-affine-sheet.png",
       "referenceSha256": "b6c9fb89269e3bb5ad627f7d7b741d2a54859fd86a0a650703a1ff84e1e398d7",
       "linuxReference": "references/linux64/mask-color-affine-sheet.png",
-      "linuxReferenceSha256": "b6c9fb89269e3bb5ad627f7d7b741d2a54859fd86a0a650703a1ff84e1e398d7",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "b6c9fb89269e3bb5ad627f7d7b741d2a54859fd86a0a650703a1ff84e1e398d7"
     },
     {
       "id": "colored-luminance",
@@ -42,8 +41,7 @@
       "reference": "references/colored-luminance.png",
       "referenceSha256": "6702324faff4509c14378480befb860d3b660358c2bc6d641f1d5c65934a3f27",
       "linuxReference": "references/linux64/colored-luminance.png",
-      "linuxReferenceSha256": "6702324faff4509c14378480befb860d3b660358c2bc6d641f1d5c65934a3f27",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "6702324faff4509c14378480befb860d3b660358c2bc6d641f1d5c65934a3f27"
     },
     {
       "id": "affine-user-mask",
@@ -60,8 +58,7 @@
       "reference": "references/affine-user-mask.png",
       "referenceSha256": "1cd419ad0d108c2b1c9e15d4a631849bfcb4b07b204d83c5dfde029f3888561b",
       "linuxReference": "references/linux64/affine-user-mask.png",
-      "linuxReferenceSha256": "1cd419ad0d108c2b1c9e15d4a631849bfcb4b07b204d83c5dfde029f3888561b",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "1cd419ad0d108c2b1c9e15d4a631849bfcb4b07b204d83c5dfde029f3888561b"
     },
     {
       "id": "affine-object-mask",
@@ -78,8 +75,7 @@
       "reference": "references/affine-object-mask.png",
       "referenceSha256": "af2510523ea2d5bf68d3de14f3ad325ee2411ae3f488678453b27a15bc7402bc",
       "linuxReference": "references/linux64/affine-object-mask.png",
-      "linuxReferenceSha256": "af2510523ea2d5bf68d3de14f3ad325ee2411ae3f488678453b27a15bc7402bc",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "af2510523ea2d5bf68d3de14f3ad325ee2411ae3f488678453b27a15bc7402bc"
     }
   ]
 }

@@ -272,6 +272,7 @@ public static class SvgConverter
         float foldedOpacity = 1;
         SvgAnalyticClipBounds layerBounds = frame?.ContentClip ?? new(0, 0, outputWidth, outputHeight);
         bool maskClipAntialiased = false;
+        bool maskLuminanceLayer = false;
         bool collectingViewportClip = false;
         byte[] activeViewportClip = [];
         bool activeViewportIsBinary = true;
@@ -1243,6 +1244,8 @@ public static class SvgConverter
                     bool viewportClip = command.RegionKind == SvgLayerRegionKind.Viewport && command.MaskRegion is not null;
                     bool affineViewportClip = command.RegionKind == SvgLayerRegionKind.AffineViewport && command.MaskContentIndex >= 0;
                     (double regionLeft, double regionTop, double regionRight, double regionBottom) = command.MaskRegion is SvgClipBox maskRegion ? MapClipBounds(maskRegion, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : (0, 0, outputWidth, outputHeight);
+                    bool affineMaskTarget = command.MaskContentIndex >= 0 && root.SceneStorage is {} maskStorage
+                        && (uint)command.MaskContentIndex < (uint)maskStorage.MaskContents.Length && maskStorage.MaskContents[command.MaskContentIndex].UsesAffineTarget;
                     SvgAnalyticClipBounds layer = affineViewportClip ? previousLayer : LayerPaintBounds(index, previousLayer, viewportClip ? null : command.MaskRegion);
                     if (activeViewportBounds is {} inheritedBounds)
                     {
@@ -1330,7 +1333,8 @@ public static class SvgConverter
                             new(MathF.Floor((float)paintRegion.X), MathF.Floor((float)paintRegion.Y)), new(0, 0));
                         SvgDevicePoint last = SvgAuthoredPath.MapPoint(outputMap,
                             new(MathF.Ceiling((float)(paintRegion.X + paintRegion.Width)), MathF.Ceiling((float)(paintRegion.Y + paintRegion.Height))), new(0, 0));
-                        maskClipAntialiased = SvgAnalyticRectangleClip.Classify(first.X, first.Y, last.X, last.Y, previousLayer, SvgClipAntialiasing.All) == SvgAnalyticPaintClip.Antialiased;
+                        // An affine mask target keeps the native AA paint consumer even under a fully white mask.
+                        maskClipAntialiased = affineMaskTarget || SvgAnalyticRectangleClip.Classify(first.X, first.Y, last.X, last.Y, previousLayer, SvgClipAntialiasing.All) == SvgAnalyticPaintClip.Antialiased;
                     }
                     try { index = RenderCommands(index, groupPixels, true); }
                     finally { layerBounds = previousLayer; activeViewportClip = parentViewportClip; maskClipAntialiased = previousMaskClip; }
@@ -1474,6 +1478,8 @@ public static class SvgConverter
             bool previousCollector = collectingViewportClip;
             bool previousMaskClip = maskClipAntialiased;
             maskClipAntialiased = false;
+            bool previousLuminanceLayer = maskLuminanceLayer;
+            maskLuminanceLayer = content.UsesAffineTarget && !content.IsAlpha;
             SvgAnalyticClipBounds previousLayer = layerBounds;
             SvgRoot previousRoot = root;
             double previousScaleX = horizontalScale, previousScaleY = verticalScale, previousOffsetX = horizontalOffset, previousOffsetY = verticalOffset;
@@ -1580,6 +1586,7 @@ public static class SvgConverter
                 horizontalScale = previousScaleX; verticalScale = previousScaleY; horizontalOffset = previousOffsetX; verticalOffset = previousOffsetY;
                 layerBounds = previousLayer;
                 maskClipAntialiased = previousMaskClip;
+                maskLuminanceLayer = previousLuminanceLayer;
                 ReleasePatternTile();
             }
         }
@@ -2110,7 +2117,8 @@ public static class SvgConverter
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             SvgAnalyticPaint glyphPaint = ResolveSolidPaint(polygon.Color);
             SvgAnalyticPaint analyticPaint = fontPreblend.Length == 0 ? glyphPaint : SvgAnalyticPaint.Solid(new SvgColor(0, 0, 0, 255));
-            if (activeViewportClip.Length != 0 && activeViewportIsBinary) analyticPaint = analyticPaint.ThroughBinaryRegion();
+            // Luminance save-layers preserve coverage-pair arithmetic through the binary source-region clip.
+            if (activeViewportClip.Length != 0 && activeViewportIsBinary && !maskLuminanceLayer) analyticPaint = analyticPaint.ThroughBinaryRegion();
             ReadOnlySpan<int> contourEnds = raster.ContourEnds;
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
             SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, polygon.IsEvenOdd, raster.Signs, raster.Mapping, raster.QuadSpans, raster.CubicSpans, raster.CompleteBounds.RoundOutForDispatch(), outputWidth, outputHeight, raster.Authored, raster.AuthoredMap);

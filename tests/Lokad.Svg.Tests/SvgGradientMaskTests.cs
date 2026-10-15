@@ -162,7 +162,7 @@ public sealed class SvgGradientMaskTests
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
         if (following.Length != 0 && id.Length != 0)
             Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
-        else if (paint.Contains("#ff0000", StringComparison.Ordinal) || paint.Contains("mask=", StringComparison.Ordinal))
+        else if (paint.Contains("mask=", StringComparison.Ordinal))
             Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         else using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)) Assert.Single(scene.Geometries);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

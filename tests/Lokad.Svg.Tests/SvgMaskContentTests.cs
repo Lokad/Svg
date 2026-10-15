@@ -35,14 +35,26 @@ public sealed class SvgMaskContentTests
     }
 
     [Theory]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><circle cx='4' cy='4' r='2' fill='none' stroke='red'/></mask></defs><rect width='8' height='8' fill='red'/></svg>", "Only grayscale luminance mask content is implemented.")]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><circle cx='4' cy='4' r='2' fill='#888888' stroke='white'/></mask></defs><rect width='8' height='8' fill='red'/></svg>", "Only single-paint mask content is implemented.")]
-    public void Spatial_mask_gates_reject_honestly(string svg, string message)
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><circle cx='4' cy='4' r='2' fill='none' stroke='red'/></mask></defs><rect width='8' height='8' fill='red'/></svg>")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><circle cx='4' cy='4' r='2' fill='#888888' stroke='white'/></mask></defs><rect width='8' height='8' fill='red'/></svg>")]
+    public void Original_mask_paint_boundaries_admit_and_preserve_unmasked_siblings(string svg)
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => RenderPixels(svg, out _, out _));
+        byte[] pixels = RenderPixels(svg, out int width, out int height);
+        for (int y = 0; y < height; y++)
+        for (int x = 0; x < width; x++) Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, x, y));
+    }
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains(message, rejected.Message);
+    [Theory]
+    [InlineData("fill='none' stroke='red' stroke-width='2'", 54, 0)]
+    [InlineData("fill='#808080' stroke='white' stroke-width='2'", 255, 128)]
+    public void Colored_stroke_and_independent_fill_use_composited_luminance(string paint, byte ringAlpha, byte centerAlpha)
+    {
+        string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><mask id='m'><circle cx='8' cy='8' r='4' " + paint
+            + "/></mask></defs><rect width='16' height='16' fill='red' mask='url(#m)'/></svg>";
+        byte[] pixels = RenderPixels(svg, out _, out _);
+        Assert.Equal(ringAlpha, Pixel(pixels, 16, 8, 11).Alpha);
+        Assert.Equal(centerAlpha, Pixel(pixels, 16, 8, 8).Alpha);
+        Assert.Equal(0, Pixel(pixels, 16, 0, 0).Alpha);
     }
 
     [Fact]
@@ -51,6 +63,26 @@ public sealed class SvgMaskContentTests
         const string input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><circle cx='4' cy='4' r='2' fill='none' stroke='white'/></mask></defs><defs><rect id='r' width='2' height='2' fill='red'/></defs><use href='#r' mask='url(#m)'/></svg>";
         string direct = input.Replace("<use href='#r'", "<rect width='2' height='2' fill='red'", StringComparison.Ordinal);
         Assert.Equal(RenderPixels(direct, out _, out _), RenderPixels(input, out _, out _));
+    }
+
+    [Theory]
+    [InlineData("maskUnits='userSpaceOnUse' x='2' y='2' width='4' height='4'", "<rect width='24' height='16' fill='white'/><rect width='0' height='0'/>", "<rect x='2' y='2' width='8' height='4' fill='red' transform='matrix(0 1 -1 0 20 0)' mask='url(#m)'/>")]
+    [InlineData("maskContentUnits='objectBoundingBox'", "<rect width='50%' height='100%' fill='white'/>", "<g transform='matrix(0 1 -1 0 20 0)' mask='url(#m)'><rect x='2' y='2' width='8' height='4' fill='red'/></g>")]
+    [InlineData("maskContentUnits='objectBoundingBox'", "<rect width='50%' height='100%' fill='white'/>", "<use href='#r' x='2' y='2' transform='matrix(0 1 -1 0 20 0)' mask='url(#m)'/>")]
+    public void Affine_masks_use_local_bounds_and_regions_without_clipping_siblings(string units, string content, string target)
+    {
+        string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='16'><defs><mask id='m' " + units + ">" + content
+            + "</mask><rect id='r' width='8' height='4' fill='red'/></defs>" + target + "<rect x='22' y='14' width='2' height='2' fill='blue'/></svg>";
+        byte[] pixels = RenderPixels(svg, out int width, out int height);
+        Assert.Equal(24, width);
+        Assert.Equal(16, height);
+        for (int y = 0; y < height; y++)
+        for (int x = 0; x < width; x++)
+        {
+            SvgColor expected = x >= 22 && y >= 14 ? new(0, 0, 255, 255)
+                : x >= 14 && x < 18 && y >= 2 && y < 6 ? new(255, 0, 0, 255) : SvgColor.Transparent;
+            Assert.Equal(expected, Pixel(pixels, width, x, y));
+        }
     }
 
     private static byte[] RenderPixels(string svg, out int width, out int height)

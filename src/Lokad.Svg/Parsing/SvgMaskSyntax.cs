@@ -110,17 +110,16 @@ internal static class SvgMaskSyntax
             workCounter.Consume(cancellationToken);
             PendingLeafMask pending = state.PendingLeafMasks[pendingIndex];
             SvgMaskContent? spatialContent = null;
-            SvgAffineTransform spatialMap = SvgAffineTransform.Identity;
+            SvgAffineTransform spatialMap = pending.Transform;
+            if (pending.Parent is {} maskParent) spatialMap = SvgAffineTransform.FromScaleOffset(maskParent.ScaleX, maskParent.ScaleY, maskParent.OffsetX, maskParent.OffsetY).ComposeChecked(spatialMap);
             if (!state.Masks.TryGetValue(pending.MaskId, out byte value))
             {
                 if (!state.MaskContents.TryGetValue(pending.MaskId, out SvgMaskContent spatial)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
-                SvgAffineTransform map = pending.Transform;
-                if (pending.Parent is {} parent) map = SvgAffineTransform.FromScaleOffset(parent.ScaleX, parent.ScaleY, parent.OffsetX, parent.OffsetY).ComposeChecked(map);
-                if (!map.IsAxisAligned || map.A == 0 || map.D == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonsingular axis-aligned spatial mask target maps are implemented.");
                 spatialContent = spatial;
-                spatialMap = map;
                 value = 255;
             }
+            if (!spatialMap.IsAxisAligned && state.MaskContents.TryGetValue(pending.MaskId, out SvgMaskContent retained))
+            { spatialContent = retained; value = 255; }
             pending.Operation.Value = value;
             pending.Operation.Resolved = true;
             if (pending.GeometryCount == 0) continue;
@@ -128,8 +127,16 @@ internal static class SvgMaskSyntax
             SvgGeometry first = state.Scene.GeometryAt(pending.FirstGeometryIndex);
             SvgRectangle objectBox = state.Scene.GetRecordedPaintValue(first.RecordedPaint).ObjectBounds is not null
                 ? RecordedObjectBox(first, state) : fallback;
+            SvgMaskTarget? nativeTarget = null;
+            if (!spatialMap.IsAxisAligned)
+            {
+                SvgObjectBoundingClip collector = new(pending.Transform, pending.Parent);
+                for (int index = pending.FirstGeometryIndex; index < pending.FirstGeometryIndex + pending.GeometryCount; index++)
+                    collector.Add(state.Scene.GeometryAt(index), workCounter, cancellationToken);
+                nativeTarget = SvgMaskTarget.Create(pending.MaskId, spatialMap, collector.SourceBounds, state);
+            }
             if (spatialContent is {} placedContent)
-                pending.Operation.ContentIndex = state.Scene.AddMaskContent(placedContent.PlaceForTarget(spatialMap, objectBox, workCounter, cancellationToken));
+                pending.Operation.ContentIndex = state.Scene.AddMaskContent(SvgMaskContentReplay.PlaceForTarget(placedContent, spatialMap, objectBox, nativeTarget, state, workCounter, cancellationToken));
             if (pending.Operation.ContentIndex < 0 && state.MaskContents.TryGetValue(pending.MaskId, out SvgMaskContent uniform)
                 && uniform.UniformSource is not null && state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox uniformBox))
             {
@@ -144,7 +151,7 @@ internal static class SvgMaskSyntax
                 }
             }
             if (pending.Operation.ContentIndex < 0 && state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox content) && !content.Contains(fallback.X, fallback.Y, fallback.X + fallback.Width, fallback.Y + fallback.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering the masked geometry is implemented.");
-            SvgClipBox region = ResolveDeferredRegion(state, pending, objectBox);
+            SvgClipBox region = nativeTarget is {} native ? native.SceneBounds(workCounter, cancellationToken) : ResolveDeferredRegion(state, pending, objectBox);
             pending.Operation.Region = region;
             for (int geometryIndex = pending.FirstGeometryIndex; geometryIndex < pending.FirstGeometryIndex + pending.GeometryCount; geometryIndex++)
             {
@@ -262,21 +269,35 @@ internal static class SvgMaskSyntax
         {
             workCounter.Consume(cancellationToken);
             PendingGroupMask pending = state.PendingGroupMasks[pendingIndex];
+            SvgAffineTransform targetMap = pending.Transform;
+            if (pending.Parent is {} viewport) targetMap = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(targetMap);
+            SvgMaskTarget? nativeTarget = null;
+            if (!targetMap.IsAxisAligned)
+            {
+                SvgObjectBoundingClip collector = new(pending.Transform, pending.Parent);
+                for (int commandIndex = pending.FirstCommandIndex; commandIndex < pending.EndCommandIndex; commandIndex++)
+                {
+                    workCounter.Consume(cancellationToken);
+                    SvgDrawCommand command = state.Scene.CommandAt(commandIndex);
+                    if (command.Kind == SvgDrawCommandKind.Geometry) collector.Add(state.Scene.GeometryAt(command.GeometryIndex), workCounter, cancellationToken);
+                }
+                nativeTarget = SvgMaskTarget.Create(pending.MaskId, targetMap, collector.SourceBounds, state);
+            }
             bool hasExplicitRegion = state.MaskRegions.TryGetValue(pending.MaskId, out SvgClipBox customRegion);
             SvgClipBox fractionRegion = default;
             bool hasFractionRegion = !hasExplicitRegion && state.MaskFractionRegions.TryGetValue(pending.MaskId, out fractionRegion);
-            SvgClipBox? maskRegion = hasExplicitRegion || hasFractionRegion
-                ? ResolveGroupMaskRegion(state, pending, hasExplicitRegion, customRegion, fractionRegion, workCounter, cancellationToken)
-                : MaskRegion(GroupChildrenUnion(state, pending, workCounter, cancellationToken));
-            if (!state.Masks.TryGetValue(pending.MaskId, out byte value))
+            SvgClipBox? maskRegion = nativeTarget is {} native ? native.SceneBounds(workCounter, cancellationToken)
+                : hasExplicitRegion || hasFractionRegion
+                    ? ResolveGroupMaskRegion(state, pending, hasExplicitRegion, customRegion, fractionRegion, workCounter, cancellationToken)
+                    : MaskRegion(GroupChildrenUnion(state, pending, workCounter, cancellationToken));
+            bool scalar = state.Masks.TryGetValue(pending.MaskId, out byte value);
+            if (!scalar || nativeTarget is not null && state.MaskContents.TryGetValue(pending.MaskId, out _))
             {
                 if (!state.MaskContents.TryGetValue(pending.MaskId, out SvgMaskContent content)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
-                if (!content.IsObjectBoundingBox && pending.Parent is not null && !pending.Parent.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Spatial mask content in transformed viewports is not implemented.");
+                if (nativeTarget is null && !content.IsObjectBoundingBox && pending.Parent is not null && !pending.Parent.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Spatial mask content in transformed viewports is not implemented.");
                 ValidateNoGlyphText(state, pending, workCounter, cancellationToken);
-                SvgAffineTransform map = pending.Transform;
-                if (content.IsObjectBoundingBox && pending.Parent is {} parent)
-                    map = SvgAffineTransform.FromScaleOffset(parent.ScaleX, parent.ScaleY, parent.OffsetX, parent.OffsetY).ComposeChecked(map);
-                int contentIndex = state.Scene.AddMaskContent(content.PlaceForTarget(map, GroupChildrenUnion(state, pending, workCounter, cancellationToken), workCounter, cancellationToken));
+                SvgAffineTransform map = content.IsObjectBoundingBox || nativeTarget is not null ? targetMap : pending.Transform;
+                int contentIndex = state.Scene.AddMaskContent(SvgMaskContentReplay.PlaceForTarget(content, map, GroupChildrenUnion(state, pending, workCounter, cancellationToken), nativeTarget, state, workCounter, cancellationToken));
                 RewriteGroupMaskScope(state, pending, 255, maskRegion, contentIndex);
                 continue;
             }

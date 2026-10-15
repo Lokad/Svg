@@ -21,12 +21,15 @@ internal static class SvgResourceUseReplay
     }
 
     internal static SvgResourceUse Retain(XmlReader reader, SvgPaintableElementContext context, SvgRootAttributes root, SvgDocumentState state)
+        => Retain(reader, context, new SvgViewportLengthBases(root.UserViewportWidth, root.UserViewportHeight), state);
+
+    internal static SvgResourceUse Retain(XmlReader reader, SvgPaintableElementContext context, SvgViewportLengthBases bases, SvgDocumentState state)
     {
         ParserWorkCounter work = context.WorkCounter;
         CancellationToken token = context.CancellationToken;
         SvgElementAttributePolicy.ValidateUse(reader, work, token);
         if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on mask content are not implemented.");
-        SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, root.UserViewportWidth, root.UserViewportHeight, state);
+        SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, bases.Width, bases.Height, state);
         string? clip = reader.GetAttribute("clip-path");
         string? clipId = clip is null ? null : state.Strings.Copy(SvgClipPathSyntax.ParseClipId(clip));
         SvgComputedStyle style = context.ResolveStyle(reader);
@@ -128,7 +131,8 @@ internal static class SvgResourceUseReplay
                     SvgVectorContent content = SvgVectorContent.Create(builder.Build(), state.Budget);
                     try { state.Scene.AdoptVectorContent(content); }
                     catch { content.Dispose(); throw; }
-                    state.MaskContents.Replace(pending.Id, new([], 255, pending.IsAlpha) { VectorContent = content });
+                    SvgMaskSourceRange? replaySource = state.MaskContents.TryGetValue(pending.Id, out SvgMaskContent previous) ? previous.ReplaySource : null;
+                    state.MaskContents.Replace(pending.Id, new([], 255, pending.IsAlpha) { VectorContent = content, ReplaySource = replaySource });
                 }
             }
             finally { if (!adopted) foreach (SvgGeometry geometry in mapped) geometry.Dispose(); }

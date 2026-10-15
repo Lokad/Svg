@@ -9,7 +9,7 @@ The frozen selection and measured outcomes are recorded below.
 
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
-variants**. **Nineteen additional authored documents** (eighteen CC0 and the MIT
+variants**. **Twenty additional authored documents** (nineteen CC0 and the MIT
 tile sheet) are complete and counted separately. Preserve the delivered
 [effects sheet](../tests/Research/effects-marker-sheet/README.md),
 [composition sheet](../tests/Research/composition-sheet/README.md) and
@@ -46,17 +46,22 @@ records 7,873 passing tests/platform, all prior semantics and original
 assets/options/limits preserved, twenty-four healthy captures and six unchanged
 native cross-checks of the original mask-content boundary. This is the nineteenth
 authored document (eighteenth CC0), separate from both cohorts and W3C.
-Remaining colored/general affine masks, font/effect and S17 exits stay required.
+This checkpoint's color/general-affine gates are superseded by the bank below;
+nested-viewport masks, glyph/font/effect and S17 exits remain required.
 
-The frozen [mask color/affine sheet](../tests/Research/mask-color-affine-exit-sheet/README.md)
-starts at **0/1 document / 0/3 exact controls** on both platforms. Grayscale-only
-luminance and axis-only spatial target maps are measured original G5/C3 blockers.
-Twenty-four healthy stable captures and original sources/options predate correction.
-This adds no completed-document count or combination quota.
+The [mask color/affine sheet](../tests/Research/mask-color-affine-exit-sheet/README.md)
+is **1/1 complete document / 3/3 exact controls** on both platforms, from
+**0/1 / 0/3** at declaration. Colored luminance and general affine user-space/
+object-box targets now match unchanged references. Twenty-four healthy stable
+captures, original source/options/default limits and all prior semantics are
+preserved in the [receipt](../artifacts/maintenance-review-20261012/mask-color-affine-qualified-results.json).
+This is the twentieth authored document (nineteenth CC0), separate from both
+cohorts and W3C. Nested-viewport mask and glyph clip/mask boundaries stay open
+in PLAN.md; no additional combination quota or feature deferral applies.
 
 One additional sourced [W3C decoration document](../tests/Research/stroked-decorations/README.md)
 is **1/1 exact** on Windows/Linux at its frozen 1200×400 output, separately from
-both cohorts and the nineteen authored documents. All **4/4 controls** are exact,
+both cohorts and the twenty authored documents. All **4/4 controls** are exact,
 including curved, three-line/stroke-only and positioned/stretched paths.
 The original 974-byte SVG, supplied Noto program and platform references are
 unchanged. The [receipt](../artifacts/maintenance-review-20261012/decorated-path-qualified-results.json)

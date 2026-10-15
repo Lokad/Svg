@@ -291,6 +291,7 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal bool MaskIsAlpha { get; set; }
     internal bool MaskObjectBoundingBoxContent { get; set; }
+    internal SvgViewportLengthBases MaskReplayBases { get; set; }
 
     internal byte? MaskValue { get; set; }
 

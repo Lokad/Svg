@@ -13,6 +13,12 @@ internal static class SvgPathBounds
     /// Fixed stack buffers hold four roots and at most three endpoint conics; no heap storage is
     /// allocated or retained. Cancellation preserves its token. Calls have independent local state.</remarks>
     internal static SvgRectangle Compute(ReadOnlySpan<SvgAuthoredPathCommand> commands, ParserWorkCounter work, CancellationToken token)
+        => Compute(commands, SvgAffineTransform.Identity, work, token);
+
+    /// <summary>Computes tight bounds after mapping native controls into a referencing object's coordinate system.</summary>
+    /// <remarks>Source commands remain borrowed. Mapping and extrema share bounded work/token and fixed scratch;
+    /// mapping precedes root evaluation so a rotated curve is not replaced by its enclosing rectangle.</remarks>
+    internal static SvgRectangle Compute(ReadOnlySpan<SvgAuthoredPathCommand> commands, SvgAffineTransform map, ParserWorkCounter work, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         float left = float.PositiveInfinity, top = float.PositiveInfinity, right = float.NegativeInfinity, bottom = float.NegativeInfinity;
@@ -26,11 +32,11 @@ internal static class SvgPathBounds
             {
                 case SvgAuthoredPathVerb.Move:
                     current = first = command.First;
-                    Include(current);
+                    Include(Map(current));
                     break;
                 case SvgAuthoredPathVerb.Line:
                     current = command.First;
-                    Include(current);
+                    Include(Map(current));
                     break;
                 case SvgAuthoredPathVerb.Quadratic:
                     Quad(current, command.First, command.Second, 1, false, roots, work, token);
@@ -42,17 +48,18 @@ internal static class SvgPathBounds
                     break;
                 case SvgAuthoredPathVerb.Cubic:
                     work.Consume(token);
-                    int count = CubicRoots((float)current.X, (float)command.First.X, (float)command.Second.X, (float)command.Third.X, roots);
-                    count += CubicRoots((float)current.Y, (float)command.First.Y, (float)command.Second.Y, (float)command.Third.Y, roots[count..]);
+                    SvgDevicePoint a = Map(current), b = Map(command.First), c = Map(command.Second), d = Map(command.Third);
+                    int count = CubicRoots((float)a.X, (float)b.X, (float)c.X, (float)d.X, roots);
+                    count += CubicRoots((float)a.Y, (float)b.Y, (float)c.Y, (float)d.Y, roots[count..]);
                     for (int index = 0; index < count; index++)
                     {
                         work.Consume(token);
                         Include(new(
-                            EvalCubic((float)current.X, (float)command.First.X, (float)command.Second.X, (float)command.Third.X, roots[index]),
-                            EvalCubic((float)current.Y, (float)command.First.Y, (float)command.Second.Y, (float)command.Third.Y, roots[index])));
+                            EvalCubic((float)a.X, (float)b.X, (float)c.X, (float)d.X, roots[index]),
+                            EvalCubic((float)a.Y, (float)b.Y, (float)c.Y, (float)d.Y, roots[index])));
                     }
                     current = command.Third;
-                    Include(current);
+                    Include(d);
                     break;
                 case SvgAuthoredPathVerb.Arc:
                     for (int phase = 0; phase <= SvgEndpointArc.MaximumConicCount; phase++) work.Consume(token);
@@ -63,7 +70,7 @@ internal static class SvgPathBounds
                         current = arcs[index].End;
                     }
                     current = command.Third;
-                    Include(current);
+                    Include(Map(current));
                     break;
                 case SvgAuthoredPathVerb.End:
                 case SvgAuthoredPathVerb.Close:
@@ -77,6 +84,13 @@ internal static class SvgPathBounds
         if (!float.IsFinite(width) || !float.IsFinite(height)) throw new SvgException(SvgErrorCode.LimitExceeded, "Path bounds exceed the finite float range.");
         return new(left, top, width, height, default, true, null);
 
+        SvgDevicePoint Map(SvgDevicePoint point)
+        {
+            if (map == SvgAffineTransform.Identity) return point;
+            work.Consume(token);
+            return SvgAuthoredPath.MapPoint(map, point, new(0, 0));
+        }
+
         void Include(SvgDevicePoint point)
         {
             float x = (float)point.X, y = (float)point.Y;
@@ -87,6 +101,7 @@ internal static class SvgPathBounds
         void Quad(SvgDevicePoint start, SvgDevicePoint control, SvgDevicePoint end, float weight, bool conic, Span<float> candidates, ParserWorkCounter counter, CancellationToken cancellation)
         {
             counter.Consume(cancellation);
+            start = Map(start); control = Map(control); end = Map(end);
             // SkConic::set substitutes one for nonpositive or nonfinite weights.
             if (conic && (!(weight > 0) || !float.IsFinite(weight))) weight = 1;
             int count = QuadRoots((float)start.X, (float)control.X, (float)end.X, weight, conic, candidates);

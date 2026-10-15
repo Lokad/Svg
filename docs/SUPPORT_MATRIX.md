@@ -1,3 +1,19 @@
+## Colored and general affine masks (2026-10-15)
+
+The unchanged [mask color/affine bank](../tests/Research/mask-color-affine-exit-sheet/README.md)
+is **1/1 complete document / 3/3 exact controls** on Windows/Linux. Colored solid
+fill/stroke and independent fill/stroke masks share composited luminance; general
+affine leaf/group/use targets reuse native source replay and tight local object
+bounds. Region/content units stay independent. Native binary source-region, AA
+target and luminance-layer coverage consumers preserve exact edge arithmetic.
+
+The [qualification](../artifacts/maintenance-review-20261012/mask-color-affine-qualified-results.json)
+retains original assets/options/default limits, all prior regressions and affected
+resource/sibling protection. Former grayscale-only and axis-target gates are
+superseded for these routes. Nested-viewport mask-region/scoping gates and glyph
+clip/mask boundaries remain explicit in [PLAN](../PLAN.md); they do not close with
+this document. No feature deferral or new runtime dependency is introduced.
+
 ## Object-box mask content and tile-local clips (2026-10-15)
 
 The [composition/resource bank](../tests/Research/composition-resource-exit-sheet/README.md)
@@ -14,8 +30,9 @@ and all prior cases preserved. The original mask-content rejection now requires
 exact pixels against its unchanged reference, cross-checked by six healthy native
 captures. Applicable resource presentation reuses existing clip/mask/pattern banks
 and analytic pattern CSS priority controls. Earlier object-content/tile-clip gates
-below are superseded. Colored luminance and general affine mask target maps remain
-required under [PLAN](../PLAN.md); font/effect and S17 exits remain open. No feature
+below are superseded. The color/general-affine exits are qualified above; nested-
+viewport masks, glyph clip/mask boundaries, font/effect and S17 exits remain open
+under [PLAN](../PLAN.md). No feature
 scope is deferred or new runtime dependency introduced.
 
 ## Native child clip unions and larger mask fallback (2026-10-15)

@@ -58,6 +58,21 @@ public sealed class SvgPathBoundsTests
     }
 
     [Fact]
+    public void Affine_curve_bounds_find_extrema_after_mapping_controls()
+    {
+        SvgAuthoredPathCommand[] commands =
+        [
+            new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(0, 0), default, default),
+            new(SvgAuthoredPathVerb.Quadratic, SvgAuthoredArcFlags.None, new(4, 8), new(8, 0), default),
+        ];
+        SvgRectangle bounds = SvgPathBounds.Compute(commands, new(1, 0, 1, 1, 0, 0), new(100_000), CancellationToken.None);
+        Assert.Equal(0, bounds.X);
+        Assert.Equal(0, bounds.Y);
+        Assert.Equal(9, bounds.Width);
+        Assert.Equal(4, bounds.Height);
+    }
+
+    [Fact]
     public void Repeated_curve_bounds_queries_allocate_no_heap_storage()
     {
         SvgAuthoredPathCommand[] commands =
