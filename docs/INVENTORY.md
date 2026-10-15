@@ -5,11 +5,11 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 The frozen selection and measured outcomes are recorded below.
 
-## Current document evidence (2026-10-15)
+## Current document evidence (2026-10-16)
 
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
-variants**. **Twenty-one additional authored documents** (nineteen CC0 and two MIT
+variants**. **Twenty-two additional authored documents** (nineteen CC0 and three MIT
 documents) are complete and counted separately. Preserve the delivered
 [effects sheet](../tests/Research/effects-marker-sheet/README.md),
 [composition sheet](../tests/Research/composition-sheet/README.md) and
@@ -66,12 +66,24 @@ is **1/1 complete document / 5/5 exact controls** on both platforms, from
 references/default limits and thirty-six healthy stable captures remain unchanged.
 The [receipt](../artifacts/maintenance-review-20261012/mask-viewport-qualified-results.json)
 owns complete checks, original-input pixel/cleanup migrations and preservation.
-This is the twenty-first authored document (second MIT). C3b is complete; C6
-clip/opacity bridges, C5b tile masks, glyph/font/effect and S17 exits remain required.
+This is the twenty-first authored document (second MIT). C3b is complete; C6a is
+qualified below. C6b, C5b tile masks, glyph/font/effect and S17 remain required.
+
+The [viewport clip/opacity sheet](../tests/Research/viewport-clip-opacity-exit-sheet/README.md)
+is **1/1 complete document / 6/6 exact controls** on both platforms, from
+**0/1 / 0/6** at declaration. Six original Core SVGs and forty-two healthy stable
+captures retain their source/reference bytes/options/limits. This is the twenty-
+second authored document (third MIT), separate from both cohorts and W3C.
+The [receipt](../artifacts/maintenance-review-20261012/viewport-composition-qualified-results.json)
+owns complete qualification and original-input migrations. Three retained
+fractional clipped-frame backgrounds and nested cropped opacity also match
+unchanged references; twelve healthy Linux captures cross-check their bytes.
+Six further native overlap captures protect quantized RGB and sibling scopes.
+C6a is complete. C6b, C5b, glyph/font/effect and S17 remain required.
 
 One additional sourced [W3C decoration document](../tests/Research/stroked-decorations/README.md)
 is **1/1 exact** on Windows/Linux at its frozen 1200×400 output, separately from
-both cohorts and the twenty-one authored documents. All **4/4 controls** are exact,
+both cohorts and the twenty-two authored documents. All **4/4 controls** are exact,
 including curved, three-line/stroke-only and positioned/stretched paths.
 The original 974-byte SVG, supplied Noto program and platform references are
 unchanged. The [receipt](../artifacts/maintenance-review-20261012/decorated-path-qualified-results.json)

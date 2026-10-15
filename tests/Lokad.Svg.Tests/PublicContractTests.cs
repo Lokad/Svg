@@ -607,7 +607,6 @@ public sealed class PublicContractTests
     [InlineData("<style>circle:hover { fill: red; }</style><rect/>")]
     [InlineData("<style>rect { fill: red</style><rect/>")]
     [InlineData("<foreign:rect xmlns:foreign='urn:foreign' width='1' height='1'><foreign:child/></foreign:rect>")]
-    [InlineData("<g opacity='0.5'><g opacity='0.5'><rect/></g></g>")]
     public void Unsupported_presentation_namespace_and_syntax_forms_are_categorized_at_public_conversion(string content)
     {
         string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'>" + content + "</svg>";
@@ -615,6 +614,15 @@ public sealed class PublicContractTests
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Original_empty_nested_opacity_is_admitted_with_unchanged_output()
+    {
+        const string content = "<g opacity='0.5'><g opacity='0.5'><rect/></g></g>";
+        string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'>" + content + "</svg>";
+        Assert.Equal(SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Fact]

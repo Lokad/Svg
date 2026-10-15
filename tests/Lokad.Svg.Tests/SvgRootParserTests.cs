@@ -3170,13 +3170,10 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_nested_viewport_opacity_inside_opacity_scopes()
+    public void Original_nested_viewport_and_group_opacity_compose_separate_layers()
     {
-        SvgException inner = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' opacity='0.5'><svg x='0' y='0' width='8' height='8' opacity='0.5'><rect width='8' height='8' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-        SvgException outer = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><svg x='0' y='0' width='8' height='8' opacity='0.5'><g opacity='0.5'><rect width='8' height='8' fill='red'/></g></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, inner.ErrorCode);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, outer.ErrorCode);
+        AssertSolidRectanglePixels("<svg xmlns='http://www.w3.org/2000/svg' opacity='0.5'><svg x='0' y='0' width='8' height='8' opacity='0.5'><rect width='8' height='8' fill='red'/></svg></svg>"u8.ToArray(), new(0, 0, 8, 8, new(255, 0, 0, 64), true, null), 300, 150);
+        AssertSolidRectanglePixels("<svg xmlns='http://www.w3.org/2000/svg'><svg x='0' y='0' width='8' height='8' opacity='0.5'><g opacity='0.5'><rect width='8' height='8' fill='red'/></g></svg></svg>"u8.ToArray(), new(0, 0, 8, 8, new(255, 0, 0, 64), true, null), 300, 150);
     }
 
     [Fact]
@@ -4012,11 +4009,9 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_nested_group_opacity_pending_compositing_calibration()
+    public void Original_nested_group_opacity_composes_separate_layers()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g opacity='0.5'><g opacity='0.5'><rect width='1' height='1'/></g></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        AssertSolidRectanglePixels("<svg xmlns='http://www.w3.org/2000/svg'><g opacity='0.5'><g opacity='0.5'><rect width='1' height='1'/></g></g></svg>"u8.ToArray(), new(0, 0, 1, 1, new(0, 0, 0, 64), true, null), 300, 150);
     }
 
     [Fact]
@@ -4291,11 +4286,24 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_a_stroked_rectangle_crossing_a_nested_viewport_boundary()
+    public void Original_stroke_crossing_viewport_preserves_source_and_physical_clip()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><svg x='8' y='8' width='32' height='32'><rect width='64' height='64' fill='red' stroke='blue' stroke-width='2'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        RenderBudget budget = new(8_000_000);
+        using (SvgRoot scene = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><svg x='8' y='8' width='32' height='32'><rect width='64' height='64' fill='red' stroke='blue' stroke-width='2'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
+        {
+            Assert.Equal(300, surface.Width);
+            Assert.Equal(150, surface.Height);
+            for (int y = 0; y < surface.Height; y++)
+            for (int x = 0; x < surface.Width; x++)
+            {
+                SvgColor expected = x >= 8 && x < 40 && y >= 8 && y < 40
+                    ? x == 8 || y == 8 ? new(0, 0, 255, 255) : new(255, 0, 0, 255) : SvgColor.Transparent;
+                int offset = (y * surface.Width + x) * 4;
+                Assert.Equal(expected, new SvgColor(surface.Pixels[offset], surface.Pixels[offset + 1], surface.Pixels[offset + 2], surface.Pixels[offset + 3]));
+            }
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]
@@ -4429,12 +4437,11 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_forward_masks_on_opaque_groups_with_nested_opacity()
+    public void Original_forward_mask_composes_nested_group_opacity()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g opacity='0.5' mask='url(#later)'><g opacity='0.5'><rect x='0' y='0' width='8' height='8' fill='red'/></g></g><defs><mask id='later'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        AssertSolidRectanglePixels("<svg xmlns='http://www.w3.org/2000/svg'><g opacity='0.5' mask='url(#later)'><g opacity='0.5'><rect x='0' y='0' width='8' height='8' fill='red'/></g></g><defs><mask id='later'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs></svg>"u8.ToArray(), new(0, 0, 8, 8, new(255, 0, 0, 32), true, null), 300, 150);
     }
+
     [Fact]
     public void Crops_forward_masks_on_groups_with_uncovered_children()
     {
@@ -4540,18 +4547,15 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_forward_clips_on_groups_in_scaled_viewports()
+    public void Original_forward_group_clip_maps_scaled_viewport()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><svg x='0' y='0' width='16' height='16' viewBox='0 0 8 8'><g clip-path='url(#later)'><rect width='8' height='8' fill='red'/></g></svg><defs><clipPath id='later'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        AssertSolidRectanglePixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><svg x='0' y='0' width='16' height='16' viewBox='0 0 8 8'><g clip-path='url(#later)'><rect width='8' height='8' fill='red'/></g></svg><defs><clipPath id='later'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), new(4, 4, 8, 8, new(255, 0, 0, 255), true, null), 16, 16);
     }
-    [Fact]
-    public void Rejects_forward_clips_on_groups_containing_scaled_viewports()
-    {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g clip-path='url(#later)'><svg x='0' y='0' width='16' height='16' viewBox='0 0 8 8'><rect width='8' height='8' fill='red'/></svg></g><defs><clipPath id='later'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    [Fact]
+    public void Original_enclosing_group_clip_stays_outside_child_viewport_map()
+    {
+        AssertSolidRectanglePixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g clip-path='url(#later)'><svg x='0' y='0' width='16' height='16' viewBox='0 0 8 8'><rect width='8' height='8' fill='red'/></svg></g><defs><clipPath id='later'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), new(2, 2, 4, 4, new(255, 0, 0, 255), true, null), 16, 16);
     }
 
     [Fact]
@@ -4687,17 +4691,15 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_clip_paths_in_scaled_viewports()
+    public void Original_scaled_leaf_clip_preserves_empty_intersection()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><clipPath id='window'><rect x='8' y='8' width='8' height='8'/></clipPath></defs><svg x='8' y='8' width='48' height='48' viewBox='0 0 24 24'><rect x='0' y='0' width='8' height='8' fill='red' clip-path='url(#window)'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        AssertSolidRectanglePixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><clipPath id='window'><rect x='8' y='8' width='8' height='8'/></clipPath></defs><svg x='8' y='8' width='48' height='48' viewBox='0 0 24 24'><rect x='0' y='0' width='8' height='8' fill='red' clip-path='url(#window)'/></svg></svg>"u8.ToArray(), new(0, 0, 0, 0, new(255, 0, 0, 255), true, null), 64, 64);
     }
 
     [Fact]
     public void Original_scaled_viewport_mask_maps_region_and_coverage()
     {
-        AssertMaskedRedPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><mask id='window' maskUnits='userSpaceOnUse' x='1' y='1' width='2' height='2'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><svg x='8' y='8' width='48' height='48' viewBox='0 0 24 24'><rect x='0' y='0' width='8' height='8' fill='red' mask='url(#window)'/></svg></svg>"u8.ToArray(), new(10, 10, 4, 4, new(255, 0, 0, 128), true, null), 64, 64);
+        AssertSolidRectanglePixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><mask id='window' maskUnits='userSpaceOnUse' x='1' y='1' width='2' height='2'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><svg x='8' y='8' width='48' height='48' viewBox='0 0 24 24'><rect x='0' y='0' width='8' height='8' fill='red' mask='url(#window)'/></svg></svg>"u8.ToArray(), new(10, 10, 4, 4, new(255, 0, 0, 128), true, null), 64, 64);
     }
 
     [Fact]
@@ -5060,7 +5062,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Original_forward_viewport_mask_maps_its_region()
     {
-        AssertMaskedRedPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><svg x='4' y='0' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red' mask='url(#later)'/></svg><defs><mask id='later' maskUnits='userSpaceOnUse' x='2' y='2' width='4' height='4'><rect x='0' y='0' width='8' height='8' fill='#ffffff'/></mask></defs></svg>"u8.ToArray(), new(6, 2, 4, 4, new(255, 0, 0, 255), true, null), 16, 8);
+        AssertSolidRectanglePixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><svg x='4' y='0' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red' mask='url(#later)'/></svg><defs><mask id='later' maskUnits='userSpaceOnUse' x='2' y='2' width='4' height='4'><rect x='0' y='0' width='8' height='8' fill='#ffffff'/></mask></defs></svg>"u8.ToArray(), new(6, 2, 4, 4, new(255, 0, 0, 255), true, null), 16, 8);
     }
 
     [Fact]
@@ -7225,7 +7227,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Original_partial_user_space_region_uses_default_extents()
     {
-        AssertMaskedRedPixels("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='window' maskUnits='userSpaceOnUse' x='1' y='1'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><rect width='8' height='8' fill='red' mask='url(#window)'/></svg>"u8.ToArray(), new(1, 1, 7, 7, new(255, 0, 0, 128), true, null), 300, 150);
+        AssertSolidRectanglePixels("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='window' maskUnits='userSpaceOnUse' x='1' y='1'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><rect width='8' height='8' fill='red' mask='url(#window)'/></svg>"u8.ToArray(), new(1, 1, 7, 7, new(255, 0, 0, 128), true, null), 300, 150);
     }
 
     [Fact]
@@ -7285,7 +7287,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Original_viewport_use_mask_maps_its_region()
     {
-        AssertMaskedRedPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='8' height='8'><rect x='0' y='0' width='16' height='16' fill='#808080'/></mask></defs><svg x='8' y='8' width='48' height='48'><use href='#r' mask='url(#m)'/></svg></svg>"u8.ToArray(), new(8, 8, 8, 8, new(255, 0, 0, 128), true, null), 64, 64);
+        AssertSolidRectanglePixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='8' height='8'><rect x='0' y='0' width='16' height='16' fill='#808080'/></mask></defs><svg x='8' y='8' width='48' height='48'><use href='#r' mask='url(#m)'/></svg></svg>"u8.ToArray(), new(8, 8, 8, 8, new(255, 0, 0, 128), true, null), 64, 64);
     }
 
     [Fact]
@@ -7752,7 +7754,7 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
-    private static void AssertMaskedRedPixels(byte[] input, SvgRectangle visible, int width, int height)
+    private static void AssertSolidRectanglePixels(byte[] input, SvgRectangle visible, int width, int height)
     {
         RenderBudget budget = new(8_000_000);
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))

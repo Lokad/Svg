@@ -1,3 +1,25 @@
+## Shared viewport clips and owning opacity layers (2026-10-16)
+
+Axis clip placement composes inherited source transforms with scalar viewport
+scale/offset before intersecting the physical clip. Forward group clips retain
+the coordinate stage at group entry even when descendants introduce viewBoxes.
+The former scaled-descendant admission counter is unnecessary and removed.
+
+Each viewport's stored own opacity identifies its matching layer at close.
+Existing source-opacity commands handle nested/root/group layers; global opacity
+admission flags are removed from traversal, container inheritance and font
+discovery. Rectangle strokes crossing a viewport use the existing retained native
+stroke constructor. Fully contained primitives retain their exact route.
+
+The unchanged [whole document and six controls](../tests/Research/viewport-clip-opacity-exit-sheet/README.md)
+are exact on both platforms, as are three retained fractional clipped-frame
+backgrounds and nested cropped opacity. A diagnostic overlap matches six healthy
+native captures: red 82 at alpha 96 preserves native saved-layer quantization;
+independently rounding every lane to predict 85 was rejected. Production blend
+arithmetic is unchanged. The [qualification](../artifacts/maintenance-review-20261012/viewport-composition-qualified-results.json)
+owns preservation, original-input migrations and resource/sibling checks.
+C6b/C5b, font/effect and S17 remain required in PLAN.md.
+
 ## Viewport mask targets and partial region defaults (2026-10-15)
 
 Nontrivial axis viewports use the same local target bounds and region mapping

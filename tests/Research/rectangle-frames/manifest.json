@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Fractional rectangle-frame coverage controls, separate from the original and corporate banks. Twelve cases are exact and three retain the viewport-crossing admission gate.",
+  "purpose": "Fifteen exact fractional rectangle-frame coverage controls, including clipped frames on transparent, white and black backgrounds. Separate from the original and corporate banks.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
@@ -149,9 +149,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "support-diagnostic",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Rectangle strokes crossing a nested viewport boundary are not implemented."
+      "role": "support-diagnostic"
     },
     {
       "id": "aa-clipped-frames-white",
@@ -165,9 +163,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "support-diagnostic",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Rectangle strokes crossing a nested viewport boundary are not implemented."
+      "role": "support-diagnostic"
     },
     {
       "id": "aa-clipped-frames-black",
@@ -181,9 +177,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "support-diagnostic",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Rectangle strokes crossing a nested viewport boundary are not implemented."
+      "role": "support-diagnostic"
     },
     {
       "id": "shader-fill-frames-transparent",

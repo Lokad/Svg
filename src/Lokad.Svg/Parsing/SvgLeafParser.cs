@@ -41,7 +41,15 @@ internal static class SvgLeafParser
             && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(patternStyle.Width ?? syntax.StrokeWidth))
         {
             double nativeWidth = SvgStrokeStyleSyntax.ParseStrokeWidth(patternStyle.Width ?? syntax.StrokeWidth, "rectangle");
-            if (context.RetainInstanceStrokePath || effectiveFrame is { IsScaled: true } || !earlyTransform.IsTranslation || nativeWidth > syntax.Width || nativeWidth > syntax.Height
+            bool crossesViewport = false;
+            if (effectiveFrame is {} strokeViewport)
+            {
+                SvgRectangle shifted = strokeViewport.Shift(earlyPlacement);
+                double halfWidth = nativeWidth / 2d;
+                crossesViewport = !strokeViewport.Clip.Contains(shifted.X - halfWidth, shifted.Y - halfWidth,
+                    shifted.X + shifted.Width + halfWidth, shifted.Y + shifted.Height + halfWidth);
+            }
+            if (crossesViewport || context.RetainInstanceStrokePath || effectiveFrame is { IsScaled: true } || !earlyTransform.IsTranslation || nativeWidth > syntax.Width || nativeWidth > syntax.Height
                 || SvgStrokeStyleSyntax.ParseLinejoin(patternStyle.Linejoin, true) != SvgStrokeJoin.Miter)
                 return LowerRoundedRect(reader, context, syntax, 0, 0, effectiveFrame, state);
         }

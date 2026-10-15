@@ -70,10 +70,10 @@ public sealed class SvgOpacityInheritanceTests
     [Fact]
     public void Inherited_group_opacity_preserves_nested_composition_boundary()
     {
-        SvgException expected = Assert.Throws<SvgException>(() => Render(Start + "<g opacity='0.5'><g opacity='0.5'>" + Box + "/></g></g></svg>"));
-        SvgException actual = Assert.Throws<SvgException>(() => Render(Start + "<g opacity='0.5'><g opacity='inherit'>" + Box + "/></g></g></svg>"));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, actual.ErrorCode);
-        Assert.Equal(expected.Message, actual.Message);
+        byte[] expected = Render(Start + "<g opacity='0.5'><g opacity='0.5'>" + Box + "/></g></g></svg>");
+        byte[] actual = Render(Start + "<g opacity='0.5'><g opacity='inherit'>" + Box + "/></g></g></svg>");
+        Assert.Equal(expected, actual);
+        Assert.Equal(Render(Start + "<g opacity='0.25'>" + Box + "/></g></svg>"), actual);
     }
 
     [Theory]
@@ -126,6 +126,23 @@ public sealed class SvgOpacityInheritanceTests
         string start = Start.Replace("width=", "opacity='0.5' width=", StringComparison.Ordinal);
         string line = "<line x1='8' y1='20' x2='32' y2='20' stroke='blue' stroke-width='2' marker-end='url(#m)'/></svg>";
         Assert.Equal(Render(start + expectedMarker + line), Render(start + marker + line));
+    }
+
+    [Fact]
+    public void Nested_viewport_layers_close_at_their_own_boundaries_and_restore_siblings()
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='8'><svg width='8' height='8' opacity='.5'><g opacity='.5'><rect width='8' height='8' fill='red'/></g><svg width='4' height='4' opacity='.5'><rect width='4' height='4' fill='blue'/></svg></svg><rect x='8' width='8' height='8' fill='red'/><svg x='16' width='8' height='8' opacity='.5'><rect width='8' height='8' fill='red'/></svg></svg>"u8.ToArray();
+        RenderBudget budget = new(8_000_000);
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
+        {
+            // Healthy pinned native captures retain this quantized saved-layer RGB.
+            Assert.Equal(new byte[] { 82, 0, 170, 96 }, surface.Pixels.AsSpan((2 * 24 + 2) * 4, 4).ToArray());
+            Assert.Equal(new byte[] { 255, 0, 0, 64 }, surface.Pixels.AsSpan((6 * 24 + 2) * 4, 4).ToArray());
+            Assert.Equal(new byte[] { 255, 0, 0, 255 }, surface.Pixels.AsSpan((2 * 24 + 10) * 4, 4).ToArray());
+            Assert.Equal(new byte[] { 255, 0, 0, 128 }, surface.Pixels.AsSpan((2 * 24 + 18) * 4, 4).ToArray());
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     private const string Start = "<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'>";

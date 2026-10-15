@@ -1,3 +1,20 @@
+## Viewport clips, nested opacity and crossing strokes (2026-10-16)
+
+The unchanged [viewport clip/opacity bank](../tests/Research/viewport-clip-opacity-exit-sheet/README.md)
+is **1/1 complete document / 6/6 exact controls** on Windows/Linux. Leaf/group
+clip placement includes scalar viewBox mapping; enclosing group clips keep their
+own coordinate stage. Each viewport closes its own source-opacity layer. Crossing
+rectangle strokes reuse retained native lowering and physical clips; contained
+strokes preserve their qualified route.
+
+The three original fractional clipped-frame backgrounds and nested cropped-
+opacity control also match unchanged references, with twelve healthy Linux native
+cross-checks. An overlapping-opacity control preserves native quantized RGB.
+[Qualification](../artifacts/maintenance-review-20261012/viewport-composition-qualified-results.json)
+retains original sources/options/references/limits and affected ownership checks.
+C6a is complete; C6b forward/object-box clips, C5b tile masks, glyph/font/effect
+and S17 remain required in PLAN.md. No feature scope is deferred.
+
 ## Mask viewport maps and region defaults (2026-10-15)
 
 The unchanged [mask viewport/default bank](../tests/Research/mask-viewport-exit-sheet/README.md)
@@ -11,7 +28,7 @@ physical clipping, source cleanup and following siblings.
 The [qualification](../artifacts/maintenance-review-20261012/mask-viewport-qualified-results.json)
 retains original SVG/reference bytes/options/default limits and all earlier exact
 results. Former custom-region/scaled-group gates below are superseded for these
-routes. C6 clip/opacity, C5b tile masks, glyph/font/effect and S17 remain required
+routes. C6a is qualified above; C6b, C5b tile masks, glyph/font/effect and S17 remain required
 in PLAN.md; no feature scope is deferred.
 
 ## Colored and general affine masks (2026-10-15)

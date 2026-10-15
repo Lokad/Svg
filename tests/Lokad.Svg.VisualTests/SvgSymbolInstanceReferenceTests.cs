@@ -130,7 +130,14 @@ public sealed class SvgSymbolInstanceReferenceTests
             ("mask-viewport-exit-sheet", "forward-custom-region"),
             ("mask-viewport-exit-sheet", "use-custom-region"),
             ("mask-viewport-exit-sheet", "spatial-group-viewport"),
-            ("mask-viewport-exit-sheet", "partial-user-region")
+            ("mask-viewport-exit-sheet", "partial-user-region"),
+            ("viewport-clip-opacity-exit-sheet", "viewport-clip-opacity-sheet"),
+            ("viewport-clip-opacity-exit-sheet", "scaled-leaf-clip"),
+            ("viewport-clip-opacity-exit-sheet", "group-inside-scaled-viewport"),
+            ("viewport-clip-opacity-exit-sheet", "group-around-scaled-viewport"),
+            ("viewport-clip-opacity-exit-sheet", "viewport-under-root-opacity"),
+            ("viewport-clip-opacity-exit-sheet", "group-under-viewport-opacity"),
+            ("viewport-clip-opacity-exit-sheet", "stroke-crossing-viewport")
         })
         {
             byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", sample.Family, sample.Name + ".svg"));

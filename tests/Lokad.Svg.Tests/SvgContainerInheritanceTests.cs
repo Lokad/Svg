@@ -18,7 +18,7 @@ public sealed class SvgContainerInheritanceTests
             default,
             computedStyle,
             default,
-            new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), null, SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, false,
+            new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), null, SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default,
             new Dictionary<string, SvgColor>(), new ParserWorkCounter(1_000_000), CancellationToken.None);
 
         Assert.Equal(SvgPaint.Default, resolved.Presentation.Paint);
@@ -28,7 +28,7 @@ public sealed class SvgContainerInheritanceTests
         Assert.Equal("Example", resolved.TextStyle.Family);
         Assert.Equal(20, resolved.TextStyle.FontSize);
         Assert.Null(resolved.FillRule);
-        Assert.True(resolved.HasOpacityScope);
+        Assert.Equal(0.5, resolved.Presentation.ElementOpacity.Value);
         Assert.Equal((byte)128, resolved.Opacity);
     }
 
@@ -46,7 +46,7 @@ public sealed class SvgContainerInheritanceTests
             inline,
             computedStyle,
             styleSheet,
-            new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), "evenodd", SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, false,
+            new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), "evenodd", SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default,
             new Dictionary<string, SvgColor>(), new ParserWorkCounter(1_000_000), CancellationToken.None);
 
         Assert.Equal("Important", resolved.TextStyle.Family);
@@ -54,21 +54,22 @@ public sealed class SvgContainerInheritanceTests
     }
 
     [Fact]
-    public void Rejects_nested_group_opacity()
+    public void Nested_group_preserves_own_opacity_for_separate_layer_composition()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<g opacity='0.5'/>"));
         Assert.True(reader.Read());
 
         SvgComputedStyle nestedStyle = SvgComputedStyle.Resolve(reader, default, default);
-        SvgException exception = Assert.Throws<SvgException>(() => SvgContainerInheritance.Resolve(
+        SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(
             reader,
             default,
             nestedStyle,
             default,
-            new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), null, SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, true,
-            new Dictionary<string, SvgColor>(), new ParserWorkCounter(1_000_000), CancellationToken.None));
+            new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), null, SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default,
+            new Dictionary<string, SvgColor>(), new ParserWorkCounter(1_000_000), CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Equal(0.5, resolved.Presentation.ElementOpacity.Value);
+        Assert.Equal((byte)128, resolved.Opacity);
     }
 }
 

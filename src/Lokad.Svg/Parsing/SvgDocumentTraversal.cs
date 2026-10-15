@@ -134,12 +134,11 @@ internal static class SvgDocumentTraversal
                     }
                     SvgClipBox box = new(clipOriginX, clipOriginY, viewport.Width * clipScaleX, viewport.Height * clipScaleY);
                     if (parentClip is not null) box = box.Intersect(parentClip.Value);
-                    if (!reader.IsEmptyElement && (composedScaleX != 1 || composedScaleY != 1)) state.ScaledViewportPushes++;
                     SvgPaintableElementContext viewportContext = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
                     InlineStyle viewportInline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
                     SvgComputedStyle viewportStyle = SvgComputedStyle.Resolve(reader, viewportInline, viewportContext.StyleSheet);
                     SvgInheritedContainer inheritedViewport = SvgContainerInheritance.Resolve(reader, viewportInline, viewportStyle, viewportContext.StyleSheet, viewportContext.InheritedPresentation,
-                        viewportContext.InheritedFillRule, viewportContext.InheritedTextStyle, viewportContext.InheritedStroke, false, namedColors, workCounter, cancellationToken);
+                        viewportContext.InheritedFillRule, viewportContext.InheritedTextStyle, viewportContext.InheritedStroke, namedColors, workCounter, cancellationToken);
                     SvgPaintOpacity sourceViewportOpacity = inheritedViewport.Presentation.ElementOpacity;
                     SvgAffineTransform textParent = parentFrame is {} textFrame ? textFrame.MapText(viewportContext.InheritedPresentation.Transform) : viewportContext.InheritedPresentation.Transform;
                     SvgAffineTransform textPlacement = textParent.ComposeChecked(SvgAffineTransform.FromScaleOffset(localScaleX, localScaleY, viewport.X + viewOffsetX, viewport.Y + viewOffsetY));
@@ -168,12 +167,9 @@ internal static class SvgDocumentTraversal
                     byte viewportOpacity = sourceViewportOpacity.Alpha;
                     if (viewportOpacity != 255)
                     {
-                        if (root.Opacity != 255 || state.HasOpacityScope) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested viewport opacity requires separate compositing calibration.");
                         if (!reader.IsEmptyElement)
                         {
                             state.Scene.BeginSourceOpacityScope(sourceViewportOpacity, new(-1));
-                            state.HasOpacityScope = true;
-                            state.ViewportOpacityDepth = reader.Depth;
                         }
                     }
                 }
@@ -208,7 +204,6 @@ internal static class SvgDocumentTraversal
                             if (state.Clips.TryGetValue(groupClipId, out SvgClipBox clipBox))
                             {
                                 SvgViewportFrame? clipParent = state.EffectiveFrame;
-                                if (clipParent?.IsScaled ?? false) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
                                 SvgClipBox clip = SvgClipPathSyntax.MapGroupClip(clipBox, parsedGroup.Scope.InheritedPresentation.Transform, clipParent, workCounter, cancellationToken);
                                 state.Viewports.Add(new SvgViewportFrame(clipParent?.OffsetX ?? 0, clipParent?.OffsetY ?? 0, clipParent?.ScaleX ?? 1, clipParent?.ScaleY ?? 1, clipParent?.ViewportWidth, clipParent?.ViewportHeight, clip, reader.Depth));
                                 state.ClipDepths.Add(reader.Depth);
@@ -224,7 +219,7 @@ internal static class SvgDocumentTraversal
                             else
                             {
                                 SvgViewportFrame? groupParent = state.EffectiveFrame;
-                                state.PendingGroupClips.Add(new PendingGroupClip(state.Strings.Copy(groupClipId), groupParent, parsedGroup.Scope.InheritedPresentation.Transform, state.Scene.CommandCount, -1, reader.Depth, state.ScaledViewportPushes, -1));
+                                state.PendingGroupClips.Add(new PendingGroupClip(state.Strings.Copy(groupClipId), groupParent, parsedGroup.Scope.InheritedPresentation.Transform, state.Scene.CommandCount, -1, reader.Depth));
                                 SvgClipBox passthrough = groupParent?.Clip ?? SvgClipBox.Unbounded;
                                 state.Viewports.Add(new SvgViewportFrame(groupParent?.OffsetX ?? 0, groupParent?.OffsetY ?? 0, groupParent?.ScaleX ?? 1, groupParent?.ScaleY ?? 1, groupParent?.ViewportWidth, groupParent?.ViewportHeight, passthrough, reader.Depth));
                                 state.ClipDepths.Add(reader.Depth);
@@ -247,7 +242,6 @@ internal static class SvgDocumentTraversal
                                 state.Scene.ReplaceCommand(position, state.Scene.CommandAt(position) with
                                 { RegionKind = SvgLayerRegionKind.Filter, MaskContentIndex = binding });
                             }
-                            if (parsedGroup.Scope.IsolatesOpacity) state.HasOpacityScope = true;
                         }
                     }
                 }
@@ -368,11 +362,9 @@ internal static class SvgDocumentTraversal
                 if (reader.Depth == state.SymbolDepth) SvgDefinitionParser.RegisterSymbol(state, workCounter, cancellationToken);
                 SvgViewportFrame? closingViewport = state.Viewports.Count > 0 && state.Viewports[^1].Depth == reader.Depth ? state.Viewports[^1] : null;
                 if (closingViewport is not null) state.Viewports.RemoveLast();
-                if (state.ViewportOpacityDepth == reader.Depth)
+                if (closingViewport?.OwnOpacity is {} closingOpacity && closingOpacity.Alpha != 255)
                 {
-                    state.ViewportOpacityDepth = -1;
                     state.Scene.EndOpacityScope();
-                    state.HasOpacityScope = false;
                 }
                 if (closingViewport?.HasAffineClipScope == true) state.Scene.EndOpacityScope();
                 if (state.ClipDepths.Count > 0 && state.ClipDepths[^1] == reader.Depth) state.ClipDepths.RemoveLast();
@@ -412,7 +404,7 @@ internal static class SvgDocumentTraversal
                         PendingGroupClip pendingGroup = state.PendingGroupClips[pendingGroupIndex];
                         if (pendingGroup.Depth == reader.Depth && pendingGroup.EndCommandIndex < 0)
                         {
-                            state.PendingGroupClips[pendingGroupIndex] = pendingGroup with { EndCommandIndex = state.Scene.CommandCount, ScaledPushesAtClose = state.ScaledViewportPushes };
+                            state.PendingGroupClips[pendingGroupIndex] = pendingGroup with { EndCommandIndex = state.Scene.CommandCount };
                             break;
                         }
                     }
@@ -429,7 +421,6 @@ internal static class SvgDocumentTraversal
                     if (group.IsolatesOpacity || group.HasDeferredMask || group.HasFilter)
                     {
                         state.Scene.EndOpacityScope();
-                        if (group.IsolatesOpacity) state.HasOpacityScope = false;
                     }
                 }
                 if (reader.Depth == rootDepth)

@@ -301,7 +301,7 @@ internal static class SvgDefinitionParser
             // the mask without an extra opacity layer around the resource itself.
             SvgInheritedContainer inherited = SvgContainerInheritance.Resolve(reader, inline, style, maskContext.StyleSheet,
                 maskContext.InheritedPresentation, maskContext.InheritedFillRule, maskContext.InheritedTextStyle,
-                maskContext.InheritedStroke, false, namedColors, workCounter, cancellationToken);
+                maskContext.InheritedStroke, namedColors, workCounter, cancellationToken);
             if (style.Fill is not null && inherited.Presentation.PaintServerFill is string fill)
             {
                 workCounter.ConsumeText(fill.Length, cancellationToken);
@@ -432,7 +432,7 @@ internal static class SvgDefinitionParser
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Opacity on pattern containers is not implemented.");
             SvgInheritedContainer inherited = SvgContainerInheritance.Resolve(reader, inline, style, patternContext.StyleSheet,
                 patternContext.InheritedPresentation, patternContext.InheritedFillRule, patternContext.InheritedTextStyle,
-                patternContext.InheritedStroke, false, namedColors, workCounter, cancellationToken);
+                patternContext.InheritedStroke, namedColors, workCounter, cancellationToken);
             if (style.Fill is not null && inherited.Presentation.PaintServerFill is string fill)
             {
                 workCounter.ConsumeText(fill.Length, cancellationToken);
@@ -639,7 +639,7 @@ internal static class SvgDefinitionParser
             InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
             SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, definitionContext.StyleSheet);
             SvgInheritedContainer inherited = SvgContainerInheritance.Resolve(reader, inline, style, definitionContext.StyleSheet, definitionContext.InheritedPresentation,
-                definitionContext.InheritedFillRule, definitionContext.InheritedTextStyle, definitionContext.InheritedStroke, false, namedColors, workCounter, cancellationToken);
+                definitionContext.InheritedFillRule, definitionContext.InheritedTextStyle, definitionContext.InheritedStroke, namedColors, workCounter, cancellationToken);
             if (!reader.IsEmptyElement) state.DefinitionInheritance = inherited;
             if (!reader.IsEmptyElement) state.DefinitionsDepth = reader.Depth;
             return true;

@@ -24,8 +24,7 @@
       "reference": "references/viewport-clip-opacity-sheet.png",
       "referenceSha256": "598977bdfb32bed7142d8c796f602299da3d77d1be31ee9b3f4636d00e7db42e",
       "linuxReference": "references/linux64/viewport-clip-opacity-sheet.png",
-      "linuxReferenceSha256": "598977bdfb32bed7142d8c796f602299da3d77d1be31ee9b3f4636d00e7db42e",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "598977bdfb32bed7142d8c796f602299da3d77d1be31ee9b3f4636d00e7db42e"
     },
     {
       "id": "scaled-leaf-clip",
@@ -42,8 +41,7 @@
       "reference": "references/scaled-leaf-clip.png",
       "referenceSha256": "1502272898b22a79c129dc16ab37a1280c353a18767753769bc82532dddd72a7",
       "linuxReference": "references/linux64/scaled-leaf-clip.png",
-      "linuxReferenceSha256": "1502272898b22a79c129dc16ab37a1280c353a18767753769bc82532dddd72a7",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "1502272898b22a79c129dc16ab37a1280c353a18767753769bc82532dddd72a7"
     },
     {
       "id": "group-inside-scaled-viewport",
@@ -60,8 +58,7 @@
       "reference": "references/group-inside-scaled-viewport.png",
       "referenceSha256": "e2a925f77aad28c60309befcbde8a28f520099c569d6b93d15f22960631f32c9",
       "linuxReference": "references/linux64/group-inside-scaled-viewport.png",
-      "linuxReferenceSha256": "e2a925f77aad28c60309befcbde8a28f520099c569d6b93d15f22960631f32c9",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "e2a925f77aad28c60309befcbde8a28f520099c569d6b93d15f22960631f32c9"
     },
     {
       "id": "group-around-scaled-viewport",
@@ -78,8 +75,7 @@
       "reference": "references/group-around-scaled-viewport.png",
       "referenceSha256": "0c0ed5fe6ce07b1fa6dab5b3720bdb1e90af64f6bc349305436bea56f32691c6",
       "linuxReference": "references/linux64/group-around-scaled-viewport.png",
-      "linuxReferenceSha256": "0c0ed5fe6ce07b1fa6dab5b3720bdb1e90af64f6bc349305436bea56f32691c6",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "0c0ed5fe6ce07b1fa6dab5b3720bdb1e90af64f6bc349305436bea56f32691c6"
     },
     {
       "id": "viewport-under-root-opacity",
@@ -96,8 +92,7 @@
       "reference": "references/viewport-under-root-opacity.png",
       "referenceSha256": "aeed015f10379297dd339f966f9f05750ac7a3ab963a7c6c2e9dd49f73d1ae2b",
       "linuxReference": "references/linux64/viewport-under-root-opacity.png",
-      "linuxReferenceSha256": "aeed015f10379297dd339f966f9f05750ac7a3ab963a7c6c2e9dd49f73d1ae2b",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "aeed015f10379297dd339f966f9f05750ac7a3ab963a7c6c2e9dd49f73d1ae2b"
     },
     {
       "id": "group-under-viewport-opacity",
@@ -114,8 +109,7 @@
       "reference": "references/group-under-viewport-opacity.png",
       "referenceSha256": "aeed015f10379297dd339f966f9f05750ac7a3ab963a7c6c2e9dd49f73d1ae2b",
       "linuxReference": "references/linux64/group-under-viewport-opacity.png",
-      "linuxReferenceSha256": "aeed015f10379297dd339f966f9f05750ac7a3ab963a7c6c2e9dd49f73d1ae2b",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "aeed015f10379297dd339f966f9f05750ac7a3ab963a7c6c2e9dd49f73d1ae2b"
     },
     {
       "id": "stroke-crossing-viewport",
@@ -132,8 +126,7 @@
       "reference": "references/stroke-crossing-viewport.png",
       "referenceSha256": "6f7b3fdc90f28072c49842edcf5dd1f6ff3383047e5c447fc6ef8e0118cd8db5",
       "linuxReference": "references/linux64/stroke-crossing-viewport.png",
-      "linuxReferenceSha256": "6f7b3fdc90f28072c49842edcf5dd1f6ff3383047e5c447fc6ef8e0118cd8db5",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "6f7b3fdc90f28072c49842edcf5dd1f6ff3383047e5c447fc6ef8e0118cd8db5"
     }
   ]
 }

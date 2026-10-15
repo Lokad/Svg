@@ -8,7 +8,7 @@ namespace Lokad.Svg.Parsing;
 internal readonly record struct PendingLeafClip(int FirstGeometryIndex, int GeometryCount, string ClipId, SvgViewportFrame? Parent, bool AdmitsBoundingBox, SvgAffineTransform Transform);
 
 /// <summary>Retains a group command range and its referencing transform for document-end userSpace clip resolution after use expansion.</summary>
-internal readonly record struct PendingGroupClip(string ClipId, SvgViewportFrame? Parent, SvgAffineTransform Transform, int FirstCommandIndex, int EndCommandIndex, int Depth, int ScaledPushesAtOpen, int ScaledPushesAtClose);
+internal readonly record struct PendingGroupClip(string ClipId, SvgViewportFrame? Parent, SvgAffineTransform Transform, int FirstCommandIndex, int EndCommandIndex, int Depth);
 
 /// <summary>Parses the bounded clip-path reference syntax shared by clipped containers and leaves.</summary>
 internal static class SvgClipPathSyntax
@@ -103,11 +103,10 @@ internal static class SvgClipPathSyntax
         string? id = ResolveClipId(reader, state);
         if (id is null) return frame;
         if (state.DeferringLeafClip && !state.Clips.TryGetValue(id, out _) && !state.ObjectClips.TryGetValue(id, out _)) return frame;
-        if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
         if (state.ObjectClips.TryGetValue(id, out SvgClipBox fractions))
         {
             SvgClipBox resolved = new(placement.X + fractions.X * placement.Width, placement.Y + fractions.Y * placement.Height, fractions.Width * placement.Width, fractions.Height * placement.Height);
-            SvgClipBox clip = frame is null ? resolved : frame.Value.Clip.Intersect(resolved);
+            SvgClipBox clip = PlaceViewportClip(resolved, SvgAffineTransform.Identity, frame);
             double offsetX = frame?.OffsetX ?? 0;
             double offsetY = frame?.OffsetY ?? 0;
             double scaleX = frame?.ScaleX ?? 1;
@@ -140,13 +139,10 @@ internal static class SvgClipPathSyntax
             SvgClipBox clip;
             if (state.Clips.TryGetValue(pending.ClipId, out SvgClipBox box))
             {
-                if (parent is not null && parent.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
-                box = pending.Transform.Apply(box);
-                clip = parent is null ? box : parent.Value.Clip.Intersect(box);
+                clip = MapGroupClip(box, pending.Transform, parent, workCounter, cancellationToken);
             }
             else if (state.ObjectClips.TryGetValue(pending.ClipId, out SvgClipBox fractions))
             {
-                if (parent is not null && parent.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
                 if (!pending.AdmitsBoundingBox) throw new SvgException(SvgErrorCode.UnsupportedFeature, "objectBoundingBox clip paths are only implemented on rectangles, bands and straight contours.");
                 if (pending.GeometryCount == 0) continue;
                 clip = BoundingBoxClip(state, pending, fractions, parent, workCounter, cancellationToken);
@@ -605,8 +601,6 @@ internal static class SvgClipPathSyntax
             workCounter.Consume(cancellationToken);
             PendingGroupClip pending = state.PendingGroupClips[pendingIndex];
             SvgViewportFrame? parent = pending.Parent;
-            if (parent is not null && parent.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
-            if (pending.ScaledPushesAtClose != pending.ScaledPushesAtOpen) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
             SvgClipBox clip;
             if (state.Clips.TryGetValue(pending.ClipId, out SvgClipBox box))
             {
@@ -671,13 +665,19 @@ internal static class SvgClipPathSyntax
     }
 
     /// <summary>Places a user-space group clip beside its transformed children before intersecting the parent clip.</summary>
-    /// <remarks>The group supplies its complete inherited axis-aligned map; the parent frame has unscaled viewport coordinates. Mapping charges four boundary visits before arithmetic and preserves AA provenance through reflection. This constant-size operation owns no storage and retains no state.</remarks>
+    /// <remarks>The group supplies its complete inherited axis-aligned map; the parent frame supplies its scalar viewBox and physical clip. Mapping charges four boundary visits before arithmetic and preserves AA provenance through reflection. This constant-size operation owns no storage and retains no state.</remarks>
     internal static SvgClipBox MapGroupClip(SvgClipBox box, SvgAffineTransform transform, SvgViewportFrame? parent, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         for (int boundary = 0; boundary < 4; boundary++) workCounter.Consume(cancellationToken);
+        return PlaceViewportClip(box, transform, parent);
+    }
+
+    /// <summary>Places one finite axis clip through bounded value arithmetic; node traversal owns work/cancellation.</summary>
+    private static SvgClipBox PlaceViewportClip(SvgClipBox box, SvgAffineTransform transform, SvgViewportFrame? parent)
+    {
         SvgClipBox placed = transform.Apply(box);
         if (parent is not {} frame) return placed;
-        placed = placed with { X = placed.X + frame.OffsetX, Y = placed.Y + frame.OffsetY };
+        placed = SvgAffineTransform.FromScaleOffset(frame.ScaleX, frame.ScaleY, frame.OffsetX, frame.OffsetY).Apply(placed);
         return frame.Clip.Intersect(placed);
     }
 
@@ -718,11 +718,10 @@ internal static class SvgClipPathSyntax
         string? clipId = ResolveClipId(reader, state);
         if (clipId is null) return state.EffectiveFrame;
         if (state.DeferringLeafClip && !state.Clips.TryGetValue(clipId, out _) && !state.ObjectClips.TryGetValue(clipId, out _)) return state.EffectiveFrame;
-        if (state.EffectiveFrame is not null && state.EffectiveFrame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
         if (state.ObjectClips.TryGetValue(clipId, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "objectBoundingBox clip paths are only implemented on rectangles, bands and straight contours.");
         if (!state.Clips.TryGetValue(clipId, out SvgClipBox box)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clip-path references are implemented.");
         SvgViewportFrame? parent = state.EffectiveFrame;
-        SvgClipBox clip = parent is null ? box : parent.Value.Clip.Intersect(box);
+        SvgClipBox clip = PlaceViewportClip(box, SvgAffineTransform.Identity, parent);
         double offsetX = parent?.OffsetX ?? 0;
         double offsetY = parent?.OffsetY ?? 0;
         double scaleX = parent?.ScaleX ?? 1;

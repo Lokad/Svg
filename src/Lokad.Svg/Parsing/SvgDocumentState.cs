@@ -222,7 +222,6 @@ internal sealed class SvgDocumentState : IDisposable
     /// <summary>Gets or sets whether missing gradient href targets throw at registration instead of deferring, used for the document-end leftover pass.</summary>
     internal bool ThrowOnMissingGradientHref { get; set; }
 
-    internal int ScaledViewportPushes { get; set; }
 
     internal int NodeCount { get; set; }
 
@@ -231,7 +230,6 @@ internal sealed class SvgDocumentState : IDisposable
     internal int GroupDepth { get; set; }
     internal int FilterGroupDepth { get; set; }
 
-    internal bool HasOpacityScope { get; set; }
 
     internal bool HasUnsupportedContent { get; set; }
 
@@ -252,7 +250,6 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal int MaskDepth { get; set; } = -1;
 
-    internal int ViewportOpacityDepth { get; set; } = -1;
 
     internal int PatternDepth { get; set; } = -1;
 
