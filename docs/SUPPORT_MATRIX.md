@@ -1690,3 +1690,21 @@ owns finished platform/resource checks. Prior named content gates are superseded
 Remaining G6 target/stroke/instance maps, applicable container presentation and
 clip/mask interactions remain explicit required work; no G6/release closure or
 feature deferral is claimed. No exhaustive content/shape/API product is required.
+
+
+## Retained W3C stroked decorations (2026-10-15)
+
+The unchanged [W3C decoration example](../tests/Research/stroked-decorations/README.md)
+is **1/1 complete document / 1/2 exact controls** on Windows/Linux. Direct solid
+underline/overline/line-through decorations retain their declaring fill/stroke
+paint and paint order through existing rectangle/stroke replay. One bounded
+compound binary clip preserves native ink exclusions, including the upper stroke
+fringe and lower/end-glyph boundaries. Shaping widths round at paint-fragment
+boundaries; existing glyph positions and filled-decoration references stay exact.
+
+The [qualification receipt](../artifacts/maintenance-review-20261012/stroked-decorations-qualified-results.json)
+records full platform checks, affected denial/cancellation/retry and unchanged
+asset/options/default-limit evidence. This supersedes the direct stroked-decoration
+gate in historical sections. The frozen curved decorated-path control still
+rejects explicitly and remains required in PLAN item 1. Wider glyph maps,
+composite flags and private validation remain required in item 4; G9/S17 stay open.

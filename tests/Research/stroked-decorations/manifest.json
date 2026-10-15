@@ -35,8 +35,6 @@
       "selection": "Original W3C whole stroked-decoration example.",
       "explicitViewport": true,
       "licenseEvidence": "LICENSE.txt",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Stroked text decorations are not implemented.",
       "reference": "references/w3c-textdecoration01.png",
       "referenceSha256": "f32576b1b543bd45b0b3ff3944b9e1765019e6ae20985b99a94b4e107060e0c2",
       "captures": [
@@ -162,8 +160,6 @@
       "selection": "Focused promised direct/path stroked-decoration mechanism for the retained W3C document and finite G9 exit.",
       "explicitViewport": true,
       "licenseEvidence": "direct-stroked-decoration.svg",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Stroked text decorations are not implemented.",
       "reference": "references/direct-stroked-decoration.png",
       "referenceSha256": "fa6829c8f48306e31f7c438ff8310fa2824c5f0e3ffb6f68f380e28679add994",
       "captures": [
@@ -290,7 +286,7 @@
       "explicitViewport": true,
       "licenseEvidence": "curved-stroked-decoration.svg",
       "expectedError": "UnsupportedFeature",
-      "observedGate": "Stroked text decorations are not implemented.",
+      "observedGate": "Decorations on retained text paths are not implemented.",
       "reference": "references/curved-stroked-decoration.png",
       "referenceSha256": "bee7dd8ce58b25aaaf0e96f3859083415d22ccce883d5f6ad0020c00d10060f3",
       "captures": [

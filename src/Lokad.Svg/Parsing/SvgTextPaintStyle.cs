@@ -36,7 +36,7 @@ internal readonly record struct SvgTextPaintStyle(SvgPaint Paint, bool IsDisplay
     internal void ValidateEmission()
     {
         _ = GlyphPaint.Stroke?.Resolve();
-        if (Decoration?.Paint.HasStroke == true) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked text decorations are not implemented.");
+        _ = Decoration?.Paint.Stroke?.Resolve();
     }
 
     private static void ValidateStyle(SvgComputedStyle style)

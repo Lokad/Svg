@@ -1549,7 +1549,7 @@ public static class SvgConverter
                         throw new SvgException(SvgErrorCode.MalformedInput, "A binary viewport requires retained rectangle geometry.");
                     workUnits += SvgBinaryViewportCoverage.Rasterize(viewportPath,
                         SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset), rasterGrid,
-                        contentBounds, destination, outputWidth, coverage, options.Limits.MaximumWorkUnits - workUnits, cancellationToken);
+                        contentBounds, destination, outputWidth, coverage, content.Geometries[0].Polygon.IsEvenOdd, budget, options.Limits.MaximumWorkUnits - workUnits, cancellationToken);
                 }
                 else foreach (SvgGeometry geometry in content.Geometries) RasterizeGeometry(geometry, destination);
                 if (boundsPixels.Length != 0)

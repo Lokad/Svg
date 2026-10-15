@@ -9,20 +9,25 @@ The frozen selection and measured outcomes are recorded below.
 
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
-variants**. **Ten additional authored CC0 documents** are complete and counted
-separately. The latest is the [effects/marker sheet](../tests/Research/effects-marker-sheet/README.md),
-**1/1 exact** with controls separately **11/11 exact** on Windows/Linux against
-unchanged sources, options and platform references. The nine preceding completed
-documents and their useful controls remain protected in their existing banks.
+variants**. **Twelve additional authored documents** (eleven CC0 and the MIT
+tile sheet) are complete and counted separately. Preserve the delivered
+[effects sheet](../tests/Research/effects-marker-sheet/README.md),
+[composition sheet](../tests/Research/composition-sheet/README.md) and
+[tile sheet](../tests/Research/pattern-tile-sheet/README.md), including their
+separately counted controls and original sources/options/references.
 These failure-selected cases establish declared outcomes, not a general SVG success rate.
 
-The [affine-filter receipt](../artifacts/maintenance-review-20261012/affine-filters-qualified-results.json)
-owns this correction's qualification and preservation evidence. The whole sheet's
-formerly rejected affine panel is exact, including its original opaque-background
-integration. No new public case or reference was added for this correction.
-[PLAN](../PLAN.md#ordered-delivery-checklist) advances to the composition sheet;
-wider finite G2–G9 and S17 remain open. Dated sections below are checkpoint history;
-completed gates are superseded by later qualified witnesses.
+One additional sourced [W3C decoration document](../tests/Research/stroked-decorations/README.md)
+is **1/1 exact** on Windows/Linux at its frozen 1200×400 output, separately from
+both cohorts and the twelve authored documents. Its direct control is exact;
+the curved-path control still rejects and remains required (**1/2 controls**).
+The original 974-byte SVG, supplied Noto program and platform references are
+unchanged. The [receipt](../artifacts/maintenance-review-20261012/stroked-decorations-qualified-results.json)
+owns qualification, intended-font proof and preservation; adjacent W3C notices
+retain the original code-example license. This is not a CC0 document.
+[PLAN](../PLAN.md#ordered-delivery-checklist) owns the remaining finite exits.
+G2–G9/S17 remain open. Dated sections below are checkpoint history; later
+qualified evidence supersedes former gates.
 
 ## Development checkpoint (2026-10-12)
 

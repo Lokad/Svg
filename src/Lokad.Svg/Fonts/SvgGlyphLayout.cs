@@ -261,6 +261,7 @@ internal static class SvgGlyphLayout
                     || letterSpacingSpans[spacingSpanIndex].WordSpacing == letterSpacingSpans[spacingSpanIndex + 1].WordSpacing;
                 bool sameDecoration = glyphPaints.Length == 0 || index + 1 < positionedGlyphCount
                     && ReferenceEquals(glyphPaints[index].Decoration, glyphPaints[index + 1].Decoration);
+                bool samePaint = glyphPaints.Length == 0 || index + 1 < positionedGlyphCount && glyphPaints[index] == glyphPaints[index + 1];
                 int pairAdjustment = chunkEnds || !sameFont ? 0 : OpenTypeFont.GetPairAdjustment(font.Bytes, glyph.GlyphIndex, glyphs[index + 1].GlyphIndex, font.Metrics, workCounter, cancellationToken);
                 double kerning = pairAdjustment * scale;
                 if (pairAdjustment != 0 && deviceMetrics is { UsesCharacterAdvances: true } pathMetrics)
@@ -275,10 +276,10 @@ internal static class SvgGlyphLayout
                     fragments[fragmentIndex] = fragments[fragmentIndex] with { Width = nextX - decorationOrigin };
                     fragmentIndex++;
                 }
-                if (!chunkEnds && (!sameFont || !sameWordSpacing || !sameDecoration) && deviceMetrics is { } fragmentMetrics)
+                if (!chunkEnds && (!sameFont || !sameWordSpacing || !sameDecoration || !samePaint) && deviceMetrics is { } fragmentMetrics)
                 {
                     // Native shaping fragments round their total inline width
-                    // before the next face/size/spacing/decoration fragment begins.
+                    // before the next face/size/spacing/decoration/paint fragment begins.
                     nextX = fontFragmentOrigin + fragmentMetrics.RoundWidth(nextX - fontFragmentOrigin);
                     fontFragmentOrigin = nextX;
                 }

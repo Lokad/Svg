@@ -1,8 +1,8 @@
 # Lokad.Svg — finite renderer delivery plan
 
 Updated 2026-10-15 at the retained W3C decoration checkpoint.
-The qualified tile sheet remains complete. The W3C whole/direct pixel matches
-are provisional until the current correction passes regression qualification.
+The W3C whole document and direct control are qualified exact on Windows/Linux;
+its curved decorated-path control remains required. The tile sheet stays complete.
 This plan owns remaining work and completion decisions;
 [SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md)
 owns admission, [INVENTORY](docs/INVENTORY.md) owns document evidence,
@@ -31,6 +31,7 @@ There are **no proposed or newly approved feature deferrals** in this revision.
 | Original acceptance and supplied-font work | Original marker/drop-shadow fixtures **2/2**, original supplied-font label/path fixtures **2/2**, SVG Translate, `inv-127` and `inv-145` are complete. Preserve intended-font proof, original programs/aliases and metrics/pixels in the [document evidence](docs/INVENTORY.md), [supplied-font documents](tests/Research/supplied-font-documents/README.md) and [curved labels](tests/Research/curved-font-documents/README.md). |
 | `inv-146` and shared rendering corrections | Whole `inv-146`, eight oval/text controls and four [merge controls](tests/Research/filter-merges/README.md) are exact. Preserve the [merge receipt](artifacts/maintenance-review-20261012/merge-qualified-results.json), [design record](docs/RASTERIZATION_DESIGN.md) and [support record](docs/SUPPORT_MATRIX.md). Paint recording is **149/149 exact**; I Ching is **24 exact / one out-of-scope animation boundary**. Later qualified evidence supersedes historical gates. |
 | Additional authored documents | **Twelve complete authored documents** (eleven CC0 and the MIT tile sheet), each **1/1 exact** on Windows/Linux, separate from both frozen cohorts. Preserve all separately counted controls in the [document evidence](docs/INVENTORY.md) and linked banks, including the [effects sheet](tests/Research/effects-marker-sheet/README.md) **11/11** and [composition sheet](tests/Research/composition-sheet/README.md) **4/4**. Bank manifests own immutable inputs, options, references and control denominators; document completion does not close a support group. |
+| Additional sourced W3C document | The unchanged [decoration example](tests/Research/stroked-decorations/README.md) is **1/1 complete document / 1/2 exact controls** on Windows/Linux, separately from the twelve authored documents and both cohorts. The [receipt](artifacts/maintenance-review-20261012/stroked-decorations-qualified-results.json) preserves original bytes, options, intended-font proof and all preceding tests. The curved decorated-path control remains required in item 1. |
 | Qualified G2–G5 mechanisms | Fractional ordinary-use stroke widths, fractional/nonuniform symbol frames, nonuniform root curve fills and affine oval strokes, the non-scaling conic defect, composed cubic clips, translated custom mask regions and mask-container opacity have qualified witnesses. Preserve [use widths](artifacts/maintenance-review-20261012/fractional-use-qualified-results.json), [symbol frames](artifacts/maintenance-review-20261012/symbol-frames-final-results.json), [root curves](artifacts/maintenance-review-20261012/nonuniform-curves-qualified-results.json), [non-scaling strokes](artifacts/maintenance-review-20261012/non-scaling-qualified-results.json), [ovals](tests/Research/affine-oval-strokes/manifest.json) and [scopes](tests/Research/scoped-clips-masks/manifest.json). These completed mechanisms are dependencies already available, not work to repeat for wider maps or locations. |
 | Filter bounds, rescaling and restoration | The [colored-effects bank](tests/Research/colored-effects-markers/README.md) preserves original controls **7/7**, repaired control **1/1**, bounds **4/4** and whole document **1/1**. The [filter-region bank](tests/Research/filter-regions/manifest.json) is **26/26 exact**, including sRGB rescaling/opacity and the unchanged displaced linearRGB blur. Preserve the [bounds](artifacts/maintenance-review-20261012/offset-image-bounds-qualified-results.json), [rescaling](artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json) and [restoration receipts](artifacts/maintenance-review-20261012/linear-restoration-qualified-results.json). Wider G8 stays open. |
 | Qualified marker and filter-source mechanisms | The [effects/marker bank](tests/Research/effects-marker-sheet/README.md) is **1/1 complete document / 11/11 exact controls** on Windows/Linux. Preserve marker units/overflow, image/shadow sources, leaf/group output clips, nested capture/halos, mixed spaces and affine solid-source replay. The unchanged whole sheet qualifies opaque-background integration; wider G8 remains open. [Affine receipt](artifacts/maintenance-review-20261012/affine-filters-qualified-results.json), [design record](docs/RASTERIZATION_DESIGN.md#complete-effects-sheet-through-bounded-affine-filtering-2026-10-15). |
@@ -77,16 +78,17 @@ unblocks the current deliverable. Exhaustive G2 combinations are not a prerequis
 | [ ] 5. Remaining static effects and markers (G8) | Non-solid affine source maps, colored linearRGB restoration/shadows, object-box clips and named source boundaries, font-relative marker sizes and tangent/style cases. Reuse item 2–4 maps/scopes and existing bounded capture. | Every named finite G8 case below is exact on both platforms, including the retained standalone linear-image defect. Preserve the delivered [effects sheet and eleven controls](tests/Research/effects-marker-sheet/README.md); affected graph/region/resource checks pass. |
 | [ ] 6. Release (S17) | Finished-revision contracts/evidence after items 1–5. | All [release conditions](#release-completion-s17) hold together: finite exits resolved, exact results preserved, platform/API/resource/package/consumer checks and exact-revision CI green, representative measurements reported. Counts alone do not establish completion. |
 
-**Current correction, preserved:** the unchanged
+**Current checkpoint, qualified:** the unchanged
 [W3C document](tests/Research/stroked-decorations/w3c-textdecoration01.svg) retains
 its 974 original bytes and declared **1200×400 transparent** output, with the
 existing public Noto program supplied under the initial `serif` request. Frozen
 references and font-use proof are in the [bank](tests/Research/stroked-decorations/README.md)
 and [source/admission record](artifacts/stroked-decorations-20261015/sourcing.json).
-The current targeted Windows/Linux probe is exact for the whole document and
-direct control; the curved control still rejects decorated text paths. This is
-**provisional development evidence**, not a completed document/support-group or
-release claim. Finish correction and qualification without changing references.
+The whole document and direct control are exact on Windows/Linux; full platform
+qualification and affected resource regressions pass in the
+[receipt](artifacts/maintenance-review-20261012/stroked-decorations-qualified-results.json).
+The curved control still rejects decorated text paths and keeps item 1 open.
+Complete it against its frozen references; this document does not close G9/S17.
 The completed `inv-146`, tile sheet and all preceding exact results remain closed.
 
 The finite tables below define the exits of these six items, rather than a second
@@ -384,8 +386,8 @@ representativeness quota delays this finite release.
   visual by every API or require all combinations before advancing a document.
 - Keep **routine incremental Release build plus complete tests below ten minutes
   per platform**.
-  The [latest receipt](artifacts/maintenance-review-20261012/pattern-content-qualified-results.json)
-  records **7,803 tests/platform** in **71.7s Windows / 227.0s Linux**, including
+  The [latest receipt](artifacts/maintenance-review-20261012/stroked-decorations-qualified-results.json)
+  records **7,807 tests/platform** in **74.0s Windows / 228.6s Linux**, including
   normal build/startup and complete tests. Both meet the target. Keep each
   receipt's workload/methodology limits; these are no speedup claims.
   Use normal incremental builds without forced compiler shutdown. No rerun is

@@ -1,8 +1,9 @@
 # Retained stroked-decoration document
 
 This bank retains one unchanged W3C SVG document and two authored CC0 controls
-for the remaining finite G9 decoration promises. The complete document and
-controls are initially rejected; they do not count as completed documents.
+for the remaining finite G9 decoration promises. The whole document and direct
+control are exact on Windows/Linux: **1/1 complete document / 1/2 exact controls**.
+The curved control still rejects decorated text paths and remains required.
 [PLAN.md](../../../PLAN.md) owns delivery and wider support closure.
 
 The original [W3C example](https://www.w3.org/TR/2026/CR-SVG2-20261006/images/text/textdecoration01.svg)
@@ -24,7 +25,7 @@ image. Oracle transport also replaces the W3C root dimensions to honor the decla
 1200×400 output viewport. Removing the font insertion and restoring the original
 physical dimensions recovers the original XML tree. Defining
 @font-face for the generic family alone leaves the native fallback unchanged;
-that rejected transport is retained in the private sourcing study.
+that rejected transport is retained in the ignored sourcing study.
 
 Healthy fresh-process Windows/Linux triples and missing/corrupt/substituted-font
 triples are acquired before renderer corrections. Converter sources, declared
@@ -33,3 +34,11 @@ frozen. The [manifest](manifest.json) records intended assets and proof summarie
 full captures and health logs remain in the existing ignored
 [study](../../../artifacts/stroked-decorations-20261015/). A control denominator is
 separate from the complete document. No wider G9 or release completion is claimed.
+
+The [qualification receipt](../../../artifacts/maintenance-review-20261012/stroked-decorations-qualified-results.json)
+records complete platform checks and asset preservation. Declaring fill/stroke
+paint reuses native rectangle/stroke replay; bounded compound binary clips retain
+skip-ink exclusions without clipping the upper stroke fringe. Paint changes also
+end native shaping-width fragments. Filled decorations and earlier supplied-font
+results remain protected. The W3C document is counted separately from the 50
+selected development documents, corporate cohort and twelve authored documents.

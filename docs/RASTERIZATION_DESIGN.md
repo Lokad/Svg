@@ -13711,3 +13711,37 @@ zero-grid unused fonts, active cancellation during filtered curve replay, meanin
 memory/work denial, borrowed-byte immutability and cleanup/retry. The whole-sheet
 font/resource check reuses the existing provider and representative APIs. Wider
 G6 maps/presentation and G9 obligations remain required in PLAN.md.
+
+
+## Retained W3C stroked decoration document (2026-10-15)
+
+The unchanged [W3C document and direct control](../tests/Research/stroked-decorations/README.md)
+are exact on Windows/Linux. Decoration fragments carry their declaring fill and
+stroke instead of a fill color alone. Solid rectangles preserve the existing
+axis/affine fill routes; strokes use the shared native rounded-rectangle source
+with zero radii and the existing stroke/paint-order machinery.
+
+Skip-ink clipping excludes bounded rectangular holes from one compound binary
+clip. Overlapping x intervals merge before even-odd contour emission. The clip
+retains the stripe's upper stroke fringe, covers its lower half-pixel and does
+not trim the end glyph's ink interval to the nominal decoration width. The existing
+fixed-edge binary rasterizer now accepts these rectangular contours with bounded
+scratch storage/work; ordinary one-rectangle clips still use stack storage. The
+parser/scene own copied clip data through existing owners; no new layer or paint
+implementation is introduced per glyph. Stroke visual bounds remain distinct
+from the decoration's object bounds.
+
+A native DOM position observation isolated the whole document's span drift to
+shaping-fragment width rounding: effective paint changes end a fragment, as
+font/spacing/decoration changes already do. Retaining that boundary removes the
+glyph differences without changing kerning or ligatures. Initial infinite-height
+ink clips incorrectly removed 35 Windows /33 Linux direct-control pixels; bounded
+stripe exclusions remove that error. The remaining 29/32 whole-document pixels
+identified lower/end-glyph clip boundaries and are now exact. Rejected models and
+single-observation diagnostics remain in the existing ignored
+[study](../artifacts/stroked-decorations-20261015/); they are not acceptance rows.
+
+The [receipt](../artifacts/maintenance-review-20261012/stroked-decorations-qualified-results.json)
+records complete platform checks, original assets/font-use proof and preservation.
+The curved decorated-path control still rejects and remains required; this whole
+document milestone does not close G9 or S17.

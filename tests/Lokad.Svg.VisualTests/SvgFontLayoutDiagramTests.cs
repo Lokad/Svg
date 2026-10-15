@@ -101,7 +101,9 @@ public sealed class SvgFontLayoutDiagramTests
         byte[] original = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "remaining-label-path-sheet", "solid-decorations.svg"));
         byte[] unchanged = original.ToArray();
         byte[] affine = System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(original).Replace("<g font-family", "<g transform='rotate(7 160 80)' font-family", StringComparison.Ordinal));
-        foreach (byte[] input in new[] { original, affine })
+        byte[] stroked = System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(original).Replace("<g font-family", "<g stroke='#a44f32' stroke-width='1' font-family", StringComparison.Ordinal));
+        byte[] affineStroked = System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(stroked).Replace("<g stroke", "<g transform='rotate(7 160 80)' stroke", StringComparison.Ordinal));
+        foreach (byte[] input in new[] { original, affine, stroked, affineStroked })
         {
             RenderBudget accepted = new(32_000_000);
             ParserWorkCounter work = new(100_000_000);
@@ -133,6 +135,39 @@ public sealed class SvgFontLayoutDiagramTests
             using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, work, token);
             Assert.True(scene.Geometries.Length > 0);
         }
+    }
+
+    [Fact]
+    public async Task Stroked_decoration_compound_clips_release_render_storage_on_denial_cancellation_and_retry()
+    {
+        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "stroked-decorations");
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, "..", "offset-merge-document", "font-pack.json")), "public-noto-sans");
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(catalog, [new("serif", 400, false)], new Provider(), CancellationToken.None);
+        byte[] original = File.ReadAllBytes(Path.Combine(directory, "direct-stroked-decoration.svg"));
+        byte[] unchanged = original.ToArray();
+        byte[] affine = System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(original).Replace("<text ", "<text transform='rotate(7 100 40)' ", StringComparison.Ordinal));
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        foreach (byte[] input in new[] { original, affine })
+        {
+            RenderBudget sceneBudget = new(16_000_000);
+            using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, snapshot, CancellationToken.None))
+            {
+                RenderBudget accepted = new(16_000_000);
+                byte[] expected = SvgConverter.ConvertToPng(scene, options, accepted, CancellationToken.None).ToArray();
+                Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+                RenderBudget denied = new(accepted.Snapshot().PeakBytes / 2);
+                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(scene, options, denied, CancellationToken.None)).ErrorCode);
+                Assert.Equal(0, denied.Snapshot().CurrentBytes);
+                using CancellationTokenSource cancellation = new();
+                cancellation.Cancel();
+                Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgConverter.ConvertToPng(scene, options, accepted, cancellation.Token)).CancellationToken);
+                Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+                Assert.Equal(expected, SvgConverter.ConvertToPng(scene, options, accepted, CancellationToken.None).ToArray());
+                Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+            }
+            Assert.Equal(0, sceneBudget.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(unchanged, original);
     }
 
     [Fact]
