@@ -69,6 +69,12 @@ is **1/1 document / 5/5 exact controls** on both platforms. Its
 owns original inputs, thirty-six healthy captures, pixel comparisons and resource
 checks. C3b is closed; its completed witnesses need no repeated qualification.
 
+The next [viewport clip/opacity sheet](tests/Research/viewport-clip-opacity-exit-sheet/README.md)
+is frozen at **0/1 document / 0/6 exact controls** on Windows/Linux. All six
+original C6a inputs are unchanged; forty-two healthy stable captures precede
+production correction. The declared opacity/clip/stroke gates are measured
+remaining work. This bank adds no completed-document count.
+
 | Required item, in order | Missing behavior and dependencies | Acceptance and completion condition |
 | --- | --- | --- |
 | [ ] 3. Composition and resource presentation (G5–G7) | Remaining C6 clip/opacity/viewport and C5b tile-mask bridges below. C1–C4 and C5a acceptances are complete. Reuse source replay, tight bounds and viewport rebasing; glyph-specific boundaries belong to item 4. | Complete retained boundary documents, finite C6 inputs and the C5b tile-mask witness are exact on both platforms, with sibling restoration and affected scope/cleanup checks. Preserve every completed C1–C5 witness. |
