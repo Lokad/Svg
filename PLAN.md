@@ -44,8 +44,13 @@ The output-clip correction is locally qualified: **7,735 tests/platform**
 The [receipt](artifacts/maintenance-review-20261012/filter-output-clips-qualified-results.json)
 owns complete platform checks, preservation, bounded failures and timings. The
 effects bank remains **0/1 complete document / 5/6 exact controls**. Original
-inputs/options/references remain unchanged. Hosted exact-revision CI will be
-recorded after this substantive batch is pushed; preceding green CI stays closed.
+inputs/options/references remain unchanged.
+[Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38689776082)
+for exact implementation revision `a6360b2b`, including memory, browser/setup,
+font, validator, package and installed-consumer checks. Hosted build plus complete
+tests took **139s Windows / 118s Linux**, separate from local routine timings.
+Reuse this terminal evidence for unchanged documentation; do not repoll this or
+preceding completed runs.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
@@ -82,7 +87,11 @@ own immutable inputs/options and healthy platform triples. Image sampling,
 fractional shadows and output clips have qualified controls; reuse that evidence.
 Identity/zero-offset colored-source diagnostics remain required G8 restoration
 work. These controls close neither wider mask/viewport/text/instance boundaries
-nor the whole sheet; no references or promises are changed.
+nor the whole sheet; no references or promises are changed. The reduced
+[nested-source witness](artifacts/effects-marker-sheet-20261015/nested-filter-source-declaration.json)
+is frozen at `a6360b2b`: six healthy stable captures, identical platform references
+and retained Windows/Linux nested-source rejections. Both graphs use sRGB to
+isolate capture; the original mixed-space whole panel remains required.
 
 The image/effects/composition/tile sheets are bounded acceptance recipes, not new
 feature promises or acquisition quotas. Before implementation, bind each missing
