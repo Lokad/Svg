@@ -1401,7 +1401,14 @@ public static class SvgConverter
                         if (extra == 0 || maskAlpha == 0 || clipAlpha == 0 || groupPixels[offset + 3] == 0) continue;
                         // A binary viewport permits the native sprite restore;
                         // fractional clip coverage requires the separate shader path.
-                        if (shaderRestore || parentViewportClip.Length != 0 && !activeViewportIsBinary) BlendClippedLayerPixel(destination.AsSpan(offset, 4), groupPixels.AsSpan(offset, 4), extra, maskAlpha, clipAlpha);
+                        if (surfaceMode == RasterSurfaceMode.PremultipliedPattern)
+                        {
+                            // Picture-backed tiles apply layer alpha through the
+                            // packed shader's coverage stage before source-over.
+                            SvgConstantShaderPaint sample = new(groupPixels[offset], groupPixels[offset + 1], groupPixels[offset + 2], groupPixels[offset + 3]);
+                            sample.Blend(destination.AsSpan(offset, 4), MultiplyAlpha(extra, MultiplyAlpha(maskAlpha, clipAlpha)));
+                        }
+                        else if (shaderRestore || parentViewportClip.Length != 0 && !activeViewportIsBinary) BlendClippedLayerPixel(destination.AsSpan(offset, 4), groupPixels.AsSpan(offset, 4), extra, maskAlpha, clipAlpha);
                         else BlendLayerPixel(destination.AsSpan(offset, 4), groupPixels.AsSpan(offset, 4), extra, maskAlpha);
                     }
                     continue;

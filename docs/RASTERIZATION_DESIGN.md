@@ -13593,3 +13593,38 @@ percentage rebinding, meaningful allocation/work denial, active cancellation,
 cleanup and exact retry. The [receipt](../artifacts/maintenance-review-20261012/composition-qualified-results.json)
 owns finished qualification. This supersedes earlier percentage-instance,
 overlapping-convex-child and partial-use-mask gates only; finite G2–G9/S17 remain open.
+
+
+## Pattern tile element and group opacity (2026-10-15)
+
+The original MIT [fill/stroke/element control](../tests/Research/paint-recording/pattern-tile-tile-fill-stroke-element.svg)
+and CC0 [group control](../tests/Research/pattern-vector-content/group-opacity-promotion.svg)
+now match their unchanged references exactly on Windows/Linux. Both remain in
+their original banks, with missing Linux triples acquired once. The required
+[whole tile sheet](../tests/Research/pattern-tile-sheet/README.md) and six missing-
+semantic controls were frozen at `5d61f27a` before production changes. The whole
+is still rejected; its next gate is pattern fills under scaled nested viewports.
+This is a shared correction, not a document or G6 completion claim.
+
+Combined fill/stroke element opacity promotes through ordinary retained source
+lowering and recorded paint layers. Qualified single-paint legacy rectangles
+keep their existing path. Pattern groups now enter/leave the staging scene's
+bounded source-opacity scope, including nesting, empty groups and following
+siblings. No new per-shape painter or surface owner is introduced.
+
+Picture-backed tile layers restore through the existing packed shader coverage
+stage. Stored source lanes are scaled as `(lane * coverage + 255) >> 8`, followed
+by the qualified source-over arithmetic. Ordinary document layer consumers keep
+their distinct native restoration path. A healthy native source diagnostic is
+already exact; the native isolated-source diagnostic confirms the restore stage.
+The old sprite route differed in 2,360 group-control pixels. Rounding scaled lanes
+first left 168; floating shader composition left 146. Shared packed coverage is
+exact, including the independent diagnostic. These rejected models remain in the
+ignored [study](../artifacts/pattern-tile-sheet-20261015/), not renderer predicates.
+
+Original rejection inputs graduate to positive admission/parser-work/cleanup
+regressions. Focused tests cover nested/empty/sibling scopes, meaningful memory/
+work denial, active cancellation after layer creation, immutable input and exact
+retry. The [receipt](../artifacts/maintenance-review-20261012/pattern-opacity-qualified-results.json)
+owns checkpoint qualification. Object-box units, scaled viewport placement,
+image/filter/font tile content and other finite exits remain required.

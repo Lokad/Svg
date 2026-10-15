@@ -1,7 +1,9 @@
 # Retained pattern tile sheet
 
-The required whole document is **0/1 complete**; its **eight controls** have a
-separate denominator. Six new controls demonstrate independent promised G6 gaps:
+The required whole document is **0/1 complete**; **3/8 controls are exact** on
+Windows/Linux, with a separate denominator. The original two opacity controls
+and the baseline reflected-map control are exact; five unit/content controls
+still reject. Six new controls demonstrate independent promised G6 gaps:
 object-box tile units, object-box content without viewBox, reflected fractional
 maps, embedded images, filtered content and supplied static TrueType labels.
 The two original opacity controls remain in their original banks:
@@ -31,7 +33,8 @@ font or reference is silently relicensed or substituted.
 [The manifest](manifest.json) owns frozen source/asset/options identity. Original
 captures, startup-health logs, font-use controls and managed baseline outcomes
 remain in the existing ignored [study](../../../artifacts/pattern-tile-sheet-20261015/).
-Complete every unchanged declared output against its frozen references, beginning
-with shared bounded tile-content opacity, then the dependencies encountered by
-the whole sheet. [PLAN.md](../../../PLAN.md#ordered-delivery-checklist) owns wider
+The [opacity correction](../../../artifacts/maintenance-review-20261012/pattern-opacity-qualified-results.json)
+reuses ordinary recorded element layers, bounded group scopes and native packed
+shader coverage. Complete the remaining unchanged outputs, next addressing the
+whole sheet's scaled nested viewport gate and its unit/content dependencies. [PLAN.md](../../../PLAN.md#ordered-delivery-checklist) owns wider
 finite support exits; a document milestone alone does not close G6 or release.

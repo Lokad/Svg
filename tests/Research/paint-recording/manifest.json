@@ -1227,7 +1227,21 @@
       "license": "MIT",
       "licenseEvidence": "Repository LICENSE.txt; unchanged unit input or original contributor control.",
       "purpose": "Supplemental after tile payload opacity repair: verify resolved tile paint and rejected temporary owner cleanup.",
-      "outcome": "UnsupportedFeature"
+      "outcome": "renders",
+      "comparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 0,
+        "MaximumChannelError": 0,
+        "MeanAbsoluteError": 0,
+        "RootMeanSquareError": 0,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 8,
+        "MinimumMismatchY": 8,
+        "MaximumMismatchX": -1,
+        "MaximumMismatchY": -1,
+        "IsExact": true
+      }
     },
     {
       "id": "pattern-tile-tile-linear-rejection",

@@ -6,6 +6,16 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgStaticCssImageTests
 {
     [Theory]
+    [InlineData("paint-recording", "pattern-tile-tile-fill-stroke-element")]
+    [InlineData("pattern-vector-content", "group-opacity-promotion")]
+    public void Pattern_opacity_replay_preserves_sources_and_releases_owners_after_denial_and_retry(string family, string identity)
+        => AssertResourceLifecycle(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", family, identity + ".svg")));
+
+    [Fact]
+    public void Pattern_group_opacity_cancellation_and_work_denial_release_temporary_owners()
+        => AssertActiveRasterLifecycle("<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><defs><pattern id='p' width='256' height='256' patternUnits='userSpaceOnUse'><g opacity='.6'><rect x='16' y='16' width='96' height='96' fill='red'/><circle cx='128' cy='128' r='100' fill='#025bc7'/></g></pattern></defs><rect width='256' height='256' fill='url(#p)'/></svg>"u8.ToArray());
+
+    [Theory]
     [InlineData("composition-sheet")]
     [InlineData("partial-mask-use")]
     public void Composition_replay_preserves_sources_and_releases_owners_after_denial_and_retry(string identity)

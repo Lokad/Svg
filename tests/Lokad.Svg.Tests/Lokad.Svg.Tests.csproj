@@ -141,6 +141,7 @@
     <None Include="../Research/affine-image-maps/*.svg" Link="TestData/affine-image-maps/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/effects-marker-sheet/*.svg" Link="TestData/effects-marker-sheet/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/pattern-tile-sheet/*.svg" Link="TestData/pattern-tile-sheet/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/paint-recording/pattern-tile-tile-fill-stroke-element.svg" Link="TestData/paint-recording/pattern-tile-tile-fill-stroke-element.svg" CopyToOutputDirectory="PreserveNewest" />
     <ProjectReference Include="../../src/Lokad.Svg/Lokad.Svg.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />

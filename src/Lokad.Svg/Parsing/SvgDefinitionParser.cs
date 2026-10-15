@@ -467,17 +467,16 @@ internal static class SvgDefinitionParser
                 if (reader.GetAttribute("mask") is not null || reader.GetAttribute("clip-path") is not null || reader.GetAttribute("filter") is not null)
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clips, masks and filters on pattern groups are not implemented.");
                 SvgParsedGroup group = SvgGroupParser.Parse(reader, false, root, state, namedColors, workCounter, cancellationToken);
-                if (!reader.IsEmptyElement && group.SourceOpacity.Value != 1)
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Isolated opacity on pattern groups is not implemented.");
                 if (!reader.IsEmptyElement)
                 {
-                    _ = GetPatternContentBuilder(state, workCounter, cancellationToken);
+                    SvgSceneBuilder builder = GetPatternContentBuilder(state, workCounter, cancellationToken);
+                    if (group.Scope.IsolatesOpacity) builder.BeginSourceOpacityScope(group.SourceOpacity, group.RecordingScope);
                     state.Groups.Add(group.Scope with { Kind = SvgGroupKind.PatternGroup });
                     state.GroupDepth++;
                 }
                 return true;
             }
-            if (reader.LocalName == "rect" && !SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken).ResolveStyle(reader).PaintOrder.GetValueOrDefault().StrokeFirst() && state.PatternTemplate.KeepsLegacyRectangle && state.PatternContentBuilder is null && state.PatternTile?.Content is null)
+            if (reader.LocalName == "rect" && KeepsLegacyRectanglePaint() && state.PatternTemplate.KeepsLegacyRectangle && state.PatternContentBuilder is null && state.PatternTile?.Content is null)
             {
                 SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
                 if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on pattern tile content are not implemented.");
@@ -545,6 +544,18 @@ internal static class SvgDefinitionParser
             }
             state.HasUnsupportedContent = true;
             return true;
+
+            bool KeepsLegacyRectanglePaint()
+            {
+                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                SvgComputedStyle style = context.ResolveStyle(reader);
+                bool hasFill = style.Fill is {} fill ? !fill.Trim().Equals("none", StringComparison.Ordinal) : context.InheritedPresentation.Paint.HasFill;
+                bool hasStroke = (style.Stroke ?? context.InheritedStroke.Stroke) is {} stroke && !stroke.Trim().Equals("none", StringComparison.Ordinal);
+                // Independent fill and stroke need the ordinary recorded element
+                // layer. Keep qualified single-paint legacy pixels unchanged.
+                return !style.PaintOrder.GetValueOrDefault().StrokeFirst()
+                    && (!hasFill || !hasStroke || style.GetOpacity().Value == 1);
+            }
         }
         if ((state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 || directChild || resourceDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "radialGradient")
         {

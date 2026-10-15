@@ -6,6 +6,21 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgPatternContentTests
 {
+    [Fact]
+    public void Nested_tile_opacity_ends_before_siblings_and_empty_groups()
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><g opacity='.5'><g opacity='.5'><rect width='4' height='4' fill='red'/></g><rect x='4' width='4' height='4' fill='blue'/></g><g opacity='0'/><rect y='4' width='8' height='4' fill='#00ff00'/></pattern></defs><rect width='8' height='8' fill='url(#p)'/></svg>"u8.ToArray();
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
+        {
+            Assert.Equal(new byte[] { 255, 0, 0, 64 }, surface.Pixels.AsSpan((2 * 8 + 1) * 4, 4).ToArray());
+            Assert.Equal(new byte[] { 0, 0, 255, 128 }, surface.Pixels.AsSpan((2 * 8 + 6) * 4, 4).ToArray());
+            Assert.Equal(new byte[] { 0, 255, 0, 255 }, surface.Pixels.AsSpan((6 * 8 + 1) * 4, 4).ToArray());
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     [Theory]
     [InlineData("circle-tile-rectangle")]
     [InlineData("curve-tile-circle")]
@@ -174,7 +189,6 @@ public sealed class SvgPatternContentTests
     [InlineData("<pattern id='p' width='16' height='16' patternUnits='userSpaceOnUse'><circle cx='8' cy='8' r='4' fill='url(#p)'/></pattern>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<pattern id='p' width='16' height='16' patternUnits='userSpaceOnUse'><circle cx='8' cy='8' r='4' mask='url(#m)'/></pattern>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<pattern id='p' width='16' height='16' patternUnits='userSpaceOnUse'><circle cx='8' cy='8' r='4'/></pattern><pattern id='p' width='16' height='16' patternUnits='userSpaceOnUse'><circle cx='8' cy='8' r='4'/></pattern>", SvgErrorCode.MalformedInput)]
-    [InlineData("<pattern id='p' width='16' height='16' patternUnits='userSpaceOnUse'><rect width='16' height='16'/><g opacity='0.6'><circle cx='8' cy='8' r='4'/></g></pattern>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<pattern id='p' width='16' height='16' patternUnits='userSpaceOnUse'><g mask='url(#m)'><circle cx='8' cy='8' r='4'/></g></pattern>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<pattern id='p' width='16' height='16' patternUnits='userSpaceOnUse'><g><circle cx='8' cy='8' r='4' fill='url(#p)'/></g></pattern>", SvgErrorCode.UnsupportedFeature)]
     public void Rejected_tile_content_and_duplicate_ids_release_partial_scenes(string content, SvgErrorCode expected)
@@ -183,5 +197,19 @@ public sealed class SvgPatternContentTests
         RenderBudget budget = new(1_000_000);
         Assert.Equal(expected, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Original_group_opacity_admission_releases_the_replayed_scene()
+    {
+        const string content = "<pattern id='p' width='16' height='16' patternUnits='userSpaceOnUse'><rect width='16' height='16'/><g opacity='0.6'><circle cx='8' cy='8' r='4'/></g></pattern>";
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs>" + content + "</defs><rect width='16' height='16' fill='url(#p)'/></svg>");
+        byte[] unchanged = input.ToArray();
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
+            Assert.Equal((byte)255, surface.Pixels[3]);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(unchanged, input);
     }
 }

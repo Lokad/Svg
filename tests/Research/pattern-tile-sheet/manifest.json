@@ -72,7 +72,7 @@
       "oracleInputSha256": "bddf3b97f8826e71673307f56d3eb1f59bfb10fbd66bc317d74b7023f12b9039",
       "platformReferencesByteIdentical": false,
       "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Only rectangle strokes under translations, with opacity only when fill-less, are implemented.",
+      "expectedMessage": "Pattern fills in scaled viewports are not implemented.",
       "fontUseProof": {
         "windows": [
           {

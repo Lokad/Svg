@@ -351,6 +351,8 @@ internal static class SvgDocumentTraversal
                 if (state.ClipDepths.Count > 0 && state.ClipDepths[^1] == reader.Depth) state.ClipDepths.RemoveLast();
                 if (state.Groups.Count > 0 && state.Groups[^1].Depth == reader.Depth && state.Groups[^1].Kind == SvgGroupKind.PatternGroup)
                 {
+                    if (state.Groups[^1].IsolatesOpacity)
+                        (state.PatternContentBuilder ?? throw new InvalidOperationException("An isolated pattern group requires its replay builder.")).EndOpacityScope();
                     state.Groups.RemoveLast();
                     state.GroupDepth--;
                 }

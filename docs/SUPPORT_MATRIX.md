@@ -1631,3 +1631,21 @@ paint-map, mask-unit/restoration and resource-presentation exits in PLAN.md.
 Qualified effects, inv-146, approximate memory protections and all prior exact
 results remain protected. The [receipt](../artifacts/maintenance-review-20261012/composition-qualified-results.json)
 owns full platform checks and their limits.
+
+
+## Qualified pattern tile opacity (2026-10-15)
+
+The original [combined tile-paint opacity](../tests/Research/paint-recording/pattern-tile-tile-fill-stroke-element.svg)
+and [nested group opacity](../tests/Research/pattern-vector-content/group-opacity-promotion.svg)
+controls are exact on unchanged Windows/Linux references. Multiple-paint element
+opacity uses ordinary recorded source replay; groups use bounded staging scene
+layers and the native packed shader coverage restore. Nested and empty scopes
+terminate before following siblings. Prior single-paint legacy results remain
+protected. This supersedes the earlier named opacity gates only.
+
+The [required tile sheet](../tests/Research/pattern-tile-sheet/README.md) remains
+**0/1 complete document**, with **3/8 exact controls** including the already exact
+reflected fractional map. Scaled nested viewport placement, both object-box unit
+gates and image/filter/supplied-font content remain required. The
+[receipt](../artifacts/maintenance-review-20261012/pattern-opacity-qualified-results.json)
+owns complete platform/preservation checks; no G6 or release closure is claimed.

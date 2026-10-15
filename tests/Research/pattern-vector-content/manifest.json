@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Twenty-two bounded vector tile controls: twenty exact results, recursive paint and isolated group opacity explicitly unsupported. Complete inv-103 and inv-128 are counted separately.",
+  "purpose": "Twenty-two bounded vector tile controls: twenty-one exact results and recursive paint explicitly unsupported. Complete inv-103 and inv-128 are counted separately; the original isolated group-opacity input graduates unchanged.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
@@ -305,8 +305,7 @@
       "width": 64,
       "height": 64,
       "background": "transparent",
-      "role": "boundary",
-      "expectedError": "UnsupportedFeature"
+      "role": "boundary"
     },
     {
       "id": "empty-group-legacy",
