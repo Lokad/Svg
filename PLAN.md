@@ -63,6 +63,12 @@ close their declared outputs; their receipts own capture/correction history.
 Document success does not close the remaining viewport or glyph boundaries.
 No exhaustive G2 or shape × paint × instance prerequisite applies.
 
+The selected [mask viewport/default sheet](tests/Research/mask-viewport-exit-sheet/README.md)
+is frozen at **0/1 document / 0/5 exact controls** on Windows/Linux. The four
+original C3b inputs are unchanged; a spatial group/viewBox control protects
+siblings. Thirty-six healthy stable captures precede production correction.
+This is remaining work and adds no completed-document count.
+
 | Required item, in order | Missing behavior and dependencies | Acceptance and completion condition |
 | --- | --- | --- |
 | [ ] 3. Composition and resource presentation (G5–G7) | Remaining C3b mask, C6 clip/opacity/viewport and C5b tile-mask bridges below. Declared unit/color/affine and C1/C2/C4/C5a acceptances are complete. Reuse source replay, tight bounds and viewport rebasing; glyph-specific boundaries belong to item 4. | Complete retained boundary documents, the five C3b cases, finite C6 inputs and C5b tile-mask witness are exact on both platforms, with sibling restoration and affected scope/cleanup checks. Preserve every completed C1–C5 witness. |
