@@ -62,8 +62,8 @@ remain open**; completing the sheet does not close those finite exits.
 
 ## Ordered delivery checklist
 
-The **next three deliverables** are **the retained W3C decoration document and
-its two controls**, **shared curved-stroke/pattern maps**, then **the remaining
+The **next three deliverables** are **finish the retained decoration bank's
+curved-path control**, **shared curved-stroke/pattern maps**, then **the remaining
 clip/mask/image composition cases**. They are items 1–3 below. Items 4–6 finish
 the remaining font, effects and release obligations. Select shared fixes by the
 retained documents they advance; bring a later dependency forward only when it
@@ -90,6 +90,10 @@ qualification and affected resource regressions pass in the
 The curved control still rejects decorated text paths and keeps item 1 open.
 Complete it against its frozen references; this document does not close G9/S17.
 The completed `inv-146`, tile sheet and all preceding exact results remain closed.
+[Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38741794298)
+for `281ec21f`, first attempt, including resource, browser/setup, font, validator,
+package and installed-consumer checks. Reuse this terminal audit for unchanged
+documentation; no renderer requalification or repoll is needed.
 
 The finite tables below define the exits of these six items, rather than a second
 execution queue. Acceptance recipes without file links are **planned**. Before
@@ -198,6 +202,7 @@ mechanisms are completed dependencies. The complete tile sheet additionally
 qualifies image/filter/supplied-font content via the
 [content receipt](artifacts/maintenance-review-20261012/pattern-content-qualified-results.json);
 G6 remains open for the shared maps/presentation exits below.
+Its target/phase cases also satisfy the G2–G4 pattern-map exit; count them once.
 
 | Required remaining behavior | Dependency / concrete acceptance / completion |
 | --- | --- |
@@ -235,6 +240,9 @@ duplicate/unknown tokens reject. Apply each resource's applicable properties.
 | --- | --- |
 | Independent horizontal/vertical image alignment offsets | All nine spellings, `none` and omitted-meet equivalence are implemented in [aspect tests](tests/Lokad.Svg.Tests/SvgAspectRatioTests.cs). Reconcile native image-bank evidence using portrait and landscape meet/slice panels with independent horizontal/vertical Min/Mid/Max offsets; reuse already exact offsets. Item 3 adds only uncovered offset semantics. Complete when independent offsets are qualified with existing PNG/resource validation; no nine-alignments × placements census. |
 | Remaining resource presentation and dependent image content | Reuse cascade witnesses, [selector](tests/Lokad.Svg.Tests/SvgCssSelectorTests.cs) and [paint-order](tests/Lokad.Svg.Tests/SvgPaintOrderTests.cs) regressions. Qualify only missing applicable clipPath/mask and pattern presentation in item 3, marker/filter in item 5, text/span paint in items 1/4. Concrete panels use inherited/container paint versus a child override and stylesheet/inline priority for the uncovered resource. Image filter/tile content has qualified witnesses; remaining interactions belong to their owning support rows. Complete when each independent boundary has exact acceptance in its owning document/control; add source-order coverage only for an uncovered interaction. |
+
+The resource-presentation row delegates to those owning exits; it adds no second
+case set or qualification requirement.
 
 Outside scope with explicit outcomes: interlaced/16-bit/color-managed PNG,
 JPEG/GIF/WebP/external image fetching; CSS imports/media/supports, pseudo
