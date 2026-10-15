@@ -1,0 +1,19 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="432" height="300">
+<rect x="12" y="12" width="196" height="124" rx="4" fill="#edf2f5"/>
+<rect x="224" y="12" width="196" height="124" rx="4" fill="#f8f1df"/>
+<rect x="12" y="156" width="196" height="124" rx="4" fill="#edf4eb"/>
+<rect x="224" y="156" width="196" height="124" rx="4" fill="#edf2f5"/>
+<svg x="26" y="26" width="168" height="96" viewBox="0 0 120 80">
+<defs><circle id="percentageOval" cx="50%" cy="50%" r="20%" fill="#347bad"/></defs><use href="#percentageOval"/>
+</svg>
+<svg x="274" y="26" width="96" height="96" viewBox="0 0 32 32">
+<defs><clipPath id="oppositeCut"><path d="M3 3H22V22H3Z"/><path d="M12 12V29H29V12Z"/></clipPath></defs><rect width="32" height="32" fill="#397ac4" clip-path="url(#oppositeCut)"/>
+</svg>
+<svg x="38" y="164" width="144" height="108" viewBox="0 0 96 72">
+<defs><clipPath id="overlapCut"><path d="M9 13H53V49H9Z"/><path d="M33 25H81V61H33Z"/></clipPath></defs><rect x="5" y="6" width="84" height="59" fill="#16b" clip-path="url(#overlapCut)"/>
+</svg>
+<svg x="274" y="168" width="96" height="96" viewBox="0 0 8 8">
+<defs><mask id="halfMask"><rect width="4" height="8" fill="white"/></mask><rect id="halfTile" width="8" height="8"/></defs><use href="#halfTile" mask="url(#halfMask)"/>
+</svg>
+</svg>

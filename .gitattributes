@@ -64,3 +64,6 @@ tests/Research/remaining-label-path-sheet/*.svg -text
 
 # Preserve frozen effects-sheet/control bytes, including authored CRLF endings.
 tests/Research/effects-marker-sheet/*.svg -text whitespace=cr-at-eol
+
+# Keep frozen composition inputs byte-identical on both platforms.
+tests/Research/composition-sheet/*.svg -text

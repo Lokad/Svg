@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "purpose": "One required composition document, one retained MIT core-input visual and three existing controls reused in their original banks. References frozen before composition changes; all five declared inputs currently reject.",
+  "declarationBaseRevision": "005b4876039cd02f551aeec2ed68733e446d2c48",
+  "cases": [
+    {
+      "id": "composition-sheet",
+      "input": "composition-sheet.svg",
+      "width": 432,
+      "height": 300,
+      "background": "transparent",
+      "role": "document-output",
+      "license": "CC0-1.0",
+      "sourceSha256": "a1a3151efef025580f1c2c0758d3298efe5e9f6e2a327b019391a48dd6dd6c10",
+      "selection": "Combines retained percentage-instance bases, opposite-winding clip children, overlapping child unions and partial-mask use under qualified nested viewBox maps.",
+      "reference": "references/composition-sheet.png",
+      "referenceSha256": "39112a6df8f6f782a7d425691139fd6bf377709368afe44ca80b1e5db34566d8",
+      "licenseEvidence": "README.md",
+      "captures": [
+        {
+          "pngSha256": "39112a6df8f6f782a7d425691139fd6bf377709368afe44ca80b1e5db34566d8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "39112a6df8f6f782a7d425691139fd6bf377709368afe44ca80b1e5db34566d8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "39112a6df8f6f782a7d425691139fd6bf377709368afe44ca80b1e5db34566d8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "39112a6df8f6f782a7d425691139fd6bf377709368afe44ca80b1e5db34566d8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "39112a6df8f6f782a7d425691139fd6bf377709368afe44ca80b1e5db34566d8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "39112a6df8f6f782a7d425691139fd6bf377709368afe44ca80b1e5db34566d8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": true,
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Percentage oval definitions require retained instance viewport bases."
+    },
+    {
+      "id": "partial-mask-use",
+      "input": "partial-mask-use.svg",
+      "width": 8,
+      "height": 8,
+      "background": "transparent",
+      "role": "retained-core-admission-control",
+      "license": "MIT",
+      "sourceSha256": "df6841fac9d0714be4e15a67010724e75b5e2cfea81d1841c8dfbf4a3e0ea4ac",
+      "selection": "Exact SVG input retained by SvgGroupMaskCropTests.Instance_and_width_admission_preserves_output_and_cleanup; supplies the missing original native visual witness.",
+      "reference": "references/partial-mask-use.png",
+      "referenceSha256": "899755bfa742a518f6a2e43749264c9c6edce692c1bb883a3a5ff228067fb2ff",
+      "licenseEvidence": "README.md",
+      "captures": [
+        {
+          "pngSha256": "899755bfa742a518f6a2e43749264c9c6edce692c1bb883a3a5ff228067fb2ff",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "899755bfa742a518f6a2e43749264c9c6edce692c1bb883a3a5ff228067fb2ff",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "899755bfa742a518f6a2e43749264c9c6edce692c1bb883a3a5ff228067fb2ff",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "899755bfa742a518f6a2e43749264c9c6edce692c1bb883a3a5ff228067fb2ff",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "899755bfa742a518f6a2e43749264c9c6edce692c1bb883a3a5ff228067fb2ff",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "899755bfa742a518f6a2e43749264c9c6edce692c1bb883a3a5ff228067fb2ff",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": true,
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Only mask content covering the masked geometry is implemented."
+    }
+  ],
+  "reusedControls": [
+    {
+      "bank": "oval-percentage-lengths",
+      "id": "percentage-use-boundary",
+      "input": "percentage-use-boundary.svg",
+      "reference": "references/percentage-use-boundary.png",
+      "sourceSha256": "be04625513427291839b0f0a169adcc3fb3e64cdfaa12a12aa322a1f704b0712",
+      "referenceSha256": "257b63bb637ed549f1bd9a4400ccda55f39601102a9dfaee506cedc3fb513c54",
+      "linuxCaptures": [
+        {
+          "pngSha256": "257b63bb637ed549f1bd9a4400ccda55f39601102a9dfaee506cedc3fb513c54",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "257b63bb637ed549f1bd9a4400ccda55f39601102a9dfaee506cedc3fb513c54",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "257b63bb637ed549f1bd9a4400ccda55f39601102a9dfaee506cedc3fb513c54",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": true
+    },
+    {
+      "bank": "compound-clip-content",
+      "id": "overlapping-opposite-children",
+      "input": "overlapping-opposite-children.svg",
+      "reference": "references/overlapping-opposite-children.png",
+      "sourceSha256": "d75b0f701e4acc21eebfdc6517269391ef6d782c02eda38dc1690907f424dadd",
+      "referenceSha256": "2c6bc88b790e067d47046a0b43ba07db9b1d43a76045d7f2f241bb6e1eb78b2c",
+      "linuxCaptures": [
+        {
+          "pngSha256": "2c6bc88b790e067d47046a0b43ba07db9b1d43a76045d7f2f241bb6e1eb78b2c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2c6bc88b790e067d47046a0b43ba07db9b1d43a76045d7f2f241bb6e1eb78b2c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2c6bc88b790e067d47046a0b43ba07db9b1d43a76045d7f2f241bb6e1eb78b2c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": true
+    },
+    {
+      "bank": "clip-intersections",
+      "id": "overlapping-path-child-union",
+      "input": "overlapping-path-child-union.svg",
+      "reference": "references/overlapping-path-child-union.png",
+      "sourceSha256": "529356fff98d9e13391c4cc9b7e7dbb33bc7d44cdf35b3a25dda7af81cf6a39e",
+      "referenceSha256": "331abb677474a59b7b8ccba3c967417c2fba37a481c8a2248d2b2de0b14b43da",
+      "linuxCaptures": [
+        {
+          "pngSha256": "331abb677474a59b7b8ccba3c967417c2fba37a481c8a2248d2b2de0b14b43da",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "331abb677474a59b7b8ccba3c967417c2fba37a481c8a2248d2b2de0b14b43da",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "331abb677474a59b7b8ccba3c967417c2fba37a481c8a2248d2b2de0b14b43da",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": true
+    }
+  ]
+}

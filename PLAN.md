@@ -78,19 +78,20 @@ IDs, source coordinates or observed failure pixels may become renderer predicate
 | Required checklist | Missing behavior and dependencies | Acceptance milestone / completion condition |
 | --- | --- | --- |
 | [ ] 1. Remaining finite effects/markers (G8; document milestone complete) | Colored/translucent linearRGB shadows, identity/linear-image restoration, uncovered affine paint/source maps, object-box clips, source crossings and remaining marker semantics. Reuse the completed bounded affine/source/clip/color-space machinery. | **Delivered:** unchanged [whole sheet and affine control](tests/Research/effects-marker-sheet/README.md) exact on both platforms; all eleven controls preserved. Handoff to row 2 is complete. **Row complete:** each remaining finite G8 obligation below has acceptance and affected graph/region/resource checks pass. |
-| [ ] 2. Composition sheet (G2–G5; remaining G7 placement/style evidence; active) | Percentage instance bases, stroke/paint maps, clip-child unions, mask boundaries and uncovered image-alignment/resource-presentation evidence. Reuse qualified geometry/source replay and row 1's capture/restore machinery where needed. | **Milestone:** freeze and complete a sheet joining [percentage oval use](tests/Research/oval-percentage-lengths/percentage-use-boundary.svg), [partial-mask use](tests/Lokad.Svg.Tests/SvgGroupMaskCropTests.cs), [opposite-winding children](tests/Research/compound-clip-content/overlapping-opposite-children.svg) and [clip-child union](tests/Research/clip-intersections/overlapping-path-child-union.svg), preserving each original control. Then advance to row 3. **Row complete:** finite G2–G5/G7 obligations below are witnessed, with affected cleanup and degenerate outcomes. |
+| [ ] 2. Composition sheet (G2–G5; remaining G7 placement/style evidence; active) | Percentage instance bases, stroke/paint maps, clip-child unions, mask boundaries and uncovered image-alignment/resource-presentation evidence. Reuse qualified geometry/source replay and row 1's capture/restore machinery where needed. | **Milestone:** complete the frozen [composition sheet](tests/Research/composition-sheet/README.md) joining [percentage oval use](tests/Research/oval-percentage-lengths/percentage-use-boundary.svg), [partial-mask use](tests/Lokad.Svg.Tests/SvgGroupMaskCropTests.cs), [opposite-winding children](tests/Research/compound-clip-content/overlapping-opposite-children.svg) and [clip-child union](tests/Research/clip-intersections/overlapping-path-child-union.svg), preserving each original control. Then advance to row 3. **Row complete:** finite G2–G5/G7 obligations below are witnessed, with affected cleanup and degenerate outcomes. |
 | [ ] 3. Pattern tile sheet (G6; dependent G7–G9 content) | Combined opacity, remaining tile/content units and affine phase/maps, image/filter/supplied-font content. Dependencies: bounded replay/layers and only the row 1/2/4 slices needed by a tile. | **Milestone:** unchanged [combined opacity](tests/Research/paint-recording/pattern-tile-tile-fill-stroke-element.svg) and [group opacity](tests/Research/pattern-vector-content/group-opacity-promotion.svg) exact, plus a frozen sheet joining missing map/content semantics exact on both platforms. **Row complete:** every independent G6 obligation below and recursion/size/work/cancellation cleanup checks pass. Preserve the eight complete pattern documents. |
 | [ ] 4. Remaining labels, paths and font validation (G9) | Stroked decorations and decorated paths; unverified skew/reflection or stroke-paint/instance maps; OVERLAP_COMPOUND, SCALED_COMPONENT_OFFSET and UNSCALED_COMPONENT_OFFSET; private deployment validation. Reuse qualified layout, fitting, preparation and rows 1–2's maps. | Freeze direct and curved-path stroked decorations and bounded synthetic overlapping/transformed-offset composites. Reuse qualified affine glyph cases. Exit: each missing semantic exact on both platforms, valid degenerate paths have measured outcomes, affected failure checks pass and the finite private request set below has sanitized outcomes. Preserve the completed label/path sheet, eight controls and intended-font proofs. |
 | [ ] 5. Release (S17) | Finished-revision contracts and evidence after rows 1–4. | Close every finite G2–G9 obligation below, preserve established exact results, pass complete platform/API/resource/package/consumer checks and exact-revision CI, and report representative measurements. All [release conditions](#release-completion-s17) must hold; document counts alone cannot establish completion. |
 
-**Next correction:** freeze the composition sheet around the original percentage
-oval-use, partial-mask-use and overlapping clip-child controls in row 2. Diagnose
-its rejections and mismatches with those retained controls; choose shared geometry,
-instance-coordinate and resource-replay fixes by the panels they advance. The sheet
-is not yet captured or qualified. No exhaustive G2 completion precedes this delivery.
-The completed effects sheet and native shader/stored-pixel/source-origin distinctions
-stay protected; remaining G8 obligations stay visible below rather than delaying
-this document handoff.
+**Next correction:** carry the frozen [composition sheet](tests/Research/composition-sheet/README.md)
+through percentage instance-coordinate bases, then its clip-child union and
+partial-mask-use gates. All five retained inputs currently reject on Windows/Linux.
+The three original controls remain in their existing banks; only the whole sheet
+and a visual of the exact retained partial-mask core input are new. Their source
+bytes/options and 21 healthy stable new captures are frozen before implementation;
+the older controls' Windows references stay unchanged. This declares no completed
+document or group closure and creates no exhaustive G2 prerequisite. Preserve the
+completed effects sheet and shader/stored-pixel/source-origin distinctions.
 
 The effects/composition/tile sheets are bounded acceptance recipes, not new
 feature promises or acquisition quotas. Before implementation, bind each missing
@@ -122,8 +123,9 @@ still-unverified mechanism to an existing acceptance case or to the next declare
 document before implementing it. Reuse qualified witnesses; no exhaustive
 combination census or separate tracking framework is required.
 Acceptance recipes without file links below are **planned**, not captured or
-qualified. The composition/tile sheets are also planned recipes. Freeze a new
-case only for an uncovered independent semantic or demonstrated interaction.
+qualified. The composition sheet is frozen and currently rejected; the tile sheet
+is still planned. Freeze a new case only for an uncovered independent semantic or
+demonstrated interaction.
 
 <a id="g2g4-instances-geometry-maps-and-strokes"></a>
 
