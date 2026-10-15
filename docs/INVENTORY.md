@@ -37,6 +37,13 @@ bounds/scope/ownership checks. This is the eighteenth authored document
 (seventeenth CC0), separate from both cohorts and the W3C document. C1/C2 are
 complete; [PLAN](../PLAN.md) keeps C3-C5, font/effect and S17 exits required.
 
+The frozen [composition/resource sheet](../tests/Research/composition-resource-exit-sheet/README.md)
+starts at **0/1 complete document / 1/3 exact controls** on both platforms. Its
+whole output and mask/tile controls retain measured C3/C5 rejections; its active
+horizontal xMin image control is exact. Twenty-four healthy stable captures and
+original assets/options predate correction. This closes C4 without a renderer
+change and adds no completed-document count. C3/C5 and later exits remain required.
+
 One additional sourced [W3C decoration document](../tests/Research/stroked-decorations/README.md)
 is **1/1 exact** on Windows/Linux at its frozen 1200×400 output, separately from
 both cohorts and the eighteen authored documents. All **4/4 controls** are exact,
