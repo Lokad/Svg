@@ -25,9 +25,9 @@ Independent boundary/root vectors, empty/concave coverage, original rejection
 inputs and affected denial/cancellation/cleanup/retry checks protect the shared
 correction. The original unreferenced quadratic/line input now protects unchanged
 ordinary paint and cleanup. [PLAN](../../../PLAN.md) keeps the existing G3 cubic
-segment-pair union dependency required: its declared
-[admission-only input](../../../artifacts/clip-union-exits-20261015/cubic-pair-pending-declaration.json)
-still rejects and needs healthy frozen native triples before correction. Completing
+segment-pair union dependency required: its unchanged input is now part of the
+[next document bank](../cubic-viewport-exit-sheet/README.md), with healthy frozen
+native triples and the original rejection retained before correction. Completing
 this document does not close that boundary, C2-C4, remaining C5, or S17.
 
 The [manifest](manifest.json) fixes original SVG/PNG bytes, dimensions, scale one,

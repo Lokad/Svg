@@ -52,13 +52,13 @@ Each item closes against its acceptance and the common validation policy; no
 exhaustive G2 or shape × paint × instance prerequisite applies.
 
 **Next complete document within item 3:** the declared CC0
-[cubic/viewport sheet](artifacts/cubic-viewport-exits-20261015/declaration.json),
+[cubic/viewport sheet](tests/Research/cubic-viewport-exit-sheet/README.md),
 384×160, with two independent controls. Its
 [preflight](artifacts/cubic-viewport-exits-20261015/frozen-preflight-results.json)
 retains eighteen healthy, stable captures across Windows/Linux. The sheet and
 cubic control reject; the viewport control renders with 7,866 differing pixels
-on each platform. Freeze these unchanged assets/options and reference triples in
-the existing test-bank format before correction. Complete the whole document and
+on each platform. Its unchanged assets/options and platform references are frozen
+in the existing test-bank format before correction. Complete the whole document and
 both controls exactly on both platforms; this advances C1/C2 without closing C3–C5.
 
 | Required item, in order | Missing behavior and dependencies | Acceptance and completion condition |
@@ -135,8 +135,8 @@ and [template](tests/Lokad.Svg.Tests/SvgPatternTemplateTests.cs) tests need no n
 
 | Required exit (item 3) | Concrete acceptance, dependency and completion |
 | --- | --- |
-| C1. Clip unions and their remaining cubic primitive | The [sheet and five controls](tests/Research/clip-union-exit-sheet/README.md) close mixed rectangle/path, overlapping conics, independent compound/concave winding and 43-child fallback, including applicable C5 clip-rule cascade. The promised G3 cubic-pair solver still rejects in the [next document and 64×48 control](artifacts/cubic-viewport-exits-20261015/declaration.json). Freeze their healthy native references, then make both exact on Windows/Linux with affected bounds/ownership checks. Reuse existing native source/root/boundary machinery; no child-count, shape or API census. |
-| C2. Affine ancestor at a nested viewport | Axis ancestry is qualified. The declared 192×160 rotated/skewed ancestor and scaled-viewport [control](artifacts/cubic-viewport-exits-20261015/affine-ancestor-viewport.svg) has 7,866 differing pixels on each platform. Reuse viewport placement/affine clip machinery; make that control and the whole next sheet exact, protecting physical clipping and unaffected siblings inside and after the ancestor. C1 is required to finish the sheet, not to diagnose this independent control. |
+| C1. Clip unions and their remaining cubic primitive | The [sheet and five controls](tests/Research/clip-union-exit-sheet/README.md) close mixed rectangle/path, overlapping conics, independent compound/concave winding and 43-child fallback, including applicable C5 clip-rule cascade. The promised G3 cubic-pair solver still rejects in the [next document and 64×48 control](tests/Research/cubic-viewport-exit-sheet/manifest.json). Use their frozen healthy native references to make both exact on Windows/Linux with affected bounds/ownership checks. Reuse existing native source/root/boundary machinery; no child-count, shape or API census. |
+| C2. Affine ancestor at a nested viewport | Axis ancestry is qualified. The declared 192×160 rotated/skewed ancestor and scaled-viewport [control](tests/Research/cubic-viewport-exit-sheet/affine-ancestor-viewport.svg) has 7,866 differing pixels on each platform. Reuse viewport placement/affine clip machinery; make that control and the whole next sheet exact, protecting physical clipping and unaffected siblings inside and after the ancestor. C1 is required to finish the sheet, not to diagnose this independent control. |
 | C3. Mask units and restoration | Reuse [local-reference](tests/Research/mask-local-references/manifest.json), [group-mask](tests/Research/mask-group-documents/README.md) and custom-region/container-opacity witnesses. Exact two-panel object-box region/user-space content and user-space region/object-box content; nested leaf/group/use mask followed by an unmasked sibling. Reuse covered panels; qualify only missing unit/restoration semantics and affected cleanup. |
 | C4. Independent image alignment offsets | The [existing qualified active-axis witnesses](artifacts/shared-map-exits-20261015/existing-image-alignments.json) cover xMid/xMax and yMin/yMid/yMax through portrait/landscape meet/slice images. All nine spellings, `none` and omitted-meet equivalence are implemented in [aspect tests](tests/Lokad.Svg.Tests/SvgAspectRatioTests.cs). Add only one active horizontal xMin witness (portrait image in a wider meet viewport, or equivalent slice crop); preserve existing PNG/resource checks. Inactive axes establish no offset coverage. No alignment × placement census. |
 | C5. Applicable clipPath/mask/pattern presentation and tile-local scopes | Reuse [root/resource cascade](tests/Research/root-resource-cascade/manifest.json), [selectors](tests/Lokad.Svg.Tests/SvgCssSelectorTests.cs) and [paint order](tests/Lokad.Svg.Tests/SvgPaintOrderTests.cs). Exact inherited/container paint versus child override and stylesheet/inline priority at each uncovered applicable resource boundary; one bounded mixed image/vector tile with a local content clip/mask. Preserve scope/cleanup. Marker/filter presentation belongs to E3/E4 and text/span paint to T1, with no duplicate case sets. |

@@ -27,8 +27,16 @@ The [receipt](../artifacts/maintenance-review-20261012/clip-native-unions-qualif
 owns full qualification and prior-result preservation. This is the seventeenth
 authored document; both cohort memberships and denominators stay unchanged.
 Cubic-segment pair union remains required within the existing G3/G5 promise;
-its current evidence is admission-only. [PLAN](../PLAN.md) owns that finite next
-acceptance and the remaining resource/font/effect exits.
+its frozen acceptance is in the next bank below. [PLAN](../PLAN.md) owns the
+remaining finite resource/font/effect exits.
+
+The declared [cubic/viewport sheet](../tests/Research/cubic-viewport-exit-sheet/README.md)
+starts at **0/1 complete document / 0/2 exact controls** on both platforms.
+The whole document and cubic-pair control reject; the affine-ancestor/scaled-
+viewport control has 7,866 differing pixels on each platform. Eighteen healthy,
+stable fresh-process captures were retained before correction. This one CC0
+document targets existing C1/C2 requirements and adds no combination quota or
+completed-document count. Its original assets/options/references are frozen.
 
 One additional sourced [W3C decoration document](../tests/Research/stroked-decorations/README.md)
 is **1/1 exact** on Windows/Linux at its frozen 1200×400 output, separately from
