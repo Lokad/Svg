@@ -64,7 +64,7 @@ unblocks the current deliverable. Exhaustive G2 combinations are not a prerequis
 | Required item, in execution order | Missing behavior and available dependencies | Concrete acceptance and completion |
 | --- | --- | --- |
 | [x] 1. W3C decoration document (G9) | Completed direct/curved decorations, positioning/stretch and declaring-paint/phase boundaries through shared layout, stroke and binary-region replay. | All five unchanged [declared outputs](tests/Research/stroked-decorations/manifest.json) exact on Windows/Linux; filled-decoration/layout and denial/cancellation/cleanup regressions pass. [Qualification](artifacts/maintenance-review-20261012/decorated-path-qualified-results.json). Wider G9 stays open. |
-| [ ] 2. Shared curved-stroke and pattern maps (G2–G4/G6) | Inherited symbol strokes, dashed curved shader caps/alpha, scaled-viewport patterned strokes/uses and skewed oval targets. Reuse native geometry, unit/viewBox maps and completed tile-content replay. | The finite map cases in G2–G4/G6 below, including reflected/magnified placement, are exact on both platforms with bounded tile work and measured finite degenerates. Reuse each witness across geometry, paint and instance groups. |
+| [ ] 2. Shared curved-stroke and pattern maps (G2–G4/G6) | Dashed curved shader caps/alpha, scaled-viewport patterned strokes/uses and skewed oval targets. Reuse native geometry, unit/viewBox maps and completed tile-content replay. | The finite map cases in G2–G4/G6 below, including reflected/magnified placement, are exact on both platforms with bounded tile work and measured finite degenerates. Reuse each witness across geometry, paint and instance groups. |
 | [ ] 3. Clip/mask/image composition and resource presentation (G5–G7) | Mixed/curved child unions and larger fallback, remaining mask units/restoration, image alignment offsets and applicable resource style/scopes. Depends on item 2 where acceptance uses its maps. | Named union, unit/restoration, offset and presentation cases below are exact on both platforms. Preserve the delivered [composition sheet](tests/Research/composition-sheet/README.md); protect scope termination, ordered native coverage and cleanup. |
 | [ ] 4. Remaining font maps, composites and private validation (G9) | Skew/reflection and stroke/instance glyph maps, three composite flags, finite private requests. Reuse qualified layout/fitting and item 2 maps where applicable. | Exact public map and overlapping/transformed-offset composite witnesses on both platforms; categorized degenerates and affected resource checks; sanitized outcomes for the fixed regular/bold/italic/fallback request set. Public reproductions of in-scope private defects must be resolved. |
 | [ ] 5. Remaining static effects and markers (G8) | Non-solid affine source maps, colored linearRGB restoration/shadows, object-box clips and named source boundaries, font-relative marker sizes and tangent/style cases. Reuse item 2–4 maps/scopes and existing bounded capture. | Every named finite G8 case below is exact on both platforms, including the retained standalone linear-image defect. Preserve the delivered [effects sheet and eleven controls](tests/Research/effects-marker-sheet/README.md); affected graph/region/resource checks pass. |
@@ -139,8 +139,26 @@ completed document count or unmeasured behavior cannot establish closure.
 
 | Required remaining behavior | Dependency / concrete acceptance / completion |
 | --- | --- |
-| Inherited symbol strokes and remaining stroke-to-paint maps, dashed curved shader caps/translucency, reflected/magnified patterns | The retained [inherited-symbol-stroke](tests/Research/use-paint-properties/inherited-symbol-stroke.svg) still rejects at symbol resolution; qualify its unchanged output through shared inherited stroke/instance routing. Reuse [use paints](tests/Research/use-paint-properties/manifest.json), [native replay](tests/Research/native-path-replay/manifest.json), [paint recording](tests/Research/paint-recording/manifest.json) and [oval source](tests/Research/oval-source-replay/manifest.json). Reconcile existing rotation/skew/reflection/nonuniform evidence; the remaining acceptance is a dashed quadratic/cubic with round and square caps plus fractional paint alpha, and reflected/magnified patterned placement. Qualify missing independent semantics through shared routing, preserving native shape distinctions; no all-paints/all-shapes product. |
+| Remaining stroke-to-paint maps, dashed curved shader caps/translucency, reflected/magnified patterns | Reuse [use paints](tests/Research/use-paint-properties/manifest.json), [native replay](tests/Research/native-path-replay/manifest.json), [paint recording](tests/Research/paint-recording/manifest.json) and [oval source](tests/Research/oval-source-replay/manifest.json). Reconcile existing rotation/skew/reflection/nonuniform evidence; the remaining acceptance is a dashed quadratic/cubic with round and square caps plus fractional paint alpha, and reflected/magnified patterned placement. Qualify missing independent semantics through shared routing, preserving native shape distinctions; no all-paints/all-shapes product. |
 | Finite degenerate maps | Reuse existing geometry checks; measure a singular map and zero-size geometry only where an outcome is absent. Complete when finite valid degenerates have measured nonpainting or categorized outcomes with affected cleanup checks. No new shape-by-map grid. |
+
+Inherited symbol strokes are a completed dependency: the retained
+[inherited-symbol-stroke](tests/Research/use-paint-properties/inherited-symbol-stroke.svg)
+is exact through current source replay on both platforms in the
+[existing qualification](artifacts/maintenance-review-20261012/decorated-path-qualified-results.json).
+Reflected phase/curved-target witnesses also remain exact; the
+[reconciliation](artifacts/shared-stroke-pattern-maps-20261015/existing-map-witnesses.json)
+identifies the reused cases. Historical `observedGate` text is admission history,
+not evidence of a current rejection. Only uncovered independent semantics above
+require implementation or additional acceptance.
+
+The retained [shared map sheet](tests/Research/shared-paint-map-sheet/README.md)
+now binds the uncovered acceptance: **0/1 complete document / 1/3 exact controls**
+on Windows/Linux before production changes. Dashed quadratic/cubic shaders with
+round/square caps and fractional alpha already match. The remaining measured gates
+are paint-server strokes on a local use in a scaled viewport, and the composed
+pattern map on a skewed oval. Finish all four frozen outputs, reusing existing
+reflected/magnified phase evidence; do not add a shape/paint/instance product.
 
 <a id="g5-viewports-clips-masks-and-composition"></a>
 
