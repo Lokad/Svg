@@ -1,0 +1,602 @@
+{
+  "schemaVersion": 1,
+  "declarationBaseRevision": "5d61f27a067845e44bc1856ff0ca9a65de292fb3",
+  "purpose": "One required whole tile document, six independent missing-mechanism controls and two unchanged opacity controls reused in their original banks. Native references precede production changes.",
+  "fontPack": "../font-layout-diagram/font-pack.json",
+  "fontPrograms": [
+    {
+      "relativePath": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+      "license": "../supplied-font-labels/fonts/OFL.txt",
+      "provenance": "../supplied-font-labels/font-provenance.json",
+      "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
+    }
+  ],
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "cases": [
+    {
+      "id": "pattern-tile-sheet",
+      "input": "pattern-tile-sheet.svg",
+      "width": 576,
+      "height": 240,
+      "background": "transparent",
+      "role": "document-output",
+      "license": "MIT",
+      "sourceSha256": "10891af5aa68fdd024ace3b45b13ec33852985d8c5a007c2d994e2700eeb1949",
+      "selection": "Whole required tile sheet: retained element/group opacity, both object-box unit gaps, fractional reflected maps and image/filter/supplied-font content under nested viewports.",
+      "licenseEvidence": "README.md",
+      "captures": [
+        {
+          "pngSha256": "bad67750b47e3cc5b99b6483771f18ec6f71628ceb62781b4db4dd8c8df915dc",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bad67750b47e3cc5b99b6483771f18ec6f71628ceb62781b4db4dd8c8df915dc",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bad67750b47e3cc5b99b6483771f18ec6f71628ceb62781b4db4dd8c8df915dc",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "reference": "references/pattern-tile-sheet.png",
+      "referenceSha256": "bad67750b47e3cc5b99b6483771f18ec6f71628ceb62781b4db4dd8c8df915dc",
+      "linuxCaptures": [
+        {
+          "pngSha256": "d963ef2d6901625350bca9b0b5828763a70207a578e6d7fe6f8c51af325464ce",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d963ef2d6901625350bca9b0b5828763a70207a578e6d7fe6f8c51af325464ce",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d963ef2d6901625350bca9b0b5828763a70207a578e6d7fe6f8c51af325464ce",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/pattern-tile-sheet.png",
+      "linuxReferenceSha256": "d963ef2d6901625350bca9b0b5828763a70207a578e6d7fe6f8c51af325464ce",
+      "oracleInputSha256": "bddf3b97f8826e71673307f56d3eb1f59bfb10fbd66bc317d74b7023f12b9039",
+      "platformReferencesByteIdentical": false,
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Only rectangle strokes under translations, with opacity only when fill-less, are implemented.",
+      "fontUseProof": {
+        "windows": [
+          {
+            "id": "pattern-tile-sheet",
+            "mode": "missing",
+            "changedPixels": 2133,
+            "freshProcessCaptures": 3,
+            "stability": "identical",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "f5fcb7b9ae6ed5767bc72b74216ae7644ae2f69c155125c3610e62cfa0f6b889",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "pattern-tile-sheet",
+            "mode": "corrupt",
+            "changedPixels": 2133,
+            "freshProcessCaptures": 3,
+            "stability": "identical",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "f5fcb7b9ae6ed5767bc72b74216ae7644ae2f69c155125c3610e62cfa0f6b889",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "pattern-tile-sheet",
+            "mode": "substituted",
+            "changedPixels": 2109,
+            "freshProcessCaptures": 3,
+            "stability": "identical",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "f690e7e8e5247c9299f385b497566f88186a12cd0e0afd51cc214f168499fcff",
+            "inputFontProgramChangedOnly": true
+          }
+        ],
+        "linux": [
+          {
+            "id": "pattern-tile-sheet",
+            "mode": "missing",
+            "changedPixels": 1878,
+            "freshProcessCaptures": 3,
+            "stability": "identical",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "d011809685813f9fdaf08bf73e6b35ed975fe8a1153c63a2c89b7b2aee6bbd05",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "pattern-tile-sheet",
+            "mode": "corrupt",
+            "changedPixels": 1878,
+            "freshProcessCaptures": 3,
+            "stability": "identical",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "d011809685813f9fdaf08bf73e6b35ed975fe8a1153c63a2c89b7b2aee6bbd05",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "pattern-tile-sheet",
+            "mode": "substituted",
+            "changedPixels": 1991,
+            "freshProcessCaptures": 3,
+            "stability": "identical",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "a6dac3e46d689b50dc40bc72f00b68403eb7096d243d28b403e8fd2111d14662",
+            "inputFontProgramChangedOnly": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "object-box-tile",
+      "input": "object-box-tile.svg",
+      "width": 96,
+      "height": 80,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "ae4203817d0c4daa6a073b83dc3a1efb7f04377000f2fcba098f8bac6552779a",
+      "selection": "Required objectBoundingBox tile units, nonzero fractional tile origin, user-space vector content.",
+      "licenseEvidence": "README.md",
+      "captures": [
+        {
+          "pngSha256": "2238b14534536e1edd6d85b44309a1221aab729c453723cdb4c658e5e6744963",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2238b14534536e1edd6d85b44309a1221aab729c453723cdb4c658e5e6744963",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2238b14534536e1edd6d85b44309a1221aab729c453723cdb4c658e5e6744963",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "reference": "references/object-box-tile.png",
+      "referenceSha256": "2238b14534536e1edd6d85b44309a1221aab729c453723cdb4c658e5e6744963",
+      "linuxCaptures": [
+        {
+          "pngSha256": "2238b14534536e1edd6d85b44309a1221aab729c453723cdb4c658e5e6744963",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2238b14534536e1edd6d85b44309a1221aab729c453723cdb4c658e5e6744963",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2238b14534536e1edd6d85b44309a1221aab729c453723cdb4c658e5e6744963",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/object-box-tile.png",
+      "linuxReferenceSha256": "2238b14534536e1edd6d85b44309a1221aab729c453723cdb4c658e5e6744963",
+      "platformReferencesByteIdentical": true,
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Only userSpaceOnUse pattern units are implemented."
+    },
+    {
+      "id": "object-box-content",
+      "input": "object-box-content.svg",
+      "width": 96,
+      "height": 80,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "4d53c96ff321399191f59ced44d199564b7264f1abd4a74baf24d501f2799308",
+      "selection": "Required objectBoundingBox pattern content units without viewBox, nonzero target origin and nonsquare object box.",
+      "licenseEvidence": "README.md",
+      "captures": [
+        {
+          "pngSha256": "77f2b79d2d585fcf045e915583607d36c8400cec433bf593dc80864433fc95ae",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "77f2b79d2d585fcf045e915583607d36c8400cec433bf593dc80864433fc95ae",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "77f2b79d2d585fcf045e915583607d36c8400cec433bf593dc80864433fc95ae",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "reference": "references/object-box-content.png",
+      "referenceSha256": "77f2b79d2d585fcf045e915583607d36c8400cec433bf593dc80864433fc95ae",
+      "linuxCaptures": [
+        {
+          "pngSha256": "77f2b79d2d585fcf045e915583607d36c8400cec433bf593dc80864433fc95ae",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "77f2b79d2d585fcf045e915583607d36c8400cec433bf593dc80864433fc95ae",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "77f2b79d2d585fcf045e915583607d36c8400cec433bf593dc80864433fc95ae",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/object-box-content.png",
+      "linuxReferenceSha256": "77f2b79d2d585fcf045e915583607d36c8400cec433bf593dc80864433fc95ae",
+      "platformReferencesByteIdentical": true,
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Only userSpaceOnUse pattern content units are implemented without a viewBox."
+    },
+    {
+      "id": "reflected-fractional-map",
+      "input": "reflected-fractional-map.svg",
+      "width": 96,
+      "height": 80,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "d6abd0bdf2164d4ffa2ad9cd4168d18c052b0fcdd9f4c8160f752bb370ece0a0",
+      "selection": "Required reflected/magnified composed pattern map with fractional tile phase and dimensions.",
+      "licenseEvidence": "README.md",
+      "captures": [
+        {
+          "pngSha256": "92e039dd0850be6496d5ea36532541eb24f45e1f7d33f3351698612c58ea25f5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "92e039dd0850be6496d5ea36532541eb24f45e1f7d33f3351698612c58ea25f5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "92e039dd0850be6496d5ea36532541eb24f45e1f7d33f3351698612c58ea25f5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "reference": "references/reflected-fractional-map.png",
+      "referenceSha256": "92e039dd0850be6496d5ea36532541eb24f45e1f7d33f3351698612c58ea25f5",
+      "linuxCaptures": [
+        {
+          "pngSha256": "92e039dd0850be6496d5ea36532541eb24f45e1f7d33f3351698612c58ea25f5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "92e039dd0850be6496d5ea36532541eb24f45e1f7d33f3351698612c58ea25f5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "92e039dd0850be6496d5ea36532541eb24f45e1f7d33f3351698612c58ea25f5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/reflected-fractional-map.png",
+      "linuxReferenceSha256": "92e039dd0850be6496d5ea36532541eb24f45e1f7d33f3351698612c58ea25f5",
+      "platformReferencesByteIdentical": true,
+      "baselineOutcome": "Exact"
+    },
+    {
+      "id": "image-tile",
+      "input": "image-tile.svg",
+      "width": 96,
+      "height": 80,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "423bdd6fd4e63ede0f4f1bee29c1f2de264b01c254bdc4193902165c5c7d4e9e",
+      "selection": "Required embedded-image tile content, independent image opacity, varied RGBA pixels and clipped tile border.",
+      "licenseEvidence": "README.md",
+      "captures": [
+        {
+          "pngSha256": "c74169377e5d65b6b8fc2d8236bce417aa40fdc9a02602f66680aca3dfddcf6d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c74169377e5d65b6b8fc2d8236bce417aa40fdc9a02602f66680aca3dfddcf6d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c74169377e5d65b6b8fc2d8236bce417aa40fdc9a02602f66680aca3dfddcf6d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "reference": "references/image-tile.png",
+      "referenceSha256": "c74169377e5d65b6b8fc2d8236bce417aa40fdc9a02602f66680aca3dfddcf6d",
+      "linuxCaptures": [
+        {
+          "pngSha256": "c74169377e5d65b6b8fc2d8236bce417aa40fdc9a02602f66680aca3dfddcf6d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c74169377e5d65b6b8fc2d8236bce417aa40fdc9a02602f66680aca3dfddcf6d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c74169377e5d65b6b8fc2d8236bce417aa40fdc9a02602f66680aca3dfddcf6d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/image-tile.png",
+      "linuxReferenceSha256": "c74169377e5d65b6b8fc2d8236bce417aa40fdc9a02602f66680aca3dfddcf6d",
+      "platformReferencesByteIdentical": true,
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "This SVG child element is not implemented yet."
+    },
+    {
+      "id": "filtered-tile",
+      "input": "filtered-tile.svg",
+      "width": 96,
+      "height": 80,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "014a7bd03e5d5ec92332c718a078af115664a63c3e1fc827dd53c7df213c2f61",
+      "selection": "Required bounded filtered tile content through the qualified sRGB blur/capture machinery.",
+      "licenseEvidence": "README.md",
+      "captures": [
+        {
+          "pngSha256": "bfbe10a4d9d79aa920f009198711855f96555c2624916a6bd7277007e9c39733",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bfbe10a4d9d79aa920f009198711855f96555c2624916a6bd7277007e9c39733",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bfbe10a4d9d79aa920f009198711855f96555c2624916a6bd7277007e9c39733",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "reference": "references/filtered-tile.png",
+      "referenceSha256": "bfbe10a4d9d79aa920f009198711855f96555c2624916a6bd7277007e9c39733",
+      "linuxCaptures": [
+        {
+          "pngSha256": "bfbe10a4d9d79aa920f009198711855f96555c2624916a6bd7277007e9c39733",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bfbe10a4d9d79aa920f009198711855f96555c2624916a6bd7277007e9c39733",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bfbe10a4d9d79aa920f009198711855f96555c2624916a6bd7277007e9c39733",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/filtered-tile.png",
+      "linuxReferenceSha256": "bfbe10a4d9d79aa920f009198711855f96555c2624916a6bd7277007e9c39733",
+      "platformReferencesByteIdentical": true,
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Filters on retained definition content are not implemented."
+    },
+    {
+      "id": "supplied-font-tile",
+      "input": "supplied-font-tile.svg",
+      "width": 96,
+      "height": 80,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "4b84721bb48e9318c63598cc876d5513ad075ddc8c90eaf0298bd565e565ffb3",
+      "selection": "Required supplied static TrueType tile content with clipping and repeated glyph alpha; unchanged public Noto Sans Regular face 0.",
+      "licenseEvidence": "README.md",
+      "captures": [
+        {
+          "pngSha256": "6386eaa81ce68aecbc9d5bf79de132ecc6cdbb16904581d9b9b8aa1b55d99070",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6386eaa81ce68aecbc9d5bf79de132ecc6cdbb16904581d9b9b8aa1b55d99070",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6386eaa81ce68aecbc9d5bf79de132ecc6cdbb16904581d9b9b8aa1b55d99070",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "reference": "references/supplied-font-tile.png",
+      "referenceSha256": "6386eaa81ce68aecbc9d5bf79de132ecc6cdbb16904581d9b9b8aa1b55d99070",
+      "linuxCaptures": [
+        {
+          "pngSha256": "fe445cb068eaabc193424d182457b31bf21a4bfee37fc81ed642ae6f77318b6a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fe445cb068eaabc193424d182457b31bf21a4bfee37fc81ed642ae6f77318b6a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fe445cb068eaabc193424d182457b31bf21a4bfee37fc81ed642ae6f77318b6a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/supplied-font-tile.png",
+      "linuxReferenceSha256": "fe445cb068eaabc193424d182457b31bf21a4bfee37fc81ed642ae6f77318b6a",
+      "oracleInputSha256": "1258fde08da2fbdd7fd5cad1d45f508cb78e579020a23839e4382dc84886cc5d",
+      "platformReferencesByteIdentical": false,
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "This SVG child element is not implemented yet.",
+      "fontUseProof": {
+        "windows": [
+          {
+            "id": "supplied-font-tile",
+            "mode": "missing",
+            "changedPixels": 1307,
+            "freshProcessCaptures": 3,
+            "stability": "identical",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "23a2a785d754b5abde91efa8c7348fa84da4a5dc02d4fd7baf4fe6ba014d3b18",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "supplied-font-tile",
+            "mode": "corrupt",
+            "changedPixels": 1307,
+            "freshProcessCaptures": 3,
+            "stability": "identical",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "23a2a785d754b5abde91efa8c7348fa84da4a5dc02d4fd7baf4fe6ba014d3b18",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "supplied-font-tile",
+            "mode": "substituted",
+            "changedPixels": 1362,
+            "freshProcessCaptures": 3,
+            "stability": "identical",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "0386b886b2e7546c55b5c556c982614eca67d4a87c200c2b76b991ab9a48ebe4",
+            "inputFontProgramChangedOnly": true
+          }
+        ],
+        "linux": [
+          {
+            "id": "supplied-font-tile",
+            "mode": "missing",
+            "changedPixels": 1214,
+            "freshProcessCaptures": 3,
+            "stability": "identical",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "7d6c0f6aa2890e41f643117c282a8c695d4271e8665feaf925341eb064c6b603",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "supplied-font-tile",
+            "mode": "corrupt",
+            "changedPixels": 1214,
+            "freshProcessCaptures": 3,
+            "stability": "identical",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "7d6c0f6aa2890e41f643117c282a8c695d4271e8665feaf925341eb064c6b603",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "supplied-font-tile",
+            "mode": "substituted",
+            "changedPixels": 1160,
+            "freshProcessCaptures": 3,
+            "stability": "identical",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "0917989e1162dc154c979e026b63fdeed8e81ad4c333b6eb5ec643549536da75",
+            "inputFontProgramChangedOnly": true
+          }
+        ]
+      }
+    }
+  ],
+  "reusedControls": [
+    {
+      "id": "pattern-tile-tile-fill-stroke-element",
+      "input": "pattern-tile-tile-fill-stroke-element.svg",
+      "width": 8,
+      "height": 8,
+      "background": "transparent",
+      "role": "reused-control",
+      "license": "MIT",
+      "sourceSha256": "f71a0a328c4b777a35707a12d39cef0a66ca80c3d917185b62483a2da4c977eb",
+      "bank": "paint-recording",
+      "reference": "pattern-tile-tile-fill-stroke-element.png",
+      "referenceSha256": "e21bfb6bb57fe6eb90e2e492365b98efb45f820cc589cf8af44fa06419994380",
+      "linuxCaptures": [
+        {
+          "pngSha256": "e21bfb6bb57fe6eb90e2e492365b98efb45f820cc589cf8af44fa06419994380",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e21bfb6bb57fe6eb90e2e492365b98efb45f820cc589cf8af44fa06419994380",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e21bfb6bb57fe6eb90e2e492365b98efb45f820cc589cf8af44fa06419994380",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "group-opacity-promotion",
+      "input": "group-opacity-promotion.svg",
+      "width": 64,
+      "height": 64,
+      "background": "transparent",
+      "role": "reused-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "0e584517823d26031eb15fb1552db8f313f9a00c3e26e02c9b20b594b0c9c2c9",
+      "bank": "pattern-vector-content",
+      "reference": "references/group-opacity-promotion.png",
+      "referenceSha256": "a2b9533483d4e1a11feabfdaada639f5620d2aa356733927a559668672137b53",
+      "linuxCaptures": [
+        {
+          "pngSha256": "a2b9533483d4e1a11feabfdaada639f5620d2aa356733927a559668672137b53",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a2b9533483d4e1a11feabfdaada639f5620d2aa356733927a559668672137b53",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a2b9533483d4e1a11feabfdaada639f5620d2aa356733927a559668672137b53",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ]
+}

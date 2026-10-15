@@ -67,3 +67,6 @@ tests/Research/effects-marker-sheet/*.svg -text whitespace=cr-at-eol
 
 # Keep frozen composition inputs byte-identical on both platforms.
 tests/Research/composition-sheet/*.svg -text
+
+# Keep frozen pattern tile inputs byte-identical on both platforms.
+tests/Research/pattern-tile-sheet/*.svg -text

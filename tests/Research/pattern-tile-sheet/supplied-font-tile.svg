@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="80"><defs><pattern id="p" width="24" height="24" patternUnits="userSpaceOnUse"><text x="2" y="18" font-family="Example" font-size="16" fill="#364958">A7</text></pattern></defs><rect x="8" y="8" width="80" height="60" fill="url(#p)"/></svg>

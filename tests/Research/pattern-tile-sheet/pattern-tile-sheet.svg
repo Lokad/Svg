@@ -1,0 +1,30 @@
+<!-- SPDX-License-Identifier: MIT -->
+<svg xmlns="http://www.w3.org/2000/svg" width="576" height="240">
+<rect x="12" y="12" width="126" height="96" rx="4" fill="#edf2f5"/>
+<svg x="17" y="16" width="116" height="88" viewBox="0 0 8 8"><defs><linearGradient id='p0_g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><radialGradient id='p0_r'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient><pattern id='p0_p' width='4' height='4' patternUnits='userSpaceOnUse'><rect x='1' y='1' width='2' height='2' fill='red' stroke='blue' stroke-width='2' opacity='0.5'/></pattern></defs><rect width='8' height='8' fill='url(#p0_p)'/></svg>
+<rect x="154" y="12" width="126" height="96" rx="4" fill="#f8f1df"/>
+<svg x="159" y="16" width="116" height="88" viewBox="0 0 64 64">
+  <defs>
+    <pattern id="p1_p" width="24" height="24" patternUnits="userSpaceOnUse">
+      <rect width="24" height="24" fill="#f0dc82"/>
+      <g opacity="0.6" fill="#82280a" transform="translate(2 2)">
+        <rect width="14" height="14"/><g transform="translate(6 6)"><circle cx="7" cy="7" r="7"/></g>
+      </g>
+      <rect x="1" y="19" width="6" height="4" fill="#c85019"/>
+    </pattern>
+  </defs>
+  <rect width="64" height="64" fill="url(#p1_p)"/>
+</svg>
+<rect x="296" y="12" width="126" height="96" rx="4" fill="#edf2f5"/>
+<svg x="301" y="16" width="116" height="88" viewBox="0 0 96 80"><defs><pattern id="p2_p" x=".125" y=".125" width=".25" height=".5" patternUnits="objectBoundingBox"><rect x="1" y="2" width="12" height="16" fill="#337ca6"/></pattern></defs><rect x="8" y="8" width="80" height="56" fill="url(#p2_p)"/></svg>
+<rect x="438" y="12" width="126" height="96" rx="4" fill="#f8f1df"/>
+<svg x="443" y="16" width="116" height="88" viewBox="0 0 96 80"><defs><pattern id="p3_p" width="24" height="24" patternUnits="userSpaceOnUse" patternContentUnits="objectBoundingBox"><rect x=".05" y=".1" width=".15" height=".2" fill="#337ca6"/><path d="M.25 .05L.35 .2L.2 .25Z" fill="#b85b36"/></pattern></defs><rect x="8" y="8" width="80" height="60" fill="url(#p3_p)"/></svg>
+<rect x="12" y="132" width="126" height="96" rx="4" fill="#edf2f5"/>
+<svg x="17" y="136" width="116" height="88" viewBox="0 0 96 80"><defs><pattern id="p4_p" x=".5" y="1.25" width="14.5" height="11.25" patternUnits="userSpaceOnUse" patternTransform="matrix(-1.2 .25 .2 1.1 87 0)"><rect x="1" y="2" width="7" height="5" fill="#337ca6"/><path d="M9 2L13 4L10 9Z" fill="#b85b36"/></pattern></defs><rect x="8" y="8" width="80" height="60" fill="url(#p4_p)"/></svg>
+<rect x="154" y="132" width="126" height="96" rx="4" fill="#f8f1df"/>
+<svg x="159" y="136" width="116" height="88" viewBox="0 0 96 80"><defs><pattern id="p5_p" width="16" height="16" patternUnits="userSpaceOnUse"><image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAADCAYAAABbNsX4AAAANUlEQVR4nGNQSe35f2KO6QGTqqiG////OwD5DAxAAQeQAJBzAMj+D2QfYAAS/6ECDUA2WCUAqOUcMAMh7joAAAAASUVORK5CYII=" x="1" y="2" width="14" height="10" preserveAspectRatio="none" opacity=".75"/></pattern></defs><rect x="8" y="8" width="80" height="60" fill="url(#p5_p)"/></svg>
+<rect x="296" y="132" width="126" height="96" rx="4" fill="#edf2f5"/>
+<svg x="301" y="136" width="116" height="88" viewBox="0 0 96 80"><defs><filter id="p6_f" filterUnits="userSpaceOnUse" x="0" y="0" width="18" height="18" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation=".7"/></filter><pattern id="p6_p" width="18" height="18" patternUnits="userSpaceOnUse"><rect x="4" y="5" width="8" height="7" fill="#c45d32" filter="url(#p6_f)"/></pattern></defs><rect x="8" y="8" width="80" height="60" fill="url(#p6_p)"/></svg>
+<rect x="438" y="132" width="126" height="96" rx="4" fill="#f8f1df"/>
+<svg x="443" y="136" width="116" height="88" viewBox="0 0 96 80"><defs><pattern id="p7_p" width="24" height="24" patternUnits="userSpaceOnUse"><text x="2" y="18" font-family="Example" font-size="16" fill="#364958">A7</text></pattern></defs><rect x="8" y="8" width="80" height="60" fill="url(#p7_p)"/></svg>
+</svg>

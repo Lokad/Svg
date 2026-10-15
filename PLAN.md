@@ -78,12 +78,14 @@ witness across groups and APIs rather than opening a second checklist.
 | [ ] 4. Remaining finite effects/markers (G8) | Colored/translucent linearRGB shadows; identity/linear-image restoration; uncovered affine paint/source maps, object-box clips, source crossings and marker semantics. Reuse qualified bounded capture, transfer and restore. | Preserve the delivered [whole sheet and eleven controls](tests/Research/effects-marker-sheet/README.md). Complete each named finite G8 acceptance below, including the retained standalone linear-image defect, with affected graph/region/resource checks. Whole-sheet completion alone does not close this row. |
 | [ ] 5. Release (S17) | Finished-revision contracts and evidence after rows 1–4. | Close all finite G2–G9 exits; preserve established exact results; pass complete platform/API/resource/package/consumer checks and exact-revision CI; report representative measurements. Every [release condition](#release-completion-s17) must hold. Counts alone cannot establish completion. |
 
-**Next correction:** freeze the bounded pattern tile sheet for the identified G6
-unit, map, opacity and content gaps, reusing the two original rejected controls.
-Declare licensed inputs/options and healthy platform triples before implementation.
-Start with shared isolated tile-content opacity for those two retained controls;
-then bring forward only the map/content dependencies needed by the whole sheet.
-Do not acquire unrelated SVGs or broaden combinations.
+**Next correction:** complete the frozen [pattern tile sheet](tests/Research/pattern-tile-sheet/README.md),
+beginning with shared isolated tile-content opacity for the two retained original
+controls. The whole document and seven controls reject at the declared opacity,
+unit or content gates; the reflected fractional-map control is already exact on
+both platforms and is a preserved dependency. Source/options and healthy platform
+triples precede implementation; original Windows controls remain unchanged. Bring
+forward only unit/content dependencies needed by this document. No new scope,
+unrelated acquisition or exhaustive combination prerequisite is introduced.
 
 The effects/composition/tile sheets are bounded acceptance recipes, not new
 feature promises or acquisition quotas. Before implementation, bind each missing
@@ -114,8 +116,9 @@ lists below define their exits, rather than creating a second backlog. Bind each
 still-unverified mechanism to an existing acceptance case or to the next declared
 document before implementing it. Reuse qualified witnesses; no exhaustive
 combination census or separate tracking framework is required.
-The composition sheet is qualified. The tile sheet and acceptance recipes without
-file links are **planned**, not captured or qualified. Freeze a new case only for
+The composition sheet is qualified; the pattern tile sheet is frozen and still
+rejected. Acceptance recipes without file links are **planned**, not captured or
+qualified. Freeze a new case only for
 an uncovered independent semantic or demonstrated interaction.
 
 <a id="g2g4-instances-geometry-maps-and-strokes"></a>

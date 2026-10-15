@@ -201,15 +201,16 @@ public sealed class SvgFontLayoutDiagramTests
     }
 
     public static IEnumerable<object[]> Cases()
-    {
-        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "manifest.json")));
-        foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
-            yield return [item.GetProperty("id").GetString() ?? throw new InvalidDataException()];
-    }
+        => ReadCases(DirectoryPath);
 
     public static IEnumerable<object[]> CascadeCases()
+        => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "root-resource-cascade"));
+
+    public static IEnumerable<object[]> PatternTileCases()
+        => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "pattern-tile-sheet"));
+
+    private static IEnumerable<object[]> ReadCases(string directory)
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "root-resource-cascade");
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
             yield return [item.GetProperty("id").GetString() ?? throw new InvalidDataException()];
@@ -270,6 +271,11 @@ public sealed class SvgFontLayoutDiagramTests
     public Task Declared_layout_outputs_preserve_original_sources_and_platform_references(string identity)
         => ValidateDeclared(DirectoryPath, identity, [new("Example", 400, false), new("Mono", 700, false), new("Missing", 400, false)]);
 
+    [Theory]
+    [MemberData(nameof(PatternTileCases))]
+    public Task Declared_pattern_tile_outputs_preserve_original_sources_and_platform_references(string identity)
+        => ValidateDeclared(Path.Combine(AppContext.BaseDirectory, "Research", "pattern-tile-sheet"), identity, [new("Example", 400, false)]);
+
     private static async Task ValidateDeclared(string directory, string identity, SvgFontFaceRequest[] requests)
     {
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
@@ -278,7 +284,9 @@ public sealed class SvgFontLayoutDiagramTests
         byte[] input = File.ReadAllBytes(Path.Combine(directory, Required(item, "input")));
         byte[] unchanged = input.ToArray();
         Assert.Equal(Required(item, "sourceSha256"), Convert.ToHexStringLower(SHA256.HashData(input)));
-        Assert.Equal("CC0-1.0", Required(item, "license"));
+        string license = Required(item, "license");
+        Assert.Contains(license, new[] { "CC0-1.0", "MIT" });
+        Assert.True(input.AsSpan().IndexOf(System.Text.Encoding.UTF8.GetBytes("SPDX-License-Identifier: " + license)) >= 0);
         string referenceKey = OperatingSystem.IsLinux() ? "linuxReference" : "reference";
         byte[] reference = File.ReadAllBytes(Path.Combine(directory, Required(item, referenceKey)));
         Assert.Equal(Required(item, referenceKey + "Sha256"), Convert.ToHexStringLower(SHA256.HashData(reference)));
