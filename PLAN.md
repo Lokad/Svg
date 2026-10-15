@@ -40,15 +40,16 @@ Completed work remains closed. Final-release qualification covers the finished
 revision without reopening unchanged mechanisms for a new accounting or coverage
 policy.
 
-The latest [composition receipt](artifacts/maintenance-review-20261012/composition-qualified-results.json)
-owns finished Windows/Linux checks, routine timings, unchanged asset/options/limit
-checks and preservation of prior test semantics. Three obsolete rejection cases
-retain their original inputs as positive regressions; no visual case was removed.
-The [affine receipt](artifacts/maintenance-review-20261012/affine-filters-qualified-results.json)
-and [terminal green CI](https://github.com/Lokad/Svg/actions/runs/38710155561)
-remain evidence for the preceding effects checkpoint. Reuse terminal evidence for
-unchanged documentation; inspect the composition revision's new CI once terminal,
-without repolling preceding completed runs.
+The [composition receipt](artifacts/maintenance-review-20261012/composition-qualified-results.json)
+records **7,765 tests/platform** in **73.1s Windows / 225.8s Linux** for normal
+incremental Release build plus complete tests. Prior visual cases, assets/options/
+default limits and test semantics are preserved. Three obsolete rejection cases
+retain their original SVG inputs as positive regressions.
+[Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38717065403)
+for `c8bdf164`, first attempt, including memory, browser/setup, font, validator,
+package and installed-consumer checks. The receipt owns the exact-revision step
+audit. Reuse this evidence for unchanged documentation; do not repoll this or
+preceding completed runs.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
@@ -80,8 +81,9 @@ witness across groups and APIs rather than opening a second checklist.
 **Next correction:** freeze the bounded pattern tile sheet for the identified G6
 unit, map, opacity and content gaps, reusing the two original rejected controls.
 Declare licensed inputs/options and healthy platform triples before implementation.
-First select the shared opacity/layer or coordinate-map correction that advances
-those retained outputs. Do not acquire unrelated SVGs or broaden combinations.
+Start with shared isolated tile-content opacity for those two retained controls;
+then bring forward only the map/content dependencies needed by the whole sheet.
+Do not acquire unrelated SVGs or broaden combinations.
 
 The effects/composition/tile sheets are bounded acceptance recipes, not new
 feature promises or acquisition quotas. Before implementation, bind each missing
@@ -112,10 +114,9 @@ lists below define their exits, rather than creating a second backlog. Bind each
 still-unverified mechanism to an existing acceptance case or to the next declared
 document before implementing it. Reuse qualified witnesses; no exhaustive
 combination census or separate tracking framework is required.
-Acceptance recipes without file links below are **planned**, not captured or
-qualified. The composition sheet is qualified; the tile sheet and new remaining-boundary
-cases are planned, not captured or qualified. Freeze a new case only for an uncovered independent semantic or
-demonstrated interaction.
+The composition sheet is qualified. The tile sheet and acceptance recipes without
+file links are **planned**, not captured or qualified. Freeze a new case only for
+an uncovered independent semantic or demonstrated interaction.
 
 <a id="g2g4-instances-geometry-maps-and-strokes"></a>
 
