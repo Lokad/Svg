@@ -29,10 +29,10 @@ Optional maintenance below adds no feature-completion prerequisite.
 
 The latest complete local [qualification](artifacts/maintenance-review-20261012/clip-crossings-qualified-results.json)
 is **7,847 tests/platform**, normal incremental Release build plus full tests in
-**78.3s Windows / 271.2s Linux**. Exact-revision hosted CI for this straight
-clip-boundary correction follows its substantive push. The preceding
-[shared-map CI](https://github.com/Lokad/Svg/actions/runs/38781325677) is terminal
-green for `d0bac550`; reuse that closed audit without repolling.
+**78.3s Windows / 271.2s Linux**. Exact-revision [hosted CI](https://github.com/Lokad/Svg/actions/runs/38786923061)
+is terminal green for `4e24dd8e`, first attempt, with all ten required checks
+passing on both platforms. Hosted build plus complete tests took **116s Windows /
+118s Linux**. Reuse this closed audit without repolling.
 Completed work stays closed under the existing coverage/accounting policy.
 
 The [shared map exit bank](tests/Research/shared-map-exit-sheet/README.md) is
