@@ -1,3 +1,25 @@
+## Ordered text chunks and endpoint continuation (2026-10-16)
+
+Direct and path chunks reuse the existing paint output, glyph builder and paint
+slots. Chunk boundaries retain normalized whitespace and consume root coordinate/
+rotation lists by Unicode scalar count. Existing path-only extraction keeps its
+qualified independent chunk semantics. Direct text following a path adopts its
+normalized layout into one bounded pending owner. After definitions resolve,
+the existing measured path supplies the endpoint; ordinary glyph fitting/layout
+then runs from that position, with original span overrides and viewport clips.
+The [SVG text rule](https://www.w3.org/TR/SVG/latest/text.html#TextpathLayoutRules)
+places following text at the path endpoint; one closed loop adjusts for offset.
+Glyph tangent and final glyph advance do not supply that continuation origin.
+
+The queued owner borrows the caller snapshot, transfers material layout arrays
+and clears them after shaping or any failed/canceled conversion. The existing
+range-shift machinery preserves one element mask around direct/deferred paints
+and restores following siblings. No parallel text renderer or host-font lookup
+is introduced. The unchanged [mixed control](../tests/Research/text-map-exit-sheet/README.md)
+is exact on both platforms; [qualification](../artifacts/maintenance-review-20261012/text-flow-qualified-results.json)
+owns original inputs, prior outputs and resource checks. Shader and local-use
+gates still block the complete document; G9 is not closed by this control.
+
 ## Glyph resource ranges and fitted-ink windows (2026-10-16)
 
 Direct text clip/mask attributes reuse the existing group resource binders around

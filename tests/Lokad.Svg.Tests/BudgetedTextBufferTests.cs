@@ -22,7 +22,7 @@ public sealed class BudgetedTextBufferTests
             output.ExitPositioningSpan(1);
             output.ExitPaintSpan();
             parent.Append("C ", output, 20, work, CancellationToken.None);
-            using SvgExtractedTextRun run = output.Detach(null);
+            using SvgExtractedTextRun run = output.Detach(null, false);
             Assert.Equal("A B C", run.Layout.Value);
             Assert.Equal([
                 new SvgTextLetterSpacingSpan(0, 2, 1) { WordSpacing = 5 },

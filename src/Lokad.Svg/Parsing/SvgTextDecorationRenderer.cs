@@ -14,7 +14,7 @@ internal static class SvgTextDecorationRenderer
     {
         if (fragments.IsEmpty) return;
         if (!pathPlacements.IsEmpty && (!pathPlacements[fragments[0].Start].Visible || run.GetGlyphPaint(fragments[0].Start, fallbackColor).Decoration is null)) return;
-        SvgLeafMaskBinding? baseClip = pathPlacements.IsEmpty ? SvgViewportFrame.ResolveGlyphClip(state, work, token) : pathClip;
+        SvgLeafMaskBinding? baseClip = pathPlacements.IsEmpty ? pathClip ?? SvgViewportFrame.ResolveGlyphClip(state, work, token) : pathClip;
         double inkStretch = pathPlacements.IsEmpty ? run.GlyphStretch : 1;
         using BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, work, token);
         using BudgetedParserList<int> ends = new(budget, SvgMemoryCategory.Geometry, work, token);

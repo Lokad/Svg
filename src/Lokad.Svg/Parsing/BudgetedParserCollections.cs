@@ -275,7 +275,9 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
         spans.Add(new SvgTextLetterSpacingSpan(start, end, letterSpacing) { WordSpacing = wordSpacing });
     }
 
-    internal bool AcceptsCollapsedWhitespace => _text.Length != 0 && !_trailingCollapsedWhitespace;
+    private bool _hasPriorText;
+    internal void BeginTextChunk(bool hasPriorText) => _hasPriorText = hasPriorText;
+    internal bool AcceptsCollapsedWhitespace => (_text.Length != 0 || _hasPriorText) && !_trailingCollapsedWhitespace;
     internal void MarkCollapsedWhitespace() => _trailingCollapsedWhitespace = true;
 
     public void AppendCollapsedWhitespace(double letterSpacing, int scopeDepth, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -313,9 +315,11 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
     }
 
     /// <summary>Transfers normalized text and any exact spacing-span storage to the layout consumer.</summary>
-    internal BudgetedTextLayout Detach()
+    internal BudgetedTextLayout Detach() => Detach(false);
+
+    internal BudgetedTextLayout Detach(bool preserveTrailingWhitespace)
     {
-        if (_trailingCollapsedWhitespace)
+        if (_trailingCollapsedWhitespace && !preserveTrailingWhitespace)
         {
             _text.TrimLastCharacter();
             _trailingCollapsedWhitespace = false;
@@ -325,6 +329,8 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
                 else spacing[^1] = spacing[^1] with { End = _text.Length };
             }
         }
+        _trailingCollapsedWhitespace = false;
+        _hasPriorText = false;
         if (_positioningScopes is { Count: not 0 }) throw new InvalidOperationException("Text positioning scopes must be closed before layout transfer.");
         _positioningScopes?.Dispose();
         _positioningScopes = null;

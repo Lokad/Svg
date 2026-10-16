@@ -338,6 +338,45 @@ public sealed class SvgFontLayoutDiagramTests
     public static IEnumerable<object[]> TextMapCases()
         => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "text-map-exit-sheet"));
 
+    [Fact]
+    public async Task Mixed_text_continuations_release_queued_layouts_and_support_prepared_retry()
+    {
+        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "text-map-exit-sheet");
+        byte[] input = File.ReadAllBytes(Path.Combine(directory, "mixed-direct-path.svg")), unchanged = input.ToArray();
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, "..", "supplied-font-labels", "font-pack.json")), "public-noto-sans");
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, new Provider(), CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        RenderBudget accepted = new(32_000_000); ParserWorkCounter work = new(100_000_000);
+        byte[] expected = Run(accepted, work, CancellationToken.None);
+        Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+        foreach (long maximum in new[] { 1L, accepted.Snapshot().PeakBytes / 2 })
+        {
+            RenderBudget denied = new(maximum);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(denied, new(100_000_000), CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(accepted, new(work.Used - 1), CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+        int visits = 0;
+        using (GlyphExpansionProbe.Observe(() => visits++))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, accepted, snapshot, CancellationToken.None)) Assert.NotEmpty(root.Geometries);
+        Assert.True(visits > 0); Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+        int observed = 0; using CancellationTokenSource cancellation = new();
+        using (GlyphExpansionProbe.Observe(() => { if (++observed == visits) cancellation.Cancel(); }))
+            Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => Run(accepted, new(100_000_000), cancellation.Token)).CancellationToken);
+        Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+        Assert.Equal(expected, Run(accepted, new(100_000_000), CancellationToken.None));
+        Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, new Provider(), SvgRenderOptions.Default, CancellationToken.None);
+        Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray()); Assert.Equal(unchanged, input);
+
+        byte[] Run(RenderBudget budget, ParserWorkCounter counter, CancellationToken token)
+        {
+            using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, counter, token);
+            return SvgConverter.ConvertToPng(root, options, budget, token).ToArray();
+        }
+    }
+
     private static IEnumerable<object[]> ReadCases(string directory)
     {
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));

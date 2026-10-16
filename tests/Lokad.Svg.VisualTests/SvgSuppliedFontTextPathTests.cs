@@ -119,8 +119,6 @@ public sealed class SvgSuppliedFontTextPathTests
     [InlineData("<text font-family='Example' font-size='16'><textPath href='#missing'>A</textPath></text>", SvgErrorCode.UnresolvedResource)]
     [InlineData("<defs><rect id='p' width='40' height='40'/></defs><text font-family='Example' font-size='16'><textPath href='#p'>A</textPath></text>", SvgErrorCode.UnresolvedResource)]
     [InlineData("<defs><path id='p' d='M8 48 Q32 16 56 48 Z M8 48 H16'/></defs><text font-family='Example' font-size='16'><textPath href='#p'>A</textPath></text>", SvgErrorCode.UnsupportedFeature)]
-    [InlineData("<defs><path id='p' d='M8 48 H56'/></defs><text font-family='Example' font-size='16'>A<textPath href='#p'>A</textPath></text>", SvgErrorCode.UnsupportedFeature)]
-    [InlineData("<defs><path id='p' d='M8 48 H56'/></defs><text font-family='Example' font-size='16'><textPath href='#p'>A</textPath>A</text>", SvgErrorCode.UnsupportedFeature)]
     public async Task Reference_and_layout_failures_release_queued_runs_and_leave_output_untouched(string body, SvgErrorCode category)
     {
         byte[] input = Document(body);
@@ -136,6 +134,22 @@ public sealed class SvgSuppliedFontTextPathTests
         using MemoryStream output = new();
         Assert.Equal(category, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, output, options, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, output.Length);
+    }
+
+    [Theory]
+    [InlineData("<defs><path id='p' d='M8 48 H56'/></defs><text font-family='Example' font-size='16'>A<textPath href='#p'>A</textPath></text>")]
+    [InlineData("<defs><path id='p' d='M8 48 H56'/></defs><text font-family='Example' font-size='16'><textPath href='#p'>A</textPath>A</text>")]
+    public async Task Original_mixed_path_inputs_render_at_independent_initial_and_resumed_positions(string body)
+    {
+        byte[] input = Document(body), unchanged = input.ToArray();
+        using SvgFontSnapshot snapshot = await Prepare(input);
+        string reference = body.Replace("A<textPath href='#p'>A</textPath>", "A</text><text font-family='Example' font-size='16'><textPath href='#p'>A</textPath>", StringComparison.Ordinal)
+            .Replace("</textPath>A</text>", "</textPath></text><text font-family='Example' font-size='16' x='56' y='48'>A</text>", StringComparison.Ordinal);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
+            Assert.Equal(SvgConverter.ConvertToPng(Document(reference), options, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(root, options, budget, CancellationToken.None).ToArray());
+        Assert.Equal(0, budget.Snapshot().CurrentBytes); Assert.Equal(unchanged, input);
     }
 
     [Fact]

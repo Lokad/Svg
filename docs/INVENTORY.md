@@ -121,6 +121,14 @@ original Core inputs and following siblings are protected. The
 [receipt](../artifacts/maintenance-review-20261012/glyph-resource-qualified-results.json)
 owns qualification and resource checks. Remaining T1–T3, effects and S17 stay open.
 
+The frozen [remaining text-map sheet](../tests/Research/text-map-exit-sheet/README.md)
+is **0/1 complete document / 1/3 exact controls** on Windows/Linux. Mixed direct/
+path text is exact; shader strokes and local-use text still block the document.
+Thirty healthy original/font-use captures and all unchanged assets remain.
+[Flow qualification](../artifacts/maintenance-review-20261012/text-flow-qualified-results.json)
+owns prior outputs, original-input migrations and queued-layout cleanup. The
+twenty-five authored-document count does not change.
+
 One additional sourced [W3C decoration document](../tests/Research/stroked-decorations/README.md)
 is **1/1 exact** on Windows/Linux at its frozen 1200×400 output, separately from
 both cohorts and the twenty-four authored documents. All **4/4 controls** are exact,

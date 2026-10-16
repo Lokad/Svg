@@ -393,7 +393,7 @@ internal sealed class SvgDocumentState : IDisposable
         _anonymousSymbols?.Dispose();
         _anonymousSymbolOwner?.Dispose();
         PendingUses.Dispose();
-        foreach (SvgPendingTextPath pending in PendingTextPaths.AsSpan()) { pending.Run.Dispose(); pending.Owner.Dispose(); }
+        foreach (SvgPendingTextPath pending in PendingTextPaths.AsSpan()) { pending.Run?.Dispose(); pending.Continuation?.Dispose(); pending.Owner.Dispose(); }
         PendingTextPaths.Dispose();
         DeferredPaintLeaves.Dispose();
         DeferredResourceUses.Dispose();

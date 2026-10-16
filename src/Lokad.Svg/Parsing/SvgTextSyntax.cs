@@ -68,6 +68,8 @@ internal readonly record struct SvgTextLetterSpacingSpan(int Start, int End, dou
 /// <summary>Owns one extracted layout until its consumer disposes it; sibling path runs have independent whitespace and anchoring boundaries.</summary>
 internal readonly record struct SvgExtractedTextRun(BudgetedTextLayout Layout, SvgTextPathReference? Path, OwnedParserArray<SvgTextPaintSpan> PaintSpans, OwnedParserArray<SvgTextFontSpan> FontSpans) : IDisposable
 {
+    internal SvgTextPathReference? ResumeAfterPath { get; init; }
+    internal int CharacterOffset { get; init; }
     public void Dispose() { Layout.Dispose(); PaintSpans.Dispose(); FontSpans.Dispose(); }
 }
 

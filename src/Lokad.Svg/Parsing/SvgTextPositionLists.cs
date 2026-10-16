@@ -8,6 +8,7 @@ namespace Lokad.Svg.Parsing;
 /// are allocated under the run's budget; validation retains no arrays or owners.</remarks>
 internal readonly record struct SvgTextPositionLists(string? X, string? Y, string? Dx, string? Dy, string? Rotate)
 {
+    internal int CharacterOffset { get; init; }
     internal bool IsEmpty => X is null && Y is null && Dx is null && Dy is null && Rotate is null;
 
     internal static double ReadFirst(string? value, out bool multiple)
@@ -47,6 +48,13 @@ internal readonly record struct SvgTextPositionLists(string? X, string? Y, strin
         SvgGeometrySyntax.DelimitedTokenReader dxs = new(Dx.AsSpan()), dys = new(Dy.AsSpan());
         SvgGeometrySyntax.DelimitedTokenReader rotations = new(Rotate.AsSpan());
         double? lastRotation = null;
+        for (int skipped = 0; skipped < CharacterOffset; skipped++)
+        {
+            if (work is null) token.ThrowIfCancellationRequested(); else work.Consume(token);
+            _ = xs.TryReadValue(out _); _ = ys.TryReadValue(out _);
+            _ = dxs.TryReadValue(out _); _ = dys.TryReadValue(out _);
+            if (rotations.TryReadValue(out ReadOnlySpan<char> previous)) lastRotation = ReadToken(previous, false);
+        }
         int sourceOffset = 0, descendantIndex = 0;
         foreach (System.Text.Rune scalar in text.EnumerateRunes())
         {

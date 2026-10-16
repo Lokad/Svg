@@ -89,10 +89,12 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
         _layout.MarkCollapsedWhitespace();
     }
 
-    internal SvgExtractedTextRun Detach(SvgTextPathReference? path)
+    internal void BeginTextChunk(bool hasPriorText) => _layout.BeginTextChunk(hasPriorText);
+
+    internal SvgExtractedTextRun Detach(SvgTextPathReference? path, bool preserveTrailingWhitespace)
     {
         if (_scopes.Count != 1) throw new InvalidOperationException("Text paint scopes must be closed before layout transfer.");
-        BudgetedTextLayout layout = _layout.Detach();
+        BudgetedTextLayout layout = _layout.Detach(preserveTrailingWhitespace);
         if (_spans is {} paints && paints.Count != 0)
         {
             if (paints[^1].Start == layout.Value.Length) paints.RemoveLast();

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One complete MIT text-map document and three focused controls, frozen before correction of the remaining T1 local-use label, shader-stroked path and mixed direct/path runs. Composite flags and private validation remain required.",
+  "purpose": "One complete MIT text-map document and three focused controls. Mixed direct/path text is exact against unchanged platform references; local-use labels and shader-stroked paths still reject, so the whole document remains incomplete. Composite flags and private validation remain required.",
   "fontPack": "../supplied-font-labels/font-pack.json",
   "fontPackId": "public-noto-sans",
   "fontProvenance": "../supplied-font-labels/font-provenance.json",
@@ -177,7 +177,6 @@
       "sourceSha256": "ccda5c155cbf259898d0fb65d534bea20f05aeca1b58467d40a2ef262e570e9f",
       "scale": 1,
       "licenseEvidence": "LICENSE.txt",
-      "expectedError": "UnsupportedFeature",
       "declarationBaseRevision": "12b29b416259c313b7c4d290c388d31a96973ea8",
       "reference": "references/mixed-direct-path.png",
       "referenceSha256": "90c24e3a38a115f003cfe56e78512adbb20a318b1c9ba1872d640fd6d95cd85f",

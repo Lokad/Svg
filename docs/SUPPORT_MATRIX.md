@@ -1,3 +1,16 @@
+## Mixed direct/path text flow (2026-10-16)
+
+The unchanged [mixed control](../tests/Research/text-map-exit-sheet/README.md)
+is exact on Windows/Linux. Direct chunks before/after a textPath preserve source
+order; continuation layout waits for the local path endpoint, including forward
+definitions. Normalized whitespace and root scalar-list offsets remain separate
+from glyph count. Existing viewport clips and element mask scopes survive deferred
+emission. Empty/closed-offset endpoints and original positive-input migrations
+have focused regressions. [Qualification](../artifacts/maintenance-review-20261012/text-flow-qualified-results.json)
+owns previous exact results and queued-layout denial/cancellation/retry.
+The whole sheet remains incomplete for shader strokes and local-use text; G9
+and release stay open. Earlier blanket mixed-text guards below are superseded.
+
 ## Supplied-font glyph clip/mask scopes (2026-10-16)
 
 The unchanged [glyph-resource document and three controls](../tests/Research/glyph-resource-exit-sheet/README.md)

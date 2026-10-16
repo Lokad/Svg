@@ -449,8 +449,6 @@ public sealed class SvgCurvedFontDocumentTests
     [Theory]
     [InlineData("<textPath href='#missing'>A</textPath>", SvgErrorCode.UnresolvedResource)]
     [InlineData("<textPath href='#p' text-anchor='center'>A</textPath>", SvgErrorCode.UnsupportedFeature)]
-    [InlineData("<tspan>A</tspan>", SvgErrorCode.UnsupportedFeature)]
-    [InlineData("A", SvgErrorCode.UnsupportedFeature)]
     public async Task A_later_sibling_failure_releases_earlier_layout_and_queued_run_storage(string sibling, SvgErrorCode category)
     {
         byte[] input = Document("<defs><path id='p' d='M0 48 H64'/></defs><text><textPath href='#p'>A</textPath>" + sibling + "</text>", "");
@@ -459,6 +457,22 @@ public sealed class SvgCurvedFontDocumentTests
         RenderBudget budget = new(long.MaxValue);
         Assert.Equal(category, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [InlineData("<tspan>A</tspan>")]
+    [InlineData("A")]
+    public async Task Original_later_text_siblings_keep_the_endpoint_and_release_queued_storage(string sibling)
+    {
+        byte[] input = Document("<defs><path id='p' d='M0 48 H64'/></defs><text><textPath href='#p'>A</textPath>" + sibling + "</text>", "");
+        using SvgFontSnapshot snapshot = await Prepare(Document("<text>A</text>", ""));
+        byte[] original = Assert.Single(snapshot.Fonts).Bytes.ToArray();
+        byte[] reference = Document("<defs><path id='p' d='M0 48 H64'/></defs><text><textPath href='#p'>A</textPath></text><text x='64' y='48'>A</text>", "");
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        RenderBudget budget = new(long.MaxValue);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
+            Assert.Equal(SvgConverter.ConvertToPng(reference, options, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(root, options, budget, CancellationToken.None).ToArray());
+        Assert.Equal(0, budget.Snapshot().CurrentBytes); Assert.Equal(original, Assert.Single(snapshot.Fonts).Bytes.ToArray());
     }
 
     [Fact]

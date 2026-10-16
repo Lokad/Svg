@@ -87,7 +87,12 @@ internal static class SvgTextGlyphPainter
                     }
                     if (size == 0) continue;
                     SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, paint.Color, font.Font, position, size, map, state.DefinitionReplayScene is null ? null : state.OutputTextScale, budget);
-                    try { state.Scene.AddGeometry(paths.IsEmpty ? SvgPaintRecording.RecordGlyph(glyph, state, work, token) : SvgGeometry.FromGlyphContours(glyph) with { LeafMask = pathClip }); }
+                    try
+                    {
+                        SvgGeometry geometry = paths.IsEmpty ? SvgPaintRecording.RecordGlyph(glyph, state, work, token) : SvgGeometry.FromGlyphContours(glyph);
+                        if (pathClip is not null) geometry = geometry with { LeafMask = pathClip };
+                        state.Scene.AddGeometry(geometry);
+                    }
                     catch { glyph.Dispose(); throw; }
                 }
             }
@@ -108,7 +113,12 @@ internal static class SvgTextGlyphPainter
                 if (contours.Contours.Length == 0) continue;
                 stroke = stroke with { FontScale = state.OutputTextScale * SvgGlyphDeviceMetrics.GetScreenScale(placement) };
                 SvgGlyphGeometry glyph = SvgGlyphGeometry.CreateStroke(contours, stroke, font.Font, placed.Position, font.FontSize, placed.Map, budget);
-                try { state.Scene.AddGeometry(paths.IsEmpty ? SvgPaintRecording.RecordGlyph(glyph, state, work, token) : SvgGeometry.FromGlyphContours(glyph) with { LeafMask = pathClip }); }
+                try
+                {
+                    SvgGeometry geometry = paths.IsEmpty ? SvgPaintRecording.RecordGlyph(glyph, state, work, token) : SvgGeometry.FromGlyphContours(glyph);
+                    if (pathClip is not null) geometry = geometry with { LeafMask = pathClip };
+                    state.Scene.AddGeometry(geometry);
+                }
                 catch { glyph.Dispose(); throw; }
             }
         }
