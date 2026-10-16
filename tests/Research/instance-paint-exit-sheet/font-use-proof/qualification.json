@@ -1,0 +1,46 @@
+{
+  "windows": {
+    "missingFaceReference": "instance-paint-sheet-missing-font-windows-1.png",
+    "missingFaceSha256": "33b17a416bb7f9634368162657282ab8994cab5b36a7a8c2ae1f604da8e3b103",
+    "changedPixelsFromIntendedFont": 14066,
+    "captures": [
+      {
+        "pngSha256": "33b17a416bb7f9634368162657282ab8994cab5b36a7a8c2ae1f604da8e3b103",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "pngSha256": "33b17a416bb7f9634368162657282ab8994cab5b36a7a8c2ae1f604da8e3b103",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "pngSha256": "33b17a416bb7f9634368162657282ab8994cab5b36a7a8c2ae1f604da8e3b103",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      }
+    ]
+  },
+  "linux": {
+    "missingFaceReference": "instance-paint-sheet-missing-font-linux-1.png",
+    "missingFaceSha256": "58261a6d7821851a4ef19acbcc1f5f1af0da47ca7610fcee7bbd79a4fd3babd1",
+    "changedPixelsFromIntendedFont": 12450,
+    "captures": [
+      {
+        "pngSha256": "58261a6d7821851a4ef19acbcc1f5f1af0da47ca7610fcee7bbd79a4fd3babd1",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "pngSha256": "58261a6d7821851a4ef19acbcc1f5f1af0da47ca7610fcee7bbd79a4fd3babd1",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "pngSha256": "58261a6d7821851a4ef19acbcc1f5f1af0da47ca7610fcee7bbd79a4fd3babd1",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      }
+    ]
+  }
+}

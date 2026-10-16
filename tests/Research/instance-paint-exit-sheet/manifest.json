@@ -1,0 +1,275 @@
+{
+  "schemaVersion": 1,
+  "purpose": "One finite MIT instance/paint document and four focused controls, frozen before correction. All declared outputs reject on Windows/Linux at declaration. Required T1 definition/font admission, instanced path/resource scopes, shader maps and degenerate paint outcomes remain open.",
+  "fontPack": "../supplied-font-labels/font-pack.json",
+  "fontPackId": "public-noto-sans",
+  "fontProvenance": "../supplied-font-labels/font-provenance.json",
+  "fontProgramSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "cases": [
+    {
+      "id": "instance-paint-sheet",
+      "input": "instance-paint-sheet.svg",
+      "width": 416,
+      "height": 384,
+      "background": "transparent",
+      "role": "document-output",
+      "license": "MIT",
+      "selection": "Finite remaining T1 definition/font admission, path/resource source replay and shader/degenerate paints; every panel and sibling must match unchanged references",
+      "sourceSha256": "bb29821609d34cf248d812f1786a350b8b681642f6400a64977e46984632212e",
+      "scale": 1,
+      "licenseEvidence": "LICENSE.txt",
+      "expectedError": "UnsupportedFeature",
+      "declarationBaseRevision": "dbfc42bcbc91dc7202f3be38657e1f2adc450c11",
+      "reference": "references/instance-paint-sheet.png",
+      "referenceSha256": "647b7204e77ca248db6963458fdcafd57f183b0b4cc3e19ece17081b2850d96f",
+      "captures": [
+        {
+          "pngSha256": "647b7204e77ca248db6963458fdcafd57f183b0b4cc3e19ece17081b2850d96f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "647b7204e77ca248db6963458fdcafd57f183b0b4cc3e19ece17081b2850d96f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "647b7204e77ca248db6963458fdcafd57f183b0b4cc3e19ece17081b2850d96f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/instance-paint-sheet.png",
+      "linuxReferenceSha256": "ca3e4263c09beb4a149e00a44ed46344597ea6457be5d63e6ffe83b71e7c905c",
+      "linuxCaptures": [
+        {
+          "pngSha256": "ca3e4263c09beb4a149e00a44ed46344597ea6457be5d63e6ffe83b71e7c905c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ca3e4263c09beb4a149e00a44ed46344597ea6457be5d63e6ffe83b71e7c905c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ca3e4263c09beb4a149e00a44ed46344597ea6457be5d63e6ffe83b71e7c905c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "definition-labels",
+      "input": "definition-labels.svg",
+      "width": 416,
+      "height": 72,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "MIT",
+      "selection": "Forward text/group/symbol targets need the public face only through instances; unused missing face must stay unrequested",
+      "sourceSha256": "e54c48689f7b3452370364203009927cd255ac651439419c023e87d5a7270ff0",
+      "scale": 1,
+      "licenseEvidence": "LICENSE.txt",
+      "expectedError": "UnsupportedFeature",
+      "declarationBaseRevision": "dbfc42bcbc91dc7202f3be38657e1f2adc450c11",
+      "reference": "references/definition-labels.png",
+      "referenceSha256": "c9a94b8e1aa443a9a4577598cf0bd0577ebcaab1d640caf1e66304ef75d7784b",
+      "captures": [
+        {
+          "pngSha256": "c9a94b8e1aa443a9a4577598cf0bd0577ebcaab1d640caf1e66304ef75d7784b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c9a94b8e1aa443a9a4577598cf0bd0577ebcaab1d640caf1e66304ef75d7784b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c9a94b8e1aa443a9a4577598cf0bd0577ebcaab1d640caf1e66304ef75d7784b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/definition-labels.png",
+      "linuxReferenceSha256": "9bbb8787c20357f5e44a7d3486a18dcba7425fbc55a3a33cfe868ab0c7eb2747",
+      "linuxCaptures": [
+        {
+          "pngSha256": "9bbb8787c20357f5e44a7d3486a18dcba7425fbc55a3a33cfe868ab0c7eb2747",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9bbb8787c20357f5e44a7d3486a18dcba7425fbc55a3a33cfe868ab0c7eb2747",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9bbb8787c20357f5e44a7d3486a18dcba7425fbc55a3a33cfe868ab0c7eb2747",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "text-paints",
+      "input": "text-paints.svg",
+      "width": 416,
+      "height": 100,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "MIT",
+      "selection": "Object-box linear fill, user-space radial stroke, pattern fill and forward direct-text linear stroke",
+      "sourceSha256": "843737543250077e51df84ba908ced5168a5709a71373d429e5e27bd1b9e2414",
+      "scale": 1,
+      "licenseEvidence": "LICENSE.txt",
+      "expectedError": "UnsupportedFeature",
+      "declarationBaseRevision": "dbfc42bcbc91dc7202f3be38657e1f2adc450c11",
+      "reference": "references/text-paints.png",
+      "referenceSha256": "c451cb97a431a4ce5ff5d604fb5171ec648d7b562fb9ccc10078adda4eec7c4c",
+      "captures": [
+        {
+          "pngSha256": "c451cb97a431a4ce5ff5d604fb5171ec648d7b562fb9ccc10078adda4eec7c4c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c451cb97a431a4ce5ff5d604fb5171ec648d7b562fb9ccc10078adda4eec7c4c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c451cb97a431a4ce5ff5d604fb5171ec648d7b562fb9ccc10078adda4eec7c4c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/text-paints.png",
+      "linuxReferenceSha256": "2110717bcda723086ea2587b68cddd029eb693d6de93359c982472dc46036efd",
+      "linuxCaptures": [
+        {
+          "pngSha256": "2110717bcda723086ea2587b68cddd029eb693d6de93359c982472dc46036efd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2110717bcda723086ea2587b68cddd029eb693d6de93359c982472dc46036efd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2110717bcda723086ea2587b68cddd029eb693d6de93359c982472dc46036efd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "instanced-path-resources",
+      "input": "instanced-path-resources.svg",
+      "width": 416,
+      "height": 88,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "MIT",
+      "selection": "Two uses of one clipped and spatially masked curved supplied-font source, preserving source coordinates and a following sibling",
+      "sourceSha256": "35a67b5aebcc5e75b757f588ba5886e1eadb2cf2af4e39f92df0e6aaf3c548ab",
+      "scale": 1,
+      "licenseEvidence": "LICENSE.txt",
+      "expectedError": "UnsupportedFeature",
+      "declarationBaseRevision": "dbfc42bcbc91dc7202f3be38657e1f2adc450c11",
+      "reference": "references/instanced-path-resources.png",
+      "referenceSha256": "3e6151841dcfe826dfc518c90e5f4fcc3d450209b4049074defccc872d47a0d6",
+      "captures": [
+        {
+          "pngSha256": "3e6151841dcfe826dfc518c90e5f4fcc3d450209b4049074defccc872d47a0d6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3e6151841dcfe826dfc518c90e5f4fcc3d450209b4049074defccc872d47a0d6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3e6151841dcfe826dfc518c90e5f4fcc3d450209b4049074defccc872d47a0d6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/instanced-path-resources.png",
+      "linuxReferenceSha256": "a2d4310ee0af78f8db2d4c9bb62771c2ee0244566de78ab0d00cf35632da5c9e",
+      "linuxCaptures": [
+        {
+          "pngSha256": "a2d4310ee0af78f8db2d4c9bb62771c2ee0244566de78ab0d00cf35632da5c9e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a2d4310ee0af78f8db2d4c9bb62771c2ee0244566de78ab0d00cf35632da5c9e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a2d4310ee0af78f8db2d4c9bb62771c2ee0244566de78ab0d00cf35632da5c9e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "text-paint-degenerates",
+      "input": "text-paint-degenerates.svg",
+      "width": 416,
+      "height": 88,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "MIT",
+      "selection": "Coincident gradient vector, one translucent stop, empty gradient with painted continuation and zero-width missing stroke/missing unused face",
+      "sourceSha256": "aee10f259f47e700c90898482575147f8868f964584ddc619589116fa8faf924",
+      "scale": 1,
+      "licenseEvidence": "LICENSE.txt",
+      "expectedError": "UnsupportedFeature",
+      "declarationBaseRevision": "dbfc42bcbc91dc7202f3be38657e1f2adc450c11",
+      "reference": "references/text-paint-degenerates.png",
+      "referenceSha256": "d0250236266e1644000f3aaf28208637a08d6c656033246b72b5227092dcdf0a",
+      "captures": [
+        {
+          "pngSha256": "d0250236266e1644000f3aaf28208637a08d6c656033246b72b5227092dcdf0a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d0250236266e1644000f3aaf28208637a08d6c656033246b72b5227092dcdf0a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d0250236266e1644000f3aaf28208637a08d6c656033246b72b5227092dcdf0a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/text-paint-degenerates.png",
+      "linuxReferenceSha256": "3418726709b8fe3d65062653590e97c19c900475f69e36f23212d28795730b86",
+      "linuxCaptures": [
+        {
+          "pngSha256": "3418726709b8fe3d65062653590e97c19c900475f69e36f23212d28795730b86",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3418726709b8fe3d65062653590e97c19c900475f69e36f23212d28795730b86",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3418726709b8fe3d65062653590e97c19c900475f69e36f23212d28795730b86",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ]
+}

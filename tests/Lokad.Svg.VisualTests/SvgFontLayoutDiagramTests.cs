@@ -335,6 +335,18 @@ public sealed class SvgFontLayoutDiagramTests
         }
     }
 
+    public static IEnumerable<object[]> InstancePaintCases()
+        => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "instance-paint-exit-sheet"));
+
+    [Theory]
+    [MemberData(nameof(InstancePaintCases))]
+    public Task Declared_instance_paint_outputs_preserve_sources_and_references(string identity)
+        => ValidateDeclared(Path.Combine(AppContext.BaseDirectory, "Research", "instance-paint-exit-sheet"), identity, [new("Example", 400, false)]);
+
+    [Fact]
+    public void Instance_paint_document_uses_the_declared_supplied_font()
+        => ValidateIntendedFont(Path.Combine(AppContext.BaseDirectory, "Research", "instance-paint-exit-sheet"), "instance-paint-sheet");
+
     public static IEnumerable<object[]> TextMapCases()
         => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "text-map-exit-sheet"));
 
@@ -488,8 +500,10 @@ public sealed class SvgFontLayoutDiagramTests
 
     [Fact]
     public void Text_map_document_uses_the_declared_supplied_font()
+        => ValidateIntendedFont(Path.Combine(AppContext.BaseDirectory, "Research", "text-map-exit-sheet"), "text-map-sheet");
+
+    private static void ValidateIntendedFont(string directory, string identity)
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "text-map-exit-sheet");
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         Assert.Equal(Required(manifest.RootElement, "fontProgramSha256"), Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Path.Combine(DirectoryPath, "..", "supplied-font-labels", "fonts", "NotoSans-Regular.ttf")))));
         using JsonDocument proof = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "font-use-proof", "qualification.json")));
@@ -503,7 +517,9 @@ public sealed class SvgFontLayoutDiagramTests
                 Assert.Equal("healthy", Required(capture, "startupHealth")); Assert.True(capture.GetProperty("profileCleaned").GetBoolean());
                 Assert.Equal(Required(witness, "missingFaceSha256"), Required(capture, "pngSha256"));
             }
-            byte[] reference = File.ReadAllBytes(Path.Combine(directory, platform == "linux" ? "references/linux64/text-map-sheet.png" : "references/text-map-sheet.png"));
+            Assert.Equal(3, witness.GetProperty("captures").GetArrayLength());
+            JsonElement item = manifest.RootElement.GetProperty("cases").EnumerateArray().Single(c => Required(c, "id") == identity);
+            byte[] reference = File.ReadAllBytes(Path.Combine(directory, Required(item, platform == "linux" ? "linuxReference" : "reference")));
             Assert.False(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, SvgRenderLimits.Default.MaximumPixels), PngRgbaDecoder.Decode(missing, SvgRenderLimits.Default.MaximumPixels)).IsExact);
         }
     }
