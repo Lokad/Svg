@@ -1,0 +1,1 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='416' height='88'><!-- Copyright 2026 Lokad. SPDX-License-Identifier: MIT --><defs><path id='mixed' d='M142 76 Q210 14 278 76'/></defs><use href='#mixed' fill='none' stroke='#aab7bf'/><text font-family='Example' font-size='24' x='12' y='76' fill='#a62e4c'>Lead <textPath href='#mixed'>arc</textPath> tail</text></svg>

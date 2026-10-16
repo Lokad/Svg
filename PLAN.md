@@ -80,6 +80,12 @@ Core inputs, source siblings, fitted-ink bounds and skew/reflection are protecte
 owns preservation and resource checks. Remaining T1 maps/admission, composites and
 private validation stay open; this is one additional MIT document.
 
+The [text-map document and three controls](tests/Research/text-map-exit-sheet/README.md)
+are frozen at **0/1 document / 0/3 controls exact** on both platforms, with thirty
+healthy captures including intended-font witnesses. Local-use labels, shader
+path strokes and mixed direct/path runs are measured T1 work; composite/private
+requirements stay open.
+
 | Required item, in order | Missing behavior and dependencies | Acceptance and completion condition |
 | --- | --- | --- |
 | [x] 3. Composition and resource presentation (G5–G7) | Declared C1–C6c exits are complete. Source replay, tight bounds, viewport rebasing and native rectangle clipping are available dependencies; glyph-specific and filtered-source boundaries remain in items 4–5. | Retain the linked whole documents, original inputs, exact platform references, siblings and affected scope/cleanup checks. C6c closes both frozen outputs without changing earlier exact results. |

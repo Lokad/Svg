@@ -1,0 +1,44 @@
+{
+  "windows": {
+    "missingFaceReference": "windows-missing-font.png",
+    "missingFaceSha256": "5fe2d1bc0d52daf37e28f55f03158f525f11091ae4bd5af761a54263ce6ecc33",
+    "captures": [
+      {
+        "pngSha256": "5fe2d1bc0d52daf37e28f55f03158f525f11091ae4bd5af761a54263ce6ecc33",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "pngSha256": "5fe2d1bc0d52daf37e28f55f03158f525f11091ae4bd5af761a54263ce6ecc33",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "pngSha256": "5fe2d1bc0d52daf37e28f55f03158f525f11091ae4bd5af761a54263ce6ecc33",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      }
+    ]
+  },
+  "linux": {
+    "missingFaceReference": "linux-missing-font.png",
+    "missingFaceSha256": "8352be4c2b0fe5caed3b417a175df930399e5517939f8a4cf5e4dc96268c5dde",
+    "captures": [
+      {
+        "pngSha256": "8352be4c2b0fe5caed3b417a175df930399e5517939f8a4cf5e4dc96268c5dde",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "pngSha256": "8352be4c2b0fe5caed3b417a175df930399e5517939f8a4cf5e4dc96268c5dde",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "pngSha256": "8352be4c2b0fe5caed3b417a175df930399e5517939f8a4cf5e4dc96268c5dde",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      }
+    ]
+  }
+}

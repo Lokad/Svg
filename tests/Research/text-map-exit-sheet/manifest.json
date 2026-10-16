@@ -1,0 +1,222 @@
+{
+  "schemaVersion": 1,
+  "purpose": "One complete MIT text-map document and three focused controls, frozen before correction of the remaining T1 local-use label, shader-stroked path and mixed direct/path runs. Composite flags and private validation remain required.",
+  "fontPack": "../supplied-font-labels/font-pack.json",
+  "fontPackId": "public-noto-sans",
+  "fontProvenance": "../supplied-font-labels/font-provenance.json",
+  "fontProgramSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "cases": [
+    {
+      "id": "text-map-sheet",
+      "input": "text-map-sheet.svg",
+      "width": 416,
+      "height": 256,
+      "background": "transparent",
+      "role": "document-output",
+      "license": "MIT",
+      "selection": "Complete remaining T1 label/paint/admission document; every panel and sibling must match unchanged native references",
+      "sourceSha256": "a0cdae6c8eb3ee205bde62db73d4ced3344f454629742c94f6512caa5a887c9f",
+      "scale": 1,
+      "licenseEvidence": "LICENSE.txt",
+      "expectedError": "UnsupportedFeature",
+      "declarationBaseRevision": "12b29b416259c313b7c4d290c388d31a96973ea8",
+      "reference": "references/text-map-sheet.png",
+      "referenceSha256": "c6d71371266561dc8018c89dc9923c65f046d413e0613c7aa79cd19e34191741",
+      "captures": [
+        {
+          "pngSha256": "c6d71371266561dc8018c89dc9923c65f046d413e0613c7aa79cd19e34191741",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c6d71371266561dc8018c89dc9923c65f046d413e0613c7aa79cd19e34191741",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c6d71371266561dc8018c89dc9923c65f046d413e0613c7aa79cd19e34191741",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/text-map-sheet.png",
+      "linuxReferenceSha256": "23a2eb0db295f25e153b5027261adc13ba326d39c88f96f564debff3f3eda73e",
+      "linuxCaptures": [
+        {
+          "pngSha256": "23a2eb0db295f25e153b5027261adc13ba326d39c88f96f564debff3f3eda73e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "23a2eb0db295f25e153b5027261adc13ba326d39c88f96f564debff3f3eda73e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "23a2eb0db295f25e153b5027261adc13ba326d39c88f96f564debff3f3eda73e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "local-use-label",
+      "input": "local-use-label.svg",
+      "width": 416,
+      "height": 56,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "MIT",
+      "selection": "Rendered local group label and vector child plus translated use; source text and instance must share ordinary supplied-font semantics",
+      "sourceSha256": "7e4f801b35774c1d4d048ab91645c230d108cbb416926a105240223d494fadda",
+      "scale": 1,
+      "licenseEvidence": "LICENSE.txt",
+      "expectedError": "UnsupportedFeature",
+      "declarationBaseRevision": "12b29b416259c313b7c4d290c388d31a96973ea8",
+      "reference": "references/local-use-label.png",
+      "referenceSha256": "ff3b4da33d78d3a164ca0c70f70e3c31b7fe23fa045f36238b8d3161e4bf7e7a",
+      "captures": [
+        {
+          "pngSha256": "ff3b4da33d78d3a164ca0c70f70e3c31b7fe23fa045f36238b8d3161e4bf7e7a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ff3b4da33d78d3a164ca0c70f70e3c31b7fe23fa045f36238b8d3161e4bf7e7a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ff3b4da33d78d3a164ca0c70f70e3c31b7fe23fa045f36238b8d3161e4bf7e7a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/local-use-label.png",
+      "linuxReferenceSha256": "2d0d40cf895d8182cf81c427eb571dff6b166ffc2eafdcf340be6c35bd5c8ef9",
+      "linuxCaptures": [
+        {
+          "pngSha256": "2d0d40cf895d8182cf81c427eb571dff6b166ffc2eafdcf340be6c35bd5c8ef9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2d0d40cf895d8182cf81c427eb571dff6b166ffc2eafdcf340be6c35bd5c8ef9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2d0d40cf895d8182cf81c427eb571dff6b166ffc2eafdcf340be6c35bd5c8ef9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "shader-curved-path",
+      "input": "shader-curved-path.svg",
+      "width": 416,
+      "height": 88,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "MIT",
+      "selection": "Linear shader stroke on a curved supplied-font path; reuse source stroking and paint-coordinate mapping",
+      "sourceSha256": "4ab3a5fc47ab6868913e22137f38a5262d906fb8c9c1f54e9a8b3c1ee7f58fbb",
+      "scale": 1,
+      "licenseEvidence": "LICENSE.txt",
+      "expectedError": "UnsupportedFeature",
+      "declarationBaseRevision": "12b29b416259c313b7c4d290c388d31a96973ea8",
+      "reference": "references/shader-curved-path.png",
+      "referenceSha256": "6b8f71eaed37f748fae6097fd8cb2c537ca16015a120c711ddd0207547d9f7cb",
+      "captures": [
+        {
+          "pngSha256": "6b8f71eaed37f748fae6097fd8cb2c537ca16015a120c711ddd0207547d9f7cb",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6b8f71eaed37f748fae6097fd8cb2c537ca16015a120c711ddd0207547d9f7cb",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6b8f71eaed37f748fae6097fd8cb2c537ca16015a120c711ddd0207547d9f7cb",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/shader-curved-path.png",
+      "linuxReferenceSha256": "90ff03b4982f72e5c5a09c08b83765d5be61bc994981ceb071d96735b5182809",
+      "linuxCaptures": [
+        {
+          "pngSha256": "90ff03b4982f72e5c5a09c08b83765d5be61bc994981ceb071d96735b5182809",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "90ff03b4982f72e5c5a09c08b83765d5be61bc994981ceb071d96735b5182809",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "90ff03b4982f72e5c5a09c08b83765d5be61bc994981ceb071d96735b5182809",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "mixed-direct-path",
+      "input": "mixed-direct-path.svg",
+      "width": 416,
+      "height": 88,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "MIT",
+      "selection": "Painted direct text before and after one local curved textPath, preserving current position and source order",
+      "sourceSha256": "ccda5c155cbf259898d0fb65d534bea20f05aeca1b58467d40a2ef262e570e9f",
+      "scale": 1,
+      "licenseEvidence": "LICENSE.txt",
+      "expectedError": "UnsupportedFeature",
+      "declarationBaseRevision": "12b29b416259c313b7c4d290c388d31a96973ea8",
+      "reference": "references/mixed-direct-path.png",
+      "referenceSha256": "90c24e3a38a115f003cfe56e78512adbb20a318b1c9ba1872d640fd6d95cd85f",
+      "captures": [
+        {
+          "pngSha256": "90c24e3a38a115f003cfe56e78512adbb20a318b1c9ba1872d640fd6d95cd85f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "90c24e3a38a115f003cfe56e78512adbb20a318b1c9ba1872d640fd6d95cd85f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "90c24e3a38a115f003cfe56e78512adbb20a318b1c9ba1872d640fd6d95cd85f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/mixed-direct-path.png",
+      "linuxReferenceSha256": "3fb18da476515b02cc9b07e0b8878288de01e9371bb5be2351de47edc443c8a5",
+      "linuxCaptures": [
+        {
+          "pngSha256": "3fb18da476515b02cc9b07e0b8878288de01e9371bb5be2351de47edc443c8a5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3fb18da476515b02cc9b07e0b8878288de01e9371bb5be2351de47edc443c8a5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3fb18da476515b02cc9b07e0b8878288de01e9371bb5be2351de47edc443c8a5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ]
+}

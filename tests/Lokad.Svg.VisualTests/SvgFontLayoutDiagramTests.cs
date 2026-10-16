@@ -335,6 +335,9 @@ public sealed class SvgFontLayoutDiagramTests
         }
     }
 
+    public static IEnumerable<object[]> TextMapCases()
+        => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "text-map-exit-sheet"));
+
     private static IEnumerable<object[]> ReadCases(string directory)
     {
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
@@ -430,6 +433,33 @@ public sealed class SvgFontLayoutDiagramTests
                 Assert.Equal(Required(witness, "missingFaceSha256"), Required(capture, "pngSha256"));
             }
             byte[] reference = File.ReadAllBytes(Path.Combine(directory, platform == "linux" ? "references/linux64/glyph-resource-sheet.png" : "references/glyph-resource-sheet.png"));
+            Assert.False(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, SvgRenderLimits.Default.MaximumPixels), PngRgbaDecoder.Decode(missing, SvgRenderLimits.Default.MaximumPixels)).IsExact);
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(TextMapCases))]
+    public Task Declared_text_map_outputs_preserve_original_sources_and_platform_references(string identity)
+        => ValidateDeclared(Path.Combine(AppContext.BaseDirectory, "Research", "text-map-exit-sheet"), identity, [new("Example", 400, false)]);
+
+    [Fact]
+    public void Text_map_document_uses_the_declared_supplied_font()
+    {
+        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "text-map-exit-sheet");
+        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
+        Assert.Equal(Required(manifest.RootElement, "fontProgramSha256"), Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Path.Combine(DirectoryPath, "..", "supplied-font-labels", "fonts", "NotoSans-Regular.ttf")))));
+        using JsonDocument proof = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "font-use-proof", "qualification.json")));
+        foreach (string platform in new[] { "windows", "linux" })
+        {
+            JsonElement witness = proof.RootElement.GetProperty(platform);
+            byte[] missing = File.ReadAllBytes(Path.Combine(directory, "font-use-proof", Required(witness, "missingFaceReference")));
+            Assert.Equal(Required(witness, "missingFaceSha256"), Convert.ToHexStringLower(SHA256.HashData(missing)));
+            foreach (JsonElement capture in witness.GetProperty("captures").EnumerateArray())
+            {
+                Assert.Equal("healthy", Required(capture, "startupHealth")); Assert.True(capture.GetProperty("profileCleaned").GetBoolean());
+                Assert.Equal(Required(witness, "missingFaceSha256"), Required(capture, "pngSha256"));
+            }
+            byte[] reference = File.ReadAllBytes(Path.Combine(directory, platform == "linux" ? "references/linux64/text-map-sheet.png" : "references/text-map-sheet.png"));
             Assert.False(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, SvgRenderLimits.Default.MaximumPixels), PngRgbaDecoder.Decode(missing, SvgRenderLimits.Default.MaximumPixels)).IsExact);
         }
     }
