@@ -10,7 +10,7 @@ namespace Lokad.Svg.Fonts;
 /// It never opens a font program or constructs glyph geometry. Callers dispose it before acquiring programs.</remarks>
 internal sealed class SvgInstanceFontDiscovery : IDisposable
 {
-    private enum Kind { Container, Definition, Opaque, Text, Use }
+    private enum Kind { Container, Definition, Opaque, Text, Use, MarkerGeometry }
     private enum VisitKind { Enter, Children, Exit }
     private readonly record struct Node(Kind Kind, SvgRetainedTextSource? Source, string? Target, int End, bool Symbol, bool Switch, bool Language);
     private readonly record struct Open(int Depth, int Index, bool CanDefine);
@@ -20,14 +20,15 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
     private readonly SvgRenderLimits _limits;
     private readonly ParserWorkCounter _work;
     private readonly CancellationToken _token;
+    private readonly bool _markerGeometry;
     private readonly BudgetedParserList<Node> _nodes;
     private readonly BudgetedParserDictionary<string, int> _ids;
     private readonly BudgetedParserList<Pending> _pending;
 
     private SvgInstanceFontDiscovery(SvgRenderLimits limits, BudgetedParserList<CssRule> rules,
-        BudgetedParserStringStore strings, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        BudgetedParserStringStore strings, RenderBudget budget, ParserWorkCounter work, CancellationToken token, bool markerGeometry)
     {
-        _limits = limits; _work = work; _token = token;
+        _limits = limits; _work = work; _token = token; _markerGeometry = markerGeometry;
         _state = new(budget, work, token, rules, strings, false);
         _nodes = new(budget, SvgMemoryCategory.Parser, work, token);
         _ids = new(budget, SvgMemoryCategory.Parser, 96);
@@ -38,8 +39,10 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
         BudgetedParserList<CssRule> rules, BudgetedParserStringStore strings, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         ReadOnlySpan<byte> bytes = svg.Span;
-        if (!bytes.Contains((byte)0) && (bytes.IndexOf("text"u8) < 0 || bytes.IndexOf("use"u8) < 0)) return null;
-        SvgInstanceFontDiscovery result = new(limits, rules, strings, budget, work, token);
+        if (!bytes.Contains((byte)0) && (bytes.IndexOf("text"u8) < 0 || bytes.IndexOf("use"u8) < 0)
+            && (bytes.IndexOf("marker"u8) < 0 || bytes.IndexOf("ex"u8) < 0)) return null;
+        SvgInstanceFontDiscovery result = new(limits, rules, strings, budget, work, token,
+            bytes.Contains((byte)0) || bytes.IndexOf("marker"u8) >= 0);
         try { Read(result, svg, settings); return result; }
         catch { result.Dispose(); throw; }
 
@@ -69,7 +72,8 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                 {
                     "g" or "a" or "svg" or "switch" => Kind.Container,
                     "defs" or "symbol" => Kind.Definition,
-                    "text" => Kind.Text, "use" => Kind.Use, _ => Kind.Opaque
+                    "text" => Kind.Text, "use" => Kind.Use,
+                    "line" or "path" or "polygon" or "polyline" when owner._markerGeometry => Kind.MarkerGeometry, _ => Kind.Opaque
                 };
                 bool switchChild = open.Count != 0 && owner._nodes[open[^1].Index].Switch && reader.Depth == open[^1].Depth + 1;
                 if (kind == Kind.Opaque && reader.IsEmptyElement && !switchChild) continue;
@@ -116,7 +120,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
     /// <summary>Emits referenced face/paint/filter requests before font acquisition.</summary>
     /// <remarks>Callbacks borrow strings for this synchronous visit and must copy retained values.
     /// Traversal shares the caller's bounded work, storage and cancellation; no font program is opened.</remarks>
-    internal void AddRequests(Action<SvgFontFaceRequest> addFace, Action<string> addPaint, Action<string> addFilter)
+    internal void AddRequests(Action<SvgFontFaceRequest> addFace, Action<string> addPaint, Action<string> addFilter, Action<SvgMarkerStyle> addMarkers)
     {
         using BudgetedParserList<Visit> stack = new(_state.Budget, SvgMemoryCategory.Parser, _work, _token);
         using BudgetedParserDictionary<int, bool> active = new(_state.Budget, SvgMemoryCategory.Parser, 64);
@@ -156,6 +160,12 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                     visit.Context.Presentation, visit.Context.FillRule, visit.Context.TextStyle, visit.Context.Stroke,
                     SvgRootParser.CssNamedColors, _work, _token);
                 if (!resolved.Presentation.IsDisplayed) continue;
+                if (node.Kind == Kind.MarkerGeometry)
+                {
+                    if (resolved.Presentation.IsVisible && (reader.LocalName != "path" || !string.IsNullOrWhiteSpace(reader.GetAttribute("d"))))
+                        addMarkers(resolved.Presentation.Markers);
+                    continue;
+                }
                 if (node.Kind == Kind.Use)
                 {
                     if (node.Target is {} target && _ids.TryGetValue(target, out int index)) stack.Add(new(index, resolved, VisitKind.Enter, 0, true));

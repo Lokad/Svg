@@ -130,12 +130,7 @@ internal static class SvgTextRunBuilder
                 float baselineAscent;
                 if (baseline == SvgTextBaseline.Middle)
                 {
-                    int xHeight = font.Metrics.LineMetrics.XHeight;
-                    if (xHeight == 0)
-                    {
-                        ushort xGlyph = OpenTypeFont.GetGlyphIndex(font.Bytes, 'x', font.Metrics, work, token);
-                        if (xGlyph != 0) xHeight = OpenTypeFont.GetGlyphHeader(font.Bytes, xGlyph, font.Metrics, work, token)?.YMaximum ?? 0;
-                    }
+                    int xHeight = font.GetXHeight(work, token);
                     baselineAscent = roundedAscent - (xHeight > 0 ? size * xHeight / font.UnitsPerEm / 2 : size / 4);
                 }
                 else baselineAscent = roundedAscent * .2f;

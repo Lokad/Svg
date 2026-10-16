@@ -1,3 +1,29 @@
+## Marker font units and axis boundaries (2026-10-16)
+
+The [retained marker document](../tests/Research/marker-completion-sheet/README.md)
+keeps numeric coordinates and authored font context independent. Em resolves
+without program acquisition; ex factors remain parser metadata until live use
+needs supplied x-height. Existing x-glyph fallback is shared with middle-baseline
+layout. Existing discovery records marker dependencies through direct geometry
+and local instance replay; hidden, empty and unused sources retain no acquisition.
+
+A float-radian/double-degree conversion can put an exact 180-degree axis just
+above the inclusive bisector boundary, rotating a repeated-vertex marker by 180
+degrees. Canonical axes close the 76-pixel directional witness. Native parent pose
+composition closes five additional pixels visible only in the whole translated
+sheet, retaining the original single-control pixels.
+
+Cold SVG images cache ex-sized marker viewports before their embedded face loads,
+then resolve anchors with the loaded face. A native absolute control with viewport
+ex=8.05078125 and reference ex=9.64799976348877 reproduces the original Windows
+attempt exactly. Preloading the identical public URI under an unrelated outer
+family before constructing the unchanged font-embedded image yields the independently
+measured supplied-font lengths. Cold Blob/data-URI transport agrees; preload does
+not substitute a missing SVG face. Invalid attempts remain in the [study](../artifacts/marker-completion-20261016/).
+No established reference is regenerated. [Qualification](../artifacts/maintenance-review-20261012/marker-qualified-results.json)
+owns every prior case and material resource behavior. E4's finite container
+admission follow-up remains required in PLAN.
+
 ## Retained-instance filter replay (2026-10-16)
 
 The [complete retained-instance document](../tests/Research/retained-instance-effect-sheet/README.md)

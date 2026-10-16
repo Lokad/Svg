@@ -1,10 +1,41 @@
 using System.Xml;
 using Lokad.Svg.Parsing;
+using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
 public sealed class SvgMarkerSyntaxTests
 {
+    [Fact]
+    public void Font_relative_marker_lengths_keep_em_values_and_defer_ex_metrics()
+    {
+        SvgMarkerDefinition em = Parse("font-size='12' markerWidth='1.5em' markerHeight='1em' refX='.25em' refY='.5em'", default);
+        Assert.Equal((18d, 12d, 3d, 6d), (em.Width, em.Height, em.RefX, em.RefY));
+        Assert.Null(em.FontLengths);
+        SvgMarkerDefinition ex = Parse("font-family='Example' font-size='18' markerWidth='3ex' markerHeight='2ex' refX='.5ex' refY='1ex'", default);
+        SvgMarkerFontLengths lengths = Assert.IsType<SvgMarkerFontLengths>(ex.FontLengths);
+        Assert.Equal("Example", lengths.Font.Family);
+        Assert.Equal(18, lengths.Font.FontSize);
+        Assert.Equal((3d, 2d, .5d, 1d), (lengths.Width, lengths.Height, lengths.RefX, lengths.RefY));
+    }
+
+    [Fact]
+    public void Axis_half_turn_at_a_repeated_closed_vertex_retains_the_native_bisector()
+    {
+        using StringReader input = new("<path xmlns='http://www.w3.org/2000/svg' d='M24 27L24 27L78 27L78 66L24 66L24 66Z'/>");
+        using XmlReader reader = XmlReader.Create(input); reader.MoveToContent();
+        RenderBudget budget = new(100_000);
+        ParserWorkCounter work = new(100_000);
+        using (SvgDocumentState state = new(budget, work, CancellationToken.None))
+        using (BudgetedParserList<SvgMarkerPosition> positions = SvgMarkerVertices.Read(reader, 100, state, work, CancellationToken.None))
+        {
+            Assert.Equal(7, positions.Count);
+            Assert.Equal(new SvgDevicePoint(24, 66), positions[4].Point);
+            Assert.Equal(90, positions[4].Angle);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     [Theory]
     [InlineData("1in", 96)]
     [InlineData("1.27cm", 48)]

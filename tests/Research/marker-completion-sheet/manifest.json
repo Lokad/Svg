@@ -1,0 +1,368 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Finite E4 completion: em/ex marker dimensions and anchors, marker-container/child cascade, directional zero/repeated vertices on open/closed paths and wholly zero geometry. One whole CC0 sheet and six independent controls; reuse earlier qualified marker cases without a shape/API grid.",
+  "fontPack": "../supplied-font-labels/font-pack.json",
+  "fontPackId": "public-noto-sans",
+  "fontProgram": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontProgramSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "fontUnitOracle": "The whole sheet and ex control preload the same public program under an unrelated outer family before constructing the unchanged font-embedded SVG image. Initial cold attempts had mixed fallback viewport / loaded reference-point metrics and remain rejected in the study; all established references are unchanged.",
+  "cases": [
+    {
+      "id": "marker-completion-sheet",
+      "input": "marker-completion-sheet.svg",
+      "width": 384,
+      "height": 224,
+      "scale": 1,
+      "background": "transparent",
+      "role": "document-output",
+      "license": "CC0-1.0",
+      "sourceSha256": "036e1c5244b513da80783c201b11b3ca350270ce16e8babce2b289ea6e548d67",
+      "declarationBaseRevision": "e20db16cbac743a7bc357b4e0e38d9c6070a5f67",
+      "reference": "references/marker-completion-sheet.png",
+      "referenceSha256": "d5c480def0fdee095925b2eb5a187c3f513aad9fcbc22ef79b58b619e2fdd3f1",
+      "captures": [
+        {
+          "pngSha256": "d5c480def0fdee095925b2eb5a187c3f513aad9fcbc22ef79b58b619e2fdd3f1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d5c480def0fdee095925b2eb5a187c3f513aad9fcbc22ef79b58b619e2fdd3f1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d5c480def0fdee095925b2eb5a187c3f513aad9fcbc22ef79b58b619e2fdd3f1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/marker-completion-sheet.png",
+      "linuxReferenceSha256": "a12b5182b203d402f15369839c25c14d7abfdb93f32b82bdfa00590b2ec364cb",
+      "linuxCaptures": [
+        {
+          "pngSha256": "a12b5182b203d402f15369839c25c14d7abfdb93f32b82bdfa00590b2ec364cb",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a12b5182b203d402f15369839c25c14d7abfdb93f32b82bdfa00590b2ec364cb",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a12b5182b203d402f15369839c25c14d7abfdb93f32b82bdfa00590b2ec364cb",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "publicFontPreloadedBeforeSvgImage": true
+    },
+    {
+      "id": "marker-font-em",
+      "input": "marker-font-em.svg",
+      "width": 128,
+      "height": 112,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "386f4dae049cc01382d9baa26bc64281dfa65826013d461e26aeaa40fff5d080",
+      "declarationBaseRevision": "e20db16cbac743a7bc357b4e0e38d9c6070a5f67",
+      "reference": "references/marker-font-em.png",
+      "referenceSha256": "8845ae8f40df6e27d87acf3f00cb14155a59b391828f86c1e9939e2ddb4f94a1",
+      "captures": [
+        {
+          "pngSha256": "8845ae8f40df6e27d87acf3f00cb14155a59b391828f86c1e9939e2ddb4f94a1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8845ae8f40df6e27d87acf3f00cb14155a59b391828f86c1e9939e2ddb4f94a1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8845ae8f40df6e27d87acf3f00cb14155a59b391828f86c1e9939e2ddb4f94a1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/marker-font-em.png",
+      "linuxReferenceSha256": "ed4078d4e4010969a10df1de095e07196394fbded66f11e7b980f2e23b31cfd5",
+      "linuxCaptures": [
+        {
+          "pngSha256": "ed4078d4e4010969a10df1de095e07196394fbded66f11e7b980f2e23b31cfd5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ed4078d4e4010969a10df1de095e07196394fbded66f11e7b980f2e23b31cfd5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ed4078d4e4010969a10df1de095e07196394fbded66f11e7b980f2e23b31cfd5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "publicFontPreloadedBeforeSvgImage": false
+    },
+    {
+      "id": "marker-font-ex",
+      "input": "marker-font-ex.svg",
+      "width": 128,
+      "height": 112,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "ec8305b95a3c0f2a0ef774268c978a277cf8c0ce5877282229dbefa90762e43c",
+      "declarationBaseRevision": "e20db16cbac743a7bc357b4e0e38d9c6070a5f67",
+      "reference": "references/marker-font-ex.png",
+      "referenceSha256": "a74c1ce47faeb0077acf23cf425de04e628d3cc6a3540b93e88bd607a76abc02",
+      "captures": [
+        {
+          "pngSha256": "a74c1ce47faeb0077acf23cf425de04e628d3cc6a3540b93e88bd607a76abc02",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a74c1ce47faeb0077acf23cf425de04e628d3cc6a3540b93e88bd607a76abc02",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a74c1ce47faeb0077acf23cf425de04e628d3cc6a3540b93e88bd607a76abc02",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/marker-font-ex.png",
+      "linuxReferenceSha256": "dd70ea936049f842105fdd836928f230f02b2ae837d9836ec12ad64f486152c9",
+      "linuxCaptures": [
+        {
+          "pngSha256": "dd70ea936049f842105fdd836928f230f02b2ae837d9836ec12ad64f486152c9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "dd70ea936049f842105fdd836928f230f02b2ae837d9836ec12ad64f486152c9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "dd70ea936049f842105fdd836928f230f02b2ae837d9836ec12ad64f486152c9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "publicFontPreloadedBeforeSvgImage": true
+    },
+    {
+      "id": "marker-container-cascade",
+      "input": "marker-container-cascade.svg",
+      "width": 128,
+      "height": 112,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "64da4911d50ebd4268df7acae018a0dadd4ec1cae2d5bfb3d4b56402b9a62c23",
+      "declarationBaseRevision": "e20db16cbac743a7bc357b4e0e38d9c6070a5f67",
+      "reference": "references/marker-container-cascade.png",
+      "referenceSha256": "1381ac8970269c7c35a05367113b70163096be211ea861c3938362d9c7f314f1",
+      "captures": [
+        {
+          "pngSha256": "1381ac8970269c7c35a05367113b70163096be211ea861c3938362d9c7f314f1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1381ac8970269c7c35a05367113b70163096be211ea861c3938362d9c7f314f1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1381ac8970269c7c35a05367113b70163096be211ea861c3938362d9c7f314f1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/marker-container-cascade.png",
+      "linuxReferenceSha256": "2be46e5a7778c1324d8c10b6a8122efbc440b37fea275308575824cf79fd994c",
+      "linuxCaptures": [
+        {
+          "pngSha256": "2be46e5a7778c1324d8c10b6a8122efbc440b37fea275308575824cf79fd994c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2be46e5a7778c1324d8c10b6a8122efbc440b37fea275308575824cf79fd994c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2be46e5a7778c1324d8c10b6a8122efbc440b37fea275308575824cf79fd994c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "publicFontPreloadedBeforeSvgImage": false
+    },
+    {
+      "id": "marker-open-zero-direction",
+      "input": "marker-open-zero-direction.svg",
+      "width": 128,
+      "height": 112,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "d405dcd32f12de4f411ec0e5c710475b9ac96d7236e9db8729f89ea9b7b98f4e",
+      "declarationBaseRevision": "e20db16cbac743a7bc357b4e0e38d9c6070a5f67",
+      "reference": "references/marker-open-zero-direction.png",
+      "referenceSha256": "7cd0b1ce2ac2217fb524a121369de3516b319c2f80feb30ab49e8e70f7111ecd",
+      "captures": [
+        {
+          "pngSha256": "7cd0b1ce2ac2217fb524a121369de3516b319c2f80feb30ab49e8e70f7111ecd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7cd0b1ce2ac2217fb524a121369de3516b319c2f80feb30ab49e8e70f7111ecd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7cd0b1ce2ac2217fb524a121369de3516b319c2f80feb30ab49e8e70f7111ecd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/marker-open-zero-direction.png",
+      "linuxReferenceSha256": "4de1a5998e39d19d97acafcca20adea85a2df8ae9e4769c3756f746ed14f3307",
+      "linuxCaptures": [
+        {
+          "pngSha256": "4de1a5998e39d19d97acafcca20adea85a2df8ae9e4769c3756f746ed14f3307",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4de1a5998e39d19d97acafcca20adea85a2df8ae9e4769c3756f746ed14f3307",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4de1a5998e39d19d97acafcca20adea85a2df8ae9e4769c3756f746ed14f3307",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "publicFontPreloadedBeforeSvgImage": false
+    },
+    {
+      "id": "marker-closed-zero-direction",
+      "input": "marker-closed-zero-direction.svg",
+      "width": 128,
+      "height": 112,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "de28f39f16e91d4b7b0db22ff8d60c79fec511a94b0bcc5076cfbd806ec83de1",
+      "declarationBaseRevision": "e20db16cbac743a7bc357b4e0e38d9c6070a5f67",
+      "reference": "references/marker-closed-zero-direction.png",
+      "referenceSha256": "bc5e539255579c8539a203121dc563ae80a8fc703ed9b70a5715a337119ef9d6",
+      "captures": [
+        {
+          "pngSha256": "bc5e539255579c8539a203121dc563ae80a8fc703ed9b70a5715a337119ef9d6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bc5e539255579c8539a203121dc563ae80a8fc703ed9b70a5715a337119ef9d6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bc5e539255579c8539a203121dc563ae80a8fc703ed9b70a5715a337119ef9d6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/marker-closed-zero-direction.png",
+      "linuxReferenceSha256": "62f95362a48a65776e3461a96033fdda1f59d100d5380725f0192ba538c30d5c",
+      "linuxCaptures": [
+        {
+          "pngSha256": "62f95362a48a65776e3461a96033fdda1f59d100d5380725f0192ba538c30d5c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "62f95362a48a65776e3461a96033fdda1f59d100d5380725f0192ba538c30d5c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "62f95362a48a65776e3461a96033fdda1f59d100d5380725f0192ba538c30d5c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "publicFontPreloadedBeforeSvgImage": false
+    },
+    {
+      "id": "marker-wholly-zero-direction",
+      "input": "marker-wholly-zero-direction.svg",
+      "width": 128,
+      "height": 112,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "e202124509a182a9db54fcb28a27eecb5916286b2066646e106ec4b9e8f1e416",
+      "declarationBaseRevision": "e20db16cbac743a7bc357b4e0e38d9c6070a5f67",
+      "reference": "references/marker-wholly-zero-direction.png",
+      "referenceSha256": "491732afd1579a70f84bc569bd43e2a85df9286a6ae124f92970b4b2e568f745",
+      "captures": [
+        {
+          "pngSha256": "491732afd1579a70f84bc569bd43e2a85df9286a6ae124f92970b4b2e568f745",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "491732afd1579a70f84bc569bd43e2a85df9286a6ae124f92970b4b2e568f745",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "491732afd1579a70f84bc569bd43e2a85df9286a6ae124f92970b4b2e568f745",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/marker-wholly-zero-direction.png",
+      "linuxReferenceSha256": "d5913a92d4f01ffba52a2ef1768d3e144ec98613107d0367e2f7b29e97b935d5",
+      "linuxCaptures": [
+        {
+          "pngSha256": "d5913a92d4f01ffba52a2ef1768d3e144ec98613107d0367e2f7b29e97b935d5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d5913a92d4f01ffba52a2ef1768d3e144ec98613107d0367e2f7b29e97b935d5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d5913a92d4f01ffba52a2ef1768d3e144ec98613107d0367e2f7b29e97b935d5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "publicFontPreloadedBeforeSvgImage": false
+    }
+  ]
+}

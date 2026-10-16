@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Xml;
+using Lokad.Svg.Fonts;
 using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
@@ -11,7 +12,13 @@ internal readonly record struct SvgMarkerDefinition(double Width, double Height,
     bool StrokeWidthUnits, SvgMarkerOrientation Orientation, double Angle)
 {
     internal bool ClipsViewport { get; init; } = true;
+    internal SvgMarkerFontLengths? FontLengths { get; init; }
 }
+
+/// <summary>Retains ex factors and authored font context until a live marker needs font metrics.</summary>
+/// <remarks>Immutable parser metadata borrows style strings and owns no programs. The existing
+/// definition allowance covers it; unused or zero-size markers never acquire a font.</remarks>
+internal sealed record SvgMarkerFontLengths(SvgInheritedTextStyle Font, double? Width, double? Height, double? RefX, double? RefY);
 
 /// <summary>Retains inherited marker declarations independently of fill and stroke paint.</summary>
 internal readonly record struct SvgMarkerStyle(string? Start, string? Mid, string? End)
@@ -59,13 +66,20 @@ internal static class SvgMarkerSyntax
     }
 
     internal static SvgMarkerDefinition Parse(XmlReader reader, SvgComputedStyle style, SvgViewportLengthBases bases, ParserWorkCounter work, CancellationToken token)
+        => Parse(reader, style, bases, SvgInheritedTextStyle.Default, default, work, token);
+
+    internal static SvgMarkerDefinition Parse(XmlReader reader, SvgComputedStyle style, SvgViewportLengthBases bases,
+        SvgInheritedTextStyle inheritedFont, InlineStyle sheet, ParserWorkCounter work, CancellationToken token)
     {
         SvgElementAttributePolicy.ValidateMarker(reader, work, token);
         string overflow = style.Overflow ?? "hidden";
         bool visibleOverflow = overflow.AsSpan().Trim().Equals("visible", StringComparison.OrdinalIgnoreCase);
         if (!visibleOverflow) SvgNestedViewportSyntax.ValidateOverflow(overflow);
         _ = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), work, token);
-        double width = Coordinate(reader.GetAttribute("markerWidth"), bases.Width, 3), height = Coordinate(reader.GetAttribute("markerHeight"), bases.Height, 3);
+        SvgInheritedTextStyle? font = null;
+        double? widthEx = null, heightEx = null, refXEx = null, refYEx = null;
+        double width = Coordinate(reader.GetAttribute("markerWidth"), bases.Width, 3, ref widthEx);
+        double height = Coordinate(reader.GetAttribute("markerHeight"), bases.Height, 3, ref heightEx);
         if (width < 0 || height < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Marker dimensions cannot be negative.");
         string units = reader.GetAttribute("markerUnits") ?? "strokeWidth";
         if (units is not ("strokeWidth" or "userSpaceOnUse"))
@@ -74,10 +88,13 @@ internal static class SvgMarkerSyntax
         SvgMarkerOrientation orientation = orient == "auto" ? SvgMarkerOrientation.Auto
             : orient == "auto-start-reverse" ? SvgMarkerOrientation.AutoStartReverse : SvgMarkerOrientation.Angle;
         double angle = orientation == SvgMarkerOrientation.Angle ? Angle(orient) : 0;
-        double refX = Coordinate(reader.GetAttribute("refX"), bases.Width, 0), refY = Coordinate(reader.GetAttribute("refY"), bases.Height, 0);
-        return new(width, height, refX, refY, units == "strokeWidth", orientation, angle) { ClipsViewport = !visibleOverflow };
+        double refX = Coordinate(reader.GetAttribute("refX"), bases.Width, 0, ref refXEx);
+        double refY = Coordinate(reader.GetAttribute("refY"), bases.Height, 0, ref refYEx);
+        SvgMarkerFontLengths? lengths = widthEx is null && heightEx is null && refXEx is null && refYEx is null ? null
+            : new(font ?? throw new InvalidOperationException("Relative coordinates require their font context."), widthEx, heightEx, refXEx, refYEx);
+        return new(width, height, refX, refY, units == "strokeWidth", orientation, angle) { ClipsViewport = !visibleOverflow, FontLengths = lengths };
 
-        double Coordinate(string? value, double? basis, double fallback)
+        double Coordinate(string? value, double? basis, double fallback, ref double? ex)
         {
             if (value is null) return fallback;
             ValidateLength(value);
@@ -86,6 +103,22 @@ internal static class SvgMarkerSyntax
             {
                 if (basis is not {} extent) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Percentage marker coordinates require a known enclosing viewport.");
                 return Finite(Number(input[..^1], false) * (float)extent / 100);
+            }
+            if (input.EndsWith("em", StringComparison.OrdinalIgnoreCase) || input.EndsWith("ex", StringComparison.OrdinalIgnoreCase))
+            {
+                if (font is null)
+                {
+                    InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), work, token, true);
+                    font = SvgTextInheritance.Resolve(reader, inheritedFont,
+                        SvgInlineStyleParser.MergeFont(inline.TextFont, inline.Important, sheet.TextFont, sheet.Important), null, null);
+                }
+                double factor = Number(input[..^2], false);
+                if (input.EndsWith("ex", StringComparison.OrdinalIgnoreCase))
+                {
+                    ex = factor;
+                    return factor; // Only sign/zero are needed until live font metrics resolve the coordinate.
+                }
+                return Finite(factor * (float)font.FontSize);
             }
             double scale = 1;
             int suffix = 2;
@@ -249,7 +282,29 @@ internal static class SvgMarkerRenderer
                 string id = SvgGradientSyntax.ParsePaintId(value);
                 if (!state.Definitions.TryGetValue(id, out SvgDefinition source) || source.Marker is not {} marker)
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local marker references are implemented.");
-                if (marker.Width == 0 || marker.Height == 0 || marker.StrokeWidthUnits && width == 0) return;
+                if (marker.Width == 0 || marker.Height == 0 || marker.StrokeWidthUnits && width == 0
+                    || !context.InheritedPresentation.IsDisplayed || !SvgPresentationResolver.ParseDisplay(style.Display)
+                    || !SvgPresentationResolver.ParseVisibility(style.Visibility, context.InheritedPresentation.IsVisible)) return;
+                if (marker.FontLengths is {} lengths)
+                {
+                    SvgFontSnapshot snapshot = state.TextReplay?.Fonts
+                        ?? throw new SvgException(SvgErrorCode.UnresolvedResource, "Font-relative marker coordinates require a supplied font snapshot.");
+                    string family = lengths.Font.Family ?? throw new SvgException(SvgErrorCode.UnresolvedResource, "Font-relative marker coordinates require a font family.");
+                    SvgPreparedFont font = snapshot.GetFont(new(family, lengths.Font.Weight, lengths.Font.Italic), id, work, token);
+                    int xHeight = font.GetXHeight(work, token);
+                    float ex = xHeight > 0 ? (float)lengths.Font.FontSize * xHeight / font.UnitsPerEm : (float)lengths.Font.FontSize * .5f;
+                    marker = marker with { Width = Resolve(lengths.Width, marker.Width), Height = Resolve(lengths.Height, marker.Height),
+                        RefX = Resolve(lengths.RefX, marker.RefX), RefY = Resolve(lengths.RefY, marker.RefY) };
+
+                    double Resolve(double? factor, double absolute)
+                    {
+                        if (factor is not {} value) return absolute;
+                        float coordinate = (float)value * ex;
+                        if (!float.IsFinite(coordinate)) throw new SvgException(SvgErrorCode.LimitExceeded, "Marker font-relative coordinates exceed the finite range.");
+                        return coordinate;
+                    }
+                }
+                if (marker.Width == 0 || marker.Height == 0) return;
                 double unitScale = marker.StrokeWidthUnits ? width : 1;
                 double angle = marker.Orientation == SvgMarkerOrientation.Angle ? marker.Angle : tangent;
                 if (start && marker.Orientation == SvgMarkerOrientation.AutoStartReverse) angle += 180;
@@ -266,7 +321,7 @@ internal static class SvgMarkerRenderer
                     .ComposeChecked(SvgAffineTransform.FromTranslation(-anchor.X, -anchor.Y));
                 // The marker's pose and content viewport are separate native matrices.
                 // Round the pose before composing the enclosing source transform.
-                SvgAffineTransform placement = context.ResolveTransform(reader).ComposeChecked(new(
+                SvgAffineTransform placement = context.ResolveTransform(reader).ComposeNative(new(
                     (float)local.A, (float)local.B, (float)local.C, (float)local.D, (float)local.E, (float)local.F));
                 SvgUseReference reference = new(id, 0, 0, marker.Width, marker.Height, placement, SvgAffineTransform.Identity,
                     255, context.ResolvePresentation(style, true).IsPainted, null, null, null)

@@ -9,7 +9,7 @@ The frozen selection and measured outcomes are recorded below.
 
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
-variants**. **Thirty-three additional authored documents** (twenty-three CC0 and ten MIT
+variants**. **Thirty-four additional authored documents** (twenty-four CC0 and ten MIT
 documents) are complete and counted separately. Preserve the delivered
 [effects sheet](../tests/Research/effects-marker-sheet/README.md),
 [composition sheet](../tests/Research/composition-sheet/README.md) and
@@ -17,6 +17,18 @@ documents) are complete and counted separately. Preserve the delivered
 [shared map sheet](../tests/Research/shared-paint-map-sheet/README.md), including their
 separately counted controls and original sources/options/references.
 These failure-selected cases establish declared outcomes, not a general SVG success rate.
+
+The unchanged [marker-length/direction sheet](../tests/Research/marker-completion-sheet/README.md)
+is complete with six controls exact on Windows/Linux. Em/ex lengths, marker/child
+cascade and directional degenerate paths share existing inheritance and replay;
+ex metrics use the supplied face only for live markers. Forty-eight qualified
+stable captures include SVG-local font proof. The first cold whole/ex attempts
+mixed fallback viewport and loaded reference metrics; those invalid attempts stay
+in the [oracle study](../artifacts/marker-completion-20261016/font-length-oracle-correction.json).
+Verified preload changes neither source/options nor any established reference.
+The [receipt](../artifacts/maintenance-review-20261012/marker-qualified-results.json)
+records 8,123 tests/platform and every prior case. This adds CC0 document 34.
+E4 container display/visibility/stroke admission, T3 and S17 remain required.
 
 The unchanged [retained-instance effect sheet](../tests/Research/retained-instance-effect-sheet/README.md)
 is complete with eight declared controls and two focused translated-wrapper

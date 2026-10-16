@@ -138,6 +138,13 @@ internal static class SvgMarkerVertices
         static SvgDevicePoint Difference(SvgDevicePoint end, SvgDevicePoint start)
             => new((float)end.X - (float)start.X, (float)end.Y - (float)start.Y);
         static double Angle(SvgDevicePoint direction)
-            => MathF.Atan2((float)direction.Y, (float)direction.X) * (180d / Math.PI);
+        {
+            // Exact axis angles keep the inclusive half-turn boundary stable.
+            // A float pi converted through double degrees can exceed 180 and
+            // flip a repeated vertex's bisector by a full half turn.
+            if (direction.Y == 0) return direction.X < 0 ? 180 : 0;
+            if (direction.X == 0) return direction.Y < 0 ? -90 : 90;
+            return MathF.Atan2((float)direction.Y, (float)direction.X) * (180d / Math.PI);
+        }
     }
 }

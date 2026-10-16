@@ -1,3 +1,21 @@
+## Qualified marker lengths and directional boundaries (2026-10-16)
+
+The [complete sheet and six controls](../tests/Research/marker-completion-sheet/README.md)
+are exact on Windows/Linux. Marker dimensions and anchors accept em from authored/
+inherited font size and ex from the caller-supplied face's existing x-height /
+x-glyph metrics. Deferred ex data does not acquire unused marker faces; discovery
+follows direct/instanced users and preserves hidden/empty outcomes. Exact axis
+angles keep the half-turn bisector boundary; parent pose composition uses native
+rounding. Container/child paint cascade and open/wholly-zero paths retain their
+already exact outcomes.
+
+[Qualification](../artifacts/maintenance-review-20261012/marker-qualified-results.json)
+preserves all prior cases and affected denial/cancellation/cleanup/prepared retry.
+The [font oracle correction](../artifacts/marker-completion-20261016/font-length-oracle-correction.json)
+retains invalid cold attempts, proves mixed cached font metrics, and verifies
+SVG-local supplied metrics after preload. E4 still requires marker-container
+display/visibility and inherited stroke-attribute admission; T3 and S17 stay open.
+
 ## Qualified retained-instance effects (2026-10-16)
 
 The unchanged [retained-instance sheet](../tests/Research/retained-instance-effect-sheet/README.md),

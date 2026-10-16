@@ -335,6 +335,43 @@ public sealed class SvgFontLayoutDiagramTests
         }
     }
 
+    public static IEnumerable<object[]> MarkerCompletionCases()
+        => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "marker-completion-sheet"));
+
+    [Theory]
+    [MemberData(nameof(MarkerCompletionCases))]
+    public Task Marker_completion_outputs_match_original_sources_and_verified_font_references(string identity)
+        => ValidateDeclared(Path.Combine(AppContext.BaseDirectory, "Research", "marker-completion-sheet"), identity, [new("Example", 400, false)]);
+
+    [Fact]
+    public void Marker_completion_sheet_uses_its_svg_local_supplied_face()
+        => ValidateIntendedFont(Path.Combine(AppContext.BaseDirectory, "Research", "marker-completion-sheet"), "marker-completion-sheet");
+
+    [Fact]
+    public Task Marker_completion_releases_owners_on_denial_cancellation_and_prepared_retry()
+        => ValidateRetainedTextOwners("marker-completion-sheet", "marker-completion-sheet.svg");
+
+    [Theory]
+    [InlineData("<path d='M20 30H80' marker-end='url(#m)'/>", true)]
+    [InlineData("<g marker-end='url(#m)'><path d='M20 30H80'/></g>", true)]
+    [InlineData("<defs><path id='s' d='M20 30H80' marker-end='url(#m)'/></defs><use href='#s'/>", true)]
+    [InlineData("<defs><g id='s'><path d='M20 30H80' marker-end='url(#m)'/></g></defs><use href='#s'/>", true)]
+    [InlineData("<path d='M20 30H80'/>", false)]
+    [InlineData("<path d='M20 30H80' visibility='hidden' marker-end='url(#m)'/>", false)]
+    [InlineData("<path d='' marker-end='url(#m)'/>", false)]
+    public async Task Marker_ex_lengths_prepare_only_live_required_public_faces(string content, bool required)
+    {
+        string marker = "<marker id='m' font-family='Example' font-size='18' markerUnits='userSpaceOnUse' markerWidth='3ex' markerHeight='2ex' refX='.5ex' refY='1ex'><path d='M0 0L20 8L0 16Z' fill='#43805b'/></marker>";
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='80'><defs>" + marker + "</defs>" + content + "</svg>");
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "..", "supplied-font-labels", "font-pack.json")), "public-noto-sans");
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, new Provider(), CancellationToken.None);
+        Assert.Equal(required ? 1 : 0, snapshot.Fonts.Count);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] expected = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
+        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, new Provider(), SvgRenderOptions.Default, CancellationToken.None);
+        Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
+    }
+
     public static IEnumerable<object[]> RetainedInstanceEffectCases()
         => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "retained-instance-effect-sheet"));
 

@@ -322,6 +322,20 @@ public sealed class SvgPreparedFont
         }
     }
 
+    /// <summary>Reads the validated x-height, falling back to the existing x-glyph header.</summary>
+    /// <remarks>Font bytes stay borrowed under the snapshot lease. Header lookup shares caller
+    /// work/cancellation and allocates no glyph contours or retained storage.</remarks>
+    internal int GetXHeight(ParserWorkCounter? work, CancellationToken token)
+    {
+        int height = Metrics.LineMetrics.XHeight;
+        if (height == 0)
+        {
+            ushort glyph = OpenTypeFont.GetGlyphIndex(Bytes, 'x', Metrics, work, token);
+            if (glyph != 0) height = OpenTypeFont.GetGlyphHeader(Bytes, glyph, Metrics, work, token)?.YMaximum ?? 0;
+        }
+        return height;
+    }
+
     internal OpenTypeFontMetrics Metrics
     {
         get
