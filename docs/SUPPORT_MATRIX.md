@@ -2029,7 +2029,8 @@ logical text bounds, source order and resource-local coordinates. Focused tests
 cover focal-circle sampling, inherited paint/span overrides, dormant-group masks,
 continuation cleanup and whole-document prepared retry. The
 [receipt](../artifacts/maintenance-review-20261012/text-paints-qualified-results.json)
-owns qualification of this bank. The retained dormant forward-paint diagnostic
-remains a required T1 follow-up; T2 composite flags, T3 private validation, E1–E4
-and S17 also remain required. Corporate **27/27 / 258/258**, selected **50/50**
+owns qualification of this bank. The unchanged dormant forward-paint diagnostic
+also passes: dormant sources defer unavailable paints until live construction;
+unused sources require no missing paint. The [follow-up receipt](../artifacts/maintenance-review-20261012/dormant-paints-qualified-results.json)
+closes T1. T2 composite flags, T3 private validation, E1–E4 and S17 remain required. Corporate **27/27 / 258/258**, selected **50/50**
 and all preceding exact results remain unchanged.

@@ -367,6 +367,28 @@ public sealed class SvgFontLayoutDiagramTests
     public Task Text_paint_sheet_releases_owners_on_denial_cancellation_and_prepared_retry()
         => ValidateRetainedTextOwners("instance-paint-exit-sheet", "instance-paint-sheet.svg");
 
+    [Fact]
+    public async Task Retained_dormant_forward_paint_diagnostic_is_definition_order_invariant()
+    {
+        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "instance-paint-exit-sheet");
+        byte[] input = File.ReadAllBytes(Path.Combine(directory, "diagnostics", "dormant-forward-paint.svg")), unchanged = input.ToArray();
+        string xml = System.Text.Encoding.UTF8.GetString(input);
+        int start = xml.IndexOf("<linearGradient", StringComparison.Ordinal);
+        int end = xml.IndexOf("</linearGradient>", start, StringComparison.Ordinal) + "</linearGradient>".Length;
+        string gradient = xml[start..end];
+        string ordered = xml.Remove(start, end - start);
+        ordered = ordered.Insert(ordered.IndexOf("<path ", StringComparison.Ordinal), gradient);
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, "..", "supplied-font-labels", "font-pack.json")), "public-noto-sans");
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, new Provider(), CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] expected = SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(ordered), options, CancellationToken.None).ToArray();
+        byte[] actual = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
+        Assert.Equal(expected, actual);
+        RgbaImage pixels = PngRgbaDecoder.Decode(actual, SvgRenderLimits.Default.MaximumPixels);
+        Assert.Contains(pixels.Pixels.Where((_, index) => index % 4 == 3), alpha => alpha != 0);
+        Assert.Equal(unchanged, input);
+    }
+
     private static async Task ValidateRetainedTextOwners(string bankName, string inputName)
     {
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", bankName);

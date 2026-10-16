@@ -101,6 +101,47 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Dormant_forward_paint_waits_for_the_registry_and_live_uses_keep_their_paint(bool liveUse)
+    {
+        const string prefix = "<svg xmlns='http://www.w3.org/2000/svg' width='125' height='8' font-family='Example' font-size='100' fill='url(#g)'>";
+        const string label = "<text y='5'>A<textPath href='#p'>A</textPath>A</text>";
+        const string path = "<path id='p' d='M0 5H200'/>";
+        const string gradient = "<linearGradient id='g' gradientUnits='userSpaceOnUse' x2='125'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient>";
+        string instance = liveUse ? "<use href='#p' stroke='url(#g)' stroke-width='2'/>" : "";
+        byte[] input = TextEncoding.UTF8.GetBytes(prefix + label + "<defs>" + path + gradient + "</defs>" + instance + "</svg>");
+        byte[] ordered = TextEncoding.UTF8.GetBytes(prefix + "<defs>" + gradient + path + "</defs>" + label + instance + "</svg>");
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        RenderBudget budget = new(4_000_000);
+        byte[] expected = SvgConverter.ConvertToPng(ordered, options, CancellationToken.None).ToArray();
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
+            Assert.Equal(expected, SvgConverter.ConvertToPng(root, options, budget, CancellationToken.None).ToArray());
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        using SvgPreparedDocument prepared = await CreateSceneDocumentAsync(input);
+        Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
+        Assert.True(DecodeAlpha(expected, liveUse ? 50 : 1, liveUse ? 5 : 3) > 0);
+    }
+
+    [Fact]
+    public void Unused_dormant_geometry_does_not_demand_an_inherited_missing_paint()
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' fill='url(#missing)'><defs><path id='unused' d='M0 0H8V8Z'/></defs><rect width='8' height='8' fill='blue'/></svg>"u8.ToArray();
+        byte[] expected = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect width='8' height='8' fill='blue'/></svg>"u8.ToArray();
+        Assert.Equal(SvgConverter.ConvertToPng(expected, SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+    }
+
+    [Fact]
+    public void Live_dormant_geometry_keeps_missing_paint_failure_and_releases_partial_source_owners()
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' fill='url(#missing)'><use href='#p'/><defs><path id='p' d='M0 0H8V8Z'/></defs></svg>"u8.ToArray();
+        RenderBudget budget = new(1_000_000);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
     [InlineData(0)]
     [InlineData(3)]
     public async Task Focal_circle_text_paint_shares_the_area_evaluator_at_opaque_glyph_interiors(int focalX)

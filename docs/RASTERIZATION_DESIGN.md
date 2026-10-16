@@ -14345,3 +14345,12 @@ admission inside dormant groups. Existing bounded replay, source ownership and
 scope compilation provide cleanup; no source raster substitute or runtime dependency
 is introduced. The [receipt](../artifacts/maintenance-review-20261012/text-paints-qualified-results.json)
 records full checks and preservation; PLAN.md owns remaining scope.
+
+Dormant definitions with unavailable local fill/stroke servers retain the same
+unconstructed source adapter used by viewport-dependent geometry. Text-path
+measurement can read the baseline without painting it; live use construction binds
+actual paints after registry completion. Deferred symbol children enable existing
+ordered source replay. Available-paint construction is unchanged. The
+[dormant-paint qualification](../artifacts/maintenance-review-20261012/dormant-paints-qualified-results.json)
+protects definition-order equivalence, actual live stroke paint, unused-source
+behavior, categorized missing resources and cleanup without new runtime machinery.

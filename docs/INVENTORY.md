@@ -3675,5 +3675,6 @@ references and thirty-six healthy captures are unchanged. Shared discovery,
 resource replay and glyph-paint fixes close every panel and sibling; controls add
 no completed document. The [receipt](../artifacts/maintenance-review-20261012/text-paints-qualified-results.json)
 records full checks and preservation. The separately retained dormant forward-paint
-diagnostic is unqualified and adds no count. PLAN.md retains that T1 boundary,
-T2/T3, E1–E4 and S17.
+diagnostic now passes the definition-order invariant on both platforms, with the
+[follow-up receipt](../artifacts/maintenance-review-20261012/dormant-paints-qualified-results.json)
+closing T1. It adds no count. PLAN.md retains T2/T3, E1–E4 and S17.

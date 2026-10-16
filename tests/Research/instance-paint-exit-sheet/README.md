@@ -35,9 +35,11 @@ exact-revision hosted CI status. Focused regressions cover inherited paints/span
 overrides, fragment width/line metrics, dormant-group resources, missing paints
 before acquisition, focal circles and continuation cleanup. Prior audits stay closed.
 The separate [dormant forward-paint diagnostic](diagnostics/dormant-forward-paint.svg)
-retains a discovered rejection: a root-inherited forward paint is eagerly bound
-while collecting a path used only as a text baseline. Run it with the existing
-synthetic `Example` face; moving the gradient before the path removes the gate.
-It has no frozen visual acceptance yet and adds no bank control or document count.
-[PLAN](../../../PLAN.md) keeps this T1 follow-up, T2 component flags, T3 private
-requests, E1–E4 and S17 required. No feature promise is deferred by this bank.
+now renders unchanged on both platforms. Moving its gradient before the baseline
+path leaves the output identical, using the unchanged public face. Synthetic
+baseline/live-stroke cases also protect raw/prepared output, unused dormant paints
+and categorized live missing-paint cleanup. The
+[follow-up receipt](../../../artifacts/maintenance-review-20261012/dormant-paints-qualified-results.json)
+owns these checks; this semantic diagnostic adds no frozen bank control or completed
+document. T1 is complete. [PLAN](../../../PLAN.md) keeps T2 component flags, T3
+private requests, E1–E4 and S17 required; no scope deferral is implied.
