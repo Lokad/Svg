@@ -1,3 +1,22 @@
+## Text stroke shader coordinates and mask color (2026-10-16)
+
+The [text-map shader controls](../tests/Research/text-map-exit-sheet/README.md)
+reuse native glyph-local stroke outlines, Windows horizontal filtering and Linux
+A8 coverage. A fragment shares one immutable scene-owned linear paint; stop arrays
+use existing scene ownership. Skia's pinned `onAsLuminanceColor` selects font-mask
+preblend from an unweighted source-color mean, including implicit end stops.
+Stop alpha and pixel colors remain separate. Black-stroke diagnostics were exact.
+
+Chromium's [text fragment painter](https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/third_party/blink/renderer/core/paint/text_fragment_painter.cc)
+cancels fragment placement in its shader-local transform. Preserve that inverse
+and the canvas map through float concatenation: algebraic cancellation changes
+one Linux alpha-rounding result in the affine/translucent control. Shared shader
+coordinate preparation accepts the separate matrices and reuses its unit map,
+ramp, dither and covered source-over arithmetic. Both controls are now exact on
+both platforms. [Qualification](../artifacts/maintenance-review-20261012/text-shader-qualified-results.json)
+retains frozen inputs and affected resource checks. Local-use and remaining
+promised paint routes stay in T1; the whole document remains incomplete.
+
 ## Ordered text chunks and endpoint continuation (2026-10-16)
 
 Direct and path chunks reuse the existing paint output, glyph builder and paint
@@ -17,8 +36,8 @@ range-shift machinery preserves one element mask around direct/deferred paints
 and restores following siblings. No parallel text renderer or host-font lookup
 is introduced. The unchanged [mixed control](../tests/Research/text-map-exit-sheet/README.md)
 is exact on both platforms; [qualification](../artifacts/maintenance-review-20261012/text-flow-qualified-results.json)
-owns original inputs, prior outputs and resource checks. Shader and local-use
-gates still block the complete document; G9 is not closed by this control.
+owns original inputs, prior outputs and resource checks. The later linear-shader correction closes its curved control; local-use
+text still blocks the complete document. G9 stays open.
 
 ## Glyph resource ranges and fitted-ink windows (2026-10-16)
 

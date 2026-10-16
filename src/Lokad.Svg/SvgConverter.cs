@@ -3136,9 +3136,10 @@ public static class SvgConverter
                 ParserWorkCounter preparationWork = new(options.Limits.MaximumWorkUnits - workUnits);
                 if (glyph.StrokePaint is {} strokePaint)
                 {
+                    if (glyph.StrokeShader is { Gradient.IsEmpty: true }) return;
                     using SvgAuthoredPath path = source.CreateStrokePath(strokePaint, horizontalScale, horizontalOffset, verticalScale, verticalOffset, budget, preparationWork, cancellationToken);
                     Span<byte> preblend = stackalloc byte[256];
-                    SvgColor color = ResolveSolidColor(glyph.Color);
+                    SvgColor color = glyph.StrokeShader is {} shader ? GradientLuminance(shader.Gradient, preparationWork) : ResolveSolidColor(glyph.Color);
                     if (OperatingSystem.IsWindows()) SvgFontMaskPreblend.BuildWindowsGrayTable(preblend, color, preparationWork, cancellationToken);
                     else SvgFontMaskPreblend.BuildLinuxGrayTable(preblend, color, preparationWork, cancellationToken);
                     RasterizeMappedBitmap(path, preblend, preparationWork);
@@ -3360,10 +3361,26 @@ public static class SvgConverter
                     int startY = Math.Max(layerBounds.Top, ClampFloor(deviceTop, outputHeight));
                     int endX = Math.Min(layerBounds.Right, ClampCeiling(deviceLeft + bitmapWidth, outputWidth));
                     int endY = Math.Min(layerBounds.Bottom, ClampCeiling(deviceTop + height, outputHeight));
-                    long paintWork = (long)Math.Max(0, endX - startX) * Math.Max(0, endY - startY) * (horizontalStrokeFilter ? 37 : 1);
+                    long paintWork = (long)Math.Max(0, endX - startX) * Math.Max(0, endY - startY) * ((horizontalStrokeFilter ? 37 : 1) + (glyph.StrokeShader is null ? 0 : 16));
                     if (paintWork > limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph mask painting exceeds the configured work limit.");
                     workUnits += paintWork;
                     SvgAnalyticPaint paint = ResolveSolidPaint(glyph.Color);
+                    SvgLinearGradient? gradient = glyph.StrokeShader?.Gradient;
+                    using SvgGradientRamp ramp = gradient is {} definition
+                        ? PrepareGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2) : default;
+                    SvgGradientPaintMatrices? textMatrices = null;
+                    if (gradient?.SourcePaint?.Data is {} textSource && source.GlyphMap != SvgAffineTransform.Identity)
+                    {
+                        // SVG text cancels the fragment transform in its shader-local
+                        // matrix before the canvas concatenates their float forms.
+                        // Algebraic cancellation loses native sampling precision.
+                        SvgAffineTransform glyphMap = source.GlyphMap;
+                        if (!glyphMap.TryInvert(out SvgAffineTransform inverse)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text shader placement must be invertible.");
+                        SvgAffineTransform local = inverse.ComposeChecked(textSource.Referencing).ComposeChecked(new(textSource.Local.A, textSource.Local.B, textSource.Local.C, textSource.Local.D, textSource.Local.E, textSource.Local.F));
+                        textMatrices = new(new((float)local.A, (float)local.C, (float)local.E, (float)local.B, (float)local.D, (float)local.F), glyphMap);
+                    }
+                    SvgShaderCoordinates coordinates = gradient is {} mapped
+                        ? SvgShaderCoordinates.CreateLinear(mapped, default, horizontalScale, verticalScale, horizontalOffset, verticalOffset, textMatrices) : default;
                     for (int y = startY; y < endY; y++)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
@@ -3374,6 +3391,23 @@ public static class SvgConverter
                             int sampleX = (int)(x - deviceLeft) * sampleScale;
                             byte coverage = horizontalStrokeFilter ? FilterStroke(bitmap.Pixels.AsSpan(row, width * 4), sampleX) : bitmap.Pixels[row + sampleX * 4 + 3];
                             byte alpha = ViewportAlpha(preblend[coverage], x, y);
+                            if (gradient is {} ink)
+                            {
+                                double position;
+                                if (ink.X1 == ink.X2 && ink.Y1 == ink.Y2) position = 1;
+                                else if (!coordinates.TryLinear(x, y, ShaderBitmapOrigin(x, y), out position))
+                                    position = ink.SourcePaint?.Position((x + .5 - horizontalOffset) / horizontalScale, (y + .5 - verticalOffset) / verticalScale) ?? 1;
+                                double span = ink.Offset2 - ink.Offset1;
+                                double local = span == 0 ? 1 : (position - ink.Offset1) / span;
+                                if (ink.Spread == SvgGradientSpread.Repeat) local -= Math.Floor(local);
+                                else if (ink.Spread == SvgGradientSpread.Reflect)
+                                {
+                                    double cycle = local - 2 * Math.Floor(local / 2);
+                                    local = cycle > 1 ? 2 - cycle : cycle;
+                                }
+                                else local = Math.Clamp(local, 0, 1);
+                                paint = SvgAnalyticPaint.Shader(ramp.SampleLinear(local, ShaderAlpha(glyph.Color.Alpha), GradientDither(x, y)));
+                            }
                             paint.Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), alpha, SvgAnalyticPaintKind.Mask);
                         }
                     }
@@ -3407,6 +3441,32 @@ public static class SvgConverter
                         r += alpha * red[index]; g += alpha * green[index]; b += alpha * blue[index];
                     }
                     return (byte)((Math.Min(r >> 8, 255) + Math.Min(g >> 8, 255) + Math.Min(b >> 8, 255)) / 3);
+                }
+            }
+
+            // SkGradientBaseShader uses an unweighted source-color mean to select
+            // font-mask preblend, independently of stop alpha and pixel position.
+            SvgColor GradientLuminance(SvgLinearGradient gradient, ParserWorkCounter work)
+            {
+                float red = 0, green = 0, blue = 0;
+                int count = 0;
+                if (gradient.Stops.Length != 0 && gradient.Stops[0].Offset > 0) Include(gradient.Stops[0].Color);
+                foreach (SvgGradientStop stop in gradient.Stops)
+                {
+                    work.Consume(cancellationToken);
+                    Include(stop.Color);
+                }
+                if (count == 0) { Include(gradient.Start); Include(gradient.End); }
+                else
+                {
+                    if (gradient.Stops[^1].Offset < 1) Include(gradient.Stops[^1].Color);
+                }
+                float scale = 255f / count;
+                return new((byte)MathF.Floor(red * scale + .5f), (byte)MathF.Floor(green * scale + .5f), (byte)MathF.Floor(blue * scale + .5f), 255);
+
+                void Include(SvgColor color)
+                {
+                    red += color.Red * (1f / 255f); green += color.Green * (1f / 255f); blue += color.Blue * (1f / 255f); count++;
                 }
             }
         }

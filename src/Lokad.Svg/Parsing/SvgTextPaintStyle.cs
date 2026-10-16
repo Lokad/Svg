@@ -36,7 +36,8 @@ internal readonly record struct SvgTextPaintStyle(SvgPaint Paint, bool IsDisplay
     internal void ValidateEmission()
     {
         _ = GlyphPaint.Stroke?.Resolve();
-        _ = Decoration?.Paint.Stroke?.Resolve();
+        if (Decoration?.Paint.Stroke is {} decoration && decoration.Resolve() is {})
+            SvgStrokeStyleSyntax.RejectPaintServerStroke(decoration.Style.Stroke, "text decorations");
     }
 
     private static void ValidateStyle(SvgComputedStyle style)
@@ -67,13 +68,16 @@ internal readonly record struct SvgTextStrokePaint(SvgInheritedStrokeStyle Style
     {
         double width = SvgStrokeStyleSyntax.ParseStrokeWidth(Style.Width, "text");
         if (width == 0) return null;
-        SvgStrokeStyleSyntax.RejectPaintServerStroke(Style.Stroke, "text");
         _ = SvgStrokeStyleSyntax.ParseLinecap(Style.Linecap);
         _ = SvgStrokeStyleSyntax.ParseLinejoin(Style.Linejoin, true);
         _ = SvgStrokeStyleSyntax.ParseMiterLimit(Style.Miterlimit);
         _ = SvgStrokeStyleSyntax.ParseDasharray(Style.Dasharray);
         _ = SvgStrokeStyleSyntax.ParseDashoffset(Style.Dashoffset);
-        SvgColor color = SvgPaintResolver.ResolveStrokeColor(Style.Stroke ?? "none", null, Paint, SvgRootParser.CssNamedColors);
+        // A shader supplies color at replay. White retains the independent
+        // stroke/element opacity while the shared outline uses only the width.
+        SvgColor color = Style.Stroke is {} value && SvgLocalUrl.TryParseId(value, out _)
+            ? new SvgColor(255, 255, 255, 255)
+            : SvgPaintResolver.ResolveStrokeColor(Style.Stroke ?? "none", null, Paint, SvgRootParser.CssNamedColors);
         color = SvgPaintResolver.ApplyOpacity(color, Style.StrokeOpacity is null ? (byte)255 : SvgColorParser.ParseOpacity(Style.StrokeOpacity));
         return new(SvgPaintResolver.ApplyOpacity(color, Opacity), width);
     }

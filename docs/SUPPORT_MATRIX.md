@@ -1,3 +1,17 @@
+## Supplied-font user-space linear strokes (2026-10-16)
+
+The original curved shader control and one affine/translucent control are exact
+on Windows/Linux in the [text-map bank](../tests/Research/text-map-exit-sheet/README.md).
+Defined user-space linear gradients reuse native glyph masks and the shared ramp/
+coordinate sampler. Coverage uses the shader's representative color; fragment
+inverse and canvas maps stay separate through float preparation. Independent stop/
+stroke alpha, span overrides and siblings are qualified. Gradient `skewX`/`skewY`
+spelling lowers to the shared affine map. [Qualification](../artifacts/maintenance-review-20261012/text-shader-qualified-results.json)
+owns prior results and affected ownership checks. Local-use text still blocks the
+whole document. Object-box/radial/pattern text paints and forward direct-text
+binding remain required T1 work, including finite constant/empty outcomes. Earlier
+blanket text-shader guards are superseded only for the admitted route. G9 stays open.
+
 ## Mixed direct/path text flow (2026-10-16)
 
 The unchanged [mixed control](../tests/Research/text-map-exit-sheet/README.md)
@@ -8,7 +22,7 @@ from glyph count. Existing viewport clips and element mask scopes survive deferr
 emission. Empty/closed-offset endpoints and original positive-input migrations
 have focused regressions. [Qualification](../artifacts/maintenance-review-20261012/text-flow-qualified-results.json)
 owns previous exact results and queued-layout denial/cancellation/retry.
-The whole sheet remains incomplete for shader strokes and local-use text; G9
+The later shader correction closes its linear control. Local-use text still blocks the whole sheet; G9
 and release stay open. Earlier blanket mixed-text guards below are superseded.
 
 ## Supplied-font glyph clip/mask scopes (2026-10-16)

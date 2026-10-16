@@ -1,6 +1,6 @@
 # Remaining supplied-font text maps
 
-One MIT document (416×256) remains **0/1 complete**, with **1/3 separately counted
+One MIT document (416×256) remains **0/1 complete**, with **3/4 separately counted
 controls exact** on Windows/Linux, from zero at declaration. Original inputs exercise
 a rendered local-use label, a linear-shader stroke on a curved text path and
 painted direct text before/after a local path. Every panel and following sibling
@@ -25,5 +25,11 @@ forward references); cached viewport clips and the original element mask remain
 shared. Original rejected inputs now have positive position/cleanup regressions.
 [Qualification](../../../artifacts/maintenance-review-20261012/text-flow-qualified-results.json)
 owns full platform checks and denial/cancellation/retry of queued layout owners.
-The whole sheet still rejects shader strokes and local-use text. Finish both
-remaining gates against these frozen references; no document count is added.
+The original curved linear-shader control is also exact on both platforms. Its
+native glyph stroke geometry is unchanged; shared sampling retains the host paint
+map and fragment-matrix cancellation independently of glyph tangents. One added
+affine/translucent control covers three stops, alpha, a span stroke override and
+a following sibling, from six healthy captures. The original three controls stay
+unchanged. [Shader qualification](../../../artifacts/maintenance-review-20261012/text-shader-qualified-results.json)
+owns affected cleanup and prior results. Local-use text still blocks the whole
+sheet. Remaining promised text paints stay in T1; no document count is added.

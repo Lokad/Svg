@@ -338,11 +338,14 @@ public sealed class SvgFontLayoutDiagramTests
     public static IEnumerable<object[]> TextMapCases()
         => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "text-map-exit-sheet"));
 
-    [Fact]
-    public async Task Mixed_text_continuations_release_queued_layouts_and_support_prepared_retry()
+    [Theory]
+    [InlineData("mixed-direct-path.svg")]
+    [InlineData("shader-curved-path.svg")]
+    [InlineData("shader-stroke-maps.svg")]
+    public async Task Retained_text_maps_release_owners_and_support_prepared_retry(string inputName)
     {
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", "text-map-exit-sheet");
-        byte[] input = File.ReadAllBytes(Path.Combine(directory, "mixed-direct-path.svg")), unchanged = input.ToArray();
+        byte[] input = File.ReadAllBytes(Path.Combine(directory, inputName)), unchanged = input.ToArray();
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, "..", "supplied-font-labels", "font-pack.json")), "public-noto-sans");
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, new Provider(), CancellationToken.None);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);

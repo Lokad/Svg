@@ -194,7 +194,9 @@ internal static class SvgGradientSyntax
         bool isMatrix = name.Equals("matrix".AsSpan(), StringComparison.OrdinalIgnoreCase);
         bool isTranslate = name.Equals("translate".AsSpan(), StringComparison.OrdinalIgnoreCase);
         bool isRotate = name.Equals("rotate".AsSpan(), StringComparison.OrdinalIgnoreCase);
-        if (!isMatrix && !isTranslate && !isRotate && !name.Equals("scale".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotation, and finite matrix() gradient transforms are implemented.");
+        bool isSkewX = name.Equals("skewX".AsSpan(), StringComparison.OrdinalIgnoreCase);
+        bool isSkewY = name.Equals("skewY".AsSpan(), StringComparison.OrdinalIgnoreCase);
+        if (!isMatrix && !isTranslate && !isRotate && !isSkewX && !isSkewY && !name.Equals("scale".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotation, skew and finite matrix() gradient transforms are implemented.");
         Span<double> values = stackalloc double[6];
         int valueCount = 0;
         SvgGeometrySyntax.DelimitedTokenReader tokens = new(arguments);
@@ -219,6 +221,12 @@ internal static class SvgGradientSyntax
             SvgGradientTransform toCenter = new(1, 0, 0, 1, values[1], values[2]);
             SvgGradientTransform fromCenter = new(1, 0, 0, 1, -values[1], -values[2]);
             return SvgGradientTransform.Compose(SvgGradientTransform.Compose(toCenter, rotation), fromCenter);
+        }
+        if (isSkewX || isSkewY)
+        {
+            if (valueCount != 1) throw new SvgException(SvgErrorCode.MalformedInput, "skewX()/skewY() require one angle.");
+            SvgAffineTransform map = isSkewX ? SvgAffineTransform.FromSkewXDegrees(values[0]) : SvgAffineTransform.FromSkewYDegrees(values[0]);
+            return new(map.A, map.B, map.C, map.D, 0, 0);
         }
         if (valueCount is < 1 or > 2) throw new SvgException(SvgErrorCode.MalformedInput, "Transforms require one or two coordinates.");
         double first = values[0];

@@ -44,12 +44,15 @@ internal struct SvgShaderCoordinates
         => new(new(1, 0, 0, 0, 1, 0), paintMap, imageLocal);
 
     internal static SvgShaderCoordinates CreateLinear(SvgLinearGradient gradient, SvgRectangle box, double horizontalScale, double verticalScale, double horizontalOffset, double verticalOffset)
+        => CreateLinear(gradient, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, null);
+
+    internal static SvgShaderCoordinates CreateLinear(SvgLinearGradient gradient, SvgRectangle box, double horizontalScale, double verticalScale, double horizontalOffset, double verticalOffset, SvgGradientPaintMatrices? textMatrices)
     {
         if (gradient.SourcePaint?.Data is { IsMapped: true } source)
         {
-            SvgAffineTransform reference = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset).ComposeChecked(source.Referencing);
+            SvgAffineTransform reference = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset).ComposeChecked(textMatrices?.Referencing ?? source.Referencing);
             SvgShaderMatrix paint = new((float)reference.A, (float)reference.C, (float)reference.E, (float)reference.B, (float)reference.D, (float)reference.F);
-            SvgShaderMatrix local = new((float)source.Local.A, (float)source.Local.C, (float)source.Local.E, (float)source.Local.B, (float)source.Local.D, (float)source.Local.F);
+            SvgShaderMatrix local = textMatrices?.Local ?? new((float)source.Local.A, (float)source.Local.C, (float)source.Local.E, (float)source.Local.B, (float)source.Local.D, (float)source.Local.F);
             return Linear((float)source.X1, (float)source.Y1, (float)source.X2, (float)source.Y2, paint, local);
         }
         float sx = (float)(gradient.IsUserSpace ? gradient.ReferenceScaleX : box.Width) * (float)horizontalScale;

@@ -12,6 +12,9 @@ internal readonly record struct SvgPlacedTextGlyph(SvgPositionedGlyph Position, 
 /// <summary>Retains the native fragment origin separately from its tangent map for rectangle paint precision.</summary>
 internal readonly record struct SvgTextDecorationPlacement(SvgDevicePoint Origin, SvgAffineTransform Map);
 
+/// <summary>Shares one scene-owned, source-bound linear text stroke without changing glyph coverage geometry.</summary>
+internal sealed record SvgTextLinearStroke(SvgLinearGradient Gradient);
+
 /// <summary>Replays fill and stroke in normalized fragment order using the existing platform glyph sources.</summary>
 /// <remarks>All inputs remain borrowed. Each emitted geometry transfers to the scene; temporary decoded contours
 /// observe the shared budget/work/token and release on every exit. Direct and path font-placement distinctions remain explicit.</remarks>
@@ -29,6 +32,15 @@ internal static class SvgTextGlyphPainter
         foreach (SvgTextPaintFragment fragment in run.PaintFragments)
         {
             work.Consume(token);
+            SvgTextLinearStroke? shader = null;
+            SvgTextGlyphPaint fragmentPaint = run.GetGlyphPaint(fragment.Start, fallback);
+            if (fragmentPaint.HasStroke && fragmentPaint.Stroke is {} fragmentStroke && fragmentStroke.Style.Stroke is {} strokeValue && SvgLocalUrl.TryParseId(strokeValue, out string? paintId))
+            {
+                if (!state.Gradients.TryGetValue(paintId, out SvgLinearGradient gradient) || !gradient.IsUserSpace)
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined user-space linear gradients on text strokes are implemented.");
+                gradient = SvgGradientSyntax.BindLinearSourceMap(gradient, default, placement, state, work, token);
+                shader = state.Scene.RetainTextLinearStroke(gradient);
+            }
             // A direct run shares each paint pass. Path text paints independently
             // placed glyphs, so an adjacent glyph's stroke follows the prior fill.
             int start = fragment.Start;
@@ -41,9 +53,9 @@ internal static class SvgTextGlyphPainter
                 ReadOnlySpan<SvgTextPaintFragment> decoration = [new(start, end, decorationWidth)];
                 if (!pathPlacements.IsEmpty)
                     SvgTextDecorationRenderer.Emit(run, decoration, placement, pathPlacements, pathClip, state, fallback, false, maximumCommands, budget, work, token);
-                if (strokeFirst && paint.HasStroke) Stroke(run, placement, pathPlacements, pathClip, fallback, start, end, state, budget, work, token);
+                if (strokeFirst && paint.HasStroke) Stroke(run, placement, pathPlacements, pathClip, shader, fallback, start, end, state, budget, work, token);
                 if (paint.HasFill) Fill(run, placement, pathPlacements, pathClip, fallback, start, end, state, budget, work, token);
-                if (!strokeFirst && paint.HasStroke) Stroke(run, placement, pathPlacements, pathClip, fallback, start, end, state, budget, work, token);
+                if (!strokeFirst && paint.HasStroke) Stroke(run, placement, pathPlacements, pathClip, shader, fallback, start, end, state, budget, work, token);
                 if (!pathPlacements.IsEmpty)
                     SvgTextDecorationRenderer.Emit(run, decoration, placement, pathPlacements, pathClip, state, fallback, true, maximumCommands, budget, work, token);
                 start = end;
@@ -100,7 +112,7 @@ internal static class SvgTextGlyphPainter
         }
 
         static void Stroke(SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> paths, SvgLeafMaskBinding? pathClip,
-            SvgColor fallback, int start, int end, SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+            SvgTextLinearStroke? shader, SvgColor fallback, int start, int end, SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
         {
             for (int index = start; index < end; index++)
             {
@@ -113,6 +125,7 @@ internal static class SvgTextGlyphPainter
                 if (contours.Contours.Length == 0) continue;
                 stroke = stroke with { FontScale = state.OutputTextScale * SvgGlyphDeviceMetrics.GetScreenScale(placement) };
                 SvgGlyphGeometry glyph = SvgGlyphGeometry.CreateStroke(contours, stroke, font.Font, placed.Position, font.FontSize, placed.Map, budget);
+                glyph.StrokeShader = shader;
                 try
                 {
                     SvgGeometry geometry = paths.IsEmpty ? SvgPaintRecording.RecordGlyph(glyph, state, work, token) : SvgGeometry.FromGlyphContours(glyph);

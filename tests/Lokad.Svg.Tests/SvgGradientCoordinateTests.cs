@@ -8,6 +8,30 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgGradientCoordinateTests
 {
+    [Theory]
+    [InlineData("skewX(45)", 5, 2)]
+    [InlineData("skewY(45)", 3, 5)]
+    public void Gradient_skew_spelling_preserves_the_shared_affine_map(string transform, double x, double y)
+    {
+        using StringReader input = new("<linearGradient gradientTransform='" + transform + "'/>");
+        using XmlReader reader = XmlReader.Create(input);
+        reader.MoveToContent();
+        SvgGradientTransform map = SvgGradientSyntax.ParseLinearVector(reader, new(1000), CancellationToken.None).Transform;
+        var point = map.Apply(3, 2);
+        Assert.Equal(x, point.X, 12); Assert.Equal(y, point.Y, 12);
+    }
+
+    [Theory]
+    [InlineData("skewX()")]
+    [InlineData("skewY(1 2)")]
+    public void Gradient_skew_requires_one_finite_angle(string transform)
+    {
+        using StringReader input = new("<radialGradient gradientTransform='" + transform + "'/>");
+        using XmlReader reader = XmlReader.Create(input);
+        reader.MoveToContent();
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgGradientSyntax.ParseRadialVector(reader, new(1000), CancellationToken.None)).ErrorCode);
+    }
+
     [Fact]
     public void Gradient_transform_numbers_match_browser_dom_bits()
     {

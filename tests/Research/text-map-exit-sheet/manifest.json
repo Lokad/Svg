@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One complete MIT text-map document and three focused controls. Mixed direct/path text is exact against unchanged platform references; local-use labels and shader-stroked paths still reject, so the whole document remains incomplete. Composite flags and private validation remain required.",
+  "purpose": "One complete MIT text-map document remains blocked by local-use labels. Original mixed text and curved shader controls are exact; one additional coordinate/alpha control protects the shared correction. Composite/private/remaining paint routes stay required.",
   "fontPack": "../supplied-font-labels/font-pack.json",
   "fontPackId": "public-noto-sans",
   "fontProvenance": "../supplied-font-labels/font-provenance.json",
@@ -124,7 +124,6 @@
       "sourceSha256": "4ab3a5fc47ab6868913e22137f38a5262d906fb8c9c1f54e9a8b3c1ee7f58fbb",
       "scale": 1,
       "licenseEvidence": "LICENSE.txt",
-      "expectedError": "UnsupportedFeature",
       "declarationBaseRevision": "12b29b416259c313b7c4d290c388d31a96973ea8",
       "reference": "references/shader-curved-path.png",
       "referenceSha256": "6b8f71eaed37f748fae6097fd8cb2c537ca16015a120c711ddd0207547d9f7cb",
@@ -212,6 +211,58 @@
         },
         {
           "pngSha256": "3fb18da476515b02cc9b07e0b8878288de01e9371bb5be2351de47edc443c8a5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "shader-stroke-maps",
+      "input": "shader-stroke-maps.svg",
+      "width": 416,
+      "height": 120,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "MIT",
+      "selection": "Host affine paint map versus curved glyph tangents, three translucent stops, stroke opacity and span override",
+      "sourceSha256": "b595544d03a9ad0149181888f655745475b2e52eac969664ee2e869a714d8036",
+      "scale": 1,
+      "licenseEvidence": "LICENSE.txt",
+      "declarationBaseRevision": "93a4fd9e6569003cdaee3c4d9b509e4ad503827e",
+      "reference": "references/shader-stroke-maps.png",
+      "referenceSha256": "6b43249e42d9624f0965691cb6fa64e7aead0e80beeb47a4f00731a70f82e94b",
+      "captures": [
+        {
+          "pngSha256": "6b43249e42d9624f0965691cb6fa64e7aead0e80beeb47a4f00731a70f82e94b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6b43249e42d9624f0965691cb6fa64e7aead0e80beeb47a4f00731a70f82e94b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6b43249e42d9624f0965691cb6fa64e7aead0e80beeb47a4f00731a70f82e94b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/shader-stroke-maps.png",
+      "linuxReferenceSha256": "0f6dee635d963a9127f4b0465996092ddc9b38a24a74b5063df69479a2f2589b",
+      "linuxCaptures": [
+        {
+          "pngSha256": "0f6dee635d963a9127f4b0465996092ddc9b38a24a74b5063df69479a2f2589b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0f6dee635d963a9127f4b0465996092ddc9b38a24a74b5063df69479a2f2589b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0f6dee635d963a9127f4b0465996092ddc9b38a24a74b5063df69479a2f2589b",
           "startupHealth": "healthy",
           "profileCleaned": true
         }

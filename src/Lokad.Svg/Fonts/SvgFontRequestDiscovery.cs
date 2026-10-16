@@ -9,6 +9,7 @@ internal static class SvgFontRequestDiscovery
 {
     private const int MaximumRequests = 256;
     private const string SvgNamespace = "http://www.w3.org/2000/svg";
+    private readonly record struct TextStrokeReference(string Id);
 
     internal static SvgFontFaceRequest[] Discover(ReadOnlyMemory<byte> svg, CancellationToken cancellationToken)
         => Discover(svg, SvgRenderLimits.Default, cancellationToken);
@@ -49,6 +50,8 @@ internal static class SvgFontRequestDiscovery
         using var groupLevels = new BudgetedParserList<bool>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         using var viewportSizes = new BudgetedParserList<SvgViewportSize>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         using var switchScopes = new BudgetedParserList<SwitchScope>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        using var linearStrokeIds = new BudgetedParserDictionary<string, bool>(budget, SvgMemoryCategory.Parser, 96);
+        using var textStrokeIds = new BudgetedParserList<TextStrokeReference>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         char[]? textChunk = null;
         RenderBudget.BudgetReservation? textChunkReservation = null;
         try
@@ -93,6 +96,8 @@ internal static class SvgFontRequestDiscovery
                     if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                     nodeCount++;
                     bool isSvgElement = reader.NamespaceURI == SvgNamespace;
+                    if (isSvgElement && reader.LocalName == "linearGradient" && reader.GetAttribute("id") is {} linearId)
+                        linearStrokeIds.TryAdd(styleStrings.Copy(linearId), true);
                     bool insideDirectText = activeCandidateLevel >= 0;
                     bool directChild = reader.Depth == rootDepth + 1;
                     bool hasGroupAncestor = groupDepth != 0;
@@ -337,6 +342,8 @@ internal static class SvgFontRequestDiscovery
                         if (hasRenderable)
                         {
                             paint.ValidateEmission();
+                            if (paint.GlyphPaint.HasStroke && paint.Stroke is {} stroke && SvgLocalUrl.TryParseId(stroke, out string? strokeId))
+                                textStrokeIds.Add(new(styleStrings.Copy(strokeId)));
                             activeTextPainted |= paint.GlyphPaint.IsPainted;
                             // Displayed hidden/unpainted glyphs still advance later
                             // painted spans. Acquire their metrics only when the
@@ -350,6 +357,12 @@ internal static class SvgFontRequestDiscovery
                 }
             }
             if (!hasRoot) throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
+            foreach (TextStrokeReference reference in textStrokeIds.AsSpan())
+            {
+                workCounter.Consume(cancellationToken);
+                if (!linearStrokeIds.TryGetValue(reference.Id, out _))
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "A text stroke requires a defined local linear gradient.");
+            }
             var result = new SvgFontFaceRequest[requestKeys.Count];
             for (int index = 0; index < result.Length; index++)
             {

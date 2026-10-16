@@ -5245,13 +5245,26 @@ public sealed class SvgRootParserTests
 
     [Theory]
     [InlineData("scale(0)")]
-    [InlineData("skewX(30)")]
-    [InlineData("skewY(15)")]
     public void Rejects_unsupported_gradient_transform_forms(string transform)
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientTransform='" + transform + "'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Theory]
+    [InlineData("skewX(30)", "matrix(1 0 .5773502691896257 1 0 0)")]
+    [InlineData("skewY(15)", "matrix(1 .2679491924311227 0 1 0 0)")]
+    public void Original_gradient_skews_match_their_affine_matrix_and_release_storage(string transform, string matrix)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientTransform='" + transform + "'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>");
+        byte[] equivalent = System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(input).Replace(transform, matrix, StringComparison.Ordinal));
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+            Assert.True(Assert.Single(root.Geometries).Gradient.Gradient.RequiresSourceMap);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        SvgRenderOptions options = new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default);
+        Assert.Equal(SvgConverter.ConvertToPng(equivalent, options, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
     }
 
     [Fact]

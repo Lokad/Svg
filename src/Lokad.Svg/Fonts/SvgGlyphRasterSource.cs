@@ -15,6 +15,7 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
     private readonly SvgAffineTransform _glyphMap;
 
     internal bool HasGlyphMap => _glyphMap != SvgAffineTransform.Identity;
+    internal SvgAffineTransform GlyphMap => _glyphMap;
 
     private SvgGlyphRasterSource(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, SvgAffineTransform glyphMap, double? pictureFontScale, RenderBudget.BudgetReservation reservation)
     {

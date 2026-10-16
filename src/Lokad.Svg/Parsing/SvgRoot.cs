@@ -922,6 +922,7 @@ internal sealed class SvgGlyphGeometry : IDisposable
 
     internal SvgGlyphRasterSource? Source { get; }
     internal SvgTextStrokePaint? StrokePaint { get; private set; }
+    internal SvgTextLinearStroke? StrokeShader { get; set; }
     internal double StrokeBoundsInflation { get; private set; }
 
     internal static SvgGlyphGeometry CreateStroke(SvgGlyphContourStorage contours, SvgTextStrokePaint paint,
@@ -1481,6 +1482,22 @@ internal sealed class SvgSceneBuilder : IDisposable
         catch { reservation.Dispose(); throw; }
     }
 
+    /// <summary>Shares one immutable text shader across a fragment's glyphs under scene ownership.</summary>
+    /// <remarks>Reserves aggregate metadata and stop storage before publication. The scene releases
+    /// storage on failure/disposal; the value borrows no parser state and is safe for concurrent draws.</remarks>
+    internal SvgTextLinearStroke RetainTextLinearStroke(SvgLinearGradient gradient)
+    {
+        RenderBudget.BudgetReservation reservation = _budget.Reserve(64L + Unsafe.SizeOf<SvgLinearGradient>(), SvgMemoryCategory.Scene);
+        try
+        {
+            SvgTextLinearStroke paint = new(gradient);
+            ReserveGradientStopArray(gradient.Stops);
+            _paintReservations.Add(reservation);
+            return paint;
+        }
+        catch { reservation.Dispose(); throw; }
+    }
+
     internal void ChangeRecordedPaint(SvgRecordedPaint reference, SvgRecordedPaintValue value)
     {
         _workCounter.Consume(_cancellationToken);
@@ -1540,7 +1557,12 @@ internal sealed class SvgSceneBuilder : IDisposable
             SvgGeometryKind.RadialPolygon => geometry.RadialPolygon.Gradient.Stops,
             _ => null,
         };
-        if (stops is null || stops.Length == 0 || !_reservedStopArrays.Add(stops)) return;
+        if (stops is not null) ReserveGradientStopArray(stops);
+    }
+
+    private void ReserveGradientStopArray(SvgGradientStop[] stops)
+    {
+        if (stops.Length == 0 || !_reservedStopArrays.Add(stops)) return;
         _paintReservations.Add(_budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(stops.Length), SvgMemoryCategory.Scene));
     }
 
