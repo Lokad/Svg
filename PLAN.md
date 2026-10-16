@@ -1,6 +1,7 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-16 at the completed T1 text instance/paint checkpoint.
+Updated 2026-10-16 at the T2 composite-font diagnostic checkpoint.
+T1 is qualified; the current T2 implementation remains unqualified.
 Preserve the current implementation work, qualified `inv-146` correction and every
 established exact result, original SVG/font/reference bytes, options and default
 resource limits. This file owns delivery order, required exits and scope
@@ -60,13 +61,20 @@ rows; it is measured once, without duplicate API or combination requirements.
 
 | Order / required exit | Missing behavior or evidence; dependencies | Concrete acceptance and completion condition |
 | --- | --- | --- |
-| [ ] T2 — composite flags (item 4 / G9) | OVERLAP_COMPOUND, SCALED_COMPONENT_OFFSET and UNSCALED_COMPONENT_OFFSET remain outside the [decoder's admitted flags](src/Lokad.Svg/Fonts/OpenTypeFont.cs). Reuse bounded composite decoding and fitting. | Public synthetic overlapping components and transformed nonzero offsets distinguish all three flags and match both native profiles exactly. Affected malformed/failure/ownership checks pass; retain parent-hint, USE_MY_METRICS and nested-accent results. No general VM grid. |
+| [ ] T2 — composite flags (item 4 / G9) | Finish and qualify the current OVERLAP_COMPOUND, SCALED_COMPONENT_OFFSET and UNSCALED_COMPONENT_OFFSET work. Admission alone does not close this exit: Windows transformed-component fitting/placement still differs. Reuse bounded decoding, metric origins and native fitting; preserve the exact Linux candidate. | Complete the frozen composite-flag sheet and its three independent overlap/offset controls exactly on both platforms, including transformed nonzero offsets. Add focused malformed/failure/ownership protection; retain parent-hint, USE_MY_METRICS and nested-accent results. Close only after full qualification; no general VM grid. |
 | [ ] T3 — private requests (item 4 / G9) | End-to-end deployment evidence remains missing; host/catalog and public conformance are implemented. Use the [authorized private workflow](#authorized-private-font-testing), with T1/T2 fixes only if a request needs them. | Freeze one regular, bold, italic and fallback request against the unchanged deployed manifest. Retain four sanitized selection/metrics/pixel outcomes; convert in-scope defects into public reproductions and resolve them. Private success cannot replace public acceptance. |
 | [ ] E1 — non-solid affine sources (item 5 / G8) | Linear/radial, pattern and supplied-font affine source maps, with source clip/nested resource scope. Reuse qualified solid affine capture, shared paint maps, C1–C6c and T1. | Exact linear/radial-painted, patterned and supplied-font affine-source witnesses including source clip/nested scope. Reuse exact panels in the [effects bank](tests/Research/effects-marker-sheet/README.md); add only uncovered independent cases. Preserve native origins/nearest offsets. |
 | [ ] E2 — linearRGB restoration/shadows (item 5 / G8) | Colored/translucent linearRGB shadow and identity/zero-offset restoration boundaries. Reuse existing per-primitive transfers, CPU/shadow consumers and E1 maps as needed. | Exact colored linearRGB shadow over translucent source and uncovered identity/zero-offset colored-source controls. Resolve the retained [single-linear-image/outer-opacity difference](artifacts/effects-marker-sheet-20261015/mixed-consumer-single-blur.svg) against healthy frozen platform references; one native observation is insufficient. Preserve mixed-space and 26/26 filter-region results. |
 | [ ] E3 — filtered-source boundaries (item 5 / G8) | Object-box output clips; uncovered mask, nested-viewport, marker, text and local-use sources and applicable filter presentation. Reuse qualified output clips/nested halos, C/T scopes and E1–E2 playback. | Exact filtered target with an object-box clip, plus one witness for each listed uncovered source boundary. Preserve source/output order, halos and scope termination. Bring an E4 marker dependency forward only if needed; no content × graph × container census. |
 | [ ] E4 — marker semantics (item 5 / G8) | Font-relative sizes, inherited container paint/child override and stylesheet/inline priority; remaining auto/auto-start-reverse tangents. Reuse [path](tests/Research/path-marker-content/manifest.json), [instance](tests/Research/marker-instance-content/manifest.json), angle/overflow and source-geometry machinery. | Exact font-relative and cascaded-paint markers, and open/closed/zero-length-path orientation witnesses. Valid degenerates have measured outcomes; missing/recursive references remain categorized errors. Reuse qualified spellings and controls. |
 | [ ] S17 — release (item 6) | Finished T1–T3/E1–E4 plus retained product, font, resource and packaging contracts. | Every [release condition](#release-completion-s17) holds together for the finished revision. Counts alone cannot establish completion. |
+
+T2 diagnostic inputs and frozen native captures are retained in the existing
+[study](artifacts/composite-flag-exits-20261016/declaration.json);
+[Windows](artifacts/composite-flag-exits-20261016/candidate-windows.json) and
+[Linux](artifacts/composite-flag-exits-20261016/candidate-linux.json) results are
+candidate evidence, not qualification. Preserve this work and the original
+references while finishing the Windows boundary.
 
 Before implementing a row, check current code and qualified manifests. Distinguish
 an actual rejection/difference from admitted behavior needing evidence; historical
@@ -110,8 +118,8 @@ and [shared-map qualification](artifacts/maintenance-review-20261012/shared-maps
 own their evidence. Retain cap/dash/dot, inherited shader, reflected phase,
 nonpainting/device-width and degenerate/cleanup regressions. Root viewBox,
 pattern-content viewBox and stroke host maps remain distinct native stages.
-Composition/resource exits are complete under item 3; only glyph contexts (T1)
-and filtered/marker sources (E1–E4) remain required here.
+Composition/resource exits are complete under item 3, including T1 glyph
+contexts. Only filtered/marker source extensions (E1–E4) remain required here.
 
 <a id="g5-viewports-clips-masks-and-composition"></a>
 <a id="g6-patterns"></a>
