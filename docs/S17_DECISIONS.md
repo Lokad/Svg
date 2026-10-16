@@ -1,5 +1,11 @@
 # S17 release criteria and decisions
 
+**Current status (2026-10-16): standalone delivery is reopened** for the six
+demonstrated corrections A1–A6 and finished verification A7 in
+[PLAN](../PLAN.md#delivery-order). Preserve the dated qualification below for its
+declared cases; it does not cover the newly retained failures. T3-public and
+measurements remain qualified; T3-private stays separate before production adoption.
+
 Updated 2026-10-16. **Standalone Lokad.Svg release qualification is complete**
 for substantive revision `e21f956c`. The [completion audit](../artifacts/feather-line-documents-20261016/release-follow-up-qualified-results.json)
 maps all five current [PLAN conditions](../PLAN.md#release-completion-s17) to

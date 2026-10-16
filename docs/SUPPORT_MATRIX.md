@@ -1,3 +1,16 @@
+## Current standalone delivery — reopened audit corrections (2026-10-16)
+
+The completion audit in [PLAN](../PLAN.md#delivery-order) demonstrates six missing
+behaviors within the finite promises: pattern leaf/object-box clips, retained
+instance/marker clips, clipped vector mask content, nested clip-child intersections
+and filtered gradient source fidelity. A1–A6 and final S17 verification A7 are open.
+Eight additional rejected probes require the three explicit admission reconciliations
+listed in PLAN; they are not automatic scope additions or approved deferrals.
+The qualified `e21f956c` cases, public fonts, exact cohorts and resource/ownership
+contracts remain evidence to preserve. Dated completion statements below describe
+their revisions and do not close these newly retained gaps. Private deployment
+qualification remains a separate pending adoption gate.
+
 ## Public symbol and fractional-line follow-up (2026-10-16)
 
 Symbol display/visibility presentation attributes, inline styles and admitted

@@ -18,17 +18,21 @@ with runtime/host overhead and borrowed storage identified separately.
 
 The frozen corporate cohort is exact on Windows/Linux: **27/27 documents and
 258/258 variants**. The selected development queue is **50/50 complete**, with
-**35 authored documents** and one sourced W3C document counted separately.
+**36 authored documents** and four sourced documents counted separately.
 These results establish their declared outputs, not general SVG completeness.
 Original inputs/options and independent platform references remain frozen;
 [INVENTORY](docs/INVENTORY.md) owns the evidence and selection limits.
 
 [SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md) and [PLAN's finite boundaries](PLAN.md#required-support-boundaries-and-finite-exits)
-define the useful subset and explicit unsupported outcomes. Its G2–G9 acceptance,
-[public regular/bold/real-italic/fallback qualification](tests/Research/public-font-qualification/README.md)
-(T3-public) and standalone release qualification (S17) are complete on Windows/Linux:
-**8,147 tests/platform** and all package/installed-consumer checks pass in
-[terminal green CI](https://github.com/Lokad/Svg/actions/runs/38952070864). Private
+define the useful subset and explicit unsupported outcomes. **Standalone delivery
+is reopened for six demonstrated corrections A1–A6 and final verification A7**:
+pattern leaf/object-box clips, retained instance/marker clips, clipped vector mask
+content, nested clip-child intersections and filtered gradient source fidelity.
+The prior `e21f956c` qualification remains valid for its declared cases:
+**8,147 tests/platform** and package/installed-consumer checks passed in
+[terminal green CI](https://github.com/Lokad/Svg/actions/runs/38952070864).
+[Public regular/bold/real-italic/fallback qualification](tests/Research/public-font-qualification/README.md)
+(T3-public), existing exact outputs and resource contracts remain preserved. Private
 deployment validation (T3-private) remains pending before production adoption
 and does not block standalone qualification. [PLAN](PLAN.md#delivery-order) owns the ordered
 checklist, dependencies and release exit. Mechanism/history belongs in
