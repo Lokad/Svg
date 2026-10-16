@@ -1,0 +1,215 @@
+{
+  "schemaVersion": 1,
+  "purpose": "One complete MIT document and three independent controls exact on Windows/Linux for T2 composite flags, metric origins, child strikes and alignment zones. Original references and authored face are unchanged; full qualification preserves all prior exact results.",
+  "fontPack": "font-pack.json",
+  "fontPackId": "public-composite-flags",
+  "fontProgram": "fonts/CompositeFlags.ttf",
+  "fontProgramSha256": "9dd209dcaf3fae7b34a0a54acbeaa5f8f0ca5c1e2aed62fa9990099fd0fc77a8",
+  "fontConstruction": "Self-contained authored MIT geometric face, generated once with FontTools 4.64.0. No borrowed font data or runtime/tooling dependency. Glyph indices A=3 B=4 C=5 D=6 E=7, child=2.",
+  "cases": [
+    {
+      "id": "composite-flag-sheet",
+      "input": "composite-flag-sheet.svg",
+      "width": 384,
+      "height": 168,
+      "scale": 1,
+      "background": "transparent",
+      "role": "document-output",
+      "license": "MIT",
+      "sourceSha256": "6fe49e2010a98b2dedeba537ed955697d7aefdaac841e84eefe85cf39463ec0a",
+      "licenseEvidence": "LICENSE.txt",
+      "declarationBaseRevision": "85bb798fe6851c30f8755ca5111ecd8c345e2b2d",
+      "reference": "references/composite-flag-sheet.png",
+      "referenceSha256": "a2dc3a3bde111c3d21a747cff805830b777f242697bda69134e3cb47dfdbd7e2",
+      "captures": [
+        {
+          "pngSha256": "a2dc3a3bde111c3d21a747cff805830b777f242697bda69134e3cb47dfdbd7e2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a2dc3a3bde111c3d21a747cff805830b777f242697bda69134e3cb47dfdbd7e2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a2dc3a3bde111c3d21a747cff805830b777f242697bda69134e3cb47dfdbd7e2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/composite-flag-sheet.png",
+      "linuxReferenceSha256": "284d24c410fa94bb05e03f0de630dcc0ef51cd0381ae627587dfc1c6786fad89",
+      "linuxCaptures": [
+        {
+          "pngSha256": "284d24c410fa94bb05e03f0de630dcc0ef51cd0381ae627587dfc1c6786fad89",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "284d24c410fa94bb05e03f0de630dcc0ef51cd0381ae627587dfc1c6786fad89",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "284d24c410fa94bb05e03f0de630dcc0ef51cd0381ae627587dfc1c6786fad89",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "overlap-compound",
+      "input": "overlap-compound.svg",
+      "width": 96,
+      "height": 96,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "MIT",
+      "sourceSha256": "e78a340d1d9382cfd78b5e6a47a3cc915517484f5f9401609c5a3b16cce254ed",
+      "licenseEvidence": "LICENSE.txt",
+      "declarationBaseRevision": "85bb798fe6851c30f8755ca5111ecd8c345e2b2d",
+      "reference": "references/overlap-compound.png",
+      "referenceSha256": "3110c7d4da3bb2a5875ac221d11e3477c756705ffe1f636655835553020bbc9d",
+      "captures": [
+        {
+          "pngSha256": "3110c7d4da3bb2a5875ac221d11e3477c756705ffe1f636655835553020bbc9d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3110c7d4da3bb2a5875ac221d11e3477c756705ffe1f636655835553020bbc9d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3110c7d4da3bb2a5875ac221d11e3477c756705ffe1f636655835553020bbc9d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/overlap-compound.png",
+      "linuxReferenceSha256": "00381004b03b8a369d0d5ad9b3b0f650d8f9dd84a77ca4805b4d5e94fd7e89bd",
+      "linuxCaptures": [
+        {
+          "pngSha256": "00381004b03b8a369d0d5ad9b3b0f650d8f9dd84a77ca4805b4d5e94fd7e89bd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "00381004b03b8a369d0d5ad9b3b0f650d8f9dd84a77ca4805b4d5e94fd7e89bd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "00381004b03b8a369d0d5ad9b3b0f650d8f9dd84a77ca4805b4d5e94fd7e89bd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "scaled-unscaled-offsets",
+      "input": "scaled-unscaled-offsets.svg",
+      "width": 160,
+      "height": 96,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "MIT",
+      "sourceSha256": "a8ebaf57a7844efcc63bcdaf3eefd0ebaf0c1fd9b8af6423febb61ec73893269",
+      "licenseEvidence": "LICENSE.txt",
+      "declarationBaseRevision": "85bb798fe6851c30f8755ca5111ecd8c345e2b2d",
+      "reference": "references/scaled-unscaled-offsets.png",
+      "referenceSha256": "79734cc0473b4998318c8b07264972c1b72fe5b75f4fcc4d7c7574c5c0b54085",
+      "captures": [
+        {
+          "pngSha256": "79734cc0473b4998318c8b07264972c1b72fe5b75f4fcc4d7c7574c5c0b54085",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "79734cc0473b4998318c8b07264972c1b72fe5b75f4fcc4d7c7574c5c0b54085",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "79734cc0473b4998318c8b07264972c1b72fe5b75f4fcc4d7c7574c5c0b54085",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/scaled-unscaled-offsets.png",
+      "linuxReferenceSha256": "2ef8bfef8b2759961e21a04a281af1a64d3f2a890818360d42c1b0d2c674f873",
+      "linuxCaptures": [
+        {
+          "pngSha256": "2ef8bfef8b2759961e21a04a281af1a64d3f2a890818360d42c1b0d2c674f873",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2ef8bfef8b2759961e21a04a281af1a64d3f2a890818360d42c1b0d2c674f873",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2ef8bfef8b2759961e21a04a281af1a64d3f2a890818360d42c1b0d2c674f873",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "affine-component-offsets",
+      "input": "affine-component-offsets.svg",
+      "width": 160,
+      "height": 96,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "MIT",
+      "sourceSha256": "9cbf7e6a017844c99dbfe3afe515e852d370f3323f1f9b6ffa58f53fcde01ddb",
+      "licenseEvidence": "LICENSE.txt",
+      "declarationBaseRevision": "85bb798fe6851c30f8755ca5111ecd8c345e2b2d",
+      "reference": "references/affine-component-offsets.png",
+      "referenceSha256": "ff0adefb5888f72c6e4a3179ba1cb86346b5d720ba05386e713cb507738a4e25",
+      "captures": [
+        {
+          "pngSha256": "ff0adefb5888f72c6e4a3179ba1cb86346b5d720ba05386e713cb507738a4e25",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ff0adefb5888f72c6e4a3179ba1cb86346b5d720ba05386e713cb507738a4e25",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ff0adefb5888f72c6e4a3179ba1cb86346b5d720ba05386e713cb507738a4e25",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/affine-component-offsets.png",
+      "linuxReferenceSha256": "9b5449cf5a2815b36955146f6a598a11c5c6b3b436a4b89e34a8abd04ef8edef",
+      "linuxCaptures": [
+        {
+          "pngSha256": "9b5449cf5a2815b36955146f6a598a11c5c6b3b436a4b89e34a8abd04ef8edef",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9b5449cf5a2815b36955146f6a598a11c5c6b3b436a4b89e34a8abd04ef8edef",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9b5449cf5a2815b36955146f6a598a11c5c6b3b436a4b89e34a8abd04ef8edef",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ]
+}

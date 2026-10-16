@@ -335,6 +335,22 @@ public sealed class SvgFontLayoutDiagramTests
         }
     }
 
+    public static IEnumerable<object[]> CompositeFlagCases()
+        => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "composite-flag-exit-sheet"));
+
+    [Theory]
+    [MemberData(nameof(CompositeFlagCases))]
+    public Task Declared_composite_flag_document_and_controls_match_frozen_references(string identity)
+        => ValidateDeclared(Path.Combine(AppContext.BaseDirectory, "Research", "composite-flag-exit-sheet"), identity, [new("Example", 400, false)]);
+
+    [Fact]
+    public void Composite_flag_document_uses_the_authored_supplied_face()
+        => ValidateIntendedFont(Path.Combine(AppContext.BaseDirectory, "Research", "composite-flag-exit-sheet"), "composite-flag-sheet");
+
+    [Fact]
+    public Task Composite_flag_sheet_releases_owners_on_denial_cancellation_and_prepared_retry()
+        => ValidateRetainedTextOwners("composite-flag-exit-sheet", "composite-flag-sheet.svg");
+
     public static IEnumerable<object[]> InstancePaintCases()
         => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "instance-paint-exit-sheet"));
 
@@ -393,7 +409,8 @@ public sealed class SvgFontLayoutDiagramTests
     {
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", bankName);
         byte[] input = File.ReadAllBytes(Path.Combine(directory, inputName)), unchanged = input.ToArray();
-        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, "..", "supplied-font-labels", "font-pack.json")), "public-noto-sans");
+        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, Required(manifest.RootElement, "fontPack"))), Required(manifest.RootElement, "fontPackId"));
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, new Provider(), CancellationToken.None);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
         RenderBudget accepted = new(32_000_000); ParserWorkCounter work = new(100_000_000);
@@ -538,7 +555,7 @@ public sealed class SvgFontLayoutDiagramTests
     private static void ValidateIntendedFont(string directory, string identity)
     {
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
-        Assert.Equal(Required(manifest.RootElement, "fontProgramSha256"), Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Path.Combine(DirectoryPath, "..", "supplied-font-labels", "fonts", "NotoSans-Regular.ttf")))));
+        Assert.Equal(Required(manifest.RootElement, "fontProgramSha256"), Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Path.Combine(directory, manifest.RootElement.TryGetProperty("fontProgram", out JsonElement program) ? program.GetString() ?? throw new InvalidDataException() : "../supplied-font-labels/fonts/NotoSans-Regular.ttf")))));
         using JsonDocument proof = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "font-use-proof", "qualification.json")));
         foreach (string platform in new[] { "windows", "linux" })
         {
@@ -615,6 +632,7 @@ public sealed class SvgFontLayoutDiagramTests
             string path = file.RelativePath switch
             {
                 "fonts/NotoSans-Regular.ttf" => "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+                "fonts/CompositeFlags.ttf" => "../composite-flag-exit-sheet/fonts/CompositeFlags.ttf",
                 "fonts/NotoSansMono-Bold.ttf" => "../supplied-font-documents/fonts/NotoSansMono-Bold.ttf",
                 _ => throw new InvalidDataException("Unexpected supplied program."),
             };

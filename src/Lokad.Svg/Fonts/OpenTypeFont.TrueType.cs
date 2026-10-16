@@ -61,8 +61,9 @@ internal static partial class OpenTypeFont
         if (structure.CompositeHeader is not null)
         {
             (TrueTypeHintProfile compositeProfile, OpenTypeTableRange compositeCvt, OpenTypeTableRange compositeFont, OpenTypeTableRange compositePrep) = ReadHintTables();
-            using CompositeTrueTypeHinting fitting = new(bytes, metrics, compositeProfile, compositeCvt, compositeFont, compositePrep, checked((int)Math.Floor(deviceSize + .5)), deviceScale, horizontalSize, target, budget, work, token);
-            using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, fitting, null, budget, work, token);
+            using CompositeTrueTypeHinting fitting = new(bytes, metrics, compositeProfile, compositeCvt, compositeFont, compositePrep, checked((int)Math.Floor(deviceSize + .5)), deviceScale, deviceSize, horizontalSize, target, budget, work, token);
+            using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, fitting, null, (target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0 ? OpenTypeCompositeOffsetMath.DirectWrite : OpenTypeCompositeOffsetMath.NativeLength, budget, work, token);
+            SubtractGlyphOrigin(outline.Points, outline.Phantoms?.LeftX ?? 0, work, token);
             MapPoints(outline.Points);
             using OpenTypeSegmentAccumulator compositeSegments = new(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, work, token);
             BuildQuadraticContours(outline.Points, outline.Ends, compositeSegments, true, impliedPointRounding, work, token);

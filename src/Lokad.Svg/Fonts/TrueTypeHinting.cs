@@ -81,6 +81,7 @@ internal sealed class TrueTypeHinting : IDisposable
     private int _count, _depth, _loop = 1, _rp0, _rp1, _rp2;
     private int _deltaBase = 9, _deltaShift = 3, _cutIn = 68, _instructionControl;
     private int _scanControl, _scanType;
+    private bool _scanConfigured;
     private TrueTypeHintAxis _axis = TrueTypeHintAxis.X;
     private TrueTypeHintRound _round = TrueTypeHintRound.Grid;
     private TrueTypeHintZone _zp0 = TrueTypeHintZone.Glyph, _zp1 = TrueTypeHintZone.Glyph, _zp2 = TrueTypeHintZone.Glyph;
@@ -145,6 +146,7 @@ internal sealed class TrueTypeHinting : IDisposable
         bool savedComposite = _compositeGlyph;
         int savedCutIn = _cutIn, savedDeltaBase = _deltaBase, savedDeltaShift = _deltaShift, savedControl = _instructionControl;
         int savedScanControl = _scanControl, savedScanType = _scanType;
+        bool savedScanConfigured = _scanConfigured;
         TrueTypeHintRound savedRound = _round;
         _glyph = points; _ends = ends; _compositeGlyph = composite;
         try { Run(program, TrueTypeHintProgramKind.Glyph); }
@@ -153,7 +155,7 @@ internal sealed class TrueTypeHinting : IDisposable
             _glyph = savedPoints; _ends = savedEnds; _compositeGlyph = savedComposite;
             _cutIn = savedCutIn; _deltaBase = savedDeltaBase; _deltaShift = savedDeltaShift;
             _instructionControl = savedControl; _round = savedRound;
-            _scanControl = savedScanControl; _scanType = savedScanType;
+            _scanControl = savedScanControl; _scanType = savedScanType; _scanConfigured = savedScanConfigured;
         }
     }
 
@@ -184,7 +186,7 @@ internal sealed class TrueTypeHinting : IDisposable
             // Glyph-local reference/zone/vector state starts at the prescribed defaults.
             _rp0 = _rp1 = _rp2 = 0; _zp0 = _zp1 = _zp2 = TrueTypeHintZone.Glyph;
             _axis = TrueTypeHintAxis.X; _loop = 1;
-            if ((_instructionControl & 2) != 0) { _round = TrueTypeHintRound.Grid; _cutIn = 68; _deltaBase = 9; _deltaShift = 3; _scanControl = _scanType = 0; }
+            if ((_instructionControl & 2) != 0) { _round = TrueTypeHintRound.Grid; _cutIn = 68; _deltaBase = 9; _deltaShift = 3; _scanControl = _scanType = 0; _scanConfigured = false; }
         }
         try
         {
@@ -195,6 +197,9 @@ internal sealed class TrueTypeHinting : IDisposable
 
         bool SmartDropouts()
         {
+            // The native symmetric profile enables default tip dropouts through
+            // rounded ppem 32. Authored scanner settings replace that default.
+            if (!_scanConfigured && (_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0 && _ppem <= 32) return true;
             if (_scanType != 4) return false;
             int threshold = _scanControl & 255;
             bool small = threshold == 255 || threshold != 0 && _ppem <= threshold;
@@ -340,7 +345,7 @@ internal sealed class TrueTypeHinting : IDisposable
                 case 0x7A: _round = TrueTypeHintRound.Off; break;
                 case 0x7C: _round = TrueTypeHintRound.Up; break;
                 case 0x7D: _round = TrueTypeHintRound.Down; break;
-                case 0x85: _scanControl = Pop() & 0xFFFF; break;
+                case 0x85: _scanControl = Pop() & 0xFFFF; _scanConfigured = true; break;
                 case 0x88:
                 {
                     int selector = Pop(), result = (selector & 1) != 0 ? _target.Version : 0;
@@ -350,7 +355,7 @@ internal sealed class TrueTypeHinting : IDisposable
                     Push(result); break;
                 }
                 case 0x8A: { int a = Pop(), b = Pop(), c = Pop(); Push(b); Push(a); Push(c); break; }
-                case 0x8D: _scanType = Pop() & 0xFFFF; break;
+                case 0x8D: _scanType = Pop() & 0xFFFF; _scanConfigured = true; break;
                 case 0x8E:
                 {
                     int selector = Pop(), value = Pop(); if (selector is < 1 or > 3 || value != 0 && value != 1 << (selector - 1)) throw Invalid("The TrueType instruction-control value is invalid.");

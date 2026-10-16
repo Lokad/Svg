@@ -6,13 +6,15 @@ using Lokad.Svg.Rendering;
 internal static partial class OpenTypeFont
 {
     /// <summary>Fits children and their assembled parents under one supplied face's prepared interpreter state.</summary>
-    /// <remarks>Font/preparation programs, CVT and function/storage changes survive component calls. Each glyph owns temporary phantom/point scratch, and the machine releases all borrows before that scratch reservation ends. The context and machine belong to one conversion/thread and never acquire native services.</remarks>
+    /// <remarks>Font/preparation programs, CVT and function/storage changes survive calls within a strike. Transformed Windows children own a bounded strike and interpreter; identity children share the parent state. Each glyph owns temporary phantom/point scratch, and the machine releases all borrows before that scratch reservation ends. The context and machine belong to one conversion/thread and never acquire native services.</remarks>
     private sealed class CompositeTrueTypeHinting : IDisposable
     {
         private readonly ReadOnlyMemory<byte> _bytes;
         private readonly OpenTypeFontMetrics _metrics;
         private readonly TrueTypeHintDeviceScale _scale;
-        private readonly double _horizontalSize;
+        private readonly double _horizontalSize, _deviceSize;
+        private readonly TrueTypeHintProfile _profile;
+        private readonly OpenTypeTableRange _cvtRange, _fontProgram, _preparation;
         internal double HorizontalRatio => _target.HorizontalRatio;
         private readonly TrueTypeHintTarget _target;
         private readonly RenderBudget _budget;
@@ -21,10 +23,11 @@ internal static partial class OpenTypeFont
         private readonly TrueTypeHinting _machine;
         private readonly RenderBudget.BudgetReservation _reservation;
 
-        internal CompositeTrueTypeHinting(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, TrueTypeHintProfile profile, OpenTypeTableRange cvtRange, OpenTypeTableRange fontProgram, OpenTypeTableRange preparation, int ppem, TrueTypeHintDeviceScale scale, double horizontalSize, TrueTypeHintTarget target, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        internal CompositeTrueTypeHinting(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, TrueTypeHintProfile profile, OpenTypeTableRange cvtRange, OpenTypeTableRange fontProgram, OpenTypeTableRange preparation, int ppem, TrueTypeHintDeviceScale scale, double deviceSize, double horizontalSize, TrueTypeHintTarget target, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
         {
-            _bytes = bytes; _metrics = metrics; _scale = scale; _horizontalSize = horizontalSize; _target = target; _budget = budget; _work = work; _token = token;
-            _reservation = budget.Reserve(192, SvgMemoryCategory.Geometry);
+            _bytes = bytes; _metrics = metrics; _scale = scale; _deviceSize = deviceSize; _horizontalSize = horizontalSize;
+            _profile = profile; _cvtRange = cvtRange; _fontProgram = fontProgram; _preparation = preparation; _target = target; _budget = budget; _work = work; _token = token;
+            _reservation = budget.Reserve(256, SvgMemoryCategory.Geometry);
             try
             {
                 int count = cvtRange.Length / 2;
@@ -45,10 +48,51 @@ internal static partial class OpenTypeFont
             catch { _reservation.Dispose(); throw; }
         }
 
-        internal int ScaleOffset(int value, bool round, bool horizontal)
+        /// <summary>Creates a bounded child strike for a transformed Windows component; identity and other profiles share their existing interpreter.</summary>
+        internal CompositeTrueTypeHinting? CreateComponent(OpenTypeAffineTransform transform)
+        {
+            if ((_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) == 0 || transform == new OpenTypeAffineTransform(1, 0, 0, 1)) return null;
+            double x = _horizontalSize * Math.Max(Math.Abs(transform.XX), Math.Abs(transform.YX));
+            double y = _deviceSize * Math.Max(Math.Abs(transform.XY), Math.Abs(transform.YY));
+            if (x == 0 || y == 0) return null;
+            if (!double.IsFinite(x) || !double.IsFinite(y) || x > 32767 || y > 32767)
+                throw new SvgException(SvgErrorCode.LimitExceeded, "A component strike exceeds its device bound.");
+            int horizontal = checked((int)Math.Floor(x * 64 * 65536 / _metrics.UnitsPerEm + .5));
+            int vertical = checked((int)Math.Floor(y * 64 * 65536 / _metrics.UnitsPerEm + .5));
+            return new(_bytes, _metrics, _profile, _cvtRange, _fontProgram, _preparation, checked((int)Math.Floor(y + .5)), new(vertical, horizontal), y, x,
+                _target with { HorizontalRatio = x / y }, _budget, _work, _token);
+        }
+
+        /// <summary>Returns a fitted child's coordinate to native fractional font units before component placement.</summary>
+        internal OpenTypeGlyphPoint Unscale(OpenTypeGlyphPoint point)
+        {
+            int x = Divide(point.X, _scale.Horizontal >> 6), y = Divide(point.Y, _scale.Vertical >> 6);
+            return new(x, y, point.IsOnCurve);
+
+            static int Divide(int value, int coefficient)
+            {
+                if (coefficient == 0 && value == 0) return 0;
+                if (coefficient <= 0) throw new SvgException(SvgErrorCode.LimitExceeded, "A component strike has no finite inverse scale.");
+                long numerator = (long)value * 65536;
+                return checked((int)(Math.Sign(numerator) * ((Math.Abs(numerator) + coefficient / 2) / coefficient)));
+            }
+        }
+
+        /// <summary>Restores a placed fractional-font coordinate to the parent strike, rounding each matrix product independently.</summary>
+        internal OpenTypeGlyphPoint ScalePlaced(OpenTypeGlyphPoint point)
+            => new(Scale(point.X, _scale.Horizontal >> 6), Scale(point.Y, _scale.Vertical >> 6), point.IsOnCurve);
+
+        internal int ScaleOffset(OpenTypeCompositeGlyphComponent component, bool horizontal)
         {
             _work.Consume(_token);
-            int scaled = horizontal ? ScaleHorizontal(value) : Scale(value, _scale.Vertical);
+            bool windows = (_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0;
+            bool round = (component.Flags & 4) != 0;
+            OpenTypeOutlinePoint offset = component.GetOffset(OpenTypeCompositeOffsetMath.NativeLength);
+            int value = windows ? horizontal ? component.HorizontalOffset : component.VerticalOffset : checked((int)(horizontal ? offset.X : offset.Y));
+            int scaled = horizontal && windows ? ScaleWindowsHorizontalPoint(value, _horizontalSize, _metrics.UnitsPerEm)
+                : Scale(value, horizontal ? _scale.Horizontal : _scale.Vertical);
+            if (windows && (component.Flags & 2048) != 0)
+                scaled = checked((int)Math.Round(scaled * (horizontal ? Math.Max(Math.Abs(component.Transform.XX), Math.Abs(component.Transform.YX)) : Math.Max(Math.Abs(component.Transform.XY), Math.Abs(component.Transform.YY))), MidpointRounding.AwayFromZero));
             // ROUND_XY_TO_GRID uses sixteenth-pixel X placement in the
             // Windows subpixel profile, separately from whole-pixel Y fitting.
             if (round && horizontal && (_target.QueryFlags & (TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned)) == (TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned))
@@ -59,6 +103,7 @@ internal static partial class OpenTypeFont
             }
             // Legacy grayscale rounds both axes; the admitted smooth profiles retain fractional X.
             return round && (!horizontal || _target.Version == 35) ? Round(scaled) : scaled;
+
         }
 
         internal bool GlyphSmartDropouts => _machine.GlyphSmartDropouts;
@@ -87,13 +132,22 @@ internal static partial class OpenTypeFont
             OpenTypeHorizontalPhantoms initial = selectedMetrics ?? new(scaledOrigin, 0, scaledAdvance, 0);
             points[firstPhantom] = new(initial.LeftX, initial.LeftY, composite ? initial.LeftX : origin, composite ? initial.LeftY : 0);
             points[firstPhantom + 1] = new(initial.RightX, initial.RightY, composite ? initial.RightX : origin + advance, composite ? initial.RightY : 0);
-            points[firstPhantom].X = Round(initial.LeftX);
-            points[firstPhantom + 1].X = Round(initial.RightX);
+            points[firstPhantom].X = RoundMetric(initial.LeftX);
+            points[firstPhantom + 1].X = RoundMetric(initial.RightX);
             points[firstPhantom + 2].Unavailable = points[firstPhantom + 3].Unavailable = true;
             _machine.HintGlyph(_bytes.Slice(instructions.Offset, instructions.Length), points, ends, composite);
             for (int i = 0; i < outline.Length; i++) { _work.Consume(_token); outline[i] = new(points[i].X, points[i].Y, outline[i].IsOnCurve); }
-            // The native v40 compatibility policy preserves the unrounded metrics.
-            return _target.Version == 40 ? initial : new(points[firstPhantom].X, points[firstPhantom].Y, points[firstPhantom + 1].X, points[firstPhantom + 1].Y);
+            // The native FreeType v40 policy and instruction-free parents preserve
+            // unrounded metrics; Windows parents retain their fitted sixteenth-pixel origin.
+            return _target.Version == 40 || composite && instructions.Length == 0 && (_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) == 0 ? initial : new(points[firstPhantom].X, points[firstPhantom].Y, points[firstPhantom + 1].X, points[firstPhantom + 1].Y);
+        }
+
+        private int RoundMetric(int value)
+        {
+            if ((_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) == 0) return Round(value);
+            long rounded = ((long)value + 2) & ~3L;
+            if (rounded < int.MinValue || rounded > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "A glyph metric exceeds its signed coordinate bound.");
+            return (int)rounded;
         }
 
         private static int Round(int value)

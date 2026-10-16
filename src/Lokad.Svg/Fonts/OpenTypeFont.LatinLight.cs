@@ -16,7 +16,8 @@ internal static partial class OpenTypeFont
         // Native light outlines average signed 26.6 implied points toward zero.
         if (structure.CompositeHeader is not null)
         {
-            using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, null, null, budget, work, cancellationToken);
+            using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, null, null, OpenTypeCompositeOffsetMath.FontationsLength, budget, work, cancellationToken);
+            SubtractGlyphOrigin(outline.Points, GetHorizontalOrigin(bytes, glyphIndex, metrics, work, cancellationToken), work, cancellationToken);
             Span<LatinAlignmentZone> compositeZones = stackalloc LatinAlignmentZone[6];
             int compositeZoneCount = GetLatinAlignmentZones(bytes, metrics, compositeZones, budget, work, cancellationToken);
             LatinLightHinting.Hint(outline.Points, outline.Ends, compositeZones[..compositeZoneCount], metrics.UnitsPerEm, deviceSize, GetMaximumStemWidth(bytes, metrics, budget, work, cancellationToken), budget, work, cancellationToken);
@@ -41,7 +42,7 @@ internal static partial class OpenTypeFont
         {
             ushort index = GetGlyphIndex(bytes, scalar, metrics, work, token);
             if (index == 0) continue;
-            using OpenTypeGlyphPointOutline sample = GetGlyphPointOutline(bytes, index, metrics, null, null, budget, work, token);
+            using OpenTypeGlyphPointOutline sample = GetGlyphPointOutline(bytes, index, metrics, null, null, OpenTypeCompositeOffsetMath.FontationsLength, budget, work, token);
             return LatinLightHinting.MeasureStemWidth(sample.Points, sample.Ends, metrics.UnitsPerEm, budget, work, token);
         }
         return 0;
@@ -65,10 +66,9 @@ internal static partial class OpenTypeFont
                 ushort sampleGlyph = GetGlyphIndex(bytes, scalar, metrics, work, cancellationToken);
                 if (sampleGlyph == 0) continue;
                 OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, sampleGlyph, metrics, work, cancellationToken);
-                if (header is null || header.Value.IsComposite || header.Value.ContourCount == 0) continue;
-                using OpenTypeSimpleGlyphStructureStorage sampleStructure = GetSimpleGlyphStructure(bytes, sampleGlyph, metrics, budget, work, cancellationToken);
-                using OpenTypeGlyphPointStorage samplePoints = GetSimpleGlyphPoints(bytes, sampleStructure.Value, budget, work, cancellationToken);
-                if (!LatinLightHinting.FindAlignment(samplePoints.Points, sampleStructure.Value.ContourEndpoints, top, metrics.UnitsPerEm, work, cancellationToken, out int position, out bool round, out int maximum, out int minimum)) continue;
+                if (header is null || !header.Value.IsComposite && header.Value.ContourCount == 0) continue;
+                using OpenTypeGlyphPointOutline sample = GetGlyphPointOutline(bytes, sampleGlyph, metrics, null, null, OpenTypeCompositeOffsetMath.FontationsLength, budget, work, cancellationToken);
+                if (!LatinLightHinting.FindAlignment(sample.Points, sample.Ends, top, metrics.UnitsPerEm, work, cancellationToken, out int position, out bool round, out int maximum, out int minimum)) continue;
                 ascender = Math.Max(ascender, maximum); descender = Math.Min(descender, minimum);
                 if (round) rounds[roundCount++] = position;
                 else flats[flatCount++] = position;

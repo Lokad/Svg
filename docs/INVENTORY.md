@@ -9,7 +9,7 @@ The frozen selection and measured outcomes are recorded below.
 
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
-variants**. **Twenty-six additional authored documents** (nineteen CC0 and seven MIT
+variants**. **Twenty-eight additional authored documents** (nineteen CC0 and nine MIT
 documents) are complete and counted separately. Preserve the delivered
 [effects sheet](../tests/Research/effects-marker-sheet/README.md),
 [composition sheet](../tests/Research/composition-sheet/README.md) and
@@ -17,6 +17,18 @@ documents) are complete and counted separately. Preserve the delivered
 [shared map sheet](../tests/Research/shared-paint-map-sheet/README.md), including their
 separately counted controls and original sources/options/references.
 These failure-selected cases establish declared outcomes, not a general SVG success rate.
+
+The [composite-flag sheet](../tests/Research/composite-flag-exit-sheet/README.md)
+is **1/1 complete document / 3/3 exact controls** on Windows/Linux, from
+**0/1 / 0/3** at declaration. The original 1,524-byte authored MIT face and all
+SVG/reference/options bytes remain unchanged. Thirty healthy stable captures
+include intended-font proof. Twenty-two independent native contour witnesses
+protect shared child-strike/offset/metric arithmetic and Linux composite alignment;
+focused malformed, tiny-grid and material ownership checks pass. The
+[receipt](../artifacts/maintenance-review-20261012/composite-flags-qualified-results.json)
+records full platform qualification and preservation. This is authored document
+28 (ninth MIT), separate from both cohorts and the W3C document. T2 is complete;
+T3 private validation, E1–E4 and S17 remain required in [PLAN](../PLAN.md).
 
 The [clip union sheet](../tests/Research/clip-union-exit-sheet/README.md) is
 **1/1 complete document / 5/5 exact controls** on Windows/Linux, including the

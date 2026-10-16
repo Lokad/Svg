@@ -90,7 +90,7 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
                 OpenTypeQuadraticSegment segment = contours.Segments[i];
                 contours.Segments[i] = new(Map(segment.Start), Map(segment.Control), Map(segment.End));
             }
-            if (HasGlyphMap)
+            if (HasGlyphMap || !HasSimpleOutline(work, token))
             {
                 using (contours) return SvgWindowsGlyphCurves.Prepare(contours, budget, work, token);
             }

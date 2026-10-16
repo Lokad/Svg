@@ -53,7 +53,8 @@ internal static partial class OpenTypeFont
     internal static OpenTypeGlyphContourStorage GetWindowsUnhintedContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, SvgGlyphStrikeTransform strike, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         OpenTypeWindowsGlyphTransform transform = OpenTypeWindowsGlyphTransform.Create(strike, metrics.UnitsPerEm);
-        using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, null, null, budget, work, token);
+        using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, null, null, OpenTypeCompositeOffsetMath.DirectWrite, budget, work, token);
+        SubtractGlyphOrigin(outline.Points, GetHorizontalOrigin(bytes, glyphIndex, metrics, work, token), work, token);
         for (int index = 0; index < outline.Points.Length; index++)
         {
             work.Consume(token);

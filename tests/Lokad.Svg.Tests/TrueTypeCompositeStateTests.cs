@@ -7,6 +7,29 @@ public sealed class TrueTypeCompositeStateTests
 {
     private static TrueTypeHintTarget Target => new(35, TrueTypeHintQueryFlags.Grayscale, TrueTypeHintControlScale.FullPrecision, TrueTypeHintPreparation.Single);
 
+    [Theory]
+    [InlineData(32, true)]
+    [InlineData(33, false)]
+    public void Windows_default_tip_dropout_boundary_yields_to_explicit_scanner_controls(int ppem, bool expected)
+    {
+        RenderBudget budget = new(long.MaxValue);
+        TrueTypeHintTarget target = new(42, TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned | TrueTypeHintQueryFlags.Symmetric, TrueTypeHintControlScale.FullPrecision, TrueTypeHintPreparation.Single);
+        using (TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], [], [], ppem, new(65536, 65536), target, budget, new(long.MaxValue), CancellationToken.None))
+        {
+            TrueTypeHintPoint[] points = [new(0, 0, 0, 0), default, default, default, default];
+            machine.HintGlyph(ReadOnlyMemory<byte>.Empty, points, [0], false);
+            Assert.Equal(expected, machine.GlyphSmartDropouts);
+            machine.HintGlyph(new byte[] { 0xB0, 0, 0x85 }, points, [0], false);
+            Assert.False(machine.GlyphSmartDropouts);
+            machine.HintGlyph(ReadOnlyMemory<byte>.Empty, points, [0], false);
+            Assert.Equal(expected, machine.GlyphSmartDropouts);
+            machine.Prepare(new byte[] { 0xB0, 2, 0x8D }, target);
+            machine.HintGlyph(ReadOnlyMemory<byte>.Empty, points, [0], true);
+            Assert.False(machine.GlyphSmartDropouts);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     [Fact]
     public void Composite_original_distances_and_control_writes_use_device_coordinates_once()
     {

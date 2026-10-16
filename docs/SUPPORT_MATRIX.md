@@ -1,3 +1,21 @@
+## Qualified composite placement flags (2026-10-16)
+
+The unchanged [composite-flag document and three controls](../tests/Research/composite-flag-exit-sheet/README.md)
+are exact on Windows/Linux. OVERLAP_COMPOUND, SCALED_COMPONENT_OFFSET and
+UNSCALED_COMPONENT_OFFSET reuse bounded composite decoding and native fitting.
+Raw component metadata remains unchanged; conflicting scaled/unscaled offsets
+are malformed and reserved flags retain explicit unsupported outcomes.
+
+Windows transformed children use component strikes and native inverse-scale
+precision before parent mapping; metric origins, offset/grid rounding and bounded
+quadratic subdivision retain their separate stages. The default small-strike tip
+dropout yields to authored scan controls. Linux light fitting includes composite
+alignment samples. Independent reflected/off-diagonal contours, tiny-grid collapse
+and affected denial/cancellation/retry pass, preserving parent-hint, USE_MY_METRICS,
+nested-accent and all previous exact results. [Qualification](../artifacts/maintenance-review-20261012/composite-flags-qualified-results.json)
+owns 8,040 tests/platform and preservation. This supersedes historical composite-flag
+gates below; T3 private validation, E1–E4 and S17 remain required.
+
 ## Rendered-group supplied-font text instances (2026-10-16)
 
 The unchanged [text-map document and four controls](../tests/Research/text-map-exit-sheet/README.md)

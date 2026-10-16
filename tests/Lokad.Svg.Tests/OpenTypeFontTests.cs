@@ -686,7 +686,7 @@ public sealed partial class OpenTypeFontTests
     [InlineData((ushort)1024)]
     [InlineData((ushort)2048)]
     [InlineData((ushort)4096)]
-    public void Rejects_composite_flags_outside_the_admitted_placement_and_transform_subset(ushort unsupportedFlag)
+    public void Composite_flag_admission_preserves_known_metadata_and_rejects_reserved_bits(ushort unsupportedFlag)
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
         OpenTypeTableRange glyph = OpenTypeFont.GetGlyphDataRange(font, 2, CancellationToken.None);
@@ -698,9 +698,31 @@ public sealed partial class OpenTypeFontTests
 
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
 
+        if (unsupportedFlag != 8192)
+        {
+            Assert.Equal((ushort)(3 | unsupportedFlag), Assert.Single(OpenTypeFont.GetCompositeGlyphComponents(font, 2, metrics, CancellationToken.None)).Flags);
+            Assert.Equal(OpenTypeFont.GetGlyphContours(font, 1, metrics, CancellationToken.None), OpenTypeFont.GetGlyphContours(font, 2, metrics, CancellationToken.None));
+            RenderBudget budget = new(1_000_000);
+            using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetGlyphContours(font, 2, metrics, budget, new(long.MaxValue), CancellationToken.None))
+                Assert.Equal(OpenTypeFont.GetGlyphContours(font, 1, metrics, CancellationToken.None), contours.Segments);
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+            return;
+        }
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.GetCompositeGlyphComponents(font, 2, metrics, CancellationToken.None)).ErrorCode);
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphContours(font, 2, metrics, CancellationToken.None)).ErrorCode);
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphContours(font, 2, metrics, new RenderBudget(1_000_000), new ParserWorkCounter(long.MaxValue), CancellationToken.None)).ErrorCode);
+    }
+
+    [Fact]
+    public void Conflicting_composite_offset_flags_are_malformed_and_release_decoder_owners()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 1);
+        OpenTypeTableRange glyph = OpenTypeFont.GetGlyphDataRange(font, 2, CancellationToken.None);
+        WriteInt16(font, glyph.Offset, -1); WriteUInt16(font, glyph.Offset + 10, 3 | 2048 | 4096);
+        WriteUInt16(font, glyph.Offset + 12, 1); WriteInt16(font, glyph.Offset + 14, 0); WriteInt16(font, glyph.Offset + 16, 0);
+        RenderBudget budget = new(1_000_000);
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphContours(font, 2, OpenTypeFont.ParseMetrics(font, CancellationToken.None), budget, new(long.MaxValue), CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]

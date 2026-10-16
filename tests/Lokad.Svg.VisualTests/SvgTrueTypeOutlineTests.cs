@@ -176,16 +176,22 @@ public sealed class SvgTrueTypeOutlineTests
     }
 
     [Fact]
-    public void Unadmitted_component_offset_flags_remain_an_explicit_dependency()
+    public void Scaled_offset_flag_preserves_untransformed_accent_contours()
     {
         byte[] bytes = Font();
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
         ushort glyph = OpenTypeFont.GetGlyphIndex(bytes, 'é', metrics, CancellationToken.None);
+        RenderBudget baseline = new(long.MaxValue);
+        OpenTypeQuadraticSegment[] expected;
+        using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetTrueTypeContours(bytes, glyph, metrics, 28, Target, baseline, new(long.MaxValue), CancellationToken.None)) expected = contours.Segments.ToArray();
+        Assert.Equal(0, baseline.Snapshot().CurrentBytes);
         OpenTypeTableRange range = OpenTypeFont.GetGlyphDataRange(bytes, glyph, CancellationToken.None);
         ushort flags = BinaryPrimitives.ReadUInt16BigEndian(bytes.AsSpan(range.Offset + 10));
         BinaryPrimitives.WriteUInt16BigEndian(bytes.AsSpan(range.Offset + 10), (ushort)(flags | 2048));
         var budget = new RenderBudget(long.MaxValue);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.GetTrueTypeContours(bytes, glyph, metrics, 28, Target, budget, new(long.MaxValue), CancellationToken.None)).ErrorCode);
+        byte[] unchanged = bytes.ToArray();
+        using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetTrueTypeContours(bytes, glyph, metrics, 28, Target, budget, new(long.MaxValue), CancellationToken.None)) Assert.Equal(expected, contours.Segments);
+        Assert.Equal(unchanged, bytes);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 

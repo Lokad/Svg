@@ -35,7 +35,7 @@ internal static partial class OpenTypeFont
     internal static OpenTypeGlyphContourStorage GetUnhintedDeviceContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, double deviceSize, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         OpenTypeUnhintedDeviceScale scale = OpenTypeUnhintedDeviceScale.Create(deviceSize, metrics.UnitsPerEm);
-        using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, null, scale, budget, work, token);
+        using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, null, scale, OpenTypeCompositeOffsetMath.FontationsLength, budget, work, token);
         int origin = outline.Phantoms is {} phantoms ? phantoms.LeftX : 0;
         if (origin != 0)
             for (int index = 0; index < outline.Points.Length; index++)

@@ -1,0 +1,20 @@
+{
+  "packId": "public-composite-flags",
+  "files": [
+    {
+      "relativePath": "fonts/CompositeFlags.ttf",
+      "byteSize": 1524,
+      "sha256": "9dd209dcaf3fae7b34a0a54acbeaa5f8f0ca5c1e2aed62fa9990099fd0fc77a8"
+    }
+  ],
+  "families": [
+    {
+      "requestedFamily": "Example",
+      "resolvedFamily": "Lokad SVG Composite Flags",
+      "relativeFontFile": "fonts/CompositeFlags.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0
+    }
+  ]
+}

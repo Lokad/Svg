@@ -15,7 +15,7 @@ internal static partial class OpenTypeFont
     private const int MaximumCompositeGlyphComponents = 64;
     private const int MaximumCompositeGlyphDepth = 8;
     private const int MaximumExpandedGlyphSegments = 65_536;
-    private const ushort SupportedCompositeFlags = 1 | 2 | 4 | 8 | 32 | 64 | 128 | 256 | 512;
+    private const ushort SupportedCompositeFlags = 1 | 2 | 4 | 8 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
     private const uint TrueTypeScalerType = 0x00010000;
     private const uint TrueTypeCollectionTag = 0x74746366;
     private const uint HeadTag = 0x68656164;
@@ -637,6 +637,7 @@ internal static partial class OpenTypeFont
             ushort componentGlyph = ReadUInt16(data, cursor + 2);
             cursor += 4;
             if ((flags & ~SupportedCompositeFlags) != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The composite glyf component uses flags outside the admitted placement and transform subset.");
+            if ((flags & (2048 | 4096)) == (2048 | 4096)) throw InvalidFont("The composite glyph requests both scaled and unscaled offsets.");
             ushort scaleFlags = (ushort)(flags & (8 | 64 | 128));
             if (scaleFlags is not 0 and not 8 and not 64 and not 128) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The composite glyf component combines incompatible scale encodings.");
             bool words = (flags & 1) != 0;
@@ -1507,8 +1508,36 @@ internal readonly record struct OpenTypeOutlineTransform(double XX, double XY, d
     internal OpenTypeOutlinePoint Apply(OpenTypeOutlinePoint point) => new(XX * point.X + XY * point.Y + TX, YX * point.X + YY * point.Y + TY);
 
     internal OpenTypeOutlineTransform Compose(OpenTypeCompositeGlyphComponent component)
-        => new(XX * component.Transform.XX + XY * component.Transform.YX, XX * component.Transform.XY + XY * component.Transform.YY, YX * component.Transform.XX + YY * component.Transform.YX, YX * component.Transform.XY + YY * component.Transform.YY, XX * component.HorizontalOffset + XY * component.VerticalOffset + TX, YX * component.HorizontalOffset + YY * component.VerticalOffset + TY);
+    {
+        (double x, double y) = component.GetOffset(OpenTypeCompositeOffsetMath.NativeLength);
+        return new(XX * component.Transform.XX + XY * component.Transform.YX, XX * component.Transform.XY + XY * component.Transform.YY, YX * component.Transform.XX + YY * component.Transform.YX, YX * component.Transform.XY + YY * component.Transform.YY, XX * x + XY * y + TX, YX * x + YY * y + TY);
+    }
 }
 
+/// <summary>Selects the pinned native length arithmetic without changing authored component metadata.</summary>
+internal enum OpenTypeCompositeOffsetMath { NativeLength, FontationsLength, DirectWrite }
+
 /// <summary>Represents one validated, non-expanded component in a composite TrueType glyph.</summary>
-internal readonly record struct OpenTypeCompositeGlyphComponent(ushort GlyphIndex, int HorizontalOffset, int VerticalOffset, OpenTypeAffineTransform Transform, ushort Flags);
+internal readonly record struct OpenTypeCompositeGlyphComponent(ushort GlyphIndex, int HorizontalOffset, int VerticalOffset, OpenTypeAffineTransform Transform, ushort Flags)
+{
+    /// <summary>Resolves the component's design-unit translation before device scaling and optional grid rounding.</summary>
+    /// <remarks>Allocation-free scalar setup after the caller charges the component visit. Native scaled offsets
+    /// use the two matrix-row lengths rather than transforming the translation vector; raw metadata stays unchanged.</remarks>
+    internal OpenTypeOutlinePoint GetOffset(OpenTypeCompositeOffsetMath math)
+    {
+        if ((Flags & 2048) == 0 || (Flags & (8 | 64 | 128)) == 0) return new(HorizontalOffset, VerticalOffset);
+        if (math == OpenTypeCompositeOffsetMath.DirectWrite)
+            return new(HorizontalOffset * Math.Max(Math.Abs(Transform.XX), Math.Abs(Transform.YX)), VerticalOffset * Math.Max(Math.Abs(Transform.XY), Math.Abs(Transform.YY)));
+        return new(Scale(HorizontalOffset, Transform.XX, Transform.XY, math), Scale(VerticalOffset, Transform.YY, Transform.YX, math));
+
+        static int Scale(int value, double first, double second, OpenTypeCompositeOffsetMath math)
+        {
+            double x = first * 65536, y = second * 65536;
+            long length = math == OpenTypeCompositeOffsetMath.FontationsLength
+                ? Math.Max(Math.Abs((long)x), Math.Abs((long)y)) + (3 * Math.Min(Math.Abs((long)x), Math.Abs((long)y)) >> 3)
+                : (long)Math.Floor(Math.Sqrt(x * x + y * y) + .5);
+            long product = value * length;
+            return checked((int)(Math.Sign(product) * ((Math.Abs(product) + 32768) >> 16)));
+        }
+    }
+}

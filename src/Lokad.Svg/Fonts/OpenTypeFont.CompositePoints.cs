@@ -24,7 +24,7 @@ internal static partial class OpenTypeFont
                 foreach (OpenTypeCompositeGlyphComponent component in components.Components)
                 {
                     work.Consume(token);
-                    if ((component.Flags & (4 | 256 | 512)) != 0 || Visit(component.GlyphIndex, depth + 1)) return true;
+                    if ((component.Flags & (4 | 256 | 512 | 1024 | 2048 | 4096)) != 0 || Visit(component.GlyphIndex, depth + 1)) return true;
                 }
                 return false;
             }
@@ -32,14 +32,37 @@ internal static partial class OpenTypeFont
         }
     }
 
+    /// <summary>Reads the font-unit distance from the stored outline origin to the horizontal metric origin.</summary>
+    private static int GetHorizontalOrigin(ReadOnlyMemory<byte> bytes, ushort glyph, OpenTypeFontMetrics metrics, ParserWorkCounter work, CancellationToken token)
+    {
+        OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyph, metrics, work, token);
+        int bearingOffset = glyph < metrics.NumberOfHMetrics ? metrics.Hmtx.Offset + glyph * 4 + 2
+            : metrics.Hmtx.Offset + metrics.NumberOfHMetrics * 4 + (glyph - metrics.NumberOfHMetrics) * 2;
+        return (header?.XMinimum ?? 0) - ReadInt16(bytes.Span, bearingOffset);
+    }
+
+    /// <summary>Rebases caller-owned points after their metric origin is resolved, without retaining storage.</summary>
+    private static void SubtractGlyphOrigin(Span<OpenTypeGlyphPoint> points, int origin, ParserWorkCounter work, CancellationToken token)
+    {
+        if (origin == 0) return;
+        for (int index = 0; index < points.Length; index++)
+        {
+            work.Consume(token);
+            OpenTypeGlyphPoint point = points[index];
+            long x = (long)point.X - origin;
+            if (x < int.MinValue || x > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "A glyph origin exceeds its signed coordinate bound.");
+            points[index] = new((int)x, point.Y, point.IsOnCurve);
+        }
+    }
+
     /// <summary>Assembles owned, ordered component points in font units, by unhinted device scaling, or by fitting each child before its parent.</summary>
     /// <remarks>Depth, component/point counts and cycles are bounded. Temporary and returned arrays reserve geometry bytes before allocation; every visit/copy observes work and cancellation. The optional fitter borrows one supplied face and interpreter, and never owns returned points. Device scaling runs before component placement; these conversion-local owners are not shared between threads.</remarks>
-    private static OpenTypeGlyphPointOutline GetGlyphPointOutline(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CompositeTrueTypeHinting? fitting, OpenTypeUnhintedDeviceScale? scaling, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    private static OpenTypeGlyphPointOutline GetGlyphPointOutline(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CompositeTrueTypeHinting? fitting, OpenTypeUnhintedDeviceScale? scaling, OpenTypeCompositeOffsetMath offsetMath, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         using OpenTypeGlyphRecursionTracker active = new(MaximumCompositeGlyphDepth + 1, budget, work, token);
-        return Expand(glyphIndex, 0);
+        return Expand(glyphIndex, 0, fitting);
 
-        OpenTypeGlyphPointOutline Expand(ushort glyph, int depth)
+        OpenTypeGlyphPointOutline Expand(ushort glyph, int depth, CompositeTrueTypeHinting? fitting)
         {
             work.Consume(token);
             if (depth > MaximumCompositeGlyphDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "The composite glyph nesting depth exceeds the supported limit.");
@@ -82,18 +105,29 @@ internal static partial class OpenTypeFont
                 foreach (OpenTypeCompositeGlyphComponent component in components.Components)
                 {
                     work.Consume(token);
-                    using OpenTypeGlyphPointOutline child = Expand(component.GlyphIndex, depth + 1);
+                    using CompositeTrueTypeHinting? childFitting = fitting?.CreateComponent(component.Transform);
+                    using OpenTypeGlyphPointOutline child = Expand(component.GlyphIndex, depth + 1, childFitting ?? fitting);
                     // Metrics are inherited before the component's outline transform/offset.
                     // A later marked component replaces an earlier selection, including nested children.
                     if ((component.Flags & 512) != 0) selectedMetrics = child.Phantoms;
                     if (child.Points.Length > MaximumSimpleGlyphPoints - points.Count) throw new SvgException(SvgErrorCode.LimitExceeded, "The expanded composite point count exceeds the supported limit.");
                     if (child.Ends.Length > MaximumSimpleGlyphContours - ends.Count) throw new SvgException(SvgErrorCode.LimitExceeded, "The expanded composite contour count exceeds the supported limit.");
                     int basePoint = points.Count;
-                    int dx = fitting is not null ? fitting.ScaleOffset(component.HorizontalOffset, (component.Flags & 4) != 0, true) : scaling is {} xScale ? xScale.Apply(component.HorizontalOffset) : component.HorizontalOffset;
-                    int dy = fitting is not null ? fitting.ScaleOffset(component.VerticalOffset, (component.Flags & 4) != 0, false) : scaling is {} yScale ? yScale.Apply(component.VerticalOffset) : component.VerticalOffset;
+                    (double offsetX, double offsetY) = component.GetOffset(offsetMath);
+                    int dx = fitting is not null ? fitting.ScaleOffset(component, true) : scaling is {} xScale ? xScale.Apply(checked((int)Math.Round(offsetX, MidpointRounding.AwayFromZero))) : checked((int)Math.Round(offsetX, MidpointRounding.AwayFromZero));
+                    int dy = fitting is not null ? fitting.ScaleOffset(component, false) : scaling is {} yScale ? yScale.Apply(checked((int)Math.Round(offsetY, MidpointRounding.AwayFromZero))) : checked((int)Math.Round(offsetY, MidpointRounding.AwayFromZero));
                     foreach (OpenTypeGlyphPoint point in child.Points)
                     {
                         work.Consume(token);
+                        if (childFitting is not null && fitting is not null)
+                        {
+                            OpenTypeGlyphPoint source = childFitting.Unscale(point);
+                            OpenTypeGlyphPoint placed = new(Transform(source.X, component.Transform.XX, source.Y, component.Transform.XY, 0),
+                                Transform(source.X, component.Transform.YX, source.Y, component.Transform.YY, 0), point.IsOnCurve);
+                            OpenTypeGlyphPoint scaled = fitting.ScalePlaced(placed);
+                            points.Add(new(checked(scaled.X + dx), checked(scaled.Y + dy), point.IsOnCurve));
+                            continue;
+                        }
                         double ratio = fitting?.HorizontalRatio ?? 1;
                         int x = Transform(point.X, component.Transform.XX, point.Y, component.Transform.XY * ratio, dx);
                         int y = Transform(point.X, component.Transform.YX / ratio, point.Y, component.Transform.YY, dy);

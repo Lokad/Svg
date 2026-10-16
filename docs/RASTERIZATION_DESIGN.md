@@ -1,3 +1,39 @@
+## Native composite strikes and placement flags (2026-10-16)
+
+The [T2 document](../tests/Research/composite-flag-exit-sheet/README.md) and its
+three independent controls match unchanged Windows/Linux references. The
+1,524-byte MIT face is authored geometry, with no borrowed font data. Twenty-two
+[independent native contour witnesses](../tests/Research/composite-flag-exit-sheet/diagnostics/native-contours.json)
+separate overlap, nonuniform/affine offsets, metric origins, reflection and an
+off-diagonal dominant map. Whole-document pixels and controls are counted separately.
+
+Shared bounded component metadata admits overlap/scaled/unscaled flags, preserves
+raw offsets and categorizes conflicting offset flags as malformed. Offset arithmetic
+retains native distinctions: FreeType row lengths, Fontations approximated row
+lengths, and Windows maximum absolute column scales. Windows converts scaled
+offsets to device coordinates before applying the component scale. Transformed
+children fit in their component strike, return to fractional font coordinates
+through the quantized inverse scale, receive the component matrix, then return to
+the parent strike. Identity children retain the shared interpreter state;
+transformed Windows children own bounded strike-local state. Fitted horizontal
+metric origins rebase the result, independently of placement. Existing phantom,
+parent-program, USE_MY_METRICS and nested-accent protections remain unchanged.
+
+Windows composite curves reuse the native bounded subdivision machinery. Native
+mask observations locate the default tip-dropout boundary at rounded ppem 32;
+explicit scanner controls retain priority and glyph-local settings are restored.
+Linux light fitting now samples composite alignment glyphs through existing
+bounded point expansion instead of omitting them. Conservative aggregate owners,
+work limits, cancellation and cleanup cover all added material storage.
+
+The [qualification receipt](../artifacts/maintenance-review-20261012/composite-flags-qualified-results.json)
+records 8,040 passing tests/platform, unchanged prior cases/assets/options/limits,
+and routine build-plus-suite time of 76.0s Windows / 267.8s Linux. The ignored
+[study](../artifacts/composite-flag-exits-20261016/) retains declarations, baseline
+rejections, native point/mask diagnostics and rejected models. No separate
+rasterizer, external dependency, source fingerprint or VM combination quota is added.
+T3, E1–E4 and S17 remain required.
+
 ## Deferred paths and scopes inside text instances (2026-10-16)
 
 Retained text reuses ordinary path layout on its newly appended pending-run suffix.
