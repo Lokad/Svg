@@ -335,6 +335,22 @@ public sealed class SvgFontLayoutDiagramTests
         }
     }
 
+    public static IEnumerable<object[]> RetainedInstanceEffectCases()
+        => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "retained-instance-effect-sheet"));
+
+    [Theory]
+    [MemberData(nameof(RetainedInstanceEffectCases))]
+    public Task Retained_instance_effect_outputs_match_unchanged_platform_references(string identity)
+        => ValidateDeclared(Path.Combine(AppContext.BaseDirectory, "Research", "retained-instance-effect-sheet"), identity, [new("Example", 400, false)]);
+
+    [Fact]
+    public void Retained_instance_effect_sheet_uses_the_declared_supplied_face()
+        => ValidateIntendedFont(Path.Combine(AppContext.BaseDirectory, "Research", "retained-instance-effect-sheet"), "retained-instance-effect-sheet");
+
+    [Fact]
+    public Task Retained_instance_effect_sheet_releases_owners_on_denial_cancellation_and_prepared_retry()
+        => ValidateRetainedTextOwners("retained-instance-effect-sheet", "retained-instance-effect-sheet.svg");
+
     public static IEnumerable<object[]> FilterSourceCases()
         => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "filter-source-exit-sheet"));
 

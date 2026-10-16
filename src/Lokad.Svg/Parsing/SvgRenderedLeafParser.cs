@@ -113,7 +113,7 @@ internal static class SvgRenderedLeafParser
             sourceVisuals = Union(sourceVisuals, paint.VisualBounds ?? box);
         }
         SvgFilterArena filters = state.Scene.Filters;
-        if (state.DefinitionReplayScene is not null) filters.BorrowResourcesFrom(state.DocumentFilters);
+        if (!ReferenceEquals(filters, state.DocumentFilters)) filters.BorrowResourcesFrom(state.DocumentFilters);
         int binding = filters.AddBinding(id, sourceObjects ?? default, sourceVisuals ?? default, filterTransform, context.LengthBases, false, clip);
         SvgDrawCommand begin = new(SvgDrawCommandKind.BeginGroup, 0, mask is null ? style.GetOpacity() : SvgPaintOpacity.Opaque, null, binding, 255) { RegionKind = SvgLayerRegionKind.Filter };
         state.Scene.InsertCommands(state.Scene.CommandCount, [new(SvgDrawCommandKind.EndGroup, 0, 255, null, -1, 255)]);

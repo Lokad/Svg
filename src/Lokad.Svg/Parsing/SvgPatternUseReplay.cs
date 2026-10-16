@@ -18,9 +18,7 @@ internal static class SvgPatternUseReplay
     internal static void Retain(XmlReader reader, SvgRootAttributes root, SvgDocumentState state,
         IReadOnlyDictionary<string, SvgColor> colors, SvgSceneBuilder builder, ParserWorkCounter work, CancellationToken token)
     {
-        if (reader.GetAttribute("clip-path") is not null || reader.GetAttribute("mask") is not null || reader.GetAttribute("filter") is not null)
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clips, masks and filters on pattern uses are not implemented.");
-        SvgResourceUse reference = SvgResourceUseReplay.Retain(reader, root, state, colors, work, token);
+        SvgResourceUse reference = SvgResourceUseReplay.RetainPattern(reader, root, state, colors, work, token);
         if (state.PatternUseCount == 0) state.PatternUseStart = state.PatternUses.Count;
         state.PatternUses.Add(new(reference, builder.AddPaintPlaceholder()));
         state.PatternUseCount++;

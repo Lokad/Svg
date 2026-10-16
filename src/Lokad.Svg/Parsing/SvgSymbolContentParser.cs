@@ -27,7 +27,6 @@ internal static class SvgSymbolContentParser
         bool? visible = style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true);
         SvgSymbolPresentation inherited = builder.Presentation;
         SvgSymbolContent content = builder.EnableContent();
-        if (style.Filter is string filter && filter.Trim() != "none") content.AddUnsupported();
         state.HasRetainedSymbolContent = true;
         if (reader.LocalName == "g")
         {
@@ -45,7 +44,7 @@ internal static class SvgSymbolContentParser
             content.BeginGroup(reader.Depth, definitionRoot ? null : id, presentation, new(paint, style.Fill is not null, opacity, color, sourceOpacity, displayed, visible)
                 { TextStyleSource = SvgRetainedTextSource.CaptureElement(reader, SvgPaintableElementContext.Create(reader, false, root, state, colors, work, token), state,
                     state.TextReplay?.Limits ?? throw new InvalidOperationException("Group capture requires document limits.")),
-                    InheritsOpacity = style.InheritsOpacity, Markers = markers, PaintOrder = style.PaintOrder, PaintServerFill = shader ? shaderFill : null, PaintServerId = shader ? shaderId : null, FillRule = Copy(style.FillRule), Stroke = stroke, StrokeOpacity = strokeOpacity }, SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
+                    Filter = Copy(style.Filter), InheritsOpacity = style.InheritsOpacity, Markers = markers, PaintOrder = style.PaintOrder, PaintServerFill = shader ? shaderFill : null, PaintServerId = shader ? shaderId : null, FillRule = Copy(style.FillRule), Stroke = stroke, StrokeOpacity = strokeOpacity }, SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
             if (!definitionRoot && id is not null) state.Definitions.TryAdd(id, new([], false, null, null) { SymbolContent = new(content, 0, 0), BorrowedFromSymbol = true });
             if (reader.IsEmptyElement) content.EndGroup(reader.Depth, state);
         }

@@ -135,6 +135,7 @@ internal sealed class SvgRetainedTextSource
         SvgSceneBuilder? previous = state.DefinitionReplayScene;
         bool previousDirect = state.DirectTextReplay;
         int previousNodes = state.NodeCount, previousCharacters = state.TextCharacterCount, previousPaths = state.PendingTextRuns.Count;
+        int previousFilterDepth = state.FilterGroupDepth;
         int previousClips = state.PendingGroupClips.Count, previousMasks = state.PendingGroupMasks.Count;
         using SvgSceneBuilder staging = new(state.Budget, work, token);
         SvgSceneStorage? storage = null;
@@ -142,6 +143,7 @@ internal sealed class SvgRetainedTextSource
         {
             state.DefinitionReplayScene = staging;
             state.DirectTextReplay = previous is null || previousDirect;
+            if (reference.Filter is {} ownFilter && ownFilter.Trim() != "none") state.FilterGroupDepth++;
             // Source syntax was counted at capture. Expansion charges work and
             // geometry storage without counting those lexical nodes a second time.
             state.NodeCount = 1; state.TextCharacterCount = 0;
@@ -162,6 +164,7 @@ internal sealed class SvgRetainedTextSource
         finally
         {
             state.DefinitionReplayScene = previous; state.DirectTextReplay = previousDirect;
+            state.FilterGroupDepth = previousFilterDepth;
             state.NodeCount = previousNodes; state.TextCharacterCount = previousCharacters;
             while (state.PendingTextRuns.Count > previousPaths)
             {
@@ -199,14 +202,17 @@ internal sealed class SvgRetainedTextSource
             work.Consume(token);
             if (command.Kind == SvgDrawCommandKind.BeginGroup)
             {
-                if (command.RegionKind == SvgLayerRegionKind.Filter)
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filtered text source scopes are not implemented.");
                 SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
                 operation.Resolved = true; operation.PreservesIsolation = true;
                 operation.Value = command.MaskAlpha; operation.SourceOpacity = command.SourceOpacity;
                 operation.Region = command.MaskRegion; operation.RegionKind = command.RegionKind;
                 operation.RecordingScope = command.RecordingScope;
-                operation.ContentIndex = command.MaskContentIndex < 0 ? -1 : masks[command.MaskContentIndex];
+                if (command.RegionKind == SvgLayerRegionKind.Filter)
+                {
+                    SvgFilterArena filters = owner.Scene.Filters ?? throw new InvalidOperationException("Transferred filter scopes require their source arena.");
+                    operation.Filter = new(filters.BindingAt(command.MaskContentIndex));
+                }
+                else operation.ContentIndex = command.MaskContentIndex < 0 ? -1 : masks[command.MaskContentIndex];
                 scopes.Add(new(operation)); bindingReady = false;
                 continue;
             }

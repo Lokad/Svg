@@ -36,6 +36,8 @@ internal readonly record struct SvgFilterRegionContext(SvgAffineTransform Coordi
     internal SvgFilterRasterPlacement? RasterPlacement { get; init; }
     /// <summary>Identifies restoration into another filter's source bitmap, where native source-in retains its input image subset.</summary>
     internal bool IntermediateOutput { get; init; }
+    /// <summary>Identifies picture-backed destinations, whose terminal dynamic source offsets use constant image paint.</summary>
+    internal bool PictureOutput { get; init; }
     /// <summary>Retains native matrix arithmetic for image transforms after affine source capture.</summary>
     internal SvgFilterNativeMapping? NativeMapping { get; init; }
     /// <summary>Allows the terminal dynamic source image to retain its offset for an affine consumer.</summary>
@@ -462,7 +464,8 @@ internal static class SvgFilterPlayback
                         Charge(pixels);
                         input.CopyTo(output);
                     }
-                    else Offset(input, output, primitive.OffsetX * map.ScaleX, primitive.OffsetY * map.ScaleY, inputBounds, null, nativeTransform);
+                    else Offset(input, output, primitive.OffsetX * map.ScaleX, primitive.OffsetY * map.ScaleY, inputBounds, null, nativeTransform,
+                        index == finalIndex && primitive.Input.Index < 0 && map.Regions?.PictureOutput == true);
                     linear[index] = inputLinear;
                 }
                 else if (primitive.Kind == SvgFilterPrimitiveKind.Merge)
@@ -517,7 +520,7 @@ internal static class SvgFilterPlayback
                             blurred.Pixels[offset + 3] = (byte)a;
                         }
                     }
-                    Offset(blurred.Pixels, output, shadowX, shadowY, null, fractionalShadow ? tint : null, null);
+                    Offset(blurred.Pixels, output, shadowX, shadowY, null, fractionalShadow ? tint : null, null, false);
                     bool destinationLinear = colorSpace == SvgFilterColorSpace.LinearRgb;
                     bool convertSource = inputLinear != destinationLinear;
                     Charge(pixels * (convertSource ? 2 : 1));
@@ -728,7 +731,7 @@ internal static class SvgFilterPlayback
 
         static byte Modulate(byte value, byte alpha) => (byte)((value * alpha + 127) / 255);
 
-        void Offset(ReadOnlySpan<byte> input, Span<byte> output, double dx, double dy, SvgPaintBounds? imageBounds, SvgConstantShaderPaint? shadow, SvgShaderMatrix? nativeTransform)
+        void Offset(ReadOnlySpan<byte> input, Span<byte> output, double dx, double dy, SvgPaintBounds? imageBounds, SvgConstantShaderPaint? shadow, SvgShaderMatrix? nativeTransform, bool constantImagePaint)
         {
             ValidateOffset(dx, dy);
             bool fractional = dx != Math.Truncate(dx) || dy != Math.Truncate(dy);
@@ -809,8 +812,13 @@ internal static class SvgFilterPlayback
                         int sampleY = (int)Math.Clamp(sy, imageTop, imageBottom - 1);
                         int at = (sampleY * width + sampleX) * 4;
                         Span<byte> pixel = output.Slice((y * width + x) * 4, 4);
-                        // Stored-image AA uses packed alpha modulation before
-                        // the enclosing opacity layer, retaining both roundings.
+                        // A terminal dynamic source uses the picture destination's constant
+                        // image paint. Stored graph inputs retain packed alpha modulation.
+                        if (constantImagePaint)
+                        {
+                            new SvgConstantShaderPaint(input[at], input[at + 1], input[at + 2], input[at + 3]).Blend(pixel, alpha);
+                            continue;
+                        }
                         int scale = alpha + 1;
                         pixel[0] = (byte)(input[at] * scale >> 8);
                         pixel[1] = (byte)(input[at + 1] * scale >> 8);

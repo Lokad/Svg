@@ -1,3 +1,21 @@
+## Qualified retained-instance effects (2026-10-16)
+
+The unchanged [retained-instance sheet](../tests/Research/retained-instance-effect-sheet/README.md),
+eight declared controls and two focused placement controls are exact on
+Windows/Linux. Own-use filters and filtered path/group/supplied-text targets
+replay through ordinary geometry/text and scene-owned bindings. Pattern uses
+retain clip/mask/filter wrappers, forward definitions and sibling termination.
+Use x/y translates effect coordinates; clipping surrounds isolated mask/filter
+results and constrains native mask construction.
+
+Terminal dynamic source offsets in picture-backed output retain constant image
+coverage. Stored intermediate graph images and ordinary bitmap consumers keep
+packed coverage; the preceding blur/merge pattern document remains exact.
+[Qualification](../artifacts/maintenance-review-20261012/retained-instance-qualified-results.json)
+retains all prior cases and affected denial, cancellation, cleanup and prepared
+retry. E3 is complete. E4 marker semantics, private T3 and S17 remain required;
+this supersedes historical pending-E3/guard wording below without changing scope.
+
 ## Qualified filter owner/source placements (2026-10-16)
 
 The unchanged [owner/source document](../tests/Research/filter-owner-exit-sheet/README.md)

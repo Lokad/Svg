@@ -284,13 +284,21 @@ internal static class SvgPaintRecording
         try
         {
             foreach (SvgGeometry geometry in lowered.Geometries)
-            {
-                SvgRecordedPaint fill = geometry.RecordedPaint.Identity > 0 ? builder.RegisterRecordedPaint(state.Scene.GetRecordedPaintValue(geometry.RecordedPaint)) : geometry.RecordedPaint;
-                SvgRecordedPaint stroke = geometry.RecordedStrokePaint.Identity > 0 ? builder.RegisterRecordedPaint(state.Scene.GetRecordedPaintValue(geometry.RecordedStrokePaint)) : geometry.RecordedStrokePaint;
-                builder.AddGeometry(geometry with { RecordedPaint = fill, RecordedStrokePaint = stroke });
-            }
+                builder.AddGeometry(RebindLeafPaint(geometry, state.Scene, builder));
         }
         catch { foreach (SvgGeometry geometry in lowered.Geometries) geometry.Dispose(); throw; }
+    }
+
+    /// <summary>Rebinds borrowed paint metadata before owned geometry moves into another scene.</summary>
+    /// <remarks>Geometry ownership stays with the caller until adoption. Destination registration
+    /// charges bounded scene storage/work and checks cancellation; references are scene-local.</remarks>
+    internal static SvgGeometry RebindLeafPaint(SvgGeometry geometry, SvgSceneBuilder source, SvgSceneBuilder destination)
+    {
+        SvgRecordedPaint fill = geometry.RecordedPaint.Identity > 0
+            ? destination.RegisterRecordedPaint(source.GetRecordedPaintValue(geometry.RecordedPaint)) : geometry.RecordedPaint;
+        SvgRecordedPaint stroke = geometry.RecordedStrokePaint.Identity > 0
+            ? destination.RegisterRecordedPaint(source.GetRecordedPaintValue(geometry.RecordedStrokePaint)) : geometry.RecordedStrokePaint;
+        return geometry with { RecordedPaint = fill, RecordedStrokePaint = stroke };
     }
 
     internal static void FinishScene(SvgDocumentState state, int first, ParserWorkCounter work, CancellationToken token)
@@ -371,6 +379,30 @@ internal static class SvgPaintRecording
         operation.RegionKind = affineViewport is not null ? SvgLayerRegionKind.AffineViewport
             : viewportClip is { Antialiasing: SvgClipAntialiasing.None } ? SvgLayerRegionKind.Bounds
             : viewportClip is null ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.Viewport;
+        WrapOperation(geometries, operation, state, work, token);
+    }
+
+    /// <summary>Retains an authored local filter until its owning scene emits the completed source range.</summary>
+    internal static void WrapFilter(Span<SvgGeometry> geometries, string? filter, SvgAffineTransform transform, SvgViewportLengthBases lengthBases,
+        SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        if (geometries.IsEmpty) return;
+        if (SvgRetainedFilter.Create(filter, transform, lengthBases, state) is {} retained)
+            WrapFilter(geometries, retained, state, work, token);
+    }
+
+    /// <summary>Retains an isolated filter around an ordered borrowed batch without copying geometry or resource storage.</summary>
+    internal static void WrapFilter(Span<SvgGeometry> geometries, SvgRetainedFilter filter, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        if (geometries.IsEmpty) return;
+        SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
+        operation.Resolved = true; operation.PreservesIsolation = true; operation.Value = 255;
+        operation.RegionKind = SvgLayerRegionKind.Filter; operation.Filter = filter; operation.RecordingScope = state.NewRecordingScope();
+        WrapOperation(geometries, operation, state, work, token);
+    }
+
+    private static void WrapOperation(Span<SvgGeometry> geometries, SvgLeafMaskOperation operation, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
         SvgLeafMaskBinding? lastInner = null;
         SvgLeafMaskBinding? binding = null;
         for (int index = 0; index < geometries.Length; index++)

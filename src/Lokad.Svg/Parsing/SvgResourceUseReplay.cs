@@ -24,11 +24,21 @@ internal static class SvgResourceUseReplay
         => Retain(reader, context, new SvgViewportLengthBases(root.UserViewportWidth, root.UserViewportHeight), state);
 
     internal static SvgResourceUse Retain(XmlReader reader, SvgPaintableElementContext context, SvgViewportLengthBases bases, SvgDocumentState state)
+        => Retain(reader, context, bases, state, false);
+
+    internal static SvgResourceUse RetainPattern(XmlReader reader, SvgRootAttributes root, SvgDocumentState state,
+        IReadOnlyDictionary<string, SvgColor> colors, ParserWorkCounter work, CancellationToken token)
+    {
+        SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, colors, work, token);
+        return Retain(reader, context, new(root.UserViewportWidth, root.UserViewportHeight), state, true);
+    }
+
+    private static SvgResourceUse Retain(XmlReader reader, SvgPaintableElementContext context, SvgViewportLengthBases bases, SvgDocumentState state, bool allowMask)
     {
         ParserWorkCounter work = context.WorkCounter;
         CancellationToken token = context.CancellationToken;
         SvgElementAttributePolicy.ValidateUse(reader, work, token);
-        if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on mask content are not implemented.");
+        if (!allowMask && reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on mask content are not implemented.");
         SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, bases.Width, bases.Height, state);
         string? clip = reader.GetAttribute("clip-path");
         string? clipId = clip is null ? null : state.Strings.Copy(SvgClipPathSyntax.ParseClipId(clip));
@@ -172,20 +182,52 @@ internal static class SvgResourceUseReplay
     private static void AppendMaskUse(SvgResourceUse use, SvgUseReference reference, SvgGeometry[] mapped,
         SvgSceneBuilder builder, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
-        if (use.ClipId is {} id)
+        SvgAffineTransform placement = SvgReferenceResolver.PlainInstancePlacement(reference, null);
+        foreach (ref SvgGeometry geometry in mapped.AsSpan())
         {
-            if (!state.ClipPolygons.TryGetValue(id, out SvgClipPolygon clip)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only contour clips on referenced mask content are implemented.");
-            (SvgClipBox bounds, int contentIndex) = clip.Register(SvgReferenceResolver.PlainInstancePlacement(reference, null), clip.UsesNativeReplay, state, builder, work, token);
-            SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
-            operation.Resolved = true; operation.Value = 255; operation.Region = clip.UsesMaskFallback ? null : bounds;
-            operation.ContentIndex = contentIndex; operation.RegionKind = clip.UsesMaskFallback ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.AffineViewport;
-            for (int geometryIndex = 0; geometryIndex < mapped.Length; geometryIndex++)
-            {
-                work.Consume(token);
-                mapped[geometryIndex] = mapped[geometryIndex] with { LeafMask = SvgLeafMaskComposition.NewBinding(state, operation, mapped[geometryIndex].LeafMask) };
-            }
+            work.Consume(token);
+            geometry = SvgPaintRecording.RebindLeafPaint(geometry, state.Scene, builder);
         }
-        SvgPaintRecording.WrapInstance(mapped, reference.SourceOpacity, reference.RecordingScope, state, work, token);
-        SvgPaintRecording.AdoptLeafScene(new(mapped, false, null, null), builder, state);
+        SvgSceneBuilder? previous = state.DefinitionReplayScene;
+        state.DefinitionReplayScene = builder;
+        try
+        {
+            SvgPaintRecording.WrapFilter(mapped, reference.Filter, placement, reference.LengthBases, state, work, token);
+            SvgReferenceResolver.ApplyMask(mapped, null, null, reference.SourceMaskReference, placement, state, work, token);
+            // Native use clipping surrounds the isolated mask/filter result. Its bounds
+            // also constrain mask-content construction; source effects remain inside.
+            if (use.ClipId is {} id)
+            {
+                if (!state.ClipPolygons.TryGetValue(id, out SvgClipPolygon clip))
+                {
+                    SvgLeafMaskBinding? previousInner = null, binding = null;
+                    foreach (ref SvgGeometry geometry in mapped.AsSpan())
+                    {
+                        work.Consume(token);
+                        if (binding is null || !ReferenceEquals(previousInner, geometry.LeafMask))
+                        {
+                            previousInner = geometry.LeafMask;
+                            binding = SvgClipPathSyntax.BindResourceClip(id, placement, previousInner, state, work, token);
+                        }
+                        geometry = geometry with { LeafMask = binding };
+                    }
+                }
+                else
+                {
+                    (SvgClipBox bounds, int contentIndex) = clip.Register(placement, clip.UsesNativeReplay, state, builder, work, token);
+                    SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
+                    operation.Resolved = true; operation.Value = 255; operation.Region = clip.UsesMaskFallback ? null : bounds;
+                    operation.ContentIndex = contentIndex; operation.RegionKind = clip.UsesMaskFallback ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.AffineViewport;
+                    for (int geometryIndex = 0; geometryIndex < mapped.Length; geometryIndex++)
+                    {
+                        work.Consume(token);
+                        mapped[geometryIndex] = mapped[geometryIndex] with { LeafMask = SvgLeafMaskComposition.NewBinding(state, operation, mapped[geometryIndex].LeafMask) };
+                    }
+                }
+            }
+            SvgPaintRecording.WrapInstance(mapped, reference.SourceOpacity, reference.RecordingScope, state, work, token);
+            builder.AddGeometries(mapped);
+        }
+        finally { state.DefinitionReplayScene = previous; }
     }
 }

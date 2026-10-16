@@ -9,7 +9,7 @@ The frozen selection and measured outcomes are recorded below.
 
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
-variants**. **Thirty-two additional authored documents** (twenty-two CC0 and ten MIT
+variants**. **Thirty-three additional authored documents** (twenty-three CC0 and ten MIT
 documents) are complete and counted separately. Preserve the delivered
 [effects sheet](../tests/Research/effects-marker-sheet/README.md),
 [composition sheet](../tests/Research/composition-sheet/README.md) and
@@ -18,6 +18,17 @@ documents) are complete and counted separately. Preserve the delivered
 separately counted controls and original sources/options/references.
 These failure-selected cases establish declared outcomes, not a general SVG success rate.
 
+The unchanged [retained-instance effect sheet](../tests/Research/retained-instance-effect-sheet/README.md)
+is complete with eight declared controls and two focused translated-wrapper
+controls exact on Windows/Linux. Seventy-two healthy stable captures preserve
+original assets/options and public intended-font proof. Shared replay carries
+own-use and retained path/group/supplied-text filter scopes; placed clip/mask/filter
+wrappers retain native scope bounds and image-coverage distinctions. The
+[receipt](../artifacts/maintenance-review-20261012/retained-instance-qualified-results.json)
+records 8,105 tests/platform and all prior-case preservation. This adds authored
+CC0 document 33 and closes E3. E4, T3 private requests and S17 remain required;
+these current outcomes supersede historical pending-E3 notes below.
+
 The unchanged [filter owner/source sheet](../tests/Research/filter-owner-exit-sheet/README.md)
 is complete with all eight declared controls exact on Windows/Linux. Seven
 controls are new; the unchanged source-offset control reuses its canonical bank.
@@ -25,8 +36,8 @@ The parent revision rejects the document and seven controls. Fifty-four healthy
 stable captures retain the original declarations and two focused boundaries:
 leaf-mask ordering and outside-viewport source reentry. This adds authored
 CC0 document 32. The [receipt](../artifacts/maintenance-review-20261012/filter-owner-qualified-results.json)
-records full qualification and resource protection. Retained-definition and
-local-instance effects remain required E3 work; T3, E4 and S17 also remain open.
+records full qualification and resource protection. Retained-instance effects
+are qualified above; T3, E4 and S17 remain open.
 
 The retained [affine source-offset input](../tests/Research/filter-source-exit-sheet/diagnostics/affine-offset-only.svg),
 partial crop and near-integer boundary are **3/3 exact controls** on Windows/Linux.

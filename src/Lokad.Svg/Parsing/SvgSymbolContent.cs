@@ -10,6 +10,7 @@ internal readonly record struct SvgSymbolContentStyle(SvgPaint Paint, bool HasAu
     internal bool InheritsOpacity { get; init; }
     internal SvgPaintOpacity ResolveOpacity(SvgPaintOpacity parentOpacity) => InheritsOpacity ? parentOpacity : Opacity;
     internal string? PaintServerFill { get; init; }
+    internal string? Filter { get; init; }
     internal SvgPaintOrder? PaintOrder { get; init; }
     internal SvgMarkerStyle Markers { get; init; }
     internal string? PaintServerId { get; init; }

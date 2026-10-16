@@ -1875,6 +1875,9 @@ internal static class SvgDefinitionParser
     /// native geometry and every lowerer observes the supplied work, cancellation and memory bounds.</remarks>
     internal static SvgDefinition LowerInstanceSource(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state)
     {
+        SvgComputedStyle sourceStyle = context.ResolveStyle(reader);
+        bool filtered = sourceStyle.Filter is {} filter && filter.Trim() != "none";
+        if (filtered) context = context with { AuthoredStyle = sourceStyle with { Filter = null, Opacity = null, ComputedOpacity = null } };
         if (reader.LocalName is not ("line" or "path" or "polygon" or "polyline") && SvgMarkerStyle.Resolve(context.ResolveStyle(reader), context.InheritedPresentation.Markers).HasMarkers)
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Markers on shapes other than lines and paths are not implemented.");
         if (reader.LocalName == "rect")
@@ -1894,6 +1897,7 @@ internal static class SvgDefinitionParser
             : ParseShapeDefinition(reader, context, state, null, false);
         try
         {
+            SvgPaintRecording.WrapFilter(definition.Geometries, sourceStyle.Filter, context.ResolveTransform(reader), context.LengthBases, state, context.WorkCounter, context.CancellationToken);
             if (SvgClipPathSyntax.ResolveClipId(reader, state) is {} clipId)
             {
                 SvgAffineTransform map = context.ResolveTransform(reader);
@@ -1908,6 +1912,7 @@ internal static class SvgDefinitionParser
                 }
             }
             SvgReferenceResolver.ApplyMask(definition.Geometries, null, null, reader.GetAttribute("mask"), state, context.WorkCounter, context.CancellationToken);
+            if (filtered) SvgPaintRecording.WrapInstance(definition.Geometries, sourceStyle.GetOpacity(), state.NewRecordingScope(), state, context.WorkCounter, context.CancellationToken);
             SvgPaintRecording.FinishDefinition(definition.Geometries, state, context.WorkCounter, context.CancellationToken);
             return BindSymbolFill(definition, reader, context, state, context.WorkCounter, context.CancellationToken, false);
         }

@@ -1,3 +1,31 @@
+## Retained-instance filter replay (2026-10-16)
+
+The [complete retained-instance document](../tests/Research/retained-instance-effect-sheet/README.md)
+uses immutable filter placement metadata on the existing deferred scope chain.
+Each destination scene emits its own binding and borrows document definitions;
+transferred text-filter commands retain resource identities rather than source
+scene binding indices. Filter-depth tracking records supplied glyph bounds only
+where an enclosing effect needs them. Paint rebinding remains shared with
+ordinary resource adoption; parser state restores on every exit.
+
+Use x/y participates in effect placement through PlainInstancePlacement. Native
+captures reject applying the own filter before this translation by 120 pixels.
+Clipping surrounds isolated mask/filter output and constrains mask-content bounds;
+the composed translated control exposes 210 pixels when those scopes reverse.
+
+A native integral-phase pattern exposes 20 fractional-offset image-edge pixels,
+which become 294 differences after repeat interpolation. Source paint and repeat
+sampling were already correct. Terminal SourceGraphic/SourceAlpha offsets into
+picture-backed output use constant-shader image coverage; stored graph inputs
+retain packed arithmetic. Applying the change to an intermediate blur offset
+regresses the preceding exact owner sheet, retained as a rejected experiment.
+The correction reuses existing coverage and constant paint, with no new rasterizer.
+
+The [study](../artifacts/retained-instance-effects-20261016/) retains native
+counterexamples and failed models. [Full qualification](../artifacts/maintenance-review-20261012/retained-instance-qualified-results.json)
+protects original references, every preceding semantic case and material ownership/
+work/cancellation/prepared-retry behavior. E3 is complete; PLAN owns E4/T3/S17.
+
 ## Filter owner/source scopes (2026-10-16)
 
 The [retained owner-composition document](../tests/Research/filter-owner-exit-sheet/README.md)

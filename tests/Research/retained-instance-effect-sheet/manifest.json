@@ -1,0 +1,562 @@
+{
+  "schemaVersion": 1,
+  "purpose": "One complete CC0 retained-instance effect document and eight independent controls. Source bytes/options and native platform triples were frozen before admission/replay corrections. Two focused translated-wrapper controls retain the independently discovered x/y placement defect.",
+  "fontPack": "../supplied-font-labels/font-pack.json",
+  "fontPackId": "public-noto-sans",
+  "fontProgram": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontProgramSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "cases": [
+    {
+      "id": "retained-instance-effect-sheet",
+      "input": "retained-instance-effect-sheet.svg",
+      "width": 448,
+      "height": 216,
+      "scale": 1,
+      "background": "transparent",
+      "role": "document-output",
+      "license": "CC0-1.0",
+      "sourceSha256": "f448b3b185193cfb90ecb5aa6ac9381441b2924b8640f7a82d1c0445f337ccf3",
+      "declarationBaseRevision": "ff29cdf84da90e5d6ce745fc57015a2ea49b23a0",
+      "reference": "references/retained-instance-effect-sheet.png",
+      "referenceSha256": "6ee730d5e0abd45f9732874f10dcb8c7377819c58c17eca86e175104a6cb7f27",
+      "captures": [
+        {
+          "pngSha256": "6ee730d5e0abd45f9732874f10dcb8c7377819c58c17eca86e175104a6cb7f27",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6ee730d5e0abd45f9732874f10dcb8c7377819c58c17eca86e175104a6cb7f27",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6ee730d5e0abd45f9732874f10dcb8c7377819c58c17eca86e175104a6cb7f27",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/retained-instance-effect-sheet.png",
+      "linuxReferenceSha256": "c2179074ceb0c3ef8c4d23337cfa0ae7b3294b5c4c15bbf502201d36f0e30165",
+      "linuxCaptures": [
+        {
+          "pngSha256": "c2179074ceb0c3ef8c4d23337cfa0ae7b3294b5c4c15bbf502201d36f0e30165",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c2179074ceb0c3ef8c4d23337cfa0ae7b3294b5c4c15bbf502201d36f0e30165",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c2179074ceb0c3ef8c4d23337cfa0ae7b3294b5c4c15bbf502201d36f0e30165",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "use-filter-owner",
+      "input": "use-filter-owner.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "d86c616435ec203e33973dd145d78193c1026d74e27571ab7c1b84299472748b",
+      "declarationBaseRevision": "ff29cdf84da90e5d6ce745fc57015a2ea49b23a0",
+      "reference": "references/use-filter-owner.png",
+      "referenceSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+      "captures": [
+        {
+          "pngSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/use-filter-owner.png",
+      "linuxReferenceSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+      "linuxCaptures": [
+        {
+          "pngSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "filtered-path-target",
+      "input": "filtered-path-target.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "4339db404af43cd5ecf0a0f6a6ec3ac362454fbcdf0b8667328fab1563fbe29e",
+      "declarationBaseRevision": "ff29cdf84da90e5d6ce745fc57015a2ea49b23a0",
+      "reference": "references/filtered-path-target.png",
+      "referenceSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+      "captures": [
+        {
+          "pngSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/filtered-path-target.png",
+      "linuxReferenceSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+      "linuxCaptures": [
+        {
+          "pngSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "filtered-group-target",
+      "input": "filtered-group-target.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "a3790dea03e4449c26dcee442b6a2a20da4056ca668c3d50e998c12b47371619",
+      "declarationBaseRevision": "ff29cdf84da90e5d6ce745fc57015a2ea49b23a0",
+      "reference": "references/filtered-group-target.png",
+      "referenceSha256": "4ecdbe9c8b09a5238ac0bf2db7090acfdab1a3514605a2c8120ce6097fd6bf76",
+      "captures": [
+        {
+          "pngSha256": "4ecdbe9c8b09a5238ac0bf2db7090acfdab1a3514605a2c8120ce6097fd6bf76",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4ecdbe9c8b09a5238ac0bf2db7090acfdab1a3514605a2c8120ce6097fd6bf76",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4ecdbe9c8b09a5238ac0bf2db7090acfdab1a3514605a2c8120ce6097fd6bf76",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/filtered-group-target.png",
+      "linuxReferenceSha256": "4ecdbe9c8b09a5238ac0bf2db7090acfdab1a3514605a2c8120ce6097fd6bf76",
+      "linuxCaptures": [
+        {
+          "pngSha256": "4ecdbe9c8b09a5238ac0bf2db7090acfdab1a3514605a2c8120ce6097fd6bf76",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4ecdbe9c8b09a5238ac0bf2db7090acfdab1a3514605a2c8120ce6097fd6bf76",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4ecdbe9c8b09a5238ac0bf2db7090acfdab1a3514605a2c8120ce6097fd6bf76",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "filtered-text-target",
+      "input": "filtered-text-target.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "4dcd0538e47a247ad60deef513a52dc79682163af19996a6fdea1c9719086e34",
+      "declarationBaseRevision": "ff29cdf84da90e5d6ce745fc57015a2ea49b23a0",
+      "reference": "references/filtered-text-target.png",
+      "referenceSha256": "9166bb8de28d4ed9c1763369f2d0d570c4ecaa6cd15bb35212b8143a32d24312",
+      "captures": [
+        {
+          "pngSha256": "9166bb8de28d4ed9c1763369f2d0d570c4ecaa6cd15bb35212b8143a32d24312",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9166bb8de28d4ed9c1763369f2d0d570c4ecaa6cd15bb35212b8143a32d24312",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9166bb8de28d4ed9c1763369f2d0d570c4ecaa6cd15bb35212b8143a32d24312",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/filtered-text-target.png",
+      "linuxReferenceSha256": "5b9e672e825d8a101d36504ddb25187de63538e7de040dcddf3074d5dc984864",
+      "linuxCaptures": [
+        {
+          "pngSha256": "5b9e672e825d8a101d36504ddb25187de63538e7de040dcddf3074d5dc984864",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5b9e672e825d8a101d36504ddb25187de63538e7de040dcddf3074d5dc984864",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5b9e672e825d8a101d36504ddb25187de63538e7de040dcddf3074d5dc984864",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "pattern-use-filter",
+      "input": "pattern-use-filter.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "d0e5bda9b18299754095219b20e8e633b28f7ea9df3ba594ab4fe0c80ce951bf",
+      "declarationBaseRevision": "ff29cdf84da90e5d6ce745fc57015a2ea49b23a0",
+      "reference": "references/pattern-use-filter.png",
+      "referenceSha256": "84e726f9964cfe1872e7c1d231dfaa5dc1218a600a608398033875f31de655ea",
+      "captures": [
+        {
+          "pngSha256": "84e726f9964cfe1872e7c1d231dfaa5dc1218a600a608398033875f31de655ea",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "84e726f9964cfe1872e7c1d231dfaa5dc1218a600a608398033875f31de655ea",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "84e726f9964cfe1872e7c1d231dfaa5dc1218a600a608398033875f31de655ea",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/pattern-use-filter.png",
+      "linuxReferenceSha256": "84e726f9964cfe1872e7c1d231dfaa5dc1218a600a608398033875f31de655ea",
+      "linuxCaptures": [
+        {
+          "pngSha256": "84e726f9964cfe1872e7c1d231dfaa5dc1218a600a608398033875f31de655ea",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "84e726f9964cfe1872e7c1d231dfaa5dc1218a600a608398033875f31de655ea",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "84e726f9964cfe1872e7c1d231dfaa5dc1218a600a608398033875f31de655ea",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "pattern-use-clip",
+      "input": "pattern-use-clip.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "ad81c006a5f42c6c4e7629ad099640045f8acb7af0530066c749660385fb22ad",
+      "declarationBaseRevision": "ff29cdf84da90e5d6ce745fc57015a2ea49b23a0",
+      "reference": "references/pattern-use-clip.png",
+      "referenceSha256": "115293aa8146f2cb205f93d2f788424dc3df9fd152a90dbc76b9974eb2182ab0",
+      "captures": [
+        {
+          "pngSha256": "115293aa8146f2cb205f93d2f788424dc3df9fd152a90dbc76b9974eb2182ab0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "115293aa8146f2cb205f93d2f788424dc3df9fd152a90dbc76b9974eb2182ab0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "115293aa8146f2cb205f93d2f788424dc3df9fd152a90dbc76b9974eb2182ab0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/pattern-use-clip.png",
+      "linuxReferenceSha256": "115293aa8146f2cb205f93d2f788424dc3df9fd152a90dbc76b9974eb2182ab0",
+      "linuxCaptures": [
+        {
+          "pngSha256": "115293aa8146f2cb205f93d2f788424dc3df9fd152a90dbc76b9974eb2182ab0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "115293aa8146f2cb205f93d2f788424dc3df9fd152a90dbc76b9974eb2182ab0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "115293aa8146f2cb205f93d2f788424dc3df9fd152a90dbc76b9974eb2182ab0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "pattern-use-mask",
+      "input": "pattern-use-mask.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "83ca50ec35353f2559e5268583a3d32db952004824bf6b26c4e3494c9be6c853",
+      "declarationBaseRevision": "ff29cdf84da90e5d6ce745fc57015a2ea49b23a0",
+      "reference": "references/pattern-use-mask.png",
+      "referenceSha256": "5fb382e3abd2e9f324a5610d320d34e33cee31331fab80aa50d926244c35a16c",
+      "captures": [
+        {
+          "pngSha256": "5fb382e3abd2e9f324a5610d320d34e33cee31331fab80aa50d926244c35a16c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5fb382e3abd2e9f324a5610d320d34e33cee31331fab80aa50d926244c35a16c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5fb382e3abd2e9f324a5610d320d34e33cee31331fab80aa50d926244c35a16c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/pattern-use-mask.png",
+      "linuxReferenceSha256": "5fb382e3abd2e9f324a5610d320d34e33cee31331fab80aa50d926244c35a16c",
+      "linuxCaptures": [
+        {
+          "pngSha256": "5fb382e3abd2e9f324a5610d320d34e33cee31331fab80aa50d926244c35a16c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5fb382e3abd2e9f324a5610d320d34e33cee31331fab80aa50d926244c35a16c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5fb382e3abd2e9f324a5610d320d34e33cee31331fab80aa50d926244c35a16c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "filtered-text-group-target",
+      "input": "filtered-text-group-target.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "29b1ff036f1637720dc52c7093d38dd52a3417bc9b925fed991e224dd714b6ca",
+      "declarationBaseRevision": "ff29cdf84da90e5d6ce745fc57015a2ea49b23a0",
+      "reference": "references/filtered-text-group-target.png",
+      "referenceSha256": "cb3b4247c4c2fccac8ea2ac7f9a728ed36ccf2490ae5aada4709825a1c7ee3d3",
+      "captures": [
+        {
+          "pngSha256": "cb3b4247c4c2fccac8ea2ac7f9a728ed36ccf2490ae5aada4709825a1c7ee3d3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "cb3b4247c4c2fccac8ea2ac7f9a728ed36ccf2490ae5aada4709825a1c7ee3d3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "cb3b4247c4c2fccac8ea2ac7f9a728ed36ccf2490ae5aada4709825a1c7ee3d3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/filtered-text-group-target.png",
+      "linuxReferenceSha256": "657a016d68ee3caa50f9e62161b53c3a52f551f6d9ca784f97449ae3537f53e4",
+      "linuxCaptures": [
+        {
+          "pngSha256": "657a016d68ee3caa50f9e62161b53c3a52f551f6d9ca784f97449ae3537f53e4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "657a016d68ee3caa50f9e62161b53c3a52f551f6d9ca784f97449ae3537f53e4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "657a016d68ee3caa50f9e62161b53c3a52f551f6d9ca784f97449ae3537f53e4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "translated-own-use",
+      "input": "translated-own-use.svg",
+      "width": 64,
+      "height": 48,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "a5000a152a7bdb544613a76cb993d796d26b34188ef795482552538722d02782",
+      "selection": "Focused native acceptance for the independently discovered x/y placement defect in new retained-use effect wrappers; declared before correcting the maps.",
+      "declarationBaseRevision": "ff29cdf84da90e5d6ce745fc57015a2ea49b23a0",
+      "reference": "references/translated-own-use.png",
+      "referenceSha256": "f00dd34bf430b74f7cab31358e57606b3ffd3cf2840bfc3b9ac926c7d06a8303",
+      "captures": [
+        {
+          "pngSha256": "f00dd34bf430b74f7cab31358e57606b3ffd3cf2840bfc3b9ac926c7d06a8303",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f00dd34bf430b74f7cab31358e57606b3ffd3cf2840bfc3b9ac926c7d06a8303",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f00dd34bf430b74f7cab31358e57606b3ffd3cf2840bfc3b9ac926c7d06a8303",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/translated-own-use.png",
+      "linuxReferenceSha256": "f00dd34bf430b74f7cab31358e57606b3ffd3cf2840bfc3b9ac926c7d06a8303",
+      "linuxCaptures": [
+        {
+          "pngSha256": "f00dd34bf430b74f7cab31358e57606b3ffd3cf2840bfc3b9ac926c7d06a8303",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f00dd34bf430b74f7cab31358e57606b3ffd3cf2840bfc3b9ac926c7d06a8303",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f00dd34bf430b74f7cab31358e57606b3ffd3cf2840bfc3b9ac926c7d06a8303",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "pattern-use-placed-wrappers",
+      "input": "pattern-use-placed-wrappers.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "6e615950cb4e761ccca7e5f6b57aa0fe65f55297ad099bce6bc3b6f62eaa9df4",
+      "selection": "Focused native acceptance for the independently discovered x/y placement defect in new retained-use effect wrappers; declared before correcting the maps.",
+      "declarationBaseRevision": "ff29cdf84da90e5d6ce745fc57015a2ea49b23a0",
+      "reference": "references/pattern-use-placed-wrappers.png",
+      "referenceSha256": "0aed6388df734654b65fb77de1be122bc413db3da765b22941dd0e64d915de24",
+      "captures": [
+        {
+          "pngSha256": "0aed6388df734654b65fb77de1be122bc413db3da765b22941dd0e64d915de24",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0aed6388df734654b65fb77de1be122bc413db3da765b22941dd0e64d915de24",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0aed6388df734654b65fb77de1be122bc413db3da765b22941dd0e64d915de24",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/pattern-use-placed-wrappers.png",
+      "linuxReferenceSha256": "0aed6388df734654b65fb77de1be122bc413db3da765b22941dd0e64d915de24",
+      "linuxCaptures": [
+        {
+          "pngSha256": "0aed6388df734654b65fb77de1be122bc413db3da765b22941dd0e64d915de24",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0aed6388df734654b65fb77de1be122bc413db3da765b22941dd0e64d915de24",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0aed6388df734654b65fb77de1be122bc413db3da765b22941dd0e64d915de24",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ]
+}

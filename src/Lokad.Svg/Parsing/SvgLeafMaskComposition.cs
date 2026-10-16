@@ -33,6 +33,7 @@ internal sealed class SvgLeafMaskOperation : IDisposable
     internal SvgAffineViewportClip? AffineViewport { get; set; }
     /// <summary>Borrows a parser-owned clip id until native content is emitted after instance placement.</summary>
     internal SvgNativeClipReference? NativeClip { get; set; }
+    internal SvgRetainedFilter? Filter { get; set; }
     internal int ContentIndex { get; set; } = -1;
     /// <summary>Releases this metadata reservation without disposing borrowed operations or observing cancellation.</summary>
     /// <remarks>Only the conversion owner disposes this single-threaded value; budget release is idempotent.</remarks>
@@ -250,7 +251,14 @@ internal static class SvgLeafMaskComposition
                 for (int begin = common; begin < desired.Count; begin++)
                 {
                     SvgLeafMaskOperation operation = desired[begin].Operation;
-                    commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, operation.RecordingScope.Value, operation.SourceOpacity, operation.Region, operation.ContentIndex, operation.Value) { RegionKind = operation.RegionKind });
+                    int contentIndex = operation.ContentIndex;
+                    if (operation.Filter is {} filter)
+                    {
+                        SvgFilterArena arena = scene.Filters;
+                        if (!ReferenceEquals(arena, state.DocumentFilters)) arena.BorrowResourcesFrom(state.DocumentFilters);
+                        contentIndex = arena.AddBinding(filter.Binding);
+                    }
+                    commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, operation.RecordingScope.Value, operation.SourceOpacity, operation.Region, contentIndex, operation.Value) { RegionKind = operation.RegionKind });
                 }
                 active.Clear();
                 active.AddRange(desired.AsSpan());
@@ -292,6 +300,8 @@ internal static class SvgLeafMaskComposition
                     mapped.PreservesIsolation = source.PreservesIsolation;
                     mapped.SourceOpacity = source.SourceOpacity;
                     mapped.RegionKind = source.RegionKind;
+                    if (source.Filter is {} filter)
+                        mapped.Filter = new(filter.Binding with { Transform = mapped.Map.ComposeChecked(filter.Binding.Transform) });
                     if (source.NativeClip is {} native)
                         mapped.NativeClip = native with { Map = mapped.Map.ComposeChecked(native.Map) };
                     if (source.AffineViewport is {} affine)

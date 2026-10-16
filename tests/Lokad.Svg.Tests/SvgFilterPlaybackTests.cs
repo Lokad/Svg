@@ -6,6 +6,65 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgFilterPlaybackTests
 {
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Filtered_use_and_target_coordinates_follow_instance_translation(bool filterOnTarget)
+    {
+        string effect = " filter='url(#f)'";
+        string body = "<rect x='4' y='5' width='16' height='12' fill='#244a77' fill-opacity='.75'/>";
+        string target = filterOnTarget ? body.Replace("<rect ", "<rect id='s'" + effect + " ", StringComparison.Ordinal)
+            : body.Replace("<rect ", "<rect id='s' ", StringComparison.Ordinal);
+        string actual = "<use href='#s' x='13' y='7' transform='translate(3 2)'" + (filterOnTarget ? "" : effect) + "/>"
+            + "<defs>" + target + "</defs>";
+        // Independent native captures retain the translated-use output and reject
+        // applying the filter before the use's x/y translation (120 differing pixels).
+        string expected = "<g transform='translate(16 9)'" + effect + ">" + body + "</g>";
+        Assert.Equal(Render(expected), Render(actual));
+
+        static byte[] Render(string content) => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(
+            "<svg xmlns='http://www.w3.org/2000/svg' width='64' height='48'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='25' height='25' color-interpolation-filters='sRGB'><feOffset dx='2' dy='1'/></filter></defs>"
+            + content + "<rect x='50' y='38' width='5' height='5' fill='#43805b'/></svg>"), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+    }
+
+    [Fact]
+    public void Repeated_filtered_targets_own_their_placed_bindings_and_terminate_before_siblings()
+    {
+        string body = "<path d='M3 4H19V17H3Z' fill='#244a77' fill-opacity='.75'/>";
+        string filter = " filter='url(#f)'";
+        string instances = "<use href='#s' x='7' y='5'/><use href='#s' x='42' y='11'/><defs><g id='s'" + filter + ">" + body + "</g></defs>";
+        string expanded = "<g transform='translate(7 5)'" + filter + ">" + body + "</g><g transform='translate(42 11)'" + filter + ">" + body + "</g>";
+        Assert.Equal(Render(expanded), Render(instances));
+
+        static byte[] Render(string content) => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(
+            "<svg xmlns='http://www.w3.org/2000/svg' width='80' height='48'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='26' height='24' color-interpolation-filters='sRGB'><feOffset dx='2' dy='1'/></filter></defs>"
+            + content + "<rect x='68' y='38' width='5' height='5' fill='#43805b'/></svg>"), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+    }
+
+    [Theory]
+    [InlineData("<defs><path id='s' d='M1 1H8V8H1Z'/></defs><use href='#s' filter='url(#missing)'/>", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("<defs><path id='s' d='M1 1H8V8H1Z' filter='url(#missing)'/></defs><use href='#s'/>", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("<defs><path id='s' d='M1 1H8V8H1Z'/><pattern id='p' patternUnits='userSpaceOnUse' width='12' height='12'><use href='#s' filter='url(#missing)'/></pattern></defs><rect width='16' height='16' fill='url(#p)'/>", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("<defs><path id='s' d='M1 1H8V8H1Z'/><pattern id='p' patternUnits='userSpaceOnUse' width='12' height='12'><use href='#s' clip-path='url(#missing)'/></pattern></defs><rect width='16' height='16' fill='url(#p)'/>", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("<defs><path id='s' d='M1 1H8V8H1Z'/><pattern id='p' patternUnits='userSpaceOnUse' width='12' height='12'><use href='#s' mask='url(#missing)'/></pattern></defs><rect width='16' height='16' fill='url(#p)'/>", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("<defs><filter id='f'><feOffset/></filter><g id='s' filter='url(#f)'><use href='#s'/></g></defs><use href='#s'/>", SvgErrorCode.MalformedInput)]
+    public void Retained_effect_reference_errors_release_partial_scenes_without_publishing(string content, SvgErrorCode expected)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'>" + content + "</svg>");
+        byte[] unchanged = input.ToArray();
+        RenderBudget budget = new(2_000_000);
+        Assert.Equal(expected, Assert.Throws<SvgException>(() =>
+        {
+            using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
+            using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None);
+        }).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        using MemoryStream output = new();
+        Assert.Equal(expected, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, output, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, output.Length);
+        Assert.Equal(unchanged, input);
+    }
+
     [Fact]
     public void Stored_merge_inputs_preserve_native_packed_image_composition()
     {

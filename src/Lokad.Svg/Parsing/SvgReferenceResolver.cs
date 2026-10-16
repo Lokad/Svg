@@ -23,6 +23,7 @@ internal readonly record struct SvgUseReference(string Id, double X, double Y, d
     internal SvgPaintOrder InheritedPaintOrder { get; init; }
     internal SvgMarkerStyle InheritedMarkers { get; init; }
     internal string? SourceMaskReference { get; init; }
+    internal string? Filter { get; init; }
     internal string? PaintServerFill { get; init; }
     internal bool IsDisplayed { get; init; } = true;
     internal bool IsVisible { get; init; } = true;
@@ -849,6 +850,7 @@ internal static class SvgReferenceResolver
         try
         {
             foreach (SvgGeometry geometry in sources) SvgMaskSyntax.ValidateMaskScopes(state, geometry);
+            SvgPaintRecording.WrapFilter(sources, reference.Filter, PlainInstancePlacement(reference, frame), reference.LengthBases, state, workCounter, cancellationToken);
             if (mask is null && maskReference is null) return SvgPaintRecording.WrapInstance(sources, reference.SourceOpacity, reference.RecordingScope, state, workCounter, cancellationToken);
             ApplyMask(sources, frame, mask, maskReference, PlainInstancePlacement(reference, frame), state, workCounter, cancellationToken);
             return SvgPaintRecording.WrapInstance(sources, reference.SourceOpacity, reference.RecordingScope, state, workCounter, cancellationToken);
