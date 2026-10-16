@@ -36,8 +36,7 @@ internal static class SvgMaskContentReplay
             default: SvgElementAttributePolicy.ValidatePointList(reader, reader.LocalName, work, token); break;
         }
         if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on mask content are not implemented.");
-        if (reader.LocalName != "use" && reader.GetAttribute("clip-path") is not null)
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths on mask content are not implemented.");
+        bool clipped = reader.GetAttribute("clip-path") is not null;
         SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, colors, work, token);
         SvgDefinitionLeafSource source = SvgDefinitionLeafSource.Capture(reader, context, state);
         if (state.MaskReplayChildCount == 0) state.MaskReplayChildStart = state.MaskReplayChildren.Count;
@@ -61,7 +60,7 @@ internal static class SvgMaskContentReplay
                 || !state.MaskIsAlpha && (fill.Red != fill.Green || fill.Red != fill.Blue
                     || paint.StrokeColor is {} stroke && (stroke.Red != stroke.Green || stroke.Red != stroke.Blue));
         }
-        if (!requiresVectorPaint && !state.MaskObjectBoundingBoxContent && !group && state.MaskReplayChildCount == 1 && (reader.LocalName is "use" or "rect" or "circle"
+        if (!clipped && !requiresVectorPaint && !state.MaskObjectBoundingBoxContent && !group && state.MaskReplayChildCount == 1 && (reader.LocalName is "use" or "rect" or "circle"
             || SvgGradientSyntax.IsGradientFill(context.ResolveStyle(reader).Fill))) return false;
         if (!state.MaskHasReplayContent)
         {

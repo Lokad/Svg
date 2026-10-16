@@ -94,7 +94,7 @@ internal static class SvgClipPathSyntax
         {
             SvgObjectBoundingClip target = new(map, null);
             foreach (SvgGeometry geometry in geometries) target.Add(geometry, state, work, token);
-            objectClip = rectangle ? target.Register(fractions, state, work, token) : target.Register(polygon, state, work, token);
+            objectClip = rectangle ? target.Register(fractions, state, work, token) : target.Register(polygon, id, state, work, token);
         }
         SvgLeafMaskBinding? lastInner = null, binding = null;
         foreach (ref SvgGeometry geometry in geometries)

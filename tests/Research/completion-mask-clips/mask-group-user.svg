@@ -1,0 +1,2 @@
+<!-- CC0-1.0: authored Lokad.Svg completion-audit control. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><defs><clipPath id="c"><circle cx="8" cy="8" r="7"/></clipPath><mask id="m" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64"><g clip-path="url(#c)"><rect x="0" y="0" width="16" height="16" fill="white"/></g></mask></defs><rect width="64" height="64" fill="#d45a32" mask="url(#m)"/></svg>

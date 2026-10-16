@@ -91,6 +91,13 @@ internal struct SvgObjectBoundingClip
     }
 
     internal SvgLeafMaskOperation Register(SvgClipPolygon content, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+        => Register(content, null, state, work, token);
+
+    /// <summary>Retains the mapped native resource when source geometry may transfer to another scene.</summary>
+    /// <remarks>A null id registers immediately in the active owner. Otherwise emission registers the
+    /// borrowed document resource in the final geometry owner, avoiding scene-local content indices
+    /// crossing a source transfer. Bounds, empty targets, work and cancellation use the same route.</remarks>
+    internal SvgLeafMaskOperation Register(SvgClipPolygon content, string? nativeId, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
         work.Consume(token);
         if (content.NestedClipId is not null)
@@ -103,6 +110,13 @@ internal struct SvgObjectBoundingClip
             return operation;
         }
         SvgAffineTransform map = _map.ComposeChecked(SvgAffineTransform.FromScaleOffset(_right - _left, _bottom - _top, _left, _top));
+        if (nativeId is not null)
+        {
+            operation.NativeClip = new(nativeId, map);
+            operation.Value = 255;
+            operation.RegionKind = SvgLayerRegionKind.AffineViewport;
+            return operation;
+        }
         (SvgClipBox region, int contentIndex) = content.Register(map, true, state, state.Scene, work, token);
         operation.Value = 255;
         operation.Region = content.UsesMaskFallback ? null : region;
