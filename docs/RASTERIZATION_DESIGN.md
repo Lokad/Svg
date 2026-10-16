@@ -16,9 +16,16 @@ Direct font painting remains distinct from picture-backed tile painting. Every
 failure restores the borrowed context and releases partial owners; snapshots stay
 caller-owned. The [text-map sheet](../tests/Research/text-map-exit-sheet/README.md)
 and four controls are exact on both platforms. [Qualification](../artifacts/maintenance-review-20261012/local-use-qualified-results.json) retains all earlier results and affected ownership checks.
-Instanced deferred paths/resource scopes, source-only font discovery and further
-text admission remain explicit T1 work; the finite instance/paint sheet owns their
-remaining acceptance instead of a combination census.
+Definition text now retains the same source model without preparing glyphs. A
+bounded font-source graph visits only actual instance targets through shared
+container inheritance and the ordinary normalized-text extraction method. Source
+CSS matches survive ancestor exclusion; font requests deduplicate before program
+acquisition. Symbols retain authored root typography without forcing vector-only
+symbols through text replay. Lexical text/node counts are admitted once, while
+reference visits consume bounded work. Unused/hidden/unselected sources request no
+program. The unchanged definition control is exact on Windows/Linux.
+Instanced deferred paths/resource scopes and remaining paints stay required T1
+work; the finite instance/paint sheet owns their acceptance instead of a census.
 
 ## Text stroke shader coordinates and mask color (2026-10-16)
 

@@ -32,6 +32,29 @@ internal static class SvgDefinitionParser
         }
         bool rootDefinition = state.DefinitionsDepth < 0 && state.SymbolDepth < 0 && directChild && reader.GetAttribute("id") is not null;
         bool groupNestedDefinition = state.DefinitionsDepth < 0 && state.SymbolDepth < 0 && state.PatternId is null && state.MaskId is null && state.ClipPathId is null && state.GroupDepth > 0 && reader.GetAttribute("id") is not null;
+        if (inDefinitions && state.MarkerDefinition is null && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "text")
+        {
+            SvgElementAttributePolicy.ValidateText(reader, workCounter, cancellationToken);
+            string? id = reader.GetAttribute("id");
+            if (id is not null && (id == state.SymbolId || state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _) || state.RenderedGroupDefinitions.TryGetValue(id, out _)))
+                throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+            SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
+            SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, workCounter, cancellationToken, true);
+            SvgRetainedTextSource source = SvgRetainedTextSource.Capture(reader, context, state, limits);
+            state.NodeCount += source.ChildNodeCount; state.TextCharacterCount += source.CharacterCount;
+            SvgDefinition definition = new([], false, null, null)
+            {
+                TextSource = source, SourceDisplayed = SvgPresentationResolver.ParseDisplay(style.Display),
+                SourceVisible = style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true)
+            };
+            if (symbolLocation)
+            {
+                SvgSymbolDefinitionBuilder builder = state.SymbolDefinition ?? throw new InvalidOperationException("Text source requires its definition builder.");
+                builder.EnableContent(); builder.Add(definition); state.HasRetainedSymbolContent = true;
+            }
+            if (id is not null) state.Definitions.TryAdd(state.Strings.Copy(id), definition with { BorrowedFromSymbol = symbolLocation });
+            return true;
+        }
         if ((inDefinitions || rootDefinition || groupNestedDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "filter")
         {
             state.FilterDefinition = SvgFilterDefinitionBuilder.Create(reader, state.Budget, workCounter, cancellationToken);
@@ -143,6 +166,11 @@ internal static class SvgDefinitionParser
             SvgInheritedStrokeStyle stroke = new(CopyStyleValue(style.Linecap, state), CopyStyleValue(style.Linejoin, state), CopyStyleValue(style.Dasharray, state), CopyStyleValue(style.Dashoffset, state), CopyStyleValue(style.Width, state), CopyStyleValue(style.Miterlimit, state), CopyStyleValue(style.StrokeOpacity, state), CopyStyleValue(style.Stroke, state));
             SvgSymbolPresentation presentation = new(paint, stroke, CopyStyleValue(style.FillRule, state), marker || style.Fill is not null,
                 marker ? paint.FillOpacity : style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity), marker ? paint.CurrentColor : style.Color is null ? null : SvgColorParser.Parse(style.Color, namedColors), marker ? style.GetOpacity() : style.ResolveOpacity(SvgPaintOpacity.Opaque).GetOpacity()) { InheritsOpacity = !marker && style.InheritsOpacity, Markers = new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, workCounter, cancellationToken), PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
+            if (!marker) presentation = presentation with
+            {
+                TextStyleSource = SvgRetainedTextSource.CaptureElement(reader,
+                    SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken), state, limits)
+            };
             string? id = reader.GetAttribute("id");
             if (id is not null && (state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _) || state.RenderedGroupDefinitions.TryGetValue(id, out _))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
             state.SymbolId = id is null ? null : state.Strings.Copy(id);

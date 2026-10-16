@@ -20,8 +20,11 @@ internal sealed class SvgRetainedTextSource
     private readonly Attribute[] _attributes;
     private readonly InlineStyle[] _styles;
 
-    private SvgRetainedTextSource(Node[] nodes, Attribute[] attributes, InlineStyle[] styles)
-    { _nodes = nodes; _attributes = attributes; _styles = styles; }
+    private SvgRetainedTextSource(Node[] nodes, Attribute[] attributes, InlineStyle[] styles, int characters, int childNodes)
+    { _nodes = nodes; _attributes = attributes; _styles = styles; CharacterCount = characters; ChildNodeCount = childNodes; }
+
+    internal int CharacterCount { get; }
+    internal int ChildNodeCount { get; }
 
     internal static SvgRetainedTextSource Capture(XmlReader element, SvgPaintableElementContext context,
         SvgDocumentState state, SvgRenderLimits limits)
@@ -96,7 +99,7 @@ internal sealed class SvgRetainedTextSource
         try
         {
             state.DefinitionReservations.Add(owner);
-            return new(Adopt(nodes.Detach()), Adopt(attributes.Detach()), Adopt(styles.Detach()));
+            return new(Adopt(nodes.Detach()), Adopt(attributes.Detach()), Adopt(styles.Detach()), characters, childNodes);
         }
         catch { owner.Dispose(); throw; }
 

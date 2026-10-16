@@ -7,9 +7,15 @@ Group/use font-size inheritance includes nested aliases. Native fitting, glyph
 paint, alpha and source order retain the existing paths; parent ownership keeps
 borrowed font bytes and staged paints alive. No source is rasterized into a bitmap
 for instancing. [Qualification](../artifacts/maintenance-review-20261012/local-use-qualified-results.json) owns affected cleanup and prior exact results.
-T1 stays open for instance-only font discovery, unrendered text/defs/symbol sources,
-instanced path/resource scopes and remaining paints. Existing explicit gates stay
-required work; this document closes no broader admission or API promise.
+Forward text/group/symbol definitions and instance-only font discovery now pass
+the unchanged [definition control](../tests/Research/instance-paint-exit-sheet/README.md)
+on both platforms. Only referenced painted text contributes requests; unused,
+hidden and unselected source faces stay unopened. Original source CSS and instance
+inheritance reuse the ordinary text extraction/container paths. T1 stays open for
+instanced path/resource scopes and remaining paints; the new whole document is
+0/1 complete with 1/4 exact controls. The [receipt](../artifacts/maintenance-review-20261012/definition-font-qualified-results.json)
+owns full platform qualification and affected resource checks. This closes no
+broader G9 or release promise.
 
 ## Supplied-font user-space linear strokes (2026-10-16)
 

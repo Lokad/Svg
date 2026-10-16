@@ -129,6 +129,14 @@ captures remain unchanged. [Local-use qualification](../artifacts/maintenance-re
 This raises the separate authored total to **twenty-six** (nineteen CC0, seven MIT).
 Corporate 27/258, selected 50 and sourced W3C counts stay unchanged. T1–T3 remains open.
 
+The frozen [instance/paint sheet](../tests/Research/instance-paint-exit-sheet/README.md)
+is **0/1 complete document / 1/4 exact controls** on Windows/Linux. Forward text,
+group and symbol definitions acquire the public face only through live instances;
+unused missing faces remain unopened. The other three controls and whole document
+retain explicit path/resource or paint gates. [Qualification](../artifacts/maintenance-review-20261012/definition-font-qualified-results.json)
+retains every original asset/options/reference and prior exact result. This adds
+no complete document; authored totals and both cohorts stay unchanged.
+
 One additional sourced [W3C decoration document](../tests/Research/stroked-decorations/README.md)
 is **1/1 exact** on Windows/Linux at its frozen 1200×400 output, separately from
 both cohorts and the twenty-six authored documents. All **4/4 controls** are exact,

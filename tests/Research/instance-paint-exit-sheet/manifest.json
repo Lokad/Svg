@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One finite MIT instance/paint document and four focused controls, frozen before correction. All declared outputs reject on Windows/Linux at declaration. Required T1 definition/font admission, instanced path/resource scopes, shader maps and degenerate paint outcomes remain open.",
+  "purpose": "One finite MIT instance/paint document remains incomplete. The forward definition/font control is exact through input-based preparation on Windows/Linux; paint and instanced path/resource gates remain required. Original inputs/options/references stay frozen.",
   "fontPack": "../supplied-font-labels/font-pack.json",
   "fontPackId": "public-noto-sans",
   "fontProvenance": "../supplied-font-labels/font-provenance.json",
@@ -71,7 +71,6 @@
       "sourceSha256": "e54c48689f7b3452370364203009927cd255ac651439419c023e87d5a7270ff0",
       "scale": 1,
       "licenseEvidence": "LICENSE.txt",
-      "expectedError": "UnsupportedFeature",
       "declarationBaseRevision": "dbfc42bcbc91dc7202f3be38657e1f2adc450c11",
       "reference": "references/definition-labels.png",
       "referenceSha256": "c9a94b8e1aa443a9a4577598cf0bd0577ebcaab1d640caf1e66304ef75d7784b",

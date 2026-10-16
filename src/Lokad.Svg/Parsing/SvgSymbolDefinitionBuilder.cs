@@ -9,6 +9,7 @@ internal readonly record struct SvgSymbolPresentation(SvgPaint Paint, SvgInherit
     internal SvgPaintOrder? PaintOrder { get; init; }
     internal SvgMarkerStyle Markers { get; init; }
     internal string? PaintServerId { get; init; }
+    internal SvgRetainedTextSource? TextStyleSource { get; init; }
 }
 
 /// <summary>Owns one open symbol's ordered children until its complete definition transfers to the document registry.</summary>

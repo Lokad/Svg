@@ -1,6 +1,6 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-16 at the retained text-map document completion checkpoint.
+Updated 2026-10-16 at the text-definition/font-admission checkpoint.
 Preserve the current implementation work, qualified `inv-146` correction and every
 established exact result, original SVG/font/reference bytes, options and default
 resource limits. This file owns delivery order, required exits and scope
@@ -27,9 +27,9 @@ Optional maintenance below adds no feature-completion prerequisite.
 | Filters and font infrastructure | Preserve [filter-region results](tests/Research/filter-regions/manifest.json) **26/26**, [colored-effects bounds/restoration](tests/Research/colored-effects-markers/README.md), [affine effect qualification](artifacts/maintenance-review-20261012/affine-filters-qualified-results.json), intended-font/metrics proof, catalog conformance and the implemented [FontProbe host](tools/Lokad.Svg.FontProbe/README.md) with six transport/input regressions. Private deployment validation remains required. |
 | API/resource/package contracts | Preserve bounded preparation/raster/encoding, size/work denial, cancellation/retry, partial cleanup, immutable borrowed bytes, single-use prepared ownership and output integrity. Existing [API contracts](docs/API_CONTRACT.md), package and installed-consumer protections remain required. |
 
-The latest complete local [qualification](artifacts/maintenance-review-20261012/local-use-qualified-results.json)
-is **7,968 tests/platform**, normal incremental Release build plus full tests in
-**90.0s Windows / 265.3s Linux**. The same receipt owns the substantive revision's
+The latest complete local [qualification](artifacts/maintenance-review-20261012/definition-font-qualified-results.json)
+is **7,985 tests/platform**, normal incremental Release build plus full tests in
+**81.7s Windows / 296.0s Linux**. The same receipt owns the substantive revision's
 hosted CI, package and installed-consumer checks. Reuse closed exact-revision
 audits without repolling; unchanged documentation does not reopen qualification.
 Completed work stays closed under the existing coverage/accounting policy.
@@ -45,61 +45,33 @@ maps/admission belong to item 4 and filtered-source boundaries to item 5.
 
 **Next three deliverables, in order:**
 
-1. **Finish the remaining glyph maps/composites and four private requests (item 4).**
-   The glyph-resource document is complete. Close the finite T1 source/paint witnesses,
-   T2 component flags and T3 private outcomes; bring forward
-   only dependencies that block those acceptances.
-2. **Finish the static-effects/marker document (item 5).** Close E1–E4, including
-   the retained linear-image defect, against frozen platform references.
-3. **Finish S17 release qualification (item 6).** Close the explicit revision,
-   package/consumer, resource/API and representative measurement conditions below.
+1. **Finish the frozen instance/paint document (T1).** Definition/font admission
+   is exact. Next transfer deferred text paths and resource scopes through the
+   existing source replay, then close forward/object-box/radial/pattern and
+   constant/empty text paints. Finish the whole document and all four controls.
+2. **Close the three named composite flags (T2).** Reuse the bounded decoder and
+   fitting paths; establish exact public overlapping/transformed-offset witnesses.
+3. **Complete the four private font requests (T3).** Freeze regular, bold, italic
+   and fallback requests, retain sanitized outcomes and resolve any in-scope defect
+   using a public reproduction. Private validation cannot replace public acceptance.
 
-Stroke/style and shared-map items 1–2 are complete. The linked completed C1–C6c
-exits below provide available dependencies, including the unchanged
-[forward/object-box clip document and six controls](tests/Research/forward-bbox-clip-exit-sheet/README.md).
-Document success does not close remaining glyph or effect
-boundaries. No exhaustive G2 or shape × paint × instance prerequisite applies.
+Items 1–3 and their C1–C6c exits are completed dependencies, owned by the evidence
+above and boundary tables below. Do not reopen them as prerequisites. After T1–T3,
+finish E1–E4 and S17 in order. No exhaustive G2 or shape × paint × instance grid.
 
-The unchanged [tile-mask sheet](tests/Research/tile-mask-exit-sheet/README.md) is
-**1/1 document / 2/2 exact controls** on both platforms; its
-[qualification](artifacts/maintenance-review-20261012/tile-mask-qualified-results.json)
-owns eighteen healthy captures, original inputs and resource/sibling protection.
-
-The unchanged [affine-stroke bank](tests/Research/affine-rectangle-strokes/README.md)
-is **10/10 exact controls** on both platforms, including the two C6c outputs.
-Its [qualification](artifacts/maintenance-review-20261012/affine-rect-clip-qualified-results.json)
-retains twelve healthy captures, the original Core input and the earlier eight
-controls. The old transformed-fill clip-crossing control is also exact against
-its unchanged reference. No complete-document count changes.
-
-The unchanged [glyph-resource document and three controls](tests/Research/glyph-resource-exit-sheet/README.md)
-are **1/1 document / 3/3 controls exact** on both platforms, from zero at
-declaration. Thirty healthy captures include intended-font witnesses. Original
-Core inputs, source siblings, fitted-ink bounds and skew/reflection are protected;
-[qualification](artifacts/maintenance-review-20261012/glyph-resource-qualified-results.json)
-owns preservation and resource checks. Remaining T1 maps/admission, composites and
-private validation stay open; this is one additional MIT document.
-
-The unchanged [text-map document and four controls](tests/Research/text-map-exit-sheet/README.md)
-are **1/1 complete document / 4/4 exact controls** on both platforms. Rendered-group
-labels now replay through ordinary supplied-font layout and native glyph paints;
-source CSS, spans, font-size inheritance, cancellation and cleanup are protected.
-Original inputs/options/references and thirty-six healthy captures stay frozen.
-[Local-use qualification](artifacts/maintenance-review-20261012/local-use-qualified-results.json) owns prior outputs and affected resource checks;
-[flow](artifacts/maintenance-review-20261012/text-flow-qualified-results.json) and
-[shader](artifacts/maintenance-review-20261012/text-shader-qualified-results.json)
-evidence remain closed. This adds one MIT document; it does not close T1–T3.
-
-The next [instance/paint bank](tests/Research/instance-paint-exit-sheet/README.md)
-retains thirty-six healthy captures and actual rejections on both platforms at
-`dbfc42bc`; [declaration evidence](artifacts/instance-paint-exits-20261016/declaration-qualification.json)
-owns that baseline. Preserve these bytes/options/references through every gate.
+The [instance/paint bank](tests/Research/instance-paint-exit-sheet/README.md)
+retains thirty-six healthy captures and its measured `dbfc42bc` rejection
+[baseline](artifacts/instance-paint-exits-20261016/declaration-qualification.json).
+It is **0/1 complete document / 1/4 exact controls** on both platforms; definition
+admission is closed, remaining path/resource and paint gates are explicit.
+Preserve these bytes/options/references through every correction.
 
 | Required item, in order | Missing behavior and dependencies | Acceptance and completion condition |
 | --- | --- | --- |
-| [x] 3. Composition and resource presentation (G5–G7) | Declared C1–C6c exits are complete. Source replay, tight bounds, viewport rebasing and native rectangle clipping are available dependencies; glyph-specific and filtered-source boundaries remain in items 4–5. | Retain the linked whole documents, original inputs, exact platform references, siblings and affected scope/cleanup checks. C6c closes both frozen outputs without changing earlier exact results. |
-| [ ] 4. Glyph maps, composites and private validation (G9) | Finite T1–T3 below: remaining text-source admission/binding and paints, three component flags and four private requests. Reuse qualified layout/fitting/decorations and shared maps from items 1–3 where needed. | Exact public map/component witnesses on both platforms, measured degenerate outcomes and affected ownership checks; sanitized outcomes for the fixed private request set, with public reproductions of in-scope defects resolved. |
-| [ ] 5. Static effects and markers (G8) | Finite E1–E4 below: non-solid affine sources, named linearRGB restoration/shadows, object-box/source boundaries and marker size/tangent/style semantics. Reuse bounded capture, item-1/2 paint maps and item-3 scopes. | Every E1–E4 case is exact on both platforms, including the retained standalone linear-image defect; affected graph/region/resource checks pass. Preserve the whole effects sheet and eleven controls. |
+| [ ] 4 / T1. Text instances and paints (G9) | Deferred instanced path/resource transfer and remaining text paint routes; reuse qualified source tokens/CSS, instance fonts, native glyph paints and resource binders. | The unchanged instance/paint document and four controls are exact on both platforms; constant/empty/missing outcomes and affected ownership checks pass. Definition/font admission is already exact. |
+| [ ] 4 / T2. Composite flags (G9) | OVERLAP_COMPOUND, SCALED_COMPONENT_OFFSET and UNSCALED_COMPONENT_OFFSET; reuse bounded composite decoding/fitting. | Public overlapping/transformed-offset witnesses establish all three flags exactly on both platforms, with affected failure/ownership checks. |
+| [ ] 4 / T3. Private validation (G9) | Four fixed private requests through the implemented host/catalog. | Four sanitized outcomes; discovered in-scope defects have resolved public reproductions. |
+| [ ] 5. Static effects and markers (G8) | E1–E4: non-solid affine sources, named linearRGB restoration/shadows, object-box/source boundaries and marker size/tangent/style semantics. Reuse bounded capture, shared paint maps and qualified scopes. | Every named exit is exact on both platforms, including the retained standalone linear-image defect; affected graph/region/resource checks pass. Preserve the whole effects sheet and eleven controls. |
 | [ ] 6. Release (S17) | Finished revision after items 1–5, retaining the product/font contracts below. | All [release conditions](#release-completion-s17) hold together. Document/test counts alone cannot establish completion. |
 
 The tables below specify these exits; they are not another execution queue.
@@ -161,7 +133,7 @@ and [template](tests/Lokad.Svg.Tests/SvgPatternTemplateTests.cs) tests need no n
 | Group | Retained support boundary |
 | --- | --- |
 | G5 | Nested SVG/symbol viewBox/aspect maps and percentage bases; local paints; G3 clip shapes in user-space/object-box coordinates, ordered child unions and compound/winding behavior; alpha/luminance masks with both region/content units, transformed finite regions and implicit root bases. Nested leaf/group/use opacity, clips/masks and mask-container opacity; root/group/defs/symbol/nested-SVG locations. Preserve forward binding, source order, distinct object/visual/percentage bounds and native AA/BW consumers. |
-| G6 | Ordered G3 vector leaves/groups/local uses, solid/gradient paint, opacity and admitted image/filter/supplied-font tile content; both tile/content unit systems, viewBox/aspect maps, fractional finite origins/sizes and composed affine transforms. Preserve inheritance, borders/phase/alpha, transformed fill/stroke and bounded repeat work; recursive pattern/paint dependencies reject. Item 2 closes the basic map routes; C5 owns remaining presentation/content scopes. |
+| G6 | Ordered G3 vector leaves/groups/local uses, solid/gradient paint, opacity and admitted image/filter/supplied-font tile content; both tile/content unit systems, viewBox/aspect maps, fractional finite origins/sizes and composed affine transforms. Preserve inheritance, borders/phase/alpha, transformed fill/stroke and bounded repeat work; recursive pattern/paint dependencies reject. Item 2 closes the basic map routes; C5 closes the declared presentation/content scopes; remaining glyph/effect-specific boundaries belong to items 4–5. |
 | G7 images | Base64 data-URI, non-interlaced 8-bit RGB/RGBA, grayscale/grayscale-alpha and indexed PNG, including tRNS, with chunk/CRC/decompression checks. Finite geometry/viewBox percentages, all meet/slice alignments and `none`, fractional/general affine placement, clips/masks/opacity. Keep image sampling/matrix rounding distinct from gradient/glyph arithmetic and bounded decode ownership. |
 | G7 CSS | Existing ID/class/attribute/selector lists, SVG element and element+ID/class, descendant/child selectors through admitted trees; specificity/source order, `!important`, inline priority/inheritance for enumerated presentation/font properties and parsed width/height. Root/resource collection and source-ancestor exclusion are implemented. `paint-order` supports normal/distinct fill/stroke/markers lists with omitted operations appended; duplicate/unknown tokens reject. Apply each resource's applicable properties. |
 
@@ -213,7 +185,7 @@ spans, dashed/non-scaling/stroke-before-fill/path strokes and metrics stay close
 
 | Required exit (item 4) | Concrete acceptance, dependency and completion |
 | --- | --- |
-| T1. Remaining glyph maps/paints/instances | The unchanged [resource](tests/Research/glyph-resource-exit-sheet/README.md) and [text-map](tests/Research/text-map-exit-sheet/README.md) documents are complete. Reuse qualified layout, source tokens/CSS, instance typography, native glyph paints and resource binders. **Next acceptance:** the frozen [instance/paint sheet](tests/Research/instance-paint-exit-sheet/README.md), currently **0/1 complete / 0/4 exact controls**: forward text/group/symbol definitions with a face needed only through the instance; a masked curved-label use and following sibling; a row for forward direct-text shader binding and object-box/radial/pattern text paints, including constant/empty outcomes. These are required missing routes, not scope deferrals. Add focused controls only to diagnose each shared fix. Completion requires those unchanged declared outputs exact on both platforms, categorized missing/degenerate outcomes, representative raw/prepared font discovery and affected ownership checks. Preserve original masked inputs, source order, endpoint continuation and scalar-list consumption. No font/size/map or paint × glyph × placement grid. |
+| T1. Remaining glyph maps/paints/instances | The unchanged [resource](tests/Research/glyph-resource-exit-sheet/README.md) and [text-map](tests/Research/text-map-exit-sheet/README.md) documents are complete. Reuse qualified layout, source tokens/CSS, instance typography, native glyph paints and resource binders. **Remaining acceptance:** the frozen [instance/paint sheet](tests/Research/instance-paint-exit-sheet/README.md), currently **0/1 complete / 1/4 exact controls**: forward text/group/symbol definitions and instance-only font discovery are exact; a masked curved-label use and following sibling remain required; a row for forward direct-text shader binding and object-box/radial/pattern text paints, including constant/empty outcomes. The unresolved routes remain required, with no scope deferral. Add focused controls only to diagnose each shared fix. Completion requires those unchanged declared outputs exact on both platforms, categorized missing/degenerate outcomes, representative raw/prepared font discovery and affected ownership checks. Preserve original masked inputs, source order, endpoint continuation and scalar-list consumption. No font/size/map or paint × glyph × placement grid. |
 | T2. OVERLAP_COMPOUND, SCALED_COMPONENT_OFFSET, UNSCALED_COMPONENT_OFFSET | Reuse bounded composite decode/fitting. Public synthetic overlapping/transformed-offset components must establish all three flags exactly on both platforms, with affected ownership/failure checks. Preserve [parent-hint/USE_MY_METRICS/nested-accent tests](tests/Lokad.Svg.VisualTests/SvgCompositeMetricsTests.cs), [contours](tests/Research/curved-font-documents/diagnostics/composite-metrics-contours.json), Windows LCD/dropout and Linux light fitting. Executed unsupported opcodes/formats reject explicitly; no general VM grid. |
 | T3. Private deployment validation | Use the implemented host/catalog and unchanged manifest. Freeze one regular, bold, italic and fallback request; execute the [private workflow](#authorized-private-font-testing). Finish with four sanitized outcomes and public synthetic reproductions of in-scope defects resolved; private success cannot replace public acceptance. |
 
@@ -303,7 +275,7 @@ open-ended representativeness quota delays this release.
   failure/publication and cleanup in [PublicContractTests](tests/Lokad.Svg.Tests/PublicContractTests.cs)
   and [PngEncoderTests](tests/Lokad.Svg.Tests/PngEncoderTests.cs).
 - **Routine incremental Release build plus complete tests must stay below ten
-  minutes per platform.** The qualified 90.0s/265.3s checkpoint above meets this.
+  minutes per platform.** The qualified 81.7s/296.0s checkpoint above meets this.
   Include normal build/startup; avoid forced compiler shutdown. Measure before/
   after only when routine cost materially changes. Remove redundant API work if
   needed while preserving distinct semantics. Browser captures, optional benchmarks
