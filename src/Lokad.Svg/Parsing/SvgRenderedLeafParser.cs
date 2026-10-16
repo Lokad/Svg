@@ -280,10 +280,15 @@ internal static class SvgRenderedLeafParser
             {
                 // Fail fast with the conversion-level category: the operation is already rejected as unsupported, so a later font lookup must not surface UnresolvedResource instead.
                 if (state.HasUnsupportedContent) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
-                if (reader.GetAttribute("clip-path") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The clip-path attribute on text is not implemented.");
-                if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on text are not implemented.");
                 SvgResolvedDirectTextElement resolvedText = context.ResolveTextShape(reader);
                 SvgResolvedPaintableElement textElement = resolvedText.PaintableElement;
+                string? textClip = SvgClipPathSyntax.ResolveClipId(reader, state);
+                if (textClip is not null) textClip = state.Strings.Copy(textClip);
+                string? textMask = SvgMaskSyntax.PendingMaskId(reader, state);
+                SvgViewportFrame? resourceParent = state.EffectiveFrame;
+                int resourceStart = state.Scene.CommandCount;
+                if (textClip is not null || textMask is not null)
+                    state.Scene.BeginSourceOpacityScope(SvgPaintOpacity.Opaque, state.NewRecordingScope());
                 SvgAffineTransform textPlacement = textElement.Transform;
                 if (state.EffectiveFrame is {} textFrame)
                 {
@@ -348,6 +353,16 @@ internal static class SvgRenderedLeafParser
                             SvgTextGlyphPainter.Emit(run, textPlacement, [], null, textElement.Presentation.Color, state, limits.MaximumPathCommands, budget, workCounter, cancellationToken);
                             SvgTextDecorationRenderer.Emit(run, run.PaintFragments, textPlacement, [], null, state, textElement.Presentation.Color, true, limits.MaximumPathCommands, budget, workCounter, cancellationToken);
                         }
+                    }
+                    if (textClip is not null || textMask is not null)
+                    {
+                        // Deferred paths occupy paint slots inside the same element scope. Their
+                        // resolution shifts these shared ranges before clip/mask binding.
+                        state.Scene.EndOpacityScope();
+                        if (textClip is not null)
+                            state.PendingGroupClips.Add(new(textClip, resourceParent, textElement.Transform, resourceStart, state.Scene.CommandCount, -1) { UsesNativeClip = true });
+                        if (textMask is not null)
+                            state.PendingGroupMasks.Add(new(textMask, resourceStart, state.Scene.CommandCount, -1, resourceParent, textElement.Transform, state.Scene));
                     }
                     return true;
                 }

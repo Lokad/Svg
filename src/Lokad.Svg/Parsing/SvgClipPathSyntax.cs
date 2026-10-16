@@ -9,7 +9,11 @@ namespace Lokad.Svg.Parsing;
 internal readonly record struct PendingLeafClip(int FirstGeometryIndex, int GeometryCount, string ClipId, SvgViewportFrame? Parent, SvgAffineTransform Transform, SvgSceneBuilder Scene);
 
 /// <summary>Retains a group command range and its referencing transform for document-end clip resolution after use expansion.</summary>
-internal readonly record struct PendingGroupClip(string ClipId, SvgViewportFrame? Parent, SvgAffineTransform Transform, int FirstCommandIndex, int EndCommandIndex, int Depth);
+internal readonly record struct PendingGroupClip(string ClipId, SvgViewportFrame? Parent, SvgAffineTransform Transform, int FirstCommandIndex, int EndCommandIndex, int Depth)
+{
+    /// <summary>Preserves glyph source rendering instead of lowering a clip into non-glyph geometry.</summary>
+    internal bool UsesNativeClip { get; init; }
+}
 
 /// <summary>Parses the bounded clip-path reference syntax shared by clipped containers and leaves.</summary>
 internal static class SvgClipPathSyntax
@@ -617,7 +621,7 @@ internal static class SvgClipPathSyntax
             SvgClipBox clip;
             if (state.Clips.TryGetValue(pending.ClipId, out SvgClipBox box))
             {
-                if (!pending.Transform.IsAxisAligned)
+                if (!pending.Transform.IsAxisAligned || pending.UsesNativeClip)
                 {
                     SvgAffineTransform map = parent is {} frame
                         ? SvgAffineTransform.FromScaleOffset(frame.ScaleX, frame.ScaleY, frame.OffsetX, frame.OffsetY).ComposeChecked(pending.Transform)

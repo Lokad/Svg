@@ -1,5 +1,6 @@
 using System.Xml;
 using System.Globalization;
+using Lokad.Svg.Fonts;
 using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
@@ -131,7 +132,7 @@ internal static class SvgMaskSyntax
                 SvgRectangle fallback = UnionBounds(state, pending, workCounter, cancellationToken);
                 SvgGeometry first = state.Scene.GeometryAt(pending.FirstGeometryIndex);
                 SvgRectangle objectBox = state.Scene.GetRecordedPaintValue(first.RecordedPaint).ObjectBounds is not null
-                    ? RecordedObjectBox(first, state) : fallback;
+                    ? RecordedObjectBox(first, state, workCounter, cancellationToken) : fallback;
                 SvgMaskTarget? nativeTarget = null;
                 if (!spatialMap.IsAxisAligned || pending.Parent is { IsTrivial: false })
                 {
@@ -176,7 +177,7 @@ internal static class SvgMaskSyntax
             for (int geometryIndex = pending.FirstGeometryIndex; geometryIndex < pending.FirstGeometryIndex + pending.GeometryCount; geometryIndex++)
             {
                 workCounter.Consume(cancellationToken);
-                SvgRectangle bounds = BoundingBox(state.Scene.GeometryAt(geometryIndex));
+                SvgRectangle bounds = ResourceBounds(state.Scene.GeometryAt(geometryIndex), workCounter, cancellationToken);
                 if (bounds.X < left) left = bounds.X;
                 if (bounds.Y < top) top = bounds.Y;
                 if (bounds.X + bounds.Width > right) right = bounds.X + bounds.Width;
@@ -302,7 +303,6 @@ internal static class SvgMaskSyntax
                 if (!scalar || !targetMap.IsAxisAligned && state.MaskContents.TryGetValue(pending.MaskId, out _))
                 {
                     if (!state.MaskContents.TryGetValue(pending.MaskId, out SvgMaskContent content)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
-                    ValidateNoGlyphText(state, pending, workCounter, cancellationToken);
                     SvgAffineTransform map = content.IsObjectBoundingBox || nativeTarget is not null ? targetMap : pending.Transform;
                     int contentIndex = state.Scene.AddMaskContent(SvgMaskContentReplay.PlaceForTarget(content, map, GroupChildrenUnion(state, pending, workCounter, cancellationToken), nativeTarget, state, workCounter, cancellationToken));
                     RewriteGroupMaskScope(state, pending, 255, maskRegion, contentIndex);
@@ -327,17 +327,6 @@ internal static class SvgMaskSyntax
             finally { state.DefinitionReplayScene = previous; }
         }
 
-        static void ValidateNoGlyphText(SvgDocumentState state, PendingGroupMask pending, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        {
-            for (int commandIndex = pending.FirstCommandIndex; commandIndex < pending.EndCommandIndex; commandIndex++)
-            {
-                workCounter.Consume(cancellationToken);
-                SvgDrawCommand command = state.Scene.CommandAt(commandIndex);
-                if (command.Kind != SvgDrawCommandKind.Geometry) continue;
-                if (state.Scene.GeometryAt(command.GeometryIndex).Kind == SvgGeometryKind.GlyphContours) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside masked groups is not implemented.");
-            }
-        }
-
         static bool GroupCovered(SvgDocumentState state, PendingGroupMask pending, SvgClipBox content, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
             bool covers = true;
@@ -347,8 +336,7 @@ internal static class SvgMaskSyntax
                 SvgDrawCommand command = state.Scene.CommandAt(commandIndex);
                 if (command.Kind != SvgDrawCommandKind.Geometry) continue;
                 SvgGeometry geometry = state.Scene.GeometryAt(command.GeometryIndex);
-                if (geometry.Kind == SvgGeometryKind.GlyphContours) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside masked groups is not implemented.");
-                SvgRectangle box = CoverageBox(geometry);
+                SvgRectangle box = ResourceCoverageBox(geometry, workCounter, cancellationToken);
                 covers &= content.Contains(box.X, box.Y, box.X + box.Width, box.Y + box.Height);
             }
             return covers;
@@ -362,8 +350,7 @@ internal static class SvgMaskSyntax
                 SvgDrawCommand command = state.Scene.CommandAt(commandIndex);
                 if (command.Kind != SvgDrawCommandKind.Geometry) continue;
                 SvgGeometry geometry = state.Scene.GeometryAt(command.GeometryIndex);
-                if (geometry.Kind == SvgGeometryKind.GlyphContours) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside masked groups is not implemented.");
-                SvgRectangle box = CoverageBox(geometry);
+                SvgRectangle box = ResourceCoverageBox(geometry, workCounter, cancellationToken);
                 if (!content.Contains(box.X, box.Y, box.X + box.Width, box.Y + box.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering masked group children is implemented.");
             }
         }
@@ -414,8 +401,7 @@ internal static class SvgMaskSyntax
             SvgDrawCommand command = state.Scene.CommandAt(commandIndex);
             if (command.Kind != SvgDrawCommandKind.Geometry) continue;
             SvgGeometry geometry = state.Scene.GeometryAt(command.GeometryIndex);
-            if (geometry.Kind == SvgGeometryKind.GlyphContours) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside masked groups is not implemented.");
-            SvgRectangle box = RecordedObjectBox(geometry, state);
+            SvgRectangle box = RecordedObjectBox(geometry, state, workCounter, cancellationToken);
             if (box.X < left) left = box.X;
             if (box.Y < top) top = box.Y;
             if (box.X + box.Width > right) right = box.X + box.Width;
@@ -425,12 +411,25 @@ internal static class SvgMaskSyntax
         return new SvgRectangle(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, false, null);
     }
 
-    internal static SvgRectangle RecordedObjectBox(SvgGeometry geometry, SvgDocumentState state)
+    internal static SvgRectangle RecordedObjectBox(SvgGeometry geometry, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
         SvgPaintBounds? recorded = state.Scene.GetRecordedPaintValue(geometry.RecordedPaint).ObjectBounds;
         return recorded is {} box
             ? new(box.Left, box.Top, box.Right - box.Left, box.Bottom - box.Top, default, false, null)
-            : BoundingBox(geometry);
+            : ResourceBounds(geometry, work, token);
+    }
+
+    /// <summary>Reuses bounded native glyph extrema without changing the qualified non-glyph bounds routes.</summary>
+    internal static SvgRectangle ResourceBounds(SvgGeometry geometry, ParserWorkCounter work, CancellationToken token)
+        => geometry.Kind == SvgGeometryKind.GlyphContours
+            ? SvgGlyphOutline.Bounds(geometry.Glyph.Contours, SvgAffineTransform.Identity, work, token) : BoundingBox(geometry);
+
+    private static SvgRectangle ResourceCoverageBox(SvgGeometry geometry, ParserWorkCounter work, CancellationToken token)
+    {
+        if (geometry.Kind != SvgGeometryKind.GlyphContours) return CoverageBox(geometry);
+        SvgRectangle box = ResourceBounds(geometry, work, token);
+        double inflation = geometry.Glyph.StrokeBoundsInflation;
+        return box with { X = box.X - inflation, Y = box.Y - inflation, Width = box.Width + 2 * inflation, Height = box.Height + 2 * inflation };
     }
 
     internal static SvgRectangle BoundingBox(SvgGeometry geometry)

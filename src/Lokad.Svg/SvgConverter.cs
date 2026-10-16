@@ -1111,19 +1111,12 @@ public static class SvgConverter
                         foreach (SvgGlyphQuadraticContour contour in geometry.Glyph.Contours)
                         foreach (SvgGlyphQuadraticSegment segment in contour.Segments)
                         {
-                            if (geometry.Glyph.StrokeBoundsInflation > 0)
-                            {
-                                double inflation = geometry.Glyph.StrokeBoundsInflation;
-                                IncludeBox(new(segment.Start.X, segment.Start.Y, 0, 0, default, false, null), outputMap, inflation);
-                                IncludeBox(new(segment.Control.X, segment.Control.Y, 0, 0, default, false, null), outputMap, inflation);
-                                IncludeBox(new(segment.End.X, segment.End.Y, 0, 0, default, false, null), outputMap, inflation);
-                            }
-                            else
-                            {
-                                Include(new(segment.Start.X, segment.Start.Y), outputMap);
-                                Include(new(segment.Control.X, segment.Control.Y), outputMap);
-                                Include(new(segment.End.X, segment.End.Y), outputMap);
-                            }
+                            // Device fitting can extend filled ink beyond its source outline.
+                            // Keep that fringe inside the bounded layer, as filtered glyphs do.
+                            double inflation = Math.Max(2, geometry.Glyph.StrokeBoundsInflation);
+                            IncludeBox(new(segment.Start.X, segment.Start.Y, 0, 0, default, false, null), outputMap, inflation);
+                            IncludeBox(new(segment.Control.X, segment.Control.Y, 0, 0, default, false, null), outputMap, inflation);
+                            IncludeBox(new(segment.End.X, segment.End.Y, 0, 0, default, false, null), outputMap, inflation);
                         }
                         break;
                     default:

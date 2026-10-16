@@ -173,8 +173,6 @@ internal static class SvgDocumentTraversal
                         }
                     }
                 }
-                else if (state.ClipDepths.Count > 0 && textElement && reader.NamespaceURI == "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside clipped groups is not implemented.");
-                else if (textElement && reader.NamespaceURI == "http://www.w3.org/2000/svg" && HasMaskedGroup(state, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside masked groups is not implemented.");
                 else if (SvgRenderedLeafParser.TryParse(reader, directChild, inScope, root, state, limits, budget, namedColors, fontSnapshot, workCounter, cancellationToken))
                 {
                     // Rendered leaves admit no rendered children: an explicitly closed leaf with an element-free
@@ -461,16 +459,6 @@ internal static class SvgDocumentTraversal
             }
         }
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG root element is not closed.");
-
-        static bool HasMaskedGroup(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        {
-            foreach (SvgGroupScope group in state.Groups.AsSpan())
-            {
-                workCounter.Consume(cancellationToken);
-                if (group.HasDeferredMask) return true;
-            }
-            return false;
-        }
 
         // Seal shader-mask replay under one parent-owned vector scene; failure releases staging owners.
         static void RegisterMaskScene(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)

@@ -1,3 +1,25 @@
+## Glyph resource ranges and fitted-ink windows (2026-10-16)
+
+Direct text clip/mask attributes reuse the existing group resource binders around
+one element command range. Deferred text-path paint slots shift those same ranges
+before resource resolution; multiple admitted path runs keep one element mask.
+Font discovery admits rendered clip/mask groups. Glyph source bounds reuse the
+existing native quadratic evaluator with bounded stack commands and work/token
+checks; normalized resources map curves before extrema rather than map a box.
+Logical object bounds remain separate from conservative layer allocation, which
+retains the same fitted-ink fringe already needed for filtered glyphs.
+
+The frozen document exposed Windows X-skew fitting separately from clipping.
+A fresh healthy unclipped diagnostic reproduces the difference. Horizontal
+baselines retain device fitting under X skew; rotated baselines keep their
+qualified unhinted route and quarter turns. Existing glyph raster kernels and
+native outline/coverage witnesses remain unchanged. Rejected models and the
+remaining mixed direct/path parser gate are retained in the existing
+[diagnosis](../artifacts/glyph-resource-exits-20261016/diagnosis-results.json).
+The unchanged [document and controls](../tests/Research/glyph-resource-exit-sheet/README.md)
+are exact on both platforms; [qualification](../artifacts/maintenance-review-20261012/glyph-resource-qualified-results.json)
+owns prior outputs, original Core inputs and resource checks. G9 stays open.
+
 ## Affine resource rectangles and construction windows (2026-10-16)
 
 General leaf/group rectangle clips defer through the existing native resource

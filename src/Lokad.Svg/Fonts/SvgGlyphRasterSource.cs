@@ -51,8 +51,10 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
         SvgGlyphStrikeTransform strike = HasGlyphMap
             ? SvgGlyphStrikeTransform.Create(_fontSize * scaleY, new(_glyphMap.A * scaleX / scaleY, _glyphMap.B, _glyphMap.C * scaleX / scaleY, _glyphMap.D, 0, 0))
             : default;
+        // A horizontal baseline retains device fitting under X skew. Rotated
+        // baselines keep their qualified unhinted route, except quarter turns.
         bool mappedFitting = HasGlyphMap && HasTrueTypePrograms(budget, work, token) &&
-            (strike.RelaxedMap.B == 0 && strike.RelaxedMap.C == 0 || strike.RelaxedMap.A == 0 && strike.RelaxedMap.D == 0);
+            (strike.RelaxedMap.B == 0 || strike.RelaxedMap.A == 0 && strike.RelaxedMap.D == 0);
         SvgAffineTransform fittedMap = strike.RemainingMap;
         if (mappedFitting)
         {

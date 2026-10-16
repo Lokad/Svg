@@ -48,7 +48,6 @@ internal static class SvgFontRequestDiscovery
         using var eligibleLevels = new BudgetedParserList<bool>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         using var groupLevels = new BudgetedParserList<bool>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         using var viewportSizes = new BudgetedParserList<SvgViewportSize>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        using var clipDepths = new BudgetedParserList<int>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         using var switchScopes = new BudgetedParserList<SwitchScope>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         char[]? textChunk = null;
         RenderBudget.BudgetReservation? textChunkReservation = null;
@@ -203,7 +202,7 @@ internal static class SvgFontRequestDiscovery
                     }
                     bool textElement = isSvgElement && reader.LocalName == "text";
                     bool isTextEligible = !sterile && parentAllowsText && textElement;
-                    bool childAllowsText = !sterile && parentAllowsText && isSvgElement && clipDepths.Count == 0 && reader.GetAttribute("mask") is null && (reader.Depth == rootDepth || reader.LocalName == "svg" || patternDefinition || SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName));
+                    bool childAllowsText = !sterile && parentAllowsText && isSvgElement && (reader.Depth == rootDepth || reader.LocalName == "svg" || patternDefinition || SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName));
                     bool plainViewport = false;
                     if (!sterile && inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement && !rootElement && (directChild || hasGroupAncestor || viewportSizes.Count > 0) && reader.LocalName == "svg")
                     {
@@ -215,8 +214,7 @@ internal static class SvgFontRequestDiscovery
                         plainViewport = true;
                         if (!reader.IsEmptyElement) viewportSizes.Add(new SvgViewportSize(viewBox?.Width ?? viewport.Width, viewBox?.Height ?? viewport.Height, reader.Depth));
                     }
-                    if (!sterile && inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName) && reader.GetAttribute("clip-path") is not null && !reader.IsEmptyElement) clipDepths.Add(reader.Depth);
-                    if (!sterile && !insideDirectText && isSvgElement && reader.LocalName == "switch" && (parentAllowsText || viewportSizes.Count > 0 || clipDepths.Count > 0) && !reader.IsEmptyElement) switchScopes.Add(new SwitchScope(reader.Depth, false));
+                    if (!sterile && !insideDirectText && isSvgElement && reader.LocalName == "switch" && (parentAllowsText || viewportSizes.Count > 0) && !reader.IsEmptyElement) switchScopes.Add(new SwitchScope(reader.Depth, false));
                     bool isKnownContent = isSvgElement && (SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName) || reader.LocalName is ("svg" or "g" or "a" or "switch" or "text" or "use" or "style" or "defs" or "title" or "desc" or "metadata" or "symbol" or "marker" or "clipPath" or "mask" or "image" or "pattern" or "linearGradient" or "radialGradient" or "stop"));
                     bool isInertForeignElement = !isSvgElement && reader.IsEmptyElement;
                     bool unsupportedContainer = (!rootElement && (reader.LocalName == "style" || (reader.LocalName == "symbol" && !symbolDefinition))) || (!rootElement && reader.LocalName == "svg" && !plainViewport) || (!directChild && !hasGroupAncestor && viewportSizes.Count == 0 && reader.LocalName == "defs");
@@ -303,7 +301,6 @@ internal static class SvgFontRequestDiscovery
                     if (reader.Depth == symbolDepth) symbolDepth = -1;
                     if (reader.Depth == patternDepth) { patternDepth = -1; inertDepth = patternInheritedInertDepth; patternInheritedInertDepth = -1; }
                     if (viewportSizes.Count > 0 && viewportSizes[^1].Depth == reader.Depth) viewportSizes.RemoveLast();
-                    if (clipDepths.Count > 0 && clipDepths[^1] == reader.Depth) clipDepths.RemoveLast();
                     if (inheritedLevels.Count != 0)
                     {
                         inheritedLevels.RemoveLast();

@@ -1,3 +1,17 @@
+## Supplied-font glyph clip/mask scopes (2026-10-16)
+
+The unchanged [glyph-resource document and three controls](../tests/Research/glyph-resource-exit-sheet/README.md)
+are exact on Windows/Linux. Defined direct/group clips and direct/spatial group
+masks preserve supplied-font discovery, source ranges, fitted-ink bounds and
+following siblings. Skewed/reflected labels are qualified; Windows horizontal
+baselines retain fitting under X skew. Original direct-mask/clipped-group Core
+inputs are positive regressions; missing fonts/references still have categorized
+outcomes. Earlier blanket glyph clip/mask guards below are superseded.
+[Qualification](../artifacts/maintenance-review-20261012/glyph-resource-qualified-results.json)
+owns preservation and affected resource checks. Local-use/shader-path and mixed
+direct/path admission, composite flags, private validation and wider G8/S17 exits
+remain required. This bank does not close G9 or defer a feature promise.
+
 ## General affine rectangular resource clips (2026-10-16)
 
 The unchanged [affine-stroke bank](../tests/Research/affine-rectangle-strokes/README.md)

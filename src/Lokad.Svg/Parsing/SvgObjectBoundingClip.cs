@@ -1,4 +1,5 @@
 using Lokad.Svg.Rendering;
+using Lokad.Svg.Fonts;
 
 namespace Lokad.Svg.Parsing;
 
@@ -40,6 +41,8 @@ internal struct SvgObjectBoundingClip
                     ? local.Apply(retained) : SvgPathBounds.Compute(source.Commands, local, work, token);
             }
         }
+        else if (geometry.Kind == SvgGeometryKind.GlyphContours)
+            bounds = SvgGlyphOutline.Bounds(geometry.Glyph.Contours, _inverse, work, token);
         else if (geometry.Kind == SvgGeometryKind.AxisAlignedLine)
         {
             SvgAxisAlignedLine line = geometry.AxisAlignedLine;
@@ -50,7 +53,7 @@ internal struct SvgObjectBoundingClip
         else if (geometry.Kind is SvgGeometryKind.Rectangle or SvgGeometryKind.PatternFill or SvgGeometryKind.GradientFill or SvgGeometryKind.RadialGradient or SvgGeometryKind.EmbeddedImage
             or SvgGeometryKind.OrthogonalBand or SvgGeometryKind.PolygonFill or SvgGeometryKind.GradientPolygon
             or SvgGeometryKind.RadialPolygon or SvgGeometryKind.PatternPolygon or SvgGeometryKind.GradientStroke)
-            bounds = MapBox(SvgMaskSyntax.RecordedObjectBox(geometry, state), _inverse, work, token);
+            bounds = MapBox(SvgMaskSyntax.RecordedObjectBox(geometry, state, work, token), _inverse, work, token);
         else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Bounding-box curved clips require retained source geometry bounds.");
         if (!double.IsFinite(bounds.X) || !double.IsFinite(bounds.Y) || !double.IsFinite(bounds.Width) || !double.IsFinite(bounds.Height))
             throw new SvgException(SvgErrorCode.LimitExceeded, "Bounding-box clip coordinates exceed the finite range.");

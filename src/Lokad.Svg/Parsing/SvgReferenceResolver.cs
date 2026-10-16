@@ -888,7 +888,7 @@ internal static class SvgReferenceResolver
             SvgRectangle visual = SvgMaskSyntax.BoundingBox(geometry);
             visualLeft = Math.Min(visualLeft, visual.X); visualTop = Math.Min(visualTop, visual.Y);
             visualRight = Math.Max(visualRight, visual.X + visual.Width); visualBottom = Math.Max(visualBottom, visual.Y + visual.Height);
-            SvgRectangle box = SvgMaskSyntax.RecordedObjectBox(geometry, state);
+            SvgRectangle box = SvgMaskSyntax.RecordedObjectBox(geometry, state, workCounter, cancellationToken);
             left = Math.Min(left, box.X); top = Math.Min(top, box.Y);
             right = Math.Max(right, box.X + box.Width); bottom = Math.Max(bottom, box.Y + box.Height);
         }

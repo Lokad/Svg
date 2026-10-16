@@ -112,6 +112,15 @@ cross-checked by six healthy native captures. The
 owns qualification, original-input preservation and affected resource checks.
 Declared C1–C6c exits are complete; glyph/font/effect and S17 remain required.
 
+The unchanged [glyph-resource bank](../tests/Research/glyph-resource-exit-sheet/README.md)
+is **1/1 document / 3/3 controls exact** on Windows/Linux, with thirty healthy
+captures including intended-font witnesses. This raises the separate authored
+total to **twenty-five** (nineteen CC0, six MIT); corporate 27/258, selected 50
+and sourced W3C counts are unchanged. Direct/group clips and masks, skew/reflection,
+original Core inputs and following siblings are protected. The
+[receipt](../artifacts/maintenance-review-20261012/glyph-resource-qualified-results.json)
+owns qualification and resource checks. Remaining T1–T3, effects and S17 stay open.
+
 One additional sourced [W3C decoration document](../tests/Research/stroked-decorations/README.md)
 is **1/1 exact** on Windows/Linux at its frozen 1200×400 output, separately from
 both cohorts and the twenty-four authored documents. All **4/4 controls** are exact,

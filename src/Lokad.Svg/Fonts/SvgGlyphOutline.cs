@@ -6,6 +6,27 @@ using Lokad.Svg.Parsing;
 /// <summary>Converts one decoded TrueType glyph outline into SVG user coordinates.</summary>
 internal static class SvgGlyphOutline
 {
+    /// <summary>Computes tight geometric glyph bounds through the shared native quadratic-bound evaluator.</summary>
+    /// <remarks>Contours remain borrowed. Fixed stack commands reuse path extrema without retaining storage;
+    /// every segment/map/root visit charges the shared work counter and observes cancellation.</remarks>
+    internal static SvgRectangle Bounds(ReadOnlySpan<SvgGlyphQuadraticContour> contours, SvgAffineTransform map, ParserWorkCounter work, CancellationToken token)
+    {
+        token.ThrowIfCancellationRequested();
+        double left = double.PositiveInfinity, top = double.PositiveInfinity;
+        double right = double.NegativeInfinity, bottom = double.NegativeInfinity;
+        Span<SvgAuthoredPathCommand> commands = stackalloc SvgAuthoredPathCommand[2];
+        foreach (SvgGlyphQuadraticContour contour in contours)
+        foreach (SvgGlyphQuadraticSegment segment in contour.Segments)
+        {
+            commands[0] = new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(segment.Start.X, segment.Start.Y), default, default);
+            commands[1] = new(SvgAuthoredPathVerb.Quadratic, SvgAuthoredArcFlags.None, new(segment.Control.X, segment.Control.Y), new(segment.End.X, segment.End.Y), default);
+            SvgRectangle box = SvgPathBounds.Compute(commands, map, work, token);
+            left = Math.Min(left, box.X); top = Math.Min(top, box.Y);
+            right = Math.Max(right, box.X + box.Width); bottom = Math.Max(bottom, box.Y + box.Height);
+        }
+        return double.IsPositiveInfinity(left) ? default : new(left, top, right - left, bottom - top, default, true, null);
+    }
+
     internal static SvgGlyphQuadraticContour[] GetContours(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, CancellationToken cancellationToken)
     {
         using SvgGlyphContourStorage storage = GetContourStorage(font, glyph, fontSize, new RenderBudget(long.MaxValue), null, cancellationToken);

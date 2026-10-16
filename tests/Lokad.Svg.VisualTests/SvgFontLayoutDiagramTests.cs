@@ -298,6 +298,43 @@ public sealed class SvgFontLayoutDiagramTests
     public static IEnumerable<object[]> GlyphResourceCases()
         => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "glyph-resource-exit-sheet"));
 
+    [Fact]
+    public async Task Glyph_resource_scopes_preserve_preparation_denial_cancellation_cleanup_and_retry()
+    {
+        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "glyph-resource-exit-sheet");
+        byte[] input = File.ReadAllBytes(Path.Combine(directory, "glyph-resource-sheet.svg")), unchanged = input.ToArray();
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, "..", "supplied-font-labels", "font-pack.json")), "public-noto-sans");
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, new Provider(), CancellationToken.None);
+        Assert.Single(snapshot.Fonts);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        RenderBudget accepted = new(32_000_000); ParserWorkCounter work = new(100_000_000);
+        byte[] expected = Run(accepted, work, CancellationToken.None);
+        Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+        foreach (long maximum in new[] { 1L, accepted.Snapshot().PeakBytes / 2 })
+        {
+            RenderBudget denied = new(maximum);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(denied, new(100_000_000), CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(accepted, new(work.Used - 1), CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+        using CancellationTokenSource cancellation = new();
+        using (GlyphExpansionProbe.Observe(cancellation.Cancel))
+            Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => Run(accepted, new(100_000_000), cancellation.Token)).CancellationToken);
+        Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+        Assert.Equal(expected, Run(accepted, new(100_000_000), CancellationToken.None));
+        Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, new Provider(), SvgRenderOptions.Default, CancellationToken.None);
+        Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
+        Assert.Equal(unchanged, input);
+
+        byte[] Run(RenderBudget budget, ParserWorkCounter counter, CancellationToken token)
+        {
+            using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, counter, token);
+            return SvgConverter.ConvertToPng(root, options, budget, token).ToArray();
+        }
+    }
+
     private static IEnumerable<object[]> ReadCases(string directory)
     {
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
@@ -409,9 +446,12 @@ public sealed class SvgFontLayoutDiagramTests
         Assert.Contains(license, new[] { "CC0-1.0", "MIT", "LicenseRef-W3C-Software-2023" });
         if (license == "LicenseRef-W3C-Software-2023")
             Assert.True(File.Exists(Path.Combine(directory, Required(item, "licenseEvidence"))));
-        else if (license == "MIT" && item.TryGetProperty("licenseEvidence", out JsonElement evidence))
-            Assert.Contains("MIT License", File.ReadAllText(Path.Combine(directory, evidence.GetString() ?? throw new InvalidDataException("Missing license path."))));
-        else Assert.True(input.AsSpan().IndexOf(System.Text.Encoding.UTF8.GetBytes("SPDX-License-Identifier: " + license)) >= 0);
+        else if (input.AsSpan().IndexOf(System.Text.Encoding.UTF8.GetBytes("SPDX-License-Identifier: " + license)) < 0)
+        {
+            Assert.Equal("MIT", license);
+            Assert.Equal("LICENSE.txt", Required(item, "licenseEvidence"));
+            Assert.Contains("MIT License", File.ReadAllText(Path.Combine(directory, "LICENSE.txt")));
+        }
         string referenceKey = OperatingSystem.IsLinux() ? "linuxReference" : "reference";
         byte[] reference = File.ReadAllBytes(Path.Combine(directory, Required(item, referenceKey)));
         Assert.Equal(Required(item, referenceKey + "Sha256"), Convert.ToHexStringLower(SHA256.HashData(reference)));
