@@ -18,6 +18,14 @@ documents) are complete and counted separately. Preserve the delivered
 separately counted controls and original sources/options/references.
 These failure-selected cases establish declared outcomes, not a general SVG success rate.
 
+The retained [affine source-offset input](../tests/Research/filter-source-exit-sheet/diagnostics/affine-offset-only.svg),
+partial crop and near-integer boundary are **3/3 exact controls** on Windows/Linux.
+Eighteen healthy stable captures preserve the original 480-pixel observation and
+all new references. This adds no complete document. The
+[receipt](../artifacts/maintenance-review-20261012/affine-offset-qualified-results.json)
+records full checks; the separately frozen owner-composition sheet remains open
+for its five gates. Private T3, E4 and S17 remain required.
+
 The unchanged [filter-source document and eight controls](../tests/Research/filter-source-exit-sheet/README.md)
 are exact on Windows/Linux. The baseline rejected the document and six controls;
 local use and CSS filter presentation were already exact. Sixty healthy stable
@@ -25,8 +33,9 @@ captures preserve all original bytes/options, including supplied-face proof
 (821 Windows / 794 Linux pixels differ without the face). The
 [receipt](../artifacts/maintenance-review-20261012/filter-source-qualified-results.json)
 records complete checks and prior-input preservation. This adds authored document
-31 (twenty-first CC0). It completes the document, while affine offset-only capture
-and the enumerated owner/viewport/pattern placements remain required E3 work.
+31 (twenty-first CC0). It completes the document; the offset-only correction is
+qualified above, while the enumerated owner/viewport/pattern placements remain
+required E3 work.
 Private T3, E4 and S17 also remain required; no promise is deferred.
 
 The unchanged retained [linear-restoration document](../tests/Research/linear-restoration-exit-sheet/README.md)

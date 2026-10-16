@@ -19,9 +19,15 @@ The [study](../../../artifacts/filter-source-boundaries-20261016/) retains rejec
 experiments, native traces and qualification. Source/reference hashes identify
 immutable assets; no production-source fingerprint is recorded.
 
-E3 remains open: the [offset-only diagnostic](diagnostics/affine-offset-only.svg)
-has one healthy Windows observation and an actual capture difference. It is not
-part of the nine qualified outputs. Filters on owners with masks/markers and
-inside viewport/pattern scopes, plus affine masked sources, retain explicit
-implementation gates. [PLAN](../../../PLAN.md) owns their finite follow-ups,
+The unchanged [offset-only input](diagnostics/affine-offset-only.svg), its partial
+crop and near-integer sampling boundary now have exact platform triples (18
+additional healthy captures). Native offsets remain deferred until the affine
+consumer; source/input bounds, output clips, tight binary clip construction and
+nearest/default image sampling remain separate. The original 480-pixel difference
+is resolved, and its first Windows observation is byte-identical to the new triple.
+These three controls add no complete document.
+
+E3 remains open for affine masked sources, filters on owners with masks/markers
+and filters inside viewport/pattern scopes. These retain explicit implementation
+gates. [PLAN](../../../PLAN.md) owns their finite follow-ups,
 private T3, marker semantics and S17. No scope promise is deferred.

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One complete CC0 document and eight orthogonal controls for E3 filter source/output boundaries. Original SVG/font/options/native references remain unchanged; local use and CSS filter presentation were already exact at declaration. Affine offset-only capture remains a separate required follow-up.",
+  "purpose": "One complete CC0 source-boundary document and eight independent source controls, plus three affine source-offset controls. Original SVG/font/options/native references remain unchanged. The offset-only observation is preserved, with cropped and nearly integral native sampling boundaries; the separate owner-composition document remains required E3 work.",
   "fontPack": "font-pack.json",
   "fontPackId": "public-noto-sans",
   "fontProgram": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
@@ -451,6 +451,159 @@
         },
         {
           "pngSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "affine-offset-only",
+      "input": "diagnostics/affine-offset-only.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "ff3d97a19cefc1c57d9c4728a3d1df63d7823329c84ee55828f78a89eab7145e",
+      "declarationBaseRevision": "f76af25b0c9395154fc7c10af4fa9d5119aa4147",
+      "acceptanceGroup": "affine-source-offsets",
+      "reference": "references/affine-offset-only.png",
+      "referenceSha256": "3a5c524e20aa4c98dc51946dd9be3aae2bb365365e23c475d8680d85d0f8f763",
+      "captures": [
+        {
+          "pngSha256": "3a5c524e20aa4c98dc51946dd9be3aae2bb365365e23c475d8680d85d0f8f763",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3a5c524e20aa4c98dc51946dd9be3aae2bb365365e23c475d8680d85d0f8f763",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3a5c524e20aa4c98dc51946dd9be3aae2bb365365e23c475d8680d85d0f8f763",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/affine-offset-only.png",
+      "linuxReferenceSha256": "3a5c524e20aa4c98dc51946dd9be3aae2bb365365e23c475d8680d85d0f8f763",
+      "linuxCaptures": [
+        {
+          "pngSha256": "3a5c524e20aa4c98dc51946dd9be3aae2bb365365e23c475d8680d85d0f8f763",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3a5c524e20aa4c98dc51946dd9be3aae2bb365365e23c475d8680d85d0f8f763",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3a5c524e20aa4c98dc51946dd9be3aae2bb365365e23c475d8680d85d0f8f763",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "affine-offset-crop",
+      "input": "affine-offset-crop.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "a975d6705096572a14b6066bdb81b5944be66606b60e46e5da781c46ddd2be1c",
+      "declarationBaseRevision": "f76af25b0c9395154fc7c10af4fa9d5119aa4147",
+      "acceptanceGroup": "affine-source-offsets",
+      "reference": "references/affine-offset-crop.png",
+      "referenceSha256": "c68680df28bfc138cab2c510d1912e6d1340218b4bd37c68c654d7bad7425727",
+      "captures": [
+        {
+          "pngSha256": "c68680df28bfc138cab2c510d1912e6d1340218b4bd37c68c654d7bad7425727",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c68680df28bfc138cab2c510d1912e6d1340218b4bd37c68c654d7bad7425727",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c68680df28bfc138cab2c510d1912e6d1340218b4bd37c68c654d7bad7425727",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/affine-offset-crop.png",
+      "linuxReferenceSha256": "c68680df28bfc138cab2c510d1912e6d1340218b4bd37c68c654d7bad7425727",
+      "linuxCaptures": [
+        {
+          "pngSha256": "c68680df28bfc138cab2c510d1912e6d1340218b4bd37c68c654d7bad7425727",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c68680df28bfc138cab2c510d1912e6d1340218b4bd37c68c654d7bad7425727",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c68680df28bfc138cab2c510d1912e6d1340218b4bd37c68c654d7bad7425727",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "affine-offset-almost-integer",
+      "input": "affine-offset-almost-integer.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "04d80695a8e17287a609dca1fa0943d3035340013bf353b590a33ae7df7f4c9b",
+      "declarationBaseRevision": "f76af25b0c9395154fc7c10af4fa9d5119aa4147",
+      "acceptanceGroup": "affine-source-offsets",
+      "reference": "references/affine-offset-almost-integer.png",
+      "referenceSha256": "b9234df479abae761205bd5446329a866b248e95626596093a9a0109ba1a3192",
+      "captures": [
+        {
+          "pngSha256": "b9234df479abae761205bd5446329a866b248e95626596093a9a0109ba1a3192",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b9234df479abae761205bd5446329a866b248e95626596093a9a0109ba1a3192",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b9234df479abae761205bd5446329a866b248e95626596093a9a0109ba1a3192",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/affine-offset-almost-integer.png",
+      "linuxReferenceSha256": "b9234df479abae761205bd5446329a866b248e95626596093a9a0109ba1a3192",
+      "linuxCaptures": [
+        {
+          "pngSha256": "b9234df479abae761205bd5446329a866b248e95626596093a9a0109ba1a3192",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b9234df479abae761205bd5446329a866b248e95626596093a9a0109ba1a3192",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b9234df479abae761205bd5446329a866b248e95626596093a9a0109ba1a3192",
           "startupHealth": "healthy",
           "profileCleaned": true
         }

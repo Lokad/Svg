@@ -1,3 +1,25 @@
+## Deferred source-offset images (2026-10-16)
+
+The [retained offset source and two controls](../tests/Research/filter-source-exit-sheet/README.md)
+are exact against unchanged native platform triples. A terminal dynamic-source
+offset retains its bitmap transform for the affine consumer; sampling onto an
+axis grid first changes phase. Immutable optional metadata owns no pixel storage.
+Source capture, geometry/paint replay and pixel reservations remain shared.
+
+Native saveLayer hints round in parameter space before mapping. The graph's input
+request limits the source device independently of its output region. Restoration
+uses nearest image sampling and native AA edges; partial crops retain their own
+coverage and tight binary bounds before image-edge construction. Nearly aligned
+filter transforms retain default linear sampling and integer crop/subset origins.
+Existing ordinary bitmap and working-space materialization routes stay distinct.
+The bounded coverage walker owns edge/row scratch; one optional row allowance
+holds crop coverage. Work denial, late replay cancellation, cleanup and retry
+reuse the conversion's owners. No separate shape or paint renderer is added.
+
+The [receipt](../artifacts/maintenance-review-20261012/affine-offset-qualified-results.json)
+records complete preservation. The owner-composition document is still pending
+its five source/owner gates; controls do not increase complete-document counts.
+
 ## Nested filter source devices and image edges (2026-10-16)
 
 The unchanged [E3 document and eight controls](../tests/Research/filter-source-exit-sheet/README.md)
@@ -19,7 +41,7 @@ work and cancellation share the existing conversion owners and limits.
 
 The [qualification](../artifacts/maintenance-review-20261012/filter-source-qualified-results.json)
 retains original inputs/references and prior exact outputs. The boundary sheet is
-complete; affine offset-only capture and enumerated owner/viewport/pattern gates
+complete; the source-offset correction is qualified above, while owner/viewport/pattern gates
 remain required in PLAN.md. No additional matrix/measurement framework is added.
 
 ## Linear shadow operating space and packed restoration (2026-10-16)

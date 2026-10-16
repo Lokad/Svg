@@ -219,6 +219,49 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
+    public void Deferred_affine_source_and_crop_release_owners_on_denial_cancellation_and_retry()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='112' height='108'>"
+            + "<defs><filter id='f' filterUnits='userSpaceOnUse' x='30.5' y='20.25' width='40.5' height='38.75' color-interpolation-filters='sRGB'><feOffset dx='1.25' dy='.75'/></filter></defs>"
+            + "<g transform='matrix(1 .15 .2 1 1.25 .5)' filter='url(#f)'><path d='M13 19Q38 2 70 15L88 58Q48 83 16 62Z' fill='#244a77' fill-opacity='.75'/></g></svg>");
+        byte[] unchanged = input.ToArray();
+        RenderBudget accepted = new(8_000_000);
+        int replayCount = 0;
+        byte[] expected;
+        long work;
+        using (SvgAnalyticPaintProbe.Arm((phase, _) => { if (phase == SvgAnalyticPaintPhase.BeforeReplay) replayCount++; }))
+            expected = Run(accepted, SvgRenderLimits.Default, CancellationToken.None, out work);
+        Assert.True(replayCount > 2);
+        Assert.Contains(expected, value => value != 0);
+        Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+        RenderBudget denied = new(accepted.Snapshot().PeakBytes - 1);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(denied, SvgRenderLimits.Default, CancellationToken.None, out _)).ErrorCode);
+        Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        SvgRenderLimits limits = SvgRenderLimits.Default;
+        // Optional preparation can adapt to the remaining work; exercise a material shortfall.
+        SvgRenderLimits shortWork = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels,
+            limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)(work / 2)), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(accepted, shortWork, CancellationToken.None, out _)).ErrorCode);
+        Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+        int observed = 0;
+        using CancellationTokenSource cancellation = new();
+        using (SvgAnalyticPaintProbe.Arm((phase, _) => { if (phase == SvgAnalyticPaintPhase.BeforeReplay && ++observed == replayCount - 1) cancellation.Cancel(); }))
+            Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => Run(accepted, limits, cancellation.Token, out _)).CancellationToken);
+        Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+        Assert.Equal(expected, Run(accepted, limits, CancellationToken.None, out _));
+        Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+        Assert.Equal(unchanged, input);
+
+        byte[] Run(RenderBudget budget, SvgRenderLimits configured, CancellationToken token, out long used)
+        {
+            using SvgRoot root = SvgRootParser.Parse(input, configured, budget, token);
+            using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(null, 1, SvgColor.Transparent, configured, null), budget, token);
+            used = surface.WorkUnits;
+            return surface.Pixels.ToArray();
+        }
+    }
+
+    [Fact]
     public void Affine_object_box_primitive_offsets_keep_their_placed_distances()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='96' height='80'>"

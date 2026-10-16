@@ -1,3 +1,17 @@
+## Qualified affine source offsets (2026-10-16)
+
+The unchanged [offset-only input and two boundaries](../tests/Research/filter-source-exit-sheet/README.md)
+are exact on Windows/Linux. Terminal SourceGraphic/SourceAlpha offsets can retain
+their native image transform until affine restoration. Source capture uses the
+native input request and parameter-rounded hint; partial output crops retain
+independent AA coverage and tight binary construction bounds. Nearest sampling
+and nearly pixel-aligned default sampling retain their native origins and phase.
+Memory/work denial, late cancellation, cleanup and retry are protected.
+
+This closes the retained 480-pixel offset failure and adds three controls, with no
+new complete document. The frozen owner-composition document and five placement
+gates remain required E3 work, alongside T3, E4 and S17. No scope is deferred.
+
 ## Qualified filter source boundaries (2026-10-16)
 
 The unchanged [sheet and eight controls](../tests/Research/filter-source-exit-sheet/README.md)
@@ -7,11 +21,12 @@ filters use shared geometry/scope replay. Local uses and CSS filter presentation
 were already exact at declaration. Missing text-filter references still reject
 before font acquisition; degenerate object bounds and marker exclusion are protected.
 
-E3 remains required for affine offset-only capture, affine masked sources,
-filter owners with masks/markers and filters inside viewport/pattern scopes.
+The source-offset failure is qualified above. E3 remains required for affine
+masked sources, filter owners with masks/markers and filters inside viewport/pattern scopes.
 The [offset-only observation](../tests/Research/filter-source-exit-sheet/diagnostics/affine-offset-only-observation.json)
-is a measured difference, not passing acceptance. These live gates and private T3,
-E4 and S17 remain in [PLAN](../PLAN.md#delivery-order); no scope is deferred.
+retains its original observation and now links qualified platform triples. These
+live gates and private T3, E4 and S17 remain in [PLAN](../PLAN.md#delivery-order);
+no scope is deferred.
 This entry supersedes older blanket rejection notes only for the qualified routes.
 
 ## Qualified linearRGB shadow and opacity restoration (2026-10-16)

@@ -1,12 +1,12 @@
 {
   "baseRevision": "07ae7824315e638b013108a56224997f9376fc10",
-  "status": "Required E3 follow-up; observed Windows difference, not qualified acceptance.",
+  "status": "Qualified offset-only control; E3 owner-composition placements remain required.",
   "source": "affine-offset-only.svg",
   "reference": "affine-offset-only-windows-observation.png",
   "captures": 1,
   "startupHealth": "healthy",
   "profileCleaned": true,
   "changedPixelsBeforeCorrection": 480,
-  "missingBehavior": "Native complex-matrix capture for an affine offset-only filter; retain unchanged source and observation.",
-  "qualification": "Freeze stable platform triples before correcting; this observation contributes no completed document or passing control."
+  "qualification": "Original source and observation retained; three healthy stable native captures per platform now match exactly. See ../manifest.json, case affine-offset-only.",
+  "originalMissingBehavior": "Native complex-matrix capture for an affine offset-only filter; retain unchanged source and observation."
 }

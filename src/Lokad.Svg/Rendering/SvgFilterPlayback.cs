@@ -10,6 +10,12 @@ internal readonly record struct SvgFilterDeviceMap(double ScaleX, double ScaleY)
     internal SvgFilterRegionContext? Regions { get; init; }
 }
 
+/// <summary>Retains a borrowed bitmap's image transform and separate source/output bounds.</summary>
+/// <remarks>Immutable metadata owns no pixel storage. The enclosing filter/surface owns bytes, work and cancellation.</remarks>
+internal sealed record SvgFilterDeferredImage(SvgShaderMatrix ImageToSource, SvgPaintBounds SourceBounds, SvgPaintBounds Clip, SvgFilterImageSampling Sampling);
+
+internal enum SvgFilterImageSampling : byte { Nearest, Linear }
+
 internal enum SvgFilterBoundsKind : byte { Visual, StoredImage }
 
 /// <summary>Retains one integer-offset source branch and its composed intermediate crop.</summary>
@@ -32,12 +38,15 @@ internal readonly record struct SvgFilterRegionContext(SvgAffineTransform Coordi
     internal bool IntermediateOutput { get; init; }
     /// <summary>Retains native matrix arithmetic for image transforms after affine source capture.</summary>
     internal SvgFilterNativeMapping? NativeMapping { get; init; }
+    /// <summary>Allows the terminal dynamic source image to retain its offset for an affine consumer.</summary>
+    internal bool DeferFinalOffset { get; init; }
 }
 
 /// <summary>Owns the graph output and optional unquantized final shader samples until composition.</summary>
 internal readonly record struct SvgFilterResult(SvgConverter.RasterizedSurface Frame,
     SvgShaderPaint[]? Samples, RenderBudget.BudgetReservation? SampleReservation) : IDisposable
 {
+    internal SvgFilterDeferredImage? DeferredImage { get; init; }
     internal byte[] Pixels => Frame.Pixels;
     internal long WorkUnits => Frame.WorkUnits;
     public void Dispose() { SampleReservation?.Dispose(); Frame.Dispose(); }
@@ -263,6 +272,7 @@ internal static class SvgFilterPlayback
         bool returned = false;
         SvgShaderPaint[]? samples = null;
         RenderBudget.BudgetReservation? sampleOwner = null;
+        SvgFilterDeferredImage? deferredImage = null;
         int finalIndex = count == 0 ? 0 : count - 1;
         try
         {
@@ -337,7 +347,7 @@ internal static class SvgFilterPlayback
                         work += SvgGaussianBlur.ApplyRescaled(input, output, width, height, deviation, inputBounds, regions[index], placement,
                             inputLinear, colorSpace, index == finalIndex && colorSpace == SvgFilterColorSpace.LinearRgb ? AllocateSamples() : Span<SvgShaderPaint>.Empty,
                             budget, availableWork - work, token);
-                        if (map.Regions is not null) Clip(output, regions[index], CropRounding.Outward);
+                        if (map.Regions is not null && deferredImage is null) Clip(output, regions[index], CropRounding.Outward);
                         continue;
                     }
                     // A CPU kernel consumes stored working-space pixels; shader
@@ -369,7 +379,7 @@ internal static class SvgFilterPlayback
                                 ConvertColor(input, converted.Pixels, SvgFilterColorSpace.LinearRgb);
                                 work += SvgGaussianBlur.Apply(converted.Pixels, output, width, height, deviation, budget, availableWork - work, token);
                                 linear[index] = true;
-                                if (map.Regions is not null) Clip(output, regions[index], CropRounding.Outward);
+                                if (map.Regions is not null && deferredImage is null) Clip(output, regions[index], CropRounding.Outward);
                                 continue;
                             }
                             linear[index] = true;
@@ -417,17 +427,42 @@ internal static class SvgFilterPlayback
                 else if (primitive.Kind == SvgFilterPrimitiveKind.Offset)
                 {
                     SvgPaintBounds? inputBounds = primitive.Input.Index >= 0 ? imageBounds[primitive.Input.Index] : map.Regions?.SourceBounds;
+                    SvgPaintBounds bounds = inputBounds ?? new(0, 0, width, height);
+                    SvgCpuBitmapOrigin nativeOrigin = map.Regions?.NativeMapping?.Origin ?? new((int)bounds.Left - 1, (int)bounds.Top - 1);
+                    SvgShaderMatrix placed = new(1, 0, (float)(primitive.OffsetX * map.ScaleX), 0, 1, (float)(primitive.OffsetY * map.ScaleY));
                     SvgShaderMatrix? nativeTransform = null;
                     if (map.Regions?.NativeMapping is {} nativeMapping && nativeMapping.Coordinates.TryInvert(out SvgShaderMatrix parameterInverse))
                     {
                         Charge(64);
                         // Retain the conjugated matrix, including finite residual skew.
                         // Reducing it to a vector can select a different native image blitter.
-                        SvgShaderMatrix placed = SvgShaderMatrix.Concat(nativeMapping.Coordinates, SvgShaderMatrix.Concat(new(1, 0, (float)primitive.OffsetX, 0, 1, (float)primitive.OffsetY), parameterInverse));
-                        SvgShaderMatrix forward = SvgShaderMatrix.Concat(new(1, 0, nativeMapping.Origin.X, 0, 1, nativeMapping.Origin.Y), SvgShaderMatrix.Concat(placed, new(1, 0, -nativeMapping.Origin.X, 0, 1, -nativeMapping.Origin.Y)));
+                        placed = SvgShaderMatrix.Concat(nativeMapping.Coordinates,
+                            SvgShaderMatrix.Concat(new(1, 0, (float)primitive.OffsetX, 0, 1, (float)primitive.OffsetY), parameterInverse));
+                        SvgShaderMatrix forward = SvgShaderMatrix.Concat(new(1, 0, nativeOrigin.X, 0, 1, nativeOrigin.Y),
+                            SvgShaderMatrix.Concat(placed, new(1, 0, -nativeOrigin.X, 0, 1, -nativeOrigin.Y)));
                         if (forward.ScaleX != 1 || forward.ScaleY != 1 || forward.SkewX != 0 || forward.SkewY != 0) nativeTransform = forward;
                     }
-                    Offset(input, output, primitive.OffsetX * map.ScaleX, primitive.OffsetY * map.ScaleY, inputBounds, null, nativeTransform);
+                    if (index == finalIndex && primitive.Input.Index < 0 && map.Regions is { DeferFinalOffset: true }
+                        && (primitive.OffsetX * map.ScaleX != Math.Truncate(primitive.OffsetX * map.ScaleX)
+                            || primitive.OffsetY * map.ScaleY != Math.Truncate(primitive.OffsetY * map.ScaleY)))
+                    {
+                        // The source bitmap remains unsampled until its affine consumer.
+                        // Skia retains default linear sampling for nearly pixel-aligned filter transforms.
+                        const float roundEpsilon = 1e-3f;
+                        bool aligned = MathF.Abs(placed.ScaleX - 1) <= roundEpsilon && MathF.Abs(placed.ScaleY - 1) <= roundEpsilon
+                            && MathF.Abs(placed.SkewX) <= roundEpsilon && MathF.Abs(placed.SkewY) <= roundEpsilon
+                            && MathF.Abs(placed.TranslateX - MathF.Floor(placed.TranslateX + .5f)) <= roundEpsilon
+                            && MathF.Abs(placed.TranslateY - MathF.Floor(placed.TranslateY + .5f)) <= roundEpsilon;
+                        SvgShaderMatrix imageToSource = SvgShaderMatrix.Concat(placed, new(1, 0, bounds.Left - nativeOrigin.X, 0, 1, bounds.Top - nativeOrigin.Y));
+                        // The following SVG crop moves a pixel-aligned transform into
+                        // its integer image subset, retaining native origin snapping.
+                        if (aligned)
+                            imageToSource = new(1, 0, MathF.Floor(imageToSource.TranslateX + .5f), 0, 1, MathF.Floor(imageToSource.TranslateY + .5f));
+                        deferredImage = new(imageToSource, bounds, regions[index], aligned ? SvgFilterImageSampling.Linear : SvgFilterImageSampling.Nearest);
+                        Charge(pixels);
+                        input.CopyTo(output);
+                    }
+                    else Offset(input, output, primitive.OffsetX * map.ScaleX, primitive.OffsetY * map.ScaleY, inputBounds, null, nativeTransform);
                     linear[index] = inputLinear;
                 }
                 else if (primitive.Kind == SvgFilterPrimitiveKind.Merge)
@@ -438,7 +473,7 @@ internal static class SvgFilterPlayback
                         Charge(bytes);
                         ReadInput(merged, index, graphic).CopyTo(output);
                         linear[index] = merged.Index >= 0 && linear[merged.Index];
-                        if (map.Regions is not null) Clip(output, regions[index], CropRounding.Outward);
+                        if (map.Regions is not null && deferredImage is null) Clip(output, regions[index], CropRounding.Outward);
                         continue;
                     }
                     bool destinationLinear = colorSpace == SvgFilterColorSpace.LinearRgb;
@@ -495,7 +530,7 @@ internal static class SvgFilterPlayback
                     linear[index] = destinationLinear;
                 }
                 else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filter primitive is not implemented.");
-                if (map.Regions is not null) Clip(output, regions[index], CropRounding.Outward);
+                if (map.Regions is not null && deferredImage is null) Clip(output, regions[index], CropRounding.Outward);
             }
             if (count > 0 && linear[finalIndex])
             {
@@ -516,7 +551,7 @@ internal static class SvgFilterPlayback
             }
             token.ThrowIfCancellationRequested();
             returned = true;
-            return new(outputs[finalIndex] with { WorkUnits = work }, samples, sampleOwner);
+            return new(outputs[finalIndex] with { WorkUnits = work }, samples, sampleOwner) { DeferredImage = deferredImage };
         }
         finally
         {
