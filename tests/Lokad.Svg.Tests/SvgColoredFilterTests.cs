@@ -115,6 +115,43 @@ public sealed class SvgColoredFilterTests
         Assert.Equal(0, output.Length);
     }
 
+    [Fact]
+    public void Linear_shadow_conversion_releases_material_surfaces_on_denial_cancellation_and_retry()
+    {
+        byte[] input = Document("<feDropShadow dx='.25' dy='.5' stdDeviation='1.25 .75' flood-color='#65377a' flood-opacity='.625'/>", "linearRGB");
+        RenderBudget parser = new(1_000_000);
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None))
+        {
+            SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
+            SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
+            byte[] source = new byte[64 * 64 * 4];
+            for (int offset = 0; offset < source.Length; offset += 4)
+            { source[offset] = 40; source[offset + 1] = 70; source[offset + 2] = 100; source[offset + 3] = 160; }
+            byte[] unchanged = source.ToArray();
+            RenderBudget budget = new(2_000_000);
+            byte[] expected;
+            long work;
+            using (SvgFilterResult result = Run(budget, long.MaxValue, CancellationToken.None))
+            { expected = result.Pixels.ToArray(); work = result.WorkUnits; }
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+            RenderBudget denied = new(budget.Snapshot().PeakBytes / 2);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(denied, long.MaxValue, CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, denied.Snapshot().CurrentBytes);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(budget, work - 1, CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+            using CancellationTokenSource cancellation = new(); cancellation.Cancel();
+            Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => Run(budget, long.MaxValue, cancellation.Token)).CancellationToken);
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+            using (SvgFilterResult retry = Run(budget, long.MaxValue, CancellationToken.None)) Assert.Equal(expected, retry.Pixels);
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+            Assert.Equal(unchanged, source);
+
+            SvgFilterResult Run(RenderBudget owner, long maximumWork, CancellationToken token)
+                => SvgFilterPlayback.Apply(source, 64, 64, resource, new(1, 1), owner, maximumWork, token);
+        }
+        Assert.Equal(0, parser.Snapshot().CurrentBytes);
+    }
+
     private static byte[] Document(string graph, string colorSpace)
         => System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><defs><filter id='f' color-interpolation-filters='"
             + colorSpace + "'>" + graph + "</filter></defs><rect width='4' height='4' filter='url(#f)'/></svg>");

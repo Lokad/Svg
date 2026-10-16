@@ -561,7 +561,10 @@ public static class SvgConverter
                     cancellationToken.ThrowIfCancellationRequested();
                     int target = (y * outputWidth + x) * 4, origin = ((int)(y - frameTop) * fw + (int)(x - frameLeft)) * 4;
                     float opacity = command.SourceOpacity.Value * foldedOpacity;
-                    if (filtered.Samples is {} shaderSamples)
+                    // Native nonopaque restoration materializes the converted image
+                    // before packed paint-alpha modulation. Opaque shader results
+                    // retain their unquantized transfer route.
+                    if (filtered.Samples is {} shaderSamples && opacity == 1)
                     {
                         SvgShaderPaint sample = shaderSamples[origin / 4];
                         new SvgShaderPaint(sample.Red * opacity, sample.Green * opacity, sample.Blue * opacity, sample.Alpha * opacity)

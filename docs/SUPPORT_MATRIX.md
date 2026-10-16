@@ -1,3 +1,16 @@
+## Qualified linearRGB shadow and opacity restoration (2026-10-16)
+
+The unchanged [retained document and three controls](../tests/Research/linear-restoration-exit-sheet/README.md)
+are exact on Windows/Linux. Colored and translucent linearRGB shadows convert the
+CSS tint and source through the existing operating-space transfer and native
+premultiplied image composition. Integer/fractional displacement retains its
+separate native arithmetic. Identity and zero-offset outcomes remain exact.
+Nonopaque filter restoration materializes the converted result before packed
+paint-alpha modulation; opaque shader transfer retains its unquantized route.
+
+This closes E2. Private T3, E3 filtered-source boundaries, E4 marker semantics and
+S17 remain required; no scope deferral is introduced.
+
 ## Qualified non-solid affine filter sources (2026-10-16)
 
 The unchanged [affine-source document and four controls](../tests/Research/affine-source-exit-sheet/README.md)
@@ -9,7 +22,7 @@ the padded native bitmap for clip construction and shader/dither coordinates.
 This closes E1. Object-box output clips and uncovered mask, nested-viewport, affine nested-filter,
 marker, text/local-use and presentation boundaries remain required under E3;
 explicit unsupported outcomes retain empty-output and cleanup protection.
-Private T3, E2–E4 and S17 remain required. No scope deferral is introduced.
+Private T3, E3/E4 and S17 remain required. No scope deferral is introduced.
 
 ## Qualified composite placement flags (2026-10-16)
 
@@ -27,7 +40,7 @@ alignment samples. Independent reflected/off-diagonal contours, tiny-grid collap
 and affected denial/cancellation/retry pass, preserving parent-hint, USE_MY_METRICS,
 nested-accent and all previous exact results. [Qualification](../artifacts/maintenance-review-20261012/composite-flags-qualified-results.json)
 owns 8,040 tests/platform and preservation. This supersedes historical composite-flag
-gates below; T3 private validation, E2–E4 and S17 remain required.
+gates below; T3 private validation, E3/E4 and S17 remain required.
 
 ## Rendered-group supplied-font text instances (2026-10-16)
 

@@ -9,7 +9,7 @@ The frozen selection and measured outcomes are recorded below.
 
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
-variants**. **Twenty-nine additional authored documents** (nineteen CC0 and ten MIT
+variants**. **Thirty additional authored documents** (twenty CC0 and ten MIT
 documents) are complete and counted separately. Preserve the delivered
 [effects sheet](../tests/Research/effects-marker-sheet/README.md),
 [composition sheet](../tests/Research/composition-sheet/README.md) and
@@ -18,6 +18,16 @@ documents) are complete and counted separately. Preserve the delivered
 separately counted controls and original sources/options/references.
 These failure-selected cases establish declared outcomes, not a general SVG success rate.
 
+The unchanged retained [linear-restoration document](../tests/Research/linear-restoration-exit-sheet/README.md)
+and three focused controls are exact on Windows/Linux. Its initial baseline was
+3,312 changed pixels in the document and explicit colored/translucent linearRGB
+shadow gates; identity/zero-offset acceptance was already exact. Twenty-four
+healthy stable captures preserve the original observation byte for byte and
+separately protect the new integer-offset branch. The
+[receipt](../artifacts/maintenance-review-20261012/linear-restoration-qualified-results.json)
+records platform qualification and prior-case preservation. This closes E2 and
+adds authored document 30 (twentieth CC0). Private T3, E3/E4 and S17 remain required.
+
 The unchanged [affine-source sheet](../tests/Research/affine-source-exit-sheet/README.md)
 and four controls are exact on Windows/Linux, from **0/1 / 0/4** at declaration.
 Thirty-six healthy stable native captures include intended-font proof. The shared
@@ -25,7 +35,7 @@ source placement preserves linear/radial paints, vector patterns, clipped suppli
 text, nested opacity and an unaffected sibling. The
 [receipt](../artifacts/maintenance-review-20261012/affine-sources-qualified-results.json)
 records platform qualification and preservation. This closes E1 and adds authored
-document 29 (tenth MIT). Private T3, E2–E4 and S17 remain required.
+document 29 (tenth MIT). Private T3, E3/E4 and S17 remain required.
 
 The [composite-flag sheet](../tests/Research/composite-flag-exit-sheet/README.md)
 is **1/1 complete document / 3/3 exact controls** on Windows/Linux, from
@@ -37,7 +47,7 @@ focused malformed, tiny-grid and material ownership checks pass. The
 [receipt](../artifacts/maintenance-review-20261012/composite-flags-qualified-results.json)
 records full platform qualification and preservation. This is authored document
 28 (ninth MIT), separate from both cohorts and the W3C document. T2 is complete;
-T3 private validation, E2–E4 and S17 remain required in [PLAN](../PLAN.md).
+T3 private validation, E3/E4 and S17 remain required in [PLAN](../PLAN.md).
 
 The [clip union sheet](../tests/Research/clip-union-exit-sheet/README.md) is
 **1/1 complete document / 5/5 exact controls** on Windows/Linux, including the

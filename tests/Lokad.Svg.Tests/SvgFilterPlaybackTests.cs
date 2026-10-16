@@ -332,12 +332,21 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
-    public void Translucent_colored_linear_shadow_keeps_its_explicit_color_conversion_gate()
+    public void Translucent_colored_linear_shadow_renders_and_releases_source_owners()
     {
         byte[] input = Document("<defs><filter id='f'><feDropShadow stdDeviation='3'/></filter></defs><rect width='4' height='4' fill='red' fill-opacity='.5' filter='url(#f)'/>");
         using MemoryStream stream = new();
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, stream, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
-        Assert.Equal(0, stream.Length);
+        // Preserve the original rejection input as positive acceptance.
+        byte[] unchanged = input.ToArray();
+        byte[] expected = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        Assert.True(SvgConverter.ConvertToPng(input, stream, SvgRenderOptions.Default, CancellationToken.None) > 0);
+        Assert.Equal(expected, stream.ToArray());
+        RenderBudget budget = new(2_000_000);
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
+            Assert.Contains(Enumerable.Range(0, surface.Width * surface.Height), pixel => surface.Pixels[pixel * 4 + 3] > 128);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(unchanged, input);
     }
 
     [Theory]

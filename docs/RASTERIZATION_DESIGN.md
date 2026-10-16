@@ -1,3 +1,23 @@
+## Linear shadow operating space and packed restoration (2026-10-16)
+
+The [E2 document and controls](../tests/Research/linear-restoration-exit-sheet/README.md)
+preserve their original bytes and frozen Windows/Linux references. CSS shadow
+tint and source pixels enter the declared operating space through the existing
+transfer. Retain native premultiplied tint lanes, integral/fractional offset
+stages, source-over arithmetic and final working-space conversion. The existing
+sRGB tint/materialization route remains distinct.
+
+A converted CPU filter image with outer opacity is stored before native packed
+paint-alpha modulation. Applying opacity directly to its unquantized transfer
+samples changes alpha and low-alpha colors. Opaque restoration retains that
+shader route. The unchanged retained document drops from 3,312 changed pixels to
+exact; identity/zero-offset controls stay exact, and both shadow branches close.
+
+The [qualification receipt](../artifacts/maintenance-review-20261012/linear-restoration-qualified-results.json)
+records all prior semantic cases, the unchanged rejection-input migration and
+material work/storage denial, cancellation, cleanup and retry. T3, E3/E4 and S17
+remain required.
+
 ## Affine filter-source placement and native capture (2026-10-16)
 
 The [E1 sheet](../tests/Research/affine-source-exit-sheet/README.md) and four
@@ -17,7 +37,7 @@ continues through the existing packed affine sampler and nearest-offset graph.
 
 The [qualification receipt](../artifacts/maintenance-review-20261012/affine-sources-qualified-results.json)
 retains document/control results, resource regressions and prior output protection.
-E2–E4, private-font evidence and S17 remain required.
+E3/E4, private-font evidence and S17 remain required.
 
 ## Native composite strikes and placement flags (2026-10-16)
 
@@ -53,7 +73,7 @@ and routine build-plus-suite time of 76.0s Windows / 267.8s Linux. The ignored
 [study](../artifacts/composite-flag-exits-20261016/) retains declarations, baseline
 rejections, native point/mask diagnostics and rejected models. No separate
 rasterizer, external dependency, source fingerprint or VM combination quota is added.
-T3, E2–E4 and S17 remain required.
+T3, E3/E4 and S17 remain required.
 
 ## Deferred paths and scopes inside text instances (2026-10-16)
 

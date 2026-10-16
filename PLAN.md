@@ -1,6 +1,6 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-16 at the qualified E1 affine-source checkpoint.
+Updated 2026-10-16 at the qualified E2 linear-restoration checkpoint.
 Preserve the current implementation work, qualified `inv-146` correction and every
 established exact result, original SVG/font/reference bytes, options and default
 resource limits. This file owns delivery order, required exits and scope
@@ -22,25 +22,26 @@ Optional maintenance below adds no feature-completion prerequisite.
 | Frozen corporate cohort | **27/27 documents / 258/258 variants exact on Windows/Linux**, including 13/13 marks and 14/14 outlined wordmarks. Preserve membership, original bytes, options, backgrounds and references in the [manifest](tests/References/inventory/corporate-cohort-v1.json) and [measurement](tests/References/inventory/corporate-cohort-current.json). |
 | Selected development documents and original fixtures | **50/50 complete**, including whole `inv-146`; original marker/drop-shadow fixtures **2/2**, supplied-font label/path fixtures **2/2**, SVG Translate, `inv-127` and `inv-145`. Preserve the [gap ledger](tests/References/inventory/svg-gap-cases.json), [supplied-font banks](tests/Research/supplied-font-documents/README.md), [curved labels](tests/Research/curved-font-documents/README.md) and [inventory](docs/INVENTORY.md). Failure-selected inputs establish no representative success rate. |
 | `inv-146`, paint recording and retained libraries | Preserve whole `inv-146`, eight oval/text controls and four [merge controls](tests/Research/filter-merges/README.md), with the [qualification receipt](artifacts/maintenance-review-20261012/merge-qualified-results.json). Paint recording is **149/149 exact**; I Ching is **24 exact / one out-of-scope animation boundary**. |
-| Additional complete documents | **Twenty-nine authored documents** (nineteen CC0, ten MIT) and **one sourced W3C decoration document**, exact on both platforms and separate from both cohorts. [INVENTORY](docs/INVENTORY.md) owns the document list, controls and immutable assets/options. The [tile-mask bank](tests/Research/tile-mask-exit-sheet/README.md) is **1/1 document / 2/2 controls**; retain every earlier bank and direct/curved decoration boundary. |
+| Additional complete documents | **Thirty authored documents** (twenty CC0, ten MIT) and **one sourced W3C decoration document**, exact on both platforms and separate from both cohorts. [INVENTORY](docs/INVENTORY.md) owns the document list, controls and immutable assets/options. The [tile-mask bank](tests/Research/tile-mask-exit-sheet/README.md) is **1/1 document / 2/2 controls**; retain every earlier bank and direct/curved decoration boundary. |
 | Shared geometry, paint and scope dependencies | Fractional use widths and symbol frames, nonuniform curves/affine oval strokes, non-scaling conics, composed cubic clips, custom mask regions/container opacity, inherited symbol strokes, cubic-pair clip unions, normalized mask content, tile-local clips and axis/affine ancestry at nested viewports are qualified. Reuse [geometry/scope evidence](docs/INVENTORY.md), [existing map witnesses](artifacts/shared-stroke-pattern-maps-20261015/existing-map-witnesses.json), [tile-content qualification](artifacts/maintenance-review-20261012/pattern-content-qualified-results.json) and [shared-map qualification](artifacts/maintenance-review-20261012/shared-maps-qualified-results.json). These are available dependencies, not blockers to repeat. |
 | Text instances and paints (T1) | The unchanged [instance/paint sheet](tests/Research/instance-paint-exit-sheet/README.md) is **1/1 complete document / 4/4 exact controls** on both platforms. Forward definition/font discovery, masked path-resource instances and linear/radial/pattern/constant/empty text paints are qualified with focused boundary and material ownership protection. Preserve the [paint qualification](artifacts/maintenance-review-20261012/text-paints-qualified-results.json) and [dormant forward-paint follow-up](artifacts/maintenance-review-20261012/dormant-paints-qualified-results.json), which closes the unchanged diagnostic and its live/unused/missing outcomes. |
 | Composite placement flags (T2) | The unchanged [composite-flag sheet](tests/Research/composite-flag-exit-sheet/README.md) is **1/1 complete document / 3/3 exact controls** on both platforms. Overlap/scaled/unscaled flags, native child strikes and metric origins, composite light-alignment samples and default small-strike tip dropouts are qualified. Preserve [22 independent contour witnesses](tests/Research/composite-flag-exit-sheet/diagnostics/native-contours.json), malformed/resource boundaries and the [qualification receipt](artifacts/maintenance-review-20261012/composite-flags-qualified-results.json). |
 | Non-solid affine sources (E1) | The unchanged [affine-source sheet](tests/Research/affine-source-exit-sheet/README.md) is **1/1 complete document / 4/4 exact controls** on both platforms, from **0/1 / 0/4**. Shared geometry/paint/glyph placement preserves clipped linear sources, radial opacity, bounded patterns, clipped supplied fonts and sibling scope. Native padded capture, font layout bounds and baseline snapping are protected by the [qualification receipt](artifacts/maintenance-review-20261012/affine-sources-qualified-results.json), intended-font proof and resource/unsupported-boundary regressions. |
+| LinearRGB shadow/restoration (E2) | The unchanged [retained document](tests/Research/linear-restoration-exit-sheet/README.md) is **1/1 complete / 3/3 exact controls** on both platforms. Its 3,312-pixel difference and colored/translucent shadow gates are resolved; identity/zero-offset outcomes stay exact. Native working-space tint/source composition, integer/fractional offsets and packed nonopaque restoration reuse existing playback. Preserve the [qualification receipt](artifacts/maintenance-review-20261012/linear-restoration-qualified-results.json), unchanged original observation and material resource protection. |
 | Filters and font infrastructure | Preserve [filter-region results](tests/Research/filter-regions/manifest.json) **26/26**, [colored-effects bounds/restoration](tests/Research/colored-effects-markers/README.md), [affine effect qualification](artifacts/maintenance-review-20261012/affine-filters-qualified-results.json), intended-font/metrics proof, catalog conformance and the implemented [FontProbe host](tools/Lokad.Svg.FontProbe/README.md) with six transport/input regressions. Private deployment validation remains required. |
 | API/resource/package contracts | Preserve bounded preparation/raster/encoding, size/work denial, cancellation/retry, partial cleanup, immutable borrowed bytes, single-use prepared ownership and output integrity. Existing [API contracts](docs/API_CONTRACT.md), package and installed-consumer protections remain required. |
 
-The latest complete local [qualification](artifacts/maintenance-review-20261012/affine-sources-qualified-results.json)
-is **8,051 tests/platform**, normal incremental Release build plus full tests in
-**84.3s Windows / 251.6s Linux**. It preserves every preceding semantic case and
+The latest complete local [qualification](artifacts/maintenance-review-20261012/linear-restoration-qualified-results.json)
+is **8,056 tests/platform**, normal incremental Release build plus full tests in
+**77.8s Windows / 263.3s Linux**. It preserves every preceding semantic case and
 established exact output. The receipt owns the exact implementation revision and
 hosted CI outcome, including package/installed-consumer validation; batch pushes
 and reuse closed exact-revision audits without repolling. Unchanged documentation
 and completed accounting work do not reopen qualification.
 
 Items 1–3 (G2–G7 and C1–C6c) are complete under the linked evidence.
-T1, its dormant forward-paint follow-up, T2 and E1 are also complete. The remaining
-font exit is T3; filtered-source extensions belong to E2–E3. Preserve
+T1, its dormant forward-paint follow-up, T2, E1 and E2 are also complete. The remaining
+font exit is T3; filtered-source extensions belong to E3. Preserve
 `inv-146` and every established exact result.
 
 <a id="delivery-order"></a>
@@ -48,10 +49,10 @@ font exit is T3; filtered-source extensions belong to E2–E3. Preserve
 
 ## Ordered delivery checklist
 
-**Next three deliverables:** **T3 private font requests → E2 linearRGB
-restoration/shadows → E3 filtered-source boundaries.** Then finish E4 and S17.
+**Next three deliverables:** **T3 private font requests → E3 filtered-source
+boundaries → E4 marker semantics.** Then finish S17.
 T3 needs the existing private deployment source; while that local input is pending,
-advance the independent public E2 work. T3 remains a required release exit.
+advance the independent public E3 work. T3 remains a required release exit.
 Bring a shared dependency forward only when it advances the next acceptance case.
 Do not make an exhaustive G2 or shape × paint × instance grid a prerequisite.
 
@@ -64,7 +65,6 @@ rows; it is measured once, without duplicate API or combination requirements.
 | Order / required exit | Missing behavior or evidence; dependencies | Concrete acceptance and completion condition |
 | --- | --- | --- |
 | [ ] T3 — private requests (item 4 / G9) | End-to-end deployment evidence remains missing; host/catalog and public conformance are implemented. Use the [authorized private workflow](#authorized-private-font-testing), with T1/T2 fixes only if a request needs them. | Freeze one regular, bold, italic and fallback request against the unchanged deployed manifest. Retain four sanitized selection/metrics/pixel outcomes; convert in-scope defects into public reproductions and resolve them. Private success cannot replace public acceptance. |
-| [ ] E2 — linearRGB restoration/shadows (item 5 / G8) | Colored/translucent linearRGB shadow and identity/zero-offset restoration boundaries. Reuse existing per-primitive transfers, CPU/shadow consumers and E1 maps as needed. | Exact colored linearRGB shadow over translucent source and uncovered identity/zero-offset colored-source controls. Resolve the retained [single-linear-image/outer-opacity difference](artifacts/effects-marker-sheet-20261015/mixed-consumer-single-blur.svg) against healthy frozen platform references; one native observation is insufficient. Preserve mixed-space and 26/26 filter-region results. |
 | [ ] E3 — filtered-source boundaries (item 5 / G8) | Object-box output clips; uncovered mask, nested-viewport, affine nested-filter, marker, text and local-use sources and applicable filter presentation. Reuse qualified output clips/nested halos, C/T scopes and E1–E2 playback. | Exact filtered target with an object-box clip, plus one witness for each listed uncovered source boundary. Preserve source/output order, halos and scope termination. Bring an E4 marker dependency forward only if needed; no content × graph × container census. |
 | [ ] E4 — marker semantics (item 5 / G8) | Font-relative sizes, inherited container paint/child override and stylesheet/inline priority; remaining auto/auto-start-reverse tangents. Reuse [path](tests/Research/path-marker-content/manifest.json), [instance](tests/Research/marker-instance-content/manifest.json), angle/overflow and source-geometry machinery. | Exact font-relative and cascaded-paint markers, and open/closed/zero-length-path orientation witnesses. Valid degenerates have measured outcomes; missing/recursive references remain categorized errors. Reuse qualified spellings and controls. |
 | [ ] S17 — release (item 6) | Finished T1–T3/E1–E4 plus retained product, font, resource and packaging contracts. | Every [release condition](#release-completion-s17) holds together for the finished revision. Counts alone cannot establish completion. |
@@ -112,7 +112,7 @@ own their evidence. Retain cap/dash/dot, inherited shader, reflected phase,
 nonpainting/device-width and degenerate/cleanup regressions. Root viewBox,
 pattern-content viewBox and stroke host maps remain distinct native stages.
 Composition/resource exits are complete under item 3, including T1 glyph
-contexts. Only filtered/marker source extensions (E2–E4) remain required here.
+contexts. Only filtered/marker source extensions (E3–E4) remain required here.
 
 <a id="g5-viewports-clips-masks-and-composition"></a>
 <a id="g6-patterns"></a>
@@ -199,7 +199,7 @@ references. Preserve per-primitive spaces, binary/merge transfers, distinct
 CPU-kernel/shadow consumers, premultiplied arithmetic, bounded regions/work,
 cancellation and cleanup. A flood override alone proves no color transition.
 
-E2–E4 in the ordered checklist are the only remaining G8 exits. Preserve the
+E3–E4 in the ordered checklist are the only remaining G8 exits. Preserve the
 [whole effects sheet and eleven controls](tests/Research/effects-marker-sheet/README.md),
 [filter-region results](tests/Research/filter-regions/manifest.json) and qualified
 colored-effects, affine capture, output-clip and nested-halo witnesses. Reuse

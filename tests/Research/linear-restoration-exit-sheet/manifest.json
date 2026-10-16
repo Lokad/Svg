@@ -1,0 +1,232 @@
+{
+  "schemaVersion": 1,
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "purpose": "Finish the unchanged retained mixed-consumer blur document and finite E2 linearRGB shadow / identity boundaries. Original references and sources stay frozen; controls are counted separately.",
+  "linuxReferenceQualification": {
+    "date": "2026-10-15",
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  },
+  "cases": [
+    {
+      "id": "mixed-consumer-single-blur",
+      "input": "mixed-consumer-single-blur.svg",
+      "width": 144,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "document-output",
+      "license": "CC0-1.0",
+      "sourceSha256": "8c00ae84063eab71b115276b944e458ad74daf6516459f5918110608d9cb71f0",
+      "licenseEvidence": "Original authored work dedicated to the public domain through the asset SPDX CC0-1.0 declaration.",
+      "selection": "Retained E2 document or focused working-space/opacity/native offset boundary; no exhaustive combination grid.",
+      "declarationBaseRevision": "1502017914fda967074c9123591a70ce5dd32c10",
+      "reference": "references/mixed-consumer-single-blur.png",
+      "referenceSha256": "db67a94ba70b980221344743222a04955bf08a53cb065efa0893f4582eeb3099",
+      "captures": [
+        {
+          "pngSha256": "db67a94ba70b980221344743222a04955bf08a53cb065efa0893f4582eeb3099",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "db67a94ba70b980221344743222a04955bf08a53cb065efa0893f4582eeb3099",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "db67a94ba70b980221344743222a04955bf08a53cb065efa0893f4582eeb3099",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/mixed-consumer-single-blur.png",
+      "linuxReferenceSha256": "db67a94ba70b980221344743222a04955bf08a53cb065efa0893f4582eeb3099",
+      "linuxCaptures": [
+        {
+          "pngSha256": "db67a94ba70b980221344743222a04955bf08a53cb065efa0893f4582eeb3099",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "db67a94ba70b980221344743222a04955bf08a53cb065efa0893f4582eeb3099",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "db67a94ba70b980221344743222a04955bf08a53cb065efa0893f4582eeb3099",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "linear-shadow-boundaries",
+      "input": "linear-shadow-boundaries.svg",
+      "width": 240,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "5d0a8c06f1bb2650849f2c6554f65de8c3add64b600c852f8999ca69f1866dee",
+      "licenseEvidence": "Original authored work dedicated to the public domain through the asset SPDX CC0-1.0 declaration.",
+      "selection": "Retained E2 document or focused working-space/opacity/native offset boundary; no exhaustive combination grid.",
+      "declarationBaseRevision": "1502017914fda967074c9123591a70ce5dd32c10",
+      "reference": "references/linear-shadow-boundaries.png",
+      "referenceSha256": "44ccee37899adbe2713e2c5f62cab588445a9adfc419cbec8df357f863d40ee8",
+      "captures": [
+        {
+          "pngSha256": "44ccee37899adbe2713e2c5f62cab588445a9adfc419cbec8df357f863d40ee8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "44ccee37899adbe2713e2c5f62cab588445a9adfc419cbec8df357f863d40ee8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "44ccee37899adbe2713e2c5f62cab588445a9adfc419cbec8df357f863d40ee8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/linear-shadow-boundaries.png",
+      "linuxReferenceSha256": "44ccee37899adbe2713e2c5f62cab588445a9adfc419cbec8df357f863d40ee8",
+      "linuxCaptures": [
+        {
+          "pngSha256": "44ccee37899adbe2713e2c5f62cab588445a9adfc419cbec8df357f863d40ee8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "44ccee37899adbe2713e2c5f62cab588445a9adfc419cbec8df357f863d40ee8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "44ccee37899adbe2713e2c5f62cab588445a9adfc419cbec8df357f863d40ee8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "identity-zero-restoration",
+      "input": "identity-zero-restoration.svg",
+      "width": 240,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "e3c4afe6b43e5690869f01c35b2d454bcd9e990c4e298320252a68c25c45c25c",
+      "licenseEvidence": "Original authored work dedicated to the public domain through the asset SPDX CC0-1.0 declaration.",
+      "selection": "Retained E2 document or focused working-space/opacity/native offset boundary; no exhaustive combination grid.",
+      "declarationBaseRevision": "1502017914fda967074c9123591a70ce5dd32c10",
+      "reference": "references/identity-zero-restoration.png",
+      "referenceSha256": "f9ef3c248aa7992bde401b036cb47304ab28385fc570115c95942ce6a7e44a37",
+      "captures": [
+        {
+          "pngSha256": "f9ef3c248aa7992bde401b036cb47304ab28385fc570115c95942ce6a7e44a37",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f9ef3c248aa7992bde401b036cb47304ab28385fc570115c95942ce6a7e44a37",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f9ef3c248aa7992bde401b036cb47304ab28385fc570115c95942ce6a7e44a37",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/identity-zero-restoration.png",
+      "linuxReferenceSha256": "f9ef3c248aa7992bde401b036cb47304ab28385fc570115c95942ce6a7e44a37",
+      "linuxCaptures": [
+        {
+          "pngSha256": "f9ef3c248aa7992bde401b036cb47304ab28385fc570115c95942ce6a7e44a37",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f9ef3c248aa7992bde401b036cb47304ab28385fc570115c95942ce6a7e44a37",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f9ef3c248aa7992bde401b036cb47304ab28385fc570115c95942ce6a7e44a37",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "linear-shadow-integer",
+      "input": "linear-shadow-integer.svg",
+      "width": 240,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "335ec847dde9cc4e3e2f5ef165157fa6948a4cdaa32a6c90f57b26289f03b0ec",
+      "supplementalReason": "New working-space tint has a separate integral-offset materialization branch; preserve the original three cases unchanged. Frozen before this supplemental case is rendered.",
+      "licenseEvidence": "Original authored work dedicated to the public domain through the asset SPDX CC0-1.0 declaration.",
+      "selection": "Retained E2 document or focused working-space/opacity/native offset boundary; no exhaustive combination grid.",
+      "declarationBaseRevision": "1502017914fda967074c9123591a70ce5dd32c10",
+      "reference": "references/linear-shadow-integer.png",
+      "referenceSha256": "0de961a56cf2721a5b65c377a184e4ed71474480e1f4426694a60d319df81ccf",
+      "captures": [
+        {
+          "pngSha256": "0de961a56cf2721a5b65c377a184e4ed71474480e1f4426694a60d319df81ccf",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0de961a56cf2721a5b65c377a184e4ed71474480e1f4426694a60d319df81ccf",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0de961a56cf2721a5b65c377a184e4ed71474480e1f4426694a60d319df81ccf",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/linear-shadow-integer.png",
+      "linuxReferenceSha256": "0de961a56cf2721a5b65c377a184e4ed71474480e1f4426694a60d319df81ccf",
+      "linuxCaptures": [
+        {
+          "pngSha256": "0de961a56cf2721a5b65c377a184e4ed71474480e1f4426694a60d319df81ccf",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0de961a56cf2721a5b65c377a184e4ed71474480e1f4426694a60d319df81ccf",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0de961a56cf2721a5b65c377a184e4ed71474480e1f4426694a60d319df81ccf",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ]
+}

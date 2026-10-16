@@ -436,18 +436,6 @@ internal static class SvgFilterPlayback
                 }
                 else if (primitive.Kind == SvgFilterPrimitiveKind.DropShadow)
                 {
-                    if (colorSpace == SvgFilterColorSpace.LinearRgb && (primitive.Flood.Red != 0 || primitive.Flood.Green != 0 || primitive.Flood.Blue != 0))
-                        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Colored linearRGB shadow conversion is not implemented.");
-                    if (colorSpace == SvgFilterColorSpace.LinearRgb)
-                    {
-                        Charge(pixels);
-                        for (int offset = 0; offset < bytes; offset += 4)
-                        {
-                            token.ThrowIfCancellationRequested();
-                            if (input[offset + 3] != 255 && (input[offset] != 0 || input[offset + 1] != 0 || input[offset + 2] != 0))
-                                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent colored linearRGB shadow composition is not implemented.");
-                        }
-                    }
                     using SvgConverter.RasterizedSurface alpha = Allocate();
                     Charge(pixels);
                     for (int offset = 0; offset < bytes; offset += 4) { token.ThrowIfCancellationRequested(); alpha.Pixels[offset + 3] = input[offset + 3]; }
@@ -455,12 +443,22 @@ internal static class SvgFilterPlayback
                     work += SvgGaussianBlur.Apply(alpha.Pixels, blurred.Pixels, width, height, deviation, budget, availableWork - work, token);
                     double shadowX = primitive.OffsetX * map.ScaleX, shadowY = primitive.OffsetY * map.ScaleY;
                     bool fractionalShadow = shadowX != Math.Truncate(shadowX) || shadowY != Math.Truncate(shadowY);
+                    SvgConstantShaderPaint tint = ShadowTint(primitive, colorSpace);
                     if (!fractionalShadow)
                     {
                         Charge(pixels);
                         for (int offset = 0; offset < bytes; offset += 4)
                         {
                             token.ThrowIfCancellationRequested();
+                            if (colorSpace == SvgFilterColorSpace.LinearRgb)
+                            {
+                                byte coverage = blurred.Pixels[offset + 3];
+                                blurred.Pixels[offset] = Modulate(tint.Red, coverage);
+                                blurred.Pixels[offset + 1] = Modulate(tint.Green, coverage);
+                                blurred.Pixels[offset + 2] = Modulate(tint.Blue, coverage);
+                                blurred.Pixels[offset + 3] = Modulate(tint.Alpha, coverage);
+                                continue;
+                            }
                             int a = (int)MathF.Floor(blurred.Pixels[offset + 3] * primitive.FloodOpacity * (primitive.Flood.Alpha / 255f) + .5f);
                             blurred.Pixels[offset] = (byte)((primitive.Flood.Red * a + 127) / 255);
                             blurred.Pixels[offset + 1] = (byte)((primitive.Flood.Green * a + 127) / 255);
@@ -468,8 +466,9 @@ internal static class SvgFilterPlayback
                             blurred.Pixels[offset + 3] = (byte)a;
                         }
                     }
-                    Offset(blurred.Pixels, output, shadowX, shadowY, null, fractionalShadow ? primitive : null);
-                    bool convertSource = inputLinear && colorSpace == SvgFilterColorSpace.Srgb;
+                    Offset(blurred.Pixels, output, shadowX, shadowY, null, fractionalShadow ? tint : null);
+                    bool destinationLinear = colorSpace == SvgFilterColorSpace.LinearRgb;
+                    bool convertSource = inputLinear != destinationLinear;
                     Charge(pixels * (convertSource ? 2 : 1));
                     for (int offset = 0; offset < bytes; offset += 4)
                     {
@@ -477,7 +476,7 @@ internal static class SvgFilterPlayback
                         if (convertSource) ReadPaint(input, offset, inputLinear, colorSpace).Blend(output.Slice(offset, 4), 255);
                         else SvgConverter.BlendPremultipliedOver(output.Slice(offset, 4), input[offset], input[offset + 1], input[offset + 2], input[offset + 3]);
                     }
-                    linear[index] = inputLinear && !convertSource;
+                    linear[index] = destinationLinear;
                 }
                 else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filter primitive is not implemented.");
                 if (map.Regions is not null) Clip(output, regions[index], CropRounding.Outward);
@@ -661,19 +660,33 @@ internal static class SvgFilterPlayback
                     ? (int)Math.Floor(value + .5) : upper ? (int)Math.Ceiling(value) : (int)Math.Floor(value);
         }
 
-        void Offset(ReadOnlySpan<byte> input, Span<byte> output, double dx, double dy, SvgPaintBounds? imageBounds, SvgFilterPrimitive? shadow)
+        SvgConstantShaderPaint ShadowTint(SvgFilterPrimitive primitive, SvgFilterColorSpace colorSpace)
+        {
+            float alpha = primitive.FloodOpacity * (primitive.Flood.Alpha * (1f / 255f));
+            if (colorSpace == SvgFilterColorSpace.Srgb)
+                return new(Quantize(primitive.Flood.Red * alpha), Quantize(primitive.Flood.Green * alpha), Quantize(primitive.Flood.Blue * alpha), Quantize(255 * alpha));
+            // CSS tint and source pixels enter the same operating space before
+            // native premultiplied constant lanes and image composition.
+            Charge(16);
+            SvgShaderPaint tint = SvgFilterColorTransfer.Convert(new(primitive.Flood.Red * (1f / 255f),
+                primitive.Flood.Green * (1f / 255f), primitive.Flood.Blue * (1f / 255f), 1), colorSpace);
+            return new(Quantize(tint.Red * alpha * 255), Quantize(tint.Green * alpha * 255), Quantize(tint.Blue * alpha * 255), Quantize(255 * alpha));
+
+            static byte Quantize(float value) => (byte)Math.Clamp((int)MathF.Floor(value + .5f), 0, 255);
+        }
+
+        static byte Modulate(byte value, byte alpha) => (byte)((value * alpha + 127) / 255);
+
+        void Offset(ReadOnlySpan<byte> input, Span<byte> output, double dx, double dy, SvgPaintBounds? imageBounds, SvgConstantShaderPaint? shadow)
         {
             ValidateOffset(dx, dy);
             bool fractional = dx != Math.Truncate(dx) || dy != Math.Truncate(dy);
-            if (fractional && shadow is {} tint)
+            if (fractional && shadow is {} flood)
             {
                 // DropShadow uses a linearly sampled matrix translation, while
                 // ordinary feOffset retains nearest-neighbor displacement.
                 // The source-in color filter follows interpolation and retains
                 // its independently quantized constant premultiplied lanes.
-                float floodAlpha = tint.FloodOpacity * (tint.Flood.Alpha * (1f / 255f));
-                SvgConstantShaderPaint flood = new(Quantize(tint.Flood.Red * floodAlpha), Quantize(tint.Flood.Green * floodAlpha),
-                    Quantize(tint.Flood.Blue * floodAlpha), Quantize(255 * floodAlpha));
                 Charge(pixels * 4);
                 for (int y = 0; y < height; y++)
                 {
@@ -701,8 +714,6 @@ internal static class SvgFilterPlayback
 
                 static SvgConstantShaderPaint Read(ReadOnlySpan<byte> pixels, int width, int height, long x, long y)
                     => new(0, 0, 0, x >= 0 && x < width && y >= 0 && y < height ? pixels[(int)(y * width + x) * 4 + 3] : (byte)0);
-                static byte Quantize(float value) => (byte)Math.Clamp((int)MathF.Floor(value + .5f), 0, 255);
-                static byte Modulate(byte value, byte alpha) => (byte)((value * alpha + 127) / 255);
             }
             SvgPaintBounds bounds = imageBounds ?? new(0, 0, width, height);
             // The SVG filter scope retains the union of source and displaced
