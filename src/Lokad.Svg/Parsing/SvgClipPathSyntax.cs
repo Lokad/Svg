@@ -80,6 +80,36 @@ internal static class SvgClipPathSyntax
         return SvgLeafMaskComposition.NewBinding(state, operation, inner);
     }
 
+    /// <summary>Binds one retained leaf or container clip after collecting its complete pre-clip target.</summary>
+    /// <remarks>Geometry remains caller-owned. Clip content and binding metadata belong to the active
+    /// scene/document owner. Traversal charges shared work and observes cancellation; source geometry
+    /// is not trimmed, so nested clips cannot change an enclosing object's bounds.</remarks>
+    internal static void ApplyResourceClip(Span<SvgGeometry> geometries, string id, SvgAffineTransform map,
+        SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        bool rectangle = state.ObjectClips.TryGetValue(id, out SvgClipBox fractions);
+        state.ClipPolygons.TryGetValue(id, out SvgClipPolygon polygon);
+        SvgLeafMaskOperation? objectClip = null;
+        if (rectangle || polygon.IsObjectBoundingBox)
+        {
+            SvgObjectBoundingClip target = new(map, null);
+            foreach (SvgGeometry geometry in geometries) target.Add(geometry, state, work, token);
+            objectClip = rectangle ? target.Register(fractions, state, work, token) : target.Register(polygon, state, work, token);
+        }
+        SvgLeafMaskBinding? lastInner = null, binding = null;
+        foreach (ref SvgGeometry geometry in geometries)
+        {
+            work.Consume(token);
+            if (binding is null || !ReferenceEquals(lastInner, geometry.LeafMask))
+            {
+                lastInner = geometry.LeafMask;
+                binding = objectClip is null ? BindResourceClip(id, map, lastInner, state, work, token)
+                    : SvgLeafMaskComposition.NewBinding(state, objectClip, lastInner);
+            }
+            geometry = geometry with { LeafMask = binding };
+        }
+    }
+
     /// <summary>Validates the clip rule shared by attributes and style declarations.</summary>
     internal static void ValidateClipRule(ReadOnlySpan<char> value)
         => _ = ParseClipRule(value);

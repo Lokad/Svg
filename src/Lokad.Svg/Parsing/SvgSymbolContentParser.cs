@@ -12,8 +12,9 @@ internal static class SvgSymbolContentParser
         SvgSymbolDefinitionBuilder builder = state.SymbolDefinition ?? throw new InvalidOperationException("Symbol content requires an open builder.");
         if (reader.LocalName == "g") SvgElementAttributePolicy.ValidateGroup(reader, work, token);
         else SvgElementAttributePolicy.ValidateUse(reader, work, token);
-        if (reader.GetAttribute("clip-path") is not null || reader.GetAttribute("mask") is not null)
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clips and masks within retained symbol containers are not implemented.");
+        if (reader.GetAttribute("mask") is not null)
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks within retained symbol containers are not implemented.");
+        string? clipId = Copy(SvgClipPathSyntax.ResolveClipId(reader, state));
         string? id = reader.GetAttribute("id");
         if (id is not null && (id == state.SymbolId || state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _) || state.RenderedGroupDefinitions.TryGetValue(id, out _)))
             throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
@@ -44,7 +45,7 @@ internal static class SvgSymbolContentParser
             content.BeginGroup(reader.Depth, definitionRoot ? null : id, presentation, new(paint, style.Fill is not null, opacity, color, sourceOpacity, displayed, visible)
                 { TextStyleSource = SvgRetainedTextSource.CaptureElement(reader, SvgPaintableElementContext.Create(reader, false, root, state, colors, work, token), state,
                     state.TextReplay?.Limits ?? throw new InvalidOperationException("Group capture requires document limits.")),
-                    Filter = Copy(style.Filter), InheritsOpacity = style.InheritsOpacity, Markers = markers, PaintOrder = style.PaintOrder, PaintServerFill = shader ? shaderFill : null, PaintServerId = shader ? shaderId : null, FillRule = Copy(style.FillRule), Stroke = stroke, StrokeOpacity = strokeOpacity }, SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
+                    Filter = Copy(style.Filter), ClipId = clipId, InheritsOpacity = style.InheritsOpacity, Markers = markers, PaintOrder = style.PaintOrder, PaintServerFill = shader ? shaderFill : null, PaintServerId = shader ? shaderId : null, FillRule = Copy(style.FillRule), Stroke = stroke, StrokeOpacity = strokeOpacity }, SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
             if (!definitionRoot && id is not null) state.Definitions.TryAdd(id, new([], false, null, null) { SymbolContent = new(content, 0, 0), BorrowedFromSymbol = true });
             if (reader.IsEmptyElement) content.EndGroup(reader.Depth, state);
         }
@@ -58,7 +59,7 @@ internal static class SvgSymbolContentParser
             SvgColor? color = style.Color is null ? null : SvgColorParser.Parse(style.Color, colors);
             SvgInheritedStrokeStyle stroke = new(Copy(style.Linecap), Copy(style.Linejoin), Copy(style.Dasharray), Copy(style.Dashoffset), Copy(style.Width), Copy(style.Miterlimit), Copy(style.StrokeOpacity), Copy(style.Stroke));
             int start = content.AddUse(reference, fillOpacity, color, strokeOpacity, stroke, style.PaintOrder, markers,
-                SvgRetainedTextSource.CaptureElement(reader, context, state, state.TextReplay?.Limits ?? throw new InvalidOperationException("Use capture requires document limits.")), style.Fill is not null, displayed, visible);
+                SvgRetainedTextSource.CaptureElement(reader, context, state, state.TextReplay?.Limits ?? throw new InvalidOperationException("Use capture requires document limits.")), clipId, style.Fill is not null, displayed, visible);
             if (id is not null) state.Definitions.TryAdd(id, new([], false, null, null) { SymbolContent = new(content, start, 1), BorrowedFromSymbol = true });
             state.HasUnsupportedContent |= !reader.IsEmptyElement;
         }

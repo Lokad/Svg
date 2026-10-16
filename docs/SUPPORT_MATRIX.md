@@ -3,8 +3,8 @@
 The completion audit in [PLAN](../PLAN.md#delivery-order) demonstrates six missing
 behaviors within the finite promises: pattern leaf/object-box clips, retained
 instance/marker clips, clipped vector mask content, nested clip-child intersections
-and filtered gradient source fidelity. A1/A2 are corrected with targeted
-Windows/Linux evidence; A3–A6 remain open. F1 replaces the full-document collection
+and filtered gradient source fidelity. A1–A3 are corrected with targeted
+Windows/Linux evidence; A4–A6 remain open. F1 replaces the full-document collection
 through the existing harness before final S17 verification A7.
 Eight additional rejected probes require the three explicit admission reconciliations
 listed in PLAN; they are not automatic scope additions or approved deferrals.

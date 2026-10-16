@@ -100,6 +100,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
         SvgInheritedStrokeStyle resolved = inherited.ResolveChild(_authored);
         if (_authored.InheritsOpacity) return true;
         if (_authored.Filter is string filter && filter.Trim() != "none") return true;
+        if (GetAttribute("clip-path") is not null) return true;
         // Numeric opacity binds through recorded paint. Shader fills and native
         // stroke colors require source lowering when their inherited values change.
         bool inheritedShader = _element != "line" && _authored.Fill is null && paintServerFill is not null;

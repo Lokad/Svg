@@ -11,6 +11,7 @@ internal readonly record struct SvgSymbolContentStyle(SvgPaint Paint, bool HasAu
     internal SvgPaintOpacity ResolveOpacity(SvgPaintOpacity parentOpacity) => InheritsOpacity ? parentOpacity : Opacity;
     internal string? PaintServerFill { get; init; }
     internal string? Filter { get; init; }
+    internal string? ClipId { get; init; }
     internal SvgPaintOrder? PaintOrder { get; init; }
     internal SvgMarkerStyle Markers { get; init; }
     internal string? PaintServerId { get; init; }
@@ -90,13 +91,13 @@ internal sealed class SvgSymbolContent : IDisposable
         catch { _groups.RemoveLast(); throw; }
     }
 
-    internal int AddUse(SvgUseReference reference, SvgPaintOpacity? fillOpacity, SvgColor? color, SvgPaintOpacity? strokeOpacity, SvgInheritedStrokeStyle stroke, SvgPaintOrder? paintOrder, SvgMarkerStyle markers, SvgRetainedTextSource? textStyleSource, bool hasAuthoredFill, bool displayed, bool? visible)
+    internal int AddUse(SvgUseReference reference, SvgPaintOpacity? fillOpacity, SvgColor? color, SvgPaintOpacity? strokeOpacity, SvgInheritedStrokeStyle stroke, SvgPaintOrder? paintOrder, SvgMarkerStyle markers, SvgRetainedTextSource? textStyleSource, string? clipId, bool hasAuthoredFill, bool displayed, bool? visible)
     {
         int start = _building.Count;
         if (!hasAuthoredFill) reference = reference with { PaintServerId = null, PaintServerFill = null, FillOverride = null };
         _building.Add(new(SvgSymbolContentKind.Use, default, reference,
             new(reference.InheritedFill, hasAuthoredFill, fillOpacity, color, reference.SourceOpacity, displayed, visible)
-            { TextStyleSource = textStyleSource, InheritsOpacity = reference.InheritsOpacity, Markers = markers, PaintOrder = paintOrder, Stroke = stroke, StrokeOpacity = strokeOpacity }, SvgAffineTransform.Identity, -1));
+            { TextStyleSource = textStyleSource, ClipId = clipId, InheritsOpacity = reference.InheritsOpacity, Markers = markers, PaintOrder = paintOrder, Stroke = stroke, StrokeOpacity = strokeOpacity }, SvgAffineTransform.Identity, -1));
         return start;
     }
 

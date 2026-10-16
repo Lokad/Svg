@@ -1,5 +1,12 @@
 # Representative logo inventory
 
+**Current collection decision (2026-10-17):** [PLAN F1](../PLAN.md#full-svg-fixture-replacement-f1)
+replaces mandatory full-document membership/counts with a finite selection from
+established SVG suites. The legacy collection below remains dated evidence until
+that migration; its unique behavior and known-bug micro-tests stay protected.
+The completion-audit correction banks contain focused controls, not additional
+representative documents. No F1 replacement selection is qualified yet.
+
 This document defines the versioned representative inventory required by PLAN.md R26.
 It records the selection rules, record schema, legal handling, and coverage accounting
 so that document sourcing can proceed without changing the rules midstream.

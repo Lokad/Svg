@@ -1891,27 +1891,24 @@ internal static class SvgDefinitionParser
                 && SvgStrokeStyleSyntax.ParseLinejoin(style.Linejoin, true) != SvgStrokeJoin.Miter)
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-miter stroke joins on rectangle instances are not implemented.");
         }
-        SvgDefinition definition = reader.LocalName == "rect"
-            ? new(RetainParsedGeometries(SvgLeafParser.ParseRectangle(reader, context, null, state), state, context.WorkCounter, context.CancellationToken), false, null, null)
-            : reader.LocalName == "image" ? ParseImageSource(reader, context, state)
-            : reader.LocalName == "line" ? ParseLineDefinition(reader, context, state)
-            : ParseShapeDefinition(reader, context, state, null, false);
+        string? clipId = SvgClipPathSyntax.ResolveClipId(reader, state);
+        bool previousClipDeferral = state.DeferringLeafClip;
+        state.DeferringLeafClip |= clipId is not null;
+        SvgDefinition definition;
+        try
+        {
+            definition = reader.LocalName == "rect"
+                ? new(RetainParsedGeometries(SvgLeafParser.ParseRectangle(reader, context, null, state), state, context.WorkCounter, context.CancellationToken), false, null, null)
+                : reader.LocalName == "image" ? ParseImageSource(reader, context, state)
+                : reader.LocalName == "line" ? ParseLineDefinition(reader, context, state)
+                : ParseShapeDefinition(reader, context, state, null, false);
+        }
+        finally { state.DeferringLeafClip = previousClipDeferral; }
         try
         {
             SvgPaintRecording.WrapFilter(definition.Geometries, sourceStyle.Filter, context.ResolveTransform(reader), context.LengthBases, state, context.WorkCounter, context.CancellationToken);
-            if (SvgClipPathSyntax.ResolveClipId(reader, state) is {} clipId)
-            {
-                SvgAffineTransform map = context.ResolveTransform(reader);
-                for (int index = 0; index < definition.Geometries.Length; index++)
-                {
-                    context.WorkCounter.Consume(context.CancellationToken);
-                    SvgGeometry geometry = definition.Geometries[index];
-                    definition.Geometries[index] = geometry with
-                    {
-                        LeafMask = SvgClipPathSyntax.BindResourceClip(clipId, map, geometry.LeafMask, state, context.WorkCounter, context.CancellationToken)
-                    };
-                }
-            }
+            if (clipId is not null)
+                SvgClipPathSyntax.ApplyResourceClip(definition.Geometries, clipId, context.ResolveTransform(reader), state, context.WorkCounter, context.CancellationToken);
             SvgReferenceResolver.ApplyMask(definition.Geometries, null, null, reader.GetAttribute("mask"), state, context.WorkCounter, context.CancellationToken);
             if (filtered) SvgPaintRecording.WrapInstance(definition.Geometries, sourceStyle.GetOpacity(), state.NewRecordingScope(), state, context.WorkCounter, context.CancellationToken);
             SvgPaintRecording.FinishDefinition(definition.Geometries, state, context.WorkCounter, context.CancellationToken);

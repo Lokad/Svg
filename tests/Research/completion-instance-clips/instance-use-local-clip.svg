@@ -1,0 +1,13 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+<defs>
+  <rect id="r" width="16" height="16" fill="#bd4f36"/>
+  <symbol id="s">
+    <use href="#r" x="4" y="4" transform="translate(2 1)" clip-path="url(#c)"/>
+    <rect x="24" y="4" width="4" height="16" fill="#244a77"/>
+  </symbol>
+  <clipPath id="c"><circle cx="12" cy="12" r="7"/></clipPath>
+</defs>
+<use href="#s" x="8" y="8"/>
+<use href="#s" x="8" y="36"/>
+</svg>
