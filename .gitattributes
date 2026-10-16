@@ -70,3 +70,8 @@ tests/Research/composition-sheet/*.svg -text
 
 # Keep frozen pattern tile inputs byte-identical on both platforms.
 tests/Research/pattern-tile-sheet/*.svg -text
+
+# Retain the completion-audit originals byte for byte, including CRLF sources.
+tests/Research/completion-pattern-clips/*.svg -text whitespace=cr-at-eol
+tests/Research/completion-pattern-object-clips/*.svg -text whitespace=cr-at-eol
+tests/Research/completion-instance-clips/*.svg -text whitespace=cr-at-eol
