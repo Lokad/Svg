@@ -1,6 +1,6 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-16 for standalone public-font qualification.
+Updated 2026-10-16: standalone qualification complete; private adoption gate pending.
 Preserve the current implementation work, qualified `inv-146` correction and every
 established exact result, original SVG/font/reference bytes, options and default
 resource limits. This file owns delivery order, required exits and scope
@@ -43,8 +43,19 @@ established exact outputs are preserved. The receipt owns the exact implementati
 revision and hosted CI outcome, including package/installed-consumer checks. Reuse closed exact-revision CI audits without repolling;
 PLAN-only edits and completed accounting work do not reopen qualification.
 
+Standalone [final qualification](artifacts/standalone-font-qualification-20261016/standalone-release-qualified-results.json)
+is complete for substantive revision `a3346605`: **8,137 tests/platform** in
+[terminal green CI](https://github.com/Lokad/Svg/actions/runs/38941225820), including
+all four actual-host public font requests, package/notices and installed consumers.
+Normal build plus complete tests: **91s Windows / 115s Ubuntu**. The prior 8,133-case
+local qualification and seven-witness measurements above are reused unchanged;
+only four focused host requests and one new italic visual were needed. Private
+configuration is independent of ordinary builds/CI. Documentation-only finalization
+reuses this exact substantive-revision audit without another CI run.
+
 Completed items 1–3 (G2–G7/C1–C6c), T1–T2 and E1–E4 stay closed.
-T3-public is qualified; only final S17 remains in the standalone queue. T3-private stays pending for production adoption. Historical rejection notes,
+T3-public and final S17 are complete for standalone qualification. T3-private
+stays pending before production adoption. Historical rejection notes,
 `observedGate` fields and pending-CI narratives in linked checkpoint records do
 not override qualified outcomes. Detailed mechanism/history belongs in those
 records; the queue below owns remaining work.
@@ -54,16 +65,16 @@ records; the queue below owns remaining work.
 
 ## Ordered delivery checklist
 
-**Standalone delivery: T3-public qualified → S17 final verification.**
+**Standalone delivery is complete: T3-public qualified and final S17 verified.**
 The seven-witness public measurement/documentation exit is complete and remains
 available evidence. Private deployment configuration does not block this queue.
 Bring a shared correction forward only for a demonstrated in-scope defect.
 
 | Order / required exit | Missing behavior and dependencies | Concrete acceptance and completion condition |
 | --- | --- | --- |
-| [x] **1. T3-public — public fonts** (item 4 / G9) | The [four public requests](tests/Research/public-font-qualification/README.md) are qualified on Windows/Linux, including the new real italic witness; regular/bold/fallback assets and references are reused unchanged. Use redistributable static TrueType programs, the existing manifest/catalog/provider interfaces and FontProbe host. No private access, new schema or other-renderer dependency. | Four regular/bold/real-italic/intentional-fallback requests complete acquisition and selection through the existing host. Verify independent metrics, intended-font use and exact Windows/Linux pixels against unchanged qualified references; add only missing cases. Categorized format/shaping boundaries, limits, cancellation, cleanup and ownership remain protected. All four actual-host outcomes, metrics, face-use controls and exact platform references are recorded in [qualification](artifacts/standalone-font-qualification-20261016/public-font-qualified-results.json). Final complete-suite CI is the S17 checkpoint below. |
+| [x] **1. T3-public — public fonts** (item 4 / G9) | The [four public requests](tests/Research/public-font-qualification/README.md) are qualified on Windows/Linux, including the new real italic witness; regular/bold/fallback assets and references are reused unchanged. Use redistributable static TrueType programs, the existing manifest/catalog/provider interfaces and FontProbe host. No private access, new schema or other-renderer dependency. | Four regular/bold/real-italic/intentional-fallback requests complete acquisition and selection through the existing host. Verify independent metrics, intended-font use and exact Windows/Linux pixels against unchanged qualified references; add only missing cases. Categorized format/shaping boundaries, limits, cancellation, cleanup and ownership remain protected. All four actual-host outcomes, metrics, face-use controls and exact platform references are recorded in [qualification](artifacts/standalone-font-qualification-20261016/public-font-qualified-results.json). Final complete-suite/package/consumer CI is green under S17 below. |
 | [x] **2. S17 — public measurements and documentation** (item 6) | Public measurements are complete for qualified revision `393e19d5`. Reuse completed maintenance/resource evidence; later corrections need only affected follow-up. | The [seven-witness results](docs/BENCHMARKS.md#finite-s17-measurement-set-2026-10-16) and [public receipt](artifacts/s17-release-20261016/s17-public-evidence.json) close release conditions 4–5 for that revision. Reconcile public documentation with the approved T3 split and final qualification. No speculative optimization, new framework or completed-memory requalification. |
-| [ ] **3. S17 — standalone final verification** (item 6) | T3-public closed; completed renderer dependencies and product/font/resource/package contracts preserved. T3-private remains a separate adoption gate. | Every [standalone release condition](#release-completion-s17) holds for the finished substantive revision, including Windows/Linux tests, package/installed consumer and terminal green CI. Reuse unchanged evidence. Document/test counts alone cannot establish completion. |
+| [x] **3. S17 — standalone final verification** (item 6) | T3-public closed; completed renderer dependencies and product/font/resource/package contracts preserved. T3-private remains a separate adoption gate. | Every [standalone release condition](#release-completion-s17) is satisfied for substantive revision `a3346605`: **8,137 tests/platform**, all ten required checks/platform including package/installed consumer, and [terminal green CI](https://github.com/Lokad/Svg/actions/runs/38941225820). The [completion audit](artifacts/standalone-font-qualification-20261016/standalone-release-qualified-results.json) maps every condition to evidence. Document/test counts alone do not establish completion. |
 
 **Separate production-adoption gate — [ ] T3-private.** The original regular,
 bold, italic and fallback requests against the unchanged deployed manifest remain
@@ -230,6 +241,10 @@ forward/missing result names retain categorized outcomes. `inv-146` source/paren
 device rounding and padded capture remain closed.
 
 ## Release completion (S17)
+
+**Standalone status: complete.** The [finished-revision audit](artifacts/standalone-font-qualification-20261016/standalone-release-qualified-results.json)
+proves all five conditions below. T3-private remains pending before production
+adoption; standalone qualification does not prove compatibility with that deployment.
 
 Standalone release qualification is complete only when all of these hold for the **finished revision**. Private deployment access is not a prerequisite:
 

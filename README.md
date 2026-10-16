@@ -24,10 +24,11 @@ Original inputs/options and independent platform references remain frozen;
 [INVENTORY](docs/INVENTORY.md) owns the evidence and selection limits.
 
 [SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md) and [PLAN's finite boundaries](PLAN.md#required-support-boundaries-and-finite-exits)
-define the useful subset and explicit unsupported outcomes. G2–G8 and public G9
-acceptance and [public regular/bold/real-italic/fallback qualification](tests/Research/public-font-qualification/README.md)
-(T3-public) are complete on Windows/Linux. Final standalone verification (S17)
-remains required. Private
+define the useful subset and explicit unsupported outcomes. Its G2–G9 acceptance,
+[public regular/bold/real-italic/fallback qualification](tests/Research/public-font-qualification/README.md)
+(T3-public) and standalone release qualification (S17) are complete on Windows/Linux:
+**8,137 tests/platform** and all package/installed-consumer checks pass in
+[terminal green CI](https://github.com/Lokad/Svg/actions/runs/38941225820). Private
 deployment validation (T3-private) remains pending before production adoption
 and does not block standalone qualification. [PLAN](PLAN.md#delivery-order) owns the ordered
 checklist, dependencies and release exit. Mechanism/history belongs in

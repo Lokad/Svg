@@ -1,7 +1,19 @@
+## Standalone qualification complete (2026-10-16)
+
+[Final S17 qualification](../artifacts/standalone-font-qualification-20261016/standalone-release-qualified-results.json)
+is complete for substantive revision `a3346605`: 8,137 tests/platform and all ten
+required Windows/Linux CI checks, including package and installed consumer.
+[Terminal green CI](https://github.com/Lokad/Svg/actions/runs/38941225820) reuses
+unchanged renderer/maintenance evidence and includes four public FontProbe requests.
+The finite SVG/font-format/shaping boundaries below are preserved. Private deployment
+qualification remains pending before production adoption; no compatibility with that
+deployment is claimed. Historical remaining-work/CI statements below retain their
+checkpoint dates and do not override this standalone/adoption status.
+
 ## Standalone and deployment gates (2026-10-16)
 
-The approved [PLAN](../PLAN.md#delivery-order) splits T3-public (required for
-standalone release) from T3-private (required before production adoption).
+The approved [PLAN](../PLAN.md#delivery-order) splits T3-public (required and qualified for
+standalone release) from T3-private (required and pending before production adoption).
 [T3-public is qualified](../tests/Research/public-font-qualification/README.md):
 regular/bold/fallback evidence is reused and real italic metrics, intended-face
 proof and exact Windows/Linux rendering pass through the existing
@@ -18,7 +30,7 @@ G2–G8 and public G9 acceptance remain qualified under the finite
 exact substantive revision `393e19d5`, including Windows/Linux package and installed
 consumer checks. The [fixed public measurement set](BENCHMARKS.md#finite-s17-measurement-set-2026-10-16)
 and current README/API contracts close S17's public evidence/documentation exit.
-T3-public is qualified; final S17 standalone verification remains required. T3-private is a
+T3-public and final S17 standalone verification are complete. T3-private is a
 separate pending adoption gate; this is no broader SVG or deployment-compatibility claim.
 
 ## Qualified marker container presentation (2026-10-16)
@@ -32,7 +44,7 @@ outcomes and zero marker width remains nonpainting.
 
 [Qualification](../artifacts/maintenance-review-20261012/marker-presentation-qualified-results.json)
 preserves every prior case and representative denial/cancellation/cleanup/retry.
-E4 is complete. Only final standalone S17 remains required in
+E4 is complete. Standalone S17 is complete under
 [PLAN](../PLAN.md#delivery-order); historical checkpoint guards/status below do not
 reopen qualified work or defer scope.
 

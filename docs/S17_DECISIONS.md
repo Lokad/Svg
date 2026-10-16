@@ -1,45 +1,35 @@
 # S17 release criteria and decisions
 
-The approved 2026-10-16 release criteria in [PLAN](../PLAN.md#delivery-order)
-require public regular/bold/real-italic/fallback qualification for standalone
-release. Private deployment access is not a standalone prerequisite. Its original
-four deployed-manifest requests remain pending before production adoption;
-standalone qualification cannot establish deployment compatibility. Historical
-criteria/status below retain their dates and are superseded by this gate split.
+Updated 2026-10-16. **Standalone Lokad.Svg release qualification is complete**
+for substantive revision `a3346605`. The [completion audit](../artifacts/standalone-font-qualification-20261016/standalone-release-qualified-results.json)
+maps all five current [PLAN conditions](../PLAN.md#release-completion-s17) to
+finished-revision evidence. [Terminal green CI](https://github.com/Lokad/Svg/actions/runs/38941225820)
+passes 8,137 tests/platform and all required package/notices/installed-consumer,
+resource and browser/font tooling checks. Normal build plus complete tests take
+91s Windows / 115s Ubuntu; unchanged seven-witness measurements are reused.
 
-Updated 2026-10-07. Native float rectangle operands and endpoint construction
-close IBM's three large variants on Windows/Linux. The cohort has **27/27 exact
-documents**, marks **13/13**, wordmarks **14/14**, with **258 exact, zero known
-and zero rejected** comparisons. All 255 earlier exact corporate outputs remain
-unchanged. The full frozen-cohort fidelity target and original numerical release
-criterion are met; S17 remote CI evidence remains open.
+The frozen cohort remains **27/27 documents / 258/258 variants exact**, with
+marks 13/13 and outlined wordmarks 14/14. Selected documents remain 50/50 complete;
+35 authored documents and one sourced W3C document are counted separately. No
+established SVG/font/reference bytes, options, limits or exact outcomes changed.
+The public font gate verifies regular, bold, real italic and intentional fallback
+through the existing catalog/providers/FontProbe, independent metrics and exact
+Windows/Linux references. Only one focused italic visual and public font program
+were missing; no production renderer correction was needed.
 
-Exact documents are SimpleLogin, Ford, SDL, UAAR, SimpleX, Zeppelin, Omega,
-Eisenbahn, Rede Manchete, ROC HCVS, Red Cross, SG Rotation Leipzig, Tokyo Tsukurou,
-Artsy, Party of Changes, YouTube, Liputan6, NASA, Blur, Nike, Toyota, Pepsi,
-Target, IKEA, Google, IBM and Coca-Cola.
-Membership, inputs, options and references remain frozen.
-[PLAN.md](../PLAN.md) owns the current queue and validation totals;
-[the design record](RASTERIZATION_DESIGN.md#native-rectangle-source-operands-2026-10-07)
-explains the repair. Detailed diagnostics stay under ignored artifacts.
+**Approved criteria change:** private access is not a standalone prerequisite.
+T3-private's original four regular/bold/italic/fallback requests against the
+unchanged deployed manifest remain pending until configuration is available and
+are required before production adoption. Public success cannot pass that gate
+or establish deployment compatibility. Endpoints, credentials and caches remain
+host-owned; ordinary builds/CI stay independent of private configuration. Existing
+manifest compatibility and font-format/shaping boundaries remain unchanged, with
+no other-renderer comparison, dependency, coordination or shared management project.
 
-Every frozen variant is measured against its original platform-appropriate
-reference. Broader geometry, coverage, paint and composition fidelity retain
-their independent exit criteria; no pixel difference is waived.
-
-The preceding renderer completed all 258 frozen recipes through the synchronous
-owned-memory BenchmarkDotNet ShortRun. Intended-size medians across variant means
-are 16.37 ms for marks and 10.52 ms for wordmarks, with median allocation traffic
-1.46 and 1.00 MiB.
-[The complete-cohort baseline](BENCHMARKS.md#frozen-corporate-cohort-baseline-2026-10-07)
-records sizes, maxima, machine scope and confidence limits. This is a warmed
-Windows measurement, with no speedup or service-latency claim. Current Windows
-and Linux builds, tests and complete bank/cohort comparisons pass. Memory
-and installed package-consumer checks pass on each platform; browser/font tools
-retain their preceding delivery scope.
-All 258 Linux variants reuse independent reference triples: 774 stable, healthy,
-cleaned captures with no failures or gaps.
-Remote CI is pending.
+The original numerical/freeze decisions below remain binding. Counts alone do
+not establish completion; the final audit also proves public font acceptance,
+resource/API/lifetime, packaging and support-boundary requirements. Historical
+renderer/mechanism details live in their linked evidence and design records.
 
 ## Q1 - numeric exact-document target: selected
 

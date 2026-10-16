@@ -54,3 +54,10 @@ Redistributable assets and exact platform references remain offline test data;
 no private configuration is needed by ordinary builds or CI. The four original
 private deployed-manifest requests are a separate pending production-adoption
 gate. Public success does not establish compatibility with that deployment.
+
+[Public qualification](../../tests/Research/public-font-qualification/README.md)
+passes all four requests on Windows/Linux through this executable, with independent
+metrics and exact platform references. Run the offline checks with
+`dotnet test tests/Lokad.Svg.VisualTests -c Release --filter FullyQualifiedName~SvgPublicFontQualificationTests`.
+The test project builds this existing host and owns its temporary public font root;
+no deployment configuration or source discovery is involved.
