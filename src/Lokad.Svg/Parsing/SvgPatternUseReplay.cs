@@ -54,6 +54,7 @@ internal static class SvgPatternUseReplay
         {
             int depth = 0;
             int first = -1;
+            SvgLeafMaskOperation? objectClip = bindMask ? null : BindObjectClip();
             SvgLeafMaskBinding? lastInner = null, lastBinding = null;
             for (int index = 0; index < builder.CommandCount; index++)
             {
@@ -97,11 +98,43 @@ internal static class SvgPatternUseReplay
                 if (lastBinding is null || !ReferenceEquals(lastInner, inner))
                 {
                     lastInner = inner;
-                    lastBinding = SvgClipPathSyntax.BindResourceClip(clipId, clip.Map, inner, state, work, token);
+                    lastBinding = objectClip is null
+                        ? SvgClipPathSyntax.BindResourceClip(clipId, clip.Map, inner, state, work, token)
+                        : SvgLeafMaskComposition.NewBinding(state, objectClip, inner);
                 }
                 builder.AssignLeafMask(command.GeometryIndex, lastBinding);
             }
             throw new InvalidOperationException("A retained pattern scope requires a balanced source group.");
+
+            SvgLeafMaskOperation? BindObjectClip()
+            {
+                if (clip.ClipId is not {} id) return null;
+                bool rectangle = state.ObjectClips.TryGetValue(id, out SvgClipBox fractions);
+                state.ClipPolygons.TryGetValue(id, out SvgClipPolygon polygon);
+                if (!rectangle && !polygon.IsObjectBoundingBox) return null;
+                SvgObjectBoundingClip target = new(clip.Map, null);
+                int scopeDepth = 0;
+                SvgSceneBuilder? previous = state.DefinitionReplayScene;
+                state.DefinitionReplayScene = builder;
+                try
+                {
+                    for (int index = 0; index < builder.CommandCount; index++)
+                    {
+                        work.Consume(token);
+                        SvgDrawCommand command = builder.CommandAt(index);
+                        if (scopeDepth == 0 && (command.Kind != SvgDrawCommandKind.BeginGroup || command.GeometryIndex != clip.Scope.Value)) continue;
+                        if (command.Kind == SvgDrawCommandKind.BeginGroup) scopeDepth++;
+                        else if (command.Kind == SvgDrawCommandKind.EndGroup && --scopeDepth == 0)
+                            return rectangle ? target.Register(fractions, state, work, token) : target.Register(polygon, state, work, token);
+                        // Bounds and clip content both belong to the tile scene. Collect
+                        // the complete target before other clips can trim its geometry.
+                        if (command.Kind == SvgDrawCommandKind.Geometry)
+                            target.Add(builder.GeometryAt(command.GeometryIndex), state, work, token);
+                    }
+                    throw new InvalidOperationException("A retained pattern scope requires a balanced source group.");
+                }
+                finally { state.DefinitionReplayScene = previous; }
+            }
         }
     }
 
