@@ -46,8 +46,8 @@ internal static class SvgTextRunBuilder
         }
         SvgPreparedFont font = resolvedFonts.Count != 0 ? resolvedFonts[0].Style.Font
             : workCounter is null ? snapshot.GetFont(style.Font, style.SourceElementId) : snapshot.GetFont(style.Font, style.SourceElementId, workCounter, cancellationToken);
-        bool needsFragments = defaultPaint?.Decoration is not null || defaultPaint?.HasStroke == true;
-        foreach (SvgTextPaintSpan span in paintSpans) needsFragments |= span.Paint.Decoration is not null || span.Paint.HasStroke;
+        bool needsFragments = defaultPaint?.Decoration is not null || defaultPaint?.HasStroke == true || defaultPaint?.FillServer is not null;
+        foreach (SvgTextPaintSpan span in paintSpans) needsFragments |= span.Paint.Decoration is not null || span.Paint.HasStroke || span.Paint.FillServer is not null;
         double originX = style.X + style.Dx;
         double originY = style.Y + style.Dy;
         if (!double.IsFinite(originX) || !double.IsFinite(originY))

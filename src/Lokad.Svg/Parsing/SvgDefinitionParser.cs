@@ -318,10 +318,13 @@ internal static class SvgDefinitionParser
             state.HasUnsupportedContent = true;
             return true;
         }
-        if ((state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 || directChild) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "mask")
+        if ((inDefinitions || directChild || groupNestedDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "mask")
         {
             SvgElementAttributePolicy.ValidateMask(reader, workCounter, cancellationToken);
             SvgPaintableElementContext maskContext = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
+            // A resource inherits presentation, while its content coordinates start
+            // at the resource rather than at a rendered definition ancestor.
+            maskContext = maskContext with { InheritedPresentation = maskContext.InheritedPresentation with { Transform = SvgAffineTransform.Identity } };
             InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
             SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, maskContext.StyleSheet).ResolveOpacity(maskContext.InheritedPresentation.ElementOpacity);
             // The resource container supplies inherited style; its children paint

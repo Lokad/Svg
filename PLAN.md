@@ -1,6 +1,6 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-16 at the planning checkpoint during the shared text-paint correction.
+Updated 2026-10-16 at the qualified text instance/paint checkpoint.
 Preserve the current implementation work, qualified `inv-146` correction and every
 established exact result, original SVG/font/reference bytes, options and default
 resource limits. This file owns delivery order, required exits and scope
@@ -22,45 +22,39 @@ Optional maintenance below adds no feature-completion prerequisite.
 | Frozen corporate cohort | **27/27 documents / 258/258 variants exact on Windows/Linux**, including 13/13 marks and 14/14 outlined wordmarks. Preserve membership, original bytes, options, backgrounds and references in the [manifest](tests/References/inventory/corporate-cohort-v1.json) and [measurement](tests/References/inventory/corporate-cohort-current.json). |
 | Selected development documents and original fixtures | **50/50 complete**, including whole `inv-146`; original marker/drop-shadow fixtures **2/2**, supplied-font label/path fixtures **2/2**, SVG Translate, `inv-127` and `inv-145`. Preserve the [gap ledger](tests/References/inventory/svg-gap-cases.json), [supplied-font banks](tests/Research/supplied-font-documents/README.md), [curved labels](tests/Research/curved-font-documents/README.md) and [inventory](docs/INVENTORY.md). Failure-selected inputs establish no representative success rate. |
 | `inv-146`, paint recording and retained libraries | Preserve whole `inv-146`, eight oval/text controls and four [merge controls](tests/Research/filter-merges/README.md), with the [qualification receipt](artifacts/maintenance-review-20261012/merge-qualified-results.json). Paint recording is **149/149 exact**; I Ching is **24 exact / one out-of-scope animation boundary**. |
-| Additional complete documents | **Twenty-six authored documents** (nineteen CC0, seven MIT) and **one sourced W3C decoration document**, exact on both platforms and separate from both cohorts. [INVENTORY](docs/INVENTORY.md) owns the document list, controls and immutable assets/options. The [tile-mask bank](tests/Research/tile-mask-exit-sheet/README.md) is **1/1 document / 2/2 controls**; retain every earlier bank and direct/curved decoration boundary. |
+| Additional complete documents | **Twenty-seven authored documents** (nineteen CC0, eight MIT) and **one sourced W3C decoration document**, exact on both platforms and separate from both cohorts. [INVENTORY](docs/INVENTORY.md) owns the document list, controls and immutable assets/options. The [tile-mask bank](tests/Research/tile-mask-exit-sheet/README.md) is **1/1 document / 2/2 controls**; retain every earlier bank and direct/curved decoration boundary. |
 | Shared geometry, paint and scope dependencies | Fractional use widths and symbol frames, nonuniform curves/affine oval strokes, non-scaling conics, composed cubic clips, custom mask regions/container opacity, inherited symbol strokes, cubic-pair clip unions, normalized mask content, tile-local clips and axis/affine ancestry at nested viewports are qualified. Reuse [geometry/scope evidence](docs/INVENTORY.md), [existing map witnesses](artifacts/shared-stroke-pattern-maps-20261015/existing-map-witnesses.json), [tile-content qualification](artifacts/maintenance-review-20261012/pattern-content-qualified-results.json) and [shared-map qualification](artifacts/maintenance-review-20261012/shared-maps-qualified-results.json). These are available dependencies, not blockers to repeat. |
+| T1 instance/paint document | The unchanged [instance/paint sheet](tests/Research/instance-paint-exit-sheet/README.md) is **1/1 complete document / 4/4 exact controls** on both platforms. Forward definition/font discovery, masked path-resource instances and linear/radial/pattern/constant/empty text paints are qualified with focused boundary and material ownership protection. Reuse the [receipt](artifacts/maintenance-review-20261012/text-paints-qualified-results.json). |
 | Filters and font infrastructure | Preserve [filter-region results](tests/Research/filter-regions/manifest.json) **26/26**, [colored-effects bounds/restoration](tests/Research/colored-effects-markers/README.md), [affine effect qualification](artifacts/maintenance-review-20261012/affine-filters-qualified-results.json), intended-font/metrics proof, catalog conformance and the implemented [FontProbe host](tools/Lokad.Svg.FontProbe/README.md) with six transport/input regressions. Private deployment validation remains required. |
 | API/resource/package contracts | Preserve bounded preparation/raster/encoding, size/work denial, cancellation/retry, partial cleanup, immutable borrowed bytes, single-use prepared ownership and output integrity. Existing [API contracts](docs/API_CONTRACT.md), package and installed-consumer protections remain required. |
 
-The latest complete local [qualification](artifacts/maintenance-review-20261012/path-scopes-qualified-results.json)
-is **7,988 tests/platform**, normal incremental Release build plus full tests in
-**77.6s Windows / 262.6s Linux**. This correction remains local for the next
-substantive text-paint push; its hosted CI is pending. The [published definition/font
-revision](artifacts/maintenance-review-20261012/definition-font-qualified-results.json)
-has terminal green CI, package and installed-consumer checks. Reuse closed exact-
-revision audits without repolling; unchanged documentation does not reopen them.
-Completed work stays closed under the existing coverage/accounting policy.
+The latest complete local [qualification](artifacts/maintenance-review-20261012/text-paints-qualified-results.json)
+is **8,001 tests/platform**, normal incremental Release build plus full tests in
+**80.8s Windows / 256.1s Linux**. That receipt also owns exact-revision hosted
+CI, package and installed-consumer status for this substantive delivery. Inspect
+the new push once; reuse closed prior audits without repolling. Unchanged
+documentation and completed coverage/accounting work do not reopen qualification.
 
 Items 1–3 (G2–G7 and C1–C6c) are complete under the linked evidence.
-Their glyph-specific extensions belong to T1 and filtered-source extensions to
-E1–E3. They are available dependencies, not blockers to repeat. `inv-146` stays
-closed; preserve its correction and the current uncommitted rendering work.
+The frozen T1 instance/paint bank is also qualified. Its newly diagnosed dormant
+forward-paint boundary remains required under T1; filtered-source extensions remain
+in E1–E3. Preserve `inv-146` and every established exact result.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
 
 ## Ordered delivery checklist
 
-**Next three deliverables:** **T1 qualification → T2 composite flags → T3 private
-font requests.** Then finish E1–E4 and S17 in the order below. Bring a shared
-dependency forward only when it advances the next acceptance case. Do not make
+**Next three deliverables:** **T1 dormant forward-paint binding → T2 composite
+flags → T3 private font requests.** Then finish E1–E4 and S17 in the order below.
+Bring a shared dependency forward only when it advances the next acceptance case. Do not make
 an exhaustive G2 or shape × paint × instance grid a prerequisite.
 
-T1's [frozen bank](tests/Research/instance-paint-exit-sheet/manifest.json) has
-thirty-six healthy captures. The last full qualification remains **0/1 complete
-document / 2/4 exact controls**. The latest saved development probes show
-**1/1 document / 4/4 controls exact on both platforms**
-([Windows](artifacts/instance-paint-exits-20261016/candidate-windows.json),
-[Linux](artifacts/instance-paint-exits-20261016/candidate-linux.json)). These are
-candidate results, not qualification of the final uncommitted tree. Finish the
-focused regressions and complete checks before promoting the remaining manifest
-outcomes or completed-document count. The historical paint rejection is no longer
-evidence of a live rendering gate; the unchanged references remain authoritative.
+The frozen instance/paint bank is **1/1 complete document / 4/4 exact controls**.
+A separate [diagnostic](tests/Research/instance-paint-exit-sheet/diagnostics/dormant-forward-paint.svg)
+exposes eager binding of a root-inherited forward paint on a dormant text-baseline
+path. It remains required under T1, has no qualified visual acceptance yet and adds
+no document/control count. Counts do not close an in-scope defect. No scope deferral.
 
 Each row owns one required exit. All visual exits require exact unchanged declared
 outputs on Windows/Linux, applicable negative/degenerate outcomes and affected
@@ -70,7 +64,7 @@ rows; it is measured once, without duplicate API or combination requirements.
 
 | Order / required exit | Missing behavior or evidence; dependencies | Concrete acceptance and completion condition |
 | --- | --- | --- |
-| [ ] T1 — text instances and paints (item 4 / G9) | Qualify the shared forward/object-box/linear/radial/pattern glyph-paint correction. Reuse qualified definition/font discovery, source replay, path/resource scopes and native paint maps; any demonstrated in-scope residual stays in T1. | The unchanged `instance-paint-sheet.svg`, `definition-labels.svg`, `text-paints.svg`, `instanced-path-resources.svg` and `text-paint-degenerates.svg` are exact. Focused constant/empty/missing-paint, paint inheritance and representative raw/prepared discovery/cleanup checks pass; full platform qualification closes the candidate correction. |
+| [ ] T1 — dormant forward-paint binding (item 4 / G2/G9) | A root-inherited forward paint URL still rejects while collecting a path used only by textPath. Reuse dormant source capture, deferred paint registries and the now-qualified glyph replay. | The unchanged [diagnostic](tests/Research/instance-paint-exit-sheet/diagnostics/dormant-forward-paint.svg), with the existing synthetic Example face, renders exactly like its definition-order-equivalent input. Verify unused dormant paths do not demand paint and live uses retain their actual paint, categorized missing outcomes and cleanup; preserve the exact whole bank. |
 | [ ] T2 — composite flags (item 4 / G9) | OVERLAP_COMPOUND, SCALED_COMPONENT_OFFSET and UNSCALED_COMPONENT_OFFSET remain outside the [decoder's admitted flags](src/Lokad.Svg/Fonts/OpenTypeFont.cs). Reuse bounded composite decoding and fitting. | Public synthetic overlapping components and transformed nonzero offsets distinguish all three flags and match both native profiles exactly. Affected malformed/failure/ownership checks pass; retain parent-hint, USE_MY_METRICS and nested-accent results. No general VM grid. |
 | [ ] T3 — private requests (item 4 / G9) | End-to-end deployment evidence remains missing; host/catalog and public conformance are implemented. Use the [authorized private workflow](#authorized-private-font-testing), with T1/T2 fixes only if a request needs them. | Freeze one regular, bold, italic and fallback request against the unchanged deployed manifest. Retain four sanitized selection/metrics/pixel outcomes; convert in-scope defects into public reproductions and resolve them. Private success cannot replace public acceptance. |
 | [ ] E1 — non-solid affine sources (item 5 / G8) | Linear/radial, pattern and supplied-font affine source maps, with source clip/nested resource scope. Reuse qualified solid affine capture, shared paint maps, C1–C6c and T1. | Exact linear/radial-painted, patterned and supplied-font affine-source witnesses including source clip/nested scope. Reuse exact panels in the [effects bank](tests/Research/effects-marker-sheet/README.md); add only uncovered independent cases. Preserve native origins/nearest offsets. |
@@ -140,7 +134,7 @@ and filtered/marker sources (E1–E4) remain required here.
 All declared C exits are complete. This index replaces their historical
 implementation narratives; retain the referenced independent cases and useful
 resource regressions. The glyph-mask instance extension is also exact in the
-qualified path control; finish its whole-document qualification under T1.
+qualified path control and complete T1 document.
 
 | Completed dependency | Existing acceptance evidence |
 | --- | --- |
@@ -178,7 +172,7 @@ tangents, method align/spacing exact, curved/transformed sources and measured
 out-of-range/zero-length outcomes. Qualified fitting, decorations, positioned
 spans, dashed/non-scaling/stroke-before-fill/path strokes and metrics stay closed.
 
-T1–T3 in the ordered checklist are the only remaining G9 exits. The
+The T1 bank is qualified; its retained follow-up plus T2/T3 remain in the ordered checklist. The
 [resource](tests/Research/glyph-resource-exit-sheet/README.md) and
 [text-map](tests/Research/text-map-exit-sheet/README.md) documents stay complete.
 Preserve original masked inputs, source order, endpoint continuation and
@@ -274,7 +268,7 @@ open-ended representativeness quota delays this release.
   failure/publication and cleanup in [PublicContractTests](tests/Lokad.Svg.Tests/PublicContractTests.cs)
   and [PngEncoderTests](tests/Lokad.Svg.Tests/PngEncoderTests.cs).
 - **Routine incremental Release build plus complete tests must stay below ten
-  minutes per platform.** The qualified 77.6s/262.6s checkpoint above meets this.
+  minutes per platform.** The qualified 80.8s/256.1s checkpoint above meets this.
   Include normal build/startup; avoid forced compiler shutdown. Measure before/
   after only when routine cost materially changes. Remove redundant API work if
   needed while preserving distinct semantics. Browser captures, optional benchmarks

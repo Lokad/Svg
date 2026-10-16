@@ -134,7 +134,7 @@ internal sealed class SvgRetainedTextSource
         SvgSceneBuilder parent = state.Scene;
         SvgSceneBuilder? previous = state.DefinitionReplayScene;
         bool previousDirect = state.DirectTextReplay;
-        int previousNodes = state.NodeCount, previousCharacters = state.TextCharacterCount, previousPaths = state.PendingTextPaths.Count;
+        int previousNodes = state.NodeCount, previousCharacters = state.TextCharacterCount, previousPaths = state.PendingTextRuns.Count;
         int previousClips = state.PendingGroupClips.Count, previousMasks = state.PendingGroupMasks.Count;
         using SvgSceneBuilder staging = new(state.Budget, work, token);
         SvgSceneStorage? storage = null;
@@ -163,11 +163,11 @@ internal sealed class SvgRetainedTextSource
         {
             state.DefinitionReplayScene = previous; state.DirectTextReplay = previousDirect;
             state.NodeCount = previousNodes; state.TextCharacterCount = previousCharacters;
-            while (state.PendingTextPaths.Count > previousPaths)
+            while (state.PendingTextRuns.Count > previousPaths)
             {
-                SvgPendingTextPath path = state.PendingTextPaths[^1];
+                SvgPendingTextRun path = state.PendingTextRuns[^1];
                 path.Run?.Dispose(); path.Continuation?.Dispose(); path.Owner.Dispose();
-                state.PendingTextPaths.RemoveLast();
+                state.PendingTextRuns.RemoveLast();
             }
             while (state.PendingGroupClips.Count > previousClips) state.PendingGroupClips.RemoveLast();
             while (state.PendingGroupMasks.Count > previousMasks) state.PendingGroupMasks.RemoveLast();

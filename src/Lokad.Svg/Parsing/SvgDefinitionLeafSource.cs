@@ -25,8 +25,6 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
     private readonly CancellationToken _token;
     private int _attribute = -1;
 
-    /// <summary>Borrows the source ancestor map for local geometry consumers; authored leaf transforms remain attributes.</summary>
-    internal SvgAffineTransform InheritedTransform { get; private init; }
     internal SvgRenderLimits? ImageLimits { get; private set; }
     internal SvgViewportLengthBases ImageBases { get; private set; }
 
@@ -80,7 +78,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
             }
             reader.MoveToElement();
             SvgInheritedStrokeStyle constructed = context.InheritedStroke.ResolveChild(authored);
-            SvgDefinitionLeafSource source = new(element, attributes, authored, constructed, context.NamedColors, context.WorkCounter, context.CancellationToken, Copy(context.InheritedFillRule), unconstructed, context.InheritedPresentation.Paint.CurrentColor, context.InheritedPresentation.PaintServerFill, context.InheritedPresentation.PaintOrder) { InheritedTransform = context.InheritedPresentation.Transform };
+            SvgDefinitionLeafSource source = new(element, attributes, authored, constructed, context.NamedColors, context.WorkCounter, context.CancellationToken, Copy(context.InheritedFillRule), unconstructed, context.InheritedPresentation.Paint.CurrentColor, context.InheritedPresentation.PaintServerFill, context.InheritedPresentation.PaintOrder);
             state.DefinitionReservations.Add(reservation);
             return source;
         }

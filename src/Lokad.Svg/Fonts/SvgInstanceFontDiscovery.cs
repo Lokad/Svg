@@ -113,7 +113,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
         return _state.Strings.Copy(href.AsSpan(1));
     }
 
-    internal void AddRequests(Action<SvgFontFaceRequest> addFace, Action<string> addStroke)
+    internal void AddRequests(Action<SvgFontFaceRequest> addFace, Action<string> addPaint)
     {
         using BudgetedParserList<Visit> stack = new(_state.Budget, SvgMemoryCategory.Parser, _work, _token);
         using BudgetedParserDictionary<int, bool> active = new(_state.Budget, SvgMemoryCategory.Parser, 64);
@@ -146,7 +146,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                 SvgRetainedTextSource source = node.Source ?? throw new InvalidOperationException("A font source requires retained tokens.");
                 using SvgRetainedTextSource.Reader reader = source.OpenReader(0, _work, _token); reader.MoveToContent();
                 stack[^1] = visit with { Kind = VisitKind.Exit };
-                if (node.Kind == Kind.Text) { AddText(reader, visit.Context, addFace, addStroke); continue; }
+                if (node.Kind == Kind.Text) { AddText(reader, visit.Context, addFace, addPaint); continue; }
                 InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), _work, _token, true);
                 SvgComputedStyle computed = SvgComputedStyle.Resolve(reader, inline, reader.StyleSheet);
                 SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inline, computed, reader.StyleSheet,
@@ -161,7 +161,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
             }
         }
 
-        void AddText(XmlReader reader, SvgInheritedContainer inherited, Action<SvgFontFaceRequest> addFace, Action<string> addStroke)
+        void AddText(XmlReader reader, SvgInheritedContainer inherited, Action<SvgFontFaceRequest> addFace, Action<string> addPaint)
         {
             SvgPaintableElementContext context = new(inherited.Presentation, inherited.TextStyle, inherited.Stroke,
                 reader is SvgRetainedTextSource.Reader source ? source.StyleSheet : default, SvgRootParser.CssNamedColors, _work, _token, 1, inherited.FillRule);
@@ -186,10 +186,10 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                 {
                     _work.Consume(_token);
                     if (run.PaintSpans.Items.Length == 0) painted |= paint.GlyphPaint.IsPainted;
-                    foreach (SvgTextPaintSpan span in run.PaintSpans.Items) { _work.Consume(_token); painted |= span.Paint.IsPainted; ObserveStroke(span.Paint); }
+                    foreach (SvgTextPaintSpan span in run.PaintSpans.Items) { _work.Consume(_token); painted |= span.Paint.IsPainted; ObservePaint(span.Paint); }
                 }
                 if (!painted) return;
-                ObserveStroke(paint.GlyphPaint);
+                ObservePaint(paint.GlyphPaint);
                 foreach (SvgExtractedTextRun run in runs.AsSpan())
                 {
                     _work.Consume(_token);
@@ -200,9 +200,10 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
             }
             finally { foreach (SvgExtractedTextRun run in runs.AsSpan()) run.Dispose(); }
 
-            void ObserveStroke(SvgTextGlyphPaint glyph)
+            void ObservePaint(SvgTextGlyphPaint glyph)
             {
-                if (glyph.HasStroke && glyph.Stroke?.Style.Stroke is {} stroke && SvgLocalUrl.TryParseId(stroke, out string id)) addStroke(id);
+                if (glyph.FillServer is {} fill && SvgLocalUrl.TryParseId(fill, out string fillId)) addPaint(fillId);
+                if (glyph.HasStroke && glyph.Stroke?.Style.Stroke is {} stroke && SvgLocalUrl.TryParseId(stroke, out string id)) addPaint(id);
             }
         }
     }

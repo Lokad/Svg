@@ -3,10 +3,10 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Retains a shaped path run or owned continuation layout at its original paint slot until local definitions are available.</summary>
+/// <summary>Retains a shaped direct/path run or owned continuation layout at its original paint slot until local paint/path definitions are available.</summary>
 /// <remarks>Exactly one input is present. The document owns both alternatives and their aggregate allowance;
 /// fonts, viewport clips and the originating builder remain borrowed. Resolution and cleanup are parser-thread confined.</remarks>
-internal readonly record struct SvgPendingTextPath(SvgTextRun? Run, SvgTextPathReference Reference, SvgAffineTransform Placement, SvgColor Color, int CommandIndex, RenderBudget.BudgetReservation Owner, SvgSceneBuilder Scene)
+internal readonly record struct SvgPendingTextRun(SvgTextRun? Run, SvgTextPathReference? Reference, SvgAffineTransform Placement, SvgColor Color, int CommandIndex, RenderBudget.BudgetReservation Owner, SvgSceneBuilder Scene)
 {
     internal SvgPendingTextLayout? Continuation { get; init; }
     /// <summary>Borrows the originating viewport clip chain until deferred glyph command emission.</summary>
@@ -37,7 +37,9 @@ internal static class SvgTextPathLayout
         if (source.LocalName != "path") throw new SvgException(SvgErrorCode.UnresolvedResource, "The text-path reference must identify a path.");
         double? pathLength = SvgStrokeStyleSyntax.ParsePathLength(source.GetAttribute("pathLength"));
         if (pathLength == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Zero calibrated text-path lengths are not implemented.");
-        SvgAffineTransform map = source.InheritedTransform.ComposeChecked(SvgGeometrySyntax.ParseTransform(source.GetAttribute("transform"), work, token));
+        // A referenced path's own transform supplements the text coordinate system;
+        // definition ancestors do not move that local baseline (SVG 2 textPath).
+        SvgAffineTransform map = SvgGeometrySyntax.ParseTransform(source.GetAttribute("transform"), work, token);
         string data = source.GetAttribute("d") ?? string.Empty;
         using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Parser, work, token);
         (int prefixLength, _) = SvgPathDataParser.ReadRenderablePrefix(data, maximumCommands, work, token);
@@ -55,115 +57,121 @@ internal static class SvgTextPathLayout
     /// <summary>Resolves only the appended source-local suffix; earlier document runs remain borrowed and untouched.</summary>
     internal static void Resolve(SvgDocumentState state, int first, SvgRenderLimits limits, ParserWorkCounter work, CancellationToken token)
     {
-        for (int index = state.PendingTextPaths.Count - 1; index >= first; index--)
+        for (int index = state.PendingTextRuns.Count - 1; index >= first; index--)
         {
             work.Consume(token);
-            SvgPendingTextPath pending = state.PendingTextPaths[index];
-            if (!state.Definitions.TryGetValue(pending.Reference.PathId, out SvgDefinition definition) || definition.LeafSource is not {} source)
-                throw new SvgException(SvgErrorCode.UnresolvedResource, "The local text-path reference was not found.");
-            using SvgMeasuredTextPath measured = ReadMeasured(source, limits.MaximumPathCommands, state.Budget, work, token);
-            SvgTextPathBaseline baseline = measured.Baseline;
-            double offset = pending.Reference.IsPercentage ? baseline.Length * (pending.Reference.StartOffset / 100) : pending.Reference.StartOffset * baseline.OffsetScale;
-            if (!double.IsFinite(offset)) throw new SvgException(SvgErrorCode.LimitExceeded, "The resolved text-path offset is not finite.");
+            SvgPendingTextRun pending = state.PendingTextRuns[index];
             int tail = state.Scene.CommandCount;
             SvgTextRun run;
-            if (pending.Continuation is {} continuation)
+            if (pending.Reference is not {} reference)
             {
-                SvgDevicePoint origin = measured.EndPoint;
-                if (measured.IsClosed && baseline.Length > 0)
-                {
-                    double wrapped = (offset % baseline.Length + baseline.Length) % baseline.Length;
-                    origin = measured.GlyphMap(wrapped, 0, 0, work, token).Apply(0, 0);
-                }
-                SvgExtractedTextRun raw = continuation.Source;
-                SvgTextStyle style = continuation.Style with { X = origin.X, Y = origin.Y };
-                run = SvgTextRunBuilder.Create(style, raw.Layout.Value, raw.Layout.LetterSpacingSpans, raw.Layout.PositionAdjustments,
-                    raw.PaintSpans.Items, raw.FontSpans.Items, continuation.Paint, continuation.Metrics, continuation.Snapshot, state.Budget, work, token);
-                state.PendingTextPaths[index] = pending with { Run = run };
-                continuation.Dispose();
-                SvgTextDecorationRenderer.Emit(run, run.PaintFragments, pending.Placement, [], pending.ViewportClip, state, pending.Color, false, limits.MaximumPathCommands, state.Budget, work, token);
-                SvgTextGlyphPainter.Emit(run, pending.Placement, [], pending.ViewportClip, pending.Color, state, limits.MaximumPathCommands, state.Budget, work, token);
-                SvgTextDecorationRenderer.Emit(run, run.PaintFragments, pending.Placement, [], pending.ViewportClip, state, pending.Color, true, limits.MaximumPathCommands, state.Budget, work, token);
+                run = pending.Run ?? throw new InvalidOperationException("A queued direct paint requires a shaped run.");
+                SvgTextGlyphPainter.EmitDirect(run, pending.Placement, pending.ViewportClip, pending.Color, state, limits.MaximumPathCommands, state.Budget, work, token);
             }
             else
             {
-                run = pending.Run ?? throw new InvalidOperationException("A queued path requires a shaped run or continuation layout.");
-                using BudgetedParserList<SvgPlacedTextGlyph> placements = new(state.Budget, SvgMemoryCategory.Geometry, work, token);
-                int glyphIndex = 0;
-                foreach (SvgPositionedGlyph glyph in run.Glyphs)
+                if (!state.Definitions.TryGetValue(reference.PathId, out SvgDefinition definition) || definition.LeafSource is not {} source)
+                    throw new SvgException(SvgErrorCode.UnresolvedResource, "The local text-path reference was not found.");
+                using SvgMeasuredTextPath measured = ReadMeasured(source, limits.MaximumPathCommands, state.Budget, work, token);
+                SvgTextPathBaseline baseline = measured.Baseline;
+                double offset = reference.IsPercentage ? baseline.Length * (reference.StartOffset / 100) : reference.StartOffset * baseline.OffsetScale;
+                if (!double.IsFinite(offset)) throw new SvgException(SvgErrorCode.LimitExceeded, "The resolved text-path offset is not finite.");
+                if (pending.Continuation is {} continuation)
                 {
-                    work.Consume(token);
-                    SvgGlyphFontStyle glyphFont = run.GetGlyphFont(glyphIndex);
-                    double rotation = run.GetGlyphRotation(glyphIndex);
-                    SvgTextGlyphPaint paint = run.GetGlyphPaint(glyphIndex++, pending.Color);
-                    if (!paint.IsPainted) { placements.Add(default); continue; }
-                    double distance = offset + glyph.X;
-                    double midpoint = distance + glyph.Advance / 2;
-                    if (!measured.IsHorizontal || rotation != 0)
-                        // Native SVG adds the device character offset and inline
-                        // half-width before scalar division and the path offset.
-                        midpoint = ((float)(glyph.X * state.OutputTextScale) + (float)(glyph.Advance * state.OutputTextScale) / 2) / (float)state.OutputTextScale + (float)offset;
-                    if (!double.IsFinite(distance) || !double.IsFinite(midpoint)) throw new SvgException(SvgErrorCode.LimitExceeded, "Text-path placement exceeds the supported range.");
-                    if (baseline.Length == 0 || midpoint < 0 || midpoint > baseline.Length) { placements.Add(default); continue; }
-                    bool horizontalPlacement = measured.IsHorizontal && rotation == 0;
-                    SvgPositionedGlyph placed = horizontalPlacement
-                        ? glyph with { X = baseline.X + distance, Y = baseline.Y + glyph.Y }
-                        : glyph with { X = 0, Y = 0 };
-                    SvgAffineTransform glyphMap = horizontalPlacement ? SvgAffineTransform.Identity
-                        : measured.GlyphMap(midpoint, glyph.Advance / 2, glyph.Y, rotation, work, token);
-                    SvgTextDecorationPlacement decoration = default;
-                    if (paint.Decoration is not null)
+                    SvgDevicePoint origin = measured.EndPoint;
+                    if (measured.IsClosed && baseline.Length > 0)
                     {
-                        double stretch = run.GlyphStretch;
-                        if (glyphMap.IsTranslation)
-                        {
-                            SvgDevicePoint origin = glyphMap.Apply(placed.X, placed.Y);
-                            decoration = new(origin, SvgAffineTransform.FromScaleOffset(stretch, 1, origin.X - stretch * origin.X, 0));
-                        }
-                        else
-                        {
-                            double scale = state.OutputTextScale;
-                            SvgDevicePoint center = glyphMap.Apply(glyph.Advance / 2, -glyph.Y);
-                            float cx = (float)center.X * (float)scale, cy = (float)center.Y * (float)scale;
-                            float size = SvgGlyphDeviceMetrics.GetEffectiveFontSize(glyphFont.FontSize * scale);
-                            float ascent = OperatingSystem.IsWindows()
-                                ? size * glyphFont.Font.Metrics.LineMetrics.WindowsAscender / glyphFont.Font.UnitsPerEm
-                                : glyphFont.Font.Metrics.LineMetrics.Ascender * (size / glyphFont.Font.UnitsPerEm);
-                            ascent = MathF.Floor(ascent + .5f);
-                            // Decoration rectangles use the physical fragment origin
-                            // (truncated layout units), separately from glyph fitting.
-                            SvgDevicePoint origin = new(MathF.Truncate(cx * 64) / (64 * scale), (MathF.Truncate((cy - ascent) * 64) / 64 + ascent) / scale);
-                            SvgAffineTransform map = glyphMap.ComposeChecked(SvgAffineTransform.FromScale(stretch, 1))
-                                .ComposeChecked(SvgAffineTransform.FromTranslation(-cx / scale, -cy / scale));
-                            decoration = new(origin, map);
-                        }
-                        decoration = decoration with { Map = pending.Placement.ComposeChecked(decoration.Map) };
+                        double wrapped = (offset % baseline.Length + baseline.Length) % baseline.Length;
+                        origin = measured.GlyphMap(wrapped, 0, 0, work, token).Apply(0, 0);
                     }
-                    // A zero tangent angle uses the native horizontal strike, even on a curved baseline.
-                    if (!horizontalPlacement && glyphMap.A == 1 && glyphMap.B == 0 && glyphMap.C == 0 && glyphMap.D == 1)
-                    {
-                        placed = placed with { X = glyphMap.E, Y = glyphMap.F };
-                        glyphMap = SvgAffineTransform.Identity;
-                    }
-                    else if (!horizontalPlacement && (OperatingSystem.IsWindows() || OperatingSystem.IsLinux()))
-                    {
-                        SvgGlyphDeviceMetrics metrics = new(state.OutputTextScale, OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, true);
-                        glyphMap = metrics.PlaceTextPathPaint(glyphMap, glyph.Advance / 2, glyph.Y, glyphFont.FontSize, glyphFont.Font.Metrics);
-                    }
-                    if (run.GlyphStretch != 1)
-                    {
-                        SvgAffineTransform stretch = SvgAffineTransform.FromScale(run.GlyphStretch, 1);
-                        glyphMap = (glyphMap == SvgAffineTransform.Identity ? SvgAffineTransform.FromTranslation(placed.X, placed.Y) : glyphMap).ComposeChecked(stretch);
-                        placed = placed with { X = 0, Y = 0 };
-                    }
-                    if (pending.Placement != SvgAffineTransform.Identity)
-                    {
-                        if (glyphMap == SvgAffineTransform.Identity) placed = placed.Translate(pending.Placement);
-                        else glyphMap = pending.Placement.ComposeChecked(glyphMap);
-                    }
-                    placements.Add(new(placed, glyphMap, true) { Decoration = decoration });
+                    SvgExtractedTextRun raw = continuation.Source;
+                    SvgTextStyle style = continuation.Style with { X = origin.X, Y = origin.Y };
+                    run = SvgTextRunBuilder.Create(style, raw.Layout.Value, raw.Layout.LetterSpacingSpans, raw.Layout.PositionAdjustments,
+                        raw.PaintSpans.Items, raw.FontSpans.Items, continuation.Paint, continuation.Metrics, continuation.Snapshot, state.Budget, work, token);
+                    state.PendingTextRuns[index] = pending with { Run = run };
+                    continuation.Dispose();
+                    SvgTextGlyphPainter.EmitDirect(run, pending.Placement, pending.ViewportClip, pending.Color, state, limits.MaximumPathCommands, state.Budget, work, token);
                 }
-                SvgTextGlyphPainter.Emit(run, pending.Placement, placements.AsSpan(), pending.ViewportClip, pending.Color, state, limits.MaximumPathCommands, state.Budget, work, token);
+                else
+                {
+                    run = pending.Run ?? throw new InvalidOperationException("A queued path requires a shaped run or continuation layout.");
+                    using BudgetedParserList<SvgPlacedTextGlyph> placements = new(state.Budget, SvgMemoryCategory.Geometry, work, token);
+                    int glyphIndex = 0;
+                    foreach (SvgPositionedGlyph glyph in run.Glyphs)
+                    {
+                        work.Consume(token);
+                        SvgGlyphFontStyle glyphFont = run.GetGlyphFont(glyphIndex);
+                        double rotation = run.GetGlyphRotation(glyphIndex);
+                        SvgTextGlyphPaint paint = run.GetGlyphPaint(glyphIndex++, pending.Color);
+                        if (!paint.IsPainted) { placements.Add(default); continue; }
+                        double distance = offset + glyph.X;
+                        double midpoint = distance + glyph.Advance / 2;
+                        if (!measured.IsHorizontal || rotation != 0)
+                            // Native SVG adds the device character offset and inline
+                            // half-width before scalar division and the path offset.
+                            midpoint = ((float)(glyph.X * state.OutputTextScale) + (float)(glyph.Advance * state.OutputTextScale) / 2) / (float)state.OutputTextScale + (float)offset;
+                        if (!double.IsFinite(distance) || !double.IsFinite(midpoint)) throw new SvgException(SvgErrorCode.LimitExceeded, "Text-path placement exceeds the supported range.");
+                        if (baseline.Length == 0 || midpoint < 0 || midpoint > baseline.Length) { placements.Add(default); continue; }
+                        bool horizontalPlacement = measured.IsHorizontal && rotation == 0;
+                        SvgPositionedGlyph placed = horizontalPlacement
+                            ? glyph with { X = baseline.X + distance, Y = baseline.Y + glyph.Y }
+                            : glyph with { X = 0, Y = 0 };
+                        SvgAffineTransform glyphMap = horizontalPlacement ? SvgAffineTransform.Identity
+                            : measured.GlyphMap(midpoint, glyph.Advance / 2, glyph.Y, rotation, work, token);
+                        SvgTextDecorationPlacement decoration = default;
+                        if (paint.Decoration is not null)
+                        {
+                            double stretch = run.GlyphStretch;
+                            if (glyphMap.IsTranslation)
+                            {
+                                SvgDevicePoint origin = glyphMap.Apply(placed.X, placed.Y);
+                                decoration = new(origin, SvgAffineTransform.FromScaleOffset(stretch, 1, origin.X - stretch * origin.X, 0));
+                            }
+                            else
+                            {
+                                double scale = state.OutputTextScale;
+                                SvgDevicePoint center = glyphMap.Apply(glyph.Advance / 2, -glyph.Y);
+                                float cx = (float)center.X * (float)scale, cy = (float)center.Y * (float)scale;
+                                float size = SvgGlyphDeviceMetrics.GetEffectiveFontSize(glyphFont.FontSize * scale);
+                                float ascent = OperatingSystem.IsWindows()
+                                    ? size * glyphFont.Font.Metrics.LineMetrics.WindowsAscender / glyphFont.Font.UnitsPerEm
+                                    : glyphFont.Font.Metrics.LineMetrics.Ascender * (size / glyphFont.Font.UnitsPerEm);
+                                ascent = MathF.Floor(ascent + .5f);
+                                // Decoration rectangles use the physical fragment origin
+                                // (truncated layout units), separately from glyph fitting.
+                                SvgDevicePoint origin = new(MathF.Truncate(cx * 64) / (64 * scale), (MathF.Truncate((cy - ascent) * 64) / 64 + ascent) / scale);
+                                SvgAffineTransform map = glyphMap.ComposeChecked(SvgAffineTransform.FromScale(stretch, 1))
+                                    .ComposeChecked(SvgAffineTransform.FromTranslation(-cx / scale, -cy / scale));
+                                decoration = new(origin, map);
+                            }
+                            decoration = decoration with { Map = pending.Placement.ComposeChecked(decoration.Map) };
+                        }
+                        // A zero tangent angle uses the native horizontal strike, even on a curved baseline.
+                        if (!horizontalPlacement && glyphMap.A == 1 && glyphMap.B == 0 && glyphMap.C == 0 && glyphMap.D == 1)
+                        {
+                            placed = placed with { X = glyphMap.E, Y = glyphMap.F };
+                            glyphMap = SvgAffineTransform.Identity;
+                        }
+                        else if (!horizontalPlacement && (OperatingSystem.IsWindows() || OperatingSystem.IsLinux()))
+                        {
+                            SvgGlyphDeviceMetrics metrics = new(state.OutputTextScale, OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, true);
+                            glyphMap = metrics.PlaceTextPathPaint(glyphMap, glyph.Advance / 2, glyph.Y, glyphFont.FontSize, glyphFont.Font.Metrics);
+                        }
+                        if (run.GlyphStretch != 1)
+                        {
+                            SvgAffineTransform stretch = SvgAffineTransform.FromScale(run.GlyphStretch, 1);
+                            glyphMap = (glyphMap == SvgAffineTransform.Identity ? SvgAffineTransform.FromTranslation(placed.X, placed.Y) : glyphMap).ComposeChecked(stretch);
+                            placed = placed with { X = 0, Y = 0 };
+                        }
+                        if (pending.Placement != SvgAffineTransform.Identity)
+                        {
+                            if (glyphMap == SvgAffineTransform.Identity) placed = placed.Translate(pending.Placement);
+                            else glyphMap = pending.Placement.ComposeChecked(glyphMap);
+                        }
+                        placements.Add(new(placed, glyphMap, true) { Decoration = decoration });
+                    }
+                    SvgTextGlyphPainter.Emit(run, pending.Placement, placements.AsSpan(), pending.ViewportClip, pending.Color, state, limits.MaximumPathCommands, state.Budget, work, token);
+                }
             }
             int inserted = state.Scene.ResolvePaintPlaceholder(pending.CommandIndex, tail);
             SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.CommandIndex + 1, inserted, true, work, token);

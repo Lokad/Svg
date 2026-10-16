@@ -139,6 +139,31 @@ internal struct SvgShaderCoordinates
         }
     }
 
+    /// <summary>Evaluates the admitted two-circle fallback after the caller maps into gradient coordinates.</summary>
+    /// <remarks>Allocation-free scalar arithmetic shared by geometry and glyph paints. The caller charges
+    /// sampling and observes cancellation. Native float dispatch stays with each paint consumer.</remarks>
+    internal static double EvaluateRadial(SvgDevicePoint ray, SvgDevicePoint offset, double radius, double focalRadius)
+    {
+        if (offset.X == 0 && offset.Y == 0)
+            return (Math.Sqrt(ray.X * ray.X + ray.Y * ray.Y) - focalRadius) / (radius - focalRadius);
+        if (ray.X == 0 && ray.Y == 0) return 0;
+        double dot = ray.X * offset.X + ray.Y * offset.Y;
+        double raySquared = ray.X * ray.X + ray.Y * ray.Y;
+        if (focalRadius == 0)
+        {
+            double discriminant = dot * dot + raySquared * (radius * radius - offset.X * offset.X - offset.Y * offset.Y);
+            if (discriminant < 0) discriminant = 0;
+            return raySquared / (dot + Math.Sqrt(discriminant));
+        }
+        double span = radius - focalRadius;
+        double linear = dot + focalRadius * span;
+        double quadratic = offset.X * offset.X + offset.Y * offset.Y - span * span;
+        double constant = raySquared - focalRadius * focalRadius;
+        double coneDiscriminant = linear * linear - quadratic * constant;
+        if (coneDiscriminant < 0) coneDiscriminant = 0;
+        return (linear - Math.Sqrt(coneDiscriminant)) / quadratic;
+    }
+
     internal bool TryLinear(int x, int y, SvgCpuBitmapOrigin origin, out double position)
     {
         position = 0;

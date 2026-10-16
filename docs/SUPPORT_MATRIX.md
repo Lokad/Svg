@@ -2013,3 +2013,23 @@ asset/options/default-limit evidence. This supersedes the direct stroked-decorat
 gate in historical sections. The frozen curved decorated-path control still
 rejects explicitly and remains required in PLAN item 1. Wider glyph maps,
 composite flags and private validation remain required in item 4; G9/S17 stay open.
+
+## Qualified text instance and paint exits (2026-10-16)
+
+The unchanged MIT [instance/paint document](../tests/Research/instance-paint-exit-sheet/README.md)
+is **1/1 complete / 4/4 exact controls** on Windows/Linux. Ordinary direct/path
+fill and stroke paints bind local linear/radial gradients and bounded vector
+patterns, including forward references and measured object-box/constant/empty
+outcomes. Supplied-font discovery validates referenced paints before acquisition;
+zero-width unused strokes acquire no missing face. Solid decorations retain their
+separate boundary.
+
+Shared native glyph coverage and paint maps preserve independent opacity,
+logical text bounds, source order and resource-local coordinates. Focused tests
+cover focal-circle sampling, inherited paint/span overrides, dormant-group masks,
+continuation cleanup and whole-document prepared retry. The
+[receipt](../artifacts/maintenance-review-20261012/text-paints-qualified-results.json)
+owns qualification of this bank. The retained dormant forward-paint diagnostic
+remains a required T1 follow-up; T2 composite flags, T3 private validation, E1–E4
+and S17 also remain required. Corporate **27/27 / 258/258**, selected **50/50**
+and all preceding exact results remain unchanged.

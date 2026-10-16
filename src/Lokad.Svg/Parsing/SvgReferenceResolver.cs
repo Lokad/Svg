@@ -1774,13 +1774,13 @@ internal static class SvgReferenceResolver
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(workCounter);
         if (insertedCount == 0) return;
-        for (int textIndex = 0; textIndex < state.PendingTextPaths.Count; textIndex++)
+        for (int textIndex = 0; textIndex < state.PendingTextRuns.Count; textIndex++)
         {
             workCounter.Consume(cancellationToken);
-            SvgPendingTextPath pending = state.PendingTextPaths[textIndex];
+            SvgPendingTextRun pending = state.PendingTextRuns[textIndex];
             if (!ReferenceEquals(pending.Scene, state.Scene)) continue;
             if (pending.CommandIndex > insertPosition || shiftStartsAtInsertion && pending.CommandIndex == insertPosition)
-                state.PendingTextPaths[textIndex] = pending with { CommandIndex = pending.CommandIndex + insertedCount };
+                state.PendingTextRuns[textIndex] = pending with { CommandIndex = pending.CommandIndex + insertedCount };
         }
         for (int groupIndex = 0; groupIndex < state.PendingGroupClips.Count; groupIndex++)
         {

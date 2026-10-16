@@ -922,7 +922,7 @@ internal sealed class SvgGlyphGeometry : IDisposable
 
     internal SvgGlyphRasterSource? Source { get; }
     internal SvgTextStrokePaint? StrokePaint { get; private set; }
-    internal SvgTextLinearStroke? StrokeShader { get; set; }
+    internal SvgTextShader? Shader { get; set; }
     internal double StrokeBoundsInflation { get; private set; }
 
     internal static SvgGlyphGeometry CreateStroke(SvgGlyphContourStorage contours, SvgTextStrokePaint paint,
@@ -1486,13 +1486,40 @@ internal sealed class SvgSceneBuilder : IDisposable
     /// <summary>Shares one immutable text shader across a fragment's glyphs under scene ownership.</summary>
     /// <remarks>Reserves aggregate metadata and stop storage before publication. The scene releases
     /// storage on failure/disposal; the value borrows no parser state and is safe for concurrent draws.</remarks>
-    internal SvgTextLinearStroke RetainTextLinearStroke(SvgLinearGradient gradient)
+    internal SvgTextShader RetainTextShader(SvgLinearGradient gradient)
     {
         RenderBudget.BudgetReservation reservation = _budget.Reserve(64L + Unsafe.SizeOf<SvgLinearGradient>(), SvgMemoryCategory.Scene);
         try
         {
-            SvgTextLinearStroke paint = new(gradient);
+            SvgTextLinearShader paint = new(gradient);
             ReserveGradientStopArray(gradient.Stops);
+            _paintReservations.Add(reservation);
+            return paint;
+        }
+        catch { reservation.Dispose(); throw; }
+    }
+
+    /// <summary>Retains a bound radial text paint with its immutable stop array under scene ownership.</summary>
+    internal SvgTextShader RetainTextShader(SvgRadialGradient gradient)
+    {
+        RenderBudget.BudgetReservation reservation = _budget.Reserve(SvgRadialGradient.RetainedStorageBytes, SvgMemoryCategory.Scene);
+        try
+        {
+            SvgTextRadialShader paint = new(gradient);
+            ReserveGradientStopArray(gradient.Stops);
+            _paintReservations.Add(reservation);
+            return paint;
+        }
+        catch { reservation.Dispose(); throw; }
+    }
+
+    /// <summary>Retains aggregate pattern metadata; vector content remains borrowed from the parent-owned tile.</summary>
+    internal SvgTextShader RetainTextShader(SvgPatternGeometry pattern)
+    {
+        RenderBudget.BudgetReservation reservation = _budget.Reserve(512, SvgMemoryCategory.Scene);
+        try
+        {
+            SvgTextPatternShader paint = new(pattern);
             _paintReservations.Add(reservation);
             return paint;
         }

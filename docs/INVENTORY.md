@@ -3661,3 +3661,19 @@ source/options, font programs, healthy native platform triples and intended-font
 proof are preserved. No new acceptance assets or references were added for the
 content correction. The [receipt](../artifacts/maintenance-review-20261012/pattern-content-qualified-results.json)
 owns full checks; remaining finite G6/G2–G9/S17 exits stay open in PLAN.md.
+
+## Complete retained instance/paint sheet (2026-10-16)
+
+The unchanged MIT [instance/paint sheet](../tests/Research/instance-paint-exit-sheet/README.md)
+is **1/1 complete document / 4/4 exact controls** on Windows/Linux. This is the
+twenty-seventh additional authored document (nineteen CC0, eight MIT), with one
+sourced W3C document counted separately. Corporate **27/27 / 258/258** and selected
+**50/50**, including whole `inv-146`, keep their original denominators.
+
+The original sources/options, public Noto face and intended-font proof, platform
+references and thirty-six healthy captures are unchanged. Shared discovery,
+resource replay and glyph-paint fixes close every panel and sibling; controls add
+no completed document. The [receipt](../artifacts/maintenance-review-20261012/text-paints-qualified-results.json)
+records full checks and preservation. The separately retained dormant forward-paint
+diagnostic is unqualified and adds no count. PLAN.md retains that T1 boundary,
+T2/T3, E1–E4 and S17.

@@ -12,14 +12,29 @@ internal readonly record struct SvgPlacedTextGlyph(SvgPositionedGlyph Position, 
 /// <summary>Retains the native fragment origin separately from its tangent map for rectangle paint precision.</summary>
 internal readonly record struct SvgTextDecorationPlacement(SvgDevicePoint Origin, SvgAffineTransform Map);
 
-/// <summary>Shares one scene-owned, source-bound linear text stroke without changing glyph coverage geometry.</summary>
-internal sealed record SvgTextLinearStroke(SvgLinearGradient Gradient);
+/// <summary>Borrows one immutable scene-owned text paint; variants contain exactly one bound paint source.</summary>
+/// <remarks>Implementations retain no parser state or font ownership. Scene construction reserves metadata
+/// and dominant stop/tile storage before publication. Raster replay borrows the value, charges sampling
+/// and observes cancellation; immutable variants support concurrent independent conversions.</remarks>
+internal abstract record SvgTextShader;
+internal sealed record SvgTextLinearShader(SvgLinearGradient Gradient) : SvgTextShader;
+internal sealed record SvgTextRadialShader(SvgRadialGradient Gradient) : SvgTextShader;
+internal sealed record SvgTextPatternShader(SvgPatternGeometry Pattern) : SvgTextShader;
 
 /// <summary>Replays fill and stroke in normalized fragment order using the existing platform glyph sources.</summary>
 /// <remarks>All inputs remain borrowed. Each emitted geometry transfers to the scene; temporary decoded contours
 /// observe the shared budget/work/token and release on every exit. Direct and path font-placement distinctions remain explicit.</remarks>
 internal static class SvgTextGlyphPainter
 {
+    /// <summary>Emits one direct run with the same ordered decorations, paints and borrowed clip as deferred replay.</summary>
+    internal static void EmitDirect(SvgTextRun run, SvgAffineTransform placement, SvgLeafMaskBinding? clip, SvgColor fallback,
+        SvgDocumentState state, int maximumCommands, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    {
+        SvgTextDecorationRenderer.Emit(run, run.PaintFragments, placement, [], clip, state, fallback, false, maximumCommands, budget, work, token);
+        Emit(run, placement, [], clip, fallback, state, maximumCommands, budget, work, token);
+        SvgTextDecorationRenderer.Emit(run, run.PaintFragments, placement, [], clip, state, fallback, true, maximumCommands, budget, work, token);
+    }
+
     internal static void Emit(SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> pathPlacements,
         SvgLeafMaskBinding? pathClip, SvgColor fallback, SvgDocumentState state, int maximumCommands, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
@@ -32,15 +47,10 @@ internal static class SvgTextGlyphPainter
         foreach (SvgTextPaintFragment fragment in run.PaintFragments)
         {
             work.Consume(token);
-            SvgTextLinearStroke? shader = null;
+            SvgTextShader? shader = null;
             SvgTextGlyphPaint fragmentPaint = run.GetGlyphPaint(fragment.Start, fallback);
-            if (fragmentPaint.HasStroke && fragmentPaint.Stroke is {} fragmentStroke && fragmentStroke.Style.Stroke is {} strokeValue && SvgLocalUrl.TryParseId(strokeValue, out string? paintId))
-            {
-                if (!state.Gradients.TryGetValue(paintId, out SvgLinearGradient gradient) || !gradient.IsUserSpace)
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined user-space linear gradients on text strokes are implemented.");
-                gradient = SvgGradientSyntax.BindLinearSourceMap(gradient, default, placement, state, work, token);
-                shader = state.Scene.RetainTextLinearStroke(gradient);
-            }
+            if (fragmentPaint.HasStroke && fragmentPaint.Stroke is {} fragmentStroke && fragmentStroke.Style.Stroke is {} strokeValue && SvgLocalUrl.TryParseId(strokeValue, out _))
+                shader = Bind(strokeValue, run, placement, pathPlacements, state, work, token);
             // A direct run shares each paint pass. Path text paints independently
             // placed glyphs, so an adjacent glyph's stroke follows the prior fill.
             int start = fragment.Start;
@@ -66,6 +76,8 @@ internal static class SvgTextGlyphPainter
             SvgColor fallback, int start, int end, SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
         {
             OpenTypeGlyphContourStorage? decoded = null;
+            string? fillServer = null;
+            SvgTextShader? shader = null;
             ushort decodedIndex = 0;
             SvgPreparedFont? decodedFont = null;
             try
@@ -85,6 +97,11 @@ internal static class SvgTextGlyphPainter
                     using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(font.Font, placed.Position, font.FontSize, placed.Map, decoded, budget, work, token);
                     SvgTextGlyphPaint paint = run.GetGlyphPaint(index, fallback);
                     if (!paint.HasFill) continue;
+                    if (paint.FillServer != fillServer)
+                    {
+                        fillServer = paint.FillServer;
+                        shader = fillServer is null ? null : Bind(fillServer, run, placement, paths, state, work, token);
+                    }
                     SvgPositionedGlyph position = placed.Position;
                     SvgAffineTransform map = placed.Map;
                     double screenScale = SvgGlyphDeviceMetrics.GetScreenScale(placement);
@@ -99,6 +116,7 @@ internal static class SvgTextGlyphPainter
                     }
                     if (size == 0) continue;
                     SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, paint.Color, font.Font, position, size, map, state.DefinitionReplayScene is null || state.DirectTextReplay ? null : state.OutputTextScale, budget);
+                    glyph.Shader = shader;
                     try
                     {
                         SvgGeometry geometry = paths.IsEmpty ? SvgPaintRecording.RecordGlyph(glyph, state, work, token) : SvgGeometry.FromGlyphContours(glyph);
@@ -112,7 +130,7 @@ internal static class SvgTextGlyphPainter
         }
 
         static void Stroke(SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> paths, SvgLeafMaskBinding? pathClip,
-            SvgTextLinearStroke? shader, SvgColor fallback, int start, int end, SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+            SvgTextShader? shader, SvgColor fallback, int start, int end, SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
         {
             for (int index = start; index < end; index++)
             {
@@ -125,7 +143,7 @@ internal static class SvgTextGlyphPainter
                 if (contours.Contours.Length == 0) continue;
                 stroke = stroke with { FontScale = state.OutputTextScale * SvgGlyphDeviceMetrics.GetScreenScale(placement) };
                 SvgGlyphGeometry glyph = SvgGlyphGeometry.CreateStroke(contours, stroke, font.Font, placed.Position, font.FontSize, placed.Map, budget);
-                glyph.StrokeShader = shader;
+                glyph.Shader = shader;
                 try
                 {
                     SvgGeometry geometry = paths.IsEmpty ? SvgPaintRecording.RecordGlyph(glyph, state, work, token) : SvgGeometry.FromGlyphContours(glyph);
@@ -134,6 +152,34 @@ internal static class SvgTextGlyphPainter
                 }
                 catch { glyph.Dispose(); throw; }
             }
+        }
+
+        static SvgTextShader Bind(string value, SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> paths,
+            SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+        {
+            if (!SvgLocalUrl.TryParseId(value, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local text paints are implemented.");
+            if (state.Gradients.TryGetValue(id, out SvgLinearGradient linear))
+            {
+                SvgRectangle box = linear.IsUserSpace || linear.IsEmpty ? default : SvgTextLayoutBounds.Measure(run, paths, placement, work, token);
+                return state.Scene.RetainTextShader(SvgGradientSyntax.BindLinearSourceMap(linear, box, placement, state, work, token));
+            }
+            if (state.RadialGradients.TryGetValue(id, out SvgRadialGradient radial))
+            {
+                SvgRectangle box = radial.IsUserSpace || radial.IsEmpty ? default : SvgTextLayoutBounds.Measure(run, paths, placement, work, token);
+                return state.Scene.RetainTextShader(SvgGradientSyntax.BindRadialSourceMap(radial, box, placement, work, token));
+            }
+            if (state.Patterns.TryGetValue(id, out SvgPatternTile tile))
+            {
+                tile = SvgPatternReferenceResolver.ForPlacement(id, tile, state.OutputMap.ComposeChecked(placement), state, work, token);
+                SvgRectangle box = tile.Coordinates is null ? default : SvgTextLayoutBounds.Measure(run, paths, placement, work, token);
+                SvgGeometry content = SvgPatternSyntax.LowerPatternFillGeometry(tile, box, true, 255, null, placement, null);
+                if (content.Kind != SvgGeometryKind.PatternFill)
+                    return state.Scene.RetainTextShader(new SvgLinearGradient(default, default, 0, 0, 1, 0, 0, 1, true, true, SvgGradientSpread.Pad, [], 1, 1, false));
+                SvgPatternGeometry pattern = content.Pattern;
+                pattern.BindObjectBox(new((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height)));
+                return state.Scene.RetainTextShader(pattern);
+            }
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "A text paint requires a defined local paint server.");
         }
 
         static SvgPlacedTextGlyph Place(SvgTextRun run, int index, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> paths)

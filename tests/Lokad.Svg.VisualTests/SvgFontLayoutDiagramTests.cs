@@ -363,6 +363,10 @@ public sealed class SvgFontLayoutDiagramTests
     public Task Instanced_path_resources_release_owners_on_denial_cancellation_and_retry()
         => ValidateRetainedTextOwners("instance-paint-exit-sheet", "instanced-path-resources.svg");
 
+    [Fact]
+    public Task Text_paint_sheet_releases_owners_on_denial_cancellation_and_prepared_retry()
+        => ValidateRetainedTextOwners("instance-paint-exit-sheet", "instance-paint-sheet.svg");
+
     private static async Task ValidateRetainedTextOwners(string bankName, string inputName)
     {
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", bankName);

@@ -295,6 +295,9 @@ internal static class SvgRenderedLeafParser
             }
             case "text":
             {
+                static bool HasServer(SvgTextGlyphPaint paint) => paint.FillServer is not null
+                    || paint.HasStroke && paint.Stroke?.Style.Stroke is {} stroke && SvgLocalUrl.TryParseId(stroke, out _);
+
                 // Fail fast with the conversion-level category: the operation is already rejected as unsupported, so a later font lookup must not surface UnresolvedResource instead.
                 if (state.HasUnsupportedContent) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
                 SvgResolvedDirectTextElement resolvedText = context.ResolveTextShape(reader);
@@ -334,12 +337,14 @@ internal static class SvgRenderedLeafParser
                         bool hasFill = extracted.PaintSpans.Items.Length == 0 && textPaint.GlyphPaint.HasFill;
                         bool hasStroke = extracted.PaintSpans.Items.Length == 0 && textPaint.GlyphPaint.HasStroke;
                         bool hasDecoration = extracted.PaintSpans.Items.Length == 0 && textPaint.GlyphPaint.Decoration is not null;
+                        bool hasServer = extracted.PaintSpans.Items.Length == 0 && HasServer(textPaint.GlyphPaint);
                         foreach (SvgTextPaintSpan span in extracted.PaintSpans.Items)
                         {
                             workCounter.Consume(cancellationToken);
                             hasFill |= span.Paint.HasFill;
                             hasStroke |= span.Paint.HasStroke;
                             hasDecoration |= span.Paint.Decoration is not null;
+                            hasServer |= HasServer(span.Paint);
                         }
                         if (!hasFill && !hasStroke && !hasDecoration) continue;
                         if (fontSnapshot is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG text requires a prepared font snapshot.");
@@ -347,7 +352,6 @@ internal static class SvgRenderedLeafParser
                         if (extracted.CharacterOffset != 0 || extracted.ResumeAfterPath is not null)
                             runStyle = runStyle with { X = 0, Y = 0, Dx = 0, Dy = 0,
                                 PositionLists = runStyle.PositionLists with { CharacterOffset = extracted.CharacterOffset } };
-                        RenderBudget.BudgetReservation? pendingTextOwner = textPath is null ? null : budget.Reserve(256, SvgMemoryCategory.Parser);
                         double textMetricScale = state.OutputTextScale * SvgGlyphDeviceMetrics.GetScreenScale(textPlacement);
                         SvgGlyphDeviceMetrics? deviceMetrics = OperatingSystem.IsWindows() ? new(textMetricScale, SvgGlyphMetricTarget.Windows, textPath is not null)
                             : OperatingSystem.IsLinux() ? new(textMetricScale, SvgGlyphMetricTarget.Linux, textPath is not null) : null;
@@ -359,12 +363,13 @@ internal static class SvgRenderedLeafParser
                             {
                                 continuation = new(extracted, runStyle, textPaint.GlyphPaint, deviceMetrics, fontSnapshot);
                                 textRuns[textIndex] = default;
-                                state.PendingTextPaths.Add(new(null, resume, textPlacement, textElement.Presentation.Color, state.Scene.AddPaintPlaceholder(), owner, state.Scene)
+                                state.PendingTextRuns.Add(new(null, resume, textPlacement, textElement.Presentation.Color, state.Scene.AddPaintPlaceholder(), owner, state.Scene)
                                     { ViewportClip = SvgViewportFrame.ResolveGlyphClip(state, workCounter, cancellationToken), Continuation = continuation });
                             }
                             catch { continuation?.Dispose(); owner.Dispose(); throw; }
                             continue;
                         }
+                        RenderBudget.BudgetReservation? pendingTextOwner = textPath is null && !hasServer ? null : budget.Reserve(256, SvgMemoryCategory.Parser);
                         SvgTextRun run;
                         try { run = SvgTextRunBuilder.Create(runStyle, text.Value, text.LetterSpacingSpans, text.PositionAdjustments, extracted.PaintSpans.Items, extracted.FontSpans.Items, textPaint.GlyphPaint, deviceMetrics, fontSnapshot, budget, workCounter, cancellationToken); }
                         catch (SvgException exception) when (exception.ErrorCode == SvgErrorCode.UnresolvedResource && state.DeferredPaintLeaves.Count > 0)
@@ -376,17 +381,15 @@ internal static class SvgRenderedLeafParser
                             return true;
                         }
                         catch { pendingTextOwner?.Dispose(); throw; }
-                        if (textPath is {} pathReference)
+                        if (textPath is not null || hasServer)
                         {
-                            try { state.PendingTextPaths.Add(new(run, pathReference, textPlacement, textElement.Presentation.Color, state.Scene.AddPaintPlaceholder(), pendingTextOwner ?? throw new InvalidOperationException("A retained text run requires its metadata owner."), state.Scene) { ViewportClip = SvgViewportFrame.ResolveGlyphClip(state, workCounter, cancellationToken) }); }
+                            try { state.PendingTextRuns.Add(new(run, textPath, textPlacement, textElement.Presentation.Color, state.Scene.AddPaintPlaceholder(), pendingTextOwner ?? throw new InvalidOperationException("A retained text run requires its metadata owner."), state.Scene) { ViewportClip = SvgViewportFrame.ResolveGlyphClip(state, workCounter, cancellationToken) }); }
                             catch { pendingTextOwner?.Dispose(); run.Dispose(); throw; }
                             continue;
                         }
                         using (run)
                         {
-                            SvgTextDecorationRenderer.Emit(run, run.PaintFragments, textPlacement, [], null, state, textElement.Presentation.Color, false, limits.MaximumPathCommands, budget, workCounter, cancellationToken);
-                            SvgTextGlyphPainter.Emit(run, textPlacement, [], null, textElement.Presentation.Color, state, limits.MaximumPathCommands, budget, workCounter, cancellationToken);
-                            SvgTextDecorationRenderer.Emit(run, run.PaintFragments, textPlacement, [], null, state, textElement.Presentation.Color, true, limits.MaximumPathCommands, budget, workCounter, cancellationToken);
+                            SvgTextGlyphPainter.EmitDirect(run, textPlacement, null, textElement.Presentation.Color, state, limits.MaximumPathCommands, budget, workCounter, cancellationToken);
                         }
                     }
                     if (textClip is not null || textMask is not null)

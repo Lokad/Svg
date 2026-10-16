@@ -14321,3 +14321,27 @@ remain separate. Resource references resolve before deferred tile clips; no seco
 renderer or production dependency is added. Forward aliases, missing clips, sibling
 restoration and literal-color CSS priority have independent controls. Representative
 existing resource checks now cover the unchanged whole document and changed panels.
+
+## Shared glyph paints and resource-local coordinates (2026-10-16)
+
+The [instance/paint sheet](../tests/Research/instance-paint-exit-sheet/README.md)
+closes its declared T1 paint panels against unchanged platform references. Linear/radial/pattern glyph paints
+reuse existing source binders, native matrix stages, ramps and tile samplers.
+Resolved immutable shader values share scene ownership across each fragment;
+ordinary solid glyphs retain their direct path. Deferred direct paints and paths
+share ordered command slots and resource-range shifts. A continuation owns its
+normalized layout and one aggregate allowance, without an unused direct-run receipt.
+
+Object-box text paints use logical rounded ascent/descent, ink overhang and the
+retained fragment width before 1/64 paint-origin truncation. Reconstructing width
+from the last glyph's truncated origin loses layout precision. Platform advance
+and fitting conventions remain distinct. Focal-circle glyphs share the existing
+double radial fallback; each consumer retains its native float dispatch.
+
+A referenced text path applies its own transform in text coordinates; definition
+ancestors do not place the baseline. Mask content likewise starts at the resource,
+while inherited presentation remains available. Masks use shared definition-location
+admission inside dormant groups. Existing bounded replay, source ownership and
+scope compilation provide cleanup; no source raster substitute or runtime dependency
+is introduced. The [receipt](../artifacts/maintenance-review-20261012/text-paints-qualified-results.json)
+records full checks and preservation; PLAN.md owns remaining scope.

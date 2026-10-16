@@ -1,0 +1,8 @@
+<!-- SPDX-License-Identifier: MIT -->
+<svg xmlns="http://www.w3.org/2000/svg" width="125" height="8" font-family="Example" font-size="100" fill="url(#g)">
+  <text y="5">A<textPath href="#p">A</textPath>A</text>
+  <defs>
+    <path id="p" d="M0 5H200"/>
+    <linearGradient id="g" gradientUnits="userSpaceOnUse" x2="125"><stop stop-color="red"/><stop offset="1" stop-color="blue"/></linearGradient>
+  </defs>
+</svg>
