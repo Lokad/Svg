@@ -1,0 +1,1 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><defs><clipPath id="c"><circle cx="8" cy="8" r="8"/></clipPath><pattern id="p" width="16" height="16" patternUnits="userSpaceOnUse"><g clip-path="url(#c)"><rect width="16" height="16" fill="red"/></g></pattern></defs><rect width="64" height="64" fill="url(#p)"/></svg>

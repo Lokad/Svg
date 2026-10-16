@@ -537,7 +537,7 @@ internal static class SvgDefinitionParser
             {
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
                 SvgComputedStyle style = context.ResolveStyle(reader, reader.LocalName == "text");
-                if (reader.LocalName is "image" or "text" || reader.GetAttribute("mask") is not null || style.Filter is {} filter && filter.Trim() != "none")
+                if (reader.LocalName is "image" or "text" || reader.GetAttribute("clip-path") is not null || reader.GetAttribute("mask") is not null || style.Filter is {} filter && filter.Trim() != "none")
                 {
                     if (!SvgRenderedLeafParser.ValidateLeafAttributes(reader, workCounter, cancellationToken))
                         throw new InvalidOperationException("Pattern replay requires a supported leaf.");

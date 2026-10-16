@@ -1,0 +1,11 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <defs>
+    <pattern id="p" width="16" height="16" patternUnits="userSpaceOnUse">
+      <rect x="-2" y="-2" width="16" height="16" transform="translate(2 2)" fill="#bd4f36" clip-path="url(#c)"/>
+      <rect x="13" width="3" height="16" fill="#244a77"/>
+    </pattern>
+    <clipPath id="c"><circle cx="6" cy="6" r="6"/></clipPath>
+  </defs>
+  <rect width="64" height="64" fill="url(#p)"/>
+</svg>
