@@ -76,13 +76,16 @@ The ignored [selection study](../../../artifacts/full-fixture-replacement-202610
 retains upstream inventories and candidate review. [PLAN](../../../PLAN.md#full-svg-fixture-replacement-f1)
 owns acceptance and remaining work. This declaration is not renderer qualification.
 
-The first Windows renderer comparison is **20/26 exact**, with four rejections and
-two pixel differences. All documents remain selected. [PLAN F1.1-F1.6](../../../PLAN.md#full-svg-fixture-replacement-f1)
-records the finite required corrections and retirement gate. Renderer qualification
-and finished-batch A7 are pending; native capture health does not establish them.
+Current targeted results are **25/26 exact on Windows/Linux**. The unchanged
+`filter-mask-clip` output remains a required pixel difference. Renderer sources,
+fixture bytes and platform references retain their identities; no case is removed
+because of failure. [PLAN F1.5/F1.6/A7](../../../PLAN.md#full-svg-fixture-replacement-f1)
+owns the remaining correction, actual retirement and final verification.
 
-F1.1 now makes `nested-affine` and `pattern-affine` exact on Windows/Linux through
-shared rectangle source replay. [Targeted evidence](../../../artifacts/full-fixture-replacement-20261017/rectangle-source-qualified-results.json)
-records 1,199 core and 1,668 affected visual/resource checks per platform, including
-the promoted unchanged group-use control. The first-run20/26 result above is
-historical; the four other F1 document corrections and retirement remain required.
+[Rectangle source qualification](../../../artifacts/full-fixture-replacement-20261017/rectangle-source-qualified-results.json)
+and [rounded clip/viewport/PNG qualification](../../../artifacts/full-fixture-replacement-20261017/composition-qualified-results.json)
+record the corrections, promoted unchanged group-use regression, source/glyph
+controls and material denial/cancellation/cleanup/retry. The latter covers 414
+core checks per platform and the linked Windows groups / coherent 761-case Linux
+visual-resource run. Initial failure records stay in the ignored study; historical
+counts do not override current qualification or close the remaining exits.

@@ -13,6 +13,22 @@ public sealed class SvgFontLayoutDiagramTests
     private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "font-layout-diagram");
 
     [Fact]
+    public async Task Nested_viewport_own_map_keeps_supplied_glyph_placement_and_physical_clipping()
+    {
+        const string viewport = "<svg x='8' y='6' width='60' height='40' viewBox='0 0 30 20' opacity='.625'><text x='2' y='14' fill='#2168ad'>Aa</text></svg>";
+        const string start = "<svg xmlns='http://www.w3.org/2000/svg' width='144' height='96' font-family='Example' font-size='18'>";
+        const string end = "<rect x='120' y='4' width='4' height='4' fill='blue'/></svg>";
+        const string map = "matrix(1 .25 -.3 1 32 8)";
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(start + viewport.Replace("<svg ", "<svg transform='" + map + "' ", StringComparison.Ordinal) + end);
+        byte[] expected = System.Text.Encoding.UTF8.GetBytes(start + "<g transform='" + map + "'>" + viewport + "</g>" + end);
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "font-pack.json")), "public-noto-layout");
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, new Provider(), CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        Assert.Equal(SvgConverter.ConvertToPng(expected, options, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
+    }
+
+    [Fact]
     public async Task Whole_pattern_content_releases_borrowed_font_filter_and_image_resources_on_denial_and_retry()
     {
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", "pattern-tile-sheet");

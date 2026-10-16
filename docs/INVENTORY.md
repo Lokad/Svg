@@ -5,7 +5,9 @@ replaces mandatory full-document membership/counts with a finite selection from
 established SVG suites. The legacy collection below remains dated evidence until
 that migration; its unique behavior and known-bug micro-tests stay protected.
 The completion-audit correction banks contain focused controls, not additional
-representative documents. No F1 replacement selection is qualified yet.
+representative documents. The [26-document upstream selection](../tests/Research/upstream-static-documents/README.md)
+is frozen with healthy Windows/Linux reference triples: 25 outputs are exact;
+`filter-mask-clip` and coverage retirement remain required before F1 closes.
 
 This document defines the versioned representative inventory required by PLAN.md R26.
 It records the selection rules, record schema, legal handling, and coverage accounting

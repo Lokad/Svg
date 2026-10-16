@@ -6,6 +6,22 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgObjectBoundingClipTests
 {
     [Theory]
+    [InlineData("rx='.125'", "rx='4'")]
+    [InlineData("rx='.125' ry='.0625'", "rx='4' ry='2'")]
+    [InlineData("rx='0' ry='.125'", "rx='0' ry='4'")]
+    public void Rounded_resource_units_preserve_corners_forward_binding_and_siblings(string normalizedCorners, string explicitCorners)
+    {
+        const string target = "<rect width='32' height='32' fill='red' clip-path='url(#c)'/><rect width='3' height='3' fill='blue'/>";
+        string normalized = "<defs><clipPath id='c' clipPathUnits='objectBoundingBox'><rect x='.125' y='.25' width='.75' height='.5' " + normalizedCorners + "/></clipPath></defs>";
+        string explicitClip = "<defs><clipPath id='c'><rect x='4' y='8' width='24' height='16' " + explicitCorners + "/></clipPath></defs>";
+        byte[] actual = Render(target + normalized);
+        Assert.Equal(Render(explicitClip + target), actual);
+        byte[] sharp = Render("<defs><clipPath id='c'><rect x='4' y='8' width='24' height='16'/></clipPath></defs>" + target);
+        if (normalizedCorners.StartsWith("rx='0'", StringComparison.Ordinal)) Assert.Equal(sharp, actual);
+        else Assert.NotEqual(sharp, actual);
+    }
+
+    [Theory]
     [InlineData("stroke-linecap='butt'")]
     [InlineData("stroke-linecap='square'")]
     [InlineData("stroke-linecap='round'")]
@@ -67,10 +83,12 @@ public sealed class SvgObjectBoundingClipTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
-    [Fact]
-    public void Group_replay_and_bounds_observe_limits_and_release_on_denial()
+    [Theory]
+    [InlineData("<circle cx='.5' cy='.5' r='.4'/>")]
+    [InlineData("<rect x='.125' y='.25' width='.75' height='.5' rx='.125'/>")]
+    public void Group_replay_and_bounds_observe_limits_and_release_on_denial(string clip)
     {
-        byte[] input = Input("<use href='#source' x='1.25' clip-path='url(#c)'/><defs><clipPath id='c' clipPathUnits='objectBoundingBox'><circle cx='.5' cy='.5' r='.4'/></clipPath><g id='source' stroke='red' stroke-width='6'><line x1='16' y1='4' x2='16' y2='28'/><line x1='4' y1='16' x2='28' y2='16'/></g></defs>");
+        byte[] input = Input("<use href='#source' x='1.25' clip-path='url(#c)'/><defs><clipPath id='c' clipPathUnits='objectBoundingBox'>" + clip + "</clipPath><g id='source' stroke='red' stroke-width='6'><line x1='16' y1='4' x2='16' y2='28'/><line x1='4' y1='16' x2='28' y2='16'/></g></defs>");
         RenderBudget measured = new(1_000_000);
         ParserWorkCounter work = new(100_000);
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None)) Assert.NotEmpty(root.Geometries.ToArray());

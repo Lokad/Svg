@@ -239,7 +239,16 @@ internal static class SvgDefinitionParser
                 SvgAffineViewportClip source = new(new(syntax.X, syntax.Y, syntax.Width, syntax.Height), clipTransform);
                 string? nestedClip = SvgClipPathSyntax.ResolveClipId(reader, state);
                 nestedClip = nestedClip is null ? null : state.Strings.Copy(nestedClip);
-                if (clipTransform.IsAxisAligned && state.ClipPolygon is null && nestedClip is null)
+                double radiusX = syntax.CornerX ?? syntax.CornerY ?? 0;
+                double radiusY = syntax.CornerY ?? syntax.CornerX ?? 0;
+                if (radiusX > 0 && radiusY > 0 && syntax.Width > 0 && syntax.Height > 0)
+                {
+                    using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Scene, workCounter, cancellationToken);
+                    SvgRoundedRectPath.Append(commands, syntax.X, syntax.Y, syntax.Width, syntax.Height, radiusX, radiusY);
+                    AppendClipChild(CreateClipSource(commands.Detach(), clipTransform, false, nestedClip, state, workCounter, cancellationToken),
+                        state, workCounter, cancellationToken);
+                }
+                else if (clipTransform.IsAxisAligned && state.ClipPolygon is null && nestedClip is null)
                 {
                     SvgRectangle rect = clipTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, false, null));
                     state.ClipBox = new SvgClipBox(rect.X, rect.Y, rect.Width, rect.Height);
@@ -310,25 +319,10 @@ internal static class SvgDefinitionParser
                 }
                 else
                 {
-                    OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
-                    SvgAuthoredPath source;
-                    try { source = SvgAuthoredPath.CreateConvexShape(owned, childMap, state.Budget); }
-                    catch { owned.Dispose(); throw; }
-                    SvgClipPolygon content;
-                    try
-                    {
-                        using SvgPreparedPathContours prepared = source.Prepare(SvgAffineTransform.Identity, false, state.Budget, workCounter, cancellationToken);
-                        state.DefinitionReservations.Add(state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(prepared.Points.Length)
-                            + ParserCollectionMemory.GetArrayByteCount<int>(prepared.ContourEnds.Length), SvgMemoryCategory.Scene));
-                        SvgDevicePoint[] points = new SvgDevicePoint[prepared.Points.Length];
-                        int[] ends = new int[prepared.ContourEnds.Length];
-                        for (int index = 0; index < points.Length; index++) { workCounter.Consume(cancellationToken); points[index] = prepared.Points[index]; }
-                        for (int index = 0; index < ends.Length; index++) { workCounter.Consume(cancellationToken); ends[index] = prepared.ContourEnds[index]; }
-                        string? nestedClip = SvgClipPathSyntax.ResolveClipId(reader, state);
-                        content = new(points, ends) { SourcePath = source, UsesNativeReplay = true, IsOval = childMap.IsAxisAligned, IsObjectBoundingBox = state.ClipIsObjectBoundingBox, NestedClipId = nestedClip is null ? null : state.Strings.Copy(nestedClip) };
-                    }
-                    catch { source.Dispose(); throw; }
-                    AppendClipChild(content, state, workCounter, cancellationToken);
+                    string? nestedClip = SvgClipPathSyntax.ResolveClipId(reader, state);
+                    nestedClip = nestedClip is null ? null : state.Strings.Copy(nestedClip);
+                    AppendClipChild(CreateClipSource(commands.Detach(), childMap, childMap.IsAxisAligned, nestedClip, state, workCounter, cancellationToken),
+                        state, workCounter, cancellationToken);
                 }
                 state.HasUnsupportedContent |= !reader.IsEmptyElement;
                 return true;
@@ -885,6 +879,29 @@ internal static class SvgDefinitionParser
             try { path = SvgAuthoredPath.Create(owned, source.Map, state.Budget); }
             catch { owned.Dispose(); throw; }
             return new(points, ends) { SourcePath = path, IsObjectBoundingBox = state.ClipIsObjectBoundingBox };
+        }
+
+        // Rounded rectangles and ovals share one native source/staging owner.
+        // Resource units and nested intersections bind later in the final scene.
+        static SvgClipPolygon CreateClipSource(OwnedParserArray<SvgAuthoredPathCommand> owned, SvgAffineTransform map,
+            bool oval, string? nestedClip, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+        {
+            SvgAuthoredPath source;
+            try { source = SvgAuthoredPath.CreateConvexShape(owned, map, state.Budget); }
+            catch { owned.Dispose(); throw; }
+            try
+            {
+                using SvgPreparedPathContours prepared = source.Prepare(SvgAffineTransform.Identity, false, state.Budget, work, token);
+                state.DefinitionReservations.Add(state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(prepared.Points.Length)
+                    + ParserCollectionMemory.GetArrayByteCount<int>(prepared.ContourEnds.Length), SvgMemoryCategory.Scene));
+                SvgDevicePoint[] points = new SvgDevicePoint[prepared.Points.Length];
+                int[] ends = new int[prepared.ContourEnds.Length];
+                for (int index = 0; index < points.Length; index++) { work.Consume(token); points[index] = prepared.Points[index]; }
+                for (int index = 0; index < ends.Length; index++) { work.Consume(token); ends[index] = prepared.ContourEnds[index]; }
+                return new(points, ends) { SourcePath = source, UsesNativeReplay = true, IsOval = oval,
+                    IsObjectBoundingBox = state.ClipIsObjectBoundingBox, NestedClipId = nestedClip };
+            }
+            catch { source.Dispose(); throw; }
         }
 
         // Adopt each source once; union failure retains the first staging owner

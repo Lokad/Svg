@@ -73,6 +73,7 @@ internal static class PngImageDecoder
         byte[]? transparent = null;
         byte[]? palette = null;
         bool seenImageData = false;
+        bool seenSignificantBits = false;
         using var compressed = new MemoryStream();
         using var storage = new WorkingStorage(budget);
         long compressedLength = 0;
@@ -157,9 +158,26 @@ internal static class PngImageDecoder
             {
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Color-managed embedded PNG data are not implemented.");
             }
-            else if (type.SequenceEqual("sBIT"u8) || type.SequenceEqual("eXIf"u8))
+            else if (type.SequenceEqual("sBIT"u8))
             {
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Significant-bit and orientation-carrying embedded PNG data are not implemented.");
+                if (!seenHeader || seenSignificantBits || seenImageData || palette is not null)
+                    throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data misplaces or repeats its significant-bit chunk.");
+                if (length != (isPaletteType ? 3 : channels))
+                    throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data has a malformed significant-bit chunk.");
+                bool fullPrecision = true;
+                foreach (byte bits in data)
+                {
+                    if (bits == 0 || bits > 8) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG significant bits exceed the sample depth.");
+                    fullPrecision &= bits == 8;
+                }
+                if (!fullPrecision) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Reduced-significance embedded PNG samples are not implemented.");
+                // All admitted samples already have eight significant bits.
+                // This declaration requires no rescaling or color conversion.
+                seenSignificantBits = true;
+            }
+            else if (type.SequenceEqual("eXIf"u8))
+            {
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Orientation-carrying embedded PNG data are not implemented.");
             }
             else if (IsCritical(type))
             {

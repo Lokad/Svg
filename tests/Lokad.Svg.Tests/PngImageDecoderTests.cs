@@ -12,6 +12,78 @@ public sealed class PngImageDecoderTests
     [InlineData(3)]
     [InlineData(4)]
     [InlineData(6)]
+    public void Full_significance_metadata_preserves_eight_bit_samples(int colorType)
+    {
+        byte[] row = colorType switch
+        {
+            0 => [0, 120], 2 => [0, 255, 0, 0], 3 => [0, 0],
+            4 => [0, 120, 128], 6 => [0, 255, 0, 0, 128],
+            _ => throw new ArgumentOutOfRangeException(nameof(colorType))
+        };
+        byte[] significance = colorType switch
+        {
+            0 => [8], 2 or 3 => [8, 8, 8], 4 => [8, 8], 6 => [8, 8, 8, 8],
+            _ => throw new ArgumentOutOfRangeException(nameof(colorType))
+        };
+        List<TestChunk> chunks = [new("IHDR", TestIhdr(1, 1, (byte)colorType)), new("sBIT", significance)];
+        if (colorType == 3) chunks.Add(new("PLTE", [255, 0, 0]));
+        chunks.Add(new("IDAT", ZlibCompress(row))); chunks.Add(new("IEND", []));
+        SvgColor expected = colorType switch
+        {
+            0 => new(120, 120, 120, 255), 2 or 3 => new(255, 0, 0, 255),
+            4 => new(120, 120, 120, 128), 6 => new(255, 0, 0, 128),
+            _ => throw new ArgumentOutOfRangeException(nameof(colorType))
+        };
+        Assert.Equal(expected, DecodeBuilt(BuildPng(chunks)));
+    }
+
+    [Theory]
+    [InlineData("", SvgErrorCode.MalformedInput)]
+    [InlineData("080808", SvgErrorCode.MalformedInput)]
+    [InlineData("00080808", SvgErrorCode.MalformedInput)]
+    [InlineData("09080808", SvgErrorCode.MalformedInput)]
+    [InlineData("07080808", SvgErrorCode.UnsupportedFeature)]
+    public void Significant_bit_payloads_preserve_explicit_malformed_and_format_boundaries(string payload, SvgErrorCode expected)
+    {
+        List<TestChunk> chunks = ParseChunks(Convert.FromBase64String(RedPixel));
+        chunks.Insert(1, new("sBIT", Convert.FromHexString(payload)));
+        Assert.Equal(expected, DecodeBuiltError(BuildPng(chunks)));
+    }
+
+    [Theory]
+    [InlineData("before-header")]
+    [InlineData("duplicate")]
+    [InlineData("after-palette")]
+    [InlineData("after-image-data")]
+    public void Significant_bit_chunks_require_unique_pre_palette_pre_image_placement(string placement)
+    {
+        List<TestChunk> chunks = ParseChunks(BuiltPalette());
+        TestChunk significance = new("sBIT", [8, 8, 8]);
+        switch (placement)
+        {
+            case "before-header": chunks.Insert(0, significance); break;
+            case "duplicate": chunks.Insert(1, significance); chunks.Insert(2, significance); break;
+            case "after-palette": chunks.Insert(2, significance); break;
+            case "after-image-data": chunks.Insert(3, significance); break;
+            default: throw new ArgumentOutOfRangeException(nameof(placement));
+        }
+        Assert.Equal(SvgErrorCode.MalformedInput, DecodeBuiltError(BuildPng(chunks)));
+    }
+
+    [Fact]
+    public void Orientation_metadata_remains_an_explicit_format_boundary()
+    {
+        List<TestChunk> chunks = ParseChunks(Convert.FromBase64String(RedPixel));
+        chunks.Insert(1, new("eXIf", [0, 0, 0, 0]));
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, DecodeBuiltError(BuildPng(chunks)));
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    [InlineData(6)]
     public void Varied_png_formats_retain_independent_premultiplied_pixels(int colorType)
     {
         byte[] row = colorType switch

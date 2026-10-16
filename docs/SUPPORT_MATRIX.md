@@ -14,19 +14,28 @@ explicitly replaces mandatory full-document membership/counts. Dated statements 
 their revisions and do not close these newly retained gaps. Private deployment
 qualification remains a separate pending adoption gate.
 
-## Upstream rectangle source follow-up (2026-10-17)
+## Upstream document follow-up (2026-10-17)
 
-Named live rectangles with authored affine maps now register through ordinary
-retained shape lowering. General rounded rectangles preserve native conic sources
-through existing fill, paint and stroke maps. The unchanged F1 `nested-affine` and
-`pattern-affine` documents are exact on Windows/Linux; 1,199 core and 1,668
-affected visual/resource cases are covered per platform in the
-[targeted qualification](../artifacts/full-fixture-replacement-20261017/rectangle-source-qualified-results.json).
-The original `transformed-rectangle-fills/rendered-group-use` control also matches
-its unchanged reference, superseding its earlier expected rejection. Four F1
-documents still require corrections; full collection replacement and finished-batch
-S17 qualification remain open. This result preserves native distinctions, work/
-memory limits and cleanup; it introduces no public API or renderer dependency.
+The frozen replacement collection is **25/26 exact on Windows/Linux**. The
+`filter-mask-clip` difference, full-fixture retirement and final S17 verification
+remain required in [PLAN F1/A7](../PLAN.md#full-svg-fixture-replacement-f1).
+
+Named affine rectangles register through retained shape lowering; general rounded
+fills preserve native conics and existing paint/stroke maps. The original
+`transformed-rectangle-fills/rendered-group-use` control now matches its unchanged
+reference, superseding its old rejection. [Rectangle qualification](../artifacts/full-fixture-replacement-20261017/rectangle-source-qualified-results.json)
+records existing-case preservation and material cleanup.
+
+Rounded resource clips share native source staging with ovals, preserving radii,
+resource units and forward binding. Nested SVG `transform` attributes compose
+outside x/y/viewBox with physical clipping, including supplied glyphs. Embedded
+PNGs admit validated sBIT declarations when every channel has eight significant
+bits; malformed count/range/order/duplicates reject, and reduced significance,
+color management and orientation remain unsupported. No sample conversion is
+introduced. [Combined qualification](../artifacts/full-fixture-replacement-20261017/composition-qualified-results.json)
+records 414 affected core checks per platform, the Windows visual groups and one
+coherent 761-case Linux visual/resource run. Existing limits, ownership, cleanup
+and public font qualification are preserved; private deployment remains pending.
 
 ## Public symbol and fractional-line follow-up (2026-10-16)
 

@@ -16,41 +16,25 @@ Memory accounting uses conservative estimates for dominant allocations under
 [PLAN's approximate engineering target](PLAN.md#maintenance-decisions-and-evidence),
 with runtime/host overhead and borrowed storage identified separately.
 
-The frozen corporate cohort is exact on Windows/Linux: **27/27 documents and
-258/258 variants**. The selected development queue is **50/50 complete**, with
-**36 authored documents** and four sourced documents counted separately.
-These results establish their declared outputs, not general SVG completeness.
-Original inputs/options and independent platform references remain frozen;
-[INVENTORY](docs/INVENTORY.md) owns the evidence and selection limits.
-
 [SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md) and [PLAN's finite boundaries](PLAN.md#required-support-boundaries-and-finite-exits)
-define the useful subset and explicit unsupported outcomes. **Standalone delivery
-is reopened for six demonstrated corrections A1–A6, fixture replacement F1 and
-final verification A7**:
-pattern leaf/object-box clips, retained instance/marker clips, clipped vector mask
-content, nested clip-child intersections and filtered gradient source fidelity.
-The prior `e21f956c` qualification remains valid for its declared cases:
-**8,147 tests/platform** and package/installed-consumer checks passed in
-[terminal green CI](https://github.com/Lokad/Svg/actions/runs/38952070864).
-[Public regular/bold/real-italic/fallback qualification](tests/Research/public-font-qualification/README.md)
-(T3-public), micro-tests and resource contracts remain preserved. F1 replaces the
-full-document collection with a finite selection from established SVG test suites,
-using the existing harness and pinned Chrome references. Legacy document counts
-remain dated evidence; retained fixture bytes/options and known-bug protections
-stay unchanged. Private
-deployment validation (T3-private) remains pending before production adoption
-and does not block standalone qualification. [PLAN](PLAN.md#delivery-order) owns the ordered
-checklist, dependencies and release exit. Mechanism/history belongs in
-[RASTERIZATION_DESIGN](docs/RASTERIZATION_DESIGN.md), and measurements with their
-workload limits belong in [BENCHMARKS](docs/BENCHMARKS.md).
+define the useful subset and explicit unsupported outcomes. The six audit
+corrections A1-A6 are complete. **Standalone delivery remains open for F1 and
+final verification A7**: the [frozen upstream replacement collection](tests/Research/upstream-static-documents/README.md)
+is **25/26 exact on Windows/Linux**, with a filter/mask/clip mismatch and fixture
+retirement still required. Counts alone do not close release qualification.
 
-The public SVG follow-up closes symbol display/visibility and fractional line
-endpoints through existing retained-source/native-stroke machinery. One symbol
-sheet and three unchanged MIT Feather documents are exact on Windows/Linux;
-nine older rejection cases now match unchanged goldens. Full local qualification
-passes **8,147 tests/platform**; all required hosted checks are green for source
-`e21f956c`. [PLAN](PLAN.md#delivery-order) records the finite follow-up and separate
-pending private deployment gate.
+The prior `e21f956c` qualification remains dated evidence for its declared cases:
+**8,147 tests/platform**, package/installed-consumer checks and **27 documents /
+258 variants** passed in [terminal green CI](https://github.com/Lokad/Svg/actions/runs/38952070864).
+[INVENTORY](docs/INVENTORY.md) retains selection/evidence limits and historical
+full-document results; F1 replaces their mandatory membership and count gates.
+
+[Public regular/bold/real-italic/fallback qualification](tests/Research/public-font-qualification/README.md)
+(T3-public), micro-tests, known-bug and resource contracts remain preserved.
+Private deployment validation (T3-private) remains pending before production
+adoption and does not block standalone qualification. [PLAN](PLAN.md#delivery-order)
+owns delivery order and the release exit; [RASTERIZATION_DESIGN](docs/RASTERIZATION_DESIGN.md)
+owns mechanisms/history and [BENCHMARKS](docs/BENCHMARKS.md) owns measurements.
 
 ## Development
 

@@ -141,10 +141,13 @@ internal static class SvgDocumentTraversal
                     SvgInheritedContainer inheritedViewport = SvgContainerInheritance.Resolve(reader, viewportInline, viewportStyle, viewportContext.StyleSheet, viewportContext.InheritedPresentation,
                         viewportContext.InheritedFillRule, viewportContext.InheritedTextStyle, viewportContext.InheritedStroke, namedColors, workCounter, cancellationToken);
                     SvgPaintOpacity sourceViewportOpacity = inheritedViewport.Presentation.ElementOpacity;
-                    SvgAffineTransform textParent = parentFrame is {} textFrame ? textFrame.MapText(viewportContext.InheritedPresentation.Transform) : viewportContext.InheritedPresentation.Transform;
+                    // The viewport's own transform precedes its x/y and viewBox,
+                    // together with ancestor placement and the physical clip.
+                    SvgAffineTransform viewportTransform = inheritedViewport.Presentation.Transform;
+                    SvgAffineTransform textParent = parentFrame is {} textFrame ? textFrame.MapText(viewportTransform) : viewportTransform;
                     SvgAffineTransform textPlacement = textParent.ComposeChecked(SvgAffineTransform.FromScaleOffset(localScaleX, localScaleY, viewport.X + viewOffsetX, viewport.Y + viewOffsetY));
                     SvgAffineViewportClip textClip = new(new(viewport.X, viewport.Y, viewport.Width, viewport.Height), textParent);
-                    if (viewportContext.InheritedPresentation.Transform != SvgAffineTransform.Identity)
+                    if (viewportTransform != SvgAffineTransform.Identity)
                     {
                         // Geometry applies the scalar viewport after its inherited
                         // source map. Rebase that ancestry so outer group placement
