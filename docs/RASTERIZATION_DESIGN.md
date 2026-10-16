@@ -1,3 +1,17 @@
+## Marker container presentation (2026-10-16)
+
+The [presentation sheet and two controls](../tests/Research/marker-presentation-sheet/README.md)
+close the remaining E4 admission guards through existing mechanisms. Marker
+containers validate cap/join/dash attributes as inherited stroke presentation.
+Retained source replay already carries their values and child overrides; no new
+stroker is needed. The shared content-root presentation carries nullable visibility;
+ordinary symbols keep their previous inheritance. Marker display is validated but
+ignored when instantiating its definition, matching the unchanged native references.
+
+The [qualification](../artifacts/maintenance-review-20261012/marker-presentation-qualified-results.json)
+retains all prior cases, invalid/zero-size outcomes and material ownership checks.
+E4 is complete; PLAN owns T3 and the finite S17 release exits.
+
 ## Marker font units and axis boundaries (2026-10-16)
 
 The [retained marker document](../tests/Research/marker-completion-sheet/README.md)
@@ -21,8 +35,7 @@ family before constructing the unchanged font-embedded image yields the independ
 measured supplied-font lengths. Cold Blob/data-URI transport agrees; preload does
 not substitute a missing SVG face. Invalid attempts remain in the [study](../artifacts/marker-completion-20261016/).
 No established reference is regenerated. [Qualification](../artifacts/maintenance-review-20261012/marker-qualified-results.json)
-owns every prior case and material resource behavior. E4's finite container
-admission follow-up remains required in PLAN.
+owns every prior case and material resource behavior. E4 container presentation is now qualified above.
 
 ## Retained-instance filter replay (2026-10-16)
 

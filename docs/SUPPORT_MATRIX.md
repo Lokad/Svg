@@ -1,3 +1,18 @@
+## Qualified marker container presentation (2026-10-16)
+
+The unchanged [whole sheet and two controls](../tests/Research/marker-presentation-sheet/README.md)
+are exact on Windows/Linux. Marker display does not suppress definition content;
+visibility inherits and an explicitly visible child overrides hidden visibility.
+Literal cap/join/dash properties share ordinary inherited stroke validation and
+retained source replay, including child overrides. Invalid values retain categorized
+outcomes and zero marker width remains nonpainting.
+
+[Qualification](../artifacts/maintenance-review-20261012/marker-presentation-qualified-results.json)
+preserves every prior case and representative denial/cancellation/cleanup/retry.
+E4 is complete. Only T3 private evidence and S17 remain required in
+[PLAN](../PLAN.md#delivery-order); historical checkpoint guards/status below do not
+reopen qualified work or defer scope.
+
 ## Qualified marker lengths and directional boundaries (2026-10-16)
 
 The [complete sheet and six controls](../tests/Research/marker-completion-sheet/README.md)
@@ -13,8 +28,7 @@ already exact outcomes.
 preserves all prior cases and affected denial/cancellation/cleanup/prepared retry.
 The [font oracle correction](../artifacts/marker-completion-20261016/font-length-oracle-correction.json)
 retains invalid cold attempts, proves mixed cached font metrics, and verifies
-SVG-local supplied metrics after preload. E4 still requires marker-container
-display/visibility and inherited stroke-attribute admission; T3 and S17 stay open.
+SVG-local supplied metrics after preload. E4 marker-container presentation is qualified above; T3 and S17 stay open.
 
 ## Qualified retained-instance effects (2026-10-16)
 

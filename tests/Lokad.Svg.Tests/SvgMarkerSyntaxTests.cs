@@ -6,6 +6,32 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgMarkerSyntaxTests
 {
+    [Theory]
+    [InlineData("display='grid'", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("visibility='collapse'", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("stroke-linecap='triangle'", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("stroke-linejoin='arcs'", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("stroke-dasharray='-1 2'", SvgErrorCode.MalformedInput)]
+    [InlineData("stroke-dashoffset='25%'", SvgErrorCode.UnsupportedFeature)]
+    public void Invalid_marker_container_presentation_rejects_without_retaining_sources(string attributes, SvgErrorCode category)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes($"<svg xmlns='http://www.w3.org/2000/svg' width='32' height='24'><defs><marker id='m' {attributes}><path d='M0 0L3 2L0 4Z'/></marker></defs><path d='M4 12H24' stroke='blue' marker-end='url(#m)'/></svg>");
+        RenderBudget budget = new(1_000_000);
+        Assert.Equal(category, Assert.Throws<SvgException>(() =>
+            SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Zero_width_marker_remains_nonpainting_with_inherited_stroke_presentation()
+    {
+        const string body = "<path d='M4 12H24' fill='none' stroke='blue'";
+        const string root = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='24'>";
+        byte[] expected = System.Text.Encoding.UTF8.GetBytes(root + body + "/></svg>");
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(root + "<defs><marker id='m' markerWidth='0' display='none' visibility='visible' stroke='red' stroke-linecap='round' stroke-linejoin='round' stroke-dasharray='2 1' stroke-dashoffset='.5'><path d='M0 0L3 2L0 4'/></marker></defs>" + body + " marker-end='url(#m)'/></svg>");
+        Assert.Equal(SvgConverter.ConvertToPng(expected, SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+    }
+
     [Fact]
     public void Font_relative_marker_lengths_keep_em_values_and_defer_ex_metrics()
     {

@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "purpose": "Finite required E4 marker-container presentation follow-up: explicit display/visibility admission and inherited stroke cap/join/dash attributes. These code guards are within promised container presentation/ordinary paint; no new shape/API grid or scope deferral. Cases declared before native capture or correction.",
+  "linuxReferenceQualification": {
+    "date": "2026-10-16",
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  },
+  "cases": [
+    {
+      "id": "marker-presentation-sheet",
+      "input": "marker-presentation-sheet.svg",
+      "width": 256,
+      "height": 112,
+      "scale": 1,
+      "background": "transparent",
+      "role": "document-output",
+      "license": "CC0-1.0",
+      "sourceSha256": "6b2046a4dac263855a0e318b5b91dc95331d74fbef5a4e2b296107bb37845189",
+      "licenseEvidence": "Original authored work dedicated to the public domain through the asset SPDX CC0-1.0 declaration.",
+      "selection": "Declared whole marker presentation document or independent display/visibility and inherited-stroke control; controls do not increase document counts.",
+      "declarationBaseRevision": "887bf2ee50ff17fb9a95ebd05f247def410900d0",
+      "reference": "references/marker-presentation-sheet.png",
+      "referenceSha256": "8f693fd3787eb25fe8874c6a8dab936486cc26286ea4e83aab42cf53b3db467a",
+      "captures": [
+        {
+          "pngSha256": "8f693fd3787eb25fe8874c6a8dab936486cc26286ea4e83aab42cf53b3db467a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8f693fd3787eb25fe8874c6a8dab936486cc26286ea4e83aab42cf53b3db467a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8f693fd3787eb25fe8874c6a8dab936486cc26286ea4e83aab42cf53b3db467a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/marker-presentation-sheet.png",
+      "linuxReferenceSha256": "8f693fd3787eb25fe8874c6a8dab936486cc26286ea4e83aab42cf53b3db467a",
+      "linuxCaptures": [
+        {
+          "pngSha256": "8f693fd3787eb25fe8874c6a8dab936486cc26286ea4e83aab42cf53b3db467a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8f693fd3787eb25fe8874c6a8dab936486cc26286ea4e83aab42cf53b3db467a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8f693fd3787eb25fe8874c6a8dab936486cc26286ea4e83aab42cf53b3db467a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "marker-display-visibility",
+      "input": "marker-display-visibility.svg",
+      "width": 128,
+      "height": 112,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "068a01baa4576a4081e31e9eb041b3cf4f529195eb186952dc864cb0c293f7d3",
+      "licenseEvidence": "Original authored work dedicated to the public domain through the asset SPDX CC0-1.0 declaration.",
+      "selection": "Declared whole marker presentation document or independent display/visibility and inherited-stroke control; controls do not increase document counts.",
+      "declarationBaseRevision": "887bf2ee50ff17fb9a95ebd05f247def410900d0",
+      "reference": "references/marker-display-visibility.png",
+      "referenceSha256": "d3bb03dedab5bbfc4f4978acd455dee7a0bed919b0222edd16702a5b2a783ed1",
+      "captures": [
+        {
+          "pngSha256": "d3bb03dedab5bbfc4f4978acd455dee7a0bed919b0222edd16702a5b2a783ed1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d3bb03dedab5bbfc4f4978acd455dee7a0bed919b0222edd16702a5b2a783ed1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d3bb03dedab5bbfc4f4978acd455dee7a0bed919b0222edd16702a5b2a783ed1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/marker-display-visibility.png",
+      "linuxReferenceSha256": "d3bb03dedab5bbfc4f4978acd455dee7a0bed919b0222edd16702a5b2a783ed1",
+      "linuxCaptures": [
+        {
+          "pngSha256": "d3bb03dedab5bbfc4f4978acd455dee7a0bed919b0222edd16702a5b2a783ed1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d3bb03dedab5bbfc4f4978acd455dee7a0bed919b0222edd16702a5b2a783ed1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d3bb03dedab5bbfc4f4978acd455dee7a0bed919b0222edd16702a5b2a783ed1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "marker-stroke-inheritance",
+      "input": "marker-stroke-inheritance.svg",
+      "width": 128,
+      "height": 112,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "a16942ed930a5941314eea54ec2de12ef5930fec26e12b949789e9300ebee230",
+      "licenseEvidence": "Original authored work dedicated to the public domain through the asset SPDX CC0-1.0 declaration.",
+      "selection": "Declared whole marker presentation document or independent display/visibility and inherited-stroke control; controls do not increase document counts.",
+      "declarationBaseRevision": "887bf2ee50ff17fb9a95ebd05f247def410900d0",
+      "reference": "references/marker-stroke-inheritance.png",
+      "referenceSha256": "db57e827fc3ba07a2c7018569e7a3abec0ee7d3540c866b9f76b46a581f37288",
+      "captures": [
+        {
+          "pngSha256": "db57e827fc3ba07a2c7018569e7a3abec0ee7d3540c866b9f76b46a581f37288",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "db57e827fc3ba07a2c7018569e7a3abec0ee7d3540c866b9f76b46a581f37288",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "db57e827fc3ba07a2c7018569e7a3abec0ee7d3540c866b9f76b46a581f37288",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/marker-stroke-inheritance.png",
+      "linuxReferenceSha256": "db57e827fc3ba07a2c7018569e7a3abec0ee7d3540c866b9f76b46a581f37288",
+      "linuxCaptures": [
+        {
+          "pngSha256": "db57e827fc3ba07a2c7018569e7a3abec0ee7d3540c866b9f76b46a581f37288",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "db57e827fc3ba07a2c7018569e7a3abec0ee7d3540c866b9f76b46a581f37288",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "db57e827fc3ba07a2c7018569e7a3abec0ee7d3540c866b9f76b46a581f37288",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ]
+}

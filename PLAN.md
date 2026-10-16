@@ -1,6 +1,6 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-16 at the marker-length/direction document checkpoint.
+Updated 2026-10-16 at the completed E4 marker-presentation checkpoint.
 Preserve the current implementation work, qualified `inv-146` correction and every
 established exact result, original SVG/font/reference bytes, options and default
 resource limits. This file owns delivery order, required exits and scope
@@ -20,24 +20,23 @@ Optional maintenance below adds no feature-completion prerequisite.
 | Completed commitment | Existing evidence and required preservation |
 | --- | --- |
 | Frozen cohorts and original fixtures | **27/27 corporate documents / 258/258 variants exact on Windows/Linux**, with unchanged [membership/recipes](tests/References/inventory/corporate-cohort-v1.json) and [measurement](tests/References/inventory/corporate-cohort-current.json). **50/50 selected documents complete**, including whole `inv-146`, original marker/shadow and supplied-font fixtures, SVG Translate, `inv-127` and `inv-145`: [gap ledger](tests/References/inventory/svg-gap-cases.json), [inventory](docs/INVENTORY.md). Failure-selected inputs establish no representative success rate. |
-| Integration documents and retained libraries | **34 authored documents** (24 CC0, 10 MIT) and **one sourced W3C decoration document** exact on both platforms, separate from the cohorts; [INVENTORY](docs/INVENTORY.md) owns the list, controls and immutable assets/options. Preserve `inv-146`'s oval/text and [merge controls](tests/Research/filter-merges/README.md), [merge qualification](artifacts/maintenance-review-20261012/merge-qualified-results.json), **149/149 paint-recording results** and I Ching's **24 exact / one out-of-scope animation boundary**. |
-| G2–G7 / C1–C6c shared dependencies | Instance/viewport maps, retained curves and affine/non-scaling strokes, shader placement, clip unions/forward/object-box binding, mask regions/opacity, bounded tile content/clips/masks, image placement and static CSS are complete under the [boundary/evidence index below](#required-support-boundaries-and-finite-exits), [existing map witnesses](artifacts/shared-stroke-pattern-maps-20261015/existing-map-witnesses.json), [tile-content qualification](artifacts/maintenance-review-20261012/pattern-content-qualified-results.json) and [shared-map qualification](artifacts/maintenance-review-20261012/shared-maps-qualified-results.json). These are available dependencies. Only the E4 marker extensions listed in the queue remain required here. |
+| Integration documents and retained libraries | **35 authored documents** (25 CC0, 10 MIT) and **one sourced W3C decoration document** exact on both platforms, separate from the cohorts; [INVENTORY](docs/INVENTORY.md) owns the list, controls and immutable assets/options. Preserve `inv-146`'s oval/text and [merge controls](tests/Research/filter-merges/README.md), [merge qualification](artifacts/maintenance-review-20261012/merge-qualified-results.json), **149/149 paint-recording results** and I Ching's **24 exact / one out-of-scope animation boundary**. |
+| G2–G7 / C1–C6c shared dependencies | Instance/viewport maps, retained curves and affine/non-scaling strokes, shader placement, clip unions/forward/object-box binding, mask regions/opacity, bounded tile content/clips/masks, image placement and static CSS are complete under the [boundary/evidence index below](#required-support-boundaries-and-finite-exits), [existing map witnesses](artifacts/shared-stroke-pattern-maps-20261015/existing-map-witnesses.json), [tile-content qualification](artifacts/maintenance-review-20261012/pattern-content-qualified-results.json) and [shared-map qualification](artifacts/maintenance-review-20261012/shared-maps-qualified-results.json). Marker extensions are also qualified under E4 below; these mechanisms are available dependencies. |
 | G9 public text / T1–T2 | The [instance/paint sheet](tests/Research/instance-paint-exit-sheet/README.md) and [composite-flag sheet](tests/Research/composite-flag-exit-sheet/README.md) are complete with **4/4** and **3/3** exact controls on both platforms. Retain [paint qualification](artifacts/maintenance-review-20261012/text-paints-qualified-results.json), [dormant forward-paint follow-up](artifacts/maintenance-review-20261012/dormant-paints-qualified-results.json), [composite qualification](artifacts/maintenance-review-20261012/composite-flags-qualified-results.json), intended-font/metrics proof and the finite [G9 boundary](#g9-supplied-font-labels-and-text-paths). Catalog conformance and the [FontProbe host](tools/Lokad.Svg.FontProbe/README.md), including six transport/input regressions, are implemented; private deployment evidence is T3. |
 | G8 qualified effects / E1–E2 and E3 source/owner placements | [Affine sources](tests/Research/affine-source-exit-sheet/README.md) **1 document / 4 controls**, [linearRGB restoration](tests/Research/linear-restoration-exit-sheet/README.md) **1 / 3**, [source boundaries](tests/Research/filter-source-exit-sheet/README.md) **1 / 8** and [owner/source composition](tests/Research/filter-owner-exit-sheet/README.md) **1 / 8** are exact on both platforms. The last bank reuses one offset witness: seven new controls, no duplicate canonical test. Preserve the three [source-offset controls and qualification](artifacts/maintenance-review-20261012/affine-offset-qualified-results.json), [filter-region results](tests/Research/filter-regions/manifest.json) **26/26**, and bank-linked qualification/resource evidence. The retained-instance exit is qualified below. |
 | E3 retained-instance effects | The unchanged [sheet](tests/Research/retained-instance-effect-sheet/README.md), **8/8 declared controls** and **2/2 focused translated-wrapper controls** are exact on Windows/Linux. Preserve 72 healthy stable captures, intended-font proof, own-use and retained path/group/text filter scopes, scene-local bindings, x/y effect placement and native clip/mask/filter ordering. [Qualification](artifacts/maintenance-review-20261012/retained-instance-qualified-results.json) owns prior-case preservation and material resource/prepared-retry checks. E3 is complete. |
-| E4 marker-length/direction document | The unchanged [sheet and six controls](tests/Research/marker-completion-sheet/README.md) are exact on Windows/Linux. Preserve em/ex dimensions/anchors, marker/child cascade, directional open/closed/zero paths, lazy face discovery and native parent pose rounding. [Qualification](artifacts/maintenance-review-20261012/marker-qualified-results.json) retains all prior cases and material ownership checks. The initial ex attempts had demonstrably mixed fallback/supplied metrics; the [oracle correction](artifacts/marker-completion-20261016/font-length-oracle-correction.json) preserves them and proves corrected SVG-local font use. No established reference changes. This document is complete; E4 container admission below remains required. |
+| E4 markers — complete | The unchanged [length/direction sheet and six controls](tests/Research/marker-completion-sheet/README.md) and [presentation sheet and two controls](tests/Research/marker-presentation-sheet/README.md) are exact on Windows/Linux. Preserve em/ex dimensions/anchors, lazy supplied-face discovery, native directional/pose rounding, marker display/visibility and inherited stroke/child overrides. [Length qualification](artifacts/maintenance-review-20261012/marker-qualified-results.json), [presentation qualification](artifacts/maintenance-review-20261012/marker-presentation-qualified-results.json) and the retained [font oracle correction](artifacts/marker-completion-20261016/font-length-oracle-correction.json) own diagnostics, prior-case preservation and material resource checks. E4 is complete; no established reference changed. |
 | API/resource/package contracts | Preserve bounded preparation/raster/encoding, size/work denial, cancellation/retry, partial cleanup, immutable borrowed bytes, single-use prepared ownership and output integrity. Existing [API contracts](docs/API_CONTRACT.md), package and installed-consumer protections remain required. |
 
-The latest full local [qualification](artifacts/maintenance-review-20261012/marker-qualified-results.json)
-is **8,123 tests/platform**, normal incremental Release build plus complete tests
-**78.8s Windows / 243.4s Linux**. All 8,105 preceding semantic cases and
+The latest full local [qualification](artifacts/maintenance-review-20261012/marker-presentation-qualified-results.json)
+is **8,133 tests/platform**, normal incremental Release build plus complete tests
+**80.6s Windows / 248.9s Linux**. All 8,123 preceding semantic cases and
 established exact outputs are preserved. The receipt owns the exact implementation
-revision and hosted CI outcome, including the next substantive batch's package/
-installed-consumer checks. Reuse closed exact-revision CI audits without repolling;
+revision and hosted CI outcome, including package/installed-consumer checks. Reuse closed exact-revision CI audits without repolling;
 PLAN-only edits and completed accounting work do not reopen qualification.
 
-Completed items 1–3 (G2–G7/C1–C6c), T1–T2 and E1–E3 stay closed.
-Only E4, T3 and S17 remain in the queue. Historical rejection notes,
+Completed items 1–3 (G2–G7/C1–C6c), T1–T2 and E1–E4 stay closed.
+Only T3 and S17 remain in the queue. Historical rejection notes,
 `observedGate` fields and pending-CI narratives in linked checkpoint records do
 not override qualified outcomes. Detailed mechanism/history belongs in those
 records; the queue below owns remaining work.
@@ -47,21 +46,21 @@ records; the queue below owns remaining work.
 
 ## Ordered delivery checklist
 
-**Next three deliverables: E4 marker-container admission → T3 private font requests →
-S17 release qualification.** T3 needs the existing deployment source/configuration;
-it may run as soon as that input is available and remains a required release exit.
-Bring a shared dependency forward only when it advances their concrete acceptance.
+**Next three deliverables: T3 private font requests → S17 measurement/documentation
+reconciliation → S17 final release verification.** T3 needs the existing deployment
+source/configuration. Prepare independent S17 evidence while that input is pending;
+the release still requires T3. Bring a shared fix forward only for a demonstrated
+defect in these concrete exits.
 
 | Order / required exit | Missing behavior and dependencies | Concrete acceptance and completion condition |
 | --- | --- | --- |
-| [ ] **1. E4 — marker-container admission** (item 5 / G8) | The length/direction document above is complete. Remaining live guards reject marker-container `display`/`visibility` and literal `stroke-linecap`, `stroke-linejoin`, `stroke-dasharray` and `stroke-dashoffset`. These remain within promised container presentation/ordinary paint; no deferral is proposed. Reuse existing symbol/group presentation, stroke inheritance and source replay. | Finish the [declared presentation sheet and two controls](artifacts/marker-completion-20261016/presentation-follow-up/declaration.json): display/hidden visibility/visible child override, and inherited round cap/join/dash values with a child override. Native references and baseline outcomes are not yet measured; measure before changing admission. Close E4 when all original outputs are exact on Windows/Linux, applicable error/degenerate/material resource checks pass and full qualification preserves the completed marker banks. No property × shape × instance/API grid. |
-| [ ] **2. T3 — private requests** (item 4 / G9; input pending) | End-to-end deployment evidence is missing; the host/catalog and public conformance are implemented. Needs the existing private source/configuration and unchanged deployed manifest, under the [authorized workflow](#authorized-private-font-testing). Reopen a shared text mechanism only for a demonstrated request defect. | Freeze one regular, bold, italic and fallback request. Retain four sanitized selection/metrics/pixel outcomes; convert in-scope defects into public reproductions and resolve them. The four outcomes, public regressions for any corrections and applicable qualification close T3. Private success cannot replace public acceptance or authorize new font formats. |
-| [ ] **3. S17 — release** (item 6) | E4 and T3 closed, with E3 and other completed dependencies and product/font/resource/package contracts preserved. | Every [release condition](#release-completion-s17) holds together for the finished revision. Document/test counts alone cannot establish completion. |
+| [ ] **1. T3 — private requests** (item 4 / G9; input pending) | End-to-end deployment evidence is missing; host/catalog and public conformance are implemented. Needs the existing private source/configuration and unchanged deployed manifest, under the [authorized workflow](#authorized-private-font-testing). Reopen shared text code only for a demonstrated request defect. | Freeze one regular, bold, italic and fallback request. Retain four sanitized selection/metrics/pixel outcomes; turn in-scope defects into public reproductions and resolve them. All four outcomes, resulting public regressions and applicable qualification close T3. Private success cannot replace public acceptance or authorize new font formats. |
+| [ ] **2. S17 — measurements and documentation** (item 6) | Final evidence must describe the finished subset. Reuse completed maintenance/resource evidence and existing benchmark workloads; the public portion is independent of T3. | Reconcile one small existing workload set covering outlined geometry, instances/paint, clips/layers, filters/images and supplied fonts, with latency/allocation, hardware/options/setup and selection limits. Investigate material regressions; update README/API_CONTRACT/SUPPORT_MATRIX to the qualified subset. Close when release conditions 4–5 below have current evidence, with no speculative optimization, new framework or completed-memory requalification. |
+| [ ] **3. S17 — final release verification** (item 6) | T3 and the preceding evidence exit closed; E4 and completed dependencies and product/font/resource/package contracts preserved. | Every [release condition](#release-completion-s17) holds together for the finished revision, including Windows/Linux tests, package/installed consumer and exact-revision terminal green CI. Reuse unchanged qualification. Document/test counts alone cannot establish completion. |
 
 Before implementing an exit, inspect current code and qualified manifests. An
 admitted behavior may need only evidence; an old guard/test name is not a live
-blocker. E4's presentation follow-up is planned acceptance for observed code
-guards; its native outcomes remain unmeasured. Reuse
+blocker. E4 is qualified above; historical admission guards do not reopen it. Reuse
 covered spellings, retain original inputs when replacing obsolete rejection
 assertions, and add only missing independent cases. Every visual exit requires
 exact declared outputs and applicable negative/degenerate/material ownership
@@ -103,7 +102,7 @@ own their evidence. Retain cap/dash/dot, inherited shader, reflected phase,
 nonpainting/device-width and degenerate/cleanup regressions. Root viewBox,
 pattern-content viewBox and stroke host maps remain distinct native stages.
 Composition/resource exits are complete under item 3, including T1 glyph
-contexts. Only marker source extensions (E4) remain required here.
+contexts. Marker source extensions are also complete under E4.
 
 <a id="g5-viewports-clips-masks-and-composition"></a>
 <a id="g6-patterns"></a>
@@ -190,11 +189,11 @@ references. Preserve per-primitive spaces, binary/merge transfers, distinct
 CPU-kernel/shadow consumers, premultiplied arithmetic, bounded regions/work,
 cancellation and cleanup. A flood override alone proves no color transition.
 
-E4 in the ordered checklist is the remaining G8 exit; E1–E3 are qualified. Open/closed
+E1–E4 are qualified under the evidence index above. Open/closed
 path auto orientation, ordinary curve tangents/degenerates, arcs, point lists and
 instance CSS priority already have exact [path](tests/Research/path-marker-content/manifest.json)
 and [instance](tests/Research/marker-instance-content/manifest.json) cases; preserve
-them and add only the uncovered E4 witnesses. Preserve the
+them together with the two completed E4 banks. Preserve the
 [whole effects sheet and eleven controls](tests/Research/effects-marker-sheet/README.md),
 [filter-region results](tests/Research/filter-regions/manifest.json) and qualified
 colored-effects, affine capture, output-clip and nested-halo witnesses. Reuse
@@ -211,8 +210,8 @@ device rounding and padded capture remain closed.
 
 Release is complete only when all of these hold for the **finished revision**:
 
-1. E4 and T3 have met the concrete exits above, and completed G2–G7,
-   T1–T2/E1–E3 dependencies remain qualified. Retain linked
+1. T3 and the S17 evidence/documentation exit above are closed, and completed G2–G8,
+   T1–T2/E1–E4 dependencies remain qualified. Retain linked
    exact acceptance, measured valid-degenerate outcomes and applicable negative/
    resource regressions. No checklist row remains candidate-only. Reused evidence
    is sufficient; unverified behavior, actual gates and known in-scope defects stay

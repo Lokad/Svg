@@ -9,7 +9,7 @@ The frozen selection and measured outcomes are recorded below.
 
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
-variants**. **Thirty-four additional authored documents** (twenty-four CC0 and ten MIT
+variants**. **Thirty-five additional authored documents** (twenty-five CC0 and ten MIT
 documents) are complete and counted separately. Preserve the delivered
 [effects sheet](../tests/Research/effects-marker-sheet/README.md),
 [composition sheet](../tests/Research/composition-sheet/README.md) and
@@ -17,6 +17,16 @@ documents) are complete and counted separately. Preserve the delivered
 [shared map sheet](../tests/Research/shared-paint-map-sheet/README.md), including their
 separately counted controls and original sources/options/references.
 These failure-selected cases establish declared outcomes, not a general SVG success rate.
+
+The unchanged [marker presentation sheet](../tests/Research/marker-presentation-sheet/README.md)
+is complete with two independent controls exact on Windows/Linux. Eighteen healthy
+stable native captures retain original source/options. Existing inheritance and
+replay carry marker visibility and round/dashed strokes; marker display is ignored.
+The [receipt](../artifacts/maintenance-review-20261012/marker-presentation-qualified-results.json)
+records **8,133 tests/platform**, all 8,123 prior cases, and normal incremental
+Release build plus full tests **80.6s Windows / 248.9s Linux**. This adds authored
+CC0 document 35 and closes E4. Only T3 private evidence and S17 remain in PLAN;
+older implementation checkpoints below retain their historical scope/status.
 
 The unchanged [marker-length/direction sheet](../tests/Research/marker-completion-sheet/README.md)
 is complete with six controls exact on Windows/Linux. Em/ex lengths, marker/child
@@ -28,7 +38,7 @@ in the [oracle study](../artifacts/marker-completion-20261016/font-length-oracle
 Verified preload changes neither source/options nor any established reference.
 The [receipt](../artifacts/maintenance-review-20261012/marker-qualified-results.json)
 records 8,123 tests/platform and every prior case. This adds CC0 document 34.
-E4 container display/visibility/stroke admission, T3 and S17 remain required.
+E4 container presentation is qualified above; T3 and S17 remain required.
 
 The unchanged [retained-instance effect sheet](../tests/Research/retained-instance-effect-sheet/README.md)
 is complete with eight declared controls and two focused translated-wrapper
