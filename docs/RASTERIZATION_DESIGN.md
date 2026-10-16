@@ -1,3 +1,24 @@
+## Fractional line source follow-up (2026-10-16)
+
+The [three unchanged MIT Feather documents](../tests/Research/feather-line-documents/README.md)
+exposed integer-only endpoint parsing. Path-only diagnostic twins matched original
+native screenshots, identifying the existing shared native stroke as the required
+mechanism. `SvgLineSyntax` now retains finite bounded doubles through the ordinary
+bare-number/px parser. Fractional endpoints select the native stroke; original
+integer band/cap/dash choices remain intact. Recording and square-cap visual bounds
+narrow to native floats at their existing stage; marker direction subtracts native
+float endpoints. Source replay and shader placement use the same typed endpoints.
+
+All three original 24×24 transparent outputs and two focused axial/replay controls
+are exact on both platforms, using thirty frozen healthy stable captures. Nine
+existing fractional-line/opacity rejection cases also become exact with unchanged
+goldens; twenty-seven new Linux captures confirm those originals independently.
+The baseline rejection records and diagnostics remain in the ignored
+[study](../artifacts/feather-line-documents-20261016/), alongside final local
+qualification: 8,147 tests/platform, 80s Windows / 252s Linux for build plus full
+tests. Material denial/cancellation/cleanup/retry protections use existing routes.
+No source/raster pipeline, runtime dependency or measurement framework was added.
+
 ## Symbol presentation follow-up (2026-10-16)
 
 The [sprite sheet and controls](../tests/Research/symbol-presentation-sheet/README.md)

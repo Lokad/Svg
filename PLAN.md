@@ -1,7 +1,7 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-16: standalone checkpoint qualified; public symbol correction
-locally qualified; three sourced fractional-line documents queued; private adoption pending.
+Updated 2026-10-16: standalone checkpoint qualified; public symbol/fractional-line
+corrections locally qualified; hosted final verification pending; private adoption pending.
 Preserve the current implementation work, qualified `inv-146` correction and every
 established exact result, original SVG/font/reference bytes, options and default
 resource limits. This file owns delivery order, required exits and scope
@@ -29,7 +29,7 @@ are unchanged. This explicitly supersedes earlier private-access prerequisites.
 | Completed commitment | Existing evidence and required preservation |
 | --- | --- |
 | Frozen cohorts and original fixtures | **27/27 corporate documents / 258/258 variants exact on Windows/Linux**, with unchanged [membership/recipes](tests/References/inventory/corporate-cohort-v1.json) and [measurement](tests/References/inventory/corporate-cohort-current.json). **50/50 selected documents complete**, including whole `inv-146`, original marker/shadow and supplied-font fixtures, SVG Translate, `inv-127` and `inv-145`: [gap ledger](tests/References/inventory/svg-gap-cases.json), [inventory](docs/INVENTORY.md). Failure-selected inputs establish no representative success rate. |
-| Integration documents and retained libraries | **35 authored documents** (25 CC0, 10 MIT) and **one sourced W3C decoration document** exact on both platforms, separate from the cohorts; [INVENTORY](docs/INVENTORY.md) owns the list, controls and immutable assets/options. Preserve `inv-146`'s oval/text and [merge controls](tests/Research/filter-merges/README.md), [merge qualification](artifacts/maintenance-review-20261012/merge-qualified-results.json), **149/149 paint-recording results** and I Ching's **24 exact / one out-of-scope animation boundary**. |
+| Integration documents and retained libraries | **36 authored documents** (26 CC0, 10 MIT) and **four sourced documents** (one W3C decoration document and three [MIT Feather icons](tests/Research/feather-line-documents/README.md)) exact on both platforms, separate from the cohorts; [INVENTORY](docs/INVENTORY.md) owns the list, controls and immutable assets/options. Preserve `inv-146`'s oval/text and [merge controls](tests/Research/filter-merges/README.md), [merge qualification](artifacts/maintenance-review-20261012/merge-qualified-results.json), **149/149 paint-recording results** and I Ching's **24 exact / one out-of-scope animation boundary**. |
 | G2–G7 / C1–C6c shared dependencies | Instance/viewport maps, retained curves and affine/non-scaling strokes, shader placement, clip unions/forward/object-box binding, mask regions/opacity, bounded tile content/clips/masks, image placement and static CSS are complete under the [boundary/evidence index below](#required-support-boundaries-and-finite-exits), [existing map witnesses](artifacts/shared-stroke-pattern-maps-20261015/existing-map-witnesses.json), [tile-content qualification](artifacts/maintenance-review-20261012/pattern-content-qualified-results.json) and [shared-map qualification](artifacts/maintenance-review-20261012/shared-maps-qualified-results.json). Marker extensions are also qualified under E4 below; these mechanisms are available dependencies. |
 | G9 public text / T1–T2 | The [instance/paint sheet](tests/Research/instance-paint-exit-sheet/README.md) and [composite-flag sheet](tests/Research/composite-flag-exit-sheet/README.md) are complete with **4/4** and **3/3** exact controls on both platforms. Retain [paint qualification](artifacts/maintenance-review-20261012/text-paints-qualified-results.json), [dormant forward-paint follow-up](artifacts/maintenance-review-20261012/dormant-paints-qualified-results.json), [composite qualification](artifacts/maintenance-review-20261012/composite-flags-qualified-results.json), intended-font/metrics proof and the finite [G9 boundary](#g9-supplied-font-labels-and-text-paths). Catalog conformance and the [FontProbe host](tools/Lokad.Svg.FontProbe/README.md), including six transport/input regressions, are implemented; the four end-to-end public requests are T3-public; deployed-manifest evidence remains T3-private. |
 | G8 qualified effects / E1–E2 and E3 source/owner placements | [Affine sources](tests/Research/affine-source-exit-sheet/README.md) **1 document / 4 controls**, [linearRGB restoration](tests/Research/linear-restoration-exit-sheet/README.md) **1 / 3**, [source boundaries](tests/Research/filter-source-exit-sheet/README.md) **1 / 8** and [owner/source composition](tests/Research/filter-owner-exit-sheet/README.md) **1 / 8** are exact on both platforms. The last bank reuses one offset witness: seven new controls, no duplicate canonical test. Preserve the three [source-offset controls and qualification](artifacts/maintenance-review-20261012/affine-offset-qualified-results.json), [filter-region results](tests/Research/filter-regions/manifest.json) **26/26**, and bank-linked qualification/resource evidence. The retained-instance exit is qualified below. |
@@ -37,7 +37,7 @@ are unchanged. This explicitly supersedes earlier private-access prerequisites.
 | E4 markers — complete | The unchanged [length/direction sheet and six controls](tests/Research/marker-completion-sheet/README.md) and [presentation sheet and two controls](tests/Research/marker-presentation-sheet/README.md) are exact on Windows/Linux. Preserve em/ex dimensions/anchors, lazy supplied-face discovery, native directional/pose rounding, marker display/visibility and inherited stroke/child overrides. [Length qualification](artifacts/maintenance-review-20261012/marker-qualified-results.json), [presentation qualification](artifacts/maintenance-review-20261012/marker-presentation-qualified-results.json) and the retained [font oracle correction](artifacts/marker-completion-20261016/font-length-oracle-correction.json) own diagnostics, prior-case preservation and material resource checks. E4 is complete; no established reference changed. |
 | API/resource/package contracts | Preserve bounded preparation/raster/encoding, size/work denial, cancellation/retry, partial cleanup, immutable borrowed bytes, single-use prepared ownership and output integrity. Existing [API contracts](docs/API_CONTRACT.md), package and installed-consumer protections remain required. |
 
-The latest full local [qualification](artifacts/maintenance-review-20261012/marker-presentation-qualified-results.json)
+The earlier marker full local [qualification](artifacts/maintenance-review-20261012/marker-presentation-qualified-results.json)
 is **8,133 tests/platform**, normal incremental Release build plus complete tests
 **80.6s Windows / 248.9s Linux**. All 8,123 preceding semantic cases and
 established exact outputs are preserved. The receipt owns the exact implementation
@@ -84,45 +84,23 @@ selection/metrics/pixel outcomes; convert in-scope defects into public
 reproductions. This gate cannot be marked passed by public qualification, and
 standalone completion makes no claim of compatibility with that deployment.
 
-**Public SVG follow-up (2026-10-16):** the [symbol sprite sheet and two controls](tests/Research/symbol-presentation-sheet/)
-now match frozen Windows/Linux references exactly. Existing retained-source
-presentation carries symbol display/visibility and explicit visible leaves that
-override a hidden use; preserve hidden-use suppression and child aliases excluding
-symbol ancestors. Pinned Chrome suppresses symbol instances with `display:none`,
-unlike its marker behavior and the SVG 2 direct-symbol-instance rule; retain that
-native discriminator. [Local qualification](artifacts/symbol-presentation-20261016/qualified-results.json)
-passes **8,142 tests/platform**, **104s Windows / 377s Linux** for build plus full
-tests, including representative denial/cancellation/cleanup/retry. No old SVG,
-font, reference or option changed. Hosted finished-revision qualification is pending.
+**Public SVG follow-up (2026-10-16): local corrections complete; hosted finished-revision verification pending.**
+The finite delivery sequence is:
 
-The next three deliverables are finite:
+| Exit | Acceptance and status |
+| --- | --- |
+| [x] **P1 — symbol presentation** | The [whole sprite sheet and two controls](tests/Research/symbol-presentation-sheet/README.md) are exact on Windows/Linux. Retained source presentation preserves display, inherited visibility, explicit child overrides and source-ancestor exclusion. Invalid values and representative material resource checks pass. Pinned native symbol/marker display distinctions remain documented. |
+| [x] **P3/P4 — bounded public scan and fractional line endpoints** | Six unchanged MIT Feather SVGs were screened; three passing screens add no corpus cases. The three retained failures—Aperture, Feather and Sun—now match their original 24×24 transparent outputs exactly on Windows/Linux, alongside [two controls](tests/Research/feather-line-documents/README.md). Existing source/native strokes admit finite fractional bare-number/px endpoints while preserving integer fast paths. Nine old fractional-line rejection cases now compare exactly against their unchanged references; independent Linux triples confirm those original golds. No new stroker, API grid or acquisition quota. |
+| [ ] **P2 — finished-correction verification** | [Full local qualification](artifacts/feather-line-documents-20261016/qualified-results.json) passes **8,147 tests/platform**, **80s Windows / 252s Linux** for build plus tests. Push the two buildable corrections together; require terminal green CI for the exact finished revision, including package/consumer and resource checks. Reuse unchanged benchmarks, approximate-memory and maintenance evidence. Ordinary qualification stays below ten minutes. |
 
-1. **P1 — symbol presentation: locally complete.** One whole document and both
-   controls are exact on Windows/Linux; invalid values and representative resource
-   outcomes pass. No shape/API combination grid.
-2. **P2 — finished-correction checkpoint:** run the required hosted checks once the
-   correction is finished, preserve every established exact result and record the
-   exact revised source/CI outcome. Reuse unchanged measurements and completed
-   memory/maintenance evidence; ordinary qualification stays below ten minutes.
-3. **P3 — public-source follow-up: scan complete.** Six unchanged MIT Feather SVGs
-   at pinned revision `1b002399e8758fb2bccea4d07312dc9e0f43dcb8` were screened on
-   Windows/Linux. Activity, GitHub and Slack screens are exact and add no corpus
-   cases. Aperture, Feather and Sun are rejected: their fractional line endpoints
-   hit integer-only line parsing. [Source/selection](artifacts/public-svg-scan-20261016/selection.json)
-   and platform screen results retain provenance and distinct outcomes; these
-   failure-selected inputs establish no general success rate.
-
-**Next required correction — fractional line endpoints (G3/G4):** retain the three
-unchanged public documents with MIT notices and stable native references. Extend
-the existing source/native-stroke route for finite fractional endpoints, preserving
-integer fast paths and source replay. Close all three declared 24×24 transparent
-outputs exactly on Windows/Linux; use only missing axial/diagonal controls and
-material boundary/resource checks. No new stroke implementation or combinations
-grid. Finish this shared correction before another acquisition batch or CI refresh.
-
-P1/P2 are complete only with exact document/control results and finished-revision
-verification. This follow-up does not expand the font, shaping or effects scope;
-T3-private remains a separate pending adoption gate.
+Sources, original MIT notices, declared outputs and stable native captures are
+retained; the [six-document scan](artifacts/public-svg-scan-20261016/selection.json)
+establishes no representative success rate. Both shared corrections preserve all
+old SVG/font/reference bytes and options, **27/27 / 258/258**, selected **50/50**,
+resource limits, cancellation/cleanup, ownership and font/shaping boundaries.
+P2 closes this finite public follow-up only after hosted finished-revision checks;
+T3-private remains a separate pending adoption gate. Further corpus acquisition
+requires a demonstrated gap within the existing subset.
 
 The S17 measurement set is finite: existing `SvgCurveBenchmarks` outlined-wordmark,
 gradient-clip and isolated-opacity methods; `SvgPatternBenchmarks` identical instances;

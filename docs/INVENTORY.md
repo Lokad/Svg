@@ -9,16 +9,21 @@ The frozen selection and measured outcomes are recorded below.
 
 The [symbol sprite sheet](../tests/Research/symbol-presentation-sheet/README.md)
 and two controls are exact on Windows/Linux, closing symbol display/visibility
-admission and the visible-leaf override lost by flat symbols. Full local
-qualification passes 8,142 tests/platform. This adds one CC0 document: **36 authored
+admission and visible-leaf overrides. This adds one CC0 document: **36 authored
 documents (26 CC0 / 10 MIT)**, separately counted from corporate/selected cohorts.
-Hosted qualification is pending. The finite public-source follow-up screened six
-unchanged [MIT Feather SVGs](https://github.com/feathericons/feather/tree/1b002399e8758fb2bccea4d07312dc9e0f43dcb8/icons):
-Activity, GitHub and Slack screen exact on both platforms and add no corpus cases;
-Aperture, Feather and Sun reject fractional line endpoints and are the next
-required whole documents in PLAN. Screens are single healthy native captures,
-not yet stable qualification. Sources, license and [results](../artifacts/public-svg-scan-20261016/)
-remain retained. No representative success-rate claim follows from this selection.
+The bounded six-icon scan of unchanged MIT Feather SVGs retained three failures:
+[Aperture, Feather and Sun](../tests/Research/feather-line-documents/README.md) now
+match their original **24×24 transparent** outputs exactly on Windows/Linux, with
+two CC0 diagnostic controls. These are **three additional sourced MIT documents**,
+separate from the existing sourced W3C example (four sourced documents total).
+Activity, GitHub and Slack screened exact on both platforms and add no corpus cases.
+Original license, pinned upstream bytes, recipes and stable platform references are
+retained. Nine older fractional-line cases now compare exactly against their
+unchanged golds, independently confirmed by Linux native triples. Full local
+qualification passes **8,147 tests/platform**, **80s Windows / 252s Linux** for build
+plus tests; hosted finished-revision verification is pending in PLAN. The
+[selection/results](../artifacts/public-svg-scan-20261016/) establish no representative
+success rate. All established cohort and authored-document outputs remain exact.
 
 [Public standalone font qualification](../tests/Research/public-font-qualification/README.md)
 now covers regular, bold, real italic and intentional fallback requests end to end

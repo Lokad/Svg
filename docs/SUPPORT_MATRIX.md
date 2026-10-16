@@ -1,17 +1,24 @@
-## Public symbol follow-up (2026-10-16)
+## Public symbol and fractional-line follow-up (2026-10-16)
 
-Symbol `display` and `visibility` presentation attributes, inline styles and admitted
-stylesheets now use the existing retained-content presentation. Pinned Chrome
-suppresses symbol instances with `display:none`; marker display remains ignored.
-Symbol visibility inherits and explicit child/group visibility overrides it, including
-a visible leaf overriding a hidden use. Direct child aliases exclude source ancestors.
-The [whole sheet and two controls](../tests/Research/symbol-presentation-sheet/README.md)
-are exact on Windows/Linux; 8,142 local tests/platform pass, including useful invalid
-values and material resource outcomes. Hosted finished-revision verification is pending.
-The finite source scan additionally identified integer-only line endpoint parsing
-as a live G3/G4 blocker for three public Feather documents; [PLAN](../PLAN.md#delivery-order)
-owns that next shared correction. Existing exact cohorts and font/resource contracts
-remain preserved. This follow-up does not expand the agreed finite subset.
+Symbol display/visibility presentation attributes, inline styles and admitted
+stylesheets use existing retained-content presentation. Pinned Chrome suppresses
+symbol instances with `display:none`; marker display remains ignored. Visibility
+inherits with explicit child/group overrides, including a visible leaf overriding
+a hidden use. Child aliases exclude source ancestors. The [whole sheet and two
+controls](../tests/Research/symbol-presentation-sheet/README.md) are exact on both platforms.
+
+Lines retain finite fractional bare-number/px endpoints and select the existing
+native-stroke route for fractional sources; integer fast paths remain selected as
+before. Existing coordinate range/token/work limits remain; percentages and other
+endpoint units remain unsupported. Recording, markers and shader/source replay
+consume the shared endpoints with native float bounds. Three unchanged public MIT
+[Feather documents and two controls](../tests/Research/feather-line-documents/README.md)
+are exact on Windows/Linux. Nine formerly rejected fractional-line/opacity cases
+are exact against their unchanged golds, independently confirmed on Linux.
+Full local qualification passes **8,147 tests/platform**, including useful invalid
+values and material resource outcomes. Hosted finished-revision verification is
+pending in [PLAN](../PLAN.md#delivery-order). Existing cohorts and font/resource
+contracts remain preserved; this closes demonstrated gaps within the agreed subset.
 
 ## Standalone qualification complete (2026-10-16)
 

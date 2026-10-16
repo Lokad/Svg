@@ -655,8 +655,8 @@ internal static class SvgLeafParser
             // A square tip's diagonal bounds the source stroke before dash segmentation.
             float inflation = halfWidth * MathF.Sqrt(2);
             // Recording rounds the local visual bounds before the output viewport transform.
-            SvgPaintBounds bounds = new(MathF.Floor(Math.Min(line.X1, line.X2) - inflation), MathF.Floor(Math.Min(line.Y1, line.Y2) - inflation),
-                MathF.Ceiling(Math.Max(line.X1, line.X2) + inflation), MathF.Ceiling(Math.Max(line.Y1, line.Y2) + inflation));
+            SvgPaintBounds bounds = new(MathF.Floor(MathF.Min((float)line.X1, (float)line.X2) - inflation), MathF.Floor(MathF.Min((float)line.Y1, (float)line.Y2) - inflation),
+                MathF.Ceiling(MathF.Max((float)line.X1, (float)line.X2) + inflation), MathF.Ceiling(MathF.Max((float)line.Y1, (float)line.Y2) + inflation));
             return viewport is {} frame
                 ? bounds.Map(SvgAffineTransform.FromScaleOffset(frame.ScaleX, frame.ScaleY, frame.OffsetX, frame.OffsetY), element.WorkCounter, element.CancellationToken)
                 : bounds;
@@ -674,7 +674,9 @@ internal static class SvgLeafParser
         if (SvgPatternSyntax.IsPatternFill(style.Fill)) style = style with { Fill = "none" };
         SvgResolvedPaintableElement element = context.ResolveShape(style, reader, true);
         double lineWidth = SvgStrokeStyleSyntax.ParseStrokeWidth(style.Width ?? syntax.StrokeWidth ?? "1", "line");
-        if (context.RetainInstanceStrokePath || NeedsSourceBounds() || element.Transform != SvgAffineTransform.Identity || frame is {} scaled && scaled.IsScaled || syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2 || syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2 || lineWidth % 2 != 0 || element.Presentation.StrokeColor is null)
+        bool fractionalEndpoints = syntax.X1 != Math.Truncate(syntax.X1) || syntax.Y1 != Math.Truncate(syntax.Y1)
+            || syntax.X2 != Math.Truncate(syntax.X2) || syntax.Y2 != Math.Truncate(syntax.Y2);
+        if (fractionalEndpoints || context.RetainInstanceStrokePath || NeedsSourceBounds() || element.Transform != SvgAffineTransform.Identity || frame is {} scaled && scaled.IsScaled || syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2 || syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2 || lineWidth % 2 != 0 || element.Presentation.StrokeColor is null)
             return LowerNativeLine();
         SvgColor? strokeColor = element.Presentation.StrokeColor;
         int strokeWidth = SvgGeometrySyntax.ParseInteger(style.Width ?? syntax.StrokeWidth ?? "1");

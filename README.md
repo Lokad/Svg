@@ -35,6 +35,13 @@ checklist, dependencies and release exit. Mechanism/history belongs in
 [RASTERIZATION_DESIGN](docs/RASTERIZATION_DESIGN.md), and measurements with their
 workload limits belong in [BENCHMARKS](docs/BENCHMARKS.md).
 
+The public SVG follow-up closes symbol display/visibility and fractional line
+endpoints through existing retained-source/native-stroke machinery. One symbol
+sheet and three unchanged MIT Feather documents are exact on Windows/Linux;
+nine older rejection cases now match unchanged goldens. Full local qualification
+passes **8,147 tests/platform**; hosted verification of these corrections is
+pending in [PLAN](PLAN.md#delivery-order).
+
 ## Development
 
 ```powershell

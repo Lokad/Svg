@@ -1,0 +1,282 @@
+{
+  "schemaVersion": 1,
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "purpose": "Close three retained unchanged MIT Feather documents by extending finite fractional line endpoints through existing source/native strokes; two controls cover axial paint and definition/affine/shader replay. Original declaration before implementation, no shape/API grid.",
+  "sourceRevision": "1b002399e8758fb2bccea4d07312dc9e0f43dcb8",
+  "linuxReferenceQualification": {
+    "date": "2026-10-16",
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  },
+  "cases": [
+    {
+      "id": "aperture",
+      "input": "aperture.svg",
+      "width": 24,
+      "height": 24,
+      "role": "document-output",
+      "sourceSha256": "3d6c859251f304def7b87c36fcd658a0df61d0c6892b671f6a9b8fd090b893de",
+      "license": "MIT",
+      "scale": 1,
+      "background": "transparent",
+      "licenseEvidence": "Original MIT source copyright 2013-2023 Cole Bemis; unchanged bytes and original notice retained in LICENSE.",
+      "selection": "One of three failing documents retained from a declared six-SVG scan, or a focused fractional endpoint/shared replay control. No passing screen promoted; no general success-rate claim.",
+      "sourceUrl": "https://raw.githubusercontent.com/feathericons/feather/1b002399e8758fb2bccea4d07312dc9e0f43dcb8/icons/aperture.svg",
+      "reference": "references/aperture.png",
+      "referenceSha256": "e6334f169bc5f7f5fb607fffecf9f445c80bef4c5ddd2686b0efad1f1b4eccf7",
+      "captures": [
+        {
+          "pngSha256": "e6334f169bc5f7f5fb607fffecf9f445c80bef4c5ddd2686b0efad1f1b4eccf7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e6334f169bc5f7f5fb607fffecf9f445c80bef4c5ddd2686b0efad1f1b4eccf7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e6334f169bc5f7f5fb607fffecf9f445c80bef4c5ddd2686b0efad1f1b4eccf7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/aperture.png",
+      "linuxReferenceSha256": "e6334f169bc5f7f5fb607fffecf9f445c80bef4c5ddd2686b0efad1f1b4eccf7",
+      "linuxCaptures": [
+        {
+          "pngSha256": "e6334f169bc5f7f5fb607fffecf9f445c80bef4c5ddd2686b0efad1f1b4eccf7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e6334f169bc5f7f5fb607fffecf9f445c80bef4c5ddd2686b0efad1f1b4eccf7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e6334f169bc5f7f5fb607fffecf9f445c80bef4c5ddd2686b0efad1f1b4eccf7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "feather",
+      "input": "feather.svg",
+      "width": 24,
+      "height": 24,
+      "role": "document-output",
+      "sourceSha256": "691db93b4188412b968d0c40c3e88f857daa207dcf4ce0b3ae69423daee5f7b5",
+      "license": "MIT",
+      "scale": 1,
+      "background": "transparent",
+      "licenseEvidence": "Original MIT source copyright 2013-2023 Cole Bemis; unchanged bytes and original notice retained in LICENSE.",
+      "selection": "One of three failing documents retained from a declared six-SVG scan, or a focused fractional endpoint/shared replay control. No passing screen promoted; no general success-rate claim.",
+      "sourceUrl": "https://raw.githubusercontent.com/feathericons/feather/1b002399e8758fb2bccea4d07312dc9e0f43dcb8/icons/feather.svg",
+      "reference": "references/feather.png",
+      "referenceSha256": "3574d63fa4bc54647734ef3bd59f2447557eb09cc035232c2868234e09e8692f",
+      "captures": [
+        {
+          "pngSha256": "3574d63fa4bc54647734ef3bd59f2447557eb09cc035232c2868234e09e8692f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3574d63fa4bc54647734ef3bd59f2447557eb09cc035232c2868234e09e8692f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3574d63fa4bc54647734ef3bd59f2447557eb09cc035232c2868234e09e8692f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/feather.png",
+      "linuxReferenceSha256": "3574d63fa4bc54647734ef3bd59f2447557eb09cc035232c2868234e09e8692f",
+      "linuxCaptures": [
+        {
+          "pngSha256": "3574d63fa4bc54647734ef3bd59f2447557eb09cc035232c2868234e09e8692f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3574d63fa4bc54647734ef3bd59f2447557eb09cc035232c2868234e09e8692f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3574d63fa4bc54647734ef3bd59f2447557eb09cc035232c2868234e09e8692f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "sun",
+      "input": "sun.svg",
+      "width": 24,
+      "height": 24,
+      "role": "document-output",
+      "sourceSha256": "6c346fdb49a8af368b91a07fb43a8b8d9419af84ca005a06ac075679a9ee2380",
+      "license": "MIT",
+      "scale": 1,
+      "background": "transparent",
+      "licenseEvidence": "Original MIT source copyright 2013-2023 Cole Bemis; unchanged bytes and original notice retained in LICENSE.",
+      "selection": "One of three failing documents retained from a declared six-SVG scan, or a focused fractional endpoint/shared replay control. No passing screen promoted; no general success-rate claim.",
+      "sourceUrl": "https://raw.githubusercontent.com/feathericons/feather/1b002399e8758fb2bccea4d07312dc9e0f43dcb8/icons/sun.svg",
+      "reference": "references/sun.png",
+      "referenceSha256": "da1934af6df7c27abf60b30eea28cde0916a6875a53c9d54fe065b0dc348e56b",
+      "captures": [
+        {
+          "pngSha256": "da1934af6df7c27abf60b30eea28cde0916a6875a53c9d54fe065b0dc348e56b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "da1934af6df7c27abf60b30eea28cde0916a6875a53c9d54fe065b0dc348e56b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "da1934af6df7c27abf60b30eea28cde0916a6875a53c9d54fe065b0dc348e56b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/sun.png",
+      "linuxReferenceSha256": "da1934af6df7c27abf60b30eea28cde0916a6875a53c9d54fe065b0dc348e56b",
+      "linuxCaptures": [
+        {
+          "pngSha256": "da1934af6df7c27abf60b30eea28cde0916a6875a53c9d54fe065b0dc348e56b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "da1934af6df7c27abf60b30eea28cde0916a6875a53c9d54fe065b0dc348e56b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "da1934af6df7c27abf60b30eea28cde0916a6875a53c9d54fe065b0dc348e56b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "fractional-axial-line",
+      "input": "fractional-axial-line.svg",
+      "width": 96,
+      "height": 64,
+      "role": "control",
+      "sourceSha256": "542588ec625493ddd750628deb9e919458c8a6d0e734d724a59f609b4e89015f",
+      "license": "CC0-1.0",
+      "scale": 1,
+      "background": "transparent",
+      "licenseEvidence": "Original authored work dedicated to the public domain through the asset SPDX CC0-1.0 declaration.",
+      "selection": "One of three failing documents retained from a declared six-SVG scan, or a focused fractional endpoint/shared replay control. No passing screen promoted; no general success-rate claim.",
+      "reference": "references/fractional-axial-line.png",
+      "referenceSha256": "2a26a2fd9a7a11c897c2784d1825781dfb97573ed48373b724cf1f5260721ff2",
+      "captures": [
+        {
+          "pngSha256": "2a26a2fd9a7a11c897c2784d1825781dfb97573ed48373b724cf1f5260721ff2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2a26a2fd9a7a11c897c2784d1825781dfb97573ed48373b724cf1f5260721ff2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2a26a2fd9a7a11c897c2784d1825781dfb97573ed48373b724cf1f5260721ff2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/fractional-axial-line.png",
+      "linuxReferenceSha256": "2a26a2fd9a7a11c897c2784d1825781dfb97573ed48373b724cf1f5260721ff2",
+      "linuxCaptures": [
+        {
+          "pngSha256": "2a26a2fd9a7a11c897c2784d1825781dfb97573ed48373b724cf1f5260721ff2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2a26a2fd9a7a11c897c2784d1825781dfb97573ed48373b724cf1f5260721ff2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2a26a2fd9a7a11c897c2784d1825781dfb97573ed48373b724cf1f5260721ff2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "fractional-line-replay",
+      "input": "fractional-line-replay.svg",
+      "width": 112,
+      "height": 72,
+      "role": "control",
+      "sourceSha256": "8730f142362fddf8cbc8b949f6bb8edc28d112c0fe8056ae122f64bd70629d5f",
+      "license": "CC0-1.0",
+      "scale": 1,
+      "background": "transparent",
+      "licenseEvidence": "Original authored work dedicated to the public domain through the asset SPDX CC0-1.0 declaration.",
+      "selection": "One of three failing documents retained from a declared six-SVG scan, or a focused fractional endpoint/shared replay control. No passing screen promoted; no general success-rate claim.",
+      "reference": "references/fractional-line-replay.png",
+      "referenceSha256": "4ab6f24f65f90af8823b72927d5dace914e9a401f20522040f0afaa762b78c1a",
+      "captures": [
+        {
+          "pngSha256": "4ab6f24f65f90af8823b72927d5dace914e9a401f20522040f0afaa762b78c1a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4ab6f24f65f90af8823b72927d5dace914e9a401f20522040f0afaa762b78c1a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4ab6f24f65f90af8823b72927d5dace914e9a401f20522040f0afaa762b78c1a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/fractional-line-replay.png",
+      "linuxReferenceSha256": "4ab6f24f65f90af8823b72927d5dace914e9a401f20522040f0afaa762b78c1a",
+      "linuxCaptures": [
+        {
+          "pngSha256": "4ab6f24f65f90af8823b72927d5dace914e9a401f20522040f0afaa762b78c1a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4ab6f24f65f90af8823b72927d5dace914e9a401f20522040f0afaa762b78c1a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4ab6f24f65f90af8823b72927d5dace914e9a401f20522040f0afaa762b78c1a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ]
+}

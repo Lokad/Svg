@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Stroke-opacity inheritance controls: 72 exact and nine retained geometry rejections, through all six outputs.",
+  "purpose": "Stroke-opacity inheritance controls: 81 exact cases through the declared outputs. Nine formerly rejected fractional-line cases now compare against their unchanged original references.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
@@ -107,8 +107,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "unsupported"
     },
     {
       "id": "symbol-mixed-white",
@@ -122,8 +121,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "unsupported"
     },
     {
       "id": "symbol-mixed-black",
@@ -137,8 +135,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "unsupported"
     },
     {
       "id": "forward-ellipse-transparent",
@@ -194,8 +191,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "unsupported"
     },
     {
       "id": "group-authored-opacity-white",
@@ -209,8 +205,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "unsupported"
     },
     {
       "id": "group-authored-opacity-black",
@@ -224,8 +219,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "unsupported"
     },
     {
       "id": "group-inherited-opacity-transparent",
@@ -239,8 +233,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "unsupported"
     },
     {
       "id": "group-inherited-opacity-white",
@@ -254,8 +247,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "unsupported"
     },
     {
       "id": "group-inherited-opacity-black",
@@ -269,8 +261,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "unsupported"
     },
     {
       "id": "nested-use-authored-transparent",
@@ -1154,5 +1145,24 @@
       "background": "transparent",
       "role": "fidelity"
     }
-  ]
+  ],
+  "fractionalLineQualification": {
+    "date": "2026-10-16",
+    "cases": [
+      "symbol-mixed-transparent",
+      "symbol-mixed-white",
+      "symbol-mixed-black",
+      "group-authored-opacity-transparent",
+      "group-authored-opacity-white",
+      "group-authored-opacity-black",
+      "group-inherited-opacity-transparent",
+      "group-inherited-opacity-white",
+      "group-inherited-opacity-black"
+    ],
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "decodedPixelsExactAgainstUnchangedReferences": true
+  }
 }

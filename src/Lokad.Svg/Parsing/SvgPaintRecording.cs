@@ -141,7 +141,7 @@ internal static class SvgPaintRecording
                     break;
                 case "line":
                     SvgLineSyntax line = SvgLineSyntax.Parse(input);
-                    bounds = new(Math.Min(line.X1, line.X2), Math.Min(line.Y1, line.Y2), Math.Max(line.X1, line.X2), Math.Max(line.Y1, line.Y2));
+                    bounds = new((float)Math.Min(line.X1, line.X2), (float)Math.Min(line.Y1, line.Y2), (float)Math.Max(line.X1, line.X2), (float)Math.Max(line.Y1, line.Y2));
                     break;
                 default:
                     return null;

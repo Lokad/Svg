@@ -178,7 +178,7 @@ internal static class SvgMarkerRenderer
         try
         {
             SvgLineSyntax line = SvgLineSyntax.Parse(reader);
-            double angle = MathF.Atan2((float)line.Y2 - line.Y1, (float)line.X2 - line.X1) * (180f / MathF.PI);
+            double angle = MathF.Atan2((float)line.Y2 - (float)line.Y1, (float)line.X2 - (float)line.X1) * (180f / MathF.PI);
             positions[0] = new(SvgMarkerVertexRole.Start, new(line.X1, line.Y1), angle);
             positions[1] = new(SvgMarkerVertexRole.End, new(line.X2, line.Y2), angle);
         }

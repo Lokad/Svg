@@ -1,0 +1,10 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="112" height="72" fill="none">
+  <defs>
+    <linearGradient id="paint"><stop stop-color="#244a77"/><stop offset="1" stop-color="#bd4f36"/></linearGradient>
+    <line id="source" x1="8.25" y1="12.5" x2="38.75" y2="32.125"/>
+  </defs>
+  <use href="#source" stroke="#244a77" stroke-width="2.5" stroke-linecap="round"/>
+  <use href="#source" transform="translate(52 0) scale(1.25 1.5)" stroke="url(#paint)" stroke-width="2.5" stroke-linecap="round"/>
+  <use href="#source" transform="translate(6 35)" stroke="#43805b" stroke-width="2" stroke-linecap="square" stroke-dasharray="3 2"/>
+</svg>
