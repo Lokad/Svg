@@ -7,6 +7,36 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgRoundedRectSourceTests
 {
     [Theory]
+    [InlineData("rotate(17 20 16)", "fill='#2168ad'")]
+    [InlineData("matrix(1 .25 -.3 .8 8 2)", "fill='#2168ad' stroke='#ab7128' stroke-width='2'")]
+    public void Affine_rounded_sources_preserve_conics_instances_and_material_cleanup(string transform, string paint)
+    {
+        string source = "<rect id='source' x='4' y='6' width='24' height='18' rx='5' ry='3' "
+            + paint + " transform='" + transform + "'/>";
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='48' height='40'>" + source + "</svg>");
+        byte[] instanced = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='48' height='40'><defs>" + source + "</defs><use href='#source'/></svg>");
+        RenderBudget budget = new(1_000_000);
+        ParserWorkCounter work = new(1_000_000);
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, work, CancellationToken.None))
+        {
+            SvgAuthoredPath path = Assert.IsType<SvgAuthoredPath>(scene.Geometries[0].AuthoredPath);
+            Assert.True(path.IsKnownConvex);
+            Assert.Equal(4, path.Commands.ToArray().Count(static command => command.Verb == SvgAuthoredPathVerb.Conic));
+            Assert.Equal(SvgGeometrySyntax.ParseTransform(transform, new(1_000_000), CancellationToken.None), path.SceneMap);
+            Assert.Equal(SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+                SvgConverter.ConvertToPng(instanced, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        RenderBudget denied = new(budget.Snapshot().PeakBytes / 2);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+            SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(1_000_000), CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+            SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(work.Used / 2), CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
     [InlineData(5, 3, 10, 4)]
     [InlineData(12.75, 3, 10, 4)]
     [InlineData(5, 9.5, 10, 4)]

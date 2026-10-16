@@ -2122,7 +2122,10 @@ internal static class SvgDefinitionParser
         SvgRectangleSyntax roundedSyntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
         if ((roundedSyntax.CornerX ?? roundedSyntax.CornerY ?? 0) != 0 || (roundedSyntax.CornerY ?? roundedSyntax.CornerX ?? 0) != 0) return ParseShapeDefinition(reader, context, state, symbolViewBox, true);
         SvgComputedStyle style = context.ResolveStyle(reader);
-        bool nativeRectangle = context.RetainInstanceStrokePath;
+        // Named live leaves also register a dormant source. Its authored map
+        // needs the ordinary retained shape route before any use is encountered.
+        bool nativeRectangle = context.RetainInstanceStrokePath
+            || !SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), context.WorkCounter, context.CancellationToken).IsAxisAligned;
         if (!nativeRectangle && style.Stroke is string nativeStroke && !nativeStroke.AsSpan().Trim().Equals("none", StringComparison.OrdinalIgnoreCase))
         {
             double width = SvgStrokeStyleSyntax.ParseStrokeWidth(style.Width ?? roundedSyntax.StrokeWidth, "rectangle");

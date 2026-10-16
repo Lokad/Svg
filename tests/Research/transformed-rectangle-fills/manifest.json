@@ -93,9 +93,7 @@
       "width": 64,
       "height": 48,
       "background": "transparent",
-      "role": "admission-gate",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Only supported local geometry use references are implemented."
+      "role": "fidelity"
     },
     {
       "id": "clip-crossing",

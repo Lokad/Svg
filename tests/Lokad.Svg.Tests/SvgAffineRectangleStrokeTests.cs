@@ -6,6 +6,26 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgAffineRectangleStrokeTests
 {
     [Theory]
+    [InlineData("skewY(45)")]
+    [InlineData("rotate(17 24 20)")]
+    public void Naming_an_affine_rectangle_preserves_live_and_referenced_output(string transform)
+    {
+        string source = "<rect x='12' y='8' width='32' height='24' fill='#2168ad' transform='" + transform + "'/>";
+        string named = source.Replace("<rect ", "<rect id='source' ", StringComparison.Ordinal);
+        byte[] expected = Render(source);
+        Assert.Equal(expected, Render(named));
+        Assert.Equal(expected, Render("<defs>" + named + "</defs><use href='#source'/>"));
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot scene = SvgRootParser.Parse(Input(named), SvgRenderLimits.Default, budget, CancellationToken.None))
+            Assert.NotEmpty(scene.Geometries.ToArray());
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        RenderBudget denied = new(budget.Snapshot().PeakBytes / 2);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+            SvgRootParser.Parse(Input(named), SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, denied.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
     [InlineData("0", "24", "matrix(1 .25 -.3 1 8 2)")]
     [InlineData("32", "0", "matrix(1 .25 -.3 1 8 2)")]
     [InlineData("0", "24", "matrix(0 1 -1 0 60 0)")]

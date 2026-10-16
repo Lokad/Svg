@@ -34,6 +34,8 @@ internal static class SvgLeafParser
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths on transformed rectangle strokes are not implemented.");
             return LowerRoundedRect(reader, context, syntax, 0, 0, frame, state);
         }
+        if (!earlyTransform.IsAxisAligned && rounded)
+            return LowerRoundedRect(reader, context, syntax, cornerX, cornerY, frame, state);
         SvgRectangle earlyPlacement = earlyTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         SvgViewportFrame? effectiveFrame = SvgClipPathSyntax.ResolveLeafClipOrPlacement(reader, state, frame, earlyPlacement);
         if (!rounded && patternStyle.Stroke is string mappedStroke
@@ -271,13 +273,24 @@ internal static class SvgLeafParser
             string paintId = SvgGradientSyntax.ParsePaintId(style.Fill);
             if (state.Gradients.TryGetValue(paintId, out SvgLinearGradient foundLinear))
             {
-                linear = SvgGradientSyntax.MirrorBoundingBoxVector(transform, SvgGradientSyntax.MapUserSpaceVector(transform, foundLinear, frame));
+                linear = transform.IsAxisAligned
+                    ? SvgGradientSyntax.MirrorBoundingBoxVector(transform, SvgGradientSyntax.MapUserSpaceVector(transform, foundLinear, frame)) : foundLinear;
                 isLinear = true;
             }
             else if (!state.RadialGradients.TryGetValue(paintId, out radial)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
-            else radial = SvgGradientSyntax.MapUserSpaceRadial(transform, radial, frame);
-            SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
-            box = frame is null ? placement : frame.Value.Shift(placement);
+            if (!transform.IsAxisAligned)
+            {
+                box = new(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null);
+                SvgAffineTransform sceneMap = SvgViewportFrame.MapGeometry(transform, frame);
+                if (isLinear) linear = SvgGradientSyntax.BindLinearSourceMap(linear, box, sceneMap, state, context.WorkCounter, context.CancellationToken);
+                else radial = SvgGradientSyntax.BindRadialSourceMap(radial, box, sceneMap, context.WorkCounter, context.CancellationToken);
+            }
+            else
+            {
+                if (!isLinear) radial = SvgGradientSyntax.MapUserSpaceRadial(transform, radial, frame);
+                SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
+                box = frame is null ? placement : frame.Value.Shift(placement);
+            }
         }
         using BudgetedParserList<SvgPoint> noPoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         using BudgetedParserList<int> noEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);

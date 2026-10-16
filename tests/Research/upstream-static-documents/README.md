@@ -80,3 +80,9 @@ The first Windows renderer comparison is **20/26 exact**, with four rejections a
 two pixel differences. All documents remain selected. [PLAN F1.1-F1.6](../../../PLAN.md#full-svg-fixture-replacement-f1)
 records the finite required corrections and retirement gate. Renderer qualification
 and finished-batch A7 are pending; native capture health does not establish them.
+
+F1.1 now makes `nested-affine` and `pattern-affine` exact on Windows/Linux through
+shared rectangle source replay. [Targeted evidence](../../../artifacts/full-fixture-replacement-20261017/rectangle-source-qualified-results.json)
+records 1,199 core and 1,668 affected visual/resource checks per platform, including
+the promoted unchanged group-use control. The first-run20/26 result above is
+historical; the four other F1 document corrections and retirement remain required.

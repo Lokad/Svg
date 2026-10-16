@@ -6661,15 +6661,23 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Clips_pattern_tile_content_through_clip_paths()
     {
-        SvgRoot userSpace = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c'><rect x='0' y='0' width='1' height='1'/></clipPath><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red' clip-path='url(#c)'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-
-        SvgGeometry userGeometry = Assert.Single(userSpace.Geometries);
-        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null) { Clip = new(0, 0, 1, 1) }, userGeometry.Pattern.Content);
-
-        SvgRoot boundingBox = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='0.5' height='0.5'/></clipPath><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red' clip-path='url(#c)'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-
-        SvgGeometry boundingGeometry = Assert.Single(boundingBox.Geometries);
-        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null) { Clip = new(0, 0, 1, 1) }, boundingGeometry.Pattern.Content);
+        using SvgRoot userSpace = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c'><rect x='0' y='0' width='1' height='1'/></clipPath><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red' clip-path='url(#c)'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot boundingBox = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='0.5' height='0.5'/></clipPath><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red' clip-path='url(#c)'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        // Clipped leaves use retained tile scenes after A1. Protect their visible
+        // coverage independently from the old single-rectangle storage shortcut.
+        foreach (SvgRoot scene in new[] { userSpace, boundingBox })
+        {
+            RenderBudget budget = new(1_000_000);
+            using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene,
+                new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
+                for (int y = 0; y < 8; y++) for (int x = 0; x < 8; x++)
+                {
+                    int offset = (y * 8 + x) * 4;
+                    SvgColor expected = x % 4 == 0 && y % 4 == 0 ? new(255, 0, 0, 255) : SvgColor.Transparent;
+                    Assert.Equal(expected, new SvgColor(surface.Pixels[offset], surface.Pixels[offset + 1], surface.Pixels[offset + 2], surface.Pixels[offset + 3]));
+                }
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        }
     }
 
     [Fact]

@@ -469,12 +469,61 @@ internal ref struct SvgOrthogonalGeometryLowering
         return LowerFractionalPointList(points, SvgPolygonMapping.FiniteEdges, element, frame, budget) with { ElementCount = 0 };
     }
 
-    /// <summary>Lowers axis-aligned rounded rectangles or general-mapped sharp rectangles to retained fills.</summary>
+    /// <summary>Lowers rounded rectangles with retained native source conics and finite affine placement.</summary>
     internal SvgParsedGeometry LowerRoundedRectFill(double x, double y, double width, double height, double radiusX, double radiusY, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
-        if (!element.Transform.IsAxisAligned && radiusX == 0 && radiusY == 0)
-            return LowerRectangleSourceFill(x, y, width, height, element, frame, budget);
+        if (!element.Transform.IsAxisAligned)
+        {
+            if (radiusX == 0 && radiusY == 0)
+                return LowerRectangleSourceFill(x, y, width, height, element, frame, budget);
+            (SvgAffineTransform nativeMap, double _, double _) = BuildDeviceMap(element.Transform, frame, false);
+            using BudgetedParserList<SvgAuthoredPathCommand> source = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+            SvgRoundedRectPath.Append(source, x, y, width, height, radiusX, radiusY);
+            // As for mapped ovals, retain conic controls for legacy bounds while
+            // native playback consumes the original float source and its map.
+            const int pointCapacity = 41;
+            using RenderBudget.BudgetReservation mappedScratch = budget.Reserve(
+                ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity)
+                + 3 * ParserCollectionMemory.GetArrayByteCount<int>(1)
+                + 3 * ParserCollectionMemory.GetArrayByteCount<int>(4)
+                + ParserCollectionMemory.GetArrayByteCount<float>(4)
+                + ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4)
+                + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(4), SvgMemoryCategory.Geometry);
+            SvgContourBuilder nativeBuilder = new(pointCapacity, 1);
+            nativeBuilder.EnableQuadSpanRetention();
+            foreach (SvgAuthoredPathCommand command in source.AsSpan())
+            {
+                _workCounter.Consume(_cancellationToken);
+                switch (command.Verb)
+                {
+                    case SvgAuthoredPathVerb.Move: nativeBuilder.BeginContour(SvgNativePathStroke.MapPoint(nativeMap, command.First)); break;
+                    case SvgAuthoredPathVerb.Line: nativeBuilder.AddLine(SvgNativePathStroke.MapPoint(nativeMap, command.First)); break;
+                    case SvgAuthoredPathVerb.Conic:
+                        nativeBuilder.AddConic(SvgNativePathStroke.MapPoint(nativeMap, command.First), SvgNativePathStroke.MapPoint(nativeMap, command.Second), (float)command.Third.X, 8, _cancellationToken);
+                        break;
+                    case SvgAuthoredPathVerb.Close: nativeBuilder.EndContour(); break;
+                    default: throw new InvalidOperationException("Native rounded rectangle contains an unexpected verb.");
+                }
+            }
+            using BudgetedParserList<SvgDevicePoint> nativePoints = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+            foreach (SvgDevicePoint point in nativeBuilder.GetContour(0)) nativePoints.Add(point);
+            SvgParsedGeometry nativeResult = FinishPolygonFill(nativePoints, [nativePoints.Count], nativeBuilder.GetQuadSpans(), [],
+                element.Presentation.Color, element.Presentation.HasFill, SvgPolygonMapping.FlattenedCurves, frame, budget);
+            OwnedParserArray<SvgAuthoredPathCommand> nativeSource = new([], null);
+            try
+            {
+                if (element.Presentation.HasFill && nativeResult.Geometries.Length == 1)
+                {
+                    nativeSource = source.Detach();
+                    nativeResult.Storage.Items[0] = nativeResult.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.CreateConvexShape(nativeSource, nativeMap, budget) };
+                    nativeSource = new([], null);
+                }
+                return nativeResult;
+            }
+            catch { nativeResult.Discard(); throw; }
+            finally { nativeSource.Dispose(); }
+        }
         (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame, true);
         SvgRectangle placed = element.Transform.Apply(new SvgRectangle(x, y, width, height, default, false, null));
         SvgRectangle shifted = frame is null ? placed : frame.Value.Shift(placed);
@@ -529,11 +578,11 @@ internal ref struct SvgOrthogonalGeometryLowering
         double radiusX, double radiusY, SvgResolvedPaintableElement element,
         SvgStrokeStyleSyntax.SvgAdmittedStroke stroke, SvgViewportFrame? frame, RenderBudget budget)
     {
-        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, radiusX != 0 || radiusY != 0);
+        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, false);
         // Sharp rectangles construct their outline in source coordinates; the
         // retained map carries independent scales, rotations and skews to playback.
         double deviceWidth = radiusX == 0 && radiusY == 0 && !stroke.NonScalingStroke
-            ? stroke.Width : StrokeDeviceWidth(stroke.Width, element.Transform, frame, stroke.NonScalingStroke);
+            ? stroke.Width : NativeStrokeDeviceWidth(stroke.Width, element.Transform, deviceMap, frame, stroke.NonScalingStroke);
         using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
         SvgRoundedRectPath.Append(commands, x, y, width, height, radiusX, radiusY);
         int count = commands.Count;

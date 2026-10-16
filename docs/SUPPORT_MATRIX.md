@@ -14,6 +14,20 @@ explicitly replaces mandatory full-document membership/counts. Dated statements 
 their revisions and do not close these newly retained gaps. Private deployment
 qualification remains a separate pending adoption gate.
 
+## Upstream rectangle source follow-up (2026-10-17)
+
+Named live rectangles with authored affine maps now register through ordinary
+retained shape lowering. General rounded rectangles preserve native conic sources
+through existing fill, paint and stroke maps. The unchanged F1 `nested-affine` and
+`pattern-affine` documents are exact on Windows/Linux; 1,199 core and 1,668
+affected visual/resource cases are covered per platform in the
+[targeted qualification](../artifacts/full-fixture-replacement-20261017/rectangle-source-qualified-results.json).
+The original `transformed-rectangle-fills/rendered-group-use` control also matches
+its unchanged reference, superseding its earlier expected rejection. Four F1
+documents still require corrections; full collection replacement and finished-batch
+S17 qualification remain open. This result preserves native distinctions, work/
+memory limits and cleanup; it introduces no public API or renderer dependency.
+
 ## Public symbol and fractional-line follow-up (2026-10-16)
 
 Symbol display/visibility presentation attributes, inline styles and admitted
