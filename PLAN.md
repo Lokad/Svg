@@ -1,6 +1,6 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-16 at the instanced path/resource correction checkpoint.
+Updated 2026-10-16 at the planning checkpoint during the shared text-paint correction.
 Preserve the current implementation work, qualified `inv-146` correction and every
 established exact result, original SVG/font/reference bytes, options and default
 resource limits. This file owns delivery order, required exits and scope
@@ -36,55 +36,56 @@ has terminal green CI, package and installed-consumer checks. Reuse closed exact
 revision audits without repolling; unchanged documentation does not reopen them.
 Completed work stays closed under the existing coverage/accounting policy.
 
-Items 1–3 and their declared C1–C6c exits are complete. Remaining glyph
-maps/admission belong to item 4 and filtered-source boundaries to item 5.
-`inv-146` and completed mechanisms need no requalification.
+Items 1–3 (G2–G7 and C1–C6c) are complete under the linked evidence.
+Their glyph-specific extensions belong to T1 and filtered-source extensions to
+E1–E3. They are available dependencies, not blockers to repeat. `inv-146` stays
+closed; preserve its correction and the current uncommitted rendering work.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
 
 ## Ordered delivery checklist
 
-**Next three deliverables, in order:**
+**Next three deliverables:** **T1 qualification → T2 composite flags → T3 private
+font requests.** Then finish E1–E4 and S17 in the order below. Bring a shared
+dependency forward only when it advances the next acceptance case. Do not make
+an exhaustive G2 or shape × paint × instance grid a prerequisite.
 
-1. **Finish the frozen instance/paint document (T1).** Definition/font admission
-   and masked curved-label instances are exact. Next close forward/object-box/
-   radial/pattern and constant/empty text paints through shared glyph paint maps.
-   Finish the whole document and all four controls.
-2. **Close the three named composite flags (T2).** Reuse the bounded decoder and
-   fitting paths; establish exact public overlapping/transformed-offset witnesses.
-3. **Complete the four private font requests (T3).** Freeze regular, bold, italic
-   and fallback requests, retain sanitized outcomes and resolve any in-scope defect
-   using a public reproduction. Private validation cannot replace public acceptance.
+T1's [frozen bank](tests/Research/instance-paint-exit-sheet/manifest.json) has
+thirty-six healthy captures. The last full qualification remains **0/1 complete
+document / 2/4 exact controls**. The latest saved development probes show
+**1/1 document / 4/4 controls exact on both platforms**
+([Windows](artifacts/instance-paint-exits-20261016/candidate-windows.json),
+[Linux](artifacts/instance-paint-exits-20261016/candidate-linux.json)). These are
+candidate results, not qualification of the final uncommitted tree. Finish the
+focused regressions and complete checks before promoting the remaining manifest
+outcomes or completed-document count. The historical paint rejection is no longer
+evidence of a live rendering gate; the unchanged references remain authoritative.
 
-Items 1–3 and their C1–C6c exits are completed dependencies, owned by the evidence
-above and boundary tables below. Do not reopen them as prerequisites. After T1–T3,
-finish E1–E4 and S17 in order. No exhaustive G2 or shape × paint × instance grid.
+Each row owns one required exit. All visual exits require exact unchanged declared
+outputs on Windows/Linux, applicable negative/degenerate outcomes and affected
+material ownership checks. Run full qualification at the finished shared
+correction, under the validation policy below. A shared witness can close several
+rows; it is measured once, without duplicate API or combination requirements.
 
-The [instance/paint bank](tests/Research/instance-paint-exit-sheet/README.md)
-retains thirty-six healthy captures and its measured `dbfc42bc` rejection
-[baseline](artifacts/instance-paint-exits-20261016/declaration-qualification.json).
-It is **0/1 complete document / 2/4 exact controls** on both platforms. Definition
-admission and masked path/resource instances are exact; the two paint controls
-and whole document still have explicit paint gates.
-Preserve these bytes/options/references through every correction.
-
-| Required item, in order | Missing behavior and dependencies | Acceptance and completion condition |
+| Order / required exit | Missing behavior or evidence; dependencies | Concrete acceptance and completion condition |
 | --- | --- | --- |
-| [ ] 4 / T1. Text instances and paints (G9) | Remaining text paint routes; reuse source tokens/CSS, instance fonts, deferred path/resource transfer, native glyph paints and resource binders. | The unchanged instance/paint document and four controls are exact on both platforms; constant/empty/missing outcomes and affected ownership checks pass. Definition/font and masked-path controls are already exact. |
-| [ ] 4 / T2. Composite flags (G9) | OVERLAP_COMPOUND, SCALED_COMPONENT_OFFSET and UNSCALED_COMPONENT_OFFSET; reuse bounded composite decoding/fitting. | Public overlapping/transformed-offset witnesses establish all three flags exactly on both platforms, with affected failure/ownership checks. |
-| [ ] 4 / T3. Private validation (G9) | Four fixed private requests through the implemented host/catalog. | Four sanitized outcomes; discovered in-scope defects have resolved public reproductions. |
-| [ ] 5. Static effects and markers (G8) | E1–E4: non-solid affine sources, named linearRGB restoration/shadows, object-box/source boundaries and marker size/tangent/style semantics. Reuse bounded capture, shared paint maps and qualified scopes. | Every named exit is exact on both platforms, including the retained standalone linear-image defect; affected graph/region/resource checks pass. Preserve the whole effects sheet and eleven controls. |
-| [ ] 6. Release (S17) | Finished revision after items 1–5, retaining the product/font contracts below. | All [release conditions](#release-completion-s17) hold together. Document/test counts alone cannot establish completion. |
+| [ ] T1 — text instances and paints (item 4 / G9) | Qualify the shared forward/object-box/linear/radial/pattern glyph-paint correction. Reuse qualified definition/font discovery, source replay, path/resource scopes and native paint maps; any demonstrated in-scope residual stays in T1. | The unchanged `instance-paint-sheet.svg`, `definition-labels.svg`, `text-paints.svg`, `instanced-path-resources.svg` and `text-paint-degenerates.svg` are exact. Focused constant/empty/missing-paint, paint inheritance and representative raw/prepared discovery/cleanup checks pass; full platform qualification closes the candidate correction. |
+| [ ] T2 — composite flags (item 4 / G9) | OVERLAP_COMPOUND, SCALED_COMPONENT_OFFSET and UNSCALED_COMPONENT_OFFSET remain outside the [decoder's admitted flags](src/Lokad.Svg/Fonts/OpenTypeFont.cs). Reuse bounded composite decoding and fitting. | Public synthetic overlapping components and transformed nonzero offsets distinguish all three flags and match both native profiles exactly. Affected malformed/failure/ownership checks pass; retain parent-hint, USE_MY_METRICS and nested-accent results. No general VM grid. |
+| [ ] T3 — private requests (item 4 / G9) | End-to-end deployment evidence remains missing; host/catalog and public conformance are implemented. Use the [authorized private workflow](#authorized-private-font-testing), with T1/T2 fixes only if a request needs them. | Freeze one regular, bold, italic and fallback request against the unchanged deployed manifest. Retain four sanitized selection/metrics/pixel outcomes; convert in-scope defects into public reproductions and resolve them. Private success cannot replace public acceptance. |
+| [ ] E1 — non-solid affine sources (item 5 / G8) | Linear/radial, pattern and supplied-font affine source maps, with source clip/nested resource scope. Reuse qualified solid affine capture, shared paint maps, C1–C6c and T1. | Exact linear/radial-painted, patterned and supplied-font affine-source witnesses including source clip/nested scope. Reuse exact panels in the [effects bank](tests/Research/effects-marker-sheet/README.md); add only uncovered independent cases. Preserve native origins/nearest offsets. |
+| [ ] E2 — linearRGB restoration/shadows (item 5 / G8) | Colored/translucent linearRGB shadow and identity/zero-offset restoration boundaries. Reuse existing per-primitive transfers, CPU/shadow consumers and E1 maps as needed. | Exact colored linearRGB shadow over translucent source and uncovered identity/zero-offset colored-source controls. Resolve the retained [single-linear-image/outer-opacity difference](artifacts/effects-marker-sheet-20261015/mixed-consumer-single-blur.svg) against healthy frozen platform references; one native observation is insufficient. Preserve mixed-space and 26/26 filter-region results. |
+| [ ] E3 — filtered-source boundaries (item 5 / G8) | Object-box output clips; uncovered mask, nested-viewport, marker, text and local-use sources and applicable filter presentation. Reuse qualified output clips/nested halos, C/T scopes and E1–E2 playback. | Exact filtered target with an object-box clip, plus one witness for each listed uncovered source boundary. Preserve source/output order, halos and scope termination. Bring an E4 marker dependency forward only if needed; no content × graph × container census. |
+| [ ] E4 — marker semantics (item 5 / G8) | Font-relative sizes, inherited container paint/child override and stylesheet/inline priority; remaining auto/auto-start-reverse tangents. Reuse [path](tests/Research/path-marker-content/manifest.json), [instance](tests/Research/marker-instance-content/manifest.json), angle/overflow and source-geometry machinery. | Exact font-relative and cascaded-paint markers, and open/closed/zero-length-path orientation witnesses. Valid degenerates have measured outcomes; missing/recursive references remain categorized errors. Reuse qualified spellings and controls. |
+| [ ] S17 — release (item 6) | Finished T1–T3/E1–E4 plus retained product, font, resource and packaging contracts. | Every [release condition](#release-completion-s17) holds together for the finished revision. Counts alone cannot establish completion. |
 
-The tables below specify these exits; they are not another execution queue.
-Unlinked acceptance recipes are **planned**, not measured failures. Before changing
-code, reconcile each with current implementation and qualified manifests: reuse an
-exact witness, distinguish admitted-but-unverified behavior from actual rejection/
-difference, then add only the missing independent case. Historical `observedGate`
-text and test names alone cannot establish a live blocker. Keep original inputs
-when replacing obsolete rejection assertions. Shared witnesses count once across
-groups and APIs. Use existing banks/tests; no new tracking framework is required.
+Before implementing a row, check current code and qualified manifests. Distinguish
+an actual rejection/difference from admitted behavior needing evidence; historical
+`observedGate` text and test names are not live blockers. Unlinked recipes above
+are planned acceptance, not measured failures. Reuse exact witnesses, retain the
+original input when replacing obsolete rejection assertions, and add only the
+missing independent case. Detailed mechanisms/history belong in the linked design
+and inventory records; this checklist is the sole remaining execution queue.
 
 ## Required support boundaries and finite exits
 
@@ -114,18 +115,14 @@ features require an explicit scope decision.
   fill/stroke opacity, dashed curved paints and nonuniform placement. Use shared
   stroke/paint machinery while preserving native geometry distinctions.
 
-Items 1–2 are complete under their linked acceptance/qualification records.
-Preserve the original cap/dash/dot inputs, inherited shader controls, reflected
-offscreen nonpainting, visible pattern phase and device-width checks. Root
-viewBox scaling, pattern-content viewBox and stroke host maps retain their
-distinct coordinate stages; the [design record](docs/RASTERIZATION_DESIGN.md)
-owns implementation history. Composition/resource exits are qualified under item 3; glyph maps belong
-to item 4 and filtered/marker sources to item 5.
-
-Completed inherited-symbol, reflected-phase, curved-target and viewport-map
-witnesses remain closed. Zero-size oval/object-box nonpainting and categorized
-singular-pattern/cleanup outcomes in the existing [coordinate](tests/Lokad.Svg.Tests/SvgPatternCoordinateTests.cs)
-and [template](tests/Lokad.Svg.Tests/SvgPatternTemplateTests.cs) tests need no new grid.
+Items 1–2 are complete; the [geometry/scope inventory](docs/INVENTORY.md),
+[existing map witnesses](artifacts/shared-stroke-pattern-maps-20261015/existing-map-witnesses.json)
+and [shared-map qualification](artifacts/maintenance-review-20261012/shared-maps-qualified-results.json)
+own their evidence. Retain cap/dash/dot, inherited shader, reflected phase,
+nonpainting/device-width and degenerate/cleanup regressions. Root viewBox,
+pattern-content viewBox and stroke host maps remain distinct native stages.
+Composition/resource exits are complete under item 3; only glyph contexts (T1)
+and filtered/marker sources (E1–E4) remain required here.
 
 <a id="g5-viewports-clips-masks-and-composition"></a>
 <a id="g6-patterns"></a>
@@ -140,32 +137,27 @@ and [template](tests/Lokad.Svg.Tests/SvgPatternTemplateTests.cs) tests need no n
 | G7 images | Base64 data-URI, non-interlaced 8-bit RGB/RGBA, grayscale/grayscale-alpha and indexed PNG, including tRNS, with chunk/CRC/decompression checks. Finite geometry/viewBox percentages, all meet/slice alignments and `none`, fractional/general affine placement, clips/masks/opacity. Keep image sampling/matrix rounding distinct from gradient/glyph arithmetic and bounded decode ownership. |
 | G7 CSS | Existing ID/class/attribute/selector lists, SVG element and element+ID/class, descendant/child selectors through admitted trees; specificity/source order, `!important`, inline priority/inheritance for enumerated presentation/font properties and parsed width/height. Root/resource collection and source-ancestor exclusion are implemented. `paint-order` supports normal/distinct fill/stroke/markers lists with omitted operations appended; duplicate/unknown tokens reject. Apply each resource's applicable properties. |
 
-| Required exit (item 3) | Concrete acceptance, dependency and completion |
-| --- | --- |
-| C1. Clip unions — complete | The [original sheet and five controls](tests/Research/clip-union-exit-sheet/README.md) close mixed rectangle/path, overlapping conics, independent compound/concave winding and 43-child fallback, including applicable C5 clip-rule cascade. The unchanged [cubic document/control](tests/Research/cubic-viewport-exit-sheet/README.md) now close the cubic-pair solver on both platforms, with analytic crossing/coincident/degree-nine and degenerate cubic-line checks plus affected resource protection. Reuse this qualified dependency. |
-| C2. Affine ancestor at a nested viewport — complete | The same whole document and 192 by 160 ancestor/viewport control are exact on both platforms. Physical clipping and unaffected siblings inside/after the ancestor are protected, with zero-size nonpainting/cleanup controls. Ancestor/viewBox rebasing and the existing native physical clip machinery are shared dependencies. |
-| C3a. Mask units, color and general maps — complete | The [composition/resource bank](tests/Research/composition-resource-exit-sheet/README.md) closes unit/restoration acceptance; the [mask color/affine bank](tests/Research/mask-color-affine-exit-sheet/README.md) closes colored luminance and general-affine user-space/object-box target maps. Original colored-stroke/mixed-paint inputs, tight mapped curve bounds, leaf/group/use regions and affected resource/sibling checks are protected. Preserve native source replay and AA/BW/luminance-layer distinctions. |
-| C3b. Mask region defaults and nested-viewport scopes — complete | The unchanged [document and five controls](tests/Research/mask-viewport-exit-sheet/README.md) are exact on Windows/Linux. Four original rejected SVGs now protect every output pixel and cleanup; spatial group/viewBox content and following siblings are exact. Focused percentage/implicit-root defaults, partial group sources, pre-clip object bounds and affected denial/cancellation/retry pass. Reuse C3a source replay, native target bounds and viewport rebasing. Glyph-only masks remain T1. |
-| C4. Independent image alignment offsets — complete | Existing [active-axis witnesses](artifacts/shared-map-exits-20261015/existing-image-alignments.json) cover xMid/xMax and yMin/yMid/yMax. The frozen [active xMin control](tests/Research/composition-resource-exit-sheet/image-horizontal-min.svg) now matches healthy platform triples through the canonical visual API; its wider meet viewport has a real horizontal alignment choice. Existing [aspect tests](tests/Lokad.Svg.Tests/SvgAspectRatioTests.cs) preserve all nine spellings, `none` and omitted-meet equivalence. No production fix or alignment/placement census is required. |
-| C5a. Qualified resource presentation and tile-local clips — complete | The unchanged [mixed tile/document](tests/Research/composition-resource-exit-sheet/README.md) qualifies bounded image/vector content with a native local group clip and forward-source/sibling regressions. Reuse clip-rule container/child stylesheet/inline priority from the [clip bank](tests/Research/clip-union-exit-sheet/README.md), [mask presentation](tests/Research/mask-presentation/manifest.json), [inline pattern inheritance/override](tests/Research/paint-order/pattern-presentation-alias.svg), and the two analytic [pattern CSS priority](tests/Lokad.Svg.Tests/SvgPatternContentTests.cs) controls. [Root/resource cascade](tests/Research/root-resource-cascade/manifest.json), selectors and paint-order witnesses stay qualified. Marker/filter presentation belongs to E3/E4 and text/span paint to T1. |
+All declared C exits are complete. This index replaces their historical
+implementation narratives; retain the referenced independent cases and useful
+resource regressions. The glyph-mask instance extension is also exact in the
+qualified path control; finish its whole-document qualification under T1.
 
-Qualified CSS, varied/affine image pixels, source-cropped slice, partial image-use
-masks, tile content and scoped composition remain closed; use the evidence table.
+| Completed dependency | Existing acceptance evidence |
+| --- | --- |
+| C1 — mixed/compound clip unions, cubic pairs and fallback | [Clip sheet](tests/Research/clip-union-exit-sheet/README.md), [cubic sheet](tests/Research/cubic-viewport-exit-sheet/README.md). |
+| C2 — affine ancestor at nested viewport | [Cubic/viewport document and control](tests/Research/cubic-viewport-exit-sheet/README.md), including physical clipping and siblings. |
+| C3a/C3b — mask color/maps, regions/defaults and viewport scopes | [Composition](tests/Research/composition-resource-exit-sheet/README.md), [color/affine](tests/Research/mask-color-affine-exit-sheet/README.md) and [mask/viewport](tests/Research/mask-viewport-exit-sheet/README.md) banks. |
+| C4 — independent image alignment offsets | [Active-axis evidence](artifacts/shared-map-exits-20261015/existing-image-alignments.json), [xMin control](tests/Research/composition-resource-exit-sheet/image-horizontal-min.svg) and [aspect spellings](tests/Lokad.Svg.Tests/SvgAspectRatioTests.cs). |
+| C5a/C5b — resource presentation, tile-local clips and masks | [Composition](tests/Research/composition-resource-exit-sheet/README.md), [tile masks](tests/Research/tile-mask-exit-sheet/README.md), [resource cascade](tests/Research/root-resource-cascade/manifest.json), [mask presentation](tests/Research/mask-presentation/manifest.json) and [pattern priority](tests/Lokad.Svg.Tests/SvgPatternContentTests.cs). |
+| C6a/C6b — clip/opacity across viewports, forward/object-box binding | [Viewport scopes](tests/Research/viewport-clip-opacity-exit-sheet/README.md) and [forward/object-box bank](tests/Research/forward-bbox-clip-exit-sheet/README.md). |
+| C6c — affine user-space rectangle clips | [Original input and visible controls](tests/Research/affine-rectangle-strokes/README.md), [qualification](artifacts/maintenance-review-20261012/affine-rect-clip-qualified-results.json). |
+
+Keep source order, pre-clip object bounds, native AA/BW/luminance distinctions,
+physical viewport clips and unaffected siblings under these existing protections.
+Image/CSS qualification and all original positive/negative outcomes remain closed.
 Outside scope with explicit outcomes: interlaced/16-bit/color-managed PNG,
 JPEG/GIF/WebP/external image fetching; CSS imports/media/supports, pseudo
 classes/elements, siblings, layout, variables, animation and web fonts.
-
-The declared C5b/C6a–C6c bridges below are complete. Reuse their qualified
-mechanisms; glyph and filtered-source contexts remain required under items 4–5.
-Original rejection inputs are retained as positive pixel/resource regressions.
-This closes named exits without adding a shape × paint × instance census.
-
-| Required bridge (item 3) | Dependency, acceptance and completion |
-| --- | --- |
-| C6a. Clip/opacity scopes across viewports — complete | The unchanged [document and six controls](tests/Research/viewport-clip-opacity-exit-sheet/README.md) are exact on Windows/Linux, preserving all six original Core inputs. Shared clip placement includes viewBox scale; viewport-owned layers compose nested/root/group opacity; crossing strokes reuse native source geometry and physical clips. Original nested/inherited/masked opacity, empty public output and font acquisition now have positive regressions. The retained fractional frame and cropped-opacity controls, native overlap bytes, siblings and affected ownership checks pass. Reuse the qualified dependency. |
-| C6b. Forward/object-box clip binding — complete | The unchanged [document and six controls](tests/Research/forward-bbox-clip-exit-sheet/README.md) are exact on Windows/Linux, preserving all six original Core inputs and forty-two healthy captures. Shared geometric bounds and deferred binding handle definition order, images/groups/lines/circles and transformed normalized content. Zero-height lines and disjoint clips are valid nonpainting; mask order, pre-viewport object bounds, siblings and affected resource checks pass. The retained rotated-stroke object-box input also passes; its user-space variant is qualified under C6c. Reuse [qualification](artifacts/maintenance-review-20261012/forward-bbox-qualified-results.json); no target × clip-shape census. |
-| C5b. Masks inside pattern content — complete | The unchanged [document and two controls](tests/Research/tile-mask-exit-sheet/README.md) are exact on Windows/Linux. The original rejected leaf SVG now checks every pixel and cleanup. Spatial group masks, forward local uses and tile/root siblings are qualified; shared owning-scene binding, delayed sealing and native mask-before-opacity arithmetic preserve C5a clips/styles. Focused nested mask/clip-marker, forward leaf resource and anonymous-owner regressions plus affected denial/cancellation/retry pass. Reuse [qualification](artifacts/maintenance-review-20261012/tile-mask-qualified-results.json); no repeat-work or presentation cross-product quota. |
-| C6c. Affine user-space rectangle clips — complete | The unchanged [original 96×72 input and visible control](tests/Research/affine-rectangle-strokes/README.md) are exact on both platforms. General leaf/group clips defer through shared native rectangle binding; the parent supplies an outward-rounded construction window while geometry retains fractional viewport coverage. Native rectangle contour order preserves existing vertical-piece combination. Original unit outcomes, quarter-turn source coordinates, nonpainting, fractional coverage, siblings and affected ownership are protected. The retained transformed-fill clip-crossing reference is also exact. Reuse [qualification](artifacts/maintenance-review-20261012/affine-rect-clip-qualified-results.json); no document or combination quota is added. |
 
 <a id="g9-supplied-font-labels-and-text-paths"></a>
 
@@ -186,11 +178,14 @@ tangents, method align/spacing exact, curved/transformed sources and measured
 out-of-range/zero-length outcomes. Qualified fitting, decorations, positioned
 spans, dashed/non-scaling/stroke-before-fill/path strokes and metrics stay closed.
 
-| Required exit (item 4) | Concrete acceptance, dependency and completion |
-| --- | --- |
-| T1. Remaining glyph maps/paints/instances | The unchanged [resource](tests/Research/glyph-resource-exit-sheet/README.md) and [text-map](tests/Research/text-map-exit-sheet/README.md) documents are complete. Reuse qualified layout, source tokens/CSS, instance typography, native glyph paints and resource binders. **Remaining acceptance:** the frozen [instance/paint sheet](tests/Research/instance-paint-exit-sheet/README.md), currently **0/1 complete / 2/4 exact controls**: forward text/group/symbol definitions, instance-only font discovery and masked curved-label instances with siblings are exact; remaining acceptance is a row for forward direct-text shader binding and object-box/radial/pattern text paints, including constant/empty outcomes. The unresolved routes remain required, with no scope deferral. Add focused controls only to diagnose each shared fix. Completion requires those unchanged declared outputs exact on both platforms, categorized missing/degenerate outcomes, representative raw/prepared font discovery and affected ownership checks. Preserve original masked inputs, source order, endpoint continuation and scalar-list consumption. No font/size/map or paint × glyph × placement grid. |
-| T2. OVERLAP_COMPOUND, SCALED_COMPONENT_OFFSET, UNSCALED_COMPONENT_OFFSET | Reuse bounded composite decode/fitting. Public synthetic overlapping/transformed-offset components must establish all three flags exactly on both platforms, with affected ownership/failure checks. Preserve [parent-hint/USE_MY_METRICS/nested-accent tests](tests/Lokad.Svg.VisualTests/SvgCompositeMetricsTests.cs), [contours](tests/Research/curved-font-documents/diagnostics/composite-metrics-contours.json), Windows LCD/dropout and Linux light fitting. Executed unsupported opcodes/formats reject explicitly; no general VM grid. |
-| T3. Private deployment validation | Use the implemented host/catalog and unchanged manifest. Freeze one regular, bold, italic and fallback request; execute the [private workflow](#authorized-private-font-testing). Finish with four sanitized outcomes and public synthetic reproductions of in-scope defects resolved; private success cannot replace public acceptance. |
+T1–T3 in the ordered checklist are the only remaining G9 exits. The
+[resource](tests/Research/glyph-resource-exit-sheet/README.md) and
+[text-map](tests/Research/text-map-exit-sheet/README.md) documents stay complete.
+Preserve original masked inputs, source order, endpoint continuation and
+scalar-list consumption, plus [parent-hint/USE_MY_METRICS/nested-accent checks](tests/Lokad.Svg.VisualTests/SvgCompositeMetricsTests.cs),
+[contours](tests/Research/curved-font-documents/diagnostics/composite-metrics-contours.json),
+Windows LCD/dropout and Linux light fitting. Executed unsupported opcodes/formats
+retain explicit outcomes. No font/size/map or paint × glyph × placement grid.
 
 Outside scope: wrapping, bidi/joining/complex scripts, general GSUB/GPOS/mark
 positioning or other lookup flags/types/formats, vertical text, path stretch/auto
@@ -214,12 +209,12 @@ references. Preserve per-primitive spaces, binary/merge transfers, distinct
 CPU-kernel/shadow consumers, premultiplied arithmetic, bounded regions/work,
 cancellation and cleanup. A flood override alone proves no color transition.
 
-| Required exit (item 5) | Concrete acceptance, dependency and completion |
-| --- | --- |
-| E1. Non-solid affine paint/source maps | Reuse qualified solid-source affine capture and shared layer/paint maps. Exact linear/radial-painted affine source, patterned affine source and supplied-font affine source with source clip/nested resource scope; reuse covered panels. Preserve native origins/nearest offsets and all effects controls. |
-| E2. Named linearRGB shadow/restoration gaps | Exact colored linearRGB shadow over translucent source; identity/zero-offset colored-source controls where not already qualified. Resolve the retained [single-linear-image/outer-opacity difference](artifacts/effects-marker-sheet-20261015/mixed-consumer-single-blur.svg) against healthy frozen references; one native observation is insufficient. Preserve region/opacity, mixed-space and 26/26 filter-region results. |
-| E3. Object-box output clips and filtered-source boundaries | Reuse qualified output-clip/nested-halo replay. Exact filtered target with object-box clip, plus one witness for each uncovered mask, nested-viewport, marker, text and local-use source boundary and applicable filter presentation. Bring C/T dependencies forward only as needed. Protect source/output order, halos/scope termination; no content × graph × container census. |
-| E4. Marker sizes, style and tangents | Exact font-relative sizing, inherited container paint/child override with stylesheet/inline priority, and auto/auto-start-reverse open/closed/zero-length-path semantics. Reuse qualified [path](tests/Research/path-marker-content/manifest.json), [instance](tests/Research/marker-instance-content/manifest.json), angle and overflow controls. Valid degenerates have measured outcomes; missing/recursive references remain explicit errors. |
+E1–E4 in the ordered checklist are the only remaining G8 exits. Preserve the
+[whole effects sheet and eleven controls](tests/Research/effects-marker-sheet/README.md),
+[filter-region results](tests/Research/filter-regions/manifest.json) and qualified
+colored-effects, affine capture, output-clip and nested-halo witnesses. Reuse
+covered panels before acquiring another document. Preserve native origins/nearest
+offsets, mixed-space consumers, region/opacity and graph/resource protections.
 
 Outside scope with explicit outcomes: backdrop inputs, external filter images,
 displacement, turbulence, lighting, morphology, convolution, arithmetic composite,
@@ -231,10 +226,11 @@ device rounding and padded capture remain closed.
 
 Release is complete only when all of these hold for the **finished revision**:
 
-1. Items 1–5 and their named G2–G9 exits are closed with linked exact acceptance,
-   measured valid-degenerate outcomes and applicable negative/resource regressions.
-   Reused evidence is sufficient; unverified behavior, actual gates and known
-   in-scope defects stay open. No unapproved deferral is hidden by an error.
+1. Completed G2–G7 dependencies and all T1–T3/E1–E4 exits are closed with linked
+   exact acceptance, measured valid-degenerate outcomes and applicable negative/
+   resource regressions. No checklist row remains candidate-only. Reused evidence
+   is sufficient; unverified behavior, actual gates and known in-scope defects stay
+   open. No unapproved deferral is hidden by an error.
 2. All established exact outputs remain exact, including **27/27 / 258/258**,
    selected documents and useful visual regressions. Every declared document
    variant must be measured. Rejection, difference, oracle failure and unmeasured
