@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "selectionDate": "2026-10-17",
-  "selectionStatus": "Frozen before fresh Lokad.Svg comparisons; captures and qualification pending.",
+  "selectionStatus": "Selection frozen at 460a67df before fresh comparisons; native references qualified before renderer comparisons. Renderer qualification and coverage retirement pending.",
   "oracle": "Pinned Chrome 153.0.8010.52 only; upstream expected images and pass tables are unused.",
   "purpose": "F1 finite feature-selected replacement full-document collection; preserved micro-tests cover additional distinctions and known defects.",
   "cases": [
@@ -30,7 +30,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/geometry-rect.svg",
       "captureInputSha256": "fbfa89844fa4466a0978f7ac967c2c2bbecad928be71d28eb58ada391f106367",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/geometry-rect.png",
+      "referenceSha256": "0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b",
+      "captures": [
+        {
+          "pngSha256": "0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/geometry-rect.png",
+      "linuxReferenceSha256": "0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b",
+      "linuxCaptures": [
+        {
+          "pngSha256": "0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "geometry-cubic",
@@ -58,7 +97,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/geometry-cubic.svg",
       "captureInputSha256": "6338223a934d1494f438d8aaaa35d1c788c43db0b723aab5adba15e784edf424",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/geometry-cubic.png",
+      "referenceSha256": "49904489b05fe882139de154484cc32559ba58e8e9d59062110e8e55152680b8",
+      "captures": [
+        {
+          "pngSha256": "49904489b05fe882139de154484cc32559ba58e8e9d59062110e8e55152680b8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "49904489b05fe882139de154484cc32559ba58e8e9d59062110e8e55152680b8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "49904489b05fe882139de154484cc32559ba58e8e9d59062110e8e55152680b8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/geometry-cubic.png",
+      "linuxReferenceSha256": "49904489b05fe882139de154484cc32559ba58e8e9d59062110e8e55152680b8",
+      "linuxCaptures": [
+        {
+          "pngSha256": "49904489b05fe882139de154484cc32559ba58e8e9d59062110e8e55152680b8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "49904489b05fe882139de154484cc32559ba58e8e9d59062110e8e55152680b8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "49904489b05fe882139de154484cc32559ba58e8e9d59062110e8e55152680b8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "geometry-arc",
@@ -86,7 +164,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/geometry-arc.svg",
       "captureInputSha256": "2f991f9ce46e9d013d133a6f299ea4d9cd3e539a399520197bb2838c07f86ae7",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/geometry-arc.png",
+      "referenceSha256": "616fda984f8e79495bd6add64a4cfc26c6404bdc93a2047c3138e4744d9fa3b8",
+      "captures": [
+        {
+          "pngSha256": "616fda984f8e79495bd6add64a4cfc26c6404bdc93a2047c3138e4744d9fa3b8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "616fda984f8e79495bd6add64a4cfc26c6404bdc93a2047c3138e4744d9fa3b8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "616fda984f8e79495bd6add64a4cfc26c6404bdc93a2047c3138e4744d9fa3b8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/geometry-arc.png",
+      "linuxReferenceSha256": "616fda984f8e79495bd6add64a4cfc26c6404bdc93a2047c3138e4744d9fa3b8",
+      "linuxCaptures": [
+        {
+          "pngSha256": "616fda984f8e79495bd6add64a4cfc26c6404bdc93a2047c3138e4744d9fa3b8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "616fda984f8e79495bd6add64a4cfc26c6404bdc93a2047c3138e4744d9fa3b8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "616fda984f8e79495bd6add64a4cfc26c6404bdc93a2047c3138e4744d9fa3b8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "stroke-dashed-circle",
@@ -114,7 +231,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/stroke-dashed-circle.svg",
       "captureInputSha256": "b7d097b6444172c36c05d6645b2ae091afd7f98ebdb6d87491be97d422c967ce",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/stroke-dashed-circle.png",
+      "referenceSha256": "bf310c4a5e29288e4d309ad0ab9389146b5dd82d39a5a329c5ed96314618014e",
+      "captures": [
+        {
+          "pngSha256": "bf310c4a5e29288e4d309ad0ab9389146b5dd82d39a5a329c5ed96314618014e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bf310c4a5e29288e4d309ad0ab9389146b5dd82d39a5a329c5ed96314618014e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bf310c4a5e29288e4d309ad0ab9389146b5dd82d39a5a329c5ed96314618014e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/stroke-dashed-circle.png",
+      "linuxReferenceSha256": "bf310c4a5e29288e4d309ad0ab9389146b5dd82d39a5a329c5ed96314618014e",
+      "linuxCaptures": [
+        {
+          "pngSha256": "bf310c4a5e29288e4d309ad0ab9389146b5dd82d39a5a329c5ed96314618014e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bf310c4a5e29288e4d309ad0ab9389146b5dd82d39a5a329c5ed96314618014e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bf310c4a5e29288e4d309ad0ab9389146b5dd82d39a5a329c5ed96314618014e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "stroke-round-join",
@@ -142,7 +298,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/stroke-round-join.svg",
       "captureInputSha256": "a34d863c0146c394a8ecfbdfdd6cdd50c7c716373b39610cdd456a43f17344d5",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/stroke-round-join.png",
+      "referenceSha256": "ba829585966fe80bddce0219c72b5ec811247b1c6d2fa756216cde55828fcb1e",
+      "captures": [
+        {
+          "pngSha256": "ba829585966fe80bddce0219c72b5ec811247b1c6d2fa756216cde55828fcb1e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ba829585966fe80bddce0219c72b5ec811247b1c6d2fa756216cde55828fcb1e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ba829585966fe80bddce0219c72b5ec811247b1c6d2fa756216cde55828fcb1e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/stroke-round-join.png",
+      "linuxReferenceSha256": "ba829585966fe80bddce0219c72b5ec811247b1c6d2fa756216cde55828fcb1e",
+      "linuxCaptures": [
+        {
+          "pngSha256": "ba829585966fe80bddce0219c72b5ec811247b1c6d2fa756216cde55828fcb1e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ba829585966fe80bddce0219c72b5ec811247b1c6d2fa756216cde55828fcb1e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ba829585966fe80bddce0219c72b5ec811247b1c6d2fa756216cde55828fcb1e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "nested-affine",
@@ -170,7 +365,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/nested-affine.svg",
       "captureInputSha256": "603c7e72badf95e6ffc1f7c2af61ee0965b3d742e5158aa777f04379ba062ca8",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/nested-affine.png",
+      "referenceSha256": "1dfdf41f50e65b86dad72afdc15191250df2c5e616d2e57dbc82b993deca5179",
+      "captures": [
+        {
+          "pngSha256": "1dfdf41f50e65b86dad72afdc15191250df2c5e616d2e57dbc82b993deca5179",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1dfdf41f50e65b86dad72afdc15191250df2c5e616d2e57dbc82b993deca5179",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1dfdf41f50e65b86dad72afdc15191250df2c5e616d2e57dbc82b993deca5179",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/nested-affine.png",
+      "linuxReferenceSha256": "1dfdf41f50e65b86dad72afdc15191250df2c5e616d2e57dbc82b993deca5179",
+      "linuxCaptures": [
+        {
+          "pngSha256": "1dfdf41f50e65b86dad72afdc15191250df2c5e616d2e57dbc82b993deca5179",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1dfdf41f50e65b86dad72afdc15191250df2c5e616d2e57dbc82b993deca5179",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1dfdf41f50e65b86dad72afdc15191250df2c5e616d2e57dbc82b993deca5179",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "symbol-opacity",
@@ -198,7 +432,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/symbol-opacity.svg",
       "captureInputSha256": "9724cb239894ad0f45b840678ce744606f816c00d8977a249c222987f93909fb",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/symbol-opacity.png",
+      "referenceSha256": "b4e72dec4880bd4204712351e563d715cc78d954e354ec8971f4af50c89fb1c3",
+      "captures": [
+        {
+          "pngSha256": "b4e72dec4880bd4204712351e563d715cc78d954e354ec8971f4af50c89fb1c3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b4e72dec4880bd4204712351e563d715cc78d954e354ec8971f4af50c89fb1c3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b4e72dec4880bd4204712351e563d715cc78d954e354ec8971f4af50c89fb1c3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/symbol-opacity.png",
+      "linuxReferenceSha256": "b4e72dec4880bd4204712351e563d715cc78d954e354ec8971f4af50c89fb1c3",
+      "linuxCaptures": [
+        {
+          "pngSha256": "b4e72dec4880bd4204712351e563d715cc78d954e354ec8971f4af50c89fb1c3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b4e72dec4880bd4204712351e563d715cc78d954e354ec8971f4af50c89fb1c3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b4e72dec4880bd4204712351e563d715cc78d954e354ec8971f4af50c89fb1c3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "linear-affine",
@@ -226,7 +499,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/linear-affine.svg",
       "captureInputSha256": "859c50e22924319001e6db982ccf262186d44c8dc9617ea977cc3f5e45cfbd21",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/linear-affine.png",
+      "referenceSha256": "233ca24e63273787f190b7289c922443ce3f32766342f0482238671cafadd2a6",
+      "captures": [
+        {
+          "pngSha256": "233ca24e63273787f190b7289c922443ce3f32766342f0482238671cafadd2a6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "233ca24e63273787f190b7289c922443ce3f32766342f0482238671cafadd2a6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "233ca24e63273787f190b7289c922443ce3f32766342f0482238671cafadd2a6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/linear-affine.png",
+      "linuxReferenceSha256": "233ca24e63273787f190b7289c922443ce3f32766342f0482238671cafadd2a6",
+      "linuxCaptures": [
+        {
+          "pngSha256": "233ca24e63273787f190b7289c922443ce3f32766342f0482238671cafadd2a6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "233ca24e63273787f190b7289c922443ce3f32766342f0482238671cafadd2a6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "233ca24e63273787f190b7289c922443ce3f32766342f0482238671cafadd2a6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "radial-affine",
@@ -254,7 +566,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/radial-affine.svg",
       "captureInputSha256": "b9d69cf245b2e2b83fcf3257a542b739ea4def15d03ff11bfe3efc987d7bfd12",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/radial-affine.png",
+      "referenceSha256": "e075725c80d8cac727b734596c78289733245c454e165c0d79665dc0265c95ad",
+      "captures": [
+        {
+          "pngSha256": "e075725c80d8cac727b734596c78289733245c454e165c0d79665dc0265c95ad",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e075725c80d8cac727b734596c78289733245c454e165c0d79665dc0265c95ad",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e075725c80d8cac727b734596c78289733245c454e165c0d79665dc0265c95ad",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/radial-affine.png",
+      "linuxReferenceSha256": "e075725c80d8cac727b734596c78289733245c454e165c0d79665dc0265c95ad",
+      "linuxCaptures": [
+        {
+          "pngSha256": "e075725c80d8cac727b734596c78289733245c454e165c0d79665dc0265c95ad",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e075725c80d8cac727b734596c78289733245c454e165c0d79665dc0265c95ad",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e075725c80d8cac727b734596c78289733245c454e165c0d79665dc0265c95ad",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "object-box-clip",
@@ -281,7 +632,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/object-box-clip.svg",
       "captureInputSha256": "832a0e735968f4f9ab378bd5f69b484ef57b813264e80d748c716859911261a0",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/object-box-clip.png",
+      "referenceSha256": "bbc45580d088c8cedb8c7598d77caf7929b7322eaa5c8a701ece90a653c41e3e",
+      "captures": [
+        {
+          "pngSha256": "bbc45580d088c8cedb8c7598d77caf7929b7322eaa5c8a701ece90a653c41e3e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bbc45580d088c8cedb8c7598d77caf7929b7322eaa5c8a701ece90a653c41e3e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bbc45580d088c8cedb8c7598d77caf7929b7322eaa5c8a701ece90a653c41e3e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/object-box-clip.png",
+      "linuxReferenceSha256": "bbc45580d088c8cedb8c7598d77caf7929b7322eaa5c8a701ece90a653c41e3e",
+      "linuxCaptures": [
+        {
+          "pngSha256": "bbc45580d088c8cedb8c7598d77caf7929b7322eaa5c8a701ece90a653c41e3e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bbc45580d088c8cedb8c7598d77caf7929b7322eaa5c8a701ece90a653c41e3e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bbc45580d088c8cedb8c7598d77caf7929b7322eaa5c8a701ece90a653c41e3e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "nested-clip-child",
@@ -308,7 +698,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/nested-clip-child.svg",
       "captureInputSha256": "e86e37c9928c30241baa1f6ddb88f7f712028be671eca699305cf6a332f7063d",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/nested-clip-child.png",
+      "referenceSha256": "4cbe9c1531e05341130e6c8e6c0700d415056591d0ee416d5e0d2cf5ad7567d7",
+      "captures": [
+        {
+          "pngSha256": "4cbe9c1531e05341130e6c8e6c0700d415056591d0ee416d5e0d2cf5ad7567d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4cbe9c1531e05341130e6c8e6c0700d415056591d0ee416d5e0d2cf5ad7567d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4cbe9c1531e05341130e6c8e6c0700d415056591d0ee416d5e0d2cf5ad7567d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/nested-clip-child.png",
+      "linuxReferenceSha256": "4cbe9c1531e05341130e6c8e6c0700d415056591d0ee416d5e0d2cf5ad7567d7",
+      "linuxCaptures": [
+        {
+          "pngSha256": "4cbe9c1531e05341130e6c8e6c0700d415056591d0ee416d5e0d2cf5ad7567d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4cbe9c1531e05341130e6c8e6c0700d415056591d0ee416d5e0d2cf5ad7567d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4cbe9c1531e05341130e6c8e6c0700d415056591d0ee416d5e0d2cf5ad7567d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "clip-child-union",
@@ -335,7 +764,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/clip-child-union.svg",
       "captureInputSha256": "6e3afaeacb42e272b665d0e91a2e0d8beab0e11ad8be03a1bd48b90287805fa3",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/clip-child-union.png",
+      "referenceSha256": "5aad4816bf2b468fd7d7aad033ffe4fd95ba7b0713391bd7e4078cb1fadac54c",
+      "captures": [
+        {
+          "pngSha256": "5aad4816bf2b468fd7d7aad033ffe4fd95ba7b0713391bd7e4078cb1fadac54c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5aad4816bf2b468fd7d7aad033ffe4fd95ba7b0713391bd7e4078cb1fadac54c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5aad4816bf2b468fd7d7aad033ffe4fd95ba7b0713391bd7e4078cb1fadac54c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/clip-child-union.png",
+      "linuxReferenceSha256": "5aad4816bf2b468fd7d7aad033ffe4fd95ba7b0713391bd7e4078cb1fadac54c",
+      "linuxCaptures": [
+        {
+          "pngSha256": "5aad4816bf2b468fd7d7aad033ffe4fd95ba7b0713391bd7e4078cb1fadac54c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5aad4816bf2b468fd7d7aad033ffe4fd95ba7b0713391bd7e4078cb1fadac54c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5aad4816bf2b468fd7d7aad033ffe4fd95ba7b0713391bd7e4078cb1fadac54c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "luminance-mask",
@@ -363,7 +831,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/luminance-mask.svg",
       "captureInputSha256": "f8a7096b56365488682ff67045c0e3abf4bb1c4f714dcc3d506171cba15dc9e3",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/luminance-mask.png",
+      "referenceSha256": "81ae6e205d22cdb5bb03897b74a6b221bfc91eafa3e52ef10c5d3d2aa2699197",
+      "captures": [
+        {
+          "pngSha256": "81ae6e205d22cdb5bb03897b74a6b221bfc91eafa3e52ef10c5d3d2aa2699197",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "81ae6e205d22cdb5bb03897b74a6b221bfc91eafa3e52ef10c5d3d2aa2699197",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "81ae6e205d22cdb5bb03897b74a6b221bfc91eafa3e52ef10c5d3d2aa2699197",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/luminance-mask.png",
+      "linuxReferenceSha256": "81ae6e205d22cdb5bb03897b74a6b221bfc91eafa3e52ef10c5d3d2aa2699197",
+      "linuxCaptures": [
+        {
+          "pngSha256": "81ae6e205d22cdb5bb03897b74a6b221bfc91eafa3e52ef10c5d3d2aa2699197",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "81ae6e205d22cdb5bb03897b74a6b221bfc91eafa3e52ef10c5d3d2aa2699197",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "81ae6e205d22cdb5bb03897b74a6b221bfc91eafa3e52ef10c5d3d2aa2699197",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "pattern-viewbox",
@@ -391,7 +898,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/pattern-viewbox.svg",
       "captureInputSha256": "cd4d7dcfaba4a0462001a839cd1804f2eb02dfa001b5d63b453dd7a5f6957e12",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/pattern-viewbox.png",
+      "referenceSha256": "a3e268a85c425cd63711ada1873993da377d0a8dd091128a636409db7e40f0d7",
+      "captures": [
+        {
+          "pngSha256": "a3e268a85c425cd63711ada1873993da377d0a8dd091128a636409db7e40f0d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a3e268a85c425cd63711ada1873993da377d0a8dd091128a636409db7e40f0d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a3e268a85c425cd63711ada1873993da377d0a8dd091128a636409db7e40f0d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/pattern-viewbox.png",
+      "linuxReferenceSha256": "a3e268a85c425cd63711ada1873993da377d0a8dd091128a636409db7e40f0d7",
+      "linuxCaptures": [
+        {
+          "pngSha256": "a3e268a85c425cd63711ada1873993da377d0a8dd091128a636409db7e40f0d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a3e268a85c425cd63711ada1873993da377d0a8dd091128a636409db7e40f0d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a3e268a85c425cd63711ada1873993da377d0a8dd091128a636409db7e40f0d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "pattern-affine",
@@ -419,7 +965,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/pattern-affine.svg",
       "captureInputSha256": "0e32b15871fa8eed6da8fa1f4c0e439a73328b1c975918d4d4445f23bea661b9",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/pattern-affine.png",
+      "referenceSha256": "487d29d9f9812f13f8ac086893e9cdc3bf6f5ab0c1a87e9fcef09bdc3aa30642",
+      "captures": [
+        {
+          "pngSha256": "487d29d9f9812f13f8ac086893e9cdc3bf6f5ab0c1a87e9fcef09bdc3aa30642",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "487d29d9f9812f13f8ac086893e9cdc3bf6f5ab0c1a87e9fcef09bdc3aa30642",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "487d29d9f9812f13f8ac086893e9cdc3bf6f5ab0c1a87e9fcef09bdc3aa30642",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/pattern-affine.png",
+      "linuxReferenceSha256": "487d29d9f9812f13f8ac086893e9cdc3bf6f5ab0c1a87e9fcef09bdc3aa30642",
+      "linuxCaptures": [
+        {
+          "pngSha256": "487d29d9f9812f13f8ac086893e9cdc3bf6f5ab0c1a87e9fcef09bdc3aa30642",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "487d29d9f9812f13f8ac086893e9cdc3bf6f5ab0c1a87e9fcef09bdc3aa30642",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "487d29d9f9812f13f8ac086893e9cdc3bf6f5ab0c1a87e9fcef09bdc3aa30642",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "embedded-png",
@@ -446,7 +1031,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/embedded-png.svg",
       "captureInputSha256": "df13e0634dd463cfa5b67c84274815d7a827bed48c9a9b4a9d689f1022007a82",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/embedded-png.png",
+      "referenceSha256": "aa5d5326f7c0f7808baff4c73c254df3b0f58cd87d68143e98c2b377fce6738a",
+      "captures": [
+        {
+          "pngSha256": "aa5d5326f7c0f7808baff4c73c254df3b0f58cd87d68143e98c2b377fce6738a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "aa5d5326f7c0f7808baff4c73c254df3b0f58cd87d68143e98c2b377fce6738a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "aa5d5326f7c0f7808baff4c73c254df3b0f58cd87d68143e98c2b377fce6738a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/embedded-png.png",
+      "linuxReferenceSha256": "aa5d5326f7c0f7808baff4c73c254df3b0f58cd87d68143e98c2b377fce6738a",
+      "linuxCaptures": [
+        {
+          "pngSha256": "aa5d5326f7c0f7808baff4c73c254df3b0f58cd87d68143e98c2b377fce6738a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "aa5d5326f7c0f7808baff4c73c254df3b0f58cd87d68143e98c2b377fce6738a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "aa5d5326f7c0f7808baff4c73c254df3b0f58cd87d68143e98c2b377fce6738a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "blur",
@@ -473,7 +1097,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/blur.svg",
       "captureInputSha256": "22645505d01bd95293ab66f544821d22eea68a9d0c71fe10950aed4e4b573da3",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/blur.png",
+      "referenceSha256": "12b21593c0967f9f2270c5cc58a2f928afbe4dea830afe2c2e9bc3b32de0ac0b",
+      "captures": [
+        {
+          "pngSha256": "12b21593c0967f9f2270c5cc58a2f928afbe4dea830afe2c2e9bc3b32de0ac0b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "12b21593c0967f9f2270c5cc58a2f928afbe4dea830afe2c2e9bc3b32de0ac0b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "12b21593c0967f9f2270c5cc58a2f928afbe4dea830afe2c2e9bc3b32de0ac0b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/blur.png",
+      "linuxReferenceSha256": "12b21593c0967f9f2270c5cc58a2f928afbe4dea830afe2c2e9bc3b32de0ac0b",
+      "linuxCaptures": [
+        {
+          "pngSha256": "12b21593c0967f9f2270c5cc58a2f928afbe4dea830afe2c2e9bc3b32de0ac0b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "12b21593c0967f9f2270c5cc58a2f928afbe4dea830afe2c2e9bc3b32de0ac0b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "12b21593c0967f9f2270c5cc58a2f928afbe4dea830afe2c2e9bc3b32de0ac0b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "blend-multiply",
@@ -500,7 +1163,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/blend-multiply.svg",
       "captureInputSha256": "18dc7485d7290c969da3b0d86921edbb444f1c210a248f496f4c83df793c40ce",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/blend-multiply.png",
+      "referenceSha256": "7ef352e223d0aea7218d454d4b531bfc9ead47b71ea52d3268af52bdfdbb1f42",
+      "captures": [
+        {
+          "pngSha256": "7ef352e223d0aea7218d454d4b531bfc9ead47b71ea52d3268af52bdfdbb1f42",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7ef352e223d0aea7218d454d4b531bfc9ead47b71ea52d3268af52bdfdbb1f42",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7ef352e223d0aea7218d454d4b531bfc9ead47b71ea52d3268af52bdfdbb1f42",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/blend-multiply.png",
+      "linuxReferenceSha256": "7ef352e223d0aea7218d454d4b531bfc9ead47b71ea52d3268af52bdfdbb1f42",
+      "linuxCaptures": [
+        {
+          "pngSha256": "7ef352e223d0aea7218d454d4b531bfc9ead47b71ea52d3268af52bdfdbb1f42",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7ef352e223d0aea7218d454d4b531bfc9ead47b71ea52d3268af52bdfdbb1f42",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7ef352e223d0aea7218d454d4b531bfc9ead47b71ea52d3268af52bdfdbb1f42",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "composite-in",
@@ -527,7 +1229,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/composite-in.svg",
       "captureInputSha256": "317844d059e68e13c3cba63c28dd42e4a72c07d17c444f2315d68584cf32a838",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/composite-in.png",
+      "referenceSha256": "7ad01f6996ca0f48596979e0f7d59676ef33997677db85fffd75b088c284a413",
+      "captures": [
+        {
+          "pngSha256": "7ad01f6996ca0f48596979e0f7d59676ef33997677db85fffd75b088c284a413",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7ad01f6996ca0f48596979e0f7d59676ef33997677db85fffd75b088c284a413",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7ad01f6996ca0f48596979e0f7d59676ef33997677db85fffd75b088c284a413",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/composite-in.png",
+      "linuxReferenceSha256": "7ad01f6996ca0f48596979e0f7d59676ef33997677db85fffd75b088c284a413",
+      "linuxCaptures": [
+        {
+          "pngSha256": "7ad01f6996ca0f48596979e0f7d59676ef33997677db85fffd75b088c284a413",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7ad01f6996ca0f48596979e0f7d59676ef33997677db85fffd75b088c284a413",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7ad01f6996ca0f48596979e0f7d59676ef33997677db85fffd75b088c284a413",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "merge-color-spaces",
@@ -554,7 +1295,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/merge-color-spaces.svg",
       "captureInputSha256": "904968a4ae7a2690078cfa8219ab986d982439abfc9447d9841e94fb872c8989",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/merge-color-spaces.png",
+      "referenceSha256": "c6af2b579db306289319e340c0880b26714b93d08c17e92e759730cda3a695f0",
+      "captures": [
+        {
+          "pngSha256": "c6af2b579db306289319e340c0880b26714b93d08c17e92e759730cda3a695f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c6af2b579db306289319e340c0880b26714b93d08c17e92e759730cda3a695f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c6af2b579db306289319e340c0880b26714b93d08c17e92e759730cda3a695f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/merge-color-spaces.png",
+      "linuxReferenceSha256": "c6af2b579db306289319e340c0880b26714b93d08c17e92e759730cda3a695f0",
+      "linuxCaptures": [
+        {
+          "pngSha256": "c6af2b579db306289319e340c0880b26714b93d08c17e92e759730cda3a695f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c6af2b579db306289319e340c0880b26714b93d08c17e92e759730cda3a695f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c6af2b579db306289319e340c0880b26714b93d08c17e92e759730cda3a695f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "filter-mask-clip",
@@ -582,7 +1362,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/filter-mask-clip.svg",
       "captureInputSha256": "c4a6ea437372555d00351e710076d9c8548af084447b2ac191b6d3d3fbf2da3d",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/filter-mask-clip.png",
+      "referenceSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+      "captures": [
+        {
+          "pngSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/filter-mask-clip.png",
+      "linuxReferenceSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+      "linuxCaptures": [
+        {
+          "pngSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "css-priority",
@@ -609,7 +1428,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/css-priority.svg",
       "captureInputSha256": "bd17e33463aaf02fe6812e6bee22dc8ad2a31172463f33eab77b342ee5ad22ab",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/css-priority.png",
+      "referenceSha256": "0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b",
+      "captures": [
+        {
+          "pngSha256": "0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/css-priority.png",
+      "linuxReferenceSha256": "0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b",
+      "linuxCaptures": [
+        {
+          "pngSha256": "0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "text-real-italic",
@@ -638,7 +1496,200 @@
       ],
       "captureInput": "capture-inputs/text-real-italic.svg",
       "captureInputSha256": "48bc67de2b650d819e947c059104c6dfd5f4b69b786d6483a34ab0fb8310ef9a",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/text-real-italic.png",
+      "referenceSha256": "b9ff989403c7074885bc62541a99ec2877450aadae2057ab1c6ca79c3459069d",
+      "captures": [
+        {
+          "pngSha256": "b9ff989403c7074885bc62541a99ec2877450aadae2057ab1c6ca79c3459069d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b9ff989403c7074885bc62541a99ec2877450aadae2057ab1c6ca79c3459069d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b9ff989403c7074885bc62541a99ec2877450aadae2057ab1c6ca79c3459069d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "fontProof": {
+        "windows": [
+          {
+            "variant": "absent",
+            "reference": "font-use-proof/windows/text-real-italic-absent.png",
+            "sha256": "d1977e85002228c5821136e962534e815e08a9a5ab5b443cce22c9558b290c70",
+            "freshProcessCaptures": 3,
+            "captures": [
+              {
+                "pngSha256": "d1977e85002228c5821136e962534e815e08a9a5ab5b443cce22c9558b290c70",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "d1977e85002228c5821136e962534e815e08a9a5ab5b443cce22c9558b290c70",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "d1977e85002228c5821136e962534e815e08a9a5ab5b443cce22c9558b290c70",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              }
+            ],
+            "comparison": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 1047,
+              "MaximumChannelError": 255,
+              "MeanAbsoluteError": 0.98315625,
+              "RootMeanSquareError": 14.44532818076488,
+              "MaximumAlphaError": 255,
+              "AlphaChangedPixelCount": 1047,
+              "MinimumMismatchX": 68,
+              "MinimumMismatchY": 71,
+              "MaximumMismatchX": 136,
+              "MaximumMismatchY": 99,
+              "IsExact": false
+            }
+          },
+          {
+            "variant": "substituted",
+            "reference": "font-use-proof/windows/text-real-italic-substituted.png",
+            "sha256": "9599152113fb8e85f7ad7a2e39b81daec37b769f053ba7a574219c0f5abb7c0d",
+            "freshProcessCaptures": 3,
+            "captures": [
+              {
+                "pngSha256": "9599152113fb8e85f7ad7a2e39b81daec37b769f053ba7a574219c0f5abb7c0d",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "9599152113fb8e85f7ad7a2e39b81daec37b769f053ba7a574219c0f5abb7c0d",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "9599152113fb8e85f7ad7a2e39b81daec37b769f053ba7a574219c0f5abb7c0d",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              }
+            ],
+            "comparison": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 918,
+              "MaximumChannelError": 255,
+              "MeanAbsoluteError": 0.79765625,
+              "RootMeanSquareError": 12.733119462645435,
+              "MaximumAlphaError": 255,
+              "AlphaChangedPixelCount": 918,
+              "MinimumMismatchX": 61,
+              "MinimumMismatchY": 71,
+              "MaximumMismatchX": 137,
+              "MaximumMismatchY": 99,
+              "IsExact": false
+            }
+          }
+        ],
+        "linux": [
+          {
+            "variant": "absent",
+            "reference": "font-use-proof/linux/text-real-italic-absent.png",
+            "sha256": "677445be92904a22d94aa6edb2e622760fd39c80ddc7842a92f1f79a58cbe868",
+            "freshProcessCaptures": 3,
+            "captures": [
+              {
+                "pngSha256": "677445be92904a22d94aa6edb2e622760fd39c80ddc7842a92f1f79a58cbe868",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "677445be92904a22d94aa6edb2e622760fd39c80ddc7842a92f1f79a58cbe868",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "677445be92904a22d94aa6edb2e622760fd39c80ddc7842a92f1f79a58cbe868",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              }
+            ],
+            "comparison": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 961,
+              "MaximumChannelError": 255,
+              "MeanAbsoluteError": 0.970925,
+              "RootMeanSquareError": 14.482398368364267,
+              "MaximumAlphaError": 255,
+              "AlphaChangedPixelCount": 961,
+              "MinimumMismatchX": 68,
+              "MinimumMismatchY": 71,
+              "MaximumMismatchX": 136,
+              "MaximumMismatchY": 99,
+              "IsExact": false
+            }
+          },
+          {
+            "variant": "substituted",
+            "reference": "font-use-proof/linux/text-real-italic-substituted.png",
+            "sha256": "ddface04d9e5b01cf94572f7f6e56b9ce9e7aeb844a0a7730e44a2c0462ead77",
+            "freshProcessCaptures": 3,
+            "captures": [
+              {
+                "pngSha256": "ddface04d9e5b01cf94572f7f6e56b9ce9e7aeb844a0a7730e44a2c0462ead77",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "ddface04d9e5b01cf94572f7f6e56b9ce9e7aeb844a0a7730e44a2c0462ead77",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "ddface04d9e5b01cf94572f7f6e56b9ce9e7aeb844a0a7730e44a2c0462ead77",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              }
+            ],
+            "comparison": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 876,
+              "MaximumChannelError": 255,
+              "MeanAbsoluteError": 0.80170625,
+              "RootMeanSquareError": 12.84240996659116,
+              "MaximumAlphaError": 255,
+              "AlphaChangedPixelCount": 876,
+              "MinimumMismatchX": 61,
+              "MinimumMismatchY": 71,
+              "MaximumMismatchX": 137,
+              "MaximumMismatchY": 99,
+              "IsExact": false
+            }
+          }
+        ]
+      },
+      "linuxReference": "references/linux64/text-real-italic.png",
+      "linuxReferenceSha256": "4bdad0b70f59972f639b0c32f6e06cbde820589df821014ca71a55b429206367",
+      "linuxCaptures": [
+        {
+          "pngSha256": "4bdad0b70f59972f639b0c32f6e06cbde820589df821014ca71a55b429206367",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4bdad0b70f59972f639b0c32f6e06cbde820589df821014ca71a55b429206367",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4bdad0b70f59972f639b0c32f6e06cbde820589df821014ca71a55b429206367",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "text-path",
@@ -668,7 +1719,126 @@
       ],
       "captureInput": "capture-inputs/text-path.svg",
       "captureInputSha256": "adf145a05077a667630ca97767560ffb190135875273a5c3345d2cdd3da0b8f4",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/resvg-MIT.txt",
+      "reference": "references/text-path.png",
+      "referenceSha256": "aa7ceb7e8eda3deb91f782548205efd8da4286d9c4e6450eb587ae93a308eae3",
+      "captures": [
+        {
+          "pngSha256": "aa7ceb7e8eda3deb91f782548205efd8da4286d9c4e6450eb587ae93a308eae3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "aa7ceb7e8eda3deb91f782548205efd8da4286d9c4e6450eb587ae93a308eae3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "aa7ceb7e8eda3deb91f782548205efd8da4286d9c4e6450eb587ae93a308eae3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "fontProof": {
+        "windows": [
+          {
+            "variant": "absent",
+            "reference": "font-use-proof/windows/text-path-absent.png",
+            "sha256": "6c03762e94abb791ba6b98c3042777bd5e95ca8f067fb1e255cb785bb3482048",
+            "freshProcessCaptures": 3,
+            "captures": [
+              {
+                "pngSha256": "6c03762e94abb791ba6b98c3042777bd5e95ca8f067fb1e255cb785bb3482048",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "6c03762e94abb791ba6b98c3042777bd5e95ca8f067fb1e255cb785bb3482048",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "6c03762e94abb791ba6b98c3042777bd5e95ca8f067fb1e255cb785bb3482048",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              }
+            ],
+            "comparison": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 1913,
+              "MaximumChannelError": 255,
+              "MeanAbsoluteError": 1.6462125,
+              "RootMeanSquareError": 16.887973531480917,
+              "MaximumAlphaError": 255,
+              "AlphaChangedPixelCount": 1907,
+              "MinimumMismatchX": 19,
+              "MinimumMismatchY": 60,
+              "MaximumMismatchX": 160,
+              "MaximumMismatchY": 126,
+              "IsExact": false
+            }
+          }
+        ],
+        "linux": [
+          {
+            "variant": "absent",
+            "reference": "font-use-proof/linux/text-path-absent.png",
+            "sha256": "cea05d753ce21c0e9233385557ba5f1a61a783b38c27d14a69bbe1524ef7999c",
+            "freshProcessCaptures": 3,
+            "captures": [
+              {
+                "pngSha256": "cea05d753ce21c0e9233385557ba5f1a61a783b38c27d14a69bbe1524ef7999c",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "cea05d753ce21c0e9233385557ba5f1a61a783b38c27d14a69bbe1524ef7999c",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "cea05d753ce21c0e9233385557ba5f1a61a783b38c27d14a69bbe1524ef7999c",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              }
+            ],
+            "comparison": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 1751,
+              "MaximumChannelError": 255,
+              "MeanAbsoluteError": 1.64631875,
+              "RootMeanSquareError": 17.16410553305939,
+              "MaximumAlphaError": 255,
+              "AlphaChangedPixelCount": 1745,
+              "MinimumMismatchX": 20,
+              "MinimumMismatchY": 60,
+              "MaximumMismatchX": 160,
+              "MaximumMismatchY": 126,
+              "IsExact": false
+            }
+          }
+        ]
+      },
+      "linuxReference": "references/linux64/text-path.png",
+      "linuxReferenceSha256": "800b91ca51360fd00ce86a7dd225acd687dd59a8652297b8e62d09887c8e7257",
+      "linuxCaptures": [
+        {
+          "pngSha256": "800b91ca51360fd00ce86a7dd225acd687dd59a8652297b8e62d09887c8e7257",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "800b91ca51360fd00ce86a7dd225acd687dd59a8652297b8e62d09887c8e7257",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "800b91ca51360fd00ce86a7dd225acd687dd59a8652297b8e62d09887c8e7257",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "wpt-marker-path",
@@ -697,7 +1867,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/wpt-marker-path.svg",
       "captureInputSha256": "dd54dd0d46eb6626de9f7a340889f507450df4a3d8b6eaf3d2c1784fe10a8adb",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/WPT-BSD-3-Clause.md",
+      "reference": "references/wpt-marker-path.png",
+      "referenceSha256": "7d8280796bd863d630a55c4890a4ceba30a7db6f9689c695d45c015a15cebd8e",
+      "captures": [
+        {
+          "pngSha256": "7d8280796bd863d630a55c4890a4ceba30a7db6f9689c695d45c015a15cebd8e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7d8280796bd863d630a55c4890a4ceba30a7db6f9689c695d45c015a15cebd8e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7d8280796bd863d630a55c4890a4ceba30a7db6f9689c695d45c015a15cebd8e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/wpt-marker-path.png",
+      "linuxReferenceSha256": "7d8280796bd863d630a55c4890a4ceba30a7db6f9689c695d45c015a15cebd8e",
+      "linuxCaptures": [
+        {
+          "pngSha256": "7d8280796bd863d630a55c4890a4ceba30a7db6f9689c695d45c015a15cebd8e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7d8280796bd863d630a55c4890a4ceba30a7db6f9689c695d45c015a15cebd8e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7d8280796bd863d630a55c4890a4ceba30a7db6f9689c695d45c015a15cebd8e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     },
     {
       "id": "wpt-nested-viewport",
@@ -725,7 +1934,46 @@
       "fonts": [],
       "captureInput": "capture-inputs/wpt-nested-viewport.svg",
       "captureInputSha256": "3e38168518dce0dd1c6e559e96aeee07f427b83548c62d1a481a577e09559646",
-      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.",
+      "licenseEvidence": "notices/WPT-BSD-3-Clause.md",
+      "reference": "references/wpt-nested-viewport.png",
+      "referenceSha256": "681810fc30bf15959117bd284cf38fd193fb6733d82443e6cd0ae3824c659c88",
+      "captures": [
+        {
+          "pngSha256": "681810fc30bf15959117bd284cf38fd193fb6733d82443e6cd0ae3824c659c88",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "681810fc30bf15959117bd284cf38fd193fb6733d82443e6cd0ae3824c659c88",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "681810fc30bf15959117bd284cf38fd193fb6733d82443e6cd0ae3824c659c88",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/wpt-nested-viewport.png",
+      "linuxReferenceSha256": "681810fc30bf15959117bd284cf38fd193fb6733d82443e6cd0ae3824c659c88",
+      "linuxCaptures": [
+        {
+          "pngSha256": "681810fc30bf15959117bd284cf38fd193fb6733d82443e6cd0ae3824c659c88",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "681810fc30bf15959117bd284cf38fd193fb6733d82443e6cd0ae3824c659c88",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "681810fc30bf15959117bd284cf38fd193fb6733d82443e6cd0ae3824c659c88",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     }
   ],
   "fontPrograms": [
@@ -747,5 +1995,34 @@
       "weight": 400,
       "italic": true
     }
-  ]
+  ],
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "oraclePins": {
+    "windows": {
+      "version": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "platform": "win64",
+      "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/win64/chrome-win64.zip",
+      "archiveSha256": "df4854428c509fcf2f790ac448bca3f994151bcff22008236fa7c4587294fbe1",
+      "executableRelativePath": "chrome-win64/chrome.exe",
+      "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3"
+    },
+    "linux": {
+      "version": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "platform": "linux64",
+      "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/linux64/chrome-linux64.zip",
+      "archiveSha256": "e66f66d4802a46d4a022667e668aa950e277cadbfbed4b3777915b47413a0ef9",
+      "executableRelativePath": "chrome-linux64/chrome",
+      "executableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3"
+    }
+  }
 }

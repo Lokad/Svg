@@ -170,7 +170,26 @@ T3-public/private split, default limits and under-ten-minute routine test policy
 remain unchanged. Selected test assets are committed for offline tests;
 `external/` remains an optional source checkout.
 
-F1 selection is frozen in the [26-document upstream manifest](tests/Research/upstream-static-documents/README.md) before fresh renderer comparisons. Original assets, notices and viewport/font transport are tracked. Capture qualification, any exposed in-scope corrections and coverage retirement remain required; this declaration does not close F1.
+F1 selection is frozen at `460a67df` in the [26-document upstream manifest](tests/Research/upstream-static-documents/README.md), before fresh comparisons.
+All original assets/notices and viewport/font transports are tracked. **174 healthy,
+stable, cleaned Chrome captures** freeze all Windows/Linux references and three
+native font-use discriminators. First Windows comparison: **20 exact, two pixel
+differences, four rejections**. Every selected case remains required; the
+[initial results](artifacts/full-fixture-replacement-20261017/first-comparison-failures-windows.json)
+retain the failures. Resolve this finite dependency order before fixture retirement:
+
+| Required F1 work | Missing behavior and acceptance | Completion condition |
+| --- | --- | --- |
+| [ ] **F1.1 - shared rectangle source replay** | `nested-affine` rejects while registering an affine rectangle id; `pattern-affine` rejects a rotated rounded rectangle. Reuse native shape sources and composed paint maps, preserving ordinary/instance paths. | Both unchanged documents exact on Windows/Linux; focused source/map/ownership regressions pass. |
+| [ ] **F1.2 - rounded resource clips** | `object-box-clip` loses rounded corners (424 differing Windows pixels). Use the shared rounded source with the resource's object-box map. | Unchanged document exact on both platforms; sharp/rounded and native/object-bound clip controls stay exact. |
+| [ ] **F1.3 - nested SVG transform binding** | `wpt-nested-viewport` rejects its nested SVG transform. Compose it outside the child viewBox with the existing viewport/clip map. | Unchanged document exact on both platforms; parent maps, physical clips and siblings remain protected. |
+| [ ] **F1.4 - embedded PNG metadata** | `embedded-png` rejects its significant-bit chunk. Resolve valid fully significant 8-bit metadata without adding color conversion or orientation support; retain meaningful format/chunk boundaries. | Original embedded PNG document exact on both platforms with focused valid/malformed/unsupported chunk outcomes. |
+| [ ] **F1.5 - composed effect fidelity** | `filter-mask-clip` differs by 395 Windows pixels (267 alpha differences). Diagnose source capture, mask/clip ordering and native coverage through the existing effect machinery. | Unchanged document exact on both platforms; A6, existing mixed-space/owner/source and resource controls stay exact. |
+| [ ] **F1.6 - replace active full-document membership** | Record coverage dispositions and retire superseded full-document checks/assets after the replacement passes. Keep focused known-bug cases, API/resource/font-host contracts and benchmark inputs. | Replacement manifest and tests are active; every retired document has a recorded replacement/redundancy/focused-regression disposition; all 26 selected outputs are exact on Windows/Linux. |
+
+F1 remains open, followed by finished-batch A7. No reference replacement,
+tolerance, candidate-based exclusion or new measurement framework closes a gap.
+
 
 ### Completion audit (2026-10-16)
 

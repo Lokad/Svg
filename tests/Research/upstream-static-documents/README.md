@@ -3,7 +3,7 @@
 This finite selection is frozen before fresh renderer comparisons. It replaces
 full logo/export/icon/authored-sheet membership after qualification and coverage
 disposition; existing micro-tests, known-bug, API/resource and font-host contracts
-stay. Capture/reference qualification and retirement are pending.
+stay. Native references are qualified; renderer corrections and retirement are pending.
 
 The [manifest](manifest.json) records 26 unchanged documents, original hashes,
 pinned upstream identity/license, feature purpose, one viewport/scale/background
@@ -21,8 +21,10 @@ Selection reviewed these pinned inventories:
   (2,517 entries, not truncated). Two standalone marker/viewport documents add
   interactions. HTML/DOM/script/animation, external-resource and unsupported
   feature tests are outside this static profile. Duplicate reference documents
-  are not fixtures. Inspected `line-dasharray.svg` requires unpromised pathLength;
-  `clip-path-filter-order.svg` requires excluded feColorMatrix; neither is selected.
+  are not fixtures. Inspected `line-dasharray.svg` overlaps the selected curved
+  dash document and retained `SvgRootParserTests`/`SvgStrokeFillTests` pathLength
+  controls; pathLength remains admitted. `clip-path-filter-order.svg` requires
+  excluded feColorMatrix and is not selected.
 - [Accepted W3C SVG 1.1 F2 index](https://dev.w3.org/SVG/profiles/1.1F2/test/harness/htmlObjectApproved/index.html),
   retained 2026-10-17 with SHA256
   `365f7d07615f2053ac0da65ba2f97d8281b01077b785dad87584d49ebe81d8af`.
@@ -65,9 +67,16 @@ regular and real italic Noto Sans under OFL-1.1, without machine-font discovery.
 and, on the two text documents, appended data-URI @font-face bindings for the
 unchanged requested family/style. Every other original XML node/attribute is
 preserved. Lokad.Svg receives the original input plus the same viewport/fonts
-through its existing API/catalog/provider. Font-use proof and healthy stable
-Windows/Linux reference triples remain required before F1 closes.
+through its existing API/catalog/provider. All 174 fresh-process Windows/Linux captures have healthy startup, successful
+cleanup and identical triples. Intended text differs from absent-font controls
+on both platforms; real italic also differs from regular-font substitution.
+Their references, hashes and provenance are retained in the manifest.
 
 The ignored [selection study](../../../artifacts/full-fixture-replacement-20261017/)
 retains upstream inventories and candidate review. [PLAN](../../../PLAN.md#full-svg-fixture-replacement-f1)
 owns acceptance and remaining work. This declaration is not renderer qualification.
+
+The first Windows renderer comparison is **20/26 exact**, with four rejections and
+two pixel differences. All documents remain selected. [PLAN F1.1-F1.6](../../../PLAN.md#full-svg-fixture-replacement-f1)
+records the finite required corrections and retirement gate. Renderer qualification
+and finished-batch A7 are pending; native capture health does not establish them.
