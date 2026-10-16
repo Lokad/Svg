@@ -1,0 +1,25 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="64">
+  <defs>
+    <symbol id="hidden" viewBox="0 0 32 32" visibility="hidden">
+      <rect x="2" y="2" width="12" height="12" fill="#bd4f36"/>
+      <g visibility="visible">
+        <rect x="18" y="2" width="12" height="12" fill="#43805b"/>
+        <rect x="18" y="18" width="12" height="12" fill="#bd4f36" visibility="hidden"/>
+      </g>
+      <rect id="leaf-alias" x="2" y="18" width="12" height="12" fill="#244a77"/>
+    </symbol>
+    <symbol id="visible" viewBox="0 0 32 32" visibility="visible">
+      <rect x="2" y="2" width="12" height="12" fill="#43805b"/>
+    </symbol>
+    <symbol id="inherited" viewBox="0 0 32 32">
+      <rect x="2" y="2" width="12" height="12" fill="#bd4f36"/>
+      <rect x="18" y="18" width="12" height="12" fill="#43805b" visibility="visible"/>
+    </symbol>
+  </defs>
+  <use href="#hidden" x="8" y="8" width="32" height="32"/>
+  <use href="#visible" x="48" y="8" width="32" height="32" visibility="hidden"/>
+  <use href="#inherited" x="80" y="8" width="32" height="32" visibility="hidden"/>
+  <use href="#leaf-alias" x="120" y="8"/>
+  <rect x="8" y="52" width="136" height="2" fill="#244a77"/>
+</svg>

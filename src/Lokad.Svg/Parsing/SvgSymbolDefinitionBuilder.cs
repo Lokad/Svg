@@ -4,6 +4,7 @@ namespace Lokad.Svg.Parsing;
 
 internal readonly record struct SvgSymbolPresentation(SvgPaint Paint, SvgInheritedStrokeStyle Stroke, string? FillRule, bool HasAuthoredFill, SvgPaintOpacity? FillOpacity, SvgColor? CurrentColor, SvgPaintOpacity SourceOpacity)
 {
+    internal bool IsHidden { get; init; }
     internal bool? IsVisible { get; init; }
     internal bool InheritsOpacity { get; init; }
     internal string? PaintServerFill { get; init; }
@@ -67,6 +68,7 @@ internal sealed class SvgSymbolDefinitionBuilder : IDisposable
     /// <summary>Transfers a complete child's geometries on success; the caller retains ownership if growth fails.</summary>
     internal void Add(SvgDefinition definition)
     {
+        if (_content is null && definition.SourceVisible is not null) _ = EnableContent();
         if (_content is null && definition.LeafSource?.LocalName == "rect")
             foreach (SvgGeometry geometry in definition.Geometries)
             {

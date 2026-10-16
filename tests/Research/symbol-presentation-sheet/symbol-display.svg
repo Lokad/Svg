@@ -1,0 +1,21 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="48">
+  <style>symbol.hidden { display: none; }</style>
+  <defs>
+    <symbol id="attribute" viewBox="0 0 24 24" display="none">
+      <rect x="2" y="2" width="20" height="20" fill="#43805b"/>
+    </symbol>
+    <symbol id="inline" viewBox="0 0 24 24" style="display:none !important">
+      <path d="M2 22V2H22V22Z" fill="#244a77"/>
+    </symbol>
+    <symbol id="stylesheet" class="hidden" viewBox="0 0 24 24">
+      <rect x="2" y="2" width="20" height="20" fill="#bd4f36"/>
+    </symbol>
+    <symbol id="normal" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" fill="#244a77"/></symbol>
+  </defs>
+  <use href="#attribute" x="8" y="12" width="24" height="24"/>
+  <use href="#inline" x="40" y="12" width="24" height="24"/>
+  <use href="#stylesheet" x="72" y="12" width="24" height="24"/>
+  <use href="#normal" x="104" y="12" width="24" height="24"/>
+  <use href="#normal" x="136" y="12" width="24" height="24" display="none"/>
+</svg>

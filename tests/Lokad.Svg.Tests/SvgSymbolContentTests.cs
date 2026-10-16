@@ -8,6 +8,18 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgSymbolContentTests
 {
     [Theory]
+    [InlineData("display='unknown'")]
+    [InlineData("visibility='collapse'")]
+    public void Invalid_symbol_presentation_releases_retained_sources(string presentation)
+    {
+        RenderBudget budget = new(1_000_000);
+        byte[] input = Input("<symbol id='s' " + presentation + "><rect width='4' height='4'/></symbol><use href='#s'/>");
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
     [InlineData("<symbol id='s'><use href='#s'/></symbol>", SvgErrorCode.MalformedInput)]
     [InlineData("<symbol id='a'><use href='#b'/></symbol><symbol id='b'><use href='#a'/></symbol>", SvgErrorCode.MalformedInput)]
     [InlineData("<symbol><g id='a'><g><use href='#a'/></g></g></symbol>", SvgErrorCode.MalformedInput)]

@@ -1,3 +1,18 @@
+## Public symbol follow-up (2026-10-16)
+
+Symbol `display` and `visibility` presentation attributes, inline styles and admitted
+stylesheets now use the existing retained-content presentation. Pinned Chrome
+suppresses symbol instances with `display:none`; marker display remains ignored.
+Symbol visibility inherits and explicit child/group visibility overrides it, including
+a visible leaf overriding a hidden use. Direct child aliases exclude source ancestors.
+The [whole sheet and two controls](../tests/Research/symbol-presentation-sheet/README.md)
+are exact on Windows/Linux; 8,142 local tests/platform pass, including useful invalid
+values and material resource outcomes. Hosted finished-revision verification is pending.
+The finite source scan additionally identified integer-only line endpoint parsing
+as a live G3/G4 blocker for three public Feather documents; [PLAN](../PLAN.md#delivery-order)
+owns that next shared correction. Existing exact cohorts and font/resource contracts
+remain preserved. This follow-up does not expand the agreed finite subset.
+
 ## Standalone qualification complete (2026-10-16)
 
 [Final S17 qualification](../artifacts/standalone-font-qualification-20261016/standalone-release-qualified-results.json)

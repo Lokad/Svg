@@ -1,3 +1,18 @@
+## Symbol presentation follow-up (2026-10-16)
+
+The [sprite sheet and controls](../tests/Research/symbol-presentation-sheet/README.md)
+exposed symbol attribute-policy/parser gates and a separate loss of explicit leaf
+visibility in flat symbol assembly. Symbol display and nullable visibility now
+enter the retained root presentation; a leaf with authored visibility selects the
+existing retained-content path. Instance visibility and source-ancestor exclusion
+therefore use the existing replay rules, without another stroke/raster pipeline.
+Pinned native captures suppress symbol `display:none`, unlike marker display and
+the SVG 2 direct-instance rule. The initial discriminator remains recorded rather
+than changing the target to the specification's different outcome.
+The complete sheet and two controls match both platforms; 8,142 local tests/platform
+pass. [Evidence](../artifacts/symbol-presentation-20261016/qualified-results.json)
+owns the frozen captures, source declarations and proportional resource checks.
+
 ## Standalone public font gate (2026-10-16)
 
 [Four public requests](../tests/Research/public-font-qualification/README.md)

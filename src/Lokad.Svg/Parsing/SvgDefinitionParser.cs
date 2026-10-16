@@ -164,9 +164,8 @@ internal static class SvgDefinitionParser
             SvgComputedStyle style = marker ? markerContext.ResolveStyle(reader) : SvgComputedStyleResolver.Resolve(reader, sheet, workCounter, cancellationToken);
             state.MarkerDefinition = marker ? SvgMarkerSyntax.Parse(reader, style, new(state.EffectiveFrame?.ViewportWidth ?? root.UserViewportWidth, state.EffectiveFrame?.ViewportHeight ?? root.UserViewportHeight), markerContext.InheritedTextStyle, markerContext.StyleSheet, workCounter, cancellationToken) : null;
             SvgPaint inheritedPaint = marker ? markerContext.InheritedPresentation.Paint : SvgPaint.Default;
-            if (!marker && (style.Display is not null || style.Visibility is not null)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Display and visibility on symbol containers are not implemented.");
-            // Marker definitions ignore display; visibility still inherits through their content.
-            if (marker) _ = SvgPresentationResolver.ParseDisplay(style.Display);
+            // Pinned Chrome honors display on symbol instances, but ignores it on marker definitions.
+            bool displayed = SvgPresentationResolver.ParseDisplay(style.Display);
             bool shader = SvgPatternSyntax.IsPatternFill(style.Fill);
             SvgPaint paint = SvgPaintResolver.Resolve(shader ? "#ffffff" : style.Fill, style.FillOpacity, style.Color, inheritedPaint, namedColors);
             string? shaderFill = null, shaderId = null;
@@ -178,7 +177,7 @@ internal static class SvgDefinitionParser
             }
             SvgInheritedStrokeStyle stroke = new(CopyStyleValue(style.Linecap, state), CopyStyleValue(style.Linejoin, state), CopyStyleValue(style.Dasharray, state), CopyStyleValue(style.Dashoffset, state), CopyStyleValue(style.Width, state), CopyStyleValue(style.Miterlimit, state), CopyStyleValue(style.StrokeOpacity, state), CopyStyleValue(style.Stroke, state));
             SvgSymbolPresentation presentation = new(paint, stroke, CopyStyleValue(style.FillRule, state), marker || style.Fill is not null,
-                marker ? paint.FillOpacity : style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity), marker ? paint.CurrentColor : style.Color is null ? null : SvgColorParser.Parse(style.Color, namedColors), marker ? style.GetOpacity() : style.ResolveOpacity(SvgPaintOpacity.Opaque).GetOpacity()) { IsVisible = marker ? SvgPresentationResolver.ParseVisibility(style.Visibility, markerContext.InheritedPresentation.IsVisible) : null, InheritsOpacity = !marker && style.InheritsOpacity, Markers = new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, workCounter, cancellationToken), PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
+                marker ? paint.FillOpacity : style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity), marker ? paint.CurrentColor : style.Color is null ? null : SvgColorParser.Parse(style.Color, namedColors), marker ? style.GetOpacity() : style.ResolveOpacity(SvgPaintOpacity.Opaque).GetOpacity()) { IsHidden = !marker && !displayed, IsVisible = marker ? SvgPresentationResolver.ParseVisibility(style.Visibility, markerContext.InheritedPresentation.IsVisible) : style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true), InheritsOpacity = !marker && style.InheritsOpacity, Markers = new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, workCounter, cancellationToken), PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
             if (!marker) presentation = presentation with
             {
                 TextStyleSource = SvgRetainedTextSource.CaptureElement(reader,
@@ -190,7 +189,7 @@ internal static class SvgDefinitionParser
             state.SymbolViewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), workCounter, cancellationToken);
             state.SymbolDefinition = SvgSymbolDefinitionBuilder.Create(state.Budget, workCounter, cancellationToken, presentation);
             state.SymbolDefinition.EstablishesViewport = true;
-            if (shaderFill is not null || marker || presentation.Markers.HasMarkers || presentation.InheritsOpacity || sheet != default)
+            if (shaderFill is not null || marker || presentation.IsHidden || presentation.IsVisible is not null || presentation.Markers.HasMarkers || presentation.InheritsOpacity || sheet != default)
             {
                 state.SymbolDefinition.EnableContent();
                 state.HasRetainedSymbolContent = true;

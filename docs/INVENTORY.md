@@ -7,6 +7,19 @@ The frozen selection and measured outcomes are recorded below.
 
 ## Current document evidence (2026-10-16)
 
+The [symbol sprite sheet](../tests/Research/symbol-presentation-sheet/README.md)
+and two controls are exact on Windows/Linux, closing symbol display/visibility
+admission and the visible-leaf override lost by flat symbols. Full local
+qualification passes 8,142 tests/platform. This adds one CC0 document: **36 authored
+documents (26 CC0 / 10 MIT)**, separately counted from corporate/selected cohorts.
+Hosted qualification is pending. The finite public-source follow-up screened six
+unchanged [MIT Feather SVGs](https://github.com/feathericons/feather/tree/1b002399e8758fb2bccea4d07312dc9e0f43dcb8/icons):
+Activity, GitHub and Slack screen exact on both platforms and add no corpus cases;
+Aperture, Feather and Sun reject fractional line endpoints and are the next
+required whole documents in PLAN. Screens are single healthy native captures,
+not yet stable qualification. Sources, license and [results](../artifacts/public-svg-scan-20261016/)
+remain retained. No representative success-rate claim follows from this selection.
+
 [Public standalone font qualification](../tests/Research/public-font-qualification/README.md)
 now covers regular, bold, real italic and intentional fallback requests end to end
 on Windows/Linux. Three existing visual cases are reused unchanged; one focused
@@ -17,7 +30,7 @@ prerequisites below are superseded by this approved gate split.
 
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
-variants**. **Thirty-five additional authored documents** (twenty-five CC0 and ten MIT
+variants**. **Thirty-six additional authored documents** (twenty-six CC0 and ten MIT
 documents) are complete and counted separately. Preserve the delivered
 [effects sheet](../tests/Research/effects-marker-sheet/README.md),
 [composition sheet](../tests/Research/composition-sheet/README.md) and

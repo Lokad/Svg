@@ -63,7 +63,7 @@ internal sealed class SvgSymbolContent : IDisposable
         {
             content = new(budget, work, token, presentation, owner);
             content._building.Add(new(SvgSymbolContentKind.Group, default, default,
-                new(presentation.Paint, presentation.HasAuthoredFill, presentation.FillOpacity, presentation.CurrentColor, presentation.SourceOpacity, true, presentation.IsVisible)
+                new(presentation.Paint, presentation.HasAuthoredFill, presentation.FillOpacity, presentation.CurrentColor, presentation.SourceOpacity, !presentation.IsHidden, presentation.IsVisible)
                 { TextStyleSource = presentation.TextStyleSource, InheritsOpacity = presentation.InheritsOpacity, Markers = presentation.Markers, PaintOrder = presentation.PaintOrder, PaintServerFill = presentation.PaintServerFill, PaintServerId = presentation.PaintServerId, FillRule = presentation.FillRule, Stroke = presentation.Stroke, StrokeOpacity = presentation.Stroke.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(presentation.Stroke.StrokeOpacity) }, SvgAffineTransform.Identity, -1));
             return content;
         }

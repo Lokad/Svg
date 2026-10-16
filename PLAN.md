@@ -1,6 +1,7 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-16: standalone qualification complete; private adoption gate pending.
+Updated 2026-10-16: standalone checkpoint qualified; public symbol correction
+locally qualified; three sourced fractional-line documents queued; private adoption pending.
 Preserve the current implementation work, qualified `inv-146` correction and every
 established exact result, original SVG/font/reference bytes, options and default
 resource limits. This file owns delivery order, required exits and scope
@@ -83,6 +84,46 @@ selection/metrics/pixel outcomes; convert in-scope defects into public
 reproductions. This gate cannot be marked passed by public qualification, and
 standalone completion makes no claim of compatibility with that deployment.
 
+**Public SVG follow-up (2026-10-16):** the [symbol sprite sheet and two controls](tests/Research/symbol-presentation-sheet/)
+now match frozen Windows/Linux references exactly. Existing retained-source
+presentation carries symbol display/visibility and explicit visible leaves that
+override a hidden use; preserve hidden-use suppression and child aliases excluding
+symbol ancestors. Pinned Chrome suppresses symbol instances with `display:none`,
+unlike its marker behavior and the SVG 2 direct-symbol-instance rule; retain that
+native discriminator. [Local qualification](artifacts/symbol-presentation-20261016/qualified-results.json)
+passes **8,142 tests/platform**, **104s Windows / 377s Linux** for build plus full
+tests, including representative denial/cancellation/cleanup/retry. No old SVG,
+font, reference or option changed. Hosted finished-revision qualification is pending.
+
+The next three deliverables are finite:
+
+1. **P1 — symbol presentation: locally complete.** One whole document and both
+   controls are exact on Windows/Linux; invalid values and representative resource
+   outcomes pass. No shape/API combination grid.
+2. **P2 — finished-correction checkpoint:** run the required hosted checks once the
+   correction is finished, preserve every established exact result and record the
+   exact revised source/CI outcome. Reuse unchanged measurements and completed
+   memory/maintenance evidence; ordinary qualification stays below ten minutes.
+3. **P3 — public-source follow-up: scan complete.** Six unchanged MIT Feather SVGs
+   at pinned revision `1b002399e8758fb2bccea4d07312dc9e0f43dcb8` were screened on
+   Windows/Linux. Activity, GitHub and Slack screens are exact and add no corpus
+   cases. Aperture, Feather and Sun are rejected: their fractional line endpoints
+   hit integer-only line parsing. [Source/selection](artifacts/public-svg-scan-20261016/selection.json)
+   and platform screen results retain provenance and distinct outcomes; these
+   failure-selected inputs establish no general success rate.
+
+**Next required correction — fractional line endpoints (G3/G4):** retain the three
+unchanged public documents with MIT notices and stable native references. Extend
+the existing source/native-stroke route for finite fractional endpoints, preserving
+integer fast paths and source replay. Close all three declared 24×24 transparent
+outputs exactly on Windows/Linux; use only missing axial/diagonal controls and
+material boundary/resource checks. No new stroke implementation or combinations
+grid. Finish this shared correction before another acquisition batch or CI refresh.
+
+P1/P2 are complete only with exact document/control results and finished-revision
+verification. This follow-up does not expand the font, shaping or effects scope;
+T3-private remains a separate pending adoption gate.
+
 The S17 measurement set is finite: existing `SvgCurveBenchmarks` outlined-wordmark,
 gradient-clip and isolated-opacity methods; `SvgPatternBenchmarks` identical instances;
 `SvgSuppliedLabelBenchmarks` public label; and the retained
@@ -99,7 +140,8 @@ covered spellings, retain original inputs when replacing obsolete rejection
 assertions, and add only missing independent cases. Every visual exit requires
 exact declared outputs and applicable negative/degenerate/material ownership
 checks. One witness can close several promises without duplicate API rows or
-shape × paint × instance grids. This is the sole remaining execution queue.
+shape × paint × instance grids. The ordered exits and public follow-up above own
+the execution queue.
 
 ## Required support boundaries and finite exits
 
