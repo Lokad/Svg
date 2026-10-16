@@ -1,3 +1,17 @@
+## General affine rectangular resource clips (2026-10-16)
+
+The unchanged [affine-stroke bank](../tests/Research/affine-rectangle-strokes/README.md)
+is **10/10 exact controls** on Windows/Linux, preserving its original eight.
+C6c's original rotated stroke and visible forward clip through a scaled viewport
+are exact; the retained transformed-fill clip-crossing control also matches its
+unchanged reference. General leaf/group clips use native rectangle binding.
+Construction uses the parent's outward-rounded window; geometry owns fractional
+viewport coverage. Native contour order preserves vertical-piece combination.
+The [qualification](../artifacts/maintenance-review-20261012/affine-rect-clip-qualified-results.json)
+owns original inputs/options/references/limits and resource/sibling checks.
+Earlier affine rectangle-clip gates below are superseded. Declared C1–C6c exits
+are complete; glyph/font/effect and S17 remain required. No feature scope is deferred.
+
 ## Bounded tile masks (2026-10-16)
 
 The unchanged [tile-mask bank](../tests/Research/tile-mask-exit-sheet/README.md) is

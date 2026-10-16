@@ -201,7 +201,7 @@ internal static class SvgDocumentTraversal
                         string? groupClipId = parsedGroup.Scope.ClipPathId;
                         if (groupClipId is not null && !parsedGroup.Scope.HasFilter)
                         {
-                            if (state.Clips.TryGetValue(groupClipId, out SvgClipBox clipBox))
+                            if (state.Clips.TryGetValue(groupClipId, out SvgClipBox clipBox) && parsedGroup.Scope.InheritedPresentation.Transform.IsAxisAligned)
                             {
                                 SvgViewportFrame? clipParent = state.EffectiveFrame;
                                 SvgClipBox clip = SvgClipPathSyntax.MapGroupClip(clipBox, parsedGroup.Scope.InheritedPresentation.Transform, clipParent, workCounter, cancellationToken);

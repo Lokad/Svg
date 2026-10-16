@@ -109,9 +109,7 @@
       "width": 64,
       "height": 48,
       "background": "transparent",
-      "role": "admission-gate",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Clip paths on transformed rectangle fills are not implemented."
+      "role": "admission-gate"
     },
     {
       "id": "translucent-overlap",

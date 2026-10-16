@@ -461,10 +461,11 @@ internal ref struct SvgOrthogonalGeometryLowering
     {
         using BudgetedParserList<SvgFractionalPoint> points = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         double right = x + width, bottom = y + height;
-        points.Add(new(x, bottom));
+        // Match native rectangle contour order before clipping and vertical-edge combination.
         points.Add(new(x, y));
         points.Add(new(right, y));
         points.Add(new(right, bottom));
+        points.Add(new(x, bottom));
         return LowerFractionalPointList(points, SvgPolygonMapping.FiniteEdges, element, frame, budget) with { ElementCount = 0 };
     }
 

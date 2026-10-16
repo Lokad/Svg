@@ -1,3 +1,29 @@
+## Affine resource rectangles and construction windows (2026-10-16)
+
+General leaf/group rectangle clips defer through the existing native resource
+binder with their composed source/viewport map. Defined axis clips retain their
+qualified route. The parent supplies an outward-rounded binary construction
+window; geometry keeps the actual fractional viewport boundary. Omitting that
+window reconstructs an edge against the root bitmap; applying another fractional
+AA clip squares coverage. Both rejected models remain in the existing
+[diagnostic study](../artifacts/affine-rect-clip-exits-20261016/diagnosis-results.json).
+
+Rectangle contours retain the native top-left start corner. The existing edge
+builder can then combine consecutive clipped vertical pieces before walking.
+A different start splits those pieces across the contour seam, introducing an
+extra Y event and one wrong fringe pixel. The shared rectangle fill constructor
+uses the same ordering. Native source is SkPath::Rect/SkDraw.cpp and vertical
+combination in SkEdgeBuilder.cpp at the existing pinned revision; no new raster
+implementation, numerical tolerance or pixel predicate is introduced.
+
+The unchanged [two C6c controls](../tests/Research/affine-rectangle-strokes/README.md)
+and retained transformed-fill clip-crossing control are exact on both platforms.
+Independent fill/stroke, ordinary-rectangle and fractional-viewport diagnostics
+also match healthy triples. Temporary diagnostic hooks are removed. The
+[qualification](../artifacts/maintenance-review-20261012/affine-rect-clip-qualified-results.json)
+owns preservation and affected resource/sibling checks. Declared C1–C6c exits are
+complete; glyph/font/effect and S17 stay required.
+
 ## Tile-owned resource binding and native mask restoration (2026-10-16)
 
 Deferred leaf clips/masks and group masks borrow the builder that owns their

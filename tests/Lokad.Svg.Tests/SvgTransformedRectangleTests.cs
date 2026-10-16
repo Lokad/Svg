@@ -123,12 +123,17 @@ public sealed class SvgTransformedRectangleTests
     }
 
     [Fact]
-    public void Transformed_leaf_clip_boundary_rejects_without_retaining_owners()
+    public void Transformed_leaf_clip_boundary_renders_without_retaining_owners()
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "transformed-rectangle-fills", "clip-crossing.svg"));
         RenderBudget budget = new(8_000_000);
-        SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
+        {
+            Assert.Equal(64, surface.Width); Assert.Equal(48, surface.Height);
+            Assert.Equal(new byte[] { 2, 91, 199, 255 }, surface.Pixels.AsSpan((24 * 64 + 30) * 4, 4).ToArray());
+            Assert.Equal(new byte[] { 0, 0, 0, 0 }, surface.Pixels[..4]);
+        }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 

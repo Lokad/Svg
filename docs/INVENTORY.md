@@ -99,7 +99,18 @@ all source/reference bytes/options/default limits and sibling outputs. This is
 the twenty-fourth authored document (fifth MIT), separate from both cohorts and
 W3C. The [receipt](../artifacts/maintenance-review-20261012/tile-mask-qualified-results.json)
 owns full qualification, the original-input migration and resource preservation.
-C5b is complete; C6c, glyph/font/effect and S17 stay required in PLAN.md.
+C5b is complete; reuse its qualified mask dependency for the remaining exits in PLAN.md.
+
+The [affine-stroke bank](../tests/Research/affine-rectangle-strokes/README.md) is
+**10/10 exact controls** on both platforms, preserving its original eight.
+The two C6c controls retain twelve healthy captures: the original 96×72 Core
+input and a visible forward clip/viewport/sibling witness. They add no complete
+document to either cohort or the twenty-four authored documents. The retained
+transformed-fill clip-crossing control also matches its unchanged reference,
+cross-checked by six healthy native captures. The
+[receipt](../artifacts/maintenance-review-20261012/affine-rect-clip-qualified-results.json)
+owns qualification, original-input preservation and affected resource checks.
+Declared C1–C6c exits are complete; glyph/font/effect and S17 remain required.
 
 One additional sourced [W3C decoration document](../tests/Research/stroked-decorations/README.md)
 is **1/1 exact** on Windows/Linux at its frozen 1200×400 output, separately from

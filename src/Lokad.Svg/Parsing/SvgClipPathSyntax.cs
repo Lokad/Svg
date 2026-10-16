@@ -116,14 +116,14 @@ internal static class SvgClipPathSyntax
         }
         return ResolveLeafClip(reader, state);
     }
-    /// <summary>Reports the unknown clip-path reference of one direct leaf for end-of-document resolution, or nothing when absent or already defined.</summary>
-    internal static string? PendingClipId(XmlReader reader, SvgDocumentState state)
+    /// <summary>Retains unresolved or generally placed leaf clips; defined axis clips keep their qualified direct route.</summary>
+    internal static string? PendingClipId(XmlReader reader, SvgDocumentState state, SvgPaintableElementContext context)
     {
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(state);
         string? id = ResolveClipId(reader, state);
         if (id is null) return null;
-        if (state.Clips.TryGetValue(id, out _)) return null;
+        if (state.Clips.TryGetValue(id, out _) && context.ResolveTransform(reader).IsAxisAligned) return null;
         return state.Strings.Copy(id);
     }
 
@@ -144,6 +144,24 @@ internal static class SvgClipPathSyntax
                 SvgClipBox clip;
                 if (state.Clips.TryGetValue(pending.ClipId, out SvgClipBox box))
                 {
+                    if (!pending.Transform.IsAxisAligned)
+                    {
+                        SvgAffineTransform map = parent is {} frame
+                            ? SvgAffineTransform.FromScaleOffset(frame.ScaleX, frame.ScaleY, frame.OffsetX, frame.OffsetY).ComposeChecked(pending.Transform)
+                            : pending.Transform;
+                        SvgLeafMaskOperation? viewport = ParentClipWindow(parent, state);
+                        SvgLeafMaskBinding? binding = null;
+                        for (int index = pending.FirstGeometryIndex; index < pending.FirstGeometryIndex + pending.GeometryCount; index++)
+                        {
+                            workCounter.Consume(cancellationToken);
+                            SvgLeafMaskBinding? inner = state.Scene.GeometryAt(index).LeafMask;
+                            binding = binding is null
+                                ? BindResourceClip(pending.ClipId, map, inner, state, workCounter, cancellationToken)
+                                : SvgLeafMaskComposition.NewBinding(state, binding.Operation, inner);
+                            state.Scene.AssignLeafMask(index, viewport is null ? binding : SvgLeafMaskComposition.NewBinding(state, viewport, binding));
+                        }
+                        continue;
+                    }
                     clip = MapGroupClip(box, pending.Transform, parent, workCounter, cancellationToken);
                 }
                 else if (state.ObjectClips.TryGetValue(pending.ClipId, out SvgClipBox fractions))
@@ -599,6 +617,26 @@ internal static class SvgClipPathSyntax
             SvgClipBox clip;
             if (state.Clips.TryGetValue(pending.ClipId, out SvgClipBox box))
             {
+                if (!pending.Transform.IsAxisAligned)
+                {
+                    SvgAffineTransform map = parent is {} frame
+                        ? SvgAffineTransform.FromScaleOffset(frame.ScaleX, frame.ScaleY, frame.OffsetX, frame.OffsetY).ComposeChecked(pending.Transform)
+                        : pending.Transform;
+                    SvgLeafMaskOperation? viewport = ParentClipWindow(parent, state);
+                    SvgLeafMaskBinding? binding = null;
+                    for (int index = pending.FirstCommandIndex; index < pending.EndCommandIndex; index++)
+                    {
+                        workCounter.Consume(cancellationToken);
+                        SvgDrawCommand command = state.Scene.CommandAt(index);
+                        if (command.Kind != SvgDrawCommandKind.Geometry) continue;
+                        SvgLeafMaskBinding? inner = state.Scene.GeometryAt(command.GeometryIndex).LeafMask;
+                        binding = binding is null
+                            ? BindResourceClip(pending.ClipId, map, inner, state, workCounter, cancellationToken)
+                            : SvgLeafMaskComposition.NewBinding(state, binding.Operation, inner);
+                        state.Scene.AssignLeafMask(command.GeometryIndex, viewport is null ? binding : SvgLeafMaskComposition.NewBinding(state, viewport, binding));
+                    }
+                    continue;
+                }
                 clip = MapGroupClip(box, pending.Transform, parent, workCounter, cancellationToken);
             }
             else if (state.ObjectClips.TryGetValue(pending.ClipId, out SvgClipBox fractions))
@@ -672,6 +710,19 @@ internal static class SvgClipPathSyntax
                 state.Scene.ReplaceGeometry(command.GeometryIndex, ApplyLeafClip(state.Scene.GeometryAt(command.GeometryIndex), clip));
             }
         }
+    }
+
+    /// <summary>Keeps the native clip construction window while geometry owns fractional parent coverage.</summary>
+    private static SvgLeafMaskOperation? ParentClipWindow(SvgViewportFrame? parent, SvgDocumentState state)
+    {
+        if (parent is not {} frame || frame.HasAffineClipScope || frame.Clip == SvgClipBox.Unbounded) return null;
+        double left = Math.Floor(frame.Clip.X), top = Math.Floor(frame.Clip.Y);
+        SvgClipBox window = new(left, top, Math.Ceiling(frame.Clip.Right) - left, Math.Ceiling(frame.Clip.Bottom) - top);
+        SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
+        operation.Resolved = true; operation.Value = 255;
+        operation.RegionKind = SvgLayerRegionKind.AffineViewport;
+        operation.AffineViewport = new(window, SvgAffineTransform.Identity) { IsBinary = true };
+        return operation;
     }
 
     /// <summary>Places a user-space group clip beside its transformed children before intersecting the parent clip.</summary>

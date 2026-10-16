@@ -24,7 +24,9 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
             return RegisterContour(vertices.AsSpan(), ends.AsSpan(), Map, IsExclusion ? SvgClipContentKind.BinaryExclusion : IsBinary ? SvgClipContentKind.BinaryViewport : SvgClipContentKind.AffineViewport, null, null, true, state, scene, work, token);
         }
         float left = (float)Box.X, top = (float)Box.Y, right = (float)(Box.X + Box.Width), bottom = (float)(Box.Y + Box.Height);
-        ReadOnlySpan<SvgDevicePoint> points = stackalloc SvgDevicePoint[] { new(left, bottom), new(left, top), new(right, top), new(right, bottom) };
+        // Native rectangles start at top-left. A clipped closing edge must remain adjacent
+        // to the preceding vertical piece so the existing edge builder can combine them.
+        ReadOnlySpan<SvgDevicePoint> points = stackalloc SvgDevicePoint[] { new(left, top), new(right, top), new(right, bottom), new(left, bottom) };
         return RegisterContour(points, [points.Length], Map, IsBinary ? SvgClipContentKind.BinaryViewport : SvgClipContentKind.AffineViewport, null, null, false, state, scene, work, token);
 
         static void Append(SvgClipBox box, BudgetedParserList<SvgDevicePoint> vertices, BudgetedParserList<int> ends)

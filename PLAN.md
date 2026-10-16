@@ -1,6 +1,6 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-16 at the tile-mask correction checkpoint.
+Updated 2026-10-16 at the affine rectangle-clip correction checkpoint.
 Preserve the current implementation work, qualified `inv-146` correction and every
 established exact result, original SVG/font/reference bytes, options and default
 resource limits. This file owns delivery order, required exits and scope
@@ -27,17 +27,16 @@ Optional maintenance below adds no feature-completion prerequisite.
 | Filters and font infrastructure | Preserve [filter-region results](tests/Research/filter-regions/manifest.json) **26/26**, [colored-effects bounds/restoration](tests/Research/colored-effects-markers/README.md), [affine effect qualification](artifacts/maintenance-review-20261012/affine-filters-qualified-results.json), intended-font/metrics proof, catalog conformance and the implemented [FontProbe host](tools/Lokad.Svg.FontProbe/README.md) with six transport/input regressions. Private deployment validation remains required. |
 | API/resource/package contracts | Preserve bounded preparation/raster/encoding, size/work denial, cancellation/retry, partial cleanup, immutable borrowed bytes, single-use prepared ownership and output integrity. Existing [API contracts](docs/API_CONTRACT.md), package and installed-consumer protections remain required. |
 
-The latest complete local [qualification](artifacts/maintenance-review-20261012/tile-mask-qualified-results.json)
-is **7,920 tests/platform**, normal incremental Release build plus full tests in
-**71.8s Windows / 237.6s Linux**. The same receipt owns the substantive revision's
+The latest complete local [qualification](artifacts/maintenance-review-20261012/affine-rect-clip-qualified-results.json)
+is **7,927 tests/platform**, normal incremental Release build plus full tests in
+**74.3s Windows / 241.3s Linux**. The same receipt owns the substantive revision's
 hosted CI, package and installed-consumer checks. Reuse closed exact-revision
 audits without repolling; unchanged documentation does not reopen qualification.
 Completed work stays closed under the existing coverage/accounting policy.
 
-C1/C2/C3/C4/C5a/C5b/C6a/C6b and their declared controls are complete.
-Item 3 stays open for the retained C6c affine user-space
-rectangle-clip boundary; masked glyphs belong to item 4. These are remaining
-parts of the promised subset, not feature scope deferrals. `inv-146` and completed mechanisms need no requalification.
+Items 1–3 and their declared C1–C6c exits are complete. Masked glyphs belong
+to item 4 and filtered-source boundaries to item 5; those remain required.
+`inv-146` and completed mechanisms need no requalification.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
@@ -46,20 +45,18 @@ parts of the promised subset, not feature scope deferrals. `inv-146` and complet
 
 **Next three deliverables, in order:**
 
-1. **Finish the retained affine clip output (item 3).** Close C6c user-space
-   clipping of a rotated rectangle stroke at its original 96×72 output, with
-   cleanup and sibling restoration. Reuse qualified native clip/source replay;
-   C5b tile masking and its whole document are complete.
-2. **Finish the glyph/composite document and four private requests (item 4).**
+1. **Finish the glyph/composite document and four private requests (item 4).**
    Close T1–T3, including the remaining glyph clip/mask boundary; bring forward
    only the dependencies that block that document.
-3. **Finish the static-effects/marker document (item 5).** Close E1–E4, including
+2. **Finish the static-effects/marker document (item 5).** Close E1–E4, including
    the retained linear-image defect, against frozen platform references.
+3. **Finish S17 release qualification (item 6).** Close the explicit revision,
+   package/consumer, resource/API and representative measurement conditions below.
 
-Stroke/style and shared-map items 1–2 are complete. The linked completed C1–C6b
+Stroke/style and shared-map items 1–2 are complete. The linked completed C1–C6c
 exits below provide available dependencies, including the unchanged
 [forward/object-box clip document and six controls](tests/Research/forward-bbox-clip-exit-sheet/README.md).
-Document success does not close remaining affine clip, glyph or effect
+Document success does not close remaining glyph or effect
 boundaries. No exhaustive G2 or shape × paint × instance prerequisite applies.
 
 The unchanged [tile-mask sheet](tests/Research/tile-mask-exit-sheet/README.md) is
@@ -67,14 +64,16 @@ The unchanged [tile-mask sheet](tests/Research/tile-mask-exit-sheet/README.md) i
 [qualification](artifacts/maintenance-review-20261012/tile-mask-qualified-results.json)
 owns eighteen healthy captures, original inputs and resource/sibling protection.
 
-The two C6c [affine-stroke clip controls](tests/Research/affine-rectangle-strokes/README.md)
-are frozen at **0/2 exact** on both platforms, with twelve healthy stable captures
-before correction. The original eight affine-stroke controls remain exact;
-these additions change no completed-document count.
+The unchanged [affine-stroke bank](tests/Research/affine-rectangle-strokes/README.md)
+is **10/10 exact controls** on both platforms, including the two C6c outputs.
+Its [qualification](artifacts/maintenance-review-20261012/affine-rect-clip-qualified-results.json)
+retains twelve healthy captures, the original Core input and the earlier eight
+controls. The old transformed-fill clip-crossing control is also exact against
+its unchanged reference. No complete-document count changes.
 
 | Required item, in order | Missing behavior and dependencies | Acceptance and completion condition |
 | --- | --- | --- |
-| [ ] 3. Composition and resource presentation (G5–G7) | Remaining C6c affine user-space rectangle-clip bridge below. C1–C4, C5a/C5b and C6a/C6b acceptances are complete. Reuse source replay, tight bounds and viewport rebasing; glyph-specific boundaries belong to item 4. | The original C6c rotated-stroke input is exact on both platforms, with sibling restoration and affected scope/cleanup checks. Preserve every completed C1–C5 witness. |
+| [x] 3. Composition and resource presentation (G5–G7) | Declared C1–C6c exits are complete. Source replay, tight bounds, viewport rebasing and native rectangle clipping are available dependencies; glyph-specific and filtered-source boundaries remain in items 4–5. | Retain the linked whole documents, original inputs, exact platform references, siblings and affected scope/cleanup checks. C6c closes both frozen outputs without changing earlier exact results. |
 | [ ] 4. Glyph maps, composites and private validation (G9) | Finite T1–T3 below: remaining glyph maps/clip/mask scopes, three component flags and four private requests. Reuse qualified layout/fitting/decorations and shared maps from items 1–3 where needed. | Exact public map/component witnesses on both platforms, measured degenerate outcomes and affected ownership checks; sanitized outcomes for the fixed private request set, with public reproductions of in-scope defects resolved. |
 | [ ] 5. Static effects and markers (G8) | Finite E1–E4 below: non-solid affine sources, named linearRGB restoration/shadows, object-box/source boundaries and marker size/tangent/style semantics. Reuse bounded capture, item-1/2 paint maps and item-3 scopes. | Every E1–E4 case is exact on both platforms, including the retained standalone linear-image defect; affected graph/region/resource checks pass. Preserve the whole effects sheet and eleven controls. |
 | [ ] 6. Release (S17) | Finished revision after items 1–5, retaining the product/font contracts below. | All [release conditions](#release-completion-s17) hold together. Document/test counts alone cannot establish completion. |
@@ -121,8 +120,8 @@ Preserve the original cap/dash/dot inputs, inherited shader controls, reflected
 offscreen nonpainting, visible pattern phase and device-width checks. Root
 viewBox scaling, pattern-content viewBox and stroke host maps retain their
 distinct coordinate stages; the [design record](docs/RASTERIZATION_DESIGN.md)
-owns implementation history. Remaining composition/resource locations belong
-to item 3, glyph maps to item 4 and filtered/marker sources to item 5.
+owns implementation history. Composition/resource exits are qualified under item 3; glyph maps belong
+to item 4 and filtered/marker sources to item 5.
 
 Completed inherited-symbol, reflected-phase, curved-target and viewport-map
 witnesses remain closed. Zero-size oval/object-box nonpainting and categorized
@@ -157,18 +156,17 @@ Outside scope with explicit outcomes: interlaced/16-bit/color-managed PNG,
 JPEG/GIF/WebP/external image fetching; CSS imports/media/supports, pseudo
 classes/elements, siblings, layout, variables, animation and web fonts.
 
-C5b/C6a/C6b are complete below. The remaining C6c gate lies inside the existing
-support boundary. Its original rejection outcome still holds; it is **required work**,
-not optional combinations and not reasons to requalify completed witnesses.
-Use the named inputs in [SvgRootParserTests](tests/Lokad.Svg.Tests/SvgRootParserTests.cs)
-as the finite acceptance set, extending existing banks rather than adding a grid.
+The declared C5b/C6a–C6c bridges below are complete. Reuse their qualified
+mechanisms; glyph and filtered-source contexts remain required under items 4–5.
+Original rejection inputs are retained as positive pixel/resource regressions.
+This closes named exits without adding a shape × paint × instance census.
 
 | Required bridge (item 3) | Dependency, acceptance and completion |
 | --- | --- |
 | C6a. Clip/opacity scopes across viewports — complete | The unchanged [document and six controls](tests/Research/viewport-clip-opacity-exit-sheet/README.md) are exact on Windows/Linux, preserving all six original Core inputs. Shared clip placement includes viewBox scale; viewport-owned layers compose nested/root/group opacity; crossing strokes reuse native source geometry and physical clips. Original nested/inherited/masked opacity, empty public output and font acquisition now have positive regressions. The retained fractional frame and cropped-opacity controls, native overlap bytes, siblings and affected ownership checks pass. Reuse the qualified dependency. |
-| C6b. Forward/object-box clip binding — complete | The unchanged [document and six controls](tests/Research/forward-bbox-clip-exit-sheet/README.md) are exact on Windows/Linux, preserving all six original Core inputs and forty-two healthy captures. Shared geometric bounds and deferred binding handle definition order, images/groups/lines/circles and transformed normalized content. Zero-height lines and disjoint clips are valid nonpainting; mask order, pre-viewport object bounds, siblings and affected resource checks pass. The retained rotated-stroke object-box input also passes; its user-space variant remains C6c. Reuse [qualification](artifacts/maintenance-review-20261012/forward-bbox-qualified-results.json); no target × clip-shape census. |
+| C6b. Forward/object-box clip binding — complete | The unchanged [document and six controls](tests/Research/forward-bbox-clip-exit-sheet/README.md) are exact on Windows/Linux, preserving all six original Core inputs and forty-two healthy captures. Shared geometric bounds and deferred binding handle definition order, images/groups/lines/circles and transformed normalized content. Zero-height lines and disjoint clips are valid nonpainting; mask order, pre-viewport object bounds, siblings and affected resource checks pass. The retained rotated-stroke object-box input also passes; its user-space variant is qualified under C6c. Reuse [qualification](artifacts/maintenance-review-20261012/forward-bbox-qualified-results.json); no target × clip-shape census. |
 | C5b. Masks inside pattern content — complete | The unchanged [document and two controls](tests/Research/tile-mask-exit-sheet/README.md) are exact on Windows/Linux. The original rejected leaf SVG now checks every pixel and cleanup. Spatial group masks, forward local uses and tile/root siblings are qualified; shared owning-scene binding, delayed sealing and native mask-before-opacity arithmetic preserve C5a clips/styles. Focused nested mask/clip-marker, forward leaf resource and anonymous-owner regressions plus affected denial/cancellation/retry pass. Reuse [qualification](artifacts/maintenance-review-20261012/tile-mask-qualified-results.json); no repeat-work or presentation cross-product quota. |
-| C6c. Affine user-space rectangle clips | Preserve the `userSpaceOnUse` input of `Rectangular_clip_maps_preserve_unit_outcomes_and_release` in [SvgAffineRectangleStrokeTests](tests/Lokad.Svg.Tests/SvgAffineRectangleStrokeTests.cs): a 32×24 rectangle with a red stroke, rotated 17°, clipped by a local unit rectangle. It still rejects. Reuse the C6b native clip/source maps; finish its original 96×72 output against frozen platform references with cleanup and sibling restoration. The already exact object-box variant stays closed. This is an existing in-scope boundary, not a new combination quota or approved deferral. |
+| C6c. Affine user-space rectangle clips — complete | The unchanged [original 96×72 input and visible control](tests/Research/affine-rectangle-strokes/README.md) are exact on both platforms. General leaf/group clips defer through shared native rectangle binding; the parent supplies an outward-rounded construction window while geometry retains fractional viewport coverage. Native rectangle contour order preserves existing vertical-piece combination. Original unit outcomes, quarter-turn source coordinates, nonpainting, fractional coverage, siblings and affected ownership are protected. The retained transformed-fill clip-crossing reference is also exact. Reuse [qualification](artifacts/maintenance-review-20261012/affine-rect-clip-qualified-results.json); no document or combination quota is added. |
 
 <a id="g9-supplied-font-labels-and-text-paths"></a>
 
@@ -281,7 +279,7 @@ open-ended representativeness quota delays this release.
   failure/publication and cleanup in [PublicContractTests](tests/Lokad.Svg.Tests/PublicContractTests.cs)
   and [PngEncoderTests](tests/Lokad.Svg.Tests/PngEncoderTests.cs).
 - **Routine incremental Release build plus complete tests must stay below ten
-  minutes per platform.** The qualified 71.8s/237.6s checkpoint above meets this.
+  minutes per platform.** The qualified 74.3s/241.3s checkpoint above meets this.
   Include normal build/startup; avoid forced compiler shutdown. Measure before/
   after only when routine cost materially changes. Remove redundant API work if
   needed while preserving distinct semantics. Browser captures, optional benchmarks
