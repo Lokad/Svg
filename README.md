@@ -1,159 +1,35 @@
 # Lokad.Svg
 
-Lokad.Svg is a pure-managed .NET SVG-to-PNG renderer being built in staged,
-explicitly supported subsets. The current subset renders explicitly sized empty
-SVGs; integer or quarter-pixel `rect` layers; bounded axis-aligned `line`, closed
-orthogonal `path`, `polygon` and filled `polyline` geometry; and direct local
-`use` instances of supported definitions, together with the matrix-documented diagonal,
-curved-shape, gradient, pattern, image, clip and mask subsets. It has bounded root/group/link
-structure, inherited paint/visibility/display, limited element/group opacity,
-source-over composition, caller-provided backgrounds, and managed PNG output to
-owned memory, caller memory or a writable stream. Presentation attributes, inline
-styles and a deliberately narrow ordered root stylesheet cover the documented
-subset. Gradients, images, filters, general CSS and general path geometry remain
-supported only inside the narrow admitted subsets the support matrix documents;
-everything outside those subsets stays explicitly unsupported. An experimental supplied-font direct-text path is deliberately not an
-admitted text-support claim; see the support matrix for its exact narrow syntax and
-failure behavior.
-The prototype also retains documented accepted-input contract gaps, so rejected
-syntax must not be inferred solely from the absence of support claims.
+Lokad.Svg is a pure-managed .NET renderer for a finite, documented subset of
+static SVG. It converts geometry and local instances through composed affine
+maps, solid/gradient/pattern paints, viewports, clips, alpha/luminance masks,
+embedded PNGs, static CSS, markers and selected filters. Caller-supplied TrueType
+programs support the documented label and text-path subset; font selection uses
+an explicit catalog and fallback policy, without machine-font discovery.
 
-See [PLAN.md](PLAN.md) for the product contract and implementation roadmap, and
-[the support matrix](docs/SUPPORT_MATRIX.md) for the current status.
+`SvgConverter` writes PNGs to independently owned memory, caller memory or a
+writable stream, with synchronous and asynchronous forms.
+`SvgPreparedDocument` provides explicit preparation with single-conversion
+ownership. Size/work limits, cancellation, cleanup and borrowed-source lifetimes
+apply throughout; [API_CONTRACT](docs/API_CONTRACT.md) defines these guarantees.
+Memory accounting uses conservative estimates for dominant allocations under
+[PLAN's approximate engineering target](PLAN.md#maintenance-decisions-and-evidence),
+with runtime/host overhead and borrowed storage identified separately.
 
-Declaration-only DOCTYPEs are admitted with inert external identifiers. Internal
-subsets and duplicate declarations remain malformed; DTD resources, entities and
-default attributes are never loaded. Root parsing, font discovery and output-scale
-probing use the same bounded policy.
+The frozen corporate cohort is exact on Windows/Linux: **27/27 documents and
+258/258 variants**. The selected development queue is **50/50 complete**, with
+**35 authored documents** and one sourced W3C document counted separately.
+These results establish their declared outputs, not general SVG completeness.
+Original inputs/options and independent platform references remain frozen;
+[INVENTORY](docs/INVENTORY.md) owns the evidence and selection limits.
 
-The pinned-browser full-canvas solid-rectangle route preserves original
-fill-opacity separately from ordinary byte composition. Its independent routing
-controls are banked, while general layer composition and broader curve
-fidelity remain open; the support matrix records those limits.
-
-Antialiased rectangle paint clips now have independent native/browser regressions
-and preserve the distinction between geometric clip edges and mask allocation
-bounds. Ford and YouTube are each exact in all nine declared variants. Analytic
-paints apply the rectangle's snapped byte mask to each ordered operation.
-The frozen corporate matrix has 258 rendered comparisons on Windows and Linux:
-258 exact, zero known differences and zero rejections. Every declared variant is exact for
-27/27 documents, including 13/13 marks and 14/14 outlined wordmarks. Local
-Windows and Linux delivery checks and the complete fresh Linux browser matrix
-pass; the [Windows/Linux CI run](https://github.com/Lokad/Svg/actions/runs/38285636122)
-also passes build/test, sandboxed Chrome, resource,
-font, artifact-validation and package checks. See [PLAN.md](PLAN.md) for the current
-release assessment and cohort selection limits.
-
-Generated native stroke outlines retain source operands until final mapping,
-making all nine Zeppelin variants exact. Coincident stroke contours preserve
-their native output classification, with independent browser regressions and
-bounded ownership checks. Integer and fractional diagonal filled point lists
-retain source commands through final mapping, preserving directed crossing events.
-The retained integer bowtie is exact against its original browser PNG. Native float
-rectangle endpoints close IBM's three large variants, completing the frozen-cohort
-fidelity target on both platforms.
-
-The frozen corporate matrix and completed original documents are exact;
-measured numerical research residuals remain visible in PLAN.md. Native
-stroke coverage keeps zero-signed-area contours carrying local winding, closing
-the final contained-ring witness. [The support queue](PLAN.md#3-ordered-support-queue)
-now targets remaining static SVG combinations, with four sourced
-public-domain/CC0 failures retained in the development inventory.
-
-Inert `enable-background` declarations now share validation across attributes and
-admitted styles, including Illustrator's `new` rectangle hint. The retained heart
-and complete 79-instance I Ching library match their frozen references on
-Windows/Linux through all six outputs. Both retained patterns now join them: **all four gap documents are complete**
-against unchanged references. Bounded vector tile scenes share source lowering,
-native paint and premultiplied repeat sampling. Local forward pattern templates
-retain independent attributes/content; fractional tiles keep their declared
-period after integral texture rasterization. The two pattern banks retain 32
-exact controls and three explicit boundary rejections. The original two-child
-cubic-pattern fixture remains exact. The next retained correction is nested
-affine clipping/opacity; finite remaining combinations stay in
-[PLAN.md](PLAN.md#3-ordered-support-queue).
-
-Direct-leaf symbols now preserve multiple children in document order, inherited
-fill channels and separate child/symbol/use opacity. Magnified native-backed
-instances replay original curve commands. Both retained families are exact on
-three backgrounds, and sixteen independent controls match through all six
-outputs. Symbols also work under the root and rendered groups, with optional IDs
-and non-rendering descriptions; eleven new controls are exact. Nested symbol
-groups/uses and wider style/viewport combinations remain in G2; see [the supported boundary](docs/SUPPORT_MATRIX.md#direct-leaf-symbols-and-instances-2026-10-08).
-
-Circle and ellipse dashes now cut original conics through the shared native
-path-dash constructor. All nine retained dash failures and twelve new independent
-controls are exact, including thin widths, offsets, seams, scaling, pathLength
-and clipping. Remaining admission restrictions are in the support matrix.
-See [the dash repair](docs/RASTERIZATION_DESIGN.md#source-conic-ellipse-dashes-2026-10-08).
-
-Rounded rectangles retain native conic corners and convex shape classification.
-Fills and strokes share source commands through final mapping, with independent
-browser regressions for fractional coordinates, clamped radii and reflected shapes.
-See [the rectangle repair](docs/RASTERIZATION_DESIGN.md#native-rectangle-source-operands-2026-10-07).
-See [the source-outline repair](docs/RASTERIZATION_DESIGN.md#source-native-stroke-outlines-2026-10-07).
-
-Uniform masks apply after a group's children or a leaf's fill/stroke compose,
-preserving overlap alpha and antialiased colors independently of definition order.
-Copied use instances preserve source-child masks and their own mask boundaries;
-adjacent and empty groups retain the validated command-range behavior. Independent
-rounded fill/stroke, pattern, mask-value and instance controls match the browser
-on three backgrounds. Other mask and layer combinations remain in the support matrix.
-See [the mask repair](docs/RASTERIZATION_DESIGN.md#leaf-and-instance-mask-composition-2026-10-07).
-
-Isolated opacity layers now use native image compositing, with masks applied
-before outer opacity. This closes the original white-background group/root
-controls and preserves the complete exact corporate matrix.
-See [the layer repair](docs/RASTERIZATION_DESIGN.md#isolated-image-layer-composition-2026-10-07).
-
-The following implementation checkpoints retain their historical results.
-Authored fills retain directed winding and
-curves after scene normalization, with root/group composition before float
-rounding. Convex cubics retain live edges, and incoming intersections constrain
-dense-path strips. Every prior exact image is preserved; six known controls
-worsen slightly. Broader event fidelity remains open; see
-[the design record](docs/RASTERIZATION_DESIGN.md#convex-cubic-and-incoming-edge-rows-2026-10-06).
-Solid path strokes up to one device pixel use native hairline coverage for lines,
-quadratics, cubics and endpoint arcs. Dashes measure and cut retained float curves
-before stroking, preserving conic weights and closed seams. Twelve new thin dash
-configurations are exact; all earlier exact images are preserved.
-
-Wider paths and integer/fractional polylines now share native offsets, joins/caps
-and closed seams, preserving fitted quadratics and rational round verbs.
-Twenty-six existing comparisons become exact; all nine Zeppelin variants
-improve, with every prior exact PNG preserved. Remaining stroke scan/clip/paint
-fidelity, sampled shape routes, transformed/pathLength dash coverage and other
-hairline contexts remain open.
-Circle/ellipse strokes now retain native normal-offset quadratic outlines rather
-than sampled concentric ellipses. Painted `use` instances retain those curves.
-All twelve new oval controls and all nine SG Rotation variants improve but remain
-inexact; every prior exact image is preserved. Remaining stroke scan/paint
-residuals and sampled shape routes remain open.
-Bitmap-local straight-edge clipping and float polygon mapping close Artsy's
-remaining variants. Native straight open-stroke construction and winding make
-six original miter/bevel probes and three viewBox configurations exact, and
-improve every Rede Manchete variant. Bevel polylines share the path kernel.
-Circle/ellipse fills and native straight solid open-stroke round caps, dots and
-joins retain rational conics through final mapping. Signed native stroke contacts
-preserve their directed fill. Four original round-stroke probes and three fresh
-configurations become exact; every Rede Manchete variant improves but remains
-inexact. The later hairline repair closes the width-one cap probe. Broader
-fractional events, closed/curved/dashed strokes and clip fidelity remain open.
-Straight dash cuts now preserve native float endpoints, and nonzero orthogonal
-contact sets retain their one-byte fringes through signed-winding analytic
-walking. All nine ROC variants and twelve fresh controls are exact. These
-checkpoints do not establish general logo coverage.
-
-Convex paths now round coverage for rectangular strips created by clipping a
-slanted edge, while raw rectangles retain their separate calibration. This closes
-YouTube's opaque triangle residuals at intended and large sizes. The subsequent
-clip-byte repair closes the remaining boundary differences. Clipped orthogonal
-paths, polygons and filled polylines now preserve their original contour and AA
-paint clip, making eleven existing failures and eighteen new scaled controls
-exact. Solid rectangles now retain their original edges and separate paint clip,
-with native rounded coverage and premultiplication. Thirty fresh configurations
-and two existing controls become exact; all nine IBM variants improve but remain
-inexact. Shader quantization, clip-stack and layer parity remain open.
+[SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md) and [PLAN's finite boundaries](PLAN.md#required-support-boundaries-and-finite-exits)
+define the useful subset and explicit unsupported outcomes. G2–G8 and public G9
+acceptance are qualified; private deployment requests (T3) and final release
+qualification (S17) remain required. [PLAN](PLAN.md#delivery-order) owns the ordered
+checklist, dependencies and release exit. Mechanism/history belongs in
+[RASTERIZATION_DESIGN](docs/RASTERIZATION_DESIGN.md), and measurements with their
+workload limits belong in [BENCHMARKS](docs/BENCHMARKS.md).
 
 ## Development
 

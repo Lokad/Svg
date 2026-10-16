@@ -51,12 +51,17 @@ caller-owned prepared `SvgFontSnapshot`; the caller must keep that snapshot and
 its font bytes valid and undisposed until conversion completes. A logical viewport
 is optional and distinct from the positive output scale. Its `SvgRenderLimits` are validated at construction;
 renderer-owned live storage, input bytes, dimensions, output bytes and work are
-separate limits. The initial defaults are the provisional limits in PLAN.md. The
-internal ledger reserves live renderer-owned storage before the corresponding
-allocation, exposes current/peak/denial diagnostics to the conversion context, and
-releases reservations deterministically.
+separate limits. Default values and the approximate memory policy are in PLAN.md.
+The internal ledger uses conservative estimates and aggregate allowances for
+material renderer-owned allocations, exposes current/peak/denial diagnostics, and
+releases reservations deterministically. Directionally, no more than 20% of
+conversion-attributable live memory should be unaccounted for across representative
+workloads; this is an engineering target, not an exact guarantee at every instant.
+Shared runtime/host overhead and borrowed storage remain separate. Byte-exact
+small-object accounting and GC-round retirement proofs are not completion contracts;
+size/work limits, cancellation, cleanup and output integrity remain required.
 
-For the current supported rectangle subset, an explicit `SvgViewport` supplies the
+For admitted SVG content, an explicit `SvgViewport` supplies the
 outer logical dimensions and overrides root `width`/`height`; a root `viewBox`, when
 present, still maps its user coordinates into that viewport.
 The per-axis dimension cap applies after output scaling. Exceeding it with valid
@@ -95,41 +100,42 @@ or conversion using it is in progress. Disposal invalidates snapshot and
 already obtained from `SvgPreparedFont.Bytes`; that view remains caller-owned and
 subject to the same validity and immutability obligation. Prepared direct-text
 layout and outline decoding reuse those validated core metrics without reparsing
-them for every cmap, advance, or glyph-structure query. It neither parses SVG nor performs
-storage I/O. Its request-based overload resolves all explicit family/style requests,
+them for every cmap, advance, or glyph-structure query. These queries neither parse
+SVG nor perform storage I/O. The request-based snapshot overload resolves all explicit family/style requests,
 preflights distinct declared byte sizes and same-hash consistency, then selectively
 asks a provider for each distinct program. Its
-SVG-driven overload accepts only an SVG-namespaced root and discovers inherited
-single-family direct-`text` presentation attributes, admitted root-stylesheet
-properties, and inline-style properties (`font-family`, `font-weight`,
-`font-style`, `font-size`) within either default limits or caller-supplied input,
-XML depth, attribute, node and work limits through metric validation and program
-integrity verification before doing the same; CSS family lists and text-run
-retention remain unsupported. It validates root viewport plus inherited container
-and direct-text presentation/opacity syntax before provider access. Font-request discovery reserves ancestor, whitespace, eligibility, group and distinct-request storage from its own preparation budget before allocation and releases it deterministically; BCL XML workspace remains under the separate conservative allowance. Once it sees
-rendered content outside the admitted path, it suppresses later text-font
-acquisition. A snapshot can already be supplied through render options. The
-renderer's experimental direct-text path accepts only direct
-single-face text/CDATA content. On a direct `text` element, `xml:space="default"` (or its absence) collapses spaces, tabs, carriage returns and line feeds to one inter-word space and trims leading/trailing runs; `xml:space="preserve"` converts tabs and line breaks to spaces while retaining leading, trailing and repeated spaces. CSS `white-space: normal` and `white-space: pre` are admitted on direct text and inherit through admitted `svg`, `g` and `a` inline or stylesheet declarations; a direct CSS declaration takes precedence over `xml:space`. It does not make SVG text a supported feature and
-accepts nested `tspan` elements as text concatenation. A span may carry inherited XML/CSS whitespace, scalar letter spacing and scalar `x`/`y`/`dx`/`dy` positions. Absolute span coordinates remain unsupported on text paths.
-Solid `fill`, `color`, `fill-opacity`, unpainted `stroke`, display, visibility and
-valid inert `fill-rule` declarations use the existing attribute/inline/stylesheet
-cascade. Effective paint follows normalized character intervals through shared
-glyph layout and text-path replay. Hidden and fill-less characters retain their
-advances; display-none content is excluded. An inherited stroke is validated on
-emitted content after a child may replace it with `none`. The whitespace mode
-and letter spacing inherit when no winning declaration replaces them. A scalar span `dx`/`dy` applies before the first retained glyph in that span or one of its descendants; the nearest span that specifies each axis takes precedence, and the resulting current-position shift remains in force for later glyphs. Span spacing applies after each glyph emitted by that span, including before the following parent glyph, and contributes to the enclosing text chunk's anchor calculation. Scalar span offsets are applied after that anchoring adjustment and do not change the anchor width. A single validated version-zero horizontal format-zero legacy `kern` subtable and a single DFLT-script `kern` feature using an unfiltered GPOS PairPos format-1 first-glyph X-advance lookup adjust adjacent direct-run glyphs; GPOS takes precedence when both are present. Other CSS whitespace values, per-span font changes, opacity layers, paint-server fills, painted text strokes, positioning lists and general GPOS shaping remain unsupported and retain their required G9 exit work.
+SVG-driven overload accepts an SVG-namespaced root and discovers live supplied-face
+requirements through the admitted stylesheet, inline and inherited font context,
+nested text and local instances. Live font-relative marker lengths also participate;
+unused, hidden and empty marker users do not acquire a face. Discovery and metric/
+program validation obey the caller's input, XML depth, attribute, node, memory and
+work limits before rendering. Preparation owns its discovery storage and releases
+it on every exit; BCL XML workspace uses the separate conservative allowance.
 
-Composed translations on the text element and admitted containers apply after
-local spacing, anchoring and absolute span positions. Text paths apply that
-placement after baseline measurement. Ordinary glyphs retain the native
-horizontal strike; general maps and per-span transforms remain required G9
-work. Linux glyph coverage uses a local bitmap before placement.
+The finite [G9 boundary](../PLAN.md#g9-supplied-font-labels-and-text-paths) and
+[SUPPORT_MATRIX](SUPPORT_MATRIX.md) define admitted supplied-font labels and text
+paths. Text/CDATA and nested `tspan` order, inherited/per-span font selection,
+positioning lists, spacing/anchors/baselines, textLength, affine glyph maps,
+ordinary paints/strokes, decorations and local text paths use shared bounded
+layout and source replay. Catalog fallback is explicit; missing required programs
+or glyphs cannot silently select a machine font. Complex-script shaping, wrapping,
+vertical text and the other enumerated formats/features remain outside scope.
 
-Its presentation, admitted root-stylesheet and inline `style` font subset is `font-family`,
-`font-weight`, `font-style` and `font-size`; admitted scalar positioning is `x`,
-`y`, `dx`, `dy`, scalar `letter-spacing` (added only between glyphs), and `text-anchor` (`start`, `middle`, `end`), with a bounded `id`
-retained only for font diagnostics and a bounded `class` token for admitted generic stylesheet selectors.
+`xml:space="default"` collapses spaces, tabs, carriage returns and line feeds to
+one inter-word space and trims leading/trailing runs; `xml:space="preserve"`
+converts tabs and line breaks to spaces while retaining leading, trailing and
+repeated spaces. Inherited CSS `white-space: normal`/`pre` takes precedence over
+`xml:space` when declared. Hidden and fill-less characters retain their advances;
+display-none content is excluded. Effective paint follows normalized character
+intervals through glyph layout and text-path replay. Positioning, span offsets,
+chunk anchoring and list consumption retain their qualified source-order rules.
+
+A validated version-zero horizontal format-zero legacy `kern` subtable or the
+admitted unfiltered GPOS PairPos format-1 first-glyph X-advance lookup adjusts
+adjacent glyphs; GPOS takes precedence when both are present. The bounded default
+ligature subset is specified below. Native unrotated strike placement and affine/
+text-path mapping retain their platform distinctions.
+
 Embedded `name` data is structurally validated but does not override manifest family
 selection. `OS/2` version-specific table bounds remain checked; its style fields
 do not select a face. Validated hhea/OS2 alphabetic line metrics are retained for

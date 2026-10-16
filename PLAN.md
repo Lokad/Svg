@@ -46,17 +46,26 @@ records; the queue below owns remaining work.
 
 ## Ordered delivery checklist
 
-**Next three deliverables: T3 private font requests → S17 measurement/documentation
-reconciliation → S17 final release verification.** T3 needs the existing deployment
-source/configuration. Prepare independent S17 evidence while that input is pending;
+**Three delivery exits: T3 private font requests → S17 measurement/documentation
+reconciliation (public evidence complete) → S17 final release verification.**
+T3 needs the existing deployment source/configuration. The independent S17 public evidence is complete;
 the release still requires T3. Bring a shared fix forward only for a demonstrated
 defect in these concrete exits.
 
 | Order / required exit | Missing behavior and dependencies | Concrete acceptance and completion condition |
 | --- | --- | --- |
 | [ ] **1. T3 — private requests** (item 4 / G9; input pending) | End-to-end deployment evidence is missing; host/catalog and public conformance are implemented. Needs the existing private source/configuration and unchanged deployed manifest, under the [authorized workflow](#authorized-private-font-testing). Reopen shared text code only for a demonstrated request defect. | Freeze one regular, bold, italic and fallback request. Retain four sanitized selection/metrics/pixel outcomes; turn in-scope defects into public reproductions and resolve them. All four outcomes, resulting public regressions and applicable qualification close T3. Private success cannot replace public acceptance or authorize new font formats. |
-| [ ] **2. S17 — measurements and documentation** (item 6) | Final evidence must describe the finished subset. Reuse completed maintenance/resource evidence and existing benchmark workloads; the public portion is independent of T3. | Reconcile one small existing workload set covering outlined geometry, instances/paint, clips/layers, filters/images and supplied fonts, with latency/allocation, hardware/options/setup and selection limits. Investigate material regressions; update README/API_CONTRACT/SUPPORT_MATRIX to the qualified subset. Close when release conditions 4–5 below have current evidence, with no speculative optimization, new framework or completed-memory requalification. |
+| [x] **2. S17 — measurements and documentation** (item 6) | Public evidence is complete for qualified revision `393e19d5`; T3 remains independent and required. Reuse completed maintenance/resource evidence; a demonstrated later correction needs only its affected follow-up. | Reconcile the seven witnesses below for outlined geometry, instances/paint, clips/layers, filters, images and supplied fonts, with latency/allocation, hardware/options/setup and selection limits. Investigate material regressions; update README/API_CONTRACT/SUPPORT_MATRIX to the qualified subset. The [seven-witness results](docs/BENCHMARKS.md#finite-s17-measurement-set-2026-10-16) and [public receipt](artifacts/s17-release-20261016/s17-public-evidence.json) close release conditions 4–5 for this revision; no speculative optimization, new framework or completed-memory requalification. Final release remains open. |
 | [ ] **3. S17 — final release verification** (item 6) | T3 and the preceding evidence exit closed; E4 and completed dependencies and product/font/resource/package contracts preserved. | Every [release condition](#release-completion-s17) holds together for the finished revision, including Windows/Linux tests, package/installed consumer and exact-revision terminal green CI. Reuse unchanged qualification. Document/test counts alone cannot establish completion. |
+
+The S17 measurement set is finite: existing `SvgCurveBenchmarks` outlined-wordmark,
+gradient-clip and isolated-opacity methods; `SvgPatternBenchmarks` identical instances;
+`SvgSuppliedLabelBenchmarks` public label; and the retained
+[masked filter source](tests/Research/filter-source-exit-sheet/masked-source.svg) and
+[image resource scope](tests/Research/affine-image-maps/image-resource-scope.svg).
+Use the existing BenchmarkDotNet and MemoryProbe routes; report warmed conversions
+and fresh-process tool observations separately. Equivalent existing evidence may be
+reused. These seven witnesses add no feature or API-combination prerequisite.
 
 Before implementing an exit, inspect current code and qualified manifests. An
 admitted behavior may need only evidence; an old guard/test name is not a live

@@ -1,4 +1,67 @@
-# Local benchmark baseline
+# Renderer measurements
+
+## Finite S17 measurement set (2026-10-16)
+
+Qualified renderer `393e19d5` is compared with preceding delivered revision
+`e20db16c` on the same Windows host. Five existing BenchmarkDotNet ShortRun methods
+cover outlined geometry, repeated pattern instances, clipped gradient paint,
+isolated opacity and supplied-font labels. Two original retained inputs cover a
+masked filter source and embedded-image resource scopes with the existing
+MemoryProbe. This fixed seven-witness set is a release observation, not a general
+SVG throughput claim; no complete feature/API product or new framework is required.
+
+Environment: BenchmarkDotNet 0.14.0, .NET SDK 10.0.401 / .NET 10.0.13 x64 RyuJIT,
+Windows 10 22H2 (10.0.19045.6456), Intel Xeon W-2223 3.60 GHz, four physical/eight
+logical cores, concurrent workstation GC. Each ShortRun has one launch, three
+warmups and three measured iterations. Input construction/loading, option setup
+and public font acquisition are outside the timed synchronous owned-PNG conversion.
+Measurements ran serially in clean isolated checkouts, with identical benchmark
+sources/options; the original workspace's nested research checkouts made project
+lookup ambiguous and produced no measurements in the rejected setup attempts.
+
+| Existing method | Baseline mean ms | Current mean ms | Baseline allocated bytes | Current allocated bytes |
+| --- | ---: | ---: | ---: | ---: |
+| `ConvertOutlinedWordmark` | 1.0092 | 1.0301 | 495,855 | 495,856 |
+| `ConvertGradientClip` | 0.1326 | 0.1287 | 36,107 | 36,107 |
+| `ConvertIsolatedOpacity` | 0.0873 | 0.0864 | 30,570 | 30,570 |
+| `ConvertIdenticalInstances` | 1.2936 | 1.3593 | 275,730 | 275,731 |
+| `ConvertPublicLabel` | 3.7831 | 3.7063 | 164,854 | 164,854 |
+
+Allocation is effectively unchanged (identical or within one byte/operation).
+Every timing confidence interval overlaps; the three-sample run, especially the
+small gradient-clip case, supports no causal speedup or slowdown conclusion. The
+older maintenance results retain their own workload/revision limits; the higher
+current public-label allocation was already present at `e20db16c` and was not
+introduced by the two marker corrections. No optimization is justified by this run.
+
+Each existing MemoryProbe input ran in three fresh Windows processes at scale 1,
+transparent background and unchanged default limits. Tool elapsed time includes
+cold runtime/input/output work; managed allocation covers the conversion call.
+It is separate from the warmed timings above and from live storage/OS working set.
+
+| Original retained input | Fresh-process elapsed ms | Conversion allocated bytes | Original native reference |
+| --- | ---: | ---: | --- |
+| `filter-source-exit-sheet/masked-source` | 473–479 | 592,936–592,936 | 3/3 exact |
+| `affine-image-maps/image-resource-scope` | 348–353 | 469,704–482,040 | 3/3 exact |
+
+Reproduce the warmed set from a clean checkout with:
+
+```powershell
+Push-Location benchmarks/Lokad.Svg.Benchmarks
+dotnet run -c Release -- --job Short --filter "*SvgCurveBenchmarks*" "*SvgPatternBenchmarks.ConvertIdenticalInstances*" "*SvgSuppliedLabelBenchmarks.ConvertPublicLabel*" --exporters JSON
+Pop-Location
+```
+
+Use the existing MemoryProbe command from README for each retained input; keep
+its fresh-process results separate. Raw reports, immutable workset, failed setup
+attempts and comparison receipts remain under
+[the ignored study](../artifacts/s17-release-20261016/). Current Windows/Linux
+correctness and material normal/adversarial resource evidence are reused from
+[qualification](../artifacts/maintenance-review-20261012/marker-presentation-qualified-results.json)
+and its exact-revision terminal green CI. This does not reopen completed ownership
+work or claim byte-exact accounting; [PLAN](../PLAN.md) retains the approximate
+target, private T3 requirement and final S17 release conditions.
+
 
 The full frozen-cohort baseline predates the latest renderer repairs;
 see [the corporate baseline](#frozen-corporate-cohort-baseline-2026-10-07) and

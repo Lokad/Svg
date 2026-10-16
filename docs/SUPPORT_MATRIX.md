@@ -1,3 +1,14 @@
+## Current release evidence (2026-10-16)
+
+G2–G8 and public G9 acceptance remain qualified under the finite
+[PLAN boundaries](../PLAN.md#required-support-boundaries-and-finite-exits).
+[Terminal green CI](https://github.com/Lokad/Svg/actions/runs/38915163866) covers
+exact substantive revision `393e19d5`, including Windows/Linux package and installed
+consumer checks. The [fixed public measurement set](BENCHMARKS.md#finite-s17-measurement-set-2026-10-16)
+and current README/API contracts close S17's public evidence/documentation exit.
+Private T3 requests and final S17 release verification remain required; this is no
+release-completion or broader SVG support claim.
+
 ## Qualified marker container presentation (2026-10-16)
 
 The unchanged [whole sheet and two controls](../tests/Research/marker-presentation-sheet/README.md)
