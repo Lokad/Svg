@@ -1,0 +1,63 @@
+{
+  "packId": "public-standalone-fonts",
+  "files": [
+    {
+      "relativePath": "fonts/NotoSans-Regular.ttf",
+      "byteSize": 569208,
+      "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
+    },
+    {
+      "relativePath": "fonts/NotoSansMono-Bold.ttf",
+      "byteSize": 525664,
+      "sha256": "beb857bd799a114de7d5d90cc75cc69f4b6ee8d401f4ab20697e6f9719a66dfc"
+    },
+    {
+      "relativePath": "fonts/NotoSans-Italic.ttf",
+      "byteSize": 552776,
+      "sha256": "36cff144df01309dab648bea71baff9bb074026914afe63aeacc8bc90b67a28b"
+    }
+  ],
+  "families": [
+    {
+      "requestedFamily": "Example",
+      "resolvedFamily": "Noto Sans",
+      "relativeFontFile": "fonts/NotoSans-Regular.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0,
+      "hasMathTable": false
+    },
+    {
+      "requestedFamily": "Example",
+      "resolvedFamily": "Noto Sans",
+      "relativeFontFile": "fonts/NotoSans-Italic.ttf",
+      "weight": 400,
+      "italic": true,
+      "faceIndex": 0,
+      "hasMathTable": false
+    },
+    {
+      "requestedFamily": "Mono",
+      "resolvedFamily": "Noto Sans Mono",
+      "relativeFontFile": "fonts/NotoSansMono-Bold.ttf",
+      "weight": 700,
+      "italic": false,
+      "faceIndex": 0,
+      "hasMathTable": false
+    },
+    {
+      "requestedFamily": "monospace",
+      "resolvedFamily": "Noto Sans Mono",
+      "relativeFontFile": "fonts/NotoSansMono-Bold.ttf",
+      "weight": 700,
+      "italic": false,
+      "faceIndex": 0,
+      "hasMathTable": false
+    }
+  ],
+  "fallbacks": [
+    {
+      "family": "Example"
+    }
+  ]
+}

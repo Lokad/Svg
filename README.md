@@ -25,8 +25,11 @@ Original inputs/options and independent platform references remain frozen;
 
 [SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md) and [PLAN's finite boundaries](PLAN.md#required-support-boundaries-and-finite-exits)
 define the useful subset and explicit unsupported outcomes. G2–G8 and public G9
-acceptance are qualified; private deployment requests (T3) and final release
-qualification (S17) remain required. [PLAN](PLAN.md#delivery-order) owns the ordered
+acceptance and [public regular/bold/real-italic/fallback qualification](tests/Research/public-font-qualification/README.md)
+(T3-public) are complete on Windows/Linux. Final standalone verification (S17)
+remains required. Private
+deployment validation (T3-private) remains pending before production adoption
+and does not block standalone qualification. [PLAN](PLAN.md#delivery-order) owns the ordered
 checklist, dependencies and release exit. Mechanism/history belongs in
 [RASTERIZATION_DESIGN](docs/RASTERIZATION_DESIGN.md), and measurements with their
 workload limits belong in [BENCHMARKS](docs/BENCHMARKS.md).

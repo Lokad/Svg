@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "purpose": "T3-public: four finite existing-host requests; reuse unchanged regular/bold/fallback SVG/options/metrics/native references and add only a real italic rendering control. No private configuration or cross-renderer dependency.",
+  "fontPack": "font-pack.json",
+  "programs": [
+    {
+      "relativePath": "fonts/NotoSans-Regular.ttf",
+      "source": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+      "byteSize": 569208,
+      "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
+    },
+    {
+      "relativePath": "fonts/NotoSansMono-Bold.ttf",
+      "source": "../supplied-font-documents/fonts/NotoSansMono-Bold.ttf",
+      "byteSize": 525664,
+      "sha256": "beb857bd799a114de7d5d90cc75cc69f4b6ee8d401f4ab20697e6f9719a66dfc"
+    },
+    {
+      "relativePath": "fonts/NotoSans-Italic.ttf",
+      "source": "fonts/NotoSans-Italic.ttf",
+      "byteSize": 552776,
+      "sha256": "36cff144df01309dab648bea71baff9bb074026914afe63aeacc8bc90b67a28b"
+    }
+  ],
+  "cases": [
+    {
+      "id": "regular",
+      "request": {
+        "family": "Example",
+        "weight": 400,
+        "italic": false
+      },
+      "expectedFile": "fonts/NotoSans-Regular.ttf",
+      "expectedResolvedFamily": "Noto Sans",
+      "expectedFallback": false,
+      "expectedAcquisitions": [
+        "fonts/NotoSans-Regular.ttf"
+      ],
+      "metrics": "../supplied-font-labels/metrics.json",
+      "metricsCase": "pair-and-space",
+      "sourceManifest": "../supplied-font-labels/manifest.json",
+      "sourceCase": "pair-and-space"
+    },
+    {
+      "id": "bold",
+      "request": {
+        "family": "monospace",
+        "weight": 700,
+        "italic": false
+      },
+      "expectedFile": "fonts/NotoSansMono-Bold.ttf",
+      "expectedResolvedFamily": "Noto Sans Mono",
+      "expectedFallback": false,
+      "expectedAcquisitions": [
+        "fonts/NotoSansMono-Bold.ttf"
+      ],
+      "metrics": "metrics.json",
+      "metricsCase": "bold",
+      "sourceManifest": "../supplied-font-documents/manifest.json",
+      "sourceCase": "integer-strikes"
+    },
+    {
+      "id": "fallback",
+      "request": {
+        "family": "Missing",
+        "weight": 400,
+        "italic": false
+      },
+      "expectedFile": "fonts/NotoSans-Regular.ttf",
+      "expectedResolvedFamily": "Noto Sans",
+      "expectedFallback": true,
+      "expectedAcquisitions": [
+        "fonts/NotoSans-Regular.ttf",
+        "fonts/NotoSansMono-Bold.ttf"
+      ],
+      "metrics": "metrics.json",
+      "metricsCase": "fallback",
+      "sourceManifest": "../font-layout-diagram/manifest.json",
+      "sourceCase": "span-font-fallback"
+    },
+    {
+      "id": "real-italic",
+      "request": {
+        "family": "Example",
+        "weight": 400,
+        "italic": true
+      },
+      "expectedFile": "fonts/NotoSans-Italic.ttf",
+      "expectedResolvedFamily": "Noto Sans",
+      "expectedFallback": false,
+      "expectedAcquisitions": [
+        "fonts/NotoSans-Italic.ttf"
+      ],
+      "metrics": "metrics.json",
+      "metricsCase": "real-italic",
+      "input": "real-italic.svg",
+      "width": 184,
+      "height": 76,
+      "scale": 1,
+      "background": "transparent",
+      "role": "public-font-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "b422409c38ebbee7c88ccb02ae9b66a480f234ad92aeec67bfc540cd0b01d668",
+      "reference": "references/real-italic.png",
+      "referenceSha256": "76a935a826080ea2b40435ab7201a4ab53f56bbcd1e17c3ea04ab47c133ee502",
+      "captures": [
+        {
+          "pngSha256": "76a935a826080ea2b40435ab7201a4ab53f56bbcd1e17c3ea04ab47c133ee502",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "76a935a826080ea2b40435ab7201a4ab53f56bbcd1e17c3ea04ab47c133ee502",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "76a935a826080ea2b40435ab7201a4ab53f56bbcd1e17c3ea04ab47c133ee502",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/real-italic.png",
+      "linuxReferenceSha256": "f80df2fe71d1878c782973306b6572bc9d14d5d74f8510e2d1dd763d4d02e614",
+      "linuxCaptures": [
+        {
+          "pngSha256": "f80df2fe71d1878c782973306b6572bc9d14d5d74f8510e2d1dd763d4d02e614",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f80df2fe71d1878c782973306b6572bc9d14d5d74f8510e2d1dd763d4d02e614",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f80df2fe71d1878c782973306b6572bc9d14d5d74f8510e2d1dd763d4d02e614",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ]
+}

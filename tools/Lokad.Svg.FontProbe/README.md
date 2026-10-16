@@ -47,3 +47,10 @@ reports outside the repository or under `artifacts/private-fonts/`, which is
 ignored. Console reports deliberately contain only outcome, SVG error category,
 output size and selected-program request count; they omit paths, pack IDs,
 hashes and exception text.
+
+Public regular, bold, real italic and intentional fallback requests qualify the
+standalone renderer through this same host, manifest and provider interfaces.
+Redistributable assets and exact platform references remain offline test data;
+no private configuration is needed by ordinary builds or CI. The four original
+private deployed-manifest requests are a separate pending production-adoption
+gate. Public success does not establish compatibility with that deployment.

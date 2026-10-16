@@ -1,3 +1,18 @@
+## Standalone public font gate (2026-10-16)
+
+[Four public requests](../tests/Research/public-font-qualification/README.md)
+qualify acquisition, intended-face selection, independent metrics and exact
+Windows/Linux output through the existing FontProbe executable. Three qualified
+visual cases are reused; only the real italic control is new. Its unmodified
+Noto Sans Italic program, independent metrics and native missing/substituted-face
+proof require no production renderer correction. No manifest conversion, new
+font-management layer or other-renderer comparison/dependency is introduced.
+
+T3-private's four original deployed-manifest requests remain pending before
+production adoption. They do not block standalone S17 under the approved PLAN
+criteria. Historical implementation status below retains its original checkpoint;
+current public/adoption gates belong to [PLAN](../PLAN.md#delivery-order).
+
 ## Marker container presentation (2026-10-16)
 
 The [presentation sheet and two controls](../tests/Research/marker-presentation-sheet/README.md)

@@ -60,7 +60,7 @@ correctness and material normal/adversarial resource evidence are reused from
 [qualification](../artifacts/maintenance-review-20261012/marker-presentation-qualified-results.json)
 and its exact-revision terminal green CI. This does not reopen completed ownership
 work or claim byte-exact accounting; [PLAN](../PLAN.md) retains the approximate
-target, private T3 requirement and final S17 release conditions.
+target, separate private-adoption gate and final standalone S17 conditions.
 
 
 The full frozen-cohort baseline predates the latest renderer repairs;

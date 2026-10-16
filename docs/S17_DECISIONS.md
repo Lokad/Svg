@@ -1,5 +1,12 @@
 # S17 release criteria and decisions
 
+The approved 2026-10-16 release criteria in [PLAN](../PLAN.md#delivery-order)
+require public regular/bold/real-italic/fallback qualification for standalone
+release. Private deployment access is not a standalone prerequisite. Its original
+four deployed-manifest requests remain pending before production adoption;
+standalone qualification cannot establish deployment compatibility. Historical
+criteria/status below retain their dates and are superseded by this gate split.
+
 Updated 2026-10-07. Native float rectangle operands and endpoint construction
 close IBM's three large variants on Windows/Linux. The cohort has **27/27 exact
 documents**, marks **13/13**, wordmarks **14/14**, with **258 exact, zero known

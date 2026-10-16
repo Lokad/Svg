@@ -1,6 +1,6 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-16 at the completed E4 marker-presentation checkpoint.
+Updated 2026-10-16 for standalone public-font qualification.
 Preserve the current implementation work, qualified `inv-146` correction and every
 established exact result, original SVG/font/reference bytes, options and default
 resource limits. This file owns delivery order, required exits and scope
@@ -15,6 +15,14 @@ is remaining work. A future deferral must identify the promise, missing acceptan
 reason and release consequence, and remain required until explicitly decided.
 Optional maintenance below adds no feature-completion prerequisite.
 
+**Approved release-criteria change (2026-10-16):** T3-public is required for
+standalone Lokad.Svg qualification. T3-private is required before production
+adoption of the existing deployment and is not a standalone release prerequisite.
+Its original four deployed-manifest requests remain pending; no deployment
+compatibility is claimed. Font-format/shaping boundaries and renderer promises
+are unchanged. This explicitly supersedes earlier private-access prerequisites.
+
+
 ## Qualified work to preserve
 
 | Completed commitment | Existing evidence and required preservation |
@@ -22,7 +30,7 @@ Optional maintenance below adds no feature-completion prerequisite.
 | Frozen cohorts and original fixtures | **27/27 corporate documents / 258/258 variants exact on Windows/Linux**, with unchanged [membership/recipes](tests/References/inventory/corporate-cohort-v1.json) and [measurement](tests/References/inventory/corporate-cohort-current.json). **50/50 selected documents complete**, including whole `inv-146`, original marker/shadow and supplied-font fixtures, SVG Translate, `inv-127` and `inv-145`: [gap ledger](tests/References/inventory/svg-gap-cases.json), [inventory](docs/INVENTORY.md). Failure-selected inputs establish no representative success rate. |
 | Integration documents and retained libraries | **35 authored documents** (25 CC0, 10 MIT) and **one sourced W3C decoration document** exact on both platforms, separate from the cohorts; [INVENTORY](docs/INVENTORY.md) owns the list, controls and immutable assets/options. Preserve `inv-146`'s oval/text and [merge controls](tests/Research/filter-merges/README.md), [merge qualification](artifacts/maintenance-review-20261012/merge-qualified-results.json), **149/149 paint-recording results** and I Ching's **24 exact / one out-of-scope animation boundary**. |
 | G2–G7 / C1–C6c shared dependencies | Instance/viewport maps, retained curves and affine/non-scaling strokes, shader placement, clip unions/forward/object-box binding, mask regions/opacity, bounded tile content/clips/masks, image placement and static CSS are complete under the [boundary/evidence index below](#required-support-boundaries-and-finite-exits), [existing map witnesses](artifacts/shared-stroke-pattern-maps-20261015/existing-map-witnesses.json), [tile-content qualification](artifacts/maintenance-review-20261012/pattern-content-qualified-results.json) and [shared-map qualification](artifacts/maintenance-review-20261012/shared-maps-qualified-results.json). Marker extensions are also qualified under E4 below; these mechanisms are available dependencies. |
-| G9 public text / T1–T2 | The [instance/paint sheet](tests/Research/instance-paint-exit-sheet/README.md) and [composite-flag sheet](tests/Research/composite-flag-exit-sheet/README.md) are complete with **4/4** and **3/3** exact controls on both platforms. Retain [paint qualification](artifacts/maintenance-review-20261012/text-paints-qualified-results.json), [dormant forward-paint follow-up](artifacts/maintenance-review-20261012/dormant-paints-qualified-results.json), [composite qualification](artifacts/maintenance-review-20261012/composite-flags-qualified-results.json), intended-font/metrics proof and the finite [G9 boundary](#g9-supplied-font-labels-and-text-paths). Catalog conformance and the [FontProbe host](tools/Lokad.Svg.FontProbe/README.md), including six transport/input regressions, are implemented; private deployment evidence is T3. |
+| G9 public text / T1–T2 | The [instance/paint sheet](tests/Research/instance-paint-exit-sheet/README.md) and [composite-flag sheet](tests/Research/composite-flag-exit-sheet/README.md) are complete with **4/4** and **3/3** exact controls on both platforms. Retain [paint qualification](artifacts/maintenance-review-20261012/text-paints-qualified-results.json), [dormant forward-paint follow-up](artifacts/maintenance-review-20261012/dormant-paints-qualified-results.json), [composite qualification](artifacts/maintenance-review-20261012/composite-flags-qualified-results.json), intended-font/metrics proof and the finite [G9 boundary](#g9-supplied-font-labels-and-text-paths). Catalog conformance and the [FontProbe host](tools/Lokad.Svg.FontProbe/README.md), including six transport/input regressions, are implemented; the four end-to-end public requests are T3-public; deployed-manifest evidence remains T3-private. |
 | G8 qualified effects / E1–E2 and E3 source/owner placements | [Affine sources](tests/Research/affine-source-exit-sheet/README.md) **1 document / 4 controls**, [linearRGB restoration](tests/Research/linear-restoration-exit-sheet/README.md) **1 / 3**, [source boundaries](tests/Research/filter-source-exit-sheet/README.md) **1 / 8** and [owner/source composition](tests/Research/filter-owner-exit-sheet/README.md) **1 / 8** are exact on both platforms. The last bank reuses one offset witness: seven new controls, no duplicate canonical test. Preserve the three [source-offset controls and qualification](artifacts/maintenance-review-20261012/affine-offset-qualified-results.json), [filter-region results](tests/Research/filter-regions/manifest.json) **26/26**, and bank-linked qualification/resource evidence. The retained-instance exit is qualified below. |
 | E3 retained-instance effects | The unchanged [sheet](tests/Research/retained-instance-effect-sheet/README.md), **8/8 declared controls** and **2/2 focused translated-wrapper controls** are exact on Windows/Linux. Preserve 72 healthy stable captures, intended-font proof, own-use and retained path/group/text filter scopes, scene-local bindings, x/y effect placement and native clip/mask/filter ordering. [Qualification](artifacts/maintenance-review-20261012/retained-instance-qualified-results.json) owns prior-case preservation and material resource/prepared-retry checks. E3 is complete. |
 | E4 markers — complete | The unchanged [length/direction sheet and six controls](tests/Research/marker-completion-sheet/README.md) and [presentation sheet and two controls](tests/Research/marker-presentation-sheet/README.md) are exact on Windows/Linux. Preserve em/ex dimensions/anchors, lazy supplied-face discovery, native directional/pose rounding, marker display/visibility and inherited stroke/child overrides. [Length qualification](artifacts/maintenance-review-20261012/marker-qualified-results.json), [presentation qualification](artifacts/maintenance-review-20261012/marker-presentation-qualified-results.json) and the retained [font oracle correction](artifacts/marker-completion-20261016/font-length-oracle-correction.json) own diagnostics, prior-case preservation and material resource checks. E4 is complete; no established reference changed. |
@@ -36,7 +44,7 @@ revision and hosted CI outcome, including package/installed-consumer checks. Reu
 PLAN-only edits and completed accounting work do not reopen qualification.
 
 Completed items 1–3 (G2–G7/C1–C6c), T1–T2 and E1–E4 stay closed.
-Only T3 and S17 remain in the queue. Historical rejection notes,
+T3-public is qualified; only final S17 remains in the standalone queue. T3-private stays pending for production adoption. Historical rejection notes,
 `observedGate` fields and pending-CI narratives in linked checkpoint records do
 not override qualified outcomes. Detailed mechanism/history belongs in those
 records; the queue below owns remaining work.
@@ -46,17 +54,23 @@ records; the queue below owns remaining work.
 
 ## Ordered delivery checklist
 
-**Three delivery exits: T3 private font requests → S17 measurement/documentation
-reconciliation (public evidence complete) → S17 final release verification.**
-T3 needs the existing deployment source/configuration. The independent S17 public evidence is complete;
-the release still requires T3. Bring a shared fix forward only for a demonstrated
-defect in these concrete exits.
+**Standalone delivery: T3-public qualified → S17 final verification.**
+The seven-witness public measurement/documentation exit is complete and remains
+available evidence. Private deployment configuration does not block this queue.
+Bring a shared correction forward only for a demonstrated in-scope defect.
 
 | Order / required exit | Missing behavior and dependencies | Concrete acceptance and completion condition |
 | --- | --- | --- |
-| [ ] **1. T3 — private requests** (item 4 / G9; input pending) | End-to-end deployment evidence is missing; host/catalog and public conformance are implemented. Needs the existing private source/configuration and unchanged deployed manifest, under the [authorized workflow](#authorized-private-font-testing). Reopen shared text code only for a demonstrated request defect. | Freeze one regular, bold, italic and fallback request. Retain four sanitized selection/metrics/pixel outcomes; turn in-scope defects into public reproductions and resolve them. All four outcomes, resulting public regressions and applicable qualification close T3. Private success cannot replace public acceptance or authorize new font formats. |
-| [x] **2. S17 — measurements and documentation** (item 6) | Public evidence is complete for qualified revision `393e19d5`; T3 remains independent and required. Reuse completed maintenance/resource evidence; a demonstrated later correction needs only its affected follow-up. | Reconcile the seven witnesses below for outlined geometry, instances/paint, clips/layers, filters, images and supplied fonts, with latency/allocation, hardware/options/setup and selection limits. Investigate material regressions; update README/API_CONTRACT/SUPPORT_MATRIX to the qualified subset. The [seven-witness results](docs/BENCHMARKS.md#finite-s17-measurement-set-2026-10-16) and [public receipt](artifacts/s17-release-20261016/s17-public-evidence.json) close release conditions 4–5 for this revision; no speculative optimization, new framework or completed-memory requalification. Final release remains open. |
-| [ ] **3. S17 — final release verification** (item 6) | T3 and the preceding evidence exit closed; E4 and completed dependencies and product/font/resource/package contracts preserved. | Every [release condition](#release-completion-s17) holds together for the finished revision, including Windows/Linux tests, package/installed consumer and exact-revision terminal green CI. Reuse unchanged qualification. Document/test counts alone cannot establish completion. |
+| [x] **1. T3-public — public fonts** (item 4 / G9) | The [four public requests](tests/Research/public-font-qualification/README.md) are qualified on Windows/Linux, including the new real italic witness; regular/bold/fallback assets and references are reused unchanged. Use redistributable static TrueType programs, the existing manifest/catalog/provider interfaces and FontProbe host. No private access, new schema or other-renderer dependency. | Four regular/bold/real-italic/intentional-fallback requests complete acquisition and selection through the existing host. Verify independent metrics, intended-font use and exact Windows/Linux pixels against unchanged qualified references; add only missing cases. Categorized format/shaping boundaries, limits, cancellation, cleanup and ownership remain protected. All four actual-host outcomes, metrics, face-use controls and exact platform references are recorded in [qualification](artifacts/standalone-font-qualification-20261016/public-font-qualified-results.json). Final complete-suite CI is the S17 checkpoint below. |
+| [x] **2. S17 — public measurements and documentation** (item 6) | Public measurements are complete for qualified revision `393e19d5`. Reuse completed maintenance/resource evidence; later corrections need only affected follow-up. | The [seven-witness results](docs/BENCHMARKS.md#finite-s17-measurement-set-2026-10-16) and [public receipt](artifacts/s17-release-20261016/s17-public-evidence.json) close release conditions 4–5 for that revision. Reconcile public documentation with the approved T3 split and final qualification. No speculative optimization, new framework or completed-memory requalification. |
+| [ ] **3. S17 — standalone final verification** (item 6) | T3-public closed; completed renderer dependencies and product/font/resource/package contracts preserved. T3-private remains a separate adoption gate. | Every [standalone release condition](#release-completion-s17) holds for the finished substantive revision, including Windows/Linux tests, package/installed consumer and terminal green CI. Reuse unchanged evidence. Document/test counts alone cannot establish completion. |
+
+**Separate production-adoption gate — [ ] T3-private.** The original regular,
+bold, italic and fallback requests against the unchanged deployed manifest remain
+unexecuted until its existing configuration is available. Retain sanitized
+selection/metrics/pixel outcomes; convert in-scope defects into public
+reproductions. This gate cannot be marked passed by public qualification, and
+standalone completion makes no claim of compatibility with that deployment.
 
 The S17 measurement set is finite: existing `SvgCurveBenchmarks` outlined-wordmark,
 gradient-clip and isolated-opacity methods; `SvgPatternBenchmarks` identical instances;
@@ -167,7 +181,7 @@ tangents, method align/spacing exact, curved/transformed sources and measured
 out-of-range/zero-length outcomes. Qualified fitting, decorations, positioned
 spans, dashed/non-scaling/stroke-before-fill/path strokes and metrics stay closed.
 
-T1 and T2 are complete; T3 is the remaining G9 exit. The
+T1, T2 and T3-public are complete for standalone G9 qualification. T3-private remains required before deployment adoption. The
 [resource](tests/Research/glyph-resource-exit-sheet/README.md) and
 [text-map](tests/Research/text-map-exit-sheet/README.md) documents stay complete.
 Preserve original masked inputs, source order, endpoint continuation and
@@ -217,9 +231,9 @@ device rounding and padded capture remain closed.
 
 ## Release completion (S17)
 
-Release is complete only when all of these hold for the **finished revision**:
+Standalone release qualification is complete only when all of these hold for the **finished revision**. Private deployment access is not a prerequisite:
 
-1. T3 and the S17 evidence/documentation exit above are closed, and completed G2–G8,
+1. T3-public and the S17 evidence/documentation exit above are closed, and completed G2–G8,
    T1–T2/E1–E4 dependencies remain qualified. Retain linked
    exact acceptance, measured valid-degenerate outcomes and applicable negative/
    resource regressions. No checklist row remains candidate-only. Reused evidence
@@ -393,17 +407,13 @@ protections; do not reopen them for requalification under this clarification.
 
 ## Font, text and host contracts
 
-### Shared public font-pack contract
+### Existing Lokad.Svg manifest and host contract
 
-Preserve the public Lokad.OoxPdf 0.1.4 manifest contract; the 2026-09-20 source review
-of the local OoxPdf checkout at `8e4b0333` (declared version 0.1.5, not a verified
-published release) confirms the same fields and resolution order. The reviewed
-public files are `Fonts/OoxPdfFontPackResolver.cs`, `Fonts/FontProgramLoader.cs`,
-`FontTests.cs`, `README.md` and `docs/PrivateValidation.md`. Both renderers must use
-unchanged manifest/font files from one location, without a converted/pruned SVG
-manifest, duplicated deployment or OoxPdf assembly/package/project dependency.
-Focused independent font-management adaptation is allowed; PDF embedding and SVG
-glyph rasterization retain distinct responsibilities.
+Preserve Lokad.Svg's existing manifest compatibility and selection semantics.
+Use the existing catalog, font-provider interfaces and FontProbe host; endpoints,
+credentials, I/O, retry/concurrency and bounded caches belong to the host. No
+cross-renderer comparison, dependency, coordination or shared font-management
+project is required for standalone qualification or deployment validation.
 
 | JSON location | Compatibility |
 | --- | --- |
@@ -420,16 +430,25 @@ when selected. Pin self-contained conformance fixtures to the public contract:
 defaults/aliases/fallback order, unknown metadata, paths, unused TTC and selective
 loading. No other renderer checkout is required.
 
-The focused comparison establishes these alignment targets; source inspection of
-upstream tests is not a claim that those tests were executed here:
-
-| OoxPdf behavior inspected | Lokad.Svg alignment and remaining work |
+| Existing property | Required preservation / evidence |
 | --- | --- |
-| Manifest first; font bytes fetched lazily for selected files and checked by length/SHA-256. | Keep `SvgFontPackCatalog` metadata-only and acquire through caller-owned sources during async preparation. Verify the unchanged private manifest with Svg itself before claiming end-to-end compatibility. |
-| Case-insensitive requested/resolved family matching; italic match, closest 400/700 weight, then deterministic family/path/face tie-breaks; ordered configured fallback. | Existing Svg selection follows that order and accepts numeric SVG weights. Independent conformance vectors cover aliases, four real styles, fallback (`b0d4d5d`), plus unused collection entries that parse and select without poisoning the catalog while snapshots reject selected collection faces before acquisition. OoxPdf's bold request maps to 700; preserve SVG's numeric weight semantics. |
-| Shared per-file sources coalesce concurrent downloads, cache successful bytes and use at most three attempts for transient transport failures. Manifest reads cap at 1 MiB; font reads cap at the smaller of the declared size and 64 MiB. | Implemented in the opt-in [FontProbe host](tools/Lokad.Svg.FontProbe/README.md), with synthetic transport regressions. Preserve Svg's separate 32 MiB aggregate borrowed-program and 256-face caps; the source's per-file cap does not replace them. |
-| Font loading can select collection faces; the inspected loader synchronously waits for bytes, copies them and can return no font for certain failures. | Retain Svg's async acquisition, immutable borrowed bytes and categorized required-font failures. Current face-0 standalone TrueType admission remains explicit; packs may contain unused TTC or other unsupported entries without rejecting the whole catalog. |
-| Private validation keeps manifests, inputs and reports ignored and commits anonymized findings. Download exceptions can contain source URIs. | Apply the private workflow below and redact transport errors before they reach repository reports or shared logs. Do not propagate private source identities through diagnostic `StableId` values. |
+| Manifest-first lazy programs | `SvgFontPackCatalog` stays metadata-only; selected immutable caller bytes are checked by declared length/SHA-256 during async preparation. |
+| Style/coverage selection | Case-insensitive families/aliases, real italic matching, numeric weight selection, deterministic ties and configured fallback retain self-contained conformance vectors. Metadata selection evidence does not replace T3-public real-style pixels. |
+| Host acquisition | Existing coalescing/cache/retry regressions and FontProbe remain. Manifest reads cap at 1 MiB, selected reads at the smaller of declared size and 64 MiB; library caps remain 32 MiB distinct borrowed programs / 256 faces. |
+| Formats and ownership | Standalone static TrueType face 0 remains the admitted program format. Unused unsupported entries do not poison the catalog; selected unsupported entries reject explicitly. Preserve async acquisition, borrowed immutable bytes, cancellation and cleanup. |
+
+### Public font qualification (T3-public)
+
+Use the existing public Noto Sans Regular and Noto Sans Mono Bold assets and their
+qualified controls, the intentional fallback control, and one redistributable
+real Noto Sans Italic program. Retain upstream identity/license as asset metadata;
+no new manifest field is required. Exercise four finite requests end to end through
+catalog selection, the provider interfaces and FontProbe. Reuse original regular,
+bold and fallback references and independent metrics. Freeze the missing italic
+source/options, independent metrics and three healthy stable captures/platform
+before correcting any rendering defect. Verify actual face use inside the SVG
+image, including real italic versus regular/substituted or missing faces. Keep
+public tests/CI offline after assets are retained and independent of private input.
 
 ### Authorized private font testing
 
@@ -441,19 +460,18 @@ configuration/code, or derived artifacts that disclose them. This includes
 embedded-font SVG/data URLs, request/response traces, exception text and reports.
 Any retained private inputs, font caches and captures belong outside this repo or
 under its already-ignored `artifacts/private-fonts/`; check that they are untracked
-before use. Follow OoxPdf's private-validation approach with Svg's existing ignore
-layout. Ordinary builds/tests and public CI must remain offline and independent of
+before use. Use the existing ignored local-validation layout. Ordinary builds/tests and public CI must remain offline and independent of
 the private source and sibling checkouts; do not upload private test artifacts.
 
 The earlier one-program format inspection establishes no whole-pack or rendering
 qualification; its historical detail stays in Git. The host and catalog are
 implemented. Preserve them rather than rebuilding them as another S7 queue.
 
-**Required private validation, attached to item 4 (G9):** freeze one regular, one
+**T3-private — required before production adoption, not standalone release:** freeze one regular, one
 bold, one italic and one fallback request before execution. Use the unchanged
 deployed manifest to prepare their required programs; inventory their relevant
 formats, coverage, composites and positioning
-tables, and compare selection with the public OoxPdf contract. For those requests,
+tables, and verify selection against the unchanged deployed catalog. For those requests,
 compare curves/counters/composites, AV/space and fractional labels using identical
 verified bytes in Svg and an SVG-image-local browser font embedding. Existing
 intended-font controls, three stable captures and independent metrics/pixels apply.
@@ -461,7 +479,7 @@ Completion is a sanitized outcome for every selected request, with private gaps
 categorized and reproducible in-scope defects converted to public synthetic cases
 and resolved under G9. Unsupported formats retain explicit outcomes; no whole-pack
 combination quota or new host is required. Private success cannot replace public
-acceptance. The security/retention rules above remain mandatory.
+acceptance. All four deployed requests remain pending until configuration is supplied; public qualification neither passes this gate nor claims deployment compatibility. The security/retention rules above remain mandatory.
 
 Hosts own locations, credentials, I/O/retry/concurrency and bounded shared caches;
 the library owns SVG analysis, ordered family/generic mapping, face selection,

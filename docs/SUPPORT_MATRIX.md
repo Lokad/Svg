@@ -1,3 +1,15 @@
+## Standalone and deployment gates (2026-10-16)
+
+The approved [PLAN](../PLAN.md#delivery-order) splits T3-public (required for
+standalone release) from T3-private (required before production adoption).
+[T3-public is qualified](../tests/Research/public-font-qualification/README.md):
+regular/bold/fallback evidence is reused and real italic metrics, intended-face
+proof and exact Windows/Linux rendering pass through the existing
+manifest/catalog/provider/FontProbe route. The original four deployed-manifest
+requests remain pending; no compatibility with that deployment is claimed.
+Earlier private-access prerequisites in historical checkpoints below are
+superseded. Format/shaping support and all established exact results are unchanged.
+
 ## Current release evidence (2026-10-16)
 
 G2–G8 and public G9 acceptance remain qualified under the finite
@@ -6,8 +18,8 @@ G2–G8 and public G9 acceptance remain qualified under the finite
 exact substantive revision `393e19d5`, including Windows/Linux package and installed
 consumer checks. The [fixed public measurement set](BENCHMARKS.md#finite-s17-measurement-set-2026-10-16)
 and current README/API contracts close S17's public evidence/documentation exit.
-Private T3 requests and final S17 release verification remain required; this is no
-release-completion or broader SVG support claim.
+T3-public is qualified; final S17 standalone verification remains required. T3-private is a
+separate pending adoption gate; this is no broader SVG or deployment-compatibility claim.
 
 ## Qualified marker container presentation (2026-10-16)
 
@@ -20,7 +32,7 @@ outcomes and zero marker width remains nonpainting.
 
 [Qualification](../artifacts/maintenance-review-20261012/marker-presentation-qualified-results.json)
 preserves every prior case and representative denial/cancellation/cleanup/retry.
-E4 is complete. Only T3 private evidence and S17 remain required in
+E4 is complete. Only final standalone S17 remains required in
 [PLAN](../PLAN.md#delivery-order); historical checkpoint guards/status below do not
 reopen qualified work or defer scope.
 

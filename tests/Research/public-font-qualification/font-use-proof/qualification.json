@@ -1,0 +1,146 @@
+{
+  "windows": {
+    "missing": {
+      "reference": "font-use-proof/windows-missing.png",
+      "sha256": "3cdf9ccdfcebd25692314b36c4e8b35ff1cd48b068c1c62bab50491c441df56b",
+      "captures": [
+        {
+          "pngSha256": "3cdf9ccdfcebd25692314b36c4e8b35ff1cd48b068c1c62bab50491c441df56b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3cdf9ccdfcebd25692314b36c4e8b35ff1cd48b068c1c62bab50491c441df56b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3cdf9ccdfcebd25692314b36c4e8b35ff1cd48b068c1c62bab50491c441df56b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "comparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 1683,
+        "MaximumChannelError": 255,
+        "MeanAbsoluteError": 7.06931135583524,
+        "RootMeanSquareError": 30.319815431643452,
+        "MaximumAlphaError": 255,
+        "AlphaChangedPixelCount": 1683,
+        "MinimumMismatchX": 6,
+        "MinimumMismatchY": 10,
+        "MaximumMismatchX": 134,
+        "MaximumMismatchY": 60,
+        "IsExact": false
+      }
+    },
+    "substituted": {
+      "reference": "font-use-proof/windows-substituted.png",
+      "sha256": "4bcafeb654ab3b63181caa3eddb30603c9a8845b0076b827c7eebd21def320db",
+      "captures": [
+        {
+          "pngSha256": "4bcafeb654ab3b63181caa3eddb30603c9a8845b0076b827c7eebd21def320db",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4bcafeb654ab3b63181caa3eddb30603c9a8845b0076b827c7eebd21def320db",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4bcafeb654ab3b63181caa3eddb30603c9a8845b0076b827c7eebd21def320db",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "comparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 2017,
+        "MaximumChannelError": 255,
+        "MeanAbsoluteError": 10.459846967963387,
+        "RootMeanSquareError": 37.70691911495656,
+        "MaximumAlphaError": 255,
+        "AlphaChangedPixelCount": 2017,
+        "MinimumMismatchX": 6,
+        "MinimumMismatchY": 10,
+        "MaximumMismatchX": 145,
+        "MaximumMismatchY": 60,
+        "IsExact": false
+      }
+    }
+  },
+  "linux": {
+    "missing": {
+      "reference": "font-use-proof/linux-missing.png",
+      "sha256": "13a2798f4c7896157fb9e60f9249764c6763203b91ba465c111282b55549ce90",
+      "captures": [
+        {
+          "pngSha256": "13a2798f4c7896157fb9e60f9249764c6763203b91ba465c111282b55549ce90",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "13a2798f4c7896157fb9e60f9249764c6763203b91ba465c111282b55549ce90",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "13a2798f4c7896157fb9e60f9249764c6763203b91ba465c111282b55549ce90",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "comparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 1479,
+        "MaximumChannelError": 255,
+        "MeanAbsoluteError": 6.693524742562929,
+        "RootMeanSquareError": 30.05876175632986,
+        "MaximumAlphaError": 255,
+        "AlphaChangedPixelCount": 1478,
+        "MinimumMismatchX": 7,
+        "MinimumMismatchY": 10,
+        "MaximumMismatchX": 134,
+        "MaximumMismatchY": 60,
+        "IsExact": false
+      }
+    },
+    "substituted": {
+      "reference": "font-use-proof/linux-substituted.png",
+      "sha256": "66c3e7d6a950477b42ea4bdc9e5eb667306d99d65a5e038138c631d5c10ee207",
+      "captures": [
+        {
+          "pngSha256": "66c3e7d6a950477b42ea4bdc9e5eb667306d99d65a5e038138c631d5c10ee207",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "66c3e7d6a950477b42ea4bdc9e5eb667306d99d65a5e038138c631d5c10ee207",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "66c3e7d6a950477b42ea4bdc9e5eb667306d99d65a5e038138c631d5c10ee207",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "comparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 1796,
+        "MaximumChannelError": 255,
+        "MeanAbsoluteError": 10.2517698798627,
+        "RootMeanSquareError": 38.079228676636184,
+        "MaximumAlphaError": 255,
+        "AlphaChangedPixelCount": 1796,
+        "MinimumMismatchX": 7,
+        "MinimumMismatchY": 10,
+        "MaximumMismatchX": 145,
+        "MaximumMismatchY": 60,
+        "IsExact": false
+      }
+    }
+  }
+}

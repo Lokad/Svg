@@ -68,7 +68,7 @@ The per-axis dimension cap applies after output scaling. Exceeding it with valid
 integral dimensions returns `SvgErrorCode.LimitExceeded` before surface allocation
 or output writes. Nonpositive or non-finite resolved output dimensions remain `UnsupportedFeature`; fractional dimensions round to the nearest device pixel (midpoint away from zero) before that check, matching an explicit rounded viewport byte-for-byte; malformed SVG values retain their parsing errors.
 
-`Lokad.Svg.Fonts.SvgFontPackCatalog` parses the public OoxPdf 0.1.4 manifest
+`Lokad.Svg.Fonts.SvgFontPackCatalog` parses Lokad.Svg's existing font-pack manifest
 format from caller-owned bytes without network or filesystem access. It validates
 the requested pack ID, safe relative paths, file byte counts and SHA-256 metadata,
 then resolves requested/resolved family aliases, styles and configured fallback
@@ -77,8 +77,12 @@ families deterministically. `AcquireAsync` asks an explicit caller-owned
 program before returning; a missing source is `UnresolvedResource`. The provider
 owns I/O, retries, caching, concurrency and its source lifetime. The library does
 not probe storage or request unrelated pack files. A caller can supply a verified
-snapshot through render options to exercise the deliberately narrow direct-text
-pipeline; catalog acquisition is not implicitly invoked by rendering.
+snapshot through render options for the admitted supplied-font label/path subset;
+catalog acquisition is not implicitly invoked by rendering. Standalone font
+qualification uses redistributable regular, bold, real italic and intentional
+fallback requests through these same interfaces and the existing FontProbe host.
+Private deployed-manifest validation remains a separate production-adoption gate;
+standalone success does not establish compatibility with that deployment.
 `ISvgFontProgramSource` is the explicit caller-owned byte boundary. Binding a
 catalog resolution wraps that source with declared byte-count/SHA-256 validation;
 it neither copies nor caches the returned program. Source storage must therefore

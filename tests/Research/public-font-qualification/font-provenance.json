@@ -1,0 +1,19 @@
+{
+  "retrieved": "2026-10-16",
+  "repository": "https://github.com/notofonts/noto-fonts",
+  "revision": "ffebf8c1ee449e544955a7e813c54f9b73848eac",
+  "fontUrl": "https://raw.githubusercontent.com/notofonts/noto-fonts/ffebf8c1ee449e544955a7e813c54f9b73848eac/hinted/ttf/NotoSans/NotoSans-Italic.ttf",
+  "licenseUrl": "https://raw.githubusercontent.com/notofonts/noto-fonts/ffebf8c1ee449e544955a7e813c54f9b73848eac/LICENSE",
+  "license": "OFL-1.1",
+  "file": "fonts/NotoSans-Italic.ttf",
+  "byteSize": 552776,
+  "sha256": "36cff144df01309dab648bea71baff9bb074026914afe63aeacc8bc90b67a28b",
+  "faceIndex": 0,
+  "requestedFamily": "Example",
+  "resolvedFamily": "Noto Sans",
+  "weight": 400,
+  "realItalic": true,
+  "italicAngle": -12.0,
+  "unitsPerEm": 1000,
+  "selection": "Unmodified redistributable real italic face from the same pinned upstream as the existing regular/bold assets; selected before capture or renderer screening."
+}

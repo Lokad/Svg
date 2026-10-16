@@ -7,6 +7,14 @@ The frozen selection and measured outcomes are recorded below.
 
 ## Current document evidence (2026-10-16)
 
+[Public standalone font qualification](../tests/Research/public-font-qualification/README.md)
+now covers regular, bold, real italic and intentional fallback requests end to end
+on Windows/Linux. Three existing visual cases are reused unchanged; one focused
+italic control and one public OFL font program add no corpus document. T3-public
+is qualified; T3-private's original four deployed-manifest requests remain pending
+before production adoption and do not block standalone S17. Historical private-access
+prerequisites below are superseded by this approved gate split.
+
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
 variants**. **Thirty-five additional authored documents** (twenty-five CC0 and ten MIT

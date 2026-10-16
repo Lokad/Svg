@@ -1,0 +1,176 @@
+{
+  "method": "Independent FontTools cmap/hmtx and ordered GPOS kern pair/class tables. Font-unit metrics mapped to user units without native-device hinting/rounding; existing regular metrics are reused verbatim.",
+  "cases": [
+    {
+      "id": "bold",
+      "text": "St",
+      "fontSize": 32,
+      "unitsPerEm": 1000,
+      "glyphs": [
+        {
+          "scalar": 83,
+          "glyphIndex": 54,
+          "x": 0.0,
+          "y": 0.0,
+          "advance": 19.2,
+          "kerning": 0.0
+        },
+        {
+          "scalar": 116,
+          "glyphIndex": 87,
+          "x": 19.2,
+          "y": 0.0,
+          "advance": 19.2,
+          "kerning": 0.0
+        }
+      ],
+      "length": 38.4
+    },
+    {
+      "id": "fallback",
+      "text": "test",
+      "fontSize": 18,
+      "unitsPerEm": 1000,
+      "glyphs": [
+        {
+          "scalar": 116,
+          "glyphIndex": 87,
+          "x": 0.0,
+          "y": 0.0,
+          "advance": 6.498,
+          "kerning": 0.0
+        },
+        {
+          "scalar": 101,
+          "glyphIndex": 72,
+          "x": 6.498,
+          "y": 0.0,
+          "advance": 10.152,
+          "kerning": 0.0
+        },
+        {
+          "scalar": 115,
+          "glyphIndex": 86,
+          "x": 16.65,
+          "y": 0.0,
+          "advance": 8.622,
+          "kerning": 0.0
+        },
+        {
+          "scalar": 116,
+          "glyphIndex": 87,
+          "x": 25.272,
+          "y": 0.0,
+          "advance": 6.498,
+          "kerning": 0.0
+        }
+      ],
+      "length": 31.77
+    },
+    {
+      "id": "real-italic",
+      "text": "AV To O0g éÅ",
+      "fontSize": 22,
+      "unitsPerEm": 1000,
+      "glyphs": [
+        {
+          "scalar": 65,
+          "glyphIndex": 36,
+          "x": 0.0,
+          "y": 0.0,
+          "advance": 12.364,
+          "kerning": 0.0
+        },
+        {
+          "scalar": 86,
+          "glyphIndex": 57,
+          "x": 12.144,
+          "y": 0.0,
+          "advance": 12.144,
+          "kerning": -0.22
+        },
+        {
+          "scalar": 32,
+          "glyphIndex": 3,
+          "x": 24.288,
+          "y": 0.0,
+          "advance": 5.72,
+          "kerning": 0.0
+        },
+        {
+          "scalar": 84,
+          "glyphIndex": 55,
+          "x": 30.008,
+          "y": 0.0,
+          "advance": 11.022,
+          "kerning": 0.0
+        },
+        {
+          "scalar": 111,
+          "glyphIndex": 82,
+          "x": 39.49,
+          "y": 0.0,
+          "advance": 12.386,
+          "kerning": -1.54
+        },
+        {
+          "scalar": 32,
+          "glyphIndex": 3,
+          "x": 51.876000000000005,
+          "y": 0.0,
+          "advance": 5.72,
+          "kerning": 0.0
+        },
+        {
+          "scalar": 79,
+          "glyphIndex": 50,
+          "x": 57.596000000000004,
+          "y": 0.0,
+          "advance": 15.862,
+          "kerning": 0.0
+        },
+        {
+          "scalar": 48,
+          "glyphIndex": 19,
+          "x": 73.458,
+          "y": 0.0,
+          "advance": 12.122,
+          "kerning": 0.0
+        },
+        {
+          "scalar": 103,
+          "glyphIndex": 74,
+          "x": 85.58,
+          "y": 0.0,
+          "advance": 12.738,
+          "kerning": 0.0
+        },
+        {
+          "scalar": 32,
+          "glyphIndex": 3,
+          "x": 98.318,
+          "y": 0.0,
+          "advance": 5.72,
+          "kerning": 0.0
+        },
+        {
+          "scalar": 233,
+          "glyphIndex": 171,
+          "x": 104.038,
+          "y": 0.0,
+          "advance": 10.978,
+          "kerning": 0.0
+        },
+        {
+          "scalar": 197,
+          "glyphIndex": 135,
+          "x": 115.01599999999999,
+          "y": 0.0,
+          "advance": 12.364,
+          "kerning": 0.0
+        }
+      ],
+      "length": 127.38
+    }
+  ]
+}
