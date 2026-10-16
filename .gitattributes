@@ -76,3 +76,4 @@ tests/Research/completion-pattern-clips/*.svg -text whitespace=cr-at-eol
 tests/Research/completion-pattern-object-clips/*.svg -text whitespace=cr-at-eol
 tests/Research/completion-instance-clips/*.svg -text whitespace=cr-at-eol
 tests/Research/completion-mask-clips/*.svg -text whitespace=cr-at-eol
+tests/Research/completion-nested-clips/*.svg -text whitespace=cr-at-eol

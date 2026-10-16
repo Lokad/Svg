@@ -1,0 +1,2 @@
+<!-- CC0-1.0: authored completion-audit discriminator; existing embedded PNG retained under its original provenance. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><defs><clipPath id="a"><circle cx="8" cy="8" r="7"/></clipPath><clipPath id="b"><path d="M0 0H16V16H0Z" clip-path="url(#a)"/></clipPath><pattern id="p" width="16" height="16" patternUnits="userSpaceOnUse"><g clip-path="url(#b)"><rect width="16" height="16" fill="#d45a32"/></g></pattern></defs><rect width="64" height="64" fill="url(#p)"/></svg>

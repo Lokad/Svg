@@ -41,43 +41,64 @@ internal static class SvgClipPathSyntax
 
     /// <summary>Binds a retained resource clip to source geometry through existing native clip operations.</summary>
     /// <remarks>Commands and mask scenes transfer to the parent scene owner. The binding borrows parser-owned operations;
-    /// source arrays remain borrowed. All construction charges work and observes cancellation. Nested resource clips
-    /// currently admit one additional level; broader resource graphs retain an explicit boundary.</remarks>
+    /// source arrays remain borrowed. Nested chains use bounded iterative scratch, reject cycles and preserve
+    /// source map/order. All construction charges work and observes cancellation.</remarks>
     internal static SvgLeafMaskBinding BindResourceClip(string id, SvgAffineTransform map, SvgLeafMaskBinding? inner,
         SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
-        work.Consume(token);
-        SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
-        operation.Resolved = true;
-        if (state.Clips.TryGetValue(id, out SvgClipBox box))
+        if (!state.ClipPolygons.TryGetValue(id, out SvgClipPolygon first) || first.NestedClipId is null)
+            return BindSingle(id, map, inner, state, work, token);
+        using BudgetedParserList<SvgNativeClipReference> chain = new(state.Budget, SvgMemoryCategory.Parser, work, token);
+        using BudgetedParserDictionary<string, byte> seen = new(state.Budget, SvgMemoryCategory.Parser, 48);
+        string currentId = id;
+        SvgAffineTransform currentMap = map;
+        while (true)
         {
-            if (box.Width <= 0 || box.Height <= 0) operation.Value = 0;
-            else
-            {
-                operation.AffineViewport = new(box, map);
-                operation.Value = 255;
-                operation.RegionKind = SvgLayerRegionKind.AffineViewport;
-            }
-        }
-        else if (state.ClipPolygons.TryGetValue(id, out SvgClipPolygon content))
-        {
+            work.Consume(token);
+            if (!seen.TryAdd(currentId, 0)) throw new SvgException(SvgErrorCode.MalformedInput, "Cyclic clip-path references are not valid.");
+            chain.Add(new(currentId, currentMap));
+            if (!state.ClipPolygons.TryGetValue(currentId, out SvgClipPolygon content) || content.NestedClipId is not {} nestedId) break;
             if (content.IsObjectBoundingBox) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Bounding-box clips on retained resource geometry are not implemented.");
-            if (content.NestedClipId is {} nestedId)
-            {
-                if (state.ClipPolygons.TryGetValue(nestedId, out SvgClipPolygon nested) && nested.NestedClipId is not null)
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Deeper nested resource clips are not implemented.");
-                inner = BindResourceClip(nestedId, map.ComposeChecked(content.SourcePath?.SceneMap ?? SvgAffineTransform.Identity), inner, state, work, token);
-            }
-            if (content.Points.Length == 0) operation.Value = 0;
-            else
-            {
-                operation.NativeClip = new(id, map);
-                operation.Value = 255;
-                operation.RegionKind = SvgLayerRegionKind.AffineViewport;
-            }
+            currentMap = currentMap.ComposeChecked(content.SourcePath?.SceneMap ?? SvgAffineTransform.Identity);
+            currentId = nestedId;
         }
-        else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clips on retained resource geometry are implemented.");
-        return SvgLeafMaskComposition.NewBinding(state, operation, inner);
+        for (int index = chain.Count - 1; index >= 0; index--)
+        {
+            SvgNativeClipReference clip = chain[index];
+            inner = BindSingle(clip.Id, clip.Map, inner, state, work, token);
+        }
+        return inner ?? throw new InvalidOperationException("A retained clip chain requires its root.");
+
+        static SvgLeafMaskBinding BindSingle(string id, SvgAffineTransform map, SvgLeafMaskBinding? inner,
+            SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+        {
+            work.Consume(token);
+            SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
+            operation.Resolved = true;
+            if (state.Clips.TryGetValue(id, out SvgClipBox box))
+            {
+                if (box.Width <= 0 || box.Height <= 0) operation.Value = 0;
+                else
+                {
+                    operation.AffineViewport = new(box, map);
+                    operation.Value = 255;
+                    operation.RegionKind = SvgLayerRegionKind.AffineViewport;
+                }
+            }
+            else if (state.ClipPolygons.TryGetValue(id, out SvgClipPolygon content))
+            {
+                if (content.IsObjectBoundingBox) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Bounding-box clips on retained resource geometry are not implemented.");
+                if (content.Points.Length == 0) operation.Value = 0;
+                else
+                {
+                    operation.NativeClip = new(id, map);
+                    operation.Value = 255;
+                    operation.RegionKind = SvgLayerRegionKind.AffineViewport;
+                }
+            }
+            else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clips on retained resource geometry are implemented.");
+            return SvgLeafMaskComposition.NewBinding(state, operation, inner);
+        }
     }
 
     /// <summary>Binds one retained leaf or container clip after collecting its complete pre-clip target.</summary>
@@ -89,13 +110,15 @@ internal static class SvgClipPathSyntax
     {
         bool rectangle = state.ObjectClips.TryGetValue(id, out SvgClipBox fractions);
         state.ClipPolygons.TryGetValue(id, out SvgClipPolygon polygon);
-        SvgLeafMaskOperation? objectClip = null;
+        SvgLeafMaskOperation? resourceClip = null;
         if (rectangle || polygon.IsObjectBoundingBox)
         {
             SvgObjectBoundingClip target = new(map, null);
             foreach (SvgGeometry geometry in geometries) target.Add(geometry, state, work, token);
-            objectClip = rectangle ? target.Register(fractions, state, work, token) : target.Register(polygon, id, state, work, token);
+            resourceClip = rectangle ? target.Register(fractions, state, work, token) : target.Register(polygon, id, state, work, token);
         }
+        else if (polygon.NestedClipId is not null)
+            resourceClip = DeferNestedResourceMask(id, map, state);
         SvgLeafMaskBinding? lastInner = null, binding = null;
         foreach (ref SvgGeometry geometry in geometries)
         {
@@ -103,11 +126,22 @@ internal static class SvgClipPathSyntax
             if (binding is null || !ReferenceEquals(lastInner, geometry.LeafMask))
             {
                 lastInner = geometry.LeafMask;
-                binding = objectClip is null ? BindResourceClip(id, map, lastInner, state, work, token)
-                    : SvgLeafMaskComposition.NewBinding(state, objectClip, lastInner);
+                binding = resourceClip is null ? BindResourceClip(id, map, lastInner, state, work, token)
+                    : SvgLeafMaskComposition.NewBinding(state, resourceClip, lastInner);
             }
             geometry = geometry with { LeafMask = binding };
         }
+    }
+
+    /// <summary>Defers nested stencil registration until retained geometry reaches its final scene owner.</summary>
+    /// <remarks>The document owns the id and operation; instance mapping preserves the native resource map.
+    /// Emission charges construction work and observes cancellation through the ordinary clip replay.</remarks>
+    internal static SvgLeafMaskOperation DeferNestedResourceMask(string id, SvgAffineTransform map, SvgDocumentState state)
+    {
+        SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
+        operation.Resolved = true; operation.Value = 255;
+        operation.NativeClip = new(id, map); operation.RegionKind = SvgLayerRegionKind.Mask;
+        return operation;
     }
 
     /// <summary>Validates the clip rule shared by attributes and style declarations.</summary>
@@ -239,7 +273,7 @@ internal static class SvgClipPathSyntax
                         SvgAffineTransform map = pending.Transform;
                         if (parent is {} viewport) map = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(map);
                         (SvgClipBox bounds, int contentIndex) = clipPolygon.NestedClipId is not null
-                            ? RegisterNestedResourceMask(pending.ClipId, clipPolygon, map, state, workCounter, cancellationToken)
+                            ? RegisterNestedResourceMask(pending.ClipId, clipPolygon, map, state.Scene, state, workCounter, cancellationToken)
                             : clipPolygon.Register(map, clipPolygon.UsesNativeReplay, state, state.Scene, workCounter, cancellationToken);
                         SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
                         operation.Resolved = true;
@@ -609,34 +643,36 @@ internal static class SvgClipPathSyntax
                 return new SvgDevicePoint(s.X + (t * dx), s.Y + (t * dy));
             }
         }
-        // Build a bounded white stencil from borrowed native paths. The containing
-        // scene adopts its immutable replay owner. Native clips construct inside
-        // the mask; target alpha-mask rounding remains separate. Existing owners
-        // enforce work, cancellation, material reservations and cleanup.
-        static (SvgClipBox Bounds, int ContentIndex) RegisterNestedResourceMask(string id, SvgClipPolygon polygon,
-            SvgAffineTransform map, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
-        {
-            SvgAuthoredPath source = polygon.SourcePath ?? throw new InvalidOperationException("Nested clip replay requires source bounds.");
-            SvgRectangle bounds = map.ComposeChecked(source.SceneMap).Apply(SvgPathBounds.Compute(source.Commands, work, token));
-            double margin = 2 / state.OutputMagnification;
-            using SvgSceneBuilder builder = new(state.Budget, work, token);
-            SvgLeafMaskOperation contour = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
-            contour.Resolved = true; contour.Value = 255; contour.NativeClip = new(id, map);
-            contour.RegionKind = SvgLayerRegionKind.AffineViewport;
-            SvgLeafMaskBinding binding = SvgLeafMaskComposition.NewBinding(state, contour, null);
-            string nestedId = polygon.NestedClipId ?? throw new InvalidOperationException("Nested clip replay requires a child clip.");
-            binding = BindResourceClip(nestedId, map.ComposeChecked(source.SceneMap), binding, state, work, token);
-            builder.AddGeometry(SvgGeometry.FromRectangle(new(bounds.X - margin, bounds.Y - margin,
-                bounds.Width + margin * 2, bounds.Height + margin * 2, new(255, 255, 255, 255), true, null)) with { LeafMask = binding });
-            SvgLeafMaskComposition.Emit(state, builder, work, token);
-            SvgVectorContent content = SvgVectorContent.Create(builder.Build(), state.Budget);
-            try { state.Scene.AdoptVectorContent(content); }
-            catch { content.Dispose(); throw; }
-            int index = state.Scene.AddMaskContent(new([], 255, true) { VectorContent = content });
-            return (new(bounds.X, bounds.Y, bounds.Width, bounds.Height), index);
-        }
+
 
     }
+    // Build a bounded white stencil from borrowed native paths. The containing
+    // scene adopts its immutable replay owner. Native clips construct inside
+    // the mask; target alpha-mask rounding remains separate. Existing owners
+    // enforce work, cancellation, material reservations and cleanup.
+    internal static (SvgClipBox Bounds, int ContentIndex) RegisterNestedResourceMask(string id, SvgClipPolygon polygon,
+        SvgAffineTransform map, SvgSceneBuilder owner, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        SvgAuthoredPath source = polygon.SourcePath ?? throw new InvalidOperationException("Nested clip replay requires source bounds.");
+        SvgRectangle bounds = SvgPathBounds.Compute(source.Commands, map.ComposeChecked(source.SceneMap), work, token);
+        double margin = 2 / state.OutputMagnification;
+        using SvgSceneBuilder builder = new(state.Budget, work, token);
+        SvgLeafMaskOperation contour = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
+        contour.Resolved = true; contour.Value = 255; contour.NativeClip = new(id, map);
+        contour.RegionKind = SvgLayerRegionKind.AffineViewport;
+        SvgLeafMaskBinding binding = SvgLeafMaskComposition.NewBinding(state, contour, null);
+        string nestedId = polygon.NestedClipId ?? throw new InvalidOperationException("Nested clip replay requires a child clip.");
+        binding = BindResourceClip(nestedId, map.ComposeChecked(source.SceneMap), binding, state, work, token);
+        builder.AddGeometry(SvgGeometry.FromRectangle(new(bounds.X - margin, bounds.Y - margin,
+            bounds.Width + margin * 2, bounds.Height + margin * 2, new(255, 255, 255, 255), true, null)) with { LeafMask = binding });
+        SvgLeafMaskComposition.Emit(state, builder, work, token);
+        SvgVectorContent content = SvgVectorContent.Create(builder.Build(), state.Budget);
+        try { owner.AdoptVectorContent(content); }
+        catch { content.Dispose(); throw; }
+        int index = owner.AddMaskContent(new([], 255, true) { VectorContent = content });
+        return (new(bounds.X, bounds.Y, bounds.Width, bounds.Height), index);
+    }
+
     /// <summary>Applies deferred userSpace clip paths to direct group command ranges at document end, after use expansion.</summary>
     internal static void ResolvePendingGroupClips(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         => ResolvePendingGroupClips(state, 0, workCounter, cancellationToken);
@@ -723,17 +759,18 @@ internal static class SvgClipPathSyntax
                         continue;
                     }
                     if (polygon.ContourEnds.Length != 1 && !polygon.UsesNativeReplay) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-contour polygon clip-paths on groups are implemented.");
-                    if (polygon.NestedClipId is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested resource clip masks on groups require separate qualification.");
                     SvgAffineTransform map = pending.Transform;
                     if (parent is {} viewport)
                         map = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(map);
-                    (SvgClipBox bounds, int contentIndex) = polygon.Register(map, polygon.UsesNativeReplay, state, state.Scene, workCounter, cancellationToken);
+                    (SvgClipBox bounds, int contentIndex) = polygon.NestedClipId is not null
+                        ? RegisterNestedResourceMask(pending.ClipId, polygon, map, state.Scene, state, workCounter, cancellationToken)
+                        : polygon.Register(map, polygon.UsesNativeReplay, state, state.Scene, workCounter, cancellationToken);
                     SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
                     operation.Resolved = true;
                     operation.Value = 255;
-                    operation.Region = polygon.UsesMaskFallback ? null : bounds;
+                    operation.Region = polygon.NestedClipId is not null || polygon.UsesMaskFallback ? null : bounds;
                     operation.ContentIndex = contentIndex;
-                    operation.RegionKind = polygon.UsesMaskFallback ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.AffineViewport;
+                    operation.RegionKind = polygon.NestedClipId is not null || polygon.UsesMaskFallback ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.AffineViewport;
                     for (int commandIndex = pending.FirstCommandIndex; commandIndex < pending.EndCommandIndex; commandIndex++)
                     {
                         workCounter.Consume(cancellationToken);

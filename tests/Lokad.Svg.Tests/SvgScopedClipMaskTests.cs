@@ -6,6 +6,36 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgScopedClipMaskTests
 {
     [Theory]
+    [InlineData("symbol")]
+    [InlineData("mask")]
+    public void Nested_clip_stencils_preserve_color_and_ownership_through_retained_sources(string placement)
+    {
+        const string prefix = "<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><clipPath id='a'><circle cx='8' cy='8' r='7'/></clipPath><clipPath id='b'><path d='M0 0H16V16H0Z' clip-path='url(#a)'/></clipPath>";
+        const string rectangle = "<rect width='16' height='16' fill='#d45a32'/>";
+        string ordinary = prefix + "</defs><g clip-path='url(#b)'>" + rectangle + "</g></svg>";
+        string source = placement == "symbol"
+            ? prefix + "<symbol id='s'><g clip-path='url(#b)'>" + rectangle + "</g></symbol></defs><use href='#s'/></svg>"
+            : prefix + "<mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='64' height='64'><g clip-path='url(#b)'><rect width='16' height='16' fill='white'/></g></mask></defs><rect width='16' height='16' fill='#d45a32' mask='url(#m)'/></svg>";
+        byte[] expected = SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(ordinary), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(source), SvgRenderLimits.Default, budget, CancellationToken.None))
+            Assert.Equal(expected, SvgConverter.ConvertToPng(root, SvgRenderOptions.Default, budget, CancellationToken.None).ToArray());
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [InlineData("a", "", SvgErrorCode.MalformedInput)]
+    [InlineData("b", "<clipPath id='b'><path d='M0 0H8V8H0Z' clip-path='url(#a)'/></clipPath>", SvgErrorCode.MalformedInput)]
+    [InlineData("missing", "", SvgErrorCode.UnsupportedFeature)]
+    public void Nested_clip_resource_failures_release_partial_stencils(string nested, string additional, SvgErrorCode expected)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='a'><path d='M0 0H8V8H0Z' clip-path='url(#" + nested + ")'/></clipPath>" + additional + "</defs><g clip-path='url(#a)'><rect width='8' height='8' fill='red'/></g></svg>");
+        RenderBudget budget = new(1_000_000);
+        Assert.Equal(expected, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
     [InlineData("scoped-card-diagram")]
     [InlineData("composed-quadratic-clip")]
     [InlineData("translated-mask-use")]

@@ -323,7 +323,12 @@ internal static class SvgLeafMaskComposition
                 {
                     if (!state.ClipPolygons.TryGetValue(nativeClip.Id, out SvgClipPolygon content))
                         throw new InvalidOperationException("Retained native clip content is missing.");
-                    (operation.Region, operation.ContentIndex) = content.Register(nativeClip.Map, content.UsesNativeReplay, state, scene, work, token);
+                    if (operation.RegionKind == SvgLayerRegionKind.Mask && content.NestedClipId is not null)
+                    {
+                        (_, operation.ContentIndex) = SvgClipPathSyntax.RegisterNestedResourceMask(nativeClip.Id, content, nativeClip.Map, scene, state, work, token);
+                        operation.Region = null;
+                    }
+                    else (operation.Region, operation.ContentIndex) = content.Register(nativeClip.Map, content.UsesNativeReplay, state, scene, work, token);
                     if (content.UsesMaskFallback) { operation.Region = null; operation.RegionKind = SvgLayerRegionKind.Mask; }
                 }
                 if (operation.PreservesIsolation || operation.Value != 255 || operation.Region is not null || operation.ContentIndex >= 0 || operation.SourceOpacity.Value != 1) desired.Add(new(operation));

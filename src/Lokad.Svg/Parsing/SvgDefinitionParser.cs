@@ -237,13 +237,16 @@ internal static class SvgDefinitionParser
                 // A resource uses its own child map; ancestors place the referencing element.
                 SvgAffineTransform clipTransform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken);
                 SvgAffineViewportClip source = new(new(syntax.X, syntax.Y, syntax.Width, syntax.Height), clipTransform);
-                if (clipTransform.IsAxisAligned && state.ClipPolygon is null)
+                string? nestedClip = SvgClipPathSyntax.ResolveClipId(reader, state);
+                nestedClip = nestedClip is null ? null : state.Strings.Copy(nestedClip);
+                if (clipTransform.IsAxisAligned && state.ClipPolygon is null && nestedClip is null)
                 {
                     SvgRectangle rect = clipTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, false, null));
                     state.ClipBox = new SvgClipBox(rect.X, rect.Y, rect.Width, rect.Height);
                     state.ClipRectangleSource = source;
                 }
-                else AppendClipChild(CreateClipRectangle(source, state, workCounter, cancellationToken), state, workCounter, cancellationToken);
+                else AppendClipChild(CreateClipRectangle(source, state, workCounter, cancellationToken) with
+                    { NestedClipId = nestedClip, UsesNativeReplay = nestedClip is not null }, state, workCounter, cancellationToken);
                 state.HasUnsupportedContent |= !reader.IsEmptyElement;
                 return true;
             }
@@ -269,8 +272,11 @@ internal static class SvgDefinitionParser
                     state.Definitions.TryAdd(state.Strings.Copy(pathId), source);
                 }
                 bool isEvenOdd = clipStyle.ClipRule is null ? state.ClipIsEvenOdd : SvgClipPathSyntax.ParseClipRule(clipStyle.ClipRule.AsSpan());
+                string? nestedClip = SvgClipPathSyntax.ResolveClipId(reader, state);
+                nestedClip = nestedClip is null ? null : state.Strings.Copy(nestedClip);
                 SvgClipPolygon clipContent = ParseClipPathPolygon(reader.GetAttribute("d"), clipTransform, isEvenOdd, state, workCounter, cancellationToken)
                     with { IsObjectBoundingBox = state.ClipIsObjectBoundingBox };
+                clipContent = clipContent with { NestedClipId = nestedClip, UsesNativeReplay = clipContent.UsesNativeReplay || nestedClip is not null };
                 AppendClipChild(clipContent, state, workCounter, cancellationToken);
                 state.HasUnsupportedContent |= !reader.IsEmptyElement;
                 return true;
@@ -888,7 +894,7 @@ internal static class SvgDefinitionParser
             if (child.Points.Length == 0 && state.ClipPolygon is {} painted)
             {
                 child.SourcePath?.Dispose();
-                if (!painted.UsesNativeReplay && painted.ContourEnds.Length == 1 && TryGetAxisClipBox(painted.Points, work, token, out SvgClipBox box))
+                if (painted.NestedClipId is null && !painted.UsesNativeReplay && painted.ContourEnds.Length == 1 && TryGetAxisClipBox(painted.Points, work, token, out SvgClipBox box))
                     state.ClipBox = box;
                 return;
             }
@@ -907,7 +913,7 @@ internal static class SvgDefinitionParser
             }
             else state.ClipPolygon = child;
             state.ClipBox = child.Points.Length == 0 ? new(0, 0, 0, 0)
-                : !child.UsesNativeReplay && child.ContourEnds.Length == 1 && TryGetAxisClipBox(child.Points, work, token, out SvgClipBox clipRect) ? clipRect : null;
+                : child.NestedClipId is null && !child.UsesNativeReplay && child.ContourEnds.Length == 1 && TryGetAxisClipBox(child.Points, work, token, out SvgClipBox clipRect) ? clipRect : null;
         }
 
         // Borrow both input owners, bake each native child map once, then retain a

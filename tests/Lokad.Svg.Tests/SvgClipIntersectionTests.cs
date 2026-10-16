@@ -93,15 +93,25 @@ public sealed class SvgClipIntersectionTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
+    [Fact]
+    public void Group_nested_resource_clips_preserve_a_containing_child_clip_and_release_owners()
+    {
+        string source = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='a'><path d='M0 0H8V8H0Z'/></clipPath><clipPath id='c'><circle cx='4' cy='4' r='3' clip-path='url(#a)'/></clipPath></defs><g clip-path='url(#c)'><rect width='8' height='8'/></g></svg>";
+        byte[] expected = SvgConverter.ConvertToPng(TextEncoding.UTF8.GetBytes(source.Replace(" clip-path='url(#a)'", "", StringComparison.Ordinal)), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(TextEncoding.UTF8.GetBytes(source), SvgRenderLimits.Default, budget, CancellationToken.None))
+            Assert.Equal(expected, SvgConverter.ConvertToPng(root, SvgRenderOptions.Default, budget, CancellationToken.None).ToArray());
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     [Theory]
-    [InlineData("", "<g clip-path='url(#c)'><rect width='8' height='8'/></g>", "a")]
-    [InlineData(" clipPathUnits='objectBoundingBox'", "<rect width='8' height='8' clip-path='url(#c)'/>", "a")]
-    [InlineData("", "<rect width='8' height='8' clip-path='url(#c)'/>", "c")]
-    public void Unqualified_nested_resource_targets_and_cycles_reject_with_cleanup(string units, string target, string nested)
+    [InlineData(" clipPathUnits='objectBoundingBox'", "<rect width='8' height='8' clip-path='url(#c)'/>", "a", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("", "<rect width='8' height='8' clip-path='url(#c)'/>", "c", SvgErrorCode.MalformedInput)]
+    public void Unsupported_nested_resource_units_and_cycles_reject_with_cleanup(string units, string target, string nested, SvgErrorCode expected)
     {
         byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='a'><path d='M0 0H8V8H0Z'/></clipPath><clipPath id='c'" + units + "><circle cx='4' cy='4' r='3' clip-path='url(#" + nested + ")'/></clipPath></defs>" + target + "</svg>");
         RenderBudget budget = new(1_000_000);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
+        Assert.Equal(expected, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 

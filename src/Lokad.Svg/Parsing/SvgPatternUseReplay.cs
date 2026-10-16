@@ -54,7 +54,7 @@ internal static class SvgPatternUseReplay
         {
             int depth = 0;
             int first = -1;
-            SvgLeafMaskOperation? objectClip = bindMask ? null : BindObjectClip();
+            SvgLeafMaskOperation? scopeClip = bindMask ? null : BindScopeClip();
             SvgLeafMaskBinding? lastInner = null, lastBinding = null;
             for (int index = 0; index < builder.CommandCount; index++)
             {
@@ -98,26 +98,28 @@ internal static class SvgPatternUseReplay
                 if (lastBinding is null || !ReferenceEquals(lastInner, inner))
                 {
                     lastInner = inner;
-                    lastBinding = objectClip is null
+                    lastBinding = scopeClip is null
                         ? SvgClipPathSyntax.BindResourceClip(clipId, clip.Map, inner, state, work, token)
-                        : SvgLeafMaskComposition.NewBinding(state, objectClip, inner);
+                        : SvgLeafMaskComposition.NewBinding(state, scopeClip, inner);
                 }
                 builder.AssignLeafMask(command.GeometryIndex, lastBinding);
             }
             throw new InvalidOperationException("A retained pattern scope requires a balanced source group.");
 
-            SvgLeafMaskOperation? BindObjectClip()
+            SvgLeafMaskOperation? BindScopeClip()
             {
                 if (clip.ClipId is not {} id) return null;
                 bool rectangle = state.ObjectClips.TryGetValue(id, out SvgClipBox fractions);
                 state.ClipPolygons.TryGetValue(id, out SvgClipPolygon polygon);
-                if (!rectangle && !polygon.IsObjectBoundingBox) return null;
-                SvgObjectBoundingClip target = new(clip.Map, null);
-                int scopeDepth = 0;
+                if (!rectangle && !polygon.IsObjectBoundingBox && polygon.NestedClipId is null) return null;
                 SvgSceneBuilder? previous = state.DefinitionReplayScene;
                 state.DefinitionReplayScene = builder;
                 try
                 {
+                    if (!polygon.IsObjectBoundingBox && polygon.NestedClipId is not null)
+                        return SvgClipPathSyntax.DeferNestedResourceMask(id, clip.Map, state);
+                    SvgObjectBoundingClip target = new(clip.Map, null);
+                    int scopeDepth = 0;
                     for (int index = 0; index < builder.CommandCount; index++)
                     {
                         work.Consume(token);

@@ -1,0 +1,11 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+<defs>
+  <clipPath id="a"><circle cx="8" cy="8" r="6"/></clipPath>
+  <clipPath id="b"><path d="M0 0H16V16H0Z" transform="matrix(1 .25 -.25 1 4 2)" clip-path="url(#a)"/></clipPath>
+  <clipPath id="d"><rect width="16" height="16" transform="translate(2 1)" clip-path="url(#a)"/></clipPath>
+</defs>
+<g transform="translate(4 4)" clip-path="url(#b)"><rect width="24" height="24" fill="#bd4f36"/></g>
+<g transform="translate(32 32)" clip-path="url(#d)"><rect width="24" height="24" fill="#244a77"/></g>
+<rect x="48" y="4" width="8" height="8" fill="#48b46c"/>
+</svg>
