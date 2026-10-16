@@ -193,7 +193,9 @@ internal static class SvgDocumentTraversal
                     SvgRenderedGroupSourceParser.BeginGroup(reader, directChild, root, state, limits, namedColors, workCounter, cancellationToken);
                     if (!reader.IsEmptyElement)
                     {
-                        state.Groups.Add(parsedGroup.Scope);
+                        SvgViewportFrame? filterParent = parsedGroup.Scope.HasFilter ? state.EffectiveFrame : null;
+                        bool filterViewport = filterParent is { HasAffineClipScope: false } viewportParent && viewportParent.Clip != SvgClipBox.Unbounded;
+                        state.Groups.Add(parsedGroup.Scope with { HasFilterViewportScope = filterViewport, PreviousFilterViewportDepth = state.FilterViewportDepth });
                         string? groupId = reader.GetAttribute("id");
                         state.GroupSnapshotStarts.Add(new SvgGroupSnapshotStart(groupId is null ? null : state.Strings.Copy(groupId), reader.GetAttribute("clip-path") is not null, reader.GetAttribute("mask") is not null));
                         if (parsedGroup.Scope.Kind == SvgGroupKind.Switch) state.Switches.Add(new SwitchScope(reader.Depth, false));
@@ -218,6 +220,9 @@ internal static class SvgDocumentTraversal
                         }
                         if (parsedGroup.Scope.Kind == SvgGroupKind.Group) state.GroupDepth++;
                         if (parsedGroup.Scope.HasFilter) state.FilterGroupDepth++;
+                        if (filterViewport && filterParent is {} clippedParent)
+                            state.Scene.InsertCommands(state.Scene.CommandCount,
+                                [new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, clippedParent.Clip, -1, 255) { RegionKind = SvgLayerRegionKind.Viewport }]);
                         if (parsedGroup.DeferredMask is not null)
                         {
                             state.PendingGroupMasks.Add(new PendingGroupMask(parsedGroup.DeferredMask, state.Scene.CommandCount, -1, reader.Depth, state.EffectiveFrame, parsedGroup.Scope.InheritedPresentation.Transform, state.Scene));
@@ -227,13 +232,17 @@ internal static class SvgDocumentTraversal
                             state.Scene.BeginSourceOpacityScope(parsedGroup.SourceOpacity, parsedGroup.RecordingScope);
                             if (parsedGroup.FilterId is {} filterId)
                             {
+                                if (parsedGroup.Scope.HasDeferredMask)
+                                    state.Scene.BeginSourceOpacityScope(SvgPaintOpacity.Opaque, parsedGroup.Scope.RecordingScope);
+                                SvgAffineTransform filterMap = SvgViewportFrame.MapGeometry(parsedGroup.Scope.InheritedPresentation.Transform, filterParent);
                                 int binding = state.Scene.Filters.AddBinding(filterId, default, default,
-                                    parsedGroup.Scope.InheritedPresentation.Transform, parsedGroup.LengthBases, true, groupClipId);
+                                    filterMap, parsedGroup.LengthBases, true, groupClipId);
                                 int position = state.Scene.CommandCount - 1;
                                 state.Scene.ReplaceCommand(position, state.Scene.CommandAt(position) with
                                 { RegionKind = SvgLayerRegionKind.Filter, MaskContentIndex = binding });
                             }
                         }
+                        if (parsedGroup.Scope.HasFilter) state.FilterViewportDepth = reader.Depth;
                     }
                 }
                 else if (inScope && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "style")
@@ -375,6 +384,11 @@ internal static class SvgDocumentTraversal
                 if (state.ClipDepths.Count > 0 && state.ClipDepths[^1] == reader.Depth) state.ClipDepths.RemoveLast();
                 if (state.Groups.Count > 0 && state.Groups[^1].Depth == reader.Depth && state.Groups[^1].Kind == SvgGroupKind.PatternGroup)
                 {
+                    if (state.Groups[^1].HasFilter)
+                    {
+                        (state.PatternContentBuilder ?? throw new InvalidOperationException("A filtered pattern group requires its replay builder.")).EndOpacityScope();
+                        state.FilterGroupDepth--;
+                    }
                     if (state.Groups[^1].HasMaskScope) state.MaskScopes.RemoveLast();
                     if (state.Groups[^1].IsolatesOpacity)
                         (state.PatternContentBuilder ?? throw new InvalidOperationException("An isolated pattern group requires its replay builder.")).EndOpacityScope();
@@ -403,7 +417,12 @@ internal static class SvgDocumentTraversal
                     }
                     if (group.HasMaskScope) state.MaskScopes.RemoveLast();
                     if (group.Kind == SvgGroupKind.Group) state.GroupDepth--;
-                    if (group.HasFilter) state.FilterGroupDepth--;
+                    if (group.HasFilter)
+                    {
+                        state.FilterGroupDepth--;
+                        state.FilterViewportDepth = group.PreviousFilterViewportDepth;
+                    }
+                    if (group.HasFilter && group.HasDeferredMask) state.Scene.EndOpacityScope();
                     for (int pendingGroupIndex = state.PendingGroupClips.Count - 1; pendingGroupIndex >= 0; pendingGroupIndex--)
                     {
                         workCounter.Consume(cancellationToken);
@@ -428,6 +447,7 @@ internal static class SvgDocumentTraversal
                     {
                         state.Scene.EndOpacityScope();
                     }
+                    if (group.HasFilterViewportScope) state.Scene.EndOpacityScope();
                 }
                 if (reader.Depth == rootDepth)
                 {

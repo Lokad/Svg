@@ -55,6 +55,7 @@ internal sealed class SvgFilterArena : IDisposable
     private bool _sealed;
     private bool _disposed;
     private bool _hasPendingClips;
+    private SvgFilterArena? _resourceSource;
     internal bool HasGroupSources { get; private set; }
 
     private SvgFilterArena(RenderBudget budget, ParserWorkCounter work, CancellationToken token, RenderBudget.BudgetReservation owner)
@@ -79,7 +80,7 @@ internal sealed class SvgFilterArena : IDisposable
     /// <summary>Adopts a resource on success; a failed insertion leaves its array owner with the caller.</summary>
     internal void AddResource(string id, SvgFilterResource resource)
     {
-        if (_sealed || _disposed) throw new InvalidOperationException("Filter construction is closed.");
+        if (_sealed || _disposed || _resourceSource is not null) throw new InvalidOperationException("Filter resource construction is closed.");
         BudgetedParserDictionary<string, int> names = _names ?? throw new InvalidOperationException("Filter names are unavailable.");
         BudgetedParserStringStore strings = _strings ?? throw new InvalidOperationException("Filter strings are unavailable.");
         _work.Consume(_token);
@@ -98,6 +99,17 @@ internal sealed class SvgFilterArena : IDisposable
         HasGroupSources |= groupSource;
         _hasPendingClips |= clipId is not null;
         return index;
+    }
+
+    /// <summary>Borrows document-owned definitions while this scene owns its placed bindings.</summary>
+    /// <remarks>The document outlives all child scenes. Bindings seal after definition collection and before
+    /// the document arena seals. Playback borrows immutable resources; child disposal never releases them.</remarks>
+    internal void BorrowResourcesFrom(SvgFilterArena source)
+    {
+        if (_sealed || _disposed || ReferenceEquals(source, this) || _resources.Count != 0
+            || _resourceSource is not null && !ReferenceEquals(_resourceSource, source))
+            throw new InvalidOperationException("A child filter arena requires one document resource owner.");
+        _resourceSource = source;
     }
 
     /// <summary>Resolves forward output clips through the document's existing bounded clip registry before emission.</summary>
@@ -181,17 +193,18 @@ internal sealed class SvgFilterArena : IDisposable
     {
         if (_sealed) return;
         if (_hasPendingClips) throw new InvalidOperationException("Filter output clips require command emission before sealing.");
-        BudgetedParserDictionary<string, int> names = _names ?? throw new InvalidOperationException("Filter names are unavailable.");
+        SvgFilterArena definitions = _resourceSource ?? this;
+        BudgetedParserDictionary<string, int> names = definitions._names ?? throw new InvalidOperationException("Filter names are unavailable.");
         for (int index = 0; index < _bindings.Count; index++)
         {
             _work.Consume(_token);
             SvgFilterBinding binding = _bindings[index];
             string id = binding.ReferenceId ?? throw new InvalidOperationException("Filter binding requires a name.");
             if (!names.TryGetValue(id, out int resource)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local filter references are implemented.");
-            if (_resources[resource].Rejection is {} rejected) throw new SvgException(rejected.Code, rejected.Message);
+            if (definitions._resources[resource].Rejection is {} rejected) throw new SvgException(rejected.Code, rejected.Message);
             _bindings[index] = binding with { ReferenceId = null, ResourceIndex = resource, OutputClip = null };
         }
-        _names.Dispose();
+        _names?.Dispose();
         _names = null;
         _strings?.Dispose();
         _strings = null;
@@ -206,7 +219,9 @@ internal sealed class SvgFilterArena : IDisposable
 
     internal SvgFilterResource ResourceAt(int index)
     {
-        if (!_sealed || _disposed || (uint)index >= (uint)_resources.Count) throw new InvalidOperationException("Filter resource is unavailable.");
+        if (!_sealed || _disposed) throw new InvalidOperationException("Filter resource is unavailable.");
+        if (_resourceSource is {} source) return source.ResourceAt(index);
+        if ((uint)index >= (uint)_resources.Count) throw new InvalidOperationException("Filter resource is unavailable.");
         return _resources[index];
     }
 
@@ -219,6 +234,7 @@ internal sealed class SvgFilterArena : IDisposable
         _bindings.Dispose();
         _names?.Dispose();
         _strings?.Dispose();
+        _resourceSource = null;
         _names = null;
         _strings = null;
         _owner.Dispose();

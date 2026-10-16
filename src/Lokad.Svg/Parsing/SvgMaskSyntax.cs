@@ -84,6 +84,7 @@ internal static class SvgMaskSyntax
     {
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(state);
+        if (state.DeferringFilterMask) return null;
         string? reference = reader.GetAttribute("mask");
         if (reference is null) return null;
         string id = ParseMaskId(reference);

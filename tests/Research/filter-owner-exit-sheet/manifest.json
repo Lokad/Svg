@@ -1,0 +1,446 @@
+{
+  "schemaVersion": 1,
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "purpose": "One complete CC0 document and seven new orthogonal controls, reusing the qualified offset-only control for E3 owner/source placements: affine masked sources, masked and marker-bearing filter owners, viewport output/source bounds and bounded filtered pattern groups. Original sources/options/native references remain unchanged; no exhaustive combination grid.",
+  "linuxReferenceQualification": {
+    "date": "2026-10-16",
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  },
+  "cases": [
+    {
+      "id": "filter-owner-sheet",
+      "input": "filter-owner-sheet.svg",
+      "width": 336,
+      "height": 216,
+      "scale": 1,
+      "background": "transparent",
+      "role": "document-output",
+      "license": "CC0-1.0",
+      "sourceSha256": "3cef884f647dcae86edbe70890e048289928383e9c24c5650746a235212a10d4",
+      "licenseEvidence": "Original authored work dedicated to the public domain through the asset SPDX CC0-1.0 declaration.",
+      "selection": "Retained whole owner-composition document or diagnosed independent owner/source-boundary control; controls do not increase document counts.",
+      "declarationBaseRevision": "f76af25b0c9395154fc7c10af4fa9d5119aa4147",
+      "reference": "references/filter-owner-sheet.png",
+      "referenceSha256": "783c8f67ae2d43bc1d27b708ad7f4ef40391d55e3053ef8d0f1a6d2e002c683c",
+      "captures": [
+        {
+          "pngSha256": "783c8f67ae2d43bc1d27b708ad7f4ef40391d55e3053ef8d0f1a6d2e002c683c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "783c8f67ae2d43bc1d27b708ad7f4ef40391d55e3053ef8d0f1a6d2e002c683c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "783c8f67ae2d43bc1d27b708ad7f4ef40391d55e3053ef8d0f1a6d2e002c683c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/filter-owner-sheet.png",
+      "linuxReferenceSha256": "783c8f67ae2d43bc1d27b708ad7f4ef40391d55e3053ef8d0f1a6d2e002c683c",
+      "linuxCaptures": [
+        {
+          "pngSha256": "783c8f67ae2d43bc1d27b708ad7f4ef40391d55e3053ef8d0f1a6d2e002c683c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "783c8f67ae2d43bc1d27b708ad7f4ef40391d55e3053ef8d0f1a6d2e002c683c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "783c8f67ae2d43bc1d27b708ad7f4ef40391d55e3053ef8d0f1a6d2e002c683c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "affine-masked-source",
+      "input": "affine-masked-source.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "d0428ce39569cacd974b0863d250c3139282f4605b296af9d3ca9fbc34c265e1",
+      "licenseEvidence": "Original authored work dedicated to the public domain through the asset SPDX CC0-1.0 declaration.",
+      "selection": "Retained whole owner-composition document or diagnosed independent owner/source-boundary control; controls do not increase document counts.",
+      "declarationBaseRevision": "f76af25b0c9395154fc7c10af4fa9d5119aa4147",
+      "reference": "references/affine-masked-source.png",
+      "referenceSha256": "c9df5c7246b8a7a040c225c0fe582566861dae5d8180c0e49edbcbf5fa16984d",
+      "captures": [
+        {
+          "pngSha256": "c9df5c7246b8a7a040c225c0fe582566861dae5d8180c0e49edbcbf5fa16984d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c9df5c7246b8a7a040c225c0fe582566861dae5d8180c0e49edbcbf5fa16984d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c9df5c7246b8a7a040c225c0fe582566861dae5d8180c0e49edbcbf5fa16984d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/affine-masked-source.png",
+      "linuxReferenceSha256": "c9df5c7246b8a7a040c225c0fe582566861dae5d8180c0e49edbcbf5fa16984d",
+      "linuxCaptures": [
+        {
+          "pngSha256": "c9df5c7246b8a7a040c225c0fe582566861dae5d8180c0e49edbcbf5fa16984d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c9df5c7246b8a7a040c225c0fe582566861dae5d8180c0e49edbcbf5fa16984d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c9df5c7246b8a7a040c225c0fe582566861dae5d8180c0e49edbcbf5fa16984d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "masked-filter-owner",
+      "input": "masked-filter-owner.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "5176245233a611e5e3fb78f68e654a7149445d0afa7efdda950392fb46521762",
+      "licenseEvidence": "Original authored work dedicated to the public domain through the asset SPDX CC0-1.0 declaration.",
+      "selection": "Retained whole owner-composition document or diagnosed independent owner/source-boundary control; controls do not increase document counts.",
+      "declarationBaseRevision": "f76af25b0c9395154fc7c10af4fa9d5119aa4147",
+      "reference": "references/masked-filter-owner.png",
+      "referenceSha256": "caa787713ec6c268be9c2ecfc7f7456dbec528c371747e519e22a922df74ad55",
+      "captures": [
+        {
+          "pngSha256": "caa787713ec6c268be9c2ecfc7f7456dbec528c371747e519e22a922df74ad55",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "caa787713ec6c268be9c2ecfc7f7456dbec528c371747e519e22a922df74ad55",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "caa787713ec6c268be9c2ecfc7f7456dbec528c371747e519e22a922df74ad55",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/masked-filter-owner.png",
+      "linuxReferenceSha256": "caa787713ec6c268be9c2ecfc7f7456dbec528c371747e519e22a922df74ad55",
+      "linuxCaptures": [
+        {
+          "pngSha256": "caa787713ec6c268be9c2ecfc7f7456dbec528c371747e519e22a922df74ad55",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "caa787713ec6c268be9c2ecfc7f7456dbec528c371747e519e22a922df74ad55",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "caa787713ec6c268be9c2ecfc7f7456dbec528c371747e519e22a922df74ad55",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "marker-filter-owner",
+      "input": "marker-filter-owner.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "315e75b51dc3c62b8a5969c71f4373a0f5d48f464fd1c7d95feb0f057bb15d26",
+      "licenseEvidence": "Original authored work dedicated to the public domain through the asset SPDX CC0-1.0 declaration.",
+      "selection": "Retained whole owner-composition document or diagnosed independent owner/source-boundary control; controls do not increase document counts.",
+      "declarationBaseRevision": "f76af25b0c9395154fc7c10af4fa9d5119aa4147",
+      "reference": "references/marker-filter-owner.png",
+      "referenceSha256": "2705be4342a282b27c59bc9ef8237eaa8ac12f9840396abc28431e094798a085",
+      "captures": [
+        {
+          "pngSha256": "2705be4342a282b27c59bc9ef8237eaa8ac12f9840396abc28431e094798a085",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2705be4342a282b27c59bc9ef8237eaa8ac12f9840396abc28431e094798a085",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2705be4342a282b27c59bc9ef8237eaa8ac12f9840396abc28431e094798a085",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/marker-filter-owner.png",
+      "linuxReferenceSha256": "2705be4342a282b27c59bc9ef8237eaa8ac12f9840396abc28431e094798a085",
+      "linuxCaptures": [
+        {
+          "pngSha256": "2705be4342a282b27c59bc9ef8237eaa8ac12f9840396abc28431e094798a085",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2705be4342a282b27c59bc9ef8237eaa8ac12f9840396abc28431e094798a085",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2705be4342a282b27c59bc9ef8237eaa8ac12f9840396abc28431e094798a085",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "viewport-filter-owner",
+      "input": "viewport-filter-owner.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "f6b86f9764b0b188544b062483c5cf37fc90352da41a608c92f21fbe3b0df208",
+      "licenseEvidence": "Original authored work dedicated to the public domain through the asset SPDX CC0-1.0 declaration.",
+      "selection": "Retained whole owner-composition document or diagnosed independent owner/source-boundary control; controls do not increase document counts.",
+      "declarationBaseRevision": "f76af25b0c9395154fc7c10af4fa9d5119aa4147",
+      "reference": "references/viewport-filter-owner.png",
+      "referenceSha256": "a1cd65ca5f71a245363a69d6f0b97ba900220e8f4bda12b0fa08804c702ffb22",
+      "captures": [
+        {
+          "pngSha256": "a1cd65ca5f71a245363a69d6f0b97ba900220e8f4bda12b0fa08804c702ffb22",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a1cd65ca5f71a245363a69d6f0b97ba900220e8f4bda12b0fa08804c702ffb22",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a1cd65ca5f71a245363a69d6f0b97ba900220e8f4bda12b0fa08804c702ffb22",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/viewport-filter-owner.png",
+      "linuxReferenceSha256": "a1cd65ca5f71a245363a69d6f0b97ba900220e8f4bda12b0fa08804c702ffb22",
+      "linuxCaptures": [
+        {
+          "pngSha256": "a1cd65ca5f71a245363a69d6f0b97ba900220e8f4bda12b0fa08804c702ffb22",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a1cd65ca5f71a245363a69d6f0b97ba900220e8f4bda12b0fa08804c702ffb22",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a1cd65ca5f71a245363a69d6f0b97ba900220e8f4bda12b0fa08804c702ffb22",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "pattern-filter-owner",
+      "input": "pattern-filter-owner.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "1efd75111ddcb1d3492778d53b09873f0f989a20dc8aa4f4282d84255a32db42",
+      "licenseEvidence": "Original authored work dedicated to the public domain through the asset SPDX CC0-1.0 declaration.",
+      "selection": "Retained whole owner-composition document or diagnosed independent owner/source-boundary control; controls do not increase document counts.",
+      "declarationBaseRevision": "f76af25b0c9395154fc7c10af4fa9d5119aa4147",
+      "reference": "references/pattern-filter-owner.png",
+      "referenceSha256": "1d4127013b178bc33ae27db1b8d16b27c652a6418ebe12ec2d2fb486c3376aee",
+      "captures": [
+        {
+          "pngSha256": "1d4127013b178bc33ae27db1b8d16b27c652a6418ebe12ec2d2fb486c3376aee",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1d4127013b178bc33ae27db1b8d16b27c652a6418ebe12ec2d2fb486c3376aee",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1d4127013b178bc33ae27db1b8d16b27c652a6418ebe12ec2d2fb486c3376aee",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/pattern-filter-owner.png",
+      "linuxReferenceSha256": "1d4127013b178bc33ae27db1b8d16b27c652a6418ebe12ec2d2fb486c3376aee",
+      "linuxCaptures": [
+        {
+          "pngSha256": "1d4127013b178bc33ae27db1b8d16b27c652a6418ebe12ec2d2fb486c3376aee",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1d4127013b178bc33ae27db1b8d16b27c652a6418ebe12ec2d2fb486c3376aee",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1d4127013b178bc33ae27db1b8d16b27c652a6418ebe12ec2d2fb486c3376aee",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "leaf-masked-filter-owner",
+      "input": "leaf-masked-filter-owner.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "a0605ad53111eb3a5afd4a99b5a67cc6845836701b294b924e63af3156a87c98",
+      "licenseEvidence": "Original authored work dedicated to the public domain through the asset SPDX CC0-1.0 declaration.",
+      "selection": "Retained whole owner-composition document or diagnosed independent owner/source-boundary control; controls do not increase document counts.",
+      "declarationBaseRevision": "845538f1d70f5df4dff1c190990fc6ea39903abc",
+      "reference": "references/leaf-masked-filter-owner.png",
+      "referenceSha256": "caa787713ec6c268be9c2ecfc7f7456dbec528c371747e519e22a922df74ad55",
+      "captures": [
+        {
+          "pngSha256": "caa787713ec6c268be9c2ecfc7f7456dbec528c371747e519e22a922df74ad55",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "caa787713ec6c268be9c2ecfc7f7456dbec528c371747e519e22a922df74ad55",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "caa787713ec6c268be9c2ecfc7f7456dbec528c371747e519e22a922df74ad55",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/leaf-masked-filter-owner.png",
+      "linuxReferenceSha256": "caa787713ec6c268be9c2ecfc7f7456dbec528c371747e519e22a922df74ad55",
+      "linuxCaptures": [
+        {
+          "pngSha256": "caa787713ec6c268be9c2ecfc7f7456dbec528c371747e519e22a922df74ad55",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "caa787713ec6c268be9c2ecfc7f7456dbec528c371747e519e22a922df74ad55",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "caa787713ec6c268be9c2ecfc7f7456dbec528c371747e519e22a922df74ad55",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "viewport-offset-source",
+      "input": "viewport-offset-source.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "5b57d595f069c1caf710cdf3f158b37737fa5dd68a519c18da74be3552aa5721",
+      "licenseEvidence": "Original authored work dedicated to the public domain through the asset SPDX CC0-1.0 declaration.",
+      "selection": "Retained whole owner-composition document or diagnosed independent owner/source-boundary control; controls do not increase document counts.",
+      "declarationBaseRevision": "845538f1d70f5df4dff1c190990fc6ea39903abc",
+      "reference": "references/viewport-offset-source.png",
+      "referenceSha256": "daa5349b40d7944de489027139aba512d37de177f8f04f32b9478e538fbcb83a",
+      "captures": [
+        {
+          "pngSha256": "daa5349b40d7944de489027139aba512d37de177f8f04f32b9478e538fbcb83a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "daa5349b40d7944de489027139aba512d37de177f8f04f32b9478e538fbcb83a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "daa5349b40d7944de489027139aba512d37de177f8f04f32b9478e538fbcb83a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/viewport-offset-source.png",
+      "linuxReferenceSha256": "daa5349b40d7944de489027139aba512d37de177f8f04f32b9478e538fbcb83a",
+      "linuxCaptures": [
+        {
+          "pngSha256": "daa5349b40d7944de489027139aba512d37de177f8f04f32b9478e538fbcb83a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "daa5349b40d7944de489027139aba512d37de177f8f04f32b9478e538fbcb83a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "daa5349b40d7944de489027139aba512d37de177f8f04f32b9478e538fbcb83a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ],
+  "reusedControls": [
+    {
+      "id": "affine-offset-only",
+      "manifest": "../filter-source-exit-sheet/manifest.json",
+      "reason": "The original owner declaration reuses this unchanged already-qualified control; its canonical visual test remains in the source bank."
+    }
+  ]
+}

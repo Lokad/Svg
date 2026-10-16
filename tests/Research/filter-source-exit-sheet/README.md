@@ -27,7 +27,8 @@ nearest/default image sampling remain separate. The original 480-pixel differenc
 is resolved, and its first Windows observation is byte-identical to the new triple.
 These three controls add no complete document.
 
-E3 remains open for affine masked sources, filters on owners with masks/markers
-and filters inside viewport/pattern scopes. These retain explicit implementation
-gates. [PLAN](../../../PLAN.md) owns their finite follow-ups,
-private T3, marker semantics and S17. No scope promise is deferred.
+The [owner/source follow-up](../filter-owner-exit-sheet/README.md) now completes
+affine masked sources, owner masks/markers and viewport/pattern group placement.
+E3 remains open for retained-definition/local-instance effects and pattern-use
+wrappers. [PLAN](../../../PLAN.md) owns these finite follow-ups, private T3,
+marker semantics and S17. No scope promise is deferred.

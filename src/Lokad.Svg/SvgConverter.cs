@@ -511,6 +511,32 @@ public static class SvgConverter
                 sourceLeft = Math.Min(sourceLeft, Math.Floor(nested.Left)); sourceTop = Math.Min(sourceTop, Math.Floor(nested.Top));
                 sourceRight = Math.Max(sourceRight, Math.Ceiling(nested.Right)); sourceBottom = Math.Max(sourceBottom, Math.Ceiling(nested.Bottom));
             }
+            bool boundedSource = activeViewportBounds is not null || layerBounds.Left != 0 || layerBounds.Top != 0
+                || layerBounds.Right != outputWidth || layerBounds.Bottom != outputHeight;
+            if (boundedSource && frame?.NativeSourceBounds is null)
+            {
+                // Native saveLayer rounds its visual hint in parameter space before
+                // mapping to the clipped device. A tight ink box changes clipped curves.
+                ParserWorkCounter hintWork = new(options.Limits.MaximumWorkUnits - workUnits);
+                bool objectSourceUnits = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox;
+                SvgAffineTransform coordinates = objectSourceUnits
+                    ? SvgAffineTransform.FromScaleOffset(primitiveMap.ScaleX, primitiveMap.ScaleY,
+                        binding.ObjectBounds.Left * horizontalScale + horizontalOffset, binding.ObjectBounds.Top * verticalScale + verticalOffset)
+                    : SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset).ComposeChecked(binding.Transform);
+                SvgFilterRegionContext context = new(coordinates,
+                    objectSourceUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), region);
+                SvgPaintBounds hint = SvgFilterPlayback.SourceLayerBounds(resource, primitiveMap, context,
+                    new((float)(visual.Left * horizontalScale + horizontalOffset), (float)(visual.Top * verticalScale + verticalOffset),
+                        (float)(visual.Right * horizontalScale + horizontalOffset), (float)(visual.Bottom * verticalScale + verticalOffset)), budget, hintWork, cancellationToken);
+                float sx = (float)(binding.Transform.A * horizontalScale), sy = (float)(binding.Transform.D * verticalScale);
+                float tx = (float)(binding.Transform.E * horizontalScale + horizontalOffset), ty = (float)(binding.Transform.F * verticalScale + verticalOffset);
+                if (sx > 0 && sy > 0)
+                    hint = new(MathF.Floor((hint.Left - tx) / sx) * sx + tx, MathF.Floor((hint.Top - ty) / sy) * sy + ty,
+                        MathF.Ceiling((hint.Right - tx) / sx) * sx + tx, MathF.Ceiling((hint.Bottom - ty) / sy) * sy + ty);
+                sourceLeft = Math.Floor(hint.Left); sourceTop = Math.Floor(hint.Top);
+                sourceRight = Math.Ceiling(hint.Right); sourceBottom = Math.Ceiling(hint.Bottom);
+                workUnits += hintWork.Used;
+            }
             if (TryRenderOffsetSources()) return end + 1;
             double paddingX = 0, paddingY = 0;
             double offsetPaddingX = 0, offsetPaddingY = 0;
@@ -538,7 +564,7 @@ public static class SvgConverter
             if (requestedRight <= requestedLeft || requestedBottom <= requestedTop) return end + 1;
             if (right + paddingX < requestedLeft || bottom + paddingY < requestedTop || left - paddingX > requestedRight || top - paddingY > requestedBottom) return end + 1;
             SvgCpuBitmapOrigin? imageShaderOrigin = null;
-            if (activeViewportBounds is not null || nestedSourceBounds is not null || hasSourceImages)
+            if (boundedSource || nestedSourceBounds is not null || hasSourceImages)
             {
                 bool objectSourceUnits = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox;
                 SvgAffineTransform sourceCoordinates = objectSourceUnits
@@ -762,8 +788,6 @@ public static class SvgConverter
                             visualBounds = Union(visualBounds, new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height))
                                 .Map(placement.ComposeChecked(outline.SceneMap), preparation, cancellationToken));
                         }
-                        else if (item.Kind == SvgDrawCommandKind.BeginGroup && item.RegionKind == SvgLayerRegionKind.Mask && (item.MaskContentIndex >= 0 || item.MaskRegion is not null))
-                            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine filter sources crossing nested resource boundaries are not implemented.");
                         commands[index - first + 1] = item;
                     }
                     commands[^1] = root.Commands[end];
@@ -1545,7 +1569,16 @@ public static class SvgConverter
                     bool previousMaskClip = maskClipAntialiased;
                     bool viewportClip = command.RegionKind == SvgLayerRegionKind.Viewport && command.MaskRegion is not null;
                     bool affineViewportClip = command.RegionKind == SvgLayerRegionKind.AffineViewport && command.MaskContentIndex >= 0;
-                    (double regionLeft, double regionTop, double regionRight, double regionBottom) = command.MaskRegion is SvgClipBox maskRegion ? MapClipBounds(maskRegion, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : (0, 0, outputWidth, outputHeight);
+                    SvgClipBox? placedRegion = command.MaskRegion;
+                    if (placedRegion is {} retained && sourcePlacement != SvgAffineTransform.Identity)
+                    {
+                        ParserWorkCounter regionWork = new(options.Limits.MaximumWorkUnits - workUnits);
+                        SvgPaintBounds placed = new SvgPaintBounds((float)retained.X, (float)retained.Y, (float)retained.Right, (float)retained.Bottom)
+                            .Map(sourcePlacement, regionWork, cancellationToken);
+                        workUnits += regionWork.Used;
+                        placedRegion = retained with { X = placed.Left, Y = placed.Top, Width = Math.Max(0, placed.Right - placed.Left), Height = Math.Max(0, placed.Bottom - placed.Top) };
+                    }
+                    (double regionLeft, double regionTop, double regionRight, double regionBottom) = placedRegion is SvgClipBox maskRegion ? MapClipBounds(maskRegion, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : (0, 0, outputWidth, outputHeight);
                     bool affineMaskTarget = command.MaskContentIndex >= 0 && root.SceneStorage is {} maskStorage
                         && (uint)command.MaskContentIndex < (uint)maskStorage.MaskContents.Length && maskStorage.MaskContents[command.MaskContentIndex].UsesAffineTarget;
                     SvgAnalyticClipBounds layer = affineViewportClip ? previousLayer : LayerPaintBounds(index, previousLayer, viewportClip ? null : command.MaskRegion);
@@ -1621,7 +1654,7 @@ public static class SvgConverter
                     // An inner isolated surface paints before its parent's clip;
                     // folded single paints keep the existing consumer instead.
                     maskClipAntialiased = false;
-                    if (command.RegionKind == SvgLayerRegionKind.Mask && command.MaskRegion is {} paintRegion)
+                    if (command.RegionKind == SvgLayerRegionKind.Mask && placedRegion is {} paintRegion)
                     {
                         const long maskClipSetupWork = 8;
                         if (maskClipSetupWork > options.Limits.MaximumWorkUnits - workUnits)
@@ -1856,8 +1889,10 @@ public static class SvgConverter
                 {
                     if (content.Geometries.Length != 1 || content.Geometries[0].AuthoredPath is not {} viewportPath || coverage is null)
                         throw new SvgException(SvgErrorCode.MalformedInput, "A binary viewport requires retained rectangle geometry.");
+                    SvgAffineTransform clipMap = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
+                    if (sourcePlacement != SvgAffineTransform.Identity) clipMap = clipMap.ComposeChecked(sourcePlacement);
                     workUnits += SvgBinaryViewportCoverage.Rasterize(viewportPath,
-                        SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset), rasterGrid,
+                        clipMap, rasterGrid,
                         contentBounds, destination, outputWidth, coverage, content.Geometries[0].Polygon.IsEvenOdd, content.ClipKind == SvgClipContentKind.BinaryExclusion, budget, options.Limits.MaximumWorkUnits - workUnits, cancellationToken);
                 }
                 else foreach (SvgGeometry geometry in content.Geometries) RasterizeGeometry(geometry, destination);
@@ -3039,7 +3074,7 @@ public static class SvgConverter
                 SvgRenderLimits tileLimits = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)remaining), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
                 SvgRenderOptions tileOptions = new(new SvgViewport(pattern.TextureWidth, pattern.TextureHeight), 1, SvgColor.Transparent, tileLimits);
                 SvgSceneStorage scene = content.Scene;
-                SvgRoot tileRoot = new(null, null, pattern.RasterSourceBox ?? throw new InvalidOperationException("Vector tile replay requires a mapped source grid."), scene.Geometries, scene.Commands, false, 0, scene) { BorrowedFilters = root.FilterResources };
+                SvgRoot tileRoot = new(null, null, pattern.RasterSourceBox ?? throw new InvalidOperationException("Vector tile replay requires a mapped source grid."), scene.Geometries, scene.Commands, false, 0, scene);
                 RasterFrame? contentFrame = null;
                 if (pattern.ContentViewBox is {} contentViewBox && pattern.RasterSourceBox is {} sourceBox)
                 {

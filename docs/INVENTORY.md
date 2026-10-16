@@ -9,7 +9,7 @@ The frozen selection and measured outcomes are recorded below.
 
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
-variants**. **Thirty-one additional authored documents** (twenty-one CC0 and ten MIT
+variants**. **Thirty-two additional authored documents** (twenty-two CC0 and ten MIT
 documents) are complete and counted separately. Preserve the delivered
 [effects sheet](../tests/Research/effects-marker-sheet/README.md),
 [composition sheet](../tests/Research/composition-sheet/README.md) and
@@ -18,13 +18,23 @@ documents) are complete and counted separately. Preserve the delivered
 separately counted controls and original sources/options/references.
 These failure-selected cases establish declared outcomes, not a general SVG success rate.
 
+The unchanged [filter owner/source sheet](../tests/Research/filter-owner-exit-sheet/README.md)
+is complete with all eight declared controls exact on Windows/Linux. Seven
+controls are new; the unchanged source-offset control reuses its canonical bank.
+The parent revision rejects the document and seven controls. Fifty-four healthy
+stable captures retain the original declarations and two focused boundaries:
+leaf-mask ordering and outside-viewport source reentry. This adds authored
+CC0 document 32. The [receipt](../artifacts/maintenance-review-20261012/filter-owner-qualified-results.json)
+records full qualification and resource protection. Retained-definition and
+local-instance effects remain required E3 work; T3, E4 and S17 also remain open.
+
 The retained [affine source-offset input](../tests/Research/filter-source-exit-sheet/diagnostics/affine-offset-only.svg),
 partial crop and near-integer boundary are **3/3 exact controls** on Windows/Linux.
 Eighteen healthy stable captures preserve the original 480-pixel observation and
 all new references. This adds no complete document. The
 [receipt](../artifacts/maintenance-review-20261012/affine-offset-qualified-results.json)
-records full checks; the separately frozen owner-composition sheet remains open
-for its five gates. Private T3, E4 and S17 remain required.
+records full checks. The owner-composition document is qualified above; retained-
+instance effects remain E3 work. Private T3, E4 and S17 remain required.
 
 The unchanged [filter-source document and eight controls](../tests/Research/filter-source-exit-sheet/README.md)
 are exact on Windows/Linux. The baseline rejected the document and six controls;

@@ -1,3 +1,28 @@
+## Filter owner/source scopes (2026-10-16)
+
+The [retained owner-composition document](../tests/Research/filter-owner-exit-sheet/README.md)
+reuses ordinary scene scopes and source replay. A masked filtered owner has a
+separate outer mask/opacity scope; deferred mask resolution cannot replace the
+filter binding. Leaf filters collect ordinary object bounds separately from marker
+ink, and each binding includes its applicable viewport map.
+
+Outer viewport clipping applies after filter evaluation. Source preparation keeps
+the viewport's map and percentage bases while excluding enclosing clip frames;
+nested source viewports retain their own clipping. The actual bounded output,
+including isolated axis viewport layers, backpropagates its source request.
+Native visual hints round in parameter space before mapping to integer source
+bounds; tight ink bounds alone change clipped curve construction.
+
+Pattern scenes own their bindings and borrow the document arena's definitions;
+forward names resolve before the document arena seals. Child disposal releases
+only its bindings/scratch, while the parent retains resource arrays. No global
+binding index is substituted for a tile-local binding. Affine source capture maps
+mask allocation bounds and binary source-region clips through the same source
+placement as borrowed geometry. Existing coverage/sampling distinctions remain.
+The [qualification](../artifacts/maintenance-review-20261012/filter-owner-qualified-results.json)
+retains original outputs, material memory/work denial, late cancellation and retry.
+Retained-instance effects remain required under the finite E3 queue.
+
 ## Deferred source-offset images (2026-10-16)
 
 The [retained offset source and two controls](../tests/Research/filter-source-exit-sheet/README.md)

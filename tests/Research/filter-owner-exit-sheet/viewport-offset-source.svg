@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="112" height="108"><defs><filter id="f" filterUnits="userSpaceOnUse" x="3" y="2" width="120" height="82" color-interpolation-filters="sRGB"><feOffset dx="-12.25" dy="-1.5"/></filter></defs><svg x="7.25" y="5.5" width="76.5" height="66.5" viewBox="0 0 90 78" preserveAspectRatio="none"><path d="M82 16Q103 5 106 28L108 59Q92 70 82 50Z" fill="#244a77" fill-opacity=".75" filter="url(#f)"/></svg><path d="M3 104H108" stroke="#43805b"/></svg>

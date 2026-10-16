@@ -503,21 +503,31 @@ internal static class SvgDefinitionParser
             }
             if (reader.LocalName == "g")
             {
-                if (reader.GetAttribute("filter") is not null)
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filters on pattern groups are not implemented.");
                 SvgParsedGroup group = SvgGroupParser.Parse(reader, false, root, state, namedColors, workCounter, cancellationToken);
                 if (!reader.IsEmptyElement)
                 {
                     SvgSceneBuilder builder = GetPatternContentBuilder(state, workCounter, cancellationToken);
-                    bool clip = group.Scope.ClipPathId is not null;
+                    bool clip = group.Scope.ClipPathId is not null && !group.Scope.HasFilter;
                     bool mask = group.DeferredMask is not null;
-                    if (group.Scope.IsolatesOpacity || clip || mask) builder.BeginSourceOpacityScope(group.SourceOpacity, group.RecordingScope);
+                    bool isolate = !group.Scope.HasFilter && group.Scope.IsolatesOpacity || clip || mask;
+                    if (isolate) builder.BeginSourceOpacityScope(group.SourceOpacity, group.RecordingScope);
+                    if (group.FilterId is {} filterId)
+                    {
+                        SvgFilterArena filters = builder.Filters;
+                        filters.BorrowResourcesFrom(state.DocumentFilters);
+                        int binding = filters.AddBinding(filterId, default, default, group.Scope.InheritedPresentation.Transform,
+                            group.LengthBases, true, group.Scope.ClipPathId);
+                        builder.BeginSourceOpacityScope(isolate ? SvgPaintOpacity.Opaque : group.SourceOpacity, group.Scope.RecordingScope);
+                        int position = builder.CommandCount - 1;
+                        builder.ReplaceCommand(position, builder.CommandAt(position) with { RegionKind = SvgLayerRegionKind.Filter, MaskContentIndex = binding });
+                        state.FilterGroupDepth++;
+                    }
                     if (clip || mask)
                     {
                         state.PatternScopes ??= new(state.Budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
                         state.PatternScopes.Add(new(group.Scope.ClipPathId, group.DeferredMask, group.Scope.InheritedPresentation.Transform, group.RecordingScope, group.Scope.IsolatesOpacity));
                     }
-                    state.Groups.Add(group.Scope with { Kind = SvgGroupKind.PatternGroup, IsolatesOpacity = group.Scope.IsolatesOpacity || clip || mask });
+                    state.Groups.Add(group.Scope with { Kind = SvgGroupKind.PatternGroup, IsolatesOpacity = isolate });
                     state.GroupDepth++;
                 }
                 return true;

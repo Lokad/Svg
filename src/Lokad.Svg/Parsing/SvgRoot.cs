@@ -8,10 +8,8 @@ using System.Runtime.CompilerServices;
 /// <summary>Represents the parsed root viewport dimensions before scene construction.</summary>
 internal readonly record struct SvgRoot(SvgRootLength? Width, SvgRootLength? Height, SvgViewBox? ViewBox, SvgGeometry[] Geometries, SvgDrawCommand[] Commands, bool HasUnsupportedChild, long ParserWorkUnits, SvgSceneStorage? SceneStorage) : IDisposable
 {
-    /// <summary>Borrows the parent document's sealed filter registry during bounded definition replay.</summary>
-    /// <remarks>The parent scene outlives replay and owns disposal. No resource arrays are copied or adopted.</remarks>
-    internal SvgFilterArena? BorrowedFilters { get; init; }
-    internal SvgFilterArena? FilterResources => BorrowedFilters ?? SceneStorage?.Filters;
+    /// <summary>Borrows this scene's sealed bindings; child arenas separately borrow document-owned definitions.</summary>
+    internal SvgFilterArena? FilterResources => SceneStorage?.Filters;
 
     /// <summary>Materializes visible rectangle bounds only for parser characterization tests.</summary>
     internal SvgRectangle[] Rectangles => SvgGeometry.ToRectangles(Geometries);

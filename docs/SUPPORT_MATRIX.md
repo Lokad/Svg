@@ -1,3 +1,24 @@
+## Qualified filter owner/source placements (2026-10-16)
+
+The unchanged [owner/source document](../tests/Research/filter-owner-exit-sheet/README.md)
+and eight declared controls are exact on Windows/Linux. Filters compose with
+owner masks and markers, nested viewports and bounded pattern groups. Marker ink
+contributes visual bounds separately from source object bounds. Mask and opacity
+scopes remain outside filtered output; inherited viewport clipping follows source
+evaluation, so outside-viewport pixels can reenter through a local offset.
+
+Tile scenes own placed bindings and borrow immutable document definitions until
+parent disposal, including forward definitions. Affine masked sources reuse
+native geometry/paint replay, with binary clip and allocation maps placed in the
+captured source coordinate system. Bounded axis sources retain native parameter-
+rounded hints and backward source requests. Material denial, late cancellation,
+cleanup/retry and original inputs are protected without an exhaustive API grid.
+
+This completes the retained owner/source placements. Filters on local uses,
+filtered retained definition/text targets and pattern-use effect wrappers retain
+explicit guards and required acceptance in [PLAN](../PLAN.md#delivery-order).
+T3, E4 and S17 remain required; no scope is deferred.
+
 ## Qualified affine source offsets (2026-10-16)
 
 The unchanged [offset-only input and two boundaries](../tests/Research/filter-source-exit-sheet/README.md)
@@ -9,8 +30,8 @@ and nearly pixel-aligned default sampling retain their native origins and phase.
 Memory/work denial, late cancellation, cleanup and retry are protected.
 
 This closes the retained 480-pixel offset failure and adds three controls, with no
-new complete document. The frozen owner-composition document and five placement
-gates remain required E3 work, alongside T3, E4 and S17. No scope is deferred.
+new complete document. The owner-composition document is qualified above;
+retained-instance effects, T3, E4 and S17 remain required. No scope is deferred.
 
 ## Qualified filter source boundaries (2026-10-16)
 
