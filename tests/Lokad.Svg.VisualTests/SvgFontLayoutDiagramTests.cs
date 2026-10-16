@@ -335,6 +335,22 @@ public sealed class SvgFontLayoutDiagramTests
         }
     }
 
+    public static IEnumerable<object[]> AffineSourceCases()
+        => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "affine-source-exit-sheet"));
+
+    [Theory]
+    [MemberData(nameof(AffineSourceCases))]
+    public Task Declared_affine_source_document_and_controls_match_frozen_references(string identity)
+        => ValidateDeclared(Path.Combine(AppContext.BaseDirectory, "Research", "affine-source-exit-sheet"), identity, [new("Example", 400, false)]);
+
+    [Fact]
+    public void Affine_source_document_uses_the_declared_supplied_face()
+        => ValidateIntendedFont(Path.Combine(AppContext.BaseDirectory, "Research", "affine-source-exit-sheet"), "affine-source-sheet");
+
+    [Fact]
+    public Task Affine_source_sheet_releases_owners_on_denial_cancellation_and_prepared_retry()
+        => ValidateRetainedTextOwners("affine-source-exit-sheet", "affine-source-sheet.svg");
+
     public static IEnumerable<object[]> CompositeFlagCases()
         => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "composite-flag-exit-sheet"));
 

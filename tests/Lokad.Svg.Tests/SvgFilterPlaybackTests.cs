@@ -161,6 +161,35 @@ public sealed class SvgFilterPlaybackTests
         Assert.Equal(0, stream.Length);
     }
 
+    [Theory]
+    [InlineData("<rect width='4' height='4' mask='url(#missing)'/>")]
+    [InlineData("<svg width='4' height='4'><rect width='4' height='4'/></svg>")]
+    [InlineData("<path d='M1 1L4 4' marker-start='url(#missing)'/>")]
+    public void Remaining_filtered_source_boundaries_reject_without_output_and_release_owners(string source)
+    {
+        byte[] input = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='1'/></filter></defs><g filter='url(#f)'>" + source + "</g>");
+        RenderBudget budget = new(1_000_000);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        using MemoryStream stream = new();
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, stream, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, stream.Length);
+    }
+
+    [Fact]
+    public void Affine_nested_filter_sources_keep_their_pending_resource_boundary_and_release_owners()
+    {
+        byte[] input = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='1'/></filter></defs>"
+            + "<g transform='matrix(1 .15 .2 1 2 3)' filter='url(#f)'><g filter='url(#f)'><path d='M1 1H7V7H1Z'/></g></g>");
+        RenderBudget budget = new(2_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(root, SvgRenderOptions.Default, budget, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        using MemoryStream stream = new();
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, stream, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, stream.Length);
+    }
+
     [Fact]
     public void Nested_filter_groups_keep_unfiltered_object_bounds_and_release_source_owners()
     {

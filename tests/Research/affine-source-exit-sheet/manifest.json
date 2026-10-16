@@ -1,0 +1,260 @@
+{
+  "schemaVersion": 1,
+  "purpose": "One complete MIT document and four independent controls exact on Windows/Linux for E1: affine linear/radial/pattern/supplied-font filter sources with source clipping and nested opacity. Original source/font/options/references remain unchanged.",
+  "fontPack": "font-pack.json",
+  "fontPackId": "public-noto-sans",
+  "fontProgram": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontProgramSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "cases": [
+    {
+      "id": "affine-source-sheet",
+      "input": "affine-source-sheet.svg",
+      "width": 304,
+      "height": 232,
+      "scale": 1,
+      "background": "transparent",
+      "role": "document-output",
+      "license": "MIT",
+      "sourceSha256": "4cb7b218107ffcb832a92f5f7a85490e62fd342395a69c064bd9c4f67f8d72ae",
+      "declarationBaseRevision": "ee9441a3f64289f28b7248aeec7605a281975568",
+      "reference": "references/affine-source-sheet.png",
+      "referenceSha256": "4e8dfcef204e246017487373512921be19b7c131fb5dfc019a746dae952327c3",
+      "captures": [
+        {
+          "pngSha256": "4e8dfcef204e246017487373512921be19b7c131fb5dfc019a746dae952327c3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4e8dfcef204e246017487373512921be19b7c131fb5dfc019a746dae952327c3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4e8dfcef204e246017487373512921be19b7c131fb5dfc019a746dae952327c3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/affine-source-sheet.png",
+      "linuxReferenceSha256": "e6b921dfcd8f7f7d3a1f54f45baf0626ac4613507935daeb580870daeafc684f",
+      "linuxCaptures": [
+        {
+          "pngSha256": "e6b921dfcd8f7f7d3a1f54f45baf0626ac4613507935daeb580870daeafc684f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e6b921dfcd8f7f7d3a1f54f45baf0626ac4613507935daeb580870daeafc684f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e6b921dfcd8f7f7d3a1f54f45baf0626ac4613507935daeb580870daeafc684f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "linear-source-clip",
+      "input": "linear-source-clip.svg",
+      "width": 144,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "MIT",
+      "sourceSha256": "5253f1d60eae9e4f25c435529cc844f55ea95ebf8489e3f1fced274f7789f553",
+      "declarationBaseRevision": "ee9441a3f64289f28b7248aeec7605a281975568",
+      "reference": "references/linear-source-clip.png",
+      "referenceSha256": "d5ac6e1eb7e0ff23ce128cf3225eecb28584faaa5cb1f90195226e3296f36d9e",
+      "captures": [
+        {
+          "pngSha256": "d5ac6e1eb7e0ff23ce128cf3225eecb28584faaa5cb1f90195226e3296f36d9e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d5ac6e1eb7e0ff23ce128cf3225eecb28584faaa5cb1f90195226e3296f36d9e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d5ac6e1eb7e0ff23ce128cf3225eecb28584faaa5cb1f90195226e3296f36d9e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/linear-source-clip.png",
+      "linuxReferenceSha256": "d5ac6e1eb7e0ff23ce128cf3225eecb28584faaa5cb1f90195226e3296f36d9e",
+      "linuxCaptures": [
+        {
+          "pngSha256": "d5ac6e1eb7e0ff23ce128cf3225eecb28584faaa5cb1f90195226e3296f36d9e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d5ac6e1eb7e0ff23ce128cf3225eecb28584faaa5cb1f90195226e3296f36d9e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d5ac6e1eb7e0ff23ce128cf3225eecb28584faaa5cb1f90195226e3296f36d9e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "radial-source-opacity",
+      "input": "radial-source-opacity.svg",
+      "width": 144,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "MIT",
+      "sourceSha256": "19db7f66bc245881a5f02ccaeaace5ba982715d35ec5be7bab6da4a5e50416b4",
+      "declarationBaseRevision": "ee9441a3f64289f28b7248aeec7605a281975568",
+      "reference": "references/radial-source-opacity.png",
+      "referenceSha256": "ec479a877d362f48beced2b0237151c98be3b54ebbfd6187445b8ccefc947848",
+      "captures": [
+        {
+          "pngSha256": "ec479a877d362f48beced2b0237151c98be3b54ebbfd6187445b8ccefc947848",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ec479a877d362f48beced2b0237151c98be3b54ebbfd6187445b8ccefc947848",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ec479a877d362f48beced2b0237151c98be3b54ebbfd6187445b8ccefc947848",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/radial-source-opacity.png",
+      "linuxReferenceSha256": "ec479a877d362f48beced2b0237151c98be3b54ebbfd6187445b8ccefc947848",
+      "linuxCaptures": [
+        {
+          "pngSha256": "ec479a877d362f48beced2b0237151c98be3b54ebbfd6187445b8ccefc947848",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ec479a877d362f48beced2b0237151c98be3b54ebbfd6187445b8ccefc947848",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ec479a877d362f48beced2b0237151c98be3b54ebbfd6187445b8ccefc947848",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "patterned-source",
+      "input": "patterned-source.svg",
+      "width": 144,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "MIT",
+      "sourceSha256": "4f639b748b17e89d9cf959040062bf44ceb837c38cba6bb77b257ae59932a4bd",
+      "declarationBaseRevision": "ee9441a3f64289f28b7248aeec7605a281975568",
+      "reference": "references/patterned-source.png",
+      "referenceSha256": "807759e0fe8bf79108dd9415f494d58fa019a92c5f8a8902d25f578822d739b7",
+      "captures": [
+        {
+          "pngSha256": "807759e0fe8bf79108dd9415f494d58fa019a92c5f8a8902d25f578822d739b7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "807759e0fe8bf79108dd9415f494d58fa019a92c5f8a8902d25f578822d739b7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "807759e0fe8bf79108dd9415f494d58fa019a92c5f8a8902d25f578822d739b7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/patterned-source.png",
+      "linuxReferenceSha256": "807759e0fe8bf79108dd9415f494d58fa019a92c5f8a8902d25f578822d739b7",
+      "linuxCaptures": [
+        {
+          "pngSha256": "807759e0fe8bf79108dd9415f494d58fa019a92c5f8a8902d25f578822d739b7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "807759e0fe8bf79108dd9415f494d58fa019a92c5f8a8902d25f578822d739b7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "807759e0fe8bf79108dd9415f494d58fa019a92c5f8a8902d25f578822d739b7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "supplied-font-source",
+      "input": "supplied-font-source.svg",
+      "width": 144,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "MIT",
+      "sourceSha256": "37245dc41893d38fa666d61eab45a7801edbec5607c1513240e548911ab731f5",
+      "declarationBaseRevision": "ee9441a3f64289f28b7248aeec7605a281975568",
+      "reference": "references/supplied-font-source.png",
+      "referenceSha256": "8fe79ea92e76a3f463637b596cb0a47f5c24319160271c6d6a38a5cdd77c5f4b",
+      "captures": [
+        {
+          "pngSha256": "8fe79ea92e76a3f463637b596cb0a47f5c24319160271c6d6a38a5cdd77c5f4b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8fe79ea92e76a3f463637b596cb0a47f5c24319160271c6d6a38a5cdd77c5f4b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8fe79ea92e76a3f463637b596cb0a47f5c24319160271c6d6a38a5cdd77c5f4b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/supplied-font-source.png",
+      "linuxReferenceSha256": "365aa1baf973848b91beceabcbac007fc39497549f9bb5c296ade7df0b03df74",
+      "linuxCaptures": [
+        {
+          "pngSha256": "365aa1baf973848b91beceabcbac007fc39497549f9bb5c296ade7df0b03df74",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "365aa1baf973848b91beceabcbac007fc39497549f9bb5c296ade7df0b03df74",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "365aa1baf973848b91beceabcbac007fc39497549f9bb5c296ade7df0b03df74",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ]
+}

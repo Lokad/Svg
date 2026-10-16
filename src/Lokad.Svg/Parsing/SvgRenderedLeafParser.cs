@@ -74,10 +74,11 @@ internal static class SvgRenderedLeafParser
         ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         SvgComputedStyle style = context.ResolveStyle(reader, reader.LocalName == "text");
-        if (state.FilterGroupDepth > 0 && (reader.GetAttribute("clip-path") is not null
-            || reader.GetAttribute("mask") is not null || state.EffectiveFrame is not null
+        // Group clips also use map-only viewport frames; only actual nested
+        // viewports remain behind the separate filtered-source boundary.
+        if (state.FilterGroupDepth > 0 && (reader.GetAttribute("mask") is not null || state.EffectiveFrame is not null && state.Viewports.Count > state.ClipDepths.Count
             || SvgMarkerStyle.Resolve(style, context.InheritedPresentation.Markers).HasMarkers))
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filtered group descendants with clips, masks, viewports or markers are not implemented.");
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filtered group descendants with masks, viewports or markers are not implemented.");
         if (style.Filter is not string filter || filter.Trim() == "none")
             return ParseContent(reader, context, root, state, limits, budget, fontSnapshot, workCounter, cancellationToken);
         if (!SvgLocalUrl.TryParseId(filter, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local filter url references are implemented.");

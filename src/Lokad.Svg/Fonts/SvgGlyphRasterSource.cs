@@ -22,6 +22,35 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
         _font = font; _glyph = glyph; _fontSize = fontSize; _glyphMap = glyphMap; _pictureFontScale = pictureFontScale; _reservation = reservation;
     }
 
+    /// <summary>Creates conversion-owned placement metadata while borrowing the same prepared face and positioned glyph.</summary>
+    /// <remarks>The returned owner reserves bounded scene storage and must be disposed by its single-threaded replay consumer.
+    /// No font or outline arrays are copied. The caller charges placement work and observes cancellation.</remarks>
+    internal SvgGlyphRasterSource Place(SvgAffineTransform placement, RenderBudget budget)
+        => Create(_font ?? throw new InvalidOperationException("The glyph source is disposed."), _glyph, _fontSize,
+            placement.ComposeChecked(_glyphMap), _pictureFontScale, budget);
+
+    /// <summary>Measures the native font line box before device fitting, in this source's retained coordinates.</summary>
+    /// <remarks>No outline storage is created. The caller charges the corner maps and observes cancellation.</remarks>
+    internal SvgPaintBounds LayoutBounds(SvgAffineTransform placement, ParserWorkCounter work, CancellationToken token)
+    {
+        SvgPreparedFont font = _font ?? throw new InvalidOperationException("The glyph source is disposed.");
+        OpenTypeFontMetrics metrics = font.Metrics;
+        float size = (float)_fontSize;
+        float ascent = OperatingSystem.IsWindows() ? size * metrics.LineMetrics.WindowsAscender / metrics.UnitsPerEm : metrics.LineMetrics.Ascender * (size / metrics.UnitsPerEm);
+        float descent = OperatingSystem.IsWindows() ? size * metrics.LineMetrics.WindowsDescender / metrics.UnitsPerEm : -metrics.LineMetrics.Descender * (size / metrics.UnitsPerEm);
+        SvgPaintBounds bounds = new((float)_glyph.X, (float)_glyph.Y - MathF.Floor(ascent + .5f),
+            (float)(_glyph.X + _glyph.Advance), (float)_glyph.Y + MathF.Floor(descent + .5f));
+        if (OpenTypeFont.GetGlyphHeader(font.Bytes, _glyph.GlyphIndex, metrics, work, token) is {} header)
+        {
+            float unit = size / metrics.UnitsPerEm;
+            bounds = new(MathF.Min(bounds.Left, (float)_glyph.X + MathF.Floor(header.XMinimum * unit) - 1),
+                MathF.Min(bounds.Top, (float)_glyph.Y + MathF.Floor(-header.YMaximum * unit) - 1),
+                MathF.Max(bounds.Right, (float)_glyph.X + MathF.Ceiling(header.XMaximum * unit) + 1),
+                MathF.Max(bounds.Bottom, (float)_glyph.Y + MathF.Ceiling(-header.YMinimum * unit) + 1));
+        }
+        return bounds.Map(placement.ComposeChecked(_glyphMap), work, token);
+    }
+
     /// <summary>Identifies the admitted simple-outline stage without changing existing composite admission.</summary>
     internal bool HasSimpleOutline(ParserWorkCounter work, CancellationToken token)
     {
@@ -75,7 +104,7 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
         {
             SvgDevicePoint origin = _glyphMap.Apply(_glyph.X, _glyph.Y);
             float originX = MathF.Floor((float)(origin.X * scaleX + offsetX) * 4f + .5f) / 4f;
-            float originY = HasGlyphMap ? MathF.Floor((float)(origin.Y * scaleY + offsetY) * 4f + .5f) / 4f
+            float originY = HasGlyphMap && strike.RelaxedMap.B != 0 ? MathF.Floor((float)(origin.Y * scaleY + offsetY) * 4f + .5f) / 4f
                 : MathF.Floor((float)(origin.Y * scaleY + offsetY) + .5f);
             float ratioX = HasGlyphMap ? 1 : (float)(scaleX / scaleY);
             if (!float.IsFinite(originX) || !float.IsFinite(originY) || !float.IsFinite(ratioX)) throw new SvgException(SvgErrorCode.LimitExceeded, "The hinted glyph placement exceeds the device range.");
@@ -170,7 +199,7 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
         SvgAffineTransform map = SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX, offsetY).ComposeChecked(_glyphMap);
         SvgDevicePoint glyphOrigin = map.Apply(_glyph.X, _glyph.Y);
         float originX = MathF.Floor((float)glyphOrigin.X * 4f + .5f) / 4f;
-        float originY = MathF.Floor((float)glyphOrigin.Y * 4f + .5f) / 4f;
+        float originY = strike.RelaxedMap.B == 0 ? MathF.Floor((float)glyphOrigin.Y + .5f) : MathF.Floor((float)glyphOrigin.Y * 4f + .5f) / 4f;
         if (!float.IsFinite(originX) || !float.IsFinite(originY)) throw new SvgException(SvgErrorCode.LimitExceeded, "The mapped glyph placement exceeds the device range.");
         map = new(strike.RemainingMap.A, strike.RemainingMap.B, strike.RemainingMap.C, strike.RemainingMap.D, originX, originY);
         OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();

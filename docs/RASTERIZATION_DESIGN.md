@@ -1,3 +1,24 @@
+## Affine filter-source placement and native capture (2026-10-16)
+
+The [E1 sheet](../tests/Research/affine-source-exit-sheet/README.md) and four
+independent controls match unchanged Windows/Linux references. Source-placement
+metadata borrows the parent geometry and paint resources. The same mapping feeds
+retained paths, native gradient stages, vector pattern coordinates and supplied
+font strikes; local resource coordinates stay separate. No source outline or
+font program is copied for affine replay.
+
+Keep the native padded source bitmap distinct from compact result storage.
+Clip edge construction, shader sampling and ordered dithering use that bitmap's
+origin. Cropping it to fitted ink changes coverage even when the fitted glyph
+itself is exact. Font line bounds, padded glyph bounds and enclosed text recording
+remain distinct from fitted ink. After removing skew, an axis-aligned baseline
+snaps vertically before the existing native mask construction. Final image restore
+continues through the existing packed affine sampler and nearest-offset graph.
+
+The [qualification receipt](../artifacts/maintenance-review-20261012/affine-sources-qualified-results.json)
+retains document/control results, resource regressions and prior output protection.
+E2–E4, private-font evidence and S17 remain required.
+
 ## Native composite strikes and placement flags (2026-10-16)
 
 The [T2 document](../tests/Research/composite-flag-exit-sheet/README.md) and its
@@ -32,7 +53,7 @@ and routine build-plus-suite time of 76.0s Windows / 267.8s Linux. The ignored
 [study](../artifacts/composite-flag-exits-20261016/) retains declarations, baseline
 rejections, native point/mask diagnostics and rejected models. No separate
 rasterizer, external dependency, source fingerprint or VM combination quota is added.
-T3, E1–E4 and S17 remain required.
+T3, E2–E4 and S17 remain required.
 
 ## Deferred paths and scopes inside text instances (2026-10-16)
 

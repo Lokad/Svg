@@ -109,7 +109,7 @@ internal static class SvgTextGlyphPainter
                     if (paths.IsEmpty && map != SvgAffineTransform.Identity)
                     {
                         double scale = screenScale;
-                        position = position with { X = position.X * scale, Y = position.Y * scale };
+                        position = position with { X = position.X * scale, Y = position.Y * scale, Advance = position.Advance * scale };
                         size *= scale;
                         map = SvgAffineTransform.FromMatrix(map.A / scale, map.B / scale, map.C / scale, map.D / scale, map.E, map.F);
                         if (map.IsTranslation) { position = position.Translate(map); map = SvgAffineTransform.Identity; }

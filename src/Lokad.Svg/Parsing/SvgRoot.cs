@@ -1776,8 +1776,8 @@ internal sealed class SvgSceneBuilder : IDisposable
                         sources.Add(new(command.MaskContentIndex, depth, null, null));
                     else if (sources.Count > 0)
                     {
-                        if (command.MaskRegion is not null || command.MaskContentIndex >= 0 || command.MaskAlpha != 255)
-                            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masked or clipped filter descendants are not implemented.");
+                        if (command.RegionKind == SvgLayerRegionKind.Mask && (command.MaskRegion is not null || command.MaskContentIndex >= 0 || command.MaskAlpha != 255))
+                            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masked filter descendants are not implemented.");
                     }
                 }
                 else if (command.Kind == SvgDrawCommandKind.EndGroup)
