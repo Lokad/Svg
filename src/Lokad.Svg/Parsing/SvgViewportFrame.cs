@@ -37,7 +37,9 @@ internal readonly record struct SvgViewportFrame(double OffsetX, double OffsetY,
         {
             work.Consume(token);
             SvgViewportFrame frame = state.Viewports[index];
-            if (frame.HasAffineClipScope) continue;
+            // A forward group clip contributes a map-only passthrough frame until
+            // its real clip binds; the unbounded sentinel is not a native contour.
+            if (frame.HasAffineClipScope || frame.Clip == SvgClipBox.Unbounded && frame.TextContext is null) continue;
             SvgViewportTextContext context = frame.TextContext ?? SvgViewportTextContext.Create(state, null,
                 SvgAffineTransform.FromScaleOffset(frame.ScaleX, frame.ScaleY, frame.OffsetX, frame.OffsetY), new(frame.Clip, SvgAffineTransform.Identity));
             if (frame.TextContext is null) state.Viewports[index] = frame with { TextContext = context };

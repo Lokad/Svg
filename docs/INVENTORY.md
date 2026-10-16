@@ -130,10 +130,10 @@ This raises the separate authored total to **twenty-six** (nineteen CC0, seven M
 Corporate 27/258, selected 50 and sourced W3C counts stay unchanged. T1–T3 remains open.
 
 The frozen [instance/paint sheet](../tests/Research/instance-paint-exit-sheet/README.md)
-is **0/1 complete document / 1/4 exact controls** on Windows/Linux. Forward text,
+is **0/1 complete document / 2/4 exact controls** on Windows/Linux. Forward text,
 group and symbol definitions acquire the public face only through live instances;
-unused missing faces remain unopened. The other three controls and whole document
-retain explicit path/resource or paint gates. [Qualification](../artifacts/maintenance-review-20261012/definition-font-qualified-results.json)
+unused missing faces remain unopened. Masked curved-label instances and siblings
+are also exact. The other two controls and whole document retain explicit paint gates. [Qualification](../artifacts/maintenance-review-20261012/path-scopes-qualified-results.json)
 retains every original asset/options/reference and prior exact result. This adds
 no complete document; authored totals and both cohorts stay unchanged.
 

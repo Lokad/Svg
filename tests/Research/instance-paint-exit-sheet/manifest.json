@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One finite MIT instance/paint document remains incomplete. The forward definition/font control is exact through input-based preparation on Windows/Linux; paint and instanced path/resource gates remain required. Original inputs/options/references stay frozen.",
+  "purpose": "One finite MIT instance/paint document remains incomplete. Definition/font admission and masked curved-label instances are exact on Windows/Linux; text paint gates remain required. Original inputs/options/references stay frozen.",
   "fontPack": "../supplied-font-labels/font-pack.json",
   "fontPackId": "public-noto-sans",
   "fontProvenance": "../supplied-font-labels/font-provenance.json",
@@ -176,7 +176,6 @@
       "sourceSha256": "35a67b5aebcc5e75b757f588ba5886e1eadb2cf2af4e39f92df0e6aaf3c548ab",
       "scale": 1,
       "licenseEvidence": "LICENSE.txt",
-      "expectedError": "UnsupportedFeature",
       "declarationBaseRevision": "dbfc42bcbc91dc7202f3be38657e1f2adc450c11",
       "reference": "references/instanced-path-resources.png",
       "referenceSha256": "3e6151841dcfe826dfc518c90e5f4fcc3d450209b4049074defccc872d47a0d6",

@@ -356,9 +356,16 @@ public sealed class SvgFontLayoutDiagramTests
     [InlineData("shader-stroke-maps.svg")]
     [InlineData("local-use-label.svg")]
     [InlineData("text-map-sheet.svg")]
-    public async Task Retained_text_maps_release_owners_and_support_prepared_retry(string inputName)
+    public Task Retained_text_maps_release_owners_and_support_prepared_retry(string inputName)
+        => ValidateRetainedTextOwners("text-map-exit-sheet", inputName);
+
+    [Fact]
+    public Task Instanced_path_resources_release_owners_on_denial_cancellation_and_retry()
+        => ValidateRetainedTextOwners("instance-paint-exit-sheet", "instanced-path-resources.svg");
+
+    private static async Task ValidateRetainedTextOwners(string bankName, string inputName)
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "text-map-exit-sheet");
+        string directory = Path.Combine(AppContext.BaseDirectory, "Research", bankName);
         byte[] input = File.ReadAllBytes(Path.Combine(directory, inputName)), unchanged = input.ToArray();
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, "..", "supplied-font-labels", "font-pack.json")), "public-noto-sans");
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, new Provider(), CancellationToken.None);

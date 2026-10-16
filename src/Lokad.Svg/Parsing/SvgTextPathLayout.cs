@@ -5,8 +5,8 @@ namespace Lokad.Svg.Parsing;
 
 /// <summary>Retains a shaped path run or owned continuation layout at its original paint slot until local definitions are available.</summary>
 /// <remarks>Exactly one input is present. The document owns both alternatives and their aggregate allowance;
-/// fonts and viewport clips remain borrowed. Resolution and cleanup are parser-thread confined.</remarks>
-internal readonly record struct SvgPendingTextPath(SvgTextRun? Run, SvgTextPathReference Reference, SvgAffineTransform Placement, SvgColor Color, int CommandIndex, RenderBudget.BudgetReservation Owner)
+/// fonts, viewport clips and the originating builder remain borrowed. Resolution and cleanup are parser-thread confined.</remarks>
+internal readonly record struct SvgPendingTextPath(SvgTextRun? Run, SvgTextPathReference Reference, SvgAffineTransform Placement, SvgColor Color, int CommandIndex, RenderBudget.BudgetReservation Owner, SvgSceneBuilder Scene)
 {
     internal SvgPendingTextLayout? Continuation { get; init; }
     /// <summary>Borrows the originating viewport clip chain until deferred glyph command emission.</summary>
@@ -50,8 +50,12 @@ internal static class SvgTextPathLayout
     /// <remarks>Existing scene/source owners provide raster replay. Every path/glyph/command step charges work;
     /// document teardown releases queued runs and partially adopted glyphs on denial or cancellation.</remarks>
     internal static void Resolve(SvgDocumentState state, SvgRenderLimits limits, ParserWorkCounter work, CancellationToken token)
+        => Resolve(state, 0, limits, work, token);
+
+    /// <summary>Resolves only the appended source-local suffix; earlier document runs remain borrowed and untouched.</summary>
+    internal static void Resolve(SvgDocumentState state, int first, SvgRenderLimits limits, ParserWorkCounter work, CancellationToken token)
     {
-        for (int index = state.PendingTextPaths.Count - 1; index >= 0; index--)
+        for (int index = state.PendingTextPaths.Count - 1; index >= first; index--)
         {
             work.Consume(token);
             SvgPendingTextPath pending = state.PendingTextPaths[index];
@@ -167,7 +171,7 @@ internal static class SvgTextPathLayout
             {
                 work.Consume(token);
                 PendingUse use = state.PendingUses[useIndex];
-                if (use.Slot.CommandIndex > pending.CommandIndex) state.PendingUses[useIndex] = use with { Slot = use.Slot with { CommandIndex = use.Slot.CommandIndex + inserted } };
+                if (state.DefinitionReplayScene is null && use.Slot.CommandIndex > pending.CommandIndex) state.PendingUses[useIndex] = use with { Slot = use.Slot with { CommandIndex = use.Slot.CommandIndex + inserted } };
             }
             run.Dispose();
             pending.Owner.Dispose();

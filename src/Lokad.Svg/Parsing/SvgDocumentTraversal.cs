@@ -210,7 +210,7 @@ internal static class SvgDocumentTraversal
                             else
                             {
                                 SvgViewportFrame? groupParent = state.EffectiveFrame;
-                                state.PendingGroupClips.Add(new PendingGroupClip(state.Strings.Copy(groupClipId), groupParent, parsedGroup.Scope.InheritedPresentation.Transform, state.Scene.CommandCount, -1, reader.Depth));
+                                state.PendingGroupClips.Add(new PendingGroupClip(state.Strings.Copy(groupClipId), groupParent, parsedGroup.Scope.InheritedPresentation.Transform, state.Scene.CommandCount, -1, reader.Depth, state.Scene));
                                 SvgClipBox passthrough = groupParent?.Clip ?? SvgClipBox.Unbounded;
                                 state.Viewports.Add(new SvgViewportFrame(groupParent?.OffsetX ?? 0, groupParent?.OffsetY ?? 0, groupParent?.ScaleX ?? 1, groupParent?.ScaleY ?? 1, groupParent?.ViewportWidth, groupParent?.ViewportHeight, passthrough, reader.Depth));
                                 state.ClipDepths.Add(reader.Depth);

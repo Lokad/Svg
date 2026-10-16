@@ -11,10 +11,13 @@ Forward text/group/symbol definitions and instance-only font discovery now pass
 the unchanged [definition control](../tests/Research/instance-paint-exit-sheet/README.md)
 on both platforms. Only referenced painted text contributes requests; unused,
 hidden and unselected source faces stay unopened. Original source CSS and instance
-inheritance reuse the ordinary text extraction/container paths. T1 stays open for
-instanced path/resource scopes and remaining paints; the new whole document is
-0/1 complete with 1/4 exact controls. The [receipt](../artifacts/maintenance-review-20261012/definition-font-qualified-results.json)
-owns full platform qualification and affected resource checks. This closes no
+inheritance reuse the ordinary text extraction/container paths. Deferred local-use
+paths and clip/mask scopes now resolve within their originating scene and transfer
+through the existing geometry bindings; the unchanged masked curved-label control
+and sibling are exact on both platforms. The new whole document is 0/1 complete
+with 2/4 exact controls; remaining paint routes stay required T1 work. The [local receipt](../artifacts/maintenance-review-20261012/path-scopes-qualified-results.json)
+owns full platform qualification and affected resource checks; hosted CI joins the
+next substantive text-paint push. This closes no
 broader G9 or release promise.
 
 ## Supplied-font user-space linear strokes (2026-10-16)

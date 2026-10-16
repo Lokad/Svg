@@ -267,10 +267,14 @@ internal static class SvgMaskSyntax
 
     /// <summary>Resolves deferred group masks at document end, binding each authored isolation scope after use expansion.</summary>
     internal static void ResolvePendingGroupMasks(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => ResolvePendingGroupMasks(state, 0, workCounter, cancellationToken);
+
+    /// <summary>Binds an appended source-local suffix before its scene transfers to its parent.</summary>
+    internal static void ResolvePendingGroupMasks(SvgDocumentState state, int first, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(workCounter);
-        for (int pendingIndex = 0; pendingIndex < state.PendingGroupMasks.Count; pendingIndex++)
+        for (int pendingIndex = first; pendingIndex < state.PendingGroupMasks.Count; pendingIndex++)
         {
             workCounter.Consume(cancellationToken);
             PendingGroupMask pending = state.PendingGroupMasks[pendingIndex];

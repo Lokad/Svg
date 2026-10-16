@@ -1,3 +1,24 @@
+## Deferred paths and scopes inside text instances (2026-10-16)
+
+Retained text reuses ordinary path layout on its newly appended pending-run suffix.
+Command insertions shift only ranges belonging to that scene. Group clips borrow
+their originating builder, matching existing group-mask ownership. Source-local
+clips/masks bind before transfer; failure trims only the appended records and
+restores the parent's borrowed parsing context.
+
+The existing leaf-scope compiler seals source commands without rasterizing them.
+Parent adoption keeps glyph/paint/vector owners alive; mask content indices and
+recorded paints rebind to the parent. Authored begin/end scopes become shared leaf
+operations, preserving even identity isolation layers and their native compositing
+order. Physical viewport clips surround those operations. Forward group clips
+containing glyphs use the native clip path; a map-only unbounded passthrough frame
+never becomes a native contour. The frozen masked curved-label instances and
+siblings are exact on both platforms; mixed direct/path continuations, parent
+ranges, denial/cancellation/retry and source bytes have focused protection.
+[Local qualification](../artifacts/maintenance-review-20261012/path-scopes-qualified-results.json)
+retains all earlier outputs and affected owners. Remaining text paints stay
+required; no complete document is added yet.
+
 ## Retained text tokens and glyph-scene transfer (2026-10-16)
 
 Identifier-bearing rendered groups retain bounded text tokens with authored
@@ -24,8 +45,8 @@ acquisition. Symbols retain authored root typography without forcing vector-only
 symbols through text replay. Lexical text/node counts are admitted once, while
 reference visits consume bounded work. Unused/hidden/unselected sources request no
 program. The unchanged definition control is exact on Windows/Linux.
-Instanced deferred paths/resource scopes and remaining paints stay required T1
-work; the finite instance/paint sheet owns their acceptance instead of a census.
+The later source-scope correction closes the declared path/resource control. Remaining
+paints stay required T1 work; the finite instance/paint sheet owns their acceptance instead of a census.
 
 ## Text stroke shader coordinates and mask color (2026-10-16)
 

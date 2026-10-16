@@ -22,6 +22,8 @@ internal sealed class SvgLeafMaskOperation : IDisposable
     }
     internal SvgLeafMaskOperation? Source { get; }
     internal SvgAffineTransform Map { get; }
+    /// <summary>Preserves an authored isolation layer when its numerical opacity/mask values are identity.</summary>
+    internal bool PreservesIsolation { get; set; }
     internal bool Resolved { get; set; }
     internal byte Value { get; set; }
     internal SvgPaintOpacity SourceOpacity { get; set; } = SvgPaintOpacity.Opaque;
@@ -287,6 +289,7 @@ internal static class SvgLeafMaskComposition
                     SvgLeafMaskOperation mapped = unresolved[pending].Operation;
                     SvgLeafMaskOperation source = mapped.Source ?? throw new InvalidOperationException("Leaf mask was not resolved.");
                     mapped.Value = source.Value;
+                    mapped.PreservesIsolation = source.PreservesIsolation;
                     mapped.SourceOpacity = source.SourceOpacity;
                     mapped.RegionKind = source.RegionKind;
                     if (source.NativeClip is {} native)
@@ -313,7 +316,7 @@ internal static class SvgLeafMaskComposition
                     (operation.Region, operation.ContentIndex) = content.Register(nativeClip.Map, content.UsesNativeReplay, state, scene, work, token);
                     if (content.UsesMaskFallback) { operation.Region = null; operation.RegionKind = SvgLayerRegionKind.Mask; }
                 }
-                if (operation.Value != 255 || operation.Region is not null || operation.ContentIndex >= 0 || operation.SourceOpacity.Value != 1) desired.Add(new(operation));
+                if (operation.PreservesIsolation || operation.Value != 255 || operation.Region is not null || operation.ContentIndex >= 0 || operation.SourceOpacity.Value != 1) desired.Add(new(operation));
             }
         }
     }

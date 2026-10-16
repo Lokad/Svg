@@ -1778,6 +1778,7 @@ internal static class SvgReferenceResolver
         {
             workCounter.Consume(cancellationToken);
             SvgPendingTextPath pending = state.PendingTextPaths[textIndex];
+            if (!ReferenceEquals(pending.Scene, state.Scene)) continue;
             if (pending.CommandIndex > insertPosition || shiftStartsAtInsertion && pending.CommandIndex == insertPosition)
                 state.PendingTextPaths[textIndex] = pending with { CommandIndex = pending.CommandIndex + insertedCount };
         }
@@ -1785,6 +1786,7 @@ internal static class SvgReferenceResolver
         {
             workCounter.Consume(cancellationToken);
             PendingGroupClip group = state.PendingGroupClips[groupIndex];
+            if (!ReferenceEquals(group.Scene, state.Scene)) continue;
             int first = group.FirstCommandIndex > insertPosition || shiftStartsAtInsertion && group.FirstCommandIndex == insertPosition ? group.FirstCommandIndex + insertedCount : group.FirstCommandIndex;
             int end = group.EndCommandIndex >= insertPosition ? group.EndCommandIndex + insertedCount : group.EndCommandIndex;
             state.PendingGroupClips[groupIndex] = group with { FirstCommandIndex = first, EndCommandIndex = end };
@@ -1793,6 +1795,7 @@ internal static class SvgReferenceResolver
         {
             workCounter.Consume(cancellationToken);
             PendingGroupMask mask = state.PendingGroupMasks[maskIndex];
+            if (!ReferenceEquals(mask.Scene, state.Scene)) continue;
             int first = mask.FirstCommandIndex > insertPosition || shiftStartsAtInsertion && mask.FirstCommandIndex == insertPosition ? mask.FirstCommandIndex + insertedCount : mask.FirstCommandIndex;
             int end = mask.EndCommandIndex >= insertPosition ? mask.EndCommandIndex + insertedCount : mask.EndCommandIndex;
             state.PendingGroupMasks[maskIndex] = mask with { FirstCommandIndex = first, EndCommandIndex = end };

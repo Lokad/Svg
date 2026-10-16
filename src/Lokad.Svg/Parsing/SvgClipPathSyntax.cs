@@ -8,8 +8,9 @@ namespace Lokad.Svg.Parsing;
 /// <remarks>The conversion owns Scene through binding and emission; this range borrows its builder.</remarks>
 internal readonly record struct PendingLeafClip(int FirstGeometryIndex, int GeometryCount, string ClipId, SvgViewportFrame? Parent, SvgAffineTransform Transform, SvgSceneBuilder Scene);
 
-/// <summary>Retains a group command range and its referencing transform for document-end clip resolution after use expansion.</summary>
-internal readonly record struct PendingGroupClip(string ClipId, SvgViewportFrame? Parent, SvgAffineTransform Transform, int FirstCommandIndex, int EndCommandIndex, int Depth)
+/// <summary>Retains a group command range and its referencing transform for clip resolution after use expansion.</summary>
+/// <remarks>The conversion owns Scene through binding; source-local suffixes resolve before parent transfer.</remarks>
+internal readonly record struct PendingGroupClip(string ClipId, SvgViewportFrame? Parent, SvgAffineTransform Transform, int FirstCommandIndex, int EndCommandIndex, int Depth, SvgSceneBuilder Scene)
 {
     /// <summary>Preserves glyph source rendering instead of lowering a clip into non-glyph geometry.</summary>
     internal bool UsesNativeClip { get; init; }
@@ -608,63 +609,50 @@ internal static class SvgClipPathSyntax
     }
     /// <summary>Applies deferred userSpace clip paths to direct group command ranges at document end, after use expansion.</summary>
     internal static void ResolvePendingGroupClips(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => ResolvePendingGroupClips(state, 0, workCounter, cancellationToken);
+
+    /// <summary>Binds an appended source-local suffix before its scene transfers to its parent.</summary>
+    internal static void ResolvePendingGroupClips(SvgDocumentState state, int first, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(workCounter);
         // References were recorded at group entry. Prepend inner scopes first
         // so the emitted native clip stack follows outer-to-inner document order.
-        for (int pendingIndex = state.PendingGroupClips.Count - 1; pendingIndex >= 0; pendingIndex--)
+        for (int pendingIndex = state.PendingGroupClips.Count - 1; pendingIndex >= first; pendingIndex--)
         {
             workCounter.Consume(cancellationToken);
             PendingGroupClip pending = state.PendingGroupClips[pendingIndex];
-            SvgViewportFrame? parent = pending.Parent;
-            SvgClipBox clip;
-            if (state.Clips.TryGetValue(pending.ClipId, out SvgClipBox box))
+            SvgSceneBuilder? previous = state.DefinitionReplayScene;
+            state.DefinitionReplayScene = pending.Scene;
+            try
             {
-                if (!pending.Transform.IsAxisAligned || pending.UsesNativeClip)
+                SvgViewportFrame? parent = pending.Parent;
+                SvgClipBox clip;
+                if (state.Clips.TryGetValue(pending.ClipId, out SvgClipBox box))
                 {
-                    SvgAffineTransform map = parent is {} frame
-                        ? SvgAffineTransform.FromScaleOffset(frame.ScaleX, frame.ScaleY, frame.OffsetX, frame.OffsetY).ComposeChecked(pending.Transform)
-                        : pending.Transform;
-                    SvgLeafMaskOperation? viewport = ParentClipWindow(parent, state);
-                    SvgLeafMaskBinding? binding = null;
-                    for (int index = pending.FirstCommandIndex; index < pending.EndCommandIndex; index++)
+                    if (!pending.Transform.IsAxisAligned || pending.UsesNativeClip || ContainsGlyph(pending))
                     {
-                        workCounter.Consume(cancellationToken);
-                        SvgDrawCommand command = state.Scene.CommandAt(index);
-                        if (command.Kind != SvgDrawCommandKind.Geometry) continue;
-                        SvgLeafMaskBinding? inner = state.Scene.GeometryAt(command.GeometryIndex).LeafMask;
-                        binding = binding is null
-                            ? BindResourceClip(pending.ClipId, map, inner, state, workCounter, cancellationToken)
-                            : SvgLeafMaskComposition.NewBinding(state, binding.Operation, inner);
-                        state.Scene.AssignLeafMask(command.GeometryIndex, viewport is null ? binding : SvgLeafMaskComposition.NewBinding(state, viewport, binding));
+                        SvgAffineTransform map = parent is {} frame
+                            ? SvgAffineTransform.FromScaleOffset(frame.ScaleX, frame.ScaleY, frame.OffsetX, frame.OffsetY).ComposeChecked(pending.Transform)
+                            : pending.Transform;
+                        SvgLeafMaskOperation? viewport = ParentClipWindow(parent, state);
+                        SvgLeafMaskBinding? binding = null;
+                        for (int index = pending.FirstCommandIndex; index < pending.EndCommandIndex; index++)
+                        {
+                            workCounter.Consume(cancellationToken);
+                            SvgDrawCommand command = state.Scene.CommandAt(index);
+                            if (command.Kind != SvgDrawCommandKind.Geometry) continue;
+                            SvgLeafMaskBinding? inner = state.Scene.GeometryAt(command.GeometryIndex).LeafMask;
+                            binding = binding is null
+                                ? BindResourceClip(pending.ClipId, map, inner, state, workCounter, cancellationToken)
+                                : SvgLeafMaskComposition.NewBinding(state, binding.Operation, inner);
+                            state.Scene.AssignLeafMask(command.GeometryIndex, viewport is null ? binding : SvgLeafMaskComposition.NewBinding(state, viewport, binding));
+                        }
+                        continue;
                     }
-                    continue;
+                    clip = MapGroupClip(box, pending.Transform, parent, workCounter, cancellationToken);
                 }
-                clip = MapGroupClip(box, pending.Transform, parent, workCounter, cancellationToken);
-            }
-            else if (state.ObjectClips.TryGetValue(pending.ClipId, out SvgClipBox fractions))
-            {
-                SvgObjectBoundingClip target = new(pending.Transform, parent);
-                for (int index = pending.FirstCommandIndex; index < pending.EndCommandIndex; index++)
-                {
-                    workCounter.Consume(cancellationToken);
-                    SvgDrawCommand command = state.Scene.CommandAt(index);
-                    if (command.Kind == SvgDrawCommandKind.Geometry) target.Add(state.Scene.GeometryAt(command.GeometryIndex), state, workCounter, cancellationToken);
-                }
-                SvgLeafMaskOperation operation = target.Register(fractions, state, workCounter, cancellationToken);
-                for (int index = pending.FirstCommandIndex; index < pending.EndCommandIndex; index++)
-                {
-                    workCounter.Consume(cancellationToken);
-                    SvgDrawCommand command = state.Scene.CommandAt(index);
-                    if (command.Kind == SvgDrawCommandKind.Geometry)
-                        state.Scene.AssignLeafMask(command.GeometryIndex, SvgLeafMaskComposition.NewBinding(state, operation, state.Scene.GeometryAt(command.GeometryIndex).LeafMask));
-                }
-                continue;
-            }
-            else if (state.ClipPolygons.TryGetValue(pending.ClipId, out SvgClipPolygon polygon))
-            {
-                if (polygon.IsObjectBoundingBox)
+                else if (state.ObjectClips.TryGetValue(pending.ClipId, out SvgClipBox fractions))
                 {
                     SvgObjectBoundingClip target = new(pending.Transform, parent);
                     for (int index = pending.FirstCommandIndex; index < pending.EndCommandIndex; index++)
@@ -673,47 +661,82 @@ internal static class SvgClipPathSyntax
                         SvgDrawCommand command = state.Scene.CommandAt(index);
                         if (command.Kind == SvgDrawCommandKind.Geometry) target.Add(state.Scene.GeometryAt(command.GeometryIndex), state, workCounter, cancellationToken);
                     }
-                    SvgLeafMaskOperation boundingOperation = target.Register(polygon, state, workCounter, cancellationToken);
+                    SvgLeafMaskOperation operation = target.Register(fractions, state, workCounter, cancellationToken);
                     for (int index = pending.FirstCommandIndex; index < pending.EndCommandIndex; index++)
                     {
                         workCounter.Consume(cancellationToken);
                         SvgDrawCommand command = state.Scene.CommandAt(index);
-                        if (command.Kind != SvgDrawCommandKind.Geometry) continue;
-                        state.Scene.AssignLeafMask(command.GeometryIndex, SvgLeafMaskComposition.NewBinding(state, boundingOperation, state.Scene.GeometryAt(command.GeometryIndex).LeafMask));
+                        if (command.Kind == SvgDrawCommandKind.Geometry)
+                            state.Scene.AssignLeafMask(command.GeometryIndex, SvgLeafMaskComposition.NewBinding(state, operation, state.Scene.GeometryAt(command.GeometryIndex).LeafMask));
                     }
                     continue;
                 }
-                if (polygon.ContourEnds.Length != 1 && !polygon.UsesNativeReplay) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-contour polygon clip-paths on groups are implemented.");
-                if (polygon.NestedClipId is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested resource clip masks on groups require separate qualification.");
-                SvgAffineTransform map = pending.Transform;
-                if (parent is {} viewport)
-                    map = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(map);
-                (SvgClipBox bounds, int contentIndex) = polygon.Register(map, polygon.UsesNativeReplay, state, state.Scene, workCounter, cancellationToken);
-                SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
-                operation.Resolved = true;
-                operation.Value = 255;
-                operation.Region = polygon.UsesMaskFallback ? null : bounds;
-                operation.ContentIndex = contentIndex;
-                operation.RegionKind = polygon.UsesMaskFallback ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.AffineViewport;
+                else if (state.ClipPolygons.TryGetValue(pending.ClipId, out SvgClipPolygon polygon))
+                {
+                    if (polygon.IsObjectBoundingBox)
+                    {
+                        SvgObjectBoundingClip target = new(pending.Transform, parent);
+                        for (int index = pending.FirstCommandIndex; index < pending.EndCommandIndex; index++)
+                        {
+                            workCounter.Consume(cancellationToken);
+                            SvgDrawCommand command = state.Scene.CommandAt(index);
+                            if (command.Kind == SvgDrawCommandKind.Geometry) target.Add(state.Scene.GeometryAt(command.GeometryIndex), state, workCounter, cancellationToken);
+                        }
+                        SvgLeafMaskOperation boundingOperation = target.Register(polygon, state, workCounter, cancellationToken);
+                        for (int index = pending.FirstCommandIndex; index < pending.EndCommandIndex; index++)
+                        {
+                            workCounter.Consume(cancellationToken);
+                            SvgDrawCommand command = state.Scene.CommandAt(index);
+                            if (command.Kind != SvgDrawCommandKind.Geometry) continue;
+                            state.Scene.AssignLeafMask(command.GeometryIndex, SvgLeafMaskComposition.NewBinding(state, boundingOperation, state.Scene.GeometryAt(command.GeometryIndex).LeafMask));
+                        }
+                        continue;
+                    }
+                    if (polygon.ContourEnds.Length != 1 && !polygon.UsesNativeReplay) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-contour polygon clip-paths on groups are implemented.");
+                    if (polygon.NestedClipId is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested resource clip masks on groups require separate qualification.");
+                    SvgAffineTransform map = pending.Transform;
+                    if (parent is {} viewport)
+                        map = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(map);
+                    (SvgClipBox bounds, int contentIndex) = polygon.Register(map, polygon.UsesNativeReplay, state, state.Scene, workCounter, cancellationToken);
+                    SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
+                    operation.Resolved = true;
+                    operation.Value = 255;
+                    operation.Region = polygon.UsesMaskFallback ? null : bounds;
+                    operation.ContentIndex = contentIndex;
+                    operation.RegionKind = polygon.UsesMaskFallback ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.AffineViewport;
+                    for (int commandIndex = pending.FirstCommandIndex; commandIndex < pending.EndCommandIndex; commandIndex++)
+                    {
+                        workCounter.Consume(cancellationToken);
+                        SvgDrawCommand command = state.Scene.CommandAt(commandIndex);
+                        if (command.Kind != SvgDrawCommandKind.Geometry) continue;
+                        SvgLeafMaskBinding binding = SvgLeafMaskComposition.NewBinding(state, operation, state.Scene.GeometryAt(command.GeometryIndex).LeafMask);
+                        state.Scene.AssignLeafMask(command.GeometryIndex, binding);
+                    }
+                    continue;
+                }
+                else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clip-path references are implemented.");
                 for (int commandIndex = pending.FirstCommandIndex; commandIndex < pending.EndCommandIndex; commandIndex++)
                 {
                     workCounter.Consume(cancellationToken);
                     SvgDrawCommand command = state.Scene.CommandAt(commandIndex);
                     if (command.Kind != SvgDrawCommandKind.Geometry) continue;
-                    SvgLeafMaskBinding binding = SvgLeafMaskComposition.NewBinding(state, operation, state.Scene.GeometryAt(command.GeometryIndex).LeafMask);
-                    state.Scene.AssignLeafMask(command.GeometryIndex, binding);
+                    state.Scene.ReplaceGeometry(command.GeometryIndex, ApplyLeafClip(state.Scene.GeometryAt(command.GeometryIndex), clip));
                 }
-                continue;
             }
-            else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clip-path references are implemented.");
-            for (int commandIndex = pending.FirstCommandIndex; commandIndex < pending.EndCommandIndex; commandIndex++)
+            finally { state.DefinitionReplayScene = previous; }
+        }
+
+        bool ContainsGlyph(PendingGroupClip pending)
+        {
+            for (int index = pending.FirstCommandIndex; index < pending.EndCommandIndex; index++)
             {
                 workCounter.Consume(cancellationToken);
-                SvgDrawCommand command = state.Scene.CommandAt(commandIndex);
-                if (command.Kind != SvgDrawCommandKind.Geometry) continue;
-                state.Scene.ReplaceGeometry(command.GeometryIndex, ApplyLeafClip(state.Scene.GeometryAt(command.GeometryIndex), clip));
+                SvgDrawCommand command = state.Scene.CommandAt(index);
+                if (command.Kind == SvgDrawCommandKind.Geometry && state.Scene.GeometryAt(command.GeometryIndex).Kind == SvgGeometryKind.GlyphContours) return true;
             }
+            return false;
         }
+
     }
 
     /// <summary>Keeps the native clip construction window while geometry owns fractional parent coverage.</summary>

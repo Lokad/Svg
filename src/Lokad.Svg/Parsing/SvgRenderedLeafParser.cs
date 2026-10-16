@@ -359,7 +359,7 @@ internal static class SvgRenderedLeafParser
                             {
                                 continuation = new(extracted, runStyle, textPaint.GlyphPaint, deviceMetrics, fontSnapshot);
                                 textRuns[textIndex] = default;
-                                state.PendingTextPaths.Add(new(null, resume, textPlacement, textElement.Presentation.Color, state.Scene.AddPaintPlaceholder(), owner)
+                                state.PendingTextPaths.Add(new(null, resume, textPlacement, textElement.Presentation.Color, state.Scene.AddPaintPlaceholder(), owner, state.Scene)
                                     { ViewportClip = SvgViewportFrame.ResolveGlyphClip(state, workCounter, cancellationToken), Continuation = continuation });
                             }
                             catch { continuation?.Dispose(); owner.Dispose(); throw; }
@@ -378,7 +378,7 @@ internal static class SvgRenderedLeafParser
                         catch { pendingTextOwner?.Dispose(); throw; }
                         if (textPath is {} pathReference)
                         {
-                            try { state.PendingTextPaths.Add(new(run, pathReference, textPlacement, textElement.Presentation.Color, state.Scene.AddPaintPlaceholder(), pendingTextOwner ?? throw new InvalidOperationException("A retained text run requires its metadata owner.")) { ViewportClip = SvgViewportFrame.ResolveGlyphClip(state, workCounter, cancellationToken) }); }
+                            try { state.PendingTextPaths.Add(new(run, pathReference, textPlacement, textElement.Presentation.Color, state.Scene.AddPaintPlaceholder(), pendingTextOwner ?? throw new InvalidOperationException("A retained text run requires its metadata owner."), state.Scene) { ViewportClip = SvgViewportFrame.ResolveGlyphClip(state, workCounter, cancellationToken) }); }
                             catch { pendingTextOwner?.Dispose(); run.Dispose(); throw; }
                             continue;
                         }
@@ -395,7 +395,7 @@ internal static class SvgRenderedLeafParser
                         // resolution shifts these shared ranges before clip/mask binding.
                         state.Scene.EndOpacityScope();
                         if (textClip is not null)
-                            state.PendingGroupClips.Add(new(textClip, resourceParent, textElement.Transform, resourceStart, state.Scene.CommandCount, -1) { UsesNativeClip = true });
+                            state.PendingGroupClips.Add(new(textClip, resourceParent, textElement.Transform, resourceStart, state.Scene.CommandCount, -1, state.Scene) { UsesNativeClip = true });
                         if (textMask is not null)
                             state.PendingGroupMasks.Add(new(textMask, resourceStart, state.Scene.CommandCount, -1, resourceParent, textElement.Transform, state.Scene));
                     }

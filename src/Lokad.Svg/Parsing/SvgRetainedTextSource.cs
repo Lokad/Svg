@@ -126,8 +126,8 @@ internal sealed class SvgRetainedTextSource
 
     /// <summary>Replays a text leaf with instance inheritance and the ordinary glyph pipeline.</summary>
     /// <remarks>The parent scene adopts the staging owner; returned glyphs borrow its immutable paints.
-    /// Preparation is bounded and cancellable. Staging emits no pixels or intermediate bitmap. Resource
-    /// scopes and deferred path chunks retain explicit gates until their scene bindings can transfer.</remarks>
+    /// Preparation is bounded and cancellable. Deferred paths and clip/mask scopes resolve in the source
+    /// scene, then transfer through the existing leaf bindings. No pixels or intermediate bitmap are emitted.</remarks>
     internal SvgGeometry[] Lower(SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
         SvgTextReplayEnvironment environment = state.TextReplay ?? throw new InvalidOperationException("Text expansion requires its document context.");
@@ -135,6 +135,7 @@ internal sealed class SvgRetainedTextSource
         SvgSceneBuilder? previous = state.DefinitionReplayScene;
         bool previousDirect = state.DirectTextReplay;
         int previousNodes = state.NodeCount, previousCharacters = state.TextCharacterCount, previousPaths = state.PendingTextPaths.Count;
+        int previousClips = state.PendingGroupClips.Count, previousMasks = state.PendingGroupMasks.Count;
         using SvgSceneBuilder staging = new(state.Budget, work, token);
         SvgSceneStorage? storage = null;
         try
@@ -152,14 +153,10 @@ internal sealed class SvgRetainedTextSource
             { StrokeHostMap = state.OutputMap.ComposeChecked(placement), LengthBases = reference.LengthBases, RecordingScope = reference.RecordingScope };
             SvgRenderedLeafParser.ParseResolved(reader, context, environment.Root, state, environment.Limits, state.Budget, environment.Fonts, work, token);
             if (state.DeferredTextFailure is {} failure) throw failure;
-            if (state.PendingTextPaths.Count != previousPaths)
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Deferred text paths in local-use sources are not implemented.");
-            for (int index = 0; index < staging.CommandCount; index++)
-            {
-                work.Consume(token);
-                if (staging.CommandAt(index).Kind != SvgDrawCommandKind.Geometry)
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Local-use text resource scopes are not implemented.");
-            }
+            SvgTextPathLayout.Resolve(state, previousPaths, environment.Limits, work, token);
+            SvgClipPathSyntax.ResolvePendingGroupClips(state, previousClips, work, token);
+            SvgMaskSyntax.ResolvePendingGroupMasks(state, previousMasks, work, token);
+            SvgLeafMaskComposition.Emit(state, staging, work, token);
             storage = staging.Build();
         }
         finally
@@ -172,26 +169,72 @@ internal sealed class SvgRetainedTextSource
                 path.Run?.Dispose(); path.Continuation?.Dispose(); path.Owner.Dispose();
                 state.PendingTextPaths.RemoveLast();
             }
+            while (state.PendingGroupClips.Count > previousClips) state.PendingGroupClips.RemoveLast();
+            while (state.PendingGroupMasks.Count > previousMasks) state.PendingGroupMasks.RemoveLast();
         }
         SvgVectorContent owner = SvgVectorContent.Create(storage ?? throw new InvalidOperationException("Text replay did not produce a scene."), state.Budget);
         try { parent.AdoptVectorContent(owner); }
         catch { owner.Dispose(); throw; }
         using BudgetedParserList<SvgGeometry> output = new(state.Budget, SvgMemoryCategory.Parser, work, token);
-        SvgLeafMaskBinding? clip = null;
-        if (frame is {} viewport && !viewport.HasAffineClipScope)
-        {
-            SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
-            operation.Resolved = true; operation.Value = 255; operation.Region = viewport.Clip; operation.RegionKind = SvgLayerRegionKind.Viewport;
-            clip = SvgLeafMaskComposition.NewBinding(state, operation, null);
-        }
-        foreach (SvgGeometry source in owner.Scene.Geometries)
+        using BudgetedParserList<int> masks = new(state.Budget, SvgMemoryCategory.Parser, work, token);
+        foreach (SvgMaskContent source in owner.Scene.MaskContents)
         {
             work.Consume(token);
-            SvgRecordedPaint paint = source.RecordedPaint.Identity == 0 ? default
-                : parent.RegisterRecordedPaint(owner.Scene.RecordedPaintValues[source.RecordedPaint.Identity - 1]);
-            output.Add(source with { RecordedPaint = paint, LeafMask = clip ?? source.LeafMask });
+            // Bounds clips always borrow an earlier mask with no further bounds clip.
+            int bounds = source.BoundsClipContentIndex;
+            if (bounds >= masks.Count) throw new InvalidOperationException("A transferred bounds clip must precede its content.");
+            masks.Add(parent.AddMaskContent(source with { BoundsClipContentIndex = bounds < 0 ? -1 : masks[bounds] }));
         }
+        SvgLeafMaskOperation? viewportClip = null;
+        if (frame is {} viewport && !viewport.HasAffineClipScope && viewport.Clip != SvgClipBox.Unbounded)
+        {
+            viewportClip = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
+            viewportClip.Resolved = true; viewportClip.Value = 255; viewportClip.Region = viewport.Clip; viewportClip.RegionKind = SvgLayerRegionKind.Viewport;
+        }
+        using BudgetedParserList<SvgLeafMaskOperationReference> scopes = new(state.Budget, SvgMemoryCategory.Parser, work, token);
+        SvgLeafMaskBinding? binding = null;
+        bool bindingReady = false;
+        foreach (SvgDrawCommand command in owner.Scene.Commands)
+        {
+            work.Consume(token);
+            if (command.Kind == SvgDrawCommandKind.BeginGroup)
+            {
+                if (command.RegionKind == SvgLayerRegionKind.Filter)
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filtered text source scopes are not implemented.");
+                SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
+                operation.Resolved = true; operation.PreservesIsolation = true;
+                operation.Value = command.MaskAlpha; operation.SourceOpacity = command.SourceOpacity;
+                operation.Region = command.MaskRegion; operation.RegionKind = command.RegionKind;
+                operation.RecordingScope = command.RecordingScope;
+                operation.ContentIndex = command.MaskContentIndex < 0 ? -1 : masks[command.MaskContentIndex];
+                scopes.Add(new(operation)); bindingReady = false;
+                continue;
+            }
+            if (command.Kind == SvgDrawCommandKind.EndGroup)
+            {
+                if (scopes.Count == 0) throw new InvalidOperationException("Transferred text scopes must be balanced.");
+                scopes.RemoveLast(); bindingReady = false;
+                continue;
+            }
+            if (!bindingReady)
+            {
+                binding = null;
+                for (int index = scopes.Count - 1; index >= 0; index--)
+                {
+                    work.Consume(token);
+                    binding = SvgLeafMaskComposition.NewBinding(state, scopes[index].Operation, binding);
+                }
+                if (viewportClip is not null) binding = SvgLeafMaskComposition.NewBinding(state, viewportClip, binding);
+                bindingReady = true;
+            }
+            SvgGeometry source = owner.Scene.Geometries[command.GeometryIndex];
+            output.Add(source with { RecordedPaint = Rebind(source.RecordedPaint), RecordedStrokePaint = Rebind(source.RecordedStrokePaint), LeafMask = binding });
+        }
+        if (scopes.Count != 0) throw new InvalidOperationException("Transferred text scopes must be balanced.");
         return SvgReferenceResolver.RetainInstanceBatch(output.AsSpan(), state, work, token);
+
+        SvgRecordedPaint Rebind(SvgRecordedPaint paint) => paint.Identity <= 0 ? paint
+            : parent.RegisterRecordedPaint(owner.Scene.RecordedPaintValues[paint.Identity - 1]);
     }
 
     /// <summary>Replays immutable tokens with ordinary XmlReader subtree and chunk semantics.</summary>
