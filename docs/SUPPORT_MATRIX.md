@@ -1,3 +1,19 @@
+## Qualified filter source boundaries (2026-10-16)
+
+The unchanged [sheet and eight controls](../tests/Research/filter-source-exit-sheet/README.md)
+are exact on Windows/Linux. Object-box filter-output clips, source masks and
+nested viewports, fixed marker sources, direct supplied text and nested affine
+filters use shared geometry/scope replay. Local uses and CSS filter presentation
+were already exact at declaration. Missing text-filter references still reject
+before font acquisition; degenerate object bounds and marker exclusion are protected.
+
+E3 remains required for affine offset-only capture, affine masked sources,
+filter owners with masks/markers and filters inside viewport/pattern scopes.
+The [offset-only observation](../tests/Research/filter-source-exit-sheet/diagnostics/affine-offset-only-observation.json)
+is a measured difference, not passing acceptance. These live gates and private T3,
+E4 and S17 remain in [PLAN](../PLAN.md#delivery-order); no scope is deferred.
+This entry supersedes older blanket rejection notes only for the qualified routes.
+
 ## Qualified linearRGB shadow and opacity restoration (2026-10-16)
 
 The unchanged [retained document and three controls](../tests/Research/linear-restoration-exit-sheet/README.md)
@@ -19,9 +35,9 @@ vector patterns and supplied glyph strikes into the native scale-only filter
 layer. Source clips and nested opacity retain their original scope; capture keeps
 the padded native bitmap for clip construction and shader/dither coordinates.
 
-This closes E1. Object-box output clips and uncovered mask, nested-viewport, affine nested-filter,
-marker, text/local-use and presentation boundaries remain required under E3;
-explicit unsupported outcomes retain empty-output and cleanup protection.
+This closes E1. The source-boundary document above qualifies the next E3 routes;
+its listed remaining placements retain explicit unsupported/difference outcomes
+and empty-output/cleanup protection.
 Private T3, E3/E4 and S17 remain required. No scope deferral is introduced.
 
 ## Qualified composite placement flags (2026-10-16)

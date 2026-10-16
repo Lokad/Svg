@@ -15,6 +15,10 @@ internal enum SvgFilterBoundsKind : byte { Visual, StoredImage }
 /// <summary>Retains one integer-offset source branch and its composed intermediate crop.</summary>
 internal readonly record struct SvgOffsetFilterPlacement(double X, double Y, bool AlphaOnly, SvgPaintBounds Clip);
 
+/// <summary>Borrows native parameter coordinates and the source bitmap origin in the playback grid.</summary>
+/// <remarks>Immutable values own no storage. The caller charges composition work and keeps bitmap storage separately owned.</remarks>
+internal readonly record struct SvgFilterNativeMapping(SvgShaderMatrix Coordinates, SvgCpuBitmapOrigin Origin);
+
 /// <summary>Places a filter source in the bounded parent bitmaps used for restoration.</summary>
 internal readonly record struct SvgFilterRasterPlacement(SvgCpuBitmapOrigin SourceOrigin, SvgCpuRasterGrid Grid, SvgAnalyticClipBounds Clip);
 
@@ -26,6 +30,8 @@ internal readonly record struct SvgFilterRegionContext(SvgAffineTransform Coordi
     internal SvgFilterRasterPlacement? RasterPlacement { get; init; }
     /// <summary>Identifies restoration into another filter's source bitmap, where native source-in retains its input image subset.</summary>
     internal bool IntermediateOutput { get; init; }
+    /// <summary>Retains native matrix arithmetic for image transforms after affine source capture.</summary>
+    internal SvgFilterNativeMapping? NativeMapping { get; init; }
 }
 
 /// <summary>Owns the graph output and optional unquantized final shader samples until composition.</summary>
@@ -411,7 +417,17 @@ internal static class SvgFilterPlayback
                 else if (primitive.Kind == SvgFilterPrimitiveKind.Offset)
                 {
                     SvgPaintBounds? inputBounds = primitive.Input.Index >= 0 ? imageBounds[primitive.Input.Index] : map.Regions?.SourceBounds;
-                    Offset(input, output, primitive.OffsetX * map.ScaleX, primitive.OffsetY * map.ScaleY, inputBounds, null);
+                    SvgShaderMatrix? nativeTransform = null;
+                    if (map.Regions?.NativeMapping is {} nativeMapping && nativeMapping.Coordinates.TryInvert(out SvgShaderMatrix parameterInverse))
+                    {
+                        Charge(64);
+                        // Retain the conjugated matrix, including finite residual skew.
+                        // Reducing it to a vector can select a different native image blitter.
+                        SvgShaderMatrix placed = SvgShaderMatrix.Concat(nativeMapping.Coordinates, SvgShaderMatrix.Concat(new(1, 0, (float)primitive.OffsetX, 0, 1, (float)primitive.OffsetY), parameterInverse));
+                        SvgShaderMatrix forward = SvgShaderMatrix.Concat(new(1, 0, nativeMapping.Origin.X, 0, 1, nativeMapping.Origin.Y), SvgShaderMatrix.Concat(placed, new(1, 0, -nativeMapping.Origin.X, 0, 1, -nativeMapping.Origin.Y)));
+                        if (forward.ScaleX != 1 || forward.ScaleY != 1 || forward.SkewX != 0 || forward.SkewY != 0) nativeTransform = forward;
+                    }
+                    Offset(input, output, primitive.OffsetX * map.ScaleX, primitive.OffsetY * map.ScaleY, inputBounds, null, nativeTransform);
                     linear[index] = inputLinear;
                 }
                 else if (primitive.Kind == SvgFilterPrimitiveKind.Merge)
@@ -466,7 +482,7 @@ internal static class SvgFilterPlayback
                             blurred.Pixels[offset + 3] = (byte)a;
                         }
                     }
-                    Offset(blurred.Pixels, output, shadowX, shadowY, null, fractionalShadow ? tint : null);
+                    Offset(blurred.Pixels, output, shadowX, shadowY, null, fractionalShadow ? tint : null, null);
                     bool destinationLinear = colorSpace == SvgFilterColorSpace.LinearRgb;
                     bool convertSource = inputLinear != destinationLinear;
                     Charge(pixels * (convertSource ? 2 : 1));
@@ -677,7 +693,7 @@ internal static class SvgFilterPlayback
 
         static byte Modulate(byte value, byte alpha) => (byte)((value * alpha + 127) / 255);
 
-        void Offset(ReadOnlySpan<byte> input, Span<byte> output, double dx, double dy, SvgPaintBounds? imageBounds, SvgConstantShaderPaint? shadow)
+        void Offset(ReadOnlySpan<byte> input, Span<byte> output, double dx, double dy, SvgPaintBounds? imageBounds, SvgConstantShaderPaint? shadow, SvgShaderMatrix? nativeTransform)
         {
             ValidateOffset(dx, dy);
             bool fractional = dx != Math.Truncate(dx) || dy != Math.Truncate(dy);
@@ -723,6 +739,11 @@ internal static class SvgFilterPlayback
                 MathF.Min(bounds.Top, MathF.Floor(bounds.Top + (float)dy)),
                 MathF.Max(bounds.Right, MathF.Ceiling(bounds.Right + (float)dx)),
                 MathF.Max(bounds.Bottom, MathF.Ceiling(bounds.Bottom + (float)dy)));
+            if (nativeTransform is {} forward)
+            {
+                OffsetTransformed(input, output, bounds, forward);
+                return;
+            }
             SvgRectangleCoverage coverage = SvgRectangleCoverage.Create(bounds.Left + (float)dx,
                 bounds.Top + (float)dy, bounds.Right + (float)dx, bounds.Bottom + (float)dy, width, height);
             int imageLeft = (int)MathF.Floor(Math.Clamp(bounds.Left, 0, width));
@@ -764,6 +785,58 @@ internal static class SvgFilterPlayback
                     }
                     if (sx >= 0 && sx < width && sy >= 0 && sy < height)
                         input.Slice((int)(sy * width + sx) * 4, 4).CopyTo(output.Slice((y * width + x) * 4, 4));
+                }
+            }
+
+            // A conjugated image matrix uses the shared native fill-edge walker
+            // and constant shader arithmetic. Axis translations above retain
+            // their distinct rectangle/packed-bitmap route.
+            void OffsetTransformed(ReadOnlySpan<byte> image, Span<byte> target, SvgPaintBounds imageBounds, SvgShaderMatrix transform)
+            {
+                if (!transform.TryInvert(out SvgShaderMatrix inverse)) return;
+                int firstX = (int)MathF.Floor(Math.Clamp(imageBounds.Left, 0, width));
+                int firstY = (int)MathF.Floor(Math.Clamp(imageBounds.Top, 0, height));
+                int lastX = (int)MathF.Ceiling(Math.Clamp(imageBounds.Right, 0, width));
+                int lastY = (int)MathF.Ceiling(Math.Clamp(imageBounds.Bottom, 0, height));
+                if (lastX <= firstX || lastY <= firstY) return;
+                Span<SvgDevicePoint> points = stackalloc SvgDevicePoint[4];
+                points[0] = Point(imageBounds.Left, imageBounds.Top);
+                points[1] = Point(imageBounds.Right, imageBounds.Top);
+                points[2] = Point(imageBounds.Right, imageBounds.Bottom);
+                points[3] = Point(imageBounds.Left, imageBounds.Bottom);
+                SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [4], [], false, null, SvgPolygonMapping.NativeFillEdges,
+                    [], [], 0, width, 0, height, width, height, new(0, width), new SvgAnalyticClipContext(new(0, 0, width, height)),
+                    availableWork - work, budget, out long preparationWork, out bool eligible, token);
+                try
+                {
+                    Charge(preparationWork);
+                    if (!eligible) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Transformed filter image edges exceed the retained coverage boundary.");
+                    Charge(pixels * 4);
+                    for (int y = 0; y < height; y++)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        walker.PrepareRow(y, availableWork - work, out long rowWork, token);
+                        Charge(rowWork);
+                        for (int x = 0; x < width; x++)
+                        {
+                            if ((x & 4095) == 0) token.ThrowIfCancellationRequested();
+                            float px = x + .5f, py = y + .5f;
+                            float u = px * inverse.ScaleX + (py * inverse.SkewX + inverse.TranslateX);
+                            float v = px * inverse.SkewY + (py * inverse.ScaleY + inverse.TranslateY);
+                            int sampleX = (int)Math.Clamp(MathF.Floor(u), firstX, lastX - 1);
+                            int sampleY = (int)Math.Clamp(MathF.Floor(v), firstY, lastY - 1);
+                            int at = (sampleY * width + sampleX) * 4;
+                            walker.PaintPixel(x, target.Slice((y * width + x) * 4, 4),
+                                SvgAnalyticPaint.Constant(new(image[at], image[at + 1], image[at + 2], image[at + 3])), SvgAnalyticClipCoverage.Full);
+                        }
+                    }
+                }
+                finally { walker.Dispose(); }
+
+                SvgDevicePoint Point(float x, float y)
+                {
+                    (float px, float py) = transform.Map(x, y);
+                    return new(px, py);
                 }
             }
         }

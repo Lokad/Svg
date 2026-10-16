@@ -1,0 +1,460 @@
+{
+  "schemaVersion": 1,
+  "purpose": "One complete CC0 document and eight orthogonal controls for E3 filter source/output boundaries. Original SVG/font/options/native references remain unchanged; local use and CSS filter presentation were already exact at declaration. Affine offset-only capture remains a separate required follow-up.",
+  "fontPack": "font-pack.json",
+  "fontPackId": "public-noto-sans",
+  "fontProgram": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontProgramSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "cases": [
+    {
+      "id": "filter-source-sheet",
+      "input": "filter-source-sheet.svg",
+      "width": 448,
+      "height": 224,
+      "scale": 1,
+      "background": "transparent",
+      "role": "document-output",
+      "license": "CC0-1.0",
+      "sourceSha256": "28be811f209d8e8bb0a7c75ca81def9973ec3e94a16080a0defb2abe53d67789",
+      "declarationBaseRevision": "07ae7824315e638b013108a56224997f9376fc10",
+      "reference": "references/filter-source-sheet.png",
+      "referenceSha256": "790ea4a162c0b47509515c498edd3575f31f8278d310fabdcedee6325296de02",
+      "captures": [
+        {
+          "pngSha256": "790ea4a162c0b47509515c498edd3575f31f8278d310fabdcedee6325296de02",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "790ea4a162c0b47509515c498edd3575f31f8278d310fabdcedee6325296de02",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "790ea4a162c0b47509515c498edd3575f31f8278d310fabdcedee6325296de02",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/filter-source-sheet.png",
+      "linuxReferenceSha256": "3073db3a9d70ded91128a2a029509ea67fa9c524498b6f9fc1399b942ea61548",
+      "linuxCaptures": [
+        {
+          "pngSha256": "3073db3a9d70ded91128a2a029509ea67fa9c524498b6f9fc1399b942ea61548",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3073db3a9d70ded91128a2a029509ea67fa9c524498b6f9fc1399b942ea61548",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3073db3a9d70ded91128a2a029509ea67fa9c524498b6f9fc1399b942ea61548",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "object-box-output",
+      "input": "object-box-output.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "cb86082c1f82965f52a97e95584e547db06e7211335bbd3e2f65a85f71a6d139",
+      "declarationBaseRevision": "07ae7824315e638b013108a56224997f9376fc10",
+      "reference": "references/object-box-output.png",
+      "referenceSha256": "c1bdd23380701114642042fea88967db6f92c7a0a0ea7db9a8e3eb6cc475545c",
+      "captures": [
+        {
+          "pngSha256": "c1bdd23380701114642042fea88967db6f92c7a0a0ea7db9a8e3eb6cc475545c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c1bdd23380701114642042fea88967db6f92c7a0a0ea7db9a8e3eb6cc475545c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c1bdd23380701114642042fea88967db6f92c7a0a0ea7db9a8e3eb6cc475545c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/object-box-output.png",
+      "linuxReferenceSha256": "c1bdd23380701114642042fea88967db6f92c7a0a0ea7db9a8e3eb6cc475545c",
+      "linuxCaptures": [
+        {
+          "pngSha256": "c1bdd23380701114642042fea88967db6f92c7a0a0ea7db9a8e3eb6cc475545c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c1bdd23380701114642042fea88967db6f92c7a0a0ea7db9a8e3eb6cc475545c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c1bdd23380701114642042fea88967db6f92c7a0a0ea7db9a8e3eb6cc475545c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "masked-source",
+      "input": "masked-source.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "a4ab9bc30bbb37244361a37aca21e0896426896c75993505446e0b6dcc12e679",
+      "declarationBaseRevision": "07ae7824315e638b013108a56224997f9376fc10",
+      "reference": "references/masked-source.png",
+      "referenceSha256": "ded737fa9e7311fe4ac485aa49d7ffcd35641726d95c0b57873da836ffd8a765",
+      "captures": [
+        {
+          "pngSha256": "ded737fa9e7311fe4ac485aa49d7ffcd35641726d95c0b57873da836ffd8a765",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ded737fa9e7311fe4ac485aa49d7ffcd35641726d95c0b57873da836ffd8a765",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ded737fa9e7311fe4ac485aa49d7ffcd35641726d95c0b57873da836ffd8a765",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/masked-source.png",
+      "linuxReferenceSha256": "ded737fa9e7311fe4ac485aa49d7ffcd35641726d95c0b57873da836ffd8a765",
+      "linuxCaptures": [
+        {
+          "pngSha256": "ded737fa9e7311fe4ac485aa49d7ffcd35641726d95c0b57873da836ffd8a765",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ded737fa9e7311fe4ac485aa49d7ffcd35641726d95c0b57873da836ffd8a765",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ded737fa9e7311fe4ac485aa49d7ffcd35641726d95c0b57873da836ffd8a765",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "viewport-source",
+      "input": "viewport-source.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "8505a2e80025fa0a1ddc5f15107bcde18f2a4fa582e2c0b7e954d71880f7063b",
+      "declarationBaseRevision": "07ae7824315e638b013108a56224997f9376fc10",
+      "reference": "references/viewport-source.png",
+      "referenceSha256": "2bacaa79f7ab650519a80a0cc4624643a8480edb435df8279ed8e7a378d15fe4",
+      "captures": [
+        {
+          "pngSha256": "2bacaa79f7ab650519a80a0cc4624643a8480edb435df8279ed8e7a378d15fe4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2bacaa79f7ab650519a80a0cc4624643a8480edb435df8279ed8e7a378d15fe4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2bacaa79f7ab650519a80a0cc4624643a8480edb435df8279ed8e7a378d15fe4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/viewport-source.png",
+      "linuxReferenceSha256": "2bacaa79f7ab650519a80a0cc4624643a8480edb435df8279ed8e7a378d15fe4",
+      "linuxCaptures": [
+        {
+          "pngSha256": "2bacaa79f7ab650519a80a0cc4624643a8480edb435df8279ed8e7a378d15fe4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2bacaa79f7ab650519a80a0cc4624643a8480edb435df8279ed8e7a378d15fe4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2bacaa79f7ab650519a80a0cc4624643a8480edb435df8279ed8e7a378d15fe4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "affine-nested-source",
+      "input": "affine-nested-source.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "80d4fad313bff41b383357f964dab9d7a30a7197e9ce890b8080ea168738bdc7",
+      "declarationBaseRevision": "07ae7824315e638b013108a56224997f9376fc10",
+      "reference": "references/affine-nested-source.png",
+      "referenceSha256": "a64e2e77c09229742e88d0b6693865d7d547a2bcfca43dbcbeccd2efa29d2aff",
+      "captures": [
+        {
+          "pngSha256": "a64e2e77c09229742e88d0b6693865d7d547a2bcfca43dbcbeccd2efa29d2aff",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a64e2e77c09229742e88d0b6693865d7d547a2bcfca43dbcbeccd2efa29d2aff",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a64e2e77c09229742e88d0b6693865d7d547a2bcfca43dbcbeccd2efa29d2aff",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/affine-nested-source.png",
+      "linuxReferenceSha256": "a64e2e77c09229742e88d0b6693865d7d547a2bcfca43dbcbeccd2efa29d2aff",
+      "linuxCaptures": [
+        {
+          "pngSha256": "a64e2e77c09229742e88d0b6693865d7d547a2bcfca43dbcbeccd2efa29d2aff",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a64e2e77c09229742e88d0b6693865d7d547a2bcfca43dbcbeccd2efa29d2aff",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a64e2e77c09229742e88d0b6693865d7d547a2bcfca43dbcbeccd2efa29d2aff",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "marker-source",
+      "input": "marker-source.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "73f532ffa8d220014d38fe00b491e64be28093a8b041eb0b7df9412a709f9e5d",
+      "declarationBaseRevision": "07ae7824315e638b013108a56224997f9376fc10",
+      "reference": "references/marker-source.png",
+      "referenceSha256": "2705be4342a282b27c59bc9ef8237eaa8ac12f9840396abc28431e094798a085",
+      "captures": [
+        {
+          "pngSha256": "2705be4342a282b27c59bc9ef8237eaa8ac12f9840396abc28431e094798a085",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2705be4342a282b27c59bc9ef8237eaa8ac12f9840396abc28431e094798a085",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2705be4342a282b27c59bc9ef8237eaa8ac12f9840396abc28431e094798a085",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/marker-source.png",
+      "linuxReferenceSha256": "2705be4342a282b27c59bc9ef8237eaa8ac12f9840396abc28431e094798a085",
+      "linuxCaptures": [
+        {
+          "pngSha256": "2705be4342a282b27c59bc9ef8237eaa8ac12f9840396abc28431e094798a085",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2705be4342a282b27c59bc9ef8237eaa8ac12f9840396abc28431e094798a085",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2705be4342a282b27c59bc9ef8237eaa8ac12f9840396abc28431e094798a085",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "direct-text-source",
+      "input": "direct-text-source.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "4949a640ff82dce80b9cc79c963aeef49b21506e38d807cacd00009a09ddf016",
+      "declarationBaseRevision": "07ae7824315e638b013108a56224997f9376fc10",
+      "reference": "references/direct-text-source.png",
+      "referenceSha256": "d31247ff1cbcf688673b9d19f5a72a43954756c920c85c1d0960858c779d8a3f",
+      "captures": [
+        {
+          "pngSha256": "d31247ff1cbcf688673b9d19f5a72a43954756c920c85c1d0960858c779d8a3f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d31247ff1cbcf688673b9d19f5a72a43954756c920c85c1d0960858c779d8a3f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d31247ff1cbcf688673b9d19f5a72a43954756c920c85c1d0960858c779d8a3f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/direct-text-source.png",
+      "linuxReferenceSha256": "2cf33ffc865b3f3ccd0f703019d540d8d6036d93aa017209f7d22a67a216c4d1",
+      "linuxCaptures": [
+        {
+          "pngSha256": "2cf33ffc865b3f3ccd0f703019d540d8d6036d93aa017209f7d22a67a216c4d1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2cf33ffc865b3f3ccd0f703019d540d8d6036d93aa017209f7d22a67a216c4d1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2cf33ffc865b3f3ccd0f703019d540d8d6036d93aa017209f7d22a67a216c4d1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "local-use-source",
+      "input": "local-use-source.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "66cde9ce80fb6f42de2d593ecc8a815a274a2556ac21f521bbe96fa2c25ce673",
+      "declarationBaseRevision": "07ae7824315e638b013108a56224997f9376fc10",
+      "reference": "references/local-use-source.png",
+      "referenceSha256": "3c7a727dfbf3de27af59b016ab66cd6a1a22dfa48d7ff4911624502a3f2a39f4",
+      "captures": [
+        {
+          "pngSha256": "3c7a727dfbf3de27af59b016ab66cd6a1a22dfa48d7ff4911624502a3f2a39f4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3c7a727dfbf3de27af59b016ab66cd6a1a22dfa48d7ff4911624502a3f2a39f4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3c7a727dfbf3de27af59b016ab66cd6a1a22dfa48d7ff4911624502a3f2a39f4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/local-use-source.png",
+      "linuxReferenceSha256": "3c7a727dfbf3de27af59b016ab66cd6a1a22dfa48d7ff4911624502a3f2a39f4",
+      "linuxCaptures": [
+        {
+          "pngSha256": "3c7a727dfbf3de27af59b016ab66cd6a1a22dfa48d7ff4911624502a3f2a39f4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3c7a727dfbf3de27af59b016ab66cd6a1a22dfa48d7ff4911624502a3f2a39f4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3c7a727dfbf3de27af59b016ab66cd6a1a22dfa48d7ff4911624502a3f2a39f4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "css-filter-source",
+      "input": "css-filter-source.svg",
+      "width": 112,
+      "height": 108,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "CC0-1.0",
+      "sourceSha256": "e356baf97a3d487105123aac570a788d1452abf72a5b28ec8de57f1553949062",
+      "declarationBaseRevision": "07ae7824315e638b013108a56224997f9376fc10",
+      "reference": "references/css-filter-source.png",
+      "referenceSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+      "captures": [
+        {
+          "pngSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/css-filter-source.png",
+      "linuxReferenceSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+      "linuxCaptures": [
+        {
+          "pngSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "765e614658d8b01885461ce2f047c5ec163a08e0b5f3e22a0e20a3c32d24a202",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ]
+}

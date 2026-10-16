@@ -163,9 +163,8 @@ public sealed class SvgFilterPlaybackTests
 
     [Theory]
     [InlineData("<rect width='4' height='4' mask='url(#missing)'/>")]
-    [InlineData("<svg width='4' height='4'><rect width='4' height='4'/></svg>")]
     [InlineData("<path d='M1 1L4 4' marker-start='url(#missing)'/>")]
-    public void Remaining_filtered_source_boundaries_reject_without_output_and_release_owners(string source)
+    public void Missing_filtered_source_references_reject_without_output_and_release_owners(string source)
     {
         byte[] input = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='1'/></filter></defs><g filter='url(#f)'>" + source + "</g>");
         RenderBudget budget = new(1_000_000);
@@ -177,17 +176,74 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
-    public void Affine_nested_filter_sources_keep_their_pending_resource_boundary_and_release_owners()
+    public void Filtered_nested_viewport_preserves_the_original_input_and_releases_owners()
+    {
+        byte[] input = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='1'/></filter></defs><g filter='url(#f)'>"
+            + "<svg width='4' height='4'><rect width='4' height='4'/></svg></g>");
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface result = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
+            Assert.Contains(result.Pixels, value => value != 0);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Affine_nested_filter_sources_preserve_the_original_input_and_release_owners()
     {
         byte[] input = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='1'/></filter></defs>"
             + "<g transform='matrix(1 .15 .2 1 2 3)' filter='url(#f)'><g filter='url(#f)'><path d='M1 1H7V7H1Z'/></g></g>");
         RenderBudget budget = new(2_000_000);
+        byte[] expected;
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
-            Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(root, SvgRenderOptions.Default, budget, CancellationToken.None)).ErrorCode);
+            expected = SvgConverter.ConvertToPng(root, SvgRenderOptions.Default, budget, CancellationToken.None).ToArray();
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         using MemoryStream stream = new();
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, stream, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
-        Assert.Equal(0, stream.Length);
+        SvgConverter.ConvertToPng(input, stream, SvgRenderOptions.Default, CancellationToken.None);
+        Assert.Equal(expected, stream.ToArray());
+    }
+
+    [Fact]
+    public void Filter_source_object_bounds_exclude_marker_content()
+    {
+        byte[] input = Document("<defs><filter id='f'><feOffset/></filter>"
+            + "<marker id='m' markerUnits='userSpaceOnUse' markerWidth='20' markerHeight='20'><path d='M0 0H20V20Z'/></marker></defs>"
+            + "<g filter='url(#f)'><path d='M1 1H3V3Z' marker-start='url(#m)'/></g>");
+        RenderBudget budget = new(2_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        {
+            SvgFilterArena arena = root.SceneStorage?.Filters ?? throw new InvalidOperationException();
+            SvgDrawCommand command = root.Commands.First(c => c.Kind == SvgDrawCommandKind.BeginGroup && c.RegionKind == SvgLayerRegionKind.Filter);
+            Assert.Equal(new SvgPaintBounds(1, 1, 3, 3), arena.BindingAt(command.MaskContentIndex).ObjectBounds);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Affine_object_box_primitive_offsets_keep_their_placed_distances()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='96' height='80'>"
+            + "<defs><filter id='f' filterUnits='userSpaceOnUse' primitiveUnits='objectBoundingBox' x='0' y='0' width='96' height='80' color-interpolation-filters='sRGB'><feOffset dx='.5'/></filter></defs>"
+            + "<g transform='matrix(1 .15 .2 1 0 0)' filter='url(#f)'><path d='M20 20H60V50H20Z' fill='red'/></g></svg>");
+        RenderBudget budget = new(4_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
+        {
+            Assert.Equal((byte)0, surface.Pixels[(40 * 96 + 40) * 4 + 3]);
+            Assert.Equal((byte)255, surface.Pixels[(40 * 96 + 65) * 4 + 3]);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Zero_width_filtered_source_with_object_box_output_clip_is_nonpainting()
+    {
+        byte[] input = Document("<defs><filter id='f'><feOffset/></filter><clipPath id='c' clipPathUnits='objectBoundingBox'><rect width='1' height='1'/></clipPath></defs>"
+            + "<g filter='url(#f)' clip-path='url(#c)'><path d='M2 0V4' fill='none' stroke='red'/></g>");
+        RenderBudget budget = new(2_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
+            Assert.All(surface.Pixels, value => Assert.Equal((byte)0, value));
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]

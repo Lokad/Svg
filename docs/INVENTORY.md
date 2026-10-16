@@ -9,7 +9,7 @@ The frozen selection and measured outcomes are recorded below.
 
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
-variants**. **Thirty additional authored documents** (twenty CC0 and ten MIT
+variants**. **Thirty-one additional authored documents** (twenty-one CC0 and ten MIT
 documents) are complete and counted separately. Preserve the delivered
 [effects sheet](../tests/Research/effects-marker-sheet/README.md),
 [composition sheet](../tests/Research/composition-sheet/README.md) and
@@ -17,6 +17,17 @@ documents) are complete and counted separately. Preserve the delivered
 [shared map sheet](../tests/Research/shared-paint-map-sheet/README.md), including their
 separately counted controls and original sources/options/references.
 These failure-selected cases establish declared outcomes, not a general SVG success rate.
+
+The unchanged [filter-source document and eight controls](../tests/Research/filter-source-exit-sheet/README.md)
+are exact on Windows/Linux. The baseline rejected the document and six controls;
+local use and CSS filter presentation were already exact. Sixty healthy stable
+captures preserve all original bytes/options, including supplied-face proof
+(821 Windows / 794 Linux pixels differ without the face). The
+[receipt](../artifacts/maintenance-review-20261012/filter-source-qualified-results.json)
+records complete checks and prior-input preservation. This adds authored document
+31 (twenty-first CC0). It completes the document, while affine offset-only capture
+and the enumerated owner/viewport/pattern placements remain required E3 work.
+Private T3, E4 and S17 also remain required; no promise is deferred.
 
 The unchanged retained [linear-restoration document](../tests/Research/linear-restoration-exit-sheet/README.md)
 and three focused controls are exact on Windows/Linux. Its initial baseline was

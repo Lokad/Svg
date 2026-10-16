@@ -101,7 +101,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     internal SvgResolvedDirectTextElement ResolveTextShape(XmlReader reader)
     {
         InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), WorkCounter, CancellationToken, true);
-        SvgComputedStyle style = InheritedStroke.ApplyTo(SvgComputedStyle.Resolve(reader, inline, StyleSheet));
+        SvgComputedStyle style = InheritedStroke.ApplyTo(AuthoredStyle ?? SvgComputedStyle.Resolve(reader, inline, StyleSheet));
         style = style.ResolveVectorEffect(InheritedPresentation.NonScalingStroke).ResolveOpacity(InheritedPresentation.ElementOpacity) with { PaintOrder = style.PaintOrder ?? InheritedPresentation.PaintOrder };
         SvgComputedStyle textStyle = style.FillRule is null && InheritedFillRule is not null ? style with { FillRule = InheritedFillRule } : style;
         if (textStyle.Fill is null && InheritedPresentation.PaintServerFill is string fill) textStyle = textStyle with { Fill = fill };

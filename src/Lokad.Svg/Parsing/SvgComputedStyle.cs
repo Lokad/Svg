@@ -43,7 +43,7 @@ internal readonly record struct SvgComputedStyle(string? Color, string? Fill, st
     internal static SvgComputedStyle Resolve(XmlReader reader, InlineStyle inlineStyle, InlineStyle styleSheet)
     {
         string? filter = Select(reader, "filter", inlineStyle.Filter, (inlineStyle.Important & InlineImportantProperties.Filter) != 0, styleSheet.Filter, (styleSheet.Important & InlineImportantProperties.Filter) != 0);
-        if (filter is not null && filter.Trim() != "none" && reader.LocalName is not ("g" or "rect" or "line" or "path" or "polygon" or "polyline" or "circle" or "ellipse" or "image"))
+        if (filter is not null && filter.Trim() != "none" && reader.LocalName is not ("g" or "rect" or "line" or "path" or "polygon" or "polyline" or "circle" or "ellipse" or "image" or "text"))
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filters on this element are not implemented.");
         string? overflow = Select(reader, "overflow", inlineStyle.Overflow, (inlineStyle.Important & InlineImportantProperties.Overflow) != 0, styleSheet.Overflow, (styleSheet.Important & InlineImportantProperties.Overflow) != 0);
         // Attribute overflow keeps its established element-specific consumer

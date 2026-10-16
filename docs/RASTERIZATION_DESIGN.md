@@ -1,3 +1,27 @@
+## Nested filter source devices and image edges (2026-10-16)
+
+The unchanged [E3 document and eight controls](../tests/Research/filter-source-exit-sheet/README.md)
+reuse bounded object-box clip binding and recorded source geometry. Masks,
+viewports, fixed markers and supplied direct text preserve source/output order,
+raw object bounds, effect bounds and sibling scope. Marker ink contributes visual
+bounds separately from the target's object box. Text discovery validates live
+local filter references before acquiring a font, including referenced text trees.
+
+Nested affine bindings retain their authored-to-layer relation and native source
+device concatenations. Filter offset mapping preserves the conjugated matrix;
+reducing finite residual skew to two distances selects a different image blitter.
+The existing native fill-edge walker and constant shader arithmetic handle that
+image boundary. Axis translations retain rectangle coverage and packed bitmap
+arithmetic. Object-box primitive distances are already placed and retain that
+route; the authored user-space transform must not scale them again.
+Borrowed geometry stays immutable; capture, traversal, edge storage,
+work and cancellation share the existing conversion owners and limits.
+
+The [qualification](../artifacts/maintenance-review-20261012/filter-source-qualified-results.json)
+retains original inputs/references and prior exact outputs. The boundary sheet is
+complete; affine offset-only capture and enumerated owner/viewport/pattern gates
+remain required in PLAN.md. No additional matrix/measurement framework is added.
+
 ## Linear shadow operating space and packed restoration (2026-10-16)
 
 The [E2 document and controls](../tests/Research/linear-restoration-exit-sheet/README.md)

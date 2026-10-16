@@ -113,7 +113,10 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
         return _state.Strings.Copy(href.AsSpan(1));
     }
 
-    internal void AddRequests(Action<SvgFontFaceRequest> addFace, Action<string> addPaint)
+    /// <summary>Emits referenced face/paint/filter requests before font acquisition.</summary>
+    /// <remarks>Callbacks borrow strings for this synchronous visit and must copy retained values.
+    /// Traversal shares the caller's bounded work, storage and cancellation; no font program is opened.</remarks>
+    internal void AddRequests(Action<SvgFontFaceRequest> addFace, Action<string> addPaint, Action<string> addFilter)
     {
         using BudgetedParserList<Visit> stack = new(_state.Budget, SvgMemoryCategory.Parser, _work, _token);
         using BudgetedParserDictionary<int, bool> active = new(_state.Budget, SvgMemoryCategory.Parser, 64);
@@ -146,7 +149,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                 SvgRetainedTextSource source = node.Source ?? throw new InvalidOperationException("A font source requires retained tokens.");
                 using SvgRetainedTextSource.Reader reader = source.OpenReader(0, _work, _token); reader.MoveToContent();
                 stack[^1] = visit with { Kind = VisitKind.Exit };
-                if (node.Kind == Kind.Text) { AddText(reader, visit.Context, addFace, addPaint); continue; }
+                if (node.Kind == Kind.Text) { AddText(reader, visit.Context, addFace, addPaint, addFilter); continue; }
                 InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), _work, _token, true);
                 SvgComputedStyle computed = SvgComputedStyle.Resolve(reader, inline, reader.StyleSheet);
                 SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inline, computed, reader.StyleSheet,
@@ -161,14 +164,17 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
             }
         }
 
-        void AddText(XmlReader reader, SvgInheritedContainer inherited, Action<SvgFontFaceRequest> addFace, Action<string> addPaint)
+        void AddText(XmlReader reader, SvgInheritedContainer inherited, Action<SvgFontFaceRequest> addFace, Action<string> addPaint, Action<string> addFilter)
         {
             SvgPaintableElementContext context = new(inherited.Presentation, inherited.TextStyle, inherited.Stroke,
                 reader is SvgRetainedTextSource.Reader source ? source.StyleSheet : default, SvgRootParser.CssNamedColors, _work, _token, 1, inherited.FillRule);
+            // Font discovery borrows text paint but leaves effects to scene lowering.
+            SvgComputedStyle authoredStyle = context.ResolveStyle(reader, true);
+            context = context with { AuthoredStyle = authoredStyle with { Filter = null } };
             SvgResolvedDirectTextElement resolved = context.ResolveTextShape(reader);
             SvgTextStyle style = SvgTextSyntax.Parse(reader, resolved.InlineFont, inherited.TextStyle, resolved.LetterSpacing, resolved.WordSpacing);
             SvgTextWhitespaceMode whitespace = SvgTextSyntax.ParseWhitespaceMode(reader, resolved.WhiteSpace, inherited.TextStyle.WhitespaceMode);
-            SvgTextPaintStyle paint = SvgTextPaintStyle.ResolveElement(resolved.PaintableElement.Style, inherited.Presentation.Paint,
+            SvgTextPaintStyle paint = SvgTextPaintStyle.ResolveElement(resolved.PaintableElement.Style with { Filter = null }, inherited.Presentation.Paint,
                 inherited.Presentation.IsDisplayed, inherited.Presentation.IsVisible, inherited.Stroke.Stroke);
             paint = paint with { StrokeStyle = inherited.Stroke.ResolveChild(resolved.PaintableElement.Style), PaintOrder = resolved.PaintableElement.Style.PaintOrder ?? inherited.Presentation.PaintOrder };
             paint = paint with { Decoration = SvgTextDecorationSyntax.Resolve(resolved.TextDecoration ?? reader.GetAttribute("text-decoration"), inherited.TextStyle.Decoration,
@@ -189,6 +195,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                     foreach (SvgTextPaintSpan span in run.PaintSpans.Items) { _work.Consume(_token); painted |= span.Paint.IsPainted; ObservePaint(span.Paint); }
                 }
                 if (!painted) return;
+                if (authoredStyle.Filter is {} filter) addFilter(filter);
                 ObservePaint(paint.GlyphPaint);
                 foreach (SvgExtractedTextRun run in runs.AsSpan())
                 {

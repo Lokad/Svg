@@ -229,9 +229,14 @@ public static class SvgConverter
         internal SvgAffineTransform SourcePlacement { get; init; } = SvgAffineTransform.Identity;
         /// <summary>Retains native source-image bounds independently of compact result storage; capture adds its transparent border.</summary>
         internal SvgPaintBounds? NativeSourceBounds { get; init; }
+        /// <summary>Retains the exact source/layer relation when nested filters share their authored ancestry.</summary>
+        internal SvgFilterSourceMap? FilterSourceMap { get; init; }
+        /// <summary>Maps authored scene coordinates through the native source device, retaining each float concatenation.</summary>
+        internal SvgAffineTransform? NativeCapturePlacement { get; init; }
     }
 
     private readonly record struct SvgFilterReplayBinding(int Index, SvgFilterBinding Binding);
+    private readonly record struct SvgFilterSourceMap(SvgAffineTransform Source, SvgAffineTransform Layer, SvgAffineTransform NativePlacement);
 
     private static RasterizedSurface Rasterize(SvgRoot root, SvgRenderOptions options, RenderBudget budget, RasterSurfaceMode surfaceMode, RasterFrame? frame, CancellationToken cancellationToken)
     {
@@ -370,6 +375,72 @@ public static class SvgConverter
             double Length(SvgFilterLength length, double basis) => length.Percentage ? length.Value * basis / 100 : objectUnits ? length.Value * basis : length.Value;
         }
 
+        // Borrow source geometry when rebasing a nested binding. Effects remain
+        // separate from raw object/paint bounds; each bounded visit charges work.
+        SvgFilterBinding PlaceFilterBinding(SvgFilterBinding binding, int first, ParserWorkCounter work)
+        {
+            if (sourcePlacement == SvgAffineTransform.Identity) return binding;
+            SvgAffineTransform transform = frame?.FilterSourceMap is {} relation && relation.Source == binding.Transform
+                ? relation.Layer : sourcePlacement.ComposeChecked(binding.Transform);
+            SvgPaintBounds? objects = null, visuals = null;
+            int depth = 0;
+            for (int index = first; index < root.Commands.Length; index++)
+            {
+                work.Consume(cancellationToken);
+                SvgDrawCommand command = root.Commands[index];
+                if (command.Kind == SvgDrawCommandKind.BeginGroup) depth++;
+                else if (command.Kind == SvgDrawCommandKind.EndGroup)
+                {
+                    if (depth-- == 0) return binding with { Transform = transform, ObjectBounds = objects ?? default, VisualBounds = visuals ?? objects ?? default };
+                }
+                else if (command.Kind == SvgDrawCommandKind.Geometry)
+                {
+                    SvgGeometry geometry = root.Geometries[command.GeometryIndex];
+                    SvgRecordedPaintValue paint = GetRecordedPaintValue(geometry.RecordedPaint);
+                    SvgPaintBounds box, visual;
+                    if (geometry.AuthoredPath is {} path)
+                    {
+                        box = PathBounds(path);
+                        visual = PathBounds(path.StrokeOutline ?? path);
+                    }
+                    else if (geometry.Kind == SvgGeometryKind.GlyphContours && geometry.Glyph.Source is {} glyph)
+                    {
+                        box = glyph.LayoutBounds(sourcePlacement, work, cancellationToken);
+                        if (!binding.Transform.TryInvert(out SvgAffineTransform inverse)) return binding with { Transform = transform, ObjectBounds = default, VisualBounds = default };
+                        SvgPaintBounds layout = glyph.LayoutBounds(inverse, work, cancellationToken);
+                        visual = new SvgPaintBounds(MathF.Floor(layout.Left), MathF.Floor(layout.Top), MathF.Ceiling(layout.Right), MathF.Ceiling(layout.Bottom)).Map(transform, work, cancellationToken);
+                        float inflation = (float)geometry.Glyph.StrokeBoundsInflation;
+                        visual = new(visual.Left - inflation, visual.Top - inflation, visual.Right + inflation, visual.Bottom + inflation);
+                    }
+                    else
+                    {
+                        box = (paint.ObjectBounds ?? default).Map(sourcePlacement, work, cancellationToken);
+                        visual = (paint.VisualBounds ?? paint.ObjectBounds ?? default).Map(sourcePlacement, work, cancellationToken);
+                    }
+                    if (!paint.IsMarkerContent) objects = Union(objects, box);
+                    visuals = Union(visuals, visual);
+                }
+            }
+            throw new SvgException(SvgErrorCode.MalformedInput, "Nested filter source is unbalanced.");
+
+            SvgPaintBounds PathBounds(SvgAuthoredPath path)
+            {
+                SvgRectangle box = SvgPathBounds.Compute(path.Commands, work, cancellationToken);
+                return new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height))
+                    .Map(sourcePlacement.ComposeChecked(path.SceneMap), work, cancellationToken);
+            }
+            static SvgPaintBounds Union(SvgPaintBounds? prior, SvgPaintBounds value)
+                => prior is {} box ? new(MathF.Min(box.Left, value.Left), MathF.Min(box.Top, value.Top), MathF.Max(box.Right, value.Right), MathF.Max(box.Bottom, value.Bottom)) : value;
+        }
+
+        SvgAffineTransform? PlaceNativeSource(SvgCpuBitmapOrigin origin)
+        {
+            if (frame?.NativeCapturePlacement is {} parent)
+                return SvgAffineTransform.FromTranslation(-origin.X, -origin.Y).ComposeNative(parent);
+            return frame?.FilterSourceMap is {} relation
+                ? SvgAffineTransform.FromTranslation(horizontalOffset - origin.X, verticalOffset - origin.Y).ComposeNative(relation.NativePlacement) : null;
+        }
+
         int RenderFilter(int first, SvgDrawCommand command, byte[] destination)
         {
             SvgFilterArena arena = root.FilterResources ?? throw new SvgException(SvgErrorCode.MalformedInput, "Filter resources are missing.");
@@ -401,6 +472,7 @@ public static class SvgConverter
                         // final filter region. Keep object bounds independent of effects.
                         SvgFilterBinding child = arena.BindingAt(item.MaskContentIndex);
                         ParserWorkCounter childRegionWork = new(options.Limits.MaximumWorkUnits - workUnits);
+                        child = PlaceFilterBinding(child, end + 1, childRegionWork);
                         SvgPaintBounds childRegion = FilterRegion(child, arena.ResourceAt(child.ResourceIndex), childRegionWork,
                             SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset));
                         workUnits += childRegionWork.Used;
@@ -414,6 +486,12 @@ public static class SvgConverter
                 }
             }
             if (end == root.Commands.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Filter source scope is unbalanced.");
+            if (frame?.FilterBinding is not {} placed || placed.Index != command.MaskContentIndex)
+            {
+                ParserWorkCounter placementWork = new(options.Limits.MaximumWorkUnits - workUnits);
+                binding = PlaceFilterBinding(binding, first, placementWork);
+                workUnits += placementWork.Used;
+            }
             if (binding.Transform.B != 0 || binding.Transform.C != 0)
                 return RenderAffineFilter();
             ParserWorkCounter regionWork = new(options.Limits.MaximumWorkUnits - workUnits);
@@ -490,7 +568,7 @@ public static class SvgConverter
             // Shifted and chained results may feed visible pixels from outside the
             // final output window. A single blur needs only the complete source;
             // graphs retain conservative intermediate halo/shift allowances.
-            if (frame is { FilterBinding: not null, NativeSourceBounds: {} sourceBounds })
+            if (frame is { FilterBinding: {} sourceBinding, NativeSourceBounds: {} sourceBounds } && sourceBinding.Index == command.MaskContentIndex)
             {
                 // Clip construction and ordered shader arithmetic use the native
                 // padded bitmap, even when the final filter result is cropped.
@@ -519,7 +597,7 @@ public static class SvgConverter
                 (float)(region.Right - frameLeft), (float)(region.Bottom - frameTop));
             primitiveMap = primitiveMap with { Regions = new(primitiveCoordinates,
                 objectPrimitiveUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), gridRegion)
-                { RasterPlacement = new(new((int)frameLeft, (int)frameTop), rasterGrid, layerBounds), SourceBounds = new((float)(left - frameLeft), (float)(top - frameTop), (float)(right - frameLeft), (float)(bottom - frameTop)), IntermediateOutput = surfaceMode == RasterSurfaceMode.PremultipliedFilter && frame?.FilterBinding is null } };
+                { RasterPlacement = new(new((int)frameLeft, (int)frameTop), rasterGrid, layerBounds), SourceBounds = new((float)(left - frameLeft), (float)(top - frameTop), (float)(right - frameLeft), (float)(bottom - frameTop)), IntermediateOutput = surfaceMode == RasterSurfaceMode.PremultipliedFilter && (frame?.FilterBinding is not {} outerBinding || outerBinding.Index != command.MaskContentIndex) } };
             long copyWork = (long)sw * sh * 4 + end - first;
             if (copyWork >= options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source capture exceeds the work limit.");
             workUnits += copyWork;
@@ -531,9 +609,16 @@ public static class SvgConverter
                 limits.MaximumNodes, limits.MaximumPathCommands, checked((int)(limits.MaximumWorkUnits - workUnits)), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
             SvgRenderOptions sourceOptions = new(options.Viewport, options.OutputScale, SvgColor.Transparent, sourceLimits, options.FontSnapshot);
             SvgRoot borrowed = root with { Commands = sourceCommands, ParserWorkUnits = 0 };
-            using RasterizedSurface captured = Rasterize(borrowed, sourceOptions, budget, RasterSurfaceMode.PremultipliedFilter,
-                new RasterFrame(sw + 2, sh + 2, horizontalScale, horizontalOffset - left + 1, verticalScale, verticalOffset - top + 1)
-                { SingleBitmap = true, ContentClip = new(1, 1, sw + 1, sh + 1), ParentOrigin = new(0, 0), CaptureOrigin = new((int)left - 1, (int)top - 1), ImageShaderOrigin = imageShaderOrigin, SourcePlacement = sourcePlacement, NativeSourceBounds = frame?.NativeSourceBounds }, cancellationToken);
+            RasterFrame captureFrame = new(sw + 2, sh + 2, horizontalScale, horizontalOffset - left + 1, verticalScale, verticalOffset - top + 1)
+            { SingleBitmap = true, ContentClip = new(1, 1, sw + 1, sh + 1), ParentOrigin = new(0, 0), CaptureOrigin = new((int)left - 1, (int)top - 1), ImageShaderOrigin = imageShaderOrigin, SourcePlacement = sourcePlacement, NativeSourceBounds = frame?.NativeSourceBounds, FilterSourceMap = frame?.FilterSourceMap, NativeCapturePlacement = PlaceNativeSource(new((int)left - 1, (int)top - 1)) };
+            // Object-box distances already use the placed bounding coordinates.
+            // Only user-space primitives conjugate the authored source transform.
+            if (!objectPrimitiveUnits && captureFrame.NativeCapturePlacement is {} nativePlacement && primitiveMap.Regions is {} nativeRegions)
+            {
+                SvgAffineTransform parameters = nativePlacement.ComposeNative(arena.BindingAt(command.MaskContentIndex).Transform);
+                primitiveMap = primitiveMap with { Regions = nativeRegions with { NativeMapping = new(new((float)parameters.A, (float)parameters.C, (float)parameters.E, (float)parameters.B, (float)parameters.D, (float)parameters.F), new((int)(left - 1 - frameLeft), (int)(top - 1 - frameTop))) } };
+            }
+            using RasterizedSurface captured = Rasterize(borrowed, sourceOptions, budget, RasterSurfaceMode.PremultipliedFilter, captureFrame, cancellationToken);
             workUnits += captured.WorkUnits;
             int frameBytes = fw * fh * 4;
             using RenderBudget.BudgetReservation frameOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<byte>(frameBytes), SvgMemoryCategory.Surface);
@@ -604,7 +689,8 @@ public static class SvgConverter
                     native.SkewY * (1f / scaleX), native.ScaleY * (1f / scaleY), native.TranslateY);
                 if (!remainder.TryInvert(out SvgShaderMatrix inverse)) return end + 1;
                 SvgAffineTransform layerMap = SvgAffineTransform.FromScale(scaleX, scaleY);
-                SvgAffineTransform placement = layerMap.ComposeChecked(inverseSource);
+                SvgAffineTransform parameterInverse = sourcePlacement == SvgAffineTransform.Identity ? inverseSource : inverseSource.ComposeChecked(sourcePlacement);
+                SvgAffineTransform placement = layerMap.ComposeChecked(parameterInverse);
                 ParserWorkCounter preparation = new(options.Limits.MaximumWorkUnits - workUnits);
                 int count = end - first;
                 using RenderBudget.BudgetReservation replayOwner = budget.Reserve(
@@ -629,7 +715,7 @@ public static class SvgConverter
                             {
                                 geometries[geometryCount] = geometry;
                                 item = item with { GeometryIndex = geometryCount++ };
-                                SvgPaintBounds layout = geometry.Glyph.Source.LayoutBounds(inverseSource, preparation, cancellationToken);
+                                SvgPaintBounds layout = geometry.Glyph.Source.LayoutBounds(parameterInverse, preparation, cancellationToken);
                                 objectBounds = Union(objectBounds, layout.Map(layerMap, preparation, cancellationToken));
                                 // Native text recording encloses the font layout before its
                                 // filter layer maps the resulting integer visual rectangle.
@@ -647,13 +733,14 @@ public static class SvgConverter
                             SvgRectangle box = SvgPathBounds.Compute(source.Commands, preparation, cancellationToken);
                             SvgPaintBounds bounds = new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height))
                                 .Map(placement.ComposeChecked(source.SceneMap), preparation, cancellationToken);
-                            objectBounds = Union(objectBounds, bounds);
+                            if (!GetRecordedPaintValue(geometry.RecordedPaint).IsMarkerContent)
+                                objectBounds = Union(objectBounds, bounds);
                             SvgAuthoredPath outline = source.StrokeOutline ?? source;
                             box = SvgPathBounds.Compute(outline.Commands, preparation, cancellationToken);
                             visualBounds = Union(visualBounds, new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height))
                                 .Map(placement.ComposeChecked(outline.SceneMap), preparation, cancellationToken));
                         }
-                        else if (item.Kind == SvgDrawCommandKind.BeginGroup && item.RegionKind is (SvgLayerRegionKind.Mask or SvgLayerRegionKind.Filter) && (item.MaskContentIndex >= 0 || item.MaskRegion is not null))
+                        else if (item.Kind == SvgDrawCommandKind.BeginGroup && item.RegionKind == SvgLayerRegionKind.Mask && (item.MaskContentIndex >= 0 || item.MaskRegion is not null))
                             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine filter sources crossing nested resource boundaries are not implemented.");
                         commands[index - first + 1] = item;
                     }
@@ -697,7 +784,7 @@ public static class SvgConverter
                     using RasterizedSurface image = Rasterize(borrowed, new(options.Viewport, options.OutputScale, SvgColor.Transparent, layerLimits, options.FontSnapshot),
                         budget, RasterSurfaceMode.PremultipliedFilter,
                         new RasterFrame((int)frameWidth, (int)frameHeight, 1, -left, 1, -top)
-                        { SingleBitmap = true, FilterBinding = new(command.MaskContentIndex, local), SourcePlacement = placement, NativeSourceBounds = nativeSource }, cancellationToken);
+                        { SingleBitmap = true, FilterBinding = new(command.MaskContentIndex, local), SourcePlacement = placement, NativeSourceBounds = nativeSource, FilterSourceMap = new(arena.BindingAt(command.MaskContentIndex).Transform, layerMap, new SvgAffineTransform(inverse.ScaleX, inverse.SkewY, inverse.SkewX, inverse.ScaleY, inverse.TranslateX, inverse.TranslateY).ComposeNative(SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset))) }, cancellationToken);
                     workUnits += image.WorkUnits;
                     // Native drawSpecial composes the stored image origin and
                     // transparent one-pixel outset before inverting its matrix.
@@ -820,7 +907,7 @@ public static class SvgConverter
                     SvgRenderOptions captureOptions = new(options.Viewport, options.OutputScale, SvgColor.Transparent, captureLimits, options.FontSnapshot);
                     using RasterizedSurface captured = Rasterize(scene, captureOptions, budget, RasterSurfaceMode.PremultipliedFilter,
                         new RasterFrame((int)sourceWidth, (int)sourceHeight, horizontalScale, horizontalOffset - left, verticalScale, verticalOffset - top)
-                        { SingleBitmap = true, ContentClip = new(1, 1, (int)sourceWidth - 1, (int)sourceHeight - 1), ParentOrigin = tile.Origin, CaptureOrigin = new((int)left, (int)top), SourcePlacement = sourcePlacement, NativeSourceBounds = frame?.NativeSourceBounds }, cancellationToken);
+                        { SingleBitmap = true, ContentClip = new(1, 1, (int)sourceWidth - 1, (int)sourceHeight - 1), ParentOrigin = tile.Origin, CaptureOrigin = new((int)left, (int)top), SourcePlacement = sourcePlacement, NativeSourceBounds = frame?.NativeSourceBounds, FilterSourceMap = frame?.FilterSourceMap, NativeCapturePlacement = PlaceNativeSource(new((int)left, (int)top)) }, cancellationToken);
                     Charge(captured.WorkUnits);
                     int tw = tile.BitmapClip.Right - tile.BitmapClip.Left, th = tile.BitmapClip.Bottom - tile.BitmapClip.Top;
                     using RenderBudget.BudgetReservation tileOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<byte>(checked(tw * th * 4)), SvgMemoryCategory.Surface);
@@ -1924,7 +2011,8 @@ public static class SvgConverter
                     : SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
                 if (coordinateSpace == PathCoordinateSpace.User && sourcePlacement != SvgAffineTransform.Identity)
                     outputMap = outputMap.ComposeChecked(sourcePlacement);
-                authoredMap = outputMap.ComposeChecked(replay.SceneMap);
+                authoredMap = frame?.NativeCapturePlacement is {} nativeCapture
+                    ? nativeCapture.ComposeNative(replay.SceneMap) : outputMap.ComposeChecked(replay.SceneMap);
                 if (authoredPath?.StrokeStyle?.NonScalingMap is {} nonScaling)
                 {
                     preparationWork.Consume(cancellationToken);
@@ -1932,7 +2020,7 @@ public static class SvgConverter
                         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-scaling stroke transform must be invertible.");
                     authoredMap = outputMap.ComposeNative(nonScaling.SourceMap).ComposeNative(inverse);
                 }
-                if (frame is { ParentOrigin: {} parent } sourceFrame)
+                if (frame is { ParentOrigin: {} parent, NativeCapturePlacement: null } sourceFrame)
                 {
                     // SkDevice::setGlobalCTM rounds in the parent bitmap before
                     // post-concatenating the source device's integer origin.

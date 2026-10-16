@@ -103,7 +103,7 @@ internal sealed class SvgFilterArena : IDisposable
     /// <summary>Resolves forward output clips through the document's existing bounded clip registry before emission.</summary>
     /// <remarks>Bindings borrow parser-owned operations. Command emission adopts native clip content into the scene;
     /// sealing drops these borrowed references before parser disposal. Work, cancellation and owners are shared.</remarks>
-    internal void ResolveOutputClips(SvgDocumentState state)
+    internal void ResolveOutputClips(SvgDocumentState state, SvgSceneBuilder scene)
     {
         if (!_hasPendingClips) return;
         if (_sealed || _disposed) throw new InvalidOperationException("Filter construction is closed.");
@@ -112,8 +112,49 @@ internal sealed class SvgFilterArena : IDisposable
             _work.Consume(_token);
             SvgFilterBinding binding = _bindings[index];
             if (binding.ClipReferenceId is not {} id) continue;
-            SvgLeafMaskBinding clip = SvgClipPathSyntax.BindResourceClip(id, binding.Transform, null, state, _work, _token);
+            SvgLeafMaskBinding clip;
+            SvgSceneBuilder? previous = state.DefinitionReplayScene;
+            state.DefinitionReplayScene = scene;
+            try
+            {
+                if (state.ObjectClips.TryGetValue(id, out SvgClipBox fractions))
+                    clip = SvgLeafMaskComposition.NewBinding(state, TargetBounds().Register(fractions, state, _work, _token), null);
+                else if (state.ClipPolygons.TryGetValue(id, out SvgClipPolygon polygon) && polygon.IsObjectBoundingBox)
+                    clip = SvgLeafMaskComposition.NewBinding(state, TargetBounds().Register(polygon, state, _work, _token), null);
+                else clip = SvgClipPathSyntax.BindResourceClip(id, binding.Transform, null, state, _work, _token);
+            }
+            finally { state.DefinitionReplayScene = previous; }
             _bindings[index] = binding with { ClipReferenceId = null, OutputClip = clip };
+
+            SvgObjectBoundingClip TargetBounds()
+            {
+                SvgObjectBoundingClip target = new(binding.Transform, null);
+                bool found = false;
+                int depth = 0;
+                for (int commandIndex = 0; commandIndex < scene.CommandCount; commandIndex++)
+                {
+                    _work.Consume(_token);
+                    SvgDrawCommand command = scene.CommandAt(commandIndex);
+                    if (!found)
+                    {
+                        if (command.Kind == SvgDrawCommandKind.BeginGroup && command.RegionKind == SvgLayerRegionKind.Filter && command.MaskContentIndex == index)
+                            found = true;
+                        continue;
+                    }
+                    if (command.Kind == SvgDrawCommandKind.BeginGroup) depth++;
+                    else if (command.Kind == SvgDrawCommandKind.EndGroup)
+                    {
+                        if (depth-- == 0) return target;
+                    }
+                    else if (command.Kind == SvgDrawCommandKind.Geometry)
+                    {
+                        SvgGeometry geometry = scene.GeometryAt(command.GeometryIndex);
+                        if (!scene.GetRecordedPaintValue(geometry.RecordedPaint).IsMarkerContent)
+                            target.Add(geometry, state, _work, _token);
+                    }
+                }
+                throw new SvgException(SvgErrorCode.MalformedInput, "Filter output clip requires a balanced source scope.");
+            }
         }
         _hasPendingClips = false;
     }
