@@ -71,6 +71,11 @@ retains twelve healthy captures, the original Core input and the earlier eight
 controls. The old transformed-fill clip-crossing control is also exact against
 its unchanged reference. No complete-document count changes.
 
+The [glyph-resource document and three controls](tests/Research/glyph-resource-exit-sheet/README.md)
+are frozen at **0/1 document / 0/3 controls exact** on both platforms, with thirty
+healthy captures including intended-font witnesses. Direct/group glyph clip/mask
+gates are measured T1 work; other glyph/composite/private requirements stay open.
+
 | Required item, in order | Missing behavior and dependencies | Acceptance and completion condition |
 | --- | --- | --- |
 | [x] 3. Composition and resource presentation (G5–G7) | Declared C1–C6c exits are complete. Source replay, tight bounds, viewport rebasing and native rectangle clipping are available dependencies; glyph-specific and filtered-source boundaries remain in items 4–5. | Retain the linked whole documents, original inputs, exact platform references, siblings and affected scope/cleanup checks. C6c closes both frozen outputs without changing earlier exact results. |

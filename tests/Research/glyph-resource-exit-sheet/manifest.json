@@ -1,0 +1,222 @@
+{
+  "schemaVersion": 1,
+  "purpose": "One complete MIT glyph-resource document and three focused controls, frozen before correction of T1 direct/group glyph clipping and masks. Composite flags, other T1 maps and private validation remain required.",
+  "fontPack": "../supplied-font-labels/font-pack.json",
+  "fontPackId": "public-noto-sans",
+  "fontProvenance": "../supplied-font-labels/font-provenance.json",
+  "fontProgramSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "cases": [
+    {
+      "id": "glyph-resource-sheet",
+      "input": "glyph-resource-sheet.svg",
+      "width": 384,
+      "height": 216,
+      "background": "transparent",
+      "role": "document-output",
+      "license": "MIT",
+      "selection": "Whole supplied-font resource document, including direct/group clipping, direct/spatial masks, skew/reflection and independent siblings",
+      "sourceSha256": "596c391509e58bd5e916041c7d71c74aff8e36a87849d530e64d097b34ba82bf",
+      "scale": 1,
+      "licenseEvidence": "LICENSE.txt",
+      "expectedError": "UnsupportedFeature",
+      "declarationBaseRevision": "66b84574782de0cd7f655c674e884636bbbd2991",
+      "reference": "references/glyph-resource-sheet.png",
+      "referenceSha256": "7cfa626748944e022d675dced12393fabdb63d53bacffc30db9c5b801089810e",
+      "captures": [
+        {
+          "pngSha256": "7cfa626748944e022d675dced12393fabdb63d53bacffc30db9c5b801089810e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7cfa626748944e022d675dced12393fabdb63d53bacffc30db9c5b801089810e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7cfa626748944e022d675dced12393fabdb63d53bacffc30db9c5b801089810e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/glyph-resource-sheet.png",
+      "linuxReferenceSha256": "65f787f68f7aa269487611fb857003b8693a68acde53e34cf58b2e99cc9a5e4e",
+      "linuxCaptures": [
+        {
+          "pngSha256": "65f787f68f7aa269487611fb857003b8693a68acde53e34cf58b2e99cc9a5e4e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "65f787f68f7aa269487611fb857003b8693a68acde53e34cf58b2e99cc9a5e4e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "65f787f68f7aa269487611fb857003b8693a68acde53e34cf58b2e99cc9a5e4e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "defined-glyph-clip",
+      "input": "defined-glyph-clip.svg",
+      "width": 180,
+      "height": 80,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "MIT",
+      "selection": "Defined local clip crosses supplied glyph ink and restores the following sibling",
+      "sourceSha256": "b761796ddeb6c9f4784abba41f9a86ac60305d5698d4dff60ea3a75ae05c8165",
+      "scale": 1,
+      "licenseEvidence": "LICENSE.txt",
+      "expectedError": "UnsupportedFeature",
+      "declarationBaseRevision": "66b84574782de0cd7f655c674e884636bbbd2991",
+      "reference": "references/defined-glyph-clip.png",
+      "referenceSha256": "9ad0ad4c806a6b14c203bbdd8725bb15cd3a6cbc189dc71173aed4c1c0772e20",
+      "captures": [
+        {
+          "pngSha256": "9ad0ad4c806a6b14c203bbdd8725bb15cd3a6cbc189dc71173aed4c1c0772e20",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9ad0ad4c806a6b14c203bbdd8725bb15cd3a6cbc189dc71173aed4c1c0772e20",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9ad0ad4c806a6b14c203bbdd8725bb15cd3a6cbc189dc71173aed4c1c0772e20",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/defined-glyph-clip.png",
+      "linuxReferenceSha256": "857cd798863d1fd3e1857ca946d19e615767db3f88d455b992922f2fef0f8457",
+      "linuxCaptures": [
+        {
+          "pngSha256": "857cd798863d1fd3e1857ca946d19e615767db3f88d455b992922f2fef0f8457",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "857cd798863d1fd3e1857ca946d19e615767db3f88d455b992922f2fef0f8457",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "857cd798863d1fd3e1857ca946d19e615767db3f88d455b992922f2fef0f8457",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "defined-glyph-mask",
+      "input": "defined-glyph-mask.svg",
+      "width": 180,
+      "height": 80,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "MIT",
+      "selection": "Defined partial alpha mask crosses supplied glyph ink and restores the following sibling",
+      "sourceSha256": "6b60f4dfd70c07236b5a2027524feefb8f498fead00692fa87bf07e51591559f",
+      "scale": 1,
+      "licenseEvidence": "LICENSE.txt",
+      "expectedError": "UnsupportedFeature",
+      "declarationBaseRevision": "66b84574782de0cd7f655c674e884636bbbd2991",
+      "reference": "references/defined-glyph-mask.png",
+      "referenceSha256": "570678bd75b056097fe7baf77eaea90518e14b1e842cd6b8220a509f0efc3730",
+      "captures": [
+        {
+          "pngSha256": "570678bd75b056097fe7baf77eaea90518e14b1e842cd6b8220a509f0efc3730",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "570678bd75b056097fe7baf77eaea90518e14b1e842cd6b8220a509f0efc3730",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "570678bd75b056097fe7baf77eaea90518e14b1e842cd6b8220a509f0efc3730",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/defined-glyph-mask.png",
+      "linuxReferenceSha256": "a99df9142b656a7e6c9ad32466c6c2d96ae8182fe217639913907dfba936b13f",
+      "linuxCaptures": [
+        {
+          "pngSha256": "a99df9142b656a7e6c9ad32466c6c2d96ae8182fe217639913907dfba936b13f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a99df9142b656a7e6c9ad32466c6c2d96ae8182fe217639913907dfba936b13f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a99df9142b656a7e6c9ad32466c6c2d96ae8182fe217639913907dfba936b13f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "spatial-glyph-group",
+      "input": "spatial-glyph-group.svg",
+      "width": 180,
+      "height": 80,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "MIT",
+      "selection": "Spatial group mask covers supplied glyphs and a vector child under group opacity, retaining the following sibling",
+      "sourceSha256": "373b43734f56a935b09db000a6558d4daaa1a56c2d92af3dd64518981db56e9d",
+      "scale": 1,
+      "licenseEvidence": "LICENSE.txt",
+      "expectedError": "UnsupportedFeature",
+      "declarationBaseRevision": "66b84574782de0cd7f655c674e884636bbbd2991",
+      "reference": "references/spatial-glyph-group.png",
+      "referenceSha256": "49a7357864ebfcd38a47ef09537dc6be77afa4cad5eaecd09aca0af962dd5bb8",
+      "captures": [
+        {
+          "pngSha256": "49a7357864ebfcd38a47ef09537dc6be77afa4cad5eaecd09aca0af962dd5bb8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "49a7357864ebfcd38a47ef09537dc6be77afa4cad5eaecd09aca0af962dd5bb8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "49a7357864ebfcd38a47ef09537dc6be77afa4cad5eaecd09aca0af962dd5bb8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/spatial-glyph-group.png",
+      "linuxReferenceSha256": "1664b40f303727899529e3e660f237df6f35cbc0838b2bcb2470240a197d3ca9",
+      "linuxCaptures": [
+        {
+          "pngSha256": "1664b40f303727899529e3e660f237df6f35cbc0838b2bcb2470240a197d3ca9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1664b40f303727899529e3e660f237df6f35cbc0838b2bcb2470240a197d3ca9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1664b40f303727899529e3e660f237df6f35cbc0838b2bcb2470240a197d3ca9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ]
+}
