@@ -221,7 +221,7 @@ public static class SvgConverter
         // Keep the parent's rounded CTM before changing to the source device.
         internal SvgCpuBitmapOrigin? ParentOrigin { get; init; }
         internal SvgCpuBitmapOrigin CaptureOrigin { get; init; }
-        /// <summary>Retains the native padded image-shader bitmap origin in the parent's device coordinates.</summary>
+        /// <summary>Retains the native padded source-bitmap origin in the parent's device coordinates.</summary>
         internal SvgCpuBitmapOrigin? ImageShaderOrigin { get; init; }
         /// <summary>Substitutes the one outer binding of a borrowed layer-space source scene.</summary>
         internal SvgFilterReplayBinding? FilterBinding { get; init; }
@@ -564,7 +564,6 @@ public static class SvgConverter
             if (requestedRight <= requestedLeft || requestedBottom <= requestedTop) return end + 1;
             if (right + paddingX < requestedLeft || bottom + paddingY < requestedTop || left - paddingX > requestedRight || top - paddingY > requestedBottom) return end + 1;
             SvgCpuBitmapOrigin? imageShaderOrigin = null;
-            if (boundedSource || nestedSourceBounds is not null || hasSourceImages)
             {
                 bool objectSourceUnits = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox;
                 SvgAffineTransform sourceCoordinates = objectSourceUnits
@@ -576,21 +575,21 @@ public static class SvgConverter
                 ParserWorkCounter sourceRequestWork = new(options.Limits.MaximumWorkUnits - workUnits);
                 SvgPaintBounds needed = SvgFilterPlayback.RequiredSourceBounds(resource, primitiveMap, sourceContext,
                     new((float)requestedLeft, (float)requestedTop, (float)requestedRight, (float)requestedBottom), budget, sourceRequestWork, cancellationToken);
-                if (hasSourceImages)
-                {
-                    SvgPaintBounds painted = new((float)(visual.Left * horizontalScale + horizontalOffset), (float)(visual.Top * verticalScale + verticalOffset),
-                        (float)(visual.Right * horizontalScale + horizontalOffset), (float)(visual.Bottom * verticalScale + verticalOffset));
-                    SvgPaintBounds hint = SvgFilterPlayback.SourceLayerBounds(resource, primitiveMap, sourceContext, painted, budget, sourceRequestWork, cancellationToken);
-                    double nativeLeft = Math.Floor(MathF.Max(hint.Left, needed.Left)) - 1, nativeTop = Math.Floor(MathF.Max(hint.Top, needed.Top)) - 1;
-                    if (!double.IsFinite(nativeLeft) || !double.IsFinite(nativeTop) || nativeLeft < int.MinValue || nativeLeft > int.MaxValue || nativeTop < int.MinValue || nativeTop > int.MaxValue)
-                        throw new SvgException(SvgErrorCode.LimitExceeded, "Filter image origin exceeds the coordinate range.");
-                    imageShaderOrigin = new((int)nativeLeft, (int)nativeTop);
-                }
+                SvgPaintBounds painted = new((float)(visual.Left * horizontalScale + horizontalOffset), (float)(visual.Top * verticalScale + verticalOffset),
+                    (float)(visual.Right * horizontalScale + horizontalOffset), (float)(visual.Bottom * verticalScale + verticalOffset));
+                SvgPaintBounds hint = SvgFilterPlayback.SourceLayerBounds(resource, primitiveMap, sourceContext, painted, budget, sourceRequestWork, cancellationToken);
+                double nativeLeft = Math.Floor(MathF.Max(hint.Left, needed.Left)) - 1, nativeTop = Math.Floor(MathF.Max(hint.Top, needed.Top)) - 1;
+                if (!double.IsFinite(nativeLeft) || !double.IsFinite(nativeTop) || nativeLeft < int.MinValue || nativeLeft > int.MaxValue || nativeTop < int.MinValue || nativeTop > int.MaxValue)
+                    throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source origin exceeds the coordinate range.");
+                imageShaderOrigin = new((int)nativeLeft, (int)nativeTop);
                 workUnits += sourceRequestWork.Used;
-                double captureLeft = Math.Max(left, needed.Left), captureTop = Math.Max(top, needed.Top);
-                double captureRight = Math.Min(right, needed.Right), captureBottom = Math.Min(bottom, needed.Bottom);
-                if (captureRight > captureLeft && captureBottom > captureTop)
-                    (left, top, right, bottom) = (captureLeft, captureTop, captureRight, captureBottom);
+                if (boundedSource || nestedSourceBounds is not null || hasSourceImages)
+                {
+                    double captureLeft = Math.Max(left, needed.Left), captureTop = Math.Max(top, needed.Top);
+                    double captureRight = Math.Min(right, needed.Right), captureBottom = Math.Min(bottom, needed.Bottom);
+                    if (captureRight > captureLeft && captureBottom > captureTop)
+                        (left, top, right, bottom) = (captureLeft, captureTop, captureRight, captureBottom);
+                }
             }
             // Shifted and chained results may feed visible pixels from outside the
             // final output window. A single blur needs only the complete source;
@@ -1333,6 +1332,11 @@ public static class SvgConverter
         int GradientDither(int x, int y)
         {
             SvgCpuBitmapOrigin origin = ShaderBitmapOrigin(x, y);
+            // The compact capture may omit the requested image's halo. Dithering
+            // still belongs to the native padded source bitmap used by image paints.
+            if (surfaceMode == RasterSurfaceMode.PremultipliedFilter
+                && frame is { NativeSourceBounds: null, ImageShaderOrigin: {} sourceOrigin } sourceFrame)
+                origin = new(sourceOrigin.X - sourceFrame.CaptureOrigin.X, sourceOrigin.Y - sourceFrame.CaptureOrigin.Y);
             int localX = x - origin.X, localY = y - origin.Y;
             int mixedY = localY ^ localX;
             return ((mixedY & 1) << 5) | ((localX & 1) << 4)

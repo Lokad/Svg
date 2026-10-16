@@ -1,0 +1,12 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="64">
+<defs>
+  <linearGradient id="g"><stop stop-color="#285a93"/><stop offset="1" stop-color="#d45a32"/></linearGradient>
+  <filter id="zero" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="0"/></filter>
+  <filter id="small" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation=".1 2"/></filter>
+  <filter id="wide" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5"/></filter>
+</defs>
+<rect x="4" y="4" width="12" height="12" fill="url(#g)" filter="url(#zero)"/>
+<rect x="36" y="11" width="12" height="12" fill="url(#g)" filter="url(#small)"/>
+<rect x="68" y="36" width="12" height="12" fill="url(#g)" filter="url(#wide)"/>
+</svg>
