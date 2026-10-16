@@ -34,6 +34,11 @@ internal static class SvgStyleSheet
 
     internal static InlineStyle Resolve(XmlReader reader, BudgetedParserList<CssRule> rules, SvgCssAncestorContext ancestors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        if (reader is SvgRetainedTextSource.Reader retained)
+        {
+            workCounter.Consume(cancellationToken);
+            return retained.StyleSheet;
+        }
         SvgStyleCascade cascade = new();
         SvgCssElement element = default;
         for (int ruleIndex = 0; ruleIndex < rules.Count; ruleIndex++)

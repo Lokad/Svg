@@ -56,7 +56,8 @@ internal static class SvgSymbolContentParser
             SvgPaintOpacity? fillOpacity = style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity);
             SvgColor? color = style.Color is null ? null : SvgColorParser.Parse(style.Color, colors);
             SvgInheritedStrokeStyle stroke = new(Copy(style.Linecap), Copy(style.Linejoin), Copy(style.Dasharray), Copy(style.Dashoffset), Copy(style.Width), Copy(style.Miterlimit), Copy(style.StrokeOpacity), Copy(style.Stroke));
-            int start = content.AddUse(reference, fillOpacity, color, strokeOpacity, stroke, style.PaintOrder, markers, style.Fill is not null, displayed, visible);
+            int start = content.AddUse(reference, fillOpacity, color, strokeOpacity, stroke, style.PaintOrder, markers,
+                SvgRetainedTextSource.CaptureElement(reader, context, state, state.TextReplay?.Limits ?? throw new InvalidOperationException("Use capture requires document limits.")), style.Fill is not null, displayed, visible);
             if (id is not null) state.Definitions.TryAdd(id, new([], false, null, null) { SymbolContent = new(content, start, 1), BorrowedFromSymbol = true });
             state.HasUnsupportedContent |= !reader.IsEmptyElement;
         }

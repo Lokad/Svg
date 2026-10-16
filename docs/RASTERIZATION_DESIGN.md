@@ -1,3 +1,25 @@
+## Retained text tokens and glyph-scene transfer (2026-10-16)
+
+Identifier-bearing rendered groups retain bounded text tokens with authored
+attributes, text/CDATA order and source-matched CSS. Independent reader cursors
+preserve normal subtree/chunk semantics. The ordinary text parser consumes the
+same model for the original source and its instance, so style, whitespace, spans,
+metrics and native glyph generation remain shared. Group/use typography resolves
+through existing container inheritance; referenced ancestors supply no new font
+implementation. Source syntax counts once; expansion consumes work and geometry
+storage under unchanged limits.
+
+A staging scene prepares glyph geometry and immutable paints, then transfers its
+owner to the parent. Recorded paints rebind to that parent; device clips use the
+existing operation registry. No intermediate raster surface changes text pixels.
+Direct font painting remains distinct from picture-backed tile painting. Every
+failure restores the borrowed context and releases partial owners; snapshots stay
+caller-owned. The [text-map sheet](../tests/Research/text-map-exit-sheet/README.md)
+and four controls are exact on both platforms. [Qualification](../artifacts/maintenance-review-20261012/local-use-qualified-results.json) retains all earlier results and affected ownership checks.
+Instanced deferred paths/resource scopes, source-only font discovery and further
+text admission remain explicit T1 work; the finite instance/paint sheet owns their
+remaining acceptance instead of a combination census.
+
 ## Text stroke shader coordinates and mask color (2026-10-16)
 
 The [text-map shader controls](../tests/Research/text-map-exit-sheet/README.md)

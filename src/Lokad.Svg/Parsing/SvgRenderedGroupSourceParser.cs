@@ -9,7 +9,7 @@ namespace Lokad.Svg.Parsing;
 /// All construction is parser-thread confined, budgeted, work charged and cancellation aware.</remarks>
 internal static class SvgRenderedGroupSourceParser
 {
-    internal static void BeginGroup(XmlReader reader, bool directChild, SvgRootAttributes root, SvgDocumentState state,
+    internal static void BeginGroup(XmlReader reader, bool directChild, SvgRootAttributes root, SvgDocumentState state, SvgRenderLimits limits,
         IReadOnlyDictionary<string, SvgColor> colors, ParserWorkCounter work, CancellationToken token)
     {
         string? id = reader.LocalName == "g" ? reader.GetAttribute("id") : null;
@@ -46,7 +46,7 @@ internal static class SvgRenderedGroupSourceParser
         content.BeginGroup(reader.Depth, id, presentation,
             new(paint, style.Fill is not null, fillOpacity, color, opacity, SvgPresentationResolver.ParseDisplay(style.Display),
                 style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true))
-            { InheritsOpacity = style.InheritsOpacity, Markers = presentation.Markers, PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId, Stroke = stroke, FillRule = fillRule, StrokeOpacity = style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity) },
+            { TextStyleSource = SvgRetainedTextSource.CaptureElement(reader, context, state, limits), InheritsOpacity = style.InheritsOpacity, Markers = presentation.Markers, PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId, Stroke = stroke, FillRule = fillRule, StrokeOpacity = style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity) },
             SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
         if (id is not null) state.RenderedGroupDefinitions.TryAdd(id, new([], false, null, null)
             { SymbolContent = new(content, 0, 0), BorrowedFromSymbol = true, RenderedGroupId = id });
@@ -93,7 +93,8 @@ internal static class SvgRenderedGroupSourceParser
             InheritedTransform = SvgAffineTransform.Identity, InheritedFillRule = Copy(style.FillRule), SourceMaskReference = Copy(reader.GetAttribute("mask")) };
         content.AddUse(reference, style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity),
             style.Color is null ? null : SvgColorParser.Parse(style.Color, context.NamedColors),
-            style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity), stroke, style.PaintOrder, new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, context.WorkCounter, context.CancellationToken), style.Fill is not null,
+            style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity), stroke, style.PaintOrder, new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, context.WorkCounter, context.CancellationToken),
+            SvgRetainedTextSource.CaptureElement(reader, context, state, state.TextReplay?.Limits ?? throw new InvalidOperationException("Use capture requires document limits.")), style.Fill is not null,
             SvgPresentationResolver.ParseDisplay(style.Display), style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true));
         if (reader.GetAttribute("clip-path") is not null) content.AddUnsupported();
 

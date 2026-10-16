@@ -342,6 +342,8 @@ public sealed class SvgFontLayoutDiagramTests
     [InlineData("mixed-direct-path.svg")]
     [InlineData("shader-curved-path.svg")]
     [InlineData("shader-stroke-maps.svg")]
+    [InlineData("local-use-label.svg")]
+    [InlineData("text-map-sheet.svg")]
     public async Task Retained_text_maps_release_owners_and_support_prepared_retry(string inputName)
     {
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", "text-map-exit-sheet");

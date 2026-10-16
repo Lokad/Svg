@@ -45,6 +45,7 @@ internal static class SvgDocumentTraversal
         state.OutputMagnification = System.Math.Max(System.Math.Abs(outputMap.A), System.Math.Abs(outputMap.D));
         state.OutputTextScale = outputMap.A;
         state.OutputMap = outputMap;
+        state.TextReplay = new(root, limits, fontSnapshot);
         if (root.SourceOpacity.Value != 1) state.Scene.BeginSourceOpacityScope(root.SourceOpacity, new(0));
         while (reader.Read())
         {
@@ -189,7 +190,7 @@ internal static class SvgDocumentTraversal
                 else if (inScope && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName))
                 {
                     SvgParsedGroup parsedGroup = SvgGroupParser.Parse(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
-                    SvgRenderedGroupSourceParser.BeginGroup(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
+                    SvgRenderedGroupSourceParser.BeginGroup(reader, directChild, root, state, limits, namedColors, workCounter, cancellationToken);
                     if (!reader.IsEmptyElement)
                     {
                         state.Groups.Add(parsedGroup.Scope);

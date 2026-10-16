@@ -1,10 +1,10 @@
 # Remaining supplied-font text maps
 
-One MIT document (416×256) remains **0/1 complete**, with **3/4 separately counted
+One MIT document (416×256) is **1/1 complete**, with **4/4 separately counted
 controls exact** on Windows/Linux, from zero at declaration. Original inputs exercise
 a rendered local-use label, a linear-shader stroke on a curved text path and
 painted direct text before/after a local path. Every panel and following sibling
-must reach the unchanged references; these are named remaining T1 exits.
+match the unchanged references; this closes their declared document exit.
 
 The [manifest](manifest.json) freezes original SVGs/options and healthy stable
 native capture triples before production changes at `12b29b41`. Thirty captures
@@ -31,5 +31,14 @@ map and fragment-matrix cancellation independently of glyph tangents. One added
 affine/translucent control covers three stops, alpha, a span stroke override and
 a following sibling, from six healthy captures. The original three controls stay
 unchanged. [Shader qualification](../../../artifacts/maintenance-review-20261012/text-shader-qualified-results.json)
-owns affected cleanup and prior results. Local-use text still blocks the whole
-sheet. Remaining promised text paints stay in T1; no document count is added.
+owns its affected cleanup and prior results.
+
+The local-use label now closes the unchanged whole document. Bounded source tokens
+retain attributes, text/CDATA order and source-matched CSS. Both rendered source
+and instance feed the ordinary text parser. Instance containers reuse common font
+inheritance; staged glyph geometry and paints transfer under parent ownership,
+with no intermediate raster surface. Focused nested-use font-size and source CSS
+regressions plus affected denial/cancellation/retry pass. [Local-use qualification](../../../artifacts/maintenance-review-20261012/local-use-qualified-results.json)
+owns complete platform checks and preservation. This adds one MIT document to the
+separate authored total. Instance-only font acquisition, text/defs/symbol admission,
+instanced path/resource scopes and remaining paints stay required under T1.

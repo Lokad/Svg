@@ -15,6 +15,7 @@ internal readonly record struct SvgUseReference(string Id, double X, double Y, d
     internal SvgPaintOpacity? ParentElementOpacity { get; init; }
     internal SvgPaintOpacity ElementParentOpacity => ParentElementOpacity ?? SourceOpacity;
     internal SvgPaint InheritedFill { get; init; } = SvgPaint.Default;
+    internal SvgInheritedTextStyle InheritedTextStyle { get; init; } = SvgInheritedTextStyle.Default;
     internal SvgPaintOpacity InheritedStrokeOpacity { get; init; } = SvgPaintOpacity.Opaque;
     internal SvgInheritedStrokeStyle InheritedStroke { get; init; }
     internal string? InheritedFillRule { get; init; }
@@ -76,6 +77,8 @@ internal static class SvgReferenceResolver
         if (definition.StrokeContent is {} strokeContent && (reference.InheritedMarkers.HasMarkers || strokeContent.Content.Nodes[0].Style.Markers.HasMarkers || reference.InheritedStroke != default || strokeContent.Content.Nodes[0].Style.Stroke != default || strokeContent.Content.Nodes[0].Style.PaintOrder is not null || reference.InheritedPaintOrder != SvgPaintOrder.FillStrokeMarkers || reference.PaintServerId is not null || !reference.Transform.IsAxisAligned))
             return SvgSymbolContentRenderer.Apply(definition with { SymbolContent = strokeContent }, reference, frame, state, workCounter, cancellationToken);
         if (definition.SymbolContent is not null) return SvgSymbolContentRenderer.Apply(definition, reference, frame, state, workCounter, cancellationToken);
+        if (definition.TextSource is {} textSource)
+            return textSource.Lower(reference, frame, state, workCounter, cancellationToken);
         if (definition.LeafSource is SvgDefinitionLeafSource source)
         {
             if (source.LocalName == "image") return source.LowerImage(reference, frame, state).Geometries;

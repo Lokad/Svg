@@ -98,7 +98,7 @@ internal static class SvgTextGlyphPainter
                         if (map.IsTranslation) { position = position.Translate(map); map = SvgAffineTransform.Identity; }
                     }
                     if (size == 0) continue;
-                    SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, paint.Color, font.Font, position, size, map, state.DefinitionReplayScene is null ? null : state.OutputTextScale, budget);
+                    SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, paint.Color, font.Font, position, size, map, state.DefinitionReplayScene is null || state.DirectTextReplay ? null : state.OutputTextScale, budget);
                     try
                     {
                         SvgGeometry geometry = paths.IsEmpty ? SvgPaintRecording.RecordGlyph(glyph, state, work, token) : SvgGeometry.FromGlyphContours(glyph);

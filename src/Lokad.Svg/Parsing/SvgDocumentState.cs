@@ -97,6 +97,8 @@ internal sealed class SvgDocumentState : IDisposable
     /// <remarks>Callers restore it in finally; the conversion owns every borrowed builder. Resources remain
     /// document-owned, and the definition's local coordinates exclude enclosing rendered viewports.</remarks>
     internal SvgSceneBuilder? DefinitionReplayScene { get; set; }
+    internal SvgTextReplayEnvironment? TextReplay { get; set; }
+    internal bool DirectTextReplay { get; set; }
     internal SvgFilterArena DocumentFilters => _documentScene.Filters;
 
     internal SvgFilterDefinitionBuilder? FilterDefinition { get; set; }

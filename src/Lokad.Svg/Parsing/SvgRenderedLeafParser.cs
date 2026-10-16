@@ -14,6 +14,19 @@ internal static class SvgRenderedLeafParser
         if (!ValidateLeafAttributes(reader, workCounter, cancellationToken)) return false;
         SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
 
+        if (reader.LocalName == "text" && state.RenderedGroupContent is not null)
+        {
+            int sourceDepth = reader.Depth;
+            SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, workCounter, cancellationToken, true);
+            bool displayed = SvgPresentationResolver.ParseDisplay(style.Display);
+            bool? visible = style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true);
+            SvgRetainedTextSource source = SvgRetainedTextSource.Capture(reader, context, state, limits);
+            state.RenderedGroupContent.AddLeaf(new([], false, null, null)
+                { TextSource = source, SourceDisplayed = displayed, SourceVisible = visible }, displayed, visible);
+            using SvgRetainedTextSource.Reader replay = source.OpenReader(sourceDepth, workCounter, cancellationToken);
+            replay.MoveToContent();
+            return ParseResolved(replay, context, root, state, limits, budget, fontSnapshot, workCounter, cancellationToken);
+        }
         SvgRenderedGroupSourceParser.CaptureLeaf(reader, context, state);
         if (SvgDeferredPaintLeaves.TryRetain(reader, context, state)) return true;
         return ParseResolved(reader, context, root, state, limits, budget, fontSnapshot, workCounter, cancellationToken);

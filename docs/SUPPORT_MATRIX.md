@@ -1,3 +1,16 @@
+## Rendered-group supplied-font text instances (2026-10-16)
+
+The unchanged [text-map document and four controls](../tests/Research/text-map-exit-sheet/README.md)
+are exact on Windows/Linux. Rendered group labels replay authored source attributes,
+text/CDATA order, matched CSS and span overrides through the ordinary text parser.
+Group/use font-size inheritance includes nested aliases. Native fitting, glyph
+paint, alpha and source order retain the existing paths; parent ownership keeps
+borrowed font bytes and staged paints alive. No source is rasterized into a bitmap
+for instancing. [Qualification](../artifacts/maintenance-review-20261012/local-use-qualified-results.json) owns affected cleanup and prior exact results.
+T1 stays open for instance-only font discovery, unrendered text/defs/symbol sources,
+instanced path/resource scopes and remaining paints. Existing explicit gates stay
+required work; this document closes no broader admission or API promise.
+
 ## Supplied-font user-space linear strokes (2026-10-16)
 
 The original curved shader control and one affine/translucent control are exact
@@ -7,8 +20,8 @@ coordinate sampler. Coverage uses the shader's representative color; fragment
 inverse and canvas maps stay separate through float preparation. Independent stop/
 stroke alpha, span overrides and siblings are qualified. Gradient `skewX`/`skewY`
 spelling lowers to the shared affine map. [Qualification](../artifacts/maintenance-review-20261012/text-shader-qualified-results.json)
-owns prior results and affected ownership checks. Local-use text still blocks the
-whole document. Object-box/radial/pattern text paints and forward direct-text
+owns prior results and affected ownership checks. The later local-use correction completes the document. Object-box/radial/pattern
+text paints and forward direct-text
 binding remain required T1 work, including finite constant/empty outcomes. Earlier
 blanket text-shader guards are superseded only for the admitted route. G9 stays open.
 

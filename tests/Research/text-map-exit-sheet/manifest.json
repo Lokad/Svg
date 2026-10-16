@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One complete MIT text-map document remains blocked by local-use labels. Original mixed text and curved shader controls are exact; one additional coordinate/alpha control protects the shared correction. Composite/private/remaining paint routes stay required.",
+  "purpose": "One complete MIT text-map document and four focused controls exact against unchanged platform references. Rendered-group local-use labels reuse captured source text, ordinary supplied-font layout and scene-owned glyph paints. Remaining text paint/instance boundaries, composite flags and private validation stay required.",
   "fontPack": "../supplied-font-labels/font-pack.json",
   "fontPackId": "public-noto-sans",
   "fontProvenance": "../supplied-font-labels/font-provenance.json",
@@ -18,7 +18,6 @@
       "sourceSha256": "a0cdae6c8eb3ee205bde62db73d4ced3344f454629742c94f6512caa5a887c9f",
       "scale": 1,
       "licenseEvidence": "LICENSE.txt",
-      "expectedError": "UnsupportedFeature",
       "declarationBaseRevision": "12b29b416259c313b7c4d290c388d31a96973ea8",
       "reference": "references/text-map-sheet.png",
       "referenceSha256": "c6d71371266561dc8018c89dc9923c65f046d413e0613c7aa79cd19e34191741",
@@ -71,7 +70,6 @@
       "sourceSha256": "7e4f801b35774c1d4d048ab91645c230d108cbb416926a105240223d494fadda",
       "scale": 1,
       "licenseEvidence": "LICENSE.txt",
-      "expectedError": "UnsupportedFeature",
       "declarationBaseRevision": "12b29b416259c313b7c4d290c388d31a96973ea8",
       "reference": "references/local-use-label.png",
       "referenceSha256": "ff3b4da33d78d3a164ca0c70f70e3c31b7fe23fa045f36238b8d3161e4bf7e7a",

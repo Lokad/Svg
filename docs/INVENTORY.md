@@ -9,7 +9,7 @@ The frozen selection and measured outcomes are recorded below.
 
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
-variants**. **Twenty-five additional authored documents** (nineteen CC0 and six MIT
+variants**. **Twenty-six additional authored documents** (nineteen CC0 and seven MIT
 documents) are complete and counted separately. Preserve the delivered
 [effects sheet](../tests/Research/effects-marker-sheet/README.md),
 [composition sheet](../tests/Research/composition-sheet/README.md) and
@@ -121,18 +121,17 @@ original Core inputs and following siblings are protected. The
 [receipt](../artifacts/maintenance-review-20261012/glyph-resource-qualified-results.json)
 owns qualification and resource checks. Remaining T1–T3, effects and S17 stay open.
 
-The frozen [remaining text-map sheet](../tests/Research/text-map-exit-sheet/README.md)
-is **0/1 complete document / 3/4 exact controls** on Windows/Linux. Original mixed
-text and curved linear-shader outputs are exact; local-use text blocks the whole
-sheet. Original assets/options and thirty healthy original/font-use captures stay
-unchanged. One added affine/translucent control has six healthy captures and
-independent paint-map/alpha/span coverage. [Shader qualification](../artifacts/maintenance-review-20261012/text-shader-qualified-results.json)
-owns affected resource checks and prior outputs. The twenty-five authored-document
-count does not change.
+The unchanged [text-map sheet](../tests/Research/text-map-exit-sheet/README.md)
+is **1/1 complete document / 4/4 exact controls** on Windows/Linux. Source labels,
+local-use labels, curved shader strokes, mixed text and following siblings all
+match frozen references. Original inputs/options/fonts and thirty-six healthy
+captures remain unchanged. [Local-use qualification](../artifacts/maintenance-review-20261012/local-use-qualified-results.json) owns prior results and affected ownership checks.
+This raises the separate authored total to **twenty-six** (nineteen CC0, seven MIT).
+Corporate 27/258, selected 50 and sourced W3C counts stay unchanged. T1–T3 remains open.
 
 One additional sourced [W3C decoration document](../tests/Research/stroked-decorations/README.md)
 is **1/1 exact** on Windows/Linux at its frozen 1200×400 output, separately from
-both cohorts and the twenty-five authored documents. All **4/4 controls** are exact,
+both cohorts and the twenty-six authored documents. All **4/4 controls** are exact,
 including curved, three-line/stroke-only and positioned/stretched paths.
 The original 974-byte SVG, supplied Noto program and platform references are
 unchanged. The [receipt](../artifacts/maintenance-review-20261012/decorated-path-qualified-results.json)
