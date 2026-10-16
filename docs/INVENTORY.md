@@ -21,7 +21,8 @@ Original license, pinned upstream bytes, recipes and stable platform references 
 retained. Nine older fractional-line cases now compare exactly against their
 unchanged golds, independently confirmed by Linux native triples. Full local
 qualification passes **8,147 tests/platform**, **80s Windows / 252s Linux** for build
-plus tests; hosted finished-revision verification is pending in PLAN. The
+plus tests; [terminal green CI](https://github.com/Lokad/Svg/actions/runs/38952070864) for `e21f956c`
+passes all ten required checks/platform. The
 [selection/results](../artifacts/public-svg-scan-20261016/) establish no representative
 success rate. All established cohort and authored-document outputs remain exact.
 

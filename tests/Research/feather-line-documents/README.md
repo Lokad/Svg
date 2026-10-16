@@ -28,8 +28,9 @@ Nine older fractional-line/opacity rejections now compare exactly with their unc
 goldens; twenty-seven fresh Linux captures independently confirm those references.
 Full local qualification passes **8,147 tests/platform**, **80s Windows / 252s Linux**
 for build plus complete tests. Existing denial/cancellation/cleanup/retry coverage
-includes Aperture and the source-replay control. Hosted finished-revision verification
-is pending in [PLAN](../../../PLAN.md).
+includes Aperture and the source-replay control. [Terminal green CI](https://github.com/Lokad/Svg/actions/runs/38952070864)
+qualifies exact source `e21f956c`, with all ten required checks/platform.
+[PLAN](../../../PLAN.md) records completion and the separate pending private gate.
 
 The three sourced documents are counted separately from the 36 authored documents,
 the sourced W3C example, corporate **27/27 / 258/258** and selected **50/50**.

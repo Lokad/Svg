@@ -16,8 +16,9 @@ consume the shared endpoints with native float bounds. Three unchanged public MI
 are exact on Windows/Linux. Nine formerly rejected fractional-line/opacity cases
 are exact against their unchanged golds, independently confirmed on Linux.
 Full local qualification passes **8,147 tests/platform**, including useful invalid
-values and material resource outcomes. Hosted finished-revision verification is
-pending in [PLAN](../PLAN.md#delivery-order). Existing cohorts and font/resource
+values and material resource outcomes. [Terminal green CI](https://github.com/Lokad/Svg/actions/runs/38952070864)
+qualifies exact source `e21f956c`, including all ten required checks/platform.
+[PLAN](../PLAN.md#delivery-order) retains the separate pending private adoption gate. Existing cohorts and font/resource
 contracts remain preserved; this closes demonstrated gaps within the agreed subset.
 
 ## Standalone qualification complete (2026-10-16)

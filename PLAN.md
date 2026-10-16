@@ -1,7 +1,7 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-16: standalone checkpoint qualified; public symbol/fractional-line
-corrections locally qualified; hosted final verification pending; private adoption pending.
+Updated 2026-10-16: standalone qualification and finite public SVG follow-up
+complete for `e21f956c`; private deployment adoption gate pending.
 Preserve the current implementation work, qualified `inv-146` correction and every
 established exact result, original SVG/font/reference bytes, options and default
 resource limits. This file owns delivery order, required exits and scope
@@ -44,7 +44,7 @@ established exact outputs are preserved. The receipt owns the exact implementati
 revision and hosted CI outcome, including package/installed-consumer checks. Reuse closed exact-revision CI audits without repolling;
 PLAN-only edits and completed accounting work do not reopen qualification.
 
-Standalone [final qualification](artifacts/standalone-font-qualification-20261016/standalone-release-qualified-results.json)
+Prior standalone [qualification](artifacts/standalone-font-qualification-20261016/standalone-release-qualified-results.json)
 is complete for substantive revision `a3346605`: **8,137 tests/platform** in
 [terminal green CI](https://github.com/Lokad/Svg/actions/runs/38941225820), including
 all four actual-host public font requests, package/notices and installed consumers.
@@ -84,21 +84,21 @@ selection/metrics/pixel outcomes; convert in-scope defects into public
 reproductions. This gate cannot be marked passed by public qualification, and
 standalone completion makes no claim of compatibility with that deployment.
 
-**Public SVG follow-up (2026-10-16): local corrections complete; hosted finished-revision verification pending.**
+**Public SVG follow-up (2026-10-16): complete for substantive revision `e21f956c`.**
 The finite delivery sequence is:
 
 | Exit | Acceptance and status |
 | --- | --- |
 | [x] **P1 — symbol presentation** | The [whole sprite sheet and two controls](tests/Research/symbol-presentation-sheet/README.md) are exact on Windows/Linux. Retained source presentation preserves display, inherited visibility, explicit child overrides and source-ancestor exclusion. Invalid values and representative material resource checks pass. Pinned native symbol/marker display distinctions remain documented. |
 | [x] **P3/P4 — bounded public scan and fractional line endpoints** | Six unchanged MIT Feather SVGs were screened; three passing screens add no corpus cases. The three retained failures—Aperture, Feather and Sun—now match their original 24×24 transparent outputs exactly on Windows/Linux, alongside [two controls](tests/Research/feather-line-documents/README.md). Existing source/native strokes admit finite fractional bare-number/px endpoints while preserving integer fast paths. Nine old fractional-line rejection cases now compare exactly against their unchanged references; independent Linux triples confirm those original golds. No new stroker, API grid or acquisition quota. |
-| [ ] **P2 — finished-correction verification** | [Full local qualification](artifacts/feather-line-documents-20261016/qualified-results.json) passes **8,147 tests/platform**, **80s Windows / 252s Linux** for build plus tests. Push the two buildable corrections together; require terminal green CI for the exact finished revision, including package/consumer and resource checks. Reuse unchanged benchmarks, approximate-memory and maintenance evidence. Ordinary qualification stays below ten minutes. |
+| [x] **P2 — finished-correction verification** | [Full local qualification](artifacts/feather-line-documents-20261016/qualified-results.json) passes **8,147 tests/platform**, **80s Windows / 252s Linux** for build plus tests. One batched push qualified both corrections in [terminal green CI](https://github.com/Lokad/Svg/actions/runs/38952070864) for exact source `e21f956c`: all ten required checks/platform, including package/consumer and resource checks. Hosted build plus full tests: **83s Windows / 122s Ubuntu**. [Completion audit](artifacts/feather-line-documents-20261016/release-follow-up-qualified-results.json) maps every S17 condition to evidence; unchanged benchmarks, approximate-memory and maintenance evidence are reused. |
 
 Sources, original MIT notices, declared outputs and stable native captures are
 retained; the [six-document scan](artifacts/public-svg-scan-20261016/selection.json)
 establishes no representative success rate. Both shared corrections preserve all
 old SVG/font/reference bytes and options, **27/27 / 258/258**, selected **50/50**,
 resource limits, cancellation/cleanup, ownership and font/shaping boundaries.
-P2 closes this finite public follow-up only after hosted finished-revision checks;
+All three exits and every retained public gap from this batch are closed.
 T3-private remains a separate pending adoption gate. Further corpus acquisition
 requires a demonstrated gap within the existing subset.
 
@@ -262,7 +262,7 @@ device rounding and padded capture remain closed.
 
 ## Release completion (S17)
 
-**Standalone status: complete.** The [finished-revision audit](artifacts/standalone-font-qualification-20261016/standalone-release-qualified-results.json)
+**Standalone status: complete, including the public SVG follow-up at `e21f956c`.** The [finished-revision audit](artifacts/feather-line-documents-20261016/release-follow-up-qualified-results.json)
 proves all five conditions below. T3-private remains pending before production
 adoption; standalone qualification does not prove compatibility with that deployment.
 

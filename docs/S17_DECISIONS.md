@@ -1,21 +1,27 @@
 # S17 release criteria and decisions
 
 Updated 2026-10-16. **Standalone Lokad.Svg release qualification is complete**
-for substantive revision `a3346605`. The [completion audit](../artifacts/standalone-font-qualification-20261016/standalone-release-qualified-results.json)
+for substantive revision `e21f956c`. The [completion audit](../artifacts/feather-line-documents-20261016/release-follow-up-qualified-results.json)
 maps all five current [PLAN conditions](../PLAN.md#release-completion-s17) to
-finished-revision evidence. [Terminal green CI](https://github.com/Lokad/Svg/actions/runs/38941225820)
-passes 8,137 tests/platform and all required package/notices/installed-consumer,
+finished-revision evidence. [Terminal green CI](https://github.com/Lokad/Svg/actions/runs/38952070864)
+passes 8,147 tests/platform and all required package/notices/installed-consumer,
 resource and browser/font tooling checks. Normal build plus complete tests take
-91s Windows / 115s Ubuntu; unchanged seven-witness measurements are reused.
+83s Windows / 122s Ubuntu; unchanged seven-witness measurements are reused.
 
 The frozen cohort remains **27/27 documents / 258/258 variants exact**, with
 marks 13/13 and outlined wordmarks 14/14. Selected documents remain 50/50 complete;
-35 authored documents and one sourced W3C document are counted separately. No
+36 authored documents and four sourced documents (one W3C and three MIT Feather)
+are counted separately. No
 established SVG/font/reference bytes, options, limits or exact outcomes changed.
 The public font gate verifies regular, bold, real italic and intentional fallback
 through the existing catalog/providers/FontProbe, independent metrics and exact
 Windows/Linux references. Only one focused italic visual and public font program
-were missing; no production renderer correction was needed.
+were missing for that font gate; no font-renderer correction was needed.
+The subsequent public SVG follow-up closes symbol display/visibility and fractional
+line endpoints through existing retained/native stroke machinery. One authored
+sprite sheet, three unchanged Feather documents and their controls are exact; nine
+older rejection cases now compare with unchanged goldens. [PLAN](../PLAN.md#delivery-order)
+owns that finite completed delivery and its boundary/evidence links.
 
 **Approved criteria change:** private access is not a standalone prerequisite.
 T3-private's original four regular/bold/italic/fallback requests against the

@@ -26,7 +26,9 @@ The whole document and both controls are exact on Windows/Linux. Full local
 qualification passes **8,142 tests/platform**, **104s Windows / 377s Linux** for
 build plus complete tests. The existing denial/cancellation/cleanup/retry check
 now includes this whole sheet; invalid display/visibility values remain categorized.
-Hosted finished-revision CI is pending under [PLAN](../../../PLAN.md).
+Subsequent [terminal green CI](https://github.com/Lokad/Svg/actions/runs/38952070864) for source `e21f956c`
+passes 8,147 tests/platform and all required checks, including this unchanged bank.
+[PLAN](../../../PLAN.md) records completion and the separate pending private gate.
 This is one document, separate from the frozen corporate 27/27 / 258/258 and
 selected 50/50; the two controls add no document count. Existing references,
 font programs and renderer options remain unchanged.

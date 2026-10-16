@@ -27,8 +27,8 @@ Original inputs/options and independent platform references remain frozen;
 define the useful subset and explicit unsupported outcomes. Its G2–G9 acceptance,
 [public regular/bold/real-italic/fallback qualification](tests/Research/public-font-qualification/README.md)
 (T3-public) and standalone release qualification (S17) are complete on Windows/Linux:
-**8,137 tests/platform** and all package/installed-consumer checks pass in
-[terminal green CI](https://github.com/Lokad/Svg/actions/runs/38941225820). Private
+**8,147 tests/platform** and all package/installed-consumer checks pass in
+[terminal green CI](https://github.com/Lokad/Svg/actions/runs/38952070864). Private
 deployment validation (T3-private) remains pending before production adoption
 and does not block standalone qualification. [PLAN](PLAN.md#delivery-order) owns the ordered
 checklist, dependencies and release exit. Mechanism/history belongs in
@@ -39,8 +39,9 @@ The public SVG follow-up closes symbol display/visibility and fractional line
 endpoints through existing retained-source/native-stroke machinery. One symbol
 sheet and three unchanged MIT Feather documents are exact on Windows/Linux;
 nine older rejection cases now match unchanged goldens. Full local qualification
-passes **8,147 tests/platform**; hosted verification of these corrections is
-pending in [PLAN](PLAN.md#delivery-order).
+passes **8,147 tests/platform**; all required hosted checks are green for source
+`e21f956c`. [PLAN](PLAN.md#delivery-order) records the finite follow-up and separate
+pending private deployment gate.
 
 ## Development
 
