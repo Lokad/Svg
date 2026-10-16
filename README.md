@@ -25,14 +25,19 @@ Original inputs/options and independent platform references remain frozen;
 
 [SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md) and [PLAN's finite boundaries](PLAN.md#required-support-boundaries-and-finite-exits)
 define the useful subset and explicit unsupported outcomes. **Standalone delivery
-is reopened for six demonstrated corrections A1–A6 and final verification A7**:
+is reopened for six demonstrated corrections A1–A6, fixture replacement F1 and
+final verification A7**:
 pattern leaf/object-box clips, retained instance/marker clips, clipped vector mask
 content, nested clip-child intersections and filtered gradient source fidelity.
 The prior `e21f956c` qualification remains valid for its declared cases:
 **8,147 tests/platform** and package/installed-consumer checks passed in
 [terminal green CI](https://github.com/Lokad/Svg/actions/runs/38952070864).
 [Public regular/bold/real-italic/fallback qualification](tests/Research/public-font-qualification/README.md)
-(T3-public), existing exact outputs and resource contracts remain preserved. Private
+(T3-public), micro-tests and resource contracts remain preserved. F1 replaces the
+full-document collection with a finite selection from established SVG test suites,
+using the existing harness and pinned Chrome references. Legacy document counts
+remain dated evidence; retained fixture bytes/options and known-bug protections
+stay unchanged. Private
 deployment validation (T3-private) remains pending before production adoption
 and does not block standalone qualification. [PLAN](PLAN.md#delivery-order) owns the ordered
 checklist, dependencies and release exit. Mechanism/history belongs in

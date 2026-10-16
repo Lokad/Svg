@@ -4,11 +4,13 @@ Updated 2026-10-16: the completion audit and bounded survey reopen standalone
 delivery for six named corrections: pattern clips, retained instance/marker
 clips, clipped mask content, nested clip intersections and filtered gradients.
 The `e21f956c` qualification remains valid for its declared cases; it does not
-close these newly retained gaps.
+close these newly retained gaps. F1 below also replaces the full SVG fixture
+collection with documents selected systematically from established test suites.
 Private deployment adoption remains a separate pending gate.
-Preserve the current implementation work, qualified `inv-146` correction and every
-established exact result, original SVG/font/reference bytes, options and default
-resource limits. This file owns delivery order, required exits and scope
+Preserve current implementation work, micro-tests, known-bug regression coverage
+and default resource limits. F1 governs replacement of full-document fixture
+membership; retained SVG/font/reference bytes and options remain immutable.
+This file owns delivery order, required exits and scope
 decisions; [SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md) owns admission,
 [INVENTORY](docs/INVENTORY.md) owns document evidence,
 [RASTERIZATION_DESIGN](docs/RASTERIZATION_DESIGN.md) owns mechanisms/history and
@@ -27,13 +29,22 @@ Its original four deployed-manifest requests remain pending; no deployment
 compatibility is claimed. Font-format/shaping boundaries and renderer promises
 are unchanged. This explicitly supersedes earlier private-access prerequisites.
 
+**Approved full-fixture change (2026-10-16):** replace the list of full SVG
+fixtures using established W3C/resvg/WPT collections under F1. Micro-tests stay,
+and pinned Chrome remains the sole pixel oracle. This is a document-collection
+replacement using the existing harness, not a test-framework or renderer-scope
+redesign. Once F1 replaces the collection, legacy logo/export/authored-sheet
+membership and cohort counts are historical evidence, not mandatory release
+criteria. This explicitly supersedes contrary full-document preservation rules
+and old cohort percentage targets; focused behavior/API/resource protections stay.
+
 
 ## Qualified work to preserve
 
 | Completed commitment | Existing evidence and required preservation |
 | --- | --- |
-| Frozen cohorts and original fixtures | **27/27 corporate documents / 258/258 variants exact on Windows/Linux**, with unchanged [membership/recipes](tests/References/inventory/corporate-cohort-v1.json) and [measurement](tests/References/inventory/corporate-cohort-current.json). **50/50 selected documents complete**, including whole `inv-146`, original marker/shadow and supplied-font fixtures, SVG Translate, `inv-127` and `inv-145`: [gap ledger](tests/References/inventory/svg-gap-cases.json), [inventory](docs/INVENTORY.md). Failure-selected inputs establish no representative success rate. |
-| Integration documents and retained libraries | **36 authored documents** (26 CC0, 10 MIT) and **four sourced documents** (one W3C decoration document and three [MIT Feather icons](tests/Research/feather-line-documents/README.md)) exact on both platforms, separate from the cohorts; [INVENTORY](docs/INVENTORY.md) owns the list, controls and immutable assets/options. Preserve `inv-146`'s oval/text and [merge controls](tests/Research/filter-merges/README.md), [merge qualification](artifacts/maintenance-review-20261012/merge-qualified-results.json), **149/149 paint-recording results** and I Ching's **24 exact / one out-of-scope animation boundary**. |
+| Historical full-document cohorts | **27/27 corporate documents / 258/258 variants exact on Windows/Linux**, with unchanged [membership/recipes](tests/References/inventory/corporate-cohort-v1.json) and [measurement](tests/References/inventory/corporate-cohort-current.json). **50/50 selected documents complete**, including whole `inv-146`, original marker/shadow and supplied-font fixtures, SVG Translate, `inv-127` and `inv-145`: [gap ledger](tests/References/inventory/svg-gap-cases.json), [inventory](docs/INVENTORY.md). These results remain historical evidence; F1 replaces their mandatory full-fixture membership/counts. Failure-selected inputs establish no representative success rate. |
+| Historical integration documents and retained micro-tests | **36 authored documents** (26 CC0, 10 MIT) and **four sourced documents** (one W3C decoration document and three [MIT Feather icons](tests/Research/feather-line-documents/README.md)) were exact on both platforms, separate from the cohorts; [INVENTORY](docs/INVENTORY.md) owns the list, controls and immutable assets/options. F1 replaces full-document membership while preserving unique behavior such as `inv-146`'s oval/text and [merge controls](tests/Research/filter-merges/README.md), [merge qualification](artifacts/maintenance-review-20261012/merge-qualified-results.json), **149/149 paint-recording results** and the I Ching regressions through retained/reduced micro-tests. |
 | G2–G7 / C1–C6c qualified witnesses and shared dependencies | Preserve the witnessed instance/viewport maps, retained curves and affine/non-scaling strokes, shader placement, clip unions/forward/object-box binding, mask regions/opacity, bounded tile content/clips/masks, image placement and enumerated static CSS under the [boundary/evidence index below](#required-support-boundaries-and-finite-exits), [existing map witnesses](artifacts/shared-stroke-pattern-maps-20261015/existing-map-witnesses.json), [tile-content qualification](artifacts/maintenance-review-20261012/pattern-content-qualified-results.json) and [shared-map qualification](artifacts/maintenance-review-20261012/shared-maps-qualified-results.json). Their shared mechanisms remain available dependencies; A1–A5 identify missing bindings/intersections beyond those witnesses. |
 | G9 public text / T1–T2 | The [instance/paint sheet](tests/Research/instance-paint-exit-sheet/README.md) and [composite-flag sheet](tests/Research/composite-flag-exit-sheet/README.md) are complete with **4/4** and **3/3** exact controls on both platforms. Retain [paint qualification](artifacts/maintenance-review-20261012/text-paints-qualified-results.json), [dormant forward-paint follow-up](artifacts/maintenance-review-20261012/dormant-paints-qualified-results.json), [composite qualification](artifacts/maintenance-review-20261012/composite-flags-qualified-results.json), intended-font/metrics proof and the finite [G9 boundary](#g9-supplied-font-labels-and-text-paths). Catalog conformance and the [FontProbe host](tools/Lokad.Svg.FontProbe/README.md), including six transport/input regressions, are implemented; the four end-to-end public requests are T3-public; deployed-manifest evidence remains T3-private. |
 | G8 qualified effects / E1–E2 and E3 source/owner placements | [Affine sources](tests/Research/affine-source-exit-sheet/README.md) **1 document / 4 controls**, [linearRGB restoration](tests/Research/linear-restoration-exit-sheet/README.md) **1 / 3**, [source boundaries](tests/Research/filter-source-exit-sheet/README.md) **1 / 8** and [owner/source composition](tests/Research/filter-owner-exit-sheet/README.md) **1 / 8** are exact on both platforms. The last bank reuses one offset witness: seven new controls, no duplicate canonical test. Preserve the three [source-offset controls and qualification](artifacts/maintenance-review-20261012/affine-offset-qualified-results.json), [filter-region results](tests/Research/filter-regions/manifest.json) **26/26**, and bank-linked qualification/resource evidence. The retained-instance exit is qualified below. |
@@ -73,8 +84,10 @@ records; the queue below owns remaining work.
 ## Ordered delivery checklist
 
 **Standalone delivery is open.** Finish the six demonstrated corrections A1–A6,
-then close A7 on the finished revision. The bounded survey is complete; further
-acquisition is not an execution prerequisite.
+complete the approved full-fixture replacement F1, then close A7 on the finished
+revision. The bounded completion survey is complete; its closure does not close
+the separately approved F1 collection work. Freeze F1 selection before fresh
+candidate comparisons; it can be prepared alongside the corrections.
 T3-public and the seven-witness measurements remain qualified. Private deployment
 configuration does not block this queue. Reuse existing retained-source binding,
 object bounds, native clip replay, filter source capture and resource ownership.
@@ -94,7 +107,68 @@ finished qualification.
 | [ ] **A4 — clips on vector mask content** (G5 / C3/C5) | [Leaf](artifacts/completion-audit-20261016/survey/mask-leaf-user.svg) and [group](artifacts/completion-audit-20261016/survey/mask-group-user.svg) clips reject in `SvgMaskContentReplay.Retain`; both user-space and object-box variants reject before rasterization. | Lower admitted clipped vector mask children through existing source replay. The four named A4 sources must be exact on both platforms with native mask color/coverage and target/content/region units preserved. Reuse qualified alpha/luminance, transformed/object-box mask, denial/cancellation/cleanup/retry controls; image-inside-mask admission is a separate boundary below. |
 | [ ] **A5 — nested clip-child intersections** (G5 / C1/C6, G6 placement) | A [path child carrying a second clip](artifacts/completion-audit-20261016/survey/controls/clip-child-resource-chain-two.svg) renders its full square instead of its intersection with a circle: 798 pixels differ. The [pattern placement](artifacts/completion-audit-20261016/survey/controls/pattern-clip-child-resource-chain-two.svg) differs by 2,112 pixels, and a [visible three-level chain](artifacts/completion-audit-20261016/survey/controls/clip-child-resource-chain-three.svg) also loses the intersection. | Preserve nested clip references when retaining/lowering clip children; all three original visible sources must be exact on Windows/Linux. Retain qualified child unions, ordinary enclosing clips, object bounds, cycle/missing-reference failures and bounded traversal/cleanup. These child clips are distinct from `clip-path` on the `clipPath` container, whose admission is reconciled below. |
 | [ ] **A6 — filtered gradient source fidelity** (G6/G8 / E1–E3) | A [gradient plus blur in a tile](artifacts/completion-audit-20261016/survey/pattern-filtered-gradient.svg) differs by 176 pixels, maximum channel error 9; the [ordinary non-pattern source](artifacts/completion-audit-20261016/survey/controls/ordinary-filtered-gradient.svg) differs by 16 pixels, maximum error 25. Alpha is exact in both. Solid filtered tiles and unfiltered gradient tiles are exact. | Trace existing gradient source capture, filter color spaces and premultiplied rounding before changing shared arithmetic. Both failures must be exact on Windows/Linux, preserving the two discriminators, existing colored/linearRGB filters, tile phase/coverage, limits and source ownership. No tolerance or reference replacement closes this exit. |
-| [ ] **A7 — finished-correction S17 verification and admission documentation** | A1–A6 are closed; the eight boundary outcomes below have an explicit disposition consistent with the original finite promises. | Preserve all established exact cases and public font evidence. Run affected semantic/visual/resource checks while correcting, then one complete Windows/Linux qualification for the coherent finished batch and exact-revision terminal CI with package/installed consumers. Reconcile README/SUPPORT_MATRIX/INVENTORY/API status with the finished subset and retained audit evidence; investigate only material benchmark concerns. T3-private stays separate. |
+| [ ] **F1 — replace the full SVG fixture collection** | The current logo/export/icon/authored-sheet selection is replaced by a finite, feature-indexed collection of full standalone SVG documents from established suites, under [the F1 specification below](#full-svg-fixture-replacement-f1). | Commit the replacement manifest, pinned upstream SVGs/resources/notices and stable Windows/Linux Chrome reference PNGs. Exercise the declared profile and meaningful interactions; retain micro-tests and known-bug protections. Every selected in-scope output must be exact. Retire superseded full-document checks and their old count/percentage gates after recording coverage disposition. Reuse the existing harness and capture tools. |
+| [ ] **A7 — finished-correction S17 verification and admission documentation** | A1–A6 and F1 are closed; the eight boundary outcomes below have an explicit disposition consistent with the original finite promises. | Preserve micro-tests, retained behavior/API/resource contracts and public font qualification. Run affected checks while correcting and migrating, then one complete Windows/Linux qualification for the coherent finished batch and exact-revision terminal CI with package/installed consumers. Reconcile README/SUPPORT_MATRIX/INVENTORY/API status with the replacement full-fixture collection and retained audit evidence; investigate only material benchmark concerns. T3-private stays separate. |
+
+### Full SVG fixture replacement (F1)
+
+F1 changes the list of full SVG fixture documents. Existing micro-tests, including
+small semantic/pixel regressions, API/resource/lifetime checks and font-host
+contracts, stay. Reuse current manifests, visual-test infrastructure and pinned
+Chrome capture/comparison tools. This task adds no replacement harness, new
+rendering oracle or renderer dependency.
+
+1. **Select by declared feature coverage.** Review pinned inventories of the
+   [accepted static W3C SVG 1.1 tests](https://dev.w3.org/SVG/profiles/1.1F2/test/harness/index.html),
+   [resvg test suite](https://github.com/linebender/resvg-test-suite) and applicable
+   standalone SVG cases from [WPT](https://github.com/web-platform-tests/wpt/tree/master/svg).
+   Use their feature organization to choose a finite collection before fresh
+   Lokad.Svg comparisons. Cover admitted geometry/strokes, transforms/viewports,
+   paints, groups/instances, clips/masks, patterns, PNG images, finite filters and
+   supplied-font text, plus meaningful combinations such as clipped pattern
+   content, nested resource intersections and filtered instances. Record each
+   document's purpose; avoid duplicate upstream cases and repetitive size/API
+   variants. Neither a fixed document quota nor importing every upstream test is
+   required.
+2. **Commit the replacement manifest and original assets.** Extend the existing
+   fixture records with upstream URL/revision/test identity, license and original
+   SVG/resource hashes, covered feature groups, reason for inclusion, output
+   dimensions/background/scale and exact supplied fonts. Keep original documents
+   and necessary resources unchanged. Record any viewport/font/resource transport
+   separately and preserve the test's behavior. Classify browser-only HTML/DOM/
+   script tests and features outside the existing profile explicitly. A renderer
+   rejection or pixel difference cannot justify excluding an otherwise in-scope
+   document. Cases requiring changes to the behavior under test do not qualify as
+   unchanged upstream full fixtures.
+3. **Generate Chrome ground truth.** The suites supply documents and coverage
+   organization; pinned Chrome supplies every expected pixel. Capture each
+   declared output on Windows/Linux using three healthy stable fresh-process
+   captures per platform, with supplied-font proof where applicable. Preserve
+   captured bytes/provenance and existing exact decoded RGBA8 comparison, ignoring
+   RGB only when both alphas are zero. Upstream PNGs, reference documents and
+   pass/fail tables do not replace the Chrome oracle. Keep rejection, difference,
+   oracle failure and unmeasured distinct; no tolerance or candidate-driven
+   recapture closes a failure.
+4. **Replace active full-document membership and qualify.** Once the manifest,
+   captures and coverage mapping are reviewable, retire the superseded full
+   logo/export/icon/authored-sheet checks and unneeded fixture assets. Record each
+   retired document's disposition in INVENTORY: upstream replacement, redundant
+   coverage, or unique behavior retained as a focused micro-test. Existing
+   micro-tests stay; a whole document with unique bug coverage may be reduced to
+   a focused regression. Known A1–A6 defects and other admitted behavior cannot
+   disappear through fixture retirement. Historical qualification remains dated
+   evidence in Git/documentation; keeping the old full collections in active CI
+   is not an acceptance condition. Benchmarks and host-contract fixtures remain
+   governed by their own contracts.
+
+**F1 closes when** the new manifest/assets/platform references are tracked, every
+selected in-scope output matches Chrome exactly on both platforms, micro-tests
+and required contracts pass, and current documentation/CI/release counts describe
+the replacement collection. Record newly exposed in-scope defects as concrete
+remaining work and correct them before closing F1/A7. The G2–G9 feature boundary,
+T3-public/private split, default limits and under-ten-minute routine test policy
+remain unchanged. Selected test assets are committed for offline tests;
+`external/` remains an optional source checkout.
 
 ### Completion audit (2026-10-16)
 
@@ -190,8 +264,8 @@ establishes no representative success rate. Both shared corrections preserve all
 old SVG/font/reference bytes and options, **27/27 / 258/258**, selected **50/50**,
 resource limits, cancellation/cleanup, ownership and font/shaping boundaries.
 All three exits and every retained public gap from this batch are closed.
-T3-private remains a separate pending adoption gate. Further corpus acquisition
-requires a demonstrated gap within the existing subset.
+T3-private remains a separate pending adoption gate. F1 now owns replacement of
+the full-document collection; these historical counts do not constrain it.
 
 The S17 measurement set is finite: existing `SvgCurveBenchmarks` outlined-wordmark,
 gradient-clip and isolated-opacity methods; `SvgPatternBenchmarks` identical instances;
@@ -347,7 +421,7 @@ them together with the two completed E4 banks. Preserve the
 [whole effects sheet and eleven controls](tests/Research/effects-marker-sheet/README.md),
 [filter-region results](tests/Research/filter-regions/manifest.json) and qualified
 colored-effects, affine capture, output-clip and nested-halo witnesses. Reuse
-covered panels before acquiring another document. Preserve native origins/nearest
+covered micro-cases; F1 owns full-document selection. Preserve native origins/nearest
 offsets, mixed-space consumers, region/opacity and graph/resource protections.
 
 Outside scope with explicit outcomes: backdrop inputs, external filter images,
@@ -358,8 +432,8 @@ device rounding and padded capture remain closed.
 
 ## Release completion (S17)
 
-**Standalone status: reopened for six demonstrated corrections A1–A6, followed
-by A7 verification and admission documentation.** The [earlier revision audit](artifacts/feather-line-documents-20261016/release-follow-up-qualified-results.json)
+**Standalone status: open for A1–A6, the full-fixture replacement F1, and final
+A7 verification/admission documentation.** The [earlier revision audit](artifacts/feather-line-documents-20261016/release-follow-up-qualified-results.json)
 preserves the `e21f956c` qualification and every established result; it does not
 close newly demonstrated renderer defects. Reconcile the finished revision under
 A7. T3-private remains pending before production adoption and is not a standalone
@@ -367,18 +441,20 @@ prerequisite.
 
 Standalone release qualification is complete only when all of these hold for the **finished revision**. Private deployment access is not a prerequisite:
 
-1. T3-public, A1–A6 and the S17 evidence/documentation exit above are closed, and
-   qualified G2–G8/T1–T2/E1–E4 witnesses remain exact. Retain linked
+1. T3-public, A1–A6, F1 and the S17 evidence/documentation exit above are closed,
+   with G2–G8/T1–T2/E1–E4 behavior protected by retained micro-tests and the
+   replacement full fixtures. Retain linked
    exact acceptance, measured valid-degenerate outcomes and applicable negative/
    resource regressions. No checklist row remains candidate-only. Reused evidence
    is sufficient; unverified behavior, actual gates and known in-scope defects stay
    open. No unapproved deferral is hidden by an error.
-2. All established exact outputs remain exact, including **27/27 / 258/258**,
-   selected documents and useful visual regressions. Every declared document
-   variant must be measured. Rejection, difference, oracle failure and unmeasured
-   stay distinct; no tolerance/quirk budget or silent denominator change. The
-   original [S17 overall/per-stratum 80% criterion](docs/S17_DECISIONS.md) is
-   exceeded and permits no regression from achieved fidelity.
+2. Every selected in-scope F1 document/output is exact against its frozen
+   Windows/Linux Chrome reference, and retained micro-test outputs remain exact.
+   Measure every declared variant. Rejection, difference, oracle failure and
+   unmeasured stay distinct; no tolerance/quirk budget or silent denominator
+   change. F1 explicitly replaces legacy **27/27 / 258/258**, selected-document
+   count and [80% cohort criteria](docs/S17_DECISIONS.md); those remain historical
+   evidence and cannot substitute for the replacement collection's exactness.
 3. Windows/Linux Release builds and complete offline tests, package/notices and
    isolated installed-consumer checks pass; the managed/dependency/API/lifetime
    contracts below hold. Hosted CI is terminal green for the exact substantive
@@ -395,9 +471,10 @@ Standalone release qualification is complete only when all of these hold for the
    README/API_CONTRACT/SUPPORT_MATRIX to the qualified subset and retain platform
    oracle provenance. No speculative optimization or new framework is a gate.
 
-Cohort/document counts prove only their declared outputs. More corpus acquisition
-must demonstrate an identified remaining gap; no general-SVG success claim or
-open-ended representativeness quota delays this release.
+Cohort/document counts prove only their declared outputs. F1's systematic
+replacement is required; acquisition beyond its declared collection needs an
+identified coverage gap. No general-SVG success claim or open-ended
+representativeness quota delays this release.
 
 ## Orthogonal validation and execution
 
@@ -405,7 +482,8 @@ open-ended representativeness quota delays this release.
   At a finished shared correction run full Windows/Linux qualification once;
   package/consumer checks apply when their contracts change and at release.
   Reuse unchanged evidence; PLAN-only edits need consistency/diff review.
-- Preserve every distinct SVG, viewport, scale, background and platform reference.
+- Preserve micro-tests and all retained SVG/font/reference identities and options;
+  F1 explicitly replaces full-document membership and records retired coverage.
   Use one canonical rendering API per ordinary visual and the existing small
   representative matrix for six raw and six prepared sinks (supplied font,
   patterned mask on white, nested instanced mask on transparency). Preserve useful
@@ -421,11 +499,11 @@ open-ended representativeness quota delays this release.
   after only when routine cost materially changes. Remove redundant API work if
   needed while preserving distinct semantics. Browser captures, optional benchmarks
   and final package/release work are separate checkpoints, not every routine run.
-- Add cases only for identified gaps/boundaries/defects. Before correction freeze
-  licensed original bytes/options and references from three stable healthy fresh-
-  process captures per platform. Prefer a suitable redistributable export; authored
-  CC0 integration sheets are permitted. Compare decoded RGBA8 exactly, ignoring
-  RGB only when both alphas are zero; no silent reference replacement. Supplied
+- Select full-document fixtures through F1; add focused micro-cases for identified
+  gaps/boundaries/defects. Before correction freeze licensed original bytes/options
+  and references from three stable healthy fresh-process captures per platform.
+  Authored focused controls remain permitted micro-tests. Compare decoded RGBA8
+  exactly, ignoring RGB only when both alphas are zero; no silent reference replacement. Supplied
   fonts retain intended-font proof. Keep rejected models in existing evidence.
 - Re-render affected inventories for narrow fixes and all declared variants for
   broad geometry/map/composition changes. Record complete before/after differences;
@@ -670,12 +748,19 @@ Keep exact decoded RGBA8 comparison, ignoring RGB only for transparent pixels.
 No tolerance or silent reference regeneration. Separate support and fidelity
 (`exact`, `known-difference`, `oracle-failure`) in explicit inventories.
 Preserve rejected diagonal/overlap/opacity models as negative evidence; Windows
-oracle results are not canonical Linux evidence. Corpus acquisition and optional historical coverage guidance follow the
-validation and scope decisions above; no further acquisition quota applies.
+oracle results are not canonical Linux evidence. F1 owns the required full-fixture
+replacement; other acquisition and historical coverage guidance follow the
+validation/scope decisions above without a further acquisition quota.
 
-## Optional reference sources
+<a id="optional-reference-sources"></a>
+
+## Reference sources
 
 The local reference review in the earlier draft remains useful design guidance.
+F1 also uses established suites as sources for committed SVG fixture assets;
+upstream renderer code and expected PNGs do not become runtime dependencies or
+pixel oracles. W3C/WPT revisions and document notices are recorded during F1
+selection; the existing resvg-suite pin below is available for that inventory.
 Keep `external/` optional, ignored and unreferenced by builds, tests, packages and
 runtime: no submodule, CI download or hidden Rust/C++/Node dependency. Do not modify
 another worker's reference checkout to test its absence. Ordinary
@@ -692,7 +777,7 @@ regressions. Whole-renderer vendoring or translation remains outside the plan.
 | --- | --- |
 | resvg `75b6bbadd7999d0516dcd7153b4a321bfdf8670a` | `usvg` style/tree, use/clip/paint binding and renderer operation order; typed resolved state and distinct geometry/stroke/layer bounds. |
 | tiny-skia `5d4754777746eef0828be166896eaf482c49f8f2` | Edge/span organization, compact paths, stroke/dash expansion and storage reuse. Its fourfold supersampling is not Chrome-exact analytic AA. |
-| resvg-test-suite `d8e064337faf01bc5a9579187a56dbdbe3eacc72` | Semantic counterexample index. It overlaps heavily with resvg's bundled suite; neither is a separate real-logo cohort or our PNG oracle. |
+| resvg-test-suite `d8e064337faf01bc5a9579187a56dbdbe3eacc72` | F1 full-fixture candidate collection and semantic counterexample index. It overlaps heavily with resvg's bundled suite; deduplicate selected documents. Pinned Chrome remains the PNG oracle. |
 | NanoSVG `239e102ec2c691f2902e20ace2ed36ee4a35cfe6` | Secondary small-parser/scanline comparison only; five-subsample output is not the exactness target. |
 | Matched Skia `f8b66b7597c4cc859d3ed190e9c6872241e6721c` | Release-tag scan, paint routing, stroker and curve construction for demonstrated S11/S12/S14 dependencies. The bounded clipping/solver adaptation retains this pin and BSD notices; compiled-native vectors and experiment provenance are in the design record. |
 

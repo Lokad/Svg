@@ -1,10 +1,15 @@
 # S17 release criteria and decisions
 
 **Current status (2026-10-16): standalone delivery is reopened** for the six
-demonstrated corrections A1–A6 and finished verification A7 in
+demonstrated corrections A1–A6, approved full-fixture replacement F1 and finished
+verification A7 in
 [PLAN](../PLAN.md#delivery-order). Preserve the dated qualification below for its
 declared cases; it does not cover the newly retained failures. T3-public and
 measurements remain qualified; T3-private stays separate before production adoption.
+F1 replaces legacy full-document membership and count/percentage release gates
+with exact Windows/Linux Chrome comparisons for a finite selection from established
+SVG suites. Micro-tests and known-bug/API/resource protections remain required;
+the original profile and pixel oracle stay unchanged.
 
 Updated 2026-10-16. **Standalone Lokad.Svg release qualification is complete**
 for substantive revision `e21f956c`. The [completion audit](../artifacts/feather-line-documents-20261016/release-follow-up-qualified-results.json)
