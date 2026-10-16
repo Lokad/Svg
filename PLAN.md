@@ -170,6 +170,8 @@ T3-public/private split, default limits and under-ten-minute routine test policy
 remain unchanged. Selected test assets are committed for offline tests;
 `external/` remains an optional source checkout.
 
+F1 selection is frozen in the [26-document upstream manifest](tests/Research/upstream-static-documents/README.md) before fresh renderer comparisons. Original assets, notices and viewport/font transport are tracked. Capture qualification, any exposed in-scope corrections and coverage retirement remain required; this declaration does not close F1.
+
 ### Completion audit (2026-10-16)
 
 The [audit summary](artifacts/completion-audit-20261016/audit-summary.json) and

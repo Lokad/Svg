@@ -1,0 +1,40 @@
+{
+  "packId": "upstream-noto-sans",
+  "files": [
+    {
+      "relativePath": "fonts/NotoSans-Regular.ttf",
+      "byteSize": 455188,
+      "sha256": "6b04c8dd65af6b73eb4279472ed1580b29102d6496a377340e80a40cdb3b22c9"
+    },
+    {
+      "relativePath": "fonts/NotoSans-Italic.ttf",
+      "byteSize": 470472,
+      "sha256": "35600501daadd3e9030ee6ed8098fd3c7f31bfd898ca58da8edf793a3231c48b"
+    }
+  ],
+  "families": [
+    {
+      "requestedFamily": "Noto Sans",
+      "resolvedFamily": "Noto Sans",
+      "relativeFontFile": "fonts/NotoSans-Regular.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0,
+      "hasMathTable": false
+    },
+    {
+      "requestedFamily": "Noto Sans",
+      "resolvedFamily": "Noto Sans",
+      "relativeFontFile": "fonts/NotoSans-Italic.ttf",
+      "weight": 400,
+      "italic": true,
+      "faceIndex": 0,
+      "hasMathTable": false
+    }
+  ],
+  "fallbacks": [
+    {
+      "family": "Noto Sans"
+    }
+  ]
+}

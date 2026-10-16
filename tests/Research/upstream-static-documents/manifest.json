@@ -1,0 +1,751 @@
+{
+  "schemaVersion": 1,
+  "selectionDate": "2026-10-17",
+  "selectionStatus": "Frozen before fresh Lokad.Svg comparisons; captures and qualification pending.",
+  "oracle": "Pinned Chrome 153.0.8010.52 only; upstream expected images and pass tables are unused.",
+  "purpose": "F1 finite feature-selected replacement full-document collection; preserved micro-tests cover additional distinctions and known defects.",
+  "cases": [
+    {
+      "id": "geometry-rect",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/shapes/rect/simple-case.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/shapes/rect/simple-case.svg",
+      "sourceSha256": "1704df88ea3d6a0133ce74d4c3176dc169a0d01389b89fb577c6c31537b0a1ed",
+      "input": "inputs/geometry-rect.svg",
+      "coveredGroups": [
+        "G3"
+      ],
+      "selection": "Rectangles, closed path coverage and source ordering.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/geometry-rect.svg",
+      "captureInputSha256": "fbfa89844fa4466a0978f7ac967c2c2bbecad928be71d28eb58ada391f106367",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "geometry-cubic",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/shapes/path/M-C-S.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/shapes/path/M-C-S.svg",
+      "sourceSha256": "2ca8031425ac3e87af198cf818f59facacbdeadd42b0518d03e0bca32f0d89ea",
+      "input": "inputs/geometry-cubic.svg",
+      "coveredGroups": [
+        "G3",
+        "G4"
+      ],
+      "selection": "Cubic and smooth continuation with ordinary stroke.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/geometry-cubic.svg",
+      "captureInputSha256": "6338223a934d1494f438d8aaaa35d1c788c43db0b723aab5adba15e784edf424",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "geometry-arc",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/shapes/path/M-A.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/shapes/path/M-A.svg",
+      "sourceSha256": "43c9a820389edae81e9a305b3afcb22091bd2e26a26e4864260b426f4efa7042",
+      "input": "inputs/geometry-arc.svg",
+      "coveredGroups": [
+        "G3",
+        "G4"
+      ],
+      "selection": "Rotated elliptical arc and native path stroke.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/geometry-arc.svg",
+      "captureInputSha256": "2f991f9ce46e9d013d133a6f299ea4d9cd3e539a399520197bb2838c07f86ae7",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "stroke-dashed-circle",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/painting/stroke-dasharray/on-a-circle.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/painting/stroke-dasharray/on-a-circle.svg",
+      "sourceSha256": "701f301052a919001afc9721968857b1013545aa4dd7cdd9a090bcce69bca3f6",
+      "input": "inputs/stroke-dashed-circle.svg",
+      "coveredGroups": [
+        "G3",
+        "G4"
+      ],
+      "selection": "Finite dashes on a curved primitive.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/stroke-dashed-circle.svg",
+      "captureInputSha256": "b7d097b6444172c36c05d6645b2ae091afd7f98ebdb6d87491be97d422c967ce",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "stroke-round-join",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/painting/stroke-linejoin/round.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/painting/stroke-linejoin/round.svg",
+      "sourceSha256": "394b0b32e823bf5d1d7fba56cb285cf4c15a110faf61a67cbfe5dfd1c5c750e9",
+      "input": "inputs/stroke-round-join.svg",
+      "coveredGroups": [
+        "G3",
+        "G4"
+      ],
+      "selection": "Round join between curved segments.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/stroke-round-join.svg",
+      "captureInputSha256": "a34d863c0146c394a8ecfbdfdd6cdd50c7c716373b39610cdd456a43f17344d5",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "nested-affine",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/structure/transform/nested-transforms-1.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/structure/transform/nested-transforms-1.svg",
+      "sourceSha256": "724d7b53462dc38a52377fa820cfc8059a2167e7bc3fe8354f17a2e326f886d9",
+      "input": "inputs/nested-affine.svg",
+      "coveredGroups": [
+        "G2",
+        "G3"
+      ],
+      "selection": "Ancestor scaling composed with a leaf skew.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/nested-affine.svg",
+      "captureInputSha256": "603c7e72badf95e6ffc1f7c2af61ee0965b3d742e5158aa777f04379ba062ca8",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "symbol-opacity",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/structure/symbol/opacity-on-use-and-symbol.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/structure/symbol/opacity-on-use-and-symbol.svg",
+      "sourceSha256": "752d41a823885180cae1744e5976cea9965ba04ab7c6ba67f856a9087709bfc9",
+      "input": "inputs/symbol-opacity.svg",
+      "coveredGroups": [
+        "G2",
+        "G5"
+      ],
+      "selection": "Retained symbol and use opacity compose.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/symbol-opacity.svg",
+      "captureInputSha256": "9724cb239894ad0f45b840678ce744606f816c00d8977a249c222987f93909fb",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "linear-affine",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/paint-servers/linearGradient/gradientTransform-and-transform.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/paint-servers/linearGradient/gradientTransform-and-transform.svg",
+      "sourceSha256": "e37765e92d1f0451754d754bb0a45555a435334968a20326374f02780db64d75",
+      "input": "inputs/linear-affine.svg",
+      "coveredGroups": [
+        "G4",
+        "G6"
+      ],
+      "selection": "Gradient and target affine maps remain distinct.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/linear-affine.svg",
+      "captureInputSha256": "859c50e22924319001e6db982ccf262186d44c8dc9617ea977cc3f5e45cfbd21",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "radial-affine",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/paint-servers/radialGradient/gradientTransform-and-transform.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/paint-servers/radialGradient/gradientTransform-and-transform.svg",
+      "sourceSha256": "b9fd88a8560293d20dd20cb9b4001fc403020c954faea43fb2174d26c8bca9d4",
+      "input": "inputs/radial-affine.svg",
+      "coveredGroups": [
+        "G4",
+        "G6"
+      ],
+      "selection": "Radial paint through composed gradient/target maps.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/radial-affine.svg",
+      "captureInputSha256": "b9d69cf245b2e2b83fcf3257a542b739ea4def15d03ff11bfe3efc987d7bfd12",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "object-box-clip",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/masking/clipPath/clipPathUnits=objectBoundingBox.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/masking/clipPath/clipPathUnits=objectBoundingBox.svg",
+      "sourceSha256": "77891bd84318ef4402d4d72a44425799bd19adcd39e37c71d88c531370fc7113",
+      "input": "inputs/object-box-clip.svg",
+      "coveredGroups": [
+        "G5"
+      ],
+      "selection": "Rounded object-box resource clip.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/object-box-clip.svg",
+      "captureInputSha256": "832a0e735968f4f9ab378bd5f69b484ef57b813264e80d748c716859911261a0",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "nested-clip-child",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/masking/clipPath/clip-path-on-child.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/masking/clipPath/clip-path-on-child.svg",
+      "sourceSha256": "da47d6e01214bf3085cf2d333167f8bde3e7771efcfeb78ac7069899c8e8f4da",
+      "input": "inputs/nested-clip-child.svg",
+      "coveredGroups": [
+        "G5"
+      ],
+      "selection": "Even-odd path child intersects another resource (A5).",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/nested-clip-child.svg",
+      "captureInputSha256": "e86e37c9928c30241baa1f6ddb88f7f712028be671eca699305cf6a332f7063d",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "clip-child-union",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/masking/clipPath/multiple-children.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/masking/clipPath/multiple-children.svg",
+      "sourceSha256": "8176c0777f49868282224152c6fc62b0aa8db1aa71bd1c0b7a17a4320131032d",
+      "input": "inputs/clip-child-union.svg",
+      "coveredGroups": [
+        "G5"
+      ],
+      "selection": "Even-odd path and circle form an ordered clip union.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/clip-child-union.svg",
+      "captureInputSha256": "6e3afaeacb42e272b665d0e91a2e0d8beab0e11ad8be03a1bd48b90287805fa3",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "luminance-mask",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/masking/mask/simple-case.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/masking/mask/simple-case.svg",
+      "sourceSha256": "e7d33a2a64de9ccd7111321870b830b99fd847d523a240d469e30150d33973a8",
+      "input": "inputs/luminance-mask.svg",
+      "coveredGroups": [
+        "G5",
+        "G6"
+      ],
+      "selection": "Gradient opacity/color drive a luminance mask.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/luminance-mask.svg",
+      "captureInputSha256": "f8a7096b56365488682ff67045c0e3abf4bb1c4f714dcc3d506171cba15dc9e3",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "pattern-viewbox",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/paint-servers/pattern/with-viewBox.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/paint-servers/pattern/with-viewBox.svg",
+      "sourceSha256": "5131c57be09bab2ee3cde1482ccbd9f71a374c0973482640ec1e110ae373b2bc",
+      "input": "inputs/pattern-viewbox.svg",
+      "coveredGroups": [
+        "G5",
+        "G6"
+      ],
+      "selection": "Tile viewBox/aspect mapping and curved target stroke.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/pattern-viewbox.svg",
+      "captureInputSha256": "cd4d7dcfaba4a0462001a839cd1804f2eb02dfa001b5d63b453dd7a5f6957e12",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "pattern-affine",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/paint-servers/pattern/transform-and-patternTransform.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/paint-servers/pattern/transform-and-patternTransform.svg",
+      "sourceSha256": "9679019932fd8cd3886fb8bb7ba87193927b5ca95b446600db7f94ade49bdc00",
+      "input": "inputs/pattern-affine.svg",
+      "coveredGroups": [
+        "G4",
+        "G6"
+      ],
+      "selection": "Composed pattern and target rotations.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/pattern-affine.svg",
+      "captureInputSha256": "0e32b15871fa8eed6da8fa1f4c0e439a73328b1c975918d4d4445f23bea661b9",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "embedded-png",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/structure/image/embedded-png.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/structure/image/embedded-png.svg",
+      "sourceSha256": "4e10fee7ee472711cc62ef97944da77b89279fe5f7707ed73c1759a1589edf3f",
+      "input": "inputs/embedded-png.svg",
+      "coveredGroups": [
+        "G7"
+      ],
+      "selection": "Unchanged embedded RGBA PNG and finite image placement.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 80,
+      "height": 80,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 80,
+        "height": 80
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/embedded-png.svg",
+      "captureInputSha256": "df13e0634dd463cfa5b67c84274815d7a827bed48c9a9b4a9d689f1022007a82",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "blur",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/filters/feGaussianBlur/simple-case.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/filters/feGaussianBlur/simple-case.svg",
+      "sourceSha256": "38427e29a1fe7142afd40999b92ed543fff0c95c5a20aa219cf841c00efd5668",
+      "input": "inputs/blur.svg",
+      "coveredGroups": [
+        "G8"
+      ],
+      "selection": "Source capture, Gaussian support and filter region.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/blur.svg",
+      "captureInputSha256": "22645505d01bd95293ab66f544821d22eea68a9d0c71fe10950aed4e4b573da3",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "blend-multiply",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/filters/feBlend/mode=multiply.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/filters/feBlend/mode=multiply.svg",
+      "sourceSha256": "4a15b64c20bb37716addf58d78986c908d2cbac983fdd29b3004c08e0ecddead",
+      "input": "inputs/blend-multiply.svg",
+      "coveredGroups": [
+        "G8"
+      ],
+      "selection": "Flood and SourceGraphic multiply in the default filter color space.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/blend-multiply.svg",
+      "captureInputSha256": "18dc7485d7290c969da3b0d86921edbb444f1c210a248f496f4c83df793c40ce",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "composite-in",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/filters/feComposite/operator=in.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/filters/feComposite/operator=in.svg",
+      "sourceSha256": "15d8befdbc6f2729cb71ae9080e42888d3315d2355beed6fdbabc9d269b16801",
+      "input": "inputs/composite-in.svg",
+      "coveredGroups": [
+        "G8"
+      ],
+      "selection": "Flood clipped by SourceGraphic alpha.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/composite-in.svg",
+      "captureInputSha256": "317844d059e68e13c3cba63c28dd42e4a72c07d17c444f2315d68584cf32a838",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "merge-color-spaces",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/filters/feMerge/color-interpolation-filters=sRGB.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/filters/feMerge/color-interpolation-filters=sRGB.svg",
+      "sourceSha256": "dcbbbcd5bd46931132ad774950c9e891bb44c5b18d6e1ba0dc7263e36258dae1",
+      "input": "inputs/merge-color-spaces.svg",
+      "coveredGroups": [
+        "G8"
+      ],
+      "selection": "Mixed-space blurs, offset, named results and merge order.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/merge-color-spaces.svg",
+      "captureInputSha256": "904968a4ae7a2690078cfa8219ab986d982439abfc9447d9841e94fb872c8989",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "filter-mask-clip",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/filters/filter/with-clip-path-and-mask.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/filters/filter/with-clip-path-and-mask.svg",
+      "sourceSha256": "8440e080604e9e76d1ec4a3010477b8b8e3b5682c3215247a62db95e1344c830",
+      "input": "inputs/filter-mask-clip.svg",
+      "coveredGroups": [
+        "G5",
+        "G8"
+      ],
+      "selection": "Blur, gradient mask and path clipping preserve effect order.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/filter-mask-clip.svg",
+      "captureInputSha256": "c4a6ea437372555d00351e710076d9c8548af084447b2ac191b6d3d3fbf2da3d",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "css-priority",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/structure/style/important.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/structure/style/important.svg",
+      "sourceSha256": "32abf276b0e4d0a4bf7288f2e297d81acc70eb00122c1f81ca463f505fdaaa48",
+      "input": "inputs/css-priority.svg",
+      "coveredGroups": [
+        "G7"
+      ],
+      "selection": "Static stylesheet source order and important priority.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/css-priority.svg",
+      "captureInputSha256": "bd17e33463aaf02fe6812e6bee22dc8ad2a31172463f33eab77b342ee5ad22ab",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "text-real-italic",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/text/font-style/italic.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/text/font-style/italic.svg",
+      "sourceSha256": "e006f17d0b952289b984b036a57f6179aed25a5bc1feaf4dd82f21bfc5cdb88d",
+      "input": "inputs/text-real-italic.svg",
+      "coveredGroups": [
+        "G9"
+      ],
+      "selection": "Intended supplied real italic, size and middle anchor.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [
+        "NotoSans-Italic.ttf"
+      ],
+      "captureInput": "capture-inputs/text-real-italic.svg",
+      "captureInputSha256": "48bc67de2b650d819e947c059104c6dfd5f4b69b786d6483a34ab0fb8310ef9a",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "text-path",
+      "suite": "resvg",
+      "upstreamRevision": "d8e064337faf01bc5a9579187a56dbdbe3eacc72",
+      "upstreamTest": "tests/text/textPath/simple-case.svg",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/text/textPath/simple-case.svg",
+      "sourceSha256": "46b9cc99973090f86036f041f1b041f43d88b9fc3293b8edeba1f3530decb1ba",
+      "input": "inputs/text-path.svg",
+      "coveredGroups": [
+        "G3",
+        "G9"
+      ],
+      "selection": "Supplied-font advances on a curved local text path.",
+      "role": "document-output",
+      "license": "MIT",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 200,
+        "height": 200
+      },
+      "fonts": [
+        "NotoSans-Regular.ttf"
+      ],
+      "captureInput": "capture-inputs/text-path.svg",
+      "captureInputSha256": "adf145a05077a667630ca97767560ffb190135875273a5c3345d2cdd3da0b8f4",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "wpt-marker-path",
+      "suite": "WPT",
+      "upstreamRevision": "df642c4142354ffb5a0af6fa41610677f6321092",
+      "upstreamTest": "svg/painting/reftests/marker-path-001.svg",
+      "sourceUrl": "https://github.com/web-platform-tests/wpt/blob/df642c4142354ffb5a0af6fa41610677f6321092/svg/painting/reftests/marker-path-001.svg",
+      "sourceSha256": "02d017dc9dab654d002f56b4acf7b92fd09c12270641405c1ec8a399d5909913",
+      "input": "inputs/wpt-marker-path.svg",
+      "coveredGroups": [
+        "G3",
+        "G4",
+        "G8"
+      ],
+      "selection": "Open linear paths, auto marker poses and inherited marker styles.",
+      "role": "document-output",
+      "license": "BSD-3-Clause",
+      "width": 480,
+      "height": 360,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 480,
+        "height": 360
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/wpt-marker-path.svg",
+      "captureInputSha256": "dd54dd0d46eb6626de9f7a340889f507450df4a3d8b6eaf3d2c1784fe10a8adb",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    },
+    {
+      "id": "wpt-nested-viewport",
+      "suite": "WPT",
+      "upstreamRevision": "df642c4142354ffb5a0af6fa41610677f6321092",
+      "upstreamTest": "svg/struct/reftests/inner-svg-transform-and-viewbox.svg",
+      "sourceUrl": "https://github.com/web-platform-tests/wpt/blob/df642c4142354ffb5a0af6fa41610677f6321092/svg/struct/reftests/inner-svg-transform-and-viewbox.svg",
+      "sourceSha256": "c5c0112954f5bf52f7423fe5a750d6d3a46a96100dc3a73a46800de1f81e75b3",
+      "input": "inputs/wpt-nested-viewport.svg",
+      "coveredGroups": [
+        "G2",
+        "G5"
+      ],
+      "selection": "Translated nested SVG viewBox and physical viewport clipping.",
+      "role": "document-output",
+      "license": "BSD-3-Clause",
+      "width": 300,
+      "height": 150,
+      "scale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 300,
+        "height": 150
+      },
+      "fonts": [],
+      "captureInput": "capture-inputs/wpt-nested-viewport.svg",
+      "captureInputSha256": "3e38168518dce0dd1c6e559e96aeee07f427b83548c62d1a481a577e09559646",
+      "materialization": "Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately."
+    }
+  ],
+  "fontPrograms": [
+    {
+      "file": "fonts/NotoSans-Regular.ttf",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/fonts/NotoSans-Regular.ttf",
+      "sha256": "6b04c8dd65af6b73eb4279472ed1580b29102d6496a377340e80a40cdb3b22c9",
+      "license": "OFL-1.1",
+      "family": "Noto Sans",
+      "weight": 400,
+      "italic": false
+    },
+    {
+      "file": "fonts/NotoSans-Italic.ttf",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/fonts/NotoSans-Italic.ttf",
+      "sha256": "35600501daadd3e9030ee6ed8098fd3c7f31bfd898ca58da8edf793a3231c48b",
+      "license": "OFL-1.1",
+      "family": "Noto Sans",
+      "weight": 400,
+      "italic": true
+    }
+  ]
+}

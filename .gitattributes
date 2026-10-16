@@ -78,3 +78,5 @@ tests/Research/completion-instance-clips/*.svg -text whitespace=cr-at-eol
 tests/Research/completion-mask-clips/*.svg -text whitespace=cr-at-eol
 tests/Research/completion-nested-clips/*.svg -text whitespace=cr-at-eol
 tests/Research/completion-filtered-gradients/*.svg -text whitespace=cr-at-eol
+tests/Research/upstream-static-documents/inputs/*.svg -text whitespace=cr-at-eol
+tests/Research/upstream-static-documents/capture-inputs/*.svg -text whitespace=cr-at-eol
