@@ -7,6 +7,14 @@ and masks, embedded PNGs, static CSS, markers, selected filters and supplied-fon
 labels/text paths. See [supported SVG](docs/SUPPORT_MATRIX.md#supported-svg-subset)
 for the exact boundaries and unsupported outcomes.
 
+Install with:
+
+```powershell
+dotnet add package Lokad.Svg --version 0.1.0
+```
+
+[CHANGELOG](CHANGELOG.md) records release notes.
+
 `SvgConverter` provides synchronous and asynchronous output to independently
 owned memory, caller memory or a writable stream. `SvgPreparedDocument` supports
 explicit preparation and one conversion. Fonts use an explicit catalog and

@@ -1,11 +1,23 @@
 # Changelog
 
-## Unreleased
+## 0.1.0 - 2026-10-17
 
-- Completed repository and API-contract scaffolding, including the pre-allocation
-  memory-budget ledger and contract tests.
-- Added the initial renderer subset: bounded root parsing, explicit backgrounds,
-  integer rectangle layers with fill opacity, managed PNG encoding, owned and
-  caller-owned output buffers, and pinned-Chrome fidelity evidence for the current
-  manifest corpus.
-- Added an initial BCL-only Chrome DevTools launcher; it is not yet a pinned oracle.
+Initial release of the managed SVG-to-PNG renderer for .NET 10 on Windows and
+Linux, with no runtime package dependencies.
+
+- Affine geometry and local instances; solid, gradient and pattern fills/strokes;
+  caps, joins, dashes and non-scaling strokes.
+- Nested viewports, clips, alpha/luminance masks, group opacity, embedded PNGs,
+  static CSS, markers and selected filters.
+- Explicit supplied-font catalogs and fallback, TrueType labels and text paths;
+  regular, bold, real italic and intentional fallback qualification.
+- Synchronous/asynchronous output to owned memory, caller memory or streams,
+  plus explicit preparation through `SvgPreparedDocument`.
+- Size/work limits, approximate memory accounting, cancellation, deterministic
+  cleanup and documented borrowed-resource lifetimes.
+- Frozen Windows/Linux visual references, public font checks and installed-package
+  consumer verification. Packages include the icon, README, changelog, licenses,
+  notices and a separate portable-PDB symbol package.
+
+See the [support matrix](docs/SUPPORT_MATRIX.md) for the implemented static SVG
+subset, font/shaping restrictions and explicit unsupported features.

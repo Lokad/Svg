@@ -3,12 +3,14 @@
     <AssemblyName>Lokad.Svg</AssemblyName>
     <RootNamespace>Lokad.Svg</RootNamespace>
     <PackageId>Lokad.Svg</PackageId>
-    <Version>0.1.0-preview.1</Version>
+    <Version>0.1.0</Version>
     <Authors>Lokad</Authors>
     <Description>A pure managed SVG to PNG renderer for .NET.</Description>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
+    <PackageProjectUrl>https://github.com/Lokad/Svg</PackageProjectUrl>
+    <PackageReleaseNotes>Initial release: managed static SVG-to-PNG rendering for .NET 10 on Windows and Linux, with no runtime package dependencies. See https://github.com/Lokad/Svg/blob/master/CHANGELOG.md for release notes and scope.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/Lokad/Svg</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>svg;png;rendering</PackageTags>
@@ -22,5 +24,6 @@
     <None Include="../../THIRD_PARTY_NOTICES.txt" Pack="true" PackagePath="" Link="THIRD_PARTY_NOTICES.txt" />
     <None Include="../../licenses/FreeType/FTL.TXT" Pack="true" PackagePath="licenses/FreeType/" Link="licenses/FreeType/FTL.TXT" />
     <None Include="../../README.md" Pack="true" PackagePath="" Link="README.md" />
+    <None Include="../../CHANGELOG.md" Pack="true" PackagePath="" Link="CHANGELOG.md" />
   </ItemGroup>
 </Project>
