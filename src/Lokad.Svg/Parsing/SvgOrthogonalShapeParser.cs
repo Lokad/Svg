@@ -36,8 +36,7 @@ internal static class SvgOrthogonalShapeParser
         SvgResolvedPaintableElement shape;
         SvgParsedGeometry filled;
         shape = context.ResolveShape(fillStyle, reader, true);
-        bool retainPaintBox = paintOutline && !outlineCandidate.IsUserSpace || paintRadialOutline && !outlineRadialCandidate.IsUserSpace;
-        if (d.Length == 0 || !shape.Presentation.HasFill && !retainPaintBox && !context.RetainInstanceStrokePath && reader.GetAttribute("mask") is null && reader.GetAttribute("clip-path") is null && state.MaskScopes.Count == 0)
+        if (d.Length == 0 || !shape.Presentation.HasFill && !context.RetainInstanceStrokePath && reader.GetAttribute("mask") is null && reader.GetAttribute("clip-path") is null && state.MaskScopes.Count == 0)
         {
             // Unpainted fills contribute no area here. Stroke paint resolves its
             // required source box below; native stroking retains every subpath.
@@ -110,7 +109,7 @@ internal static class SvgOrthogonalShapeParser
             bool isStraightPath = !hasCurve && !hasFractional;
             bool paintPathOutline = paintOutline;
             bool paintPathRadial = paintRadialOutline;
-            bool paintPathPattern = paintPatternOutline && !hasFractional;
+            bool paintPathPattern = paintPatternOutline;
             SvgLinearGradient pathGradient = default;
             SvgRadialGradient pathCircle = default;
             SvgComputedStyle pathStrokeStyle = style;
@@ -128,10 +127,23 @@ internal static class SvgOrthogonalShapeParser
                 pathStrokeShape = context.ResolveShape(pathStrokeStyle, reader, true);
             }
 
-            SvgRectangle ResolveBoundingBoxOutlineBox()
+            SvgRectangle ResolveBoundingBoxOutlineBox(SvgParsedGeometry outline)
             {
                 bool needsFillBox = (paintPathOutline && !outlineCandidate.IsUserSpace) || (paintPathRadial && !outlineRadialCandidate.IsUserSpace);
                 if (!needsFillBox) return default;
+                if (!shape.Presentation.HasFill)
+                {
+                    foreach (SvgGeometry geometry in outline.Geometries)
+                    {
+                        context.WorkCounter.Consume(context.CancellationToken);
+                        if (geometry.AuthoredPath is not { StrokeStyle: {} strokeStyle } path) continue;
+                        // Paint binds to the undashed centerline's native curve bounds,
+                        // independently of fill closure, flattening and stroke extents.
+                        SvgRectangle bounds = strokeStyle.SourceBounds ?? SvgPathBounds.Compute(path.Commands, context.WorkCounter, context.CancellationToken);
+                        return path.SceneMap.Apply(bounds);
+                    }
+                    if (outline.Geometries.Length == 0) return default;
+                }
                 if (isStraightPath)
                 {
                     using BudgetedParserList<int> boxEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
@@ -156,7 +168,7 @@ internal static class SvgOrthogonalShapeParser
                 {
                     if (paintPathOutline || paintPathRadial || paintPathPattern)
                     {
-                        SvgRectangle pathBox = ResolveBoundingBoxOutlineBox();
+                        SvgRectangle pathBox = ResolveBoundingBoxOutlineBox(stroked);
                         using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
                         foreach (SvgGeometry existing in stroked.Geometries)
                         {

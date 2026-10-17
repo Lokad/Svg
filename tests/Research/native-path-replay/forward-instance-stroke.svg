@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="64" viewBox="0 0 96 64">
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<defs><g id="curve" fill="none"><path d="M3 28 C7 3 28 3 33 28"/></g></defs>
+<g fill="none" stroke="url(#paint)" stroke-width="6" stroke-linecap="round">
+<use href="#curve" x="5" y="7"/><use href="#curve" x="51" y="25"/>
+</g>
+<defs><linearGradient id="paint" gradientUnits="userSpaceOnUse" x1="0" x2="36" y1="0" y2="0"><stop stop-color="#e87942"/><stop offset="1" stop-color="#6563a5"/></linearGradient></defs>
+</svg>

@@ -8,6 +8,7 @@ only these selected outputs, not general SVG coverage.
 
 ## Required evidence
 
+- [Native path/stroke bank](../tests/Research/native-path-replay/manifest.json): the unchanged gallery gradient ribbons and six focused inherited/open-path paint controls supplement existing cases. These are regressions, separate from upstream document membership.
 - [Finished S17 qualification](../artifacts/full-fixture-replacement-20261017/standalone-qualified-results.json): 8,068 tests/platform, package/notices, installed consumers and terminal exact-source CI.
 - [Selection, coverage and immutable asset manifest](../tests/Research/upstream-static-documents/manifest.json).
 - [Rectangle source qualification](../artifacts/full-fixture-replacement-20261017/rectangle-source-qualified-results.json).

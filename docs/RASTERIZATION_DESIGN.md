@@ -62,6 +62,10 @@ change dithering even when the real-valued transform is equivalent.
 
 ## Paint and compositing
 
+Resolve inherited stroke paint before selecting a leaf's lowering route. Path
+gradients bind to the undashed centerline's native curve bounds, including open
+paths with no fill; flattened fill bounds and stroke extents are separate.
+
 [Analytic paint](../src/Lokad.Svg/Rendering/SvgAnalyticPaint.cs) separates solid,
 shader, mask and direct/run consumers. Preserve their byte premultiplication,
 coverage scaling, source-over order and rounding boundaries. Alpha-only, binary,

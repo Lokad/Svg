@@ -1,18 +1,20 @@
 ## Current standalone qualification (2026-10-17)
 
-**Standalone qualification is complete** for `0a0843ec`: A1-A6, the upstream
-fixture replacement F1 and finished S17 checks are closed. All 26 selected outputs
-are exact on Windows/Linux. [Terminal CI](https://github.com/Lokad/Svg/actions/runs/38986391708) passes 8,068 tests per
-platform, package/notices, isolated installed consumers and required tooling.
-Local normal build plus complete tests took 59.5s Windows / 226.3s Linux.
+Standalone qualification includes all 26 selected upstream outputs, exact on
+Windows/Linux, plus focused known-bug cases and API/resource/font-host contracts.
+Complete local qualification passes 8,080 tests/platform, package/notices and
+installed consumers. [INVENTORY](INVENTORY.md) records document evidence and retired
+membership.
+Private deployment's four font requests remain pending before production adoption.
 
-Public fonts, focused known-bug cases and API/resource/ownership contracts remain
-qualified. [INVENTORY](INVENTORY.md) records every retired full-document disposition.
-The eight admission probes have the three explicit finite boundaries below; no
-enumerated feature is deferred. Private deployment's four requests remain pending
-before adoption. Earlier dated sections retain mechanism/evidence history; their
-old whole-document membership/counts and pending gates do not override this
-qualification status and the finite support/admission boundaries below.
+Gradient and pattern path strokes resolve inherited paint before lowering; open
+stroke-only paths use undashed native centerline bounds. The unchanged gallery
+ribbons and six focused controls extend the [native-path bank](../tests/Research/native-path-replay/manifest.json),
+covering radial/pattern paints, CSS overrides, forward instances, zero-area boxes
+and compound open paths. Existing reference images remain unchanged.
+
+The finite support/admission boundaries below govern release scope; earlier dated
+sections retain historical mechanism evidence and do not reopen completed gates.
 
 ## Supported SVG subset
 

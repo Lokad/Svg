@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="48" viewBox="0 0 80 48">
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<defs><linearGradient id="box"><stop stop-color="red"/><stop offset="1" stop-color="blue"/></linearGradient><linearGradient id="space" gradientUnits="userSpaceOnUse" x1="8" x2="72" y1="0" y2="0"><stop stop-color="red"/><stop offset="1" stop-color="blue"/></linearGradient></defs>
+<g fill="none" stroke="url(#box)" stroke-width="7"><path d="M8 12H72"/><path d="M8 31H72" stroke="url(#space)"/></g>
+<g fill="none" stroke="url(#missing)" stroke-width="0"><path d="M0 0L80 48"/></g>
+</svg>

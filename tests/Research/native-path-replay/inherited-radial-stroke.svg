@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="64" viewBox="0 0 80 64">
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<defs><radialGradient id="paint" gradientUnits="userSpaceOnUse" cx="38" cy="28" r="32"><stop stop-color="#f5b85d"/><stop offset="1" stop-color="#6f4889"/></radialGradient></defs>
+<g fill="none" stroke="url(#paint)" stroke-width="7" stroke-linecap="round" stroke-dasharray="11 5" stroke-opacity=".7">
+<path d="M8 48 Q26 2 47 27 T72 13"/>
+</g></svg>

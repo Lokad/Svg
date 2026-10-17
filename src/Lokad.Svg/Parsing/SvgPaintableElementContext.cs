@@ -55,7 +55,6 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     internal SvgComputedStyle ResolveStyle(XmlReader reader)
     {
         SvgComputedStyle style = InheritedStroke.ApplyTo(AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, StyleSheet, WorkCounter, CancellationToken));
-        if (AuthoredStyle is not null) style = style with { Stroke = style.Stroke ?? InheritedStroke.Stroke };
         style = style.ResolveVectorEffect(InheritedPresentation.NonScalingStroke).ResolveOpacity(InheritedPresentation.ElementOpacity) with { PaintOrder = style.PaintOrder ?? InheritedPresentation.PaintOrder };
         if (DeferPaintOpacity) style = style with { Opacity = null, ComputedOpacity = null };
         if (style.Fill is null && InheritedPresentation.PaintServerFill is string fill) style = style with { Fill = fill };
@@ -65,7 +64,6 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     internal SvgComputedStyle ResolveStyle(XmlReader reader, bool allowsDirectTextFontProperties)
     {
         SvgComputedStyle style = InheritedStroke.ApplyTo(AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, StyleSheet, WorkCounter, CancellationToken, allowsDirectTextFontProperties));
-        if (AuthoredStyle is not null) style = style with { Stroke = style.Stroke ?? InheritedStroke.Stroke };
         style = style.ResolveVectorEffect(InheritedPresentation.NonScalingStroke).ResolveOpacity(InheritedPresentation.ElementOpacity) with { PaintOrder = style.PaintOrder ?? InheritedPresentation.PaintOrder };
         if (DeferPaintOpacity) style = style with { Opacity = null, ComputedOpacity = null };
         if (style.Fill is null && InheritedPresentation.PaintServerFill is string fill) style = style with { Fill = fill };

@@ -6915,11 +6915,10 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M0,0 L8,0 L0,8 Z' fill='none' stroke='url(#g)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(2, root.Geometries.Length);
-        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[0].Kind);
-        Assert.Equal(SvgGeometryKind.GradientPolygon, root.Geometries[1].Kind);
-        Assert.True(root.Geometries[1].GradientPolygon.HasFill);
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null), root.Geometries[1].GradientPolygon.Box);
+        SvgGeometry outline = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientPolygon, outline.Kind);
+        Assert.True(outline.GradientPolygon.HasFill);
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null), outline.GradientPolygon.Box);
     }
 
     [Fact]
@@ -6927,11 +6926,10 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><path d='M0,0 L8,0 L0,8 Z' fill='none' stroke='url(#g)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(2, root.Geometries.Length);
-        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[0].Kind);
-        Assert.Equal(SvgGeometryKind.RadialPolygon, root.Geometries[1].Kind);
-        Assert.True(root.Geometries[1].RadialPolygon.HasFill);
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null), root.Geometries[1].RadialPolygon.Box);
+        SvgGeometry outline = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.RadialPolygon, outline.Kind);
+        Assert.True(outline.RadialPolygon.HasFill);
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null), outline.RadialPolygon.Box);
     }
 
     [Fact]
@@ -6979,11 +6977,10 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M0,8 Q4,-4 8,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.True(root.Geometries.Length >= 2);
-        Assert.All(root.Geometries.Skip(1), outline => Assert.Equal(SvgGeometryKind.GradientPolygon, outline.Kind));
-        Assert.All(root.Geometries.Skip(1), outline => Assert.True(outline.GradientPolygon.HasFill));
-        SvgRectangle fillBox = FillBounds(root.Geometries[0]);
-        Assert.All(root.Geometries.Skip(1), outline => Assert.Equal(fillBox, outline.GradientPolygon.Box));
+        SvgGeometry outline = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientPolygon, outline.Kind);
+        Assert.True(outline.GradientPolygon.HasFill);
+        Assert.Equal(new SvgRectangle(0, 2, 8, 6, default, true, null), outline.GradientPolygon.Box);
     }
 
     [Fact]
@@ -6991,9 +6988,10 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><path d='M0,8 Q4,-4 8,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.True(root.Geometries.Length >= 2);
-        Assert.All(root.Geometries.Skip(1), outline => Assert.Equal(SvgGeometryKind.RadialPolygon, outline.Kind));
-        Assert.All(root.Geometries.Skip(1), outline => Assert.True(outline.RadialPolygon.HasFill));
+        SvgGeometry outline = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.RadialPolygon, outline.Kind);
+        Assert.True(outline.RadialPolygon.HasFill);
+        Assert.Equal(new SvgRectangle(0, 2, 8, 6, default, true, null), outline.RadialPolygon.Box);
     }
 
     [Fact]
@@ -7001,11 +6999,10 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M0.5,0 L8,0 L0,8 Z' fill='none' stroke='url(#g)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(2, root.Geometries.Length);
-        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[0].Kind);
-        Assert.Equal(SvgGeometryKind.GradientPolygon, root.Geometries[1].Kind);
-        Assert.True(root.Geometries[1].GradientPolygon.HasFill);
-        Assert.Equal(FillBounds(root.Geometries[0]), root.Geometries[1].GradientPolygon.Box);
+        SvgGeometry outline = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientPolygon, outline.Kind);
+        Assert.True(outline.GradientPolygon.HasFill);
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null), outline.GradientPolygon.Box);
     }
 
     [Fact]

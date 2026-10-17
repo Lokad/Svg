@@ -16,9 +16,9 @@ internal readonly record struct SvgInheritedStrokeStyle(string? Linecap, string?
         return new SvgInheritedStrokeStyle(child.Linecap ?? Linecap, child.Linejoin ?? Linejoin, child.Dasharray ?? Dasharray, child.Dashoffset ?? Dashoffset, child.Width ?? Width, child.Miterlimit ?? Miterlimit, child.StrokeOpacity ?? StrokeOpacity, child.Stroke ?? Stroke);
     }
 
-    /// <summary>Applies inherited stroke values to a leaf computed style when the leaf carries none.</summary>
+    /// <summary>Resolves inherited stroke paint and mechanics before a leaf selects its paint-specific lowering route.</summary>
     internal SvgComputedStyle ApplyTo(SvgComputedStyle leaf)
     {
-        return leaf with { Linecap = leaf.Linecap ?? Linecap, Linejoin = leaf.Linejoin ?? Linejoin, Dasharray = leaf.Dasharray ?? Dasharray, Dashoffset = leaf.Dashoffset ?? Dashoffset, Width = leaf.Width ?? Width, Miterlimit = leaf.Miterlimit ?? Miterlimit, StrokeOpacity = leaf.StrokeOpacity ?? StrokeOpacity };
+        return leaf with { Stroke = leaf.Stroke ?? Stroke, Linecap = leaf.Linecap ?? Linecap, Linejoin = leaf.Linejoin ?? Linejoin, Dasharray = leaf.Dasharray ?? Dasharray, Dashoffset = leaf.Dashoffset ?? Dashoffset, Width = leaf.Width ?? Width, Miterlimit = leaf.Miterlimit ?? Miterlimit, StrokeOpacity = leaf.StrokeOpacity ?? StrokeOpacity };
     }
 }

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="64" viewBox="0 0 80 64" fill="none" stroke="url(#paint)" stroke-width="6">
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<defs><linearGradient id="paint"><stop stop-color="#e45868"/><stop offset="1" stop-color="#416aa9"/></linearGradient></defs>
+<style>.ribbons {stroke-linecap:round;stroke-width:7} .override {stroke:#54765e}</style>
+<g class="ribbons" transform="translate(3 2)" opacity=".75">
+<path d="M6 37 C10 4 46 4 57 37" style="stroke:inherit"/>
+<path d="M8 50 Q34 22 66 48" class="override"/>
+</g></svg>

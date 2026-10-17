@@ -2339,14 +2339,16 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
-    public void Degenerate_subpath_with_gradient_stroke_stays_unsupported()
+    public void Open_compound_gradient_stroke_uses_the_complete_centerline_box()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='90' height='60'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><g fill='none'><path stroke='url(#g)' stroke-width='12' d='m0 0 45 30h45M0 60l45-30'/></g></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("closed axis-aligned integer path contours", rejected.Message);
+        byte[] pixels = RenderPixels(System.Text.Encoding.UTF8.GetString(input), out int width, out _);
+        SvgColor left = Pixel(pixels, width, 8, 4), right = Pixel(pixels, width, 70, 30);
+        Assert.Equal(255, left.Alpha);
+        Assert.Equal(255, right.Alpha);
+        Assert.True(left.Red > left.Blue);
+        Assert.True(right.Blue > right.Red);
     }
 
     [Fact]
