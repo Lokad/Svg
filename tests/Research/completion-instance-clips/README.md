@@ -15,7 +15,7 @@ correction, with healthy startup, successful cleanup and byte-identical outputs.
 The [study](../../../artifacts/audit-corrections-20261016/) owns declarations,
 native evidence and correction diagnostics. No document/cohort count changes.
 
-[Final standalone qualification](../../../docs/SUPPORT_MATRIX.md#current-standalone-qualification-2026-10-17)
+[Final standalone qualification](../../../docs/SUPPORT_MATRIX.md#qualification)
 is complete; the targeted results below retain this correction's checkpoint.
 
 All ten controls are exact on Windows/Linux. Targeted qualification passes

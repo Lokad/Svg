@@ -114,7 +114,7 @@ Shared bounded layout retains text/tspan order, positioning, metrics, admitted
 kerning/ligatures, text paths and paint. Outline replay preserves composite
 component placement and metric selection. Windows uses its matched TrueType/LCD
 coverage and preblend rules; Linux uses its matched light fitting and grayscale
-rules. Exact references are platform-specific. See the [font support boundary](SUPPORT_MATRIX.md#g9-supplied-font-labels-and-text-paths)
+rules. Exact references are platform-specific. See the [font support boundary](SUPPORT_MATRIX.md#text-and-fonts)
 and [public qualification](../tests/Research/public-font-qualification/README.md).
 
 ## Limits and cancellation

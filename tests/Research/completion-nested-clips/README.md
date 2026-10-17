@@ -13,7 +13,7 @@ successful cleanup and byte-identical captures. The
 [study](../../../artifacts/audit-corrections-20261016/) retains the evidence.
 These are focused micro-tests with no full-document/cohort count change.
 
-[Final standalone qualification](../../../docs/SUPPORT_MATRIX.md#current-standalone-qualification-2026-10-17)
+[Final standalone qualification](../../../docs/SUPPORT_MATRIX.md#qualification)
 is complete; the targeted results below retain this correction's checkpoint. Clipping children is distinct from
 admission of `clip-path` on the `clipPath` container itself.
 
