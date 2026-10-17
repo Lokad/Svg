@@ -89,6 +89,11 @@ internal static partial class OpenTypeFont
         int bearingOffset = glyphIndex < metrics.NumberOfHMetrics ? metrics.Hmtx.Offset + glyphIndex * 4 + 2 : metrics.Hmtx.Offset + metrics.NumberOfHMetrics * 4 + (glyphIndex - metrics.NumberOfHMetrics) * 2;
         int origin = header.XMinimum - ReadInt16(bytes.Span, bearingOffset);
         points[pointCount] = new(ScaleHorizontal(origin), 0, origin, 0); points[pointCount + 1] = new(ScaleHorizontal(origin + advance), 0, origin + advance, 0);
+        if ((target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0)
+        {
+            points[pointCount].X = RoundTrueTypeHorizontalMetric(points[pointCount].X, target);
+            points[pointCount + 1].X = RoundTrueTypeHorizontalMetric(points[pointCount + 1].X, target);
+        }
         // Preserve indices without inventing vertical metrics. Executed access
         // to either vertical phantom point is an explicit unsupported outcome.
         points[pointCount + 2].Unavailable = points[pointCount + 3].Unavailable = true;
@@ -164,6 +169,14 @@ internal static partial class OpenTypeFont
                 throw new SvgException(SvgErrorCode.LimitExceeded, "A TrueType hint table exceeds its supported byte bound.");
             return (new(ReadUInt16(data, maxp.Offset + 24), ReadUInt16(data, maxp.Offset + 18), ReadUInt16(data, maxp.Offset + 20), ReadUInt16(data, maxp.Offset + 16)), cvt, fpgm, prep);
         }
+    }
+
+    private static int RoundTrueTypeHorizontalMetric(int value, TrueTypeHintTarget target)
+    {
+        int grid = (target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0 ? 4 : 64;
+        long rounded = ((long)value + grid / 2) & -(long)grid;
+        if (rounded < int.MinValue || rounded > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "A glyph metric exceeds its signed coordinate bound.");
+        return (int)rounded;
     }
 
     /// <summary>Retains native initial horizontal point precision separately from the fixed-point interpreter scale.</summary>

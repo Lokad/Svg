@@ -84,7 +84,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
     private int _deltaBase = 9, _deltaShift = 3, _cutIn = 68, _instructionControl;
     private int _minimumDistance = 64, _singleWidthCutIn, _singleWidth;
     private int _scanControl, _scanType;
-    private bool _scanConfigured, _autoFlip = true;
+    private bool _scanConfigured, _autoFlip = true, _iupX, _iupY;
     private TrueTypeHintRound _round = TrueTypeHintRound.Grid;
     private TrueTypeHintZone _zp0 = TrueTypeHintZone.Glyph, _zp1 = TrueTypeHintZone.Glyph, _zp2 = TrueTypeHintZone.Glyph;
 
@@ -192,7 +192,8 @@ internal sealed partial class TrueTypeHinting : IDisposable
             // Glyph-local reference/zone/vector state starts at the prescribed defaults.
             _rp0 = _rp1 = _rp2 = 0; _zp0 = _zp1 = _zp2 = TrueTypeHintZone.Glyph;
             _projection = _dualProjection = _freedom = HintVector.XAxis; _loop = 1;
-            if ((_instructionControl & 2) != 0) { _round = TrueTypeHintRound.Grid; _cutIn = 68; _deltaBase = 9; _deltaShift = 3; _scanControl = _scanType = 0; _scanConfigured = false; _minimumDistance = 64; _singleWidthCutIn = _singleWidth = 0; _autoFlip = true; }
+            _iupX = _iupY = false;
+            if ((_instructionControl & 2) != 0) { _round = TrueTypeHintRound.Grid; _cutIn = 68; _deltaBase = 9; _deltaShift = 3; _scanControl = _scanType = 0; _scanConfigured = false; _minimumDistance = 64; _singleWidthCutIn = _singleWidth = 0; _autoFlip = true; _instructionControl &= ~4; }
         }
         try
         {
@@ -287,7 +288,11 @@ internal sealed partial class TrueTypeHinting : IDisposable
                     int coordinate = Coordinate(point, false); Move(ref point, opcode == 0x2F ? checked(Round(coordinate, kind) - coordinate) : 0, true);
                     _rp0 = _rp1 = p; break;
                 }
-                case 0x30: case 0x31: InterpolateUntouched((TrueTypeHintAxis)(opcode & 1)); break;
+                case 0x30: case 0x31:
+                    if (kind == TrueTypeHintProgramKind.Glyph && BackwardCompatible && _iupX && _iupY) break;
+                    InterpolateUntouched((TrueTypeHintAxis)(opcode & 1));
+                    if (opcode == 0x30) _iupY = true; else _iupX = true;
+                    break;
                 case 0x32: case 0x33: ShiftPoints(opcode); break;
                 case 0x34: case 0x35: ShiftContour(opcode); break;
                 case 0x38:
@@ -431,7 +436,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 TrueTypeHintZone zone = (op & 1) == 0 ? _zp1 : _zp0;
                 int index = (op & 1) == 0 ? _rp2 : _rp1;
                 TrueTypeHintPoint point = Point(zone, index);
-                return (zone, index, _projection.Project(checked(point.X - point.OriginalX), checked(point.Y - point.OriginalY)));
+                return (zone, index, Project(_projection, checked(point.X - point.OriginalX), checked(point.Y - point.OriginalY)));
             }
             void ShiftPoints(byte op)
             {
@@ -474,7 +479,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 if (indirect && (op & 4) != 0 && _zp0 == _zp1 && Math.Abs((long)control - original) > ControlCutIn(kind)) control = original;
                 int distance = indirect ? control : original;
                 if ((op & 4) != 0) distance = Round(distance, kind);
-                int minimum = IsClearTypeAxis(kind) ? _minimumDistance / 2 : _minimumDistance;
+                int minimum = UsesClearTypeGrid(kind) ? _minimumDistance / 2 : _minimumDistance;
                 if ((op & 8) != 0) distance = original >= 0 ? Math.Max(distance, minimum) : Math.Min(distance, checked(-minimum));
                 int current = ProjectedDistance(point, reference, false);
                 Move(ref point, checked(distance - current), true);
@@ -523,7 +528,9 @@ internal sealed partial class TrueTypeHinting : IDisposable
                     else
                     {
                         ref TrueTypeHintPoint point = ref Point(_zp0, p);
-                        if (ppem == AxisPpem) Move(ref point, amount, true);
+                        if (ppem == AxisPpem && (kind != TrueTypeHintProgramKind.Glyph || !BackwardCompatible ||
+                            !(_iupX && _iupY) && _freedom.X == 0 && _freedom.Y != 0 && (_compositeGlyph || point.TouchedY)))
+                            Move(ref point, amount, true);
                     }
                 }
             }
@@ -580,14 +587,14 @@ internal sealed partial class TrueTypeHinting : IDisposable
         long result = (magnitude + divisor / 2) / divisor; if ((product < 0) != (denominator < 0)) result = -result;
         return checked((int)result);
     }
-    private bool IsClearTypeAxis(TrueTypeHintProgramKind kind) => kind == TrueTypeHintProgramKind.Glyph && _target.Grid == TrueTypeHintGrid.ClearType && _projection.Y == 0;
+    private bool UsesClearTypeGrid(TrueTypeHintProgramKind kind) => kind == TrueTypeHintProgramKind.Glyph && _target.Grid == TrueTypeHintGrid.ClearType && _projection.X != 0;
 
-    private int ControlCutIn(TrueTypeHintProgramKind kind) => IsClearTypeAxis(kind) ? _cutIn / 16 : _cutIn;
+    private int ControlCutIn(TrueTypeHintProgramKind kind) => UsesClearTypeGrid(kind) ? _cutIn / 16 : _cutIn;
 
     private int Round(int value, TrueTypeHintProgramKind kind)
     {
         long absolute = Math.Abs((long)value);
-        int grid = IsClearTypeAxis(kind) ? 4 : 64;
+        int grid = UsesClearTypeGrid(kind) ? 4 : 64;
         long mask = -(long)grid, halfMask = -(long)(grid / 2);
         long result = _round switch
         {

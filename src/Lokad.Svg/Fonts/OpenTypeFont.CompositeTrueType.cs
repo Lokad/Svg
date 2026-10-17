@@ -132,22 +132,14 @@ internal static partial class OpenTypeFont
             OpenTypeHorizontalPhantoms initial = selectedMetrics ?? new(scaledOrigin, 0, scaledAdvance, 0);
             points[firstPhantom] = new(initial.LeftX, initial.LeftY, composite ? initial.LeftX : origin, composite ? initial.LeftY : 0);
             points[firstPhantom + 1] = new(initial.RightX, initial.RightY, composite ? initial.RightX : origin + advance, composite ? initial.RightY : 0);
-            points[firstPhantom].X = RoundMetric(initial.LeftX);
-            points[firstPhantom + 1].X = RoundMetric(initial.RightX);
+            points[firstPhantom].X = RoundTrueTypeHorizontalMetric(initial.LeftX, _target);
+            points[firstPhantom + 1].X = RoundTrueTypeHorizontalMetric(initial.RightX, _target);
             points[firstPhantom + 2].Unavailable = points[firstPhantom + 3].Unavailable = true;
             _machine.HintGlyph(_bytes.Slice(instructions.Offset, instructions.Length), points, ends, composite);
             for (int i = 0; i < outline.Length; i++) { _work.Consume(_token); outline[i] = new(points[i].X, points[i].Y, outline[i].IsOnCurve); }
             // The native FreeType v40 policy and instruction-free parents preserve
             // unrounded metrics; Windows parents retain their fitted sixteenth-pixel origin.
             return _target.Version == 40 || composite && instructions.Length == 0 && (_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) == 0 ? initial : new(points[firstPhantom].X, points[firstPhantom].Y, points[firstPhantom + 1].X, points[firstPhantom + 1].Y);
-        }
-
-        private int RoundMetric(int value)
-        {
-            if ((_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) == 0) return Round(value);
-            long rounded = ((long)value + 2) & ~3L;
-            if (rounded < int.MinValue || rounded > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "A glyph metric exceeds its signed coordinate bound.");
-            return (int)rounded;
         }
 
         private static int Round(int value)
