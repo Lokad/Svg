@@ -17,6 +17,7 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageOutputPath>../../artifacts/nuget/</PackageOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <None Include="../../icon.png" Pack="true" PackagePath="" Visible="false" />
@@ -26,4 +27,8 @@
     <None Include="../../README.md" Pack="true" PackagePath="" Link="README.md" />
     <None Include="../../CHANGELOG.md" Pack="true" PackagePath="" Link="CHANGELOG.md" />
   </ItemGroup>
+  <Target Name="EnforceReleasePackageConfiguration" BeforeTargets="GenerateNuspec"
+          Condition="'$(Configuration)' != 'Release' and '$(AllowNonReleasePackage)' != 'true'">
+    <Error Text="NuGet packages must be produced with -c Release. Pass /p:AllowNonReleasePackage=true only for troubleshooting." />
+  </Target>
 </Project>

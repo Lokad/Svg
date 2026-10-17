@@ -35,8 +35,11 @@ deployed-manifest requests remain pending before production adoption.
 dotnet restore --locked-mode
 dotnet build -c Release
 dotnet test -c Release
-dotnet pack src/Lokad.Svg/Lokad.Svg.csproj -c Release -o artifacts/packages
+dotnet pack src/Lokad.Svg/Lokad.Svg.csproj -c Release
 ```
+
+Packages are written to `artifacts/nuget/`. Non-Release packaging is rejected
+unless explicitly enabled for troubleshooting.
 
 Normal build plus complete tests took about one minute on Windows and four on
 Linux in the qualified local runs. Tests, browser tooling and benchmarks are
@@ -59,7 +62,7 @@ After a Release build, run the resource, font-host and package smoke checks with
 ```powershell
 tools/test-memory-probe.ps1 -ResultsDirectory artifacts/memory-probe
 tools/test-font-probe.ps1 -ResultsDirectory artifacts/font-probe-smoke
-tools/test-package.ps1 -PackageDirectory artifacts/packages -ResultsDirectory artifacts/package-smoke
+tools/test-package.ps1 -PackageDirectory artifacts/nuget -ResultsDirectory artifacts/package-smoke
 ```
 
 For an isolated conversion and optional budget/cancellation controls:

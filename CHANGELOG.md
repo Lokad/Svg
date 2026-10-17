@@ -18,6 +18,8 @@ Linux, with no runtime package dependencies.
 - Frozen Windows/Linux visual references, public font checks and installed-package
   consumer verification. Packages include the icon, README, changelog, licenses,
   notices and a separate portable-PDB symbol package.
+- NuGet output under `artifacts/nuget/`, with non-Release packaging rejected by
+  default.
 
 See the [support matrix](docs/SUPPORT_MATRIX.md) for the implemented static SVG
 subset, font/shaping restrictions and explicit unsupported features.
