@@ -7,7 +7,7 @@ and masks, embedded PNGs, static CSS, markers, selected filters and supplied-fon
 labels/text paths. See [supported SVG](docs/SUPPORT_MATRIX.md#supported-svg-subset)
 for the exact boundaries and unsupported outcomes.
 
-Install with:
+Install [Lokad.Svg from NuGet](https://www.nuget.org/packages/Lokad.Svg/0.1.0):
 
 ```powershell
 dotnet add package Lokad.Svg --version 0.1.0

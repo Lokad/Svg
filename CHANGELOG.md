@@ -2,6 +2,9 @@
 
 ## 0.1.0 - 2026-10-17
 
+Published on [NuGet.org](https://www.nuget.org/packages/Lokad.Svg/0.1.0).
+Source: [`v0.1.0`](https://github.com/Lokad/Svg/tree/v0.1.0).
+
 Initial release of the managed SVG-to-PNG renderer for .NET 10 on Windows and
 Linux, with no runtime package dependencies.
 
