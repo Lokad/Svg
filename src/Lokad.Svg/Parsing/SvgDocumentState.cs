@@ -239,6 +239,7 @@ internal sealed class SvgDocumentState : IDisposable
 
 
     internal bool HasUnsupportedContent { get; set; }
+    internal SvgSourceDiagnostic? UnsupportedDiagnostic { get; set; }
 
     // Retain at most one already-created failure until earlier paint references resolve.
     // No text or glyph owners survive this failed run; document teardown releases prior scene owners.

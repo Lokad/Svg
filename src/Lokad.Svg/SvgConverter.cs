@@ -209,7 +209,7 @@ public static class SvgConverter
         SvgRoot root = ParseRoot(svg, options, budget, workCounter, cancellationToken);
         try
         {
-            if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
+            if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.", null, root.UnsupportedDiagnostic);
             return new RasterizedConversion(budget, root, Rasterize(root, options, budget, cancellationToken));
         }
         catch

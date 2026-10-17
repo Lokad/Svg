@@ -140,6 +140,7 @@ internal static class SvgGlyphLayout
             int mappedPositionIndex = 0;
             int mappedPaintIndex = 0;
             int mappedFontIndex = 0;
+            int scalarIndex = 0;
             var mappedScalars = text.EnumerateRunes();
             while (mappedScalars.MoveNext())
             {
@@ -175,7 +176,8 @@ internal static class SvgGlyphLayout
                 if (lookupIndex == cachedLookupCount)
                 {
                     glyphIndex = OpenTypeFont.GetGlyphIndex(font.Bytes, scalarValue, font.Metrics, workCounter, cancellationToken);
-                    if (glyphIndex == 0) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font has no glyph for an admitted text scalar.", new SvgFontDiagnostic(SvgFontFailureStage.Glyph, font.Resolution.Resolution.Request.Family, font.Resolution.Resolution.Face.ResolvedFamily, font.Resolution.Resolution.Face.File.RelativePath + ":" + font.Resolution.Resolution.Face.FaceIndex, sourceElementId));
+                    if (glyphIndex == 0) throw new SvgException(SvgErrorCode.UnresolvedResource, $"The selected font has no glyph for U+{scalar.Value:X4} at scalar index {scalarIndex} in the normalized text run.", new SvgFontDiagnostic(SvgFontFailureStage.Glyph, font.Resolution.Resolution.Request.Family, font.Resolution.Resolution.Face.ResolvedFamily, font.Resolution.Resolution.Face.File.RelativePath + ":" + font.Resolution.Resolution.Face.FaceIndex, sourceElementId,
+                        font.Resolution.Resolution.Request.Weight, font.Resolution.Resolution.Request.Italic, font.Resolution.Resolution.IsFallback, scalar.Value, scalarIndex));
                     OpenTypeFont.ValidateGlyphPositioning(font.Bytes, glyphIndex, font.Metrics, workCounter, cancellationToken);
                     advance = OpenTypeFont.GetAdvanceWidth(font.Bytes, glyphIndex, font.Metrics, workCounter, cancellationToken);
                     if (cachedLookupCount < cachedLookups.Length) cachedLookups[cachedLookupCount++] = new GlyphLookup(scalarValue, glyphIndex, advance);
@@ -215,6 +217,7 @@ internal static class SvgGlyphLayout
                         cancellationToken.ThrowIfCancellationRequested();
                         workCounter?.Consume(cancellationToken);
                         if (!mappedScalars.MoveNext()) throw new InvalidOperationException("The ligature source range is invalid.");
+                        scalarIndex++;
                     }
                     glyphIndex = ligatureGlyph;
                     sourceLength = ligatureLength;
@@ -228,6 +231,7 @@ internal static class SvgGlyphLayout
                 if (!double.IsFinite(scaledAdvance)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text coordinates exceed the admitted numeric range.");
                 glyphs[glyphPosition++] = new SvgPositionedGlyph(glyphIndex, 0, originY, scaledAdvance);
                 mappedSourceOffset += sourceLength;
+                scalarIndex++;
                 if (fragments is not null && mappedSourceOffset >= sourceEnd)
                 {
                     fragments.Add(new(fragmentStart, glyphPosition, 0));

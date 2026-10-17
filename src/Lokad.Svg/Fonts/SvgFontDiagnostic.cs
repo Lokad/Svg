@@ -24,12 +24,24 @@ public sealed class SvgFontDiagnostic
 
     /// <summary>Initializes one bounded font diagnostic.</summary>
     public SvgFontDiagnostic(SvgFontFailureStage stage, string requestedFamily, string resolvedFamily, string faceIdentity, string sourceElementId)
+        : this(stage, requestedFamily, resolvedFamily, faceIdentity, sourceElementId, null, null, null, null, null)
     {
+    }
+
+    /// <summary>Initializes bounded selection and missing-glyph context; null values mean unavailable information.</summary>
+    public SvgFontDiagnostic(SvgFontFailureStage stage, string requestedFamily, string resolvedFamily, string faceIdentity, string sourceElementId,
+        int? requestedWeight, bool? requestedItalic, bool? isFallback, int? unicodeScalar, int? scalarIndex)
+    {
+        if (requestedWeight <= 0) throw new ArgumentOutOfRangeException(nameof(requestedWeight));
+        if (unicodeScalar is {} scalar && !System.Text.Rune.IsValid(scalar)) throw new ArgumentOutOfRangeException(nameof(unicodeScalar));
+        if (scalarIndex < 0) throw new ArgumentOutOfRangeException(nameof(scalarIndex));
         RequestedFamily = Bound(requestedFamily);
         ResolvedFamily = Bound(resolvedFamily);
         FaceIdentity = Bound(faceIdentity);
         SourceElementId = Bound(sourceElementId);
         Stage = stage;
+        RequestedWeight = requestedWeight; RequestedItalic = requestedItalic; IsFallback = isFallback;
+        UnicodeScalar = unicodeScalar; ScalarIndex = scalarIndex;
     }
 
     /// <summary>Gets the bounded stage at which use failed.</summary>
@@ -42,6 +54,14 @@ public sealed class SvgFontDiagnostic
     public string FaceIdentity { get; }
     /// <summary>Gets the bounded direct-text source element ID when the failure occurs while rendering text.</summary>
     public string SourceElementId { get; }
+
+    public int? RequestedWeight { get; }
+    public bool? RequestedItalic { get; }
+    public bool? IsFallback { get; }
+    /// <summary>Gets the missing Unicode scalar value, or null for failures without a missing scalar.</summary>
+    public int? UnicodeScalar { get; }
+    /// <summary>Gets the zero-based Unicode-scalar index in the normalized layout run before ligature substitution.</summary>
+    public int? ScalarIndex { get; }
 
     private static string Bound(string value)
     {

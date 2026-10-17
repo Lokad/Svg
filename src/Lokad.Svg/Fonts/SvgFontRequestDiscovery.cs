@@ -290,7 +290,7 @@ internal static class SvgFontRequestDiscovery
                     DiscoveryCandidate candidateState;
                     if (!hasUnsupportedContent && inertDepth < 0 && !insideDirectText && isTextEligible && style.Text.Family is string family)
                     {
-                        candidateState = new DiscoveryCandidate(true, family, style.Text.Weight, style.Text.Italic, whitespaceMode, false, false) { Filter = style.Filter };
+                        candidateState = new DiscoveryCandidate(true, family, style.Text.Weight, style.Text.Italic, whitespaceMode, false, false) { Filter = style.Filter, SourceContext = SvgSourceContext.Capture(reader) };
                     }
                     else
                     {
@@ -388,7 +388,7 @@ internal static class SvgFontRequestDiscovery
             }
             if (!hasRoot) throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
             instanceFonts?.AddRequests(
-                request => AddCandidate(new(true, request.Family, request.Weight, request.Italic, SvgTextWhitespaceMode.Default, false, true), requestKeys, workCounter, cancellationToken),
+                request => AddCandidate(new(true, request.Family, request.Weight, request.Italic, SvgTextWhitespaceMode.Default, false, true) { SourceContext = request.SourceContext }, requestKeys, workCounter, cancellationToken),
                 id => textPaintIds.Add(new(styleStrings.Copy(id))), ObserveFilter, ObserveMarkers);
             foreach (MarkerReference reference in markerReferences.Values)
             {
@@ -419,7 +419,7 @@ internal static class SvgFontRequestDiscovery
                 {
                     throw new SvgException(SvgErrorCode.MalformedInput, "The discovered font request is missing its family.");
                 }
-                result[index] = new SvgFontFaceRequest(family, key.Weight, key.Italic);
+                result[index] = new SvgFontFaceRequest(family, key.Weight, key.Italic) { SourceContext = key.SourceContext };
             }
             return result;
 
@@ -514,7 +514,7 @@ internal static class SvgFontRequestDiscovery
             }
         }
         if (requests.Count == MaximumRequests) throw new SvgException(SvgErrorCode.LimitExceeded, "The SVG text font request count exceeds the preparation limit.");
-        requests.Add(new TextRequestKey(family, candidate.Weight, candidate.Italic));
+        requests.Add(new TextRequestKey(family, candidate.Weight, candidate.Italic) { SourceContext = candidate.SourceContext });
     }
 
     private static bool HasRenderableText(XmlReader reader, char[] chunk, SvgTextWhitespaceMode whitespaceMode, ParserWorkCounter workCounter, CancellationToken cancellationToken, out bool hasCharacters, out bool endsWithCollapsible)
@@ -574,10 +574,14 @@ internal static class SvgFontRequestDiscovery
         internal SvgTextPaintStyle TextPaint => new(Paint, IsDisplayed, IsVisible, Stroke, ElementOpacity.Alpha) { FillServer = PaintServerFill, StrokeStyle = StrokeStyle, PaintOrder = PaintOrder, NonScalingStroke = NonScalingStroke, Decoration = Text.Decoration };
     }
 
-    private readonly record struct TextRequestKey(string Family, int Weight, bool Italic);
+    private readonly record struct TextRequestKey(string Family, int Weight, bool Italic)
+    {
+        internal SvgSourceContext? SourceContext { get; init; }
+    }
 
     private readonly record struct DiscoveryCandidate(bool HasRequest, string? Family, int Weight, bool Italic, SvgTextWhitespaceMode WhitespaceMode, bool HasChildElement, bool HasRenderableTextContent)
     {
+        internal SvgSourceContext? SourceContext { get; init; }
         internal string? Filter { get; init; }
     }
 }

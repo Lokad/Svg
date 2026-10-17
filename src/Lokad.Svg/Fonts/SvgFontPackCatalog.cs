@@ -201,7 +201,8 @@ public sealed class SvgFontPackCatalog
     }
 
     private static SvgException CreateIntegrityFailure(SvgFontPackResolution resolution, SvgException exception)
-        => new(exception.ErrorCode, exception.Message, new SvgFontDiagnostic(SvgFontFailureStage.Integrity, resolution.Request.Family, resolution.Face.ResolvedFamily, resolution.Face.File.RelativePath + ":" + resolution.Face.FaceIndex, string.Empty));
+        => new(exception.ErrorCode, exception.Message, new SvgFontDiagnostic(SvgFontFailureStage.Integrity, resolution.Request.Family, resolution.Face.ResolvedFamily, resolution.Face.File.RelativePath + ":" + resolution.Face.FaceIndex, string.Empty,
+            resolution.Request.Weight, resolution.Request.Italic, resolution.IsFallback, null, null), resolution.Request.SourceContext?.Describe(string.Empty, string.Empty));
 
     private static SvgFontPackFile[] ParseFiles(WireFile[]? entries)
     {
@@ -379,6 +380,7 @@ public sealed class SvgFontPackCatalog
 /// <summary>Describes one family/style selection request to a font pack.</summary>
 public sealed class SvgFontFaceRequest
 {
+    internal SvgSourceContext? SourceContext { get; init; }
     /// <summary>Initializes a requested family, positive CSS-like weight and italic flag.</summary>
     public SvgFontFaceRequest(string family, int weight, bool italic)
     {

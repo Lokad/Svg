@@ -11,6 +11,10 @@
   caller-controlled dimension/pixel caps without changing logical layout.
   Preserve native text fitting at fractional resolution and viewport clipping
   when a minimum one-pixel canvas is required.
+- Add bounded SVG source diagnostics for unsupported constructs and sizing
+  failures, including original locations through retained text and local uses.
+  Font failures include requested weight/style, fallback status and missing
+  Unicode scalar/index details when available.
 
 ## 0.1.0 - 2026-10-17
 

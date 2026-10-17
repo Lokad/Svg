@@ -29,6 +29,22 @@ implemented. Unsupported visible behavior reports `UnsupportedFeature`;
 malformed input, unresolved resources and exceeded limits have separate
 [error categories](../src/Lokad.Svg/SvgErrorCode.cs).
 
+### Diagnostics (unreleased)
+
+`SvgException.SourceDiagnostic` identifies the element/ID, offending attribute or
+property/value and one-based XML line/column where captured. Retained text keeps
+its original location; direct local text instances also identify the referencing
+element ID. Unavailable fields are empty/null, and diagnostic strings are bounded
+to 256 UTF-16 code units. Errors retain their existing categories and report one
+failure; this is not a whole-document validation API.
+
+`FontDiagnostic` includes requested family/weight/italic, selected face and
+fallback status when known. Missing glyphs identify the Unicode scalar and its
+zero-based scalar index in the normalized layout run before ligature substitution.
+That index is independent of UTF-16 indices and original XML character positions.
+Explicit snapshots still require prepared requests; catalog selection and
+caller-controlled fallback retain their existing behavior.
+
 ### Document sizing and inspection (unreleased)
 
 `SvgConverter.InspectDimensions` reports the CSS-resolved width/height, viewBox

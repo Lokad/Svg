@@ -329,7 +329,8 @@ internal static class SvgTextSyntax
         };
         return new SvgTextStyle(new SvgFontFaceRequest(family, weight, italic), fontSize, firstX, firstY, firstDx, firstDy, parsedLetterSpacing, anchor, reader.GetAttribute("id") ?? string.Empty)
         { PositionLists = lists, TextLength = textLength, LengthAdjust = lengthAdjust, Baseline = baseline,
-            WordSpacing = (wordSpacing ?? reader.GetAttribute("word-spacing")) is string specifiedWordSpacing ? ParseWordSpacing(specifiedWordSpacing) : inherited.WordSpacing };
+            WordSpacing = (wordSpacing ?? reader.GetAttribute("word-spacing")) is string specifiedWordSpacing ? ParseWordSpacing(specifiedWordSpacing) : inherited.WordSpacing,
+            SourceContext = SvgSourceContext.Capture(reader) };
     }
 
     /// <summary>Resolves CSS and XML direct-text whitespace declarations over the inherited CSS mode.</summary>
@@ -542,6 +543,7 @@ internal readonly record struct SvgTextInlineFontProperties(string? Family, stri
 /// <summary>Represents the explicit single-font style and baseline origin of one initial text run.</summary>
 internal readonly record struct SvgTextStyle(SvgFontFaceRequest Font, double FontSize, double X, double Y, double Dx, double Dy, double LetterSpacing, SvgTextAnchor Anchor, string SourceElementId)
 {
+    internal SvgSourceContext? SourceContext { get; init; }
     internal SvgTextPositionLists PositionLists { get; init; }
     internal double? TextLength { get; init; }
     internal SvgTextLengthAdjust LengthAdjust { get; init; }

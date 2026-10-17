@@ -32,6 +32,16 @@ internal static class SvgTextRunBuilder
     /// <summary>Resolves normalized font intervals from the caller snapshot once, then shares their faces with continuous layout and glyph replay.</summary>
     internal static SvgTextRun Create(SvgTextStyle style, string text, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, ReadOnlySpan<SvgTextPaintSpan> paintSpans, ReadOnlySpan<SvgTextFontSpan> fontSpans, SvgTextGlyphPaint? defaultPaint, SvgGlyphDeviceMetrics? deviceMetrics, SvgFontSnapshot snapshot, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
+        try { return CreateCore(style, text, letterSpacingSpans, positionAdjustments, paintSpans, fontSpans, defaultPaint, deviceMetrics, snapshot, budget, workCounter, cancellationToken); }
+        catch (SvgException exception)
+        {
+            if (style.SourceContext is {} source) exception.AttachSource(source.Describe(string.Empty, string.Empty));
+            throw;
+        }
+    }
+
+    private static SvgTextRun CreateCore(SvgTextStyle style, string text, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, ReadOnlySpan<SvgTextPaintSpan> paintSpans, ReadOnlySpan<SvgTextFontSpan> fontSpans, SvgTextGlyphPaint? defaultPaint, SvgGlyphDeviceMetrics? deviceMetrics, SvgFontSnapshot snapshot, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
         if (style.TextLength is not null && style.LengthAdjust == SvgTextLengthAdjust.Spacing && deviceMetrics is {} metrics)
             deviceMetrics = metrics with { UsesTextLengthSpacing = true };
         ArgumentNullException.ThrowIfNull(text);

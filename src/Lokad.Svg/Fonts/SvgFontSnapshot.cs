@@ -61,7 +61,7 @@ public sealed class SvgFontSnapshot : IDisposable
             SvgFontFaceRequest selected = font.Resolution.Resolution.Request;
             if (selected.Weight == request.Weight && selected.Italic == request.Italic && selected.Family.Equals(request.Family, StringComparison.OrdinalIgnoreCase)) return font;
         }
-        throw new SvgException(SvgErrorCode.UnresolvedResource, "The requested font face was not prepared in the supplied snapshot.", new SvgFontDiagnostic(SvgFontFailureStage.Source, request.Family, string.Empty, string.Empty, sourceElementId));
+        throw new SvgException(SvgErrorCode.UnresolvedResource, "The requested font face was not prepared in the supplied snapshot.", new SvgFontDiagnostic(SvgFontFailureStage.Source, request.Family, string.Empty, string.Empty, sourceElementId, request.Weight, request.Italic, null, null, null));
     }
 
     /// <summary>
@@ -198,12 +198,24 @@ public sealed class SvgFontSnapshot : IDisposable
     }
 
     /// <summary>Discovers and prepares selected programs under a work counter shared with a caller-owned prepared operation.</summary>
-    internal static ValueTask<SvgFontSnapshot> CreateAsync(ReadOnlyMemory<byte> svg, SvgFontPackCatalog catalog, ISvgFontProgramSourceProvider provider, SvgRenderLimits limits, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static async ValueTask<SvgFontSnapshot> CreateAsync(ReadOnlyMemory<byte> svg, SvgFontPackCatalog catalog, ISvgFontProgramSourceProvider provider, SvgRenderLimits limits, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(limits);
         ArgumentNullException.ThrowIfNull(workCounter);
         SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(svg, limits, workCounter, cancellationToken);
-        return CreateAsync(catalog, requests, provider, workCounter, cancellationToken);
+        try { return await CreateAsync(catalog, requests, provider, workCounter, cancellationToken).ConfigureAwait(false); }
+        catch (SvgException exception) when (exception.FontDiagnostic is {} diagnostic)
+        {
+            foreach (SvgFontFaceRequest request in requests)
+                if (request.Family.Equals(diagnostic.RequestedFamily, StringComparison.OrdinalIgnoreCase)
+                    && request.Weight == diagnostic.RequestedWeight && request.Italic == diagnostic.RequestedItalic
+                    && request.SourceContext is {} source)
+                {
+                    exception.AttachSource(source.Describe(string.Empty, string.Empty));
+                    break;
+                }
+            throw;
+        }
     }
 
     /// <summary>Releases references to caller-owned font byte regions retained by this snapshot.</summary>
@@ -262,7 +274,8 @@ public sealed class SvgFontSnapshot : IDisposable
     }
 
     private static SvgFontDiagnostic CreateDiagnostic(SvgFontPackResolution selection, SvgFontFailureStage stage)
-        => new(stage, selection.Request.Family, selection.Face.ResolvedFamily, selection.Face.File.RelativePath + ":" + selection.Face.FaceIndex, string.Empty);
+        => new(stage, selection.Request.Family, selection.Face.ResolvedFamily, selection.Face.File.RelativePath + ":" + selection.Face.FaceIndex, string.Empty,
+            selection.Request.Weight, selection.Request.Italic, selection.IsFallback, null, null);
 }
 
 /// <summary>Represents one verified, caller-byte-backed font held by an immutable snapshot.</summary>

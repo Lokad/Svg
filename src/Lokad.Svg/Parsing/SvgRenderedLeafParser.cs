@@ -73,6 +73,15 @@ internal static class SvgRenderedLeafParser
         SvgDocumentState state, SvgRenderLimits limits, RenderBudget budget, SvgFontSnapshot? fontSnapshot,
         ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        SvgSourceContext source = SvgSourceContext.Capture(reader);
+        try { return ParseResolvedCore(reader, context, root, state, limits, budget, fontSnapshot, workCounter, cancellationToken); }
+        catch (SvgException exception) { exception.AttachSource(source.Describe(string.Empty, string.Empty)); throw; }
+    }
+
+    private static bool ParseResolvedCore(XmlReader reader, SvgPaintableElementContext context, SvgRootAttributes root,
+        SvgDocumentState state, SvgRenderLimits limits, RenderBudget budget, SvgFontSnapshot? fontSnapshot,
+        ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
         SvgComputedStyle style = context.ResolveStyle(reader, reader.LocalName == "text");
         if (style.Filter is not string filter || filter.Trim() == "none")
             return ParseContent(reader, context, root, state, limits, budget, fontSnapshot, workCounter, cancellationToken);

@@ -25,14 +25,15 @@ internal readonly record struct SvgRootSyntax(SvgRootLength? Width, SvgRootLengt
         SvgRootSyntax syntax = Parse(reader, workCounter, cancellationToken);
         string? width = SvgInlineStyleParser.MergeWithImportance(inline.GeometryWidth, inline.Important, InlineImportantProperties.GeometryWidth, sheet.GeometryWidth, sheet.Important);
         string? height = SvgInlineStyleParser.MergeWithImportance(inline.GeometryHeight, inline.Important, InlineImportantProperties.GeometryHeight, sheet.GeometryHeight, sheet.Important);
-        return new(ParseStyleLength(width) ?? syntax.Width, ParseStyleLength(height) ?? syntax.Height, syntax.ViewBox);
+        return new(ParseStyleLength(width, "width") ?? syntax.Width, ParseStyleLength(height, "height") ?? syntax.Height, syntax.ViewBox);
 
-        static SvgRootLength? ParseStyleLength(string? value)
+        SvgRootLength? ParseStyleLength(string? value, string attribute)
         {
             if (value is null) return null;
             ReadOnlySpan<char> token = value.AsSpan().Trim();
             if (token.Equals("auto".AsSpan(), StringComparison.OrdinalIgnoreCase) || token.Equals("inherit".AsSpan(), StringComparison.OrdinalIgnoreCase)) return null;
-            return SvgGeometrySyntax.ParseRootLength(value);
+            try { return SvgGeometrySyntax.ParseRootLength(value); }
+            catch (SvgException exception) { SvgSourceContext.Attach(reader, exception, attribute, value); throw; }
         }
     }
 
@@ -43,7 +44,14 @@ internal readonly record struct SvgRootSyntax(SvgRootLength? Width, SvgRootLengt
         // viewports keep their own offset handling.
         ValidateRootPosition(reader.GetAttribute("x"));
         ValidateRootPosition(reader.GetAttribute("y"));
-        return new(SvgGeometrySyntax.ParseRootLength(reader.GetAttribute("width")), SvgGeometrySyntax.ParseRootLength(reader.GetAttribute("height")), SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), workCounter, cancellationToken));
+        return new(ParseLength("width"), ParseLength("height"), SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), workCounter, cancellationToken));
+
+        SvgRootLength? ParseLength(string attribute)
+        {
+            string? value = reader.GetAttribute(attribute);
+            try { return SvgGeometrySyntax.ParseRootLength(value); }
+            catch (SvgException exception) { SvgSourceContext.Attach(reader, exception, attribute, value ?? string.Empty); throw; }
+        }
 
         static void ValidateRootPosition(string? value)
         {

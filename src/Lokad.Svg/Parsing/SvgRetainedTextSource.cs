@@ -13,9 +13,9 @@ internal sealed record SvgTextReplayEnvironment(SvgRootAttributes Root, SvgRende
 /// fonts or glyph geometry; this source feeds the ordinary text parser rather than a second layout path.</remarks>
 internal sealed class SvgRetainedTextSource
 {
-    private readonly record struct Attribute(string Name, string LocalName, string Prefix, string Namespace, string Value);
+    private readonly record struct Attribute(string Name, string LocalName, string Prefix, string Namespace, string Value, int Line, int Position);
     private readonly record struct Node(XmlNodeType Type, string Name, string LocalName, string Prefix, string Namespace,
-        string Value, int Depth, bool Empty, int AttributeStart, int AttributeCount, int Style, int End);
+        string Value, int Depth, bool Empty, int AttributeStart, int AttributeCount, int Style, int End, int Line, int Position);
     private readonly Node[] _nodes;
     private readonly Attribute[] _attributes;
     private readonly InlineStyle[] _styles;
@@ -70,7 +70,8 @@ internal sealed class SvgRetainedTextSource
                 {
                     work.Consume(token);
                     subtree.MoveToAttribute(index);
-                    attributes.Add(new(Copy(subtree.Name), Copy(subtree.LocalName), Copy(subtree.Prefix), Copy(subtree.NamespaceURI), Copy(subtree.Value)));
+                    (int line, int position) = Location(subtree);
+                    attributes.Add(new(Copy(subtree.Name), Copy(subtree.LocalName), Copy(subtree.Prefix), Copy(subtree.NamespaceURI), Copy(subtree.Value), line, position));
                 }
                 subtree.MoveToElement();
             }
@@ -83,8 +84,9 @@ internal sealed class SvgRetainedTextSource
                 value = Copy(value);
             }
             int current = nodes.Count;
+            (int nodeLine, int nodePosition) = Location(subtree);
             nodes.Add(new(subtree.NodeType, Copy(subtree.Name), Copy(subtree.LocalName), Copy(subtree.Prefix), Copy(subtree.NamespaceURI),
-                value, depth, empty, firstAttribute, attributes.Count - firstAttribute, styleIndex, current));
+                value, depth, empty, firstAttribute, attributes.Count - firstAttribute, styleIndex, current, nodeLine, nodePosition));
             if (subtree.NodeType == XmlNodeType.Element && !empty) open.Add(current);
             else if (subtree.NodeType == XmlNodeType.EndElement)
             {
@@ -102,6 +104,9 @@ internal sealed class SvgRetainedTextSource
             return new(Adopt(nodes.Detach()), Adopt(attributes.Detach()), Adopt(styles.Detach()), characters, childNodes);
         }
         catch { owner.Dispose(); throw; }
+
+        static (int Line, int Position) Location(XmlReader reader)
+            => reader is IXmlLineInfo info && info.HasLineInfo() ? (info.LineNumber, info.LinePosition) : (0, 0);
 
         string Copy(string text)
         {
@@ -247,7 +252,7 @@ internal sealed class SvgRetainedTextSource
     /// <remarks>All abstract reader contracts borrow source storage. Cursor work/cancellation use the supplied
     /// conversion context; no source arrays or fonts transfer. Independent cursors may read immutable tokens,
     /// but each cursor and its shared parser work counter remain confined to their owning parse.</remarks>
-    internal sealed class Reader : XmlReader
+    internal sealed class Reader : XmlReader, IXmlLineInfo
     {
         private readonly SvgRetainedTextSource _source;
         private readonly int _first, _last, _depth;
@@ -267,6 +272,9 @@ internal sealed class SvgRetainedTextSource
         private Node Current => _source._nodes[_index];
         private Attribute CurrentAttribute => _source._attributes[Current.AttributeStart + _attribute];
         internal InlineStyle StyleSheet => Current.Style < 0 ? default : _source._styles[Current.Style];
+        public bool HasLineInfo() => LineNumber > 0;
+        public int LineNumber => _attribute < 0 ? Current.Line : CurrentAttribute.Line;
+        public int LinePosition => _attribute < 0 ? Current.Position : CurrentAttribute.Position;
         public override int AttributeCount => Current.AttributeCount;
         public override string BaseURI => string.Empty;
         public override int Depth => Current.Depth - _source._nodes[_first].Depth + _depth + (_attribute < 0 ? 0 : 1);

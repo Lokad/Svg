@@ -5,6 +5,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Represents a parsed direct local use reference before its target is resolved.</summary>
 internal readonly record struct SvgUseReference(string Id, double X, double Y, double? Width, double? Height, SvgAffineTransform Transform, SvgAffineTransform InheritedTransform, byte Opacity, bool IsPainted, SvgPaint? FillOverride, string? PaintServerId, SvgUseStrokeOverride? StrokeOverride)
 {
+    internal SvgSourceContext? SourceContext { get; init; }
     /// <summary>Records the absence of an instance opacity layer, using the validated source value rather than its rounded alpha byte.</summary>
     internal bool AllowsSolidPaintAnalysis { get; init; }
     internal bool IsMarker { get; init; }
@@ -79,7 +80,14 @@ internal static class SvgReferenceResolver
             return SvgSymbolContentRenderer.Apply(definition with { SymbolContent = strokeContent }, reference, frame, state, workCounter, cancellationToken);
         if (definition.SymbolContent is not null) return SvgSymbolContentRenderer.Apply(definition, reference, frame, state, workCounter, cancellationToken);
         if (definition.TextSource is {} textSource)
-            return textSource.Lower(reference, frame, state, workCounter, cancellationToken);
+        {
+            try { return textSource.Lower(reference, frame, state, workCounter, cancellationToken); }
+            catch (SvgException exception)
+            {
+                if (reference.SourceContext is {} instance) exception.AttachInstance(instance.ElementId);
+                throw;
+            }
+        }
         if (definition.LeafSource is SvgDefinitionLeafSource source)
         {
             if (source.LocalName == "image") return source.LowerImage(reference, frame, state).Geometries;

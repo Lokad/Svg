@@ -8,6 +8,8 @@ using System.Runtime.CompilerServices;
 /// <summary>Represents the parsed root viewport dimensions before scene construction.</summary>
 internal readonly record struct SvgRoot(SvgRootLength? Width, SvgRootLength? Height, SvgViewBox? ViewBox, SvgGeometry[] Geometries, SvgDrawCommand[] Commands, bool HasUnsupportedChild, long ParserWorkUnits, SvgSceneStorage? SceneStorage) : IDisposable
 {
+    internal SvgSourceDiagnostic? UnsupportedDiagnostic { get; init; }
+
     /// <summary>Borrows this scene's sealed bindings; child arenas separately borrow document-owned definitions.</summary>
     internal SvgFilterArena? FilterResources => SceneStorage?.Filters;
 

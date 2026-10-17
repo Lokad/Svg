@@ -49,6 +49,7 @@ internal static class SvgDocumentTraversal
         if (root.SourceOpacity.Value != 1) state.Scene.BeginSourceOpacityScope(root.SourceOpacity, new(0));
         while (reader.Read())
         {
+            SvgSourceContext? sourceContext = reader.NodeType == XmlNodeType.Element ? SvgSourceContext.Capture(reader) : null;
             workCounter.Consume(cancellationToken);
             state.CssAncestors.Observe(reader, 0);
             if (reader.NodeType == XmlNodeType.Element)
@@ -266,6 +267,8 @@ internal static class SvgDocumentTraversal
                 }
                 else if (inScope && reader.NamespaceURI != "http://www.w3.org/2000/svg" && !reader.IsEmptyElement && TrySkipInertForeignSubtree(reader, state, limits, workCounter, cancellationToken)) { }
                 else if (inScope) state.HasUnsupportedContent = true;
+                if (state.HasUnsupportedContent && state.UnsupportedDiagnostic is null && sourceContext is {} unsupportedSource)
+                    state.UnsupportedDiagnostic = unsupportedSource.Describe(string.Empty, string.Empty);
             }
             if (reader.NodeType == XmlNodeType.EndElement)
             {
@@ -478,7 +481,8 @@ internal static class SvgDocumentTraversal
                     try
                     {
                         ValidateDocumentEnd(reader, workCounter, cancellationToken);
-                        return new SvgRoot(root.Width, root.Height, root.ViewBox, sceneStorage.Geometries, sceneStorage.Commands, state.HasUnsupportedContent, workCounter.Used, sceneStorage);
+                        return new SvgRoot(root.Width, root.Height, root.ViewBox, sceneStorage.Geometries, sceneStorage.Commands, state.HasUnsupportedContent, workCounter.Used, sceneStorage)
+                            { UnsupportedDiagnostic = state.UnsupportedDiagnostic };
                     }
                     catch { sceneStorage.Dispose(); throw; }
                 }

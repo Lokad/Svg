@@ -66,6 +66,12 @@ internal static class SvgElementAttributePolicy
 
     private static void Validate(XmlReader reader, SvgElementKind kind, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        try { ValidateCore(reader, kind, elementName, workCounter, cancellationToken); }
+        catch (SvgException exception) { SvgSourceContext.Attach(reader, exception); throw; }
+    }
+
+    private static void ValidateCore(XmlReader reader, SvgElementKind kind, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
         if (!reader.HasAttributes) return;
         while (reader.MoveToNextAttribute())
         {

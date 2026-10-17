@@ -132,7 +132,8 @@ internal sealed class SvgFontProgramSourceFailure(SvgException sourceException) 
 internal static class SvgFontSourceFailures
 {
     internal static SvgException Create(SvgFontPackResolution resolution, SvgErrorCode errorCode)
-        => new(errorCode, "The selected font program could not be acquired from the caller-provided source.", new SvgFontDiagnostic(SvgFontFailureStage.Source, resolution.Request.Family, resolution.Face.ResolvedFamily, resolution.Face.File.RelativePath + ":" + resolution.Face.FaceIndex, string.Empty));
+        => new(errorCode, "The selected font program could not be acquired from the caller-provided source.", new SvgFontDiagnostic(SvgFontFailureStage.Source, resolution.Request.Family, resolution.Face.ResolvedFamily, resolution.Face.File.RelativePath + ":" + resolution.Face.FaceIndex, string.Empty,
+            resolution.Request.Weight, resolution.Request.Italic, resolution.IsFallback, null, null), resolution.Request.SourceContext?.Describe(string.Empty, string.Empty));
 }
 
 /// <summary>Hashes caller-owned font bytes in bounded, cancellable checkpoints shared by source and snapshot integrity validation.</summary>

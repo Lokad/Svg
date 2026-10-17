@@ -40,7 +40,7 @@ public sealed class SvgPreparedDocument : IDisposable
             if (root.HasUnsupportedChild)
             {
                 root.Dispose();
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.", null, root.UnsupportedDiagnostic);
             }
             return new SvgPreparedDocument(preparedOptions, snapshot, root, budget);
         }
