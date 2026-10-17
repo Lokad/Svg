@@ -47,7 +47,7 @@ font-management layer or other-renderer comparison/dependency is introduced.
 T3-private's four original deployed-manifest requests remain pending before
 production adoption. They do not block standalone S17 under the approved PLAN
 criteria. Historical implementation status below retains its original checkpoint;
-current public/adoption gates belong to [PLAN](../PLAN.md#delivery-order).
+current public/adoption gates are recorded in the [support contract](SUPPORT_MATRIX.md#standalone-and-deployment-gates-2026-10-16).
 
 ## Marker container presentation (2026-10-16)
 
@@ -1076,7 +1076,8 @@ claiming document completion.
 
 The renderer now has shared contour preparation, analytic coverage, retained
 curves and bounded paint/layer routes. General pinned-browser equality remains
-unproved. [PLAN.md](../PLAN.md) owns the current execution queue; this document
+unproved. The [support contract](SUPPORT_MATRIX.md#supported-svg-subset) defines
+current boundaries; this document
 retains chronological hypotheses, source evidence, rejected models and repairs.
 Direct paint and pending-run operations are integrated. Coupled numeric reading and retained-path-point density have landed; all nine
 original Ford variants are now exact. The

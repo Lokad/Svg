@@ -1,7 +1,7 @@
 # Filter owner/source regressions
 
 The [manifest](manifest.json) retains the qualified owner/source cases and six
-focused F1.5 controls. Whole-sheet membership is retired under [F1](../../../PLAN.md#full-svg-fixture-replacement-f1);
+focused F1.5 controls. Whole-sheet membership is retired under [fixture retirement](../../../docs/INVENTORY.md#f1-retirement-dispositions-2026-10-17);
 controls do not increase full-document counts. Original sources, options and
 native reference bytes remain unchanged.
 
@@ -24,4 +24,5 @@ source/tile denial, cancellation, cleanup and retry.
 Earlier owner/source evidence remains in the dated [qualification](../../../artifacts/maintenance-review-20261012/filter-owner-qualified-results.json).
 It covers affine sources, masked/marker-bearing owners, viewport reentry and
 bounded filtered patterns. E3 retained-instance effects and public fonts are
-qualified separately; [PLAN](../../../PLAN.md) owns remaining delivery work.
+qualified separately; the [support contract](../../../docs/SUPPORT_MATRIX.md#supported-svg-subset)
+records the finite boundaries and completed standalone qualification.

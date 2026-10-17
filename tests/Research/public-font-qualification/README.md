@@ -21,7 +21,8 @@ This bank adds one focused control, no corpus document or API-combination quota.
 Font-format/shaping limits and library ownership/resource contracts remain unchanged.
 T3-public qualifies standalone use; the original four T3-private deployed-manifest
 requests remain pending before production adoption. Public success makes no claim
-of compatibility with that deployment. [PLAN](../../../PLAN.md) owns both gates.
+of compatibility with that deployment. The [support contract](../../../docs/SUPPORT_MATRIX.md#standalone-and-deployment-gates-2026-10-16)
+records both gates.
 
 All four end-to-end requests pass on Windows/Linux, including exact italic pixels.
 No production renderer correction, manifest conversion or package dependency was

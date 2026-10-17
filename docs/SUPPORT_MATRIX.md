@@ -11,13 +11,112 @@ qualified. [INVENTORY](INVENTORY.md) records every retired full-document disposi
 The eight admission probes have the three explicit finite boundaries below; no
 enumerated feature is deferred. Private deployment's four requests remain pending
 before adoption. Earlier dated sections retain mechanism/evidence history; their
-old whole-document membership/counts and pending gates do not override the current
-[PLAN](../PLAN.md#delivery-order) and finite admission boundaries.
+old whole-document membership/counts and pending gates do not override this
+qualification status and the finite support/admission boundaries below.
+
+## Supported SVG subset
+
+These finite boundaries define the standalone contract. Newly demonstrated defects
+inside this subset require correction; broader features require an explicit scope
+decision. Document counts and exhaustive shape/paint/instance combinations do not
+define SVG completeness. Earlier dated implementation notes remain historical.
+
+<a id="g2g4-instances-geometry-maps-and-strokes"></a>
+
+### Instances, geometry, maps and strokes (G2–G4)
+
+- **G2:** backward/forward local uses and child aliases; ordinary leaves,
+  group/symbol/use targets; root/defs/rendered-group/symbol/nested-SVG definition
+  and presentation locations; authored/inherited precedence and source-ancestor
+  exclusion. Compose static instance maps through viewport, opacity and clip/mask
+  boundaries; missing/cyclic references have categorized outcomes.
+- **G3:** rect/rounded rect, circle/ellipse, line, polygon/polyline, retained
+  line/quadratic/cubic/arc paths, nonzero/even-odd compound fills; translation,
+  rotation, skew, reflection and nonuniform affine scaling at root/group/leaf and
+  admitted instances. Preserve directed source curves. Finite degenerates have
+  measured nonpainting/categorized outcomes; perspective is outside scope.
+- **G4:** that geometry with solid/linear/radial/pattern paints; fractional and
+  effective instance widths, ordinary/non-scaling strokes, butt/round/square caps,
+  miter/bevel/round joins and miter limits, finite dash arrays/offsets, independent
+  fill/stroke opacity, dashed curved paints and nonuniform placement. Use shared
+  stroke/paint machinery while preserving native geometry distinctions.
+
+<a id="g5-viewports-clips-masks-and-composition"></a>
+<a id="g6-patterns"></a>
+<a id="g7-embedded-pngs-and-static-css"></a>
+
+### Composition, patterns, embedded PNGs and static CSS (G5–G7)
+
+| Group | Retained support boundary |
+| --- | --- |
+| G5 | Nested SVG/symbol viewBox/aspect maps and percentage bases; local paints; G3 clip shapes in user-space/object-box coordinates, ordered child unions and compound/winding behavior; alpha/luminance masks with both region/content units, transformed finite regions and implicit root bases. Nested leaf/group/use opacity, clips/masks and mask-container opacity; root/group/defs/symbol/nested-SVG locations. Preserve forward binding, source order, distinct object/visual/percentage bounds and native AA/BW consumers. |
+| G6 | Ordered G3 vector leaves/groups/local uses, solid/gradient paint, opacity and admitted image/filter/supplied-font tile content; both tile/content unit systems, viewBox/aspect maps, fractional finite origins/sizes and composed affine transforms. Preserve inheritance, borders/phase/alpha, transformed fill/stroke and bounded repeat work; recursive pattern/paint dependencies reject. |
+| G7 images | Base64 data-URI, non-interlaced 8-bit RGB/RGBA, grayscale/grayscale-alpha and indexed PNG, including tRNS and validated fully significant 8-bit sBIT metadata, with chunk/CRC/decompression checks. Finite geometry/viewBox percentages, all meet/slice alignments and `none`, fractional/general affine placement, clips/masks/opacity. Keep image sampling/matrix rounding distinct from gradient/glyph arithmetic and bounded decode ownership. |
+| G7 CSS | Existing ID/class/attribute/selector lists, SVG element and element+ID/class, descendant/child selectors through admitted trees; specificity/source order, `!important`, inline priority/inheritance for enumerated presentation/font properties and parsed width/height. Root/resource collection and source-ancestor exclusion are implemented. `paint-order` supports normal/distinct fill/stroke/markers lists with omitted operations appended; duplicate/unknown tokens reject. Apply each resource's applicable properties. |
+
+The [resource admission boundaries](#resource-admission-boundaries-2026-10-17)
+qualify clip bindings and mask content. Outside scope with explicit outcomes:
+interlaced/16-bit/color-managed PNG, JPEG/GIF/WebP/external image fetching; CSS
+imports/media/supports, pseudo classes/elements, siblings, layout, variables,
+animation and web fonts.
+
+<a id="g9-supplied-font-labels-and-text-paths"></a>
+
+### Supplied-font labels and text paths (G9)
+
+Retain standalone static TrueType face 0, catalog/style/coverage fallback, bounded
+pair positioning and default Basic Latin ligatures: Latin/DFLT default language,
+one unfiltered type-4 lookup, format-1 subtables, coverage 1/2, two to eight
+components in font order. Nonzero spacing/positioned-span boundaries prevent merging.
+Retain horizontal LTR ASCII/tested precomposed Latin and covered supplementary
+scalars; text/CDATA/whitespace/nested tspan order; inherited/per-span family, size,
+weight, style, paint/visibility; scalar/list x/y/dx/dy/rotate; start/middle/end
+anchors, letter/word spacing, explicit lines, textLength spacing/spacingAndGlyphs,
+alphabetic/middle/hanging baselines, affine glyph maps, ordinary fill/stroke paints
+and solid underline/overline/line-through. Paths retain one local open/closed G3
+path per run, supplied advances/kerning, length/percentage startOffset, anchors/
+tangents, method align/spacing exact, curved/transformed sources and measured
+out-of-range/zero-length outcomes. Qualified fitting, decorations, positioned
+spans, dashed/non-scaling/stroke-before-fill/path strokes and metrics stay closed.
+
+Outside scope: wrapping, bidi/joining/complex scripts, general GSUB/GPOS/mark
+positioning or other lookup flags/types/formats, vertical text, path stretch/auto
+spacing, variable/color/bitmap fonts, CFF/CFF2, WOFF/WOFF2 and machine-font discovery.
+Required missing programs/glyphs cannot disappear or silently substitute a machine
+font. The [API and host contracts](API_CONTRACT.md) remain in force.
+
+<a id="g8-markers-and-finite-static-effects"></a>
+
+### Markers and finite static effects (G8)
+
+Retain local start/mid/end markers on G3 lines/point lists/paths and instances;
+userSpaceOnUse/strokeWidth, refX/refY, finite sizes/lengths, viewBox/aspect maps,
+fixed/auto/auto-start-reverse, ordered vector/group/use content, ordinary paint,
+source order, overflow/container presentation. Qualified absolute lengths,
+known-axis percentages, angle units and literal hidden/visible overflow stay closed.
+Retain feGaussianBlur, feOffset, feFlood, feComposite over/in, feMerge, feBlend
+normal/multiply/screen and feDropShadow; SourceGraphic, SourceAlpha, earlier local
+results, filter/primitive regions, both unit systems, sRGB/linearRGB and local CSS
+references. Preserve per-primitive spaces, binary/merge transfers, distinct
+CPU-kernel/shadow consumers, premultiplied arithmetic, bounded regions/work,
+cancellation and cleanup. A flood override alone proves no color transition.
+
+Outside scope with explicit outcomes: backdrop inputs, external filter images,
+displacement, turbulence, lighting, morphology, convolution, arithmetic composite,
+other blends, backdrop-filter and CSS filter-function lists. Recursive effects and
+forward/missing result names retain categorized outcomes.
+
+Scripts/events, animation, mutable DOM, foreignObject HTML, perspective and
+arbitrary external documents remain outside scope. Rendering consumes explicit
+options/resources without filesystem/network discovery or machine fonts. The
+[API contract](API_CONTRACT.md) defines resource, cancellation and ownership
+requirements; [font qualification](#standalone-and-deployment-gates-2026-10-16)
+keeps public acceptance separate from the four pending private deployment requests.
 
 ## Upstream document follow-up (2026-10-17)
 
 The frozen replacement collection is **26/26 exact on Windows/Linux**.
-Full-fixture retirement and final S17 verification are complete under [PLAN F1/A7](../PLAN.md#full-svg-fixture-replacement-f1).
+[Full-fixture retirement](INVENTORY.md#f1-retirement-dispositions-2026-10-17) and final S17 verification are complete.
 
 Named affine rectangles register through retained shape lowering; general rounded
 fills preserve native conics and existing paint/stroke maps. The original
@@ -82,7 +181,7 @@ are exact against their unchanged golds, independently confirmed on Linux.
 Full local qualification passes **8,147 tests/platform**, including useful invalid
 values and material resource outcomes. [Terminal green CI](https://github.com/Lokad/Svg/actions/runs/38952070864)
 qualifies exact source `e21f956c`, including all ten required checks/platform.
-[PLAN](../PLAN.md#delivery-order) retains the separate pending private adoption gate. Existing cohorts and font/resource
+The private adoption gate remains pending separately. Existing cohorts and font/resource
 contracts remain preserved; this closes demonstrated gaps within the agreed subset.
 
 ## Standalone qualification complete (2026-10-16)
@@ -99,7 +198,7 @@ checkpoint dates and do not override this standalone/adoption status.
 
 ## Standalone and deployment gates (2026-10-16)
 
-The approved [PLAN](../PLAN.md#delivery-order) splits T3-public (required and qualified for
+The approved acceptance gates separate T3-public (required and qualified for
 standalone release) from T3-private (required and pending before production adoption).
 [T3-public is qualified](../tests/Research/public-font-qualification/README.md):
 regular/bold/fallback evidence is reused and real italic metrics, intended-face
@@ -112,7 +211,7 @@ superseded. Format/shaping support and all established exact results are unchang
 ## Current release evidence (2026-10-16)
 
 G2–G8 and public G9 acceptance remain qualified under the finite
-[PLAN boundaries](../PLAN.md#required-support-boundaries-and-finite-exits).
+[support boundaries](#supported-svg-subset).
 [Terminal green CI](https://github.com/Lokad/Svg/actions/runs/38915163866) covers
 exact substantive revision `393e19d5`, including Windows/Linux package and installed
 consumer checks. The [fixed public measurement set](BENCHMARKS.md#finite-s17-measurement-set-2026-10-16)
@@ -132,7 +231,7 @@ outcomes and zero marker width remains nonpainting.
 [Qualification](../artifacts/maintenance-review-20261012/marker-presentation-qualified-results.json)
 preserves every prior case and representative denial/cancellation/cleanup/retry.
 E4 is complete. Standalone S17 is complete under
-[PLAN](../PLAN.md#delivery-order); historical checkpoint guards/status below do not
+the release plan at this checkpoint; historical checkpoint guards/status below do not
 reopen qualified work or defer scope.
 
 ## Qualified marker lengths and directional boundaries (2026-10-16)
@@ -188,7 +287,7 @@ cleanup/retry and original inputs are protected without an exhaustive API grid.
 
 This completes the retained owner/source placements. Filters on local uses,
 filtered retained definition/text targets and pattern-use effect wrappers retain
-explicit guards and required acceptance in [PLAN](../PLAN.md#delivery-order).
+explicit guards and required acceptance in the release plan at this checkpoint.
 T3, E4 and S17 remain required; no scope is deferred.
 
 ## Qualified affine source offsets (2026-10-16)
@@ -218,7 +317,7 @@ The source-offset failure is qualified above. E3 remains required for affine
 masked sources, filter owners with masks/markers and filters inside viewport/pattern scopes.
 The [offset-only observation](../tests/Research/filter-source-exit-sheet/diagnostics/affine-offset-only-observation.json)
 retains its original observation and now links qualified platform triples. These
-live gates and private T3, E4 and S17 remain in [PLAN](../PLAN.md#delivery-order);
+live gates and private T3, E4 and S17 remain in the release plan at this checkpoint;
 no scope is deferred.
 This entry supersedes older blanket rejection notes only for the qualified routes.
 
@@ -414,7 +513,7 @@ The [qualification](../artifacts/maintenance-review-20261012/mask-color-affine-q
 retains original assets/options/default limits, all prior regressions and affected
 resource/sibling protection. Former grayscale-only and axis-target gates are
 superseded for these routes. Viewport-mask defaults/scoping are qualified above;
-glyph clip/mask and C6/C5b boundaries remain explicit in [PLAN](../PLAN.md); they do not close with
+glyph clip/mask and C6/C5b boundaries remain explicit in the release plan at this checkpoint; they do not close with
 this document. No feature deferral or new runtime dependency is introduced.
 
 ## Object-box mask content and tile-local clips (2026-10-15)
@@ -435,7 +534,7 @@ captures. Applicable resource presentation reuses existing clip/mask/pattern ban
 and analytic pattern CSS priority controls. Earlier object-content/tile-clip gates
 below are superseded. The color/general-affine exits are qualified above; nested-
 viewport masks, glyph clip/mask boundaries, font/effect and S17 exits remain open
-under [PLAN](../PLAN.md). No feature
+under the release plan at this checkpoint. No feature
 scope is deferred or new runtime dependency introduced.
 
 ## Native child clip unions and larger mask fallback (2026-10-15)
@@ -460,7 +559,7 @@ on both platforms. Independent analytic/coincident/root and zero-size controls,
 plus extended existing denial/cancellation/cleanup/retry checks, protect the
 shared mechanisms. The [receipt](../artifacts/maintenance-review-20261012/cubic-viewport-qualified-results.json)
 records 7,861 passing tests/platform and every prior result preserved. No runtime
-dependency was added. [PLAN](../PLAN.md) keeps C3-C5, font/effect exits and S17
+dependency was added. the release plan at this checkpoint keeps C3-C5, font/effect exits and S17
 required without feature deferral. Older cubic/ancestor gates below are superseded.
 
 ## Basic pattern, viewport and non-scaling map exits (2026-10-15)
@@ -505,7 +604,7 @@ limits, cancellation, cleanup and retry, with every preceding result preserved.
 
 R1-R3 and ordered item 1 in PLAN are complete. The four basic pattern/viewport
 routes and original nonuniform dashed non-scaling rejection remain required in
-[item 2](../PLAN.md#g2g4-instances-geometry-maps-and-strokes). This supersedes the
+the release plan at this checkpoint. This supersedes the
 older cap/bevel/curved-alpha gates below without G2-G9/S17 closure or a deferral.
 
 ## Native primitive stroke/style replay (2026-10-15)
@@ -526,7 +625,7 @@ bevel-polygon inputs still fail XML validation after style admission.
 
 This supersedes the former primitive/line gates below. Solid-line round/zero-square
 dash boundaries, sharp-rectangle bevel joins and curved shader-alpha acceptance
-remain required, alongside the four basic pattern routes in [PLAN](../PLAN.md#g2g4-instances-geometry-maps-and-strokes).
+remain required, alongside the four basic pattern routes in the release plan at this checkpoint.
 No G2–G9/S17 closure or feature deferral is claimed.
 
 ## Shared paint maps and nested viewport ancestry (2026-10-15)
@@ -547,7 +646,7 @@ affected source/raster denial, cancellation, cleanup and retry pass.
 The original inherited-symbol stroke gate was already stale and is superseded by
 its existing exact witness. Remaining legacy primitive caps/dashes/paint-alpha,
 nonuniform radial point-list and basic pattern placement routes still have actual
-rejections, enumerated in [PLAN](../PLAN.md#g2g4-instances-geometry-maps-and-strokes).
+rejections, enumerated in the release plan at this checkpoint.
 G2–G9/S17 stay open; this checkpoint approves no feature deferral.
 
 ## Decorated paths and binary clip regions (2026-10-15)
@@ -590,7 +689,7 @@ Preserve all earlier marker/source/clip/nesting/color-space controls, bounded
 storage/work, cancellation, cleanup and retry. Non-solid affine source paints, source clips and
 nested resource boundaries still reject explicitly and remain promised G8 work.
 The finite remaining shadow/restoration, object-box clip, source and marker exits
-remain in [PLAN](../PLAN.md). No G8/S17 closure or scope deferral is claimed.
+remain in the release plan at this checkpoint. No G8/S17 closure or scope deferral is claimed.
 [Qualification](../artifacts/maintenance-review-20261012/affine-filters-qualified-results.json).
 Earlier affine and whole-sheet gates below are superseded for these qualified paths.
 
@@ -1101,7 +1200,7 @@ package checks pass at `6d4dfe7a`; remaining S17 release requirements stay open.
 
 The renderer supports the explicit subsets listed below. The original retained
 rendering differences are resolved; the original-scope admission and feature
-gaps in [PLAN.md](../PLAN.md#delivery-order) remain open. Do not infer
+gaps in the release plan at this checkpoint remain open. Do not infer
 that every unlisted visible SVG construct is rejected correctly.
 
 The completed retained G9/G3 document is the public-domain curved-label export
@@ -1278,7 +1377,7 @@ Validated stop color/opacity on geometry leaves does not affect their fill/strok
 The following are current observed gates, checked against the executed bank,
 recorded-paint controls, new online sources and parser code. Older implementation
 checkpoint paragraphs below retain their dates. The ordered work and exit
-criteria live in [PLAN](../PLAN.md#delivery-order).
+criteria live in the release plan at this checkpoint.
 
 | Queue | Supported boundary / missing combination | Retained evidence |
 | --- | --- | --- |
@@ -2026,7 +2125,7 @@ Async PNG streaming reserves one small per-conversion scratch buffer before
 allocation and reuses it for header and chunk-length framing, including all `IDAT`
 chunks.
 
-The target scope and release criteria remain in [PLAN.md](../PLAN.md).
+The target scope and release criteria remain in the release plan at this checkpoint.
 
 
 ## Finite filter regions and grouped source capture (2026-10-12)

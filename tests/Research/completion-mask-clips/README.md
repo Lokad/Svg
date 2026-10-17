@@ -13,7 +13,8 @@ with no full-document/cohort count change. Qualified alpha/luminance,
 transformed/object-box mask and material resource cases provide distinct
 regression protection through the existing harness.
 
-[PLAN](../../../PLAN.md) owns the A4 acceptance and remaining A5/A6/F1/A7 exits.
+[Final standalone qualification](../../../docs/SUPPORT_MATRIX.md#current-standalone-qualification-2026-10-17)
+is complete; the targeted results below retain this correction's checkpoint.
 Image children inside masks remain a separate admission boundary.
 
 All four controls are exact on Windows/Linux. Targeted qualification passes

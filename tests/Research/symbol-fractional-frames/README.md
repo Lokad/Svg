@@ -1,6 +1,6 @@
 # symbol-fractional-frames regression coverage
 
-Full-document membership is retired under [F1](../../../PLAN.md#full-svg-fixture-replacement-f1).
+Full-document membership is retired under [fixture retirement](../../../docs/INVENTORY.md#f1-retirement-dispositions-2026-10-17).
 The [inventory disposition](../../../docs/INVENTORY.md#research-full-documents) records
 replacement coverage and retained focused behavior.
 

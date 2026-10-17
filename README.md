@@ -13,11 +13,11 @@ writable stream, with synchronous and asynchronous forms.
 ownership. Size/work limits, cancellation, cleanup and borrowed-source lifetimes
 apply throughout; [API_CONTRACT](docs/API_CONTRACT.md) defines these guarantees.
 Memory accounting uses conservative estimates for dominant allocations under
-[PLAN's approximate engineering target](PLAN.md#maintenance-decisions-and-evidence),
+[the approximate engineering target](docs/API_CONTRACT.md#resource-limits-and-approximate-memory-accounting),
 with runtime/host overhead and borrowed storage identified separately.
 
-[SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md) and [PLAN's finite boundaries](PLAN.md#required-support-boundaries-and-finite-exits)
-define the qualified subset and explicit unsupported outcomes. **Standalone
+[SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md#supported-svg-subset) defines the qualified
+subset and explicit unsupported outcomes. **Standalone
 qualification is complete** for `0a0843ec`: all 26 [upstream documents](tests/Research/upstream-static-documents/README.md)
 are exact on Windows/Linux, and **8,068 tests per platform**, package/notices and
 isolated installed consumers pass in [terminal green CI](https://github.com/Lokad/Svg/actions/runs/38986391708).
@@ -29,9 +29,9 @@ only their declared outputs, not general SVG completeness.
 [Public regular/bold/real-italic/fallback qualification](tests/Research/public-font-qualification/README.md)
 (T3-public), micro-tests, known-bug and resource contracts remain preserved.
 Private deployment validation (T3-private) remains pending before production
-adoption and does not block standalone qualification. [PLAN](PLAN.md#delivery-order)
-owns delivery order and the release exit; [RASTERIZATION_DESIGN](docs/RASTERIZATION_DESIGN.md)
-owns mechanisms/history and [BENCHMARKS](docs/BENCHMARKS.md) owns measurements.
+adoption and does not block standalone qualification.
+[RASTERIZATION_DESIGN](docs/RASTERIZATION_DESIGN.md) records mechanisms/history
+and [BENCHMARKS](docs/BENCHMARKS.md) records measurements.
 
 ## Development
 
@@ -131,20 +131,3 @@ package from a clean consumer directory:
 ```powershell
 tools/test-package.ps1 -PackageDirectory artifacts/packages -ResultsDirectory artifacts/package-smoke
 ```
-
-The unchanged `inv-143`/`inv-144` filter exports are exact at 512×341 transparent
-through all twelve raw/prepared APIs on Windows/Linux. Shared primitive regions,
-object-box coordinates, linearRGB transfer, bounded large-blur rescaling and
-grouped geometric source capture complete the retained development queue at
-**48/48**. The 24 frozen controls have 22 exact results and two measured numerical
-residuals. Qualification passes 7,308 tests/platform, preserves all 2,856 prior
-rendered PNGs and the corporate 27/27 documents /258/258 variants. Remaining finite
-SVG support and release work stays in [PLAN.md](PLAN.md).
-
-The additional authored [CSS/image card](tests/Research/static-css-images/README.md)
-is complete against its unchanged Windows/Linux reference, with three original
-controls and two focused bitmap phase/clip controls separately exact. Shared
-bounded PNG decoding now retains varied pixels, with native fractional image
-sampling and opacity. The selected development queue remains 50/50 and the
-corporate cohort 27/27 documents/258/258 variants. Wider promised SVG behavior
-remains explicit in PLAN.md; this document does not close all image/CSS support.

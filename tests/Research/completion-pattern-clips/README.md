@@ -17,8 +17,9 @@ Clipped pattern leaves now enter the existing rendered-leaf path so their clips
 bind after definitions resolve, with the tile scene retaining its resources.
 This reuses ordinary native clipping rather than adding pattern-specific shape
 clipping. The bank contributes three controls and no document/cohort count.
-Object-box pattern groups and the other completion-audit corrections remain
-separate exits in [PLAN](../../../PLAN.md).
+Object-box pattern groups have [separate controls](../completion-pattern-object-clips/README.md).
+[Final standalone qualification](../../../docs/SUPPORT_MATRIX.md#current-standalone-qualification-2026-10-17)
+is complete; the targeted results below retain this correction's checkpoint.
 
 All three controls are exact on Windows/Linux. Targeted qualification passes
 126 pattern unit tests and 199 visual/resource cases per platform, including

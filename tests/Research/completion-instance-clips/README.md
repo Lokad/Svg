@@ -15,7 +15,8 @@ correction, with healthy startup, successful cleanup and byte-identical outputs.
 The [study](../../../artifacts/audit-corrections-20261016/) owns declarations,
 native evidence and correction diagnostics. No document/cohort count changes.
 
-[PLAN](../../../PLAN.md) owns A3's acceptance and the remaining A4–A7 exits.
+[Final standalone qualification](../../../docs/SUPPORT_MATRIX.md#current-standalone-qualification-2026-10-17)
+is complete; the targeted results below retain this correction's checkpoint.
 
 All ten controls are exact on Windows/Linux. Targeted qualification passes
 370 unit tests, 781 visual/resource cases and 13 retained-effect/font checks per

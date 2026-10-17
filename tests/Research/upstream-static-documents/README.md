@@ -74,15 +74,15 @@ on both platforms; real italic also differs from regular-font substitution.
 Their references, hashes and provenance are retained in the manifest.
 
 The ignored [selection study](../../../artifacts/full-fixture-replacement-20261017/)
-retains upstream inventories and candidate review. [PLAN](../../../PLAN.md#full-svg-fixture-replacement-f1)
-owns acceptance and completed qualification. The selection declaration records
+retains upstream inventories and candidate review. [The inventory](../../../docs/INVENTORY.md)
+records acceptance and completed qualification. The selection declaration records
 corpus provenance; finished renderer qualification is linked below.
 
 Current targeted results are **26/26 exact on Windows/Linux**.
 [Composed-effect qualification](../../../artifacts/full-fixture-replacement-20261017/effect-order-qualified-results.json)
 records the final unchanged output, six focused effect-order regressions and
 523 core / 1,963 visual-resource checks per platform.
-[PLAN F1.6/A7](../../../PLAN.md#full-svg-fixture-replacement-f1) records completed fixture
+[The inventory](../../../docs/INVENTORY.md#f1-retirement-dispositions-2026-10-17) records completed fixture
 retirement and final verification.
 
 [Rectangle source qualification](../../../artifacts/full-fixture-replacement-20261017/rectangle-source-qualified-results.json)

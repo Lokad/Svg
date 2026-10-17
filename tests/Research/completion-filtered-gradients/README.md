@@ -19,4 +19,5 @@ retains the source trace, rejected phase models and qualification. These are
 focused micro-tests and add no full document/cohort count. All five are exact on
 Windows/Linux; **371 core / 558 visual-resource checks pass per platform** in the
 [targeted qualification](../../../artifacts/audit-corrections-20261016/a6-qualified-results.json).
-[PLAN](../../../PLAN.md) owns A6 and the remaining F1/A7 exits.
+[Final standalone qualification](../../../docs/SUPPORT_MATRIX.md#current-standalone-qualification-2026-10-17)
+includes this correction and the completed fixture replacement.

@@ -13,8 +13,8 @@ successful cleanup and byte-identical captures. The
 [study](../../../artifacts/audit-corrections-20261016/) retains the evidence.
 These are focused micro-tests with no full-document/cohort count change.
 
-[PLAN](../../../PLAN.md) owns A5's acceptance, qualified union/bounds/resource
-protection and the remaining A6/F1/A7 exits. Clipping children is distinct from
+[Final standalone qualification](../../../docs/SUPPORT_MATRIX.md#current-standalone-qualification-2026-10-17)
+is complete; the targeted results below retain this correction's checkpoint. Clipping children is distinct from
 admission of `clip-path` on the `clipPath` container itself.
 
 All four controls are exact on Windows/Linux. Targeted qualification passes

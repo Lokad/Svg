@@ -13,8 +13,8 @@ revision `e64073f8`; acceptance assets were frozen at `a7afd83a`. The [MIT licen
 original sources retain their embedded CC0 notices. The existing ignored
 [study](../../../artifacts/affine-rect-clip-exits-20261016/) owns declarations,
 baseline rejections, capture health and comparisons. No source/build/report
-hashes or new combination quota are introduced. [PLAN](../../../PLAN.md) owns
-C6c completion and the remaining glyph/font/effect and S17 requirements.
+hashes or new combination quota are introduced. [The support contract](../../../docs/SUPPORT_MATRIX.md#supported-svg-subset)
+defines the finite geometry, glyph/font and effect boundaries.
 
 The bank is now **10/10 exact**, without changing any earlier source/reference
 bytes or options. Shared native binding preserves source coordinates, physical

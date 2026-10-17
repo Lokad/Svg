@@ -46,20 +46,49 @@ may be non-array-backed `Memory` instances; conversion does not require an
 expose, including distinct virtual mappings of the same storage or stream-backed
 aliases. Input memory must stay valid and unchanged until conversion completes.
 
+## Resource limits and approximate memory accounting
+
 `SvgRenderOptions` is immutable. Its five-argument constructor may carry a
 caller-owned prepared `SvgFontSnapshot`; the caller must keep that snapshot and
 its font bytes valid and undisposed until conversion completes. A logical viewport
 is optional and distinct from the positive output scale. Its `SvgRenderLimits` are validated at construction;
 renderer-owned live storage, input bytes, dimensions, output bytes and work are
-separate limits. Default values and the approximate memory policy are in PLAN.md.
+separate limits. The default bounds are:
+
+| Resource | Default bound |
+| --- | --- |
+| Renderer-accounted live storage | 256 MiB, under approximate accounting. |
+| SVG input / encoded PNG | 16 MiB / 128 MiB. |
+| Output | 16,384 per axis; 16,777,216 pixels. |
+| Nodes / cumulative path commands | 100,000 / 1,000,000. |
+| Shared conversion work | 100,000,000 units through preparation, scene, raster and encoding. |
+| XML depth / attributes per element | 128 / 256. |
+| Direct text | 32,768 cumulative UTF-16 characters. |
+| Font snapshot | 256 faces / 32 MiB distinct borrowed programs, accounted separately. |
+
 The internal ledger uses conservative estimates and aggregate allowances for
 material renderer-owned allocations, exposes current/peak/denial diagnostics, and
 releases reservations deterministically. Directionally, no more than 20% of
 conversion-attributable live memory should be unaccounted for across representative
 workloads; this is an engineering target, not an exact guarantee at every instant.
-Shared runtime/host overhead and borrowed storage remain separate. Byte-exact
-small-object accounting and GC-round retirement proofs are not completion contracts;
-size/work limits, cancellation, cleanup and output integrity remain required.
+Shared runtime/host overhead and borrowed storage remain separate. Conservative
+estimates and aggregate allowances cover dominant allocations: pixel buffers,
+decoded images, intermediate surfaces, geometry, glyph data and large collections.
+Avoid excessive overcharging; ownership audits follow material memory impact.
+Byte-exact small-object accounting, individual metadata receipts, GC-round
+retirement proofs and precise accounting of bookkeeping machinery are not
+completion contracts. Size/work limits, cancellation, cleanup and output integrity
+remain required. Validation uses a small representative normal/adversarial workload
+set through existing scenarios, without another measurement framework.
+
+Root lowering and discovery share the conservative XML workspace allowance
+`max(16 KiB, 4 × input bytes, 512 × configured attribute limit)`. This allowance,
+ledger peaks, cumulative managed allocations, borrowed storage and process working
+set are distinct measurements. Dominant allocations and expansion work remain
+bounded; cancellation is checked within bounded chunks and owners are released
+on every exit.
+
+## Rendering and supplied-font resources
 
 For admitted SVG content, an explicit `SvgViewport` supplies the
 outer logical dimensions and overrides root `width`/`height`; a root `viewBox`, when
@@ -116,9 +145,8 @@ program validation obey the caller's input, XML depth, attribute, node, memory a
 work limits before rendering. Preparation owns its discovery storage and releases
 it on every exit; BCL XML workspace uses the separate conservative allowance.
 
-The finite [G9 boundary](../PLAN.md#g9-supplied-font-labels-and-text-paths) and
-[SUPPORT_MATRIX](SUPPORT_MATRIX.md) define admitted supplied-font labels and text
-paths. Text/CDATA and nested `tspan` order, inherited/per-span font selection,
+The [supplied-font support boundary](SUPPORT_MATRIX.md#g9-supplied-font-labels-and-text-paths) defines
+admitted supplied-font labels and text paths. Text/CDATA and nested `tspan` order, inherited/per-span font selection,
 positioning lists, spacing/anchors/baselines, textLength, affine glyph maps,
 ordinary paints/strokes, decorations and local text paths use shared bounded
 layout and source replay. Catalog fallback is explicit; missing required programs

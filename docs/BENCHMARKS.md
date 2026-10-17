@@ -59,8 +59,9 @@ attempts and comparison receipts remain under
 correctness and material normal/adversarial resource evidence are reused from
 [qualification](../artifacts/maintenance-review-20261012/marker-presentation-qualified-results.json)
 and its exact-revision terminal green CI. This does not reopen completed ownership
-work or claim byte-exact accounting; [PLAN](../PLAN.md) retains the approximate
-target, separate private-adoption gate and final standalone S17 conditions.
+work or claim byte-exact accounting; the [API contract](API_CONTRACT.md#resource-limits-and-approximate-memory-accounting)
+defines the approximate target. [Current qualification](SUPPORT_MATRIX.md#current-standalone-qualification-2026-10-17)
+records standalone completion and the separate pending private-adoption gate.
 
 
 The full frozen-cohort baseline predates the latest renderer repairs;

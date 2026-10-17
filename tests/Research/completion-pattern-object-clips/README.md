@@ -18,8 +18,8 @@ A1 already closes the leaf case. Pattern groups now collect the complete
 pre-clip target with the existing object-box bounds collector, then bind through
 ordinary native clipping. Bounds lookup and clip registration both use the tile
 scene owner, including recorded image bounds. User-space groups keep their
-existing route. [PLAN](../../../PLAN.md) owns the remaining correction queue and
-the final A7 qualification gate.
+existing route. [Final standalone qualification](../../../docs/SUPPORT_MATRIX.md#current-standalone-qualification-2026-10-17)
+is complete; the targeted results below retain this correction's checkpoint.
 
 All four controls are exact on Windows/Linux. Targeted qualification passes
 159 pattern/object-box/scope unit tests and 217 visual/resource cases per platform, including

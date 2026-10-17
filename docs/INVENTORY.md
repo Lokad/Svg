@@ -3,8 +3,7 @@
 The current full-document collection is the [26-document upstream selection](../tests/Research/upstream-static-documents/README.md).
 All declared outputs are exact against frozen Windows/Linux Chrome references. Each
 input has a feature purpose, original source/license, one declared recipe and supplied
-fonts where needed. [PLAN F1/A7](../PLAN.md#full-svg-fixture-replacement-f1) owns delivery
-completion; [finished Windows/Linux qualification](https://github.com/Lokad/Svg/actions/runs/38986391708) is complete for `0a0843ec`. Document counts establish
+fonts where needed. [Finished Windows/Linux qualification](https://github.com/Lokad/Svg/actions/runs/38986391708) is complete for `0a0843ec`. Document counts establish
 only these selected outputs, not general SVG coverage.
 
 ## Required evidence
@@ -14,7 +13,7 @@ only these selected outputs, not general SVG coverage.
 - [Rectangle source qualification](../artifacts/full-fixture-replacement-20261017/rectangle-source-qualified-results.json).
 - [Rounded clip, nested viewport and PNG qualification](../artifacts/full-fixture-replacement-20261017/composition-qualified-results.json).
 - [Filter/mask/clip qualification](../artifacts/full-fixture-replacement-20261017/effect-order-qualified-results.json): 523 core / 1,963 visual-resource checks per platform.
-- A1-A6 focused [completion banks](../PLAN.md#delivery-order), unchanged known-bug controls, API/resource/font-host contracts and seven-witness measurements remain protected.
+- A1-A6 focused completion banks for [pattern clips](../tests/Research/completion-pattern-clips/README.md), [object-box pattern clips](../tests/Research/completion-pattern-object-clips/README.md), [instance clips](../tests/Research/completion-instance-clips/README.md), [mask clips](../tests/Research/completion-mask-clips/README.md), [nested clips](../tests/Research/completion-nested-clips/README.md) and [filtered gradients](../tests/Research/completion-filtered-gradients/README.md) remain protected, alongside unchanged known-bug controls, API/resource/font-host contracts and seven-witness measurements.
 
 ## F1 retirement dispositions (2026-10-17)
 
