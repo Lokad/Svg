@@ -615,19 +615,32 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
-    public void Non_linear_paint_strokes_stay_unsupported()
+    public void Non_linear_fills_accept_gradient_strokes_and_missing_paints_reject()
     {
-        // Gradient and pattern strokes compose over linear-gradient fills; missing paints plus non-linear fills keep their honest denial.
+        // Fill and stroke keep their own paint while missing resources still reject.
         string missing = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"f\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><path d=\"M2,2 H14 V14 H2 Z\" fill=\"url(#f)\" stroke=\"url(#nope)\" stroke-width=\"2\"/></svg>";
         string radialFill = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><radialGradient id=\"r\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></radialGradient><linearGradient id=\"s\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#00ff00\"/><stop offset=\"1\" stop-color=\"#000000\"/></linearGradient></defs><path d=\"M2,2 H14 V14 H2 Z\" fill=\"url(#r)\" stroke=\"url(#s)\" stroke-width=\"2\"/></svg>";
         string patternFill = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><pattern id=\"p\" width=\"8\" height=\"8\" patternUnits=\"userSpaceOnUse\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"4\" fill=\"#00ff00\"/></pattern><linearGradient id=\"s\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#00ff00\"/><stop offset=\"1\" stop-color=\"#000000\"/></linearGradient></defs><path d=\"M2,2 H14 V14 H2 Z\" fill=\"url(#p)\" stroke=\"url(#s)\" stroke-width=\"2\"/></svg>";
 
-        foreach (string svg in new[] { missing, radialFill, patternFill })
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(missing), SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        foreach (string svg in new[] { radialFill, patternFill })
         {
-            SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));
-
-            Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+            byte[] painted = RenderPixels(svg, out int width, out _);
+            Assert.Equal(255, Pixel(painted, width, 8, 1).Alpha);
+            Assert.True(Pixel(painted, width, 8, 1).Green > 100);
+            Assert.Equal(0, Pixel(painted, width, 8, 1).Red);
+            SvgColor center = Pixel(painted, width, 8, 8);
+            if (svg == radialFill)
+            {
+                Assert.Equal(0, center.Green);
+                Assert.True(center.Red > 0 && center.Blue > 0);
+            }
+            else Assert.Equal(new SvgColor(0, 255, 0, 255), center);
         }
+        byte[] patterned = RenderPixels(patternFill, out int patternWidth, out _);
+        Assert.Equal(255, Pixel(patterned, patternWidth, 8, 9).Alpha);
+        Assert.Equal(0, Pixel(patterned, patternWidth, 8, 5).Alpha);
     }
 
     [Fact]

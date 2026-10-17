@@ -43,6 +43,14 @@ internal static class SvgLeafParser
             && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(patternStyle.Width ?? syntax.StrokeWidth))
         {
             double nativeWidth = SvgStrokeStyleSyntax.ParseStrokeWidth(patternStyle.Width ?? syntax.StrokeWidth, "rectangle");
+            double strokeLeft = earlyPlacement.X - nativeWidth / 2;
+            double strokeTop = earlyPlacement.Y - nativeWidth / 2;
+            double strokeRight = earlyPlacement.X + earlyPlacement.Width + nativeWidth / 2;
+            double strokeBottom = earlyPlacement.Y + earlyPlacement.Height + nativeWidth / 2;
+            // Shader bands cannot reproduce shared corner coverage at fractional edges.
+            bool fractionalStrokeEdges = nativeWidth != Math.Truncate(nativeWidth)
+                || strokeLeft != Math.Truncate(strokeLeft) || strokeTop != Math.Truncate(strokeTop)
+                || strokeRight != Math.Truncate(strokeRight) || strokeBottom != Math.Truncate(strokeBottom);
             bool crossesViewport = false;
             if (effectiveFrame is {} strokeViewport)
             {
@@ -51,7 +59,8 @@ internal static class SvgLeafParser
                 crossesViewport = !strokeViewport.Clip.Contains(shifted.X - halfWidth, shifted.Y - halfWidth,
                     shifted.X + shifted.Width + halfWidth, shifted.Y + shifted.Height + halfWidth);
             }
-            if (crossesViewport || context.RetainInstanceStrokePath || effectiveFrame is { IsScaled: true } || !earlyTransform.IsTranslation || nativeWidth > syntax.Width || nativeWidth > syntax.Height
+            if (fractionalStrokeEdges && SvgGradientSyntax.IsGradientStrokeUrl(patternStyle.Stroke)
+                || crossesViewport || context.RetainInstanceStrokePath || effectiveFrame is { IsScaled: true } || !earlyTransform.IsTranslation || nativeWidth > syntax.Width || nativeWidth > syntax.Height
                 || SvgStrokeStyleSyntax.ParseLinejoin(patternStyle.Linejoin, true) != SvgStrokeJoin.Miter)
                 return LowerRoundedRect(reader, context, syntax, 0, 0, effectiveFrame, state);
         }

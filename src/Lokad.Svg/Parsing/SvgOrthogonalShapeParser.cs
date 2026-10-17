@@ -20,6 +20,19 @@ internal static class SvgOrthogonalShapeParser
     internal static SvgParsedGeometry ParsePathCore(XmlReader reader, SvgPaintableElementContext context, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
+        if (SvgGradientSyntax.IsGradientFill(style.Fill) && SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)
+            && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width))
+        {
+            // Resolve each paint through the ordinary fill-only or stroke-only route.
+            // Recording outside this method owns opacity and the requested paint order.
+            SvgParsedGeometry paintedFill = ParsePathCore(reader, context with { AuthoredStyle = style with { Stroke = "none" } }, maximumGeometryElements, budget, frame, state);
+            try
+            {
+                SvgParsedGeometry paintedStroke = ParsePathCore(reader, context with { AuthoredStyle = style with { Fill = "none" } }, maximumGeometryElements, budget, frame, state);
+                return ConcatParsedGeometries(paintedFill, paintedStroke, budget, context.WorkCounter, context.CancellationToken);
+            }
+            catch { paintedFill.Discard(); throw; }
+        }
         bool paintOutline = TryResolveOutlineGradient(style, state, out SvgLinearGradient outlineCandidate);
         bool paintRadialOutline = TryResolveOutlineRadial(style, state, out SvgRadialGradient outlineRadialCandidate);
         bool paintPatternOutline = TryResolveOutlinePattern(style, state, out SvgPatternTile outlineTile);
@@ -251,14 +264,15 @@ internal static class SvgOrthogonalShapeParser
         string pointsValue = reader.GetAttribute("points") ?? throw new SvgException(SvgErrorCode.MalformedInput, elementName + " points are required.");
         bool hasFractional = pointsValue.Contains('.') || pointsValue.Contains('e') || pointsValue.Contains('E');
         bool shaderFill = SvgGradientSyntax.IsGradientFill(style.Fill);
-        if (shaderFill && !hasFractional && !context.RetainInstanceStrokePath)
+        bool mappedLinearFill = shaderFill && state.Gradients.TryGetValue(SvgGradientSyntax.ParsePaintId(style.Fill), out SvgLinearGradient mappedGradient) && mappedGradient.RequiresSourceMap;
+        if (shaderFill && !hasFractional && !context.RetainInstanceStrokePath && !mappedLinearFill)
         {
             if (state.Patterns.TryGetValue(SvgGradientSyntax.ParsePaintId(style.Fill), out _)) return SvgPatternSyntax.LowerPatternBands(reader, context, style, state, elementName, false, maximumGeometryElements, budget, frame);
             return SvgGradientSyntax.LowerGradientBands(reader, context, style, state, elementName, false, maximumGeometryElements, budget, frame);
         }
         SvgResolvedPaintableElement shape;
         SvgParsedGeometry filled;
-        if (hasFractional || context.RetainInstanceStrokePath)
+        if (hasFractional || context.RetainInstanceStrokePath || mappedLinearFill)
         {
             shape = context.ResolveShape(shaderFill ? fillStyle with { Fill = "#ffffff" } : fillStyle, reader, true);
             bool fractionalEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
@@ -329,7 +343,13 @@ internal static class SvgOrthogonalShapeParser
                 if (!linear && !radial && !pattern) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local paint references are implemented.");
                 if (linear)
                 {
-                    gradient = SvgGradientSyntax.MirrorBoundingBoxVector(transform, SvgGradientSyntax.MapUserSpaceVector(transform, gradient, frame));
+                    if ((!transform.IsAxisAligned || gradient.RequiresSourceMap) && source.Geometries.Length > 0)
+                    {
+                        SvgAuthoredPath path = source.Geometries[0].AuthoredPath ?? throw new InvalidOperationException("Mapped point-list fills require retained source commands.");
+                        SvgRectangle sourceBox = gradient.IsUserSpace ? default : SvgPathBounds.Compute(path.Commands, context.WorkCounter, context.CancellationToken);
+                        gradient = SvgGradientSyntax.BindLinearSourceMap(gradient, sourceBox, path.SceneMap, state, context.WorkCounter, context.CancellationToken);
+                    }
+                    else gradient = SvgGradientSyntax.MirrorBoundingBoxVector(transform, SvgGradientSyntax.MapUserSpaceVector(transform, gradient, frame));
                     if (gradient.Stops.Length > 1 && gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && gradient.Spread != SvgGradientSpread.Pad)
                         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
                 }

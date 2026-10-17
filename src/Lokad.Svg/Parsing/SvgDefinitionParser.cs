@@ -1904,16 +1904,6 @@ internal static class SvgDefinitionParser
         if (filtered) context = context with { AuthoredStyle = sourceStyle with { Filter = null, Opacity = null, ComputedOpacity = null } };
         if (reader.LocalName is not ("line" or "path" or "polygon" or "polyline") && SvgMarkerStyle.Resolve(context.ResolveStyle(reader), context.InheritedPresentation.Markers).HasMarkers)
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Markers on shapes other than lines and paths are not implemented.");
-        if (reader.LocalName == "rect")
-        {
-            SvgRectangleSyntax rectangle = SvgRectangleSyntax.Parse(reader, context.LengthBases);
-            SvgComputedStyle style = context.ResolveStyle(reader);
-            string? stroke = style.Stroke ?? context.InheritedStroke.Stroke;
-            if ((rectangle.CornerX ?? rectangle.CornerY ?? 0) == 0 && (rectangle.CornerY ?? rectangle.CornerX ?? 0) == 0
-                && stroke is not null && !stroke.Equals("none", StringComparison.OrdinalIgnoreCase) && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width)
-                && SvgStrokeStyleSyntax.ParseLinejoin(style.Linejoin, true) != SvgStrokeJoin.Miter)
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-miter stroke joins on rectangle instances are not implemented.");
-        }
         string? clipId = SvgClipPathSyntax.ResolveClipId(reader, state);
         bool previousClipDeferral = state.DeferringLeafClip;
         state.DeferringLeafClip |= clipId is not null;
@@ -2135,14 +2125,14 @@ internal static class SvgDefinitionParser
 
     private static SvgDefinition ParseRectangleDefinition(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgViewBox? symbolViewBox)
     {
-        SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle", context.WorkCounter, context.CancellationToken);
         SvgRectangleSyntax roundedSyntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
         if ((roundedSyntax.CornerX ?? roundedSyntax.CornerY ?? 0) != 0 || (roundedSyntax.CornerY ?? roundedSyntax.CornerX ?? 0) != 0) return ParseShapeDefinition(reader, context, state, symbolViewBox, true);
         SvgComputedStyle style = context.ResolveStyle(reader);
         // Named live leaves also register a dormant source. Its authored map
         // needs the ordinary retained shape route before any use is encountered.
         bool nativeRectangle = context.RetainInstanceStrokePath
-            || !SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), context.WorkCounter, context.CancellationToken).IsAxisAligned;
+            || !SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), context.WorkCounter, context.CancellationToken).IsAxisAligned
+            || SvgStrokeStyleSyntax.ParseLinejoin(style.Linejoin, true) != SvgStrokeJoin.Miter;
         if (!nativeRectangle && style.Stroke is string nativeStroke && !nativeStroke.AsSpan().Trim().Equals("none", StringComparison.OrdinalIgnoreCase))
         {
             double width = SvgStrokeStyleSyntax.ParseStrokeWidth(style.Width ?? roundedSyntax.StrokeWidth, "rectangle");
@@ -2150,6 +2140,7 @@ internal static class SvgDefinitionParser
         }
         if (nativeRectangle)
             return ParseShapeDefinition(reader, context, state, symbolViewBox, true);
+        SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle", context.WorkCounter, context.CancellationToken);
         context = context with { InheritedPresentation = context.InheritedPresentation with { Transform = SvgAffineTransform.Identity }, RecordingScope = new(1) };
         SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, null);
         context = context with { DeferPaintOpacity = true };

@@ -8,7 +8,7 @@ only these selected outputs, not general SVG coverage.
 
 ## Required evidence
 
-- [Native path/stroke bank](../tests/Research/native-path-replay/manifest.json): unchanged gallery ribbons and six focused inherited/open-path paint controls, separate from upstream membership. [Qualification](../artifacts/path-paint-strokes-20261017/qualified-results.json) covers 8,080 tests/platform, delivery checks and terminal green source CI.
+- [Native path/stroke bank](../tests/Research/native-path-replay/manifest.json): inherited/mixed paints, affine gradient maps, referenced rectangle joins and stroke coverage, separate from upstream membership. [Latest qualification](../artifacts/scope-gap-survey-20261017/qualified-results.json) covers 8,088 tests/platform and delivery checks; [prior ribbon qualification](../artifacts/path-paint-strokes-20261017/qualified-results.json) remains preserved.
 - [Fixture-replacement qualification](../artifacts/full-fixture-replacement-20261017/standalone-qualified-results.json): 8,068 tests/platform, package/notices, installed consumers and terminal exact-source CI.
 - [Selection, coverage and immutable asset manifest](../tests/Research/upstream-static-documents/manifest.json).
 - [Rectangle source qualification](../artifacts/full-fixture-replacement-20261017/rectangle-source-qualified-results.json).

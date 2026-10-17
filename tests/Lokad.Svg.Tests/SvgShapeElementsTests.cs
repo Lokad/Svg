@@ -1577,17 +1577,21 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
-    public void Pattern_strokes_over_non_linear_fills_stay_unsupported()
+    public void Pattern_strokes_keep_their_paint_over_radial_and_pattern_fills()
     {
         string radialFill = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><radialGradient id='f'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient><pattern id='s' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='4' height='2' fill='#00ff00'/></pattern></defs><path d='M2,2 H14 V14 H2 Z' fill='url(#f)' stroke='url(#s)' stroke-width='2'/></svg>";
         string patternFill = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='f' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='4' height='2' fill='#ff0000'/></pattern><pattern id='s' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='4' height='2' fill='#00ff00'/></pattern></defs><path d='M2,2 H14 V14 H2 Z' fill='url(#f)' stroke='url(#s)' stroke-width='2'/></svg>";
 
         foreach (string svg in new[] { radialFill, patternFill })
         {
-            SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));
-
-            Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+            byte[] painted = RenderPixels(svg, out int width, out _);
+            Assert.Equal(new SvgColor(0, 255, 0, 255), Pixel(painted, width, 8, 1));
+            Assert.Equal(255, Pixel(painted, width, 8, 8).Alpha);
+            Assert.Equal(0, Pixel(painted, width, 8, 8).Green);
         }
+        byte[] patterned = RenderPixels(patternFill, out int patternWidth, out _);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(patterned, patternWidth, 8, 8));
+        Assert.Equal(0, Pixel(patterned, patternWidth, 8, 10).Alpha);
     }
 
     private static byte[] RenderPixels(string svg, out int width, out int height)

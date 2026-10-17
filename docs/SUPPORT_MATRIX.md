@@ -1,19 +1,21 @@
 ## Current standalone qualification (2026-10-17)
 
-Standalone qualification includes all 26 selected upstream outputs, exact on
-Windows/Linux, plus focused known-bug cases and API/resource/font-host contracts.
-[Terminal CI](https://github.com/Lokad/Svg/actions/runs/39019059055) passes 8,080 tests/platform,
-package/notices, installed consumers and required tooling. Local build plus
-complete tests took 86.2s Windows / 214.6s Linux. [INVENTORY](INVENTORY.md) records
-document evidence and retired membership. Private deployment's four font requests remain pending before production adoption.
+Qualification covers all 26 selected upstream outputs and retained focused
+regressions against frozen Windows/Linux references, plus API/resource/font-host
+contracts. Local build plus complete tests took 54.3s Windows / 364.1s Linux.
+Complete local qualification passes 8,088 tests/platform, package/notices
+and installed consumers. [INVENTORY](INVENTORY.md) records document evidence and
+retired membership. Private deployment's four font requests remain pending before
+production adoption. These cases do not establish general SVG completeness.
 
-Gradient and pattern path strokes resolve inherited paint before lowering; open
-stroke-only paths use undashed native centerline bounds. The unchanged gallery
-ribbons and six focused controls extend the [native-path bank](../tests/Research/native-path-replay/manifest.json),
-covering radial/pattern paints, CSS overrides, forward instances, zero-area boxes
-and compound open paths. Existing reference images remain unchanged.
+The [native-path bank](../tests/Research/native-path-replay/manifest.json) covers
+inherited strokes and undashed native curve bounds, mixed radial/pattern fills
+with shader strokes, skewed polygon gradients, round/bevel joins on referenced
+rectangles and fractional shader-stroke corner coverage. Five unchanged survey
+failures and three focused controls supplement the preceding 22 cases; all
+established reference images remain unchanged.
 
-The finite support/admission boundaries below govern release scope; earlier dated
+The finite support/admission boundaries below govern scope; earlier dated
 sections retain historical mechanism evidence and do not reopen completed gates.
 
 ## Supported SVG subset

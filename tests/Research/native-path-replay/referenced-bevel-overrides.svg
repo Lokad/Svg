@@ -1,0 +1,3 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="112" height="80"><defs><linearGradient id="l"><stop stop-color="red"/><stop offset="1" stop-color="blue"/></linearGradient>
+<radialGradient id="r"><stop stop-color="yellow"/><stop offset="1" stop-color="purple"/></radialGradient>
+<pattern id="p" patternUnits="userSpaceOnUse" width="8" height="8"><rect width="8" height="8" fill="teal"/><rect width="4" height="4" fill="gold"/></pattern></defs><defs><rect id="q" x="10" y="10" width="35" height="50" fill="none" stroke="navy" stroke-width="6" stroke-linejoin="bevel"/></defs><use href="#q"/><use href="#q" x="55" stroke="orange" stroke-width="4" stroke-linejoin="round"/></svg>

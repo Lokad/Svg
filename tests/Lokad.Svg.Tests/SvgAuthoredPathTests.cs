@@ -220,13 +220,14 @@ public sealed class SvgAuthoredPathTests
         Assert.Equal(0, sceneBudget.Snapshot().CurrentBytes);
     }
 
-    [Theory]
-    [InlineData("<rect id='p' width='16' height='16'/>")]
-    public void Round_joined_instance_strokes_reject_definitions_without_an_admitted_centerline(string definition)
+    [Fact]
+    public void Round_joined_rectangle_instances_match_direct_strokes()
     {
+        const string definition = "<rect id='p' width='16' height='16'/>";
         byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs>" + definition + "</defs><use href='#p' fill='none' stroke='red' stroke-linejoin='round'/></svg>");
-        SvgException denied = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, denied.ErrorCode);
+        byte[] direct = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><rect width='16' height='16' fill='none' stroke='red' stroke-linejoin='round'/></svg>");
+        Assert.Equal(SvgConverter.ConvertToPng(direct, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Fact]

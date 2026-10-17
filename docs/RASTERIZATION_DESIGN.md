@@ -65,6 +65,10 @@ change dithering even when the real-valued transform is equivalent.
 Resolve inherited stroke paint before selecting a leaf's lowering route. Path
 gradients bind to the undashed centerline's native curve bounds, including open
 paths with no fill; flattened fill bounds and stroke extents are separate.
+Shader-filled paths compose ordinary fill and stroke lowering; recording applies
+opacity and paint order once. Mapped polygon paints retain source commands and
+local paint bounds. Rectangle definitions reuse ordinary native join admission;
+shader strokes with fractional edges use native rectangle corner coverage.
 
 [Analytic paint](../src/Lokad.Svg/Rendering/SvgAnalyticPaint.cs) separates solid,
 shader, mask and direct/run consumers. Preserve their byte premultiplication,
