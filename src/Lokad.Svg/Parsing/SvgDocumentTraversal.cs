@@ -7,7 +7,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Traverses one bounded SVG document after reader setup without materializing a DOM.</summary>
 internal static class SvgDocumentTraversal
 {
-    internal static SvgRoot Parse(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken, SvgAffineTransform outputMap, SvgViewport? explicitViewport, BudgetedParserList<CssRule> styleRules, BudgetedParserStringStore styleStrings)
+    internal static SvgRoot Parse(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken, SvgAffineTransform outputMap, SvgViewport? explicitViewport, BudgetedParserList<CssRule> styleRules, BudgetedParserStringStore styleStrings, double rasterScale)
     {
         ArgumentNullException.ThrowIfNull(workCounter);
         while (reader.Read())
@@ -17,14 +17,14 @@ internal static class SvgDocumentTraversal
             SvgStructuralAdmission.ValidateElementStructure(reader, limits);
             SvgStructuralAdmission.ThrowIfNotSvgRoot(reader);
             SvgRootAttributes root = SvgRootAttributes.Parse(reader, namedColors, styleRules, workCounter, cancellationToken);
-            return TraverseRoot(reader, limits, budget, namedColors, fontSnapshot, cancellationToken, workCounter, root, outputMap, explicitViewport, styleRules, styleStrings);
+            return TraverseRoot(reader, limits, budget, namedColors, fontSnapshot, cancellationToken, workCounter, root, outputMap, explicitViewport, styleRules, styleStrings, rasterScale);
         }
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
 
 
     }
 
-    private static SvgRoot TraverseRoot(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken, ParserWorkCounter workCounter, SvgRootAttributes root, SvgAffineTransform outputMap, SvgViewport? explicitViewport, BudgetedParserList<CssRule> styleRules, BudgetedParserStringStore styleStrings)
+    private static SvgRoot TraverseRoot(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken, ParserWorkCounter workCounter, SvgRootAttributes root, SvgAffineTransform outputMap, SvgViewport? explicitViewport, BudgetedParserList<CssRule> styleRules, BudgetedParserStringStore styleStrings, double rasterScale)
     {
         if (reader.IsEmptyElement)
         {
@@ -43,7 +43,7 @@ internal static class SvgDocumentTraversal
             root = root with { InheritedPresentation = root.InheritedPresentation with { PaintServerFill = state.Strings.Copy(rootFill) } };
         }
         state.OutputMagnification = System.Math.Max(System.Math.Abs(outputMap.A), System.Math.Abs(outputMap.D));
-        state.OutputTextScale = outputMap.A;
+        state.OutputTextScale = outputMap.A / rasterScale;
         state.OutputMap = outputMap;
         state.TextReplay = new(root, limits, fontSnapshot);
         if (root.SourceOpacity.Value != 1) state.Scene.BeginSourceOpacityScope(root.SourceOpacity, new(0));

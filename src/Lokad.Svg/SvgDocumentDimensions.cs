@@ -33,6 +33,10 @@ public sealed class SvgDocumentDimensions
     public bool WidthUsesFallbackBase { get; }
     /// <summary>Gets whether height resolution used a fallback percentage base, directly or through aspect derivation.</summary>
     public bool HeightUsesFallbackBase { get; }
+
+    /// <summary>Plans bounded or ordinary raster output using these logical dimensions, without allocating pixels or accessing fonts.</summary>
+    public SvgRasterSize GetRasterSize(double outputScale, SvgRasterBounds? bounds, SvgRenderLimits limits)
+        => Rendering.SvgRasterSizing.Resolve(LogicalViewport, outputScale, bounds, limits);
 }
 
 /// <summary>Represents an effective root length in CSS pixels or percent; absence is represented by a nullable value.</summary>

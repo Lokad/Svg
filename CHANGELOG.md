@@ -7,6 +7,10 @@
   or raster allocation. Inspection and conversion share dimension resolution.
 - Support a single root dimension without a viewBox using the other axis's
   existing default (300 pixels wide or 150 pixels high).
+- Add opt-in `SvgRasterBounds` and `SvgDocumentDimensions.GetRasterSize` for
+  caller-controlled dimension/pixel caps without changing logical layout.
+  Preserve native text fitting at fractional resolution and viewport clipping
+  when a minimum one-pixel canvas is required.
 
 ## 0.1.0 - 2026-10-17
 

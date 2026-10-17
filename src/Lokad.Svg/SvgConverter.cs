@@ -201,6 +201,11 @@ public static class SvgConverter
     private static RasterizedConversion PrepareRasterizationCore(ReadOnlyMemory<byte> svg, SvgRenderOptions options, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
+        if (options.RasterBounds is not null)
+        {
+            workCounter ??= new ParserWorkCounter(options.Limits.MaximumWorkUnits);
+            options = ResolveRasterOptions(svg, options, budget, workCounter, cancellationToken);
+        }
         SvgRoot root = ParseRoot(svg, options, budget, workCounter, cancellationToken);
         try
         {
@@ -251,8 +256,8 @@ public static class SvgConverter
     private static RasterizedSurface Rasterize(SvgRoot root, SvgRenderOptions options, RenderBudget budget, RasterSurfaceMode surfaceMode, RasterFrame? frame, CancellationToken cancellationToken)
     {
         (double width, double height) = ResolveOutputDimensions(options.Viewport, root.Width, root.Height, root.ViewBox);
-        double scaledWidth = frame?.Width ?? Math.Round(width * options.OutputScale, MidpointRounding.AwayFromZero);
-        double scaledHeight = frame?.Height ?? Math.Round(height * options.OutputScale, MidpointRounding.AwayFromZero);
+        double scaledWidth = frame?.Width ?? options.ResolvedRasterSize?.Width ?? Math.Round(width * options.OutputScale, MidpointRounding.AwayFromZero);
+        double scaledHeight = frame?.Height ?? options.ResolvedRasterSize?.Height ?? Math.Round(height * options.OutputScale, MidpointRounding.AwayFromZero);
         if (!double.IsFinite(scaledWidth) || !double.IsFinite(scaledHeight) || scaledWidth <= 0 || scaledHeight <= 0 || scaledWidth != Math.Truncate(scaledWidth) || scaledHeight != Math.Truncate(scaledHeight)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive finite integral output dimensions are implemented currently.");
         if (scaledWidth > options.Limits.MaximumDimension || scaledHeight > options.Limits.MaximumDimension) throw new SvgException(SvgErrorCode.LimitExceeded, "Output dimensions exceed the configured dimension limit.");
         int outputWidth = (int)scaledWidth;
@@ -293,6 +298,11 @@ public static class SvgConverter
         SvgCpuClipCoverage? layerClipCoverage = null;
         float foldedOpacity = 1;
         SvgAnalyticClipBounds layerBounds = frame?.ContentClip ?? new(0, 0, outputWidth, outputHeight);
+        // The native root viewport is a binary clip. Fit mode can retain a
+        // one-pixel canvas after that clip rounds to empty; padding adds no content.
+        bool emptyRootViewport = frame is null && options.RasterBounds is not null
+            && (MathF.Floor((float)(width * options.OutputScale) + .5f) == 0
+                || MathF.Floor((float)(height * options.OutputScale) + .5f) == 0);
         bool maskClipAntialiased = false;
         bool maskLuminanceLayer = false;
         bool collectingViewportClip = false;
@@ -330,7 +340,7 @@ public static class SvgConverter
                     pixels[offset + 3] = options.BackgroundColor.Alpha;
                 }
             }
-            if (surfaceMode == RasterSurfaceMode.Capture && TryResolveSolidCanvas(out SvgColor solidColor))
+            if (!emptyRootViewport && surfaceMode == RasterSurfaceMode.Capture && TryResolveSolidCanvas(out SvgColor solidColor))
             {
                 int red = (solidColor.Red * solidColor.Alpha + 127) / 255;
                 int green = (solidColor.Green * solidColor.Alpha + 127) / 255;
@@ -352,7 +362,7 @@ public static class SvgConverter
                     }
                 }
             }
-            else
+            else if (!emptyRootViewport)
             {
                 int commandIndex = RenderCommands(0, pixels, false);
                 if (commandIndex != root.Commands.Length) throw new SvgException(SvgErrorCode.MalformedInput, "SVG group structure is unbalanced.");
@@ -4259,11 +4269,23 @@ public static class SvgConverter
         }
     }
 
+    /// <summary>Resolves explicit raster fitting before resource acquisition or native glyph/geometry preparation.</summary>
+    internal static SvgRenderOptions ResolveRasterOptions(ReadOnlyMemory<byte> svg, SvgRenderOptions options, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        if (options.RasterBounds is null || options.ResolvedRasterSize is not null) return options;
+        try
+        {
+            SvgDocumentDimensions dimensions = SvgDocumentSizing.Inspect(svg, options, budget, workCounter, cancellationToken);
+            return options.WithRasterSize(dimensions.GetRasterSize(options.OutputScale, options.RasterBounds, options.Limits));
+        }
+        catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
+    }
+
     private static SvgRoot ParseRoot(ReadOnlyMemory<byte> svg, SvgRenderOptions options, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         SvgAffineTransform outputMap = TryResolveOutputMap(svg, options, budget, cancellationToken);
         ParserWorkCounter counter = workCounter ?? new ParserWorkCounter(options.Limits.MaximumWorkUnits);
-        try { return SvgRootParser.Parse(svg, options.Limits, budget, options.FontSnapshot, counter, cancellationToken, outputMap, options.Viewport); }
+        try { return SvgRootParser.Parse(svg, options.Limits, budget, options.FontSnapshot, counter, cancellationToken, outputMap, options.Viewport, options.OutputScale); }
         catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
     }
 

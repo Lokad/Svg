@@ -1,0 +1,168 @@
+{
+  "cases": [
+    {
+      "id": "layout-600",
+      "input": "layout.svg",
+      "logicalWidth": 4800,
+      "logicalHeight": 2400,
+      "width": 600,
+      "height": 300,
+      "scale": 0.125,
+      "inputSha256": "01d6e3e946c2eaedb91ead628d4ed2d4d1085fc565fbb0afe89cc7eb9f738a5b",
+      "license": "CC0-1.0",
+      "platforms": {
+        "windows": {
+          "reference": "references/windows/layout-600.png",
+          "captures": [
+            {
+              "pngSha256": "4986592e171ac4c40c348efa36f7db3d8b92cbfb85da69c9a1aa83d2d294f381",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "4986592e171ac4c40c348efa36f7db3d8b92cbfb85da69c9a1aa83d2d294f381",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "4986592e171ac4c40c348efa36f7db3d8b92cbfb85da69c9a1aa83d2d294f381",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "reference": "references/linux/layout-600.png",
+          "captures": [
+            {
+              "pngSha256": "8301ddc06339a19404a8c992eed24dbef801b695795e1b9c26913a90ae04837c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8301ddc06339a19404a8c992eed24dbef801b695795e1b9c26913a90ae04837c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8301ddc06339a19404a8c992eed24dbef801b695795e1b9c26913a90ae04837c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "layout-800",
+      "input": "layout.svg",
+      "logicalWidth": 4800,
+      "logicalHeight": 2400,
+      "width": 800,
+      "height": 400,
+      "scale": 0.16666666666666666,
+      "inputSha256": "01d6e3e946c2eaedb91ead628d4ed2d4d1085fc565fbb0afe89cc7eb9f738a5b",
+      "license": "CC0-1.0",
+      "platforms": {
+        "windows": {
+          "reference": "references/windows/layout-800.png",
+          "captures": [
+            {
+              "pngSha256": "3857218e89863bc6592c846d8f1b70418247f01462f61d9ac3ba4ef58eac8e2e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "3857218e89863bc6592c846d8f1b70418247f01462f61d9ac3ba4ef58eac8e2e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "3857218e89863bc6592c846d8f1b70418247f01462f61d9ac3ba4ef58eac8e2e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "reference": "references/linux/layout-800.png",
+          "captures": [
+            {
+              "pngSha256": "22b0538492d26adb20bdf1439a1a30232f9cee20c31d713d3fef2fcbfa307ac0",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "22b0538492d26adb20bdf1439a1a30232f9cee20c31d713d3fef2fcbfa307ac0",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "22b0538492d26adb20bdf1439a1a30232f9cee20c31d713d3fef2fcbfa307ac0",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "thin-overflow",
+      "input": "thin-overflow.svg",
+      "logicalWidth": 120,
+      "logicalHeight": 1,
+      "width": 8,
+      "height": 1,
+      "scale": 0.06666666666666667,
+      "inputSha256": "ba8c89ba5bc9659e06793a3b07a736f10e5c2b37ef18c8e90013ae7f67cfa8e3",
+      "license": "CC0-1.0",
+      "platforms": {
+        "windows": {
+          "reference": "references/windows/thin-overflow.png",
+          "captures": [
+            {
+              "pngSha256": "77143099f3d78638f7b18f09ec96763a97619b4c49318e4f1652bc02977f95c6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "77143099f3d78638f7b18f09ec96763a97619b4c49318e4f1652bc02977f95c6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "77143099f3d78638f7b18f09ec96763a97619b4c49318e4f1652bc02977f95c6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "reference": "references/linux/thin-overflow.png",
+          "captures": [
+            {
+              "pngSha256": "77143099f3d78638f7b18f09ec96763a97619b4c49318e4f1652bc02977f95c6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "77143099f3d78638f7b18f09ec96763a97619b4c49318e4f1652bc02977f95c6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "77143099f3d78638f7b18f09ec96763a97619b4c49318e4f1652bc02977f95c6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "schemaVersion": 1,
+  "chromeVersion": "153.0.8010.52",
+  "fontPack": "../supplied-font-labels/font-pack.json",
+  "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "captureRecipe": "Image at the original logical CSS viewport, transparent page, deviceScaleFactor equal to the declared scale, screenshot CSS clip equal to pixel dimensions / scale. Example embeds the existing Noto Sans regular program. External network blocked. Three fresh healthy processes/platform; references frozen before comparison."
+}

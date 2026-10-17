@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="4800" height="2400" viewBox="0 0 4800 2400">
+  <defs>
+    <pattern id="p" width="48" height="48" patternUnits="userSpaceOnUse"><rect width="24" height="48" fill="red"/></pattern>
+    <clipPath id="c"><rect x="72" y="48" width="1056" height="504"/></clipPath>
+    <rect id="tile" width="1200" height="600" fill="url(#p)"/>
+  </defs>
+  <svg x="25%" y="25%" width="50%" height="50%" viewBox="0 0 2400 1200">
+    <use href="#tile" clip-path="url(#c)"/>
+    <text font-family="Example" font-size="384" x="1440" y="624">A</text>
+  </svg>
+</svg>

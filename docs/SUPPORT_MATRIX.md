@@ -37,6 +37,18 @@ bounded XML/CSS without preparing fonts, geometry, images or raster surfaces.
 Inspection does not assert that every drawing feature is supported. Output scale
 and raster caps do not restrict logical metadata; parsing limits still apply.
 
+`SvgRasterBounds`, supplied through the six-argument `SvgRenderOptions`
+constructor, opts into maximum raster width, height and/or pixel count. At least
+one positive bound is required. `GetRasterSize(outputScale, bounds, limits)` plans
+the same output without fonts or raster allocation. A uniform scale no greater
+than `OutputScale` fits those bounds and the hard raster limits; logical sizing,
+percentages, viewBox and clipping remain unchanged. Bounds never request upscaling.
+Integer dimensions use nearest rounding away from zero, at least one pixel per
+axis, with conservative scale reduction when the rounded product exceeds a cap.
+An empty physical viewport clip still paints no content in that minimum canvas.
+Without bounds, existing excessive-output failures remain. Memory/work and
+intermediate/output limits remain failures rather than triggering a smaller retry.
+
 Root dimensions accept bare numbers, px/in/cm/mm/pt/pc and percentages. Both
 missing dimensions use 300×150, including with a viewBox. A single dimension uses
 the viewBox ratio when present, or the other axis's default when absent. Percentages

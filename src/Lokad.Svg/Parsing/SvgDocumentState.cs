@@ -131,6 +131,7 @@ internal sealed class SvgDocumentState : IDisposable
     internal SvgAffineTransform OutputMap { get; set; } = SvgAffineTransform.Identity;
     internal double OutputMagnification { get; set; } = 1.0;
 
+    /// <summary>Logical picture font scale before the caller's raster-resolution transform.</summary>
     internal double OutputTextScale { get; set; } = 1.0;
 
     internal BudgetedParserList<SvgViewportFrame> Viewports { get; }

@@ -176,7 +176,7 @@ internal static class SvgRootParser
     internal static SvgRoot Parse(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(workCounter);
-        try { return ParseCore(svg, limits, budget, fontSnapshot, workCounter, cancellationToken, SvgAffineTransform.Identity, null); }
+        try { return ParseCore(svg, limits, budget, fontSnapshot, workCounter, cancellationToken, SvgAffineTransform.Identity, null, 1); }
         catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
     }
 
@@ -184,7 +184,7 @@ internal static class SvgRootParser
     internal static SvgRoot Parse(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken, double outputScaleX, double outputScaleY)
     {
         ArgumentNullException.ThrowIfNull(workCounter);
-        try { return ParseCore(svg, limits, budget, fontSnapshot, workCounter, cancellationToken, SvgAffineTransform.FromScale(outputScaleX, outputScaleY), null); }
+        try { return ParseCore(svg, limits, budget, fontSnapshot, workCounter, cancellationToken, SvgAffineTransform.FromScale(outputScaleX, outputScaleY), null, 1); }
         catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
     }
 
@@ -194,13 +194,17 @@ internal static class SvgRootParser
 
     /// <summary>Parses with the complete outer viewport map for native non-scaling stroke construction.</summary>
     internal static SvgRoot Parse(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken, SvgAffineTransform outputMap, SvgViewport? explicitViewport)
+        => Parse(svg, limits, budget, fontSnapshot, workCounter, cancellationToken, outputMap, explicitViewport, 1);
+
+    /// <summary>Keeps raster resolution separate from the logical SVG picture's font scale.</summary>
+    internal static SvgRoot Parse(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken, SvgAffineTransform outputMap, SvgViewport? explicitViewport, double rasterScale)
     {
         ArgumentNullException.ThrowIfNull(workCounter);
-        try { return ParseCore(svg, limits, budget, fontSnapshot, workCounter, cancellationToken, outputMap, explicitViewport); }
+        try { return ParseCore(svg, limits, budget, fontSnapshot, workCounter, cancellationToken, outputMap, explicitViewport, rasterScale); }
         catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
     }
 
-    private static SvgRoot ParseCore(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken, SvgAffineTransform outputMap, SvgViewport? explicitViewport)
+    private static SvgRoot ParseCore(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken, SvgAffineTransform outputMap, SvgViewport? explicitViewport, double rasterScale)
     {
         if (svg.Length > limits.MaximumInputBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
         using RenderBudget.BudgetReservation xmlReaderWorkspace = budget.Reserve(GetXmlReaderWorkspaceBytes(svg.Length, limits.MaximumAttributesPerElement), SvgMemoryCategory.Parser);
@@ -210,7 +214,7 @@ internal static class SvgRootParser
         SvgRootStyleSheetParser.Collect(svg, settings, limits, styleRules, styleStrings, budget, workCounter, cancellationToken);
         using ReadOnlyMemoryStream stream = new(svg);
         using XmlReader reader = XmlReader.Create(stream, settings);
-        return SvgDocumentTraversal.Parse(reader, limits, budget, CssNamedColors, fontSnapshot, workCounter, cancellationToken, outputMap, explicitViewport, styleRules, styleStrings);
+        return SvgDocumentTraversal.Parse(reader, limits, budget, CssNamedColors, fontSnapshot, workCounter, cancellationToken, outputMap, explicitViewport, styleRules, styleStrings, rasterScale);
     }
 
     internal static long GetXmlReaderWorkspaceBytes(int inputBytes, int maximumAttributes)
