@@ -584,7 +584,17 @@ internal ref struct SvgOrthogonalGeometryLowering
         double deviceWidth = radiusX == 0 && radiusY == 0 && !stroke.NonScalingStroke
             ? stroke.Width : NativeStrokeDeviceWidth(stroke.Width, element.Transform, deviceMap, frame, stroke.NonScalingStroke);
         using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
-        SvgRoundedRectPath.Append(commands, x, y, width, height, radiusX, radiusY);
+        if (radiusX == 0 && radiusY == 0 && stroke.DashPattern is not null)
+        {
+            // SVG sharp-rectangle dashes start at the top-left corner. Ordinary
+            // native rectangle construction retains its independent start point.
+            commands.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new((float)x, (float)y), default, default));
+            commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new((float)(x + width), (float)y), default, default));
+            commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new((float)(x + width), (float)(y + height)), default, default));
+            commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new((float)x, (float)(y + height)), default, default));
+            commands.Add(new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
+        }
+        else SvgRoundedRectPath.Append(commands, x, y, width, height, radiusX, radiusY);
         int count = commands.Count;
         return LowerNativeStrokeCommands(commands, deviceMap, deviceWidth, stroke.Width, stroke.MiterLimit,
             stroke.Cap, stroke.Join, stroke.DashPattern, stroke.DashOffset, stroke.PathLength,

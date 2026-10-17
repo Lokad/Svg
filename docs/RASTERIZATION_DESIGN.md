@@ -65,10 +65,12 @@ change dithering even when the real-valued transform is equivalent.
 Resolve inherited stroke paint before selecting a leaf's lowering route. Path
 gradients bind to the undashed centerline's native curve bounds, including open
 paths with no fill; flattened fill bounds and stroke extents are separate.
-Shader-filled paths compose ordinary fill and stroke lowering; recording applies
-opacity and paint order once. Mapped polygon paints retain source commands and
-local paint bounds. Rectangle definitions reuse ordinary native join admission;
-shader strokes with fractional edges use native rectangle corner coverage.
+Paint-filled paths and point lists compose ordinary fill and stroke lowering;
+recording applies opacity and paint order once. Affine linear/radial strokes and
+fractional pattern fills retain source commands, local bounds and composed paint
+maps. Rectangle strokes reuse native construction for dashes, non-scaling widths,
+joins and fractional shader edges. Sharp-rectangle dashes begin at the top-left
+corner; zero-size rectangles paint nothing.
 
 [Analytic paint](../src/Lokad.Svg/Rendering/SvgAnalyticPaint.cs) separates solid,
 shader, mask and direct/run consumers. Preserve their byte premultiplication,
@@ -98,6 +100,9 @@ regions, result dependencies, operating color spaces and source-bitmap placement
 Padded source capture, cropped storage, intermediate image subsets and restoration
 into a parent bitmap remain separate. Preserve source origins when translating
 or bounding blur work; source capture and final painting must use the same maps.
+Filter sources preserve native rectangle coverage and layer-bound rounding;
+sRGB and linear-RGB image sampling retain their distinct precision. Resource
+clips enclose group isolation, applying coverage once when opacity restores.
 
 ## Supplied fonts
 

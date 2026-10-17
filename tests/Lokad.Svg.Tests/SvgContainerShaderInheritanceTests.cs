@@ -9,11 +9,15 @@ public sealed class SvgContainerShaderInheritanceTests
     [Theory]
     [InlineData("translate(4.25 2.5)")]
     [InlineData("scale(2)")]
-    public void Retains_the_fractional_point_list_pattern_placement_gate(string transform)
+    public void Fractional_point_list_patterns_render_through_inherited_placement_and_release_storage(string transform)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='96'><defs><pattern id='p' patternUnits='userSpaceOnUse' width='8' height='6'><rect width='4' height='3'/></pattern></defs><g fill='url(#p)' transform='" + transform + "'><polygon points='4.5,6.25 25.25,7.5 23.5,23.25 3.25,21.5'/></g></svg>");
         RenderBudget budget = new(8_000_000);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None)).ErrorCode);
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
+        {
+            using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None);
+            Assert.Contains(surface.Pixels, value => value != 0);
+        }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 

@@ -2132,11 +2132,13 @@ internal static class SvgDefinitionParser
         // needs the ordinary retained shape route before any use is encountered.
         bool nativeRectangle = context.RetainInstanceStrokePath
             || !SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), context.WorkCounter, context.CancellationToken).IsAxisAligned
-            || SvgStrokeStyleSyntax.ParseLinejoin(style.Linejoin, true) != SvgStrokeJoin.Miter;
+            || SvgStrokeStyleSyntax.ParseLinejoin(style.Linejoin, true) != SvgStrokeJoin.Miter
+            || SvgStrokeStyleSyntax.ParseDasharray(style.Dasharray) is not null || style.NonScalingStroke;
         if (!nativeRectangle && style.Stroke is string nativeStroke && !nativeStroke.AsSpan().Trim().Equals("none", StringComparison.OrdinalIgnoreCase))
         {
             double width = SvgStrokeStyleSyntax.ParseStrokeWidth(style.Width ?? roundedSyntax.StrokeWidth, "rectangle");
-            nativeRectangle = width > roundedSyntax.Width || width > roundedSyntax.Height;
+            nativeRectangle = width > roundedSyntax.Width || width > roundedSyntax.Height
+                || style.Miterlimit is not null && SvgStrokeStyleSyntax.ParseMiterLimit(style.Miterlimit) < 1.4142135623730951;
         }
         if (nativeRectangle)
             return ParseShapeDefinition(reader, context, state, symbolViewBox, true);

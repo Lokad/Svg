@@ -618,16 +618,41 @@ internal static class SvgReferenceResolver
             mapped[index] = placed;
         }
         SvgRadialGradient circle = outline.Gradient;
-        if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ShiftGeneralRadial(circle, reference.X, reference.Y) : circle with { CenterX = circle.CenterX + reference.X, CenterY = circle.CenterY + reference.Y, FocalX = circle.FocalX + reference.X, FocalY = circle.FocalY + reference.Y };
-        SvgRectangle box = InstanceBox(outline.Box, reference, frame);
-        circle = SvgGradientSyntax.MapUserSpaceRadial(reference.Transform, circle, frame);
+        SvgAffineTransform placement = PlainInstancePlacement(reference, frame);
+        SvgRectangle box;
+        if (!reference.Transform.IsAxisAligned)
+        {
+            SvgAuthoredPath path = source.AuthoredPath ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine radial paint instances require retained source commands.");
+            if (circle.IsUserSpace && circle.HasGeneralTransform && circle.NativePaintMatrices is {} matrices)
+            {
+                if (!placement.TryInvert(out SvgAffineTransform inverse))
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Singular radial paint instance maps are not implemented.");
+                circle = circle with
+                {
+                    Inverse = SvgGradientTransform.Compose(circle.Inverse, new(inverse.A, inverse.B, inverse.C, inverse.D, inverse.E, inverse.F)),
+                    NativePaintMatrices = matrices with { Referencing = placement.ComposeChecked(matrices.Referencing) }
+                };
+            }
+            else
+            {
+                SvgRectangle sourceBox = circle.IsUserSpace ? default : path.StrokeStyle?.SourceBounds ?? SvgPathBounds.Compute(path.Commands, workCounter, cancellationToken);
+                circle = SvgGradientSyntax.BindRadialSourceMap(circle, sourceBox, placement.ComposeChecked(path.SceneMap), workCounter, cancellationToken);
+            }
+            box = default;
+        }
+        else
+        {
+            if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ShiftGeneralRadial(circle, reference.X, reference.Y) : circle with { CenterX = circle.CenterX + reference.X, CenterY = circle.CenterY + reference.Y, FocalX = circle.FocalX + reference.X, FocalY = circle.FocalY + reference.Y };
+            box = InstanceBox(outline.Box, reference, frame);
+            circle = SvgGradientSyntax.MapUserSpaceRadial(reference.Transform, circle, frame);
+        }
         SvgClipBox? clip = outline.Clip;
         if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
         byte opacity = MultiplyAlpha(outline.Opacity, reference.Opacity);
         SvgQuadSpan[] quadSpans = MapUseQuadSpans(outline.QuadSpans, instanceMap, reference.X, reference.Y, frame, workCounter, cancellationToken);
         SvgCubicSpan[] cubicSpans = MapUseCubicSpans(outline.CubicSpans, instanceMap, reference.X, reference.Y, frame, workCounter, cancellationToken);
         SvgGeometry result = SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(mapped, outline.ContourEnds, outline.Signs, quadSpans, cubicSpans, circle, box, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, null, state.Budget));
-        return source.CopyAuthoredPathTo(result, PlainInstancePlacement(reference, frame), state.Budget, workCounter, cancellationToken);
+        return source.CopyAuthoredPathTo(result, placement, state.Budget, workCounter, cancellationToken);
     }
 
     private static SvgGeometry ApplyPatternPolygon(SvgGeometry source, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)

@@ -60,6 +60,16 @@ internal readonly record struct SvgFilterResult(SvgConverter.RasterizedSurface F
 /// the caller. Work includes every copy, conversion, blur pass and composition. Calls are independent.</remarks>
 internal static class SvgFilterPlayback
 {
+    /// <summary>Rounds native layer bounds after the filter coordinate system's small integer-boundary inset.</summary>
+    /// <remarks>Matches skif::RoundOut; this is coordinate rounding, not a pixel-comparison tolerance.
+    /// The finite inputs are caller-validated and the caller charges bounded setup work.</remarks>
+    internal static SvgPaintBounds RoundLayerBounds(SvgPaintBounds value)
+    {
+        const float roundEpsilon = 1e-3f;
+        return new(MathF.Floor(value.Left + roundEpsilon), MathF.Floor(value.Top + roundEpsilon),
+            MathF.Ceiling(value.Right - roundEpsilon), MathF.Ceiling(value.Bottom - roundEpsilon));
+    }
+
     /// <summary>Computes the SVG visual bounds used to seed a source layer's image shaders.</summary>
     /// <remarks>Source/result bounds remain separate from object bounds and pixel ownership. Temporary
     /// arrays share the conversion budget, release on every exit and charge bounded graph visits.</remarks>
@@ -115,12 +125,9 @@ internal static class SvgFilterPlayback
                 if (primitive.Kind == SvgFilterPrimitiveKind.DropShadow) output = Union(input, output);
             }
             bounds[index] = kind == SvgFilterBoundsKind.StoredImage
-                ? Intersect(RoundOut(output), RoundOut(regions[index])) : Intersect(output, regions[index]);
+                ? Intersect(RoundLayerBounds(output), RoundLayerBounds(regions[index])) : Intersect(output, regions[index]);
         }
         return kind == SvgFilterBoundsKind.StoredImage ? bounds[^1] : Union(source, bounds[^1]);
-
-        static SvgPaintBounds RoundOut(SvgPaintBounds value)
-            => new(MathF.Floor(value.Left), MathF.Floor(value.Top), MathF.Ceiling(value.Right), MathF.Ceiling(value.Bottom));
 
         static SvgPaintBounds Intersect(SvgPaintBounds first, SvgPaintBounds second)
             => new(MathF.Max(first.Left, second.Left), MathF.Max(first.Top, second.Top), MathF.Min(first.Right, second.Right), MathF.Min(first.Bottom, second.Bottom));

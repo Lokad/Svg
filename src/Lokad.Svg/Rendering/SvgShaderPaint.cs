@@ -133,6 +133,27 @@ internal readonly record struct SvgConstantShaderPaint(byte Red, byte Green, byt
 /// charge raster work and check cancellation between rows. Samples retain no input storage.</remarks>
 internal readonly record struct SvgShaderPaint(float Red, float Green, float Blue, float Alpha)
 {
+    /// <summary>Samples a filtered bitmap while retaining floating interpolation through the final store.</summary>
+    /// <remarks>Pixels are borrowed premultiplied RGBA8. Dimensions and coordinates are caller-validated;
+    /// transparent borders belong to filter surfaces. The caller charges sampling work and cancellation.</remarks>
+    internal static SvgShaderPaint SampleAffine(ReadOnlySpan<byte> pixels, int width, int height,
+        float x, float y, SvgCpuBitmapOrigin pixelOffset, float opacity)
+    {
+        if (x + pixelOffset.X < -1 || y + pixelOffset.Y < -1 || x + pixelOffset.X > width + 1 || y + pixelOffset.Y > height + 1) return default;
+        float centeredX = x - .5f, centeredY = y - .5f;
+        float floorX = MathF.Floor(centeredX), floorY = MathF.Floor(centeredY);
+        int ix = (int)floorX + pixelOffset.X, iy = (int)floorY + pixelOffset.Y;
+        return InterpolatePremultiplied(Pixel(pixels, width, height, ix, iy), Pixel(pixels, width, height, ix + 1, iy),
+            Pixel(pixels, width, height, ix, iy + 1), Pixel(pixels, width, height, ix + 1, iy + 1), centeredX - floorX, centeredY - floorY, opacity);
+
+        static SvgConstantShaderPaint Pixel(ReadOnlySpan<byte> data, int width, int height, int x, int y)
+        {
+            if ((uint)x >= (uint)width || (uint)y >= (uint)height) return default;
+            int at = (y * width + x) * 4;
+            return new(data[at], data[at + 1], data[at + 2], data[at + 3]);
+        }
+    }
+
     /// <summary>Interpolates premultiplied picture pixels before paint alpha and the floating store.</summary>
     /// <remarks>Allocation-free shared image/repeat sampling. Callers own pixels, sampling work and cancellation.</remarks>
     internal static SvgShaderPaint InterpolatePremultiplied(SvgConstantShaderPaint a, SvgConstantShaderPaint b,

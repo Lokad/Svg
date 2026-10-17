@@ -1,19 +1,20 @@
 ## Current standalone qualification (2026-10-17)
 
-Qualification covers all 26 selected upstream outputs and retained focused
-regressions against frozen Windows/Linux references, plus API/resource/font-host
-contracts. Local build plus complete tests took 54.3s Windows / 364.1s Linux.
-[Terminal CI](https://github.com/Lokad/Svg/actions/runs/39021816411) passes 8,088 tests/platform, package/notices
-and installed consumers. [INVENTORY](INVENTORY.md) records document evidence and
-retired membership. Private deployment's four font requests remain pending before
-production adoption. These cases do not establish general SVG completeness.
+Local qualification passes **8,121 tests/platform**, including the 26 selected
+upstream outputs, focused frozen Windows/Linux regressions and API/resource/font
+contracts. Build plus complete tests took 64.2s Windows / 236.5s Linux.
+[CI](https://github.com/Lokad/Svg/actions/workflows/ci.yml) also checks package/notices
+and installed consumers; hosted verification of the current correction is pending.
+[INVENTORY](INVENTORY.md) records document evidence and retired membership.
+Private deployment's four font requests remain pending before production adoption.
+These cases do not establish general SVG completeness.
 
-The [native-path bank](../tests/Research/native-path-replay/manifest.json) covers
-inherited strokes and undashed native curve bounds, mixed radial/pattern fills
-with shader strokes, skewed polygon gradients, round/bevel joins on referenced
-rectangles and fractional shader-stroke corner coverage. Five unchanged survey
-failures and three focused controls supplement the preceding 22 cases; all
-established reference images remain unchanged.
+The [native-path bank](../tests/Research/native-path-replay/manifest.json) retains
+native stroke/bounds replay, independent path/point-list paints, affine linear,
+radial and pattern maps, rectangle joins/dashes/non-scaling widths, empty geometry
+and mask/filter composition. Thirty-two distinct additions use unchanged inputs
+and healthy stable reference triples on both platforms; earlier references are
+unchanged. Existing useful output, denial, cancellation and cleanup checks remain.
 
 The finite support/admission boundaries below govern scope; earlier dated
 sections retain historical mechanism evidence and do not reopen completed gates.
@@ -63,6 +64,10 @@ qualify clip bindings and mask content. Outside scope with explicit outcomes:
 interlaced/16-bit/color-managed PNG, JPEG/GIF/WebP/external image fetching; CSS
 imports/media/supports, pseudo classes/elements, siblings, layout, variables,
 animation and web fonts.
+
+Gradient stops admit literal color/opacity attributes and their stop inline
+styles. Stylesheet stop properties and `currentColor` on gradient resources/stops
+remain outside the current enumerated attribute/CSS subset and reject.
 
 <a id="g9-supplied-font-labels-and-text-paths"></a>
 

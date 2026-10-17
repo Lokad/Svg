@@ -35,8 +35,6 @@ internal static class SvgSymbolContentRenderer
                     }
                     SvgReferenceResolver.ApplyMask(output.AsMutableSpan().Slice(frame.OutputStart), null, null, frame.MaskReference, state, work, token);
                     Span<SvgGeometry> contents = output.AsMutableSpan().Slice(frame.OutputStart);
-                    if (frame.ResourceClip is {} resourceClip)
-                        SvgClipPathSyntax.ApplyResourceClip(contents, resourceClip.Id, resourceClip.Map, state, work, token);
                     if (frame.AffineClip is not null && frame.Opacity.Value != 1)
                     {
                         // Instance opacity surrounds the instantiated viewport. Keep its
@@ -46,6 +44,10 @@ internal static class SvgSymbolContentRenderer
                         SvgPaintRecording.WrapInstance(contents, frame.Opacity, frame.Scope, state, work, token);
                     }
                     else SvgPaintRecording.WrapInstance(contents, frame.Opacity, frame.Scope, frame.CompositionClip, frame.AffineClip, state, work, token);
+                    // A resource clip encloses group isolation. Children render
+                    // into the layer before its opacity and AA clip restore once.
+                    if (frame.ResourceClip is {} resourceClip)
+                        SvgClipPathSyntax.ApplyResourceClip(contents, resourceClip.Id, resourceClip.Map, state, work, token);
                     stack.RemoveLast(); continue;
                 }
                 SvgSymbolContentNode node = frame.Range.Content.Nodes[frame.Next];

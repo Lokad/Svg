@@ -1357,13 +1357,13 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Rotated_pattern_stays_unsupported()
+    public void Rotated_pattern_rectangle_preserves_placement_and_solid_tile_ink()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#p)' transform='rotate(30)'/></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        byte[] pixels = DecodeRgba(SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None), out int width, out _);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 1, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, width, 7, 0));
     }
 
     [Fact]

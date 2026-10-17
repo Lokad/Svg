@@ -2753,8 +2753,10 @@ public sealed partial class OpenTypeFontTests
         Assert.Equal(0, source.RequestCount);
     }
 
-    [Fact]
-    public async Task Svg_based_snapshot_rejects_definition_child_attributes_before_font_acquisition()
+    [Theory]
+    [InlineData("vector-effect='non-scaling-stroke'", true)]
+    [InlineData("transform-origin='center'", false)]
+    public async Task Svg_based_snapshot_validates_definition_child_attributes_before_font_acquisition(string attributes, bool supported)
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
         string hash = Convert.ToHexString(SHA256.HashData(bytes));
@@ -2762,10 +2764,19 @@ public sealed partial class OpenTypeFontTests
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
         var source = new CountingFontSource(bytes);
 
-        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect vector-effect='non-scaling-stroke'/></defs><text font-family='Unused'>x</text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
-        Assert.Equal(0, source.RequestCount);
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect " + attributes + "/></defs><text font-family='Unused'>x</text></svg>");
+        if (supported)
+        {
+            using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, new CountingFontProvider(source), CancellationToken.None);
+            Assert.Single(snapshot.Fonts);
+            Assert.Equal(1, source.RequestCount);
+        }
+        else
+        {
+            SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync(input, catalog, new CountingFontProvider(source), CancellationToken.None));
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+            Assert.Equal(0, source.RequestCount);
+        }
     }
 
     [Fact]

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"><defs><linearGradient id="l"><stop stop-color="red"/><stop offset="1" stop-color="blue"/></linearGradient>
+<radialGradient id="r"><stop stop-color="yellow"/><stop offset="1" stop-color="purple"/></radialGradient>
+<pattern id="p" patternUnits="userSpaceOnUse" width="8" height="8"><rect width="8" height="8" fill="teal"/><rect width="4" height="4" fill="gold"/></pattern>
+<clipPath id="c"><circle cx="40" cy="40" r="25"/></clipPath>
+<linearGradient id="s" gradientTransform="skewX(20)"><stop stop-color="red"/><stop offset="1" stop-color="blue"/></linearGradient></defs><rect x="10" y="10" width="60" height="60" fill="none" stroke="url(#l)" stroke-width="4" stroke-dasharray="7 4"/></svg>

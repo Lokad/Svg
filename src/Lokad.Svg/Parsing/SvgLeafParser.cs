@@ -61,7 +61,9 @@ internal static class SvgLeafParser
             }
             if (fractionalStrokeEdges && SvgGradientSyntax.IsGradientStrokeUrl(patternStyle.Stroke)
                 || crossesViewport || context.RetainInstanceStrokePath || effectiveFrame is { IsScaled: true } || !earlyTransform.IsTranslation || nativeWidth > syntax.Width || nativeWidth > syntax.Height
-                || SvgStrokeStyleSyntax.ParseLinejoin(patternStyle.Linejoin, true) != SvgStrokeJoin.Miter)
+                || SvgStrokeStyleSyntax.ParseLinejoin(patternStyle.Linejoin, true) != SvgStrokeJoin.Miter
+                || SvgStrokeStyleSyntax.ParseDasharray(patternStyle.Dasharray) is not null || patternStyle.NonScalingStroke
+                || patternStyle.Miterlimit is not null && SvgStrokeStyleSyntax.ParseMiterLimit(patternStyle.Miterlimit) < 1.4142135623730951)
                 return LowerRoundedRect(reader, context, syntax, 0, 0, effectiveFrame, state);
         }
         // A zero width paints no stroke bands, so paint strokes fall through to the fill-only solid path below.
@@ -109,18 +111,23 @@ internal static class SvgLeafParser
                 string paintId = SvgGradientSyntax.ParsePaintId(style.Fill);
                 bool linear = document.Gradients.TryGetValue(paintId, out SvgLinearGradient gradient);
                 SvgRadialGradient radial = default;
-                if (!linear && !document.RadialGradients.TryGetValue(paintId, out radial))
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined linear and radial paints on affine rectangle fills are implemented.");
+                bool radialPaint = !linear && document.RadialGradients.TryGetValue(paintId, out radial);
+                SvgPatternTile tile = default;
+                bool pattern = !linear && !radialPaint && document.Patterns.TryGetValue(paintId, out tile);
+                if (!linear && !radialPaint && !pattern)
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local paints on affine rectangle fills are implemented.");
                 SvgAuthoredPath source = filled.Geometries[0].AuthoredPath ?? throw new InvalidOperationException("Affine rectangles require retained source commands.");
                 SvgRectangle box = new(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, default, false, null);
                 if (linear) gradient = SvgGradientSyntax.BindLinearSourceMap(gradient, box, source.SceneMap, document, elementContext.WorkCounter, elementContext.CancellationToken);
-                else radial = SvgGradientSyntax.BindRadialSourceMap(radial, box, source.SceneMap, elementContext.WorkCounter, elementContext.CancellationToken);
+                else if (radialPaint) radial = SvgGradientSyntax.BindRadialSourceMap(radial, box, source.SceneMap, elementContext.WorkCounter, elementContext.CancellationToken);
+                else tile = SvgPatternReferenceResolver.ForPlacement(paintId, tile, elementContext.StrokeHostMap.ComposeChecked(source.SceneMap), document, elementContext.WorkCounter, elementContext.CancellationToken);
                 byte opacity = SvgReferenceResolver.MultiplyAlpha(style.GetOpacity().Alpha, SvgColorParser.ParseOpacity(style.FillOpacity));
                 foreach (SvgGeometry geometry in filled.Geometries)
                 {
                     SvgGeometry painted = geometry.TransferAuthoredPathTo(linear
                         ? SvgGradientPolygon.RepaintOutline(geometry.Polygon, gradient, box, opacity, document.Budget)
-                        : SvgRadialPolygon.RepaintOutline(geometry.Polygon, radial, box, opacity, document.Budget));
+                        : radialPaint ? SvgRadialPolygon.RepaintOutline(geometry.Polygon, radial, box, opacity, document.Budget)
+                        : SvgPatternPolygon.RepaintOutline(geometry.Polygon, tile, opacity, source.SceneMap, document.Budget));
                     try { repainted.Add(painted); }
                     catch { painted.Dispose(); throw; }
                 }
@@ -261,7 +268,7 @@ internal static class SvgLeafParser
         if (paintStrokeLinear || paintStrokeRadial || paintStrokePattern) fillStyle = fillStyle with { Stroke = "none" };
         SvgResolvedPaintableElement element = context.ResolveShape(fillStyle, reader, true);
         SvgAffineTransform transform = context.ResolveTransform(reader);
-        if (!transform.IsAxisAligned && (syntax.Width == 0 || syntax.Height == 0))
+        if (syntax.Width == 0 || syntax.Height == 0)
         {
             using BudgetedGeometryBuilder empty = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             return new SvgParsedGeometry(empty.Detach(), 0);
@@ -352,7 +359,7 @@ internal static class SvgLeafParser
                 {
                     if (useLinear) repaintList.Add(existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, mappedLinear, strokeBox, strokeOpacity, state.Budget)));
                     else if (useRadial) repaintList.Add(existing.TransferAuthoredPathTo(SvgRadialPolygon.RepaintOutline(existing.Polygon, mappedCircle, strokeBox, strokeOpacity, state.Budget)));
-                    else repaintList.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, strokeOpacity, state.Budget)));
+                    else repaintList.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, strokeOpacity, strokePlacement, state.Budget)));
                 }
                 int whiteCount = white.ElementCount;
                 white.Dispose();

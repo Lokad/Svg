@@ -1128,13 +1128,13 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
-    public void Vector_effect_on_rectangle_stroke_stays_unsupported()
+    public void Non_scaling_rectangle_stroke_preserves_fill_and_outline()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2' vector-effect='non-scaling-stroke'/></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        byte[] pixels = DecodeRgba(SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None), out int width, out _);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 0, 0));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 4, 4));
     }
 
     [Fact]
@@ -1171,25 +1171,24 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
-    public void Dasharray_on_rectangle_stroke_stays_unsupported()
+    public void Rectangle_dasharray_preserves_ink_and_gaps()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2' stroke-dasharray='2,2'/></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        byte[] pixels = DecodeRgba(SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None), out int width, out _);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 0, 0));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 3, 0));
     }
 
     [Fact]
-    public void Inline_dash_list_on_rectangle_stroke_stays_unsupported()
+    public void Inline_rectangle_dasharray_preserves_ink_and_gaps()
     {
-        // Solid sharp-rectangle bands silently dropped inline dash lists;
-        // the lowering now gates them exactly like the attribute spelling.
+        // Inline dash lists retain the same source stroke semantics as attributes.
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2' style='stroke-dasharray:4 4'/></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        byte[] pixels = DecodeRgba(SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None), out int width, out _);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 0, 0));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 6, 0));
     }
 
     [Fact]

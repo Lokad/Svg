@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"><defs><linearGradient id="l"><stop stop-color="red"/><stop offset="1" stop-color="blue"/></linearGradient>
+<linearGradient id="u" gradientUnits="userSpaceOnUse" x1="10" y1="0" x2="70" y2="0"><stop stop-color="red"/><stop offset="1" stop-color="blue"/></linearGradient>
+<radialGradient id="r"><stop stop-color="yellow"/><stop offset="1" stop-color="purple"/></radialGradient>
+<radialGradient id="ur" gradientUnits="userSpaceOnUse" cx="40" cy="40" r="30"><stop stop-color="yellow"/><stop offset="1" stop-color="purple"/></radialGradient>
+<pattern id="p" patternUnits="userSpaceOnUse" width="8" height="8"><rect width="8" height="8" fill="teal"/><rect width="4" height="4" fill="gold"/></pattern>
+<clipPath id="c"><circle cx="40" cy="40" r="25"/></clipPath>
+<clipPath id="b" clipPathUnits="objectBoundingBox"><circle cx=".5" cy=".5" r=".4"/></clipPath>
+<marker id="m" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" refX="4" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="orange"/></marker></defs><polygon points="12.5,60 40,10 68,60" fill="url(#r)" stroke="url(#l)" stroke-width="5"/></svg>
