@@ -281,7 +281,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
-    [InlineData("06")]
+    [InlineData("0A")]
     [InlineData("89")]
     public void Executed_unimplemented_instructions_remain_explicit(string program)
     {

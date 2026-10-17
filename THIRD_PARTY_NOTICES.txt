@@ -220,7 +220,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
-Lokad.Svg contains managed adaptations of FreeType 2.13.2 axial TrueType
+Lokad.Svg contains managed adaptations of FreeType 2.13.2 TrueType
 instruction arithmetic, CVT scaling, untouched-point interpolation and composite
 child/parent fitting and placement. These adaptations have no native FreeType
 runtime dependency.

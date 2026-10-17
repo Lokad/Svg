@@ -53,16 +53,16 @@ internal struct TrueTypeHintPoint
 
 internal readonly record struct TrueTypeHintFunction(bool Defined, ReadOnlyMemory<byte> Program);
 
-/// <summary>Executes the bounded axial TrueType subset needed by the selected public Latin font.</summary>
+/// <summary>Executes the bounded TrueType subset needed by the selected public Latin fonts.</summary>
 /// <remarks>Owns scratch and borrows programs, glyph points and contour ends for one conversion.
 /// Every visited instruction, skipped operand and point consumes work and observes cancellation.
 /// Malformed stacks/ranges are categorized; unsupported executed instructions remain explicit.
 /// A machine and its caller-owned inputs belong to one thread and one glyph; disposal releases
 /// its reservation and function-program borrows. It does not select fonts or draw pixels.
-/// Axial arithmetic and interpolation adapt FreeType 2.13.2; see THIRD_PARTY_NOTICES.txt.
+/// Fixed-point arithmetic and interpolation adapt FreeType 2.13.2; see THIRD_PARTY_NOTICES.txt.
 /// Target queries and preparation lifecycle are explicit native policies. Per-glyph
 /// geometry and mask acceptance belong to the independent visual controls.</remarks>
-internal sealed class TrueTypeHinting : IDisposable
+internal sealed partial class TrueTypeHinting : IDisposable
 {
     private RenderBudget.BudgetReservation? _reservation;
     private readonly int[] _stack, _storage, _cvt, _initialCvt;
@@ -76,14 +76,12 @@ internal sealed class TrueTypeHinting : IDisposable
     private TrueTypeHintTarget _target;
     private readonly int _ppem;
     private readonly TrueTypeHintDeviceScale _scale;
-    private int AxisScale => _axis == TrueTypeHintAxis.X ? _scale.Horizontal : _scale.Vertical;
-    private int AxisPpem => _axis == TrueTypeHintAxis.X ? ScaleHorizontal(_ppem) : _ppem;
+    private int AxisPpem => ScaleRatio(_ppem, ProjectionRatio);
     private int _count, _depth, _loop = 1, _rp0, _rp1, _rp2;
     private int _deltaBase = 9, _deltaShift = 3, _cutIn = 68, _instructionControl;
     private int _minimumDistance = 64, _singleWidthCutIn, _singleWidth;
     private int _scanControl, _scanType;
     private bool _scanConfigured, _autoFlip = true;
-    private TrueTypeHintAxis _axis = TrueTypeHintAxis.X;
     private TrueTypeHintRound _round = TrueTypeHintRound.Grid;
     private TrueTypeHintZone _zp0 = TrueTypeHintZone.Glyph, _zp1 = TrueTypeHintZone.Glyph, _zp2 = TrueTypeHintZone.Glyph;
 
@@ -190,7 +188,7 @@ internal sealed class TrueTypeHinting : IDisposable
             if ((_instructionControl & 1) != 0) { GlyphSmartDropouts = SmartDropouts(); return; }
             // Glyph-local reference/zone/vector state starts at the prescribed defaults.
             _rp0 = _rp1 = _rp2 = 0; _zp0 = _zp1 = _zp2 = TrueTypeHintZone.Glyph;
-            _axis = TrueTypeHintAxis.X; _loop = 1;
+            _projection = _dualProjection = _freedom = HintVector.XAxis; _loop = 1;
             if ((_instructionControl & 2) != 0) { _round = TrueTypeHintRound.Grid; _cutIn = 68; _deltaBase = 9; _deltaShift = 3; _scanControl = _scanType = 0; _scanConfigured = false; _minimumDistance = 64; _singleWidthCutIn = _singleWidth = 0; _autoFlip = true; }
         }
         try
@@ -231,7 +229,14 @@ internal sealed class TrueTypeHinting : IDisposable
             }
             switch (opcode)
             {
-                case 0x00: case 0x01: _axis = (TrueTypeHintAxis)opcode; break;
+                case >= 0x00 and <= 0x05:
+                {
+                    HintVector vector = (opcode & 1) == 0 ? HintVector.YAxis : HintVector.XAxis;
+                    if (opcode < 4) _projection = _dualProjection = vector;
+                    if ((opcode & 2) == 0) _freedom = vector;
+                    break;
+                }
+                case >= 0x06 and <= 0x09: SetLineVector(opcode); break;
                 case 0x10: _rp0 = Pop(); break;
                 case 0x11: _rp1 = Pop(); break;
                 case 0x12: _rp2 = Pop(); break;
@@ -284,13 +289,13 @@ internal sealed class TrueTypeHinting : IDisposable
                 case 0x34: case 0x35: ShiftContour(opcode); break;
                 case 0x38:
                 {
-                    int amount = Pop(); for (int i = 0; i < _loop; i++) { _work.Consume(_token); ref TrueTypeHintPoint p = ref Point(_zp2, Pop()); Move(ref p, amount, true); } _loop = 1; break;
+                    int amount = Pop(); for (int i = 0; i < _loop; i++) { _work.Consume(_token); ref TrueTypeHintPoint p = ref Point(_zp2, Pop()); MoveAlongFreedom(ref p, amount); } _loop = 1; break;
                 }
                 case 0x39: InterpolatePoints(); break;
                 case 0x3C:
                 {
-                    int reference = Coordinate(Point(_zp0, _rp0), false);
-                    for (int i = 0; i < _loop; i++) { _work.Consume(_token); ref TrueTypeHintPoint p = ref Point(_zp1, Pop()); Move(ref p, checked(reference - Coordinate(p, false)), true); } _loop = 1; break;
+                    TrueTypeHintPoint reference = Point(_zp0, _rp0);
+                    for (int i = 0; i < _loop; i++) { _work.Consume(_token); ref TrueTypeHintPoint p = ref Point(_zp1, Pop()); Move(ref p, ProjectedDistance(reference, p, false), true); } _loop = 1; break;
                 }
                 case 0x3D: _round = TrueTypeHintRound.DoubleGrid; break;
                 case 0x3E: case 0x3F:
@@ -298,8 +303,8 @@ internal sealed class TrueTypeHinting : IDisposable
                     int value = ReadControl(Index(Pop(), _cvt.Length)), p = Pop(); ref TrueTypeHintPoint point = ref Point(_zp0, p);
                     if (_zp0 == TrueTypeHintZone.Twilight)
                     {
-                        if (_axis == TrueTypeHintAxis.X) point.OriginalX = value; else point.OriginalY = value;
-                        SetCoordinate(ref point, value);
+                        point.X = point.OriginalX = Divide(value, 16384, _freedom.X);
+                        point.Y = point.OriginalY = Divide(value, 16384, _freedom.Y);
                     }
                     int original = Coordinate(point, false);
                     if (opcode == 0x3F) { if (Math.Abs((long)value - original) > _cutIn) value = original; value = Round(value); }
@@ -316,8 +321,8 @@ internal sealed class TrueTypeHinting : IDisposable
                     // MD[0] (0x4A) measures the original distance; MD[1]
                     // (0x49) the fitted distance. Scale the font-unit difference once.
                     int distance = opcode == 0x4A && !_compositeGlyph && _zp0 == TrueTypeHintZone.Glyph && _zp1 == TrueTypeHintZone.Glyph
-                        ? Divide(checked((_axis == TrueTypeHintAxis.X ? p.UnscaledX - q.UnscaledX : p.UnscaledY - q.UnscaledY)), 65536, AxisScale)
-                        : checked(Coordinate(p, opcode == 0x4A) - Coordinate(q, opcode == 0x4A));
+                        ? DesignDistance(p, q, true)
+                        : ProjectedDistance(p, q, opcode == 0x4A);
                     Push(distance); break;
                 }
                 case 0x4B: Push(AxisPpem); break;
@@ -376,7 +381,7 @@ internal sealed class TrueTypeHinting : IDisposable
                     if (kind != TrueTypeHintProgramKind.Glyph || selector == 3) _instructionControl = (_instructionControl & ~(1 << (selector - 1))) | value;
                     break;
                 }
-                case 0x70: { int value = Pop(); _cvt[Index(Pop(), _cvt.Length)] = _compositeGlyph ? StoreControl(value) : Divide(value, 65536, AxisScale); break; }
+                case 0x70: { int value = Pop(); _cvt[Index(Pop(), _cvt.Length)] = _compositeGlyph ? StoreControl(value) : Divide(value, 65536, ProjectionScale); break; }
                 case >= 0xC0: MoveRelative(opcode); break;
                 default: throw new SvgException(SvgErrorCode.UnsupportedFeature, $"TrueType hint opcode 0x{opcode:X2} is not implemented.");
             }
@@ -423,7 +428,7 @@ internal sealed class TrueTypeHinting : IDisposable
                 TrueTypeHintZone zone = (op & 1) == 0 ? _zp1 : _zp0;
                 int index = (op & 1) == 0 ? _rp2 : _rp1;
                 TrueTypeHintPoint point = Point(zone, index);
-                return (zone, index, checked(Coordinate(point, false) - Coordinate(point, true)));
+                return (zone, index, _projection.Project(checked(point.X - point.OriginalX), checked(point.Y - point.OriginalY)));
             }
             void ShiftPoints(byte op)
             {
@@ -449,16 +454,15 @@ internal sealed class TrueTypeHinting : IDisposable
                         control = control >= 0 ? _singleWidth : checked(-_singleWidth);
                     if (_zp1 == TrueTypeHintZone.Twilight)
                     {
-                        point.OriginalX = reference.OriginalX; point.OriginalY = reference.OriginalY;
-                        if (_axis == TrueTypeHintAxis.X) point.OriginalX = checked(point.OriginalX + control);
-                        else point.OriginalY = checked(point.OriginalY + control);
+                        point.OriginalX = checked(reference.OriginalX + Divide(control, 16384, _freedom.X));
+                        point.OriginalY = checked(reference.OriginalY + Divide(control, 16384, _freedom.Y));
                         point.X = point.OriginalX; point.Y = point.OriginalY;
                         reference = Point(_zp0, _rp0);
                     }
                 }
                 int original = !indirect && !_compositeGlyph && _zp0 == TrueTypeHintZone.Glyph && _zp1 == TrueTypeHintZone.Glyph
-                    ? Divide(checked(_axis == TrueTypeHintAxis.X ? point.UnscaledX - reference.UnscaledX : point.UnscaledY - reference.UnscaledY), 65536, AxisScale)
-                    : checked(Coordinate(point, true) - Coordinate(reference, true));
+                    ? DesignDistance(point, reference, true)
+                    : ProjectedDistance(point, reference, true);
                 // Retain native signed single-width cut-in and round the distance,
                 // rather than independently rounding either endpoint.
                 if (!indirect && _singleWidthCutIn > 0 && original < (long)_singleWidth + _singleWidthCutIn && original > (long)_singleWidth - _singleWidthCutIn)
@@ -468,7 +472,7 @@ internal sealed class TrueTypeHinting : IDisposable
                 int distance = indirect ? control : original;
                 if ((op & 4) != 0) distance = Round(distance);
                 if ((op & 8) != 0) distance = original >= 0 ? Math.Max(distance, _minimumDistance) : Math.Min(distance, checked(-_minimumDistance));
-                int current = checked(Coordinate(point, false) - Coordinate(reference, false));
+                int current = ProjectedDistance(point, reference, false);
                 Move(ref point, checked(distance - current), true);
                 _rp1 = _rp0; _rp2 = index;
                 if ((op & 16) != 0) _rp0 = index;
@@ -479,23 +483,21 @@ internal sealed class TrueTypeHinting : IDisposable
                 TrueTypeHintPoint first = Point(_zp0, _rp1), last = Point(_zp1, _rp2);
                 bool design = !_compositeGlyph && _zp0 == TrueTypeHintZone.Glyph && _zp1 == TrueTypeHintZone.Glyph && _zp2 == TrueTypeHintZone.Glyph;
                 int originalRange = OriginalDistance(last);
-                int currentRange = checked(Coordinate(last, false) - Coordinate(first, false));
+                int currentRange = ProjectedDistance(last, first, false);
                 for (int i = 0; i < _loop; i++)
                 {
                     _work.Consume(_token);
                     ref TrueTypeHintPoint point = ref Point(_zp2, Pop());
                     int original = OriginalDistance(point);
                     int distance = originalRange != 0 ? Divide(original, originalRange, currentRange) : original;
-                    int current = checked(Coordinate(point, false) - Coordinate(first, false));
+                    int current = ProjectedDistance(point, first, false);
                     Move(ref point, checked(distance - current), true);
                 }
                 _loop = 1;
 
                 int OriginalDistance(TrueTypeHintPoint point)
                 {
-                    if (!design) return checked(Coordinate(point, true) - Coordinate(first, true));
-                    int distance = checked(_axis == TrueTypeHintAxis.X ? point.UnscaledX - first.UnscaledX : point.UnscaledY - first.UnscaledY);
-                    return _scale.Horizontal == _scale.Vertical ? distance : Divide(distance, 65536, AxisScale);
+                    return design ? DesignDistance(point, first, false) : ProjectedDistance(point, first, true);
                 }
             }
 
@@ -574,13 +576,6 @@ internal sealed class TrueTypeHinting : IDisposable
         long result = (magnitude + divisor / 2) / divisor; if ((product < 0) != (denominator < 0)) result = -result;
         return checked((int)result);
     }
-    private int Coordinate(TrueTypeHintPoint p, bool original) => _axis == TrueTypeHintAxis.X ? original ? p.OriginalX : p.X : original ? p.OriginalY : p.Y;
-    private void SetCoordinate(ref TrueTypeHintPoint p, int value) { if (_axis == TrueTypeHintAxis.X) p.X = value; else p.Y = value; }
-    private void Move(ref TrueTypeHintPoint p, int delta, bool touch)
-    {
-        SetCoordinate(ref p, checked(Coordinate(p, false) + delta));
-        if (touch) { if (_axis == TrueTypeHintAxis.X) p.TouchedX = true; else p.TouchedY = true; }
-    }
     private int Round(int value)
     {
         long absolute = Math.Abs((long)value);
@@ -599,8 +594,8 @@ internal sealed class TrueTypeHinting : IDisposable
         if (target.Version is < 0 or > 255 || (target.QueryFlags & ~TrueTypeHintQueryFlags.All) != 0 || target.ControlScale is not TrueTypeHintControlScale.FullPrecision and not TrueTypeHintControlScale.FractionalFontUnits || target.Preparation is not TrueTypeHintPreparation.Single and not TrueTypeHintPreparation.DefaultThenTarget || !double.IsFinite(target.HorizontalRatio) || target.HorizontalRatio <= 0)
             throw Invalid("The TrueType hint target is invalid.");
     }
-    private int ReadControl(int index) => _axis == TrueTypeHintAxis.X ? ScaleHorizontal(_cvt[index]) : _cvt[index];
-    private int StoreControl(int value) => _axis == TrueTypeHintAxis.X ? ScaleRatio(value, 1 / _target.HorizontalRatio) : value;
+    private int ReadControl(int index) => ScaleRatio(_cvt[index], ProjectionRatio);
+    private int StoreControl(int value) => ScaleRatio(value, 1 / ProjectionRatio);
     private int ScaleHorizontal(int value) => ScaleRatio(value, _target.HorizontalRatio);
     private static int ScaleRatio(int value, double ratio)
     {

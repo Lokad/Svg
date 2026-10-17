@@ -6,6 +6,22 @@ namespace Lokad.Svg.Tests;
 public sealed partial class TrueTypeHintingTests
 {
     [Theory]
+    [InlineData(true, 1889)]
+    [InlineData(false, 1888)]
+    public void Direct_relative_original_scaling_preserves_target_specific_negative_half_rounding(bool symmetric, int expected)
+    {
+        // Independent native synthetic 48px/2048-unit rectangle: the reference
+        // is fitted to 2112 and the lower edge is 149 design units below it.
+        TrueTypeHintPoint[] points = [new(0, 2114, 0, 1409), new(0, 1890, 0, 1260)];
+        points[0].Y = 2112;
+        TrueTypeHintTarget target = Target with { QueryFlags = symmetric ? TrueTypeHintQueryFlags.Symmetric : TrueTypeHintQueryFlags.Grayscale };
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], points, [1], 48,
+            new(98304, 98304), target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        machine.Run(Convert.FromHexString("00B001C0"), TrueTypeHintProgramKind.Glyph);
+        Assert.Equal(expected, points[1].Y);
+    }
+
+    [Theory]
     [InlineData(0x32, 45)]
     [InlineData(0x33, 75)]
     public void Point_shifts_select_the_reference_displacement_and_move_from_current_coordinates(byte opcode, int expected)
