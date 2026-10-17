@@ -1,6 +1,6 @@
 # Renderer measurements
 
-Measured **2026-10-17** at revision `47aa542e`, using the current renderer in a
+Measured **2026-10-17** at revision `397c8ea2`, using the current renderer in a
 clean checkout. Results describe these workloads on one Windows host; they do
 not establish general SVG throughput or Linux performance.
 
@@ -17,11 +17,11 @@ is shown in milliseconds; three samples give limited timing precision.
 
 | Method | Mean ms | Std dev ms | Allocated bytes/op |
 | --- | ---: | ---: | ---: |
-| `ConvertOutlinedWordmark` | 1.0721 | 0.0076 | 495,856 |
-| `ConvertGradientClip` | 0.1481 | 0.0587 | 36,131 |
-| `ConvertIsolatedOpacity` | 0.1015 | 0.0036 | 30,570 |
-| `ConvertIdenticalInstances` | 1.6813 | 0.1394 | 275,730 |
-| `ConvertPublicLabel` | 3.6994 | 0.0263 | 164,859 |
+| `ConvertOutlinedWordmark` | 0.9699 | 0.0029 | 495,856 |
+| `ConvertGradientClip` | 0.1307 | 0.0293 | 36,131 |
+| `ConvertIsolatedOpacity` | 0.0979 | 0.0046 | 30,570 |
+| `ConvertIdenticalInstances` | 1.3559 | 0.0045 | 275,730 |
+| `ConvertPublicLabel` | 3.8016 | 0.0139 | 164,854 |
 
 The set covers outlined geometry, clipped gradient paint, isolated opacity,
 repeated patterns and supplied-font labels. Allocation is cumulative managed
@@ -36,8 +36,8 @@ output work; it is separate from the warmed conversion timings above.
 
 | Input | Elapsed ms, range | Conversion allocated bytes, range |
 | --- | ---: | ---: |
-| `masked-source` | 516–606 | 593,392 |
-| `image-resource-scope` | 413–591 | 470,016 |
+| `masked-source` | 478–527 | 581,056–593,392 |
+| `image-resource-scope` | 351–355 | 470,016 |
 
 Inputs: [masked filter source](../tests/Research/filter-source-exit-sheet/masked-source.svg)
 and [image resource scope](../tests/Research/affine-image-maps/image-resource-scope.svg).
@@ -56,4 +56,4 @@ Pop-Location
 For cold observations, build `tools/Lokad.Svg.MemoryProbe` in Release and run its
 DLL in three fresh processes per linked input, using the command in [README](../README.md#diagnostic-tools).
 Keep compilation outside measurement. Raw reports for this run remain under
-[the ignored results directory](../artifacts/scope-gap-survey-20261017/benchmarks/).
+[the ignored results directory](../artifacts/public-gap-corrections-20261017/benchmarks/).

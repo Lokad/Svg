@@ -3,11 +3,14 @@
 The current full-document collection is the [26-document upstream selection](../tests/Research/upstream-static-documents/README.md).
 All declared outputs are exact against frozen Windows/Linux Chrome references. Each
 input has a feature purpose, original source/license, one declared recipe and supplied
-fonts where needed. Local Windows/Linux qualification passes 8,121 tests/platform; hosted verification of the current correction is pending. Document counts establish
+fonts where needed. Local Windows/Linux qualification passes 8,121 tests/platform;
+[source CI](https://github.com/Lokad/Svg/actions/runs/39030907217) is terminal green
+on both platforms at renderer revision `397c8ea2`. Document counts establish
 only these selected outputs, not general SVG coverage.
 
 ## Required evidence
 
+- [Current correction qualification](../artifacts/public-gap-corrections-20261017/qualified-results.json): 32 new distinct visual cases exact on both platforms, 8,121 tests/platform and package/consumer/resource/font-host checks. Existing references remain unchanged.
 - [Native path/stroke bank](../tests/Research/native-path-replay/manifest.json): independent fill/stroke paints, affine gradient/pattern maps, direct/referenced rectangle dashes/joins/vector effects, empty shapes and scoped mask/filter rendering. New acceptance is separate from upstream membership; earlier exact references remain unchanged.
 - [Fixture-replacement qualification](../artifacts/full-fixture-replacement-20261017/standalone-qualified-results.json): 8,068 tests/platform, package/notices, installed consumers and terminal exact-source CI.
 - [Selection, coverage and immutable asset manifest](../tests/Research/upstream-static-documents/manifest.json).
