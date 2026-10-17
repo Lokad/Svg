@@ -17,17 +17,14 @@ Memory accounting uses conservative estimates for dominant allocations under
 with runtime/host overhead and borrowed storage identified separately.
 
 [SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md) and [PLAN's finite boundaries](PLAN.md#required-support-boundaries-and-finite-exits)
-define the useful subset and explicit unsupported outcomes. The six audit
-corrections A1-A6 are complete. **Standalone delivery remains open for F1 and
-final verification A7**: the [frozen upstream replacement collection](tests/Research/upstream-static-documents/README.md)
-is **26/26 exact on Windows/Linux**, with fixture retirement and final
-verification still required. Counts alone do not close release qualification.
-
-The prior `e21f956c` qualification remains dated evidence for its declared cases:
-**8,147 tests/platform**, package/installed-consumer checks and **27 documents /
-258 variants** passed in [terminal green CI](https://github.com/Lokad/Svg/actions/runs/38952070864).
-[INVENTORY](docs/INVENTORY.md) retains selection/evidence limits and historical
-full-document results; F1 replaces their mandatory membership and count gates.
+define the qualified subset and explicit unsupported outcomes. **Standalone
+qualification is complete** for `0a0843ec`: all 26 [upstream documents](tests/Research/upstream-static-documents/README.md)
+are exact on Windows/Linux, and **8,068 tests per platform**, package/notices and
+isolated installed consumers pass in [terminal green CI](https://github.com/Lokad/Svg/actions/runs/38986391708).
+Normal build plus complete tests took **59.5s Windows / 226.3s Linux** locally.
+[INVENTORY](docs/INVENTORY.md) records replacement of the old full-document cohorts
+and preservation of focused regressions and dedicated contracts. Counts establish
+only their declared outputs, not general SVG completeness.
 
 [Public regular/bold/real-italic/fallback qualification](tests/Research/public-font-qualification/README.md)
 (T3-public), micro-tests, known-bug and resource contracts remain preserved.

@@ -1,23 +1,23 @@
-## Current standalone delivery — reopened audit corrections (2026-10-16)
+## Current standalone qualification (2026-10-17)
 
-The completion audit in [PLAN](../PLAN.md#delivery-order) demonstrates six missing
-behaviors within the finite promises: pattern leaf/object-box clips, retained
-instance/marker clips, clipped vector mask content, nested clip-child intersections
-and filtered gradient source fidelity. A1–A6 are corrected with targeted
-Windows/Linux evidence. F1 replaces the full-document collection
-through the existing harness before final S17 verification A7.
-The eight additional rejected probes have the three explicit admission dispositions
-below; they add no feature promise or approved deferral.
-The qualified `e21f956c` cases and cohorts remain dated evidence. Preserve public
-fonts, micro-tests, known-bug protections and resource/ownership contracts; F1
-explicitly replaces mandatory full-document membership/counts. Dated statements below describe
-their revisions and do not close these newly retained gaps. Private deployment
-qualification remains a separate pending adoption gate.
+**Standalone qualification is complete** for `0a0843ec`: A1-A6, the upstream
+fixture replacement F1 and finished S17 checks are closed. All 26 selected outputs
+are exact on Windows/Linux. [Terminal CI](https://github.com/Lokad/Svg/actions/runs/38986391708) passes 8,068 tests per
+platform, package/notices, isolated installed consumers and required tooling.
+Local normal build plus complete tests took 59.5s Windows / 226.3s Linux.
+
+Public fonts, focused known-bug cases and API/resource/ownership contracts remain
+qualified. [INVENTORY](INVENTORY.md) records every retired full-document disposition.
+The eight admission probes have the three explicit finite boundaries below; no
+enumerated feature is deferred. Private deployment's four requests remain pending
+before adoption. Earlier dated sections retain mechanism/evidence history; their
+old whole-document membership/counts and pending gates do not override the current
+[PLAN](../PLAN.md#delivery-order) and finite admission boundaries.
 
 ## Upstream document follow-up (2026-10-17)
 
 The frozen replacement collection is **26/26 exact on Windows/Linux**.
-Full-fixture retirement and final S17 verification remain required in [PLAN F1/A7](../PLAN.md#full-svg-fixture-replacement-f1).
+Full-fixture retirement and final S17 verification are complete under [PLAN F1/A7](../PLAN.md#full-svg-fixture-replacement-f1).
 
 Named affine rectangles register through retained shape lowering; general rounded
 fills preserve native conics and existing paint/stroke maps. The original

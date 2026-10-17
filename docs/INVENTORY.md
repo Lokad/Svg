@@ -4,11 +4,12 @@ The current full-document collection is the [26-document upstream selection](../
 All declared outputs are exact against frozen Windows/Linux Chrome references. Each
 input has a feature purpose, original source/license, one declared recipe and supplied
 fonts where needed. [PLAN F1/A7](../PLAN.md#full-svg-fixture-replacement-f1) owns delivery
-completion; final coherent qualification remains pending. Document counts establish
+completion; [finished Windows/Linux qualification](https://github.com/Lokad/Svg/actions/runs/38986391708) is complete for `0a0843ec`. Document counts establish
 only these selected outputs, not general SVG coverage.
 
 ## Required evidence
 
+- [Finished S17 qualification](../artifacts/full-fixture-replacement-20261017/standalone-qualified-results.json): 8,068 tests/platform, package/notices, installed consumers and terminal exact-source CI.
 - [Selection, coverage and immutable asset manifest](../tests/Research/upstream-static-documents/manifest.json).
 - [Rectangle source qualification](../artifacts/full-fixture-replacement-20261017/rectangle-source-qualified-results.json).
 - [Rounded clip, nested viewport and PNG qualification](../artifacts/full-fixture-replacement-20261017/composition-qualified-results.json).
