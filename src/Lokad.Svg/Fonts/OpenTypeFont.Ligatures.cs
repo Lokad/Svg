@@ -27,53 +27,7 @@ internal static partial class OpenTypeFont
         int scripts = GetTableOffset(table, table.Offset, ReadUInt16(data, table.Offset + 4), 2, "GSUB ScriptList");
         int features = GetTableOffset(table, table.Offset, ReadUInt16(data, table.Offset + 6), 2, "GSUB FeatureList");
         int lookups = GetTableOffset(table, table.Offset, ReadUInt16(data, table.Offset + 8), 2, "GSUB LookupList");
-        int scriptCount = ReadUInt16(data, scripts);
-        RequireTableRange(table, scripts, 2 + scriptCount * 6, "GSUB ScriptList");
-        int script = 0;
-        int fallback = 0;
-        for (int index = 0; index < scriptCount; index++)
-        {
-            Consume(workCounter, token);
-            int record = scripts + 2 + index * 6;
-            uint tag = ReadUInt32(data, record);
-            if (tag == LatinScriptTag || tag == DefaultScriptTag)
-            {
-                int selected = GetTableOffset(table, scripts, ReadUInt16(data, record + 4), 4, "GSUB script");
-                if (tag == LatinScriptTag)
-                {
-                    if (script != 0) throw InvalidFont("The GSUB ScriptList repeats its Latin script.");
-                    script = selected;
-                }
-                else
-                {
-                    if (fallback != 0) throw InvalidFont("The GSUB ScriptList repeats its default script.");
-                    fallback = selected;
-                }
-            }
-        }
-        if (script == 0) script = fallback;
-        if (script == 0 || ReadUInt16(data, script) == 0) return null;
-        int language = GetTableOffset(table, script, ReadUInt16(data, script), 6, "GSUB default LangSys");
-        if (ReadUInt16(data, language) != 0) throw InvalidFont("The GSUB LangSys lookupOrder must be zero.");
-        int featureCount = ReadUInt16(data, features);
-        RequireTableRange(table, features, 2 + featureCount * 6, "GSUB FeatureList");
-        int selectedFeatureCount = ReadUInt16(data, language + 4);
-        RequireTableRange(table, language, 6 + selectedFeatureCount * 2, "GSUB LangSys");
-        int required = ReadUInt16(data, language + 2);
-        if (required != ushort.MaxValue && required >= featureCount) throw InvalidFont("The GSUB required feature index is invalid.");
-        int feature = 0;
-        for (int index = -1; index < selectedFeatureCount; index++)
-        {
-            Consume(workCounter, token);
-            int selected = index < 0 ? required : ReadUInt16(data, language + 6 + index * 2);
-            if (selected == ushort.MaxValue && index < 0) continue;
-            if (selected >= featureCount) throw InvalidFont("The GSUB LangSys feature index is invalid.");
-            int record = features + 2 + selected * 6;
-            if (ReadUInt32(data, record) != LigatureFeatureTag) continue;
-            int next = GetTableOffset(table, features, ReadUInt16(data, record + 4), 4, "GSUB liga feature");
-            if (feature != 0 && feature != next) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Multiple default Latin liga features are not supported.");
-            feature = next;
-        }
+        int feature = SelectLatinFeature(data, table, scripts, features, LigatureFeatureTag, "GSUB", workCounter, token);
         if (feature == 0) return null;
         if (ReadUInt16(data, feature) != 0 || ReadUInt16(data, feature + 2) != 1)
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "The Latin liga feature requires one lookup without feature parameters.");

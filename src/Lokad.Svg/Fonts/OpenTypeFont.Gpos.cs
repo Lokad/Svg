@@ -21,21 +21,8 @@ internal static partial class OpenTypeFont
         int scripts = GetTableOffset(table, table.Offset, ReadUInt16(data, table.Offset + 4), 2, "GPOS ScriptList");
         int features = GetTableOffset(table, table.Offset, ReadUInt16(data, table.Offset + 6), 2, "GPOS FeatureList");
         int lookups = GetTableOffset(table, table.Offset, ReadUInt16(data, table.Offset + 8), 2, "GPOS LookupList");
-        int featureCount = ReadUInt16(data, features);
-        RequireTableRange(table, features, 2 + featureCount * 6, "GPOS FeatureList");
-        int feature = 0;
-        int featureIndex = -1;
-        for (int index = 0; index < featureCount; index++)
-        {
-            Consume(workCounter, cancellationToken);
-            int record = features + 2 + index * 6;
-            if (ReadUInt32(data, record) != KernFeatureTag) continue;
-            if (feature != 0) throw InvalidFont("The GPOS FeatureList contains duplicate kern features.");
-            feature = GetTableOffset(table, features, ReadUInt16(data, record + 4), 4, "GPOS kern feature");
-            featureIndex = index;
-        }
+        int feature = SelectLatinFeature(data, table, scripts, features, KernFeatureTag, "GPOS", workCounter, cancellationToken);
         if (feature == 0) return null;
-        ValidateDefaultGposKernFeature(data, table, scripts, featureCount, featureIndex, workCounter, cancellationToken);
         if (ReadUInt16(data, feature) != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "GPOS kern feature parameters are not supported.");
         int selectedCount = ReadUInt16(data, feature + 2);
         if (selectedCount > MaximumKernLookups) throw new SvgException(SvgErrorCode.LimitExceeded, "The GPOS kern lookup count exceeds the admitted limit.");

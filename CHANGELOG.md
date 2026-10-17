@@ -15,6 +15,8 @@
   failures, including original locations through retained text and local uses.
   Font failures include requested weight/style, fallback status and missing
   Unicode scalar/index details when available.
+- Select GPOS kerning through the default Latin language system with DFLT
+  fallback, allowing feature tags reused by other language systems.
 
 ## 0.1.0 - 2026-10-17
 

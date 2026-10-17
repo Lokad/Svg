@@ -868,38 +868,6 @@ internal static partial class OpenTypeFont
         RequireTableLength(table, minimumLength, "OS/2");
     }
 
-    private static void ValidateDefaultGposKernFeature(ReadOnlySpan<byte> data, OpenTypeTableRange table, int scriptListOffset, int featureCount, int kernFeatureIndex, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
-    {
-        int scriptCount = ReadUInt16(data, scriptListOffset);
-        RequireTableRange(table, scriptListOffset, checked(2 + scriptCount * 6), "GPOS ScriptList");
-        int scriptOffset = 0;
-        for (int index = 0; index < scriptCount; index++)
-        {
-            Consume(workCounter, cancellationToken);
-            int record = scriptListOffset + 2 + index * 6;
-            if (ReadUInt32(data, record) != DefaultScriptTag) continue;
-            if (scriptOffset != 0) throw InvalidFont("The GPOS ScriptList contains duplicate DFLT scripts.");
-            scriptOffset = GetTableOffset(table, scriptListOffset, ReadUInt16(data, record + 4), 4, "GPOS DFLT script");
-        }
-        if (scriptOffset == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the GPOS DFLT script's kern feature is supported.");
-        if (ReadUInt16(data, scriptOffset) == 0 || ReadUInt16(data, scriptOffset + 2) != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only a default-language GPOS DFLT script is supported.");
-        int languageSystemOffset = GetTableOffset(table, scriptOffset, ReadUInt16(data, scriptOffset), 6, "GPOS DFLT language system");
-        if (ReadUInt16(data, languageSystemOffset) != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "GPOS language-system lookup-order offsets are not supported.");
-        int requiredFeatureIndex = ReadUInt16(data, languageSystemOffset + 2);
-        int featureIndexCount = ReadUInt16(data, languageSystemOffset + 4);
-        RequireTableRange(table, languageSystemOffset, checked(6 + featureIndexCount * 2), "GPOS DFLT language system");
-        bool foundKernFeature = requiredFeatureIndex == kernFeatureIndex;
-        if (requiredFeatureIndex != ushort.MaxValue && requiredFeatureIndex >= featureCount) throw InvalidFont("The GPOS DFLT language system references a feature outside the FeatureList.");
-        for (int index = 0; index < featureIndexCount; index++)
-        {
-            Consume(workCounter, cancellationToken);
-            int featureIndex = ReadUInt16(data, languageSystemOffset + 6 + index * 2);
-            if (featureIndex >= featureCount) throw InvalidFont("The GPOS DFLT language system references a feature outside the FeatureList.");
-            foundKernFeature |= featureIndex == kernFeatureIndex;
-        }
-        if (!foundKernFeature) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The GPOS DFLT language system does not select its kern feature.");
-    }
-
     private static int GetTableOffset(OpenTypeTableRange table, int parentOffset, int relativeOffset, int minimumLength, string name)
     {
         if (relativeOffset == 0) throw InvalidFont("The " + name + " offset is missing.");

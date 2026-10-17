@@ -206,6 +206,11 @@ Latin/DFLT default language, one unfiltered type-4 lookup, format-1 subtables,
 coverage 1/2 and two to eight components in font order. Nonzero spacing or
 positioned-span boundaries prevent ligature merging.
 
+Unreleased: pair positioning selects the default Latin language system before
+DFLT, sharing selection with ligatures. Repeated feature tags in other language
+systems do not invalidate the selected feature. Language-specific shaping remains
+outside this subset.
+
 Unsupported: wrapping, bidi/joining/complex scripts, general GSUB/GPOS/mark
 positioning, other lookup flags/types/formats, vertical text, path stretch/auto
 spacing, variable/color/bitmap fonts, CFF/CFF2 and WOFF/WOFF2.
