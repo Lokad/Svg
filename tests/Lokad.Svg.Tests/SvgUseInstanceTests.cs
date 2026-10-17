@@ -48,7 +48,7 @@ public sealed class SvgUseInstanceTests
     [Fact]
     public void Degenerate_fill_use_with_round_dots_renders()
     {
-        // R41-adjacent: the degenerate fill channel lowers to an empty fill while
+        // The degenerate fill channel lowers to an empty fill while
         // the round-cap stroke still emits its dot discs; expanding the use must
         // not fail reserving zero bytes.
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><path id='e' d='M236.074,195.742v0M244.392,195.742v0M240.225,199.735v0M236.074,203.916v0M244.383,203.905v0' stroke='#fff' stroke-width='2.972' stroke-linecap='round'/></defs><use href='#e' x='-232' y='-191'/></svg>", out int width, out int height);
@@ -86,7 +86,7 @@ public sealed class SvgUseInstanceTests
     [Fact]
     public void Magnified_polygon_use_matches_direct_rendering()
     {
-        // R35: straight outlines map exactly under affine instance transforms,
+        // Straight outlines map exactly under affine instance transforms,
         // so magnified polygon instances render byte-identical to direct geometry.
         byte[] instanced = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><defs><polygon id=\"t\" points=\"0,8 8,0 8,8\"/></defs><use href=\"#t\" transform=\"scale(8)\"/></svg>", out _, out _);
         byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><polygon points=\"0,64 64,0 64,64\"/></svg>", out _, out _);
@@ -97,7 +97,7 @@ public sealed class SvgUseInstanceTests
     [Fact]
     public void Reflected_curve_use_matches_direct_rendering()
     {
-        // R35: unit-magnitude instance scales never magnify the flattening budget,
+        // Unit-magnitude instance scales never magnify the flattening budget,
         // so reflected curve instances render byte-identical to hand-mirrored geometry.
         byte[] instanced = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><path id=\"q\" d=\"M0,8 Q4,0 8,8 Z\" fill=\"red\"/></defs><use href=\"#q\" transform=\"translate(16,0) scale(-1,1)\"/></svg>", out _, out _);
         byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path d=\"M16,8 Q12,0 8,8 Z\" fill=\"red\"/></svg>", out _, out _);
@@ -108,7 +108,7 @@ public sealed class SvgUseInstanceTests
     [Fact]
     public void Reflected_cubic_use_matches_direct_rendering()
     {
-        // Row 5: use-instance placement maps retained cubic controls alongside
+        // Use-instance placement maps retained cubic controls alongside
         // flattened points, so reflected cubic instances walk the same analytic
         // edges as hand-mirrored geometry.
         byte[] instanced = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><path id=\"c\" d=\"M0,8 C2,4 6,4 8,8 Z\" fill=\"red\"/></defs><use href=\"#c\" transform=\"translate(16,0) scale(-1,1)\"/></svg>", out _, out _);
@@ -129,7 +129,7 @@ public sealed class SvgUseInstanceTests
     [Fact]
     public void Magnified_symbol_polygon_use_matches_direct_rendering()
     {
-        // R35: straight symbol content maps exactly under viewBox magnification,
+        // Straight symbol content maps exactly under viewBox magnification,
         // so magnified polygon symbols render byte-identical to direct geometry.
         byte[] instanced = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><defs><symbol id=\"s\" viewBox=\"0 0 8 8\"><polygon points=\"0,8 8,0 8,8\" fill=\"red\"/></symbol></defs><use href=\"#s\" width=\"64\" height=\"64\"/></svg>", out _, out _);
         byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><polygon points=\"0,64 64,0 64,64\" fill=\"red\"/></svg>", out _, out _);
@@ -140,7 +140,7 @@ public sealed class SvgUseInstanceTests
     [Fact]
     public void Unmagnified_symbol_curve_use_matches_direct_rendering()
     {
-        // R35: unit symbol maps never magnify the flattening budget, so
+        // Unit symbol maps never magnify the flattening budget, so
         // unmagnified curve symbols render byte-identical to direct geometry.
         byte[] instanced = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><symbol id=\"s\" viewBox=\"0 0 8 8\"><path d=\"M0,8 Q4,0 8,8 Z\" fill=\"red\"/></symbol></defs><use href=\"#s\" width=\"8\" height=\"8\"/></svg>", out _, out _);
         byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path d=\"M0,8 Q4,0 8,8 Z\" fill=\"red\"/></svg>", out _, out _);
@@ -324,7 +324,7 @@ public sealed class SvgUseInstanceTests
     [Fact]
     public void Zero_width_use_stroke_override_paints_fill_only()
     {
-        // Row 6 zero widths: a zero-width stroke override on the use element resolves to no override, so the instance renders its fill exactly like the unstyled definition.
+        // A zero-width stroke override on the use element resolves to no override, so the instance renders its fill exactly like the unstyled definition.
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='red'/></svg>", out _, out _);
         byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><polygon id='p' points='0,0 8,0 8,8 0,8' fill='red'/></defs><use href='#p' stroke='blue' stroke-width='0'/></svg>", out _, out _);
 
@@ -1213,7 +1213,7 @@ public sealed class SvgUseInstanceTests
     [Fact]
     public void Rejects_use_of_use_reference()
     {
-        // S9: use elements never register as definitions, so chained
+        // Use elements never register as definitions, so chained
         // references reject instead of recursing.
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect id='r' x='0' y='0' width='4' height='4' fill='red'/><use id='u' href='#r'/><use href='#u'/></svg>");
 
@@ -1225,7 +1225,7 @@ public sealed class SvgUseInstanceTests
     [Fact]
     public void Rejects_forward_use_of_use_reference()
     {
-        // S9: forward chained references defer and then reject at document end
+        // Forward chained references defer and then reject at document end
         // rather than resolving through the intermediate instance.
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><use href='#u'/><rect id='r' x='0' y='0' width='4' height='4' fill='red'/><use id='u' href='#r'/></svg>");
 
@@ -1237,7 +1237,7 @@ public sealed class SvgUseInstanceTests
     [Fact]
     public void Rejects_duplicate_definition_ids_across_defs_and_root()
     {
-        // S9: direct-root geometry registers exactly like defs-held geometry,
+        // Direct-root geometry registers exactly like defs-held geometry,
         // so a repeated id is malformed wherever the twins live.
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><rect id='r' x='0' y='0' width='4' height='4' fill='red'/></defs><rect id='r' x='4' y='4' width='4' height='4' fill='blue'/></svg>");
 

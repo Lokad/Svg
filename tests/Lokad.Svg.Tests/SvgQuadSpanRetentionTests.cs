@@ -69,7 +69,7 @@ public sealed class SvgQuadSpanRetentionTests
     [Fact]
     public void Closing_bitwise_span_survives_stripping_translation()
     {
-        // Row 5 closing-span retention, bitwise branch: a span ending at a stripped closing duplicate keeps the duplicate explicitly, so axis-aligned closed loops substitute their closing curve exactly like dust-divergent ones.
+        // A span ending at a stripped closing duplicate keeps the duplicate explicitly, so axis-aligned closed loops substitute their closing curve exactly like dust-divergent ones.
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,48 Q32,8 56,48 Q32,88 8,48 Z' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(2, geometry.Polygon.QuadSpans.Length);

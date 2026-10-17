@@ -142,7 +142,7 @@ public sealed class SvgCurveFillTests
     [Fact]
     public void Curve_under_skew_transform_renders()
     {
-        // Row 5 skew admission: arc-free curve fills map through the general device transform, so a skewed quad renders instead of denying on uniformity.
+        // Arc-free curve fills map through the general device transform, so a skewed quad renders instead of denying on uniformity.
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g transform='skewX(15)'><path d='M0,8 Q4,0 8,8 Z' fill='red'/></g></svg>", out int width, out int height);
 
         Assert.Equal(16, width);
@@ -335,8 +335,8 @@ public sealed class SvgCurveFillTests
     [Fact]
     public void Fractional_path_inline_width_matches_direct_attribute()
     {
-        // R36: inline stroke widths flow through the same cascade as attributes,
-        // advancing the check-mark bundle past the inline-width gate (inv-074).
+        // Inline stroke widths and presentation attributes use the same cascade
+        // for fractional path geometry.
         byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,0 L8,0 L8,8 Z' fill='red' stroke='blue' style='stroke-width:2'/></svg>", out _, out _);
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,0 L8,0 L8,8 Z' fill='red' stroke='blue' stroke-width='2'/></svg>", out _, out _);
 
@@ -346,7 +346,7 @@ public sealed class SvgCurveFillTests
     [Fact]
     public void Rotated_fractional_triangle_paints_union()
     {
-        // R37/row 5: rotation maps vertices through the general affine carrier while
+        // Rotation maps vertices through the general affine carrier while
         // the diagonal fill path is unchanged. Staged oracle runs rotri-o1..o2 agree
         // 2/2 byte-identical SHA-256 d406fa809e3083c7fea8a3cd7144512373edf447a1b56852732e4b138dc9aba3;
         // the only residual is edge fringe (20 px at max channel error 6).

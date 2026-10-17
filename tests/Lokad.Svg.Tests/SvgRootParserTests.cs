@@ -3440,7 +3440,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Admits_self_intersecting_diagonal_polygons()
     {
-        // R34: single-contour nonzero crossings lower like simple contours.
+        // Single-contour nonzero crossings lower like simple contours.
         SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><polygon points='0,0 2,2 2,0 0,2'/></svg>"), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.NotEmpty(root.Geometries);
@@ -6663,7 +6663,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot userSpace = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c'><rect x='0' y='0' width='1' height='1'/></clipPath><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red' clip-path='url(#c)'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         using SvgRoot boundingBox = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='0.5' height='0.5'/></clipPath><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red' clip-path='url(#c)'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-        // Clipped leaves use retained tile scenes after A1. Protect their visible
+        // Clipped leaves use retained tile scenes. Protect their visible
         // coverage independently from the old single-rectangle storage shortcut.
         foreach (SvgRoot scene in new[] { userSpace, boundingBox })
         {

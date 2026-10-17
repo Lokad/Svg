@@ -83,7 +83,7 @@ Outside scope: wrapping, bidi/joining/complex scripts, general GSUB/GPOS/mark
 positioning or other lookup flags/types/formats, vertical text, path stretch/auto
 spacing, variable/color/bitmap fonts, CFF/CFF2, WOFF/WOFF2 and machine-font discovery.
 Required missing programs/glyphs cannot disappear or silently substitute a machine
-font. The [API and host contracts](API_CONTRACT.md) remain in force.
+font. Supplied font bytes remain immutable and valid for their documented lifetime.
 
 <a id="g8-markers-and-finite-static-effects"></a>
 
@@ -109,9 +109,31 @@ forward/missing result names retain categorized outcomes.
 Scripts/events, animation, mutable DOM, foreignObject HTML, perspective and
 arbitrary external documents remain outside scope. Rendering consumes explicit
 options/resources without filesystem/network discovery or machine fonts. The
-[API contract](API_CONTRACT.md) defines resource, cancellation and ownership
-requirements; [font qualification](#standalone-and-deployment-gates-2026-10-16)
+[resource policy](#resource-limits-and-memory-accounting) and public API comments
+define resource, cancellation and ownership requirements; [font qualification](#standalone-and-deployment-gates-2026-10-16)
 keeps public acceptance separate from the four pending private deployment requests.
+
+## Resource limits and memory accounting
+
+[SvgRenderLimits](../src/Lokad.Svg/SvgRenderLimits.cs) defines the default size,
+input/output, memory and work bounds. Cancellation, deterministic cleanup,
+output integrity and the documented ownership of prepared documents and borrowed
+font/source bytes remain required.
+
+Memory accounting is approximate: directionally no more than **20% of
+conversion-attributable live memory** should be unaccounted for across
+representative workloads. This is an engineering target, not an exact guarantee
+at every instant. Identify shared runtime/host overhead and borrowed storage
+separately. Use conservative estimates and aggregate allowances for dominant
+allocations: pixel buffers, decoded images, intermediate surfaces, geometry,
+glyph data and large collections; avoid excessive overcharging.
+
+Ownership audits follow material memory impact. Byte-exact small-object accounting,
+individual metadata receipts, GC-round retirement proofs and precise accounting of
+bookkeeping machinery are not completion requirements. Use the existing small
+representative normal/adversarial workload set; no new measurement framework or
+requalification of completed memory work is required. Rendering correctness
+remains the priority.
 
 ## Upstream document follow-up (2026-10-17)
 
@@ -1254,7 +1276,7 @@ Native nonzero stroke coverage retains zero-signed-area contours carrying local
 directed winding, through single/multiple and clipped/unclipped preparation.
 The final contained-ring fixture is exact. Mixed closed/open-subpath strokes with
 linear, radial or pattern paint still hit an existing admission restriction; nine
-retained browser controls make that support gap explicit. See [the repair](RASTERIZATION_DESIGN.md#zero-area-native-stroke-winding-2026-10-08).
+retained browser controls make that support gap explicit. See [the repair](https://github.com/Lokad/Svg/blob/48da1627/docs/RASTERIZATION_DESIGN.md#zero-area-native-stroke-winding-2026-10-08).
 
 The [four whole-export failures](https://github.com/Lokad/Svg/blob/284f8ec2/tests/Research/finite-support-exports/manifest.json)
 completed the preceding document queue at **22/22**, separately from controls
@@ -1500,7 +1522,7 @@ not change the currently admitted subsets recorded here.
 Shared background declaration validation charges text work before span-only
 tokenization and retains no backdrop or token-array owners. Active filter effects
 remain categorized. The case manifest now records the heart's complete exact
-outcome; its original and reference remain frozen. See [the repair](RASTERIZATION_DESIGN.md#shared-exporter-background-validation-2026-10-08).
+outcome; its original and reference remain frozen. See [the repair](https://github.com/Lokad/Svg/blob/48da1627/docs/RASTERIZATION_DESIGN.md#shared-exporter-background-validation-2026-10-08).
 
 ## Symbols and instances (2026-10-08)
 
@@ -1566,29 +1588,29 @@ location controls are exact, including the three former nested-content
 rejections. Sixteen further solid-fill presentation controls repair ten preceding
 pixel failures while preserving six already exact controls. All are exact through
 six outputs; four new exhaustive ownership inputs protect recolored native
-geometry and partial failures. See [the initial repair](RASTERIZATION_DESIGN.md#ordered-symbol-children-and-native-instance-replay-2026-10-08)
-and [the presentation follow-up](RASTERIZATION_DESIGN.md#symbol-solid-fill-presentation-at-instance-time-2026-10-08).
+geometry and partial failures. See [the initial repair](https://github.com/Lokad/Svg/blob/48da1627/docs/RASTERIZATION_DESIGN.md#ordered-symbol-children-and-native-instance-replay-2026-10-08)
+and [the presentation follow-up](https://github.com/Lokad/Svg/blob/48da1627/docs/RASTERIZATION_DESIGN.md#symbol-solid-fill-presentation-at-instance-time-2026-10-08).
 Sixteen retained-content controls and three diagnostic twins are exact against
 unchanged references after the shared viewport-opacity repair. Eighteen new
 controls bring the complete symbol bank to 83 exact six-output comparisons.
-The [content slice](RASTERIZATION_DESIGN.md#retained-symbol-groups-and-local-reference-graphs-2026-10-08)
-records iterative graph validation/expansion; the [viewport follow-up](RASTERIZATION_DESIGN.md#isolated-opacity-under-symbol-viewport-clips-2026-10-08)
-records the repaired clipping/layer arithmetic. The [use-paint follow-up](RASTERIZATION_DESIGN.md#use-paint-properties-and-source-stroke-identity-2026-10-08)
+The [content slice](https://github.com/Lokad/Svg/blob/48da1627/docs/RASTERIZATION_DESIGN.md#retained-symbol-groups-and-local-reference-graphs-2026-10-08)
+records iterative graph validation/expansion; the [viewport follow-up](https://github.com/Lokad/Svg/blob/48da1627/docs/RASTERIZATION_DESIGN.md#isolated-opacity-under-symbol-viewport-clips-2026-10-08)
+records the repaired clipping/layer arithmetic. The [use-paint follow-up](https://github.com/Lokad/Svg/blob/48da1627/docs/RASTERIZATION_DESIGN.md#use-paint-properties-and-source-stroke-identity-2026-10-08)
 records the new solid paint bindings and measured stroke/paint-server/group limits.
-The [frame repair](RASTERIZATION_DESIGN.md#ordered-rectangle-stroke-frames-2026-10-08)
+The [frame repair](https://github.com/Lokad/Svg/blob/48da1627/docs/RASTERIZATION_DESIGN.md#ordered-rectangle-stroke-frames-2026-10-08)
 records the now-exact rectangle strokes and remaining clip-crossing gate.
-The [stroke-opacity follow-up](RASTERIZATION_DESIGN.md#stroke-opacity-at-instance-time-2026-10-08)
+The [stroke-opacity follow-up](https://github.com/Lokad/Svg/blob/48da1627/docs/RASTERIZATION_DESIGN.md#stroke-opacity-at-instance-time-2026-10-08)
 records the original opacity repair. That bank now has 72 exact cases and nine retained fractional diagonal-line gates. The two late stylesheet inputs use the shared bounded prepass.
 The three shader rectangle definitions and rendered-group styles now match
 their unchanged references. Unstyled closed unpainted paths preserve their authored
 commands for newly added solid use strokes. Numeric opacity syntax follows the
 existing parser; the opacity slice did not broaden CSS keyword or stroke-mechanics admission.
-The [stroke-style follow-up](RASTERIZATION_DESIGN.md#instance-stroke-paint-width-and-mechanics-2026-10-08)
+The [stroke-style follow-up](https://github.com/Lokad/Svg/blob/48da1627/docs/RASTERIZATION_DESIGN.md#instance-stroke-paint-width-and-mechanics-2026-10-08)
 records immutable source attributes/cascaded style, replay through shared lowerers,
 the 96 new exact cases and the old inherited-symbol-stroke graduation. The three
 translucent shader-circle cases retain the existing G4 gate. Plain rectangle
 non-miter joins and wider instance/viewport combinations remain open under G2/G4/G5.
-The [rendered-group follow-up](RASTERIZATION_DESIGN.md#rendered-group-styles-and-native-source-replay-2026-10-08)
+The [rendered-group follow-up](https://github.com/Lokad/Svg/blob/48da1627/docs/RASTERIZATION_DESIGN.md#rendered-group-styles-and-native-source-replay-2026-10-08)
 records shared source replay, CSS/fill-rule/local-transform precedence and
 leaf/use mask preservation. Its 123 controls now have 114 exact and nine rejections:
 three group opacity, three group clip and three transformed source rectangles.
@@ -1596,13 +1618,13 @@ The three inherited shader-fill-opacity cases now match unchanged references.
 Broader container mask/viewport, text and image copies retain gates. Native solid oval strokes at hairline widths
 use the retained centerline route; nine new thin-oval comparisons are exact.
 The four older group paint/opacity cases are exact without asset changes.
-The [instance-shader follow-up](RASTERIZATION_DESIGN.md#instance-shader-fills-opacity-and-pattern-placement-2026-10-08)
+The [instance-shader follow-up](https://github.com/Lokad/Svg/blob/48da1627/docs/RASTERIZATION_DESIGN.md#instance-shader-fills-opacity-and-pattern-placement-2026-10-08)
 adds 150 exact six-output controls and graduates eight older failures without
 source/reference changes. Native paths/circles/rounded rectangles share source
 lowering; shader rectangles retain independently painted solid borders. Pattern
 instances preserve phase and positive-axis scaling with integral device tile sizes,
 including fractional mapped content edges and bounded bilinear repeat sampling.
-The [container-shader follow-up](RASTERIZATION_DESIGN.md#container-shader-inheritance-and-tile-paint-2026-10-08)
+The [container-shader follow-up](https://github.com/Lokad/Svg/blob/48da1627/docs/RASTERIZATION_DESIGN.md#container-shader-inheritance-and-tile-paint-2026-10-08)
 adds 192 exact six-output controls covering container URL fills, authored/CSS
 precedence, aliases, native shape fills and isolated opacity. Fractional point-list
 fills now admit linear/radial paints and untransformed patterns; other pattern
@@ -1610,7 +1632,7 @@ point-list placements reject explicitly. Direct pattern rectangles retain their
 group map, while tile fill opacity survives byte quantization. Fifteen resource
 sweeps and two retained placement gates pass. Broader pattern tiles/maps and
 viewport combinations keep G2/G5/G6 open.
-The [percentage-base repair](RASTERIZATION_DESIGN.md#viewport-percentage-bases-2026-10-08)
+The [percentage-base repair](https://github.com/Lokad/Svg/blob/48da1627/docs/RASTERIZATION_DESIGN.md#viewport-percentage-bases-2026-10-08)
 adds 81 six-output controls: 78 exact and three scaled nested viewport use
 rejections. Root/nested viewBox sizes supply percentage bases independently of
 output pixels; ordinary uses, omitted use dimensions and admitted images share
@@ -1633,7 +1655,7 @@ ovals paint nothing. Offsets, seams, thin widths, root scaling, non-scaling stro
 pathLength and rectangle clips have independent exact browser controls. Existing
 non-uniform/reflected placement, round/square dash caps, paint-server dash and
 magnified-use admission restrictions remain in G2–G4 of the support queue.
-See [the repair record](RASTERIZATION_DESIGN.md#source-conic-ellipse-dashes-2026-10-08).
+See [the repair record](https://github.com/Lokad/Svg/blob/48da1627/docs/RASTERIZATION_DESIGN.md#source-conic-ellipse-dashes-2026-10-08).
 
 Admitted integer diagonal polygon/polyline fills retain original source commands
 for directed raster coverage across solid, linear, radial and pattern paints.
@@ -1641,7 +1663,7 @@ Normalized loops still own scene bounds and admission; open polyline fills close
 implicitly while their source tape preserves the open ending for stroke semantics.
 The retained integer bowtie is exact against its original browser PNG. Existing
 multi-crossing even-odd and reflected-pattern-group admission gates stay explicit.
-See [the repair record](RASTERIZATION_DESIGN.md#integer-point-list-source-replay-2026-10-08).
+See [the repair record](https://github.com/Lokad/Svg/blob/48da1627/docs/RASTERIZATION_DESIGN.md#integer-point-list-source-replay-2026-10-08).
 
 Mask/run dispatch uses complete outward-rounded vertex/control bounds before
 canvas, bitmap or SVG clipping. Canvas-clamped row storage, bitmap scan windows
@@ -1649,7 +1671,7 @@ and paint clips retain their separate roles. This closes the fourteen retained
 control-bound comparisons and the clipped star stroke across the shared four-paint
 boundary. Eight resource sweeps preserve bounded setup/storage, denial cleanup
 and caller-token cancellation. Other stroke and fractional-event differences
-remain open. See [the repair record](RASTERIZATION_DESIGN.md#whole-path-blitter-dispatch-bounds-2026-10-08).
+remain open. See [the repair record](https://github.com/Lokad/Svg/blob/48da1627/docs/RASTERIZATION_DESIGN.md#whole-path-blitter-dispatch-bounds-2026-10-08).
 
 Convex polynomial quadratics now retain live curve state in both unclipped
 and clipped construction. This preserves native strip-boundary advancement and
@@ -1660,7 +1682,7 @@ exact after the group clip placement repair below; these exact examples do not
 establish general clip parity.
 Failed paint-filled stroke construction/repainting releases geometry owners and
 their containers. Six full parser-work-denial regressions cover solid, linear,
-radial and pattern combinations. See [the repair record](RASTERIZATION_DESIGN.md#live-convex-polynomial-quadratics-2026-10-08).
+radial and pattern combinations. See [the repair record](https://github.com/Lokad/Svg/blob/48da1627/docs/RASTERIZATION_DESIGN.md#live-convex-polynomial-quadratics-2026-10-08).
 
 User-space rectangle clips on groups use the complete inherited axis-aligned
 group map, then the unscaled viewport offset, before intersecting the parent clip.
@@ -1669,7 +1691,7 @@ the group's clip in its own reference space. Both retained fractional cubic and
 quadratic clip comparisons are exact. Translated, scaled and reflected controls
 cover the shared solid/linear/radial/pattern boundary; reflected pattern paint
 still rejects. General affine group clips and leaf-specific clip composition
-remain inputs to the original-scope support audit. See [the repair](RASTERIZATION_DESIGN.md#group-rectangle-clip-placement-2026-10-08).
+remain inputs to the original-scope support audit. See [the repair](https://github.com/Lokad/Svg/blob/48da1627/docs/RASTERIZATION_DESIGN.md#group-rectangle-clip-placement-2026-10-08).
 
 Uniform group masks apply once to composed children through an isolated surface,
 independently of backward/forward definition order. Overlapping children, rounded

@@ -16,7 +16,7 @@ public sealed class SvgPolygonOutputParityTests
     [Fact]
     public void Four_polygon_paints_cover_all_rasterizers()
     {
-        // R30: one quadrant per polygon paint, so the parity input below
+        // One quadrant per polygon paint, so the parity input below
         // exercises the solid, linear, radial and pattern rasterizers.
         byte[] svg = System.Text.Encoding.UTF8.GetBytes(ComboSvg);
         SvgRenderLimits limits = SvgRenderLimits.Default;

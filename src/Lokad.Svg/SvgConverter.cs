@@ -3564,8 +3564,8 @@ public static class SvgConverter
                         return;
                     }
                 }
-                // Previously admitted composites retain their existing coverage;
-                // shared composite hinting remains an explicit G9 dependency.
+                // Glyphs without a platform-specific fitting route use the generic
+                // contour coverage below.
                 workUnits += preparationWork.Used;
             }
             long segmentCount;

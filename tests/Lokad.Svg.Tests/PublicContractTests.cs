@@ -687,7 +687,7 @@ public sealed class PublicContractTests
     [Fact]
     public void Admits_a_rectangle_view_box_mapping_with_non_quarter_output_edges()
     {
-        // R37: fractional edges remain admitted. Native 24.8 rounding and the
+        // Fractional edges remain admitted. Native 24.8 rounding and the
         // one-row rectangle rule produce alpha 27, verified by browser/native controls.
         byte[] input = System.Text.Encoding.UTF8.GetBytes(
             "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 3 3'>" +

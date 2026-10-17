@@ -425,7 +425,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Outlined_wordmark_fits_linear_scratch_budget()
     {
-        // R38 remainder: an outlined wordmark (outer/inner counter pairs per glyph)
+        // An outlined wordmark (outer/inner counter pairs per glyph)
         // must scale scratch with curve commands, not global limits.
         string glyph = "<path d='M1,0 C4,0 7,1 7,4 C7,7 4,8 1,8 C0,8 0,7 0,4 C0,1 0,0 1,0 Z M3,2 C4,2 5,3 5,4 C5,5 4,6 3,6 C2,6 2,5 2,4 C2,3 2,2 3,2 Z' fill='red' fill-rule='evenodd'/>";
         System.Text.StringBuilder wordmark = new("<svg xmlns='http://www.w3.org/2000/svg' width='84' height='8'>");
@@ -498,7 +498,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Use_instance_mapping_observes_cancellation_during_point_mapping()
     {
-        // R39: per-loop charging observes cancellation inside the mapping loop,
+        // Per-loop charging observes cancellation inside the mapping loop,
         // so a cancelled resolve stops before scene transfer.
         RenderBudget budget = new(100_000);
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
@@ -627,7 +627,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Radial_polygon_rasterization_denies_and_releases_under_tight_budget()
     {
-        // R39 remainder: denial coverage grows with new geometry kinds. Radial
+        // Denial coverage grows with new geometry kinds. Radial
         // fills share the polygon mapping path and must deny before work all
         // the same.
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><radialGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient></defs><polygon points='0,0 8,0 0,8' fill='url(#g)'/></svg>");
@@ -642,7 +642,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Gradient_polygon_rasterization_denies_and_releases_under_tight_budget()
     {
-        // R39 remainder: denial coverage grows with new geometry kinds. Gradient fills
+        // Denial coverage grows with new geometry kinds. Gradient fills
         // share the polygon mapping path and must deny before work all the same.
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><polygon points='0,0 8,0 0,8' fill='url(#g)'/></svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
@@ -656,7 +656,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Pattern_polygon_rasterization_denies_and_releases_under_tight_budget()
     {
-        // R39 remainder: denial coverage grows with new geometry kinds. Pattern
+        // Denial coverage grows with new geometry kinds. Pattern
         // fills share the polygon mapping path and must deny before work all
         // the same.
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='red'/></pattern></defs><polygon points='0,0 8,0 0,8' fill='url(#p)'/></svg>");
@@ -671,7 +671,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Curved_solid_fill_denies_and_releases_under_tight_raster_budget()
     {
-        // R39 remainder: denial coverage grows with new geometry kinds. Solid
+        // Denial coverage grows with new geometry kinds. Solid
         // curved fills flatten through budgeted scratch before painting.
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q8,0 8,8 L0,8 Z' fill='red'/></svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
@@ -686,7 +686,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Curved_gradient_fill_denies_and_releases_under_tight_raster_budget()
     {
-        // R39 remainder: denial coverage grows with new geometry kinds. Curved
+        // Denial coverage grows with new geometry kinds. Curved
         // gradient fills flatten through budgeted scratch before repainting.
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"red\"/><stop offset=\"1\" stop-color=\"blue\"/></linearGradient></defs><path d=\"M0,0 Q8,0 8,8 L0,8 Z\" fill=\"url(#g)\"/></svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
@@ -835,7 +835,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Radial_parse_denies_and_releases_when_stops_exceed_the_remaining_budget()
     {
-        // R39 remainder: denial coverage grows with new geometry kinds. Radial
+        // Denial coverage grows with new geometry kinds. Radial
         // stop arrays are scene-owned like linear ones and must deny before
         // exceeding the remaining budget with nothing retained.
         byte[] svg = System.Text.Encoding.UTF8.GetBytes(EightStopRadialGradientSvg());
@@ -929,7 +929,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Crossing_split_denies_when_budget_covers_mapping_but_not_the_split()
     {
-        // R38/R39: the scene pre-reservation precedes retained copies and stays
+        // The scene pre-reservation precedes retained copies and stays
         // held while the split lists grow, so a budget sized for mapping,
         // retention and split points but not split ends fails at the split.
         RenderBudget roomyBudget = new(100_000);
@@ -955,7 +955,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Crossing_split_denies_multi_crossing_when_scene_pre_reserve_exhausted()
     {
-        // R39: the scene pre-reservation precedes retained copies, so a budget
+        // The scene pre-reservation precedes retained copies, so a budget
         // sized near the mapped input fails at the pre-reserve with full release.
         RenderBudget roomyBudget = new(100_000);
         ParserWorkCounter roomyCounter = new(100_000);
@@ -982,7 +982,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Polygon_retention_denies_and_releases_when_scene_pre_reserve_exceeds_budget()
     {
-        // R39: the scene pre-reservation precedes retained copies, so a budget
+        // The scene pre-reservation precedes retained copies, so a budget
         // sized for mapping but not retention fails before allocating copies.
         RenderBudget roomyBudget = new(100_000);
         ParserWorkCounter roomyCounter = new(100_000);
@@ -1007,7 +1007,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Gradient_polygon_retention_denies_and_releases_when_scene_pre_reserve_exceeds_budget()
     {
-        // R39: gradient retention shares the pre-reserved contour boundary, so
+        // Gradient retention shares the pre-reserved contour boundary, so
         // the same mapping-sized budget fails before allocating copies.
         RenderBudget roomyBudget = new(100_000);
         ParserWorkCounter roomyCounter = new(100_000);
@@ -1034,7 +1034,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Radial_polygon_retention_denies_and_releases_when_scene_pre_reserve_exceeds_budget()
     {
-        // R39: radial retention shares the pre-reserved contour boundary, so
+        // Radial retention shares the pre-reserved contour boundary, so
         // the same mapping-sized budget fails before allocating copies.
         RenderBudget roomyBudget = new(100_000);
         ParserWorkCounter roomyCounter = new(100_000);
@@ -1061,7 +1061,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Polygon_retention_transfers_exact_scene_bytes_to_the_fill()
     {
-        // R39: the adopted pre-reservation single-counts retained arrays, so a
+        // The adopted pre-reservation single-counts retained arrays, so a
         // successful lowering holds scene points/ends/signs plus original fill
         // commands and their conservatively accounted owner in Scene.
         RenderBudget budget = new(100_000);
@@ -1088,7 +1088,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Stroke_retention_denies_and_releases_when_scene_pre_reserve_exceeds_budget()
     {
-        // R39: stroke retention shares the pre-reserved boundary, so a budget
+        // Stroke retention shares the pre-reserved boundary, so a budget
         // sized for mapping and outlining but not retention fails before copying.
         RenderBudget roomyBudget = new(100_000);
         ParserWorkCounter roomyCounter = new(100_000);
@@ -1276,7 +1276,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Transversal_crossing_straight_multi_takes_analytic_path()
     {
-        // Row 4: straight-edge loops meeting only in transversal crossings union through
+        // Straight-edge loops meeting only in transversal crossings union through
         // signed-winding intervals on any mapping; touches and coincident spans keep the fan path.
         RenderBudget budget = new(100_000);
         SvgDevicePoint[] bands = [new(0, 0), new(4, 0), new(4, 4), new(0, 4), new(2, 2), new(6, 2), new(6, 6), new(2, 6)];

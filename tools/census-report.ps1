@@ -1,14 +1,13 @@
 <#
 .SYNOPSIS
-    Prints the S8 fixture census: document totals, exact/unsupported split,
+    Prints the fixture census: document totals, exact/unsupported split,
     distinct-document accounting (variants grouped under their original),
     per-feature-tag coverage and the unsupported reason list.
 .DESCRIPTION
     Reads tests/Fixtures/manifest.json from the repository root (resolved by
     walking up from this script) and writes a plain-text report to stdout.
     Exit code is 0. Counts are the admission evidence; percentages are not
-    computed because S8 forbids coverage-percentage claims without an agreed
-    document-coverage target.
+    computed because fixture counts do not establish general SVG coverage.
 #>
 $ErrorActionPreference = 'Stop'
 
@@ -26,7 +25,7 @@ $unsupported = @($fixtures | Where-Object { $_.expectedSupport -eq 'unsupported'
 $variants = @($fixtures | Where-Object { $null -ne $_.variantOf })
 $distinct = $fixtures.Count - $variants.Count
 
-Write-Output "S8 fixture census"
+Write-Output "Fixture census"
 Write-Output ("entries: {0} (exact: {1}, unsupported: {2})" -f $fixtures.Count, $exact.Count, $unsupported.Count)
 Write-Output ("distinct documents: {0} (variants: {1})" -f $distinct, $variants.Count)
 Write-Output ""

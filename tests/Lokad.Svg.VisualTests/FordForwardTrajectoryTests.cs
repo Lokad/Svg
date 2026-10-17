@@ -4,7 +4,7 @@ using Lokad.Svg.VisualDiff;
 
 namespace Lokad.Svg.VisualTests;
 
-// Retained forward-trajectory diagnostic for the Ford slice (PLAN row 4/5):
+// Retained forward-trajectory diagnostic for curved wordmark rendering:
 // it separates edge advancement (live versus flattened coverage rows per fill,
 // first divergence row) from coverage (alpha mismatches) and compositing
 // (RGB-only mismatches, cross-background census) instead of reporting one

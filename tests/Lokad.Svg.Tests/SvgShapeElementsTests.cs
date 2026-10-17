@@ -147,7 +147,7 @@ public sealed class SvgShapeElementsTests
     [Fact]
     public void Radial_from_linear_href_matches_same_type_twin()
     {
-        // S13: a radial gradient inherits stops through a cross-type href,
+        // A radial gradient inherits stops through a cross-type href,
         // rendering exactly like the same stops declared locally (pinned
         // Chrome capture shows the cross-type render byte-identical to the
         // same-type render).
@@ -160,8 +160,7 @@ public sealed class SvgShapeElementsTests
     [Fact]
     public void Radial_from_linear_xlink_href_matches_same_type_twin()
     {
-        // S13: the cross-type inheritance accepts the xlink:href spelling
-        // used by real exports like inv-035.
+        // Cross-type gradient inheritance also accepts xlink:href.
         byte[] crossed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16'><defs><linearGradient id='l'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><radialGradient id='r' xlink:href='#l'/></defs><rect x='2' y='2' width='12' height='12' fill='url(#r)'/></svg>", out _, out _);
         byte[] local = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><radialGradient id='r'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect x='2' y='2' width='12' height='12' fill='url(#r)'/></svg>", out _, out _);
 
@@ -171,7 +170,7 @@ public sealed class SvgShapeElementsTests
     [Fact]
     public void Radial_filled_curved_path_paints_end_stops()
     {
-        // S13: radial fills flatten curved paths through shared device
+        // Radial fills flatten curved paths through shared device
         // outlines; clamped end-stop corners are exact while the curve edge
         // carries the standing radial-curve residual against Chrome.
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><radialGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><path d='M0,8 Q8,0 16,8 L16,16 L0,16 Z' fill='url(#g)'/></svg>", out int width, out int height);
@@ -186,7 +185,7 @@ public sealed class SvgShapeElementsTests
     [Fact]
     public void Radial_fill_with_solid_stroke_on_curved_path_paints_outline()
     {
-        // S13: curved radial fills compose with solid outlines through
+        // Curved radial fills compose with solid outlines through
         // flattened geometry; the axis-aligned bottom-edge stroke pixel is
         // exact while the curve carries the standing residual.
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><radialGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><path d='M0,8 Q8,0 16,8 L16,16 L0,16 Z' fill='url(#g)' stroke='blue' stroke-width='2'/></svg>", out int width, out int height);
@@ -200,7 +199,7 @@ public sealed class SvgShapeElementsTests
     [Fact]
     public void Radial_from_linear_spread_matches_local_spread_twin()
     {
-        // S13: unspecified spread and units follow the linear parent, so a
+        // Unspecified spread and units follow the linear parent, so a
         // cross-type reflect render matches the locally declared reflect twin.
         byte[] crossed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='l' spreadMethod='reflect'><stop offset='0' stop-color='#ff0000'/><stop offset='0.5' stop-color='#0000ff'/></linearGradient><radialGradient id='r' href='#l'/></defs><rect x='2' y='2' width='12' height='12' fill='url(#r)'/></svg>", out _, out _);
         byte[] local = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><radialGradient id='r' spreadMethod='reflect'><stop offset='0' stop-color='#ff0000'/><stop offset='0.5' stop-color='#0000ff'/></radialGradient></defs><rect x='2' y='2' width='12' height='12' fill='url(#r)'/></svg>", out _, out _);
@@ -211,7 +210,7 @@ public sealed class SvgShapeElementsTests
     [Fact]
     public void Linear_from_radial_href_matches_same_type_twin()
     {
-        // S13: a linear gradient inherits stops through a cross-type href,
+        // A linear gradient inherits stops through a cross-type href,
         // rendering exactly like the same stops declared locally while the
         // vector stays linear-local.
         byte[] crossed = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><radialGradient id=\"r\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></radialGradient><linearGradient id=\"l\" href=\"#r\"/></defs><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"url(#l)\"/></svg>", out _, out _);
@@ -223,7 +222,7 @@ public sealed class SvgShapeElementsTests
     [Fact]
     public void Linear_from_radial_xlink_href_matches_same_type_twin()
     {
-        // S13: the cross-type inheritance accepts the xlink:href spelling.
+        // The cross-type inheritance accepts the xlink:href spelling.
         byte[] crossed = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"16\" height=\"16\"><defs><radialGradient id=\"r\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></radialGradient><linearGradient id=\"l\" xlink:href=\"#r\"/></defs><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"url(#l)\"/></svg>", out _, out _);
         byte[] local = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"l\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"url(#l)\"/></svg>", out _, out _);
 
@@ -233,7 +232,7 @@ public sealed class SvgShapeElementsTests
     [Fact]
     public void Linear_from_radial_spread_matches_local_spread_twin()
     {
-        // S13: unspecified spread and units follow the radial parent, so a
+        // Unspecified spread and units follow the radial parent, so a
         // cross-type reflect render matches the locally declared reflect twin.
         byte[] crossed = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><radialGradient id=\"r\" spreadMethod=\"reflect\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"0.5\" stop-color=\"#0000ff\"/></radialGradient><linearGradient id=\"l\" href=\"#r\"/></defs><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"url(#l)\"/></svg>", out _, out _);
         byte[] local = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"l\" spreadMethod=\"reflect\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"0.5\" stop-color=\"#0000ff\"/></linearGradient></defs><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"url(#l)\"/></svg>", out _, out _);
@@ -244,7 +243,7 @@ public sealed class SvgShapeElementsTests
     [Fact]
     public void Linear_partial_vector_with_radial_href_stays_unsupported()
     {
-        // S13: partial vector overrides have no cross-type meaning, mirroring
+        // Partial vector overrides have no cross-type meaning, mirroring
         // the partial radial vector gate in the other direction.
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><radialGradient id=\"r\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></radialGradient><linearGradient id=\"l\" href=\"#r\" x1=\"0\"/></defs><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"url(#l)\"/></svg>");
 
@@ -257,7 +256,7 @@ public sealed class SvgShapeElementsTests
     [Fact]
     public void Pattern_filled_diagonal_polygon_tiles_exactly()
     {
-        // S13/S16: pattern fills lower diagonal outlines through the shared
+        // Pattern fills lower diagonal outlines through the shared
         // polygon machinery repainted with the tile, byte-exact against the
         // pinned Chrome capture of the same document.
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><polygon points='0,0 16,0 0,16' fill='url(#p)'/></svg>", out int width, out int height);
@@ -273,7 +272,7 @@ public sealed class SvgShapeElementsTests
     [Fact]
     public void Shared_clip_path_binds_each_object_box()
     {
-        // S14: one objectBoundingBox clip definition resolves per referencing
+        // One objectBoundingBox clip definition resolves per referencing
         // box; the second rect keeps its full half width instead of inheriting
         // the first rects narrower clip.
         byte[] pixels = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><clipPath id=\"c\" clipPathUnits=\"objectBoundingBox\"><rect x=\"0\" y=\"0\" width=\"0.5\" height=\"1\"/></clipPath></defs><rect x=\"0\" y=\"0\" width=\"4\" height=\"8\" fill=\"red\" clip-path=\"url(#c)\"/><rect x=\"8\" y=\"0\" width=\"8\" height=\"8\" fill=\"blue\" clip-path=\"url(#c)\"/></svg>", out int width, out int height);
@@ -291,7 +290,7 @@ public sealed class SvgShapeElementsTests
     [Fact]
     public void Shared_gradient_binds_each_object_box()
     {
-        // S13: one objectBoundingBox gradient definition evaluates per
+        // One objectBoundingBox gradient definition evaluates per
         // referencing box; the second ramp restarts instead of continuing.
         byte[] pixels = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><rect x=\"0\" y=\"0\" width=\"4\" height=\"8\" fill=\"url(#g)\"/><rect x=\"8\" y=\"0\" width=\"8\" height=\"8\" fill=\"url(#g)\"/></svg>", out _, out _);
 
@@ -309,7 +308,7 @@ public sealed class SvgShapeElementsTests
     [Fact]
     public void Gradient_filled_diagonal_path_matches_polygon()
     {
-        // S13/S16: diagonal paths share the point-list gradient-fill lowering,
+        // Diagonal paths share the point-list gradient-fill lowering,
         // so the same outline renders byte-identically through both spellings.
         byte[] path = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M0,0 L16,0 L0,16 Z' fill='url(#g)'/></svg>", out _, out _);
         byte[] polygon = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><polygon points='0,0 16,0 0,16' fill='url(#g)'/></svg>", out _, out _);
@@ -320,7 +319,7 @@ public sealed class SvgShapeElementsTests
     [Fact]
     public void Radial_filled_diagonal_path_matches_polygon()
     {
-        // S13/S16: diagonal paths share the point-list radial-fill lowering,
+        // Diagonal paths share the point-list radial-fill lowering,
         // so the same circle renders byte-identically through both spellings.
         byte[] path = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><radialGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><path d='M0,0 L16,0 L0,16 Z' fill='url(#g)'/></svg>", out _, out _);
         byte[] polygon = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><radialGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><polygon points='0,0 16,0 0,16' fill='url(#g)'/></svg>", out _, out _);
@@ -331,7 +330,7 @@ public sealed class SvgShapeElementsTests
     [Fact]
     public void Pattern_filled_curved_path_tiles_arch_interior()
     {
-        // S13/S16: curved pattern fills flatten through shared device outlines
+        // Curved pattern fills flatten through shared device outlines
         // repainted with the tile; interior pixels are exact while the curved
         // edge carries a 3-pixel flattening residual against Chrome.
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><path d='M0,8 Q8,0 16,8 L16,16 L0,16 Z' fill='url(#p)'/></svg>", out int width, out int height);
@@ -346,7 +345,7 @@ public sealed class SvgShapeElementsTests
     [Fact]
     public void Pattern_filled_diagonal_path_matches_polygon()
     {
-        // S13/S16: diagonal paths share the point-list pattern-fill lowering,
+        // Diagonal paths share the point-list pattern-fill lowering,
         // so the same outline renders byte-identically through both spellings.
         byte[] path = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><path d='M0,0 L16,0 L0,16 Z' fill='url(#p)'/></svg>", out _, out _);
         byte[] polygon = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><polygon points='0,0 16,0 0,16' fill='url(#p)'/></svg>", out _, out _);

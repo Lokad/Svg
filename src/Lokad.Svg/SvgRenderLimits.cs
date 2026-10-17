@@ -3,7 +3,7 @@ namespace Lokad.Svg;
 /// <summary>Defines independent, per-conversion resource limits.</summary>
 public sealed class SvgRenderLimits
 {
-    /// <summary>Initializes the provisional limits documented by the project plan.</summary>
+    /// <summary>Initializes per-conversion resource limits with default XML depth and attribute bounds.</summary>
     public SvgRenderLimits(
         long maximumAccountedBytes,
         int maximumInputBytes,
@@ -17,7 +17,7 @@ public sealed class SvgRenderLimits
     {
     }
 
-    /// <summary>Initializes the provisional limits documented by the project plan, including XML nesting.</summary>
+    /// <summary>Initializes per-conversion resource limits with an explicit XML depth and the default attribute bound.</summary>
     public SvgRenderLimits(
         long maximumAccountedBytes,
         int maximumInputBytes,
@@ -32,7 +32,7 @@ public sealed class SvgRenderLimits
     {
     }
 
-    /// <summary>Initializes the provisional limits documented by the project plan, including XML nesting and per-element attributes.</summary>
+    /// <summary>Initializes per-conversion resource limits, including XML nesting and per-element attributes.</summary>
     public SvgRenderLimits(
         long maximumAccountedBytes,
         int maximumInputBytes,
@@ -68,7 +68,7 @@ public sealed class SvgRenderLimits
         MaximumAttributesPerElement = maximumAttributesPerElement;
     }
 
-    /// <summary>Gets the provisional default limits.</summary>
+    /// <summary>Gets the default per-conversion resource limits.</summary>
     public static SvgRenderLimits Default { get; } = new(268_435_456, 16_777_216, 16_384, 16_777_216, 134_217_728, 100_000, 1_000_000, 100_000_000, 128, 256);
 
     public long MaximumAccountedBytes { get; }

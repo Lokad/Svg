@@ -85,7 +85,7 @@ internal static class SvgContourNesting
 
     /// <summary>Drops bitwise-identical duplicate contours beyond their first occurrence, reporting survivors.</summary>
     /// <remarks>
-    /// <para>Coincident contours union exactly, so keeping one copy is coverage-identical while summing would double shared fringes. Touching, nested and crossing contours pass through untouched with their existing combination, as do rotated or reversed identicals (spatial identity belongs to row 4) and degenerate contours under three points (they contribute no coverage either way). Bitwise equality keeps NaN vertices unmerged. Callers charge one nesting work unit per contour pair; kept-vertex copies charge one work unit each.</para>
+    /// <para>Coincident contours union exactly, so keeping one copy is coverage-identical while summing would double shared fringes. Touching, nested and crossing contours pass through untouched with their existing combination, as do rotated or reversed identicals (this comparison checks stored vertex order) and degenerate contours under three points (they contribute no coverage either way). Bitwise equality keeps NaN vertices unmerged. Callers charge one nesting work unit per contour pair; kept-vertex copies charge one work unit each.</para>
     /// </remarks>
     internal static bool MergeIdenticalContours(SvgDevicePoint[] points, int[] ends, ParserWorkCounter workCounter, out SvgDevicePoint[] mergedPoints, out int[] mergedEnds, CancellationToken cancellationToken)
     {

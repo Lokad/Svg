@@ -59,7 +59,7 @@ attempts and comparison receipts remain under
 correctness and material normal/adversarial resource evidence are reused from
 [qualification](../artifacts/maintenance-review-20261012/marker-presentation-qualified-results.json)
 and its exact-revision terminal green CI. This does not reopen completed ownership
-work or claim byte-exact accounting; the [API contract](API_CONTRACT.md#resource-limits-and-approximate-memory-accounting)
+work or claim byte-exact accounting; the [resource policy](SUPPORT_MATRIX.md#resource-limits-and-memory-accounting)
 defines the approximate target. [Current qualification](SUPPORT_MATRIX.md#current-standalone-qualification-2026-10-17)
 records standalone completion and the separate pending private-adoption gate.
 
@@ -2184,7 +2184,7 @@ consumers, pinned-browser smoke, font tooling and artifact consistency pass.
 The renderer's 3,861 tests now also pass on local WSL Linux with native platform
 vectors and three independently captured Pepsi references. No Linux timing claim
 is made. A complete fresh Linux oracle matrix and remote CI evidence remain open;
-see [the platform record](RASTERIZATION_DESIGN.md#linux-delivery-and-platform-expectations-2026-10-07).
+see [the platform record](https://github.com/Lokad/Svg/blob/48da1627/docs/RASTERIZATION_DESIGN.md#linux-delivery-and-platform-expectations-2026-10-07).
 
 ## Contained bitmap-edge construction cost (2026-10-07)
 

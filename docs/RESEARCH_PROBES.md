@@ -25,5 +25,5 @@ This records the house method for calibration probes in `tests/Research/`, disti
 
 ## Records
 
-- Each probe batch gets one design-record entry in `docs/RASTERIZATION_DESIGN.md` in Question, Method, Facts, Decision form with measured numbers, including negative results and withdrawn hypotheses.
+- Keep `docs/RASTERIZATION_DESIGN.md` concise and current. Update it only when a lasting mechanism or constraint changes. Retain probe questions, measurements, negative results and rejected hypotheses with the local study artifacts; summarize relevant conclusions in the change description. Do not append a chronological probe log to the design document.
 - Inventory batches in `docs/INVENTORY.md` are reserved for inventory dispositions; research-only turns do not append there.

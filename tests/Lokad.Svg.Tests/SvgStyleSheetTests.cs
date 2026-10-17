@@ -362,7 +362,7 @@ public sealed class SvgStyleSheetTests
     [Fact]
     public void Defs_stylesheet_class_applies_to_polygon()
     {
-        // S9: definition stylesheets accumulate exactly like root stylesheets.
+        // Definition stylesheets accumulate exactly like root stylesheets.
         byte[] pixels = RenderPixels(
             "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'>" +
             "<defs><style>.a{fill:#00ff00;}</style></defs>" +
@@ -376,7 +376,7 @@ public sealed class SvgStyleSheetTests
     [Fact]
     public void Defs_stylesheet_wins_source_order_over_root_stylesheet()
     {
-        // S9: defs stylesheets parse after the root stylesheet, so ties fall to defs.
+        // Defs stylesheets parse after the root stylesheet, so ties fall to defs.
         byte[] blue = RenderPixels(
             "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'>" +
             "<style>.a{fill:#ff0000;}</style><defs><style>.a{fill:#0000ff;}</style></defs>" +
