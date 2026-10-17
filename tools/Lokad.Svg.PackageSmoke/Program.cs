@@ -35,6 +35,30 @@ foreach (bool asynchronous in new[] { false, true })
 
 Console.WriteLine("Installed package conversion, overlap rejection and dimension-limit scenarios passed.");
 
+byte[] scalable = "<svg xmlns='http://www.w3.org/2000/svg' width='4800' height='2400'><rect width='100%' height='100%' fill='red'/></svg>"u8.ToArray();
+SvgDocumentDimensions dimensions = SvgConverter.InspectDimensions(scalable, SvgRenderOptions.Default, CancellationToken.None);
+if (dimensions.LogicalViewport.Width != 4800 || dimensions.LogicalViewport.Height != 2400)
+    throw new InvalidOperationException("The installed package did not inspect logical dimensions.");
+SvgRasterBounds bounds = new(800, 600, 180_000);
+SvgRasterSize planned = dimensions.GetRasterSize(1, bounds, SvgRenderLimits.Default);
+if (planned.Width != 600 || planned.Height != 300) throw new InvalidOperationException("The installed package did not plan bounded output.");
+ReadOnlyMemory<byte> fitted = SvgConverter.ConvertToPng(scalable, new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, null, bounds), CancellationToken.None);
+if (System.Buffers.Binary.BinaryPrimitives.ReadInt32BigEndian(fitted.Span[16..]) != planned.Width
+    || System.Buffers.Binary.BinaryPrimitives.ReadInt32BigEndian(fitted.Span[20..]) != planned.Height)
+    throw new InvalidOperationException("The installed package did not preserve its raster sizing plan.");
+SvgConverter.InspectDimensions("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Absent'>A</text></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);
+try
+{
+    SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect id='r' width='1' height='1' stroke-linejoin='arcs'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);
+    throw new InvalidOperationException("The installed package accepted an unsupported line join.");
+}
+catch (SvgException exception) when (exception.ErrorCode == SvgErrorCode.UnsupportedFeature)
+{
+    if (exception.SourceDiagnostic is not { ElementName: "rect", ElementId: "r", AttributeName: "stroke-linejoin", AttributeValue: "arcs", LineNumber: 1 })
+        throw new InvalidOperationException("The installed package omitted actionable source context.");
+}
+Console.WriteLine("Installed package font-free inspection, bounded output and source diagnostic scenarios passed.");
+
 SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse("""
     {
       "packId": "test-pack",
