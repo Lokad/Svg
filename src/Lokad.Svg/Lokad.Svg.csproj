@@ -8,6 +8,7 @@
     <Description>A pure managed SVG to PNG renderer for .NET.</Description>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/Lokad/Svg</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>svg;png;rendering</PackageTags>
@@ -16,6 +17,7 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="../../icon.png" Pack="true" PackagePath="" Visible="false" />
     <None Include="../../LICENSE.txt" Pack="true" PackagePath="" Link="LICENSE.txt" />
     <None Include="../../THIRD_PARTY_NOTICES.txt" Pack="true" PackagePath="" Link="THIRD_PARTY_NOTICES.txt" />
     <None Include="../../licenses/FreeType/FTL.TXT" Pack="true" PackagePath="licenses/FreeType/" Link="licenses/FreeType/FTL.TXT" />
