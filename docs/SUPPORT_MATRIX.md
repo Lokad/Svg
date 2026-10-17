@@ -16,9 +16,8 @@ qualification remains a separate pending adoption gate.
 
 ## Upstream document follow-up (2026-10-17)
 
-The frozen replacement collection is **25/26 exact on Windows/Linux**. The
-`filter-mask-clip` difference, full-fixture retirement and final S17 verification
-remain required in [PLAN F1/A7](../PLAN.md#full-svg-fixture-replacement-f1).
+The frozen replacement collection is **26/26 exact on Windows/Linux**.
+Full-fixture retirement and final S17 verification remain required in [PLAN F1/A7](../PLAN.md#full-svg-fixture-replacement-f1).
 
 Named affine rectangles register through retained shape lowering; general rounded
 fills preserve native conics and existing paint/stroke maps. The original
@@ -36,6 +35,13 @@ introduced. [Combined qualification](../artifacts/full-fixture-replacement-20261
 records 414 affected core checks per platform, the Windows visual groups and one
 coherent 761-case Linux visual/resource run. Existing limits, ownership, cleanup
 and public font qualification are preserved; private deployment remains pending.
+
+Same-owner filter/mask/clip composition uses filter -> mask -> clip -> opacity
+order. Output clips surround both same-owner layers; a child clip stays inside
+an ancestor mask. Retained masks rebind logical content in the final scene, using
+existing source replay and target bounds. The unchanged upstream output and six
+focused controls are exact on both platforms; [qualification](../artifacts/full-fixture-replacement-20261017/effect-order-qualified-results.json)
+records 523 core / 1,963 visual-resource checks per platform and material cleanup.
 
 ## Public symbol and fractional-line follow-up (2026-10-16)
 

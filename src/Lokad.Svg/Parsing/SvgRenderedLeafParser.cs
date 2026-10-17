@@ -114,14 +114,18 @@ internal static class SvgRenderedLeafParser
         }
         SvgFilterArena filters = state.Scene.Filters;
         if (!ReferenceEquals(filters, state.DocumentFilters)) filters.BorrowResourcesFrom(state.DocumentFilters);
+        SvgRecordingScope maskScope = mask is null ? default : state.NewRecordingScope();
+        // The same element owns both boundaries. Emission places its output
+        // clip outside the mask rather than between mask and filter.
+        int filterScope = mask is not null && clip is not null ? maskScope.Value : 0;
         int binding = filters.AddBinding(id, sourceObjects ?? default, sourceVisuals ?? default, filterTransform, context.LengthBases, false, clip);
-        SvgDrawCommand begin = new(SvgDrawCommandKind.BeginGroup, 0, mask is null ? style.GetOpacity() : SvgPaintOpacity.Opaque, null, binding, 255) { RegionKind = SvgLayerRegionKind.Filter };
+        SvgDrawCommand begin = new(SvgDrawCommandKind.BeginGroup, filterScope, mask is null ? style.GetOpacity() : SvgPaintOpacity.Opaque, null, binding, 255) { RegionKind = SvgLayerRegionKind.Filter };
         state.Scene.InsertCommands(state.Scene.CommandCount, [new(SvgDrawCommandKind.EndGroup, 0, 255, null, -1, 255)]);
         state.Scene.InsertCommands(start, [begin]);
         int maskFirst = start, maskEnd = -1;
         if (mask is not null)
         {
-            SvgDrawCommand outer = new(SvgDrawCommandKind.BeginGroup, state.NewRecordingScope().Value, style.GetOpacity(), null, -1, 255);
+            SvgDrawCommand outer = new(SvgDrawCommandKind.BeginGroup, maskScope.Value, style.GetOpacity(), null, -1, 255);
             state.Scene.InsertCommands(start, [outer]);
             maskEnd = state.Scene.CommandCount;
             state.Scene.InsertCommands(maskEnd, [new(SvgDrawCommandKind.EndGroup, 0, 255, null, -1, 255)]);

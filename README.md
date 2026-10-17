@@ -20,8 +20,8 @@ with runtime/host overhead and borrowed storage identified separately.
 define the useful subset and explicit unsupported outcomes. The six audit
 corrections A1-A6 are complete. **Standalone delivery remains open for F1 and
 final verification A7**: the [frozen upstream replacement collection](tests/Research/upstream-static-documents/README.md)
-is **25/26 exact on Windows/Linux**, with a filter/mask/clip mismatch and fixture
-retirement still required. Counts alone do not close release qualification.
+is **26/26 exact on Windows/Linux**, with fixture retirement and final
+verification still required. Counts alone do not close release qualification.
 
 The prior `e21f956c` qualification remains dated evidence for its declared cases:
 **8,147 tests/platform**, package/installed-consumer checks and **27 documents /

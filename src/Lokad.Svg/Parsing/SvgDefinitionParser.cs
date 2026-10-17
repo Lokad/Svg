@@ -1930,9 +1930,9 @@ internal static class SvgDefinitionParser
         try
         {
             SvgPaintRecording.WrapFilter(definition.Geometries, sourceStyle.Filter, context.ResolveTransform(reader), context.LengthBases, state, context.WorkCounter, context.CancellationToken);
+            SvgReferenceResolver.ApplyMask(definition.Geometries, null, null, reader.GetAttribute("mask"), state, context.WorkCounter, context.CancellationToken);
             if (clipId is not null)
                 SvgClipPathSyntax.ApplyResourceClip(definition.Geometries, clipId, context.ResolveTransform(reader), state, context.WorkCounter, context.CancellationToken);
-            SvgReferenceResolver.ApplyMask(definition.Geometries, null, null, reader.GetAttribute("mask"), state, context.WorkCounter, context.CancellationToken);
             if (filtered) SvgPaintRecording.WrapInstance(definition.Geometries, sourceStyle.GetOpacity(), state.NewRecordingScope(), state, context.WorkCounter, context.CancellationToken);
             SvgPaintRecording.FinishDefinition(definition.Geometries, state, context.WorkCounter, context.CancellationToken);
             return BindSymbolFill(definition, reader, context, state, context.WorkCounter, context.CancellationToken, false);

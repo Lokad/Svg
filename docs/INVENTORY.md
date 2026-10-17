@@ -6,8 +6,8 @@ established SVG suites. The legacy collection below remains dated evidence until
 that migration; its unique behavior and known-bug micro-tests stay protected.
 The completion-audit correction banks contain focused controls, not additional
 representative documents. The [26-document upstream selection](../tests/Research/upstream-static-documents/README.md)
-is frozen with healthy Windows/Linux reference triples: 25 outputs are exact;
-`filter-mask-clip` and coverage retirement remain required before F1 closes.
+is frozen with healthy Windows/Linux reference triples: all 26 outputs are exact.
+Coverage retirement and finished-batch A7 verification remain required.
 
 This document defines the versioned representative inventory required by PLAN.md R26.
 It records the selection rules, record schema, legal handling, and coverage accounting

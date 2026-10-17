@@ -3,7 +3,8 @@
 This finite selection is frozen before fresh renderer comparisons. It replaces
 full logo/export/icon/authored-sheet membership after qualification and coverage
 disposition; existing micro-tests, known-bug, API/resource and font-host contracts
-stay. Native references are qualified; renderer corrections and retirement are pending.
+stay. All selected outputs are exact on both platforms; fixture retirement and
+finished-batch verification remain pending.
 
 The [manifest](manifest.json) records 26 unchanged documents, original hashes,
 pinned upstream identity/license, feature purpose, one viewport/scale/background
@@ -76,11 +77,12 @@ The ignored [selection study](../../../artifacts/full-fixture-replacement-202610
 retains upstream inventories and candidate review. [PLAN](../../../PLAN.md#full-svg-fixture-replacement-f1)
 owns acceptance and remaining work. This declaration is not renderer qualification.
 
-Current targeted results are **25/26 exact on Windows/Linux**. The unchanged
-`filter-mask-clip` output remains a required pixel difference. Renderer sources,
-fixture bytes and platform references retain their identities; no case is removed
-because of failure. [PLAN F1.5/F1.6/A7](../../../PLAN.md#full-svg-fixture-replacement-f1)
-owns the remaining correction, actual retirement and final verification.
+Current targeted results are **26/26 exact on Windows/Linux**.
+[Composed-effect qualification](../../../artifacts/full-fixture-replacement-20261017/effect-order-qualified-results.json)
+records the final unchanged output, six focused effect-order regressions and
+523 core / 1,963 visual-resource checks per platform.
+[PLAN F1.6/A7](../../../PLAN.md#full-svg-fixture-replacement-f1) owns actual fixture
+retirement and final verification.
 
 [Rectangle source qualification](../../../artifacts/full-fixture-replacement-20261017/rectangle-source-qualified-results.json)
 and [rounded clip/viewport/PNG qualification](../../../artifacts/full-fixture-replacement-20261017/composition-qualified-results.json)

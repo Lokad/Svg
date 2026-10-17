@@ -1,30 +1,27 @@
-# Filter owner/source exit sheet
+# Filter owner/source regressions
 
-One complete CC0 document, seven new independent controls and the unchanged
-[offset-only control](../filter-source-exit-sheet/manifest.json) reused from its
-canonical bank. The original document/six controls were declared at `f76af25b`;
-leaf-mask ordering and outside-viewport source reentry were frozen at `845538f1`
-before the viewport correction. Every original SVG, option and native reference
-is retained unchanged.
+The [manifest](manifest.json) retains the qualified owner/source cases and six
+focused F1.5 controls. Whole-sheet membership is subject to [F1 retirement](../../../PLAN.md#full-svg-fixture-replacement-f1);
+controls do not increase full-document counts. Original sources, options and
+native reference bytes remain unchanged.
 
-The parent implementation rejects the complete document and seven controls;
-its offset-only control is already exact. The qualified correction is exact for all nine
-declared outputs on Windows/Linux. The [manifest](manifest.json) retains eight
-outputs here and links the reused control, without duplicating its asset or test.
-The [study](../../../artifacts/filter-owner-placements-20261016/) retains 54
-healthy stable captures, baseline outcomes, source/output-bound diagnostics and
-qualification. Source/reference hashes identify immutable assets; Git identifies
-implementation code.
+Effect order is filter -> mask -> clip -> opacity. A same-element clip surrounds
+both filter and mask layers. A child clip remains inside its ancestor mask, so an
+unclipped sibling stays visible. Retained uses register spatial mask content in
+the final scene using the original mask id, composed map and target bounds.
+Paint arithmetic and native source capture are unchanged.
 
-Shared owner lowering preserves filter -> clip -> mask -> opacity order, marker
-ink outside object bounds, viewport output clipping after source evaluation and
-bounded pattern-content bindings that borrow document-owned definitions. Native
-binary mask clips and allocation bounds follow the captured source map. Clipped
-axis sources retain parameter-rounded native hints and backward input requests.
+The six MIT controls derive from the pinned resvg `filter-mask-clip` input;
+[upstream notice](../upstream-static-documents/notices/resvg-MIT.txt) applies.
+Three pair discriminators separate blur/clip, mask/clip and blur/mask. Group,
+retained-use and ancestor-mask/sibling controls protect ownership. Their 36 native
+captures were healthy, stable and cleaned on Windows/Linux before the relevant
+comparisons/corrections. All six and the unchanged upstream document are exact.
+[Qualification](../../../artifacts/full-fixture-replacement-20261017/effect-order-qualified-results.json)
+records 523 affected core / 1,963 visual-resource checks per platform, including
+source/tile denial, cancellation, cleanup and retry.
 
-The [qualification receipt](../../../artifacts/maintenance-review-20261012/filter-owner-qualified-results.json)
-records 8,083 passing tests per platform, preserving all prior semantic cases.
-Incremental Release build plus complete tests took 78.2s Windows / 245.8s Linux;
-material source/tile memory and work denial, late cancellation and retry pass.
-Retained-definition/local-instance filters and pattern-use effects remain explicit
-E3 work; [PLAN](../../../PLAN.md) also retains T3, E4 and S17. No scope is deferred.
+Earlier owner/source evidence remains in the dated [qualification](../../../artifacts/maintenance-review-20261012/filter-owner-qualified-results.json).
+It covers affine sources, masked/marker-bearing owners, viewport reentry and
+bounded filtered patterns. E3 retained-instance effects and public fonts are
+qualified separately; [PLAN](../../../PLAN.md) owns remaining delivery work.

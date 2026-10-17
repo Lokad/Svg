@@ -7,6 +7,8 @@ internal readonly record struct SvgLeafMaskOperationReference(SvgLeafMaskOperati
 internal readonly record struct SvgLeafMaskBindingReference(SvgLeafMaskBinding Binding);
 internal readonly record struct SvgFilterClipScope(int Depth, SvgLeafMaskBinding Binding);
 internal readonly record struct SvgNativeClipReference(string Id, SvgAffineTransform Map);
+/// <summary>Borrows a mask id and pre-placement target bounds until an instance registers content in its final scene.</summary>
+internal readonly record struct SvgRetainedMask(string Id, SvgAffineTransform Map, SvgClipBox ObjectBounds);
 
 /// <summary>Stores one parser-owned mask value/region, or a lazily mapped instance of an earlier operation.</summary>
 /// <remarks>Shared within one conversion; mutation is single-threaded. Bindings borrow operations.
@@ -33,6 +35,8 @@ internal sealed class SvgLeafMaskOperation : IDisposable
     internal SvgAffineViewportClip? AffineViewport { get; set; }
     /// <summary>Borrows a parser-owned clip id until native content is emitted after instance placement.</summary>
     internal SvgNativeClipReference? NativeClip { get; set; }
+    /// <summary>Reconstructs spatial mask content after instance mapping instead of copying another scene's content index.</summary>
+    internal SvgRetainedMask? NativeMask { get; set; }
     internal SvgRetainedFilter? Filter { get; set; }
     internal int ContentIndex { get; set; } = -1;
     /// <summary>Releases this metadata reservation without disposing borrowed operations or observing cancellation.</summary>
@@ -143,7 +147,8 @@ internal static class SvgLeafMaskComposition
     /// <summary>Reserves and registers an operation before returning a borrowed reference; registry teardown releases partial work.</summary>
     internal static SvgLeafMaskOperation NewOperation(SvgDocumentState state, SvgLeafMaskOperation? source, SvgAffineTransform map)
     {
-        RenderBudget.BudgetReservation reservation = state.Budget.Reserve(256, SvgMemoryCategory.Parser);
+        // Aggregate allowance includes retained resource/target metadata.
+        RenderBudget.BudgetReservation reservation = state.Budget.Reserve(384, SvgMemoryCategory.Parser);
         try
         {
             SvgLeafMaskOperation operation = new(reservation, source, map);
@@ -231,7 +236,21 @@ internal static class SvgLeafMaskComposition
                 if (index < count && command.Kind == SvgDrawCommandKind.BeginGroup)
                 {
                     depth++;
-                    if (command.RegionKind == SvgLayerRegionKind.Filter && scene.Filters.OutputClipAt(command.MaskContentIndex) is {} clip)
+                    SvgLeafMaskBinding? outputClip = null;
+                    if (command.RegionKind == SvgLayerRegionKind.Filter)
+                    {
+                        bool ownedMask = command.RecordingScope.Value > 0 && index > 0 && scene.CommandAt(index - 1) is { Kind: SvgDrawCommandKind.BeginGroup } owner
+                            && owner.RegionKind != SvgLayerRegionKind.Filter && owner.RecordingScope == command.RecordingScope;
+                        if (!ownedMask) outputClip = scene.Filters.OutputClipAt(command.MaskContentIndex);
+                    }
+                    else if (command.RecordingScope.Value > 0 && index + 1 < count && scene.CommandAt(index + 1) is { Kind: SvgDrawCommandKind.BeginGroup, RegionKind: SvgLayerRegionKind.Filter } filter
+                        && filter.RecordingScope == command.RecordingScope)
+                    {
+                        // A mask and filter sharing one recording owner belong to
+                        // the same element. Native clipping surrounds both layers.
+                        outputClip = scene.Filters.OutputClipAt(filter.MaskContentIndex);
+                    }
+                    if (outputClip is {} clip)
                     {
                         filterClips ??= new(state.Budget, SvgMemoryCategory.Parser, work, token);
                         filterClips.Add(new(depth, clip));
@@ -304,6 +323,8 @@ internal static class SvgLeafMaskComposition
                         mapped.Filter = new(filter.Binding with { Transform = mapped.Map.ComposeChecked(filter.Binding.Transform) });
                     if (source.NativeClip is {} native)
                         mapped.NativeClip = native with { Map = mapped.Map.ComposeChecked(native.Map) };
+                    if (source.NativeMask is {} mask)
+                        mapped.NativeMask = mask with { Map = mapped.Map.ComposeChecked(mask.Map) };
                     if (source.AffineViewport is {} affine)
                         mapped.AffineViewport = affine with { Map = mapped.Map.ComposeChecked(affine.Map) };
                     else if (source.RegionKind == SvgLayerRegionKind.Viewport && !mapped.Map.IsAxisAligned && source.Region is SvgClipBox viewport)
@@ -330,6 +351,25 @@ internal static class SvgLeafMaskComposition
                     }
                     else (operation.Region, operation.ContentIndex) = content.Register(nativeClip.Map, content.UsesNativeReplay, state, scene, work, token);
                     if (content.UsesMaskFallback) { operation.Region = null; operation.RegionKind = SvgLayerRegionKind.Mask; }
+                }
+                if (operation.NativeMask is {} nativeMask && operation.ContentIndex < 0)
+                {
+                    if (!state.MaskContents.TryGetValue(nativeMask.Id, out SvgMaskContent content))
+                        throw new InvalidOperationException("Retained mask content is missing.");
+                    SvgClipBox box = nativeMask.ObjectBounds;
+                    SvgRectangle bounds = new(box.X, box.Y, box.Width, box.Height, default, false, null);
+                    SvgMaskTarget target = SvgMaskTarget.Create(nativeMask.Id, nativeMask.Map, bounds, state);
+                    SvgSceneBuilder? previous = state.DefinitionReplayScene;
+                    state.DefinitionReplayScene = scene;
+                    try
+                    {
+                        SvgMaskContent placed = content.UniformSource is not null
+                            ? SvgMaskContentReplay.ResolveUniformSource(nativeMask.Id, nativeMask.Map, state, work, token)
+                            : SvgMaskContentReplay.PlaceForTarget(content, nativeMask.Map, bounds, target, state, work, token);
+                        operation.ContentIndex = scene.AddMaskContent(placed);
+                        operation.Region = target.SceneBounds(work, token);
+                    }
+                    finally { state.DefinitionReplayScene = previous; }
                 }
                 if (operation.PreservesIsolation || operation.Value != 255 || operation.Region is not null || operation.ContentIndex >= 0 || operation.SourceOpacity.Value != 1) desired.Add(new(operation));
             }

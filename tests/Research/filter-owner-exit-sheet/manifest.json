@@ -9,7 +9,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "One complete CC0 document and seven new orthogonal controls, reusing the qualified offset-only control for E3 owner/source placements: affine masked sources, masked and marker-bearing filter owners, viewport output/source bounds and bounded filtered pattern groups. Original sources/options/native references remain unchanged; no exhaustive combination grid.",
+  "purpose": "Qualified owner/source controls plus six independently frozen filter/mask/clip pair and ownership regressions; controls do not increase full-document counts.",
   "linuxReferenceQualification": {
     "date": "2026-10-16",
     "platform": "linux64",
@@ -430,6 +430,318 @@
         },
         {
           "pngSha256": "daa5349b40d7944de489027139aba512d37de177f8f04f32b9478e538fbcb83a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "effect-order-blur-clip",
+      "input": "effect-order-blur-clip.svg",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "MIT",
+      "sourceSha256": "8815882e8c74bf0814e1de311908024a218db5dca69d0531a297b016f7cf6ff5",
+      "licenseEvidence": "Derived from the pinned resvg filter-mask-clip case; ../upstream-static-documents/notices/resvg-MIT.txt retains the original notice.",
+      "selection": "Remove only mask=\"url(#mask1)\" from the retained F1 target; preserve every other byte.",
+      "declarationEvidence": "artifacts/full-fixture-replacement-20261017/filter-mask-clip-diagnostics/declaration.json",
+      "reference": "references/effect-order-blur-clip.png",
+      "referenceSha256": "7ccf9571c7a0395b4ae2355041c761f98ad872132e322620fd3e71c2cfed492f",
+      "captures": [
+        {
+          "pngSha256": "7ccf9571c7a0395b4ae2355041c761f98ad872132e322620fd3e71c2cfed492f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7ccf9571c7a0395b4ae2355041c761f98ad872132e322620fd3e71c2cfed492f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7ccf9571c7a0395b4ae2355041c761f98ad872132e322620fd3e71c2cfed492f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/effect-order-blur-clip.png",
+      "linuxReferenceSha256": "7ccf9571c7a0395b4ae2355041c761f98ad872132e322620fd3e71c2cfed492f",
+      "linuxCaptures": [
+        {
+          "pngSha256": "7ccf9571c7a0395b4ae2355041c761f98ad872132e322620fd3e71c2cfed492f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7ccf9571c7a0395b4ae2355041c761f98ad872132e322620fd3e71c2cfed492f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7ccf9571c7a0395b4ae2355041c761f98ad872132e322620fd3e71c2cfed492f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "effect-order-mask-clip",
+      "input": "effect-order-mask-clip.svg",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "MIT",
+      "sourceSha256": "d17c8ae4dcf79ece3c9b7671a50921e6b83648ca860c1eb71f281575d58477ee",
+      "licenseEvidence": "Derived from the pinned resvg filter-mask-clip case; ../upstream-static-documents/notices/resvg-MIT.txt retains the original notice.",
+      "selection": "Remove only filter=\"url(#filter1)\" from the retained F1 target; preserve every other byte.",
+      "declarationEvidence": "artifacts/full-fixture-replacement-20261017/filter-mask-clip-diagnostics/declaration.json",
+      "reference": "references/effect-order-mask-clip.png",
+      "referenceSha256": "3eaf121c005e06710405341fe81eaef4424db0ae26a172bbcc21b59299146163",
+      "captures": [
+        {
+          "pngSha256": "3eaf121c005e06710405341fe81eaef4424db0ae26a172bbcc21b59299146163",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3eaf121c005e06710405341fe81eaef4424db0ae26a172bbcc21b59299146163",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3eaf121c005e06710405341fe81eaef4424db0ae26a172bbcc21b59299146163",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/effect-order-mask-clip.png",
+      "linuxReferenceSha256": "3eaf121c005e06710405341fe81eaef4424db0ae26a172bbcc21b59299146163",
+      "linuxCaptures": [
+        {
+          "pngSha256": "3eaf121c005e06710405341fe81eaef4424db0ae26a172bbcc21b59299146163",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3eaf121c005e06710405341fe81eaef4424db0ae26a172bbcc21b59299146163",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3eaf121c005e06710405341fe81eaef4424db0ae26a172bbcc21b59299146163",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "effect-order-blur-mask",
+      "input": "effect-order-blur-mask.svg",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "MIT",
+      "sourceSha256": "4cf7e21065a8a17eca7a2b1689819293df65081c9cfa2f441411549c7a0b9f19",
+      "licenseEvidence": "Derived from the pinned resvg filter-mask-clip case; ../upstream-static-documents/notices/resvg-MIT.txt retains the original notice.",
+      "selection": "Remove only clip-path=\"url(#clip1)\" from the retained F1 target; preserve every other byte.",
+      "declarationEvidence": "artifacts/full-fixture-replacement-20261017/filter-mask-clip-diagnostics/declaration.json",
+      "reference": "references/effect-order-blur-mask.png",
+      "referenceSha256": "ffc6bde2eb0bbb49a90af66fcb044fe23251bd005e2c4a06562ead83b58e96e1",
+      "captures": [
+        {
+          "pngSha256": "ffc6bde2eb0bbb49a90af66fcb044fe23251bd005e2c4a06562ead83b58e96e1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ffc6bde2eb0bbb49a90af66fcb044fe23251bd005e2c4a06562ead83b58e96e1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ffc6bde2eb0bbb49a90af66fcb044fe23251bd005e2c4a06562ead83b58e96e1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/effect-order-blur-mask.png",
+      "linuxReferenceSha256": "ffc6bde2eb0bbb49a90af66fcb044fe23251bd005e2c4a06562ead83b58e96e1",
+      "linuxCaptures": [
+        {
+          "pngSha256": "ffc6bde2eb0bbb49a90af66fcb044fe23251bd005e2c4a06562ead83b58e96e1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ffc6bde2eb0bbb49a90af66fcb044fe23251bd005e2c4a06562ead83b58e96e1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ffc6bde2eb0bbb49a90af66fcb044fe23251bd005e2c4a06562ead83b58e96e1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "effect-order-group",
+      "input": "effect-order-group.svg",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "MIT",
+      "sourceSha256": "6cd686e161a0c97b7710ee012c971052d2257cc64a800123ea4d627ab6072904",
+      "licenseEvidence": "Derived from the pinned resvg filter-mask-clip case; ../upstream-static-documents/notices/resvg-MIT.txt retains the original notice.",
+      "selection": "The same group owns clip, mask and filter.",
+      "declarationEvidence": "artifacts/full-fixture-replacement-20261017/filter-mask-clip-diagnostics/owners-declaration.json",
+      "reference": "references/effect-order-group.png",
+      "referenceSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+      "captures": [
+        {
+          "pngSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/effect-order-group.png",
+      "linuxReferenceSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+      "linuxCaptures": [
+        {
+          "pngSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "effect-order-retained-use",
+      "input": "effect-order-retained-use.svg",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "MIT",
+      "sourceSha256": "7289a531c8664a358b720dce96fe8f7a05a5b1f8aad2845b64df53d1082d3a86",
+      "licenseEvidence": "Derived from the pinned resvg filter-mask-clip case; ../upstream-static-documents/notices/resvg-MIT.txt retains the original notice.",
+      "selection": "Retain the same effect-owning source through a local use.",
+      "declarationEvidence": "artifacts/full-fixture-replacement-20261017/filter-mask-clip-diagnostics/owners-declaration.json",
+      "reference": "references/effect-order-retained-use.png",
+      "referenceSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+      "captures": [
+        {
+          "pngSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/effect-order-retained-use.png",
+      "linuxReferenceSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+      "linuxCaptures": [
+        {
+          "pngSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "effect-order-ancestor-mask",
+      "input": "effect-order-ancestor-mask.svg",
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "role": "control",
+      "license": "MIT",
+      "sourceSha256": "54ac1af48da368ecdd30f71aad7e40cd04ddf115af2a834484cb3d27ad3e6399",
+      "licenseEvidence": "Derived from the pinned resvg filter-mask-clip case; ../upstream-static-documents/notices/resvg-MIT.txt retains the original notice.",
+      "selection": "Ancestor mask contains a clipped filtered child and an unclipped sibling; child clip must stay inside ancestor mask.",
+      "declarationEvidence": "artifacts/full-fixture-replacement-20261017/filter-mask-clip-diagnostics/owners-declaration.json",
+      "reference": "references/effect-order-ancestor-mask.png",
+      "referenceSha256": "980a5835c644464e14ba2d0c8901a967792041cd76243b1c5587241130638319",
+      "captures": [
+        {
+          "pngSha256": "980a5835c644464e14ba2d0c8901a967792041cd76243b1c5587241130638319",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "980a5835c644464e14ba2d0c8901a967792041cd76243b1c5587241130638319",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "980a5835c644464e14ba2d0c8901a967792041cd76243b1c5587241130638319",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/effect-order-ancestor-mask.png",
+      "linuxReferenceSha256": "980a5835c644464e14ba2d0c8901a967792041cd76243b1c5587241130638319",
+      "linuxCaptures": [
+        {
+          "pngSha256": "980a5835c644464e14ba2d0c8901a967792041cd76243b1c5587241130638319",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "980a5835c644464e14ba2d0c8901a967792041cd76243b1c5587241130638319",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "980a5835c644464e14ba2d0c8901a967792041cd76243b1c5587241130638319",
           "startupHealth": "healthy",
           "profileCleaned": true
         }

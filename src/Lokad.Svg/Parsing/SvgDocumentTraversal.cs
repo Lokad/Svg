@@ -242,7 +242,9 @@ internal static class SvgDocumentTraversal
                                     filterMap, parsedGroup.LengthBases, true, groupClipId);
                                 int position = state.Scene.CommandCount - 1;
                                 state.Scene.ReplaceCommand(position, state.Scene.CommandAt(position) with
-                                { RegionKind = SvgLayerRegionKind.Filter, MaskContentIndex = binding });
+                                { RegionKind = SvgLayerRegionKind.Filter, MaskContentIndex = binding,
+                                    GeometryIndex = parsedGroup.Scope.HasDeferredMask && groupClipId is not null
+                                        ? parsedGroup.RecordingScope.Value : state.Scene.CommandAt(position).GeometryIndex });
                             }
                         }
                         if (parsedGroup.Scope.HasFilter) state.FilterViewportDepth = reader.Depth;

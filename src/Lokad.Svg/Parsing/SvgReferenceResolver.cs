@@ -937,6 +937,12 @@ internal static class SvgReferenceResolver
         operation.Value = mask.Value; operation.Resolved = true;
         operation.ContentIndex = contentIndex;
         operation.Region = nativeTarget is null && contentIndex >= 0 && maskReference is not null && state.MaskRegions.TryGetValue(SvgMaskSyntax.ParseMaskId(maskReference), out _) ? placement.Apply(region) : region;
+        if (contentIndex >= 0 && maskId is not null)
+        {
+            SvgRectangle localBounds = nativeTarget is {} retainedTarget ? retainedTarget.ObjectBounds
+                : placement.TryInvert(out SvgAffineTransform inverse) ? inverse.Apply(fallback) : default;
+            operation.NativeMask = new(maskId, placement, new(localBounds.X, localBounds.Y, localBounds.Width, localBounds.Height));
+        }
         using BudgetedParserDictionary<SvgLeafMaskBinding, SvgLeafMaskBindingReference> bindings = new(state.Budget, SvgMemoryCategory.Parser, 96);
         SvgLeafMaskBinding? noInner = null;
         for (int index = 0; index < geometries.Length; index++)
