@@ -8,6 +8,12 @@ fonts where needed. Local Windows/Linux qualification passes 8,121 tests/platfor
 on both platforms at renderer revision `397c8ea2`. Document counts establish
 only these selected outputs, not general SVG coverage.
 
+Unreleased extension controls add [bounded raster sizing](../tests/Research/bounded-raster-sizing/README.md)
+and [static TrueType compatibility](../tests/Research/static-truetype-fonts/README.md).
+The two font documents retain their original programs, licenses, independent
+metrics and frozen Windows/Linux references. Their direct/prepared checks join
+the existing public regular, bold, real italic and fallback coverage.
+
 ## Required evidence
 
 - [Current correction qualification](../artifacts/public-gap-corrections-20261017/qualified-results.json): 32 new distinct visual cases exact on both platforms, 8,121 tests/platform and package/consumer/resource/font-host checks. Existing references remain unchanged.

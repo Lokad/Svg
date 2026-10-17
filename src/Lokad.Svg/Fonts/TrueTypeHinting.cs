@@ -326,7 +326,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 case 0x49: case 0x4A:
                 {
                     int a = Pop(), b = Pop(); TrueTypeHintPoint p = Point(_zp0, b), q = Point(_zp1, a);
-                    // MD[0] (0x4A) measures the original distance; MD[1]
+                    // MD[1] (0x4A) measures the original distance; MD[0]
                     // (0x49) the fitted distance. Scale the font-unit difference once.
                     int distance = opcode == 0x4A && !_compositeGlyph && _zp0 == TrueTypeHintZone.Glyph && _zp1 == TrueTypeHintZone.Glyph
                         ? DesignDistance(p, q, true)

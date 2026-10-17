@@ -17,6 +17,10 @@
   Unicode scalar/index details when available.
 - Select GPOS kerning through the default Latin language system with DFLT
   fallback, allowing feature tags reused by other language systems.
+- Extend bounded static TrueType fitting with relative moves, CVT deltas and
+  oblique projection/freedom vectors. Preserve Windows metric initialization,
+  ClearType compatibility and signed fixed-point rounding; qualify unchanged
+  Liberation Sans and DejaVu Sans labels against exact Windows/Linux references.
 
 ## 0.1.0 - 2026-10-17
 

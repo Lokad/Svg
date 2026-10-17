@@ -19,9 +19,16 @@ internal sealed partial class TrueTypeHinting
 
     private int Project(HintVector vector, int x, int y)
     {
+        if ((_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0)
+        {
+            // The Windows projector rounds each signed 2.14 product before the
+            // sum; combining them first changes diagonal relative distances.
+            long horizontal = ((long)x * vector.X + 8192) >> 14;
+            long vertical = ((long)y * vector.Y + 8192) >> 14;
+            return checked((int)(horizontal + vertical));
+        }
         long dot = (long)x * vector.X + (long)y * vector.Y;
-        long negativeBias = (_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0 ? 0 : dot >> 63;
-        return checked((int)((dot + 8192 + negativeBias) >> 14));
+        return checked((int)((dot + 8192 + (dot >> 63)) >> 14));
     }
 
     private double ProjectionRatio => _projection.Y == 0 ? _target.HorizontalRatio : _projection.X == 0 ? 1

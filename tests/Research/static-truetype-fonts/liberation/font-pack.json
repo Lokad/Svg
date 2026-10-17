@@ -1,0 +1,21 @@
+{
+  "packId": "static-truetype-liberation",
+  "files": [
+    {
+      "relativePath": "LiberationSans-Regular.ttf",
+      "byteSize": 410712,
+      "sha256": "76d04c18ea243f426b7de1f3ad208e927008f961dc5945e5aad352d0dfde8ee8"
+    }
+  ],
+  "families": [
+    {
+      "requestedFamily": "Example",
+      "resolvedFamily": "Liberation Sans",
+      "relativeFontFile": "LiberationSans-Regular.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0,
+      "hasMathTable": false
+    }
+  ]
+}

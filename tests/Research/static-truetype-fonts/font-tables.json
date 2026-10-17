@@ -1,0 +1,514 @@
+[
+  {
+    "id": "liberation",
+    "family": "Liberation Sans",
+    "unitsPerEm": 2048,
+    "glyphs": 2620,
+    "maxInstructionDefs": 0,
+    "locaFormat": 1,
+    "GSUB": [
+      {
+        "type": 4,
+        "flags": 1
+      },
+      {
+        "type": 4,
+        "flags": 1
+      },
+      {
+        "type": 6,
+        "flags": 1
+      },
+      {
+        "type": 4,
+        "flags": 0
+      },
+      {
+        "type": 4,
+        "flags": 1
+      },
+      {
+        "type": 1,
+        "flags": 0
+      },
+      {
+        "type": 1,
+        "flags": 0
+      }
+    ],
+    "GPOS": [
+      {
+        "type": 2,
+        "flags": 9
+      },
+      {
+        "type": 4,
+        "flags": 1
+      },
+      {
+        "type": 8,
+        "flags": 1
+      },
+      {
+        "type": 4,
+        "flags": 7
+      },
+      {
+        "type": 4,
+        "flags": 1
+      },
+      {
+        "type": 4,
+        "flags": 1
+      },
+      {
+        "type": 4,
+        "flags": 1
+      },
+      {
+        "type": 8,
+        "flags": 1
+      },
+      {
+        "type": 8,
+        "flags": 1
+      },
+      {
+        "type": 8,
+        "flags": 1
+      },
+      {
+        "type": 8,
+        "flags": 1
+      },
+      {
+        "type": 4,
+        "flags": 1
+      },
+      {
+        "type": 4,
+        "flags": 1
+      },
+      {
+        "type": 4,
+        "flags": 1
+      },
+      {
+        "type": 8,
+        "flags": 1
+      },
+      {
+        "type": 8,
+        "flags": 1
+      },
+      {
+        "type": 8,
+        "flags": 1
+      },
+      {
+        "type": 2,
+        "flags": 8
+      },
+      {
+        "type": 1,
+        "flags": 1
+      },
+      {
+        "type": 4,
+        "flags": 1
+      },
+      {
+        "type": 4,
+        "flags": 1
+      },
+      {
+        "type": 4,
+        "flags": 1
+      },
+      {
+        "type": 4,
+        "flags": 1
+      },
+      {
+        "type": 1,
+        "flags": 1
+      },
+      {
+        "type": 1,
+        "flags": 1
+      },
+      {
+        "type": 2,
+        "flags": 1
+      },
+      {
+        "type": 4,
+        "flags": 0
+      },
+      {
+        "type": 4,
+        "flags": 0
+      },
+      {
+        "type": 4,
+        "flags": 0
+      },
+      {
+        "type": 4,
+        "flags": 0
+      },
+      {
+        "type": 4,
+        "flags": 0
+      },
+      {
+        "type": 4,
+        "flags": 256
+      },
+      {
+        "type": 4,
+        "flags": 0
+      },
+      {
+        "type": 4,
+        "flags": 0
+      },
+      {
+        "type": 4,
+        "flags": 0
+      },
+      {
+        "type": 6,
+        "flags": 512
+      },
+      {
+        "type": 6,
+        "flags": 768
+      }
+    ],
+    "runs": [
+      {
+        "scalar": "U+00C0",
+        "glyph": "Agrave",
+        "advance": 1366,
+        "composite": true
+      },
+      {
+        "scalar": "U+00E9",
+        "glyph": "eacute",
+        "advance": 1139,
+        "composite": true
+      },
+      {
+        "scalar": "U+0020",
+        "glyph": "space",
+        "advance": 569,
+        "composite": false
+      },
+      {
+        "scalar": "U+0041",
+        "glyph": "A",
+        "advance": 1366,
+        "composite": false
+      },
+      {
+        "scalar": "U+0056",
+        "glyph": "V",
+        "advance": 1366,
+        "composite": false
+      },
+      {
+        "scalar": "U+0066",
+        "glyph": "f",
+        "advance": 569,
+        "composite": false
+      },
+      {
+        "scalar": "U+0069",
+        "glyph": "i",
+        "advance": 455,
+        "composite": false
+      }
+    ]
+  },
+  {
+    "id": "dejavu",
+    "family": "DejaVu Sans",
+    "unitsPerEm": 2048,
+    "glyphs": 6253,
+    "maxInstructionDefs": 0,
+    "locaFormat": 1,
+    "GSUB": [
+      {
+        "type": 1,
+        "flags": 0
+      },
+      {
+        "type": 6,
+        "flags": 9
+      },
+      {
+        "type": 6,
+        "flags": 1
+      },
+      {
+        "type": 6,
+        "flags": 0
+      },
+      {
+        "type": 6,
+        "flags": 0
+      },
+      {
+        "type": 4,
+        "flags": 1
+      },
+      {
+        "type": 1,
+        "flags": 0
+      },
+      {
+        "type": 1,
+        "flags": 0
+      },
+      {
+        "type": 1,
+        "flags": 9
+      },
+      {
+        "type": 1,
+        "flags": 9
+      },
+      {
+        "type": 1,
+        "flags": 9
+      },
+      {
+        "type": 1,
+        "flags": 9
+      },
+      {
+        "type": 1,
+        "flags": 9
+      },
+      {
+        "type": 1,
+        "flags": 9
+      },
+      {
+        "type": 4,
+        "flags": 1
+      },
+      {
+        "type": 4,
+        "flags": 1
+      },
+      {
+        "type": 4,
+        "flags": 9
+      },
+      {
+        "type": 4,
+        "flags": 9
+      },
+      {
+        "type": 4,
+        "flags": 0
+      },
+      {
+        "type": 4,
+        "flags": 1
+      },
+      {
+        "type": 4,
+        "flags": 1
+      },
+      {
+        "type": 4,
+        "flags": 0
+      },
+      {
+        "type": 4,
+        "flags": 0
+      },
+      {
+        "type": 4,
+        "flags": 0
+      },
+      {
+        "type": 4,
+        "flags": 0
+      },
+      {
+        "type": 1,
+        "flags": 1
+      },
+      {
+        "type": 1,
+        "flags": 1
+      },
+      {
+        "type": 1,
+        "flags": 0
+      },
+      {
+        "type": 1,
+        "flags": 0
+      },
+      {
+        "type": 1,
+        "flags": 0
+      },
+      {
+        "type": 3,
+        "flags": 0
+      },
+      {
+        "type": 1,
+        "flags": 1
+      },
+      {
+        "type": 1,
+        "flags": 0
+      },
+      {
+        "type": 1,
+        "flags": 0
+      },
+      {
+        "type": 1,
+        "flags": 0
+      },
+      {
+        "type": 1,
+        "flags": 0
+      },
+      {
+        "type": 1,
+        "flags": 0
+      },
+      {
+        "type": 1,
+        "flags": 0
+      },
+      {
+        "type": 1,
+        "flags": 0
+      },
+      {
+        "type": 1,
+        "flags": 0
+      }
+    ],
+    "GPOS": [
+      {
+        "type": 6,
+        "flags": 1
+      },
+      {
+        "type": 6,
+        "flags": 1
+      },
+      {
+        "type": 6,
+        "flags": 0
+      },
+      {
+        "type": 6,
+        "flags": 0
+      },
+      {
+        "type": 6,
+        "flags": 4
+      },
+      {
+        "type": 5,
+        "flags": 1
+      },
+      {
+        "type": 4,
+        "flags": 1
+      },
+      {
+        "type": 4,
+        "flags": 1
+      },
+      {
+        "type": 5,
+        "flags": 1
+      },
+      {
+        "type": 4,
+        "flags": 1
+      },
+      {
+        "type": 4,
+        "flags": 0
+      },
+      {
+        "type": 4,
+        "flags": 0
+      },
+      {
+        "type": 5,
+        "flags": 0
+      },
+      {
+        "type": 4,
+        "flags": 4
+      },
+      {
+        "type": 2,
+        "flags": 0
+      },
+      {
+        "type": 2,
+        "flags": 0
+      }
+    ],
+    "runs": [
+      {
+        "scalar": "U+00C0",
+        "glyph": "Agrave",
+        "advance": 1401,
+        "composite": true
+      },
+      {
+        "scalar": "U+00E9",
+        "glyph": "eacute",
+        "advance": 1260,
+        "composite": true
+      },
+      {
+        "scalar": "U+0020",
+        "glyph": "space",
+        "advance": 651,
+        "composite": false
+      },
+      {
+        "scalar": "U+0041",
+        "glyph": "A",
+        "advance": 1401,
+        "composite": false
+      },
+      {
+        "scalar": "U+0056",
+        "glyph": "V",
+        "advance": 1401,
+        "composite": false
+      },
+      {
+        "scalar": "U+0066",
+        "glyph": "f",
+        "advance": 721,
+        "composite": false
+      },
+      {
+        "scalar": "U+0069",
+        "glyph": "i",
+        "advance": 569,
+        "composite": false
+      }
+    ]
+  }
+]

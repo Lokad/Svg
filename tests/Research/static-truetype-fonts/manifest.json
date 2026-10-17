@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "chromeVersion": "153.0.8010.52",
+  "captureRecipe": "Unchanged declared SVG, exact embedded caller-supplied Example face, transparent image at authored 640x144 viewport and device scale 1; network blocked; three healthy fresh processes/platform, references frozen before comparison.",
+  "cases": [
+    {
+      "id": "liberation",
+      "family": "Liberation Sans",
+      "version": "2.1.5",
+      "source": "https://github.com/liberationfonts/liberation-fonts/files/7261482/liberation-fonts-ttf-2.1.5.tar.gz",
+      "archiveSha256": "7191c669bf38899f73a2094ed00f7b800553364f90e2637010a69c0e268f25d0",
+      "font": "liberation/LiberationSans-Regular.ttf",
+      "fontSha256": "76d04c18ea243f426b7de1f3ad208e927008f961dc5945e5aad352d0dfde8ee8",
+      "input": "liberation/labels.svg",
+      "inputSha256": "f7f0cae3eea5e3162810a15a363bb6a9660302587836303b8d6cb13bc88d4d6a",
+      "sizes": [
+        24,
+        48
+      ],
+      "text": "\u00c0\u00e9 AV fi",
+      "width": 640,
+      "height": 144,
+      "outputScale": 1,
+      "fontPack": "liberation/font-pack.json",
+      "packId": "static-truetype-liberation",
+      "relativeFontFile": "LiberationSans-Regular.ttf",
+      "platforms": {
+        "windows": {
+          "reference": "references/windows/liberation.png",
+          "captures": [
+            {
+              "pngSha256": "ea45aa27bb8f93f1e2669e4ef11af084365d0d24003d07ec8c01ed3693f4d0e4",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "ea45aa27bb8f93f1e2669e4ef11af084365d0d24003d07ec8c01ed3693f4d0e4",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "ea45aa27bb8f93f1e2669e4ef11af084365d0d24003d07ec8c01ed3693f4d0e4",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "reference": "references/linux/liberation.png",
+          "captures": [
+            {
+              "pngSha256": "c4a0961f0c2f453345eb24233b7e2416e3c7de9b0e47f279ca8950882e3daa97",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "c4a0961f0c2f453345eb24233b7e2416e3c7de9b0e47f279ca8950882e3daa97",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "c4a0961f0c2f453345eb24233b7e2416e3c7de9b0e47f279ca8950882e3daa97",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "dejavu",
+      "family": "DejaVu Sans",
+      "version": "2.37",
+      "source": "https://github.com/dejavu-fonts/dejavu-fonts/releases/download/version_2_37/dejavu-sans-ttf-2.37.zip",
+      "archiveSha256": "5c6e497a2f36552cb5ffb112c413a6af39c0f3c47653662b90b4fa6499822fd7",
+      "font": "dejavu/DejaVuSans.ttf",
+      "fontSha256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+      "input": "dejavu/labels.svg",
+      "inputSha256": "f7f0cae3eea5e3162810a15a363bb6a9660302587836303b8d6cb13bc88d4d6a",
+      "sizes": [
+        24,
+        48
+      ],
+      "text": "\u00c0\u00e9 AV fi",
+      "width": 640,
+      "height": 144,
+      "outputScale": 1,
+      "fontPack": "dejavu/font-pack.json",
+      "packId": "static-truetype-dejavu",
+      "relativeFontFile": "DejaVuSans.ttf",
+      "platforms": {
+        "windows": {
+          "reference": "references/windows/dejavu.png",
+          "captures": [
+            {
+              "pngSha256": "d00220c0ab28b9805f43e7e86cda6165573021fb7dd7e2964531052d45c95b39",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "d00220c0ab28b9805f43e7e86cda6165573021fb7dd7e2964531052d45c95b39",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "d00220c0ab28b9805f43e7e86cda6165573021fb7dd7e2964531052d45c95b39",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "reference": "references/linux/dejavu.png",
+          "captures": [
+            {
+              "pngSha256": "de9428af7066c7edebfcebaa6cf2d70792b5281362aae02d26f48faaa7f50f92",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "de9428af7066c7edebfcebaa6cf2d70792b5281362aae02d26f48faaa7f50f92",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "de9428af7066c7edebfcebaa6cf2d70792b5281362aae02d26f48faaa7f50f92",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

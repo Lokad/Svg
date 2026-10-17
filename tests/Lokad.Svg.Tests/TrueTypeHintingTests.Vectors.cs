@@ -6,6 +6,21 @@ namespace Lokad.Svg.Tests;
 public sealed partial class TrueTypeHintingTests
 {
     [Theory]
+    [InlineData(false, -284)]
+    [InlineData(true, -285)]
+    public void Windows_diagonal_projection_rounds_each_component_before_adding(bool symmetric, int expected)
+    {
+        // Native MD witnesses on the same 855:2240 line distinguish component
+        // products from rounding their sum, without depending on rendered pixels.
+        TrueTypeHintPoint[] points = [new(24, 0, 24, 0), new(879, 2240, 879, 2240), new(548, 576, 548, 576)];
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 2, 0, 0), [], points, [2], 48,
+            new(65536, 65536), Target with { QueryFlags = symmetric ? TrueTypeHintQueryFlags.Symmetric : TrueTypeHintQueryFlags.None },
+            new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        machine.Run(Convert.FromHexString("B1010007B1020049B0002342B1020149B0012342"), TrueTypeHintProgramKind.Glyph);
+        Assert.Equal(expected, machine.Storage[0]); Assert.Equal(-284, machine.Storage[1]);
+    }
+
+    [Theory]
     [InlineData(0x06, 53, 0)]
     [InlineData(0x07, -40, 0)]
     [InlineData(0x08, 32, 43)]

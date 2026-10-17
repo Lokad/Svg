@@ -211,6 +211,11 @@ DFLT, sharing selection with ligatures. Repeated feature tags in other language
 systems do not invalidate the selected feature. Language-specific shaping remains
 outside this subset.
 
+The unreleased [static TrueType compatibility controls](../tests/Research/static-truetype-fonts/README.md)
+also cover Liberation Sans Regular 2.1.5 and DejaVu Sans 2.37, including composites,
+kerning/ligatures and Windows hinting. Font acquisition and fallback remain explicit;
+these controls retain the same font-format and shaping boundaries.
+
 Unsupported: wrapping, bidi/joining/complex scripts, general GSUB/GPOS/mark
 positioning, other lookup flags/types/formats, vertical text, path stretch/auto
 spacing, variable/color/bitmap fonts, CFF/CFF2 and WOFF/WOFF2.
