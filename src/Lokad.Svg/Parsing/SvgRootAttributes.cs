@@ -13,9 +13,9 @@ internal readonly record struct SvgRootAttributes(SvgInheritedPresentation Inher
     internal SvgViewport? ContainingViewport { get; init; }
 
     /// <summary>Percentage lengths use the root viewBox extent when present, independently of output pixel dimensions.</summary>
-    internal double? UserViewportWidth => ViewBox?.Width ?? Width?.Resolve(ContainingViewport?.Width, 300) ?? ContainingViewport?.Width;
+    internal double? UserViewportWidth => ViewBox?.Width ?? Width?.Resolve(ContainingViewport?.Width, 300) ?? ContainingViewport?.Width ?? 300;
 
-    internal double? UserViewportHeight => ViewBox?.Height ?? Height?.Resolve(ContainingViewport?.Height, 150) ?? ContainingViewport?.Height;
+    internal double? UserViewportHeight => ViewBox?.Height ?? Height?.Resolve(ContainingViewport?.Height, 150) ?? ContainingViewport?.Height ?? 150;
 
     internal static SvgRootAttributes Parse(XmlReader reader, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
@@ -37,28 +37,17 @@ internal readonly record struct SvgRootAttributes(SvgInheritedPresentation Inher
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, sheet).ResolveOpacity(SvgPaintOpacity.Opaque);
         SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, null, true, true, namedColors);
         SvgTextWhitespaceMode rootWhitespace = ValidateXmlSpace(reader.GetAttribute("space", "http://www.w3.org/XML/1998/namespace"));
-        SvgRootSyntax syntax = SvgRootSyntax.Parse(reader, workCounter, cancellationToken);
+        SvgRootSyntax syntax = SvgRootSyntax.ParseComputed(reader, inline, sheet, workCounter, cancellationToken);
         SvgInheritedTextStyle text = SvgTextInheritance.Resolve(reader, SvgInheritedTextStyle.Default.WithWhitespaceMode(rootWhitespace),
             SvgInlineStyleParser.MergeFont(inline.TextFont, inline.Important, sheet.TextFont, sheet.Important),
             SvgInlineStyleParser.MergeWithImportance(inline.WhiteSpace, inline.Important, InlineImportantProperties.WhiteSpace, sheet.WhiteSpace, sheet.Important),
             SvgInlineStyleParser.MergeWithImportance(inline.LetterSpacing, inline.Important, InlineImportantProperties.LetterSpacing, sheet.LetterSpacing, sheet.Important),
             SvgInlineStyleParser.MergeWithImportance(inline.WordSpacing, inline.Important, InlineImportantProperties.WordSpacing, sheet.WordSpacing, sheet.Important));
-        string? width = SvgInlineStyleParser.MergeWithImportance(inline.GeometryWidth, inline.Important, InlineImportantProperties.GeometryWidth, sheet.GeometryWidth, sheet.Important);
         SvgTextPaintStyle decorationPaint = new(presentation.Paint, true, true, style.Stroke, 255)
         { StrokeStyle = SvgInheritedStrokeStyle.Default.ResolveChild(style), PaintOrder = style.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers };
         SvgTextDecorationStyle? decoration = SvgTextDecorationSyntax.Resolve(reader, inline, sheet, null, decorationPaint.GlyphPaint);
         if (decoration is not null) text = text.WithDecoration(decoration);
-        string? height = SvgInlineStyleParser.MergeWithImportance(inline.GeometryHeight, inline.Important, InlineImportantProperties.GeometryHeight, sheet.GeometryHeight, sheet.Important);
-        return new SvgRootAttributes(new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, SvgAffineTransform.Identity) { OwnOpacity = style.GetOpacity(), PaintServerFill = presentation.PaintServerFill, Markers = SvgMarkerStyle.Resolve(style, default), PaintOrder = style.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers }, text, new SvgInheritedStrokeStyle(style.Linecap, style.Linejoin, style.Dasharray, style.Dashoffset, style.Width, style.Miterlimit, style.StrokeOpacity, style.Stroke), reader.GetAttribute("id"), reader.GetAttribute("class"), presentation.Opacity, ParseRootStyleLength(width) ?? syntax.Width, ParseRootStyleLength(height) ?? syntax.Height, syntax.ViewBox, style.FillRule) { SourceOpacity = style.GetOpacity(), ClipRule = style.ClipRule };
-        static SvgRootLength? ParseRootStyleLength(string? value)
-        {
-            if (value is null) return null;
-            ReadOnlySpan<char> token = value.AsSpan().Trim();
-            if (token.Equals("auto".AsSpan(), StringComparison.OrdinalIgnoreCase) || token.Equals("inherit".AsSpan(), StringComparison.OrdinalIgnoreCase)) return null;
-            try { return SvgGeometrySyntax.ParseRootLength(value); }
-            catch (SvgException) { return null; }
-        }
-
+        return new SvgRootAttributes(new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, SvgAffineTransform.Identity) { OwnOpacity = style.GetOpacity(), PaintServerFill = presentation.PaintServerFill, Markers = SvgMarkerStyle.Resolve(style, default), PaintOrder = style.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers }, text, new SvgInheritedStrokeStyle(style.Linecap, style.Linejoin, style.Dasharray, style.Dashoffset, style.Width, style.Miterlimit, style.StrokeOpacity, style.Stroke), reader.GetAttribute("id"), reader.GetAttribute("class"), presentation.Opacity, syntax.Width, syntax.Height, syntax.ViewBox, style.FillRule) { SourceOpacity = style.GetOpacity(), ClipRule = style.ClipRule };
         static SvgTextWhitespaceMode ValidateXmlSpace(string? value)
         {
             // Only the two spec-defined values are accepted so anything else fails fast;

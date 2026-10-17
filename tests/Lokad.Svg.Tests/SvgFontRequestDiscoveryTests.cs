@@ -301,11 +301,10 @@ public sealed class SvgFontRequestDiscoveryTests
     }
 
     [Fact]
-    public void Rejects_text_below_a_dimensionless_nested_svg_before_lowering()
+    public void Finds_nested_text_using_the_root_fallback_viewport()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><svg><text font-family='Unused'>x</text></svg></svg>"u8.ToArray(), CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><svg><text font-family='Unused'>x</text></svg></svg>"u8.ToArray(), CancellationToken.None);
+        Assert.Equal("Unused", Assert.Single(requests).Family);
     }
 
     [Fact]

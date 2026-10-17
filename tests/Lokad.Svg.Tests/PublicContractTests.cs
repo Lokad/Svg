@@ -169,10 +169,11 @@ public sealed class PublicContractTests
     {
         MethodInfo[] methods = typeof(SvgConverter).GetMethods(BindingFlags.Public | BindingFlags.Static);
 
-        Assert.Equal(6, methods.Length);
+        Assert.Equal(7, methods.Length);
         Assert.All(methods.SelectMany(method => method.GetParameters()), parameter => Assert.False(parameter.HasDefaultValue));
         Assert.Equal(3, methods.Count(method => method.Name == "ConvertToPng"));
         Assert.Equal(3, methods.Count(method => method.Name == "ConvertToPngAsync"));
+        Assert.Single(methods, method => method.Name == "InspectDimensions");
     }
 
     [Fact]
@@ -184,6 +185,7 @@ public sealed class PublicContractTests
         SvgFontPackCatalog catalog = CreateNullArgumentCatalog();
         NullArgumentFontProvider provider = new();
 
+        AssertSyncNullArgument(null, ConvertMethod(typeof(SvgConverter), nameof(SvgConverter.InspectDimensions), typeof(ReadOnlyMemory<byte>), typeof(SvgRenderOptions), typeof(CancellationToken)), "options", [new ReadOnlyMemory<byte>(svg), null, CancellationToken.None]);
         AssertSyncNullArgument(null, ConvertMethod(typeof(SvgConverter), nameof(SvgConverter.ConvertToPng), typeof(ReadOnlyMemory<byte>), typeof(SvgRenderOptions), typeof(CancellationToken)), "options", [new ReadOnlyMemory<byte>(svg), null, CancellationToken.None]);
         AssertSyncNullArgument(null, ConvertMethod(typeof(SvgConverter), nameof(SvgConverter.ConvertToPng), typeof(ReadOnlyMemory<byte>), typeof(Memory<byte>), typeof(SvgRenderOptions), typeof(CancellationToken)), "options", [new ReadOnlyMemory<byte>(svg), new Memory<byte>(memoryDestination), null, CancellationToken.None]);
         AssertSyncNullArgument(null, ConvertMethod(typeof(SvgConverter), nameof(SvgConverter.ConvertToPng), typeof(ReadOnlyMemory<byte>), typeof(Stream), typeof(SvgRenderOptions), typeof(CancellationToken)), "destination", [new ReadOnlyMemory<byte>(svg), null, SvgRenderOptions.Default, CancellationToken.None]);

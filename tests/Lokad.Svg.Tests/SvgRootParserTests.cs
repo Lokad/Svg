@@ -4619,13 +4619,14 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_percentage_dimensions_with_unknown_parent_dimensions()
+    public void Root_fallback_dimensions_resolve_nested_percentages()
     {
-        SvgException viewport = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><svg width='50%' height='50%'><rect width='8' height='8' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-        SvgException use = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='8' height='8' fill='red'/></defs><use href='#tile' width='50%'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, viewport.ErrorCode);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, use.ErrorCode);
+        using SvgRoot viewport = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><svg width='50%' height='50%'><rect width='8' height='8' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot use = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='8' height='8' fill='red'/></defs><use href='#tile' width='50%'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgRectangle expected = new(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null);
+        Assert.Equal(expected, Assert.Single(viewport.Rectangles));
+        Assert.Equal(expected, Assert.Single(use.Rectangles));
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='8' height='8' fill='red'/></defs><use href='#tile' width='50%'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None)).ErrorCode);
     }
 
     [Fact]
@@ -5052,11 +5053,13 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_object_bounding_box_clips_on_sizeless_symbol_instances()
+    public void Root_fallback_viewport_supplies_sizeless_symbol_instance_clips()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='red'/></symbol></defs><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0.25' y='0.25' width='0.5' height='0.5'/></clipPath></defs><use href='#s' clip-path='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='red'/></symbol></defs><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0.25' y='0.25' width='0.5' height='0.5'/></clipPath></defs><use href='#s' clip-path='url(#window)'/></svg>"u8.ToArray();
+        string source = System.Text.Encoding.UTF8.GetString(svg);
+        byte[] explicitViewport = System.Text.Encoding.UTF8.GetBytes(source.Insert(source.IndexOf('>'), " width='300' height='150'"));
+        Assert.Equal(SvgConverter.ConvertToPng(explicitViewport, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Fact]
@@ -5674,11 +5677,13 @@ public sealed class SvgRootParserTests
 
     [Theory]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='16' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='url(#g)' stroke-width='2' stroke-dasharray='4 4'/></svg>")]
-    public void Rejects_unsupported_dashed_line_forms(string svg)
+    public void Rejects_malformed_nested_dashed_line_documents(string svg)
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderLimits.Default, CancellationToken.None));
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+        using SvgRoot corrected = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(svg + "</svg>"), SvgRenderLimits.Default, CancellationToken.None);
+        Assert.NotEmpty(corrected.Geometries);
     }
 
     [Fact]

@@ -1891,8 +1891,6 @@ public sealed partial class OpenTypeFontTests
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>.gg { text-decoration: wavy; }</style><g class='gg'><text font-family='Example' font-size='100' y='3'>A</text></g></svg>", SvgErrorCode.UnsupportedFeature)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5' font-variant='small-caps'><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><rect id='r' width='1' height='1'/></defs><style>.u { font-variant: small-caps; }</style><use href='#r' class='u'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><svg><text font-family='Example'>A</text></svg></svg>", SvgErrorCode.UnsupportedFeature)]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><svg x='1' y='1'><rect width='2' height='2' fill='red'/></svg><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><defs><style>x</style></defs><text font-family='Unused'>A</text></svg>", SvgErrorCode.MalformedInput)]
     public async Task Discovery_rejects_unsupported_text_before_lowering(string svg, SvgErrorCode code)
     {
@@ -2058,11 +2056,9 @@ public sealed partial class OpenTypeFontTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><svg x='1' y='1' width='3' height='3'><text font-family='Example'>A</text></svg><text font-family='Example' font-size='100' y='3'>A</text></svg>", null, "Example", 1, 1)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><symbol id='s' viewBox='0 0 0 0'><rect width='1' height='1' fill='red'/></symbol></defs><use href='#s' x='1' y='1' width='2' height='2'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.MalformedInput, "Example", 1, 1)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><symbol id='s' preserveAspectRatio='bogus'><rect width='1' height='1' fill='red'/></symbol></defs><use href='#s' x='1' y='1' width='2' height='2'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='s' viewBox='0 0 4 4'><rect width='4' height='4' fill='red'/></symbol></defs><use href='#s'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><clipPath id='c'><rect x='1' y='1' width='3' height='3'/></clipPath></defs><g clip-path='url(#missing)'><rect width='5' height='5' fill='red'/></g><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' clip-path='url(#c)'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><rect width='5' height='5' fill='red' mask='url(#missing)'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='1' y='1'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><image href='data:image/png;base64,!!!' x='1' y='1' width='3' height='3'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.MalformedInput, "Example", 1, 1)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><pattern id='p' width='2' height='2' patternUnits='userSpaceOnUse'><rect width='1' height='1' fill='red'/></pattern></defs><rect width='5' height='5' fill='url(#missing)'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='5' height='5' fill='url(#missing)'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
@@ -4292,7 +4288,11 @@ public sealed partial class OpenTypeFontTests
         RenderBudget budget = new(1_000_000);
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example' font-size='100'>A</text><rect x='1%' width='1'/></svg>"u8.ToArray();
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None));
+        using (SvgRoot accepted = SvgRootParser.Parse(svg, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
+            Assert.Contains(accepted.Geometries, static geometry => geometry.Kind == SvgGeometryKind.GlyphContours);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        byte[] unsupported = System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(svg).Replace("<rect x='1%' width='1'/>", "<rect x='1%' width='1' transform-origin='center'/>", StringComparison.Ordinal));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(unsupported, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Add `SvgConverter.InspectDimensions` to inspect CSS-resolved root dimensions,
+  viewBox/aspect mapping, logical viewport and fallback provenance without fonts
+  or raster allocation. Inspection and conversion share dimension resolution.
+- Support a single root dimension without a viewBox using the other axis's
+  existing default (300 pixels wide or 150 pixels high).
+
 ## 0.1.0 - 2026-10-17
 
 Published on [NuGet.org](https://www.nuget.org/packages/Lokad.Svg/0.1.0).

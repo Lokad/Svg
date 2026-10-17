@@ -9,6 +9,16 @@ using System.Xml;
 /// <summary>Converts static SVG bytes to PNG bytes.</summary>
 public static class SvgConverter
 {
+    /// <summary>Inspects root sizing using the conversion CSS/unit rules without constructing a scene or accessing fonts.</summary>
+    /// <remarks>Uses the logical viewport and parsing limits from options. Output scale, background, font snapshot and raster limits do not affect the result. Unsupported drawing content is not a renderability check.</remarks>
+    public static SvgDocumentDimensions InspectDimensions(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
+    {
+        ValidateInvocation(svg, options, cancellationToken);
+        RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
+        try { return SvgDocumentSizing.Inspect(svg, options, budget, new(options.Limits.MaximumWorkUnits), cancellationToken); }
+        catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
+    }
+
     private const int GlyphSamplesPerAxis = 4;
     private enum PathCoordinateSpace { User, Device }
     /// <summary>Owns mapped polygon points with raster bounds, clip and their surface reservation until the rasterizer releases them.</summary>
@@ -4197,19 +4207,10 @@ public static class SvgConverter
 
     /// <summary>Resolves output dimensions from an explicit viewport or root dimensions with viewBox aspect handling.</summary>
     private static (double Width, double Height) ResolveOutputDimensions(SvgViewport? viewport, SvgRootLength? rootWidth, SvgRootLength? rootHeight, SvgViewBox? viewBox)
-        => viewport is SvgViewport explicitViewport
-            ? (ResolveAgainstViewport(rootWidth, explicitViewport.Width, 300), ResolveAgainstViewport(rootHeight, explicitViewport.Height, 150))
-            : (rootWidth, rootHeight) switch
-            {
-                (SvgRootLength explicitWidth, SvgRootLength explicitHeight) => (explicitWidth.Resolve(null, 300), explicitHeight.Resolve(null, 150)),
-                (null, null) => (300, 150),
-                (SvgRootLength explicitWidth, null) when viewBox is SvgViewBox widthBox => (explicitWidth.Resolve(null, 300), explicitWidth.Resolve(null, 300) * widthBox.Height / widthBox.Width),
-                (null, SvgRootLength explicitHeight) when viewBox is SvgViewBox heightBox => (explicitHeight.Resolve(null, 150) * heightBox.Width / heightBox.Height, explicitHeight.Resolve(null, 150)),
-                _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Both root dimensions or neither root dimension are required currently.")
-            };
-
-    /// <summary>Resolves one root dimension for an explicit viewport, keeping the viewport size except for viewport-relative percentages.</summary>
-    private static double ResolveAgainstViewport(SvgRootLength? length, double viewportSide, double defaultSide) => length?.IsPercentage == true ? length.Value.Resolve(viewportSide, defaultSide) : viewportSide;
+    {
+        SvgViewport resolved = SvgDocumentSizing.Resolve(viewport, rootWidth, rootHeight, viewBox).LogicalViewport;
+        return (resolved.Width, resolved.Height);
+    }
 
     private static (double HorizontalScale, double HorizontalOffset, double VerticalScale, double VerticalOffset) GetViewBoxTransform(SvgViewBox? viewBox, double width, double height, double outputScale)
     {

@@ -29,6 +29,22 @@ implemented. Unsupported visible behavior reports `UnsupportedFeature`;
 malformed input, unresolved resources and exceeded limits have separate
 [error categories](../src/Lokad.Svg/SvgErrorCode.cs).
 
+### Document sizing and inspection (unreleased)
+
+`SvgConverter.InspectDimensions` reports the CSS-resolved width/height, viewBox
+and aspect mapping, logical viewport and dimension/fallback provenance. It reads
+bounded XML/CSS without preparing fonts, geometry, images or raster surfaces.
+Inspection does not assert that every drawing feature is supported. Output scale
+and raster caps do not restrict logical metadata; parsing limits still apply.
+
+Root dimensions accept bare numbers, px/in/cm/mm/pt/pc and percentages. Both
+missing dimensions use 300×150, including with a viewBox. A single dimension uses
+the viewBox ratio when present, or the other axis's default when absent. Percentages
+use an explicit viewport or the corresponding 300/150 fallback base. The existing
+caller viewport overrides absent/absolute root dimensions. Supported CSS applies
+before this resolution, including later embedded rules; unsupported sizing units
+fail rather than silently defaulting.
+
 ### Geometry and strokes
 
 Geometry retains authored curves through affine placement and stroke construction.
