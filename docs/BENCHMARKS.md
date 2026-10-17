@@ -1,6 +1,6 @@
 # Renderer measurements
 
-Measured **2026-10-17** at revision `848db13d`, using the current renderer in a
+Measured **2026-10-17** at revision `c41a312e`, using the current renderer in a
 clean checkout. Results describe these workloads on one Windows host; they do
 not establish general SVG throughput or Linux performance.
 
@@ -17,11 +17,11 @@ is shown in milliseconds; three samples give limited timing precision.
 
 | Method | Mean ms | Std dev ms | Allocated bytes/op |
 | --- | ---: | ---: | ---: |
-| `ConvertOutlinedWordmark` | 1.0705 | 0.0088 | 495,855 |
-| `ConvertGradientClip` | 0.1270 | 0.0219 | 36,107 |
-| `ConvertIsolatedOpacity` | 0.0816 | 0.0013 | 30,570 |
-| `ConvertIdenticalInstances` | 1.3483 | 0.0313 | 275,731 |
-| `ConvertPublicLabel` | 3.7862 | 0.0411 | 164,854 |
+| `ConvertOutlinedWordmark` | 1.1093 | 0.0419 | 495,857 |
+| `ConvertGradientClip` | 0.1277 | 0.0216 | 36,107 |
+| `ConvertIsolatedOpacity` | 0.1017 | 0.0050 | 30,570 |
+| `ConvertIdenticalInstances` | 1.5282 | 0.0248 | 275,734 |
+| `ConvertPublicLabel` | 3.7963 | 0.1025 | 164,853 |
 
 The set covers outlined geometry, clipped gradient paint, isolated opacity,
 repeated patterns and supplied-font labels. Allocation is cumulative managed
@@ -36,8 +36,8 @@ output work; it is separate from the warmed conversion timings above.
 
 | Input | Elapsed ms, range | Conversion allocated bytes, range |
 | --- | ---: | ---: |
-| `masked-source` | 492–508 | 593,392 |
-| `image-resource-scope` | 363–374 | 470,016 |
+| `masked-source` | 492–551 | 593,392 |
+| `image-resource-scope` | 361–368 | 470,016 |
 
 Inputs: [masked filter source](../tests/Research/filter-source-exit-sheet/masked-source.svg)
 and [image resource scope](../tests/Research/affine-image-maps/image-resource-scope.svg).
@@ -56,4 +56,4 @@ Pop-Location
 For cold observations, build `tools/Lokad.Svg.MemoryProbe` in Release and run its
 DLL in three fresh processes per linked input, using the command in [README](../README.md#diagnostic-tools).
 Keep compilation outside measurement. Raw reports for this run remain under
-[the ignored results directory](../artifacts/benchmarks-current-20261017/).
+[the ignored results directory](../artifacts/path-paint-strokes-20261017/benchmarks/).

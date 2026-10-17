@@ -2,10 +2,10 @@
 
 Standalone qualification includes all 26 selected upstream outputs, exact on
 Windows/Linux, plus focused known-bug cases and API/resource/font-host contracts.
-Complete local qualification passes 8,080 tests/platform, package/notices and
-installed consumers. [INVENTORY](INVENTORY.md) records document evidence and retired
-membership.
-Private deployment's four font requests remain pending before production adoption.
+[Terminal CI](https://github.com/Lokad/Svg/actions/runs/39019059055) passes 8,080 tests/platform,
+package/notices, installed consumers and required tooling. Local build plus
+complete tests took 86.2s Windows / 214.6s Linux. [INVENTORY](INVENTORY.md) records
+document evidence and retired membership. Private deployment's four font requests remain pending before production adoption.
 
 Gradient and pattern path strokes resolve inherited paint before lowering; open
 stroke-only paths use undashed native centerline bounds. The unchanged gallery
