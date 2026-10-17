@@ -236,8 +236,8 @@ G2–G8 and public G9 acceptance remain qualified under the finite
 [support boundaries](#supported-svg-subset).
 [Terminal green CI](https://github.com/Lokad/Svg/actions/runs/38915163866) covers
 exact substantive revision `393e19d5`, including Windows/Linux package and installed
-consumer checks. The [fixed public measurement set](BENCHMARKS.md#finite-s17-measurement-set-2026-10-16)
-and current README/API contracts close S17's public evidence/documentation exit.
+consumer checks. The [public measurement workloads](BENCHMARKS.md#warmed-conversion)
+and public documentation close S17's public evidence/documentation exit.
 T3-public and final S17 standalone verification are complete. T3-private is a
 separate pending adoption gate; this is no broader SVG or deployment-compatibility claim.
 
