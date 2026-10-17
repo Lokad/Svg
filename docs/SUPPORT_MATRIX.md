@@ -3,7 +3,7 @@
 Qualification covers all 26 selected upstream outputs and retained focused
 regressions against frozen Windows/Linux references, plus API/resource/font-host
 contracts. Local build plus complete tests took 54.3s Windows / 364.1s Linux.
-Complete local qualification passes 8,088 tests/platform, package/notices
+[Terminal CI](https://github.com/Lokad/Svg/actions/runs/39021816411) passes 8,088 tests/platform, package/notices
 and installed consumers. [INVENTORY](INVENTORY.md) records document evidence and
 retired membership. Private deployment's four font requests remain pending before
 production adoption. These cases do not establish general SVG completeness.

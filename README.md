@@ -15,8 +15,8 @@ Size/work limits, cancellation and borrowed-storage lifetimes apply throughout.
 Memory accounting follows the [approximate resource policy](docs/SUPPORT_MATRIX.md#resource-limits-and-memory-accounting).
 
 Qualification covers the [26 upstream documents](tests/Research/upstream-static-documents/README.md)
-and focused regressions against frozen Windows/Linux references. Complete local
-qualification passes 8,088 tests/platform plus package and installed-consumer
+and focused regressions against frozen Windows/Linux references. [Qualification CI](https://github.com/Lokad/Svg/actions/runs/39021816411)
+passes 8,088 tests/platform plus package and installed-consumer
 checks. These results establish the declared outputs, not general SVG completeness.
 Public regular, bold, real italic and fallback fonts are qualified; four private
 deployed-manifest requests remain pending before production adoption.

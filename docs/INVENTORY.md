@@ -3,7 +3,7 @@
 The current full-document collection is the [26-document upstream selection](../tests/Research/upstream-static-documents/README.md).
 All declared outputs are exact against frozen Windows/Linux Chrome references. Each
 input has a feature purpose, original source/license, one declared recipe and supplied
-fonts where needed. [Finished Windows/Linux qualification](https://github.com/Lokad/Svg/actions/runs/39019059055) is complete for `c41a312e`. Document counts establish
+fonts where needed. [Finished Windows/Linux qualification](https://github.com/Lokad/Svg/actions/runs/39021816411) is complete for `47aa542e`. Document counts establish
 only these selected outputs, not general SVG coverage.
 
 ## Required evidence
