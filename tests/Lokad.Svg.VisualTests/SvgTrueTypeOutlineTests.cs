@@ -169,7 +169,7 @@ public sealed class SvgTrueTypeOutlineTests
         {
             instructions[0] = 0xB0; instructions[1] = checked((byte)(structure.ContourEndpoints[^1] + 3)); instructions[2] = 0x46;
         }
-        else instructions[0] = 0x06;
+        else instructions[0] = 0x0A;
         var budget = new RenderBudget(long.MaxValue);
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.GetTrueTypeContours(bytes, 36, metrics, 48, Target, budget, new(long.MaxValue), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

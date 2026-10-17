@@ -9,6 +9,7 @@ internal enum TrueTypeHintProgramKind { Font, Preparation, Glyph }
 internal enum TrueTypeHintRound { Grid, HalfGrid, DoubleGrid, Down, Up, Off }
 internal enum TrueTypeHintControlScale { FullPrecision, FractionalFontUnits }
 internal enum TrueTypeHintPreparation { Single, DefaultThenTarget }
+internal enum TrueTypeHintGrid { Physical, ClearType }
 
 /// <summary>Explicit native GETINFO result bits, not a claim that every queried feature is implemented.</summary>
 [Flags]
@@ -42,6 +43,8 @@ internal readonly record struct TrueTypeHintTarget(int Version, TrueTypeHintQuer
 {
     /// <summary>Positive X/Y device-size ratio; immutable and storage-free, preserved across preparation and component calls.</summary>
     internal double HorizontalRatio { get; init; } = 1;
+    /// <summary>Selects physical or ClearType horizontal instruction rounding independently of GETINFO queries.</summary>
+    internal TrueTypeHintGrid Grid { get; init; }
 }
 
 internal struct TrueTypeHintPoint
@@ -163,13 +166,13 @@ internal sealed partial class TrueTypeHinting : IDisposable
     }
 
     /// <summary>Restores initial CVT values while retaining declared storage and functions for an explicit query-mode transition.</summary>
-    /// <remarks>The creation scale and preparation policy remain fixed; only rasterizer queries can change.</remarks>
+    /// <remarks>The creation scale, grid and preparation policy remain fixed; only rasterizer queries can change.</remarks>
     internal void Prepare(ReadOnlyMemory<byte> program, TrueTypeHintTarget target)
     {
         if (_reservation is null) throw new InvalidOperationException("The TrueType interpreter is disposed.");
         ValidateTarget(target);
-        if (target.ControlScale != _target.ControlScale || target.Preparation != _target.Preparation || target.HorizontalRatio != _target.HorizontalRatio)
-            throw Invalid("A TrueType mode transition cannot change its CVT scale or preparation policy.");
+        if (target.ControlScale != _target.ControlScale || target.Preparation != _target.Preparation || target.HorizontalRatio != _target.HorizontalRatio || target.Grid != _target.Grid)
+            throw Invalid("A TrueType mode transition cannot change its CVT scale, grid or preparation policy.");
         for (int i = 0; i < _cvt.Length; i++) { _work.Consume(_token); _cvt[i] = _initialCvt[i]; }
         _target = target;
         Run(program, TrueTypeHintProgramKind.Preparation);
@@ -281,7 +284,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 case 0x2E: case 0x2F:
                 {
                     int p = Pop(); ref TrueTypeHintPoint point = ref Point(_zp0, p);
-                    int coordinate = Coordinate(point, false); Move(ref point, opcode == 0x2F ? checked(Round(coordinate) - coordinate) : 0, true);
+                    int coordinate = Coordinate(point, false); Move(ref point, opcode == 0x2F ? checked(Round(coordinate, kind) - coordinate) : 0, true);
                     _rp0 = _rp1 = p; break;
                 }
                 case 0x30: case 0x31: InterpolateUntouched((TrueTypeHintAxis)(opcode & 1)); break;
@@ -307,7 +310,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                         point.Y = point.OriginalY = Divide(value, 16384, _freedom.Y);
                     }
                     int original = Coordinate(point, false);
-                    if (opcode == 0x3F) { if (Math.Abs((long)value - original) > _cutIn) value = original; value = Round(value); }
+                    if (opcode == 0x3F) { if (Math.Abs((long)value - original) > ControlCutIn(kind)) value = original; value = Round(value, kind); }
                     Move(ref point, checked(value - original), true); _rp0 = _rp1 = p; break;
                 }
                 case 0x42: { int value = Pop(); _storage[Index(Pop(), _storage.Length)] = value; break; }
@@ -357,7 +360,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 case 0x65: Push(checked(-Pop())); break;
                 case 0x66: Push(Pop() & ~63); break;
                 case 0x67: Push(checked((Pop() + 63) & ~63)); break;
-                case >= 0x68 and <= 0x6B: Push(Round(Pop())); break;
+                case >= 0x68 and <= 0x6B: Push(Round(Pop(), kind)); break;
                 case 0x78: { int condition = Pop(), offset = Pop(); if (condition != 0) Jump(offset); break; }
                 case 0x79: { int condition = Pop(), offset = Pop(); if (condition == 0) Jump(offset); break; }
                 case 0x1C: Jump(Pop()); break;
@@ -468,10 +471,11 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 if (!indirect && _singleWidthCutIn > 0 && original < (long)_singleWidth + _singleWidthCutIn && original > (long)_singleWidth - _singleWidthCutIn)
                     original = original >= 0 ? _singleWidth : checked(-_singleWidth);
                 if (indirect && _autoFlip && (original ^ control) < 0) control = checked(-control);
-                if (indirect && (op & 4) != 0 && _zp0 == _zp1 && Math.Abs((long)control - original) > _cutIn) control = original;
+                if (indirect && (op & 4) != 0 && _zp0 == _zp1 && Math.Abs((long)control - original) > ControlCutIn(kind)) control = original;
                 int distance = indirect ? control : original;
-                if ((op & 4) != 0) distance = Round(distance);
-                if ((op & 8) != 0) distance = original >= 0 ? Math.Max(distance, _minimumDistance) : Math.Min(distance, checked(-_minimumDistance));
+                if ((op & 4) != 0) distance = Round(distance, kind);
+                int minimum = IsClearTypeAxis(kind) ? _minimumDistance / 2 : _minimumDistance;
+                if ((op & 8) != 0) distance = original >= 0 ? Math.Max(distance, minimum) : Math.Min(distance, checked(-minimum));
                 int current = ProjectedDistance(point, reference, false);
                 Move(ref point, checked(distance - current), true);
                 _rp1 = _rp0; _rp2 = index;
@@ -576,10 +580,24 @@ internal sealed partial class TrueTypeHinting : IDisposable
         long result = (magnitude + divisor / 2) / divisor; if ((product < 0) != (denominator < 0)) result = -result;
         return checked((int)result);
     }
-    private int Round(int value)
+    private bool IsClearTypeAxis(TrueTypeHintProgramKind kind) => kind == TrueTypeHintProgramKind.Glyph && _target.Grid == TrueTypeHintGrid.ClearType && _projection.Y == 0;
+
+    private int ControlCutIn(TrueTypeHintProgramKind kind) => IsClearTypeAxis(kind) ? _cutIn / 16 : _cutIn;
+
+    private int Round(int value, TrueTypeHintProgramKind kind)
     {
         long absolute = Math.Abs((long)value);
-        long result = _round switch { TrueTypeHintRound.Grid => (absolute + 32) & ~63L, TrueTypeHintRound.HalfGrid => (absolute & ~63L) + 32, TrueTypeHintRound.DoubleGrid => (absolute + 16) & ~31L, TrueTypeHintRound.Down => absolute & ~63L, TrueTypeHintRound.Up => (absolute + 63) & ~63L, _ => absolute };
+        int grid = IsClearTypeAxis(kind) ? 4 : 64;
+        long mask = -(long)grid, halfMask = -(long)(grid / 2);
+        long result = _round switch
+        {
+            TrueTypeHintRound.Grid => (absolute + grid / 2) & mask,
+            TrueTypeHintRound.HalfGrid => (absolute & mask) + grid / 2,
+            TrueTypeHintRound.DoubleGrid => (absolute + grid / 4) & halfMask,
+            TrueTypeHintRound.Down => absolute & mask,
+            TrueTypeHintRound.Up => (absolute + grid - 1) & mask,
+            _ => absolute
+        };
         return checked((int)(value < 0 ? -result : result));
     }
     private ref TrueTypeHintPoint Point(TrueTypeHintZone zone, int index)
@@ -591,7 +609,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
     }
     internal static void ValidateTarget(TrueTypeHintTarget target)
     {
-        if (target.Version is < 0 or > 255 || (target.QueryFlags & ~TrueTypeHintQueryFlags.All) != 0 || target.ControlScale is not TrueTypeHintControlScale.FullPrecision and not TrueTypeHintControlScale.FractionalFontUnits || target.Preparation is not TrueTypeHintPreparation.Single and not TrueTypeHintPreparation.DefaultThenTarget || !double.IsFinite(target.HorizontalRatio) || target.HorizontalRatio <= 0)
+        if (target.Version is < 0 or > 255 || (target.QueryFlags & ~TrueTypeHintQueryFlags.All) != 0 || target.ControlScale is not TrueTypeHintControlScale.FullPrecision and not TrueTypeHintControlScale.FractionalFontUnits || target.Preparation is not TrueTypeHintPreparation.Single and not TrueTypeHintPreparation.DefaultThenTarget || target.Grid is not TrueTypeHintGrid.Physical and not TrueTypeHintGrid.ClearType || !double.IsFinite(target.HorizontalRatio) || target.HorizontalRatio <= 0)
             throw Invalid("The TrueType hint target is invalid.");
     }
     private int ReadControl(int index) => ScaleRatio(_cvt[index], ProjectionRatio);
