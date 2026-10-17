@@ -9,57 +9,8 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "One complete whole effects/marker sheet and eleven exact controls against unchanged Windows/Linux references. Wider finite G8 semantics remain required.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "cases": [
-    {
-      "id": "effects-marker-sheet",
-      "input": "effects-marker-sheet.svg",
-      "width": 432,
-      "height": 300,
-      "background": "transparent",
-      "role": "document-output",
-      "license": "CC0-1.0",
-      "sourceSha256": "d29cfc595c96040a372a4388868d6bf3669bccd1ce6ef550e37bf61c0a86d437",
-      "selection": "Whole finite G8 sheet: CSS marker overflow/cascade and closure, angle/length units, affine regions, mixed graph color spaces, nested effects and clipped image shadow.",
-      "captures": [
-        {
-          "pngSha256": "857d022345bdf0de019d6e9d11ff778e2feef89dee12b58ed0f6ae35ea9f2cc3",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "857d022345bdf0de019d6e9d11ff778e2feef89dee12b58ed0f6ae35ea9f2cc3",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "857d022345bdf0de019d6e9d11ff778e2feef89dee12b58ed0f6ae35ea9f2cc3",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ],
-      "linuxCaptures": [
-        {
-          "pngSha256": "857d022345bdf0de019d6e9d11ff778e2feef89dee12b58ed0f6ae35ea9f2cc3",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "857d022345bdf0de019d6e9d11ff778e2feef89dee12b58ed0f6ae35ea9f2cc3",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "857d022345bdf0de019d6e9d11ff778e2feef89dee12b58ed0f6ae35ea9f2cc3",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ],
-      "reference": "references/effects-marker-sheet.png",
-      "referenceSha256": "857d022345bdf0de019d6e9d11ff778e2feef89dee12b58ed0f6ae35ea9f2cc3",
-      "licenseEvidence": "README.md",
-      "platformReferencesByteIdentical": true
-    },
     {
       "id": "marker-overflow-cascade",
       "input": "marker-overflow-cascade.svg",

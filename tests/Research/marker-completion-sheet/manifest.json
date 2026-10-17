@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Finite E4 completion: em/ex marker dimensions and anchors, marker-container/child cascade, directional zero/repeated vertices on open/closed paths and wholly zero geometry. One whole CC0 sheet and six independent controls; reuse earlier qualified marker cases without a shape/API grid.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "fontPack": "../supplied-font-labels/font-pack.json",
   "fontPackId": "public-noto-sans",
   "fontProgram": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
@@ -14,7 +14,7 @@
       "height": 224,
       "scale": 1,
       "background": "transparent",
-      "role": "document-output",
+      "role": "font-contract-fixture",
       "license": "CC0-1.0",
       "sourceSha256": "036e1c5244b513da80783c201b11b3ca350270ce16e8babce2b289ea6e548d67",
       "declarationBaseRevision": "e20db16cbac743a7bc357b4e0e38d9c6070a5f67",

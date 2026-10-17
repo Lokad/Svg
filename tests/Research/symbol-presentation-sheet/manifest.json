@@ -9,7 +9,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "G2/G7 symbol container presentation. Original native display-none discriminator retained separately; frozen final sheet includes positive displayed symbol, hidden use, inherited visibility, child overrides and source-ancestor exclusion. One CC0 document and two controls.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "nativeSpecDifference": "Pinned Chrome 153 suppresses direct symbol instances with authored display:none, in contrast to SVG2 direct-instance display:inline rule. Marker display remains ignored.",
   "linuxReferenceQualification": {
     "date": "2026-10-16",
@@ -20,57 +20,6 @@
     "byteIdenticalToFrozenReferences": true
   },
   "cases": [
-    {
-      "id": "symbol-presentation-sheet",
-      "input": "symbol-presentation-sheet.svg",
-      "width": 160,
-      "height": 112,
-      "role": "document-output",
-      "sourceSha256": "d713c6a489b479af3b28bdef7e38ce71ae6e75ed13ed3669f0f39973c4f42527",
-      "scale": 1,
-      "background": "transparent",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original authored work dedicated to the public domain through the asset SPDX CC0-1.0 declaration.",
-      "selection": "One declared whole symbol sprite sheet or independent display/visibility control for the demonstrated G2/G7 admission gap; controls do not increase document counts.",
-      "reference": "references/symbol-presentation-sheet.png",
-      "referenceSha256": "17f85d76ca3908fdcf17a063d6f4ea238695466ab26677dfe1f6f4b424332eb6",
-      "captures": [
-        {
-          "pngSha256": "17f85d76ca3908fdcf17a063d6f4ea238695466ab26677dfe1f6f4b424332eb6",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "17f85d76ca3908fdcf17a063d6f4ea238695466ab26677dfe1f6f4b424332eb6",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "17f85d76ca3908fdcf17a063d6f4ea238695466ab26677dfe1f6f4b424332eb6",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ],
-      "linuxReference": "references/linux64/symbol-presentation-sheet.png",
-      "linuxReferenceSha256": "17f85d76ca3908fdcf17a063d6f4ea238695466ab26677dfe1f6f4b424332eb6",
-      "linuxCaptures": [
-        {
-          "pngSha256": "17f85d76ca3908fdcf17a063d6f4ea238695466ab26677dfe1f6f4b424332eb6",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "17f85d76ca3908fdcf17a063d6f4ea238695466ab26677dfe1f6f4b424332eb6",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "17f85d76ca3908fdcf17a063d6f4ea238695466ab26677dfe1f6f4b424332eb6",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ]
-    },
     {
       "id": "symbol-display",
       "input": "symbol-display.svg",

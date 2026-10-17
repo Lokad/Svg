@@ -9,58 +9,9 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "One exact required composition document, one retained MIT core-input visual and three exact controls reused in their original banks. References frozen before composition changes; all five unchanged inputs are exact on Windows/Linux.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "declarationBaseRevision": "005b4876039cd02f551aeec2ed68733e446d2c48",
   "cases": [
-    {
-      "id": "composition-sheet",
-      "input": "composition-sheet.svg",
-      "width": 432,
-      "height": 300,
-      "background": "transparent",
-      "role": "document-output",
-      "license": "CC0-1.0",
-      "sourceSha256": "a1a3151efef025580f1c2c0758d3298efe5e9f6e2a327b019391a48dd6dd6c10",
-      "selection": "Combines retained percentage-instance bases, opposite-winding clip children, overlapping child unions and partial-mask use under qualified nested viewBox maps.",
-      "reference": "references/composition-sheet.png",
-      "referenceSha256": "39112a6df8f6f782a7d425691139fd6bf377709368afe44ca80b1e5db34566d8",
-      "licenseEvidence": "README.md",
-      "captures": [
-        {
-          "pngSha256": "39112a6df8f6f782a7d425691139fd6bf377709368afe44ca80b1e5db34566d8",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "39112a6df8f6f782a7d425691139fd6bf377709368afe44ca80b1e5db34566d8",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "39112a6df8f6f782a7d425691139fd6bf377709368afe44ca80b1e5db34566d8",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ],
-      "linuxCaptures": [
-        {
-          "pngSha256": "39112a6df8f6f782a7d425691139fd6bf377709368afe44ca80b1e5db34566d8",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "39112a6df8f6f782a7d425691139fd6bf377709368afe44ca80b1e5db34566d8",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "39112a6df8f6f782a7d425691139fd6bf377709368afe44ca80b1e5db34566d8",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ],
-      "platformReferencesByteIdentical": true
-    },
     {
       "id": "partial-mask-use",
       "input": "partial-mask-use.svg",

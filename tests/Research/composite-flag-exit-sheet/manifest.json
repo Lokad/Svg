@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One complete MIT document and three independent controls exact on Windows/Linux for T2 composite flags, metric origins, child strikes and alignment zones. Original references and authored face are unchanged; full qualification preserves all prior exact results.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "fontPack": "font-pack.json",
   "fontPackId": "public-composite-flags",
   "fontProgram": "fonts/CompositeFlags.ttf",
@@ -14,7 +14,7 @@
       "height": 168,
       "scale": 1,
       "background": "transparent",
-      "role": "document-output",
+      "role": "font-contract-fixture",
       "license": "MIT",
       "sourceSha256": "6fe49e2010a98b2dedeba537ed955697d7aefdaac841e84eefe85cf39463ec0a",
       "licenseEvidence": "LICENSE.txt",

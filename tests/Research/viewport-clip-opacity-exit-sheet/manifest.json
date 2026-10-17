@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Finite C6a: six original SVG test inputs and one complete viewport clip/opacity document. Preserve source maps, root/container opacity, native physical clips and an unaffected sibling. No new scope or combination quota.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "declarationBaseRevision": "b76e96b9bb9a3958476656288d9b673572c11b10",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
@@ -9,23 +9,6 @@
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
   "cases": [
-    {
-      "id": "viewport-clip-opacity-sheet",
-      "input": "viewport-clip-opacity-sheet.svg",
-      "width": 336,
-      "height": 224,
-      "background": "transparent",
-      "license": "MIT",
-      "sourceSha256": "984dd35660d1d81c0fe690b2f1c961ad36077a38f74e40a6de944e2b92335b5a",
-      "scale": 1,
-      "role": "document-output",
-      "licenseEvidence": "LICENSE.txt",
-      "selection": "Complete integration of finite C6a clip, nested opacity and stroked physical viewport boundaries; original root opacity retained on its panel",
-      "reference": "references/viewport-clip-opacity-sheet.png",
-      "referenceSha256": "598977bdfb32bed7142d8c796f602299da3d77d1be31ee9b3f4636d00e7db42e",
-      "linuxReference": "references/linux64/viewport-clip-opacity-sheet.png",
-      "linuxReferenceSha256": "598977bdfb32bed7142d8c796f602299da3d77d1be31ee9b3f4636d00e7db42e"
-    },
     {
       "id": "scaled-leaf-clip",
       "input": "scaled-leaf-clip.svg",

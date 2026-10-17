@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One unchanged public-domain mask-unit/group-alias document and five separate CC0 mask-group controls. Healthy intended-font references precede implementation; complete finite G5/G9 promises remain open.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "selectedAt": "e1052608",
   "fontPack": "font-pack.json",
   "fontProvenance": "font-provenance.json",
@@ -23,7 +23,7 @@
       "explicitViewport": true,
       "scale": 1,
       "background": "transparent",
-      "role": "document-output",
+      "role": "font-contract-fixture",
       "sourceSha256": "a1317e7006997f40ff2ef2b12bbf119846fcc2248ecbd8135cdcb69dbc992576",
       "originalBytes": 2148,
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:SVGmask03.svg",

@@ -15,7 +15,8 @@ public sealed class SvgSuppliedFontLabelTests
     public static IEnumerable<object[]> Cases()
     {
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "manifest.json")));
-        foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray()) yield return new object[] { Required(item, "id") };
+        foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
+            if (Required(item, "role") != "font-contract-fixture") yield return new object[] { Required(item, "id") };
     }
 
     [Theory]
@@ -55,7 +56,7 @@ public sealed class SvgSuppliedFontLabelTests
         using SvgFontSnapshot snapshot = await Prepare(input);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
         byte[] png = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
-        if (Required(item, "role") == "document-output") await CheckOutputContracts(input, options, png);
+        if (identity == "curve-counters") await CheckOutputContracts(input, options, png);
         Assert.Equal(unchanged, input);
         if (OperatingSystem.IsLinux() || OperatingSystem.IsWindows())
         {
@@ -119,7 +120,7 @@ public sealed class SvgSuppliedFontLabelTests
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "manifest.json")));
         JsonElement root = manifest.RootElement;
         Assert.Equal(8, root.GetProperty("cases").GetArrayLength());
-        Assert.Equal(1, root.GetProperty("cases").EnumerateArray().Count(c => Required(c, "role") == "document-output"));
+        Assert.Equal(1, root.GetProperty("cases").EnumerateArray().Count(c => Required(c, "role") == "font-contract-fixture"));
         Assert.Equal(Required(root, "fontProgramSha256"), Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Path.Combine(DirectoryPath, "fonts", "NotoSans-Regular.ttf")))));
         Assert.True(File.ReadAllText(Path.Combine(DirectoryPath, "fonts", "OFL.txt")).Contains("SIL OPEN FONT LICENSE", StringComparison.Ordinal));
         foreach (JsonElement item in root.GetProperty("cases").EnumerateArray())

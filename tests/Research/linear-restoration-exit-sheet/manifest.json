@@ -9,7 +9,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "Finish the unchanged retained mixed-consumer blur document and finite E2 linearRGB shadow / identity boundaries. Original references and sources stay frozen; controls are counted separately.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "linuxReferenceQualification": {
     "date": "2026-10-15",
     "platform": "linux64",
@@ -19,58 +19,6 @@
     "byteIdenticalToFrozenReferences": true
   },
   "cases": [
-    {
-      "id": "mixed-consumer-single-blur",
-      "input": "mixed-consumer-single-blur.svg",
-      "width": 144,
-      "height": 108,
-      "scale": 1,
-      "background": "transparent",
-      "role": "document-output",
-      "license": "CC0-1.0",
-      "sourceSha256": "8c00ae84063eab71b115276b944e458ad74daf6516459f5918110608d9cb71f0",
-      "licenseEvidence": "Original authored work dedicated to the public domain through the asset SPDX CC0-1.0 declaration.",
-      "selection": "Retained E2 document or focused working-space/opacity/native offset boundary; no exhaustive combination grid.",
-      "declarationBaseRevision": "1502017914fda967074c9123591a70ce5dd32c10",
-      "reference": "references/mixed-consumer-single-blur.png",
-      "referenceSha256": "db67a94ba70b980221344743222a04955bf08a53cb065efa0893f4582eeb3099",
-      "captures": [
-        {
-          "pngSha256": "db67a94ba70b980221344743222a04955bf08a53cb065efa0893f4582eeb3099",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "db67a94ba70b980221344743222a04955bf08a53cb065efa0893f4582eeb3099",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "db67a94ba70b980221344743222a04955bf08a53cb065efa0893f4582eeb3099",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ],
-      "linuxReference": "references/linux64/mixed-consumer-single-blur.png",
-      "linuxReferenceSha256": "db67a94ba70b980221344743222a04955bf08a53cb065efa0893f4582eeb3099",
-      "linuxCaptures": [
-        {
-          "pngSha256": "db67a94ba70b980221344743222a04955bf08a53cb065efa0893f4582eeb3099",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "db67a94ba70b980221344743222a04955bf08a53cb065efa0893f4582eeb3099",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "db67a94ba70b980221344743222a04955bf08a53cb065efa0893f4582eeb3099",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ]
-    },
     {
       "id": "linear-shadow-boundaries",
       "input": "linear-shadow-boundaries.svg",

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One retained original live-text output and seven separate controls under a pinned public supplied-font/browser-embedding contract. References freeze before correction; snapshot-less rejection remains explicit.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "fontPack": "font-pack.json",
   "fontProvenance": "font-provenance.json",
   "fontProgramSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
@@ -11,7 +11,7 @@
       "input": "../../Fixtures/original/logo-live-text.svg",
       "width": 64,
       "height": 64,
-      "role": "document-output",
+      "role": "font-contract-fixture",
       "license": "CC0-1.0",
       "scale": 1,
       "background": "transparent",

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One complete MIT glyph-resource document and three focused controls, exact against unchanged native references on Windows/Linux. Composite flags, local-use/shader maps and private validation remain required.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "fontPack": "../supplied-font-labels/font-pack.json",
   "fontPackId": "public-noto-sans",
   "fontProvenance": "../supplied-font-labels/font-provenance.json",
@@ -12,7 +12,7 @@
       "width": 384,
       "height": 216,
       "background": "transparent",
-      "role": "document-output",
+      "role": "font-contract-fixture",
       "license": "MIT",
       "selection": "Whole supplied-font resource document, including direct/group clipping, direct/spatial masks, skew/reflection and independent siblings",
       "sourceSha256": "596c391509e58bd5e916041c7d71c74aff8e36a87849d530e64d097b34ba82bf",

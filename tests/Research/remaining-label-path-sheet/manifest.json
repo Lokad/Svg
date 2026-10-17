@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Retained whole CC0 label/path sheet plus orthogonal positioning, spacing, decoration and direct/path stroke controls for the finite G9 exit. References precede each production correction; the complete sheet is exact while wider G9 remains required.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "fontPack": "../font-layout-diagram/font-pack.json",
   "fontPrograms": [
     {
@@ -17,55 +17,6 @@
     }
   ],
   "cases": [
-    {
-      "id": "remaining-label-path-sheet",
-      "input": "remaining-label-path-sheet.svg",
-      "width": 432,
-      "height": 372,
-      "background": "transparent",
-      "role": "document-output",
-      "license": "CC0-1.0",
-      "sourceSha256": "e80afc08a4462fef2c6abbc395ab38cfa586ce6a36fcf704c3e05632fbf7bff2",
-      "selection": "Declared before shared nested-list/rotation correction; every retained byte, program, option and platform reference stays frozen. The whole sheet owns remaining finite G9 semantics; this control only diagnoses inherited character positioning.",
-      "reference": "references/remaining-label-path-sheet.png",
-      "referenceSha256": "e848f3d4cdaf509e64cac165f3cf15eeb238cfe1391bbc60c711bfe1d5b6619f",
-      "captures": [
-        {
-          "pngSha256": "e848f3d4cdaf509e64cac165f3cf15eeb238cfe1391bbc60c711bfe1d5b6619f",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "e848f3d4cdaf509e64cac165f3cf15eeb238cfe1391bbc60c711bfe1d5b6619f",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "e848f3d4cdaf509e64cac165f3cf15eeb238cfe1391bbc60c711bfe1d5b6619f",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ],
-      "linuxReference": "references/linux64/remaining-label-path-sheet.png",
-      "linuxReferenceSha256": "69ebcedef2f9faf162c5cd1579da0771a26526e21365e6127b297c3a311fb5d9",
-      "linuxCaptures": [
-        {
-          "pngSha256": "69ebcedef2f9faf162c5cd1579da0771a26526e21365e6127b297c3a311fb5d9",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "69ebcedef2f9faf162c5cd1579da0771a26526e21365e6127b297c3a311fb5d9",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "69ebcedef2f9faf162c5cd1579da0771a26526e21365e6127b297c3a311fb5d9",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ]
-    },
     {
       "id": "nested-list-rotation",
       "input": "nested-list-rotation.svg",

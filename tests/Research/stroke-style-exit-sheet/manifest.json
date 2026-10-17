@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One complete CC0 document and four controls for the finite PLAN R1-R3 stroke/style exits, declared before their production correction. No font, new feature or combination quota.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "declarationBaseRevision": "816db741f329104e5976f99f9cfb6010ae1a6ed8",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
@@ -9,23 +9,6 @@
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
   "cases": [
-    {
-      "id": "stroke-style-exit-sheet",
-      "input": "stroke-style-exit-sheet.svg",
-      "width": 720,
-      "height": 168,
-      "scale": 1,
-      "background": "transparent",
-      "role": "document-output",
-      "license": "CC0-1.0",
-      "sourceSha256": "c33ca5ab275b08f0c5224ca5bd865b2b5f72b80dd18efc491a1a34f552f2d41d",
-      "licenseEvidence": "stroke-style-exit-sheet.svg",
-      "selection": "Finite existing PLAN R1-R3 stroke/style exits, captured before their correction.",
-      "reference": "references/stroke-style-exit-sheet.png",
-      "referenceSha256": "40e0971b5a676c4897b433fbe74716f598ec8448b3eb2ecd81ba2cca6addde4b",
-      "linuxReference": "references/linux64/stroke-style-exit-sheet.png",
-      "linuxReferenceSha256": "40e0971b5a676c4897b433fbe74716f598ec8448b3eb2ecd81ba2cca6addde4b"
-    },
     {
       "id": "solid-line-caps",
       "input": "solid-line-caps.svg",

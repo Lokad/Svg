@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "declarationBaseRevision": "5d61f27a067845e44bc1856ff0ca9a65de292fb3",
-  "purpose": "One required whole tile document, seven independent controls (including a discovered affine/unit interaction) and three unchanged controls reused in their original banks. Native references precede their corrections.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "fontPack": "../font-layout-diagram/font-pack.json",
   "fontPrograms": [
     {
@@ -20,130 +20,6 @@
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
   "cases": [
-    {
-      "id": "pattern-tile-sheet",
-      "input": "pattern-tile-sheet.svg",
-      "width": 576,
-      "height": 240,
-      "background": "transparent",
-      "role": "document-output",
-      "license": "MIT",
-      "sourceSha256": "10891af5aa68fdd024ace3b45b13ec33852985d8c5a007c2d994e2700eeb1949",
-      "selection": "Whole required tile sheet: retained element/group opacity, both object-box unit gaps, fractional reflected maps and image/filter/supplied-font content under nested viewports.",
-      "licenseEvidence": "README.md",
-      "captures": [
-        {
-          "pngSha256": "bad67750b47e3cc5b99b6483771f18ec6f71628ceb62781b4db4dd8c8df915dc",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "bad67750b47e3cc5b99b6483771f18ec6f71628ceb62781b4db4dd8c8df915dc",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "bad67750b47e3cc5b99b6483771f18ec6f71628ceb62781b4db4dd8c8df915dc",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ],
-      "reference": "references/pattern-tile-sheet.png",
-      "referenceSha256": "bad67750b47e3cc5b99b6483771f18ec6f71628ceb62781b4db4dd8c8df915dc",
-      "linuxCaptures": [
-        {
-          "pngSha256": "d963ef2d6901625350bca9b0b5828763a70207a578e6d7fe6f8c51af325464ce",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "d963ef2d6901625350bca9b0b5828763a70207a578e6d7fe6f8c51af325464ce",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "d963ef2d6901625350bca9b0b5828763a70207a578e6d7fe6f8c51af325464ce",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ],
-      "linuxReference": "references/linux64/pattern-tile-sheet.png",
-      "linuxReferenceSha256": "d963ef2d6901625350bca9b0b5828763a70207a578e6d7fe6f8c51af325464ce",
-      "oracleInputSha256": "bddf3b97f8826e71673307f56d3eb1f59bfb10fbd66bc317d74b7023f12b9039",
-      "platformReferencesByteIdentical": false,
-      "fontUseProof": {
-        "windows": [
-          {
-            "id": "pattern-tile-sheet",
-            "mode": "missing",
-            "changedPixels": 2133,
-            "freshProcessCaptures": 3,
-            "stability": "identical",
-            "startupHealth": "healthy",
-            "profileCleaned": true,
-            "pngSha256": "f5fcb7b9ae6ed5767bc72b74216ae7644ae2f69c155125c3610e62cfa0f6b889",
-            "inputFontProgramChangedOnly": true
-          },
-          {
-            "id": "pattern-tile-sheet",
-            "mode": "corrupt",
-            "changedPixels": 2133,
-            "freshProcessCaptures": 3,
-            "stability": "identical",
-            "startupHealth": "healthy",
-            "profileCleaned": true,
-            "pngSha256": "f5fcb7b9ae6ed5767bc72b74216ae7644ae2f69c155125c3610e62cfa0f6b889",
-            "inputFontProgramChangedOnly": true
-          },
-          {
-            "id": "pattern-tile-sheet",
-            "mode": "substituted",
-            "changedPixels": 2109,
-            "freshProcessCaptures": 3,
-            "stability": "identical",
-            "startupHealth": "healthy",
-            "profileCleaned": true,
-            "pngSha256": "f690e7e8e5247c9299f385b497566f88186a12cd0e0afd51cc214f168499fcff",
-            "inputFontProgramChangedOnly": true
-          }
-        ],
-        "linux": [
-          {
-            "id": "pattern-tile-sheet",
-            "mode": "missing",
-            "changedPixels": 1878,
-            "freshProcessCaptures": 3,
-            "stability": "identical",
-            "startupHealth": "healthy",
-            "profileCleaned": true,
-            "pngSha256": "d011809685813f9fdaf08bf73e6b35ed975fe8a1153c63a2c89b7b2aee6bbd05",
-            "inputFontProgramChangedOnly": true
-          },
-          {
-            "id": "pattern-tile-sheet",
-            "mode": "corrupt",
-            "changedPixels": 1878,
-            "freshProcessCaptures": 3,
-            "stability": "identical",
-            "startupHealth": "healthy",
-            "profileCleaned": true,
-            "pngSha256": "d011809685813f9fdaf08bf73e6b35ed975fe8a1153c63a2c89b7b2aee6bbd05",
-            "inputFontProgramChangedOnly": true
-          },
-          {
-            "id": "pattern-tile-sheet",
-            "mode": "substituted",
-            "changedPixels": 1991,
-            "freshProcessCaptures": 3,
-            "stability": "identical",
-            "startupHealth": "healthy",
-            "profileCleaned": true,
-            "pngSha256": "a6dac3e46d689b50dc40bc72f00b68403eb7096d243d28b403e8fd2111d14662",
-            "inputFontProgramChangedOnly": true
-          }
-        ]
-      }
-    },
     {
       "id": "object-box-tile",
       "input": "object-box-tile.svg",

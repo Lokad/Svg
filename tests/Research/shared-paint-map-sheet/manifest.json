@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Finite shared curved-shader and pattern-map acceptance: one complete CC0 sheet plus three independent controls, captured before production changes. Keep existing exact witnesses closed.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "declarationBaseRevision": "732c1f1b",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
@@ -9,23 +9,6 @@
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
   "cases": [
-    {
-      "id": "shared-paint-map-sheet",
-      "input": "shared-paint-map-sheet.svg",
-      "width": 648,
-      "height": 144,
-      "background": "transparent",
-      "scale": 1,
-      "role": "document-output",
-      "sourceSha256": "3ec1852b0ddcaf0dbaa20797358677d8b3dc36806f0d5af7883e13da3ea79b29",
-      "license": "CC0-1.0",
-      "licenseEvidence": "shared-paint-map-sheet.svg",
-      "selection": "Finite G2-G4/G6 map acceptance declared at 732c1f1b and captured before production changes; shared whole sheet plus independent missing semantics.",
-      "reference": "references/shared-paint-map-sheet.png",
-      "referenceSha256": "e044d14dc2d8b9dd2adfb29eb6f243e73c2dc18f7c97c38f2a41d3efbd107c74",
-      "linuxReference": "references/linux64/shared-paint-map-sheet.png",
-      "linuxReferenceSha256": "e044d14dc2d8b9dd2adfb29eb6f243e73c2dc18f7c97c38f2a41d3efbd107c74"
-    },
     {
       "id": "dashed-shader-curves",
       "input": "dashed-shader-curves.svg",

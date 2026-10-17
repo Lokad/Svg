@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One complete CC0 document and three independent controls for remaining original G5/C3 colored luminance and general affine mask maps, preserving region/content unit distinctions and following siblings. Frozen before correction; no combination quota.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "declarationBaseRevision": "c5f7ef86d36f395da69808e34b5cd2e208ab549d",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
@@ -9,23 +9,6 @@
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
   "cases": [
-    {
-      "id": "mask-color-affine-sheet",
-      "input": "mask-color-affine-sheet.svg",
-      "width": 480,
-      "height": 160,
-      "background": "transparent",
-      "license": "CC0-1.0",
-      "sourceSha256": "e16e235bb3b5484e27da320893f48dd5bdda7226949f084c4a688210beff94be",
-      "scale": 1,
-      "role": "document-output",
-      "licenseEvidence": "mask-color-affine-sheet.svg",
-      "selection": "Remaining original G5/C3 color/general-map requirements, selected and captured before correction; complete document plus independent controls.",
-      "reference": "references/mask-color-affine-sheet.png",
-      "referenceSha256": "b6c9fb89269e3bb5ad627f7d7b741d2a54859fd86a0a650703a1ff84e1e398d7",
-      "linuxReference": "references/linux64/mask-color-affine-sheet.png",
-      "linuxReferenceSha256": "b6c9fb89269e3bb5ad627f7d7b741d2a54859fd86a0a650703a1ff84e1e398d7"
-    },
     {
       "id": "colored-luminance",
       "input": "colored-luminance.svg",

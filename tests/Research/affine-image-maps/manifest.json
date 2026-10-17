@@ -9,57 +9,8 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "One whole CC0 affine image-map sheet and three orthogonal controls, declared before correction at 5a331751; original sources and healthy Windows/Linux reference triples remain unchanged.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "cases": [
-    {
-      "id": "affine-image-map-sheet",
-      "input": "affine-image-map-sheet.svg",
-      "width": 432,
-      "height": 300,
-      "background": "transparent",
-      "role": "document-output",
-      "license": "CC0-1.0",
-      "sourceSha256": "e72b1d4747efd6c731a8287a38383a03e1dcad4a515c3938fc04c6dfd42880e2",
-      "selection": "Uniform fractional mapping, composed affine PNG maps, image use and partial clip/mask replay; the six panels share two unchanged small embedded PNG assets.",
-      "captures": [
-        {
-          "pngSha256": "efe14ed1cdc5088f22d777b7275ca92a7e549234bd59f743da9c014e31876692",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "efe14ed1cdc5088f22d777b7275ca92a7e549234bd59f743da9c014e31876692",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "efe14ed1cdc5088f22d777b7275ca92a7e549234bd59f743da9c014e31876692",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ],
-      "linuxCaptures": [
-        {
-          "pngSha256": "efe14ed1cdc5088f22d777b7275ca92a7e549234bd59f743da9c014e31876692",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "efe14ed1cdc5088f22d777b7275ca92a7e549234bd59f743da9c014e31876692",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "efe14ed1cdc5088f22d777b7275ca92a7e549234bd59f743da9c014e31876692",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ],
-      "reference": "references/affine-image-map-sheet.png",
-      "referenceSha256": "efe14ed1cdc5088f22d777b7275ca92a7e549234bd59f743da9c014e31876692",
-      "platformReferencesByteIdentical": true,
-      "licenseEvidence": "README.md"
-    },
     {
       "id": "uniform-fractional-placement",
       "input": "uniform-fractional-placement.svg",

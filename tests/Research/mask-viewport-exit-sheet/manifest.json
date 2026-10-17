@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Five finite original C3b mask-region/default/viewport boundaries and one complete document. Four original test SVGs retained verbatim. No combination quota.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "declarationBaseRevision": "bdace0ad4ce2c0f5a3e3ec72858c88b0457c5ea4",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
@@ -9,23 +9,6 @@
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
   "cases": [
-    {
-      "id": "mask-viewport-sheet",
-      "input": "mask-viewport-sheet.svg",
-      "width": 512,
-      "height": 128,
-      "background": "transparent",
-      "license": "MIT",
-      "sourceSha256": "f7f4a8e18708d625bcc7d320cd9f88c65f8158feb0ab494d0003665910453b74",
-      "scale": 1,
-      "role": "document-output",
-      "licenseEvidence": "LICENSE.txt",
-      "selection": "Whole-document integration of the five finite C3b mask boundaries",
-      "reference": "references/mask-viewport-sheet.png",
-      "referenceSha256": "aa6a9a4c3fb78d9767915733f5da9deca086976670140195ed5a921258ce0076",
-      "linuxReference": "references/linux64/mask-viewport-sheet.png",
-      "linuxReferenceSha256": "aa6a9a4c3fb78d9767915733f5da9deca086976670140195ed5a921258ce0076"
-    },
     {
       "id": "scaled-custom-region",
       "input": "scaled-custom-region.svg",

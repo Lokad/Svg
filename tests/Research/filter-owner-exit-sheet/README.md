@@ -1,7 +1,7 @@
 # Filter owner/source regressions
 
 The [manifest](manifest.json) retains the qualified owner/source cases and six
-focused F1.5 controls. Whole-sheet membership is subject to [F1 retirement](../../../PLAN.md#full-svg-fixture-replacement-f1);
+focused F1.5 controls. Whole-sheet membership is retired under [F1](../../../PLAN.md#full-svg-fixture-replacement-f1);
 controls do not increase full-document counts. Original sources, options and
 native reference bytes remain unchanged.
 

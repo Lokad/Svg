@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Six original finite C6b forward/object-box clip inputs plus a complete document. Preserve source bounds, zero-height nonpainting, clip/mask order and siblings. No combination quota.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "declarationBaseRevision": "21782163d56c4eb17e4a8559a8ba5d67ac7557fc",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
@@ -9,23 +9,6 @@
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
   "cases": [
-    {
-      "id": "forward-bbox-sheet",
-      "input": "forward-bbox-sheet.svg",
-      "width": 336,
-      "height": 224,
-      "background": "transparent",
-      "license": "MIT",
-      "sourceSha256": "322b687caa822ffec9373d1a9163a18754c93d143b493545cb95ec31edff7e23",
-      "scale": 1,
-      "role": "document-output",
-      "licenseEvidence": "LICENSE.txt",
-      "selection": "Complete finite C6b integration with independent IDs/viewport bases and unaffected footer; two valid empty outputs remain empty",
-      "reference": "references/forward-bbox-sheet.png",
-      "referenceSha256": "98af2097dfe984edc596646f19b5b34a5249a1917a56feebcb9391ce59306034",
-      "linuxReference": "references/linux64/forward-bbox-sheet.png",
-      "linuxReferenceSha256": "98af2097dfe984edc596646f19b5b34a5249a1917a56feebcb9391ce59306034"
-    },
     {
       "id": "forward-clip-masked-group",
       "input": "forward-clip-masked-group.svg",

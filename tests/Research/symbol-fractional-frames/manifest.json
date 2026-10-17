@@ -9,7 +9,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "One complete authored CC0 symbol-card document and four focused fractional/native frame controls; separate document and control counts.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "cases": [
     {
       "id": "fractional-authored",
@@ -66,20 +66,6 @@
       "licenseEvidence": "Original contributor work dedicated through its leading SPDX CC0-1.0 declaration.",
       "selection": "Declared complete card diagram and isolated symbol-width/map/collapse cases before implementation; independently frozen healthy references on both platforms.",
       "role": "fidelity"
-    },
-    {
-      "id": "symbol-card-diagram",
-      "input": "symbol-card-diagram.svg",
-      "sourceSha256": "6873d14475cdc8a472381226bda766eefb5af13cfb9f4750867bebf7f2cb8b4f",
-      "width": 96,
-      "height": 80,
-      "background": "transparent",
-      "reference": "references/symbol-card-diagram.png",
-      "referenceSha256": "dc0ec6c9662cbd2e85ded430ee4f58da7fcd4ed66dc5c49dc72b69e0007afb39",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original contributor work dedicated through its leading SPDX CC0-1.0 declaration.",
-      "selection": "Declared complete card diagram and isolated symbol-width/map/collapse cases before implementation; independently frozen healthy references on both platforms.",
-      "role": "document"
     }
   ],
   "linuxReferenceQualification": {

@@ -6,8 +6,8 @@ instance/marker clips, clipped vector mask content, nested clip-child intersecti
 and filtered gradient source fidelity. A1–A6 are corrected with targeted
 Windows/Linux evidence. F1 replaces the full-document collection
 through the existing harness before final S17 verification A7.
-Eight additional rejected probes require the three explicit admission reconciliations
-listed in PLAN; they are not automatic scope additions or approved deferrals.
+The eight additional rejected probes have the three explicit admission dispositions
+below; they add no feature promise or approved deferral.
 The qualified `e21f956c` cases and cohorts remain dated evidence. Preserve public
 fonts, micro-tests, known-bug protections and resource/ownership contracts; F1
 explicitly replaces mandatory full-document membership/counts. Dated statements below describe
@@ -42,6 +42,25 @@ an ancestor mask. Retained masks rebind logical content in the final scene, usin
 existing source replay and target bounds. The unchanged upstream output and six
 focused controls are exact on both platforms; [qualification](../artifacts/full-fixture-replacement-20261017/effect-order-qualified-results.json)
 records 523 core / 1,963 visual-resource checks per platform and material cleanup.
+
+## Resource admission boundaries (2026-10-17)
+
+The finite G5-G7 promises distinguish resource children, resource containers and
+CSS declaration locations. The eight retained survey probes still reject with
+`UnsupportedFeature` on the finished renderer; [direct outcomes](../artifacts/full-fixture-replacement-20261017/admission-reconciliation-results.json)
+record the Windows checks. This resolves the three admission questions without
+removing an enumerated acceptance or deferring a promised feature.
+
+| Location/content | Admitted behavior | Explicit unsupported outcome |
+| --- | --- | --- |
+| CSS resource binding | The enumerated static paint/stroke/opacity/font declarations, `filter`, marker properties, `clip-rule`, overflow and parsed width/height retain their finite target rules. Resource `clip-path` presentation attributes bind through existing rendered/resource-child scopes. | `clip-path` in inline style or a stylesheet is outside the enumerated declaration subset; both forms reject. `clip-rule` support does not admit `clip-path` declarations. |
+| Clip resources | Forward/local/object-box resources, child unions and `clip-path` on admitted path/rectangle resource children retain A5 intersections and final-owner binding. | `clip-path` on the `clipPath` container itself is outside the finite resource-attribute subset and rejects, including chains in patterns or rendered groups. |
+| Mask content | The finite ordered vector/text mask subset retains alpha/luminance, transforms, regions, clipping and local instances. Embedded PNG image targets may be clipped/masked; bounded patterns admit their existing image content. | An `image` child inside a mask is outside that vector-content subset and rejects before child clipping is considered, with or without a clip. |
+
+The two CSS probes, four clip-container probes and two mask-image probes exercise
+these distinct boundaries. They do not reopen completed child intersections,
+pattern image/object-box clips or clipped vector masks. General CSS completeness
+and general image-based masks were not exits of the finite public subset.
 
 ## Public symbol and fractional-line follow-up (2026-10-16)
 
@@ -1138,7 +1157,7 @@ The final contained-ring fixture is exact. Mixed closed/open-subpath strokes wit
 linear, radial or pattern paint still hit an existing admission restriction; nine
 retained browser controls make that support gap explicit. See [the repair](RASTERIZATION_DESIGN.md#zero-area-native-stroke-winding-2026-10-08).
 
-The [four whole-export failures](../tests/Research/finite-support-exports/manifest.json)
+The [four whole-export failures](https://github.com/Lokad/Svg/blob/284f8ec2/tests/Research/finite-support-exports/manifest.json)
 completed the preceding document queue at **22/22**, separately from controls
 and the corporate **27/27 / 258/258** matrix. The spiral, tunnel junction and
 shadowed soccerball now match unchanged outputs through six APIs on Windows/Linux.
@@ -1155,7 +1174,7 @@ residual stays open under G3/G4. That correction passed both Release builds and 
 all 2,908 prior reports and 2,846 PNGs unchanged under complete qualification.
 Original sources, declared frames and frozen references remain unchanged.
 
-Both retained [baseball documents](../tests/Research/compound-clip-documents/manifest.json)
+Both retained [baseball documents](https://github.com/Lokad/Svg/blob/284f8ec2/tests/Research/compound-clip-documents/manifest.json)
 are complete, closing the preceding queue at **24/24**. Their unchanged 130×130
 and 1200×800 transparent references are exact through all six APIs on Windows/Linux.
 Shared compound clipping, percentage rectangles, affine shader maps, native union
@@ -1165,7 +1184,7 @@ numeric contracts protect transform precision, and earlier viewport-height contr
 remain passing. Finished complete qualification passes **6,118 tests/platform**
 (4,350 core / 1,762 visual / six FontProbe), preserving all 2,846 prior PNGs
 byte-for-byte, all 2,752 prior exact results and corporate **27/27 / 258/258**.
-The [two CC0 arrow documents](../tests/Research/marker-documents/manifest.json)
+The [two CC0 arrow documents](https://github.com/Lokad/Svg/blob/284f8ec2/tests/Research/marker-documents/manifest.json)
 complete the preceding queue at **26/26**, exact through six APIs on both
 platforms at unchanged 2000×500 and 800×400 transparent outputs. Bounded marker
 content reuses symbol/group/use and native line-stroke replay. Fifteen exact
@@ -1177,7 +1196,7 @@ references. Complete Release qualification passes **6,143 tests/platform**
 (4,353 core / 1,784 visual / six FontProbe), with zero failures/skips/warnings,
 all 2,847 prior PNGs unchanged and all 2,753 prior exact results preserved.
 Corporate **27/27 / 258/258** remains frozen. The
-[two original CC0 path-marker exports](../tests/Research/path-marker-documents/manifest.json)
+[two original CC0 path-marker exports](https://github.com/Lokad/Svg/blob/284f8ec2/tests/Research/path-marker-documents/manifest.json)
 complete the selected development queue at **28/28**: `inv-123`, 512×352, and
 `inv-124`, 512×512, transparent, through six APIs on Windows/Linux. Original bytes,
 options and references remain untouched; their twelve healthy matching captures
@@ -1274,7 +1293,7 @@ criteria live in [PLAN](../PLAN.md#delivery-order).
 | G9 | Direct text requires a prepared supplied-font snapshot. Both original font documents, CC0 SVG Translate and the retained public-domain curved-label export are exact through six raw/six prepared APIs on both platforms. Positive horizontal text paths reuse authored commands, composed source maps and native glyph replay. Scalar span positioning, bounded language metadata, inherited/child presentation anchors, independent sibling path runs and positive numeric offset calibration are admitted. Bounded open curves retain midpoint/tangent glyph maps. Shared bounded hinting, native mapped coverage and component rounding compute from supplied font bytes; wider finite label/path promises remain open. | The live-text, straight text-path and Mono banks each have 7/7 exact controls on both platforms. The retained `inv-127` is 1/1 complete at frozen 512×369 transparent, with all five controls exact through 12 APIs. Seventeen complete native RGB masks protect mapped geometry, scan bounds and accent placement. Intended-font references and negative embedding proof stay frozen. |
 
 The retained CC0 Wikifoods logo is complete: all nine frozen original-input
-outputs in [its bank](../tests/Research/wikifoods-logo/manifest.json) are exact through
+outputs in [its bank](https://github.com/Lokad/Svg/blob/284f8ec2/tests/Research/wikifoods-logo/manifest.json) are exact through
 six APIs on Windows/Linux.
 Percentage circle/ellipse attributes now resolve against known user-space viewport
 extents; circle radii use the normalized diagonal, ellipse radii their respective
@@ -1288,7 +1307,7 @@ has 22 exact controls and one explicit geometry boundary; its former radial fill
 coordinates, bitmap-owned clip bounds and native source replay complete the logo.
 
 The CC0 striped pattern (`inv-109`) is complete: nine frozen outputs in
-[the remaining-scope bank](../tests/Research/remaining-scope-documents/manifest.json)
+[the remaining-scope bank](https://github.com/Lokad/Svg/blob/284f8ec2/tests/Research/remaining-scope-documents/manifest.json)
 are exact through six APIs on Windows/Linux. Root-local pattern registration,
 inert aspect declarations, composed positive-axis pattern maps and bounded tile
 replay share existing mechanisms. The [placement bank](../tests/Research/pattern-affine-placement/manifest.json)
@@ -1314,7 +1333,7 @@ Every declared input, option, matching browser frame and reference stays unchang
 healthy platform capture triples are reused.
 
 The five retained online failures have original bytes, separate root-sized render inputs
-and stable browser references in [the inventory manifest](../tests/References/inventory/svg-gap-cases.json).
+and stable browser references in [the inventory manifest](https://github.com/Lokad/Svg/blob/284f8ec2/tests/References/inventory/svg-gap-cases.json).
 They are failure-selected development cases, outside the 27-document corporate
 cohort and original fixture/research denominators. No new renderer behavior is
 claimed by recording a rejection. First-blocker removal may expose further
@@ -1340,7 +1359,7 @@ following four retained exports now bring it to 22/22; new sourcing targets the
 remaining finite support groups.
 Controls remain separate.
 
-The [new export bank](../tests/Research/remaining-gap-exports/manifest.json) keeps
+The [new export bank](https://github.com/Lokad/Svg/blob/284f8ec2/tests/Research/remaining-gap-exports/manifest.json) keeps
 three complete fontless static exports and matching healthy, cleaned platform
 triples. `inv-112` is now exact at its unchanged explicit 512×538 transparent
 output. General pattern grids, native rectangular stroke borders, inherited

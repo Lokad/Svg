@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Complete unchanged public-domain static CSS diagram, nine original diagnostic controls and eight translation controls. Every declared output must match frozen platform references; finite G7/G9 exits remain open.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "selectedAt": "7ca79f5f",
   "fontPack": "font-pack.json",
   "fontProvenance": "font-provenance.json",
@@ -8,61 +8,6 @@
   "fontLicense": "../supplied-font-labels/fonts/OFL.txt",
   "fontProgramSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
   "cases": [
-    {
-      "id": "inv-129-750x200-transparent",
-      "input": "../../Fixtures/candidates/inv-129.svg",
-      "width": 750,
-      "height": 200,
-      "explicitViewport": true,
-      "scale": 1,
-      "background": "transparent",
-      "role": "document-output",
-      "license": "Public domain",
-      "sourceSha256": "1a59209f5af7fff09cc18f65d9bc80075660a4b05fc5b4a61d329890919e075c",
-      "reference": "references/inv-129-750x200-transparent.png",
-      "linuxReference": "references/linux64/inv-129-750x200-transparent.png",
-      "fontPack": "font-pack.json",
-      "selection": "Declared unchanged source, output and caller-supplied default serif mapping before native capture and production editing.",
-      "rendererOutcome": "exact",
-      "oracleInputSha256": "d12ab3aadeedac25cc4adbfaba91b7d1ef9d5e43c73733746717989b648adafd",
-      "referenceSha256": "403bee5f1c55471cee4b28289602c2c62ec823b5d6ec18351146a79bf04e153c",
-      "captures": [
-        {
-          "pngSha256": "403bee5f1c55471cee4b28289602c2c62ec823b5d6ec18351146a79bf04e153c",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "403bee5f1c55471cee4b28289602c2c62ec823b5d6ec18351146a79bf04e153c",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "403bee5f1c55471cee4b28289602c2c62ec823b5d6ec18351146a79bf04e153c",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ],
-      "linuxReferenceSha256": "61e12a4c0045236232ceaabfff689e1ea5603e3e2821e8a97c188dd433b94a1a",
-      "linuxCaptures": [
-        {
-          "pngSha256": "61e12a4c0045236232ceaabfff689e1ea5603e3e2821e8a97c188dd433b94a1a",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "61e12a4c0045236232ceaabfff689e1ea5603e3e2821e8a97c188dd433b94a1a",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "61e12a4c0045236232ceaabfff689e1ea5603e3e2821e8a97c188dd433b94a1a",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ],
-      "platformReferencesByteIdentical": false
-    },
     {
       "id": "omitted-family",
       "input": "omitted-family.svg",

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One complete MIT document and four independent controls exact on Windows/Linux for E1: affine linear/radial/pattern/supplied-font filter sources with source clipping and nested opacity. Original source/font/options/references remain unchanged.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "fontPack": "font-pack.json",
   "fontPackId": "public-noto-sans",
   "fontProgram": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
@@ -13,7 +13,7 @@
       "height": 232,
       "scale": 1,
       "background": "transparent",
-      "role": "document-output",
+      "role": "font-contract-fixture",
       "license": "MIT",
       "sourceSha256": "4cb7b218107ffcb832a92f5f7a85490e62fd342395a69c064bd9c4f67f8d72ae",
       "declarationBaseRevision": "ee9441a3f64289f28b7248aeec7605a281975568",

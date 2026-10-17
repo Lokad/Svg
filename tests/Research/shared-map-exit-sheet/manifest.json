@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One complete CC0 document and five controls for the five remaining PLAN item-2 shared pattern/viewport/non-scaling map routes. Original declaration precedes correction; no new feature or combination quota.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "declarationBaseRevision": "1932455797ca3c55c89d8d0bfc6003fd92a7762a",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
@@ -9,23 +9,6 @@
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
   "cases": [
-    {
-      "id": "shared-map-exit-sheet",
-      "input": "shared-map-exit-sheet.svg",
-      "width": 900,
-      "height": 160,
-      "scale": 1,
-      "background": "transparent",
-      "role": "document-output",
-      "license": "CC0-1.0",
-      "sourceSha256": "98cf8e722854c6b4965f1a159fe84e51425b50e001eb5d6211ba906eb0fa4184",
-      "licenseEvidence": "shared-map-exit-sheet.svg",
-      "selection": "Finite existing PLAN item-2 shared map exits, captured before correction.",
-      "reference": "references/shared-map-exit-sheet.png",
-      "referenceSha256": "cb54acb337649b77eb42a8e2d9275b24d6bf0f2fdb8a517887d1b14d346c97fb",
-      "linuxReference": "references/linux64/shared-map-exit-sheet.png",
-      "linuxReferenceSha256": "cb54acb337649b77eb42a8e2d9275b24d6bf0f2fdb8a517887d1b14d346c97fb"
-    },
     {
       "id": "reflected-basic-rectangle",
       "input": "reflected-basic-rectangle.svg",

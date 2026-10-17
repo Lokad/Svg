@@ -1,34 +1,12 @@
-# Filter source and output boundaries
+# filter-source-exit-sheet regression coverage
 
-The unchanged CC0 sheet and eight orthogonal controls are exact on Windows/Linux.
-The baseline rejected the whole sheet and six controls; local-use and stylesheet
-filter presentation were already exact. Sixty healthy stable fresh-process
-captures retain original source/font/options and reference bytes, including
-intended-font proof (821 Windows / 794 Linux differing pixels without the face).
+Full-document membership is retired under [F1](../../../PLAN.md#full-svg-fixture-replacement-f1).
+The [inventory disposition](../../../docs/INVENTORY.md#research-full-documents) records
+replacement coverage and retained focused behavior.
 
-Shared output-clip binding reuses object geometry; source replay preserves masks,
-nested viewports, fixed markers, supplied direct text, local uses and sibling
-scope. Nested affine bindings reuse recorded geometry and native source devices.
-Offset matrix conjugation retains native image-edge and shader arithmetic through
-the existing coverage walker. Axis bitmap restoration keeps its separate route.
-No reference replacement, tolerance or new runtime dependency is introduced.
+The [current manifest](manifest.json) retains 11 focused cases with unchanged
+source/options/platform references. Existing dedicated font/resource/API fixtures
+remain governed by their own contracts and add no full-document membership.
 
-The bank adds one complete authored document (31 total: 21 CC0 and 10 MIT),
-separate from corporate 27/27 / 258/258, selected 50/50 and one W3C document.
-The [study](../../../artifacts/filter-source-boundaries-20261016/) retains rejected
-experiments, native traces and qualification. Source/reference hashes identify
-immutable assets; no production-source fingerprint is recorded.
-
-The unchanged [offset-only input](diagnostics/affine-offset-only.svg), its partial
-crop and near-integer sampling boundary now have exact platform triples (18
-additional healthy captures). Native offsets remain deferred until the affine
-consumer; source/input bounds, output clips, tight binary clip construction and
-nearest/default image sampling remain separate. The original 480-pixel difference
-is resolved, and its first Windows observation is byte-identical to the new triple.
-These three controls add no complete document.
-
-The [owner/source follow-up](../filter-owner-exit-sheet/README.md) now completes
-affine masked sources, owner masks/markers and viewport/pattern group placement.
-E3 remains open for retained-definition/local-instance effects and pattern-use
-wrappers. [PLAN](../../../PLAN.md) owns these finite follow-ups, private T3,
-marker semantics and S17. No scope promise is deferred.
+[Historical sources, mechanisms and qualification](https://github.com/Lokad/Svg/blob/284f8ec2/tests/Research/filter-source-exit-sheet/README.md)
+remain dated evidence for the original whole document and its controls.

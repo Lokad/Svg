@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One unchanged public-domain curved label document and five separate mechanism controls. Complete every declared output against frozen matching-platform references; finite G9/G3 promises stay open.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "selectedAt": "58c63d70",
   "fontPack": "font-pack.json",
   "fontProvenance": "font-provenance.json",
@@ -16,7 +16,7 @@
       "explicitViewport": true,
       "scale": 1,
       "background": "transparent",
-      "role": "document-output",
+      "role": "font-contract-fixture",
       "license": "Public domain",
       "sourceSha256": "649eabc32537e69339f48e52d2750477ef2b55637f250c802af687fae8ed9ed5",
       "reference": "references/inv-127-512x369-transparent.png",

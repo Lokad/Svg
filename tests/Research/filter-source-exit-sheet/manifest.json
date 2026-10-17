@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One complete CC0 source-boundary document and eight independent source controls, plus three affine source-offset controls. Original SVG/font/options/native references remain unchanged. The offset-only observation is preserved, with cropped and nearly integral native sampling boundaries; the separate owner-composition document remains required E3 work.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "fontPack": "font-pack.json",
   "fontPackId": "public-noto-sans",
   "fontProgram": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
@@ -13,7 +13,7 @@
       "height": 224,
       "scale": 1,
       "background": "transparent",
-      "role": "document-output",
+      "role": "font-contract-fixture",
       "license": "CC0-1.0",
       "sourceSha256": "28be811f209d8e8bb0a7c75ca81def9973ec3e94a16080a0defb2abe53d67789",
       "declarationBaseRevision": "07ae7824315e638b013108a56224997f9376fc10",

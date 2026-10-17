@@ -9,7 +9,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "One complete original CC0 colored-signal diagram, seven original exact controls, one repaired fractional-offset control and four focused captured-image bounds controls. Document and control denominators remain separate.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "cases": [
     {
       "id": "flood-composite-in",
@@ -107,20 +107,6 @@
       "selection": "Original finite effects/marker acceptance declared before production edits: colored flood/composite/blend, small anisotropic blur/fractional offset and arc/polyline marker directions.",
       "reference": "references/arc-polyline-markers.png",
       "referenceSha256": "5fe5bffd536b61cfe783aef372c03c76b0ec17e038993a33c5af20429eee4383",
-      "licenseEvidence": "Original contributor work dedicated through its leading SPDX CC0-1.0 declaration."
-    },
-    {
-      "id": "colored-signal-diagram",
-      "input": "colored-signal-diagram.svg",
-      "sourceSha256": "f5fb314b97914ed41ba301f67ecc9e415eb65a029bd6694fca574bec3af81dd4",
-      "width": 256,
-      "height": 179,
-      "background": "transparent",
-      "role": "document",
-      "license": "CC0-1.0",
-      "selection": "Original finite effects/marker acceptance declared before production edits: colored flood/composite/blend, small anisotropic blur/fractional offset and arc/polyline marker directions.",
-      "reference": "references/colored-signal-diagram.png",
-      "referenceSha256": "3290878f1c223c4f13be3f94a878011121f7c3922a0bfb5b4766ff9b34a1f906",
       "licenseEvidence": "Original contributor work dedicated through its leading SPDX CC0-1.0 declaration."
     },
     {

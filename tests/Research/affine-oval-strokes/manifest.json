@@ -9,7 +9,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "One complete authored CC0 affine orbit diagram and six focused native oval/dash/instance paint controls; document and control counts remain separate.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "cases": [
     {
       "id": "nonuniform-solid",
@@ -93,20 +93,6 @@
       "selection": "Declared before production edits to exercise remaining nonuniform oval construction, native dashed shader strokes and composed instance paint maps.",
       "reference": "references/nonuniform-linear-use.png",
       "referenceSha256": "389bdb2caee0dba234840a6677f44235b97128777bca527bb31de2dfa636c84c",
-      "licenseEvidence": "Original contributor work dedicated through its leading SPDX CC0-1.0 declaration."
-    },
-    {
-      "id": "affine-orbit-diagram",
-      "input": "affine-orbit-diagram.svg",
-      "sourceSha256": "e17fba9b8279abcdb4bb5fcdd58237f2b97532fcbec492455a1b900744871076",
-      "width": 160,
-      "height": 112,
-      "background": "transparent",
-      "role": "document",
-      "license": "CC0-1.0",
-      "selection": "Declared before production edits to exercise remaining nonuniform oval construction, native dashed shader strokes and composed instance paint maps.",
-      "reference": "references/affine-orbit-diagram.png",
-      "referenceSha256": "1a762136ee9b378e7610d3fade6eea3840e184a9f23c89bfd148b5764406c81c",
       "licenseEvidence": "Original contributor work dedicated through its leading SPDX CC0-1.0 declaration."
     }
   ],

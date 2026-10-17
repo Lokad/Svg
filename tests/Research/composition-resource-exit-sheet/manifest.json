@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One complete CC0 document and three independent controls for finite C3 mask units/restoration, C4 active horizontal image alignment and C5 mixed image/vector tile-local clipping. Frozen before correction; reuse qualified resource cascade witnesses, no combination quota.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "declarationBaseRevision": "a5912fc244f9242d0d0850330ea7094bee994324",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
@@ -9,23 +9,6 @@
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
   "cases": [
-    {
-      "id": "composition-resource-sheet",
-      "input": "composition-resource-sheet.svg",
-      "width": 480,
-      "height": 160,
-      "background": "transparent",
-      "license": "CC0-1.0",
-      "sourceSha256": "1c6e7b091b420b3910c41af923ce9c8d83220344b6138ba9d2d1dc32adce71c1",
-      "scale": 1,
-      "role": "document-output",
-      "licenseEvidence": "composition-resource-sheet.svg",
-      "selection": "Existing finite C3-C5 requirements: complete document and independent diagnostic controls, selected before correction.",
-      "reference": "references/composition-resource-sheet.png",
-      "referenceSha256": "f88f14b7079d8d949b8cb0a2f9c57c3eed8ef43e833b7552393846468c7e636e",
-      "linuxReference": "references/linux64/composition-resource-sheet.png",
-      "linuxReferenceSha256": "f88f14b7079d8d949b8cb0a2f9c57c3eed8ef43e833b7552393846468c7e636e"
-    },
     {
       "id": "mask-unit-scopes",
       "input": "mask-unit-scopes.svg",

@@ -24,7 +24,7 @@ public sealed class SvgMarkerReferenceTests
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement root = manifest.RootElement;
-        Assert.Equal(family switch { "marker-content" => 20, "path-marker-content" => 23, "marker-instance-content" => 16, _ => throw new InvalidDataException("Unknown marker family.") }, root.GetProperty("cases").GetArrayLength());
+        Assert.Equal(family switch { "marker-content" => 20, "path-marker-content" => 23, "marker-instance-content" => 15, _ => throw new InvalidDataException("Unknown marker family.") }, root.GetProperty("cases").GetArrayLength());
         Assert.Equal(3, root.GetProperty("freshProcessCaptures").GetInt32());
         Assert.Equal("healthy", Required(root, "captureStartupHealth"));
         Assert.True(root.GetProperty("captureProfilesCleaned").GetBoolean());

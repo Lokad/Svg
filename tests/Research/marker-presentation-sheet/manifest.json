@@ -9,7 +9,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "Finite required E4 marker-container presentation follow-up: explicit display/visibility admission and inherited stroke cap/join/dash attributes. These code guards are within promised container presentation/ordinary paint; no new shape/API grid or scope deferral. Cases declared before native capture or correction.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "linuxReferenceQualification": {
     "date": "2026-10-16",
     "platform": "linux64",
@@ -19,58 +19,6 @@
     "byteIdenticalToFrozenReferences": true
   },
   "cases": [
-    {
-      "id": "marker-presentation-sheet",
-      "input": "marker-presentation-sheet.svg",
-      "width": 256,
-      "height": 112,
-      "scale": 1,
-      "background": "transparent",
-      "role": "document-output",
-      "license": "CC0-1.0",
-      "sourceSha256": "6b2046a4dac263855a0e318b5b91dc95331d74fbef5a4e2b296107bb37845189",
-      "licenseEvidence": "Original authored work dedicated to the public domain through the asset SPDX CC0-1.0 declaration.",
-      "selection": "Declared whole marker presentation document or independent display/visibility and inherited-stroke control; controls do not increase document counts.",
-      "declarationBaseRevision": "887bf2ee50ff17fb9a95ebd05f247def410900d0",
-      "reference": "references/marker-presentation-sheet.png",
-      "referenceSha256": "8f693fd3787eb25fe8874c6a8dab936486cc26286ea4e83aab42cf53b3db467a",
-      "captures": [
-        {
-          "pngSha256": "8f693fd3787eb25fe8874c6a8dab936486cc26286ea4e83aab42cf53b3db467a",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "8f693fd3787eb25fe8874c6a8dab936486cc26286ea4e83aab42cf53b3db467a",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "8f693fd3787eb25fe8874c6a8dab936486cc26286ea4e83aab42cf53b3db467a",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ],
-      "linuxReference": "references/linux64/marker-presentation-sheet.png",
-      "linuxReferenceSha256": "8f693fd3787eb25fe8874c6a8dab936486cc26286ea4e83aab42cf53b3db467a",
-      "linuxCaptures": [
-        {
-          "pngSha256": "8f693fd3787eb25fe8874c6a8dab936486cc26286ea4e83aab42cf53b3db467a",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "8f693fd3787eb25fe8874c6a8dab936486cc26286ea4e83aab42cf53b3db467a",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "8f693fd3787eb25fe8874c6a8dab936486cc26286ea4e83aab42cf53b3db467a",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ]
-    },
     {
       "id": "marker-display-visibility",
       "input": "marker-display-visibility.svg",

@@ -549,11 +549,11 @@ public sealed class SvgFontLayoutDiagramTests
     {
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
-            yield return [item.GetProperty("id").GetString() ?? throw new InvalidDataException()];
+            if (item.GetProperty("role").GetString() != "font-contract-fixture")
+                yield return [item.GetProperty("id").GetString() ?? throw new InvalidDataException()];
     }
 
     [Theory]
-    [InlineData("remaining-label-path-sheet")]
     [InlineData("nested-list-rotation")]
     [InlineData("word-spacing")]
     [InlineData("solid-decorations")]
@@ -566,7 +566,12 @@ public sealed class SvgFontLayoutDiagramTests
     {
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", "remaining-label-path-sheet");
         await ValidateDeclared(directory, identity, [new("Example", 400, false), new("Mono", 700, false)]);
-        if (identity != "remaining-label-path-sheet") return;
+    }
+
+    [Fact]
+    public void Remaining_label_font_selection_keeps_its_independent_native_proofs()
+    {
+        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "remaining-label-path-sheet");
         using JsonDocument proof = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "font-use-proof", "qualification.json")));
         string platform = OperatingSystem.IsLinux() ? "linux" : "windows";
         string referencePath = OperatingSystem.IsLinux() ? "references/linux64/remaining-label-path-sheet.png" : "references/remaining-label-path-sheet.png";

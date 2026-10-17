@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One retained CC0 SVG Translate document and seven separate layout/leaf/strike controls. Frozen intended-font references precede implementation; full finite G9 promises remain open.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "fontPack": "font-pack.json",
   "fontProvenance": "font-provenance.json",
   "cases": [
@@ -13,7 +13,7 @@
       "explicitViewport": true,
       "scale": 1,
       "background": "transparent",
-      "role": "document-output",
+      "role": "font-contract-fixture",
       "sourceSha256": "26021a4c908e55f71011313971043cdcf716c7323474df87cdda4726c2248706",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/98/SVG_Translate_textpath.svg",
       "sourcePage": "https://commons.wikimedia.org/wiki/File:SVG_Translate_textpath.svg",

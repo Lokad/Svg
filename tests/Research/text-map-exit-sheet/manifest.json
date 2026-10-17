@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One complete MIT text-map document and four focused controls exact against unchanged platform references. Rendered-group local-use labels reuse captured source text, ordinary supplied-font layout and scene-owned glyph paints. Remaining text paint/instance boundaries, composite flags and private validation stay required.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "fontPack": "../supplied-font-labels/font-pack.json",
   "fontPackId": "public-noto-sans",
   "fontProvenance": "../supplied-font-labels/font-provenance.json",
@@ -12,7 +12,7 @@
       "width": 416,
       "height": 256,
       "background": "transparent",
-      "role": "document-output",
+      "role": "font-contract-fixture",
       "license": "MIT",
       "selection": "Complete remaining T1 label/paint/admission document; every panel and sibling must match unchanged native references",
       "sourceSha256": "a0cdae6c8eb3ee205bde62db73d4ced3344f454629742c94f6512caa5a887c9f",

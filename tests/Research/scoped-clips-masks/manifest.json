@@ -9,7 +9,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "One original CC0 scoped card diagram, three original CC0 mechanism controls and two verbatim MIT core-admission controls. Document and control denominators remain separate.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "cases": [
     {
       "id": "composed-quadratic-clip",
@@ -51,20 +51,6 @@
       "selection": "Declared before production edits for composed native curve clips, transformed custom mask regions, mask-container opacity and scoped local uses.",
       "reference": "references/mask-container-opacity.png",
       "referenceSha256": "c9d2ca2bb09a9d794946b87565c2af319fefd5a249faf6a9e159536f3c02bf75",
-      "licenseEvidence": "Original contributor work dedicated through its leading SPDX CC0-1.0 declaration."
-    },
-    {
-      "id": "scoped-card-diagram",
-      "input": "scoped-card-diagram.svg",
-      "sourceSha256": "7aa261d81262b7d77f18e5fecce96331c6927dd277f0f0a239063ece3d698fcb",
-      "width": 160,
-      "height": 112,
-      "background": "transparent",
-      "role": "document",
-      "license": "CC0-1.0",
-      "selection": "Declared before production edits for composed native curve clips, transformed custom mask regions, mask-container opacity and scoped local uses.",
-      "reference": "references/scoped-card-diagram.png",
-      "referenceSha256": "e72b3cea0af9475fb4ceca235583b09ab9e174731d102a8a8b2df5df19b6cb4f",
       "licenseEvidence": "Original contributor work dedicated through its leading SPDX CC0-1.0 declaration."
     },
     {

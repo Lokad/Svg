@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One complete CC0 static root/resource cascade sheet and three original controls declared before correction; the fourth control freezes the discovered scaled-glyph viewport clipping defect before its correction.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "fontPack": "../font-layout-diagram/font-pack.json",
   "fontPrograms": [
     {
@@ -11,57 +11,6 @@
     }
   ],
   "cases": [
-    {
-      "id": "cascade-sheet",
-      "input": "cascade-sheet.svg",
-      "width": 300,
-      "height": 180,
-      "background": "transparent",
-      "role": "document",
-      "license": "CC0-1.0",
-      "sourceSha256": "e004b34d94865c7023a345719d1847c9ab319cdeb318ad58fd40a4dc33037e96",
-      "oracleInputSha256": "9d3aaf9e27366c8d1f39ec150db4d73347ef654230d0e081a84b2b27b5ea1a26",
-      "selection": "Declared at 50fa1022 before production correction; root/nested viewport/defs/symbol cascade, inherited supplied-font metrics, child selectors and inline/important precedence.",
-      "reference": "references/cascade-sheet.png",
-      "linuxReference": "references/linux64/cascade-sheet.png",
-      "referenceSha256": "c3cd217bf9fb3c0eba9c314fe4306839c2e4390be21c9c23378eb9faa7c02bd2",
-      "captures": [
-        {
-          "pngSha256": "c3cd217bf9fb3c0eba9c314fe4306839c2e4390be21c9c23378eb9faa7c02bd2",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "c3cd217bf9fb3c0eba9c314fe4306839c2e4390be21c9c23378eb9faa7c02bd2",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "c3cd217bf9fb3c0eba9c314fe4306839c2e4390be21c9c23378eb9faa7c02bd2",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ],
-      "linuxReferenceSha256": "0621220a497ef3e113c42f479294c29b464f5f90f37428d9167dfe6d64f046ae",
-      "linuxCaptures": [
-        {
-          "pngSha256": "0621220a497ef3e113c42f479294c29b464f5f90f37428d9167dfe6d64f046ae",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "0621220a497ef3e113c42f479294c29b464f5f90f37428d9167dfe6d64f046ae",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "0621220a497ef3e113c42f479294c29b464f5f90f37428d9167dfe6d64f046ae",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ],
-      "platformReferencesByteIdentical": false
-    },
     {
       "id": "root-fill-font",
       "input": "root-fill-font.svg",

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One complete CC0 document and two independent controls for the remaining C1 cubic-pair clip union and C2 affine ancestor/scaled viewport boundaries. Frozen before correction; no combination quota.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "declarationBaseRevision": "55acca5937da036ddadc3bc603a9b9139e899628",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
@@ -9,23 +9,6 @@
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
   "cases": [
-    {
-      "id": "cubic-viewport-sheet",
-      "input": "cubic-viewport-sheet.svg",
-      "width": 384,
-      "height": 160,
-      "background": "transparent",
-      "license": "CC0-1.0",
-      "sourceSha256": "16365913de9e2838286aabd9a261031b4ba7be8e57275f55e1a90c619214fdeb",
-      "scale": 1,
-      "role": "document-output",
-      "licenseEvidence": "cubic-viewport-sheet.svg",
-      "selection": "Existing finite C1/C2 dependencies declared before production changes; complete document plus independent diagnostic controls.",
-      "reference": "references/cubic-viewport-sheet.png",
-      "referenceSha256": "69192f40a86eb194a4e827538f0780dba2fa99fc277d73635ff0aafa45f2eb5f",
-      "linuxReference": "references/linux64/cubic-viewport-sheet.png",
-      "linuxReferenceSha256": "69192f40a86eb194a4e827538f0780dba2fa99fc277d73635ff0aafa45f2eb5f"
-    },
     {
       "id": "cubic-pair-pending",
       "input": "cubic-pair-pending.svg",

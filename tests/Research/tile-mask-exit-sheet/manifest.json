@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "C5b original tile-mask input and complete bounded tile document; no combination quota.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "declarationBaseRevision": "c50524fb35dfd9125a2ff025e966d18b656e4560",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
@@ -9,23 +9,6 @@
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
   "cases": [
-    {
-      "id": "tile-mask-sheet",
-      "input": "tile-mask-sheet.svg",
-      "width": 256,
-      "height": 128,
-      "background": "transparent",
-      "role": "document-output",
-      "license": "MIT",
-      "selection": "Complete tile-mask integration with uniform leaf and spatial group masks, forward local use, repeat boundaries and unaffected siblings",
-      "sourceSha256": "6d3ecc17a5ae17efaf3286f869f1da6907ad02f5a79facfdc687294cc327b72f",
-      "scale": 1,
-      "licenseEvidence": "LICENSE.txt",
-      "reference": "references/tile-mask-sheet.png",
-      "referenceSha256": "02d3a36ecf5f4b8027343e06cb0c59f48b2898349f5eba797906e0326ad1f6b1",
-      "linuxReference": "references/linux64/tile-mask-sheet.png",
-      "linuxReferenceSha256": "02d3a36ecf5f4b8027343e06cb0c59f48b2898349f5eba797906e0326ad1f6b1"
-    },
     {
       "id": "original-masked-tile",
       "input": "original-masked-tile.svg",

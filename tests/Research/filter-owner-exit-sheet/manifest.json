@@ -9,7 +9,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "Qualified owner/source controls plus six independently frozen filter/mask/clip pair and ownership regressions; controls do not increase full-document counts.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "linuxReferenceQualification": {
     "date": "2026-10-16",
     "platform": "linux64",
@@ -19,58 +19,6 @@
     "byteIdenticalToFrozenReferences": true
   },
   "cases": [
-    {
-      "id": "filter-owner-sheet",
-      "input": "filter-owner-sheet.svg",
-      "width": 336,
-      "height": 216,
-      "scale": 1,
-      "background": "transparent",
-      "role": "document-output",
-      "license": "CC0-1.0",
-      "sourceSha256": "3cef884f647dcae86edbe70890e048289928383e9c24c5650746a235212a10d4",
-      "licenseEvidence": "Original authored work dedicated to the public domain through the asset SPDX CC0-1.0 declaration.",
-      "selection": "Retained whole owner-composition document or diagnosed independent owner/source-boundary control; controls do not increase document counts.",
-      "declarationBaseRevision": "f76af25b0c9395154fc7c10af4fa9d5119aa4147",
-      "reference": "references/filter-owner-sheet.png",
-      "referenceSha256": "783c8f67ae2d43bc1d27b708ad7f4ef40391d55e3053ef8d0f1a6d2e002c683c",
-      "captures": [
-        {
-          "pngSha256": "783c8f67ae2d43bc1d27b708ad7f4ef40391d55e3053ef8d0f1a6d2e002c683c",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "783c8f67ae2d43bc1d27b708ad7f4ef40391d55e3053ef8d0f1a6d2e002c683c",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "783c8f67ae2d43bc1d27b708ad7f4ef40391d55e3053ef8d0f1a6d2e002c683c",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ],
-      "linuxReference": "references/linux64/filter-owner-sheet.png",
-      "linuxReferenceSha256": "783c8f67ae2d43bc1d27b708ad7f4ef40391d55e3053ef8d0f1a6d2e002c683c",
-      "linuxCaptures": [
-        {
-          "pngSha256": "783c8f67ae2d43bc1d27b708ad7f4ef40391d55e3053ef8d0f1a6d2e002c683c",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "783c8f67ae2d43bc1d27b708ad7f4ef40391d55e3053ef8d0f1a6d2e002c683c",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "783c8f67ae2d43bc1d27b708ad7f4ef40391d55e3053ef8d0f1a6d2e002c683c",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ]
-    },
     {
       "id": "affine-masked-source",
       "input": "affine-masked-source.svg",

@@ -11045,8 +11045,8 @@ at 512×538, CC0 `inv-113` gradient-mask example at 512×880 and CC0 `inv-114`
 soccerball mask at 195×195. Matching browser materializations insert root dimensions
 only when absent. Nine fresh healthy, cleaned captures per platform form stable
 triples; Linux bytes match the frozen Windows PNGs. The
-[manifest](../tests/Research/remaining-gap-exports/manifest.json) and
-[source records](../tests/Research/remaining-gap-exports/source-records.json)
+[manifest](https://github.com/Lokad/Svg/blob/284f8ec2/tests/Research/remaining-gap-exports/manifest.json) and
+[source records](https://github.com/Lokad/Svg/blob/284f8ec2/tests/Research/remaining-gap-exports/source-records.json)
 retain rights, revisions, asset checksums and the declared frames.
 
 All three originals reject at `5531c080`. The next complete deliverable is `inv-112`:
@@ -11388,7 +11388,7 @@ queue is 22/22 complete; finite G2–G9 exits and S17 remain open.
 ### Compound clip document delivery (2026-10-10)
 
 Both original CC0 baseball documents are complete in
-[their frozen bank](../tests/Research/compound-clip-documents/manifest.json):
+[their frozen bank](https://github.com/Lokad/Svg/blob/284f8ec2/tests/Research/compound-clip-documents/manifest.json):
 `inv-120`, 130×130 transparent, and `inv-119`, 1200×800 transparent, are exact
 through six APIs on Windows/Linux. Original SVG bytes, options and browser PNGs
 stay unchanged. The shared admission work removes compound curved clips, child

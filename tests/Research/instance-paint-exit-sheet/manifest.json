@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One finite MIT instance/paint document and four controls render exactly on Windows/Linux. Shared definition/font discovery, path/resource replay and text paints preserve original inputs/options/references.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "fontPack": "../supplied-font-labels/font-pack.json",
   "fontPackId": "public-noto-sans",
   "fontProvenance": "../supplied-font-labels/font-provenance.json",
@@ -12,7 +12,7 @@
       "width": 416,
       "height": 384,
       "background": "transparent",
-      "role": "document-output",
+      "role": "font-contract-fixture",
       "license": "MIT",
       "selection": "Finite remaining T1 definition/font admission, path/resource source replay and shader/degenerate paints; every panel and sibling must match unchanged references",
       "sourceSha256": "bb29821609d34cf248d812f1786a350b8b681642f6400a64977e46984632212e",

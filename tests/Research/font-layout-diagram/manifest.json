@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One retained complete CC0 supplied-font layout guide and four distinct missing-semantic controls; platform references freeze before correction.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "fontPack": "font-pack.json",
   "fontPrograms": [
     {
@@ -68,58 +68,6 @@
       ],
       "platformReferencesByteIdentical": false,
       "captureTransport": "data-url-image"
-    },
-    {
-      "id": "font-layout-diagram",
-      "input": "font-layout-diagram.svg",
-      "width": 432,
-      "height": 320,
-      "background": "transparent",
-      "role": "document",
-      "license": "CC0-1.0",
-      "sourceSha256": "bac2066817a635360a43c6af789dbda35e3e0b6a3010efb7e031fb7234a733b3",
-      "oracleInputSha256": "c008ece06a5fa3ab2b5cd68e1f732db2120aca4dc3a96a8ae5544f814f582b22",
-      "selection": "Declared complete layout guide and four orthogonal controls before production correction; original source/options and both supplied public static TrueType face-0 programs freeze.",
-      "reference": "references/font-layout-diagram.png",
-      "referenceSha256": "c81a67e230c9c492db6e0482649f0d8a6ba780c758041071bb3d79548888f3c2",
-      "captures": [
-        {
-          "pngSha256": "c81a67e230c9c492db6e0482649f0d8a6ba780c758041071bb3d79548888f3c2",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "c81a67e230c9c492db6e0482649f0d8a6ba780c758041071bb3d79548888f3c2",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "c81a67e230c9c492db6e0482649f0d8a6ba780c758041071bb3d79548888f3c2",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ],
-      "linuxReference": "references/linux64/font-layout-diagram.png",
-      "linuxReferenceSha256": "f2bb5bdb188d8b440a25ff12f925720a7adef9aaa6359cf757a84b21fb646715",
-      "linuxCaptures": [
-        {
-          "pngSha256": "f2bb5bdb188d8b440a25ff12f925720a7adef9aaa6359cf757a84b21fb646715",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "f2bb5bdb188d8b440a25ff12f925720a7adef9aaa6359cf757a84b21fb646715",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "f2bb5bdb188d8b440a25ff12f925720a7adef9aaa6359cf757a84b21fb646715",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ],
-      "platformReferencesByteIdentical": false,
-      "captureTransport": "blob-image"
     },
     {
       "id": "position-rotate-lists",

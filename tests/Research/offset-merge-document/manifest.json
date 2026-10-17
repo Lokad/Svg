@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One unchanged public-domain offset/merge document, five exact CC0 rotated-oval controls and three predeclared supplied-font text paint controls. Complete finite G3/G8/G9 promises remain open.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "selectedAt": "e353b330",
   "fontPack": "font-pack.json",
   "fontProvenance": "font-provenance.json",
@@ -23,7 +23,7 @@
       "explicitViewport": true,
       "scale": 1,
       "background": "transparent",
-      "role": "document-output",
+      "role": "font-contract-fixture",
       "sourceSha256": "a1a3658bbf81743bb2bce1102269692ba81b6a7b3125d23f450ccf5b569fd89b",
       "originalBytes": 1589,
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:SVGfeOffset01.svg",

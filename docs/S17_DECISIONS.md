@@ -43,7 +43,8 @@ host-owned; ordinary builds/CI stay independent of private configuration. Existi
 manifest compatibility and font-format/shaping boundaries remain unchanged, with
 no other-renderer comparison, dependency, coordination or shared management project.
 
-The original numerical/freeze decisions below remain binding. Counts alone do
+The original source/reference freezes remain binding. F1 supersedes the old
+numerical membership and percentage gates below. Counts alone do
 not establish completion; the final audit also proves public font acceptance,
 resource/API/lifetime, packaging and support-boundary requirements. Historical
 renderer/mechanism details live in their linked evidence and design records.

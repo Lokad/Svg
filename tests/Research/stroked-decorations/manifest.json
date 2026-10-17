@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One unchanged licensed W3C decoration document and four CC0 controls for promised G9 direct/path stroked decoration behavior. References and font-use triples precede renderer changes.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "declarationBaseRevision": "3dc00785",
   "fontPack": "../offset-merge-document/font-pack.json",
   "fontPackId": "public-noto-sans",
@@ -22,131 +22,6 @@
     "rootDimensions": "For the W3C document only, replace native root width/height with the explicitly declared 1200x400 output viewport; retain converter bytes and viewBox."
   },
   "cases": [
-    {
-      "id": "w3c-textdecoration01",
-      "input": "w3c-textdecoration01.svg",
-      "width": 1200,
-      "height": 400,
-      "scale": 1,
-      "background": "transparent",
-      "role": "document-output",
-      "license": "LicenseRef-W3C-Software-2023",
-      "sourceSha256": "2eb8b91cd641955bc348cfa56cb32888599ef809fecdcb82e946bd959021b285",
-      "selection": "Original W3C whole stroked-decoration example.",
-      "explicitViewport": true,
-      "licenseEvidence": "LICENSE.txt",
-      "reference": "references/w3c-textdecoration01.png",
-      "referenceSha256": "f32576b1b543bd45b0b3ff3944b9e1765019e6ae20985b99a94b4e107060e0c2",
-      "captures": [
-        {
-          "pngSha256": "f32576b1b543bd45b0b3ff3944b9e1765019e6ae20985b99a94b4e107060e0c2",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "f32576b1b543bd45b0b3ff3944b9e1765019e6ae20985b99a94b4e107060e0c2",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "f32576b1b543bd45b0b3ff3944b9e1765019e6ae20985b99a94b4e107060e0c2",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ],
-      "fontUseProof": {
-        "windows": [
-          {
-            "id": "w3c-textdecoration01",
-            "mode": "missing",
-            "changedPixels": 69032,
-            "stability": "identical",
-            "freshProcessCaptures": 3,
-            "startupHealth": "healthy",
-            "profileCleaned": true,
-            "pngSha256": "13d2a9643ec55af00ad95a402d8432df6b4a769040b553d2a11e1481d252f823",
-            "inputFontProgramChangedOnly": true
-          },
-          {
-            "id": "w3c-textdecoration01",
-            "mode": "corrupt",
-            "changedPixels": 69032,
-            "stability": "identical",
-            "freshProcessCaptures": 3,
-            "startupHealth": "healthy",
-            "profileCleaned": true,
-            "pngSha256": "13d2a9643ec55af00ad95a402d8432df6b4a769040b553d2a11e1481d252f823",
-            "inputFontProgramChangedOnly": true
-          },
-          {
-            "id": "w3c-textdecoration01",
-            "mode": "substituted",
-            "changedPixels": 82275,
-            "stability": "identical",
-            "freshProcessCaptures": 3,
-            "startupHealth": "healthy",
-            "profileCleaned": true,
-            "pngSha256": "bf638af41303bc80a199653f6faf79bf8e5b3795f92560cffedfdc557549dbff",
-            "inputFontProgramChangedOnly": true
-          }
-        ],
-        "linux": [
-          {
-            "id": "w3c-textdecoration01",
-            "mode": "missing",
-            "changedPixels": 60457,
-            "stability": "identical",
-            "freshProcessCaptures": 3,
-            "startupHealth": "healthy",
-            "profileCleaned": true,
-            "pngSha256": "59cea8592320c8fac1c93216686f904233440eaae07b360620c98c840d04a9c0",
-            "inputFontProgramChangedOnly": true
-          },
-          {
-            "id": "w3c-textdecoration01",
-            "mode": "corrupt",
-            "changedPixels": 60457,
-            "stability": "identical",
-            "freshProcessCaptures": 3,
-            "startupHealth": "healthy",
-            "profileCleaned": true,
-            "pngSha256": "59cea8592320c8fac1c93216686f904233440eaae07b360620c98c840d04a9c0",
-            "inputFontProgramChangedOnly": true
-          },
-          {
-            "id": "w3c-textdecoration01",
-            "mode": "substituted",
-            "changedPixels": 73014,
-            "stability": "identical",
-            "freshProcessCaptures": 3,
-            "startupHealth": "healthy",
-            "profileCleaned": true,
-            "pngSha256": "6a4f8461fc04f20a17a88b0faa24b28aa20123c5024c99fcf08075823c045269",
-            "inputFontProgramChangedOnly": true
-          }
-        ]
-      },
-      "linuxReference": "references/linux64/w3c-textdecoration01.png",
-      "linuxReferenceSha256": "5f2e72426147da7a8192e968e8028266c5c4380a263d5cbbd63b93f056e1be99",
-      "linuxCaptures": [
-        {
-          "pngSha256": "5f2e72426147da7a8192e968e8028266c5c4380a263d5cbbd63b93f056e1be99",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "5f2e72426147da7a8192e968e8028266c5c4380a263d5cbbd63b93f056e1be99",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "5f2e72426147da7a8192e968e8028266c5c4380a263d5cbbd63b93f056e1be99",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ],
-      "oracleInputSha256": "e72dd37347f6b18d637c866d720bfe1ba3fe0ec5d1d4b54a2a6f518f5daa8beb"
-    },
     {
       "id": "direct-stroked-decoration",
       "input": "direct-stroked-decoration.svg",

@@ -1,48 +1,12 @@
-# Retained stroked-decoration document
+# stroked-decorations regression coverage
 
-This bank retains one unchanged W3C SVG document and four authored CC0 controls
-for the finite G9 decoration promises. All five declared outputs are exact on
-Windows/Linux: **1/1 complete document / 4/4 exact controls**. The controls cover
-direct and curved decoration, three lines with stroke-only glyphs/reversed paint
-order, and signed/percentage offsets with rotation, anchoring and horizontal stretch.
-[PLAN.md](../../../PLAN.md) owns delivery and wider support closure.
+Full-document membership is retired under [F1](../../../PLAN.md#full-svg-fixture-replacement-f1).
+The [inventory disposition](../../../docs/INVENTORY.md#research-full-documents) records
+replacement coverage and retained focused behavior.
 
-The original [W3C example](https://www.w3.org/TR/2026/CR-SVG2-20261006/images/text/textdecoration01.svg)
-retains all 974 bytes, including its physical dimensions, viewBox, four labels,
-painted spans and blue frame. Its declared output is 1200×400 transparent.
-The [source record](source-provenance.json) and [full W3C notice](LICENSE.txt)
-retain attribution, publication status and software-license terms. This is a
-redistributable W3C markup code example, not a public-domain dedication. All four
-controls carry their own CC0-1.0 headers; no original asset is
-relicensed or edited to insert a notice.
+The [current manifest](manifest.json) retains 4 focused cases with unchanged
+source/options/platform references. Existing dedicated font/resource/API fixtures
+remain governed by their own contracts and add no full-document membership.
 
-The caller supplies the unchanged public Noto Sans Regular face 0 under the
-initial/explicit `serif` request using the existing
-[offset-document pack](../offset-merge-document/font-pack.json) and
-[OFL program notice](../supplied-font-labels/fonts/OFL.txt). No machine font is
-used by the converter. Oracle-only transport embeds that exact program and maps
-only the declared initial/explicit serif alias to its named face inside the SVG
-image. Oracle transport also replaces the W3C root dimensions to honor the declared
-1200×400 output viewport. Removing the font insertion and restoring the original
-physical dimensions recovers the original XML tree. Defining
-@font-face for the generic family alone leaves the native fallback unchanged;
-that rejected transport is retained in the ignored sourcing study.
-
-Healthy fresh-process Windows/Linux triples and missing/corrupt/substituted-font
-triples are acquired before renderer corrections. Converter sources, declared
-options, original programs and the first healthy stable native references remain
-frozen. The [manifest](manifest.json) records intended assets and proof summaries;
-full captures and health logs remain in the existing ignored
-[study](../../../artifacts/stroked-decorations-20261015/). A control denominator is
-separate from the complete document. No wider G9 or release completion is claimed.
-
-The [qualification receipt](../../../artifacts/maintenance-review-20261012/decorated-path-qualified-results.json)
-records complete platform checks and asset preservation. Declaring fill/stroke
-paint reuses native rectangle/stroke replay; bounded compound binary clips retain
-skip-ink exclusions without clipping the upper stroke fringe. Path decorations
-retain physical fragment origins separately from fitted glyph origins, scalar
-tangent precision, and under/overline clip ordering. Rectangle and hairline replay
-share binary-region bands; clipped narrow fills reconstruct native fringe coverage.
-Paint changes also end native shaping-width fragments. Filled decorations and
-earlier supplied-font results remain protected. The W3C document is counted separately from the 50
-selected development documents, corporate cohort and twelve authored documents.
+[Historical sources, mechanisms and qualification](https://github.com/Lokad/Svg/blob/284f8ec2/tests/Research/stroked-decorations/README.md)
+remain dated evidence for the original whole document and its controls.

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One complete CC0 document and four independent C1 clip-union controls, plus the unchanged MIT 43-child Core input. Frozen before correction; applicable clip-rule cascade is shared C5 acceptance.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "declarationBaseRevision": "bf114d8188290f103f122dafd7f331ab401a6eb4",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
@@ -9,23 +9,6 @@
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
   "cases": [
-    {
-      "id": "clip-union-exit-sheet",
-      "input": "clip-union-exit-sheet.svg",
-      "width": 1024,
-      "height": 160,
-      "background": "transparent",
-      "license": "CC0-1.0",
-      "sourceSha256": "5cae04797da88be026e923566103c08da4d189b59da0497718b4c11bd080c16b",
-      "scale": 1,
-      "role": "document-output",
-      "licenseEvidence": "clip-union-exit-sheet.svg",
-      "selection": "Named C1 clip-union exit and applicable C5 clip-rule cascade, declared before production changes; no shape or API combination grid.",
-      "reference": "references/clip-union-exit-sheet.png",
-      "referenceSha256": "e7c59341a9dab9beecc57e40e761229b7f9a05edbceeefa8dd15c3c221b662f6",
-      "linuxReference": "references/linux64/clip-union-exit-sheet.png",
-      "linuxReferenceSha256": "e7c59341a9dab9beecc57e40e761229b7f9a05edbceeefa8dd15c3c221b662f6"
-    },
     {
       "id": "mixed-rectangle-path",
       "input": "mixed-rectangle-path.svg",

@@ -31,13 +31,12 @@ public sealed class SvgCurvedFontDocumentTests
 
     public static IEnumerable<object[]> Cases()
     {
-        foreach (string family in new[] { "curved-font-documents", "static-css-document", "mask-group-documents", "offset-merge-document" })
+        foreach (string family in new[] { "curved-font-documents", "static-css-document" })
         {
             string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
             using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
             foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
-                if ((family != "mask-group-documents" || Required(item, "role") == "document-output")
-                    && (family != "offset-merge-document" || Required(item, "rendererOutcome") == "exact")) yield return new object[] { family, Required(item, "id") };
+                if (Required(item, "role") != "font-contract-fixture") yield return new object[] { family, Required(item, "id") };
         }
     }
 
@@ -113,8 +112,8 @@ public sealed class SvgCurvedFontDocumentTests
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement root = manifest.RootElement;
-        Assert.Equal(family == "static-css-document" ? 18 : family == "offset-merge-document" ? 9 : 6, root.GetProperty("cases").GetArrayLength());
-        Assert.Equal(1, root.GetProperty("cases").EnumerateArray().Count(c => Required(c, "role") == "document-output"));
+        Assert.Equal(family == "static-css-document" ? 17 : family == "offset-merge-document" ? 9 : 6, root.GetProperty("cases").GetArrayLength());
+        Assert.DoesNotContain(root.GetProperty("cases").EnumerateArray(), c => Required(c, "role") == "document-output");
         Assert.Equal(Required(root, "fontProgramSha256"), Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Path.Combine(FontDirectory, "fonts", "NotoSans-Regular.ttf")))));
         Assert.True(File.ReadAllText(Path.Combine(FontDirectory, "fonts", "OFL.txt")).Contains("SIL OPEN FONT LICENSE", StringComparison.Ordinal));
         foreach (JsonElement item in root.GetProperty("cases").EnumerateArray())
@@ -142,7 +141,6 @@ public sealed class SvgCurvedFontDocumentTests
     private static string FontDirectory => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-labels");
 
     [Theory]
-    [InlineData("inv-145-1400x1000-transparent")]
     [InlineData("group-alias")]
     [InlineData("nested-opacity")]
     [InlineData("mapped-strokes")]
@@ -152,7 +150,6 @@ public sealed class SvgCurvedFontDocumentTests
         => await AssertRetainedOutcome("mask-group-documents", identity);
 
     [Theory]
-    [InlineData("inv-146-800x700-transparent")]
     [InlineData("rotated-fill")]
     [InlineData("rotated-stroke")]
     [InlineData("reflected-composed")]

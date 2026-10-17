@@ -1,40 +1,7 @@
 {
   "schemaVersion": 1,
-  "purpose": "One complete original acceptance document and twelve focused fidelity controls for shared use-instance marker inheritance, definition paint and source replay; three finite unsupported boundaries remain explicit.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "cases": [
-    {
-      "id": "original-logo-marker-mark-64-transparent",
-      "document": "original-logo-marker-mark",
-      "input": "../../Fixtures/original/logo-marker-mark.svg",
-      "reference": "references/original-logo-marker-mark-64-transparent.png",
-      "width": 64,
-      "height": 64,
-      "scale": 1,
-      "background": "transparent",
-      "role": "document-output",
-      "sourceSha256": "dd5d0095e1d0b25a1d91c1b1f61795020b562bd48b122dbd757a14c58976afd0",
-      "license": "CC0-1.0",
-      "creator": "Lokad.Svg contributors",
-      "selection": "Existing complete CC0 acceptance fixture, original bytes and existing declared 64x64 transparent output; frozen before removing its measured use-instance marker gate.",
-      "referenceSha256": "0ed4896a08c011102bd3eddd5e695a0711d7ed104b8e0eb7551c34e9848fc087",
-      "captures": [
-        {
-          "pngSha256": "0ed4896a08c011102bd3eddd5e695a0711d7ed104b8e0eb7551c34e9848fc087",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "0ed4896a08c011102bd3eddd5e695a0711d7ed104b8e0eb7551c34e9848fc087",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "0ed4896a08c011102bd3eddd5e695a0711d7ed104b8e0eb7551c34e9848fc087",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ]
-    },
     {
       "id": "instance-source-width",
       "input": "instance-source-width.svg",

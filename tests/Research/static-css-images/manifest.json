@@ -9,57 +9,8 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "One complete CC0 CSS/image card and three orthogonal controls, exact against frozen independent platform references. Document and control denominators remain separate.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "cases": [
-    {
-      "id": "css-image-card",
-      "input": "css-image-card.svg",
-      "width": 320,
-      "height": 200,
-      "background": "transparent",
-      "role": "document",
-      "license": "CC0-1.0",
-      "sourceSha256": "07c3cc5b156aed73aef4b3ffbc5e3bd15861da46a5839d5b4af7e41740dc2526",
-      "selection": "Declared complete CSS/image card and focused PNG-format, pixel-mapping and nested-rule controls before production changes; input/reference bytes freeze for the full deliverable.",
-      "reference": "references/css-image-card.png",
-      "licenseEvidence": "Original repository-authored SVG and embedded PNG pixels dedicated through the SPDX CC0-1.0 source header.",
-      "referenceSha256": "c6365547aff9e7fafa779bb68362c029b5c8c254d502a1650ec578ccc4483823",
-      "platformReferencesByteIdentical": true,
-      "captures": [
-        {
-          "pngSha256": "c6365547aff9e7fafa779bb68362c029b5c8c254d502a1650ec578ccc4483823",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "c6365547aff9e7fafa779bb68362c029b5c8c254d502a1650ec578ccc4483823",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "c6365547aff9e7fafa779bb68362c029b5c8c254d502a1650ec578ccc4483823",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ],
-      "linuxCaptures": [
-        {
-          "pngSha256": "c6365547aff9e7fafa779bb68362c029b5c8c254d502a1650ec578ccc4483823",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "c6365547aff9e7fafa779bb68362c029b5c8c254d502a1650ec578ccc4483823",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        },
-        {
-          "pngSha256": "c6365547aff9e7fafa779bb68362c029b5c8c254d502a1650ec578ccc4483823",
-          "startupHealth": "healthy",
-          "profileCleaned": true
-        }
-      ]
-    },
     {
       "id": "gray-alpha-solid",
       "input": "gray-alpha-solid.svg",

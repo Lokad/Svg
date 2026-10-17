@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One complete CC0 retained-instance effect document and eight independent controls. Source bytes/options and native platform triples were frozen before admission/replay corrections. Two focused translated-wrapper controls retain the independently discovered x/y placement defect.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
   "fontPack": "../supplied-font-labels/font-pack.json",
   "fontPackId": "public-noto-sans",
   "fontProgram": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
@@ -13,7 +13,7 @@
       "height": 216,
       "scale": 1,
       "background": "transparent",
-      "role": "document-output",
+      "role": "font-contract-fixture",
       "license": "CC0-1.0",
       "sourceSha256": "f448b3b185193cfb90ecb5aa6ac9381441b2924b8640f7a82d1c0445f337ccf3",
       "declarationBaseRevision": "ff29cdf84da90e5d6ce745fc57015a2ea49b23a0",
