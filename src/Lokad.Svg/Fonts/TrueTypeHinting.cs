@@ -80,8 +80,9 @@ internal sealed class TrueTypeHinting : IDisposable
     private int AxisPpem => _axis == TrueTypeHintAxis.X ? ScaleHorizontal(_ppem) : _ppem;
     private int _count, _depth, _loop = 1, _rp0, _rp1, _rp2;
     private int _deltaBase = 9, _deltaShift = 3, _cutIn = 68, _instructionControl;
+    private int _minimumDistance = 64, _singleWidthCutIn, _singleWidth;
     private int _scanControl, _scanType;
-    private bool _scanConfigured;
+    private bool _scanConfigured, _autoFlip = true;
     private TrueTypeHintAxis _axis = TrueTypeHintAxis.X;
     private TrueTypeHintRound _round = TrueTypeHintRound.Grid;
     private TrueTypeHintZone _zp0 = TrueTypeHintZone.Glyph, _zp1 = TrueTypeHintZone.Glyph, _zp2 = TrueTypeHintZone.Glyph;
@@ -145,8 +146,10 @@ internal sealed class TrueTypeHinting : IDisposable
         ushort[] savedEnds = _ends;
         bool savedComposite = _compositeGlyph;
         int savedCutIn = _cutIn, savedDeltaBase = _deltaBase, savedDeltaShift = _deltaShift, savedControl = _instructionControl;
+        int savedMinimum = _minimumDistance, savedSingleCutIn = _singleWidthCutIn, savedSingleWidth = _singleWidth;
         int savedScanControl = _scanControl, savedScanType = _scanType;
         bool savedScanConfigured = _scanConfigured;
+        bool savedAutoFlip = _autoFlip;
         TrueTypeHintRound savedRound = _round;
         _glyph = points; _ends = ends; _compositeGlyph = composite;
         try { Run(program, TrueTypeHintProgramKind.Glyph); }
@@ -155,7 +158,9 @@ internal sealed class TrueTypeHinting : IDisposable
             _glyph = savedPoints; _ends = savedEnds; _compositeGlyph = savedComposite;
             _cutIn = savedCutIn; _deltaBase = savedDeltaBase; _deltaShift = savedDeltaShift;
             _instructionControl = savedControl; _round = savedRound;
+            _minimumDistance = savedMinimum; _singleWidthCutIn = savedSingleCutIn; _singleWidth = savedSingleWidth;
             _scanControl = savedScanControl; _scanType = savedScanType; _scanConfigured = savedScanConfigured;
+            _autoFlip = savedAutoFlip;
         }
     }
 
@@ -186,7 +191,7 @@ internal sealed class TrueTypeHinting : IDisposable
             // Glyph-local reference/zone/vector state starts at the prescribed defaults.
             _rp0 = _rp1 = _rp2 = 0; _zp0 = _zp1 = _zp2 = TrueTypeHintZone.Glyph;
             _axis = TrueTypeHintAxis.X; _loop = 1;
-            if ((_instructionControl & 2) != 0) { _round = TrueTypeHintRound.Grid; _cutIn = 68; _deltaBase = 9; _deltaShift = 3; _scanControl = _scanType = 0; _scanConfigured = false; }
+            if ((_instructionControl & 2) != 0) { _round = TrueTypeHintRound.Grid; _cutIn = 68; _deltaBase = 9; _deltaShift = 3; _scanControl = _scanType = 0; _scanConfigured = false; _minimumDistance = 64; _singleWidthCutIn = _singleWidth = 0; _autoFlip = true; }
         }
         try
         {
@@ -237,10 +242,13 @@ internal sealed class TrueTypeHinting : IDisposable
                 case 0x17: _loop = Pop(); if (_loop < 0 || _loop > _stack.Length) throw Invalid("The TrueType point loop is outside its stack bound."); break;
                 case 0x18: _round = TrueTypeHintRound.Grid; break;
                 case 0x19: _round = TrueTypeHintRound.HalfGrid; break;
+                case 0x1A: _minimumDistance = Pop(); break;
                 case 0x1B:
                     if (conditionalDepth == 0) throw Invalid("ELSE occurred outside a TrueType conditional.");
                     Skip(false); conditionalDepth--; break;
                 case 0x1D: _cutIn = Pop(); break;
+                case 0x1E: _singleWidthCutIn = Pop(); break;
+                case 0x1F: _singleWidth = Divide(Pop(), 65536, Math.Max(_scale.Horizontal, _scale.Vertical)); break;
                 case 0x20: Push(Peek(1)); break;
                 case 0x21: Pop(); break;
                 case 0x22: _count = 0; break;
@@ -272,11 +280,13 @@ internal sealed class TrueTypeHinting : IDisposable
                     _rp0 = _rp1 = p; break;
                 }
                 case 0x30: case 0x31: InterpolateUntouched((TrueTypeHintAxis)(opcode & 1)); break;
+                case 0x32: case 0x33: ShiftPoints(opcode); break;
                 case 0x34: case 0x35: ShiftContour(opcode); break;
                 case 0x38:
                 {
                     int amount = Pop(); for (int i = 0; i < _loop; i++) { _work.Consume(_token); ref TrueTypeHintPoint p = ref Point(_zp2, Pop()); Move(ref p, amount, true); } _loop = 1; break;
                 }
+                case 0x39: InterpolatePoints(); break;
                 case 0x3C:
                 {
                     int reference = Coordinate(Point(_zp0, _rp0), false);
@@ -311,6 +321,8 @@ internal sealed class TrueTypeHinting : IDisposable
                     Push(distance); break;
                 }
                 case 0x4B: Push(AxisPpem); break;
+                case 0x4D: _autoFlip = true; break;
+                case 0x4E: _autoFlip = false; break;
                 case 0x50: case 0x51: case 0x52: case 0x53: case 0x54: case 0x55:
                 case 0x5A: case 0x5B: case 0x60: case 0x61: case 0x62: case 0x63:
                 {
@@ -332,13 +344,15 @@ internal sealed class TrueTypeHinting : IDisposable
                     if (conditionalDepth == 0) throw Invalid("EIF occurred outside a TrueType conditional.");
                     conditionalDepth--; break;
                 case 0x5C: Push(Pop() == 0 ? 1 : 0); break;
-                case 0x5D: case 0x71: case 0x72: DeltaPoints(opcode); break;
+                case 0x5D: case 0x71: case 0x72: Delta(opcode, false); break;
+                case 0x73: case 0x74: case 0x75: Delta(opcode, true); break;
                 case 0x5E: _deltaBase = Pop(); break;
                 case 0x5F: _deltaShift = Pop(); if (_deltaShift is < 0 or > 6) throw Invalid("The TrueType delta shift is invalid."); break;
                 case 0x64: Push(checked((int)Math.Abs((long)Pop()))); break;
                 case 0x65: Push(checked(-Pop())); break;
                 case 0x66: Push(Pop() & ~63); break;
                 case 0x67: Push(checked((Pop() + 63) & ~63)); break;
+                case >= 0x68 and <= 0x6B: Push(Round(Pop())); break;
                 case 0x78: { int condition = Pop(), offset = Pop(); if (condition != 0) Jump(offset); break; }
                 case 0x79: { int condition = Pop(), offset = Pop(); if (condition == 0) Jump(offset); break; }
                 case 0x1C: Jump(Pop()); break;
@@ -363,6 +377,7 @@ internal sealed class TrueTypeHinting : IDisposable
                     break;
                 }
                 case 0x70: { int value = Pop(); _cvt[Index(Pop(), _cvt.Length)] = _compositeGlyph ? StoreControl(value) : Divide(value, 65536, AxisScale); break; }
+                case >= 0xC0: MoveRelative(opcode); break;
                 default: throw new SvgException(SvgErrorCode.UnsupportedFeature, $"TrueType hint opcode 0x{opcode:X2} is not implemented.");
             }
 
@@ -397,25 +412,113 @@ internal sealed class TrueTypeHinting : IDisposable
             }
             void ShiftContour(byte op)
             {
-                TrueTypeHintZone referenceZone = op == 0x34 ? _zp1 : _zp0;
-                int referenceIndex = op == 0x34 ? _rp2 : _rp1;
-                TrueTypeHintPoint reference = Point(referenceZone, referenceIndex);
-                int delta = checked(Coordinate(reference, false) - Coordinate(reference, true));
+                (TrueTypeHintZone referenceZone, int referenceIndex, int delta) = ReferenceShift(op);
                 int contour = Pop(), first, end;
                 if (_zp2 == TrueTypeHintZone.Twilight) { if (contour != 0) throw Invalid("A twilight contour index is invalid."); first = 0; end = _twilight.Length; }
                 else { int index = Index(contour, _ends.Length); first = index == 0 ? 0 : _ends[index - 1] + 1; end = _ends[index] + 1; }
                 for (int i = first; i < end; i++) { _work.Consume(_token); if (_zp2 == referenceZone && i == referenceIndex) continue; ref TrueTypeHintPoint p = ref Point(_zp2, i); Move(ref p, delta, false); }
             }
-            void DeltaPoints(byte op)
+            (TrueTypeHintZone Zone, int Index, int Delta) ReferenceShift(byte op)
+            {
+                TrueTypeHintZone zone = (op & 1) == 0 ? _zp1 : _zp0;
+                int index = (op & 1) == 0 ? _rp2 : _rp1;
+                TrueTypeHintPoint point = Point(zone, index);
+                return (zone, index, checked(Coordinate(point, false) - Coordinate(point, true)));
+            }
+            void ShiftPoints(byte op)
+            {
+                (_, _, int delta) = ReferenceShift(op);
+                for (int i = 0; i < _loop; i++)
+                {
+                    _work.Consume(_token);
+                    ref TrueTypeHintPoint point = ref Point(_zp2, Pop());
+                    Move(ref point, delta, true);
+                }
+                _loop = 1;
+            }
+            void MoveRelative(byte op)
+            {
+                bool indirect = op >= 0xE0;
+                int control = indirect ? ReadControl(Index(Pop(), _cvt.Length)) : 0;
+                int index = Pop();
+                ref TrueTypeHintPoint point = ref Point(_zp1, index);
+                TrueTypeHintPoint reference = Point(_zp0, _rp0);
+                if (indirect)
+                {
+                    if (Math.Abs((long)control - _singleWidth) < _singleWidthCutIn)
+                        control = control >= 0 ? _singleWidth : checked(-_singleWidth);
+                    if (_zp1 == TrueTypeHintZone.Twilight)
+                    {
+                        point.OriginalX = reference.OriginalX; point.OriginalY = reference.OriginalY;
+                        if (_axis == TrueTypeHintAxis.X) point.OriginalX = checked(point.OriginalX + control);
+                        else point.OriginalY = checked(point.OriginalY + control);
+                        point.X = point.OriginalX; point.Y = point.OriginalY;
+                        reference = Point(_zp0, _rp0);
+                    }
+                }
+                int original = !indirect && !_compositeGlyph && _zp0 == TrueTypeHintZone.Glyph && _zp1 == TrueTypeHintZone.Glyph
+                    ? Divide(checked(_axis == TrueTypeHintAxis.X ? point.UnscaledX - reference.UnscaledX : point.UnscaledY - reference.UnscaledY), 65536, AxisScale)
+                    : checked(Coordinate(point, true) - Coordinate(reference, true));
+                // Retain native signed single-width cut-in and round the distance,
+                // rather than independently rounding either endpoint.
+                if (!indirect && _singleWidthCutIn > 0 && original < (long)_singleWidth + _singleWidthCutIn && original > (long)_singleWidth - _singleWidthCutIn)
+                    original = original >= 0 ? _singleWidth : checked(-_singleWidth);
+                if (indirect && _autoFlip && (original ^ control) < 0) control = checked(-control);
+                if (indirect && (op & 4) != 0 && _zp0 == _zp1 && Math.Abs((long)control - original) > _cutIn) control = original;
+                int distance = indirect ? control : original;
+                if ((op & 4) != 0) distance = Round(distance);
+                if ((op & 8) != 0) distance = original >= 0 ? Math.Max(distance, _minimumDistance) : Math.Min(distance, checked(-_minimumDistance));
+                int current = checked(Coordinate(point, false) - Coordinate(reference, false));
+                Move(ref point, checked(distance - current), true);
+                _rp1 = _rp0; _rp2 = index;
+                if ((op & 16) != 0) _rp0 = index;
+            }
+
+            void InterpolatePoints()
+            {
+                TrueTypeHintPoint first = Point(_zp0, _rp1), last = Point(_zp1, _rp2);
+                bool design = !_compositeGlyph && _zp0 == TrueTypeHintZone.Glyph && _zp1 == TrueTypeHintZone.Glyph && _zp2 == TrueTypeHintZone.Glyph;
+                int originalRange = OriginalDistance(last);
+                int currentRange = checked(Coordinate(last, false) - Coordinate(first, false));
+                for (int i = 0; i < _loop; i++)
+                {
+                    _work.Consume(_token);
+                    ref TrueTypeHintPoint point = ref Point(_zp2, Pop());
+                    int original = OriginalDistance(point);
+                    int distance = originalRange != 0 ? Divide(original, originalRange, currentRange) : original;
+                    int current = checked(Coordinate(point, false) - Coordinate(first, false));
+                    Move(ref point, checked(distance - current), true);
+                }
+                _loop = 1;
+
+                int OriginalDistance(TrueTypeHintPoint point)
+                {
+                    if (!design) return checked(Coordinate(point, true) - Coordinate(first, true));
+                    int distance = checked(_axis == TrueTypeHintAxis.X ? point.UnscaledX - first.UnscaledX : point.UnscaledY - first.UnscaledY);
+                    return _scale.Horizontal == _scale.Vertical ? distance : Divide(distance, 65536, AxisScale);
+                }
+            }
+
+            void Delta(byte op, bool control)
             {
                 int count = Pop(); if (count < 0 || count > _count / 2) throw Invalid("TrueType delta operands exceed the stack.");
                 for (int i = 0; i < count; i++)
                 {
                     _work.Consume(_token); int p = Pop(), argument = Pop();
                     if (argument is < 0 or > 255) throw Invalid("A TrueType delta argument is invalid.");
-                    int ppem = checked(_deltaBase + (op == 0x71 ? 16 : op == 0x72 ? 32 : 0) + (argument >> 4));
-                    ref TrueTypeHintPoint point = ref Point(_zp0, p);
-                    if (ppem == AxisPpem) { int step = (argument & 15) - 8; if (step >= 0) step++; Move(ref point, step * (64 >> _deltaShift), true); }
+                    int ppem = checked(_deltaBase + (op is 0x71 or 0x74 ? 16 : op is 0x72 or 0x75 ? 32 : 0) + (argument >> 4));
+                    int step = (argument & 15) - 8; if (step >= 0) step++;
+                    int amount = step * (64 >> _deltaShift);
+                    if (control)
+                    {
+                        int index = Index(p, _cvt.Length);
+                        if (ppem == AxisPpem) _cvt[index] = checked(_cvt[index] + StoreControl(amount));
+                    }
+                    else
+                    {
+                        ref TrueTypeHintPoint point = ref Point(_zp0, p);
+                        if (ppem == AxisPpem) Move(ref point, amount, true);
+                    }
                 }
             }
             void InterpolateUntouched(TrueTypeHintAxis axis)

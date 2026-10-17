@@ -4,7 +4,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
-public sealed class TrueTypeHintingTests
+public sealed partial class TrueTypeHintingTests
 {
     private static TrueTypeHintTarget Target => new(35, TrueTypeHintQueryFlags.Grayscale, TrueTypeHintControlScale.FractionalFontUnits, TrueTypeHintPreparation.Single);
 
