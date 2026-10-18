@@ -255,7 +255,9 @@ including simple Windows tip dropout control distinct from smart dropout control
 Windows selects natural or symmetric LCD sampling from the supplied font's
 bounded gasp recommendations and actual raster size. Natural sampling retains
 native fixed-point curve/dropout decisions, including excluded stubs and exact
-terminating vertices. Font-selected unfitted Windows ranges retain integer-size
+terminating vertices. Natural half-scan overshoot must reach the selected pixel
+center; neighboring full scans retain exact vertex continuation.
+Font-selected unfitted Windows ranges retain integer-size
 flags, signed point rounding and inherited metric origins; component assembly
 precedes final device rounding. Ranges requiring fitting still execute the bounded
 interpreter. Windows/Linux numerical rules remain separate.

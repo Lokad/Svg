@@ -375,10 +375,9 @@ internal static class SvgGlyphLcdCoverage
                     missing[index] = (candidates[index] & CellCoverage.Dropout) != 0
                         ? candidates[index] & (CellCoverage.LowerGap | CellCoverage.UpperGap) : CellCoverage.None;
                 }
-                // First require a continuation at the neighboring full scan.
-                // A half-cell-wide stroke can instead end at an overshooting
-                // half scan. Natural also owns exact terminating vertices at
-                // the other directed limit; symmetric sampling excludes them.
+                // Full neighboring scans establish continuation, including
+                // natural-mode terminating vertices. A wide half-scan overshoot
+                // must reach the selected center in the natural profile.
                 for (int stage = 0; stage < 2; stage++)
                 {
                     if (stage != 0)
@@ -406,9 +405,11 @@ internal static class SvgGlyphLcdCoverage
                         {
                             work.Consume(token);
                             double center = origin + index;
-                            bool includeTouch = stage != 0 || side != 0;
-                            if ((missing[index] & CellCoverage.LowerGap) != 0 && HasSpan(scratch[..count], center - 1, center, includeTouch, mode == SvgGlyphLcdMode.Natural, work, token)) missing[index] &= ~CellCoverage.LowerGap;
-                            if ((missing[index] & CellCoverage.UpperGap) != 0 && HasSpan(scratch[..count], center, center + 1, includeTouch, mode == SvgGlyphLcdMode.Natural, work, token)) missing[index] &= ~CellCoverage.UpperGap;
+                            bool includeTouch = stage != 0 || side != 0 || (endpoint && mode == SvgGlyphLcdMode.Natural);
+                            bool centeredOvershoot = stage != 0 && mode == SvgGlyphLcdMode.Natural;
+                            double lower = centeredOvershoot ? center : center - 1, upper = centeredOvershoot ? center : center + 1;
+                            if ((missing[index] & CellCoverage.LowerGap) != 0 && HasSpan(scratch[..count], lower, center, includeTouch, mode == SvgGlyphLcdMode.Natural, work, token)) missing[index] &= ~CellCoverage.LowerGap;
+                            if ((missing[index] & CellCoverage.UpperGap) != 0 && HasSpan(scratch[..count], center, upper, includeTouch, mode == SvgGlyphLcdMode.Natural, work, token)) missing[index] &= ~CellCoverage.UpperGap;
                         }
                     }
                 }

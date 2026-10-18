@@ -26,6 +26,8 @@
   sizing, component placement, signed point rounding and inherited metric origins.
 - Correct Linux Latin light stem bounds against pending edges, preserving the
   native quarter-pixel collapse guard and unlinked serif offsets.
+- Correct natural Windows LCD stub continuation at exact neighboring vertices
+  and bound half-scan overshoot to the selected pixel center.
 
 ## 0.2.0 - 2026-10-18
 
