@@ -18,7 +18,8 @@ dotnet add package Lokad.Svg --version 0.2.0
 `SvgConverter` provides synchronous and asynchronous output to independently
 owned memory, caller memory or a writable stream. `SvgPreparedDocument` supports
 explicit preparation and one conversion. Fonts use an explicit catalog and
-fallback policy; the renderer does not discover machine fonts or fetch resources.
+fallback policy, with ordered CSS family lists and caller-defined generic mappings;
+the renderer does not discover machine fonts or fetch resources.
 Size/work limits, cancellation and borrowed-storage lifetimes apply throughout.
 Memory accounting follows the [approximate resource policy](docs/SUPPORT_MATRIX.md#resource-limits-and-memory-accounting).
 

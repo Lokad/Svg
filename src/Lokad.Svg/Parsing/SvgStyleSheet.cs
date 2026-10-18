@@ -102,10 +102,17 @@ internal static class SvgStyleSheet
     {
         int sourceIndex = 0;
         int removedCharacters = 0;
+        SvgCssQuotedState quotes = default;
+        bool declarations = false, propertyValue = false;
         while (sourceIndex < value.Length)
         {
             if ((sourceIndex & 4095) == 0) workCounter.Consume(cancellationToken);
-            if (value[sourceIndex] != '/' || sourceIndex + 1 == value.Length || value[sourceIndex + 1] != '*') { sourceIndex++; continue; }
+            bool syntax = quotes.IsSyntax(value[sourceIndex]);
+            if (syntax && value[sourceIndex] == '{') { declarations = true; propertyValue = false; }
+            else if (syntax && value[sourceIndex] == '}') { declarations = false; propertyValue = false; }
+            else if (syntax && declarations && value[sourceIndex] == ':') propertyValue = true;
+            else if (syntax && value[sourceIndex] == ';') propertyValue = false;
+            if (!syntax || value[sourceIndex] != '/' || sourceIndex + 1 == value.Length || value[sourceIndex + 1] != '*') { sourceIndex++; continue; }
             int commentStart = sourceIndex;
             sourceIndex += 2;
             while (sourceIndex + 1 < value.Length && (value[sourceIndex] != '*' || value[sourceIndex + 1] != '/'))
@@ -115,7 +122,9 @@ internal static class SvgStyleSheet
             }
             if (sourceIndex + 1 >= value.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Stylesheet comments must be terminated.");
             sourceIndex += 2;
-            removedCharacters += sourceIndex - commentStart;
+            // Preserve value token boundaries and the established removal
+            // of comments inside selectors and property names.
+            removedCharacters += sourceIndex - commentStart - (propertyValue ? 1 : 0);
         }
         if (removedCharacters == 0) return new(value, null);
         int commentlessLength = value.Length - removedCharacters;
@@ -127,15 +136,23 @@ internal static class SvgStyleSheet
             {
                 int sourceIndex = 0;
                 int destinationIndex = 0;
+                SvgCssQuotedState quotes = default;
+                bool declarations = false, propertyValue = false;
                 while (sourceIndex < state.Value.Length)
                 {
                     if ((sourceIndex & 4095) == 0) state.WorkCounter.Consume(state.CancellationToken);
-                    if (state.Value[sourceIndex] != '/' || sourceIndex + 1 == state.Value.Length || state.Value[sourceIndex + 1] != '*')
+                    bool syntax = quotes.IsSyntax(state.Value[sourceIndex]);
+                    if (syntax && state.Value[sourceIndex] == '{') { declarations = true; propertyValue = false; }
+                    else if (syntax && state.Value[sourceIndex] == '}') { declarations = false; propertyValue = false; }
+                    else if (syntax && declarations && state.Value[sourceIndex] == ':') propertyValue = true;
+                    else if (syntax && state.Value[sourceIndex] == ';') propertyValue = false;
+                    if (!syntax || state.Value[sourceIndex] != '/' || sourceIndex + 1 == state.Value.Length || state.Value[sourceIndex + 1] != '*')
                     {
                         destination[destinationIndex++] = state.Value[sourceIndex++];
                         continue;
                     }
                     sourceIndex += 2;
+                    if (propertyValue) destination[destinationIndex++] = ' ';
                     while (state.Value[sourceIndex] != '*' || state.Value[sourceIndex + 1] != '/')
                     {
                         if ((sourceIndex & 4095) == 0) state.WorkCounter.Consume(state.CancellationToken);
@@ -280,10 +297,11 @@ internal static class SvgStyleSheet
 
     private static int FindCharacter(string value, char character, int position, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        SvgCssQuotedState quotes = default;
         while (position < value.Length)
         {
             ConsumeCheckpoint(position, workCounter, cancellationToken);
-            if (value[position] == character) return position;
+            if (quotes.IsSyntax(value[position]) && value[position] == character) return position;
             position++;
         }
         return -1;
@@ -302,10 +320,11 @@ internal static class SvgStyleSheet
 
     private static bool ContainsCharacter(string value, char character, int start, int end, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        SvgCssQuotedState quotes = default;
         for (int position = start; position < end; position++)
         {
             ConsumeCheckpoint(position, workCounter, cancellationToken);
-            if (value[position] == character) return true;
+            if (quotes.IsSyntax(value[position]) && value[position] == character) return true;
         }
         return false;
     }

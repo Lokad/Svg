@@ -152,13 +152,7 @@ internal static partial class OpenTypeFont
 
         private int ScaleHorizontal(int value) => (_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) == 0
             ? Scale(value, _scale.Horizontal) : ScaleWindowsHorizontalPoint(value, _horizontalSize, _metrics.UnitsPerEm);
-        private static int Scale(int value, int factor)
-        {
-            long product = (long)value * factor;
-            long scaled = (Math.Abs(product) + 32768) >> 16;
-            if (scaled > int.MaxValue + (product < 0 ? 1L : 0L)) throw new SvgException(SvgErrorCode.LimitExceeded, "A composite device coordinate exceeds its signed bound.");
-            return checked((int)(product < 0 ? -scaled : scaled));
-        }
+        private int Scale(int value, int factor) => ScaleTrueTypeFixed(value, factor, _target);
 
         public void Dispose() { _machine.Dispose(); _reservation.Dispose(); }
     }

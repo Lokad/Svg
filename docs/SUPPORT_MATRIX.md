@@ -189,7 +189,9 @@ back to machine fonts. The host owns acquisition, credentials, retries and cache
 See [FontProbe](../tools/Lokad.Svg.FontProbe/README.md) for local/HTTP host usage.
 
 Family lists preserve order, quoted names, CSS escapes and inheritance. Missing
-families are skipped before catalog fallback. SvgFontFaceRequest.FromCss
+families are skipped before catalog fallback. Quoted priority punctuation, braces
+and comment markers remain part of a family name through inline/stylesheet
+parsing; an actual priority suffix retains its cascade behavior. SvgFontFaceRequest.FromCss
 exposes decoded named/generic candidates. SvgFontSelectionPolicy supplies host
 generic mappings and ordered fallback restrictions to snapshot/prepared-document
 creation; quoted "serif" remains a literal name. Existing single-family
@@ -240,6 +242,9 @@ super-rounding, projected coordinate and relative moves, signed MIN/MAX,
 ODD/EVEN predicates and curve-tag range changes. Fitting preserves the native
 Windows/Linux rounding distinctions and simple/composite outline tags. Other
 executed instructions outside the supported subset fail explicitly.
+Initial points and control values retain the Windows signed half-unit rule;
+Latin light fitting keeps nearby edges distinct according to the measured
+standard stem width, with a quarter-pixel maximum merging allowance.
 Instruction-free static programs retain their metric origins and native masks,
 including simple Windows tip dropout control distinct from smart dropout control.
 

@@ -84,7 +84,7 @@ internal static partial class OpenTypeFont
         TrueTypeHintPoint[] points = new TrueTypeHintPoint[pointCount + 4];
         int[] cvt = new int[cvtCount];
         int controlScale = target.ControlScale == TrueTypeHintControlScale.FractionalFontUnits ? (scale >> 6) << 6 : scale;
-        for (int i = 0; i < cvt.Length; i++) { work.Consume(token); cvt[i] = ScaleWith(ReadInt16(bytes.Span, cvtRange.Offset + i * 2), controlScale); }
+        for (int i = 0; i < cvt.Length; i++) { work.Consume(token); cvt[i] = ScaleTrueTypeFixed(ReadInt16(bytes.Span, cvtRange.Offset + i * 2), controlScale, target); }
         for (int i = 0; i < pointCount; i++) { work.Consume(token); points[i] = new(ScaleHorizontal(decoded.Points[i].X), Scale(decoded.Points[i].Y), decoded.Points[i].X, decoded.Points[i].Y) { IsOnCurve = decoded.Points[i].IsOnCurve }; }
         OpenTypeGlyphHeader header = ParseGlyphHeader(bytes, structure.Value.GlyphRange) ?? throw InvalidFont("A nonempty glyph has no header.");
         int advanceIndex = Math.Min(glyphIndex, metrics.NumberOfHMetrics - 1);
@@ -135,18 +135,11 @@ internal static partial class OpenTypeFont
             }
         }
 
-        int Scale(int value) => ScaleWith(value, scale);
+        int Scale(int value) => ScaleTrueTypeFixed(value, scale, target);
         int ScaleHorizontal(int value)
         {
-            if ((target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) == 0) return ScaleWith(value, horizontalScale);
+            if ((target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) == 0) return ScaleTrueTypeFixed(value, horizontalScale, target);
             return ScaleWindowsHorizontalPoint(value, horizontalSize, metrics.UnitsPerEm);
-        }
-        int ScaleWith(int value, int factor)
-        {
-            long product = (long)value * factor;
-            long scaled = (Math.Abs(product) + 32768) >> 16;
-            if (scaled > int.MaxValue + (product < 0 ? 1L : 0L)) throw new SvgException(SvgErrorCode.LimitExceeded, "A TrueType device coordinate exceeds its signed bound.");
-            return checked((int)(product < 0 ? -scaled : scaled));
         }
         (TrueTypeHintProfile, OpenTypeTableRange, OpenTypeTableRange, OpenTypeTableRange) ReadHintTables()
         {
@@ -178,6 +171,21 @@ internal static partial class OpenTypeFont
         }
     }
 
+    /// <summary>Scales initial points and CVT values with the native target's signed half-unit rule; owns no storage.</summary>
+    private static int ScaleTrueTypeFixed(int value, int factor, TrueTypeHintTarget target)
+    {
+        long product = (long)value * factor;
+        if ((target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0)
+        {
+            long rounded = (product + 32768) >> 16;
+            if (rounded < int.MinValue || rounded > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "A TrueType device coordinate exceeds its signed bound.");
+            return (int)rounded;
+        }
+        long scaled = (Math.Abs(product) + 32768) >> 16;
+        if (scaled > int.MaxValue + (product < 0 ? 1L : 0L)) throw new SvgException(SvgErrorCode.LimitExceeded, "A TrueType device coordinate exceeds its signed bound.");
+        return checked((int)(product < 0 ? -scaled : scaled));
+    }
+
     private static int RoundTrueTypeHorizontalMetric(int value, TrueTypeHintTarget target)
     {
         int grid = (target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0 ? 4 : 64;
@@ -190,7 +198,9 @@ internal static partial class OpenTypeFont
     private static int ScaleWindowsHorizontalPoint(int value, double size, ushort unitsPerEm)
     {
         float scaled = value * ((float)size / unitsPerEm) * 64;
-        double rounded = Math.Round(scaled, MidpointRounding.AwayFromZero);
+        // Native initial points round negative half units toward positive infinity.
+        // Keep this float scaling distinct from interpreter distance arithmetic.
+        double rounded = Math.Floor((double)scaled + .5);
         if (!double.IsFinite(rounded) || rounded < int.MinValue || rounded > int.MaxValue)
             throw new SvgException(SvgErrorCode.LimitExceeded, "A horizontal glyph point exceeds its fixed-point bound.");
         return (int)rounded;

@@ -23,6 +23,12 @@ The source URI must be absolute HTTP(S), end at a directory, and have no query o
 fragment. The host has no credential, endpoint or platform discovery; configure
 authentication outside the tracked command and source code.
 
+The command uses manifest aliases and fallback families. Applications that need
+generic-family mappings supply `SvgFontSelectionPolicy` explicitly when creating
+a font snapshot or prepared document. The probe does not discover mappings or
+read an adjacent host-policy file automatically. Family lists retain authored
+order; coverage-based selection uses only supplied programs.
+
 For either source, use `--svg -` to read raw SVG bytes from standard input. This
 path does not seek, decode, strip a BOM or pre-read a length; it stops before
 retaining data above the normal SVG input limit.

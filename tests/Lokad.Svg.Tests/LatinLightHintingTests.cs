@@ -6,6 +6,24 @@ namespace Lokad.Svg.Tests;
 
 public sealed class LatinLightHintingTests
 {
+    [Fact]
+    public void Standard_stem_bounds_edge_merging_independently_of_the_largest_linked_stem()
+    {
+        // Two original clockwise boxes have separate 20- and 80-unit horizontal
+        // stems. The pinned hinter uses the first width / 5 for edge proximity.
+        OpenTypeGlyphPoint[] points = [new(0, 0, true), new(0, 20, true), new(300, 20, true), new(300, 0, true),
+            new(500, 0, true), new(500, 80, true), new(800, 80, true), new(800, 0, true)];
+        OpenTypeGlyphPoint[] unchanged = points.ToArray();
+        RenderBudget budget = new(long.MaxValue);
+
+        LatinStemWidths widths = LatinLightHinting.MeasureStemWidths(points, [3, 7], 2048, budget, new(long.MaxValue), CancellationToken.None);
+
+        Assert.Equal(80, widths.MaximumWidth);
+        Assert.Equal(4, widths.EdgeDistanceThreshold);
+        Assert.Equal(unchanged, points);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     [Theory]
     [InlineData(1)]
     [InlineData(4)]

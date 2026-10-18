@@ -15,5 +15,6 @@ there. The authored SVG is dedicated to the public domain under CC0 1.0.
 Offline tests verify acquisition, selected family, fallback status, shared-file
 deduplication, existing independent metrics and direct/prepared exact output.
 Synthetic controls separately cover generic/literal distinctions, host policy
-and mixed styled spans. Generic browser-policy and glyph-coverage qualification
-remain separate cases.
+and mixed styled spans, including quoted priority punctuation, braces and comment
+markers through inline styles and stylesheets. Glyph-coverage qualification is
+retained in the separate [mixed-coverage document](../glyph-fallback/README.md).

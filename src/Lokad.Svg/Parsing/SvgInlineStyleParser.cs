@@ -206,7 +206,7 @@ internal static class SvgInlineStyleParser
         {
             bool isImportant = TryStripImportant(rawValue, out ReadOnlySpan<char> stripped);
             if (stripped.IsEmpty) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Empty inline style declarations are not implemented.");
-            if (stripped.Contains("!important".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Misplaced !important inline style declarations are not implemented.");
+            if (ContainsUnquotedImportant(stripped)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Misplaced !important inline style declarations are not implemented.");
             if (mapKeywords && TryMapPaintKeyword(property, stripped, out string? mapped))
             {
                 if (!isImportant && (important & flag) != 0) return;
@@ -251,7 +251,7 @@ internal static class SvgInlineStyleParser
         static bool ValidateInertTypography(ReadOnlySpan<char> property, ReadOnlySpan<char> raw, ParserWorkCounter? work, CancellationToken token)
         {
             TryStripImportant(raw, out ReadOnlySpan<char> value);
-            if (value.Contains("!important".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (ContainsUnquotedImportant(value))
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Misplaced !important inline style declarations are not implemented.");
             return SvgInertPresentationSyntax.TryValidateTypography(property, value, work, token);
         }
@@ -259,7 +259,7 @@ internal static class SvgInlineStyleParser
         static bool ValidateRenderingDefaults(ReadOnlySpan<char> property, ReadOnlySpan<char> raw, bool isGeometry, ParserWorkCounter? work, CancellationToken token)
         {
             TryStripImportant(raw, out ReadOnlySpan<char> value);
-            if (value.Contains("!important".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (ContainsUnquotedImportant(value))
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Misplaced !important inline style declarations are not implemented.");
             return SvgInertPresentationSyntax.TryValidateRenderingDefaults(property, value, isGeometry, work, token);
         }
@@ -277,8 +277,19 @@ internal static class SvgInlineStyleParser
             if (trimmed.Length <= 9 || !trimmed[^9..].Equals("important".AsSpan(), StringComparison.OrdinalIgnoreCase)) return false;
             ReadOnlySpan<char> before = trimmed[..^9].TrimEnd();
             if (before.IsEmpty || before[^1] != '!') return false;
+            SvgCssQuotedState quotes = default;
+            for (int index = 0; index < before.Length; index++)
+                if (!quotes.IsSyntax(before[index]) && index == before.Length - 1) return false;
             stripped = before[..^1].TrimEnd();
             return true;
+        }
+
+        static bool ContainsUnquotedImportant(ReadOnlySpan<char> value)
+        {
+            SvgCssQuotedState quotes = default;
+            for (int index = 0; index < value.Length; index++)
+                if (quotes.IsSyntax(value[index]) && value[index] == '!' && value[index..].StartsWith("!important".AsSpan(), StringComparison.OrdinalIgnoreCase)) return true;
+            return false;
         }
     }
 
@@ -386,19 +397,14 @@ internal static class SvgInlineStyleParser
             {
                 ConsumeCheckpoints();
                 int start = _position;
-                char quote = '\0';
-                bool escaped = false;
+                SvgCssQuotedState quotes = default;
                 while (_position < _value.Length)
                 {
                     char character = _value[_position];
-                    if (escaped) escaped = false;
-                    else if (character == '\\') escaped = true;
-                    else if (quote != '\0') { if (character == quote) quote = '\0'; }
-                    else if (character is '\'' or '"') quote = character;
-                    else if (character == ';') break;
+                    if (quotes.IsSyntax(character) && character == ';') break;
                     _position++; ConsumeCheckpoints();
                 }
-                if (quote != '\0') throw new SvgException(SvgErrorCode.MalformedInput, "An inline style string is not closed.");
+                if (!quotes.IsClosed) throw new SvgException(SvgErrorCode.MalformedInput, "An inline style string is not closed.");
                 declaration = _value[start.._position].Trim();
                 if (_position < _value.Length) _position++;
                 ConsumeCheckpoints();

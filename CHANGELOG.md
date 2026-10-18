@@ -14,6 +14,10 @@
   positioning and text paths, with bounded acquisition and meaningful failures.
 - Correct valid instruction-free TrueType metric origins and native Windows
   simple dropout control, including the interaction between both scan passes.
+- Preserve quoted font-family punctuation through inline/stylesheet priority,
+  brace and comment handling.
+- Match native signed half-unit scaling in TrueType points/control values and
+  bound Latin light edge merging by the font's measured standard stem width.
 
 ## 0.2.0 - 2026-10-18
 

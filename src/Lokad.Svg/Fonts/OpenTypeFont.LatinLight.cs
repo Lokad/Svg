@@ -20,7 +20,7 @@ internal static partial class OpenTypeFont
             SubtractGlyphOrigin(outline.Points, GetHorizontalOrigin(bytes, glyphIndex, metrics, work, cancellationToken), work, cancellationToken);
             Span<LatinAlignmentZone> compositeZones = stackalloc LatinAlignmentZone[6];
             int compositeZoneCount = GetLatinAlignmentZones(bytes, metrics, compositeZones, budget, work, cancellationToken);
-            LatinLightHinting.Hint(outline.Points, outline.Ends, compositeZones[..compositeZoneCount], metrics.UnitsPerEm, deviceSize, GetMaximumStemWidth(bytes, metrics, budget, work, cancellationToken), budget, work, cancellationToken);
+            LatinLightHinting.Hint(outline.Points, outline.Ends, compositeZones[..compositeZoneCount], metrics.UnitsPerEm, deviceSize, GetLatinStemWidths(bytes, metrics, budget, work, cancellationToken), budget, work, cancellationToken);
             using OpenTypeSegmentAccumulator compositeSegments = new(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, work, cancellationToken);
             BuildQuadraticContours(outline.Points, outline.Ends, compositeSegments, true, TrueTypeImpliedPointRounding.TowardZero, work, cancellationToken);
             return compositeSegments.Detach();
@@ -30,23 +30,23 @@ internal static partial class OpenTypeFont
         SubtractGlyphOrigin(points.Points, GetHorizontalOrigin(bytes, glyphIndex, metrics, work, cancellationToken), work, cancellationToken);
         Span<LatinAlignmentZone> zones = stackalloc LatinAlignmentZone[6];
         int zoneCount = GetLatinAlignmentZones(bytes, metrics, zones, budget, work, cancellationToken);
-        LatinLightHinting.Hint(points.Points, structure.Value.ContourEndpoints, zones[..zoneCount], metrics.UnitsPerEm, deviceSize, GetMaximumStemWidth(bytes, metrics, budget, work, cancellationToken), budget, work, cancellationToken);
+        LatinLightHinting.Hint(points.Points, structure.Value.ContourEndpoints, zones[..zoneCount], metrics.UnitsPerEm, deviceSize, GetLatinStemWidths(bytes, metrics, budget, work, cancellationToken), budget, work, cancellationToken);
         using var segments = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.SimpleSegmentCapacity, GlyphDecoderBudgetPhase.SimpleSegmentExact, GlyphDecoderBudgetPhase.SimpleContourBoundaryCapacity, GlyphDecoderBudgetPhase.SimpleContourBoundaryExact, work, cancellationToken);
         BuildQuadraticContours(points.Points, structure.Value.ContourEndpoints, segments, true, TrueTypeImpliedPointRounding.TowardZero, work, cancellationToken);
         return segments.Detach();
     }
 
-    /// <summary>Measures the largest quantized horizontal stem of the first available Latin standard glyph under existing point/work bounds.</summary>
-    private static int GetMaximumStemWidth(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    /// <summary>Measures linked widths and the native edge-merging allowance from one bounded standard glyph.</summary>
+    private static LatinStemWidths GetLatinStemWidths(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         foreach (char scalar in "oO0")
         {
             ushort index = GetGlyphIndex(bytes, scalar, metrics, work, token);
             if (index == 0) continue;
             using OpenTypeGlyphPointOutline sample = GetGlyphPointOutline(bytes, index, metrics, null, null, OpenTypeCompositeOffsetMath.FontationsLength, budget, work, token);
-            return LatinLightHinting.MeasureStemWidth(sample.Points, sample.Ends, metrics.UnitsPerEm, budget, work, token);
+            return LatinLightHinting.MeasureStemWidths(sample.Points, sample.Ends, metrics.UnitsPerEm, budget, work, token);
         }
-        return 0;
+        return new(0, metrics.UnitsPerEm * 50 / 2048 / 5);
     }
 
     /// <summary>Samples at most six Latin alignment zones into caller-owned storage, borrowing one face and charging each decoded glyph.</summary>
@@ -87,6 +87,9 @@ internal static partial class OpenTypeFont
 
 /// <summary>One sampled Latin alignment zone in font units.</summary>
 internal readonly record struct LatinAlignmentZone(int Reference, int Overshoot, int Ascender, int Descender, bool Top, bool AdjustScale);
+
+/// <summary>Inline standard-glyph measurements in font units; owns no storage.</summary>
+internal readonly record struct LatinStemWidths(int MaximumWidth, int EdgeDistanceThreshold);
 
 /// <summary>Applies bounded vertical Latin light fitting to caller-owned decoded points.</summary>
 /// <remarks>Adapts Fontations/Skrifa 0.43.2's Latin topology, alignment and interpolation. See THIRD_PARTY_NOTICES.txt. The font program is never modified; all scratch allocations are charged before allocation and disposed on every exit.</remarks>
@@ -137,9 +140,9 @@ internal static class LatinLightHinting
     }
 
     internal static void Hint(Span<OpenTypeGlyphPoint> source, ReadOnlySpan<ushort> ends, ReadOnlySpan<LatinAlignmentZone> zones, int unitsPerEm, double size, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
-        => Hint(source, ends, zones, unitsPerEm, size, 0, budget, work, token);
+        => Hint(source, ends, zones, unitsPerEm, size, new(0, unitsPerEm * 50 / 2048 / 5), budget, work, token);
 
-    internal static void Hint(Span<OpenTypeGlyphPoint> source, ReadOnlySpan<ushort> ends, ReadOnlySpan<LatinAlignmentZone> zones, int unitsPerEm, double size, int maximumStemWidth, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    internal static void Hint(Span<OpenTypeGlyphPoint> source, ReadOnlySpan<ushort> ends, ReadOnlySpan<LatinAlignmentZone> zones, int unitsPerEm, double size, LatinStemWidths stemWidths, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         if (!double.IsFinite(size) || size <= 0 || size > 32767) throw Limit("The hinted font size exceeds the native coordinate range.");
         work.Consume(token);
@@ -186,9 +189,9 @@ internal static class LatinLightHinting
             using BudgetedParserList<HintSegment> segments = new(budget, SvgMemoryCategory.Geometry, work, token);
             BuildSegments(points, ends, segments, unitsPerEm, work, token);
             int major = Orientation(points, ends, work, token) > 0 ? 1 : -1;
-            LinkSegments(segments, major, unitsPerEm, maximumStemWidth, work, token);
+            LinkSegments(segments, major, unitsPerEm, stemWidths.MaximumWidth, work, token);
             using BudgetedParserList<HintEdge> edges = new(budget, SvgMemoryCategory.Geometry, work, token);
-            BuildEdges(segments, edges, yScale, work, token);
+            BuildEdges(segments, edges, yScale, stemWidths.EdgeDistanceThreshold, work, token);
             FitEdges(edges, zones, yScale, unitsPerEm, major, work, token);
             AlignPoints(points, ends, segments, edges, work, token);
         }
@@ -205,9 +208,11 @@ internal static class LatinLightHinting
             static int Hypot(int x, int y) { x = Math.Abs(x); y = Math.Abs(y); return x > y ? x + (3 * y >> 3) : y + (3 * x >> 3); }
         }
 
-        static void BuildEdges(BudgetedParserList<HintSegment> segments, BudgetedParserList<HintEdge> edges, int scale, ParserWorkCounter work, CancellationToken token)
+        static void BuildEdges(BudgetedParserList<HintSegment> segments, BudgetedParserList<HintEdge> edges, int scale, int edgeDistanceThreshold, ParserWorkCounter work, CancellationToken token)
         {
-            int threshold = Math.Max(1, Divide(16, scale)), maxDelta = Divide(32, scale);
+            // Nearby edges merge only within one fifth of the standard stem,
+            // capped at a quarter device pixel. Thin serifs remain separate.
+            int threshold = Divide(Math.Min(16, Multiply(edgeDistanceThreshold, scale)), scale), maxDelta = Divide(32, scale);
             for (int i = 0; i < segments.Count; i++)
             {
                 work.Consume(token);
@@ -406,7 +411,7 @@ internal static class LatinLightHinting
     }
 
     /// <summary>Measures at most sixteen unscaled linked widths; scratch ownership, work and cancellation match glyph fitting.</summary>
-    internal static int MeasureStemWidth(ReadOnlySpan<OpenTypeGlyphPoint> source, ReadOnlySpan<ushort> ends, int unitsPerEm, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    internal static LatinStemWidths MeasureStemWidths(ReadOnlySpan<OpenTypeGlyphPoint> source, ReadOnlySpan<ushort> ends, int unitsPerEm, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         work.Consume(token);
         using RenderBudget.BudgetReservation owner = budget.Reserve(checked(32L + source.Length * 64L), SvgMemoryCategory.Geometry);
@@ -436,7 +441,7 @@ internal static class LatinLightHinting
             int link = segments[i].Link;
             if (link > i && segments[link].Link == i) widths[count++] = Math.Abs(segments[link].Position - segments[i].Position);
         }
-        if (count == 0) return 0;
+        if (count == 0) return default;
         Span<int> measured = widths[..count];
         measured.Sort();
         // Retain the pinned native clustering arithmetic, including its absolute
@@ -454,7 +459,7 @@ internal static class LatinLightHinting
         }
         int maximum = 0;
         foreach (int width in measured) maximum = Math.Max(maximum, width);
-        return maximum;
+        return new(maximum, measured[0] / 5);
 
     }
 

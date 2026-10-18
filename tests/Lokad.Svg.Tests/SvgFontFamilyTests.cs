@@ -11,10 +11,40 @@ public sealed class SvgFontFamilyTests
     [InlineData("""<svg xmlns="http://www.w3.org/2000/svg"><style>.a{font-family:'A,B', E\78 ample}</style><text class="a">A</text></svg>""", "A,B")]
     [InlineData("""<svg xmlns="http://www.w3.org/2000/svg"><text style="font-family:'A:B',Example">A</text></svg>""", "A:B")]
     [InlineData("""<svg xmlns="http://www.w3.org/2000/svg"><text style="font-family:A\;B,Example">A</text></svg>""", "A;B")]
+    [InlineData("""<svg xmlns="http://www.w3.org/2000/svg"><text style="font-family:'A!important',Example">A</text></svg>""", "A!important")]
+    [InlineData("""<svg xmlns="http://www.w3.org/2000/svg"><text style="font-family:A\!important,Example">A</text></svg>""", "A!important")]
+    [InlineData("""<svg xmlns="http://www.w3.org/2000/svg"><style>.a{font-family:'A!important',Example}</style><text class="a">A</text></svg>""", "A!important")]
+    [InlineData("""<svg xmlns="http://www.w3.org/2000/svg"><style>.a{font-family:'A}B',Example;fill:red}</style><text class="a">A</text></svg>""", "A}B")]
+    [InlineData("""<svg xmlns="http://www.w3.org/2000/svg"><style>.a{font-family:'A{B',Example}</style><text class="a">A</text></svg>""", "A{B")]
+    [InlineData("""<svg xmlns="http://www.w3.org/2000/svg"><style>.a{font-family:'A/*B*/C',Example}</style><text class="a">A</text></svg>""", "A/*B*/C")]
+    [InlineData("""<svg xmlns="http://www.w3.org/2000/svg"><style>.a{font-family:A/**/B,Example}</style><text class="a">A</text></svg>""", "A B")]
+    [InlineData("""<svg xmlns="http://www.w3.org/2000/svg"><style>.a{font-/**/family:A/**/B,Example}</style><text class="a">A</text></svg>""", "A B")]
+    [InlineData("""<svg xmlns="http://www.w3.org/2000/svg"><style>.a{font-family:A\}B,Example}</style><text class="a">A</text></svg>""", "A}B")]
     public void Discovery_shares_quoted_and_escaped_syntax_across_presentation_inline_and_stylesheet(string svg, string first)
     {
         SvgFontFaceRequest request = Assert.Single(SvgFontRequestDiscovery.Discover(System.Text.Encoding.UTF8.GetBytes(svg), CancellationToken.None));
         Assert.Equal(new[] { first, "Example" }, request.Families.Select(family => family.Name));
+    }
+
+    [Theory]
+    [InlineData("font-family:'A!important',Example", false)]
+    [InlineData("font-family:'A!important',Example!important", true)]
+    [InlineData("font-family:A\\!important,Example", false)]
+    [InlineData("font-family:'A!important',Example ! important", true)]
+    public void Literal_bangs_do_not_change_real_declaration_priority(string css, bool important)
+    {
+        InlineStyle style = SvgInlineStyleParser.Parse(css, new ParserWorkCounter(1000), CancellationToken.None, true);
+        SvgFontFaceRequest request = SvgFontFaceRequest.FromCss(style.TextFont.Family ?? throw new InvalidDataException(), 400, false);
+        Assert.Equal("A!important", request.Families[0].Name);
+        Assert.Equal(important, (style.Important & InlineImportantProperties.Family) != 0);
+    }
+
+    [Fact]
+    public void An_escaped_bang_at_the_end_of_a_name_is_not_an_important_suffix()
+    {
+        InlineStyle style = SvgInlineStyleParser.Parse("font-family:A\\!important", new ParserWorkCounter(1000), CancellationToken.None, true);
+        Assert.Equal("A!important", Assert.Single(SvgFontFaceRequest.FromCss(style.TextFont.Family ?? throw new InvalidDataException(), 400, false).Families).Name);
+        Assert.Equal(InlineImportantProperties.None, style.Important);
     }
 
     [Fact]

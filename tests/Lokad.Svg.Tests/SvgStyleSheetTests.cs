@@ -7,6 +7,14 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgStyleSheetTests
 {
     [Fact]
+    public void Removing_a_selector_comment_does_not_introduce_a_descendant_combinator()
+    {
+        const string prefix = "<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><style>";
+        const string suffix = "{fill:red}</style><rect class='label' width='4' height='4'/></svg>";
+        Assert.Equal(RenderPixels(prefix + "rect.label" + suffix, out _, out _), RenderPixels(prefix + "rect/**/.label" + suffix, out _, out _));
+    }
+
+    [Fact]
     public void Overflow_and_decoration_keep_independent_priority()
     {
         ParserWorkCounter work = new(10_000);
