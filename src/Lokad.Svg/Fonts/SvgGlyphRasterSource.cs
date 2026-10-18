@@ -81,17 +81,18 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
         SvgGlyphStrikeTransform strike = HasGlyphMap
             ? SvgGlyphStrikeTransform.Create(_fontSize * scaleY, new(_glyphMap.A * scaleX / scaleY, _glyphMap.B, _glyphMap.C * scaleX / scaleY, _glyphMap.D, 0, 0))
             : default;
-        SvgGlyphLcdMode mode = OpenTypeFont.GetWindowsLcdMode(font.Bytes, font.Metrics, HasGlyphMap ? strike.DeviceSize : DeviceFontSize(scaleY), work, token);
+        OpenTypeWindowsGlyphProfile profile = OpenTypeFont.GetWindowsGlyphProfile(font.Bytes, font.Metrics, HasGlyphMap ? strike.DeviceSize : DeviceFontSize(scaleY), work, token);
+        SvgGlyphLcdMode mode = profile.LcdMode;
         TrueTypeHintQueryFlags queries = TrueTypeHintQueryFlags.FontVariations | TrueTypeHintQueryFlags.VerticalPhantoms | TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned;
         if (mode == SvgGlyphLcdMode.Symmetric) queries |= TrueTypeHintQueryFlags.Symmetric;
         TrueTypeHintTarget target = new(42, queries, TrueTypeHintControlScale.FullPrecision, TrueTypeHintPreparation.Single) { Grid = TrueTypeHintGrid.ClearType, WindowsArithmetic = true };
         // A horizontal baseline retains device fitting under X skew. Rotated
         // baselines keep their qualified unhinted route, except quarter turns.
         bool hasPrograms = HasGlyphMap && HasTrueTypePrograms(budget, work, token);
-        bool mappedFitting = hasPrograms &&
+        bool usesAxialStrike = (hasPrograms || !profile.GridFit) &&
             (strike.RelaxedMap.B == 0 || strike.RelaxedMap.A == 0 && strike.RelaxedMap.D == 0);
         SvgAffineTransform fittedMap = strike.RemainingMap;
-        if (mappedFitting)
+        if (usesAxialStrike)
         {
             double ratio = Math.Sqrt(fittedMap.A * fittedMap.A + fittedMap.B * fittedMap.B);
             if (ratio > 0)
@@ -100,11 +101,20 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
                 fittedMap = fittedMap with { A = fittedMap.A / ratio, B = fittedMap.B / ratio };
             }
         }
-        OpenTypeGlyphContourStorage contours = HasGlyphMap
-            ? mappedFitting
-                ? OpenTypeFont.GetTrueTypeContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike.DeviceSize, target, TrueTypeImpliedPointRounding.None, OpenTypeWindowsGlyphTransform.Create(new(1, fittedMap, strike.RelaxedMap), 1), budget, work, token)
-                : OpenTypeFont.GetWindowsUnhintedContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike, hasPrograms, budget, work, token)
-            : OpenTypeFont.GetTrueTypeContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, DeviceFontSize(scaleY), target, TrueTypeImpliedPointRounding.None, budget, work, token);
+        OpenTypeGlyphContourStorage contours;
+        if (!HasGlyphMap)
+            contours = profile.GridFit
+                ? OpenTypeFont.GetTrueTypeContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, DeviceFontSize(scaleY), target, TrueTypeImpliedPointRounding.None, budget, work, token)
+                : OpenTypeFont.GetWindowsUnfittedContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, DeviceFontSize(scaleY), budget, work, token);
+        else if (!usesAxialStrike)
+            contours = OpenTypeFont.GetWindowsUnhintedContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike, hasPrograms, budget, work, token);
+        else
+        {
+            OpenTypeWindowsGlyphTransform transform = OpenTypeWindowsGlyphTransform.Create(new(1, fittedMap, strike.RelaxedMap), 1);
+            contours = profile.GridFit
+                ? OpenTypeFont.GetTrueTypeContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike.DeviceSize, target, TrueTypeImpliedPointRounding.None, transform, budget, work, token)
+                : OpenTypeFont.GetWindowsUnfittedContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike.DeviceSize, target.HorizontalRatio, transform, budget, work, token);
+        }
         try
         {
             contours.WindowsLcdMode = mode;

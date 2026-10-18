@@ -22,6 +22,8 @@
   raster size, and preserve native curve, smart-dropout and stub behavior.
 - Preserve fractional glyph offsets when scaling ordinary SVG text; round paint
   origins after absolute span resets while retaining character and text-path metrics.
+- Honor font-selected Windows unfitted ranges while preserving native integer
+  sizing, component placement, signed point rounding and inherited metric origins.
 
 ## 0.2.0 - 2026-10-18
 

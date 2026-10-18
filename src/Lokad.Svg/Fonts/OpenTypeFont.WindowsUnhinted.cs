@@ -48,6 +48,25 @@ internal readonly record struct OpenTypeWindowsGlyphTransform(int XX, int XY, in
 
 internal static partial class OpenTypeFont
 {
+    /// <summary>Returns owned ordinary Windows contours for a font-selected unfitted range, preserving native size and initial-point scaling.</summary>
+    /// <remarks>Shares bounded component assembly, metric inheritance and contour ownership with the other device loaders. Programs remain unexecuted in this native range; outline structure, work, cancellation and cleanup remain enforced. Borrows immutable font bytes and retains no storage beyond the returned exclusive owner.</remarks>
+    internal static OpenTypeGlyphContourStorage GetWindowsUnfittedContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, double deviceSize, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        => GetWindowsUnfittedContours(bytes, glyphIndex, metrics, deviceSize, 1, null, budget, work, token);
+
+    /// <summary>Applies an explicit horizontal strike ratio and optional native point transform before implied-point construction, sharing the unfitted ownership and budget contract.</summary>
+    internal static OpenTypeGlyphContourStorage GetWindowsUnfittedContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, double deviceSize, double horizontalRatio, OpenTypeWindowsGlyphTransform? postTransform, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    {
+        work.Consume(token);
+        if (!double.IsFinite(deviceSize) || deviceSize <= 0 || deviceSize > 32767 || !double.IsFinite(horizontalRatio) || horizontalRatio <= 0)
+            throw new SvgException(SvgErrorCode.LimitExceeded, "The unfitted Windows font size exceeds its device bound.");
+        if (metrics.ForceIntegerHintingSize)
+        {
+            deviceSize = Math.Floor(deviceSize + .5);
+            if (deviceSize == 0) return new([], [], null, null);
+        }
+        return GetUnhintedDeviceContours(bytes, glyphIndex, metrics, OpenTypeUnhintedDeviceScale.CreateWindows(deviceSize, deviceSize * horizontalRatio, metrics.UnitsPerEm), OpenTypeCompositeOffsetMath.DirectWrite, TrueTypeImpliedPointRounding.None, postTransform, budget, work, token);
+    }
+
     /// <summary>Returns owned Windows unhinted contours after fixed-point mapping and before strike placement.</summary>
     /// <remarks>Borrows the unchanged supplied face and reuses bounded component assembly. Point and segment owners reserve before allocation and release on success, denial and cancellation. Each decoded or mapped point and lowered contour charges the shared work counter. No instructions, native services or host fonts are acquired; calls with separate conversion owners may run concurrently.</remarks>
     internal static OpenTypeGlyphContourStorage GetWindowsUnhintedContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, SvgGlyphStrikeTransform strike, bool hasPrograms, RenderBudget budget, ParserWorkCounter work, CancellationToken token)

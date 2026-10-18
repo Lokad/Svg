@@ -3,13 +3,16 @@ namespace Lokad.Svg.Fonts;
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
 
+/// <summary>Retains independent Windows smoothing and font-selected fitting policies without owning storage.</summary>
+internal readonly record struct OpenTypeWindowsGlyphProfile(SvgGlyphLcdMode LcdMode, bool GridFit);
+
 internal static partial class OpenTypeFont
 {
     /// <summary>Selects the bounded Windows LCD profile from borrowed gasp recommendations and the actual device size.</summary>
     /// <remarks>Adapts the pinned Skia Windows scaler. Owns no storage and performs no native calls.
     /// Each visited range charges work and observes cancellation. Unknown versions use the native
     /// no-table fallback; malformed supported tables fail without reading outside their declared span.</remarks>
-    internal static SvgGlyphLcdMode GetWindowsLcdMode(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, double deviceSize, ParserWorkCounter work, CancellationToken token)
+    internal static OpenTypeWindowsGlyphProfile GetWindowsGlyphProfile(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, double deviceSize, ParserWorkCounter work, CancellationToken token)
     {
         work.Consume(token);
         if (!double.IsFinite(deviceSize) || deviceSize <= 0 || deviceSize > 32767)
@@ -37,9 +40,14 @@ internal static partial class OpenTypeFont
                     previous = maximum;
                 }
                 if (version == 1 && selectedFlags >= 0)
-                    return (selectedFlags & 8) != 0 ? SvgGlyphLcdMode.Symmetric : SvgGlyphLcdMode.Natural;
+                {
+                    bool symmetric = (selectedFlags & 8) != 0;
+                    // Native ClearType consults symmetric grid fitting only in
+                    // a symmetric-smoothing range. Legacy ranges retain fitting.
+                    return new(symmetric ? SvgGlyphLcdMode.Symmetric : SvgGlyphLcdMode.Natural, !symmetric || (selectedFlags & 4) != 0);
+                }
             }
         }
-        return deviceSize > 20 || !metrics.HasGlyphInstructions ? SvgGlyphLcdMode.Symmetric : SvgGlyphLcdMode.Natural;
+        return new(deviceSize > 20 || !metrics.HasGlyphInstructions ? SvgGlyphLcdMode.Symmetric : SvgGlyphLcdMode.Natural, true);
     }
 }

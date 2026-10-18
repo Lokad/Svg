@@ -56,7 +56,7 @@ internal static partial class OpenTypeFont
     }
 
     /// <summary>Assembles owned, ordered component points in font units, by unhinted device scaling, or by fitting each child before its parent.</summary>
-    /// <remarks>Depth, component/point counts and cycles are bounded. Temporary and returned arrays reserve geometry bytes before allocation; every visit/copy observes work and cancellation. The optional fitter borrows one supplied face and interpreter, and never owns returned points. Device scaling runs before component placement; these conversion-local owners are not shared between threads.</remarks>
+    /// <remarks>Depth, component/point counts and cycles are bounded. Temporary and returned arrays reserve geometry bytes before allocation; every visit/copy observes work and cancellation. The optional fitter borrows one supplied face and interpreter, and never owns returned points. FreeType scales children before placement; unfitted Windows outlines retain font coordinates until assembly completes. These owners are not shared between threads.</remarks>
     private static OpenTypeGlyphPointOutline GetGlyphPointOutline(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CompositeTrueTypeHinting? fitting, OpenTypeUnhintedDeviceScale? scaling, OpenTypeCompositeOffsetMath offsetMath, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         using OpenTypeGlyphRecursionTracker active = new(MaximumCompositeGlyphDepth + 1, budget, work, token);
@@ -76,12 +76,12 @@ internal static partial class OpenTypeFont
                     try
                     {
                         decoded = GetSimpleGlyphPoints(bytes, structure.Value, budget, work, token);
-                        if (scaling is {} deviceScale)
+                        if (scaling is { WindowsArithmetic: false } deviceScale)
                             for (int index = 0; index < decoded.Points.Length; index++)
                             {
                                 work.Consume(token);
                                 OpenTypeGlyphPoint point = decoded.Points[index];
-                                decoded.Points[index] = new(deviceScale.Apply(point.X), deviceScale.Apply(point.Y), point.IsOnCurve);
+                                decoded.Points[index] = new(deviceScale.ApplyHorizontal(point.X), deviceScale.Apply(point.Y), point.IsOnCurve);
                             }
                         OpenTypeTableRange instructions = default;
                         if (structure.Value.GlyphRange.Length > 10)
@@ -114,8 +114,8 @@ internal static partial class OpenTypeFont
                     if (child.Ends.Length > MaximumSimpleGlyphContours - ends.Count) throw new SvgException(SvgErrorCode.LimitExceeded, "The expanded composite contour count exceeds the supported limit.");
                     int basePoint = points.Count;
                     (double offsetX, double offsetY) = component.GetOffset(offsetMath);
-                    int dx = fitting is not null ? fitting.ScaleOffset(component, true) : scaling is {} xScale ? xScale.Apply(checked((int)Math.Round(offsetX, MidpointRounding.AwayFromZero))) : checked((int)Math.Round(offsetX, MidpointRounding.AwayFromZero));
-                    int dy = fitting is not null ? fitting.ScaleOffset(component, false) : scaling is {} yScale ? yScale.Apply(checked((int)Math.Round(offsetY, MidpointRounding.AwayFromZero))) : checked((int)Math.Round(offsetY, MidpointRounding.AwayFromZero));
+                    int dx = fitting is not null ? fitting.ScaleOffset(component, true) : scaling is { WindowsArithmetic: false } xScale ? xScale.ApplyHorizontal(checked((int)Math.Round(offsetX, MidpointRounding.AwayFromZero))) : checked((int)Math.Round(offsetX, MidpointRounding.AwayFromZero));
+                    int dy = fitting is not null ? fitting.ScaleOffset(component, false) : scaling is { WindowsArithmetic: false } yScale ? yScale.Apply(checked((int)Math.Round(offsetY, MidpointRounding.AwayFromZero))) : checked((int)Math.Round(offsetY, MidpointRounding.AwayFromZero));
                     foreach (OpenTypeGlyphPoint point in child.Points)
                     {
                         work.Consume(token);
@@ -160,7 +160,8 @@ internal static partial class OpenTypeFont
             int advance = GetAdvanceWidth(bytes, glyph, metrics, work, token);
             int bearingOffset = glyph < metrics.NumberOfHMetrics ? metrics.Hmtx.Offset + glyph * 4 + 2 : metrics.Hmtx.Offset + metrics.NumberOfHMetrics * 4 + (glyph - metrics.NumberOfHMetrics) * 2;
             int origin = (header?.XMinimum ?? 0) - ReadInt16(bytes.Span, bearingOffset);
-            return new(scale.Apply(origin), 0, scale.Apply(origin + advance), 0);
+            if (scale.WindowsArithmetic) return new(origin, 0, origin + advance, 0);
+            return new(scale.ApplyHorizontal(origin), 0, scale.ApplyHorizontal(origin + advance), 0);
         }
 
         static int Transform(int x, double xx, int y, double xy, int offset)
