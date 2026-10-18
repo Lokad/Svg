@@ -102,7 +102,7 @@
       "lokad.svg.visualdiff": {
         "type": "Project",
         "dependencies": {
-          "Lokad.Svg": "[0.2.0-preview.1, )"
+          "Lokad.Svg": "[0.2.0, )"
         }
       }
     }

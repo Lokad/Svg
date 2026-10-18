@@ -7,17 +7,13 @@ and masks, embedded PNGs, static CSS, markers, selected filters and supplied-fon
 labels/text paths. See [supported SVG](docs/SUPPORT_MATRIX.md#supported-svg-subset)
 for the exact boundaries and unsupported outcomes.
 
-Install [Lokad.Svg from NuGet](https://www.nuget.org/packages/Lokad.Svg/0.1.0):
+Install [Lokad.Svg from NuGet](https://www.nuget.org/packages/Lokad.Svg/0.2.0):
 
 ```powershell
-dotnet add package Lokad.Svg --version 0.1.0
+dotnet add package Lokad.Svg --version 0.2.0
 ```
 
 [CHANGELOG](CHANGELOG.md) records release notes.
-
-Unreleased development adds font-free sizing inspection, caller-controlled raster
-bounds, structured diagnostics and broader static TrueType compatibility. The
-[support matrix](docs/SUPPORT_MATRIX.md) marks these additions and their boundaries.
 
 `SvgConverter` provides synchronous and asynchronous output to independently
 owned memory, caller memory or a writable stream. `SvgPreparedDocument` supports

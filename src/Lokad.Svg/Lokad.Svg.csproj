@@ -3,14 +3,14 @@
     <AssemblyName>Lokad.Svg</AssemblyName>
     <RootNamespace>Lokad.Svg</RootNamespace>
     <PackageId>Lokad.Svg</PackageId>
-    <Version>0.2.0-preview.1</Version>
+    <Version>0.2.0</Version>
     <Authors>Lokad</Authors>
     <Description>A pure managed SVG to PNG renderer for .NET.</Description>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <PackageProjectUrl>https://github.com/Lokad/Svg</PackageProjectUrl>
-    <PackageReleaseNotes>Development preview. See https://github.com/Lokad/Svg/blob/master/CHANGELOG.md for implemented changes and scope.</PackageReleaseNotes>
+    <PackageReleaseNotes>Font-free sizing inspection, bounded raster output, actionable diagnostics and improved static TrueType compatibility. See https://github.com/Lokad/Svg/blob/v0.2.0/CHANGELOG.md for release notes and scope.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/Lokad/Svg</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>svg;png;rendering</PackageTags>

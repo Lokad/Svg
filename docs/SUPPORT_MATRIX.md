@@ -29,7 +29,7 @@ implemented. Unsupported visible behavior reports `UnsupportedFeature`;
 malformed input, unresolved resources and exceeded limits have separate
 [error categories](../src/Lokad.Svg/SvgErrorCode.cs).
 
-### Diagnostics (unreleased)
+### Diagnostics
 
 `SvgException.SourceDiagnostic` identifies the element/ID, offending attribute or
 property/value and one-based XML line/column where captured. Retained text keeps
@@ -45,7 +45,7 @@ That index is independent of UTF-16 indices and original XML character positions
 Explicit snapshots still require prepared requests; catalog selection and
 caller-controlled fallback retain their existing behavior.
 
-### Document sizing and inspection (unreleased)
+### Document sizing and inspection
 
 `SvgConverter.InspectDimensions` reports the CSS-resolved width/height, viewBox
 and aspect mapping, logical viewport and dimension/fallback provenance. It reads
@@ -206,12 +206,12 @@ Latin/DFLT default language, one unfiltered type-4 lookup, format-1 subtables,
 coverage 1/2 and two to eight components in font order. Nonzero spacing or
 positioned-span boundaries prevent ligature merging.
 
-Unreleased: pair positioning selects the default Latin language system before
+Pair positioning selects the default Latin language system before
 DFLT, sharing selection with ligatures. Repeated feature tags in other language
 systems do not invalidate the selected feature. Language-specific shaping remains
 outside this subset.
 
-The unreleased [static TrueType compatibility controls](../tests/Research/static-truetype-fonts/README.md)
+The [static TrueType compatibility controls](../tests/Research/static-truetype-fonts/README.md)
 also cover Liberation Sans Regular 2.1.5 and DejaVu Sans 2.37, including composites,
 kerning/ligatures and Windows hinting. Font acquisition and fallback remain explicit;
 these controls retain the same font-format and shaping boundaries.

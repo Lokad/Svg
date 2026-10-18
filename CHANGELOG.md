@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 - 2026-10-18
+
+Source: [`v0.2.0`](https://github.com/Lokad/Svg/tree/v0.2.0).
 
 - Add `SvgConverter.InspectDimensions` to inspect CSS-resolved root dimensions,
   viewBox/aspect mapping, logical viewport and fallback provenance without fonts

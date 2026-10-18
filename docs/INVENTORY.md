@@ -3,12 +3,12 @@
 The current full-document collection is the [26-document upstream selection](../tests/Research/upstream-static-documents/README.md).
 All declared outputs are exact against frozen Windows/Linux Chrome references. Each
 input has a feature purpose, original source/license, one declared recipe and supplied
-fonts where needed. Local Windows/Linux qualification passes 8,121 tests/platform;
-[source CI](https://github.com/Lokad/Svg/actions/runs/39030907217) is terminal green
-on both platforms at renderer revision `397c8ea2`. Document counts establish
+fonts where needed. Local Windows/Linux qualification passes 8,278 tests/platform;
+[source CI](https://github.com/Lokad/Svg/actions/runs/39074734457) is terminal green
+on both platforms at renderer revision `ad189773`. Document counts establish
 only these selected outputs, not general SVG coverage.
 
-Unreleased extension controls add [bounded raster sizing](../tests/Research/bounded-raster-sizing/README.md)
+Extension controls include [bounded raster sizing](../tests/Research/bounded-raster-sizing/README.md)
 and [static TrueType compatibility](../tests/Research/static-truetype-fonts/README.md).
 The two font documents retain their original programs, licenses, independent
 metrics and frozen Windows/Linux references. Their direct/prepared checks join

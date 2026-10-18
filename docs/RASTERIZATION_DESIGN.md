@@ -55,7 +55,7 @@ bounds and stored bitmap bounds distinct. Object-box paints/resources bind to
 pre-clip geometry. Cropping storage must preserve the logical device origin.
 Nested viewports keep the parent affine map outside their local viewBox map.
 
-Unreleased sizing inspection and conversion share root CSS/unit resolution.
+Sizing inspection and conversion share root CSS/unit resolution.
 Opt-in raster bounds choose one uniform output scale before lowering, leaving
 the logical viewport and percentage bases intact. Logical picture font sizing
 precedes the separate native raster strike transform. Integer canvas rounding
