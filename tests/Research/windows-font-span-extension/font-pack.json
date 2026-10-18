@@ -1,0 +1,36 @@
+{
+  "packId": "public-windows-font-span-extension",
+  "files": [
+    {
+      "relativePath": "fonts/Original Coverage.ttf",
+      "byteSize": 1252,
+      "sha256": "3019b405dd6b04267497a00d7b7dadd98b179ab840b6207b59b6bb1bf024df90"
+    },
+    {
+      "relativePath": "fonts/Courier New.ttf",
+      "byteSize": 1228,
+      "sha256": "0df37d0ec255eb54efa4103e58da21d4954199560cf902898ff2fbf193b6164f"
+    }
+  ],
+  "families": [
+    {
+      "requestedFamily": "Original Coverage",
+      "resolvedFamily": "Original Coverage",
+      "relativeFontFile": "fonts/Original Coverage.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0,
+      "hasMathTable": false
+    },
+    {
+      "requestedFamily": "Courier New",
+      "resolvedFamily": "Courier New",
+      "relativeFontFile": "fonts/Courier New.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0,
+      "hasMathTable": false
+    }
+  ],
+  "fallbacks": []
+}

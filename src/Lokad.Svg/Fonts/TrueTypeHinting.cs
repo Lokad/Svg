@@ -133,6 +133,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
 
     /// <summary>Gets the completed glyph's enabled smart dropout policy, including stubs; contour consumers choose their own rasterizer.</summary>
     internal bool GlyphSmartDropouts { get; private set; }
+    internal bool GlyphSimpleDropouts { get; private set; }
     internal bool GlyphExcludeDropoutStubs { get; private set; }
 
     /// <summary>Fits a borrowed child or assembled composite, retaining font/preparation CVT, storage and functions between components.</summary>
@@ -214,16 +215,18 @@ internal sealed partial class TrueTypeHinting : IDisposable
 
         void SetDropouts()
         {
-            GlyphSmartDropouts = SmartDropouts();
-            GlyphExcludeDropoutStubs = GlyphSmartDropouts && _scanType == 5;
+            bool enabled = DropoutsEnabled();
+            GlyphSmartDropouts = enabled && (!_scanConfigured || _scanType is 4 or 5);
+            GlyphSimpleDropouts = enabled && _scanConfigured && _scanType is 0 or 1;
+            GlyphExcludeDropoutStubs = enabled && _scanConfigured && _scanType is 1 or 5;
         }
 
-        bool SmartDropouts()
+        bool DropoutsEnabled()
         {
             // The native symmetric profile enables default tip dropouts through
             // rounded ppem 32. Authored scanner settings replace that default.
             if (!_scanConfigured && (_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0 && _ppem <= 32) return true;
-            if (_scanType is not 4 and not 5) return false;
+            if (_scanType is not 0 and not 1 and not 4 and not 5) return false;
             int threshold = _scanControl & 255;
             bool small = threshold == 255 || threshold != 0 && _ppem <= threshold;
             bool rotated = (_target.QueryFlags & TrueTypeHintQueryFlags.Rotated) != 0;
@@ -265,6 +268,36 @@ internal sealed partial class TrueTypeHinting : IDisposable
                     break;
                 }
                 case 0x0C: Push(_projection.X); Push(_projection.Y); break;
+                case 0x0F:
+                {
+                    // ISECT uses current points in three independent zones and
+                    // moves both coordinates, regardless of projection/freedom.
+                    TrueTypeHintPoint b1 = Point(_zp0, Pop()), b0 = Point(_zp0, Pop());
+                    TrueTypeHintPoint a1 = Point(_zp1, Pop()), a0 = Point(_zp1, Pop());
+                    ref TrueTypeHintPoint point = ref Point(_zp2, Pop());
+                    int ax = checked(a1.X - a0.X), ay = checked(a1.Y - a0.Y);
+                    int bx = checked(b1.X - b0.X), by = checked(b1.Y - b0.Y);
+                    int dx = checked(b0.X - a0.X), dy = checked(b0.Y - a0.Y);
+                    int cross = checked(Divide(ax, 64, checked(-by)) + Divide(ay, 64, bx));
+                    int dot = checked(Divide(ax, 64, bx) + Divide(ay, 64, by));
+                    int x, y;
+                    // The pinned native rule bounds grazing intersections at
+                    // |tan(angle)| <= 1/19; parallel/degenerate lines share it.
+                    if (19L * Math.Abs((long)cross) > Math.Abs((long)dot))
+                    {
+                        int distance = checked(Divide(dx, 64, checked(-by)) + Divide(dy, 64, bx));
+                        x = checked(a0.X + Divide(distance, cross, ax));
+                        y = checked(a0.Y + Divide(distance, cross, ay));
+                    }
+                    else
+                    {
+                        x = checked((int)(((long)a0.X + a1.X + b0.X + b1.X) / 4));
+                        y = checked((int)(((long)a0.Y + a1.Y + b0.Y + b1.Y) / 4));
+                    }
+                    point.X = x; point.Y = y;
+                    point.TouchedX = point.TouchedY = true;
+                    break;
+                }
                 case 0x10: _rp0 = Pop(); break;
                 case 0x11: _rp1 = Pop(); break;
                 case 0x12: _rp2 = Pop(); break;
@@ -336,6 +369,14 @@ internal sealed partial class TrueTypeHinting : IDisposable
                         point.X = point.OriginalX = original.X; point.Y = point.OriginalY = original.Y;
                         reference = Point(_zp0, _rp0);
                     }
+                    // Windows applies horizontal ClearType cut-in to MSIRP
+                    // strokes, but keeps explicit placement for coincident
+                    // original points (for example an attached accent).
+                    if (_target.UsesWindowsArithmetic && UsesClearTypeGrid(kind) && _zp0 == _zp1)
+                    {
+                        int original = ProjectedDistance(point, reference, true);
+                        if (original != 0 && Math.Abs((long)distance - original) > ControlCutIn(kind)) distance = original;
+                    }
                     Move(ref point, checked(distance - ProjectedDistance(point, reference, false)), true);
                     _rp1 = _rp0; _rp2 = index;
                     if ((opcode & 1) != 0) _rp0 = index;
@@ -360,7 +401,17 @@ internal sealed partial class TrueTypeHinting : IDisposable
                     Move(ref point, checked(value - original), true); _rp0 = _rp1 = p; break;
                 }
                 case 0x42: { int value = Pop(); _storage[Index(Pop(), _storage.Length)] = value; break; }
-                case 0x43: Push(_storage[Index(Pop(), _storage.Length)]); break;
+                case 0x43:
+                {
+                    int index = Index(Pop(), _storage.Length);
+                    // Native Windows disables the documented VacuFormRound
+                    // storage switch for this exact function-zero preamble.
+                    // Other storage, functions and targets retain their values.
+                    ReadOnlySpan<byte> vacuformPreamble = [0x45, 0x23, 0x46, 0x60, 0x20, 0xB0, 38];
+                    bool vacuform = index == 8 && _target.UsesWindowsArithmetic && _target.Grid == TrueTypeHintGrid.ClearType &&
+                        _functions.Length != 0 && _functions[0].Defined && _functions[0].Program.Span.StartsWith(vacuformPreamble);
+                    Push(vacuform ? 0 : _storage[index]); break;
+                }
                 case 0x44: { int value = Pop(); _cvt[Index(Pop(), _cvt.Length)] = StoreControl(value); break; }
                 case 0x45: Push(ReadControl(Index(Pop(), _cvt.Length))); break;
                 case 0x46: case 0x47: Push(Coordinate(Point(_zp2, Pop()), opcode == 0x47)); break;
@@ -448,7 +499,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 case 0x81: case 0x82:
                 {
                     int last = Pop(), first = Pop();
-                    if (BackwardCompatible && _iupX && _iupY) break;
+                    if (!_target.UsesWindowsArithmetic && BackwardCompatible && _iupX && _iupY) break;
                     Index(first, _glyph.Length); Index(last, _glyph.Length);
                     for (int index = first; index <= last; index++) { _work.Consume(_token); _glyph[index].IsOnCurve = opcode == 0x81; }
                     break;
@@ -477,7 +528,9 @@ internal sealed partial class TrueTypeHinting : IDisposable
                     if (kind != TrueTypeHintProgramKind.Glyph || selector == 3) _instructionControl = (_instructionControl & ~(1 << (selector - 1))) | value;
                     break;
                 }
-                case 0x70: { int value = Pop(); _cvt[Index(Pop(), _cvt.Length)] = _compositeGlyph ? StoreControl(value) : Divide(value, 65536, ProjectionScale); break; }
+                // WCVTF operands remain font units in assembled parents too;
+                // only their original outline coordinates are device values.
+                case 0x70: { int value = Pop(); _cvt[Index(Pop(), _cvt.Length)] = Divide(value, 65536, ProjectionScale); break; }
                 case >= 0xC0: MoveRelative(opcode); break;
                 default: throw new SvgException(SvgErrorCode.UnsupportedFeature, $"TrueType hint opcode 0x{opcode:X2} is not implemented.");
             }
@@ -584,7 +637,10 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 if (!indirect && _singleWidthCutIn > 0 && original < (long)_singleWidth + _singleWidthCutIn && original > (long)_singleWidth - _singleWidthCutIn)
                     original = original >= 0 ? _singleWidth : checked(-_singleWidth);
                 if (indirect && _autoFlip && (original ^ control) < 0) control = checked(-control);
-                if (indirect && (op & 4) != 0 && _zp0 == _zp1 && Math.Abs((long)control - original) > ControlCutIn(kind)) control = original;
+                // Windows keeps CVT cut-in for unrounded horizontal ClearType
+                // MIRP even in native mode; other targets retain their waiver.
+                bool usesCutIn = (op & 4) != 0 || UsesClearTypeGrid(kind) && (_target.UsesWindowsArithmetic || BackwardCompatible);
+                if (indirect && usesCutIn && _zp0 == _zp1 && Math.Abs((long)control - original) > ControlCutIn(kind)) control = original;
                 int distance = indirect ? control : original;
                 if ((op & 4) != 0) distance = Round(distance, kind);
                 int minimum = UsesClearTypeGrid(kind) ? _minimumDistance / 2 : _minimumDistance;

@@ -32,6 +32,7 @@ internal static class SvgWindowsGlyphCurves
         contours.SimpleDropouts = source.SimpleDropouts;
         contours.ExcludeDropoutStubs = source.ExcludeDropoutStubs;
         contours.WindowsLcdMode = source.WindowsLcdMode;
+        contours.ExtendWindowsLcdSpans = source.ExtendWindowsLcdSpans;
         return contours;
 
         Point Map(OpenTypeOutlinePoint point)

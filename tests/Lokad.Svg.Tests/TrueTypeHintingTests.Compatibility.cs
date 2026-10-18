@@ -6,6 +6,59 @@ namespace Lokad.Svg.Tests;
 public sealed partial class TrueTypeHintingTests
 {
     [Theory]
+    [InlineData(false, true, false, 1, 70, 95, 95)]
+    [InlineData(true, false, false, 1, 70, 95, 95)]
+    [InlineData(true, true, false, 1, 0, 95, 95)]
+    [InlineData(true, true, false, 1, 1, 95, 1)]
+    [InlineData(true, true, false, 1, 70, 74, 74)]
+    [InlineData(true, true, false, 1, 70, 75, 70)]
+    [InlineData(true, true, false, 1, -70, -95, -70)]
+    [InlineData(true, true, false, 0, 70, 200, 200)]
+    [InlineData(true, true, true, 1, 70, 95, 70)]
+    public void Windows_MSIRP_cut_in_preserves_coincident_placement_and_other_profiles(bool clearType, bool windows, bool waiver, byte axis, int original, int distance, int expected)
+    {
+        // Independently measured with original-font GC witnesses under both
+        // native DirectWrite LCD modes, including one-unit and boundary cases.
+        TrueTypeHintPoint[] points = [new(0, 0, 0, 0), axis == 1 ? new(original, 0, original, 0) : new(0, original, 0, original)];
+        TrueTypeHintTarget target = Target with { Grid = clearType ? TrueTypeHintGrid.ClearType : TrueTypeHintGrid.Physical, WindowsArithmetic = windows };
+        RenderBudget budget = new(long.MaxValue);
+        using (TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], points, [1], 16,
+            new(65536, 65536), target, budget, new(long.MaxValue), CancellationToken.None))
+        {
+            byte[] program = waiver ? new byte[] { axis, 0xB1, 4, 3, 0x8E, 0xB0, 1, 0xB8, (byte)(distance >> 8), (byte)distance, 0x3A }
+                : new byte[] { axis, 0xB0, 1, 0xB8, (byte)(distance >> 8), (byte)distance, 0x3A };
+            machine.Run(program, TrueTypeHintProgramKind.Glyph);
+            Assert.Equal(expected, axis == 1 ? points[1].X : points[1].Y);
+            Assert.Equal(original, axis == 1 ? points[1].OriginalX : points[1].OriginalY);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [InlineData(false, false, false, 1, 70, 95, 95)]
+    [InlineData(true, false, false, 1, 70, 95, 70)]
+    [InlineData(true, true, false, 1, 70, 95, 95)]
+    [InlineData(true, true, true, 1, 70, 95, 70)]
+    [InlineData(false, true, true, 1, 70, 95, 95)]
+    [InlineData(true, false, true, 1, 70, 74, 74)]
+    [InlineData(true, false, true, 1, 70, 75, 70)]
+    [InlineData(true, false, true, 1, -70, -95, -70)]
+    [InlineData(true, false, true, 0, 70, 200, 200)]
+    public void Unrounded_MIRP_respects_ClearType_direction_and_platform_compatibility(bool clearType, bool waiver, bool windows, byte axis, int original, int control, int expected)
+    {
+        // Original-font DirectWrite GC witnesses independently measure these
+        // distances, including native mode and both cut-in boundary sides.
+        TrueTypeHintPoint[] points = [new(0, 0, 0, 0), axis == 1 ? new(original, 0, original, 0) : new(0, original, 0, original)];
+        TrueTypeHintTarget target = Target with { Grid = clearType ? TrueTypeHintGrid.ClearType : TrueTypeHintGrid.Physical, WindowsArithmetic = windows };
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [control], points, [1], 16,
+            new(65536, 65536), target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        byte[] program = waiver ? new byte[] { axis, 0xB1, 4, 3, 0x8E, 0xB1, 1, 0, 0xE0 } : new byte[] { axis, 0xB1, 1, 0, 0xE0 };
+        machine.Run(program, TrueTypeHintProgramKind.Glyph);
+        Assert.Equal(expected, axis == 1 ? points[1].X : points[1].Y);
+        Assert.Equal(original, axis == 1 ? points[1].OriginalX : points[1].OriginalY);
+    }
+
+    [Theory]
     [InlineData(false, 73)]
     [InlineData(true, 65)]
     public void Subpixel_positioned_right_phantom_keeps_its_linear_position(bool subpixel, int expected)

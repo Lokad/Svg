@@ -1,0 +1,62 @@
+{
+  "purpose": "Original CC0 same-geometry fonts distinguish native Windows family metadata; no commercial font bytes.",
+  "input": "windows-font-span-extension.svg",
+  "inputSha256": "79069bab9f8c7662251c4b82feae99dc9afba8521e3dcb75f01313801ef9a13c",
+  "width": 400,
+  "height": 192,
+  "scale": 1,
+  "rows": [
+    {
+      "family": "Original Coverage",
+      "size": 8,
+      "x": 16.25,
+      "y": 40,
+      "text": "AVa"
+    },
+    {
+      "family": "Courier New",
+      "size": 8,
+      "x": 208.25,
+      "y": 40,
+      "text": "AVa"
+    },
+    {
+      "family": "Original Coverage",
+      "size": 16,
+      "x": 16.25,
+      "y": 96.5,
+      "text": "AVa"
+    },
+    {
+      "family": "Courier New",
+      "size": 16,
+      "x": 208.25,
+      "y": 96.5,
+      "text": "AVa"
+    },
+    {
+      "family": "Original Coverage",
+      "size": 24,
+      "x": 16.25,
+      "y": 168,
+      "text": "AVa"
+    },
+    {
+      "family": "Courier New",
+      "size": 24,
+      "x": 208.25,
+      "y": 168,
+      "text": "AVa"
+    }
+  ],
+  "fonts": [
+    {
+      "family": "Original Coverage",
+      "file": "fonts/Original Coverage.ttf"
+    },
+    {
+      "family": "Courier New",
+      "file": "fonts/Courier New.ttf"
+    }
+  ]
+}

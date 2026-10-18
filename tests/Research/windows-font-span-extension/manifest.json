@@ -1,0 +1,244 @@
+{
+  "purpose": "Original CC0 same-geometry fonts distinguish native Windows family metadata; no commercial font bytes.",
+  "input": "windows-font-span-extension.svg",
+  "inputSha256": "79069bab9f8c7662251c4b82feae99dc9afba8521e3dcb75f01313801ef9a13c",
+  "width": 400,
+  "height": 192,
+  "scale": 1,
+  "rows": [
+    {
+      "family": "Original Coverage",
+      "size": 8,
+      "x": 16.25,
+      "y": 40,
+      "text": "AVa"
+    },
+    {
+      "family": "Courier New",
+      "size": 8,
+      "x": 208.25,
+      "y": 40,
+      "text": "AVa"
+    },
+    {
+      "family": "Original Coverage",
+      "size": 16,
+      "x": 16.25,
+      "y": 96.5,
+      "text": "AVa"
+    },
+    {
+      "family": "Courier New",
+      "size": 16,
+      "x": 208.25,
+      "y": 96.5,
+      "text": "AVa"
+    },
+    {
+      "family": "Original Coverage",
+      "size": 24,
+      "x": 16.25,
+      "y": 168,
+      "text": "AVa"
+    },
+    {
+      "family": "Courier New",
+      "size": 24,
+      "x": 208.25,
+      "y": 168,
+      "text": "AVa"
+    }
+  ],
+  "fonts": [
+    {
+      "family": "Original Coverage",
+      "file": "fonts/Original Coverage.ttf"
+    },
+    {
+      "family": "Courier New",
+      "file": "fonts/Courier New.ttf"
+    }
+  ],
+  "platforms": {
+    "windows": {
+      "platform": "windows",
+      "chromeVersion": "153.0.8010.52",
+      "captures": [
+        {
+          "pngSha256": "5b620fb75eeb515f12fb0dceefb26542dc7bbbf88e6416a953d11a239b7cfc1e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5b620fb75eeb515f12fb0dceefb26542dc7bbbf88e6416a953d11a239b7cfc1e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5b620fb75eeb515f12fb0dceefb26542dc7bbbf88e6416a953d11a239b7cfc1e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "intendedFonts": [
+        {
+          "fonts": [
+            {
+              "familyName": "Original Coverage",
+              "postScriptName": "Original-Ordinary-Span",
+              "isCustomFont": true,
+              "glyphCount": 3
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "Courier New",
+              "postScriptName": "Original-Legacy-Span",
+              "isCustomFont": true,
+              "glyphCount": 3
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "Original Coverage",
+              "postScriptName": "Original-Ordinary-Span",
+              "isCustomFont": true,
+              "glyphCount": 3
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "Courier New",
+              "postScriptName": "Original-Legacy-Span",
+              "isCustomFont": true,
+              "glyphCount": 3
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "Original Coverage",
+              "postScriptName": "Original-Ordinary-Span",
+              "isCustomFont": true,
+              "glyphCount": 3
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "Courier New",
+              "postScriptName": "Original-Legacy-Span",
+              "isCustomFont": true,
+              "glyphCount": 3
+            }
+          ]
+        }
+      ],
+      "inlineExact": true,
+      "differentProgramChangedPixels": {
+        "Original Coverage": 978,
+        "Courier New": 987
+      },
+      "referenceSha256": "5b620fb75eeb515f12fb0dceefb26542dc7bbbf88e6416a953d11a239b7cfc1e",
+      "reference": "references/windows/windows-font-span-extension.png"
+    },
+    "linux": {
+      "platform": "linux",
+      "chromeVersion": "153.0.8010.52",
+      "captures": [
+        {
+          "pngSha256": "472db8fa5687472b6cf2b6afe9b4021c87673a0e6239d02e081c6d138dbcf269",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "472db8fa5687472b6cf2b6afe9b4021c87673a0e6239d02e081c6d138dbcf269",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "472db8fa5687472b6cf2b6afe9b4021c87673a0e6239d02e081c6d138dbcf269",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "intendedFonts": [
+        {
+          "fonts": [
+            {
+              "familyName": "Original Coverage",
+              "postScriptName": "Original-Ordinary-Span",
+              "isCustomFont": true,
+              "glyphCount": 3
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "Courier New",
+              "postScriptName": "Original-Legacy-Span",
+              "isCustomFont": true,
+              "glyphCount": 3
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "Original Coverage",
+              "postScriptName": "Original-Ordinary-Span",
+              "isCustomFont": true,
+              "glyphCount": 3
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "Courier New",
+              "postScriptName": "Original-Legacy-Span",
+              "isCustomFont": true,
+              "glyphCount": 3
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "Original Coverage",
+              "postScriptName": "Original-Ordinary-Span",
+              "isCustomFont": true,
+              "glyphCount": 3
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "Courier New",
+              "postScriptName": "Original-Legacy-Span",
+              "isCustomFont": true,
+              "glyphCount": 3
+            }
+          ]
+        }
+      ],
+      "inlineExact": true,
+      "differentProgramChangedPixels": {
+        "Original Coverage": 876,
+        "Courier New": 876
+      },
+      "referenceSha256": "472db8fa5687472b6cf2b6afe9b4021c87673a0e6239d02e081c6d138dbcf269",
+      "reference": "references/linux/windows-font-span-extension.png"
+    }
+  }
+}

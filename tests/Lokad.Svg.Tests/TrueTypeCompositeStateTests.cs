@@ -31,7 +31,7 @@ public sealed class TrueTypeCompositeStateTests
     }
 
     [Fact]
-    public void Composite_original_distances_and_control_writes_use_device_coordinates_once()
+    public void Composite_original_distances_use_device_coordinates_and_CVT_writes_keep_font_units()
     {
         RenderBudget budget = new(long.MaxValue);
         using (TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 4, 0, 0), [0], [], [], 32, new(131072, 131072), Target, budget, new(long.MaxValue), CancellationToken.None))
@@ -40,7 +40,9 @@ public sealed class TrueTypeCompositeStateTests
             byte[] program = [0xB0, 0, 0xB1, 0, 1, 0x4A, 0x42, 0xB1, 0, 64, 0x70];
             machine.HintGlyph(program, points, [1], true);
             Assert.Equal(-64, machine.Storage[0]);
-            Assert.Equal(64, machine.ControlValues[0]);
+            // Independent FreeType 2.13.2 composite-font execution writes 128
+            // here: WCVTF retains its font-unit scale despite device originals.
+            Assert.Equal(128, machine.ControlValues[0]);
             machine.HintGlyph(program, points, [1], false);
             Assert.Equal(-128, machine.Storage[0]);
             Assert.Equal(128, machine.ControlValues[0]);

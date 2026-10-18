@@ -69,7 +69,8 @@ internal static partial class OpenTypeFont
             BuildQuadraticContours(outline.Points, outline.Ends, compositeSegments, true, impliedPointRounding, work, token);
             OpenTypeGlyphContourStorage result = compositeSegments.Detach();
             result.SmartDropouts = fitting.GlyphSmartDropouts;
-            result.ExcludeDropoutStubs = fitting.GlyphExcludeDropoutStubs;
+            result.SimpleDropouts = target.UsesWindowsArithmetic && fitting.GlyphSimpleDropouts;
+            result.ExcludeDropoutStubs = (result.SmartDropouts || result.SimpleDropouts) && fitting.GlyphExcludeDropoutStubs;
             return result;
         }
         if (structure.Value.ContourEndpoints.Length == 0) return new([], [], null, null);
@@ -103,7 +104,7 @@ internal static partial class OpenTypeFont
         // Preserve indices without inventing vertical metrics. Executed access
         // to either vertical phantom point is an explicit unsupported outcome.
         points[pointCount + 2].Unavailable = points[pointCount + 3].Unavailable = true;
-        bool smartDropouts, excludeDropoutStubs;
+        bool smartDropouts, simpleDropouts, excludeDropoutStubs;
         using (TrueTypeHinting machine = TrueTypeHinting.Create(profile, cvt, points, structure.Value.ContourEndpoints, ppem, deviceScale, target, budget, work, token))
         {
             machine.Run(bytes.Slice(fontProgram.Offset, fontProgram.Length), TrueTypeHintProgramKind.Font);
@@ -113,7 +114,8 @@ internal static partial class OpenTypeFont
             machine.Prepare(prep, target);
             machine.Run(bytes.Slice(lengthOffset + 2, instructionLength), TrueTypeHintProgramKind.Glyph);
             smartDropouts = hasPrograms && machine.GlyphSmartDropouts;
-            excludeDropoutStubs = hasPrograms && machine.GlyphExcludeDropoutStubs;
+            simpleDropouts = hasPrograms && target.UsesWindowsArithmetic && machine.GlyphSimpleDropouts;
+            excludeDropoutStubs = (smartDropouts || simpleDropouts) && machine.GlyphExcludeDropoutStubs;
         }
         // Simple and composite outlines share the fitted horizontal metric origin.
         // xMin need not equal the side bearing in a valid static TrueType face.
@@ -125,7 +127,7 @@ internal static partial class OpenTypeFont
         OpenTypeGlyphContourStorage fitted = segments.Detach();
         fitted.SmartDropouts = smartDropouts;
         fitted.ExcludeDropoutStubs = excludeDropoutStubs;
-        fitted.SimpleDropouts = !hasPrograms && (target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0 && ppem <= 32;
+        fitted.SimpleDropouts = simpleDropouts || !hasPrograms && (target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0 && ppem <= 32;
         return fitted;
 
         void MapPoints(Span<OpenTypeGlyphPoint> points)

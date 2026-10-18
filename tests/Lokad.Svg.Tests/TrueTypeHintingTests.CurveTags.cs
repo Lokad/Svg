@@ -34,14 +34,18 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
-    [InlineData(false, true, false, false)]
-    [InlineData(true, false, false, false)]
-    [InlineData(true, true, false, true)]
-    [InlineData(true, true, true, false)]
-    public void ClearType_curve_tag_changes_after_both_IUPs_follow_compatibility_control(bool clearType, bool bothIups, bool waiver, bool expected)
+    [InlineData(false, false, true, false, false)]
+    [InlineData(false, true, false, false, false)]
+    [InlineData(false, true, true, false, true)]
+    [InlineData(false, true, true, true, false)]
+    [InlineData(true, true, true, false, false)]
+    [InlineData(true, true, true, true, false)]
+    public void ClearType_curve_tag_changes_after_both_IUPs_follow_platform_compatibility(bool windows, bool clearType, bool bothIups, bool waiver, bool expected)
     {
         TrueTypeHintPoint[] points = [new(0, 0, 0, 0)];
-        TrueTypeHintTarget target = Target with { Grid = clearType ? TrueTypeHintGrid.ClearType : TrueTypeHintGrid.Physical };
+        // Original quadratic-font DirectWrite controls keep the same changed
+        // tags before and after IUP, with or without the native-mode waiver.
+        TrueTypeHintTarget target = Target with { Grid = clearType ? TrueTypeHintGrid.ClearType : TrueTypeHintGrid.Physical, WindowsArithmetic = windows };
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], points, [0], 16,
             new(65536, 65536), target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
         if (waiver) machine.Prepare(Convert.FromHexString("B104038E"), target);

@@ -33,6 +33,10 @@
 - Admit applicable pair-positioning lookup flags and bounded GDEF metadata.
   Filter base/ligature glyphs within font, size and absolute-position runs;
   preserve the explicit unsupported boundary for actual mark positioning.
+- Extend bounded hinting with ISECT, native MIRP/MSIRP cut-in, and composite
+  font-unit CVT writes; preserve native curve-tag and legacy rounding controls.
+- Carry authored simple dropout modes into Windows coverage, and reproduce its
+  source-family span policy with original public fonts and unchanged references.
 
 ## 0.2.0 - 2026-10-18
 

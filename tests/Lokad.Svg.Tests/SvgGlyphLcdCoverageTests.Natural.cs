@@ -6,6 +6,38 @@ namespace Lokad.Svg.Tests;
 
 public sealed partial class SvgGlyphLcdCoverageTests
 {
+    [Fact]
+    public void Natural_smart_second_pass_keeps_cells_already_selected_by_neighboring_first_pass_rows()
+    {
+        // Original CC0 thin quadrilateral: UPEM 1024, em 16, origin (20.25,80),
+        // SCANCTRL 511 / SCANTYPE 4. Independent DirectWrite RGB is (43,43,43)
+        // at (20,78) and (20,79), with empty surrounding pixels.
+        OpenTypeOutlinePoint[] points = [P(0, 24), P(12, 152), P(20, 152), P(8, 24)];
+        OpenTypeQuadraticSegment[] segments = Enumerable.Range(0, points.Length)
+            .Select(index => new OpenTypeQuadraticSegment(points[index], points[(index + 1) % points.Length], points[(index + 1) % points.Length])).ToArray();
+        ParserWorkCounter work = new(long.MaxValue);
+        SvgGlyphLcdCoverage.DropoutBounds bounds = SvgGlyphLcdCoverage.PrepareBounds(segments, true, false, false, SvgGlyphLcdMode.Natural, work, CancellationToken.None);
+        SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[8];
+        RenderBudget budget = new(long.MaxValue);
+        using (SvgGlyphLcdCoverage.ScanStorage storage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, SvgGlyphLcdMode.Natural, budget, work, CancellationToken.None) ?? throw new InvalidOperationException())
+        {
+            Span<int> counts = stackalloc int[2];
+            for (int y = 77; y <= 80; y++)
+            {
+                SvgGlyphLcdCoverage.ScanRow row = storage.PrepareRow(segments, y, counts, work, CancellationToken.None);
+                for (int x = 19; x <= 21; x++)
+                {
+                    SvgGlyphRgbCoverage expected = x == 20 && y is 78 or 79 ? new(43, 43, 43) : default;
+                    Assert.Equal(expected, SvgGlyphLcdCoverage.GetCoverage(segments, x, y, scratch, bounds, work, CancellationToken.None));
+                    Assert.Equal(expected, SvgGlyphLcdCoverage.GetCoverage(row, x, scratch, bounds, work, CancellationToken.None));
+                }
+            }
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+
+        static OpenTypeOutlinePoint P(int x, int y) => new(20 + 1d / 3 + x / 64d, 80 - y / 64d);
+    }
+
     [Theory]
     [InlineData(-1, false, 69)]
     [InlineData(0, false, 69)]

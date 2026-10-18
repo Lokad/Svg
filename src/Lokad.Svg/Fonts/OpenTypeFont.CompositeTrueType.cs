@@ -107,6 +107,7 @@ internal static partial class OpenTypeFont
         }
 
         internal bool GlyphSmartDropouts => _machine.GlyphSmartDropouts;
+        internal bool GlyphSimpleDropouts => _machine.GlyphSimpleDropouts;
         internal bool GlyphExcludeDropoutStubs => _machine.GlyphExcludeDropoutStubs;
 
         /// <summary>Fits borrowed points in place and returns horizontal phantom coordinates for metric inheritance. Selected device metrics are copied without component placement; scratch is bounded and released on every exit.</summary>

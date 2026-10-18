@@ -3586,9 +3586,9 @@ public static class SvgConverter
                         }
                         if (contours.Segments.Length != 0)
                         {
-                            int lcdStartX = ClampFloor(lcdMinimumX - 1d / 3, outputWidth), lcdEndX = ClampCeiling(lcdMaximumX + 1d / 3, outputWidth);
+                            int lcdStartX = ClampFloor(lcdMinimumX - 1d / 3, outputWidth), lcdEndX = ClampCeiling(lcdMaximumX + 1d / 3 + (contours.ExtendWindowsLcdSpans ? 1d / 6 : 0), outputWidth);
                             int lcdStartY = ClampFloor(lcdMinimumY, outputHeight), lcdEndY = ClampCeiling(lcdMaximumY, outputHeight);
-                            SvgGlyphLcdCoverage.DropoutBounds dropoutBounds = SvgGlyphLcdCoverage.PrepareBounds(contours.Segments, contours.SmartDropouts, contours.SimpleDropouts, contours.ExcludeDropoutStubs, contours.WindowsLcdMode, preparationWork, cancellationToken);
+                            SvgGlyphLcdCoverage.DropoutBounds dropoutBounds = SvgGlyphLcdCoverage.PrepareBounds(contours.Segments, contours.SmartDropouts, contours.SimpleDropouts, contours.ExcludeDropoutStubs, contours.WindowsLcdMode, preparationWork, cancellationToken) with { ExtendRight = contours.ExtendWindowsLcdSpans };
                             // Directed horizontal scans are reused across one row. This
                             // optional preparation yields to the existing low-memory path.
                             using SvgGlyphLcdCoverage.ScanStorage? rowStorage = lcdStartX < lcdEndX && lcdStartY < lcdEndY ? SvgGlyphLcdCoverage.ScanStorage.TryCreate(contours.Segments, contours.WindowsLcdMode, budget, preparationWork, cancellationToken) : null;

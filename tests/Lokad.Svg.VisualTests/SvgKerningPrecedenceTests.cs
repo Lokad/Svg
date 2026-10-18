@@ -10,7 +10,8 @@ public sealed class SvgKerningPrecedenceTests
     [Theory]
     [InlineData("kerning-precedence", "public-kerning-precedence", 4)]
     [InlineData("kerning-flags", "public-kerning-flags", 7)]
-    public async Task Gpos_document_matches_independent_metrics_and_frozen_pixels(string directory, string packId, int fontCount)
+    [InlineData("windows-font-span-extension", "public-windows-font-span-extension", 2)]
+    public async Task Font_document_matches_independent_metrics_and_frozen_pixels(string directory, string packId, int fontCount)
     {
         string directoryPath = Path.Combine(AppContext.BaseDirectory, "Research", directory);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directoryPath, "manifest.json")));

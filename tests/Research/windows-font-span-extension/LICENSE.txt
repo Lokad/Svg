@@ -1,0 +1,7 @@
+SPDX-License-Identifier: CC0-1.0
+
+These original SVG and static TrueType compatibility fixtures are dedicated to
+the public domain under CC0 1.0 Universal. The family name Courier New exercises
+a native compatibility rule; this fixture is not the commercial font.
+
+https://creativecommons.org/publicdomain/zero/1.0/legalcode

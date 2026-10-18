@@ -118,6 +118,7 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
         try
         {
             contours.WindowsLcdMode = mode;
+            contours.ExtendWindowsLcdSpans = font.Metrics.ExtendWindowsLcdSpans;
             SvgDevicePoint origin = _glyphMap.Apply(_glyph.X, _glyph.Y);
             float originX = MathF.Floor((float)(origin.X * scaleX + offsetX) * 4f + .5f) / 4f;
             float originY = HasGlyphMap && strike.RelaxedMap.B != 0 ? MathF.Floor((float)(origin.Y * scaleY + offsetY) * 4f + .5f) / 4f

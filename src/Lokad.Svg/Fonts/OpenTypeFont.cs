@@ -82,7 +82,7 @@ internal static partial class OpenTypeFont
         if (numberOfHMetrics == 0 || numberOfHMetrics > glyphCount) throw InvalidFont("The hhea numberOfHMetrics value is invalid.");
         int hmtxBytes = checked(numberOfHMetrics * 4 + (glyphCount - numberOfHMetrics) * 2);
         RequireTableLength(hmtx, hmtxBytes, "hmtx");
-        if (tables.TryGetValue(NameTag, out OpenTypeTableRange name)) ValidateNameTable(data, name, workCounter, cancellationToken);
+        bool extendWindowsSpans = tables.TryGetValue(NameTag, out OpenTypeTableRange name) && ValidateNameTable(data, name, workCounter, cancellationToken);
         if (tables.TryGetValue(Os2Tag, out OpenTypeTableRange os2)) ValidateOs2Table(data, os2, workCounter, cancellationToken);
         OpenTypeGposPairTable? gpos = tables.TryGetValue(GposTag, out OpenTypeTableRange gposTable) ? ParseGposPairTable(data, gposTable, tables.TryGetValue(GdefTag, out OpenTypeTableRange gdef) ? gdef : null, glyphCount, workCounter, cancellationToken) : null;
         // Selected GPOS kerning takes precedence, including zero adjustments.
@@ -93,6 +93,7 @@ internal static partial class OpenTypeFont
             {
                 HasCompleteTrueTypeProfile = maxp.Length >= 32 && ReadUInt32(data, maxp.Offset) == 0x10000,
                 HasGlyphInstructions = maxp.Length >= 32 && ReadUInt32(data, maxp.Offset) == 0x10000 && ReadUInt16(data, maxp.Offset + 26) != 0,
+                ExtendWindowsLcdSpans = extendWindowsSpans,
                 Gasp = tables.TryGetValue(0x67617370, out OpenTypeTableRange gasp) ? gasp : null
             };
 
@@ -802,8 +803,8 @@ internal static partial class OpenTypeFont
         return (int)location;
     }
 
-    /// <summary>Validates optional name-table records and their borrowed string-storage bounds without selecting a face from embedded names.</summary>
-    private static void ValidateNameTable(ReadOnlySpan<byte> data, OpenTypeTableRange table, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    /// <summary>Validates borrowed name records and identifies the measured Windows span-extension policy; embedded names never select a face.</summary>
+    private static bool ValidateNameTable(ReadOnlySpan<byte> data, OpenTypeTableRange table, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         RequireTableLength(table, 6, "name");
         ushort version = ReadUInt16(data, table.Offset);
@@ -828,6 +829,8 @@ internal static partial class OpenTypeFont
         if (storageStart < metadataEnd || storageStart > tableEnd) throw InvalidFont("The name string-storage offset is invalid.");
 
         ulong previousKey = 0;
+        int familyPriority = 0;
+        bool extendWindowsSpans = false;
         for (int index = 0; index < nameCount; index++)
         {
             Consume(workCounter, cancellationToken);
@@ -840,7 +843,22 @@ internal static partial class OpenTypeFont
             ulong key = ((ulong)platform << 48) | ((ulong)encoding << 32) | ((ulong)language << 16) | name;
             if (index != 0 && key < previousKey) throw InvalidFont("The name records are not sorted.");
             previousKey = key;
-            ValidateNameStorageRange(storageStart, tableEnd, ReadUInt16(data, record + 8), ReadUInt16(data, record + 10), "name string");
+            int length = ReadUInt16(data, record + 8), relative = ReadUInt16(data, record + 10);
+            ValidateNameStorageRange(storageStart, tableEnd, length, relative, "name string");
+            if (name == 1)
+            {
+                int priority = platform == 3 && encoding is 0 or 1 or 10 && language == 0x0409 ? 3
+                    : platform == 0 ? 2 : platform == 1 && encoding == 0 && language == 0 ? 1 : 0;
+                if (priority > familyPriority)
+                {
+                    familyPriority = priority;
+                    ReadOnlySpan<byte> family = data.Slice(storageStart + relative, length);
+                    // DirectWrite widens this exact internal family by one LCD
+                    // column. Case, other names and catalog aliases do not opt in.
+                    extendWindowsSpans = priority == 1 ? family.SequenceEqual("Courier New"u8)
+                        : family.SequenceEqual("\0C\0o\0u\0r\0i\0e\0r\0 \0N\0e\0w"u8);
+                }
+            }
         }
         for (int index = 0; index < languageTagCount; index++)
         {
@@ -850,6 +868,7 @@ internal static partial class OpenTypeFont
             if ((length & 1) != 0) throw InvalidFont("A name language-tag string has an invalid UTF-16BE length.");
             ValidateNameStorageRange(storageStart, tableEnd, length, ReadUInt16(data, record + 2), "name language-tag string");
         }
+        return extendWindowsSpans;
     }
 
     private static void ValidateNameStorageRange(int storageStart, int tableEnd, int length, int relativeOffset, string name)
@@ -1001,6 +1020,7 @@ internal readonly record struct OpenTypeFontMetrics(ushort UnitsPerEm, ushort Gl
     internal bool HasCompleteTrueTypeProfile { get; init; }
     internal bool HasGlyphInstructions { get; init; }
     internal OpenTypeTableRange? Gasp { get; init; }
+    internal bool ExtendWindowsLcdSpans { get; init; }
 }
 
 /// <summary>Retains bounded alphabetic line metrics in font units without owning additional font storage.</summary>
@@ -1121,6 +1141,7 @@ internal sealed class OpenTypeGlyphContourStorage : IDisposable
     internal bool ExcludeDropoutStubs { get; set; }
     /// <summary>Retains the selected native LCD sampling profile with this exclusive contour owner.</summary>
     internal SvgGlyphLcdMode WindowsLcdMode { get; set; }
+    internal bool ExtendWindowsLcdSpans { get; set; }
 
     public void Dispose()
     {

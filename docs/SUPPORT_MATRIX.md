@@ -256,10 +256,13 @@ kerning/ligatures and Windows hinting. Font acquisition and fallback remain expl
 these controls retain the same font-format and shaping boundaries.
 
 The bounded hint interpreter includes stack/dual projection vectors, physical
-super-rounding, projected coordinate and relative moves, signed MIN/MAX,
+super-rounding, line intersections, projected coordinate and relative moves, signed MIN/MAX,
 ODD/EVEN predicates and curve-tag range changes. Fitting preserves the native
 Windows/Linux rounding distinctions and simple/composite outline tags. Other
 executed instructions outside the supported subset fail explicitly.
+Windows MIRP/MSIRP retain native horizontal cut-in, including coincident-point
+placement; composite CVT writes retain their operand units. Windows also retains
+native curve-tag changes and the documented VacuFormRound function-zero switch.
 Fitted initial points and control values retain the Windows signed half-unit rule;
 Latin light fitting keeps nearby edges distinct according to the measured
 standard stem width, with a quarter-pixel maximum merging allowance.
@@ -272,6 +275,11 @@ bounded gasp recommendations and actual raster size. Natural sampling retains
 native fixed-point curve/dropout decisions, including excluded stubs and exact
 terminating vertices. Natural half-scan overshoot must reach the selected pixel
 center; neighboring full scans retain exact vertex continuation.
+Authored simple dropout modes remain distinct from smart modes and preserve
+scan-control bounds and component state. The
+[original span document](../tests/Research/windows-font-span-extension/README.md)
+qualifies the Windows one-cell span extension for the exact embedded family
+`Courier New`. A catalog alias to another program does not enable that policy.
 Font-selected unfitted Windows ranges retain integer-size
 flags, signed point rounding and inherited metric origins; component assembly
 precedes final device rounding. Ranges requiring fitting still execute the bounded
