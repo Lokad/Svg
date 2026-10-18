@@ -1,0 +1,950 @@
+{
+  "producer": "HarfBuzz 8.3.0, Latin/en/LTR, default features; declared font/size/absolute-position runs shaped independently.",
+  "rows": [
+    {
+      "family": "GposRtl",
+      "size": 32,
+      "x": 16,
+      "y": 40,
+      "text": "AV To Wa",
+      "file": "fonts/GposRtl.ttf",
+      "fontSha256": "bd2f2fad12355f3c30cb284efbe20826644b6b571273b0529c9d516f908b5466",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 0,
+          "x": 16.0,
+          "y": 40.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 20.0,
+          "designAdvance": 640
+        },
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 1,
+          "x": 36.0,
+          "y": 40.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 2,
+          "x": 60.0,
+          "y": 40.0,
+          "nominalAdvance": 8.0,
+          "shapedAdvance": 8.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 4,
+          "utf8Cluster": 3,
+          "x": 68.0,
+          "y": 40.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 22.0,
+          "designAdvance": 704
+        },
+        {
+          "glyphIndex": 5,
+          "utf8Cluster": 4,
+          "x": 90.0,
+          "y": 40.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 5,
+          "x": 114.0,
+          "y": 40.0,
+          "nominalAdvance": 8.0,
+          "shapedAdvance": 8.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 6,
+          "x": 122.0,
+          "y": 40.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 21.0,
+          "designAdvance": 672
+        },
+        {
+          "glyphIndex": 7,
+          "utf8Cluster": 7,
+          "x": 143.0,
+          "y": 40.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        }
+      ]
+    },
+    {
+      "family": "GposSkipBase",
+      "size": 32,
+      "x": 16,
+      "y": 88,
+      "text": "VAW AVW",
+      "file": "fonts/GposSkipBase.ttf",
+      "fontSha256": "8fa37b1753bb4ae6dd2b0d1a0f926f90843fdfe88f698a7abd113135ac317567",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 0,
+          "x": 16.0,
+          "y": 88.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 1,
+          "x": 40.0,
+          "y": 88.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 20.0,
+          "designAdvance": 640
+        },
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 2,
+          "x": 60.0,
+          "y": 88.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 3,
+          "x": 84.0,
+          "y": 88.0,
+          "nominalAdvance": 8.0,
+          "shapedAdvance": 8.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 4,
+          "x": 92.0,
+          "y": 88.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 20.0,
+          "designAdvance": 640
+        },
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 5,
+          "x": 112.0,
+          "y": 88.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 6,
+          "x": 136.0,
+          "y": 88.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        }
+      ]
+    },
+    {
+      "family": "GposSkipLig",
+      "size": 32,
+      "x": 16,
+      "y": 136,
+      "text": "VAW AVW",
+      "file": "fonts/GposSkipLig.ttf",
+      "fontSha256": "247affda68417c387dd3c35d98e5f9d81bf2c7f07b0fb869dd450f3a6971c0ec",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 0,
+          "x": 16.0,
+          "y": 136.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 1,
+          "x": 40.0,
+          "y": 136.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 20.0,
+          "designAdvance": 640
+        },
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 2,
+          "x": 60.0,
+          "y": 136.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 3,
+          "x": 84.0,
+          "y": 136.0,
+          "nominalAdvance": 8.0,
+          "shapedAdvance": 8.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 4,
+          "x": 92.0,
+          "y": 136.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 20.0,
+          "designAdvance": 640
+        },
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 5,
+          "x": 112.0,
+          "y": 136.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 6,
+          "x": 136.0,
+          "y": 136.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        }
+      ]
+    },
+    {
+      "family": "GposMarks",
+      "size": 32,
+      "x": 16,
+      "y": 184,
+      "text": "AV To W",
+      "file": "fonts/GposMarks.ttf",
+      "fontSha256": "3ddd4f153cb98d19992a33869a2c3eadcb22c1c6c671f8c8d474685b23f92051",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 0,
+          "x": 16.0,
+          "y": 184.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 20.0,
+          "designAdvance": 640
+        },
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 1,
+          "x": 36.0,
+          "y": 184.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 2,
+          "x": 60.0,
+          "y": 184.0,
+          "nominalAdvance": 8.0,
+          "shapedAdvance": 8.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 4,
+          "utf8Cluster": 3,
+          "x": 68.0,
+          "y": 184.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 22.0,
+          "designAdvance": 704
+        },
+        {
+          "glyphIndex": 5,
+          "utf8Cluster": 4,
+          "x": 90.0,
+          "y": 184.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 5,
+          "x": 114.0,
+          "y": 184.0,
+          "nominalAdvance": 8.0,
+          "shapedAdvance": 8.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 6,
+          "x": 122.0,
+          "y": 184.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        }
+      ]
+    },
+    {
+      "family": "GposAttach",
+      "size": 32,
+      "x": 16,
+      "y": 232,
+      "text": "AV To W",
+      "file": "fonts/GposAttach.ttf",
+      "fontSha256": "ffdb3d305e8205ed850d47c1e37c41f5325babfa91380954a762b5f37e90fb0e",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 0,
+          "x": 16.0,
+          "y": 232.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 20.0,
+          "designAdvance": 640
+        },
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 1,
+          "x": 36.0,
+          "y": 232.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 2,
+          "x": 60.0,
+          "y": 232.0,
+          "nominalAdvance": 8.0,
+          "shapedAdvance": 8.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 4,
+          "utf8Cluster": 3,
+          "x": 68.0,
+          "y": 232.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 22.0,
+          "designAdvance": 704
+        },
+        {
+          "glyphIndex": 5,
+          "utf8Cluster": 4,
+          "x": 90.0,
+          "y": 232.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 5,
+          "x": 114.0,
+          "y": 232.0,
+          "nominalAdvance": 8.0,
+          "shapedAdvance": 8.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 6,
+          "x": 122.0,
+          "y": 232.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        }
+      ]
+    },
+    {
+      "family": "GposSet",
+      "size": 32,
+      "x": 16,
+      "y": 280,
+      "text": "AV To W",
+      "file": "fonts/GposSet.ttf",
+      "fontSha256": "488e603a60d9d4494b2f50637f6bd0a7bb59bc25606bfc12a34435c574bb9bc1",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 0,
+          "x": 16.0,
+          "y": 280.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 20.0,
+          "designAdvance": 640
+        },
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 1,
+          "x": 36.0,
+          "y": 280.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 2,
+          "x": 60.0,
+          "y": 280.0,
+          "nominalAdvance": 8.0,
+          "shapedAdvance": 8.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 4,
+          "utf8Cluster": 3,
+          "x": 68.0,
+          "y": 280.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 22.0,
+          "designAdvance": 704
+        },
+        {
+          "glyphIndex": 5,
+          "utf8Cluster": 4,
+          "x": 90.0,
+          "y": 280.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 5,
+          "x": 114.0,
+          "y": 280.0,
+          "nominalAdvance": 8.0,
+          "shapedAdvance": 8.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 6,
+          "x": 122.0,
+          "y": 280.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        }
+      ]
+    },
+    {
+      "family": "GposCombined",
+      "size": 32,
+      "x": 16,
+      "y": 328,
+      "text": "AV To W",
+      "file": "fonts/GposCombined.ttf",
+      "fontSha256": "b18512f4a4c558e54afd735264edee2fc3ee23fd28d9568624e9dc8041f8620a",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 0,
+          "x": 16.0,
+          "y": 328.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 20.0,
+          "designAdvance": 640
+        },
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 1,
+          "x": 36.0,
+          "y": 328.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 2,
+          "x": 60.0,
+          "y": 328.0,
+          "nominalAdvance": 8.0,
+          "shapedAdvance": 8.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 4,
+          "utf8Cluster": 3,
+          "x": 68.0,
+          "y": 328.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 22.0,
+          "designAdvance": 704
+        },
+        {
+          "glyphIndex": 5,
+          "utf8Cluster": 4,
+          "x": 90.0,
+          "y": 328.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 5,
+          "x": 114.0,
+          "y": 328.0,
+          "nominalAdvance": 8.0,
+          "shapedAdvance": 8.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 6,
+          "x": 122.0,
+          "y": 328.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        }
+      ]
+    },
+    {
+      "family": "GposSkipBase",
+      "size": 16,
+      "x": 16.25,
+      "y": 360.5,
+      "text": "VAW AVW",
+      "file": "fonts/GposSkipBase.ttf",
+      "fontSha256": "8fa37b1753bb4ae6dd2b0d1a0f926f90843fdfe88f698a7abd113135ac317567",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 0,
+          "x": 16.25,
+          "y": 360.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 12.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 1,
+          "x": 28.25,
+          "y": 360.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 10.0,
+          "designAdvance": 640
+        },
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 2,
+          "x": 38.25,
+          "y": 360.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 12.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 3,
+          "x": 50.25,
+          "y": 360.5,
+          "nominalAdvance": 4.0,
+          "shapedAdvance": 4.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 4,
+          "x": 54.25,
+          "y": 360.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 10.0,
+          "designAdvance": 640
+        },
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 5,
+          "x": 64.25,
+          "y": 360.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 12.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 6,
+          "x": 76.25,
+          "y": 360.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 12.0,
+          "designAdvance": 768
+        }
+      ]
+    },
+    {
+      "family": "GposSkipLig",
+      "size": 16,
+      "x": 16.25,
+      "y": 392.5,
+      "text": "VAW AVW",
+      "file": "fonts/GposSkipLig.ttf",
+      "fontSha256": "247affda68417c387dd3c35d98e5f9d81bf2c7f07b0fb869dd450f3a6971c0ec",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 0,
+          "x": 16.25,
+          "y": 392.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 12.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 1,
+          "x": 28.25,
+          "y": 392.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 10.0,
+          "designAdvance": 640
+        },
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 2,
+          "x": 38.25,
+          "y": 392.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 12.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 3,
+          "x": 50.25,
+          "y": 392.5,
+          "nominalAdvance": 4.0,
+          "shapedAdvance": 4.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 4,
+          "x": 54.25,
+          "y": 392.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 10.0,
+          "designAdvance": 640
+        },
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 5,
+          "x": 64.25,
+          "y": 392.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 12.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 6,
+          "x": 76.25,
+          "y": 392.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 12.0,
+          "designAdvance": 768
+        }
+      ]
+    },
+    {
+      "family": "GposRtl",
+      "size": 16,
+      "x": 16.25,
+      "y": 424.5,
+      "text": "AV To Wa",
+      "file": "fonts/GposRtl.ttf",
+      "fontSha256": "bd2f2fad12355f3c30cb284efbe20826644b6b571273b0529c9d516f908b5466",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 0,
+          "x": 16.25,
+          "y": 424.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 10.0,
+          "designAdvance": 640
+        },
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 1,
+          "x": 26.25,
+          "y": 424.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 12.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 2,
+          "x": 38.25,
+          "y": 424.5,
+          "nominalAdvance": 4.0,
+          "shapedAdvance": 4.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 4,
+          "utf8Cluster": 3,
+          "x": 42.25,
+          "y": 424.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 11.0,
+          "designAdvance": 704
+        },
+        {
+          "glyphIndex": 5,
+          "utf8Cluster": 4,
+          "x": 53.25,
+          "y": 424.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 12.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 5,
+          "x": 65.25,
+          "y": 424.5,
+          "nominalAdvance": 4.0,
+          "shapedAdvance": 4.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 6,
+          "x": 69.25,
+          "y": 424.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 10.5,
+          "designAdvance": 672
+        },
+        {
+          "glyphIndex": 7,
+          "utf8Cluster": 7,
+          "x": 79.75,
+          "y": 424.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 12.0,
+          "designAdvance": 768
+        }
+      ]
+    },
+    {
+      "family": "GposSkipBase",
+      "size": 32,
+      "x": 16,
+      "y": 472,
+      "text": "A",
+      "file": "fonts/GposSkipBase.ttf",
+      "fontSha256": "8fa37b1753bb4ae6dd2b0d1a0f926f90843fdfe88f698a7abd113135ac317567",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 0,
+          "x": 16.0,
+          "y": 472.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        }
+      ]
+    },
+    {
+      "family": "GposSkipLig",
+      "size": 32,
+      "x": 40.0,
+      "y": 472,
+      "text": "V",
+      "file": "fonts/GposSkipLig.ttf",
+      "fontSha256": "247affda68417c387dd3c35d98e5f9d81bf2c7f07b0fb869dd450f3a6971c0ec",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 0,
+          "x": 40.0,
+          "y": 472.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        }
+      ]
+    },
+    {
+      "family": "GposSkipBase",
+      "size": 32,
+      "x": 64.0,
+      "y": 472,
+      "text": "W",
+      "file": "fonts/GposSkipBase.ttf",
+      "fontSha256": "8fa37b1753bb4ae6dd2b0d1a0f926f90843fdfe88f698a7abd113135ac317567",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 0,
+          "x": 64.0,
+          "y": 472.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        }
+      ]
+    },
+    {
+      "family": "GposSkipBase",
+      "size": 32,
+      "x": 16,
+      "y": 520,
+      "text": "A",
+      "file": "fonts/GposSkipBase.ttf",
+      "fontSha256": "8fa37b1753bb4ae6dd2b0d1a0f926f90843fdfe88f698a7abd113135ac317567",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 0,
+          "x": 16.0,
+          "y": 520.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        }
+      ]
+    },
+    {
+      "family": "GposSkipBase",
+      "size": 16,
+      "x": 40.0,
+      "y": 520,
+      "text": "V",
+      "file": "fonts/GposSkipBase.ttf",
+      "fontSha256": "8fa37b1753bb4ae6dd2b0d1a0f926f90843fdfe88f698a7abd113135ac317567",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 0,
+          "x": 40.0,
+          "y": 520.0,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 12.0,
+          "designAdvance": 768
+        }
+      ]
+    },
+    {
+      "family": "GposSkipBase",
+      "size": 32,
+      "x": 52.0,
+      "y": 520,
+      "text": "W",
+      "file": "fonts/GposSkipBase.ttf",
+      "fontSha256": "8fa37b1753bb4ae6dd2b0d1a0f926f90843fdfe88f698a7abd113135ac317567",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 0,
+          "x": 52.0,
+          "y": 520.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        }
+      ]
+    },
+    {
+      "family": "GposSkipBase",
+      "size": 32,
+      "x": 16,
+      "y": 568,
+      "text": "AV",
+      "file": "fonts/GposSkipBase.ttf",
+      "fontSha256": "8fa37b1753bb4ae6dd2b0d1a0f926f90843fdfe88f698a7abd113135ac317567",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 0,
+          "x": 16.0,
+          "y": 568.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 1,
+          "x": 40.0,
+          "y": 568.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        }
+      ]
+    },
+    {
+      "family": "GposSkipBase",
+      "size": 32,
+      "x": 96,
+      "y": 568,
+      "text": "W",
+      "file": "fonts/GposSkipBase.ttf",
+      "fontSha256": "8fa37b1753bb4ae6dd2b0d1a0f926f90843fdfe88f698a7abd113135ac317567",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 0,
+          "x": 96.0,
+          "y": 568.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        }
+      ]
+    }
+  ]
+}

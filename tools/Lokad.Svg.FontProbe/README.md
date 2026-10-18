@@ -28,6 +28,8 @@ generic-family mappings supply `SvgFontSelectionPolicy` explicitly when creating
 a font snapshot or prepared document. The probe does not discover mappings or
 read an adjacent host-policy file automatically. Family lists retain authored
 order; coverage-based selection uses only supplied programs.
+Programs follow the renderer's [bounded text/font subset](../../docs/SUPPORT_MATRIX.md#text-and-fonts),
+including admitted pair lookup/GDEF filters; actual mark positioning remains unsupported.
 
 For either source, use `--svg -` to read raw SVG bytes from standard input. This
 path does not seek, decode, strip a BOM or pre-read a length; it stops before

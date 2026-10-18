@@ -245,6 +245,7 @@ internal static class SvgGlyphLayout
             int positionBoundaryIndex = 0;
             int sourceOffset = 0;
             int fragmentIndex = 0;
+            int kerningRunEnd = 0, kerningBoundaryIndex = 0;
             double decorationOrigin = originX;
             for (int index = 0; index < positionedGlyphCount; index++)
             {
@@ -266,7 +267,36 @@ internal static class SvgGlyphLayout
                 bool sameDecoration = glyphPaints.Length == 0 || index + 1 < positionedGlyphCount
                     && ReferenceEquals(glyphPaints[index].Decoration, glyphPaints[index + 1].Decoration);
                 bool samePaint = glyphPaints.Length == 0 || index + 1 < positionedGlyphCount && glyphPaints[index] == glyphPaints[index + 1];
-                int pairAdjustment = chunkEnds || !sameFont ? 0 : OpenTypeFont.GetPairAdjustment(font.Bytes, glyph.GlyphIndex, glyphs[index + 1].GlyphIndex, font.Metrics, workCounter, cancellationToken);
+                int pairAdjustment = 0;
+                if (!chunkEnds && sameFont)
+                {
+                    if (font.Metrics.Gpos is { HasFilteredPairs: true })
+                    {
+                        if (index >= kerningRunEnd)
+                        {
+                            // Find each contiguous shaped run once. A filtered
+                            // partner must not cross a font/size or absolute reset.
+                            while (kerningBoundaryIndex < positionAdjustments.Length
+                                && (positionAdjustments[kerningBoundaryIndex].Start < sourceOffset || !positionAdjustments[kerningBoundaryIndex].HasAbsolutePosition))
+                            {
+                                cancellationToken.ThrowIfCancellationRequested(); workCounter?.Consume(cancellationToken);
+                                kerningBoundaryIndex++;
+                            }
+                            int absoluteEnd = kerningBoundaryIndex < positionAdjustments.Length ? positionAdjustments[kerningBoundaryIndex].Start : text.Length;
+                            kerningRunEnd = index + 1;
+                            int runSourceEnd = sourceOffset;
+                            while (kerningRunEnd < positionedGlyphCount && runSourceEnd < absoluteEnd
+                                && (glyphFonts.Length == 0 || glyphFonts[kerningRunEnd] == glyphFonts[index]))
+                            {
+                                cancellationToken.ThrowIfCancellationRequested(); workCounter?.Consume(cancellationToken);
+                                runSourceEnd += sourceLengths is null ? char.IsSurrogatePair(text, runSourceEnd) ? 2 : 1 : sourceLengths[kerningRunEnd];
+                                kerningRunEnd++;
+                            }
+                        }
+                        pairAdjustment = OpenTypeFont.GetPairAdjustment(font.Bytes, glyphs.AsSpan(index, kerningRunEnd - index), font.Metrics, workCounter, cancellationToken);
+                    }
+                    else pairAdjustment = OpenTypeFont.GetPairAdjustment(font.Bytes, glyph.GlyphIndex, glyphs[index + 1].GlyphIndex, font.Metrics, workCounter, cancellationToken);
+                }
                 double kerning = pairAdjustment * scale;
                 if (pairAdjustment != 0 && deviceMetrics is { UsesCharacterAdvances: true } pathMetrics)
                 {

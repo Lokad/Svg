@@ -20,6 +20,7 @@ owned memory, caller memory or a writable stream. `SvgPreparedDocument` supports
 explicit preparation and one conversion. Fonts use an explicit catalog and
 fallback policy, with ordered CSS family lists and caller-defined generic mappings;
 the renderer does not discover machine fonts or fetch resources.
+Bounded pair kerning follows the [documented lookup/GDEF subset](docs/SUPPORT_MATRIX.md#text-and-fonts).
 Size/work limits, cancellation and borrowed-storage lifetimes apply throughout.
 Memory accounting follows the [approximate resource policy](docs/SUPPORT_MATRIX.md#resource-limits-and-memory-accounting).
 

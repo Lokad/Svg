@@ -30,6 +30,9 @@
   and bound half-scan overshoot to the selected pixel center.
 - Prefer selected GPOS kerning, including zero adjustments, over unused legacy
   kern contents. Preserve SFNT bounds and validation of required legacy data.
+- Admit applicable pair-positioning lookup flags and bounded GDEF metadata.
+  Filter base/ligature glyphs within font, size and absolute-position runs;
+  preserve the explicit unsupported boundary for actual mark positioning.
 
 ## 0.2.0 - 2026-10-18
 

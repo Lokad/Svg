@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/kerning-flags/fonts/*.ttf" Link="TestData/kerning-flags/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/composition-sheet/*.svg" Link="TestData/composition-sheet/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/scoped-clips-masks/*.svg" Link="TestData/scoped-clips-masks/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/affine-oval-strokes/*.svg" Link="TestData/affine-oval-strokes/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />

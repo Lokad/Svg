@@ -240,6 +240,16 @@ remain validated. Required legacy kerning retains its single horizontal format-0
 subtable boundary. The [precedence document](../tests/Research/kerning-precedence/README.md)
 retains independent metrics and frozen Windows/Linux pixels.
 
+Type-2 pair lookups admit RIGHT_TO_LEFT (irrelevant to that lookup type),
+IgnoreBaseGlyphs and IgnoreLigatures with bounded GDEF classes. Each lookup
+filters starting glyphs and finds its own next eligible partner within a
+font/size/absolute-position chunk. IgnoreMarks, mark attachment classes and
+format-1 mark-filtering sets admit supported non-mark label runs with validated
+GDEF metadata; actual mark positioning remains unsupported. Reserved flags,
+invalid classes, set indices and table ranges fail explicitly. The
+[lookup-filter document](../tests/Research/kerning-flags/README.md) retains
+independent glyph/advance evidence and exact Windows/Linux outputs.
+
 The [static TrueType compatibility controls](../tests/Research/static-truetype-fonts/README.md)
 also cover Liberation Sans Regular 2.1.5 and DejaVu Sans 2.37, including composites,
 kerning/ligatures and Windows hinting. Font acquisition and fallback remain explicit;

@@ -1,0 +1,99 @@
+{
+  "packId": "public-kerning-flags",
+  "files": [
+    {
+      "relativePath": "fonts/GposRtl.ttf",
+      "byteSize": 1572,
+      "sha256": "bd2f2fad12355f3c30cb284efbe20826644b6b571273b0529c9d516f908b5466"
+    },
+    {
+      "relativePath": "fonts/GposSkipBase.ttf",
+      "byteSize": 1668,
+      "sha256": "8fa37b1753bb4ae6dd2b0d1a0f926f90843fdfe88f698a7abd113135ac317567"
+    },
+    {
+      "relativePath": "fonts/GposSkipLig.ttf",
+      "byteSize": 1656,
+      "sha256": "247affda68417c387dd3c35d98e5f9d81bf2c7f07b0fb869dd450f3a6971c0ec"
+    },
+    {
+      "relativePath": "fonts/GposMarks.ttf",
+      "byteSize": 1628,
+      "sha256": "3ddd4f153cb98d19992a33869a2c3eadcb22c1c6c671f8c8d474685b23f92051"
+    },
+    {
+      "relativePath": "fonts/GposAttach.ttf",
+      "byteSize": 1648,
+      "sha256": "ffdb3d305e8205ed850d47c1e37c41f5325babfa91380954a762b5f37e90fb0e"
+    },
+    {
+      "relativePath": "fonts/GposSet.ttf",
+      "byteSize": 1624,
+      "sha256": "488e603a60d9d4494b2f50637f6bd0a7bb59bc25606bfc12a34435c574bb9bc1"
+    },
+    {
+      "relativePath": "fonts/GposCombined.ttf",
+      "byteSize": 1692,
+      "sha256": "b18512f4a4c558e54afd735264edee2fc3ee23fd28d9568624e9dc8041f8620a"
+    }
+  ],
+  "families": [
+    {
+      "requestedFamily": "GposRtl",
+      "resolvedFamily": "GposRtl",
+      "relativeFontFile": "fonts/GposRtl.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0
+    },
+    {
+      "requestedFamily": "GposSkipBase",
+      "resolvedFamily": "GposSkipBase",
+      "relativeFontFile": "fonts/GposSkipBase.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0
+    },
+    {
+      "requestedFamily": "GposSkipLig",
+      "resolvedFamily": "GposSkipLig",
+      "relativeFontFile": "fonts/GposSkipLig.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0
+    },
+    {
+      "requestedFamily": "GposMarks",
+      "resolvedFamily": "GposMarks",
+      "relativeFontFile": "fonts/GposMarks.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0
+    },
+    {
+      "requestedFamily": "GposAttach",
+      "resolvedFamily": "GposAttach",
+      "relativeFontFile": "fonts/GposAttach.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0
+    },
+    {
+      "requestedFamily": "GposSet",
+      "resolvedFamily": "GposSet",
+      "relativeFontFile": "fonts/GposSet.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0
+    },
+    {
+      "requestedFamily": "GposCombined",
+      "resolvedFamily": "GposCombined",
+      "relativeFontFile": "fonts/GposCombined.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0
+    }
+  ],
+  "fallbacks": []
+}

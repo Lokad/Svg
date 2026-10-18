@@ -11,7 +11,8 @@ internal static partial class OpenTypeFont
     /// Validates borrowed pair-list/class kerning without allocating lookup storage.
     /// Chained-context format-2 coverage is an admission guard, never a shaping
     /// implementation: covered glyphs remain unsupported even in a one-glyph run.
-    /// IgnoreMarks is admitted only for runs containing no GDEF mark glyphs.
+    /// Pair lookup filters admit bounded GDEF data; actual mark-positioning runs
+    /// remain outside the supported text subset.
     /// Every traversal observes cancellation and the caller's parser work budget.
     /// </summary>
     private static OpenTypeGposPairTable? ParseGposPairTable(ReadOnlySpan<byte> data, OpenTypeTableRange table, OpenTypeTableRange? gdef, ushort glyphCount, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
@@ -37,29 +38,62 @@ internal static partial class OpenTypeFont
         }
         int firstPair = 0;
         int glyphClasses = 0;
+        int markClasses = 0, markSets = 0, definitionMinor = 0;
+        bool definitionsRead = false, filteredPairs = false;
         int previous = -1;
         var graph = new OpenTypeGposPairTable(table, feature, lookups, 0, null, 0);
         while (TryGetNextKernLookup(data, graph, ref previous, out int lookup, workCounter, cancellationToken))
         {
             int type = ReadUInt16(data, lookup);
             int flags = ReadUInt16(data, lookup + 2);
-            if (type == 2 && flags == 8)
-            {
-                if (gdef is not OpenTypeTableRange definitions) throw InvalidFont("GPOS IgnoreMarks requires GDEF glyph classes.");
-                if (glyphClasses == 0)
-                {
-                    RequireTableLength(definitions, 12, "GDEF");
-                    int minor = ReadUInt16(data, definitions.Offset + 2);
-                    if (ReadUInt16(data, definitions.Offset) != 1 || minor is not 0 and not 2 and not 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only version-1.0/1.2/1.3 GDEF glyph classes are supported.");
-                    RequireTableLength(definitions, minor == 3 ? 18 : minor == 2 ? 14 : 12, "GDEF");
-                    glyphClasses = GetTableOffset(definitions, definitions.Offset, ReadUInt16(data, definitions.Offset + 4), 4, "GDEF glyph classes");
-                    ValidateGposClasses(data, definitions, glyphClasses, glyphCount, 5, workCounter, cancellationToken);
-                }
-            }
-            else if (flags != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only unfiltered or mark-free IgnoreMarks GPOS kerning is supported.");
             int count = ReadUInt16(data, lookup + 4);
             if (count > MaximumKernSubtables) throw new SvgException(SvgErrorCode.LimitExceeded, "The GPOS kern subtable count exceeds the admitted limit.");
-            RequireTableRange(table, lookup, 6 + count * 2, "GPOS lookup");
+            RequireTableRange(table, lookup, 6 + count * 2 + ((flags & 16) != 0 ? 2 : 0), "GPOS lookup");
+            if ((flags & 0xE0) != 0) throw InvalidFont("The GPOS lookup flags contain reserved bits.");
+            // RIGHT_TO_LEFT belongs to cursive attachment, not pair positioning
+            // or the existing contextual admission guard.
+            if ((flags & 0xFF1E) != 0)
+            {
+                if (type != 2) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filtered contextual GPOS positioning is not supported.");
+                if (gdef is not OpenTypeTableRange definitions) throw InvalidFont("GPOS lookup filtering requires GDEF definitions.");
+                if (!definitionsRead)
+                {
+                    RequireTableLength(definitions, 12, "GDEF");
+                    definitionMinor = ReadUInt16(data, definitions.Offset + 2);
+                    if (ReadUInt16(data, definitions.Offset) != 1 || definitionMinor is not 0 and not 2 and not 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only version-1.0/1.2/1.3 GDEF definitions are supported.");
+                    RequireTableLength(definitions, definitionMinor == 3 ? 18 : definitionMinor == 2 ? 14 : 12, "GDEF");
+                    int classes = ReadUInt16(data, definitions.Offset + 4);
+                    if (classes != 0)
+                    {
+                        glyphClasses = GetTableOffset(definitions, definitions.Offset, classes, 4, "GDEF glyph classes");
+                        ValidateGposClasses(data, definitions, glyphClasses, glyphCount, 5, workCounter, cancellationToken);
+                    }
+                    definitionsRead = true;
+                }
+                if ((flags & 14) != 0 && glyphClasses == 0) throw InvalidFont("GPOS ignore flags require GDEF glyph classes.");
+                if ((flags & 0xFF00) != 0 && markClasses == 0)
+                {
+                    markClasses = GetTableOffset(definitions, definitions.Offset, ReadUInt16(data, definitions.Offset + 10), 4, "GDEF mark attachment classes");
+                    ValidateGposClasses(data, definitions, markClasses, glyphCount, 256, workCounter, cancellationToken);
+                }
+                if ((flags & 16) != 0)
+                {
+                    if (markSets == 0)
+                    {
+                        if (definitionMinor < 2) throw InvalidFont("GPOS mark filtering requires a GDEF mark glyph sets table.");
+                        markSets = GetTableOffset(definitions, definitions.Offset, ReadUInt16(data, definitions.Offset + 12), 4, "GDEF mark glyph sets");
+                        if (ReadUInt16(data, markSets) != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only format-1 GDEF mark glyph sets are supported.");
+                        RequireTableRange(definitions, markSets, 4 + ReadUInt16(data, markSets + 2) * 4, "GDEF mark glyph set offsets");
+                    }
+                    int selectedSet = ReadUInt16(data, lookup + 6 + count * 2);
+                    if (selectedSet >= ReadUInt16(data, markSets + 2)) throw InvalidFont("The GPOS mark filtering set index exceeds GDEF's set count.");
+                    uint relative = ReadUInt32(data, markSets + 4 + selectedSet * 4);
+                    if (relative > int.MaxValue) throw InvalidFont("A GDEF mark coverage offset exceeds the supported range.");
+                    int coverage = GetTableOffset(definitions, markSets, (int)relative, 4, "GDEF mark glyph set coverage");
+                    ValidateGlyphCoverage(data, definitions, coverage, glyphCount, workCounter, cancellationToken);
+                }
+                filteredPairs |= (flags & 6) != 0;
+            }
             for (int index = 0; index < count; index++)
             {
                 Consume(workCounter, cancellationToken);
@@ -78,7 +112,7 @@ internal static partial class OpenTypeFont
                 else throw new SvgException(SvgErrorCode.UnsupportedFeature, "This GPOS kern lookup type or format is not supported.");
             }
         }
-        return graph with { PairPosOffset = firstPair, Gdef = glyphClasses == 0 ? null : gdef, GlyphClassOffset = glyphClasses };
+        return graph with { PairPosOffset = firstPair, Gdef = definitionsRead ? gdef : null, GlyphClassOffset = glyphClasses, HasFilteredPairs = filteredPairs };
 
         static void ValidatePairSubtable(ReadOnlySpan<byte> data, OpenTypeTableRange table, int offset, ushort glyphCount, ParserWorkCounter? workCounter, CancellationToken token)
         {
@@ -129,7 +163,7 @@ internal static partial class OpenTypeFont
         if (metrics.Gpos is not OpenTypeGposPairTable graph) return;
         Consume(workCounter, token);
         ReadOnlySpan<byte> data = bytes.Span;
-        if (graph.Gdef is OpenTypeTableRange && GetGposClass(data, graph.GlyphClassOffset, glyph, workCounter, token) == 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "GPOS mark positioning is not supported in direct text.");
+        if (graph.GlyphClassOffset != 0 && GetGposClass(data, graph.GlyphClassOffset, glyph, workCounter, token) == 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "GPOS mark positioning is not supported in direct text.");
         int previous = -1;
         while (TryGetNextKernLookup(data, graph, ref previous, out int lookup, workCounter, token))
         {
@@ -157,39 +191,85 @@ internal static partial class OpenTypeFont
         while (TryGetNextKernLookup(data, graph, ref previous, out int lookup, workCounter, cancellationToken))
         {
             if (ReadUInt16(data, lookup) != 2) continue;
-            int count = ReadUInt16(data, lookup + 4);
-            for (int index = 0; index < count; index++)
-            {
-                Consume(workCounter, cancellationToken);
-                int subtable = GetTableOffset(graph.Range, lookup, ReadUInt16(data, lookup + 6 + index * 2), 10, "GPOS PairPos");
-                int coverage = GetTableOffset(graph.Range, subtable, ReadUInt16(data, subtable + 2), 4, "OpenType coverage");
-                int covered = GetGlyphCoverageIndex(data, coverage, leftGlyphIndex, workCounter, cancellationToken);
-                if (covered < 0) continue;
-                if (ReadUInt16(data, subtable) == 2)
-                {
-                    int class1 = GetGposClass(data, subtable + ReadUInt16(data, subtable + 8), leftGlyphIndex, workCounter, cancellationToken);
-                    int class2 = GetGposClass(data, subtable + ReadUInt16(data, subtable + 10), rightGlyphIndex, workCounter, cancellationToken);
-                    int class2Count = ReadUInt16(data, subtable + 14);
-                    adjustment += ReadInt16(data, subtable + 16 + 2 * (class1 * class2Count + class2));
-                    break;
-                }
-                int pairs = GetTableOffset(graph.Range, subtable, ReadUInt16(data, subtable + 10 + covered * 2), 2, "GPOS PairSet");
-                int pairCount = ReadUInt16(data, pairs);
-                int low = 0;
-                int high = pairCount;
-                while (low < high)
-                {
-                    Consume(workCounter, cancellationToken);
-                    int mid = low + (high - low) / 2;
-                    if (ReadUInt16(data, pairs + 2 + mid * 4) < rightGlyphIndex) low = mid + 1;
-                    else high = mid;
-                }
-                if (low == pairCount || ReadUInt16(data, pairs + 2 + low * 4) != rightGlyphIndex) continue;
-                adjustment += ReadInt16(data, pairs + 4 + low * 4);
-                break;
-            }
+            int flags = ReadUInt16(data, lookup + 2);
+            if (IsPairGlyphIgnored(data, graph, leftGlyphIndex, flags, workCounter, cancellationToken)
+                || IsPairGlyphIgnored(data, graph, rightGlyphIndex, flags, workCounter, cancellationToken)) continue;
+            adjustment += GetLookupPairAdjustment(data, graph, lookup, leftGlyphIndex, rightGlyphIndex, workCounter, cancellationToken);
         }
         return adjustment;
+    }
+
+    /// <summary>Accumulates filtered pair adjustments within a borrowed, already shaped font/size/chunk run.</summary>
+    /// <remarks>Retains no storage. Each visited glyph/table step charges work and observes cancellation;
+    /// actual mark-positioning and contextual glyphs keep their existing unsupported outcomes.</remarks>
+    internal static int GetPairAdjustment(ReadOnlyMemory<byte> bytes, ReadOnlySpan<SvgPositionedGlyph> glyphs, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken token)
+    {
+        Consume(workCounter, token);
+        if (glyphs.Length < 2) return 0;
+        ushort left = glyphs[0].GlyphIndex;
+        if (metrics.Gpos is not OpenTypeGposPairTable graph) return GetKerningAdjustment(bytes, left, glyphs[1].GlyphIndex, metrics, workCounter, token);
+        ValidateGlyphPositioning(bytes, left, metrics, workCounter, token);
+        ReadOnlySpan<byte> data = bytes.Span;
+        int adjustment = 0, previous = -1;
+        while (TryGetNextKernLookup(data, graph, ref previous, out int lookup, workCounter, token))
+        {
+            if (ReadUInt16(data, lookup) != 2) continue;
+            int flags = ReadUInt16(data, lookup + 2);
+            if (IsPairGlyphIgnored(data, graph, left, flags, workCounter, token)) continue;
+            int next = 1;
+            for (; next < glyphs.Length; next++)
+            {
+                Consume(workCounter, token);
+                ushort right = glyphs[next].GlyphIndex;
+                ValidateGlyphPositioning(bytes, right, metrics, workCounter, token);
+                if (!IsPairGlyphIgnored(data, graph, right, flags, workCounter, token)) break;
+            }
+            if (next < glyphs.Length) adjustment += GetLookupPairAdjustment(data, graph, lookup, left, glyphs[next].GlyphIndex, workCounter, token);
+        }
+        return adjustment;
+    }
+
+    // Mark filtering is validated at admission; actual mark runs remain unsupported.
+    // Admitted base/ligature filtering applies to both lookup starts and partners.
+    private static bool IsPairGlyphIgnored(ReadOnlySpan<byte> data, OpenTypeGposPairTable graph, ushort glyph, int flags, ParserWorkCounter? workCounter, CancellationToken token)
+    {
+        if ((flags & 6) == 0) return false;
+        int glyphClass = GetGposClass(data, graph.GlyphClassOffset, glyph, workCounter, token);
+        return glyphClass == 1 && (flags & 2) != 0 || glyphClass == 2 && (flags & 4) != 0;
+    }
+
+    private static int GetLookupPairAdjustment(ReadOnlySpan<byte> data, OpenTypeGposPairTable graph, int lookup, ushort leftGlyphIndex, ushort rightGlyphIndex, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        int count = ReadUInt16(data, lookup + 4);
+        for (int index = 0; index < count; index++)
+        {
+            Consume(workCounter, cancellationToken);
+            int subtable = GetTableOffset(graph.Range, lookup, ReadUInt16(data, lookup + 6 + index * 2), 10, "GPOS PairPos");
+            int coverage = GetTableOffset(graph.Range, subtable, ReadUInt16(data, subtable + 2), 4, "OpenType coverage");
+            int covered = GetGlyphCoverageIndex(data, coverage, leftGlyphIndex, workCounter, cancellationToken);
+            if (covered < 0) continue;
+            if (ReadUInt16(data, subtable) == 2)
+            {
+                int class1 = GetGposClass(data, subtable + ReadUInt16(data, subtable + 8), leftGlyphIndex, workCounter, cancellationToken);
+                int class2 = GetGposClass(data, subtable + ReadUInt16(data, subtable + 10), rightGlyphIndex, workCounter, cancellationToken);
+                int class2Count = ReadUInt16(data, subtable + 14);
+                return ReadInt16(data, subtable + 16 + 2 * (class1 * class2Count + class2));
+            }
+            int pairs = GetTableOffset(graph.Range, subtable, ReadUInt16(data, subtable + 10 + covered * 2), 2, "GPOS PairSet");
+            int pairCount = ReadUInt16(data, pairs);
+            int low = 0;
+            int high = pairCount;
+            while (low < high)
+            {
+                Consume(workCounter, cancellationToken);
+                int mid = low + (high - low) / 2;
+                if (ReadUInt16(data, pairs + 2 + mid * 4) < rightGlyphIndex) low = mid + 1;
+                else high = mid;
+            }
+            if (low == pairCount || ReadUInt16(data, pairs + 2 + low * 4) != rightGlyphIndex) continue;
+            return ReadInt16(data, pairs + 4 + low * 4);
+        }
+        return 0;
     }
 
     // Feature lookup indices are a set; execution order comes from the LookupList.

@@ -1,0 +1,619 @@
+{
+  "purpose": "Original CC0 finite lookup-flag/GDEF document; freeze before candidate comparison. Mark positioning remains unsupported.",
+  "input": "kerning-flags.svg",
+  "inputSha256": "b81c18bf3e8fcef38aed7a29f2d5d0d11fa7172406644af70992da35c8aef73a",
+  "width": 320,
+  "height": 592,
+  "scale": 1,
+  "rows": [
+    {
+      "family": "GposRtl",
+      "size": 32,
+      "x": 16,
+      "y": 40,
+      "text": "AV To Wa"
+    },
+    {
+      "family": "GposSkipBase",
+      "size": 32,
+      "x": 16,
+      "y": 88,
+      "text": "VAW AVW"
+    },
+    {
+      "family": "GposSkipLig",
+      "size": 32,
+      "x": 16,
+      "y": 136,
+      "text": "VAW AVW"
+    },
+    {
+      "family": "GposMarks",
+      "size": 32,
+      "x": 16,
+      "y": 184,
+      "text": "AV To W"
+    },
+    {
+      "family": "GposAttach",
+      "size": 32,
+      "x": 16,
+      "y": 232,
+      "text": "AV To W"
+    },
+    {
+      "family": "GposSet",
+      "size": 32,
+      "x": 16,
+      "y": 280,
+      "text": "AV To W"
+    },
+    {
+      "family": "GposCombined",
+      "size": 32,
+      "x": 16,
+      "y": 328,
+      "text": "AV To W"
+    },
+    {
+      "family": "GposSkipBase",
+      "size": 16,
+      "x": 16.25,
+      "y": 360.5,
+      "text": "VAW AVW"
+    },
+    {
+      "family": "GposSkipLig",
+      "size": 16,
+      "x": 16.25,
+      "y": 392.5,
+      "text": "VAW AVW"
+    },
+    {
+      "family": "GposRtl",
+      "size": 16,
+      "x": 16.25,
+      "y": 424.5,
+      "text": "AV To Wa"
+    },
+    {
+      "family": "GposSkipBase",
+      "size": 32,
+      "x": 16,
+      "y": 472,
+      "parts": [
+        {
+          "family": "GposSkipBase",
+          "size": 32,
+          "text": "A"
+        },
+        {
+          "family": "GposSkipLig",
+          "size": 32,
+          "text": "V"
+        },
+        {
+          "family": "GposSkipBase",
+          "size": 32,
+          "text": "W"
+        }
+      ]
+    },
+    {
+      "family": "GposSkipBase",
+      "size": 32,
+      "x": 16,
+      "y": 520,
+      "parts": [
+        {
+          "family": "GposSkipBase",
+          "size": 32,
+          "text": "A"
+        },
+        {
+          "family": "GposSkipBase",
+          "size": 16,
+          "text": "V"
+        },
+        {
+          "family": "GposSkipBase",
+          "size": 32,
+          "text": "W"
+        }
+      ]
+    },
+    {
+      "family": "GposSkipBase",
+      "size": 32,
+      "x": 16,
+      "y": 568,
+      "parts": [
+        {
+          "family": "GposSkipBase",
+          "size": 32,
+          "text": "AV"
+        },
+        {
+          "family": "GposSkipBase",
+          "size": 32,
+          "x": 96,
+          "text": "W"
+        }
+      ]
+    }
+  ],
+  "fonts": [
+    {
+      "family": "GposRtl",
+      "file": "fonts/GposRtl.ttf",
+      "flags": 1,
+      "classes": null,
+      "markAttachment": {},
+      "markSet": null,
+      "text": "AV To Wa",
+      "rules": "pos A V -128; pos T o -64; pos W a -96;"
+    },
+    {
+      "family": "GposSkipBase",
+      "file": "fonts/GposSkipBase.ttf",
+      "flags": 2,
+      "classes": {
+        "A": 2,
+        "V": 1,
+        "W": 2,
+        "T": 1,
+        "o": 1,
+        "a": 1,
+        "space": 1
+      },
+      "markAttachment": {},
+      "markSet": null,
+      "text": "VAW AVW",
+      "rules": "pos A W -128; pos V A -64;"
+    },
+    {
+      "family": "GposSkipLig",
+      "file": "fonts/GposSkipLig.ttf",
+      "flags": 4,
+      "classes": {
+        "A": 1,
+        "V": 2,
+        "W": 1,
+        "T": 1,
+        "o": 1,
+        "a": 1,
+        "space": 1
+      },
+      "markAttachment": {},
+      "markSet": null,
+      "text": "VAW AVW",
+      "rules": "pos A W -128; pos V A -64;"
+    },
+    {
+      "family": "GposMarks",
+      "file": "fonts/GposMarks.ttf",
+      "flags": 8,
+      "classes": {
+        "A": 1,
+        "V": 1,
+        "T": 1,
+        "o": 1,
+        "W": 1,
+        "a": 3,
+        "space": 1
+      },
+      "markAttachment": {},
+      "markSet": null,
+      "text": "AV To W",
+      "rules": "pos A V -128; pos T o -64;"
+    },
+    {
+      "family": "GposAttach",
+      "file": "fonts/GposAttach.ttf",
+      "flags": 256,
+      "classes": {
+        "A": 1,
+        "V": 1,
+        "T": 1,
+        "o": 1,
+        "W": 1,
+        "a": 3,
+        "space": 1
+      },
+      "markAttachment": {
+        "a": 1
+      },
+      "markSet": null,
+      "text": "AV To W",
+      "rules": "pos A V -128; pos T o -64;"
+    },
+    {
+      "family": "GposSet",
+      "file": "fonts/GposSet.ttf",
+      "flags": 16,
+      "classes": {
+        "A": 1,
+        "V": 1,
+        "T": 1,
+        "o": 1,
+        "W": 1,
+        "a": 3,
+        "space": 1
+      },
+      "markAttachment": {},
+      "markSet": [
+        "a"
+      ],
+      "text": "AV To W",
+      "rules": "pos A V -128; pos T o -64;"
+    },
+    {
+      "family": "GposCombined",
+      "file": "fonts/GposCombined.ttf",
+      "flags": 281,
+      "classes": {
+        "A": 1,
+        "V": 1,
+        "T": 1,
+        "o": 1,
+        "W": 1,
+        "a": 3,
+        "space": 1
+      },
+      "markAttachment": {
+        "a": 1
+      },
+      "markSet": [
+        "a"
+      ],
+      "text": "AV To W",
+      "rules": "pos A V -128; pos T o -64;"
+    }
+  ],
+  "outlineSource": "../kerning-precedence/declaration.json",
+  "unsupported": "Actual GDEF mark glyph runs retain the existing unsupported mark-positioning outcome.",
+  "platforms": {
+    "windows": {
+      "platform": "windows",
+      "chromeVersion": "153.0.8010.52",
+      "captures": [
+        {
+          "pngSha256": "32cdf19f724dcae1bb7b1f1e36f302750d3cb56b0e1d19e986758adef56db44b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "32cdf19f724dcae1bb7b1f1e36f302750d3cb56b0e1d19e986758adef56db44b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "32cdf19f724dcae1bb7b1f1e36f302750d3cb56b0e1d19e986758adef56db44b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "intendedFonts": [
+        {
+          "fonts": [
+            {
+              "familyName": "GposRtl",
+              "postScriptName": "GposRtl-Regular",
+              "isCustomFont": true,
+              "glyphCount": 8
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposSkipBase",
+              "postScriptName": "GposSkipBase-Regular",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposSkipLig",
+              "postScriptName": "GposSkipLig-Regular",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposMarks",
+              "postScriptName": "GposMarks-Regular",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposAttach",
+              "postScriptName": "GposAttach-Regular",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposSet",
+              "postScriptName": "GposSet-Regular",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposCombined",
+              "postScriptName": "GposCombined-Regular",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposSkipBase",
+              "postScriptName": "GposSkipBase-Regular",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposSkipLig",
+              "postScriptName": "GposSkipLig-Regular",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposRtl",
+              "postScriptName": "GposRtl-Regular",
+              "isCustomFont": true,
+              "glyphCount": 8
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposSkipBase",
+              "postScriptName": "GposSkipBase-Regular",
+              "isCustomFont": true,
+              "glyphCount": 2
+            },
+            {
+              "familyName": "GposSkipLig",
+              "postScriptName": "GposSkipLig-Regular",
+              "isCustomFont": true,
+              "glyphCount": 1
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposSkipBase",
+              "postScriptName": "GposSkipBase-Regular",
+              "isCustomFont": true,
+              "glyphCount": 3
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposSkipBase",
+              "postScriptName": "GposSkipBase-Regular",
+              "isCustomFont": true,
+              "glyphCount": 3
+            }
+          ]
+        }
+      ],
+      "inlineExact": true,
+      "differentProgramChangedPixels": {
+        "GposRtl": 2398,
+        "GposSkipBase": 1930,
+        "GposSkipLig": 1930,
+        "GposMarks": 1576,
+        "GposAttach": 1576,
+        "GposSet": 1576,
+        "GposCombined": 1576
+      },
+      "referenceSha256": "32cdf19f724dcae1bb7b1f1e36f302750d3cb56b0e1d19e986758adef56db44b",
+      "reference": "references/windows/kerning-flags.png"
+    },
+    "linux": {
+      "platform": "linux",
+      "chromeVersion": "153.0.8010.52",
+      "captures": [
+        {
+          "pngSha256": "4671044dec14fe14a2c5fa8511e5e677dbe1ee8c89cf3da0d6592435cc80529d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4671044dec14fe14a2c5fa8511e5e677dbe1ee8c89cf3da0d6592435cc80529d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4671044dec14fe14a2c5fa8511e5e677dbe1ee8c89cf3da0d6592435cc80529d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "intendedFonts": [
+        {
+          "fonts": [
+            {
+              "familyName": "GposRtl",
+              "postScriptName": "GposRtl-Regular",
+              "isCustomFont": true,
+              "glyphCount": 8
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposSkipBase",
+              "postScriptName": "GposSkipBase-Regular",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposSkipLig",
+              "postScriptName": "GposSkipLig-Regular",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposMarks",
+              "postScriptName": "GposMarks-Regular",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposAttach",
+              "postScriptName": "GposAttach-Regular",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposSet",
+              "postScriptName": "GposSet-Regular",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposCombined",
+              "postScriptName": "GposCombined-Regular",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposSkipBase",
+              "postScriptName": "GposSkipBase-Regular",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposSkipLig",
+              "postScriptName": "GposSkipLig-Regular",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposRtl",
+              "postScriptName": "GposRtl-Regular",
+              "isCustomFont": true,
+              "glyphCount": 8
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposSkipBase",
+              "postScriptName": "GposSkipBase-Regular",
+              "isCustomFont": true,
+              "glyphCount": 2
+            },
+            {
+              "familyName": "GposSkipLig",
+              "postScriptName": "GposSkipLig-Regular",
+              "isCustomFont": true,
+              "glyphCount": 1
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposSkipBase",
+              "postScriptName": "GposSkipBase-Regular",
+              "isCustomFont": true,
+              "glyphCount": 3
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposSkipBase",
+              "postScriptName": "GposSkipBase-Regular",
+              "isCustomFont": true,
+              "glyphCount": 3
+            }
+          ]
+        }
+      ],
+      "inlineExact": true,
+      "differentProgramChangedPixels": {
+        "GposRtl": 1828,
+        "GposSkipBase": 1612,
+        "GposSkipLig": 1612,
+        "GposMarks": 1104,
+        "GposAttach": 1104,
+        "GposSet": 1104,
+        "GposCombined": 1104
+      },
+      "referenceSha256": "4671044dec14fe14a2c5fa8511e5e677dbe1ee8c89cf3da0d6592435cc80529d",
+      "reference": "references/linux/kerning-flags.png"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+SPDX-License-Identifier: CC0-1.0
+
+The original SVG and static TrueType programs in this directory are dedicated
+to the public domain under CC0 1.0 Universal. Their rectangular outlines reuse
+the original CC0 kerning-precedence font geometry.
+
+https://creativecommons.org/publicdomain/zero/1.0/legalcode
