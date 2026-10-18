@@ -2,6 +2,7 @@
 
 ## 0.2.0 - 2026-10-18
 
+Published on [NuGet.org](https://www.nuget.org/packages/Lokad.Svg/0.2.0).
 Source: [`v0.2.0`](https://github.com/Lokad/Svg/tree/v0.2.0).
 
 - Add `SvgConverter.InspectDimensions` to inspect CSS-resolved root dimensions,
