@@ -234,6 +234,11 @@ Pair positioning selects the default Latin language system before
 DFLT, sharing selection with ligatures. Repeated feature tags in other language
 systems do not invalidate the selected feature. Language-specific shaping remains
 outside this subset.
+Selected GPOS kerning takes precedence over legacy kern, including zero
+adjustments. Superseded legacy contents are not parsed; all SFNT table ranges
+remain validated. Required legacy kerning retains its single horizontal format-0
+subtable boundary. The [precedence document](../tests/Research/kerning-precedence/README.md)
+retains independent metrics and frozen Windows/Linux pixels.
 
 The [static TrueType compatibility controls](../tests/Research/static-truetype-fonts/README.md)
 also cover Liberation Sans Regular 2.1.5 and DejaVu Sans 2.37, including composites,

@@ -1,0 +1,7 @@
+SPDX-License-Identifier: CC0-1.0
+
+The original SVG and the GposKern.ttf, ZeroKern.ttf, LegacyKern.ttf and
+PlainKern.ttf programs in this directory are dedicated to the public domain
+under CC0 1.0 Universal.
+
+https://creativecommons.org/publicdomain/zero/1.0/legalcode

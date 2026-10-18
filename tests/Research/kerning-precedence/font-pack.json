@@ -1,0 +1,60 @@
+{
+  "packId": "public-kerning-precedence",
+  "files": [
+    {
+      "relativePath": "fonts/GposKern.ttf",
+      "byteSize": 1668,
+      "sha256": "a74efe77b6f3281b74db7a2440e9dbc8a555547b24b0d36970c846ab91a671b1"
+    },
+    {
+      "relativePath": "fonts/ZeroKern.ttf",
+      "byteSize": 1668,
+      "sha256": "56f63afdd0036d9cff6ceb569a302158e0ce865dc5583ac3e644f5483f4e7ad3"
+    },
+    {
+      "relativePath": "fonts/LegacyKern.ttf",
+      "byteSize": 1536,
+      "sha256": "efc46b2f71445e01506bcd140c80122e88051a4e90a43478d0b8cf8db81a7285"
+    },
+    {
+      "relativePath": "fonts/PlainKern.ttf",
+      "byteSize": 1472,
+      "sha256": "0526c14b283c2bc05eecdc9677615a32f12d27c881fbc1ac52759716828076a7"
+    }
+  ],
+  "families": [
+    {
+      "requestedFamily": "GposKern",
+      "resolvedFamily": "GposKern",
+      "relativeFontFile": "fonts/GposKern.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0
+    },
+    {
+      "requestedFamily": "ZeroKern",
+      "resolvedFamily": "ZeroKern",
+      "relativeFontFile": "fonts/ZeroKern.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0
+    },
+    {
+      "requestedFamily": "LegacyKern",
+      "resolvedFamily": "LegacyKern",
+      "relativeFontFile": "fonts/LegacyKern.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0
+    },
+    {
+      "requestedFamily": "PlainKern",
+      "resolvedFamily": "PlainKern",
+      "relativeFontFile": "fonts/PlainKern.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0
+    }
+  ],
+  "fallbacks": []
+}

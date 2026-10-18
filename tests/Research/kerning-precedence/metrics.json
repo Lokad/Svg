@@ -1,0 +1,503 @@
+{
+  "producer": "HarfBuzz 8.3.0, hb_ot_font_set_funcs, Latin/en/LTR, default features; independent of Lokad.Svg.",
+  "rows": [
+    {
+      "family": "GposKern",
+      "size": 32,
+      "x": 16,
+      "y": 40,
+      "file": "fonts/GposKern.ttf",
+      "fontSha256": "a74efe77b6f3281b74db7a2440e9dbc8a555547b24b0d36970c846ab91a671b1",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 0,
+          "x": 16.0,
+          "y": 40.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 20.0,
+          "designAdvance": 640
+        },
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 1,
+          "x": 36.0,
+          "y": 40.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 2,
+          "x": 60.0,
+          "y": 40.0,
+          "nominalAdvance": 8.0,
+          "shapedAdvance": 8.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 4,
+          "utf8Cluster": 3,
+          "x": 68.0,
+          "y": 40.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 22.0,
+          "designAdvance": 704
+        },
+        {
+          "glyphIndex": 5,
+          "utf8Cluster": 4,
+          "x": 90.0,
+          "y": 40.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 5,
+          "x": 114.0,
+          "y": 40.0,
+          "nominalAdvance": 8.0,
+          "shapedAdvance": 8.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 6,
+          "x": 122.0,
+          "y": 40.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 21.0,
+          "designAdvance": 672
+        },
+        {
+          "glyphIndex": 7,
+          "utf8Cluster": 7,
+          "x": 143.0,
+          "y": 40.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        }
+      ]
+    },
+    {
+      "family": "ZeroKern",
+      "size": 32,
+      "x": 16,
+      "y": 80,
+      "file": "fonts/ZeroKern.ttf",
+      "fontSha256": "56f63afdd0036d9cff6ceb569a302158e0ce865dc5583ac3e644f5483f4e7ad3",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 0,
+          "x": 16.0,
+          "y": 80.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 1,
+          "x": 40.0,
+          "y": 80.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 2,
+          "x": 64.0,
+          "y": 80.0,
+          "nominalAdvance": 8.0,
+          "shapedAdvance": 8.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 4,
+          "utf8Cluster": 3,
+          "x": 72.0,
+          "y": 80.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 5,
+          "utf8Cluster": 4,
+          "x": 96.0,
+          "y": 80.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 5,
+          "x": 120.0,
+          "y": 80.0,
+          "nominalAdvance": 8.0,
+          "shapedAdvance": 8.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 6,
+          "x": 128.0,
+          "y": 80.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 7,
+          "utf8Cluster": 7,
+          "x": 152.0,
+          "y": 80.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        }
+      ]
+    },
+    {
+      "family": "LegacyKern",
+      "size": 32,
+      "x": 16,
+      "y": 120,
+      "file": "fonts/LegacyKern.ttf",
+      "fontSha256": "efc46b2f71445e01506bcd140c80122e88051a4e90a43478d0b8cf8db81a7285",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 0,
+          "x": 16.0,
+          "y": 120.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 23.0,
+          "designAdvance": 736
+        },
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 1,
+          "x": 38.0,
+          "y": 120.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 23.0,
+          "designAdvance": 736
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 2,
+          "x": 62.0,
+          "y": 120.0,
+          "nominalAdvance": 8.0,
+          "shapedAdvance": 8.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 4,
+          "utf8Cluster": 3,
+          "x": 70.0,
+          "y": 120.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 23.5,
+          "designAdvance": 752
+        },
+        {
+          "glyphIndex": 5,
+          "utf8Cluster": 4,
+          "x": 93.0,
+          "y": 120.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 23.5,
+          "designAdvance": 752
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 5,
+          "x": 117.0,
+          "y": 120.0,
+          "nominalAdvance": 8.0,
+          "shapedAdvance": 8.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 6,
+          "x": 125.0,
+          "y": 120.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 23.5,
+          "designAdvance": 752
+        },
+        {
+          "glyphIndex": 7,
+          "utf8Cluster": 7,
+          "x": 148.0,
+          "y": 120.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 23.5,
+          "designAdvance": 752
+        }
+      ]
+    },
+    {
+      "family": "PlainKern",
+      "size": 32,
+      "x": 16,
+      "y": 160,
+      "file": "fonts/PlainKern.ttf",
+      "fontSha256": "0526c14b283c2bc05eecdc9677615a32f12d27c881fbc1ac52759716828076a7",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 0,
+          "x": 16.0,
+          "y": 160.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 1,
+          "x": 40.0,
+          "y": 160.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 2,
+          "x": 64.0,
+          "y": 160.0,
+          "nominalAdvance": 8.0,
+          "shapedAdvance": 8.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 4,
+          "utf8Cluster": 3,
+          "x": 72.0,
+          "y": 160.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 5,
+          "utf8Cluster": 4,
+          "x": 96.0,
+          "y": 160.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 5,
+          "x": 120.0,
+          "y": 160.0,
+          "nominalAdvance": 8.0,
+          "shapedAdvance": 8.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 6,
+          "x": 128.0,
+          "y": 160.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 7,
+          "utf8Cluster": 7,
+          "x": 152.0,
+          "y": 160.0,
+          "nominalAdvance": 24.0,
+          "shapedAdvance": 24.0,
+          "designAdvance": 768
+        }
+      ]
+    },
+    {
+      "family": "GposKern",
+      "size": 16,
+      "x": 16.25,
+      "y": 192.5,
+      "file": "fonts/GposKern.ttf",
+      "fontSha256": "a74efe77b6f3281b74db7a2440e9dbc8a555547b24b0d36970c846ab91a671b1",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 0,
+          "x": 16.25,
+          "y": 192.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 10.0,
+          "designAdvance": 640
+        },
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 1,
+          "x": 26.25,
+          "y": 192.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 12.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 2,
+          "x": 38.25,
+          "y": 192.5,
+          "nominalAdvance": 4.0,
+          "shapedAdvance": 4.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 4,
+          "utf8Cluster": 3,
+          "x": 42.25,
+          "y": 192.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 11.0,
+          "designAdvance": 704
+        },
+        {
+          "glyphIndex": 5,
+          "utf8Cluster": 4,
+          "x": 53.25,
+          "y": 192.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 12.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 5,
+          "x": 65.25,
+          "y": 192.5,
+          "nominalAdvance": 4.0,
+          "shapedAdvance": 4.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 6,
+          "x": 69.25,
+          "y": 192.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 10.5,
+          "designAdvance": 672
+        },
+        {
+          "glyphIndex": 7,
+          "utf8Cluster": 7,
+          "x": 79.75,
+          "y": 192.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 12.0,
+          "designAdvance": 768
+        }
+      ]
+    },
+    {
+      "family": "ZeroKern",
+      "size": 16,
+      "x": 16.25,
+      "y": 220.5,
+      "file": "fonts/ZeroKern.ttf",
+      "fontSha256": "56f63afdd0036d9cff6ceb569a302158e0ce865dc5583ac3e644f5483f4e7ad3",
+      "unitsPerEm": 1024,
+      "glyphs": [
+        {
+          "glyphIndex": 2,
+          "utf8Cluster": 0,
+          "x": 16.25,
+          "y": 220.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 12.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 3,
+          "utf8Cluster": 1,
+          "x": 28.25,
+          "y": 220.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 12.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 2,
+          "x": 40.25,
+          "y": 220.5,
+          "nominalAdvance": 4.0,
+          "shapedAdvance": 4.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 4,
+          "utf8Cluster": 3,
+          "x": 44.25,
+          "y": 220.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 12.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 5,
+          "utf8Cluster": 4,
+          "x": 56.25,
+          "y": 220.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 12.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 1,
+          "utf8Cluster": 5,
+          "x": 68.25,
+          "y": 220.5,
+          "nominalAdvance": 4.0,
+          "shapedAdvance": 4.0,
+          "designAdvance": 256
+        },
+        {
+          "glyphIndex": 6,
+          "utf8Cluster": 6,
+          "x": 72.25,
+          "y": 220.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 12.0,
+          "designAdvance": 768
+        },
+        {
+          "glyphIndex": 7,
+          "utf8Cluster": 7,
+          "x": 84.25,
+          "y": 220.5,
+          "nominalAdvance": 12.0,
+          "shapedAdvance": 12.0,
+          "designAdvance": 768
+        }
+      ]
+    }
+  ]
+}

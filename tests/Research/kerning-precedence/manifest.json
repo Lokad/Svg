@@ -1,0 +1,427 @@
+{
+  "purpose": "Original CC0 finite GPOS-versus-legacy kerning document; freeze before candidate comparison.",
+  "input": "kerning-precedence.svg",
+  "inputSha256": "7eb9402aba0309bee09db3fbe1b37f396376c4dcdf4020ae5d038bbb892a457b",
+  "width": 240,
+  "height": 240,
+  "scale": 1,
+  "text": "AV To Wa",
+  "rows": [
+    {
+      "family": "GposKern",
+      "size": 32,
+      "x": 16,
+      "y": 40
+    },
+    {
+      "family": "ZeroKern",
+      "size": 32,
+      "x": 16,
+      "y": 80
+    },
+    {
+      "family": "LegacyKern",
+      "size": 32,
+      "x": 16,
+      "y": 120
+    },
+    {
+      "family": "PlainKern",
+      "size": 32,
+      "x": 16,
+      "y": 160
+    },
+    {
+      "family": "GposKern",
+      "size": 16,
+      "x": 16.25,
+      "y": 192.5
+    },
+    {
+      "family": "ZeroKern",
+      "size": 16,
+      "x": 16.25,
+      "y": 220.5
+    }
+  ],
+  "fonts": [
+    {
+      "family": "GposKern",
+      "file": "fonts/GposKern.ttf",
+      "gpos": {
+        "A V": -128,
+        "T o": -64,
+        "W a": -96
+      },
+      "legacySubtables": 2
+    },
+    {
+      "family": "ZeroKern",
+      "file": "fonts/ZeroKern.ttf",
+      "gpos": {
+        "A V": 0,
+        "T o": 0,
+        "W a": 0
+      },
+      "legacySubtables": 2
+    },
+    {
+      "family": "LegacyKern",
+      "file": "fonts/LegacyKern.ttf",
+      "gpos": null,
+      "legacySubtables": 1
+    },
+    {
+      "family": "PlainKern",
+      "file": "fonts/PlainKern.ttf",
+      "gpos": null,
+      "legacySubtables": 0
+    }
+  ],
+  "glyphOrder": [
+    ".notdef",
+    "space",
+    "A",
+    "V",
+    "T",
+    "o",
+    "W",
+    "a"
+  ],
+  "unitsPerEm": 1024,
+  "originalRectangles": {
+    ".notdef": [
+      [
+        64,
+        0,
+        192,
+        768
+      ]
+    ],
+    "space": [],
+    "A": [
+      [
+        64,
+        0,
+        192,
+        768
+      ],
+      [
+        576,
+        0,
+        704,
+        768
+      ],
+      [
+        192,
+        640,
+        576,
+        768
+      ]
+    ],
+    "V": [
+      [
+        64,
+        256,
+        192,
+        768
+      ],
+      [
+        576,
+        256,
+        704,
+        768
+      ],
+      [
+        192,
+        0,
+        576,
+        256
+      ]
+    ],
+    "T": [
+      [
+        64,
+        640,
+        704,
+        768
+      ],
+      [
+        320,
+        0,
+        448,
+        640
+      ]
+    ],
+    "o": [
+      [
+        64,
+        0,
+        192,
+        512
+      ],
+      [
+        576,
+        0,
+        704,
+        512
+      ],
+      [
+        192,
+        0,
+        576,
+        128
+      ],
+      [
+        192,
+        384,
+        576,
+        512
+      ]
+    ],
+    "W": [
+      [
+        64,
+        0,
+        192,
+        768
+      ],
+      [
+        320,
+        0,
+        448,
+        512
+      ],
+      [
+        576,
+        0,
+        704,
+        768
+      ],
+      [
+        192,
+        0,
+        320,
+        128
+      ],
+      [
+        448,
+        0,
+        576,
+        128
+      ]
+    ],
+    "a": [
+      [
+        64,
+        0,
+        192,
+        512
+      ],
+      [
+        576,
+        0,
+        704,
+        768
+      ],
+      [
+        192,
+        0,
+        576,
+        128
+      ],
+      [
+        192,
+        384,
+        576,
+        512
+      ]
+    ]
+  },
+  "platforms": {
+    "windows": {
+      "platform": "windows",
+      "chromeVersion": "153.0.8010.52",
+      "captures": [
+        {
+          "pngSha256": "16e8de3a3ac8f03483b73a6d9cdd3b6749a477596f7c2f6cddffdd42d830794f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "16e8de3a3ac8f03483b73a6d9cdd3b6749a477596f7c2f6cddffdd42d830794f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "16e8de3a3ac8f03483b73a6d9cdd3b6749a477596f7c2f6cddffdd42d830794f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "intendedFonts": [
+        {
+          "fonts": [
+            {
+              "familyName": "GposKern",
+              "postScriptName": "GposKern-Regular",
+              "isCustomFont": true,
+              "glyphCount": 8
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "ZeroKern",
+              "postScriptName": "ZeroKern-Regular",
+              "isCustomFont": true,
+              "glyphCount": 8
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "LegacyKern",
+              "postScriptName": "LegacyKern-Regular",
+              "isCustomFont": true,
+              "glyphCount": 8
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "PlainKern",
+              "postScriptName": "PlainKern-Regular",
+              "isCustomFont": true,
+              "glyphCount": 8
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposKern",
+              "postScriptName": "GposKern-Regular",
+              "isCustomFont": true,
+              "glyphCount": 8
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "ZeroKern",
+              "postScriptName": "ZeroKern-Regular",
+              "isCustomFont": true,
+              "glyphCount": 8
+            }
+          ]
+        }
+      ],
+      "inlineExact": true,
+      "differentProgramChangedPixels": {
+        "GposKern": 2398,
+        "ZeroKern": 1830,
+        "LegacyKern": 1432,
+        "PlainKern": 1432
+      },
+      "referenceSha256": "16e8de3a3ac8f03483b73a6d9cdd3b6749a477596f7c2f6cddffdd42d830794f",
+      "reference": "references/windows/kerning-precedence.png"
+    },
+    "linux": {
+      "platform": "linux",
+      "chromeVersion": "153.0.8010.52",
+      "captures": [
+        {
+          "pngSha256": "b18370761996ea17c838ef04ba163e101b0509cd516eec97fb0d33a4c426b2c1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b18370761996ea17c838ef04ba163e101b0509cd516eec97fb0d33a4c426b2c1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b18370761996ea17c838ef04ba163e101b0509cd516eec97fb0d33a4c426b2c1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "intendedFonts": [
+        {
+          "fonts": [
+            {
+              "familyName": "GposKern",
+              "postScriptName": "GposKern-Regular",
+              "isCustomFont": true,
+              "glyphCount": 8
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "ZeroKern",
+              "postScriptName": "ZeroKern-Regular",
+              "isCustomFont": true,
+              "glyphCount": 8
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "LegacyKern",
+              "postScriptName": "LegacyKern-Regular",
+              "isCustomFont": true,
+              "glyphCount": 8
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "PlainKern",
+              "postScriptName": "PlainKern-Regular",
+              "isCustomFont": true,
+              "glyphCount": 8
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "GposKern",
+              "postScriptName": "GposKern-Regular",
+              "isCustomFont": true,
+              "glyphCount": 8
+            }
+          ]
+        },
+        {
+          "fonts": [
+            {
+              "familyName": "ZeroKern",
+              "postScriptName": "ZeroKern-Regular",
+              "isCustomFont": true,
+              "glyphCount": 8
+            }
+          ]
+        }
+      ],
+      "inlineExact": true,
+      "differentProgramChangedPixels": {
+        "GposKern": 1828,
+        "ZeroKern": 1362,
+        "LegacyKern": 992,
+        "PlainKern": 992
+      },
+      "referenceSha256": "b18370761996ea17c838ef04ba163e101b0509cd516eec97fb0d33a4c426b2c1",
+      "reference": "references/linux/kerning-precedence.png"
+    }
+  }
+}

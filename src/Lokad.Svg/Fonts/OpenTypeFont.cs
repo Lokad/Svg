@@ -84,8 +84,10 @@ internal static partial class OpenTypeFont
         RequireTableLength(hmtx, hmtxBytes, "hmtx");
         if (tables.TryGetValue(NameTag, out OpenTypeTableRange name)) ValidateNameTable(data, name, workCounter, cancellationToken);
         if (tables.TryGetValue(Os2Tag, out OpenTypeTableRange os2)) ValidateOs2Table(data, os2, workCounter, cancellationToken);
-        OpenTypeKernTable? kern = tables.TryGetValue(KernTag, out OpenTypeTableRange kernTable) ? ParseKernTable(data, kernTable, glyphCount, workCounter, cancellationToken) : null;
         OpenTypeGposPairTable? gpos = tables.TryGetValue(GposTag, out OpenTypeTableRange gposTable) ? ParseGposPairTable(data, gposTable, tables.TryGetValue(GdefTag, out OpenTypeTableRange gdef) ? gdef : null, glyphCount, workCounter, cancellationToken) : null;
+        // Selected GPOS kerning takes precedence, including zero adjustments.
+        // Unused legacy contents stay opaque; SFNT ranges were validated above.
+        OpenTypeKernTable? kern = gpos is null && tables.TryGetValue(KernTag, out OpenTypeTableRange kernTable) ? ParseKernTable(data, kernTable, glyphCount, workCounter, cancellationToken) : null;
         OpenTypeFontLineMetrics lineMetrics = ReadLineMetrics(data, hhea, tables.TryGetValue(Os2Tag, out OpenTypeTableRange lineOs2) ? lineOs2 : null);
         return new OpenTypeFontMetrics(unitsPerEm, glyphCount, numberOfHMetrics, indexToLocFormat, hmtx, tables.TryGetValue(CmapTag, out OpenTypeTableRange cmap) ? cmap : null, kern, gpos, tables.TryGetValue(GsubTag, out OpenTypeTableRange gsub) ? gsub : null, tables.TryGetValue(LocaTag, out OpenTypeTableRange loca) ? loca : null, tables.TryGetValue(GlyfTag, out OpenTypeTableRange glyf) ? glyf : null, (ReadUInt16(bytes.Span, head.Offset + 16) & 8) != 0, lineMetrics)
             {

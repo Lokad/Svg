@@ -28,6 +28,8 @@
   native quarter-pixel collapse guard and unlinked serif offsets.
 - Correct natural Windows LCD stub continuation at exact neighboring vertices
   and bound half-scan overshoot to the selected pixel center.
+- Prefer selected GPOS kerning, including zero adjustments, over unused legacy
+  kern contents. Preserve SFNT bounds and validation of required legacy data.
 
 ## 0.2.0 - 2026-10-18
 
