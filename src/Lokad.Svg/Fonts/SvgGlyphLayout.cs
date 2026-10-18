@@ -44,7 +44,7 @@ internal static class SvgGlyphLayout
     internal static SvgPositionedGlyphStorage CreateStorage(SvgPreparedFont font, string text, double fontSize, double originX, double originY, double letterSpacing, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, SvgTextAnchor anchor, RenderBudget budget, string sourceElementId, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
         => CreateStorage(font, text, fontSize, originX, originY, letterSpacing, letterSpacingSpans, positionAdjustments, anchor, null, budget, sourceElementId, workCounter, cancellationToken);
 
-    /// <summary>Builds output-grid positions while retaining authored origins and bounded chunk/spacing semantics.</summary>
+    /// <summary>Builds native paint positions while retaining semantic widths and bounded chunk/spacing rules.</summary>
     internal static SvgPositionedGlyphStorage CreateStorage(SvgPreparedFont font, string text, double fontSize, double originX, double originY, double letterSpacing, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, SvgTextAnchor anchor, SvgGlyphDeviceMetrics? deviceMetrics, RenderBudget budget, string sourceElementId, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
         => CreateStorage(font, text, fontSize, originX, originY, letterSpacing, letterSpacingSpans, positionAdjustments, [], anchor, deviceMetrics, budget, sourceElementId, workCounter, cancellationToken);
 
@@ -340,10 +340,13 @@ internal static class SvgGlyphLayout
                     cancellationToken.ThrowIfCancellationRequested();
                     workCounter?.Consume(cancellationToken);
                     double localX = glyphs[index].X - nominalOrigin;
-                    double positionedX = deviceMetrics is SvgGlyphDeviceMetrics positionMetrics ? nominalOrigin + chunkShift + positionMetrics.RoundOffset(localX) : glyphs[index].X;
+                    double positionedX = deviceMetrics is SvgGlyphDeviceMetrics positionMetrics
+                        ? nominalOrigin + chunkShift + positionMetrics.RoundOffset(localX) : glyphs[index].X;
                     ApplyPositionAdjustment(ref relativeX, ref relativeY, positionedX, originY, sourceOffset, positionAdjustments, ref positionAdjustmentIndex);
                     sourceOffset += sourceLengths is null ? char.IsSurrogatePair(text, sourceOffset) ? 2 : 1 : sourceLengths[index];
                     double anchoredX = positionedX + anchorOffset + relativeX;
+                    if (deviceMetrics is { UsesCharacterAdvances: false } originMetrics)
+                        anchoredX = RoundPaintOrigin(nominalOrigin + chunkShift + anchorOffset + relativeX, originMetrics.Scale) + originMetrics.RoundOffset(localX);
                     double adjustedY = glyphs[index].Y + relativeY;
                     if (!double.IsFinite(anchoredX) || !double.IsFinite(adjustedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text anchor exceeds the admitted numeric range.");
                     glyphs[index] = glyphs[index] with { X = anchoredX, Y = adjustedY };
@@ -371,6 +374,11 @@ internal static class SvgGlyphLayout
             throw;
         }
         finally { clusterReservation?.Dispose(); }
+
+        // Blink truncates the SVG paint rectangle after anchoring and absolute
+        // resets, while offsets inside an ordinary shaped fragment stay scalar.
+        static double RoundPaintOrigin(double origin, double scale)
+            => MathF.Truncate((float)(origin * scale) * 64) / (scale * 64);
 
         static double GetLetterSpacing(int sourceOffset, double defaultLetterSpacing, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ref int spanIndex)
         {

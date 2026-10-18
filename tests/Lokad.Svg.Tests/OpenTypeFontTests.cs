@@ -4571,13 +4571,13 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
-    [InlineData("windows", false, 18, 12, 110.578125)]
-    [InlineData("linux", false, 18, 12, 110.578125)]
+    [InlineData("windows", false, 18, 12, 110.59185791015625)]
+    [InlineData("linux", false, 18, 12, 110.587646484375)]
     [InlineData("windows", true, 18, 12, 110.625)]
     [InlineData("linux", true, 18, 12, 110.625)]
-    [InlineData("windows", false, 36, 17, 313.34375)]
-    [InlineData("linux", false, 36, 17, 313.328125)]
-    public async Task Device_layout_preserves_the_authored_origin_and_matches_measured_cumulative_offsets(string target, bool textPath, double size, int index, double expectedDeviceOffset)
+    [InlineData("windows", false, 36, 17, 313.3438720703125)]
+    [InlineData("linux", false, 36, 17, 313.3319091796875)]
+    public async Task Device_layout_separates_fragment_paint_origins_from_measured_cumulative_offsets(string target, bool textPath, double size, int index, double expectedDeviceOffset)
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1000, 3, 2, 1))], CancellationToken.None);
         const double scale = 512d / 600;
@@ -4585,9 +4585,11 @@ public sealed partial class OpenTypeFontTests
         RenderBudget budget = new(10_000);
         using (SvgPositionedGlyphStorage positions = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), new string('A', 18), size, 10, 40, 0, [], [], SvgTextAnchor.Start, metrics, budget, string.Empty, new(long.MaxValue), CancellationToken.None))
         {
-            Assert.Equal(10, positions.Glyphs[0].X);
+            // Ordinary paint origins use a 26.6 rectangle; cumulative offsets
+            // retain the independent scalar advances, not a per-glyph floor.
+            Assert.Equal(textPath ? 10 : 9.99755859375, positions.Glyphs[0].X);
             Assert.Equal(40, positions.Glyphs[index].Y);
-            Assert.Equal(expectedDeviceOffset, (positions.Glyphs[index].X - 10) * scale, 10);
+            Assert.Equal(expectedDeviceOffset, (positions.Glyphs[index].X - positions.Glyphs[0].X) * scale, 10);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -4595,16 +4597,20 @@ public sealed partial class OpenTypeFontTests
     [Theory]
     [InlineData("windows")]
     [InlineData("linux")]
-    public async Task Device_layout_keeps_fractional_absolute_and_relative_span_origins(string target)
+    public async Task Device_layout_rounds_paint_origins_without_changing_semantic_absolute_and_relative_positions(string target)
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1000, 3, 2, 1))], CancellationToken.None);
         const double scale = 512d / 600;
         SvgGlyphDeviceMetrics metrics = new(scale, target == "windows" ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, false);
         using SvgPositionedGlyphStorage positions = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), "AAAA", 36, 10.1, 40.2, 0, [], [new(2, 100.1, 50.2, .125, .25)], SvgTextAnchor.Start, metrics, new(10_000), string.Empty, new(long.MaxValue), CancellationToken.None);
-        Assert.Equal(10.1, positions.Glyphs[0].X);
-        Assert.Equal(100.225, positions.Glyphs[2].X, 10);
+        Assert.Equal(10.089111328125, positions.Glyphs[0].X);
+        Assert.Equal(100.213623046875, positions.Glyphs[2].X, 10);
         Assert.Equal(50.45, positions.Glyphs[2].Y, 10);
-        Assert.Equal(18.421875, (positions.Glyphs[3].X - positions.Glyphs[2].X) * scale, 10);
+        Assert.Equal(target == "windows" ? 18.431991577148438 : 18.431289672851562, (positions.Glyphs[3].X - positions.Glyphs[2].X) * scale, 10);
+        using SvgPositionedGlyphStorage semantic = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), "AAAA", 36, 10.1, 40.2, 0, [], [new(2, 100.1, 50.2, .125, .25)], SvgTextAnchor.Start, new(10_000), string.Empty, new(long.MaxValue), CancellationToken.None);
+        Assert.Equal(10.1, semantic.Glyphs[0].X);
+        Assert.Equal(100.225, semantic.Glyphs[2].X, 10);
+        Assert.Equal(50.45, semantic.Glyphs[2].Y, 10);
     }
 
     [Fact]

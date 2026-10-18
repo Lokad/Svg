@@ -205,6 +205,9 @@ diagnostics; required corrupt or unavailable bytes are not silently skipped.
 Raw conversion uses only the supplied snapshot. Request-only snapshot creation
 has no text coverage to inspect and retains its first-face selection contract;
 callers can explicitly supply prepared alternatives for the same request.
+Ordinary shaped text keeps fractional glyph offsets when scaled. Paint-origin
+rounding follows absolute span resets; text paths and fitted-spacing text retain
+their separate character-metric rules.
 The [ordered-family document](../tests/Research/font-family-stacks/README.md)
 and [mixed-coverage document](../tests/Research/glyph-fallback/README.md) retain
 supplied-program metrics and frozen Windows/Linux pixels.

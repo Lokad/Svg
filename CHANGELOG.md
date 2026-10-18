@@ -20,6 +20,8 @@
   bound Latin light edge merging by the font's measured standard stem width.
 - Select Windows natural/symmetric LCD profiles from font gasp data at actual
   raster size, and preserve native curve, smart-dropout and stub behavior.
+- Preserve fractional glyph offsets when scaling ordinary SVG text; round paint
+  origins after absolute span resets while retaining character and text-path metrics.
 
 ## 0.2.0 - 2026-10-18
 

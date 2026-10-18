@@ -8,7 +8,7 @@ using Lokad.Svg.Rendering;
 /// <summary>Selects the existing platform scaler's horizontal metric convention.</summary>
 internal enum SvgGlyphMetricTarget { Windows, Linux }
 
-/// <summary>Maps bounded font advances and SVG fragments through the output grid without rounding authored origins.</summary>
+/// <summary>Maps bounded font advances and paint fragments through the native grid, separately from semantic inline widths.</summary>
 internal readonly record struct SvgGlyphDeviceMetrics(double Scale, SvgGlyphMetricTarget Target, bool IsTextPath)
 {
     internal bool UsesTextLengthSpacing { get; init; }
@@ -56,7 +56,10 @@ internal readonly record struct SvgGlyphDeviceMetrics(double Scale, SvgGlyphMetr
         return (UsesCharacterAdvances ? Math.Ceiling(deviceAdvance * 64) / 64 : deviceAdvance) / Scale;
     }
 
-    internal double RoundOffset(double offset) => MathF.Floor((float)(offset * Scale) * 64) / (Scale * 64);
+    /// <summary>Keeps ordinary shaping offsets at scalar precision; individually positioned characters retain their native 26.6 grid.</summary>
+    internal double RoundOffset(double offset) => UsesCharacterAdvances
+        ? MathF.Floor((float)(offset * Scale) * 64) / (Scale * 64)
+        : (float)(offset * Scale) / Scale;
 
     internal double RoundWidth(double width) => MathF.Ceiling((float)(width * Scale) * 64) / (Scale * 64);
 
