@@ -248,6 +248,8 @@ executed instructions outside the supported subset fail explicitly.
 Fitted initial points and control values retain the Windows signed half-unit rule;
 Latin light fitting keeps nearby edges distinct according to the measured
 standard stem width, with a quarter-pixel maximum merging allowance.
+Pending edges constrain fitted stems unless the bound would collapse the stem
+to a quarter pixel or less; unlinked serifs retain their original relative offsets.
 Instruction-free static programs retain their metric origins and native masks,
 including simple Windows tip dropout control distinct from smart dropout control.
 Windows selects natural or symmetric LCD sampling from the supplied font's

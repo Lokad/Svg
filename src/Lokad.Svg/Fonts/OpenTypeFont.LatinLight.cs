@@ -322,6 +322,11 @@ internal static class LatinLightHinting
                     linked.Position = Math.Abs(length) < 96 && anchor >= 0 ? center + length / 2 : edge.Position + length;
                     linked.Done = true; edges[edge.Link] = linked;
                 }
+                // Pending edges constrain fitted stems too, unless the bound
+                // would collapse the linked stem to a quarter pixel or less.
+                if (anchor >= 0 && i > 0 && edge.Position < edges[i - 1].Position
+                    && Math.Abs(linked.Position - edges[i - 1].Position) > 16)
+                    edge.Position = edges[i - 1].Position;
                 edge.Done = true; edges[i] = edge;
                 if (anchor < 0) anchor = i;
             }
@@ -342,7 +347,8 @@ internal static class LatinLightHinting
                         ? edges[before].Position + MultiplyDivide(edge.Original - edges[before].Original, edges[after].Position - edges[before].Position, edges[after].Original - edges[before].Original)
                         : edges[anchor].Position + ((edge.Original - edges[anchor].Original + 16) & ~31);
                 }
-                if (i > 0) edge.Position = Math.Max(edge.Position, edges[i - 1].Position);
+                // All linked stems are already done. Unlinked serifs retain
+                // their offset even when they cross an earlier fitted edge.
                 edge.Done = true; edges[i] = edge;
             }
         }

@@ -24,6 +24,8 @@
   origins after absolute span resets while retaining character and text-path metrics.
 - Honor font-selected Windows unfitted ranges while preserving native integer
   sizing, component placement, signed point rounding and inherited metric origins.
+- Correct Linux Latin light stem bounds against pending edges, preserving the
+  native quarter-pixel collapse guard and unlinked serif offsets.
 
 ## 0.2.0 - 2026-10-18
 

@@ -7,6 +7,64 @@ namespace Lokad.Svg.Tests;
 public sealed class LatinLightHintingTests
 {
     [Fact]
+    public void Pending_edges_bound_fitted_stems_before_serif_interpolation()
+    {
+        // Original boxes and a triangular spur keep a pending edge between two
+        // stems. Native light fitting bounds the middle stem against its original
+        // 136-unit position before resolving the unlinked spur.
+        OpenTypeGlyphPoint[] points = [.. Box(0, 300, 0, 200), .. Box(600, 900, 677, 904),
+            .. Box(350, 1200, 1140, 1349), new(100, 586, true), new(250, 1000, true), new(400, 586, true)];
+        LatinAlignmentZone[] zones = [new(0, -20, 1370, -20, false, false), new(1349, 1370, 1370, -20, true, false),
+            new(1082, 1102, 1102, -20, true, true)];
+        RenderBudget budget = new(long.MaxValue);
+
+        LatinLightHinting.Hint(points, [3, 7, 11, 14], zones, 2048, 8, new(0, 0), budget, new(long.MaxValue), CancellationToken.None);
+
+        Assert.Equal(136, points[4].Y);
+        Assert.Equal(186, points[5].Y);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Unlinked_serifs_keep_their_offset_when_they_cross_an_earlier_stem()
+    {
+        OpenTypeGlyphPoint[] points = [.. Box(0, 300, 0, 180), .. Box(500, 750, 499, 651),
+            .. Box(300, 900, 920, 1102), new(200, 774, true), new(350, 1050, true), new(500, 774, true)];
+        LatinAlignmentZone[] zones = [new(0, -20, 1370, -20, false, false), new(1349, 1370, 1370, -20, true, false),
+            new(1082, 1102, 1102, -20, true, true)];
+        RenderBudget budget = new(long.MaxValue);
+
+        LatinLightHinting.Hint(points, [3, 7, 11, 14], zones, 2048, 4, new(0, 0), budget, new(long.MaxValue), CancellationToken.None);
+
+        Assert.Equal(90, points[12].Y);
+        Assert.Equal(104, points[5].Y);
+        Assert.True(points[12].Y < points[5].Y);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [InlineData(352, 88)]
+    [InlineData(356, 87)]
+    public void Stem_bounds_preserve_the_native_quarter_pixel_collapse_boundary(int spurY, int expectedStemY)
+    {
+        // The linked upper edge fits to 105. Pending bounds at 88/89 would leave
+        // 17/16 units: the native collapse guard permits only the first bound.
+        OpenTypeGlyphPoint[] points = [.. Box(0, 300, 0, 200), .. Box(500, 800, 416, 488),
+            .. Box(250, 1000, 800, 1000), new(100, spurY, true), new(200, 700, true), new(300, spurY, true)];
+        LatinAlignmentZone[] zones = [new(0, 0, 1000, 0, false, false), new(1000, 1000, 1000, 0, true, false)];
+        RenderBudget budget = new(long.MaxValue);
+
+        LatinLightHinting.Hint(points, [3, 7, 11, 14], zones, 2048, 8, new(0, 0), budget, new(long.MaxValue), CancellationToken.None);
+
+        Assert.Equal(expectedStemY, points[4].Y);
+        Assert.Equal(105, points[5].Y);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    private static OpenTypeGlyphPoint[] Box(int left, int right, int bottom, int top)
+        => [new(left, bottom, true), new(left, top, true), new(right, top, true), new(right, bottom, true)];
+
+    [Fact]
     public void Standard_stem_bounds_edge_merging_independently_of_the_largest_linked_stem()
     {
         // Two original clockwise boxes have separate 20- and 80-unit horizontal
