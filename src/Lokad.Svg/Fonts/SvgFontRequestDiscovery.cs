@@ -4,7 +4,7 @@ using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
 using System.Xml;
 
-/// <summary>Discovers the explicit single-family text requests admitted by the initial preparation subset.</summary>
+/// <summary>Discovers admitted ordered text font requests without acquiring fonts.</summary>
 internal static class SvgFontRequestDiscovery
 {
     private const int MaximumRequests = 256;
@@ -419,7 +419,7 @@ internal static class SvgFontRequestDiscovery
                 {
                     throw new SvgException(SvgErrorCode.MalformedInput, "The discovered font request is missing its family.");
                 }
-                result[index] = new SvgFontFaceRequest(family, key.Weight, key.Italic) { SourceContext = key.SourceContext };
+                result[index] = SvgFontFaceRequest.FromCss(family, key.Weight, key.Italic, key.SourceContext, workCounter, cancellationToken);
             }
             return result;
 

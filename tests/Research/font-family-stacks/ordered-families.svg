@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="96">
+  <style>
+    .labels { font-family: "Missing Face", Example, monospace; font-size: 24px; }
+    .overridden { font-family: "Missing Face", Example, serif; }
+  </style>
+  <g class="labels">
+    <text id="inherited" x="12" y="32">AV To Wa fi</text>
+    <text id="override" class="overridden" x="12.25" y="68.25">Àé ñ 0123 ±</text>
+  </g>
+</svg>

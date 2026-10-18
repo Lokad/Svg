@@ -5,7 +5,7 @@ using Lokad.Svg.Fonts;
 
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Represents the admitted single-font text properties inherited by a rendered text descendant.</summary>
+/// <summary>Represents the admitted font request and text properties inherited by a rendered text descendant.</summary>
 internal sealed class SvgInheritedTextStyle
 {
     // The initial CSS family is a request into the caller's catalogue, never a host-font lookup.
@@ -65,8 +65,7 @@ internal static class SvgTextInheritance
     internal static SvgInheritedTextStyle Resolve(XmlReader reader, SvgInheritedTextStyle inherited, SvgTextInlineFontProperties inline, string? whiteSpace, string? letterSpacing, string? wordSpacing)
     {
         ArgumentNullException.ThrowIfNull(reader);
-        string? family = inline.Family ?? reader.GetAttribute("font-family") ?? inherited.Family;
-        if (family is not null) family = SvgTextFontSyntax.ParseFamily(family);
+        string family = SvgTextFontSyntax.ResolveFamily(inline.Family ?? reader.GetAttribute("font-family"), inherited.Family);
         string? weightValue = inline.Weight ?? reader.GetAttribute("font-weight");
         int weight = weightValue is null ? inherited.Weight : SvgTextFontSyntax.ParseWeight(weightValue);
         string? styleValue = inline.Style ?? reader.GetAttribute("font-style");

@@ -198,11 +198,10 @@ public sealed class SvgFontRequestDiscoveryTests
     }
 
     [Fact]
-    public void Rejects_font_family_lists_instead_of_silently_selecting_one()
+    public void Discovers_family_lists_without_silently_selecting_one()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='First, Second'>x</text></svg>"u8.ToArray(), CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        SvgFontFaceRequest request = Assert.Single(SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='First, Second'>x</text></svg>"u8.ToArray(), CancellationToken.None));
+        Assert.Equal(new[] { "First", "Second" }, request.Families.Select(family => family.Name));
     }
 
     [Fact]

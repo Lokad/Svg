@@ -55,12 +55,18 @@ public sealed class SvgFontSnapshot : IDisposable
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(sourceElementId);
         ThrowIfDisposed();
+        SvgPreparedFont? compatible = null;
         foreach (SvgPreparedFont font in _fonts)
         {
             workCounter?.Consume(cancellationToken);
             SvgFontFaceRequest selected = font.Resolution.Resolution.Request;
-            if (selected.Weight == request.Weight && selected.Italic == request.Italic && selected.Family.Equals(request.Family, StringComparison.OrdinalIgnoreCase)) return font;
+            if (selected.Matches(request))
+            {
+                if (selected.IsCssRequest == request.IsCssRequest) return font;
+                compatible ??= font;
+            }
         }
+        if (compatible is not null) return compatible;
         throw new SvgException(SvgErrorCode.UnresolvedResource, "The requested font face was not prepared in the supplied snapshot.", new SvgFontDiagnostic(SvgFontFailureStage.Source, request.Family, string.Empty, string.Empty, sourceElementId, request.Weight, request.Italic, null, null, null));
     }
 
@@ -141,9 +147,16 @@ public sealed class SvgFontSnapshot : IDisposable
     /// the SVG overload to discover requests from the supported direct-text subset.
     /// </summary>
     public static async ValueTask<SvgFontSnapshot> CreateAsync(SvgFontPackCatalog catalog, IReadOnlyList<SvgFontFaceRequest> requests, ISvgFontProgramSourceProvider provider, CancellationToken cancellationToken)
-        => await CreateAsync(catalog, requests, provider, null, cancellationToken).ConfigureAwait(false);
+        => await CreateAsync(catalog, requests, provider, null, null, cancellationToken).ConfigureAwait(false);
 
-    private static async ValueTask<SvgFontSnapshot> CreateAsync(SvgFontPackCatalog catalog, IReadOnlyList<SvgFontFaceRequest> requests, ISvgFontProgramSourceProvider provider, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    /// <summary>Prepares ordered requests using copied host mappings/fallbacks, sharing verified programs and borrowing caller-owned bytes until disposal.</summary>
+    public static ValueTask<SvgFontSnapshot> CreateAsync(SvgFontPackCatalog catalog, IReadOnlyList<SvgFontFaceRequest> requests, ISvgFontProgramSourceProvider provider, SvgFontSelectionPolicy policy, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(policy);
+        return CreateAsync(catalog, requests, provider, policy, null, cancellationToken);
+    }
+
+    private static async ValueTask<SvgFontSnapshot> CreateAsync(SvgFontPackCatalog catalog, IReadOnlyList<SvgFontFaceRequest> requests, ISvgFontProgramSourceProvider provider, SvgFontSelectionPolicy? policy, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(catalog);
         ArgumentNullException.ThrowIfNull(requests);
@@ -155,7 +168,7 @@ public sealed class SvgFontSnapshot : IDisposable
         {
             Consume(workCounter, cancellationToken);
             SvgFontFaceRequest request = requests[index] ?? throw new ArgumentException("The font request list contains a null request.", nameof(requests));
-            selections[index] = workCounter is null ? catalog.Resolve(request, cancellationToken) : catalog.Resolve(request, workCounter, cancellationToken);
+            selections[index] = catalog.ResolveFamilies(request, policy, workCounter, cancellationToken);
         }
         ValidateSelections(selections, workCounter, cancellationToken);
         var sources = new Dictionary<string, ISvgFontProgramSource>(StringComparer.Ordinal);
@@ -197,13 +210,24 @@ public sealed class SvgFontSnapshot : IDisposable
         return CreateAsync(svg, catalog, provider, limits, workCounter, cancellationToken);
     }
 
+    /// <summary>Discovers CSS family lists without fonts, then selectively verifies host-authorized programs under the supplied SVG limits.</summary>
+    public static ValueTask<SvgFontSnapshot> CreateAsync(ReadOnlyMemory<byte> svg, SvgFontPackCatalog catalog, ISvgFontProgramSourceProvider provider, SvgFontSelectionPolicy policy, SvgRenderLimits limits, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(policy);
+        ArgumentNullException.ThrowIfNull(limits);
+        return CreateAsync(svg, catalog, provider, limits, policy, new(limits.MaximumWorkUnits), cancellationToken);
+    }
+
     /// <summary>Discovers and prepares selected programs under a work counter shared with a caller-owned prepared operation.</summary>
-    internal static async ValueTask<SvgFontSnapshot> CreateAsync(ReadOnlyMemory<byte> svg, SvgFontPackCatalog catalog, ISvgFontProgramSourceProvider provider, SvgRenderLimits limits, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static ValueTask<SvgFontSnapshot> CreateAsync(ReadOnlyMemory<byte> svg, SvgFontPackCatalog catalog, ISvgFontProgramSourceProvider provider, SvgRenderLimits limits, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => CreateAsync(svg, catalog, provider, limits, null, workCounter, cancellationToken);
+
+    internal static async ValueTask<SvgFontSnapshot> CreateAsync(ReadOnlyMemory<byte> svg, SvgFontPackCatalog catalog, ISvgFontProgramSourceProvider provider, SvgRenderLimits limits, SvgFontSelectionPolicy? policy, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(limits);
         ArgumentNullException.ThrowIfNull(workCounter);
         SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(svg, limits, workCounter, cancellationToken);
-        try { return await CreateAsync(catalog, requests, provider, workCounter, cancellationToken).ConfigureAwait(false); }
+        try { return await CreateAsync(catalog, requests, provider, policy, workCounter, cancellationToken).ConfigureAwait(false); }
         catch (SvgException exception) when (exception.FontDiagnostic is {} diagnostic)
         {
             foreach (SvgFontFaceRequest request in requests)

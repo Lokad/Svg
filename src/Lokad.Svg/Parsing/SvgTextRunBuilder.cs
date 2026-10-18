@@ -50,7 +50,7 @@ internal static class SvgTextRunBuilder
         foreach (SvgTextFontSpan span in fontSpans)
         {
             if (workCounter is null) cancellationToken.ThrowIfCancellationRequested(); else workCounter.Consume(cancellationToken);
-            SvgFontFaceRequest request = new(span.Font.Family ?? "serif", span.Font.Weight, span.Font.Italic);
+            SvgFontFaceRequest request = SvgFontFaceRequest.FromCss(span.Font.Family ?? "serif", span.Font.Weight, span.Font.Italic, null, workCounter, cancellationToken);
             SvgPreparedFont face = workCounter is null ? snapshot.GetFont(request, style.SourceElementId) : snapshot.GetFont(request, style.SourceElementId, workCounter, cancellationToken);
             resolvedFonts.Add(new(span.Start, span.End, new(face, span.Font.FontSize)));
         }

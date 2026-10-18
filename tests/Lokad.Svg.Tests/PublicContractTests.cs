@@ -27,7 +27,16 @@ public sealed class PublicContractTests
         Assert.Equal(typeof(CancellationToken), cancellation.ParameterType);
         Assert.False(cancellation.HasDefaultValue);
         Assert.Equal(typeof(CancellationToken), getSource.GetParameters()[1].ParameterType);
-        Assert.Equal(4, snapshots.Length);
+        Type[][] publishedSnapshots =
+        [
+            [typeof(IReadOnlyList<SvgFontProgramResolution>), typeof(CancellationToken)],
+            [typeof(SvgFontPackCatalog), typeof(IReadOnlyList<SvgFontFaceRequest>), typeof(ISvgFontProgramSourceProvider), typeof(CancellationToken)],
+            [typeof(ReadOnlyMemory<byte>), typeof(SvgFontPackCatalog), typeof(ISvgFontProgramSourceProvider), typeof(CancellationToken)],
+            [typeof(ReadOnlyMemory<byte>), typeof(SvgFontPackCatalog), typeof(ISvgFontProgramSourceProvider), typeof(SvgRenderLimits), typeof(CancellationToken)]
+        ];
+        foreach (Type[] signature in publishedSnapshots)
+            Assert.NotNull(typeof(SvgFontSnapshot).GetMethod(nameof(SvgFontSnapshot.CreateAsync), signature));
+        Assert.All(snapshots, method => Assert.Equal(typeof(CancellationToken), method.GetParameters()[^1].ParameterType));
         Assert.All(snapshots.SelectMany(method => method.GetParameters()), parameter => Assert.False(parameter.HasDefaultValue));
     }
 

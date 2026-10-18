@@ -48,11 +48,22 @@ public sealed class SvgRenderOptions
     /// <summary>Gets opt-in raster bounds, or null to retain ordinary output sizing and hard-limit rejection.</summary>
     public SvgRasterBounds? RasterBounds { get; }
 
+    /// <summary>Gets the host policy used by prepared-document acquisition. Null preserves legacy catalog selection; raw conversion uses its supplied snapshot.</summary>
+    public SvgFontSelectionPolicy? FontSelectionPolicy { get; private init; }
+
+    /// <summary>Returns options using an immutable policy for prepared-document font acquisition; the caller still owns fonts, I/O and caches.</summary>
+    public SvgRenderOptions WithFontSelectionPolicy(SvgFontSelectionPolicy policy)
+    {
+        ArgumentNullException.ThrowIfNull(policy);
+        return new(Viewport, OutputScale, BackgroundColor, Limits, FontSnapshot, RasterBounds)
+            { ResolvedRasterSize = ResolvedRasterSize, FontSelectionPolicy = policy };
+    }
+
     internal SvgRasterSize? ResolvedRasterSize { get; private init; }
 
     internal SvgRenderOptions WithRasterSize(SvgRasterSize size)
-        => new(Viewport, size.OutputScale, BackgroundColor, Limits, FontSnapshot, RasterBounds) { ResolvedRasterSize = size };
+        => new(Viewport, size.OutputScale, BackgroundColor, Limits, FontSnapshot, RasterBounds) { ResolvedRasterSize = size, FontSelectionPolicy = FontSelectionPolicy };
 
     internal SvgRenderOptions WithFontSnapshot(SvgFontSnapshot snapshot)
-        => new(Viewport, OutputScale, BackgroundColor, Limits, snapshot, RasterBounds) { ResolvedRasterSize = ResolvedRasterSize };
+        => new(Viewport, OutputScale, BackgroundColor, Limits, snapshot, RasterBounds) { ResolvedRasterSize = ResolvedRasterSize, FontSelectionPolicy = FontSelectionPolicy };
 }

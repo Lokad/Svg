@@ -188,6 +188,16 @@ introduced. Required missing programs/glyphs cannot silently disappear or fall
 back to machine fonts. The host owns acquisition, credentials, retries and caches.
 See [FontProbe](../tools/Lokad.Svg.FontProbe/README.md) for local/HTTP host usage.
 
+Family lists preserve order, quoted names, CSS escapes and inheritance. Missing
+families are skipped before catalog fallback. SvgFontFaceRequest.FromCss
+exposes decoded named/generic candidates. SvgFontSelectionPolicy supplies host
+generic mappings and ordered fallback restrictions to snapshot/prepared-document
+creation; quoted "serif" remains a literal name. Existing single-family
+catalog resolution retains its fallback behavior. Selection uses one program
+per styled run; glyph-coverage fallback between programs is unsupported.
+The [ordered-family document](../tests/Research/font-family-stacks/README.md)
+retains supplied-program metrics and frozen Windows/Linux pixels.
+
 Supported format: standalone static TrueType, face index 0. Text supports
 horizontal LTR ASCII/tested precomposed Latin and covered supplementary scalars;
 text/CDATA/whitespace order; nested `tspan`; inherited/per-span family, size,

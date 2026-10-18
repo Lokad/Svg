@@ -10,6 +10,7 @@ public sealed class SvgInertTypographyTests
     [InlineData("font-size:0;font-size:22px !important;font-size:100%;font-family:'Missing Family';font-style:italic;font-weight:750;font-stretch:125%;font-variant:small-caps")]
     [InlineData("font-size:1em;line-height:100%;text-align:center;writing-mode:lr-tb;text-anchor:middle;white-space:pre-wrap;letter-spacing:-1px;-inkscape-font-specification:Arial")]
     [InlineData("font-size:initial;font-family:inherit;line-height:normal;letter-spacing:normal;font-stretch:condensed;font-style:oblique")]
+    [InlineData("font-family:Arial,serif")]
     public async Task Geometry_typography_preserves_all_six_outputs_and_requires_no_font(string declarations)
     {
         const string plain = "<path fill='red' d='M2 2C2 0 30 0 30 2L30 30H2Z'/>";
@@ -37,7 +38,7 @@ public sealed class SvgInertTypographyTests
     [InlineData("font-size:1e999px", SvgErrorCode.MalformedInput)]
     [InlineData("font-size:var(--size)", SvgErrorCode.UnsupportedFeature)]
     [InlineData("font-size:22px !important !important", SvgErrorCode.UnsupportedFeature)]
-    [InlineData("font-family:Arial,serif", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("font-family:Arial,,serif", SvgErrorCode.MalformedInput)]
     [InlineData("font-style:oblique 10deg", SvgErrorCode.UnsupportedFeature)]
     [InlineData("font-weight:1001", SvgErrorCode.MalformedInput)]
     [InlineData("font-stretch:0%", SvgErrorCode.MalformedInput)]

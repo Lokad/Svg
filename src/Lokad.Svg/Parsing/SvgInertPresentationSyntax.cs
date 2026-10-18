@@ -51,7 +51,12 @@ internal static class SvgInertPresentationSyntax
         if (Keyword(value, "inherit initial unset revert")) return true;
         if (property.Equals("text-decoration", StringComparison.OrdinalIgnoreCase)) { _ = SvgTextDecorationSyntax.Parse(value); return true; }
         bool valid;
-        if (property.Equals("font-family", StringComparison.OrdinalIgnoreCase) || property.Equals("-inkscape-font-specification", StringComparison.OrdinalIgnoreCase))
+        if (property.Equals("font-family", StringComparison.OrdinalIgnoreCase))
+        {
+            _ = Fonts.SvgFontFamilySyntax.Parse(value.ToString(), work, token);
+            return true;
+        }
+        if (property.Equals("-inkscape-font-specification", StringComparison.OrdinalIgnoreCase))
         {
             if (value.Length >= 2 && (value[0] == '\'' || value[0] == '"') && value[^1] == value[0]) value = value[1..^1];
             if (value.IsEmpty) throw new SvgException(SvgErrorCode.MalformedInput, "A font family name is required.");

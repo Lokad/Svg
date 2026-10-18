@@ -7,6 +7,8 @@
   Windows/Linux rounding and glyph-local state.
 - Carry instructed curve-tag changes through simple and composite outlines,
   and allow valid relative jumps across balanced conditionals.
+- Parse ordered CSS font families and add explicit host generic/fallback policy
+  for font snapshots and prepared documents, preserving legacy catalog selection.
 
 ## 0.2.0 - 2026-10-18
 

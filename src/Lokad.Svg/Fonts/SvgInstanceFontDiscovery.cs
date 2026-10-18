@@ -212,7 +212,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                     _work.Consume(_token);
                     if (run.FontSpans.Items.Length == 0) addFace(style.Font);
                     else foreach (SvgTextFontSpan span in run.FontSpans.Items)
-                    { _work.Consume(_token); addFace(new(span.Font.Family ?? "serif", span.Font.Weight, span.Font.Italic)); }
+                    { _work.Consume(_token); addFace(SvgFontFaceRequest.FromCss(span.Font.Family ?? "serif", span.Font.Weight, span.Font.Italic, null, _work, _token)); }
                 }
             }
             finally { foreach (SvgExtractedTextRun run in runs.AsSpan()) run.Dispose(); }

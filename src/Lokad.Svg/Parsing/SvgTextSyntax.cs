@@ -296,7 +296,7 @@ internal static class SvgTextSyntax
     internal static SvgTextStyle Parse(XmlReader reader, SvgTextInlineFontProperties inline, SvgInheritedTextStyle inherited, string? letterSpacing, string? wordSpacing)
     {
         ArgumentNullException.ThrowIfNull(reader);
-        string family = SvgTextFontSyntax.ParseFamily(inline.Family ?? reader.GetAttribute("font-family") ?? inherited.Family ?? "serif");
+        string family = SvgTextFontSyntax.ResolveFamily(inline.Family ?? reader.GetAttribute("font-family"), inherited.Family);
         string? weightValue = inline.Weight ?? reader.GetAttribute("font-weight");
         int weight = weightValue is null ? inherited.Weight : SvgTextFontSyntax.ParseWeight(weightValue);
         string? styleValue = inline.Style ?? reader.GetAttribute("font-style");
@@ -327,7 +327,7 @@ internal static class SvgTextSyntax
             "hanging" => SvgTextBaseline.Hanging,
             _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "This dominant text baseline is not implemented."),
         };
-        return new SvgTextStyle(new SvgFontFaceRequest(family, weight, italic), fontSize, firstX, firstY, firstDx, firstDy, parsedLetterSpacing, anchor, reader.GetAttribute("id") ?? string.Empty)
+        return new SvgTextStyle(SvgFontFaceRequest.FromCss(family, weight, italic), fontSize, firstX, firstY, firstDx, firstDy, parsedLetterSpacing, anchor, reader.GetAttribute("id") ?? string.Empty)
         { PositionLists = lists, TextLength = textLength, LengthAdjust = lengthAdjust, Baseline = baseline,
             WordSpacing = (wordSpacing ?? reader.GetAttribute("word-spacing")) is string specifiedWordSpacing ? ParseWordSpacing(specifiedWordSpacing) : inherited.WordSpacing,
             SourceContext = SvgSourceContext.Capture(reader) };
@@ -497,16 +497,19 @@ internal static class SvgTextSyntax
     }
 }
 
-/// <summary>Normalizes the explicit single-family text font tokens shared by discovery and direct rendering.</summary>
+/// <summary>Normalizes ordered CSS font families shared by discovery and rendering.</summary>
 internal static class SvgTextFontSyntax
 {
     internal static string ParseFamily(string value)
+        => SvgFontFamilySyntax.Parse(value, null, CancellationToken.None).Text;
+
+    internal static string ResolveFamily(string? authored, string? inherited)
     {
-        ArgumentNullException.ThrowIfNull(value);
-        string family = value.Trim();
-        if (family.Length >= 2 && ((family[0] == '\'' && family[^1] == '\'') || (family[0] == '"' && family[^1] == '"'))) family = family[1..^1];
-        if (family.Length == 0 || family.Contains(',')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only one nonempty text font family is supported.");
-        return family;
+        if (authored is null) return inherited ?? "serif";
+        ReadOnlySpan<char> token = authored.AsSpan().Trim();
+        if (token.Equals("inherit", StringComparison.OrdinalIgnoreCase) || token.Equals("unset", StringComparison.OrdinalIgnoreCase)) return inherited ?? "serif";
+        if (token.Equals("initial", StringComparison.OrdinalIgnoreCase)) return "serif";
+        return ParseFamily(authored);
     }
 
     internal static int ParseWeight(string value)

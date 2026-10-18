@@ -1,0 +1,79 @@
+{
+  "purpose": "Ordered CSS family selection: inheritance/override, missing first family before an available authored family, explicit host policy, verified supplied bytes and unchanged platform references. CC0-1.0 original SVG; existing font licenses retained at source paths.",
+  "fontPack": "font-pack.json",
+  "programs": [
+    {
+      "relativePath": "fonts/NotoSans-Regular.ttf",
+      "source": "../supplied-font-labels/fonts/NotoSans-Regular.ttf"
+    },
+    {
+      "relativePath": "fonts/NotoSansMono-Bold.ttf",
+      "source": "../supplied-font-documents/fonts/NotoSansMono-Bold.ttf"
+    }
+  ],
+  "metrics": {
+    "source": "../supplied-font-labels/metrics.json",
+    "case": "pair-and-space"
+  },
+  "cases": [
+    {
+      "id": "ordered-families",
+      "input": "ordered-families.svg",
+      "inputSha256": "7927f3174ff54eff8c6cb577f7e2c71c0054dc9086b8921176d8812e86c34f8d",
+      "width": 420,
+      "height": 96,
+      "scale": 1,
+      "expectedFamily": "Noto Sans",
+      "expectedFile": "fonts/NotoSans-Regular.ttf",
+      "expectedFallback": false,
+      "platforms": {
+        "windows": {
+          "reference": "references/windows/ordered-families.png",
+          "referenceSha256": "cba22c08b41f5c6b1441bddb1dc076a27a303d6107bfbb53d387188cf56f7d21",
+          "chromeVersion": "153.0.8010.52",
+          "captures": [
+            {
+              "pngSha256": "cba22c08b41f5c6b1441bddb1dc076a27a303d6107bfbb53d387188cf56f7d21",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "cba22c08b41f5c6b1441bddb1dc076a27a303d6107bfbb53d387188cf56f7d21",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "cba22c08b41f5c6b1441bddb1dc076a27a303d6107bfbb53d387188cf56f7d21",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "differentProgramChangedPixels": 3014
+        },
+        "linux": {
+          "reference": "references/linux/ordered-families.png",
+          "referenceSha256": "2872d7e1f4d0e56776fcc9853fa931042edebbe86bcd1ee032f1406f0faabb00",
+          "chromeVersion": "153.0.8010.52",
+          "captures": [
+            {
+              "pngSha256": "2872d7e1f4d0e56776fcc9853fa931042edebbe86bcd1ee032f1406f0faabb00",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "2872d7e1f4d0e56776fcc9853fa931042edebbe86bcd1ee032f1406f0faabb00",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "2872d7e1f4d0e56776fcc9853fa931042edebbe86bcd1ee032f1406f0faabb00",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "differentProgramChangedPixels": 2695
+        }
+      }
+    }
+  ]
+}

@@ -72,7 +72,8 @@ public sealed class SvgFontPackCatalog
     }
 
     /// <summary>
-    /// Resolves a requested family and style using the shared-pack selection order.
+    /// Resolves authored families in order, then uses the existing shared-pack
+    /// fallback and last-resort selection. Use ResolveFamilies to restrict fallback.
     /// The returned file remains metadata only; callers acquire and verify bytes separately.
     /// </summary>
     public SvgFontPackResolution Resolve(SvgFontFaceRequest request)
@@ -97,16 +98,41 @@ public sealed class SvgFontPackCatalog
     }
 
     private SvgFontPackResolution ResolveCore(SvgFontFaceRequest request, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+        => ResolveFamilies(request, null, workCounter, cancellationToken);
+
+    /// <summary>Resolves authored families in order, then only host-authorized fallbacks. No bytes are acquired.</summary>
+    public SvgFontPackResolution ResolveFamilies(SvgFontFaceRequest request, SvgFontSelectionPolicy policy)
     {
-        SvgFontPackFace? exact = SelectFamily(request.Family, request, workCounter, cancellationToken);
-        if (exact is not null) return new SvgFontPackResolution(request, exact, false);
-        foreach (string fallback in _fallbackFamilies)
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(policy);
+        return ResolveFamilies(request, policy, null, CancellationToken.None);
+    }
+
+    internal SvgFontPackResolution ResolveFamilies(SvgFontFaceRequest request, SvgFontSelectionPolicy? policy, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        foreach (SvgFontFamily family in request.Families)
+        {
+            Consume(workCounter, cancellationToken);
+            string name = family.Name;
+            if (family.IsGeneric && policy is not null)
+            {
+                if (!policy.GenericFamilies.TryGetValue(name, out string? mapped)) continue;
+                name = mapped;
+            }
+            SvgFontPackFace? exact = SelectFamily(name, request, workCounter, cancellationToken);
+            if (exact is not null) return new SvgFontPackResolution(request, exact, false);
+        }
+        foreach (string fallback in policy?.FallbackFamilies ?? _fallbackFamilies)
         {
             Consume(workCounter, cancellationToken);
             SvgFontPackFace? candidate = SelectFamily(fallback, request, workCounter, cancellationToken);
             if (candidate is not null) return new SvgFontPackResolution(request, candidate, true);
         }
 
+        if (policy is not null)
+            throw new SvgException(SvgErrorCode.UnresolvedResource, "No supplied font matches the requested family list and host fallback policy.",
+                new SvgFontDiagnostic(SvgFontFailureStage.Selection, request.Family, string.Empty, string.Empty, string.Empty,
+                    request.Weight, request.Italic, null, null, null), request.SourceContext?.Describe(string.Empty, string.Empty));
         SvgFontPackFace? textFace = SelectBest(request, true, workCounter, cancellationToken);
         return new SvgFontPackResolution(request, textFace ?? SelectBest(request, false, workCounter, cancellationToken) ?? throw new InvalidOperationException("A validated font catalog has no selectable faces."), true);
     }
@@ -380,6 +406,7 @@ public sealed class SvgFontPackCatalog
 /// <summary>Describes one family/style selection request to a font pack.</summary>
 public sealed class SvgFontFaceRequest
 {
+    private readonly bool _cssRequest;
     internal SvgSourceContext? SourceContext { get; init; }
     /// <summary>Initializes a requested family, positive CSS-like weight and italic flag.</summary>
     public SvgFontFaceRequest(string family, int weight, bool italic)
@@ -387,12 +414,40 @@ public sealed class SvgFontFaceRequest
         ArgumentException.ThrowIfNullOrWhiteSpace(family);
         if (weight <= 0) throw new ArgumentOutOfRangeException(nameof(weight));
         Family = family;
+        Families = Array.AsReadOnly<SvgFontFamily>([new(family, false)]);
         Weight = weight;
         Italic = italic;
     }
 
-    /// <summary>Gets the requested family.</summary>
+    /// <summary>Gets the original literal name or canonical CSS list. Families exposes its decoded ordered candidates.</summary>
     public string Family { get; }
+    /// <summary>Gets ordered decoded family candidates; the original constructor denotes one literal name.</summary>
+    public IReadOnlyList<SvgFontFamily> Families { get; }
+
+    private SvgFontFaceRequest(SvgFontFamilyList families, int weight, bool italic)
+    {
+        if (weight <= 0) throw new ArgumentOutOfRangeException(nameof(weight));
+        Family = families.Text; Families = Array.AsReadOnly(families.Families); Weight = weight; Italic = italic; _cssRequest = true;
+    }
+
+    /// <summary>Parses an ordered CSS family list, preserving generic versus quoted literal requests.</summary>
+    public static SvgFontFaceRequest FromCss(string familyList, int weight, bool italic)
+        => FromCss(familyList, weight, italic, null, null, CancellationToken.None);
+
+    internal static SvgFontFaceRequest FromCss(string familyList, int weight, bool italic, SvgSourceContext? source, ParserWorkCounter? work, CancellationToken token)
+        => new(SvgFontFamilySyntax.Parse(familyList, work, token), weight, italic) { SourceContext = source };
+
+    internal bool Matches(SvgFontFaceRequest other)
+    {
+        if (Weight != other.Weight || Italic != other.Italic || Families.Count != other.Families.Count) return false;
+        for (int index = 0; index < Families.Count; index++)
+        {
+            SvgFontFamily left = Families[index], right = other.Families[index];
+            if (!left.Name.Equals(right.Name, StringComparison.OrdinalIgnoreCase) || _cssRequest && other._cssRequest && left.IsGeneric != right.IsGeneric) return false;
+        }
+        return true;
+    }
+    internal bool IsCssRequest => _cssRequest;
     /// <summary>Gets the requested positive weight.</summary>
     public int Weight { get; }
     /// <summary>Gets whether an italic face was requested.</summary>

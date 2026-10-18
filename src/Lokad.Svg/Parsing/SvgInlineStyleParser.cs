@@ -119,9 +119,11 @@ internal static class SvgInlineStyleParser
         while (declarations.TryRead(out ReadOnlySpan<char> declaration))
         {
             int separator = declaration.IndexOf(':');
-            if (separator <= 0 || declaration[(separator + 1)..].Contains(':')) throw new SvgException(SvgErrorCode.MalformedInput, "Inline style declarations must use property:value syntax.");
+            if (separator <= 0) throw new SvgException(SvgErrorCode.MalformedInput, "Inline style declarations must use property:value syntax.");
             ReadOnlySpan<char> property = declaration[..separator].Trim();
             ReadOnlySpan<char> propertyValue = declaration[(separator + 1)..].Trim();
+            if (propertyValue.Contains(':') && !property.Equals("font-family", StringComparison.OrdinalIgnoreCase))
+                throw new SvgException(SvgErrorCode.MalformedInput, "Inline style declarations must use property:value syntax.");
             if (property.Length > SvgSyntaxLimits.MaximumValueTokenCharacters || propertyValue.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Inline style property names and values exceed the configured syntax limit.");
             if (propertyValue.Length == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Empty inline style declarations are not implemented.");
             if (property.Equals("color", StringComparison.OrdinalIgnoreCase)) Set(ref color, InlineImportantProperties.Color, property, propertyValue, strings, ref important, true);
@@ -362,7 +364,7 @@ internal static class SvgInlineStyleParser
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Initial paint values are not implemented for this property.");
     }
 
-    /// <summary>Streams nonempty semicolon-delimited declarations while charging each 4 KiB scan checkpoint once.</summary>
+    /// <summary>Streams declarations, preserving quoted/escaped semicolons and charging each 4 KiB scan checkpoint once.</summary>
     internal ref struct SvgInlineDeclarationReader
     {
         private readonly ReadOnlySpan<char> _value;
@@ -384,7 +386,19 @@ internal static class SvgInlineStyleParser
             {
                 ConsumeCheckpoints();
                 int start = _position;
-                while (_position < _value.Length && _value[_position] != ';') { _position++; ConsumeCheckpoints(); }
+                char quote = '\0';
+                bool escaped = false;
+                while (_position < _value.Length)
+                {
+                    char character = _value[_position];
+                    if (escaped) escaped = false;
+                    else if (character == '\\') escaped = true;
+                    else if (quote != '\0') { if (character == quote) quote = '\0'; }
+                    else if (character is '\'' or '"') quote = character;
+                    else if (character == ';') break;
+                    _position++; ConsumeCheckpoints();
+                }
+                if (quote != '\0') throw new SvgException(SvgErrorCode.MalformedInput, "An inline style string is not closed.");
                 declaration = _value[start.._position].Trim();
                 if (_position < _value.Length) _position++;
                 ConsumeCheckpoints();

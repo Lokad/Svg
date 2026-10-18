@@ -10,7 +10,9 @@ public enum SvgFontFailureStage
     /// <summary>The selected program used an unsupported or malformed font format.</summary>
     Format,
     /// <summary>A selected program could not supply a requested glyph.</summary>
-    Glyph
+    Glyph,
+    /// <summary>No authored or host-authorized fallback family could be selected.</summary>
+    Selection
 }
 
 /// <summary>

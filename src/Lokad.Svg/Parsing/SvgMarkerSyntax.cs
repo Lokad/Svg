@@ -290,7 +290,7 @@ internal static class SvgMarkerRenderer
                     SvgFontSnapshot snapshot = state.TextReplay?.Fonts
                         ?? throw new SvgException(SvgErrorCode.UnresolvedResource, "Font-relative marker coordinates require a supplied font snapshot.");
                     string family = lengths.Font.Family ?? throw new SvgException(SvgErrorCode.UnresolvedResource, "Font-relative marker coordinates require a font family.");
-                    SvgPreparedFont font = snapshot.GetFont(new(family, lengths.Font.Weight, lengths.Font.Italic), id, work, token);
+                    SvgPreparedFont font = snapshot.GetFont(SvgFontFaceRequest.FromCss(family, lengths.Font.Weight, lengths.Font.Italic, null, work, token), id, work, token);
                     int xHeight = font.GetXHeight(work, token);
                     float ex = xHeight > 0 ? (float)lengths.Font.FontSize * xHeight / font.UnitsPerEm : (float)lengths.Font.FontSize * .5f;
                     marker = marker with { Width = Resolve(lengths.Width, marker.Width), Height = Resolve(lengths.Height, marker.Height),
