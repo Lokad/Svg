@@ -244,6 +244,26 @@ public sealed partial class TrueTypeHintingTests
 
     [Theory]
     [InlineData("21")]
+    [InlineData("0A")]
+    [InlineData("B0000A")]
+    [InlineData("76")]
+    [InlineData("56")]
+    [InlineData("57")]
+    [InlineData("87")]
+    [InlineData("B1010087")]
+    [InlineData("8B")]
+    [InlineData("B0008B")]
+    [InlineData("8C")]
+    [InlineData("48")]
+    [InlineData("B00048")]
+    [InlineData("B1010048")]
+    [InlineData("81")]
+    [InlineData("B00081")]
+    [InlineData("B1010081")]
+    [InlineData("B1000182")]
+    [InlineData("3A")]
+    [InlineData("B0003A")]
+    [InlineData("B101003B")]
     [InlineData("B8FF")]
     [InlineData("4002FF")]
     [InlineData("B00025")]
@@ -261,6 +281,7 @@ public sealed partial class TrueTypeHintingTests
     [InlineData("59")]
     [InlineData("1B")]
     [InlineData("B000584102002059")]
+    [InlineData("B0031CB90102")]
     [InlineData("B8FFFC1C")]
     public void Categorizes_invalid_operands_and_flow_without_leaking_scratch(string program)
     {
@@ -281,12 +302,27 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
-    [InlineData("0A")]
     [InlineData("89")]
     public void Executed_unimplemented_instructions_remain_explicit(string program)
     {
         using TrueTypeHinting machine = Create([], [], [], new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => machine.Run(Convert.FromHexString(program), TrueTypeHintProgramKind.Glyph)).ErrorCode);
+    }
+
+    [Theory]
+    [InlineData(0x8B, 128, -64, 128)]
+    [InlineData(0x8C, 128, -64, -64)]
+    [InlineData(0x8B, -256, -128, -128)]
+    [InlineData(0x8C, -256, -128, -256)]
+    [InlineData(0x8B, 32, 32, 32)]
+    [InlineData(0x8C, 32, 32, 32)]
+    public void Min_and_max_compare_signed_distances_and_consume_only_the_two_operands(byte opcode, int first, int second, int expected)
+    {
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 2, 0, 0), [], [], [], 16,
+            new(65536, 65536), Target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        machine.Run(new byte[] { 0xB0, 73, 0xB9, (byte)(first >> 8), (byte)first, (byte)(second >> 8), (byte)second,
+            opcode, 0xB0, 0, 0x23, 0x42, 0xB0, 1, 0x23, 0x42 }, TrueTypeHintProgramKind.Glyph);
+        Assert.Equal(expected, machine.Storage[0]); Assert.Equal(73, machine.Storage[1]);
     }
 
     [Fact]

@@ -6,6 +6,133 @@ namespace Lokad.Svg.Tests;
 public sealed partial class TrueTypeHintingTests
 {
     [Theory]
+    [InlineData(0x01, 32, 32, 13)]
+    [InlineData(0x01, -32, -32, 13)]
+    [InlineData(0x00, 32, 21, 32)]
+    public void Stack_coordinate_moves_the_projected_axis_without_changing_glyph_originals(byte axis, int value, int x, int y)
+    {
+        TrueTypeHintPoint[] points = [new(21, 13, 21, 13)];
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], points, [0], 16,
+            new(65536, 65536), Target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        machine.Run(new byte[] { axis, 0xB0, 0, 0xB8, (byte)(value >> 8), (byte)value, 0x48 }, TrueTypeHintProgramKind.Glyph);
+        Assert.Equal(x, points[0].X); Assert.Equal(y, points[0].Y);
+        Assert.Equal(21, points[0].OriginalX); Assert.Equal(13, points[0].OriginalY);
+        Assert.Equal(axis == 1, points[0].TouchedX); Assert.Equal(axis == 0, points[0].TouchedY);
+    }
+
+    [Fact]
+    public void Stack_coordinate_uses_projection_for_distance_and_freedom_for_movement()
+    {
+        TrueTypeHintPoint[] points = [new(0, 0, 0, 0), new(3, 4, 3, 4), new(0, 0, 0, 0)];
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], points, [2], 16,
+            new(65536, 65536), Target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        machine.Run(Convert.FromHexString("B1010006B1022048"), TrueTypeHintProgramKind.Glyph);
+        Assert.Equal(53, points[2].X); Assert.Equal(0, points[2].Y);
+        Assert.True(points[2].TouchedX); Assert.False(points[2].TouchedY);
+    }
+
+    [Fact]
+    public void Stack_coordinate_initializes_the_twilight_original_position()
+    {
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 2, 0, 1), [], [], [], 16,
+            new(65536, 65536), Target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        machine.Run(Convert.FromHexString("B00015B1002048B00046B0002342B00047B0012342"), TrueTypeHintProgramKind.Glyph);
+        Assert.Equal(32, machine.Storage[0]); Assert.Equal(32, machine.Storage[1]);
+    }
+
+    [Theory]
+    [InlineData(0x86, 38, 51)]
+    [InlineData(0x87, -51, -38)]
+    public void Dual_line_projection_measures_current_and_original_outlines_separately(byte opcode, int current, int original)
+    {
+        TrueTypeHintPoint[] points = [new(0, 0, 0, 0), new(3, 4, 4, 3) { OriginalX = 4, OriginalY = 3 }, new(64, 0, 64, 0)];
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 2, 0, 0), [], points, [2], 16,
+            new(65536, 65536), Target with { QueryFlags = TrueTypeHintQueryFlags.Symmetric }, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        machine.Run(new byte[] { 0xB1, 1, 0, opcode, 0xB1, 2, 0, 0x49, 0xB0, 0, 0x23, 0x42,
+            0xB1, 2, 0, 0x4A, 0xB0, 1, 0x23, 0x42 }, TrueTypeHintProgramKind.Glyph);
+        Assert.Equal(current, machine.Storage[0]); Assert.Equal(original, machine.Storage[1]);
+    }
+
+    [Fact]
+    public void Coincident_original_dual_line_clears_perpendicular_for_the_current_projection()
+    {
+        TrueTypeHintPoint[] points = [new(0, 0, 0, 0), new(3, 4, 0, 0) { OriginalX = 0, OriginalY = 0 }, new(64, 0, 64, 0)];
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 2, 0, 0), [], points, [2], 16,
+            new(65536, 65536), Target with { QueryFlags = TrueTypeHintQueryFlags.Symmetric }, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        machine.Run(Convert.FromHexString("B1010087B1020049B0002342B102004AB0012342"), TrueTypeHintProgramKind.Glyph);
+        Assert.Equal(38, machine.Storage[0]); Assert.Equal(64, machine.Storage[1]);
+    }
+
+    [Fact]
+    public void Stack_projection_replaces_a_distinct_dual_projection()
+    {
+        TrueTypeHintPoint[] points = [new(0, 0, 0, 0), new(3, 4, 4, 3) { OriginalX = 4, OriginalY = 3 }, new(64, 0, 64, 0)];
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 1, 0, 0), [], points, [2], 16,
+            new(65536, 65536), Target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        machine.Run(Convert.FromHexString("B1010086B9000040000AB102004AB0002342"), TrueTypeHintProgramKind.Glyph);
+        Assert.Equal(0, machine.Storage[0]);
+    }
+
+    [Theory]
+    [InlineData(16384, 0, 16384, 0)]
+    [InlineData(0, -16384, 0, -16384)]
+    [InlineData(3, 4, 9830, 13107)]
+    [InlineData(-3, 4, -9830, 13107)]
+    public void Stack_projection_normalizes_signed_F2Dot14_components(int x, int y, int expectedX, int expectedY)
+    {
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 2, 0, 0), [], [], [], 16,
+            new(65536, 65536), Target with { QueryFlags = TrueTypeHintQueryFlags.Symmetric }, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        machine.Run(new byte[] { 0xB9, (byte)(x >> 8), (byte)x, (byte)(y >> 8), (byte)y, 0x0A,
+            0x0C, 0xB0, 1, 0x23, 0x42, 0xB0, 0, 0x23, 0x42 }, TrueTypeHintProgramKind.Glyph);
+        Assert.Equal(expectedX, machine.Storage[0]); Assert.Equal(expectedY, machine.Storage[1]);
+    }
+
+    [Fact]
+    public void Stack_projection_uses_low_signed_words_and_preserves_the_freedom_vector()
+    {
+        TrueTypeHintPoint[] points = [new(0, 0, 0, 0)];
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 2, 0, 0), [], points, [0], 16,
+            new(65536, 65536), Target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        // 0x4000 * 320 / 64 = 0x14000; only the signed low word selects X.
+        // SHPIX must still use the prior Y freedom vector.
+        machine.Run(Convert.FromHexString("00B84000B8014063B0000A0CB0012342B0002342B1002038"), TrueTypeHintProgramKind.Glyph);
+        Assert.Equal(16384, machine.Storage[0]); Assert.Equal(0, machine.Storage[1]);
+        Assert.Equal(0, points[0].X); Assert.Equal(32, points[0].Y);
+    }
+
+    [Fact]
+    public void Zero_stack_projection_preserves_the_previous_direction()
+    {
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 2, 0, 0), [], [], [], 16,
+            new(65536, 65536), Target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        machine.Run(Convert.FromHexString("02B100000A0CB0012342B0002342"), TrueTypeHintProgramKind.Glyph);
+        Assert.Equal(0, machine.Storage[0]); Assert.Equal(16384, machine.Storage[1]);
+    }
+
+    [Theory]
+    [InlineData(0x02, 0, 16384)]
+    [InlineData(0x03, 16384, 0)]
+    public void Projection_query_pushes_X_then_Y_without_changing_the_vector(byte axis, int x, int y)
+    {
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 2, 0, 0), [], [], [], 16,
+            new(65536, 65536), Target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        machine.Run(new byte[] { axis, 0x0C, 0xB0, 1, 0x23, 0x42, 0xB0, 0, 0x23, 0x42 }, TrueTypeHintProgramKind.Glyph);
+        Assert.Equal(x, machine.Storage[0]); Assert.Equal(y, machine.Storage[1]);
+    }
+
+    [Theory]
+    [InlineData(0x06, 9830, 13107)]
+    [InlineData(0x07, -13107, 9830)]
+    public void Projection_query_preserves_signed_oblique_F2Dot14_components(byte opcode, int x, int y)
+    {
+        TrueTypeHintPoint[] points = [new(0, 0, 0, 0), new(3, 4, 3, 4)];
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 2, 0, 0), [], points, [1], 16,
+            new(65536, 65536), Target with { QueryFlags = TrueTypeHintQueryFlags.Symmetric }, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        machine.Run(new byte[] { 0xB1, 1, 0, opcode, 0x0C, 0xB0, 1, 0x23, 0x42, 0xB0, 0, 0x23, 0x42 }, TrueTypeHintProgramKind.Glyph);
+        Assert.Equal(x, machine.Storage[0]); Assert.Equal(y, machine.Storage[1]);
+    }
+
+    [Theory]
     [InlineData(false, -284)]
     [InlineData(true, -285)]
     public void Windows_diagonal_projection_rounds_each_component_before_adding(bool symmetric, int expected)

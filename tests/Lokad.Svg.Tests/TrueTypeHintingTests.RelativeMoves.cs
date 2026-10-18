@@ -6,6 +6,45 @@ namespace Lokad.Svg.Tests;
 public sealed partial class TrueTypeHintingTests
 {
     [Theory]
+    [InlineData(0x3A, 20, 50, 35)]
+    [InlineData(0x3B, 20, 50, 55)]
+    [InlineData(0x3A, -20, 10, 35)]
+    [InlineData(0x3B, -20, 10, 15)]
+    public void Stack_relative_moves_use_current_reference_without_rounding_or_CVT_and_select_rp0(byte opcode, short distance, int expectedFirst, int expectedSecond)
+    {
+        TrueTypeHintPoint[] points = [new(10, 0, 10, 0), new(64, 0, 64, 0), new(0, 0, 0, 0)];
+        points[0].X = 30; points[1].X = 145;
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], points, [2], 16,
+            new(65536, 65536), Target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        machine.Run(new byte[] { 0x19, 0xB0, 0, 0x1D, 0xB0, 1, 0xB8, (byte)(distance >> 8), (byte)distance,
+            opcode, 0xB1, 2, 5, 0x3A }, TrueTypeHintProgramKind.Glyph);
+        Assert.Equal(expectedFirst, points[1].X); Assert.Equal(expectedSecond, points[2].X);
+        Assert.Equal(64, points[1].OriginalX); Assert.True(points[1].TouchedX);
+    }
+
+    [Fact]
+    public void Stack_relative_move_updates_both_shift_reference_points()
+    {
+        TrueTypeHintPoint[] points = [new(10, 0, 10, 0), new(64, 0, 64, 0), new(0, 0, 0, 0), new(0, 0, 0, 0)];
+        points[0].X = 30; points[1].X = 145;
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], points, [3], 16,
+            new(65536, 65536), Target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        machine.Run(Convert.FromHexString("B101143AB00232B00333"), TrueTypeHintProgramKind.Glyph);
+        Assert.Equal(-14, points[2].X); Assert.Equal(20, points[3].X);
+    }
+
+    [Fact]
+    public void Stack_relative_twilight_move_initializes_originals_from_the_original_reference()
+    {
+        TrueTypeHintPoint[] points = [new(13, 0, 13, 0)];
+        points[0].X = 30;
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 2, 0, 2), [], points, [0], 16,
+            new(65536, 65536), Target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        machine.Run(Convert.FromHexString("B00014B101143AB00015B00146B0002342B00147B0012342"), TrueTypeHintProgramKind.Glyph);
+        Assert.Equal(50, machine.Storage[0]); Assert.Equal(33, machine.Storage[1]);
+    }
+
+    [Theory]
     [InlineData(true, 1889)]
     [InlineData(false, 1888)]
     public void Direct_relative_original_scaling_preserves_target_specific_negative_half_rounding(bool symmetric, int expected)

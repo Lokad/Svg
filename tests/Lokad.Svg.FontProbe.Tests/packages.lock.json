@@ -99,7 +99,7 @@
       "lokad.svg.fontprobe": {
         "type": "Project",
         "dependencies": {
-          "Lokad.Svg": "[0.2.0, )"
+          "Lokad.Svg": "[0.3.0-preview.1, )"
         }
       }
     }

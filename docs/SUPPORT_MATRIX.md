@@ -216,6 +216,12 @@ also cover Liberation Sans Regular 2.1.5 and DejaVu Sans 2.37, including composi
 kerning/ligatures and Windows hinting. Font acquisition and fallback remain explicit;
 these controls retain the same font-format and shaping boundaries.
 
+The bounded hint interpreter includes stack/dual projection vectors, physical
+super-rounding, projected coordinate and relative moves, signed MIN/MAX,
+ODD/EVEN predicates and curve-tag range changes. Fitting preserves the native
+Windows/Linux rounding distinctions and simple/composite outline tags. Other
+executed instructions outside the supported subset fail explicitly.
+
 Unsupported: wrapping, bidi/joining/complex scripts, general GSUB/GPOS/mark
 positioning, other lookup flags/types/formats, vertical text, path stretch/auto
 spacing, variable/color/bitmap fonts, CFF/CFF2 and WOFF/WOFF2.

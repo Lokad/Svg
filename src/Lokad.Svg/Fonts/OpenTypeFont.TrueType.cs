@@ -82,7 +82,7 @@ internal static partial class OpenTypeFont
         int[] cvt = new int[cvtCount];
         int controlScale = target.ControlScale == TrueTypeHintControlScale.FractionalFontUnits ? (scale >> 6) << 6 : scale;
         for (int i = 0; i < cvt.Length; i++) { work.Consume(token); cvt[i] = ScaleWith(ReadInt16(bytes.Span, cvtRange.Offset + i * 2), controlScale); }
-        for (int i = 0; i < pointCount; i++) { work.Consume(token); points[i] = new(ScaleHorizontal(decoded.Points[i].X), Scale(decoded.Points[i].Y), decoded.Points[i].X, decoded.Points[i].Y); }
+        for (int i = 0; i < pointCount; i++) { work.Consume(token); points[i] = new(ScaleHorizontal(decoded.Points[i].X), Scale(decoded.Points[i].Y), decoded.Points[i].X, decoded.Points[i].Y) { IsOnCurve = decoded.Points[i].IsOnCurve }; }
         OpenTypeGlyphHeader header = ParseGlyphHeader(bytes, structure.Value.GlyphRange) ?? throw InvalidFont("A nonempty glyph has no header.");
         int advanceIndex = Math.Min(glyphIndex, metrics.NumberOfHMetrics - 1);
         int advance = ReadUInt16(bytes.Span, metrics.Hmtx.Offset + advanceIndex * 4);
@@ -110,7 +110,7 @@ internal static partial class OpenTypeFont
             machine.Run(bytes.Slice(lengthOffset + 2, instructionLength), TrueTypeHintProgramKind.Glyph);
             smartDropouts = machine.GlyphSmartDropouts;
         }
-        for (int i = 0; i < pointCount; i++) { work.Consume(token); decoded.Points[i] = new(points[i].X, points[i].Y, decoded.Points[i].IsOnCurve); }
+        for (int i = 0; i < pointCount; i++) { work.Consume(token); decoded.Points[i] = new(points[i].X, points[i].Y, points[i].IsOnCurve); }
         MapPoints(decoded.Points);
         using var segments = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.SimpleSegmentCapacity, GlyphDecoderBudgetPhase.SimpleSegmentExact, GlyphDecoderBudgetPhase.SimpleContourBoundaryCapacity, GlyphDecoderBudgetPhase.SimpleContourBoundaryExact, work, token);
         BuildQuadraticContours(decoded.Points, structure.Value.ContourEndpoints, segments, true, impliedPointRounding, work, token);

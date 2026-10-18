@@ -106,49 +106,63 @@ internal sealed partial class TrueTypeHinting
     {
         TrueTypeHintPoint second = Point(_zp2, Pop()), first = Point(_zp1, Pop());
         int x = checked(first.X - second.X), y = checked(first.Y - second.Y);
-        HintVector vector;
-        if (x == 0 && y == 0) vector = HintVector.XAxis;
+        bool perpendicular = (opcode & 1) != 0;
+        if (opcode >= 0x86)
+        {
+            int originalX = checked(first.OriginalX - second.OriginalX), originalY = checked(first.OriginalY - second.OriginalY);
+            // Native SDPVTL clears the perpendicular flag for both vectors when
+            // the original points coincide, even if hinting separated them.
+            if (originalX == 0 && originalY == 0) perpendicular = false;
+            _dualProjection = FromLine(originalX, originalY, perpendicular);
+            _projection = FromLine(x, y, perpendicular);
+        }
         else
         {
-            if ((opcode & 1) != 0) (x, y) = (checked(-y), x);
-            vector = Normalize(x, y);
+            HintVector vector = FromLine(x, y, perpendicular);
+            if (opcode < 8) _projection = _dualProjection = vector;
+            else _freedom = vector;
         }
-        if (opcode < 8) _projection = _dualProjection = vector;
-        else _freedom = vector;
 
-        HintVector Normalize(int vx, int vy)
+        HintVector FromLine(int dx, int dy, bool rotate)
         {
-            if (vx == 0) return new(0, vy < 0 ? -16384 : 16384);
-            if (vy == 0) return new(vx < 0 ? -16384 : 16384, 0);
-            if ((_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0)
-            {
-                _work.Consume(_token);
-                double magnitude = Math.Sqrt((double)vx * vx + (double)vy * vy);
-                return new(checked((int)Math.Round(vx * 16384d / magnitude, MidpointRounding.AwayFromZero)),
-                    checked((int)Math.Round(vy * 16384d / magnitude, MidpointRounding.AwayFromZero)));
-            }
-            uint ax = (uint)Math.Abs((long)vx), ay = (uint)Math.Abs((long)vy);
-            uint length = ax > ay ? ax + (ay >> 1) : ay + (ax >> 1);
-            int shift = System.Numerics.BitOperations.LeadingZeroCount(length);
-            shift -= 15 + (length >= (0xAAAAAAAAu >> shift) ? 1 : 0);
-            if (shift > 0) { ax <<= shift; ay <<= shift; length = ax > ay ? ax + (ay >> 1) : ay + (ax >> 1); }
-            else { ax >>= -shift; ay >>= -shift; length >>= -shift; }
-            int reciprocal = 65536 - (int)length, correction;
-            uint ux, uy;
-            do
-            {
-                _work.Consume(_token);
-                // These modular products are the native 32-bit Newton iteration.
-                unchecked
-                {
-                    ux = (uint)((int)ax + ((int)ax * reciprocal >> 16));
-                    uy = (uint)((int)ay + ((int)ay * reciprocal >> 16));
-                    correction = -(int)(ux * ux + uy * uy) / 512;
-                    correction = correction * ((65536 + reciprocal) >> 8) / 65536;
-                    reciprocal += correction;
-                }
-            } while (correction > 0);
-            return new((vx < 0 ? -(int)ux : (int)ux) / 4, (vy < 0 ? -(int)uy : (int)uy) / 4);
+            if (dx == 0 && dy == 0) return HintVector.XAxis;
+            if (rotate) (dx, dy) = (checked(-dy), dx);
+            return NormalizeVector(dx, dy);
         }
+    }
+
+    private HintVector NormalizeVector(int vx, int vy)
+    {
+        if (vx == 0) return new(0, vy < 0 ? -16384 : 16384);
+        if (vy == 0) return new(vx < 0 ? -16384 : 16384, 0);
+        if ((_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0)
+        {
+            _work.Consume(_token);
+            double magnitude = Math.Sqrt((double)vx * vx + (double)vy * vy);
+            return new(checked((int)Math.Round(vx * 16384d / magnitude, MidpointRounding.AwayFromZero)),
+                checked((int)Math.Round(vy * 16384d / magnitude, MidpointRounding.AwayFromZero)));
+        }
+        uint ax = (uint)Math.Abs((long)vx), ay = (uint)Math.Abs((long)vy);
+        uint length = ax > ay ? ax + (ay >> 1) : ay + (ax >> 1);
+        int shift = System.Numerics.BitOperations.LeadingZeroCount(length);
+        shift -= 15 + (length >= (0xAAAAAAAAu >> shift) ? 1 : 0);
+        if (shift > 0) { ax <<= shift; ay <<= shift; length = ax > ay ? ax + (ay >> 1) : ay + (ax >> 1); }
+        else { ax >>= -shift; ay >>= -shift; length >>= -shift; }
+        int reciprocal = 65536 - (int)length, correction;
+        uint ux, uy;
+        do
+        {
+            _work.Consume(_token);
+            // These modular products are the native 32-bit Newton iteration.
+            unchecked
+            {
+                ux = (uint)((int)ax + ((int)ax * reciprocal >> 16));
+                uy = (uint)((int)ay + ((int)ay * reciprocal >> 16));
+                correction = -(int)(ux * ux + uy * uy) / 512;
+                correction = correction * ((65536 + reciprocal) >> 8) / 65536;
+                reciprocal += correction;
+            }
+        } while (correction > 0);
+        return new((vx < 0 ? -(int)ux : (int)ux) / 4, (vy < 0 ? -(int)uy : (int)uy) / 4);
     }
 }

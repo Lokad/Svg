@@ -121,6 +121,7 @@ internal static partial class OpenTypeFont
                 _work.Consume(_token);
                 OpenTypeGlyphPoint point = outline[i];
                 points[i] = composite ? new(point.X, point.Y, point.X, point.Y) : new(ScaleHorizontal(point.X), Scale(point.Y, _scale.Vertical), point.X, point.Y);
+                points[i].IsOnCurve = point.IsOnCurve;
             }
             OpenTypeGlyphHeader? header = ParseGlyphHeader(_bytes, range);
             int advanceIndex = Math.Min(glyph, _metrics.NumberOfHMetrics - 1);
@@ -136,7 +137,7 @@ internal static partial class OpenTypeFont
             points[firstPhantom + 1].X = RoundTrueTypeHorizontalMetric(initial.RightX, _target);
             points[firstPhantom + 2].Unavailable = points[firstPhantom + 3].Unavailable = true;
             _machine.HintGlyph(_bytes.Slice(instructions.Offset, instructions.Length), points, ends, composite);
-            for (int i = 0; i < outline.Length; i++) { _work.Consume(_token); outline[i] = new(points[i].X, points[i].Y, outline[i].IsOnCurve); }
+            for (int i = 0; i < outline.Length; i++) { _work.Consume(_token); outline[i] = new(points[i].X, points[i].Y, points[i].IsOnCurve); }
             // The native FreeType v40 policy and instruction-free parents preserve
             // unrounded metrics; Windows parents retain their fitted sixteenth-pixel origin.
             return _target.Version == 40 || composite && instructions.Length == 0 && (_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) == 0 ? initial : new(points[firstPhantom].X, points[firstPhantom].Y, points[firstPhantom + 1].X, points[firstPhantom + 1].Y);

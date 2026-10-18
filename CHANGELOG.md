@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Extend bounded TrueType hinting with physical super-rounding, projection
+  vectors, coordinate/relative moves, MIN/MAX and ODD/EVEN, preserving native
+  Windows/Linux rounding and glyph-local state.
+- Carry instructed curve-tag changes through simple and composite outlines,
+  and allow valid relative jumps across balanced conditionals.
+
 ## 0.2.0 - 2026-10-18
 
 Published on [NuGet.org](https://www.nuget.org/packages/Lokad.Svg/0.2.0).

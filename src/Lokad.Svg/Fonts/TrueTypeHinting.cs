@@ -6,7 +6,7 @@ using Lokad.Svg.Rendering;
 internal enum TrueTypeHintZone { Twilight, Glyph }
 internal enum TrueTypeHintAxis { Y, X }
 internal enum TrueTypeHintProgramKind { Font, Preparation, Glyph }
-internal enum TrueTypeHintRound { Grid, HalfGrid, DoubleGrid, Down, Up, Off }
+internal enum TrueTypeHintRound { Grid, HalfGrid, DoubleGrid, Down, Up, Off, Super }
 internal enum TrueTypeHintControlScale { FullPrecision, FractionalFontUnits }
 internal enum TrueTypeHintPreparation { Single, DefaultThenTarget }
 internal enum TrueTypeHintGrid { Physical, ClearType }
@@ -50,11 +50,14 @@ internal readonly record struct TrueTypeHintTarget(int Version, TrueTypeHintQuer
 internal struct TrueTypeHintPoint
 {
     internal int X, Y, OriginalX, OriginalY, UnscaledX, UnscaledY;
-    internal bool TouchedX, TouchedY, Unavailable;
-    internal TrueTypeHintPoint(int x, int y, int unscaledX, int unscaledY) { X = OriginalX = x; Y = OriginalY = y; UnscaledX = unscaledX; UnscaledY = unscaledY; TouchedX = TouchedY = Unavailable = false; }
+    internal bool TouchedX, TouchedY, Unavailable, IsOnCurve;
+    internal TrueTypeHintPoint(int x, int y, int unscaledX, int unscaledY) { X = OriginalX = x; Y = OriginalY = y; UnscaledX = unscaledX; UnscaledY = unscaledY; TouchedX = TouchedY = Unavailable = false; IsOnCurve = true; }
 }
 
 internal readonly record struct TrueTypeHintFunction(bool Defined, ReadOnlyMemory<byte> Program);
+
+/// <summary>Retains explicit super-round distances in physical 26.6 device coordinates.</summary>
+internal readonly record struct TrueTypeHintSuperRound(int Period, int Phase, int Threshold);
 
 /// <summary>Executes the bounded TrueType subset needed by the selected public Latin fonts.</summary>
 /// <remarks>Owns scratch and borrows programs, glyph points and contour ends for one conversion.
@@ -86,6 +89,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
     private int _scanControl, _scanType;
     private bool _scanConfigured, _autoFlip = true, _iupX, _iupY;
     private TrueTypeHintRound _round = TrueTypeHintRound.Grid;
+    private TrueTypeHintSuperRound _superRound = new(64, 0, 32);
     private TrueTypeHintZone _zp0 = TrueTypeHintZone.Glyph, _zp1 = TrueTypeHintZone.Glyph, _zp2 = TrueTypeHintZone.Glyph;
 
     private TrueTypeHinting(TrueTypeHintProfile profile, int[] cvt, TrueTypeHintPoint[] glyph, ushort[] ends, int ppem, TrueTypeHintDeviceScale scale, TrueTypeHintTarget target, RenderBudget.BudgetReservation reservation, ParserWorkCounter work, CancellationToken token)
@@ -152,6 +156,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
         bool savedScanConfigured = _scanConfigured;
         bool savedAutoFlip = _autoFlip;
         TrueTypeHintRound savedRound = _round;
+        TrueTypeHintSuperRound savedSuperRound = _superRound;
         _glyph = points; _ends = ends; _compositeGlyph = composite;
         try { Run(program, TrueTypeHintProgramKind.Glyph); }
         finally
@@ -159,6 +164,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
             _glyph = savedPoints; _ends = savedEnds; _compositeGlyph = savedComposite;
             _cutIn = savedCutIn; _deltaBase = savedDeltaBase; _deltaShift = savedDeltaShift;
             _instructionControl = savedControl; _round = savedRound;
+            _superRound = savedSuperRound;
             _minimumDistance = savedMinimum; _singleWidthCutIn = savedSingleCutIn; _singleWidth = savedSingleWidth;
             _scanControl = savedScanControl; _scanType = savedScanType; _scanConfigured = savedScanConfigured;
             _autoFlip = savedAutoFlip;
@@ -241,6 +247,14 @@ internal sealed partial class TrueTypeHinting : IDisposable
                     break;
                 }
                 case >= 0x06 and <= 0x09: SetLineVector(opcode); break;
+                case 0x0A:
+                {
+                    int y = unchecked((short)Pop()), x = unchecked((short)Pop());
+                    if (x != 0 || y != 0) _projection = NormalizeVector(x, y);
+                    _dualProjection = _projection;
+                    break;
+                }
+                case 0x0C: Push(_projection.X); Push(_projection.Y); break;
                 case 0x10: _rp0 = Pop(); break;
                 case 0x11: _rp1 = Pop(); break;
                 case 0x12: _rp2 = Pop(); break;
@@ -300,6 +314,23 @@ internal sealed partial class TrueTypeHinting : IDisposable
                     int amount = Pop(); for (int i = 0; i < _loop; i++) { _work.Consume(_token); ref TrueTypeHintPoint p = ref Point(_zp2, Pop()); MoveAlongFreedom(ref p, amount); } _loop = 1; break;
                 }
                 case 0x39: InterpolatePoints(); break;
+                case 0x3A: case 0x3B:
+                {
+                    int distance = Pop(), index = Pop();
+                    ref TrueTypeHintPoint point = ref Point(_zp1, index);
+                    TrueTypeHintPoint reference = Point(_zp0, _rp0);
+                    if (_zp1 == TrueTypeHintZone.Twilight)
+                    {
+                        TrueTypeHintPoint original = new(reference.OriginalX, reference.OriginalY, 0, 0);
+                        Move(ref original, distance, false);
+                        point.X = point.OriginalX = original.X; point.Y = point.OriginalY = original.Y;
+                        reference = Point(_zp0, _rp0);
+                    }
+                    Move(ref point, checked(distance - ProjectedDistance(point, reference, false)), true);
+                    _rp1 = _rp0; _rp2 = index;
+                    if ((opcode & 1) != 0) _rp0 = index;
+                    break;
+                }
                 case 0x3C:
                 {
                     TrueTypeHintPoint reference = Point(_zp0, _rp0);
@@ -323,6 +354,13 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 case 0x44: { int value = Pop(); _cvt[Index(Pop(), _cvt.Length)] = StoreControl(value); break; }
                 case 0x45: Push(ReadControl(Index(Pop(), _cvt.Length))); break;
                 case 0x46: case 0x47: Push(Coordinate(Point(_zp2, Pop()), opcode == 0x47)); break;
+                case 0x48:
+                {
+                    int value = Pop(); ref TrueTypeHintPoint point = ref Point(_zp2, Pop());
+                    Move(ref point, checked(value - Coordinate(point, false)), true);
+                    if (_zp2 == TrueTypeHintZone.Twilight) { point.OriginalX = point.X; point.OriginalY = point.Y; }
+                    break;
+                }
                 case 0x49: case 0x4A:
                 {
                     int a = Pop(), b = Pop(); TrueTypeHintPoint p = Point(_zp0, b), q = Point(_zp1, a);
@@ -352,6 +390,18 @@ internal sealed partial class TrueTypeHinting : IDisposable
                     });
                     break;
                 }
+                case 0x56: case 0x57:
+                {
+                    int value = Pop();
+                    // DirectWrite tests physical nearest-grid parity independently
+                    // of graphics-state rounding. Classic FreeType uses that state;
+                    // a fractional result can satisfy neither predicate.
+                    long rounded = (_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0
+                        ? (Math.Abs((long)value) + 32) & ~63L
+                        : RoundMagnitude(value, 64);
+                    Push((rounded & 127) == (opcode == 0x56 ? 64 : 0) ? 1 : 0);
+                    break;
+                }
                 case 0x58: if (Pop() != 0 || Skip(true)) conditionalDepth++; break;
                 case 0x59:
                     if (conditionalDepth == 0) throw Invalid("EIF occurred outside a TrueType conditional.");
@@ -366,13 +416,35 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 case 0x66: Push(Pop() & ~63); break;
                 case 0x67: Push(checked((Pop() + 63) & ~63)); break;
                 case >= 0x68 and <= 0x6B: Push(Round(Pop(), kind)); break;
+                case 0x76:
+                {
+                    int selector = Pop() & 255;
+                    int period = (selector & 192) switch
+                    {
+                        0 => 32, 64 => 64, 128 => 128,
+                        _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "The reserved TrueType super-round period is not supported.")
+                    };
+                    int threshold = (selector & 15) == 0 ? period - 1 : ((selector & 15) - 4) * period / 8;
+                    _superRound = new(period, period * ((selector >> 4) & 3) / 4, threshold);
+                    _round = TrueTypeHintRound.Super;
+                    break;
+                }
                 case 0x78: { int condition = Pop(), offset = Pop(); if (condition != 0) Jump(offset); break; }
                 case 0x79: { int condition = Pop(), offset = Pop(); if (condition == 0) Jump(offset); break; }
                 case 0x1C: Jump(Pop()); break;
                 case 0x7A: _round = TrueTypeHintRound.Off; break;
                 case 0x7C: _round = TrueTypeHintRound.Up; break;
                 case 0x7D: _round = TrueTypeHintRound.Down; break;
+                case 0x81: case 0x82:
+                {
+                    int last = Pop(), first = Pop();
+                    if (BackwardCompatible && _iupX && _iupY) break;
+                    Index(first, _glyph.Length); Index(last, _glyph.Length);
+                    for (int index = first; index <= last; index++) { _work.Consume(_token); _glyph[index].IsOnCurve = opcode == 0x81; }
+                    break;
+                }
                 case 0x85: _scanControl = Pop() & 0xFFFF; _scanConfigured = true; break;
+                case 0x86: case 0x87: SetLineVector(opcode); break;
                 case 0x88:
                 {
                     int selector = Pop(), result = (selector & 1) != 0 ? _target.Version : 0;
@@ -382,6 +454,12 @@ internal sealed partial class TrueTypeHinting : IDisposable
                     Push(result); break;
                 }
                 case 0x8A: { int a = Pop(), b = Pop(), c = Pop(); Push(b); Push(a); Push(c); break; }
+                case 0x8B: case 0x8C:
+                {
+                    int second = Pop(), first = Pop();
+                    Push(opcode == 0x8B ? Math.Max(first, second) : Math.Min(first, second));
+                    break;
+                }
                 case 0x8D: _scanType = Pop() & 0xFFFF; _scanConfigured = true; break;
                 case 0x8E:
                 {
@@ -395,7 +473,27 @@ internal sealed partial class TrueTypeHinting : IDisposable
             }
 
             byte ReadByte() { if (pc >= program.Length) throw Invalid("TrueType push operands are truncated."); return program.Span[pc++]; }
-            void Jump(int offset) { int destination = checked(start + offset); if (destination < 0 || destination > program.Length) throw Invalid("A TrueType jump leaves its program."); pc = destination; }
+            void Jump(int offset)
+            {
+                int destination = checked(start + offset);
+                if (destination < 0 || destination > program.Length) throw Invalid("A TrueType jump leaves its program.");
+                // Valid programs can leave or re-enter conditionals with a jump.
+                // Reconcile only the crossed instructions, keeping bounded scans
+                // and operand validation instead of treating IF as a runtime stack.
+                int direction = destination >= pc ? 1 : -1;
+                int end = Math.Max(pc, destination);
+                pc = Math.Min(pc, destination);
+                while (pc < end)
+                {
+                    _work.Consume(_token);
+                    byte crossed = program.Span[pc];
+                    if (crossed == 0x58) conditionalDepth += direction;
+                    else if (crossed == 0x59) conditionalDepth -= direction;
+                    SkipInstruction();
+                }
+                if (pc != end || conditionalDepth < 0) throw Invalid("A TrueType jump crosses invalid instruction or conditional boundaries.");
+                pc = destination;
+            }
             void SkipInstruction()
             {
                 byte op = ReadByte(); int count = op is 0x40 or 0x41 ? ReadByte() : op is >= 0xB0 and <= 0xBF ? (op & 7) + 1 : 0;
@@ -593,19 +691,28 @@ internal sealed partial class TrueTypeHinting : IDisposable
 
     private int Round(int value, TrueTypeHintProgramKind kind)
     {
-        long absolute = Math.Abs((long)value);
         int grid = UsesClearTypeGrid(kind) ? 4 : 64;
+        long result = RoundMagnitude(value, grid);
+        return checked((int)(value < 0 ? -result : result));
+    }
+
+    private long RoundMagnitude(int value, int grid)
+    {
+        long absolute = Math.Abs((long)value);
         long mask = -(long)grid, halfMask = -(long)(grid / 2);
-        long result = _round switch
+        return _round switch
         {
             TrueTypeHintRound.Grid => (absolute + grid / 2) & mask,
             TrueTypeHintRound.HalfGrid => (absolute & mask) + grid / 2,
             TrueTypeHintRound.DoubleGrid => (absolute + grid / 4) & halfMask,
             TrueTypeHintRound.Down => absolute & mask,
             TrueTypeHintRound.Up => (absolute + grid - 1) & mask,
+            // Explicit SROUND periods stay physical, including ClearType X.
+            // Round each magnitude and clamp a sign crossing to the closest phase.
+            TrueTypeHintRound.Super => Math.Max(_superRound.Phase,
+                ((absolute + _superRound.Threshold - _superRound.Phase) & -(long)_superRound.Period) + _superRound.Phase),
             _ => absolute
         };
-        return checked((int)(value < 0 ? -result : result));
     }
     private ref TrueTypeHintPoint Point(TrueTypeHintZone zone, int index)
     {

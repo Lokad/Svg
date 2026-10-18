@@ -155,9 +155,10 @@ public sealed class SvgTrueTypeOutlineTests
     }
 
     [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public void Unsupported_glyph_instructions_release_decoder_and_interpreter_storage(bool verticalPhantom)
+    [InlineData(0, SvgErrorCode.MalformedInput)]
+    [InlineData(1, SvgErrorCode.UnsupportedFeature)]
+    [InlineData(2, SvgErrorCode.UnsupportedFeature)]
+    public void Rejected_glyph_instructions_release_decoder_and_interpreter_storage(int instructionKind, SvgErrorCode expected)
     {
         byte[] bytes = Font();
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
@@ -165,13 +166,13 @@ public sealed class SvgTrueTypeOutlineTests
         int lengthOffset = structure.GlyphRange.Offset + 10 + structure.ContourEndpoints.Length * 2;
         int length = BinaryPrimitives.ReadUInt16BigEndian(bytes.AsSpan(lengthOffset));
         Span<byte> instructions = bytes.AsSpan(lengthOffset + 2, length); instructions.Clear();
-        if (verticalPhantom)
+        if (instructionKind == 1)
         {
             instructions[0] = 0xB0; instructions[1] = checked((byte)(structure.ContourEndpoints[^1] + 3)); instructions[2] = 0x46;
         }
-        else instructions[0] = 0x0A;
+        else instructions[0] = instructionKind == 0 ? (byte)0x0A : (byte)0x89;
         var budget = new RenderBudget(long.MaxValue);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.GetTrueTypeContours(bytes, 36, metrics, 48, Target, budget, new(long.MaxValue), CancellationToken.None)).ErrorCode);
+        Assert.Equal(expected, Assert.Throws<SvgException>(() => OpenTypeFont.GetTrueTypeContours(bytes, 36, metrics, 48, Target, budget, new(long.MaxValue), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
