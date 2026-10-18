@@ -88,7 +88,11 @@ internal static partial class OpenTypeFont
         OpenTypeGposPairTable? gpos = tables.TryGetValue(GposTag, out OpenTypeTableRange gposTable) ? ParseGposPairTable(data, gposTable, tables.TryGetValue(GdefTag, out OpenTypeTableRange gdef) ? gdef : null, glyphCount, workCounter, cancellationToken) : null;
         OpenTypeFontLineMetrics lineMetrics = ReadLineMetrics(data, hhea, tables.TryGetValue(Os2Tag, out OpenTypeTableRange lineOs2) ? lineOs2 : null);
         return new OpenTypeFontMetrics(unitsPerEm, glyphCount, numberOfHMetrics, indexToLocFormat, hmtx, tables.TryGetValue(CmapTag, out OpenTypeTableRange cmap) ? cmap : null, kern, gpos, tables.TryGetValue(GsubTag, out OpenTypeTableRange gsub) ? gsub : null, tables.TryGetValue(LocaTag, out OpenTypeTableRange loca) ? loca : null, tables.TryGetValue(GlyfTag, out OpenTypeTableRange glyf) ? glyf : null, (ReadUInt16(bytes.Span, head.Offset + 16) & 8) != 0, lineMetrics)
-            { HasCompleteTrueTypeProfile = maxp.Length >= 32 && ReadUInt32(data, maxp.Offset) == 0x10000 };
+            {
+                HasCompleteTrueTypeProfile = maxp.Length >= 32 && ReadUInt32(data, maxp.Offset) == 0x10000,
+                HasGlyphInstructions = maxp.Length >= 32 && ReadUInt32(data, maxp.Offset) == 0x10000 && ReadUInt16(data, maxp.Offset + 26) != 0,
+                Gasp = tables.TryGetValue(0x67617370, out OpenTypeTableRange gasp) ? gasp : null
+            };
 
         static OpenTypeFontLineMetrics ReadLineMetrics(ReadOnlySpan<byte> data, OpenTypeTableRange hhea, OpenTypeTableRange? os2)
         {
@@ -993,6 +997,8 @@ internal static partial class OpenTypeFont
 internal readonly record struct OpenTypeFontMetrics(ushort UnitsPerEm, ushort GlyphCount, ushort NumberOfHMetrics, short IndexToLocFormat, OpenTypeTableRange Hmtx, OpenTypeTableRange? Cmap, OpenTypeKernTable? Kern, OpenTypeGposPairTable? Gpos, OpenTypeTableRange? Gsub, OpenTypeTableRange? Loca, OpenTypeTableRange? Glyf, bool ForceIntegerHintingSize, OpenTypeFontLineMetrics LineMetrics)
 {
     internal bool HasCompleteTrueTypeProfile { get; init; }
+    internal bool HasGlyphInstructions { get; init; }
+    internal OpenTypeTableRange? Gasp { get; init; }
 }
 
 /// <summary>Retains bounded alphabetic line metrics in font units without owning additional font storage.</summary>
@@ -1106,6 +1112,10 @@ internal sealed class OpenTypeGlyphContourStorage : IDisposable
 
     /// <summary>Gets or sets simple dropout selection, observing the completed first scan pass before the second.</summary>
     internal bool SimpleDropouts { get; set; }
+    /// <summary>Requires dropout contours to continue across the neighboring scan lines.</summary>
+    internal bool ExcludeDropoutStubs { get; set; }
+    /// <summary>Retains the selected native LCD sampling profile with this exclusive contour owner.</summary>
+    internal SvgGlyphLcdMode WindowsLcdMode { get; set; }
 
     public void Dispose()
     {

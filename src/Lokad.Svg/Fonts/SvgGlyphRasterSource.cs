@@ -74,14 +74,17 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
         return OpenTypeFont.HasTrueTypePrograms(font.Bytes, _glyph.GlyphIndex, font.Metrics, budget, work, token);
     }
 
-    /// <summary>Returns owned device contours for symmetric LCD coverage, with rotated outlines retaining their unhinted shape.</summary>
+    /// <summary>Returns owned device contours for the selected native LCD profile, with rotated outlines retaining their unhinted shape.</summary>
     internal OpenTypeGlyphContourStorage CreateWindowsContours(double scaleX, double offsetX, double scaleY, double offsetY, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         SvgPreparedFont font = _font ?? throw new InvalidOperationException("The glyph source is disposed.");
-        TrueTypeHintTarget target = new(42, TrueTypeHintQueryFlags.FontVariations | TrueTypeHintQueryFlags.VerticalPhantoms | TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned | TrueTypeHintQueryFlags.Symmetric, TrueTypeHintControlScale.FullPrecision, TrueTypeHintPreparation.Single) { Grid = TrueTypeHintGrid.ClearType };
         SvgGlyphStrikeTransform strike = HasGlyphMap
             ? SvgGlyphStrikeTransform.Create(_fontSize * scaleY, new(_glyphMap.A * scaleX / scaleY, _glyphMap.B, _glyphMap.C * scaleX / scaleY, _glyphMap.D, 0, 0))
             : default;
+        SvgGlyphLcdMode mode = OpenTypeFont.GetWindowsLcdMode(font.Bytes, font.Metrics, HasGlyphMap ? strike.DeviceSize : DeviceFontSize(scaleY), work, token);
+        TrueTypeHintQueryFlags queries = TrueTypeHintQueryFlags.FontVariations | TrueTypeHintQueryFlags.VerticalPhantoms | TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned;
+        if (mode == SvgGlyphLcdMode.Symmetric) queries |= TrueTypeHintQueryFlags.Symmetric;
+        TrueTypeHintTarget target = new(42, queries, TrueTypeHintControlScale.FullPrecision, TrueTypeHintPreparation.Single) { Grid = TrueTypeHintGrid.ClearType, WindowsArithmetic = true };
         // A horizontal baseline retains device fitting under X skew. Rotated
         // baselines keep their qualified unhinted route, except quarter turns.
         bool hasPrograms = HasGlyphMap && HasTrueTypePrograms(budget, work, token);
@@ -104,18 +107,20 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
             : OpenTypeFont.GetTrueTypeContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, DeviceFontSize(scaleY), target, TrueTypeImpliedPointRounding.None, budget, work, token);
         try
         {
+            contours.WindowsLcdMode = mode;
             SvgDevicePoint origin = _glyphMap.Apply(_glyph.X, _glyph.Y);
             float originX = MathF.Floor((float)(origin.X * scaleX + offsetX) * 4f + .5f) / 4f;
             float originY = HasGlyphMap && strike.RelaxedMap.B != 0 ? MathF.Floor((float)(origin.Y * scaleY + offsetY) * 4f + .5f) / 4f
                 : MathF.Floor((float)(origin.Y * scaleY + offsetY) + .5f);
             float ratioX = HasGlyphMap ? 1 : (float)(scaleX / scaleY);
             if (!float.IsFinite(originX) || !float.IsFinite(originY) || !float.IsFinite(ratioX)) throw new SvgException(SvgErrorCode.LimitExceeded, "The hinted glyph placement exceeds the device range.");
-            // Native symmetric LCD coverage quantizes the quarter-pixel strike
+            // Native Windows LCD coverage quantizes the quarter-pixel strike
             // origin onto its six-column grid before sampling the fitted outline.
             double phase = originX - MathF.Floor(originX);
             double phaseCorrection = Math.Floor(phase * 6 + .5) / 6 - phase;
             double verticalPhase = originY - MathF.Floor(originY);
-            double verticalCorrection = HasGlyphMap ? Math.Floor(verticalPhase * 5 + .5) / 5 - verticalPhase : 0;
+            int verticalSamples = mode == SvgGlyphLcdMode.Natural ? 1 : 5;
+            double verticalCorrection = HasGlyphMap ? Math.Floor(verticalPhase * verticalSamples + .5) / verticalSamples - verticalPhase : 0;
             for (int i = 0; i < contours.Segments.Length; i++)
             {
                 OpenTypeQuadraticSegment segment = contours.Segments[i];

@@ -46,7 +46,8 @@ public sealed partial class TrueTypeHintingTests
     [Theory]
     [InlineData(511, 4, 48, 0, true)]
     [InlineData(511, 2, 48, 0, false)]
-    [InlineData(511, 5, 48, 0, false)]
+    [InlineData(511, 5, 48, 0, true)]
+    [InlineData(0, 5, 48, 0, false)]
     [InlineData(0, 4, 48, 0, false)]
     [InlineData(272, 4, 16, 0, true)]
     [InlineData(272, 4, 17, 0, false)]
@@ -60,20 +61,26 @@ public sealed partial class TrueTypeHintingTests
         machine.Prepare(new byte[] { 0xB8, (byte)(control >> 8), (byte)control, 0x85, 0xB0, scanType, 0x8D }, Target with { QueryFlags = (TrueTypeHintQueryFlags)query });
         machine.Run(ReadOnlyMemory<byte>.Empty, TrueTypeHintProgramKind.Glyph);
         Assert.Equal(expected, machine.GlyphSmartDropouts);
+        Assert.Equal(expected && scanType == 5, machine.GlyphExcludeDropoutStubs);
     }
 
-    [Fact]
-    public void Child_scan_policy_is_restored_before_parent_and_next_glyph()
+    [Theory]
+    [InlineData(4)]
+    [InlineData(5)]
+    public void Child_scan_policy_is_restored_before_parent_and_next_glyph(byte scanType)
     {
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], [], [], 16, new(65536, 65536), Target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
-        machine.Prepare(Convert.FromHexString("B801FF85B0048D"), Target);
+        machine.Prepare(new byte[] { 0xB8, 1, 255, 0x85, 0xB0, scanType, 0x8D }, Target);
         TrueTypeHintPoint[] points = [new(0, 0, 0, 0), default, default, default, default];
         machine.HintGlyph(Convert.FromHexString("B0028D"), points, [0], false);
         Assert.False(machine.GlyphSmartDropouts);
+        Assert.False(machine.GlyphExcludeDropoutStubs);
         machine.HintGlyph(ReadOnlyMemory<byte>.Empty, points, [0], true);
         Assert.True(machine.GlyphSmartDropouts);
+        Assert.Equal(scanType == 5, machine.GlyphExcludeDropoutStubs);
         machine.HintGlyph(ReadOnlyMemory<byte>.Empty, points, [0], false);
         Assert.True(machine.GlyphSmartDropouts);
+        Assert.Equal(scanType == 5, machine.GlyphExcludeDropoutStubs);
     }
 
     [Theory]

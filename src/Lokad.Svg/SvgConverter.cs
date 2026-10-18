@@ -3588,10 +3588,10 @@ public static class SvgConverter
                         {
                             int lcdStartX = ClampFloor(lcdMinimumX - 1d / 3, outputWidth), lcdEndX = ClampCeiling(lcdMaximumX + 1d / 3, outputWidth);
                             int lcdStartY = ClampFloor(lcdMinimumY, outputHeight), lcdEndY = ClampCeiling(lcdMaximumY, outputHeight);
-                            SvgGlyphLcdCoverage.DropoutBounds dropoutBounds = SvgGlyphLcdCoverage.PrepareBounds(contours.Segments, contours.SmartDropouts, contours.SimpleDropouts, preparationWork, cancellationToken);
-                            // Ten horizontal directed scans are reused across one row. This
+                            SvgGlyphLcdCoverage.DropoutBounds dropoutBounds = SvgGlyphLcdCoverage.PrepareBounds(contours.Segments, contours.SmartDropouts, contours.SimpleDropouts, contours.ExcludeDropoutStubs, contours.WindowsLcdMode, preparationWork, cancellationToken);
+                            // Directed horizontal scans are reused across one row. This
                             // optional preparation yields to the existing low-memory path.
-                            using SvgGlyphLcdCoverage.ScanStorage? rowStorage = lcdStartX < lcdEndX && lcdStartY < lcdEndY ? SvgGlyphLcdCoverage.ScanStorage.TryCreate(contours.Segments, budget, preparationWork, cancellationToken) : null;
+                            using SvgGlyphLcdCoverage.ScanStorage? rowStorage = lcdStartX < lcdEndX && lcdStartY < lcdEndY ? SvgGlyphLcdCoverage.ScanStorage.TryCreate(contours.Segments, contours.WindowsLcdMode, budget, preparationWork, cancellationToken) : null;
                             Span<int> rowCounts = stackalloc int[10];
                             for (int y = lcdStartY; y < lcdEndY; y++)
                             {

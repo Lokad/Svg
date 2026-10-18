@@ -45,6 +45,9 @@ internal readonly record struct TrueTypeHintTarget(int Version, TrueTypeHintQuer
     internal double HorizontalRatio { get; init; } = 1;
     /// <summary>Selects physical or ClearType horizontal instruction rounding independently of GETINFO queries.</summary>
     internal TrueTypeHintGrid Grid { get; init; }
+    /// <summary>Selects Windows numerical rules independently of symmetric-smoothing GETINFO queries.</summary>
+    internal bool WindowsArithmetic { get; init; }
+    internal bool UsesWindowsArithmetic => WindowsArithmetic || (QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0;
 }
 
 internal struct TrueTypeHintPoint
@@ -130,6 +133,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
 
     /// <summary>Gets the completed glyph's enabled smart dropout policy, including stubs; contour consumers choose their own rasterizer.</summary>
     internal bool GlyphSmartDropouts { get; private set; }
+    internal bool GlyphExcludeDropoutStubs { get; private set; }
 
     /// <summary>Fits a borrowed child or assembled composite, retaining font/preparation CVT, storage and functions between components.</summary>
     /// <remarks>Glyph graphics state is restored after each call. Points/endpoints remain caller-owned and are unbound on every exit. Composite originals are already device coordinates and must not be scaled again. This operation shares the machine's single-threaded work, cancellation and bounded storage contract.</remarks>
@@ -177,8 +181,8 @@ internal sealed partial class TrueTypeHinting : IDisposable
     {
         if (_reservation is null) throw new InvalidOperationException("The TrueType interpreter is disposed.");
         ValidateTarget(target);
-        if (target.ControlScale != _target.ControlScale || target.Preparation != _target.Preparation || target.HorizontalRatio != _target.HorizontalRatio || target.Grid != _target.Grid)
-            throw Invalid("A TrueType mode transition cannot change its CVT scale, grid or preparation policy.");
+        if (target.ControlScale != _target.ControlScale || target.Preparation != _target.Preparation || target.HorizontalRatio != _target.HorizontalRatio || target.Grid != _target.Grid || target.WindowsArithmetic != _target.WindowsArithmetic)
+            throw Invalid("A TrueType mode transition cannot change its arithmetic, CVT scale, grid or preparation policy.");
         for (int i = 0; i < _cvt.Length; i++) { _work.Consume(_token); _cvt[i] = _initialCvt[i]; }
         _target = target;
         Run(program, TrueTypeHintProgramKind.Preparation);
@@ -194,7 +198,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
         _count = 0;
         if (kind == TrueTypeHintProgramKind.Glyph)
         {
-            if ((_instructionControl & 1) != 0) { GlyphSmartDropouts = SmartDropouts(); return; }
+            if ((_instructionControl & 1) != 0) { SetDropouts(); return; }
             // Glyph-local reference/zone/vector state starts at the prescribed defaults.
             _rp0 = _rp1 = _rp2 = 0; _zp0 = _zp1 = _zp2 = TrueTypeHintZone.Glyph;
             _projection = _dualProjection = _freedom = HintVector.XAxis; _loop = 1;
@@ -204,16 +208,22 @@ internal sealed partial class TrueTypeHinting : IDisposable
         try
         {
             Execute(program, kind);
-            if (kind == TrueTypeHintProgramKind.Glyph) GlyphSmartDropouts = SmartDropouts();
+            if (kind == TrueTypeHintProgramKind.Glyph) SetDropouts();
         }
         catch (OverflowException) { throw Invalid("TrueType arithmetic exceeds its signed coordinate range."); }
+
+        void SetDropouts()
+        {
+            GlyphSmartDropouts = SmartDropouts();
+            GlyphExcludeDropoutStubs = GlyphSmartDropouts && _scanType == 5;
+        }
 
         bool SmartDropouts()
         {
             // The native symmetric profile enables default tip dropouts through
             // rounded ppem 32. Authored scanner settings replace that default.
             if (!_scanConfigured && (_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0 && _ppem <= 32) return true;
-            if (_scanType != 4) return false;
+            if (_scanType is not 4 and not 5) return false;
             int threshold = _scanControl & 255;
             bool small = threshold == 255 || threshold != 0 && _ppem <= threshold;
             bool rotated = (_target.QueryFlags & TrueTypeHintQueryFlags.Rotated) != 0;
@@ -396,7 +406,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                     // DirectWrite tests physical nearest-grid parity independently
                     // of graphics-state rounding. Classic FreeType uses that state;
                     // a fractional result can satisfy neither predicate.
-                    long rounded = (_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0
+                    long rounded = _target.UsesWindowsArithmetic
                         ? (Math.Abs((long)value) + 32) & ~63L
                         : RoundMagnitude(value, 64);
                     Push((rounded & 127) == (opcode == 0x56 ? 64 : 0) ? 1 : 0);
@@ -664,7 +674,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                         // Windows interpolates the design-unit ratio before rounding
                         // the resulting device coordinate. A 16.16 slope can lose
                         // an exact half-unit, especially in fitted accent contours.
-                        else if ((_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0)
+                        else if (_target.UsesWindowsArithmetic)
                             value = checked(currentA + Divide(checked(Unscaled(_glyph[i]) - unscaledA), checked(unscaledB - unscaledA), checked(currentB - currentA)));
                         else value = checked(currentA + Divide(checked(Unscaled(_glyph[i]) - unscaledA), 65536, scale));
                         if (axis == TrueTypeHintAxis.X) _glyph[i].X = value; else _glyph[i].Y = value;

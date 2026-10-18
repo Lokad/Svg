@@ -62,13 +62,14 @@ internal static partial class OpenTypeFont
         {
             (TrueTypeHintProfile compositeProfile, OpenTypeTableRange compositeCvt, OpenTypeTableRange compositeFont, OpenTypeTableRange compositePrep) = ReadHintTables();
             using CompositeTrueTypeHinting fitting = new(bytes, metrics, compositeProfile, compositeCvt, compositeFont, compositePrep, checked((int)Math.Floor(deviceSize + .5)), deviceScale, deviceSize, horizontalSize, target, budget, work, token);
-            using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, fitting, null, (target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0 ? OpenTypeCompositeOffsetMath.DirectWrite : OpenTypeCompositeOffsetMath.NativeLength, budget, work, token);
+            using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, fitting, null, target.UsesWindowsArithmetic ? OpenTypeCompositeOffsetMath.DirectWrite : OpenTypeCompositeOffsetMath.NativeLength, budget, work, token);
             SubtractGlyphOrigin(outline.Points, outline.Phantoms?.LeftX ?? 0, work, token);
             MapPoints(outline.Points);
             using OpenTypeSegmentAccumulator compositeSegments = new(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, work, token);
             BuildQuadraticContours(outline.Points, outline.Ends, compositeSegments, true, impliedPointRounding, work, token);
             OpenTypeGlyphContourStorage result = compositeSegments.Detach();
             result.SmartDropouts = fitting.GlyphSmartDropouts;
+            result.ExcludeDropoutStubs = fitting.GlyphExcludeDropoutStubs;
             return result;
         }
         if (structure.Value.ContourEndpoints.Length == 0) return new([], [], null, null);
@@ -94,7 +95,7 @@ internal static partial class OpenTypeFont
         points[pointCount] = new(ScaleHorizontal(origin), 0, origin, 0); points[pointCount + 1] = new(ScaleHorizontal(origin + advance), 0, origin + advance, 0);
         // Instruction-free outlines retain their independently scaled metric
         // origin; a fitting program starts with the native sixteenth-pixel grid.
-        if (hasPrograms && (target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0)
+        if (hasPrograms && target.UsesWindowsArithmetic)
         {
             points[pointCount].X = RoundTrueTypeHorizontalMetric(points[pointCount].X, target);
             points[pointCount + 1].X = RoundTrueTypeHorizontalMetric(points[pointCount + 1].X, target);
@@ -102,7 +103,7 @@ internal static partial class OpenTypeFont
         // Preserve indices without inventing vertical metrics. Executed access
         // to either vertical phantom point is an explicit unsupported outcome.
         points[pointCount + 2].Unavailable = points[pointCount + 3].Unavailable = true;
-        bool smartDropouts;
+        bool smartDropouts, excludeDropoutStubs;
         using (TrueTypeHinting machine = TrueTypeHinting.Create(profile, cvt, points, structure.Value.ContourEndpoints, ppem, deviceScale, target, budget, work, token))
         {
             machine.Run(bytes.Slice(fontProgram.Offset, fontProgram.Length), TrueTypeHintProgramKind.Font);
@@ -112,6 +113,7 @@ internal static partial class OpenTypeFont
             machine.Prepare(prep, target);
             machine.Run(bytes.Slice(lengthOffset + 2, instructionLength), TrueTypeHintProgramKind.Glyph);
             smartDropouts = hasPrograms && machine.GlyphSmartDropouts;
+            excludeDropoutStubs = hasPrograms && machine.GlyphExcludeDropoutStubs;
         }
         // Simple and composite outlines share the fitted horizontal metric origin.
         // xMin need not equal the side bearing in a valid static TrueType face.
@@ -122,6 +124,7 @@ internal static partial class OpenTypeFont
         BuildQuadraticContours(decoded.Points, structure.Value.ContourEndpoints, segments, true, impliedPointRounding, work, token);
         OpenTypeGlyphContourStorage fitted = segments.Detach();
         fitted.SmartDropouts = smartDropouts;
+        fitted.ExcludeDropoutStubs = excludeDropoutStubs;
         fitted.SimpleDropouts = !hasPrograms && (target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0 && ppem <= 32;
         return fitted;
 
@@ -138,7 +141,7 @@ internal static partial class OpenTypeFont
         int Scale(int value) => ScaleTrueTypeFixed(value, scale, target);
         int ScaleHorizontal(int value)
         {
-            if ((target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) == 0) return ScaleTrueTypeFixed(value, horizontalScale, target);
+            if (!target.UsesWindowsArithmetic) return ScaleTrueTypeFixed(value, horizontalScale, target);
             return ScaleWindowsHorizontalPoint(value, horizontalSize, metrics.UnitsPerEm);
         }
         (TrueTypeHintProfile, OpenTypeTableRange, OpenTypeTableRange, OpenTypeTableRange) ReadHintTables()
@@ -175,7 +178,7 @@ internal static partial class OpenTypeFont
     private static int ScaleTrueTypeFixed(int value, int factor, TrueTypeHintTarget target)
     {
         long product = (long)value * factor;
-        if ((target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0)
+        if (target.UsesWindowsArithmetic)
         {
             long rounded = (product + 32768) >> 16;
             if (rounded < int.MinValue || rounded > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "A TrueType device coordinate exceeds its signed bound.");
@@ -188,7 +191,7 @@ internal static partial class OpenTypeFont
 
     private static int RoundTrueTypeHorizontalMetric(int value, TrueTypeHintTarget target)
     {
-        int grid = (target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0 ? 4 : 64;
+        int grid = target.UsesWindowsArithmetic ? 4 : 64;
         long rounded = ((long)value + grid / 2) & -(long)grid;
         if (rounded < int.MinValue || rounded > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "A glyph metric exceeds its signed coordinate bound.");
         return (int)rounded;

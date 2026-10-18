@@ -12,6 +12,7 @@ internal static class SvgWindowsGlyphCurves
         using OpenTypeSegmentAccumulator result = new(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, work, token);
         double originX = source.Segments.Length == 0 ? 0 : Math.Floor(source.Segments[0].Start.X);
         double originY = source.Segments.Length == 0 ? 0 : Math.Floor(source.Segments[0].Start.Y);
+        int verticalScale = source.WindowsLcdMode == SvgGlyphLcdMode.Natural ? 64 : 320;
         int first = 0;
         foreach (int end in source.ContourEnds)
         {
@@ -29,12 +30,14 @@ internal static class SvgWindowsGlyphCurves
         OpenTypeGlyphContourStorage contours = result.Detach();
         contours.SmartDropouts = source.SmartDropouts;
         contours.SimpleDropouts = source.SimpleDropouts;
+        contours.ExcludeDropoutStubs = source.ExcludeDropoutStubs;
+        contours.WindowsLcdMode = source.WindowsLcdMode;
         return contours;
 
         Point Map(OpenTypeOutlinePoint point)
         {
             double x = Math.Floor((point.X - originX) * 384 + .5);
-            double y = -Math.Floor((point.Y - originY) * 320 + .25);
+            double y = -Math.Floor((point.Y - originY) * verticalScale + .25);
             if (!double.IsFinite(x) || !double.IsFinite(y) || x < int.MinValue || x > int.MaxValue || y < int.MinValue || y > int.MaxValue)
                 throw new SvgException(SvgErrorCode.LimitExceeded, "The glyph scan coordinate exceeds its signed bound.");
             return new((long)x, (long)y);
@@ -46,7 +49,7 @@ internal static class SvgWindowsGlyphCurves
             result.Add(new(Device(a), Device(b), Device(c)));
         }
 
-        OpenTypeOutlinePoint Device(Point point) => new(originX + point.X / 384d, originY - point.Y / 320d);
+        OpenTypeOutlinePoint Device(Point point) => new(originX + point.X / 384d, originY - point.Y / (double)verticalScale);
 
         void Split(Point a, Point b, Point c, int depth)
         {

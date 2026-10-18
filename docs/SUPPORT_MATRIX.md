@@ -247,6 +247,11 @@ Latin light fitting keeps nearby edges distinct according to the measured
 standard stem width, with a quarter-pixel maximum merging allowance.
 Instruction-free static programs retain their metric origins and native masks,
 including simple Windows tip dropout control distinct from smart dropout control.
+Windows selects natural or symmetric LCD sampling from the supplied font's
+bounded gasp recommendations and actual raster size. Natural sampling retains
+native fixed-point curve/dropout decisions, including excluded stubs and exact
+terminating vertices. Profile selection preserves hinting and the separate
+Windows/Linux numerical rules.
 
 Unsupported: wrapping, bidi/joining/complex scripts, general GSUB/GPOS/mark
 positioning, other lookup flags/types/formats, vertical text, path stretch/auto

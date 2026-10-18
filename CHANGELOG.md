@@ -18,6 +18,8 @@
   brace and comment handling.
 - Match native signed half-unit scaling in TrueType points/control values and
   bound Latin light edge merging by the font's measured standard stem width.
+- Select Windows natural/symmetric LCD profiles from font gasp data at actual
+  raster size, and preserve native curve, smart-dropout and stub behavior.
 
 ## 0.2.0 - 2026-10-18
 

@@ -51,7 +51,7 @@ internal static partial class OpenTypeFont
         /// <summary>Creates a bounded child strike for a transformed Windows component; identity and other profiles share their existing interpreter.</summary>
         internal CompositeTrueTypeHinting? CreateComponent(OpenTypeAffineTransform transform)
         {
-            if ((_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) == 0 || transform == new OpenTypeAffineTransform(1, 0, 0, 1)) return null;
+            if (!_target.UsesWindowsArithmetic || transform == new OpenTypeAffineTransform(1, 0, 0, 1)) return null;
             double x = _horizontalSize * Math.Max(Math.Abs(transform.XX), Math.Abs(transform.YX));
             double y = _deviceSize * Math.Max(Math.Abs(transform.XY), Math.Abs(transform.YY));
             if (x == 0 || y == 0) return null;
@@ -85,7 +85,7 @@ internal static partial class OpenTypeFont
         internal int ScaleOffset(OpenTypeCompositeGlyphComponent component, bool horizontal)
         {
             _work.Consume(_token);
-            bool windows = (_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0;
+            bool windows = _target.UsesWindowsArithmetic;
             bool round = (component.Flags & 4) != 0;
             OpenTypeOutlinePoint offset = component.GetOffset(OpenTypeCompositeOffsetMath.NativeLength);
             int value = windows ? horizontal ? component.HorizontalOffset : component.VerticalOffset : checked((int)(horizontal ? offset.X : offset.Y));
@@ -107,6 +107,7 @@ internal static partial class OpenTypeFont
         }
 
         internal bool GlyphSmartDropouts => _machine.GlyphSmartDropouts;
+        internal bool GlyphExcludeDropoutStubs => _machine.GlyphExcludeDropoutStubs;
 
         /// <summary>Fits borrowed points in place and returns horizontal phantom coordinates for metric inheritance. Selected device metrics are copied without component placement; scratch is bounded and released on every exit.</summary>
         internal OpenTypeHorizontalPhantoms Fit(ushort glyph, OpenTypeGlyphPoint[] outline, ushort[] ends, OpenTypeTableRange range, OpenTypeTableRange instructions, bool composite, OpenTypeHorizontalPhantoms? selectedMetrics)
@@ -140,7 +141,7 @@ internal static partial class OpenTypeFont
             for (int i = 0; i < outline.Length; i++) { _work.Consume(_token); outline[i] = new(points[i].X, points[i].Y, points[i].IsOnCurve); }
             // The native FreeType v40 policy and instruction-free parents preserve
             // unrounded metrics; Windows parents retain their fitted sixteenth-pixel origin.
-            return _target.Version == 40 || composite && instructions.Length == 0 && (_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) == 0 ? initial : new(points[firstPhantom].X, points[firstPhantom].Y, points[firstPhantom + 1].X, points[firstPhantom + 1].Y);
+            return _target.Version == 40 || composite && instructions.Length == 0 && !_target.UsesWindowsArithmetic ? initial : new(points[firstPhantom].X, points[firstPhantom].Y, points[firstPhantom + 1].X, points[firstPhantom + 1].Y);
         }
 
         private static int Round(int value)
@@ -150,7 +151,7 @@ internal static partial class OpenTypeFont
             return (int)rounded;
         }
 
-        private int ScaleHorizontal(int value) => (_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) == 0
+        private int ScaleHorizontal(int value) => !_target.UsesWindowsArithmetic
             ? Scale(value, _scale.Horizontal) : ScaleWindowsHorizontalPoint(value, _horizontalSize, _metrics.UnitsPerEm);
         private int Scale(int value, int factor) => ScaleTrueTypeFixed(value, factor, _target);
 

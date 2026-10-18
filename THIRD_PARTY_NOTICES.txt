@@ -31,7 +31,8 @@ position rounding also adapt src/core/SkMaskGamma.cpp, src/core/SkMaskGamma.h,
 src/core/SkScalerContext.cpp, src/core/SkPaintPriv.cpp, src/core/SkGlyph.h and
 src/core/SkGlyphRunPainter.cpp at the same revision. Relaxed glyph-strike
 coefficients and vertical scaler decomposition also adapt src/core/SkScalerContext.cpp
-and src/utils/SkMatrix22.cpp. Copyright 2012, 2013, 2014 Google
+and src/utils/SkMatrix22.cpp. Windows gasp-selected LCD profiles also adapt
+src/ports/SkScalerContext_win_dw.cpp. Copyright 2011, 2012, 2013, 2014 Google
 Inc.; 2006, 2018 The Android Open Source Project.
 
 Quadratic decoration ink intercepts and their canonical-size scalar mapping also
@@ -222,11 +223,12 @@ DEALINGS IN THE SOFTWARE.
 
 Lokad.Svg contains managed adaptations of FreeType 2.13.2 TrueType
 instruction arithmetic, CVT scaling, untouched-point interpolation and composite
-child/parent fitting and placement. These adaptations have no native FreeType
+child/parent fitting and placement, and bounded fixed-point quadratic scan
+profiles with smart dropout rounding. These adaptations have no native FreeType
 runtime dependency.
 Source release: FreeType 2.13.2
 Source files: src/truetype/ttinterp.c, src/truetype/ttobjs.c,
-src/truetype/ttgload.c and src/base/ftcalc.c.
+src/truetype/ttgload.c, src/base/ftcalc.c and src/raster/ftraster.c.
 Copyright 1996-2023 David Turner, Robert Wilhelm, and Werner Lemberg.
 Portions of this software are copyright 2023 The FreeType Project
 (www.freetype.org). All rights reserved.

@@ -5,6 +5,19 @@ namespace Lokad.Svg.Tests;
 public sealed partial class TrueTypeHintingTests
 {
     [Theory]
+    [InlineData(false, 0)]
+    [InlineData(true, 1)]
+    public void Windows_arithmetic_does_not_invent_the_symmetric_getinfo_bit(bool windows, int odd)
+    {
+        TrueTypeHintTarget target = Target with { WindowsArithmetic = windows, QueryFlags = TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned, Grid = TrueTypeHintGrid.ClearType };
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 2, 0, 0), [], [], [], 48, new(98304, 98304), target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        machine.Run(Convert.FromHexString("B05876B02856B0002342B8080088B0012342"), TrueTypeHintProgramKind.Glyph);
+        Assert.Equal(odd, machine.Storage[0]);
+        Assert.Equal(0, machine.Storage[1]);
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => machine.Prepare(ReadOnlyMemory<byte>.Empty, target with { WindowsArithmetic = !windows })).ErrorCode);
+    }
+
+    [Theory]
     [InlineData("", 0, false, true, false, true)]
     [InlineData("", 21, false, true, false, true)]
     [InlineData("", 31, false, true, false, true)]

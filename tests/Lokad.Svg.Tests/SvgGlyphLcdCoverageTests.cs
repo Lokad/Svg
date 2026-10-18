@@ -4,7 +4,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
-public sealed class SvgGlyphLcdCoverageTests
+public sealed partial class SvgGlyphLcdCoverageTests
 {
     [Theory]
     [InlineData(22, 0, 11, 15)]

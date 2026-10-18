@@ -19,7 +19,7 @@ internal sealed partial class TrueTypeHinting
 
     private int Project(HintVector vector, int x, int y)
     {
-        if ((_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0)
+        if (_target.UsesWindowsArithmetic)
         {
             // The Windows projector rounds each signed 2.14 product before the
             // sum; combining them first changes diagonal relative distances.
@@ -62,7 +62,7 @@ internal sealed partial class TrueTypeHinting
         // DirectWrite rounds a negative exact half toward positive infinity when
         // scaling a design-space distance. Other targets retain FreeType's signed
         // magnitude rounding; endpoint subtraction must still precede scaling.
-        return (_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0
+        return _target.UsesWindowsArithmetic
             ? checked((int)(((long)distance * scale + 32768) >> 16)) : Divide(distance, 65536, scale);
     }
 
@@ -79,7 +79,7 @@ internal sealed partial class TrueTypeHinting
 
     private int DivideDevice(int value, int denominator, int multiplier)
     {
-        if ((_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) == 0) return Divide(value, denominator, multiplier);
+        if (!_target.UsesWindowsArithmetic) return Divide(value, denominator, multiplier);
         if (denominator == 0) throw Invalid("TrueType arithmetic divides by zero.");
         long product = (long)value * multiplier, magnitude = Math.Abs(product), divisor = Math.Abs((long)denominator);
         long result = (magnitude + divisor / 2) / divisor;
@@ -135,7 +135,7 @@ internal sealed partial class TrueTypeHinting
     {
         if (vx == 0) return new(0, vy < 0 ? -16384 : 16384);
         if (vy == 0) return new(vx < 0 ? -16384 : 16384, 0);
-        if ((_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0)
+        if (_target.UsesWindowsArithmetic)
         {
             _work.Consume(_token);
             double magnitude = Math.Sqrt((double)vx * vx + (double)vy * vy);
