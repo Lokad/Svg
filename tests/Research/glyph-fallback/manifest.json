@@ -1,0 +1,100 @@
+{
+  "purpose": "Original CC0 A\u00e9A witness: Primary covers A, Secondary covers A and \u00e9 with different advances. Declared before Chrome capture or candidate comparison.",
+  "input": "mixed-coverage.svg",
+  "inputSha256": "934c98bf09c98974ccf1265c5f6b5e2f04da14c735e0c8356394a9fa4ab40c87",
+  "width": 360,
+  "height": 260,
+  "scale": 1,
+  "fontPack": "font-pack.json",
+  "programs": [
+    {
+      "relativePath": "fonts/Primary.ttf",
+      "byteSize": 1160,
+      "sha256": "94da458b2ee3288c6959e4bdaaf3637da67f01274ce44d99c8e32ff37fc7fb07"
+    },
+    {
+      "relativePath": "fonts/Secondary.ttf",
+      "byteSize": 1248,
+      "sha256": "e356f4a340d5e63c97aa29282c48a2449ef63d961d62132c7b90bc363848bb40"
+    }
+  ],
+  "expectedFaces": [
+    "FallbackPrimary",
+    "FallbackSecondary",
+    "FallbackPrimary"
+  ],
+  "independentGlyphs": [
+    {
+      "scalar": 65,
+      "glyphIndex": 2,
+      "advance": 600
+    },
+    {
+      "scalar": 233,
+      "glyphIndex": 3,
+      "advance": 450
+    },
+    {
+      "scalar": 65,
+      "glyphIndex": 2,
+      "advance": 600
+    }
+  ],
+  "unitsPerEm": 1000,
+  "platforms": {
+    "windows": {
+      "reference": "references/windows/mixed-coverage.png",
+      "platform": "windows",
+      "chromeVersion": "153.0.8010.52",
+      "captures": [
+        {
+          "pngSha256": "9cc316ea89d9bbbe54994dd5f463e5c8c1da73687a448ec3982837b52af3c988",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9cc316ea89d9bbbe54994dd5f463e5c8c1da73687a448ec3982837b52af3c988",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9cc316ea89d9bbbe54994dd5f463e5c8c1da73687a448ec3982837b52af3c988",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "differentProgramChangedPixels": {
+        "different-primary": 5097,
+        "different-secondary": 771
+      },
+      "referenceSha256": "9cc316ea89d9bbbe54994dd5f463e5c8c1da73687a448ec3982837b52af3c988"
+    },
+    "linux": {
+      "reference": "references/linux/mixed-coverage.png",
+      "platform": "linux",
+      "chromeVersion": "153.0.8010.52",
+      "captures": [
+        {
+          "pngSha256": "a209112a16d600d8f8ad5a051c3f3eab940719cf20e3a40b69a8111bb1f06264",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a209112a16d600d8f8ad5a051c3f3eab940719cf20e3a40b69a8111bb1f06264",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a209112a16d600d8f8ad5a051c3f3eab940719cf20e3a40b69a8111bb1f06264",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "differentProgramChangedPixels": {
+        "different-primary": 4765,
+        "different-secondary": 702
+      },
+      "referenceSha256": "a209112a16d600d8f8ad5a051c3f3eab940719cf20e3a40b69a8111bb1f06264"
+    }
+  }
+}

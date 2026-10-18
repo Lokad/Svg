@@ -15,6 +15,7 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
     private readonly SvgAffineTransform _glyphMap;
 
     internal bool HasGlyphMap => _glyphMap != SvgAffineTransform.Identity;
+    internal bool HasCompleteTrueTypeProfile => (_font ?? throw new InvalidOperationException("The glyph source is disposed.")).Metrics.HasCompleteTrueTypeProfile;
     internal SvgAffineTransform GlyphMap => _glyphMap;
 
     private SvgGlyphRasterSource(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, SvgAffineTransform glyphMap, double? pictureFontScale, RenderBudget.BudgetReservation reservation)
@@ -83,7 +84,8 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
             : default;
         // A horizontal baseline retains device fitting under X skew. Rotated
         // baselines keep their qualified unhinted route, except quarter turns.
-        bool mappedFitting = HasGlyphMap && HasTrueTypePrograms(budget, work, token) &&
+        bool hasPrograms = HasGlyphMap && HasTrueTypePrograms(budget, work, token);
+        bool mappedFitting = hasPrograms &&
             (strike.RelaxedMap.B == 0 || strike.RelaxedMap.A == 0 && strike.RelaxedMap.D == 0);
         SvgAffineTransform fittedMap = strike.RemainingMap;
         if (mappedFitting)
@@ -98,7 +100,7 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
         OpenTypeGlyphContourStorage contours = HasGlyphMap
             ? mappedFitting
                 ? OpenTypeFont.GetTrueTypeContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike.DeviceSize, target, TrueTypeImpliedPointRounding.None, OpenTypeWindowsGlyphTransform.Create(new(1, fittedMap, strike.RelaxedMap), 1), budget, work, token)
-                : OpenTypeFont.GetWindowsUnhintedContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike, budget, work, token)
+                : OpenTypeFont.GetWindowsUnhintedContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike, hasPrograms, budget, work, token)
             : OpenTypeFont.GetTrueTypeContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, DeviceFontSize(scaleY), target, TrueTypeImpliedPointRounding.None, budget, work, token);
         try
         {

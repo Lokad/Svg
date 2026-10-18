@@ -1,0 +1,44 @@
+{
+  "purpose": "Original CC0 A\u00e9A witness: Primary covers A, Secondary covers A and \u00e9 with different advances. Declared before Chrome capture or candidate comparison.",
+  "input": "mixed-coverage.svg",
+  "inputSha256": "934c98bf09c98974ccf1265c5f6b5e2f04da14c735e0c8356394a9fa4ab40c87",
+  "width": 360,
+  "height": 260,
+  "scale": 1,
+  "fontPack": "font-pack.json",
+  "programs": [
+    {
+      "relativePath": "fonts/Primary.ttf",
+      "byteSize": 1160,
+      "sha256": "94da458b2ee3288c6959e4bdaaf3637da67f01274ce44d99c8e32ff37fc7fb07"
+    },
+    {
+      "relativePath": "fonts/Secondary.ttf",
+      "byteSize": 1248,
+      "sha256": "e356f4a340d5e63c97aa29282c48a2449ef63d961d62132c7b90bc363848bb40"
+    }
+  ],
+  "expectedFaces": [
+    "FallbackPrimary",
+    "FallbackSecondary",
+    "FallbackPrimary"
+  ],
+  "independentGlyphs": [
+    {
+      "scalar": 65,
+      "glyphIndex": 2,
+      "advance": 600
+    },
+    {
+      "scalar": 233,
+      "glyphIndex": 3,
+      "advance": 450
+    },
+    {
+      "scalar": 65,
+      "glyphIndex": 2,
+      "advance": 600
+    }
+  ],
+  "unitsPerEm": 1000
+}

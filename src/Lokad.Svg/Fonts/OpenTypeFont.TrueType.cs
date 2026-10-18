@@ -74,6 +74,9 @@ internal static partial class OpenTypeFont
         if (structure.Value.ContourEndpoints.Length == 0) return new([], [], null, null);
         using OpenTypeGlyphPointStorage decoded = GetSimpleGlyphPoints(bytes, structure.Value, budget, work, token);
         (TrueTypeHintProfile profile, OpenTypeTableRange cvtRange, OpenTypeTableRange fontProgram, OpenTypeTableRange preparation) = ReadHintTables();
+        int lengthOffset = structure.Value.GlyphRange.Offset + 10 + structure.Value.ContourEndpoints.Length * 2;
+        int instructionLength = ReadUInt16(bytes.Span, lengthOffset);
+        bool hasPrograms = fontProgram.Length != 0 || preparation.Length != 0 || instructionLength != 0;
         int pointCount = decoded.Points.Length, cvtCount = cvtRange.Length / 2;
         int ppem = checked((int)Math.Floor(deviceSize + .5));
         long scratchBytes = ParserCollectionMemory.GetArrayByteCount<TrueTypeHintPoint>(pointCount + 4) + ParserCollectionMemory.GetArrayByteCount<int>(cvtCount);
@@ -89,7 +92,9 @@ internal static partial class OpenTypeFont
         int bearingOffset = glyphIndex < metrics.NumberOfHMetrics ? metrics.Hmtx.Offset + glyphIndex * 4 + 2 : metrics.Hmtx.Offset + metrics.NumberOfHMetrics * 4 + (glyphIndex - metrics.NumberOfHMetrics) * 2;
         int origin = header.XMinimum - ReadInt16(bytes.Span, bearingOffset);
         points[pointCount] = new(ScaleHorizontal(origin), 0, origin, 0); points[pointCount + 1] = new(ScaleHorizontal(origin + advance), 0, origin + advance, 0);
-        if ((target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0)
+        // Instruction-free outlines retain their independently scaled metric
+        // origin; a fitting program starts with the native sixteenth-pixel grid.
+        if (hasPrograms && (target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0)
         {
             points[pointCount].X = RoundTrueTypeHorizontalMetric(points[pointCount].X, target);
             points[pointCount + 1].X = RoundTrueTypeHorizontalMetric(points[pointCount + 1].X, target);
@@ -105,17 +110,19 @@ internal static partial class OpenTypeFont
             if (target.Preparation == TrueTypeHintPreparation.DefaultThenTarget)
                 machine.Prepare(prep, target with { QueryFlags = TrueTypeHintQueryFlags.None });
             machine.Prepare(prep, target);
-            int lengthOffset = structure.Value.GlyphRange.Offset + 10 + structure.Value.ContourEndpoints.Length * 2;
-            int instructionLength = ReadUInt16(bytes.Span, lengthOffset);
             machine.Run(bytes.Slice(lengthOffset + 2, instructionLength), TrueTypeHintProgramKind.Glyph);
-            smartDropouts = machine.GlyphSmartDropouts;
+            smartDropouts = hasPrograms && machine.GlyphSmartDropouts;
         }
-        for (int i = 0; i < pointCount; i++) { work.Consume(token); decoded.Points[i] = new(points[i].X, points[i].Y, points[i].IsOnCurve); }
+        // Simple and composite outlines share the fitted horizontal metric origin.
+        // xMin need not equal the side bearing in a valid static TrueType face.
+        int fittedOrigin = points[pointCount].X;
+        for (int i = 0; i < pointCount; i++) { work.Consume(token); decoded.Points[i] = new(checked(points[i].X - fittedOrigin), points[i].Y, points[i].IsOnCurve); }
         MapPoints(decoded.Points);
         using var segments = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.SimpleSegmentCapacity, GlyphDecoderBudgetPhase.SimpleSegmentExact, GlyphDecoderBudgetPhase.SimpleContourBoundaryCapacity, GlyphDecoderBudgetPhase.SimpleContourBoundaryExact, work, token);
         BuildQuadraticContours(decoded.Points, structure.Value.ContourEndpoints, segments, true, impliedPointRounding, work, token);
         OpenTypeGlyphContourStorage fitted = segments.Detach();
         fitted.SmartDropouts = smartDropouts;
+        fitted.SimpleDropouts = !hasPrograms && (target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0 && ppem <= 32;
         return fitted;
 
         void MapPoints(Span<OpenTypeGlyphPoint> points)

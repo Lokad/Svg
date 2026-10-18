@@ -7,6 +7,50 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgGlyphLcdCoverageTests
 {
     [Theory]
+    [InlineData(22, 0, 11, 15)]
+    [InlineData(23, 15, 5, 0)]
+    public void Instruction_free_simple_dropouts_keep_the_native_left_tip(int x, byte red, byte green, byte blue)
+    {
+        // Independent DirectWrite texture of the original CC0 Primary.ttf:
+        // em 32, origin (16,166), metric origin 80, no instructions.
+        OpenTypeOutlinePoint[] points = [new(16, 166), new(16 + 450d / 64, 166 - 1434d / 64), new(16 + 901d / 64, 166)];
+        OpenTypeQuadraticSegment[] segments = Enumerable.Range(0, points.Length).Select(i => new OpenTypeQuadraticSegment(points[i], points[(i + 1) % points.Length], points[(i + 1) % points.Length])).ToArray();
+        var work = new ParserWorkCounter(long.MaxValue);
+        SvgGlyphLcdCoverage.DropoutBounds bounds = SvgGlyphLcdCoverage.PrepareBounds(segments, false, true, work, CancellationToken.None);
+        Assert.Equal(new SvgGlyphRgbCoverage(red, green, blue), SvgGlyphLcdCoverage.GetCoverage(segments, x, 143, new SvgGlyphLcdCoverage.Crossing[6], bounds, work, CancellationToken.None));
+    }
+
+    [Theory]
+    [InlineData(62, 186, 71, 89, 58)]
+    [InlineData(63, 186, 27, 0, 0)]
+    [InlineData(57, 192, 0, 48, 124)]
+    [InlineData(57, 193, 5, 5, 5)]
+    public void Simple_second_pass_observes_first_pass_cells_across_pixel_rows(int x, int y, byte red, byte green, byte blue)
+    {
+        // Independent same-byte DirectWrite texture of Secondary.ttf at the
+        // retained text-path transform. Explicit SCANTYPE 0 reproduces it;
+        // SCANTYPE 2 and 4 distinguish missing and duplicate tip cells.
+        OpenTypeOutlinePoint[][] polygons =
+        [
+            [new(58, 210.6), new(54.578125, 195.63125), new(64.875, 193.271875), new(68.296875, 208.240625)],
+            [new(57.578125, 192.975), new(60.5, 187.053125), new(63, 186.490625), new(60.078125, 192.396875)]
+        ];
+        OpenTypeQuadraticSegment[] segments = polygons.SelectMany(points => Enumerable.Range(0, points.Length).Select(i => new OpenTypeQuadraticSegment(points[i], points[(i + 1) % points.Length], points[(i + 1) % points.Length]))).ToArray();
+        var work = new ParserWorkCounter(long.MaxValue);
+        SvgGlyphLcdCoverage.DropoutBounds bounds = SvgGlyphLcdCoverage.PrepareBounds(segments, false, true, work, CancellationToken.None);
+        SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[segments.Length * 2];
+        SvgGlyphRgbCoverage expected = new(red, green, blue);
+        Assert.Equal(expected, SvgGlyphLcdCoverage.GetCoverage(segments, x, y, scratch, bounds, work, CancellationToken.None));
+        RenderBudget budget = new(long.MaxValue);
+        using (SvgGlyphLcdCoverage.ScanStorage rows = SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, budget, work, CancellationToken.None) ?? throw new InvalidOperationException("The native control must fit."))
+        {
+            Span<int> counts = stackalloc int[10];
+            Assert.Equal(expected, SvgGlyphLcdCoverage.GetCoverage(rows.PrepareRow(segments, y, counts, work, CancellationToken.None), x, scratch, bounds, work, CancellationToken.None));
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
     [InlineData(0, 0, 0, 0, 5, 24)]
     [InlineData(0, 0, 0, 1, 4, 30)]
     [InlineData(0, 0, 0, 2, 6, 50)]

@@ -9,6 +9,11 @@
   and allow valid relative jumps across balanced conditionals.
 - Parse ordered CSS font families and add explicit host generic/fallback policy
   for font snapshots and prepared documents, preserving legacy catalog selection.
+- Select supplied-font coverage per admitted scalar, lazily acquiring later
+  authored families before host fallback. Preserve mixed-face advances, spans,
+  positioning and text paths, with bounded acquisition and meaningful failures.
+- Correct valid instruction-free TrueType metric origins and native Windows
+  simple dropout control, including the interaction between both scan passes.
 
 ## 0.2.0 - 2026-10-18
 

@@ -120,7 +120,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
     /// <summary>Emits referenced face/paint/filter requests before font acquisition.</summary>
     /// <remarks>Callbacks borrow strings for this synchronous visit and must copy retained values.
     /// Traversal shares the caller's bounded work, storage and cancellation; no font program is opened.</remarks>
-    internal void AddRequests(Action<SvgFontFaceRequest> addFace, Action<string> addPaint, Action<string> addFilter, Action<SvgMarkerStyle> addMarkers)
+    internal void AddRequests(Action<SvgFontFaceRequest> addFace, Action<string> addPaint, Action<string> addFilter, Action<SvgMarkerStyle> addMarkers, SvgFontCoverageDiscovery? coverage)
     {
         using BudgetedParserList<Visit> stack = new(_state.Budget, SvgMemoryCategory.Parser, _work, _token);
         using BudgetedParserDictionary<int, bool> active = new(_state.Budget, SvgMemoryCategory.Parser, 64);
@@ -210,9 +210,18 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                 foreach (SvgExtractedTextRun run in runs.AsSpan())
                 {
                     _work.Consume(_token);
-                    if (run.FontSpans.Items.Length == 0) addFace(style.Font);
+                    if (run.FontSpans.Items.Length == 0)
+                    {
+                        addFace(style.Font);
+                        coverage?.ObserveNormalized(style.Font, run.Layout.Value.AsSpan());
+                    }
                     else foreach (SvgTextFontSpan span in run.FontSpans.Items)
-                    { _work.Consume(_token); addFace(SvgFontFaceRequest.FromCss(span.Font.Family ?? "serif", span.Font.Weight, span.Font.Italic, null, _work, _token)); }
+                    {
+                        _work.Consume(_token);
+                        SvgFontFaceRequest request = SvgFontFaceRequest.FromCss(span.Font.Family ?? "serif", span.Font.Weight, span.Font.Italic, null, _work, _token);
+                        addFace(request);
+                        coverage?.ObserveNormalized(request, run.Layout.Value.AsSpan(span.Start, span.End - span.Start));
+                    }
                 }
             }
             finally { foreach (SvgExtractedTextRun run in runs.AsSpan()) run.Dispose(); }

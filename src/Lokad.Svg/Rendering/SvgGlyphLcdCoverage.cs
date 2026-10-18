@@ -87,8 +87,13 @@ internal static class SvgGlyphLcdCoverage
 
     /// <summary>Prepares immutable native dropout bounds once; borrows contours and retains no storage.</summary>
     internal static DropoutBounds PrepareBounds(ReadOnlySpan<OpenTypeQuadraticSegment> segments, bool dropouts, ParserWorkCounter work, CancellationToken token)
+        => PrepareBounds(segments, dropouts, false, work, token);
+
+    /// <summary>Prepares native bounds while preserving simple left/bottom selection separately from smart midpoint selection.</summary>
+    internal static DropoutBounds PrepareBounds(ReadOnlySpan<OpenTypeQuadraticSegment> segments, bool smartDropouts, bool simpleDropouts, ParserWorkCounter work, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
+        bool dropouts = smartDropouts || simpleDropouts;
         double minX = double.PositiveInfinity, minY = double.PositiveInfinity, maxX = double.NegativeInfinity, maxY = double.NegativeInfinity;
         if (dropouts)
         {
@@ -103,7 +108,7 @@ internal static class SvgGlyphLcdCoverage
         double leftBound = Math.Floor(minX + .5), topBound = Math.Floor(minY + .5), rightBound = Math.Floor(maxX + .5), bottomBound = Math.Floor(maxY + .5);
         if (leftBound == rightBound) { leftBound = Math.Floor(minX); rightBound = Math.Ceiling(maxX); }
         if (topBound == bottomBound) { topBound = Math.Floor(minY); bottomBound = Math.Ceiling(maxY); }
-        return new(dropouts, leftBound, topBound, rightBound, bottomBound);
+        return new(dropouts, leftBound, topBound, rightBound, bottomBound) { Simple = simpleDropouts };
 
         void Bound(OpenTypeOutlinePoint point)
         {
@@ -113,7 +118,10 @@ internal static class SvgGlyphLcdCoverage
         }
     }
 
-    internal readonly record struct DropoutBounds(bool Enabled, double Left, double Top, double Right, double Bottom);
+    internal readonly record struct DropoutBounds(bool Enabled, double Left, double Top, double Right, double Bottom)
+    {
+        internal bool Simple { get; init; }
+    }
 
     /// <summary>Prepares the five horizontal scans and their directed endpoint limits once per pixel row.</summary>
     /// <remarks>Caller reserves and owns crossing storage, count scratch and contours. All are borrowed;
@@ -198,13 +206,15 @@ internal static class SvgGlyphLcdCoverage
     {
         bool dropouts = bounds.Enabled;
         double leftBound = bounds.Left, rightBound = bounds.Right, topBound = bounds.Top, bottomBound = bounds.Bottom;
-        Span<CellCoverage> cells = stackalloc CellCoverage[50]; cells.Clear();
-        for (int row = 0; row < 5; row++)
+        // Simple dropout control observes cells set by the completed first pass,
+        // including its neighboring rows, before selecting the second-pass cell.
+        Span<CellCoverage> cells = stackalloc CellCoverage[70]; cells.Clear();
+        for (int row = bounds.Simple ? -1 : 0; row < (bounds.Simple ? 6 : 5); row++)
         {
             double sample = pixelY * 5d + row + .5;
             bool endpoint;
             ReadOnlySpan<Crossing> lowerScans;
-            if (scans.IsPrepared)
+            if (scans.IsPrepared && row is >= 0 and < 5)
             {
                 lowerScans = scans.GetCrossings(row, false);
                 endpoint = scans.HasEndpoint(row);
@@ -215,14 +225,14 @@ internal static class SvgGlyphLcdCoverage
                 lowerScans = scratch[..count];
             }
             for (int column = -2; column < 8; column++)
-                cells[row * 10 + column + 2] = Classify(lowerScans, pixelX * 6d + column + .5, false, dropouts, leftBound, rightBound, work, token);
+                cells[(row + 1) * 10 + column + 2] = Classify(lowerScans, pixelX * 6d + column + .5, false, dropouts, bounds.Simple, [], 0, leftBound, rightBound, work, token);
             if (endpoint)
             {
                 // Compare the two directed limits only when the scan meets a
                 // vertex. This owns horizontal borders and their corners without
                 // counting a shared monotonic vertex twice in a single scan.
                 ReadOnlySpan<Crossing> upperScans;
-                if (scans.IsPrepared) upperScans = scans.GetCrossings(row, true);
+                if (scans.IsPrepared && row is >= 0 and < 5) upperScans = scans.GetCrossings(row, true);
                 else
                 {
                     int count = Gather(segments, scans.MappedSegments, sample, false, true, scratch, work, token, out _);
@@ -230,8 +240,8 @@ internal static class SvgGlyphLcdCoverage
                 }
                 for (int column = -2; column < 8; column++)
                 {
-                    int index = row * 10 + column + 2;
-                    CellCoverage lower = cells[index], upper = Classify(upperScans, pixelX * 6d + column + .5, false, dropouts, leftBound, rightBound, work, token);
+                    int index = (row + 1) * 10 + column + 2;
+                    CellCoverage lower = cells[index], upper = Classify(upperScans, pixelX * 6d + column + .5, false, dropouts, bounds.Simple, [], 0, leftBound, rightBound, work, token);
                     if ((lower & CellCoverage.Interior) != (upper & CellCoverage.Interior))
                     {
                         CellCoverage normal = ((lower | upper) & CellCoverage.Closed) != 0 ? CellCoverage.Interior : CellCoverage.None;
@@ -247,8 +257,8 @@ internal static class SvgGlyphLcdCoverage
             int count = Gather(segments, scans.MappedSegments, sample, true, false, scratch, work, token, out bool endpoint);
             for (int row = 0; row < 5; row++)
             {
-                CellCoverage value = Classify(scratch[..count], pixelY * 5d + row + .5, true, dropouts, topBound, bottomBound, work, token);
-                int index = row * 10 + column + 2;
+                CellCoverage value = Classify(scratch[..count], pixelY * 5d + row + .5, true, dropouts, bounds.Simple, cells, (1 - pixelY * 5) * 10 + column + 2, topBound, bottomBound, work, token);
+                int index = (row + 1) * 10 + column + 2;
                 // Exact boundary ownership is checked on either axis. Dropouts
                 // are applied after normal ownership on both axes.
                 if ((value & CellCoverage.Boundary) != 0) cells[index] = (cells[index] & CellCoverage.Dropout) | (value & CellCoverage.Interior);
@@ -258,7 +268,7 @@ internal static class SvgGlyphLcdCoverage
             {
                 count = Gather(segments, scans.MappedSegments, sample, true, true, scratch, work, token, out _);
                 for (int row = 0; row < 5; row++)
-                    cells[row * 10 + column + 2] |= Classify(scratch[..count], pixelY * 5d + row + .5, true, true, topBound, bottomBound, work, token) & CellCoverage.Dropout;
+                    cells[(row + 1) * 10 + column + 2] |= Classify(scratch[..count], pixelY * 5d + row + .5, true, true, bounds.Simple, cells, (1 - pixelY * 5) * 10 + column + 2, topBound, bottomBound, work, token) & CellCoverage.Dropout;
             }
         }
         int red = 0, green = 0, blue = 0;
@@ -268,7 +278,7 @@ internal static class SvgGlyphLcdCoverage
             for (int column = -2; column < 8; column++)
             {
                 work.Consume(token);
-                if ((cells[row * 10 + column + 2] & (CellCoverage.Interior | CellCoverage.Dropout)) == 0) continue;
+                if ((cells[(row + 1) * 10 + column + 2] & (CellCoverage.Interior | CellCoverage.Dropout)) == 0) continue;
                 if (column < 4) red += weight;
                 if (column is >= 0 and < 6) green += weight;
                 if (column >= 2) blue += weight;
@@ -276,7 +286,7 @@ internal static class SvgGlyphLcdCoverage
         }
         return new((byte)((red * 255 + 108) / 216), (byte)((green * 255 + 108) / 216), (byte)((blue * 255 + 108) / 216));
 
-        static CellCoverage Classify(ReadOnlySpan<Crossing> crossings, double sample, bool horizontal, bool dropouts, double lowerBound, double upperBound, ParserWorkCounter work, CancellationToken token)
+        static CellCoverage Classify(ReadOnlySpan<Crossing> crossings, double sample, bool horizontal, bool dropouts, bool simple, ReadOnlySpan<CellCoverage> earlier, int earlierOffset, double lowerBound, double upperBound, ParserWorkCounter work, CancellationToken token)
         {
             int winding = 0; double left = 0; CellCoverage value = CellCoverage.None;
             for (int i = 0; i < crossings.Length;)
@@ -298,25 +308,30 @@ internal static class SvgGlyphLcdCoverage
                     if (sample > left && sample < right || boundary && closed) value |= CellCoverage.Interior;
                     if (closed && sample >= left && sample <= right) value |= CellCoverage.Closed;
                     if (boundary) value |= CellCoverage.Boundary;
-                    if (dropouts && IsDropout(left, right, crossings, sample, horizontal, lowerBound, upperBound, work, token)) value |= CellCoverage.Dropout;
+                    if (dropouts && IsDropout(left, right, crossings, sample, horizontal, simple, earlier, earlierOffset, lowerBound, upperBound, work, token)) value |= CellCoverage.Dropout;
                 }
-                else if (dropouts && previous == 0 && winding == 0 && IsDropout(position, position, crossings, sample, horizontal, lowerBound, upperBound, work, token)) value |= CellCoverage.Dropout;
+                else if (dropouts && previous == 0 && winding == 0 && IsDropout(position, position, crossings, sample, horizontal, simple, earlier, earlierOffset, lowerBound, upperBound, work, token)) value |= CellCoverage.Dropout;
             }
             return value;
 
-            static bool IsDropout(double start, double end, ReadOnlySpan<Crossing> crossings, double sample, bool horizontal, double lowerBound, double upperBound, ParserWorkCounter work, CancellationToken token)
+            static bool IsDropout(double start, double end, ReadOnlySpan<Crossing> crossings, double sample, bool horizontal, bool simple, ReadOnlySpan<CellCoverage> earlier, int earlierOffset, double lowerBound, double upperBound, ParserWorkCounter work, CancellationToken token)
             {
                 double first = Math.Ceiling(start - .5), last = Math.Floor(end - .5);
                 if (first != last + 1) return false;
                 double midpoint = (start + end) * .5;
-                double selected = horizontal ? Math.Floor(midpoint) : Math.Ceiling(midpoint) - 1;
+                double selected = simple ? horizontal ? first : last : horizontal ? Math.Floor(midpoint) : Math.Ceiling(midpoint) - 1;
                 // A tip on an exclusive contour bound selects the other cell.
                 if (selected < lowerBound || selected >= upperBound) selected = selected == first ? last : first;
                 if (selected < lowerBound || selected >= upperBound || selected != Math.Floor(sample)) return false;
                 double other = (selected == first ? last : first) + .5;
+                if (horizontal && simple)
+                {
+                    int neighbor = checked((int)Math.Floor(other) * 10 + earlierOffset);
+                    if ((uint)neighbor < (uint)earlier.Length && (earlier[neighbor] & (CellCoverage.Interior | CellCoverage.Dropout)) != 0) return false;
+                }
                 // The neighbor query disables dropouts, bounding this call to
                 // one extra normal-coverage scan, including collapsed tips.
-                return (Classify(crossings, other, horizontal, false, lowerBound, upperBound, work, token) & CellCoverage.Interior) == 0;
+                return (Classify(crossings, other, horizontal, false, simple, [], 0, lowerBound, upperBound, work, token) & CellCoverage.Interior) == 0;
             }
         }
 

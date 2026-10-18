@@ -35,6 +35,24 @@ internal static class SvgFontRequestDiscovery
 
     /// <summary>Discovers admitted text requests while reserving all discovery control storage from the supplied preparation budget.</summary>
     internal static SvgFontFaceRequest[] Discover(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, ParserWorkCounter workCounter, RenderBudget budget, CancellationToken cancellationToken)
+        => DiscoverCore(svg, limits, workCounter, budget, null, cancellationToken);
+
+    /// <summary>Shares request discovery and whitespace normalization while retaining bounded scalar needs for selective acquisition.</summary>
+    internal static SvgFontCoverageRequest[] DiscoverWithCoverage(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        RenderBudget budget = new(limits.MaximumAccountedBytes);
+        using SvgFontCoverageDiscovery coverage = new(budget, workCounter, cancellationToken);
+        SvgFontFaceRequest[] requests = DiscoverCore(svg, limits, workCounter, budget, coverage, cancellationToken);
+        var result = new SvgFontCoverageRequest[requests.Length];
+        for (int index = 0; index < requests.Length; index++)
+        {
+            workCounter.Consume(cancellationToken);
+            result[index] = new(requests[index], coverage.GetScalars(requests[index]));
+        }
+        return result;
+    }
+
+    private static SvgFontFaceRequest[] DiscoverCore(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, ParserWorkCounter workCounter, RenderBudget budget, SvgFontCoverageDiscovery? coverage, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(limits);
         ArgumentNullException.ThrowIfNull(workCounter);
@@ -129,7 +147,7 @@ internal static class SvgFontRequestDiscovery
                             _ = SvgTextPathSyntax.Parse(reader, workCounter, cancellationToken);
                             childWhitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, null, inheritedWhitespaceMode);
                             admittedTextSpan = true;
-                            if (!reader.IsEmptyElement) textPathDepth = reader.Depth;
+                            if (!reader.IsEmptyElement) { textPathDepth = reader.Depth; coverage?.BeginText(); }
                         }
                         catch (SvgException exception) when (exception.ErrorCode == SvgErrorCode.UnsupportedFeature) { admittedTextSpan = false; }
                     }
@@ -316,12 +334,12 @@ internal static class SvgFontRequestDiscovery
                         bool group = isSvgElement && SvgStructuralVocabulary.IsGroupContainer(reader.LocalName);
                         groupLevels.Add(group);
                         if (group) groupDepth++;
-                        if (candidateState.HasRequest) { activeCandidateLevel = directTextLevels.Count - 1; activeTextPainted = false; hasPriorText = false; pendingWhitespace = null; }
+                        if (candidateState.HasRequest) { activeCandidateLevel = directTextLevels.Count - 1; activeTextPainted = false; hasPriorText = false; pendingWhitespace = null; coverage?.BeginText(); }
                     }
                 }
                 else if (reader.NodeType == XmlNodeType.EndElement)
                 {
-                    if (reader.Depth == textPathDepth) { textPathDepth = -1; hasPriorText = false; pendingWhitespace = null; }
+                    if (reader.Depth == textPathDepth) { textPathDepth = -1; hasPriorText = false; pendingWhitespace = null; coverage?.BeginText(); }
                     if (reader.Depth == skipDepth) skipDepth = -1;
                     if (switchScopes.Count > 0 && switchScopes[switchScopes.Count - 1].Depth == reader.Depth) switchScopes.RemoveLast();
                     if (reader.Depth == inertDepth) inertDepth = -1;
@@ -359,9 +377,11 @@ internal static class SvgFontRequestDiscovery
                     if (activeCandidateLevel >= 0)
                     {
                         SvgTextWhitespaceMode activeWhitespace = whitespaceLevels[whitespaceLevels.Count - 1];
-                        bool hasRenderable = HasRenderableText(reader, GetTextChunk(), activeWhitespace, workCounter, cancellationToken, out bool hasCharacters, out bool endsWithCollapsible);
                         SvgTextPaintStyle paint = inheritedLevels[^1].TextPaint;
                         SvgInheritedTextStyle currentFont = inheritedLevels[^1].Text;
+                        SvgFontCoverageDiscovery? visibleCoverage = paint.IsDisplayed ? coverage : null;
+                        visibleCoverage?.SetFont(currentFont);
+                        bool hasRenderable = HasRenderableText(reader, GetTextChunk(), activeWhitespace, visibleCoverage, workCounter, cancellationToken, out bool hasCharacters, out bool endsWithCollapsible);
                         if (hasRenderable && paint.IsDisplayed && pendingWhitespace is {} separator)
                         {
                             ObserveFont(separator);
@@ -389,7 +409,7 @@ internal static class SvgFontRequestDiscovery
             if (!hasRoot) throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
             instanceFonts?.AddRequests(
                 request => AddCandidate(new(true, request.Family, request.Weight, request.Italic, SvgTextWhitespaceMode.Default, false, true) { SourceContext = request.SourceContext }, requestKeys, workCounter, cancellationToken),
-                id => textPaintIds.Add(new(styleStrings.Copy(id))), ObserveFilter, ObserveMarkers);
+                id => textPaintIds.Add(new(styleStrings.Copy(id))), ObserveFilter, ObserveMarkers, coverage);
             foreach (MarkerReference reference in markerReferences.Values)
             {
                 workCounter.Consume(cancellationToken);
@@ -517,7 +537,7 @@ internal static class SvgFontRequestDiscovery
         requests.Add(new TextRequestKey(family, candidate.Weight, candidate.Italic) { SourceContext = candidate.SourceContext });
     }
 
-    private static bool HasRenderableText(XmlReader reader, char[] chunk, SvgTextWhitespaceMode whitespaceMode, ParserWorkCounter workCounter, CancellationToken cancellationToken, out bool hasCharacters, out bool endsWithCollapsible)
+    private static bool HasRenderableText(XmlReader reader, char[] chunk, SvgTextWhitespaceMode whitespaceMode, SvgFontCoverageDiscovery? coverage, ParserWorkCounter workCounter, CancellationToken cancellationToken, out bool hasCharacters, out bool endsWithCollapsible)
     {
         bool hasRenderableText = false;
         hasCharacters = false;
@@ -533,6 +553,7 @@ internal static class SvgFontRequestDiscovery
                 hasRenderableText |= whitespaceMode == SvgTextWhitespaceMode.Preserve
                     ? SvgTextWhitespaceNormalizer.HasText(chunk.AsSpan(0, read), workCounter, cancellationToken)
                     : SvgTextWhitespaceNormalizer.HasNonWhitespaceText(chunk.AsSpan(0, read), workCounter, cancellationToken);
+                coverage?.Observe(chunk.AsSpan(0, read), whitespaceMode);
             }
         } while (read != 0);
         return hasRenderableText;

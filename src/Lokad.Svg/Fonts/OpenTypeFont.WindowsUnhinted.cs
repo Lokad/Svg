@@ -50,20 +50,27 @@ internal static partial class OpenTypeFont
 {
     /// <summary>Returns owned Windows unhinted contours after fixed-point mapping and before strike placement.</summary>
     /// <remarks>Borrows the unchanged supplied face and reuses bounded component assembly. Point and segment owners reserve before allocation and release on success, denial and cancellation. Each decoded or mapped point and lowered contour charges the shared work counter. No instructions, native services or host fonts are acquired; calls with separate conversion owners may run concurrently.</remarks>
-    internal static OpenTypeGlyphContourStorage GetWindowsUnhintedContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, SvgGlyphStrikeTransform strike, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    internal static OpenTypeGlyphContourStorage GetWindowsUnhintedContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, SvgGlyphStrikeTransform strike, bool hasPrograms, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         OpenTypeWindowsGlyphTransform transform = OpenTypeWindowsGlyphTransform.Create(strike, metrics.UnitsPerEm);
         using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, null, null, OpenTypeCompositeOffsetMath.DirectWrite, budget, work, token);
-        SubtractGlyphOrigin(outline.Points, GetHorizontalOrigin(bytes, glyphIndex, metrics, work, token), work, token);
+        // Native mapping rounds the stored points and metric origin separately.
+        // Rebasing before those products changes valid nonzero-origin outlines.
+        OpenTypeGlyphPoint origin = transform.Apply(new(GetHorizontalOrigin(bytes, glyphIndex, metrics, work, token), 0, true));
         for (int index = 0; index < outline.Points.Length; index++)
         {
             work.Consume(token);
-            outline.Points[index] = transform.Apply(outline.Points[index]);
+            OpenTypeGlyphPoint point = transform.Apply(outline.Points[index]);
+            long x = (long)point.X - origin.X, y = (long)point.Y - origin.Y;
+            if (x < int.MinValue || x > int.MaxValue || y < int.MinValue || y > int.MaxValue)
+                throw new SvgException(SvgErrorCode.LimitExceeded, "A mapped glyph origin exceeds its signed bound.");
+            outline.Points[index] = new((int)x, (int)y, point.IsOnCurve);
         }
         using OpenTypeSegmentAccumulator segments = new(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, work, token);
         BuildQuadraticContours(outline.Points, outline.Ends, segments, true, TrueTypeImpliedPointRounding.None, work, token);
         OpenTypeGlyphContourStorage result = segments.Detach();
-        result.SmartDropouts = true;
+        result.SmartDropouts = hasPrograms;
+        result.SimpleDropouts = !hasPrograms && MathF.Floor(strike.DeviceSize + .5f) <= 32;
         return result;
     }
 }

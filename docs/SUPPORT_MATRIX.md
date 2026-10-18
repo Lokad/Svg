@@ -194,9 +194,18 @@ exposes decoded named/generic candidates. SvgFontSelectionPolicy supplies host
 generic mappings and ordered fallback restrictions to snapshot/prepared-document
 creation; quoted "serif" remains a literal name. Existing single-family
 catalog resolution retains its fallback behavior. Selection uses one program
-per styled run; glyph-coverage fallback between programs is unsupported.
+per covered interval: SVG-based snapshot/prepared creation lazily acquires
+alternatives for missing admitted scalars, trying later authored families before
+host fallback. Kerning/ligatures stay within a selected face; positioning, spans
+and text paths retain their layout. Combining/joining fallback does not expand
+the shaping subset below. Missing-everywhere requests keep scalar/index/source
+diagnostics; required corrupt or unavailable bytes are not silently skipped.
+Raw conversion uses only the supplied snapshot. Request-only snapshot creation
+has no text coverage to inspect and retains its first-face selection contract;
+callers can explicitly supply prepared alternatives for the same request.
 The [ordered-family document](../tests/Research/font-family-stacks/README.md)
-retains supplied-program metrics and frozen Windows/Linux pixels.
+and [mixed-coverage document](../tests/Research/glyph-fallback/README.md) retain
+supplied-program metrics and frozen Windows/Linux pixels.
 
 Supported format: standalone static TrueType, face index 0. Text supports
 horizontal LTR ASCII/tested precomposed Latin and covered supplementary scalars;
@@ -231,6 +240,8 @@ super-rounding, projected coordinate and relative moves, signed MIN/MAX,
 ODD/EVEN predicates and curve-tag range changes. Fitting preserves the native
 Windows/Linux rounding distinctions and simple/composite outline tags. Other
 executed instructions outside the supported subset fail explicitly.
+Instruction-free static programs retain their metric origins and native masks,
+including simple Windows tip dropout control distinct from smart dropout control.
 
 Unsupported: wrapping, bidi/joining/complex scripts, general GSUB/GPOS/mark
 positioning, other lookup flags/types/formats, vertical text, path stretch/auto

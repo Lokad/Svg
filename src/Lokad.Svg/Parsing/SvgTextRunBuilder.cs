@@ -2,6 +2,7 @@ namespace Lokad.Svg.Parsing;
 
 using Lokad.Svg.Fonts;
 using Lokad.Svg.Rendering;
+using System.Text;
 
 /// <summary>Builds one bounded simple horizontal text run from prepared caller-owned font data.</summary>
 internal static class SvgTextRunBuilder
@@ -47,15 +48,21 @@ internal static class SvgTextRunBuilder
         ArgumentNullException.ThrowIfNull(text);
         ArgumentNullException.ThrowIfNull(snapshot);
         using BudgetedParserList<SvgTextResolvedFontSpan> resolvedFonts = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        SvgPreparedFont? firstRequestedFont = null;
         foreach (SvgTextFontSpan span in fontSpans)
         {
             if (workCounter is null) cancellationToken.ThrowIfCancellationRequested(); else workCounter.Consume(cancellationToken);
             SvgFontFaceRequest request = SvgFontFaceRequest.FromCss(span.Font.Family ?? "serif", span.Font.Weight, span.Font.Italic, null, workCounter, cancellationToken);
             SvgPreparedFont face = workCounter is null ? snapshot.GetFont(request, style.SourceElementId) : snapshot.GetFont(request, style.SourceElementId, workCounter, cancellationToken);
-            resolvedFonts.Add(new(span.Start, span.End, new(face, span.Font.FontSize)));
+            firstRequestedFont ??= face;
+            if (snapshot.HasCoverageAlternatives(request, workCounter, cancellationToken))
+                AddCoverageSpans(request, face, span.Font.FontSize, span.Start, span.End);
+            else resolvedFonts.Add(new(span.Start, span.End, new(face, span.Font.FontSize)));
         }
-        SvgPreparedFont font = resolvedFonts.Count != 0 ? resolvedFonts[0].Style.Font
+        SvgPreparedFont font = firstRequestedFont is not null ? firstRequestedFont
             : workCounter is null ? snapshot.GetFont(style.Font, style.SourceElementId) : snapshot.GetFont(style.Font, style.SourceElementId, workCounter, cancellationToken);
+        if (fontSpans.IsEmpty && snapshot.HasCoverageAlternatives(style.Font, workCounter, cancellationToken))
+            AddCoverageSpans(style.Font, font, style.FontSize, 0, text.Length);
         bool needsFragments = defaultPaint?.Decoration is not null || defaultPaint?.HasStroke == true || defaultPaint?.FillServer is not null;
         foreach (SvgTextPaintSpan span in paintSpans) needsFragments |= span.Paint.Decoration is not null || span.Paint.HasStroke || span.Paint.FillServer is not null;
         double originX = style.X + style.Dx;
@@ -81,6 +88,24 @@ internal static class SvgTextRunBuilder
             { GlyphStretch = AdjustGlyphs(glyphs, font, style, deviceMetrics, workCounter, cancellationToken) };
         }
         catch { glyphs?.Dispose(); throw; }
+
+        void AddCoverageSpans(SvgFontFaceRequest request, SvgPreparedFont primary, double fontSize, int start, int end)
+        {
+            int offset = start, groupStart = start;
+            SvgPreparedFont? current = null;
+            foreach (Rune scalar in text.AsSpan(start, end - start).EnumerateRunes())
+            {
+                if (workCounter is null) cancellationToken.ThrowIfCancellationRequested(); else workCounter.Consume(cancellationToken);
+                SvgPreparedFont selected = snapshot.GetFontForScalar(request, primary, (uint)scalar.Value, workCounter, cancellationToken);
+                if (current is not null && !ReferenceEquals(current, selected))
+                {
+                    resolvedFonts.Add(new(groupStart, offset, new(current, fontSize)));
+                    groupStart = offset;
+                }
+                current = selected; offset += scalar.Utf16SequenceLength;
+            }
+            if (current is not null) resolvedFonts.Add(new(groupStart, end, new(current, fontSize)));
+        }
 
         static double AdjustGlyphs(SvgPositionedGlyphStorage storage, SvgPreparedFont font, SvgTextStyle style, SvgGlyphDeviceMetrics? metrics,
             ParserWorkCounter? work, CancellationToken token)

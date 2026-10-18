@@ -110,6 +110,16 @@ public sealed class SvgFontPackCatalog
 
     internal SvgFontPackResolution ResolveFamilies(SvgFontFaceRequest request, SvgFontSelectionPolicy? policy, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
+        foreach (SvgFontPackResolution candidate in EnumerateCandidates(request, policy, workCounter, cancellationToken)) return candidate;
+        throw new SvgException(SvgErrorCode.UnresolvedResource, "No supplied font matches the requested family list and host fallback policy.",
+            new SvgFontDiagnostic(SvgFontFailureStage.Selection, request.Family, string.Empty, string.Empty, string.Empty,
+                request.Weight, request.Italic, null, null, null), request.SourceContext?.Describe(string.Empty, string.Empty));
+    }
+
+    /// <summary>Streams metadata candidates in authored/host order. A legacy last resort is offered only when no named candidate exists.</summary>
+    internal IEnumerable<SvgFontPackResolution> EnumerateCandidates(SvgFontFaceRequest request, SvgFontSelectionPolicy? policy, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        bool found = false;
         foreach (SvgFontFamily family in request.Families)
         {
             Consume(workCounter, cancellationToken);
@@ -120,21 +130,18 @@ public sealed class SvgFontPackCatalog
                 name = mapped;
             }
             SvgFontPackFace? exact = SelectFamily(name, request, workCounter, cancellationToken);
-            if (exact is not null) return new SvgFontPackResolution(request, exact, false);
+            if (exact is not null) { found = true; yield return new(request, exact, false); }
         }
         foreach (string fallback in policy?.FallbackFamilies ?? _fallbackFamilies)
         {
             Consume(workCounter, cancellationToken);
             SvgFontPackFace? candidate = SelectFamily(fallback, request, workCounter, cancellationToken);
-            if (candidate is not null) return new SvgFontPackResolution(request, candidate, true);
+            if (candidate is not null) { found = true; yield return new(request, candidate, true); }
         }
 
-        if (policy is not null)
-            throw new SvgException(SvgErrorCode.UnresolvedResource, "No supplied font matches the requested family list and host fallback policy.",
-                new SvgFontDiagnostic(SvgFontFailureStage.Selection, request.Family, string.Empty, string.Empty, string.Empty,
-                    request.Weight, request.Italic, null, null, null), request.SourceContext?.Describe(string.Empty, string.Empty));
+        if (found || policy is not null) yield break;
         SvgFontPackFace? textFace = SelectBest(request, true, workCounter, cancellationToken);
-        return new SvgFontPackResolution(request, textFace ?? SelectBest(request, false, workCounter, cancellationToken) ?? throw new InvalidOperationException("A validated font catalog has no selectable faces."), true);
+        yield return new(request, textFace ?? SelectBest(request, false, workCounter, cancellationToken) ?? throw new InvalidOperationException("A validated font catalog has no selectable faces."), true);
     }
 
     /// <summary>

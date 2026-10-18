@@ -9,7 +9,7 @@ using Lokad.Svg.Parsing;
 /// successful creation when disposal does not overlap those reads, but do not own a shared cache or perform I/O. Multiple
 /// face records for one manifest program share one acquired byte region.
 /// </summary>
-public sealed class SvgFontSnapshot : IDisposable
+public sealed partial class SvgFontSnapshot : IDisposable
 {
     private const long MaximumBorrowedBytes = 32L * 1024 * 1024;
     private const int MaximumFaces = 256;
@@ -226,8 +226,19 @@ public sealed class SvgFontSnapshot : IDisposable
     {
         ArgumentNullException.ThrowIfNull(limits);
         ArgumentNullException.ThrowIfNull(workCounter);
-        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(svg, limits, workCounter, cancellationToken);
-        try { return await CreateAsync(catalog, requests, provider, policy, workCounter, cancellationToken).ConfigureAwait(false); }
+        ArgumentNullException.ThrowIfNull(catalog);
+        ArgumentNullException.ThrowIfNull(provider);
+        // A standalone face-zero program has one cmap, regardless of aliases.
+        // Keep ordinary single-program preparation on its existing fast path.
+        SvgFontCoverageRequest[]? coverage = catalog.Files.Count > 1 ? SvgFontRequestDiscovery.DiscoverWithCoverage(svg, limits, workCounter, cancellationToken) : null;
+        SvgFontFaceRequest[] requests = coverage is null ? SvgFontRequestDiscovery.Discover(svg, limits, workCounter, cancellationToken)
+            : coverage.Select(static item => item.Request).ToArray();
+        try
+        {
+            return coverage is null
+                ? await CreateAsync(catalog, requests, provider, policy, workCounter, cancellationToken).ConfigureAwait(false)
+                : await CreateWithCoverageAsync(catalog, coverage, provider, policy, workCounter, cancellationToken).ConfigureAwait(false);
+        }
         catch (SvgException exception) when (exception.FontDiagnostic is {} diagnostic)
         {
             foreach (SvgFontFaceRequest request in requests)

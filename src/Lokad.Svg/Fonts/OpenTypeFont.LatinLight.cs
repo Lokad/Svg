@@ -27,6 +27,7 @@ internal static partial class OpenTypeFont
         }
         if (structure.Value.ContourEndpoints.Length == 0) return new([], [], null, null);
         using OpenTypeGlyphPointStorage points = GetSimpleGlyphPoints(bytes, structure.Value, budget, work, cancellationToken);
+        SubtractGlyphOrigin(points.Points, GetHorizontalOrigin(bytes, glyphIndex, metrics, work, cancellationToken), work, cancellationToken);
         Span<LatinAlignmentZone> zones = stackalloc LatinAlignmentZone[6];
         int zoneCount = GetLatinAlignmentZones(bytes, metrics, zones, budget, work, cancellationToken);
         LatinLightHinting.Hint(points.Points, structure.Value.ContourEndpoints, zones[..zoneCount], metrics.UnitsPerEm, deviceSize, GetMaximumStemWidth(bytes, metrics, budget, work, cancellationToken), budget, work, cancellationToken);

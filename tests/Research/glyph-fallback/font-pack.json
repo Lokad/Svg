@@ -1,0 +1,34 @@
+{
+  "packId": "public-glyph-fallback",
+  "files": [
+    {
+      "relativePath": "fonts/Primary.ttf",
+      "byteSize": 1160,
+      "sha256": "94da458b2ee3288c6959e4bdaaf3637da67f01274ce44d99c8e32ff37fc7fb07"
+    },
+    {
+      "relativePath": "fonts/Secondary.ttf",
+      "byteSize": 1248,
+      "sha256": "e356f4a340d5e63c97aa29282c48a2449ef63d961d62132c7b90bc363848bb40"
+    }
+  ],
+  "families": [
+    {
+      "requestedFamily": "FallbackPrimary",
+      "resolvedFamily": "FallbackPrimary",
+      "relativeFontFile": "fonts/Primary.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0
+    },
+    {
+      "requestedFamily": "FallbackSecondary",
+      "resolvedFamily": "FallbackSecondary",
+      "relativeFontFile": "fonts/Secondary.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0
+    }
+  ],
+  "fallbacks": []
+}

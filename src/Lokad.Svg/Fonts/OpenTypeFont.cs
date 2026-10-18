@@ -87,7 +87,8 @@ internal static partial class OpenTypeFont
         OpenTypeKernTable? kern = tables.TryGetValue(KernTag, out OpenTypeTableRange kernTable) ? ParseKernTable(data, kernTable, glyphCount, workCounter, cancellationToken) : null;
         OpenTypeGposPairTable? gpos = tables.TryGetValue(GposTag, out OpenTypeTableRange gposTable) ? ParseGposPairTable(data, gposTable, tables.TryGetValue(GdefTag, out OpenTypeTableRange gdef) ? gdef : null, glyphCount, workCounter, cancellationToken) : null;
         OpenTypeFontLineMetrics lineMetrics = ReadLineMetrics(data, hhea, tables.TryGetValue(Os2Tag, out OpenTypeTableRange lineOs2) ? lineOs2 : null);
-        return new OpenTypeFontMetrics(unitsPerEm, glyphCount, numberOfHMetrics, indexToLocFormat, hmtx, tables.TryGetValue(CmapTag, out OpenTypeTableRange cmap) ? cmap : null, kern, gpos, tables.TryGetValue(GsubTag, out OpenTypeTableRange gsub) ? gsub : null, tables.TryGetValue(LocaTag, out OpenTypeTableRange loca) ? loca : null, tables.TryGetValue(GlyfTag, out OpenTypeTableRange glyf) ? glyf : null, (ReadUInt16(bytes.Span, head.Offset + 16) & 8) != 0, lineMetrics);
+        return new OpenTypeFontMetrics(unitsPerEm, glyphCount, numberOfHMetrics, indexToLocFormat, hmtx, tables.TryGetValue(CmapTag, out OpenTypeTableRange cmap) ? cmap : null, kern, gpos, tables.TryGetValue(GsubTag, out OpenTypeTableRange gsub) ? gsub : null, tables.TryGetValue(LocaTag, out OpenTypeTableRange loca) ? loca : null, tables.TryGetValue(GlyfTag, out OpenTypeTableRange glyf) ? glyf : null, (ReadUInt16(bytes.Span, head.Offset + 16) & 8) != 0, lineMetrics)
+            { HasCompleteTrueTypeProfile = maxp.Length >= 32 && ReadUInt32(data, maxp.Offset) == 0x10000 };
 
         static OpenTypeFontLineMetrics ReadLineMetrics(ReadOnlySpan<byte> data, OpenTypeTableRange hhea, OpenTypeTableRange? os2)
         {
@@ -989,7 +990,10 @@ internal static partial class OpenTypeFont
 }
 
 /// <summary>Represents validated core metrics from borrowed standalone-TrueType data.</summary>
-internal readonly record struct OpenTypeFontMetrics(ushort UnitsPerEm, ushort GlyphCount, ushort NumberOfHMetrics, short IndexToLocFormat, OpenTypeTableRange Hmtx, OpenTypeTableRange? Cmap, OpenTypeKernTable? Kern, OpenTypeGposPairTable? Gpos, OpenTypeTableRange? Gsub, OpenTypeTableRange? Loca, OpenTypeTableRange? Glyf, bool ForceIntegerHintingSize, OpenTypeFontLineMetrics LineMetrics);
+internal readonly record struct OpenTypeFontMetrics(ushort UnitsPerEm, ushort GlyphCount, ushort NumberOfHMetrics, short IndexToLocFormat, OpenTypeTableRange Hmtx, OpenTypeTableRange? Cmap, OpenTypeKernTable? Kern, OpenTypeGposPairTable? Gpos, OpenTypeTableRange? Gsub, OpenTypeTableRange? Loca, OpenTypeTableRange? Glyf, bool ForceIntegerHintingSize, OpenTypeFontLineMetrics LineMetrics)
+{
+    internal bool HasCompleteTrueTypeProfile { get; init; }
+}
 
 /// <summary>Retains bounded alphabetic line metrics in font units without owning additional font storage.</summary>
 internal readonly record struct OpenTypeFontLineMetrics(int Ascender, int Descender, int WindowsAscender, int WindowsDescender)
@@ -1099,6 +1103,9 @@ internal sealed class OpenTypeGlyphContourStorage : IDisposable
 
     /// <summary>Gets or sets the fitted glyph's smart dropout policy before its exclusive owner starts rasterization.</summary>
     internal bool SmartDropouts { get; set; }
+
+    /// <summary>Gets or sets simple dropout selection, observing the completed first scan pass before the second.</summary>
+    internal bool SimpleDropouts { get; set; }
 
     public void Dispose()
     {

@@ -212,7 +212,10 @@ $distinctTexts = (0..9 | ForEach-Object { "<text font-family=`"Family$_`">x</tex
 [IO.File]::WriteAllText($discoveryDistinctInput, '<svg xmlns="http://www.w3.org/2000/svg">' + $distinctTexts + "</svg>", [Text.UTF8Encoding]::new($false))
 $discoveryDistinctOutput = Join-Path $ResultsDirectory "$runId-font-discovery-distinct-requests.png"
 $distinctProbe = Invoke-Probe -Name 'font-discovery-distinct-requests' -InputPath $discoveryDistinctInput -Output $discoveryDistinctOutput -ExpectedExitCode 1 -ExtraArguments @('--mode', 'font-discovery')
-if ($distinctProbe['outcome'] -ne 'svg-error' -or $distinctProbe['svgErrorCode'] -ne 'UnsupportedFeature' -or $distinctProbe['discoveryRequestCount'] -ne '10' -or $distinctProbe['providerCalls'] -ne '10' -or $distinctProbe['discoveryCurrentBytes'] -ne '0' -or [long]$distinctProbe['discoveryPeakBytes'] -le 0 -or $distinctProbe['discoveryDeniedReservations'] -ne '0' -or (Test-Path -LiteralPath $discoveryDistinctOutput)) { throw 'The distinct-request font-discovery probe did not acquire each synthetic program, release its ledger, and reject the non-font bytes.' }
+# Font-free discovery reports all requests. Coverage preparation parses each
+# required program before further acquisition, so the first non-font rejects
+# the operation without opening the nine remaining programs.
+if ($distinctProbe['outcome'] -ne 'svg-error' -or $distinctProbe['svgErrorCode'] -ne 'UnsupportedFeature' -or $distinctProbe['discoveryRequestCount'] -ne '10' -or $distinctProbe['providerCalls'] -ne '1' -or $distinctProbe['discoveryCurrentBytes'] -ne '0' -or [long]$distinctProbe['discoveryPeakBytes'] -le 0 -or $distinctProbe['discoveryDeniedReservations'] -ne '0' -or (Test-Path -LiteralPath $discoveryDistinctOutput)) { throw 'The distinct-request font-discovery probe did not report every request, release its ledger, and reject the first non-font before further acquisition.' }
 
 $discoveryCancelledInput = Join-Path $ResultsDirectory "$runId-font-discovery-cancelled.svg"
 $cancelledStylesheet = New-Object string('x', 4MB)

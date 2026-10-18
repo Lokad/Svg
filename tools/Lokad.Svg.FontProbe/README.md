@@ -29,7 +29,10 @@ retaining data above the normal SVG input limit.
 
 The manifest is read under 1 MiB. A selected program is read only when SVG
 preparation requests it, and is capped at the smaller of its declared byte size
-and 64 MiB before the library's separate 32 MiB selected-program cap applies.
+and 64 MiB before the library's separate 32 MiB distinct-program cap applies.
+Coverage fallback acquires later authored families and allowed catalog fallbacks
+only when an admitted scalar needs them; examined rejected programs also count
+against that preparation bound. Required missing/corrupt bytes fail explicitly.
 HTTP requests retry transient transport failures at most three times. Successful
 HTTP programs coalesce concurrent reads and remain in a shared cache capped at
 32 MiB; a program that cannot fit remains usable for its immediate consumer but

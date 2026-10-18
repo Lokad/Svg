@@ -28,6 +28,7 @@ internal static class SvgWindowsGlyphCurves
         }
         OpenTypeGlyphContourStorage contours = result.Detach();
         contours.SmartDropouts = source.SmartDropouts;
+        contours.SimpleDropouts = source.SimpleDropouts;
         return contours;
 
         Point Map(OpenTypeOutlinePoint point)

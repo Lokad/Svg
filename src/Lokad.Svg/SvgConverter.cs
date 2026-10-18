@@ -3569,7 +3569,7 @@ public static class SvgConverter
                 }
                 if (source.HasGlyphMap || source.UsesDeviceFitting(budget, preparationWork, cancellationToken))
                 {
-                    if (OperatingSystem.IsWindows() && (source.HasGlyphMap || source.HasTrueTypePrograms(budget, preparationWork, cancellationToken)))
+                    if (OperatingSystem.IsWindows() && (source.HasGlyphMap || source.HasCompleteTrueTypeProfile || source.HasTrueTypePrograms(budget, preparationWork, cancellationToken)))
                     {
                         using OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(horizontalScale, horizontalOffset, verticalScale, verticalOffset, budget, preparationWork, cancellationToken);
                         int crossingCount = checked(contours.Segments.Length * 2);
@@ -3588,7 +3588,7 @@ public static class SvgConverter
                         {
                             int lcdStartX = ClampFloor(lcdMinimumX - 1d / 3, outputWidth), lcdEndX = ClampCeiling(lcdMaximumX + 1d / 3, outputWidth);
                             int lcdStartY = ClampFloor(lcdMinimumY, outputHeight), lcdEndY = ClampCeiling(lcdMaximumY, outputHeight);
-                            SvgGlyphLcdCoverage.DropoutBounds dropoutBounds = SvgGlyphLcdCoverage.PrepareBounds(contours.Segments, contours.SmartDropouts, preparationWork, cancellationToken);
+                            SvgGlyphLcdCoverage.DropoutBounds dropoutBounds = SvgGlyphLcdCoverage.PrepareBounds(contours.Segments, contours.SmartDropouts, contours.SimpleDropouts, preparationWork, cancellationToken);
                             // Ten horizontal directed scans are reused across one row. This
                             // optional preparation yields to the existing low-memory path.
                             using SvgGlyphLcdCoverage.ScanStorage? rowStorage = lcdStartX < lcdEndX && lcdStartY < lcdEndY ? SvgGlyphLcdCoverage.ScanStorage.TryCreate(contours.Segments, budget, preparationWork, cancellationToken) : null;

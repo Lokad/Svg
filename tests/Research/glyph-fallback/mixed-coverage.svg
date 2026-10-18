@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="260">
+  <defs><path id="curve" d="M16 224Q140 176 284 224"/></defs>
+  <g font-family="FallbackPrimary, FallbackSecondary" font-size="40">
+    <text id="ordinary" x="16" y="56">AéA</text>
+    <text id="length" x="16.25" y="112.25" textLength="90" lengthAdjust="spacing">AéA</text>
+    <text id="positioned" x="16 58 104" y="166 160 166" rotate="0 -12 0" font-size="32">AéA</text>
+    <text id="path" font-size="32"><textPath href="#curve" startOffset="25">AéA</textPath></text>
+  </g>
+</svg>
