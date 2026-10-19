@@ -28,18 +28,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
         // width-254 witness isolates ordinary fill from dropout selection.
         // Nearby geometry, signed placement and contour reversal are native
         // captures too; band 323 protects the control-midpoint rounding.
-        int leftControl = width / 3, rightControl = width - leftControl;
-        OpenTypeOutlinePoint a = P(0, shift), b = P(leftControl, 65 + shift);
-        OpenTypeOutlinePoint c = P(rightControl, rightHeight + shift), d = P(width, shift);
-        OpenTypeOutlinePoint e = P(width, shift - 25), f = P(rightControl, rightHeight + shift - 25);
-        OpenTypeOutlinePoint g = P(leftControl, 65 + shift - 25), h = P(0, shift - 25);
-        OpenTypeOutlinePoint upper = new((b.X + c.X) / 2, (b.Y + c.Y) / 2);
-        OpenTypeOutlinePoint lower = new((f.X + g.X) / 2, (f.Y + g.Y) / 2);
-        OpenTypeQuadraticSegment[] segments = [new(a, b, upper), new(upper, c, d), new(d, e, e),
-            new(e, f, lower), new(lower, g, h), new(h, a, a)];
-        if (reverse)
-            segments = segments.Reverse().Select(segment => new OpenTypeQuadraticSegment(segment.End,
-                segment.Control == segment.End ? segment.Start : segment.Control, segment.Start)).ToArray();
+        OpenTypeQuadraticSegment[] segments = CreateNaturalConicBand(width, rightHeight, shift, originX, originY, reverse);
 
         byte[] expected = Convert.FromBase64String(rgb);
         const int columns = 10, rows = 7;
@@ -69,6 +58,5 @@ public sealed partial class SvgGlyphLcdCoverageTests
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
 
-        OpenTypeOutlinePoint P(int x, int y) => new(originX + x / 64d, originY - y / 64d);
     }
 }

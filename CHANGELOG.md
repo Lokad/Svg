@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Correct natural Windows conic smart midpoints where glyph-grid rounding loses
+  point precision, preserving integral-point and fractional-endpoint profiles.
 - Preserve ordinary Windows conic fill through turning arcs, rounding control
   midpoints before reducing the monotonic scan equation.
 - Preserve symmetric Windows thin-glyph bounds and terminating vertices from
