@@ -269,6 +269,17 @@ Excluded stubs cannot suppress later strokes; turning arcs retain their distinct
 subdivision behavior. Restored candidates observe the same ordered neighbors,
 and reduced conic equations stay within their terminal bounds.
 Original native controls cover these cases.
+At fractional horizontal glyph-grid endpoints, natural conic smart midpoints
+retain implied half-unit ordinates through direction-normalized subdivision
+before six-bit profile emission. Scan ordinates stay six-bit; on-grid curves
+retain their span profile for midpoint selection. Fill, span ownership and stub
+continuation retain separate crossings.
+[Native ordinate controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.NaturalOrdinates.cs)
+cover half-unit curves, adjacent phases, signed origins, both stub policies and
+ordinary line-span ownership.
+[Interpolation controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.NaturalInterpolation.cs)
+cover monotonic bands, an on-grid guard and turning rings at both retained
+strike phases.
 Symmetric smart dropout control retains corners supported by both scan
 directions; half-scan continuation owns exact gap-endpoint vertices. Original
 [corner controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.SymmetricCorners.cs)

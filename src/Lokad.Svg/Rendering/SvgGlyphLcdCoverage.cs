@@ -25,13 +25,17 @@ internal readonly record struct SvgGlyphRgbCoverage(byte Red, byte Green, byte B
 /// Flat curve endpoints retain their one-sided direction so narrow caps close
 /// before dropout selection, without searching neighboring contour edges.
 /// Natural dropout refinement adapts FreeType's fixed-point curve profiles separately
-/// from ordinary implicit coverage. Stub continuation checks include bounded native
+/// from ordinary implicit coverage. Smart midpoints retain implied half-unit
+/// ordinates for fractional horizontal glyph-grid endpoints independently of
+/// span ownership and stub continuation. Stub checks include bounded native
 /// overshoot and directed vertex contact; no additional contour arrays are retained.
 /// Every segment, crossing, comparison and cell consumes work and observes cancellation.
 /// Callers own positioning, bounds, clipping, preblend and scratch reservations;
 /// independent calls with separate scratch may run concurrently.</remarks>
 internal static class SvgGlyphLcdCoverage
 {
+    private enum ConicProfile { Symmetric, NaturalLegacy, NaturalSmart }
+
     private const int CellColumns = 11;
     /// <summary>One directed crossing with independent fill/dropout positions in borrowed scratch; never retained.</summary>
     internal readonly record struct Crossing(double Position, int Direction)
@@ -591,7 +595,7 @@ internal static class SvgGlyphLcdCoverage
                 // Straight profiles retain 1/64 sampling cells; conic profiles
                 // use bounded fixed-point subdivision independently of fill.
                 // The smart bias below preserves the straight-profile tie rule.
-                double midpoint = !simple && !natural && scan.Mode == SvgGlyphLcdMode.Symmetric
+                double midpoint = !simple && (natural || scan.Mode == SvgGlyphLcdMode.Symmetric)
                     ? (profileStart + profileEnd) * .5
                     : (start + end) * .5;
                 // Native SMART's 63/64-cell term is evaluated in upward
@@ -652,15 +656,19 @@ internal static class SvgGlyphLcdCoverage
             if (segment.IsLine)
             {
                 if (upper ? a.Y < sample && sample <= c.Y || c.Y < sample && sample <= a.Y : a.Y <= sample && sample < c.Y || c.Y <= sample && sample < a.Y)
-                    scratch[count++] = new(a.X + (c.X - a.X) * (sample - a.Y) / (c.Y - a.Y), c.Y > a.Y ? 1 : -1);
+                {
+                    double position = a.X + (c.X - a.X) * (sample - a.Y) / (c.Y - a.Y);
+                    scratch[count++] = new(position, c.Y > a.Y ? 1 : -1)
+                    { DropoutPosition = legacy ? position : Math.Floor(position * 64 + .5) / 64 };
+                }
                 continue;
             }
             double A = a.Y - 2 * b.Y + c.Y, B = 2 * (b.Y - a.Y), C = a.Y - sample;
-            if (A == 0) { if (B != 0) Include(-C / B, a, b, c, A, B, sample, horizontal, upper, legacy, mode, scratch, work, token, ref count); continue; }
+            if (A == 0) { if (B != 0) Include(-C / B, segments[index], a, b, c, A, B, sample, horizontal, upper, legacy, mode, scratch, work, token, ref count); continue; }
             double discriminant = B * B - 4 * A * C; if (discriminant < 0) continue;
             double root = Math.Sqrt(discriminant);
-            Include((-B + root) / (2 * A), a, b, c, A, B, sample, horizontal, upper, legacy, mode, scratch, work, token, ref count);
-            if (root != 0) Include((-B - root) / (2 * A), a, b, c, A, B, sample, horizontal, upper, legacy, mode, scratch, work, token, ref count);
+            Include((-B + root) / (2 * A), segments[index], a, b, c, A, B, sample, horizontal, upper, legacy, mode, scratch, work, token, ref count);
+            if (root != 0) Include((-B - root) / (2 * A), segments[index], a, b, c, A, B, sample, horizontal, upper, legacy, mode, scratch, work, token, ref count);
         }
         for (int i = 1; i < count; i++)
         {
@@ -671,7 +679,7 @@ internal static class SvgGlyphLcdCoverage
             scratch[j] = item;
         }
         return count;
-        static void Include(double t, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, double A, double B, double sample, bool horizontal, bool upper, bool legacy, SvgGlyphLcdMode mode, Span<Crossing> scratch, ParserWorkCounter work, CancellationToken token, ref int count)
+        static void Include(double t, OpenTypeQuadraticSegment source, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, double A, double B, double sample, bool horizontal, bool upper, bool legacy, SvgGlyphLcdMode mode, Span<Crossing> scratch, ParserWorkCounter work, CancellationToken token, ref int count)
         {
             if (t is < 0 or > 1) return;
             double derivative = B + 2 * A * t;
@@ -684,26 +692,46 @@ internal static class SvgGlyphLcdCoverage
             double crossing = a.X + t * (2 * (b.X - a.X) + t * (a.X - 2 * b.X + c.X));
             double analytic = crossing;
             if (t is > 0 and < 1 && derivative != 0)
-                crossing = legacy ? FixedProfile(t, crossing, sample, a, b, c, horizontal, SvgGlyphLcdMode.Natural, work, token) : Adjust(crossing, sample, a, b, c, horizontal, work, token);
-            double dropoutPosition = !legacy && mode == SvgGlyphLcdMode.Symmetric && t is > 0 and < 1 && derivative != 0
-                ? FixedProfile(t, analytic, sample, a, b, c, horizontal, SvgGlyphLcdMode.Symmetric, work, token) : Math.Floor(crossing * 64 + .5) / 64;
+                crossing = legacy ? FixedProfile(t, crossing, sample, a, b, c, horizontal, ConicProfile.NaturalLegacy, work, token) : Adjust(crossing, sample, a, b, c, horizontal, work, token);
+            double dropoutPosition = legacy ? crossing : Math.Floor(crossing * 64 + .5) / 64;
+            if (!legacy && mode == SvgGlyphLcdMode.Symmetric && t is > 0 and < 1 && derivative != 0)
+                dropoutPosition = FixedProfile(t, analytic, sample, a, b, c, horizontal, ConicProfile.Symmetric, work, token);
+            // Six LCD columns expand one glyph-grid X unit. Refine fractional
+            // horizontal endpoints independently; on-grid curves retain their
+            // span profile for midpoint selection too.
+            if (legacy && horizontal && t is > 0 and < 1 && derivative != 0 &&
+                ((long)((a.Y - b.Y) * 64) % 6 != 0 || (long)((c.Y - b.Y) * 64) % 6 != 0))
+            {
+                OpenTypeOutlinePoint p = NaturalPoint(source.Start, horizontal), q = NaturalPoint(source.Control, horizontal), r = NaturalPoint(source.End, horizontal);
+                double precise = p.X + t * (2 * (q.X - p.X) + t * (p.X - 2 * q.X + r.X));
+                dropoutPosition = FixedProfile(t, precise, sample, p, q, r, horizontal, ConicProfile.NaturalSmart, work, token);
+            }
             scratch[count++] = new(crossing, Math.Sign(derivative)) { DropoutPosition = dropoutPosition };
 
-            static double FixedProfile(double t, double crossing, double sample, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, bool horizontal, SvgGlyphLcdMode profile, ParserWorkCounter work, CancellationToken token)
+            static OpenTypeOutlinePoint NaturalPoint(OpenTypeOutlinePoint point, bool horizontal)
             {
-                const int precision = 64;
-                bool symmetric = profile == SvgGlyphLcdMode.Symmetric;
+                double x = Math.Floor(point.X * 384 + .5) / 64, y = Math.Floor(point.Y * 128 + .5) / 128;
+                return horizontal ? new(y, x) : new(x, y);
+            }
+
+            static double FixedProfile(double t, double crossing, double sample, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, bool horizontal, ConicProfile profile, ParserWorkCounter work, CancellationToken token)
+            {
+                bool symmetric = profile == ConicProfile.Symmetric, precise = profile == ConicProfile.NaturalSmart;
+                const int scanPrecision = 64;
+                int crossingPrecision = precise ? 128 : scanPrecision;
                 // Adapts FreeType 2.13.2 ftraster.c: fixed-point midpoint
-                // subdivision and signed interpolation. Symmetric scans retain
-                // six-bit coordinates through finer, direction-normalized leaves.
+                // subdivision and signed interpolation. Natural smart midpoints
+                // retain implied half-units in the crossing coordinate until
+                // six-bit profile emission. Scan ordinates stay six-bit;
+                // ordinary natural span and stub checks retain their legacy scan.
                 // The original analytic root selects a non-monotonic branch;
                 // monotonic leaves are selected by their actual scan ordinate.
                 int xs = horizontal ? -1 : 1, ys = horizontal ? 1 : -1;
-                (long X, long Y) p = ((long)(a.X * precision) * xs, (long)(a.Y * precision) * ys);
-                (long X, long Y) q = ((long)(b.X * precision) * xs, (long)(b.Y * precision) * ys);
-                (long X, long Y) r = ((long)(c.X * precision) * xs, (long)(c.Y * precision) * ys);
-                long target = (long)(sample * precision) * ys;
-                if (!symmetric && horizontal && q.Y >= Math.Min(p.Y, r.Y) && q.Y <= Math.Max(p.Y, r.Y))
+                (long X, long Y) p = ((long)(a.X * crossingPrecision) * xs, (long)(a.Y * scanPrecision) * ys);
+                (long X, long Y) q = ((long)(b.X * crossingPrecision) * xs, (long)(b.Y * scanPrecision) * ys);
+                (long X, long Y) r = ((long)(c.X * crossingPrecision) * xs, (long)(c.Y * scanPrecision) * ys);
+                long target = (long)(sample * scanPrecision) * ys;
+                if (!symmetric && !precise && horizontal && q.Y >= Math.Min(p.Y, r.Y) && q.Y <= Math.Max(p.Y, r.Y))
                 {
                     // Native monotonic profiles round implied X endpoints on
                     // the glyph grid before LCD expansion. A real control
@@ -718,11 +746,15 @@ internal static class SvgGlyphLcdCoverage
                     bool monotonic = q.Y >= Math.Min(p.Y, r.Y) && q.Y <= Math.Max(p.Y, r.Y);
                     if (monotonic && p.Y > r.Y)
                     {
-                        if (symmetric) { (p, r) = (r, p); t = 1 - t; }
+                        if (symmetric || precise) { (p, r) = (r, p); t = 1 - t; }
                         else { p.Y = -p.Y; q.Y = -q.Y; r.Y = -r.Y; target = -target; }
                     }
                     if (monotonic && r.Y - p.Y < (symmetric ? 4 : 32))
-                        return r.Y == p.Y ? crossing : (p.X + (long)((Int128)(r.X - p.X) * (target - p.Y) / (r.Y - p.Y))) / (double)precision * xs;
+                    {
+                        if (r.Y == p.Y) return crossing;
+                        long position = p.X + (long)((Int128)(r.X - p.X) * (target - p.Y) / (r.Y - p.Y));
+                        return (precise ? position >> 1 : position) / (double)scanPrecision * xs;
+                    }
                     (long X, long Y) left = ((p.X + q.X) >> 1, (p.Y + q.Y) >> 1);
                     (long X, long Y) right = ((q.X + r.X) >> 1, (q.Y + r.Y) >> 1);
                     (long X, long Y) middle = ((p.X + 2 * q.X + r.X) >> 2, (p.Y + 2 * q.Y + r.Y) >> 2);

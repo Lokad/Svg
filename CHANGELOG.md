@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Retain implied half-unit precision in Windows natural conic smart midpoints
+  at fractional horizontal glyph-grid endpoints, preserving separate fill,
+  span and stub-continuation crossings.
 - Retain independent symmetric conic dropout profiles and normalize their scan
   direction, preserving native small-cap, curved-stem and curved-tip cells.
 - Round symmetric Windows smart-dropout profile crossings before midpoint
