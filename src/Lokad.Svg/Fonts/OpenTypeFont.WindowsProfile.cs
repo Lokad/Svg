@@ -4,7 +4,17 @@ using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
 
 /// <summary>Retains independent Windows smoothing and font-selected fitting policies without owning storage.</summary>
-internal readonly record struct OpenTypeWindowsGlyphProfile(SvgGlyphLcdMode LcdMode, bool GridFit);
+internal readonly record struct OpenTypeWindowsGlyphProfile(SvgGlyphLcdMode LcdMode, bool GridFit)
+{
+    /// <summary>Creates the storage-free native interpreter policy independently of whether its fitted points will be painted.</summary>
+    internal TrueTypeHintTarget CreateHintTarget(double horizontalRatio)
+    {
+        TrueTypeHintQueryFlags queries = TrueTypeHintQueryFlags.FontVariations | TrueTypeHintQueryFlags.VerticalPhantoms | TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned;
+        if (LcdMode == SvgGlyphLcdMode.Symmetric) queries |= TrueTypeHintQueryFlags.Symmetric;
+        return new(42, queries, TrueTypeHintControlScale.FullPrecision, TrueTypeHintPreparation.Single)
+        { Grid = TrueTypeHintGrid.ClearType, WindowsArithmetic = true, HorizontalRatio = horizontalRatio };
+    }
+}
 
 internal static partial class OpenTypeFont
 {

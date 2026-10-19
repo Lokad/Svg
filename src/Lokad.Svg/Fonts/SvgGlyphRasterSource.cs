@@ -83,9 +83,7 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
             : default;
         OpenTypeWindowsGlyphProfile profile = OpenTypeFont.GetWindowsGlyphProfile(font.Bytes, font.Metrics, HasGlyphMap ? strike.DeviceSize : DeviceFontSize(scaleY), work, token);
         SvgGlyphLcdMode mode = profile.LcdMode;
-        TrueTypeHintQueryFlags queries = TrueTypeHintQueryFlags.FontVariations | TrueTypeHintQueryFlags.VerticalPhantoms | TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned;
-        if (mode == SvgGlyphLcdMode.Symmetric) queries |= TrueTypeHintQueryFlags.Symmetric;
-        TrueTypeHintTarget target = new(42, queries, TrueTypeHintControlScale.FullPrecision, TrueTypeHintPreparation.Single) { Grid = TrueTypeHintGrid.ClearType, WindowsArithmetic = true };
+        TrueTypeHintTarget target = profile.CreateHintTarget(1);
         // A horizontal baseline retains device fitting under X skew. Rotated
         // baselines keep their qualified unhinted route, except quarter turns.
         bool hasPrograms = HasGlyphMap && HasTrueTypePrograms(budget, work, token);

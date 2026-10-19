@@ -34,7 +34,9 @@ internal readonly record struct OpenTypeUnhintedDeviceScale(int Factor)
     internal int ApplyHorizontal(int value)
     {
         if (!WindowsArithmetic) return Apply(value);
-        double rounded = Math.Floor((double)(value * HorizontalFactor) + .5);
+        // Ideal Windows outlines round signed halves away from zero;
+        // the fitted interpreter's initial X coordinates have a separate rule.
+        double rounded = Math.Round((double)(value * HorizontalFactor), MidpointRounding.AwayFromZero);
         if (!double.IsFinite(rounded) || rounded < int.MinValue || rounded > int.MaxValue)
             throw new SvgException(SvgErrorCode.LimitExceeded, "An unfitted horizontal glyph coordinate exceeds its signed bound.");
         return (int)rounded;

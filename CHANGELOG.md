@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Preserve signed ideal-outline half rounding and authored scanner controls in
+  Windows unfitted ranges, without painting fitted point movements. Distinguish
+  full-scan vertex continuation from half-scan stub overshoot.
 - Preserve directed interpolation carries in Windows natural line smart
   dropouts, retaining analytic span and stub-continuation crossings.
 - Retain implied half-unit precision in Windows natural conic smart midpoints

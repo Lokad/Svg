@@ -49,7 +49,7 @@ internal readonly record struct OpenTypeWindowsGlyphTransform(int XX, int XY, in
 internal static partial class OpenTypeFont
 {
     /// <summary>Returns owned ordinary Windows contours for a font-selected unfitted range, preserving native size and initial-point scaling.</summary>
-    /// <remarks>Shares bounded component assembly, metric inheritance and contour ownership with the other device loaders. Programs remain unexecuted in this native range; outline structure, work, cancellation and cleanup remain enforced. Borrows immutable font bytes and retains no storage beyond the returned exclusive owner.</remarks>
+    /// <remarks>Shares bounded component assembly, metric inheritance and contour ownership with the other device loaders. Material scanner state uses the existing interpreter; its fitted points are discarded. Programs without scanner effects remain unnecessary. Outline structure, work, cancellation and cleanup remain enforced. Borrows immutable font bytes and retains no storage beyond the returned exclusive owner.</remarks>
     internal static OpenTypeGlyphContourStorage GetWindowsUnfittedContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, double deviceSize, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
         => GetWindowsUnfittedContours(bytes, glyphIndex, metrics, deviceSize, 1, null, budget, work, token);
 
@@ -64,7 +64,92 @@ internal static partial class OpenTypeFont
             deviceSize = Math.Floor(deviceSize + .5);
             if (deviceSize == 0) return new([], [], null, null);
         }
-        return GetUnhintedDeviceContours(bytes, glyphIndex, metrics, OpenTypeUnhintedDeviceScale.CreateWindows(deviceSize, deviceSize * horizontalRatio, metrics.UnitsPerEm), OpenTypeCompositeOffsetMath.DirectWrite, TrueTypeImpliedPointRounding.None, postTransform, budget, work, token);
+        (bool smart, bool simple, bool excludeStubs) = SelectScanner();
+        OpenTypeGlyphContourStorage result = GetUnhintedDeviceContours(bytes, glyphIndex, metrics, OpenTypeUnhintedDeviceScale.CreateWindows(deviceSize, deviceSize * horizontalRatio, metrics.UnitsPerEm), OpenTypeCompositeOffsetMath.DirectWrite, TrueTypeImpliedPointRounding.None, postTransform, budget, work, token);
+        result.SmartDropouts = smart; result.SimpleDropouts = simple; result.ExcludeDropoutStubs = excludeStubs;
+        return result;
+
+        (bool Smart, bool Simple, bool ExcludeStubs) SelectScanner()
+        {
+            bool hasPrograms = false, required = false;
+            ReadOnlySpan<byte> data = bytes.Span;
+            int count = ReadUInt16(data, 4);
+            RequireRange(data, 12, count * 16, "scanner table directory");
+            for (int index = 0; index < count; index++)
+            {
+                work.Consume(token);
+                int at = 12 + index * 16;
+                if (ReadUInt32(data, at) is not 0x6670676D and not 0x70726570) continue;
+                uint offset = ReadUInt32(data, at + 8), length = ReadUInt32(data, at + 12);
+                if (offset > int.MaxValue || length > int.MaxValue) throw InvalidFont("A Windows scanner program exceeds the input range.");
+                RequireRange(data, (int)offset, (int)length, "scanner program");
+                required |= NeedsScanner(bytes.Slice((int)offset, (int)length));
+            }
+            if (!required)
+            {
+                using OpenTypeGlyphRecursionTracker active = new(MaximumCompositeGlyphDepth + 1, budget, work, token);
+                required = Visit(glyphIndex, 0, active);
+            }
+            if (required)
+            {
+                TrueTypeHintTarget target = new OpenTypeWindowsGlyphProfile(SvgGlyphLcdMode.Symmetric, false).CreateHintTarget(horizontalRatio);
+                using OpenTypeGlyphContourStorage scan = GetTrueTypeContours(bytes, glyphIndex, metrics, deviceSize, target, TrueTypeImpliedPointRounding.None, budget, work, token);
+                return (scan.SmartDropouts, scan.SimpleDropouts, scan.ExcludeDropoutStubs);
+            }
+            bool enabled = Math.Floor(deviceSize + .5) <= 32;
+            return (enabled && hasPrograms, enabled && !hasPrograms, false);
+
+            bool Visit(ushort glyph, int depth, OpenTypeGlyphRecursionTracker active)
+            {
+                work.Consume(token);
+                if (depth > MaximumCompositeGlyphDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "The scanner glyph nesting depth exceeds the supported limit.");
+                if (!active.TryEnter(glyph)) throw InvalidFont("The scanner glyph graph contains a cycle.");
+                try
+                {
+                    using OpenTypeSimpleGlyphStructureStorage structure = GetGlyphStructure(bytes, glyph, metrics, budget, work, token, true);
+                    OpenTypeTableRange range = structure.Value.GlyphRange;
+                    if (structure.CompositeHeader is null)
+                    {
+                        if (range.Length <= 10) return false;
+                        int at = range.Offset + 10 + structure.Value.ContourEndpoints.Length * 2;
+                        return NeedsScanner(bytes.Slice(at + 2, ReadUInt16(bytes.Span, at)));
+                    }
+                    using OpenTypeCompositeGlyphComponentStorage components = GetBudgetedCompositeGlyphComponents(bytes, glyph, metrics, budget, work, token);
+                    if (NeedsScanner(bytes.Slice(components.Instructions.Offset, components.Instructions.Length))) return true;
+                    foreach (OpenTypeCompositeGlyphComponent component in components.Components)
+                        if (Visit(component.GlyphIndex, depth + 1, active)) return true;
+                    return false;
+                }
+                finally { active.Exit(glyph); }
+            }
+
+            bool NeedsScanner(ReadOnlyMemory<byte> program)
+            {
+                hasPrograms |= program.Length != 0;
+                ReadOnlySpan<byte> code = program.Span;
+                for (int at = 0; at < code.Length;)
+                {
+                    work.Consume(token);
+                    byte opcode = code[at++];
+                    // Relative jumps can enter pushed data; conservatively use
+                    // the interpreter instead of assuming lexical reachability.
+                    if (opcode is 0x85 or 0x8D or 0x1C or 0x78 or 0x79) return true;
+                    int skip = opcode is >= 0xB0 and <= 0xB7 ? opcode - 0xB0 + 1 : opcode is >= 0xB8 and <= 0xBF ? (opcode - 0xB8 + 1) * 2 : 0;
+                    if (opcode is 0x40 or 0x41)
+                    {
+                        if (at == code.Length) return false;
+                        work.Consume(token);
+                        skip = code[at++] * (opcode == 0x40 ? 1 : 2);
+                    }
+                    // An unused truncated operand does not make scanner state
+                    // necessary. Required programs retain full VM validation.
+                    if (skip > code.Length - at) return false;
+                    for (int item = 0; item < skip; item++) work.Consume(token);
+                    at += skip;
+                }
+                return false;
+            }
+        }
     }
 
     /// <summary>Returns owned Windows unhinted contours after fixed-point mapping and before strike placement.</summary>

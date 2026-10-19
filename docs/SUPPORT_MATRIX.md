@@ -311,8 +311,9 @@ including simple Windows tip dropout control distinct from smart dropout control
 Windows selects natural or symmetric LCD sampling from the supplied font's
 bounded gasp recommendations and actual raster size. Natural sampling retains
 native fixed-point curve/dropout decisions, including excluded stubs and exact
-terminating vertices. Natural half-scan overshoot must reach the selected pixel
-center; neighboring full scans retain exact vertex continuation.
+terminating vertices. Half-scan overshoot must reach the selected cell center;
+neighboring full scans retain exact vertex continuation, with the symmetric
+opposite-limit endpoint rule kept distinct.
 Authored simple dropout modes remain distinct from smart modes and preserve
 scan-control bounds and component state. The
 [original span document](../tests/Research/windows-font-span-extension/README.md)
@@ -320,8 +321,10 @@ qualifies the Windows one-cell span extension for the exact embedded family
 `Courier New`. A catalog alias to another program does not enable that policy.
 Font-selected unfitted Windows ranges retain integer-size
 flags, signed point rounding and inherited metric origins; component assembly
-precedes final device rounding. Ranges requiring fitting still execute the bounded
-interpreter. Windows/Linux numerical rules remain separate.
+precedes final device rounding. Material scanner controls still use the bounded
+interpreter while the painted outline keeps its ideal positions. Programs without
+scanner effects remain unnecessary in unfitted ranges; ranges requiring fitting
+execute the bounded interpreter. Windows/Linux numerical rules remain separate.
 
 Unsupported: wrapping, bidi/joining/complex scripts, general GSUB/GPOS/mark
 positioning, other lookup flags/types/formats, vertical text, path stretch/auto

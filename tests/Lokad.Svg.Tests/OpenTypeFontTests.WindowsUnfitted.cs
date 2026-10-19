@@ -32,7 +32,7 @@ public sealed partial class OpenTypeFontTests
     public void Windows_unfitted_initial_points_keep_signed_halves_and_independent_axis_scales()
     {
         OpenTypeUnhintedDeviceScale half = OpenTypeUnhintedDeviceScale.CreateWindows(8, 8, 1024);
-        foreach ((int input, int expectedX, int expectedY) in new[] { (-3, -1, -2), (-1, 0, -1), (1, 1, 1), (3, 2, 2) })
+        foreach ((int input, int expectedX, int expectedY) in new[] { (-3, -2, -2), (-1, -1, -1), (1, 1, 1), (3, 2, 2) })
         {
             Assert.Equal(expectedY, half.Apply(input));
             Assert.Equal(expectedX, half.ApplyHorizontal(input));
@@ -103,7 +103,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    public void Windows_unfitted_negative_outline_points_keep_distinct_axis_half_rules()
+    public void Windows_unfitted_negative_outline_points_round_signed_halves_away_from_zero()
     {
         byte[] bytes = CreateWindowsProfileFont(Convert.FromHexString("00010001FFFF000A"), true);
         WriteUInt16(bytes, FindTableOffset(bytes, 0x68656164) + 18, 2048);

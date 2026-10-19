@@ -415,8 +415,8 @@ internal static class SvgGlyphLcdCoverage
                         ? candidates[index] & (CellCoverage.LowerGap | CellCoverage.UpperGap) : CellCoverage.None;
                 }
                 // Full neighboring scans establish continuation, including
-                // natural-mode terminating vertices. A wide half-scan overshoot
-                // must reach the selected center in the natural profile.
+                // terminating vertices. A wide half-scan overshoot must reach
+                // the selected center instead of merely entering its gap.
                 for (int stage = 0; stage < 2; stage++)
                 {
                     if (stage != 0)
@@ -471,12 +471,16 @@ internal static class SvgGlyphLcdCoverage
                         {
                             work.Consume(token);
                             double center = origin + index;
-                            bool includeTouch = stage != 0 || side != 0 || (endpoint && mode == SvgGlyphLcdMode.Natural);
-                            bool centeredOvershoot = stage != 0 && mode == SvgGlyphLcdMode.Natural;
-                            double lower = centeredOvershoot ? center : center - 1, upper = centeredOvershoot ? center : center + 1;
+                            bool includeVertex = mode == SvgGlyphLcdMode.Natural || stage == 0 && endpoint;
+                            bool includeTouch = stage != 0 || side != 0 || endpoint && includeVertex;
                             bool boundaryVertex = side != 0 && mode == SvgGlyphLcdMode.Symmetric;
-                            if ((missing[index] & CellCoverage.LowerGap) != 0 && (streaming ? ProbeSpan(segments, mapped, neighbor, horizontal, side != 0, mode, lower, center, includeTouch, work, token) : HasSpan(scratch[..count], lower, center, includeTouch, mode == SvgGlyphLcdMode.Natural, boundaryVertex, work, token))) missing[index] &= ~CellCoverage.LowerGap;
-                            if ((missing[index] & CellCoverage.UpperGap) != 0 && (streaming ? ProbeSpan(segments, mapped, neighbor, horizontal, side != 0, mode, center, upper, includeTouch, work, token) : HasSpan(scratch[..count], center, upper, includeTouch, mode == SvgGlyphLcdMode.Natural, boundaryVertex, work, token))) missing[index] &= ~CellCoverage.UpperGap;
+                            // A half-scan overshoot must reach the chosen cell
+                            // center. The symmetric opposite limit instead owns
+                            // an exact gap endpoint, as on the full scan.
+                            bool centeredOvershoot = stage != 0 && !boundaryVertex;
+                            double lower = centeredOvershoot ? center : center - 1, upper = centeredOvershoot ? center : center + 1;
+                            if ((missing[index] & CellCoverage.LowerGap) != 0 && (streaming ? ProbeSpan(segments, mapped, neighbor, horizontal, side != 0, mode, lower, center, includeTouch, includeVertex, work, token) : HasSpan(scratch[..count], lower, center, includeTouch, includeVertex, boundaryVertex, work, token))) missing[index] &= ~CellCoverage.LowerGap;
+                            if ((missing[index] & CellCoverage.UpperGap) != 0 && (streaming ? ProbeSpan(segments, mapped, neighbor, horizontal, side != 0, mode, center, upper, includeTouch, includeVertex, work, token) : HasSpan(scratch[..count], center, upper, includeTouch, includeVertex, boundaryVertex, work, token))) missing[index] &= ~CellCoverage.UpperGap;
                         }
                     }
                 }
@@ -489,7 +493,7 @@ internal static class SvgGlyphLcdCoverage
                 }
             }
 
-            static bool ProbeSpan(ReadOnlySpan<OpenTypeQuadraticSegment> segments, ReadOnlySpan<MappedSegment> mapped, double sample, bool horizontal, bool upperSide, SvgGlyphLcdMode mode, double lower, double upper, bool includeTouch, ParserWorkCounter work, CancellationToken token)
+            static bool ProbeSpan(ReadOnlySpan<OpenTypeQuadraticSegment> segments, ReadOnlySpan<MappedSegment> mapped, double sample, bool horizontal, bool upperSide, SvgGlyphLcdMode mode, double lower, double upper, bool includeTouch, bool includeVertex, ParserWorkCounter work, CancellationToken token)
             {
                 // A predecessor query must leave the ordered scan intact. Visit
                 // one segment at a time in bounded stack scratch; only cancelling
@@ -518,7 +522,7 @@ internal static class SvgGlyphLcdCoverage
                             else if (position == first) { direction += crossing.Direction; coincident++; }
                         }
                     }
-                    if (winding != 0 || direction != 0 || includeTouch && mode == SvgGlyphLcdMode.Natural && coincident > 1) return true;
+                    if (winding != 0 || direction != 0 || includeTouch && includeVertex && coincident > 1) return true;
                     if (double.IsPositiveInfinity(first)) return false;
                     after = first;
                 }
