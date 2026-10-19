@@ -37,6 +37,8 @@
   font-unit CVT writes; preserve native curve-tag and legacy rounding controls.
 - Carry authored simple dropout modes into Windows coverage, and reproduce its
   source-family span policy with original public fonts and unchanged references.
+- Correct natural Windows LCD lower bounds, ordered dropout neighbors and
+  monotonic conic endpoint rounding. Excluded stubs cannot suppress later strokes.
 
 ## 0.2.0 - 2026-10-18
 

@@ -38,6 +38,16 @@ internal static class SvgGlyphLcdCoverage
 
     internal readonly record struct MappedSegment(OpenTypeOutlinePoint Start, OpenTypeOutlinePoint Control, OpenTypeOutlinePoint End, bool IsLine);
 
+    /// <summary>Borrows the immutable contour scan while ordered dropouts validate earlier stub candidates; owns no storage.</summary>
+    private readonly ref struct DropoutScan(ReadOnlySpan<OpenTypeQuadraticSegment> segments, ReadOnlySpan<MappedSegment> mapped, double sample, bool excludeStubs, SvgGlyphLcdMode mode)
+    {
+        internal ReadOnlySpan<OpenTypeQuadraticSegment> Segments { get; } = segments;
+        internal ReadOnlySpan<MappedSegment> Mapped { get; } = mapped;
+        internal double Sample { get; } = sample;
+        internal bool ExcludeStubs { get; } = excludeStubs;
+        internal SvgGlyphLcdMode Mode { get; } = mode;
+    }
+
     /// <summary>Owns optional immutable contour maps and horizontal crossing storage for one glyph; declines reuse when the allowance is unavailable.</summary>
     /// <remarks>Conversion-thread ownership only. The caller keeps this owner alive while row scans borrow its storage;
     /// disposal releases both array references and the aggregate allowance after the last borrower finishes.
@@ -125,7 +135,9 @@ internal static class SvgGlyphLcdCoverage
         // Native scan bounds round to cells before choosing a smart dropout.
         // Preserve a nonempty interval for strokes thinner than one cell.
         double leftBound = Math.Floor(minX + .5), topBound = Math.Floor(minY + .5), rightBound = Math.Floor(maxX + .5), bottomBound = Math.Floor(maxY + .5);
-        if (mode == SvgGlyphLcdMode.Natural) { topBound = Math.Floor(minY); bottomBound = Math.Floor(maxY); }
+        // Natural scans start at the containing row; their lower exclusive
+        // dropout bound retains nearest-row rounding, including a fractional cap.
+        if (mode == SvgGlyphLcdMode.Natural) topBound = Math.Floor(minY);
         if (leftBound == rightBound) { leftBound = Math.Floor(minX); rightBound = Math.Ceiling(maxX); }
         if (topBound == bottomBound) { topBound = Math.Floor(minY); bottomBound = Math.Ceiling(maxY); }
         return new(dropouts, leftBound, topBound, rightBound, bottomBound) { Simple = simpleDropouts, Mode = mode, ExcludeStubs = excludeStubs };
@@ -254,7 +266,7 @@ internal static class SvgGlyphLcdCoverage
                 lowerScans = scratch[..count];
             }
             for (int column = -3; column < 8; column++)
-                cells[(row + 1) * CellColumns + column + 3] = Classify(lowerScans, pixelX * 6d + column + .5, false, dropouts, bounds.Simple, false, [], 0, leftBound, rightBound, work, token);
+                cells[(row + 1) * CellColumns + column + 3] = Classify(lowerScans, pixelX * 6d + column + .5, false, dropouts, bounds.Simple, false, [], 0, leftBound, rightBound, default, work, token);
             if (endpoint)
             {
                 // Compare the two directed limits only when the scan meets a
@@ -270,7 +282,7 @@ internal static class SvgGlyphLcdCoverage
                 for (int column = -3; column < 8; column++)
                 {
                     int index = (row + 1) * CellColumns + column + 3;
-                    CellCoverage lower = cells[index], upper = Classify(upperScans, pixelX * 6d + column + .5, false, dropouts, bounds.Simple, false, [], 0, leftBound, rightBound, work, token);
+                    CellCoverage lower = cells[index], upper = Classify(upperScans, pixelX * 6d + column + .5, false, dropouts, bounds.Simple, false, [], 0, leftBound, rightBound, default, work, token);
                     if ((lower & CellCoverage.Interior) != (upper & CellCoverage.Interior))
                     {
                         CellCoverage normal = ((lower | upper) & CellCoverage.Closed) != 0 ? CellCoverage.Interior : CellCoverage.None;
@@ -286,10 +298,11 @@ internal static class SvgGlyphLcdCoverage
         for (int column = -3; column < 8; column++)
         {
             double sample = pixelX * 6d + column + .5;
+            DropoutScan dropoutScan = new(segments, scans.MappedSegments, sample, bounds.ExcludeStubs, bounds.Mode);
             int count = Gather(segments, scans.MappedSegments, sample, true, false, scratch, bounds.Mode, work, token, out bool endpoint);
             for (int row = 0; row < rowCount; row++)
             {
-                CellCoverage value = Classify(scratch[..count], pixelY * (double)rowCount + row + .5, true, dropouts, bounds.Simple, false, cells, (1 - pixelY * rowCount) * CellColumns + column + 3, topBound, bottomBound, work, token);
+                CellCoverage value = Classify(scratch[..count], pixelY * (double)rowCount + row + .5, true, dropouts, bounds.Simple, false, cells, (1 - pixelY * rowCount) * CellColumns + column + 3, topBound, bottomBound, dropoutScan, work, token);
                 int index = (row + 1) * CellColumns + column + 3;
                 if (bounds.ExcludeStubs || separateDropouts) columnCells[row] = value;
                 else Apply(ref cells[index], value);
@@ -299,13 +312,13 @@ internal static class SvgGlyphLcdCoverage
                 count = Gather(segments, scans.MappedSegments, sample, true, true, scratch, bounds.Mode, work, token, out _);
                 for (int row = 0; row < rowCount; row++)
                 {
-                    CellCoverage extra = Classify(scratch[..count], pixelY * (double)rowCount + row + .5, true, true, bounds.Simple, false, cells, (1 - pixelY * rowCount) * CellColumns + column + 3, topBound, bottomBound, work, token);
+                    CellCoverage extra = Classify(scratch[..count], pixelY * (double)rowCount + row + .5, true, true, bounds.Simple, false, cells, (1 - pixelY * rowCount) * CellColumns + column + 3, topBound, bottomBound, dropoutScan, work, token);
                     if (bounds.ExcludeStubs || separateDropouts) columnCells[row] |= extra & dropoutMask;
                     else cells[(row + 1) * CellColumns + column + 3] |= extra & CellCoverage.Dropout;
                 }
             }
             if (separateDropouts)
-                AddNaturalDropouts(segments, sample, true, columnCells[..rowCount], pixelY * (double)rowCount + .5, bounds.Simple, cells, (1 - pixelY * rowCount) * CellColumns + column + 3, topBound, bottomBound, scratch, work, token);
+                AddNaturalDropouts(segments, sample, true, columnCells[..rowCount], pixelY * (double)rowCount + .5, bounds.Simple, bounds.ExcludeStubs, cells, (1 - pixelY * rowCount) * CellColumns + column + 3, topBound, bottomBound, scratch, work, token);
             if (bounds.ExcludeStubs || separateDropouts)
             {
                 if (bounds.ExcludeStubs) RemoveStubs(segments, scans.MappedSegments, sample, true, columnCells[..rowCount], pixelY * (double)rowCount + .5, scratch, bounds.Mode, work, token);
@@ -340,7 +353,7 @@ internal static class SvgGlyphLcdCoverage
             cell |= value & CellCoverage.Dropout;
         }
 
-        static void AddNaturalDropouts(ReadOnlySpan<OpenTypeQuadraticSegment> segments, double sample, bool horizontal, Span<CellCoverage> candidates, double origin, bool simple, ReadOnlySpan<CellCoverage> earlier, int earlierOffset, double lowerBound, double upperBound, Span<Crossing> scratch, ParserWorkCounter work, CancellationToken token)
+        static void AddNaturalDropouts(ReadOnlySpan<OpenTypeQuadraticSegment> segments, double sample, bool horizontal, Span<CellCoverage> candidates, double origin, bool simple, bool excludeStubs, ReadOnlySpan<CellCoverage> earlier, int earlierOffset, double lowerBound, double upperBound, Span<Crossing> scratch, ParserWorkCounter work, CancellationToken token)
         {
             // Natural coverage retains its implicit conic equation; dropout
             // selection uses the legacy fixed-point scan profile independently.
@@ -356,7 +369,7 @@ internal static class SvgGlyphLcdCoverage
                 if (side != 0) count = Gather(segments, [], sample, horizontal, true, scratch, SvgGlyphLcdMode.Natural, true, work, token, out _);
                 for (int index = 0; index < candidates.Length; index++)
                 {
-                    CellCoverage value = Classify(scratch[..count], origin + index, horizontal, true, simple, true, earlier, earlierOffset, lowerBound, upperBound, work, token);
+                    CellCoverage value = Classify(scratch[..count], origin + index, horizontal, true, simple, true, earlier, earlierOffset, lowerBound, upperBound, new(segments, [], sample, excludeStubs, SvgGlyphLcdMode.Natural), work, token);
                     candidates[index] |= value & dropoutMask;
                     // A rounded profile can cover the missing center directly.
                     // Keep that cell only for an implicit-scan dropout candidate;
@@ -408,7 +421,19 @@ internal static class SvgGlyphLcdCoverage
                         for (int index = 0; index < candidates.Length; index++) { work.Consume(token); pending |= missing[index] != CellCoverage.None; }
                         if (!pending) break;
                         double neighbor = sample + direction * (stage == 0 ? 1 : .5);
-                        int count = Gather(segments, mapped, neighbor, horizontal, side != 0, scratch, mode, mode == SvgGlyphLcdMode.Natural && horizontal, work, token, out endpoint);
+                        bool streaming = scratch.Length < (long)segments.Length * 2;
+                        int count = 0;
+                        if (streaming)
+                        {
+                            endpoint = false;
+                            for (int index = 0; index < segments.Length; index++)
+                            {
+                                work.Consume(token);
+                                MappedSegment segment = GetMappedSegment(segments, mapped, index, horizontal, mode, mode == SvgGlyphLcdMode.Natural && horizontal);
+                                endpoint |= segment.Start.Y == neighbor || segment.End.Y == neighbor;
+                            }
+                        }
+                        else count = Gather(segments, mapped, neighbor, horizontal, side != 0, scratch, mode, mode == SvgGlyphLcdMode.Natural && horizontal, work, token, out endpoint);
                         for (int index = 0; index < candidates.Length; index++)
                         {
                             work.Consume(token);
@@ -416,8 +441,8 @@ internal static class SvgGlyphLcdCoverage
                             bool includeTouch = stage != 0 || side != 0 || (endpoint && mode == SvgGlyphLcdMode.Natural);
                             bool centeredOvershoot = stage != 0 && mode == SvgGlyphLcdMode.Natural;
                             double lower = centeredOvershoot ? center : center - 1, upper = centeredOvershoot ? center : center + 1;
-                            if ((missing[index] & CellCoverage.LowerGap) != 0 && HasSpan(scratch[..count], lower, center, includeTouch, mode == SvgGlyphLcdMode.Natural, work, token)) missing[index] &= ~CellCoverage.LowerGap;
-                            if ((missing[index] & CellCoverage.UpperGap) != 0 && HasSpan(scratch[..count], center, upper, includeTouch, mode == SvgGlyphLcdMode.Natural, work, token)) missing[index] &= ~CellCoverage.UpperGap;
+                            if ((missing[index] & CellCoverage.LowerGap) != 0 && (streaming ? ProbeSpan(segments, mapped, neighbor, horizontal, side != 0, mode, lower, center, includeTouch, work, token) : HasSpan(scratch[..count], lower, center, includeTouch, mode == SvgGlyphLcdMode.Natural, work, token))) missing[index] &= ~CellCoverage.LowerGap;
+                            if ((missing[index] & CellCoverage.UpperGap) != 0 && (streaming ? ProbeSpan(segments, mapped, neighbor, horizontal, side != 0, mode, center, upper, includeTouch, work, token) : HasSpan(scratch[..count], center, upper, includeTouch, mode == SvgGlyphLcdMode.Natural, work, token))) missing[index] &= ~CellCoverage.UpperGap;
                         }
                     }
                 }
@@ -427,6 +452,41 @@ internal static class SvgGlyphLcdCoverage
                     ref CellCoverage cell = ref candidates[index];
                     cell &= ~missing[index];
                     if ((cell & (CellCoverage.LowerGap | CellCoverage.UpperGap)) == 0) cell &= ~CellCoverage.Dropout;
+                }
+            }
+
+            static bool ProbeSpan(ReadOnlySpan<OpenTypeQuadraticSegment> segments, ReadOnlySpan<MappedSegment> mapped, double sample, bool horizontal, bool upperSide, SvgGlyphLcdMode mode, double lower, double upper, bool includeTouch, ParserWorkCounter work, CancellationToken token)
+            {
+                // A predecessor query must leave the ordered scan intact. Visit
+                // one segment at a time in bounded stack scratch; only cancelling
+                // coincident groups require another pass. Use the same mapping,
+                // curve evaluation and endpoint ownership as the batched query.
+                Span<Crossing> pair = stackalloc Crossing[2];
+                double after = double.NegativeInfinity;
+                while (true)
+                {
+                    int winding = 0, direction = 0, coincident = 0;
+                    double first = double.PositiveInfinity;
+                    for (int index = 0; index < segments.Length; index++)
+                    {
+                        work.Consume(token);
+                        ReadOnlySpan<MappedSegment> oneMap = mapped.IsEmpty ? [] : mapped.Slice(index, 1);
+                        int count = Gather(segments.Slice(index, 1), oneMap, sample, horizontal, upperSide, pair, mode, mode == SvgGlyphLcdMode.Natural && horizontal, work, token, out _);
+                        foreach (Crossing crossing in pair[..count])
+                        {
+                            work.Consume(token);
+                            double position = crossing.Position;
+                            if (position < lower) winding += crossing.Direction;
+                            if (position < lower || position > upper) continue;
+                            if (includeTouch && crossing.Direction == 0) return true;
+                            if (position <= after) continue;
+                            if (position < first) { first = position; direction = crossing.Direction; coincident = 1; }
+                            else if (position == first) { direction += crossing.Direction; coincident++; }
+                        }
+                    }
+                    if (winding != 0 || direction != 0 || includeTouch && mode == SvgGlyphLcdMode.Natural && coincident > 1) return true;
+                    if (double.IsPositiveInfinity(first)) return false;
+                    after = first;
                 }
             }
 
@@ -450,9 +510,10 @@ internal static class SvgGlyphLcdCoverage
             }
         }
 
-        static CellCoverage Classify(ReadOnlySpan<Crossing> crossings, double sample, bool horizontal, bool dropouts, bool simple, bool natural, ReadOnlySpan<CellCoverage> earlier, int earlierOffset, double lowerBound, double upperBound, ParserWorkCounter work, CancellationToken token)
+        static CellCoverage Classify(ReadOnlySpan<Crossing> crossings, double sample, bool horizontal, bool dropouts, bool simple, bool natural, ReadOnlySpan<CellCoverage> earlier, int earlierOffset, double lowerBound, double upperBound, DropoutScan scan, ParserWorkCounter work, CancellationToken token)
         {
             int winding = 0; double left = 0; CellCoverage value = CellCoverage.None;
+            double previousDropout = double.NegativeInfinity;
             for (int i = 0; i < crossings.Length;)
             {
                 double position = crossings[i].Position; int previous = winding;
@@ -472,14 +533,14 @@ internal static class SvgGlyphLcdCoverage
                     if (sample > left && sample < right || boundary && closed) value |= CellCoverage.Interior;
                     if (closed && sample >= left && sample <= right) value |= CellCoverage.Closed;
                     if (boundary) value |= CellCoverage.Boundary;
-                    if (dropouts && IsDropout(left, right, crossings, sample, horizontal, simple, natural, earlier, earlierOffset, lowerBound, upperBound, work, token, out bool lowerGap))
+                    if (dropouts && IsDropout(left, right, crossings, sample, horizontal, simple, natural, earlier, earlierOffset, lowerBound, upperBound, ref previousDropout, scan, work, token, out bool lowerGap))
                         value |= CellCoverage.Dropout | (lowerGap ? CellCoverage.LowerGap : CellCoverage.UpperGap) | (right - left >= .5 ? lowerGap ? CellCoverage.LowerWideGap : CellCoverage.UpperWideGap : CellCoverage.None);
                 }
-                else if (dropouts && previous == 0 && winding == 0 && IsDropout(position, position, crossings, sample, horizontal, simple, natural, earlier, earlierOffset, lowerBound, upperBound, work, token, out bool lowerGap)) value |= CellCoverage.Dropout | (lowerGap ? CellCoverage.LowerGap : CellCoverage.UpperGap);
+                else if (dropouts && previous == 0 && winding == 0 && IsDropout(position, position, crossings, sample, horizontal, simple, natural, earlier, earlierOffset, lowerBound, upperBound, ref previousDropout, scan, work, token, out bool lowerGap)) value |= CellCoverage.Dropout | (lowerGap ? CellCoverage.LowerGap : CellCoverage.UpperGap);
             }
             return value;
 
-            static bool IsDropout(double start, double end, ReadOnlySpan<Crossing> crossings, double sample, bool horizontal, bool simple, bool natural, ReadOnlySpan<CellCoverage> earlier, int earlierOffset, double lowerBound, double upperBound, ParserWorkCounter work, CancellationToken token, out bool lowerGap)
+            static bool IsDropout(double start, double end, ReadOnlySpan<Crossing> crossings, double sample, bool horizontal, bool simple, bool natural, ReadOnlySpan<CellCoverage> earlier, int earlierOffset, double lowerBound, double upperBound, ref double previousDropout, DropoutScan scan, ParserWorkCounter work, CancellationToken token, out bool lowerGap)
             {
                 lowerGap = false;
                 double first = Math.Ceiling(start - .5), last = Math.Floor(end - .5);
@@ -492,17 +553,37 @@ internal static class SvgGlyphLcdCoverage
                     : horizontal ? Math.Floor(midpoint) : Math.Ceiling(midpoint) - 1;
                 // A tip on an exclusive contour bound selects the other cell.
                 if (selected < lowerBound || selected >= upperBound) selected = selected == first ? last : first;
-                if (selected < lowerBound || selected >= upperBound || selected != Math.Floor(sample)) return false;
+                if (selected < lowerBound || selected >= upperBound) return false;
+                bool secondPass = horizontal && (simple || natural);
+                if (!secondPass && selected != Math.Floor(sample)) return false;
                 double other = (selected == first ? last : first) + .5;
                 lowerGap = other < sample;
-                if (horizontal && (simple || natural))
+                if (secondPass)
                 {
-                    int neighbor = checked((int)Math.Floor(other) * CellColumns + earlierOffset);
-                    if ((uint)neighbor < (uint)earlier.Length && (earlier[neighbor] & (CellCoverage.Interior | CellCoverage.Dropout)) != 0) return false;
+                    // Spans are visited in order. The native neighbor test
+                    // also observes cells selected earlier in this sweep.
+                    if (previousDropout == Math.Floor(other)) return false;
+                    double neighbor = Math.Floor(other) * CellColumns + earlierOffset;
+                    if (neighbor >= 0 && neighbor < earlier.Length && (earlier[(int)neighbor] & (CellCoverage.Interior | CellCoverage.Dropout)) != 0) return false;
                 }
                 // The neighbor query disables dropouts, bounding this call to
                 // one extra normal-coverage scan, including collapsed tips.
-                return (Classify(crossings, other, horizontal, false, simple, natural, [], 0, lowerBound, upperBound, work, token) & CellCoverage.Interior) == 0;
+                if ((Classify(crossings, other, horizontal, false, simple, natural, [], 0, lowerBound, upperBound, default, work, token) & CellCoverage.Interior) != 0) return false;
+                if (secondPass && scan.ExcludeStubs)
+                {
+                    // Discarded stubs never set the native bitmap. Validate the
+                    // earlier span before it can suppress a later candidate,
+                    // without overwriting this scan's borrowed crossings.
+                    bool selectedLowerGap = other < selected + .5;
+                    CellCoverage gap = selectedLowerGap ? CellCoverage.LowerGap : CellCoverage.UpperGap;
+                    CellCoverage wide = end - start >= .5 ? selectedLowerGap ? CellCoverage.LowerWideGap : CellCoverage.UpperWideGap : CellCoverage.None;
+                    Span<CellCoverage> candidate = stackalloc CellCoverage[1]; candidate[0] = CellCoverage.Dropout | gap | wide;
+                    Span<Crossing> probe = stackalloc Crossing[2];
+                    RemoveStubs(scan.Segments, scan.Mapped, scan.Sample, true, candidate, selected + .5, probe, scan.Mode, work, token);
+                    if ((candidate[0] & CellCoverage.Dropout) == 0) return false;
+                }
+                if (secondPass) previousDropout = selected;
+                return selected == Math.Floor(sample);
             }
         }
 
@@ -568,6 +649,15 @@ internal static class SvgGlyphLcdCoverage
                 (long X, long Y) q = ((long)(b.X * 64) * xs, (long)(b.Y * 64) * ys);
                 (long X, long Y) r = ((long)(c.X * 64) * xs, (long)(c.Y * 64) * ys);
                 long target = (long)(sample * 64) * ys;
+                if (horizontal && q.Y >= Math.Min(p.Y, r.Y) && q.Y <= Math.Max(p.Y, r.Y))
+                {
+                    // Native monotonic profiles round implied X endpoints on
+                    // the glyph grid before LCD expansion. A real control
+                    // retains that grid's positioned phase. Turning arcs keep
+                    // their original hull until subdivision makes them monotonic.
+                    p.Y = q.Y + (long)Math.Ceiling((p.Y - q.Y) / 6d) * 6;
+                    r.Y = q.Y + (long)Math.Ceiling((r.Y - q.Y) / 6d) * 6;
+                }
                 for (int depth = 0; depth < 32; depth++)
                 {
                     work.Consume(token);
@@ -577,7 +667,7 @@ internal static class SvgGlyphLcdCoverage
                         return r.Y == p.Y ? crossing : (p.X + (long)((Int128)(r.X - p.X) * (target - p.Y) / (r.Y - p.Y))) / 64d * xs;
                     (long X, long Y) left = ((p.X + q.X) >> 1, (p.Y + q.Y) >> 1);
                     (long X, long Y) right = ((q.X + r.X) >> 1, (q.Y + r.Y) >> 1);
-                    (long X, long Y) middle = ((left.X + right.X) >> 1, (left.Y + right.Y) >> 1);
+                    (long X, long Y) middle = ((p.X + 2 * q.X + r.X) >> 2, (p.Y + 2 * q.Y + r.Y) >> 2);
                     bool first = monotonic ? target <= middle.Y : t <= .5;
                     if (first) { q = left; r = middle; t *= 2; }
                     else { p = middle; q = right; t = t * 2 - 1; }
