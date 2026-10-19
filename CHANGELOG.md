@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve Windows symmetric smart dropout corners supported by both scans,
+  with exact gap-endpoint ownership during half-scan continuation.
 - Preserve Windows font-unit precision at fractional sizes for initial points,
   control values, axial original distances and font-unit control writes.
 - Preserve Linux Latin non-base glyph fitting through cmap aliases and composite
