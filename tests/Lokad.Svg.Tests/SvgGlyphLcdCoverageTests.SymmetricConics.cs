@@ -20,6 +20,14 @@ public sealed partial class SvgGlyphLcdCoverageTests
     [InlineData("cap", 20.25, 80, false, "AAAAAAAAAAAAAAAAAAAfHx8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
     [InlineData("wedge", 20.5, 0, true, "AAAAAAAAAAAAAAAAAAAAAAAABUyX05hNDAAAAAAAAAAAAAVVZGAPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
     [InlineData("cap", -19.75, 80, true, "AAAAAAAAAAAAAAAAAAAfKSkLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
+    [InlineData("wedge-up", 20.5, 80, true, "AAAAAAAAAAAAAAAAAAAAAAAABUyX05hNDAAAAAAAAAAAAAVVZGAPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
+    [InlineData("tip", 20.5, 80, true, "AAAAAAAAAAAAAAAAAAAAAAALIDpOYEYnAAAAAAAAAAAAAAAFBQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
+    [InlineData("tip-up", 20.5, 80, true, "AAAAAAAAAAAAAAAAAAAAAAALIDpOYEYnAAAAAAAAAAAAAAAFBQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
+    [InlineData("tip-down", 20.5, 80, true, "AAAAAAAAAAAAAAAAAAAAAAALIDpOYEYnAAAAAAAAAAAAAAAFBQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
+    [InlineData("tip-reverse", 20.5, 80, true, "AAAAAAAAAAAAAAAAAAAAAAALIDpOYEYnAAAAAAAAAAAAAAAFBQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
+    [InlineData("tip", 20.5, 80, false, "AAAAAAAAAAAAAAAAAAAAAAAAFS9OVDobAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
+    [InlineData("tip", 20.5, 0, true, "AAAAAAAAAAAAAAAAAAAAAAALIDpOYEYnAAAAAAAAAAAAAAAFBQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
+    [InlineData("tip", -19.5, 80, true, "AAAAAAAAAAAAAAAAAAAAAAALIDpOYEYnAAAAAAAAAAAAAAAFBQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
     public void Symmetric_smart_conic_profiles_match_native_masks(string shape, double originX, int originY, bool enabled, string rgb)
     {
         // Original CC0 quadratic wedge and implied-point cap, independently
@@ -29,6 +37,11 @@ public sealed partial class SvgGlyphLcdCoverageTests
         {
             "wedge" => (false, 4, 0, false),
             "wedge-down" => (false, 4, -1, false),
+            "wedge-up" => (false, 4, 1, false),
+            "tip" => (false, 4, 0, false),
+            "tip-up" => (false, 4, 1, false),
+            "tip-down" => (false, 4, -1, false),
+            "tip-reverse" => (false, 4, 0, true),
             "wedge-reverse" => (false, 4, 0, true),
             "cap" => (true, 4, 0, false),
             "cap-narrow" => (true, 3, 0, false),
@@ -38,6 +51,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
             "cap-reverse" => (true, 4, 0, true),
             _ => throw new ArgumentOutOfRangeException(nameof(shape))
         };
+        bool tip = shape.StartsWith("tip", StringComparison.Ordinal);
         double phaseX = Math.Floor(originX * 6 + .5) / 6;
         List<OpenTypeQuadraticSegment> outline = [];
         if (cap)
@@ -58,6 +72,13 @@ public sealed partial class SvgGlyphLcdCoverageTests
                 outline.Add(new(p, q, implied)); outline.Add(new(implied, r, end)); p = end;
             }
         }
+        else if (tip)
+        {
+            OpenTypeOutlinePoint a = P(262, 421, phaseX, originY), b = P(246, 377, phaseX, originY);
+            OpenTypeOutlinePoint q = P(230, 385 + shift, phaseX, originY), r = P(193, 400, phaseX, originY), end = P(172, 400, phaseX, originY);
+            OpenTypeOutlinePoint implied = new((q.X + r.X) * .5, (q.Y + r.Y) * .5);
+            outline.Add(new(a, b, b)); outline.Add(new(b, q, implied)); outline.Add(new(implied, r, end)); outline.Add(new(end, a, a));
+        }
         else
         {
             OpenTypeOutlinePoint a = P(514, 762, phaseX, originY), b = P(556, 756 + shift, phaseX, originY);
@@ -75,8 +96,8 @@ public sealed partial class SvgGlyphLcdCoverageTests
         }
         outline.AddRange(Rectangle(phaseX + 20, originY - 16, phaseX + 21, originY));
         OpenTypeQuadraticSegment[] segments = outline.ToArray();
-        int left = (int)Math.Floor(originX) + (cap ? 1 : 7), top = originY - (cap ? 4 : 13);
-        int width = cap ? 4 : 5, height = cap ? 4 : 5;
+        int left = (int)Math.Floor(originX) + (cap ? 1 : tip ? 2 : 7), top = originY - (cap ? 4 : tip ? 8 : 13);
+        int width = cap ? 4 : 5, height = cap || tip ? 4 : 5;
         byte[] expected = Convert.FromBase64String(rgb);
         Assert.Equal(width * height * 3, expected.Length);
         ParserWorkCounter work = new(long.MaxValue);

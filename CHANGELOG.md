@@ -2,8 +2,8 @@
 
 ## Unreleased
 
-- Retain independent high-precision symmetric conic dropout profiles alongside
-  ordinary fill crossings, preserving native small-cap and curved-stem cells.
+- Retain independent symmetric conic dropout profiles and normalize their scan
+  direction, preserving native small-cap, curved-stem and curved-tip cells.
 - Round symmetric Windows smart-dropout profile crossings before midpoint
   selection, preserving native cells on both axes and at negative positions.
 

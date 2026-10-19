@@ -589,12 +589,12 @@ internal static class SvgGlyphLcdCoverage
                 double first = Math.Ceiling(start - .5), last = Math.Floor(end - .5);
                 if (first != last + 1) return false;
                 // Straight profiles retain 1/64 sampling cells; conic profiles
-                // use bounded high-precision subdivision independently of fill.
+                // use bounded fixed-point subdivision independently of fill.
                 // The smart bias below preserves the straight-profile tie rule.
                 double midpoint = !simple && !natural && scan.Mode == SvgGlyphLcdMode.Symmetric
                     ? (profileStart + profileEnd) * .5
                     : (start + end) * .5;
-                // Natural SMART's 63/64-cell term is evaluated in upward
+                // Native SMART's 63/64-cell term is evaluated in upward
                 // coordinates after the fixed-point profile's center shift.
                 double selected = simple ? horizontal ? first : last
                     : natural || scan.Mode == SvgGlyphLcdMode.Symmetric ? horizontal ? Math.Ceiling(midpoint + 1d / 128) - 1 : Math.Floor(midpoint - 1d / 128)
@@ -684,17 +684,18 @@ internal static class SvgGlyphLcdCoverage
             double crossing = a.X + t * (2 * (b.X - a.X) + t * (a.X - 2 * b.X + c.X));
             double analytic = crossing;
             if (t is > 0 and < 1 && derivative != 0)
-                crossing = legacy ? Legacy(t, crossing, sample, a, b, c, horizontal, false, work, token) : Adjust(crossing, sample, a, b, c, horizontal, work, token);
+                crossing = legacy ? FixedProfile(t, crossing, sample, a, b, c, horizontal, SvgGlyphLcdMode.Natural, work, token) : Adjust(crossing, sample, a, b, c, horizontal, work, token);
             double dropoutPosition = !legacy && mode == SvgGlyphLcdMode.Symmetric && t is > 0 and < 1 && derivative != 0
-                ? Legacy(t, analytic, sample, a, b, c, horizontal, true, work, token) : Math.Floor(crossing * 64 + .5) / 64;
+                ? FixedProfile(t, analytic, sample, a, b, c, horizontal, SvgGlyphLcdMode.Symmetric, work, token) : Math.Floor(crossing * 64 + .5) / 64;
             scratch[count++] = new(crossing, Math.Sign(derivative)) { DropoutPosition = dropoutPosition };
 
-            static double Legacy(double t, double crossing, double sample, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, bool horizontal, bool highPrecision, ParserWorkCounter work, CancellationToken token)
+            static double FixedProfile(double t, double crossing, double sample, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, bool horizontal, SvgGlyphLcdMode profile, ParserWorkCounter work, CancellationToken token)
             {
-                int precision = highPrecision ? 4096 : 64;
+                const int precision = 64;
+                bool symmetric = profile == SvgGlyphLcdMode.Symmetric;
                 // Adapts FreeType 2.13.2 ftraster.c: fixed-point midpoint
-                // subdivision, then signed linear interpolation. Natural uses
-                // six-bit profiles; symmetric conics use twelve-bit profiles.
+                // subdivision and signed interpolation. Symmetric scans retain
+                // six-bit coordinates through finer, direction-normalized leaves.
                 // The original analytic root selects a non-monotonic branch;
                 // monotonic leaves are selected by their actual scan ordinate.
                 int xs = horizontal ? -1 : 1, ys = horizontal ? 1 : -1;
@@ -702,7 +703,7 @@ internal static class SvgGlyphLcdCoverage
                 (long X, long Y) q = ((long)(b.X * precision) * xs, (long)(b.Y * precision) * ys);
                 (long X, long Y) r = ((long)(c.X * precision) * xs, (long)(c.Y * precision) * ys);
                 long target = (long)(sample * precision) * ys;
-                if (!highPrecision && horizontal && q.Y >= Math.Min(p.Y, r.Y) && q.Y <= Math.Max(p.Y, r.Y))
+                if (!symmetric && horizontal && q.Y >= Math.Min(p.Y, r.Y) && q.Y <= Math.Max(p.Y, r.Y))
                 {
                     // Native monotonic profiles round implied X endpoints on
                     // the glyph grid before LCD expansion. A real control
@@ -715,8 +716,12 @@ internal static class SvgGlyphLcdCoverage
                 {
                     work.Consume(token);
                     bool monotonic = q.Y >= Math.Min(p.Y, r.Y) && q.Y <= Math.Max(p.Y, r.Y);
-                    if (monotonic && p.Y > r.Y) { p.Y = -p.Y; q.Y = -q.Y; r.Y = -r.Y; target = -target; }
-                    if (monotonic && r.Y - p.Y < (highPrecision ? 256 : 32))
+                    if (monotonic && p.Y > r.Y)
+                    {
+                        if (symmetric) { (p, r) = (r, p); t = 1 - t; }
+                        else { p.Y = -p.Y; q.Y = -q.Y; r.Y = -r.Y; target = -target; }
+                    }
+                    if (monotonic && r.Y - p.Y < (symmetric ? 4 : 32))
                         return r.Y == p.Y ? crossing : (p.X + (long)((Int128)(r.X - p.X) * (target - p.Y) / (r.Y - p.Y))) / (double)precision * xs;
                     (long X, long Y) left = ((p.X + q.X) >> 1, (p.Y + q.Y) >> 1);
                     (long X, long Y) right = ((q.X + r.X) >> 1, (q.Y + r.Y) >> 1);
@@ -725,7 +730,7 @@ internal static class SvgGlyphLcdCoverage
                     if (first) { q = left; r = middle; t *= 2; }
                     else { p = middle; q = right; t = t * 2 - 1; }
                 }
-                throw new SvgException(SvgErrorCode.LimitExceeded, "The natural glyph scan exceeds its bounded subdivision depth.");
+                throw new SvgException(SvgErrorCode.LimitExceeded, "The fixed-point glyph scan exceeds its bounded subdivision depth.");
             }
 
             static double Adjust(double crossing, double sample, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, bool horizontal, ParserWorkCounter work, CancellationToken token)
