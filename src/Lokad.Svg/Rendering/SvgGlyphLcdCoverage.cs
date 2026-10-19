@@ -758,6 +758,13 @@ internal static class SvgGlyphLcdCoverage
             {
                 bool symmetric = profile == ConicProfile.Symmetric, fractional = profile == ConicProfile.NaturalSmart;
                 bool smart = fractional || profile == ConicProfile.NaturalSmartGrid;
+                // Integral turning spans normalize each descending scan after
+                // subdivision. Fractional endpoints and turning crossing
+                // coordinates retain their separate legacy rounding.
+                bool canonicalTurn = profile == ConicProfile.NaturalLegacy && horizontal
+                    && (b.Y < Math.Min(a.Y, c.Y) || b.Y > Math.Max(a.Y, c.Y))
+                    && b.X > Math.Min(a.X, c.X) && b.X < Math.Max(a.X, c.X)
+                    && (long)((a.Y - b.Y) * 64) % 6 == 0 && (long)((c.Y - b.Y) * 64) % 6 == 0;
                 // Fractional monotonic scans retain a parameter interval before
                 // emitting their smart ordinate. Keep turning scan directions,
                 // flat tangents and device-upturn controls on their established
@@ -794,7 +801,7 @@ internal static class SvgGlyphLcdCoverage
                     bool monotonic = q.Y >= Math.Min(p.Y, r.Y) && q.Y <= Math.Max(p.Y, r.Y);
                     if (monotonic && p.Y > r.Y)
                     {
-                        if (symmetric || smart) { (p, r) = (r, p); t = 1 - t; }
+                        if (symmetric || smart || canonicalTurn) { (p, r) = (r, p); t = 1 - t; }
                         else { p.Y = -p.Y; q.Y = -q.Y; r.Y = -r.Y; target = -target; }
                     }
                     if (monotonic && r.Y - p.Y < (symmetric ? 4 : 32))

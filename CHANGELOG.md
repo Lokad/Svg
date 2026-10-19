@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Normalize integral turning glyph profiles by scan direction, preserving
+  natural dropout coverage for reversed contours and explicit endpoints.
 - Preserve natural smart dropout candidates on closed span boundaries through
   contour reversal, retaining ordinary directed border ownership.
 - Preserve natural Windows fractional and integral conic smart ordinates with
