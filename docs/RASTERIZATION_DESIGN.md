@@ -136,8 +136,11 @@ authored profile. Turning scans, flat scan tangents and controls above both
 endpoints retain their existing profiles. Precision work stays bounded and cancellable.
 Natural legacy spans restore existing dropout candidates on either contour
 direction; ordinary borders retain directed ownership.
-Integral turning legacy profiles normalize descending scans after subdivision,
-preserving their distinct fractional-endpoint and crossing-turn rounding.
+Integral turning profiles and flat scan tangents normalize descending intervals.
+Whole-grid parameter intervals bound scan and crossing spread; fractional
+endpoints retain six-bit parameter precision. Flat minima round their weighted
+crossing midpoint separately from their control midpoints. These profiles share
+the bounded scan while preserving distinct native rounding.
 Exact references are platform-specific. See the [font support boundary](SUPPORT_MATRIX.md#text-and-fonts)
 and [public qualification](../tests/Research/public-font-qualification/README.md).
 

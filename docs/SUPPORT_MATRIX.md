@@ -4,6 +4,9 @@ Lokad.Svg renders a subset of static SVG to PNG on .NET 10, on Windows and Linux
 without runtime package dependencies. This document describes the current
 implementation. It does not claim full SVG or browser conformance.
 
+This matrix covers the 0.3.0-preview.1 development tree. Published 0.2.0 has its
+own [release matrix](https://github.com/Lokad/Svg/blob/v0.2.0/docs/SUPPORT_MATRIX.md).
+
 Scripts/events, animation, a mutable DOM, foreignObject HTML and arbitrary external
 documents are unsupported. Rendering does not discover filesystem/network resources.
 

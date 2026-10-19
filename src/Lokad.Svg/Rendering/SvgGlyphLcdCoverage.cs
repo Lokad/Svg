@@ -34,7 +34,7 @@ internal readonly record struct SvgGlyphRgbCoverage(byte Red, byte Green, byte B
 /// independent calls with separate scratch may run concurrently.</remarks>
 internal static class SvgGlyphLcdCoverage
 {
-    private enum ConicProfile { Symmetric, NaturalLegacy, NaturalSmart, NaturalSmartGrid }
+    private enum ConicProfile { Symmetric, NaturalLegacy, NaturalSmart, NaturalSmartGrid, NaturalSmartFlatMinimum }
 
     private const int CellColumns = 11;
     /// <summary>One directed crossing with independent fill/dropout positions in borrowed scratch; never retained.</summary>
@@ -728,7 +728,9 @@ internal static class SvgGlyphLcdCoverage
                     dropoutPosition = FixedProfile(t, precise, sample, p, q, r, horizontal, fractional ? ConicProfile.NaturalSmart : ConicProfile.NaturalSmartGrid, work, token);
                 }
                 else if (q.Y > Math.Min(p.Y, r.Y) && q.Y < Math.Max(p.Y, r.Y) && q.X > Math.Min(p.X, r.X))
-                    dropoutPosition = ParameterProfile(t, p.X, q.X, r.X, work, token);
+                    dropoutPosition = ParameterProfile(t, p, q, r, false, work, token);
+                else if (q.Y > Math.Min(p.Y, r.Y) && q.Y < Math.Max(p.Y, r.Y) && q.X == Math.Min(p.X, r.X) && p.X != r.X)
+                    dropoutPosition = FixedProfile(t, analytic, sample, p, q, r, horizontal, ConicProfile.NaturalSmartFlatMinimum, work, token);
             }
             scratch[count++] = new(crossing, Math.Sign(derivative)) { DropoutPosition = dropoutPosition };
 
@@ -739,16 +741,38 @@ internal static class SvgGlyphLcdCoverage
                 return horizontal ? new(y, x) : new(x, y);
             }
 
-            static double ParameterProfile(double t, double a, double b, double c, ParserWorkCounter work, CancellationToken token)
+            static double ParameterProfile(double t, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, bool fractional, ParserWorkCounter work, CancellationToken token)
             {
-                double precision = 64;
+                // Fractional endpoints retain six-bit parameter precision.
+                // Whole-grid intervals also bound the scan span and include
+                // interior crossing extrema before emitting their ordinate.
+                double precision = fractional ? 64 : 1;
                 for (int depth = 0; depth < 32; depth++)
                 {
                     work.Consume(token);
                     double lo = Math.Floor(t * precision) / precision, hi = Math.Ceiling(t * precision) / precision;
-                    double first = a + lo * (2 * (b - a) + lo * (a - 2 * b + c));
-                    double second = a + hi * (2 * (b - a) + hi * (a - 2 * b + c));
-                    if (Math.Abs(first - second) <= 1d / 32) return Math.Ceiling(Math.Max(first, second) * 64) / 64;
+                    double first = a.X + lo * (2 * (b.X - a.X) + lo * (a.X - 2 * b.X + c.X));
+                    double second = a.X + hi * (2 * (b.X - a.X) + hi * (a.X - 2 * b.X + c.X));
+                    double lower = Math.Min(first, second), upper = Math.Max(first, second);
+                    bool scanBounded = true;
+                    if (!fractional)
+                    {
+                        double firstScan = a.Y + lo * (2 * (b.Y - a.Y) + lo * (a.Y - 2 * b.Y + c.Y));
+                        double secondScan = a.Y + hi * (2 * (b.Y - a.Y) + hi * (a.Y - 2 * b.Y + c.Y));
+                        scanBounded = Math.Abs(firstScan - secondScan) < .5;
+                        double curvature = a.X - 2 * b.X + c.X;
+                        if (curvature != 0)
+                        {
+                            double vertex = (a.X - b.X) / curvature;
+                            if (vertex > lo && vertex < hi)
+                            {
+                                work.Consume(token);
+                                double ordinate = a.X + vertex * (2 * (b.X - a.X) + vertex * curvature);
+                                lower = Math.Min(lower, ordinate); upper = Math.Max(upper, ordinate);
+                            }
+                        }
+                    }
+                    if (scanBounded && upper - lower <= 1d / 32) return Math.Ceiling(upper * 64) / 64;
                     precision *= 2;
                 }
                 throw new SvgException(SvgErrorCode.LimitExceeded, "The smart glyph profile exceeds its bounded parameter precision.");
@@ -757,12 +781,13 @@ internal static class SvgGlyphLcdCoverage
             static double FixedProfile(double t, double crossing, double sample, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, bool horizontal, ConicProfile profile, ParserWorkCounter work, CancellationToken token)
             {
                 bool symmetric = profile == ConicProfile.Symmetric, fractional = profile == ConicProfile.NaturalSmart;
-                bool smart = fractional || profile == ConicProfile.NaturalSmartGrid;
-                // Integral turning spans normalize each descending scan after
-                // subdivision. Fractional endpoints and turning crossing
+                bool flatMinimum = profile == ConicProfile.NaturalSmartFlatMinimum;
+                bool smart = fractional || profile == ConicProfile.NaturalSmartGrid || flatMinimum;
+                // Integral turning and flat scan tangents normalize descending
+                // intervals. Fractional endpoints and turning crossing
                 // coordinates retain their separate legacy rounding.
-                bool canonicalTurn = profile == ConicProfile.NaturalLegacy && horizontal
-                    && (b.Y < Math.Min(a.Y, c.Y) || b.Y > Math.Max(a.Y, c.Y))
+                bool canonicalScan = profile == ConicProfile.NaturalLegacy && horizontal
+                    && (b.Y <= Math.Min(a.Y, c.Y) || b.Y >= Math.Max(a.Y, c.Y))
                     && b.X > Math.Min(a.X, c.X) && b.X < Math.Max(a.X, c.X)
                     && (long)((a.Y - b.Y) * 64) % 6 == 0 && (long)((c.Y - b.Y) * 64) % 6 == 0;
                 // Fractional monotonic scans retain a parameter interval before
@@ -770,7 +795,7 @@ internal static class SvgGlyphLcdCoverage
                 // flat tangents and device-upturn controls on their established
                 // profile; ordinary spans and stub eligibility remain separate.
                 if (fractional && b.Y > Math.Min(a.Y, c.Y) && b.Y < Math.Max(a.Y, c.Y) && b.X >= Math.Min(a.X, c.X))
-                    return ParameterProfile(t, a.X, b.X, c.X, work, token);
+                    return ParameterProfile(t, a, b, c, true, work, token);
                 const int scanPrecision = 64;
                 int crossingPrecision = fractional ? 128 : scanPrecision;
                 // Adapts FreeType 2.13.2 ftraster.c: fixed-point midpoint
@@ -801,7 +826,7 @@ internal static class SvgGlyphLcdCoverage
                     bool monotonic = q.Y >= Math.Min(p.Y, r.Y) && q.Y <= Math.Max(p.Y, r.Y);
                     if (monotonic && p.Y > r.Y)
                     {
-                        if (symmetric || smart || canonicalTurn) { (p, r) = (r, p); t = 1 - t; }
+                        if (symmetric || smart || canonicalScan) { (p, r) = (r, p); t = 1 - t; }
                         else { p.Y = -p.Y; q.Y = -q.Y; r.Y = -r.Y; target = -target; }
                     }
                     if (monotonic && r.Y - p.Y < (symmetric ? 4 : 32))
@@ -812,7 +837,9 @@ internal static class SvgGlyphLcdCoverage
                     }
                     (long X, long Y) left = ((p.X + q.X) >> 1, (p.Y + q.Y) >> 1);
                     (long X, long Y) right = ((q.X + r.X) >> 1, (q.Y + r.Y) >> 1);
-                    (long X, long Y) middle = ((p.X + 2 * q.X + r.X) >> 2, (p.Y + 2 * q.Y + r.Y) >> 2);
+                    // Flat minima round their weighted crossing midpoint;
+                    // control midpoints retain signed truncation.
+                    (long X, long Y) middle = ((p.X + 2 * q.X + r.X + (flatMinimum ? 2 : 0)) >> 2, (p.Y + 2 * q.Y + r.Y) >> 2);
                     bool first = monotonic ? target <= middle.Y : t <= .5;
                     if (first) { q = left; r = middle; t *= 2; }
                     else { p = middle; q = right; t = t * 2 - 1; }

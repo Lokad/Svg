@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve whole-grid conic scan precision and flat-minimum smart midpoints,
+  including explicit split outlines and reversed counter-arcs.
 - Normalize integral turning glyph profiles by scan direction, preserving
   natural dropout coverage for reversed contours and explicit endpoints.
 - Preserve natural smart dropout candidates on closed span boundaries through

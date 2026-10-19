@@ -31,12 +31,13 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Fact]
-    public void Natural_integer_point_conics_keep_the_authored_profile()
+    public void Natural_integer_point_counter_arcs_keep_the_native_result()
     {
         // Original CC0 arc and flat mate, independent DirectWrite RGB:
         // UPEM 2048, em 32, gasp 7, SCANCTRL 511 / SCANTYPE 4. Every
         // source point is integral in 26.6; a separate tall contour retains
-        // both candidate rows. Normalizing this profile moves four pixels.
+        // both candidate rows. The counter-arc guards distinct flat-minimum
+        // rounding; broad profile normalization moves four pixels.
         OpenTypeOutlinePoint a = P(0, 75), b = P(66, 75), c = P(66, 56), d = P(0, 39);
         OpenTypeQuadraticSegment[] segments = [new(a, b, b), new(b, c, c), new(c, P(33, 56), d),
             new(d, a, a), .. Rectangle(30.5, 76, 31.5, 80)];

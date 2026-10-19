@@ -15,6 +15,10 @@ dotnet add package Lokad.Svg --version 0.2.0
 
 [CHANGELOG](CHANGELOG.md) records release notes.
 
+The development tree targets 0.3.0-preview.1. Ordered font-family lists,
+host-defined generics and expanded TrueType compatibility require that build;
+they are not part of published 0.2.0.
+
 `SvgConverter` provides synchronous and asynchronous output to independently
 owned memory, caller memory or a writable stream. `SvgPreparedDocument` supports
 explicit preparation and one conversion. Fonts use an explicit catalog and
