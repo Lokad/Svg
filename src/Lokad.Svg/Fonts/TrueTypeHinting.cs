@@ -34,9 +34,24 @@ internal enum TrueTypeHintQueryFlags
 /// <summary>Declares bounded interpreter storage from a validated TrueType maxp table.</summary>
 internal readonly record struct TrueTypeHintProfile(int Stack, int Storage, int Functions, int Twilight);
 
-/// <summary>Retains independently rounded horizontal and vertical 16.16 font-to-device scales.</summary>
-/// <remarks>Immutable and storage-free. Axial distances select their own scale; neither scale is derived from the rounded other axis.</remarks>
-internal readonly record struct TrueTypeHintDeviceScale(int Vertical, int Horizontal);
+/// <summary>Retains independent fixed-point scales and Windows floating-point font-to-pixel ratios.</summary>
+/// <remarks>Immutable and storage-free. Windows initial points, CVT values and font-unit distances retain their native precision; other targets retain the fixed-point scales.</remarks>
+internal readonly record struct TrueTypeHintDeviceScale(int Vertical, int Horizontal)
+{
+    internal float WindowsVertical { get; init; } = Vertical / 4194304f;
+    internal float WindowsHorizontal { get; init; } = Horizontal / 4194304f;
+
+    internal static int ScaleWindows(int value, float fontToPixels)
+    {
+        // Round after native float scaling; a 16.16 ratio can cross a
+        // fractional strike boundary before the coordinate is evaluated.
+        float scaled = value * fontToPixels * 64;
+        double rounded = Math.Floor((double)scaled + .5);
+        if (!double.IsFinite(rounded) || rounded < int.MinValue || rounded > int.MaxValue)
+            throw new SvgException(SvgErrorCode.LimitExceeded, "A TrueType device coordinate exceeds its signed bound.");
+        return (int)rounded;
+    }
+}
 
 /// <summary>Supplies explicit rasterizer queries without acquiring a native rasterizer.</summary>
 internal readonly record struct TrueTypeHintTarget(int Version, TrueTypeHintQueryFlags QueryFlags, TrueTypeHintControlScale ControlScale, TrueTypeHintPreparation Preparation)
@@ -110,7 +125,9 @@ internal sealed partial class TrueTypeHinting : IDisposable
         work.Consume(token);
         if (profile.Stack is < 0 or > 4096 || profile.Storage is < 0 or > 4096 || profile.Functions is < 0 or > 1024 || profile.Twilight is < 0 or > 4096 || cvt.Length > 4096 || glyph.Length > 32772)
             throw new SvgException(SvgErrorCode.LimitExceeded, "TrueType interpreter storage exceeds the supported bounds.");
-        if (ppem is < 0 or > 32767 || scale.Vertical < 0 || scale.Horizontal < 0) throw Invalid("The TrueType device scale is invalid.");
+        if (ppem is < 0 or > 32767 || scale.Vertical < 0 || scale.Horizontal < 0 ||
+            !float.IsFinite(scale.WindowsVertical) || !float.IsFinite(scale.WindowsHorizontal) || scale.WindowsVertical < 0 || scale.WindowsHorizontal < 0)
+            throw Invalid("The TrueType device scale is invalid.");
         ValidateTarget(target);
         int previous = -1;
         foreach (ushort end in ends)
@@ -530,7 +547,14 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 }
                 // WCVTF operands remain font units in assembled parents too;
                 // only their original outline coordinates are device values.
-                case 0x70: { int value = Pop(); _cvt[Index(Pop(), _cvt.Length)] = Divide(value, 65536, ProjectionScale); break; }
+                case 0x70:
+                {
+                    int value = Pop();
+                    _cvt[Index(Pop(), _cvt.Length)] = _target.UsesWindowsArithmetic && (_projection.X == 0 || _projection.Y == 0)
+                        ? TrueTypeHintDeviceScale.ScaleWindows(value, _projection.Y == 0 ? _scale.WindowsHorizontal : _scale.WindowsVertical)
+                        : Divide(value, 65536, ProjectionScale);
+                    break;
+                }
                 case >= 0xC0: MoveRelative(opcode); break;
                 default: throw new SvgException(SvgErrorCode.UnsupportedFeature, $"TrueType hint opcode 0x{opcode:X2} is not implemented.");
             }

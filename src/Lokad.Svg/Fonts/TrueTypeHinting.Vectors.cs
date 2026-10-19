@@ -49,21 +49,21 @@ internal sealed partial class TrueTypeHinting
     private int DesignDistance(TrueTypeHintPoint point, TrueTypeHintPoint reference, bool scaled)
     {
         int x = checked(point.UnscaledX - reference.UnscaledX), y = checked(point.UnscaledY - reference.UnscaledY);
-        if (_scale.Horizontal == _scale.Vertical)
+        if (_scale.Horizontal == _scale.Vertical && (!_target.UsesWindowsArithmetic || _scale.WindowsHorizontal == _scale.WindowsVertical))
         {
             int distance = Project(_dualProjection, x, y);
-            return scaled ? ScaleOriginal(distance, _scale.Vertical) : distance;
+            return scaled ? ScaleOriginal(distance, _scale.Vertical, _scale.WindowsVertical) : distance;
         }
-        return Project(_dualProjection, ScaleOriginal(x, _scale.Horizontal), ScaleOriginal(y, _scale.Vertical));
+        return Project(_dualProjection, ScaleOriginal(x, _scale.Horizontal, _scale.WindowsHorizontal), ScaleOriginal(y, _scale.Vertical, _scale.WindowsVertical));
     }
 
-    private int ScaleOriginal(int distance, int scale)
+    private int ScaleOriginal(int distance, int scale, float windowsScale)
     {
         // DirectWrite rounds a negative exact half toward positive infinity when
         // scaling a design-space distance. Other targets retain FreeType's signed
         // magnitude rounding; endpoint subtraction must still precede scaling.
         return _target.UsesWindowsArithmetic
-            ? checked((int)(((long)distance * scale + 32768) >> 16)) : Divide(distance, 65536, scale);
+            ? TrueTypeHintDeviceScale.ScaleWindows(distance, windowsScale) : Divide(distance, 65536, scale);
     }
 
     private void Move(ref TrueTypeHintPoint point, int distance, bool touch)

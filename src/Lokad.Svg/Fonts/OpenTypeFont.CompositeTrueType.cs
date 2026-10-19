@@ -34,7 +34,13 @@ internal static partial class OpenTypeFont
                 using RenderBudget.BudgetReservation? scratch = count == 0 ? null : budget.Reserve(ParserCollectionMemory.GetArrayByteCount<int>(count), SvgMemoryCategory.Geometry);
                 int[] cvt = new int[count];
                 int controlScale = target.ControlScale == TrueTypeHintControlScale.FractionalFontUnits ? (scale.Vertical >> 6) << 6 : scale.Vertical;
-                for (int i = 0; i < count; i++) { work.Consume(token); cvt[i] = Scale(ReadInt16(bytes.Span, cvtRange.Offset + i * 2), controlScale); }
+                for (int i = 0; i < count; i++)
+                {
+                    work.Consume(token);
+                    int value = ReadInt16(bytes.Span, cvtRange.Offset + i * 2);
+                    cvt[i] = target.UsesWindowsArithmetic && target.ControlScale == TrueTypeHintControlScale.FullPrecision
+                        ? TrueTypeHintDeviceScale.ScaleWindows(value, scale.WindowsVertical) : Scale(value, controlScale);
+                }
                 _machine = TrueTypeHinting.Create(profile, cvt, [], [], ppem, scale, target, budget, work, token);
                 try
                 {
@@ -59,7 +65,12 @@ internal static partial class OpenTypeFont
                 throw new SvgException(SvgErrorCode.LimitExceeded, "A component strike exceeds its device bound.");
             int horizontal = checked((int)Math.Floor(x * 64 * 65536 / _metrics.UnitsPerEm + .5));
             int vertical = checked((int)Math.Floor(y * 64 * 65536 / _metrics.UnitsPerEm + .5));
-            return new(_bytes, _metrics, _profile, _cvtRange, _fontProgram, _preparation, checked((int)Math.Floor(y + .5)), new(vertical, horizontal), y, x,
+            TrueTypeHintDeviceScale childScale = new(vertical, horizontal)
+            {
+                WindowsVertical = (float)y / _metrics.UnitsPerEm,
+                WindowsHorizontal = (float)x / _metrics.UnitsPerEm
+            };
+            return new(_bytes, _metrics, _profile, _cvtRange, _fontProgram, _preparation, checked((int)Math.Floor(y + .5)), childScale, y, x,
                 _target with { HorizontalRatio = x / y }, _budget, _work, _token);
         }
 
@@ -89,7 +100,7 @@ internal static partial class OpenTypeFont
             bool round = (component.Flags & 4) != 0;
             OpenTypeOutlinePoint offset = component.GetOffset(OpenTypeCompositeOffsetMath.NativeLength);
             int value = windows ? horizontal ? component.HorizontalOffset : component.VerticalOffset : checked((int)(horizontal ? offset.X : offset.Y));
-            int scaled = horizontal && windows ? ScaleWindowsHorizontalPoint(value, _horizontalSize, _metrics.UnitsPerEm)
+            int scaled = horizontal && windows ? TrueTypeHintDeviceScale.ScaleWindows(value, _scale.WindowsHorizontal)
                 : Scale(value, horizontal ? _scale.Horizontal : _scale.Vertical);
             if (windows && (component.Flags & 2048) != 0)
                 scaled = checked((int)Math.Round(scaled * (horizontal ? Math.Max(Math.Abs(component.Transform.XX), Math.Abs(component.Transform.YX)) : Math.Max(Math.Abs(component.Transform.XY), Math.Abs(component.Transform.YY))), MidpointRounding.AwayFromZero));
@@ -122,7 +133,8 @@ internal static partial class OpenTypeFont
             {
                 _work.Consume(_token);
                 OpenTypeGlyphPoint point = outline[i];
-                points[i] = composite ? new(point.X, point.Y, point.X, point.Y) : new(ScaleHorizontal(point.X), Scale(point.Y, _scale.Vertical), point.X, point.Y);
+                int vertical = composite ? point.Y : _target.UsesWindowsArithmetic ? TrueTypeHintDeviceScale.ScaleWindows(point.Y, _scale.WindowsVertical) : Scale(point.Y, _scale.Vertical);
+                points[i] = composite ? new(point.X, point.Y, point.X, point.Y) : new(ScaleHorizontal(point.X), vertical, point.X, point.Y);
                 points[i].IsOnCurve = point.IsOnCurve;
             }
             OpenTypeGlyphHeader? header = ParseGlyphHeader(_bytes, range);
@@ -153,7 +165,7 @@ internal static partial class OpenTypeFont
         }
 
         private int ScaleHorizontal(int value) => !_target.UsesWindowsArithmetic
-            ? Scale(value, _scale.Horizontal) : ScaleWindowsHorizontalPoint(value, _horizontalSize, _metrics.UnitsPerEm);
+            ? Scale(value, _scale.Horizontal) : TrueTypeHintDeviceScale.ScaleWindows(value, _scale.WindowsHorizontal);
         private int Scale(int value, int factor) => ScaleTrueTypeFixed(value, factor, _target);
 
         public void Dispose() { _machine.Dispose(); _reservation.Dispose(); }

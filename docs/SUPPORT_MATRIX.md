@@ -269,7 +269,10 @@ Excluded stubs cannot suppress later strokes; turning arcs retain their distinct
 subdivision behavior. Restored candidates observe the same ordered neighbors,
 and reduced conic equations stay within their terminal bounds.
 Original native controls cover these cases.
-Fitted initial points and control values retain the Windows signed half-unit rule;
+Fitted initial points and control values retain Windows floating-point scale
+precision and signed half-unit rounding, as do axial original distances and
+font-unit control writes. [Original native controls](../tests/Research/windows-font-unit-scaling/README.md)
+cover fractional strikes, signed halves and identity composites.
 Latin light fitting keeps nearby edges distinct according to the measured
 standard stem width, with a quarter-pixel maximum merging allowance.
 Mapped Latin non-base glyphs retain scale adjustment and stem fitting but skip

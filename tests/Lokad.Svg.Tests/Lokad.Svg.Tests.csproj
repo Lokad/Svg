@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/windows-font-unit-scaling/fonts/*.ttf" Link="TestData/windows-font-unit-scaling/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/windows-font-unit-scaling/native-vectors.json" Link="TestData/windows-font-unit-scaling/native-vectors.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="../Research/latin-nonbase/fonts/*.ttf" Link="TestData/latin-nonbase/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/latin-nonbase/native-vectors.json" Link="TestData/latin-nonbase/native-vectors.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/kerning-flags/fonts/*.ttf" Link="TestData/kerning-flags/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />

@@ -1,0 +1,185 @@
+{
+  "oracle": "DirectWrite explicit font file, symmetric ClearType, grid fit enabled; original bytecode coordinate readout via a four-pixel band",
+  "cases": [
+    {
+      "font": "Fractional.ttf",
+      "glyph": 1,
+      "size": 11.5,
+      "kind": "point",
+      "input": 714,
+      "composite": false,
+      "nativeValue": 526
+    },
+    {
+      "font": "Fractional.ttf",
+      "glyph": 2,
+      "size": 11.5,
+      "kind": "point",
+      "input": -714,
+      "composite": false,
+      "nativeValue": -526
+    },
+    {
+      "font": "Fractional.ttf",
+      "glyph": 3,
+      "size": 11.5,
+      "kind": "control",
+      "input": 714,
+      "composite": false,
+      "nativeValue": 526
+    },
+    {
+      "font": "Fractional.ttf",
+      "glyph": 4,
+      "size": 11.5,
+      "kind": "control",
+      "input": -714,
+      "composite": false,
+      "nativeValue": -526
+    },
+    {
+      "font": "Fractional.ttf",
+      "glyph": 5,
+      "size": 11.5,
+      "kind": "write",
+      "input": 714,
+      "composite": false,
+      "nativeValue": 526
+    },
+    {
+      "font": "Fractional.ttf",
+      "glyph": 6,
+      "size": 11.5,
+      "kind": "write",
+      "input": -714,
+      "composite": false,
+      "nativeValue": -526
+    },
+    {
+      "font": "Fractional.ttf",
+      "glyph": 7,
+      "size": 11.5,
+      "kind": "distance",
+      "input": 714,
+      "composite": false,
+      "nativeValue": -526
+    },
+    {
+      "font": "Fractional.ttf",
+      "glyph": 8,
+      "size": 11.5,
+      "kind": "distance",
+      "input": -714,
+      "composite": false,
+      "nativeValue": 526
+    },
+    {
+      "font": "Fractional.ttf",
+      "glyph": 9,
+      "size": 11.5,
+      "kind": "point",
+      "input": 714,
+      "composite": true,
+      "nativeValue": 526
+    },
+    {
+      "font": "Fractional.ttf",
+      "glyph": 10,
+      "size": 11.5,
+      "kind": "control",
+      "input": -714,
+      "composite": true,
+      "nativeValue": -526
+    },
+    {
+      "font": "Half.ttf",
+      "glyph": 1,
+      "size": 8,
+      "kind": "point",
+      "input": 1,
+      "composite": false,
+      "nativeValue": 1
+    },
+    {
+      "font": "Half.ttf",
+      "glyph": 2,
+      "size": 8,
+      "kind": "point",
+      "input": -1,
+      "composite": false,
+      "nativeValue": 0
+    },
+    {
+      "font": "Half.ttf",
+      "glyph": 3,
+      "size": 8,
+      "kind": "control",
+      "input": 1,
+      "composite": false,
+      "nativeValue": 1
+    },
+    {
+      "font": "Half.ttf",
+      "glyph": 4,
+      "size": 8,
+      "kind": "control",
+      "input": -1,
+      "composite": false,
+      "nativeValue": 0
+    },
+    {
+      "font": "Half.ttf",
+      "glyph": 5,
+      "size": 8,
+      "kind": "write",
+      "input": 1,
+      "composite": false,
+      "nativeValue": 1
+    },
+    {
+      "font": "Half.ttf",
+      "glyph": 6,
+      "size": 8,
+      "kind": "write",
+      "input": -1,
+      "composite": false,
+      "nativeValue": 0
+    },
+    {
+      "font": "Half.ttf",
+      "glyph": 7,
+      "size": 8,
+      "kind": "distance",
+      "input": 1,
+      "composite": false,
+      "nativeValue": 0
+    },
+    {
+      "font": "Half.ttf",
+      "glyph": 8,
+      "size": 8,
+      "kind": "distance",
+      "input": -1,
+      "composite": false,
+      "nativeValue": 1
+    },
+    {
+      "font": "Half.ttf",
+      "glyph": 9,
+      "size": 8,
+      "kind": "point",
+      "input": 1,
+      "composite": true,
+      "nativeValue": 1
+    },
+    {
+      "font": "Half.ttf",
+      "glyph": 10,
+      "size": 8,
+      "kind": "control",
+      "input": -1,
+      "composite": true,
+      "nativeValue": 0
+    }
+  ]
+}
