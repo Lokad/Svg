@@ -274,6 +274,11 @@ retain implied half-unit ordinates through direction-normalized subdivision
 before six-bit profile emission. Scan ordinates stay six-bit; on-grid curves
 retain their span profile for midpoint selection. Fill, span ownership and stub
 continuation retain separate crossings.
+Natural line smart midpoints retain a guard bit, seed interpolation at the first
+crossed cell and carry its signed remainder in contour direction. Analytical
+line crossings still determine span ownership and stub continuation.
+[Line controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.NaturalLines.cs)
+cover distinct slopes, reversed contours and signed origins.
 [Native ordinate controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.NaturalOrdinates.cs)
 cover half-unit curves, adjacent phases, signed origins, both stub policies and
 ordinary line-span ownership.

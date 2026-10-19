@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve directed interpolation carries in Windows natural line smart
+  dropouts, retaining analytic span and stub-continuation crossings.
 - Retain implied half-unit precision in Windows natural conic smart midpoints
   at fractional horizontal glyph-grid endpoints, preserving separate fill,
   span and stub-continuation crossings.

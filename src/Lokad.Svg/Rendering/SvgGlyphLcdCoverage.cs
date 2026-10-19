@@ -659,7 +659,7 @@ internal static class SvgGlyphLcdCoverage
                 {
                     double position = a.X + (c.X - a.X) * (sample - a.Y) / (c.Y - a.Y);
                     scratch[count++] = new(position, c.Y > a.Y ? 1 : -1)
-                    { DropoutPosition = legacy ? position : Math.Floor(position * 64 + .5) / 64 };
+                    { DropoutPosition = legacy && horizontal ? NaturalLineProfile(position, sample, a, c, work, token) : legacy ? position : Math.Floor(position * 64 + .5) / 64 };
                 }
                 continue;
             }
@@ -679,6 +679,29 @@ internal static class SvgGlyphLcdCoverage
             scratch[j] = item;
         }
         return count;
+        static double NaturalLineProfile(double crossing, double sample, OpenTypeOutlinePoint a, OpenTypeOutlinePoint c, ParserWorkCounter work, CancellationToken token)
+        {
+            // Adapts FreeType 2.13.2 ftraster.c Line_Up/Line_Down. Natural
+            // smart line profiles retain a guard bit. Seed the first crossed
+            // cell with signed nearest interpolation, then carry the remainder
+            // in contour direction. Skip directly to the requested cell;
+            // span ownership and stub checks keep the analytic crossing.
+            work.Consume(token);
+            const int precision = 128;
+            long ax = -(long)(a.X * precision) - precision / 2, cx = -(long)(c.X * precision) - precision / 2;
+            long ay = (long)(a.Y * precision) - precision / 2, cy = (long)(c.Y * precision) - precision / 2;
+            long target = (long)(sample * precision) - precision / 2;
+            if (ay > cy) { ay = -ay; cy = -cy; target = -target; }
+            long first = (long)Math.Ceiling(ay / (double)precision) * precision;
+            long dx = cx - ax, dy = cy - ay, steps = (target - first) / precision;
+            if (dy <= 0 || steps < 0) return crossing;
+            Int128 initial = (Int128)dx * (first - ay);
+            long seed = ax + (long)((initial < 0 ? -1 : 1) * ((Int128.Abs(initial) + dy / 2) / dy));
+            long step = (long)((Int128)precision * dx / dy);
+            long remainder = (long)((Int128)precision * Int128.Abs(dx) % dy);
+            Int128 position = seed + (Int128)steps * step + (Int128)steps * remainder / dy * Math.Sign(dx);
+            return -(double)(position + precision / 2) / precision;
+        }
         static void Include(double t, OpenTypeQuadraticSegment source, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, double A, double B, double sample, bool horizontal, bool upper, bool legacy, SvgGlyphLcdMode mode, Span<Crossing> scratch, ParserWorkCounter work, CancellationToken token, ref int count)
         {
             if (t is < 0 or > 1) return;
