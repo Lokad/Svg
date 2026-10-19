@@ -253,6 +253,7 @@ internal static class SvgGlyphLcdCoverage
         for (int row = neighborRows ? -1 : 0; row < (neighborRows ? rowCount + 1 : rowCount); row++)
         {
             double sample = pixelY * (double)rowCount + row + .5;
+            DropoutScan rowDropoutScan = new(segments, scans.MappedSegments, sample, bounds.ExcludeStubs, bounds.Mode);
             bool endpoint;
             ReadOnlySpan<Crossing> lowerScans;
             if (scans.IsPrepared && row >= 0 && row < rowCount)
@@ -266,7 +267,7 @@ internal static class SvgGlyphLcdCoverage
                 lowerScans = scratch[..count];
             }
             for (int column = -3; column < 8; column++)
-                cells[(row + 1) * CellColumns + column + 3] = Classify(lowerScans, pixelX * 6d + column + .5, false, dropouts, bounds.Simple, false, [], 0, leftBound, rightBound, default, out _, work, token);
+                cells[(row + 1) * CellColumns + column + 3] = Classify(lowerScans, pixelX * 6d + column + .5, false, dropouts, bounds.Simple, false, [], 0, leftBound, rightBound, rowDropoutScan, out _, work, token);
             if (endpoint)
             {
                 // Compare the two directed limits only when the scan meets a
@@ -282,7 +283,7 @@ internal static class SvgGlyphLcdCoverage
                 for (int column = -3; column < 8; column++)
                 {
                     int index = (row + 1) * CellColumns + column + 3;
-                    CellCoverage lower = cells[index], upper = Classify(upperScans, pixelX * 6d + column + .5, false, dropouts, bounds.Simple, false, [], 0, leftBound, rightBound, default, out _, work, token);
+                    CellCoverage lower = cells[index], upper = Classify(upperScans, pixelX * 6d + column + .5, false, dropouts, bounds.Simple, false, [], 0, leftBound, rightBound, rowDropoutScan, out _, work, token);
                     if ((lower & CellCoverage.Interior) != (upper & CellCoverage.Interior))
                     {
                         CellCoverage normal = ((lower | upper) & CellCoverage.Closed) != 0 ? CellCoverage.Interior : CellCoverage.None;
@@ -584,7 +585,12 @@ internal static class SvgGlyphLcdCoverage
                 lowerGap = false;
                 double first = Math.Ceiling(start - .5), last = Math.Floor(end - .5);
                 if (first != last + 1) return false;
-                double midpoint = (start + end) * .5;
+                // Symmetric smart selection averages crossings rounded to 1/64
+                // sampling cells. Round absolute positions toward positive
+                // infinity at ties, including negative device coordinates.
+                double midpoint = !simple && !natural && scan.Mode == SvgGlyphLcdMode.Symmetric
+                    ? (Math.Floor(start * 64 + .5) + Math.Floor(end * 64 + .5)) / 128
+                    : (start + end) * .5;
                 // Natural SMART's 63/64-cell term is evaluated in upward
                 // coordinates after the fixed-point profile's center shift.
                 double selected = simple ? horizontal ? first : last

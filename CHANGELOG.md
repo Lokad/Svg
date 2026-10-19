@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Round symmetric Windows smart-dropout profile crossings before midpoint
+  selection, preserving native cells on both axes and at negative positions.
+
 - Preserve Windows symmetric smart dropout corners supported by both scans,
   with exact gap-endpoint ownership during half-scan continuation.
 - Preserve Windows font-unit precision at fractional sizes for initial points,
