@@ -706,7 +706,7 @@ internal static class SvgGlyphLcdCoverage
             double crossing = a.X + t * (2 * (b.X - a.X) + t * (a.X - 2 * b.X + c.X));
             double analytic = crossing;
             if (t is > 0 and < 1 && derivative != 0)
-                crossing = legacy ? FixedProfile(t, crossing, sample, a, b, c, horizontal, ConicProfile.NaturalLegacy, work, token) : Adjust(crossing, sample, a, b, c, horizontal, work, token);
+                crossing = legacy ? FixedProfile(t, crossing, sample, a, b, c, horizontal, ConicProfile.NaturalLegacy, work, token) : Adjust(t, crossing, sample, a, b, c, horizontal, work, token);
             double dropoutPosition = legacy ? crossing : Math.Floor(crossing * 64 + .5) / 64;
             if (!legacy && mode == SvgGlyphLcdMode.Symmetric && t is > 0 and < 1 && derivative != 0)
                 dropoutPosition = FixedProfile(t, analytic, sample, a, b, c, horizontal, ConicProfile.Symmetric, work, token);
@@ -779,7 +779,7 @@ internal static class SvgGlyphLcdCoverage
                 throw new SvgException(SvgErrorCode.LimitExceeded, "The fixed-point glyph scan exceeds its bounded subdivision depth.");
             }
 
-            static double Adjust(double crossing, double sample, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, bool horizontal, ParserWorkCounter work, CancellationToken token)
+            static double Adjust(double t, double crossing, double sample, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, bool horizontal, ParserWorkCounter work, CancellationToken token)
             {
                 work.Consume(token);
                 // An implicit quadratic is (Ay*x-Ax*y)^2 +
@@ -790,7 +790,32 @@ internal static class SvgGlyphLcdCoverage
                 double ax = (horizontal ? a.Y : a.X) * 64, ay = -(horizontal ? a.X : a.Y) * 64;
                 double bx = (horizontal ? b.Y : b.X) * 64, by = -(horizontal ? b.X : b.Y) * 64;
                 double cx = (horizontal ? c.Y : c.X) * 64, cy = -(horizontal ? c.X : c.Y) * 64;
-                if (ax == cx || ay == cy || bx < Math.Min(ax, cx) || bx > Math.Max(ax, cx) || by < Math.Min(ay, cy) || by > Math.Max(ay, cy)) return crossing;
+                if (ax == cx || ay == cy) return crossing;
+                // Split turning arcs before reducing their scan equation.
+                // Round each control midpoint first, then its shared endpoint;
+                // a single weighted midpoint loses native fill ownership.
+                // The analytic parameter identifies a non-monotonic scan's
+                // branch; monotonic scans use the actual sample ordinate.
+                for (int depth = 0; ; depth++)
+                {
+                    bool monotonicX = bx >= Math.Min(ax, cx) && bx <= Math.Max(ax, cx);
+                    bool monotonicY = by >= Math.Min(ay, cy) && by <= Math.Max(ay, cy);
+                    if (monotonicX && monotonicY) break;
+                    if (depth == 32) return crossing;
+                    work.Consume(token);
+                    double abx = Math.Floor((ax + bx + 1) / 2), aby = Math.Floor((ay + by + 1) / 2);
+                    double bcx = Math.Floor((bx + cx + 1) / 2), bcy = Math.Floor((by + cy + 1) / 2);
+                    double mx = Math.Floor((abx + bcx) / 2), my = Math.Floor((aby + bcy) / 2);
+                    bool monotonic = horizontal ? monotonicX : monotonicY;
+                    double target = horizontal ? sample * 64 : -sample * 64;
+                    double middle = horizontal ? mx : my, start = horizontal ? ax : ay, end = horizontal ? cx : cy;
+                    bool firstHalf = monotonic ? end > start ? target <= middle : target >= middle : t <= .5;
+                    if (firstHalf) { bx = abx; by = aby; cx = mx; cy = my; t *= 2; }
+                    else { ax = mx; ay = my; bx = bcx; by = bcy; t = t * 2 - 1; }
+                }
+                if (ax == cx || ay == cy) return crossing;
+                double lowerCrossing = horizontal ? -Math.Max(ay, cy) / 64 : Math.Min(ax, cx) / 64;
+                double upperCrossing = horizontal ? -Math.Min(ay, cy) / 64 : Math.Max(ax, cx) / 64;
                 int sx = cx > ax ? 1 : -1, sy = cy > ay ? 1 : -1;
                 long dx = (long)((bx - ax) * sx), dy = (long)((by - ay) * sy), tx = (long)((cx - ax) * sx), ty = (long)((cy - ay) * sy);
                 // Native monotonic curves split spans over fifty sampling
@@ -849,7 +874,7 @@ internal static class SvgGlyphLcdCoverage
                 double qa = (horizontal ? q : p) / 2, qb = (horizontal ? fy : fx) - qa + r * k;
                 double qc = f + (horizontal ? fx : fy) * k + (horizontal ? p : q) * k * (k - 1) / 2;
                 double origin = horizontal ? -firstY / 64 : firstX / 64, direction = horizontal ? -sy : sx;
-                if (qa == 0) return qb == 0 ? crossing : Math.Clamp(origin - direction * qc / qb, Math.Min(a.X, c.X), Math.Max(a.X, c.X));
+                if (qa == 0) return qb == 0 ? crossing : Math.Clamp(origin - direction * qc / qb, lowerCrossing, upperCrossing);
                 double discriminant = qb * qb - 4 * qa * qc;
                 // Reduced coefficients can move a flat terminal just beyond
                 // the scan. Native coverage remains bounded by that endpoint;
@@ -859,7 +884,7 @@ internal static class SvgGlyphLcdCoverage
                 // Coefficient reduction must not extend a monotonic leaf past
                 // its endpoint. The native scan bounds the reduced equation by
                 // that span, including an exact center beside a curved counter.
-                return Math.Clamp(Math.Abs(first - crossing) <= Math.Abs(second - crossing) ? first : second, Math.Min(a.X, c.X), Math.Max(a.X, c.X));
+                return Math.Clamp(Math.Abs(first - crossing) <= Math.Abs(second - crossing) ? first : second, lowerCrossing, upperCrossing);
 
                 static int Bits(long value) => value == 0 ? 0 : System.Numerics.BitOperations.Log2((ulong)value) + 1;
             }

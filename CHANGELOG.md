@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve ordinary Windows conic fill through turning arcs, rounding control
+  midpoints before reducing the monotonic scan equation.
 - Preserve symmetric Windows thin-glyph bounds and terminating vertices from
   both directed limits of a full scan, keeping half-scan stub rules distinct.
 - Preserve natural Windows glyph bounds and quantized line dropout crossings;

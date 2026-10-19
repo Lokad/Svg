@@ -126,6 +126,8 @@ component while preparation still rounds on the physical grid. Simple and
 composite fitting share metric initialization; subpixel-positioned hints retain
 the linear advance. Windows font-unit conversion retains float scale precision
 before coordinate rounding; other targets retain their fixed-point scales.
+Windows ordinary conic fill reduces turning arcs to monotonic spans, preserving
+control-midpoint rounding separately from dropout and stub profiles.
 Exact references are platform-specific. See the [font support boundary](SUPPORT_MATRIX.md#text-and-fonts)
 and [public qualification](../tests/Research/public-font-qualification/README.md).
 
