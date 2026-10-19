@@ -738,6 +738,24 @@ internal static class SvgGlyphLcdCoverage
             {
                 bool symmetric = profile == ConicProfile.Symmetric, fractional = profile == ConicProfile.NaturalSmart;
                 bool smart = fractional || profile == ConicProfile.NaturalSmartGrid;
+                // Fractional monotonic scans retain a parameter interval before
+                // emitting their smart ordinate. Keep turning scan directions,
+                // flat tangents and device-upturn controls on their established
+                // profile; ordinary spans and stub eligibility remain separate.
+                if (fractional && b.Y > Math.Min(a.Y, c.Y) && b.Y < Math.Max(a.Y, c.Y) && b.X >= Math.Min(a.X, c.X))
+                {
+                    double precision = 64;
+                    for (int depth = 0; depth < 32; depth++)
+                    {
+                        work.Consume(token);
+                        double lo = Math.Floor(t * precision) / precision, hi = Math.Ceiling(t * precision) / precision;
+                        double first = a.X + lo * (2 * (b.X - a.X) + lo * (a.X - 2 * b.X + c.X));
+                        double second = a.X + hi * (2 * (b.X - a.X) + hi * (a.X - 2 * b.X + c.X));
+                        if (Math.Abs(first - second) <= 1d / 32) return Math.Ceiling(Math.Max(first, second) * 64) / 64;
+                        precision *= 2;
+                    }
+                    throw new SvgException(SvgErrorCode.LimitExceeded, "The smart glyph profile exceeds its bounded parameter precision.");
+                }
                 const int scanPrecision = 64;
                 int crossingPrecision = fractional ? 128 : scanPrecision;
                 // Adapts FreeType 2.13.2 ftraster.c: fixed-point midpoint
