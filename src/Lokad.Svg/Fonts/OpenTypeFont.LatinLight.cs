@@ -12,6 +12,7 @@ internal static partial class OpenTypeFont
     {
         if (!double.IsFinite(deviceSize) || deviceSize <= 0 || deviceSize > 32767) throw new SvgException(SvgErrorCode.LimitExceeded, "The hinted font size exceeds the native coordinate range.");
         work.Consume(cancellationToken);
+        bool nonBase = IsNonBase(bytes, glyphIndex, metrics, work, cancellationToken);
         using OpenTypeSimpleGlyphStructureStorage structure = GetGlyphStructure(bytes, glyphIndex, metrics, budget, work, cancellationToken, true);
         // Native light outlines average signed 26.6 implied points toward zero.
         if (structure.CompositeHeader is not null)
@@ -20,7 +21,7 @@ internal static partial class OpenTypeFont
             SubtractGlyphOrigin(outline.Points, GetHorizontalOrigin(bytes, glyphIndex, metrics, work, cancellationToken), work, cancellationToken);
             Span<LatinAlignmentZone> compositeZones = stackalloc LatinAlignmentZone[6];
             int compositeZoneCount = GetLatinAlignmentZones(bytes, metrics, compositeZones, budget, work, cancellationToken);
-            LatinLightHinting.Hint(outline.Points, outline.Ends, compositeZones[..compositeZoneCount], metrics.UnitsPerEm, deviceSize, GetLatinStemWidths(bytes, metrics, budget, work, cancellationToken), budget, work, cancellationToken);
+            LatinLightHinting.Hint(outline.Points, outline.Ends, compositeZones[..compositeZoneCount], metrics.UnitsPerEm, deviceSize, GetLatinStemWidths(bytes, metrics, budget, work, cancellationToken), !nonBase, budget, work, cancellationToken);
             using OpenTypeSegmentAccumulator compositeSegments = new(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, work, cancellationToken);
             BuildQuadraticContours(outline.Points, outline.Ends, compositeSegments, true, TrueTypeImpliedPointRounding.TowardZero, work, cancellationToken);
             return compositeSegments.Detach();
@@ -30,10 +31,27 @@ internal static partial class OpenTypeFont
         SubtractGlyphOrigin(points.Points, GetHorizontalOrigin(bytes, glyphIndex, metrics, work, cancellationToken), work, cancellationToken);
         Span<LatinAlignmentZone> zones = stackalloc LatinAlignmentZone[6];
         int zoneCount = GetLatinAlignmentZones(bytes, metrics, zones, budget, work, cancellationToken);
-        LatinLightHinting.Hint(points.Points, structure.Value.ContourEndpoints, zones[..zoneCount], metrics.UnitsPerEm, deviceSize, GetLatinStemWidths(bytes, metrics, budget, work, cancellationToken), budget, work, cancellationToken);
+        LatinLightHinting.Hint(points.Points, structure.Value.ContourEndpoints, zones[..zoneCount], metrics.UnitsPerEm, deviceSize, GetLatinStemWidths(bytes, metrics, budget, work, cancellationToken), !nonBase, budget, work, cancellationToken);
         using var segments = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.SimpleSegmentCapacity, GlyphDecoderBudgetPhase.SimpleSegmentExact, GlyphDecoderBudgetPhase.SimpleContourBoundaryCapacity, GlyphDecoderBudgetPhase.SimpleContourBoundaryExact, work, cancellationToken);
         BuildQuadraticContours(points.Points, structure.Value.ContourEndpoints, segments, true, TrueTypeImpliedPointRounding.TowardZero, work, cancellationToken);
         return segments.Detach();
+
+        static bool IsNonBase(ReadOnlyMemory<byte> bytes, ushort glyph, OpenTypeFontMetrics metrics, ParserWorkCounter work, CancellationToken token)
+        {
+            if (glyph == 0 || metrics.Cmap is null) return false;
+            // Skrifa 0.43.2 generated Latin style ranges. Classification belongs
+            // to the cmap glyph, including aliases, not the requested scalar.
+            // It changes alignment only; admitting a mapping does not enable
+            // mark shaping or expand the supported text subset.
+            ReadOnlySpan<(int First, int Last)> ranges = [(94, 96), (126, 126), (168, 169), (174, 176), (180, 180), (184, 184), (188, 190), (697, 735), (741, 879), (6832, 6846), (7616, 7679), (8215, 8215), (8254, 8254), (42888, 42888), (43002, 43002)];
+            foreach ((int first, int last) in ranges)
+                for (int scalar = first; scalar <= last; scalar++)
+                {
+                    work.Consume(token);
+                    if (GetGlyphIndex(bytes, (uint)scalar, metrics, work, token) == glyph) return true;
+                }
+            return false;
+        }
     }
 
     /// <summary>Measures linked widths and the native edge-merging allowance from one bounded standard glyph.</summary>
@@ -143,6 +161,9 @@ internal static class LatinLightHinting
         => Hint(source, ends, zones, unitsPerEm, size, new(0, unitsPerEm * 50 / 2048 / 5), budget, work, token);
 
     internal static void Hint(Span<OpenTypeGlyphPoint> source, ReadOnlySpan<ushort> ends, ReadOnlySpan<LatinAlignmentZone> zones, int unitsPerEm, double size, LatinStemWidths stemWidths, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        => Hint(source, ends, zones, unitsPerEm, size, stemWidths, true, budget, work, token);
+
+    internal static void Hint(Span<OpenTypeGlyphPoint> source, ReadOnlySpan<ushort> ends, ReadOnlySpan<LatinAlignmentZone> zones, int unitsPerEm, double size, LatinStemWidths stemWidths, bool alignBlueZones, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         if (!double.IsFinite(size) || size <= 0 || size > 32767) throw Limit("The hinted font size exceeds the native coordinate range.");
         work.Consume(token);
@@ -192,7 +213,7 @@ internal static class LatinLightHinting
             LinkSegments(segments, major, unitsPerEm, stemWidths.MaximumWidth, work, token);
             using BudgetedParserList<HintEdge> edges = new(budget, SvgMemoryCategory.Geometry, work, token);
             BuildEdges(segments, edges, yScale, stemWidths.EdgeDistanceThreshold, work, token);
-            FitEdges(edges, zones, yScale, unitsPerEm, major, work, token);
+            FitEdges(edges, alignBlueZones ? zones : [], yScale, unitsPerEm, major, work, token);
             AlignPoints(points, ends, segments, edges, work, token);
         }
         for (int i = 0; i < source.Length; i++)

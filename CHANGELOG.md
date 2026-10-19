@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Preserve Linux Latin non-base glyph fitting through cmap aliases and composite
+  glyphs, skipping alignment-zone matching while retaining scale and stem fitting.
+- Preserve ordered neighbors when restoring Windows dropout candidates, and
+  clamp reduced conic equations to their native terminal bounds.
 - Extend bounded TrueType hinting with physical super-rounding, projection
   vectors, coordinate/relative moves, MIN/MAX and ODD/EVEN, preserving native
   Windows/Linux rounding and glyph-local state.

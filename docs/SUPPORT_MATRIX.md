@@ -266,10 +266,15 @@ native curve-tag changes and the documented VacuFormRound function-zero switch.
 Natural LCD dropout selection retains nearest-row lower bounds, observes earlier
 surviving spans and rounds monotonic conic endpoints before LCD expansion.
 Excluded stubs cannot suppress later strokes; turning arcs retain their distinct
-subdivision behavior. Original native controls cover these cases.
+subdivision behavior. Restored candidates observe the same ordered neighbors,
+and reduced conic equations stay within their terminal bounds.
+Original native controls cover these cases.
 Fitted initial points and control values retain the Windows signed half-unit rule;
 Latin light fitting keeps nearby edges distinct according to the measured
 standard stem width, with a quarter-pixel maximum merging allowance.
+Mapped Latin non-base glyphs retain scale adjustment and stem fitting but skip
+alignment-zone matches. Classification follows glyph identity through cmap aliases
+and composites; it does not enable mark shaping.
 Pending edges constrain fitted stems unless the bound would collapse the stem
 to a quarter pixel or less; unlinked serifs retain their original relative offsets.
 Instruction-free static programs retain their metric origins and native masks,

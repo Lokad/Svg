@@ -7,6 +7,23 @@ namespace Lokad.Svg.Tests;
 public sealed partial class SvgGlyphLcdCoverageTests
 {
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Natural_inherited_candidates_observe_preceding_surviving_dropouts(bool preceding)
+    {
+        // Original CC0 bar and shallow quadratic cap: UPEM 2048, em 32,
+        // origin (20,80), SCANCTRL 511 / SCANTYPE 5. Independent native masks
+        // retain row 71 alone, or only row 70 when the preceding bar is present.
+        // The rounded legacy profile reaches a center that the implicit scan
+        // misses; restoring it still observes the already selected neighbor.
+        OpenTypeOutlinePoint a = new(20, 71.484375), b = new(20, 71.0625), c = new(26.25, 71.0625), d = new(26.25, 71.484375);
+        OpenTypeQuadraticSegment[] segments = [new(a, b, b), new(b, c, c), new(c, d, d), new(d, new(23.125, 71.515625), a), .. Rectangle(35, 64, 36, 80)];
+        if (preceding) segments = [.. Rectangle(20, 70.0625, 26.25, 70.375), .. segments];
+        byte[] expected = preceding ? [0, 0, 0, 255, 255, 255, 0, 0, 0, 0, 0, 0] : [0, 0, 0, 0, 0, 0, 255, 255, 255, 0, 0, 0];
+        AssertNaturalRows(segments, false, true, 22, 69, 1, 4, expected);
+    }
+
+    [Theory]
     [InlineData(false, 2, "AAAAAAAAAFWq/6pVAAAAAAAAVar//////6pVAFWq////qlUA")]
     [InlineData(false, 3, "AAAAAAAAACuA1dWAKwAAAAAAK4DV/////9WAKyuA1f//1YAr")]
     [InlineData(true, 2, "AAAAAAAAAFWq//////+qVQAAAAAAAAAAAAAAK4DV/6pVAAAAAABVqv//qlUAAAAAAAArgNX//6pVAAAAAABVqv//1YArAAAAAAAAAAAAAFWq//////+qVQAAAAAAAAAA")]

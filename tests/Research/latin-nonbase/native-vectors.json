@@ -1,0 +1,95 @@
+{
+  "source": "Skrifa 0.43.2 / read-fonts 0.40.1 / font-types 0.12.0, Auto / Light, original test fonts",
+  "cases": [
+    {
+      "font": "Base.ttf",
+      "glyph": 1,
+      "size": 11.5,
+      "left": 0.0,
+      "bottom": 420.0,
+      "right": 221.0,
+      "top": 512.0
+    },
+    {
+      "font": "Base.ttf",
+      "glyph": 1,
+      "size": 16.0,
+      "left": 0.0,
+      "bottom": 581.0,
+      "right": 307.0,
+      "top": 704.0
+    },
+    {
+      "font": "Base.ttf",
+      "glyph": 2,
+      "size": 11.5,
+      "left": 0.0,
+      "bottom": 492.0,
+      "right": 221.0,
+      "top": 584.0
+    },
+    {
+      "font": "Base.ttf",
+      "glyph": 2,
+      "size": 16.0,
+      "left": 0.0,
+      "bottom": 640.0,
+      "right": 307.0,
+      "top": 763.0
+    },
+    {
+      "font": "Base.ttf",
+      "glyph": 6,
+      "size": 11.5,
+      "left": 0.0,
+      "bottom": 492.0,
+      "right": 221.0,
+      "top": 584.0
+    },
+    {
+      "font": "Base.ttf",
+      "glyph": 6,
+      "size": 16.0,
+      "left": 0.0,
+      "bottom": 640.0,
+      "right": 307.0,
+      "top": 763.0
+    },
+    {
+      "font": "Alias.ttf",
+      "glyph": 1,
+      "size": 11.5,
+      "left": 0.0,
+      "bottom": 492.0,
+      "right": 221.0,
+      "top": 584.0
+    },
+    {
+      "font": "Alias.ttf",
+      "glyph": 1,
+      "size": 16.0,
+      "left": 0.0,
+      "bottom": 640.0,
+      "right": 307.0,
+      "top": 763.0
+    },
+    {
+      "font": "Alias.ttf",
+      "glyph": 6,
+      "size": 11.5,
+      "left": 0.0,
+      "bottom": 492.0,
+      "right": 221.0,
+      "top": 584.0
+    },
+    {
+      "font": "Alias.ttf",
+      "glyph": 6,
+      "size": 16.0,
+      "left": 0.0,
+      "bottom": 640.0,
+      "right": 307.0,
+      "top": 763.0
+    }
+  ]
+}
