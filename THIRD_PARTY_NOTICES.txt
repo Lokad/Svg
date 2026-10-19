@@ -228,7 +228,7 @@ DEALINGS IN THE SOFTWARE.
 
 Lokad.Svg contains managed adaptations of FreeType 2.13.2 TrueType
 instruction arithmetic, CVT scaling, untouched-point interpolation and composite
-child/parent fitting and placement, and bounded fixed-point line and quadratic scan
+child/parent fitting and placement, and bounded fixed-point quadratic scan
 profiles with smart dropout rounding. These adaptations have no native FreeType
 runtime dependency.
 Source release: FreeType 2.13.2

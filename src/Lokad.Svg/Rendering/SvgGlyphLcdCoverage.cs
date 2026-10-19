@@ -142,11 +142,16 @@ internal static class SvgGlyphLcdCoverage
         // Native scan bounds round to cells before choosing a smart dropout.
         // Preserve a nonempty interval for strokes thinner than one cell.
         double leftBound = Math.Floor(minX + .5), topBound = Math.Floor(minY + .5), rightBound = Math.Floor(maxX + .5), bottomBound = Math.Floor(maxY + .5);
-        // Natural scans start at the containing row; their lower exclusive
-        // dropout bound retains nearest-row rounding, including a fractional cap.
-        if (mode == SvgGlyphLcdMode.Natural) topBound = Math.Floor(minY);
+        // Natural upper bounds round in the upward font coordinate system;
+        // an exact half-row cap still owns the touched row. The lower exclusive
+        // bound retains its independent nearest-row rounding.
+        if (mode == SvgGlyphLcdMode.Natural) topBound = Math.Ceiling(minY - .5);
         if (leftBound == rightBound) { leftBound = Math.Floor(minX); rightBound = Math.Ceiling(maxX); }
-        if (topBound == bottomBound) { topBound = Math.Floor(minY); bottomBound = Math.Ceiling(maxY); }
+        if (topBound == bottomBound)
+        {
+            if (mode == SvgGlyphLcdMode.Natural && minY < maxY) topBound = bottomBound - 1;
+            else { topBound = Math.Floor(minY); bottomBound = Math.Ceiling(maxY); }
+        }
         return new(dropouts, leftBound, topBound, rightBound, bottomBound) { Simple = simpleDropouts, Mode = mode, ExcludeStubs = excludeStubs };
 
         void Bound(OpenTypeOutlinePoint point)
@@ -425,17 +430,18 @@ internal static class SvgGlyphLcdCoverage
                         {
                             work.Consume(token);
                             CellCoverage cell = candidates[index];
-                            if (mode == SvgGlyphLcdMode.Symmetric && !simple && missing[index] != CellCoverage.None && (cell & CellCoverage.Dropout) != 0)
+                            if (!simple && (mode == SvgGlyphLcdMode.Symmetric || !horizontal) && missing[index] != CellCoverage.None && (cell & CellCoverage.Dropout) != 0)
                             {
-                                // Native symmetric smart coverage retains a
-                                // corner when both scans select the same cell.
-                                // Check before retiring narrow candidates. This
-                                // query cannot recurse into stub removal; the
-                                // simple/natural streaming path stays separate.
+                                // Both scans can support a corner before narrow
+                                // candidates retire. Natural coverage keeps it
+                                // in the first pass; its second pass observes
+                                // that cell through the ordered neighbor check.
+                                // The opposite query disables stub recursion.
                                 double center = origin + index;
-                                int count = Gather(segments, mapped, center, !horizontal, false, scratch, mode, work, token, out _);
-                                CellCoverage perpendicular = Classify(scratch[..count], sample, !horizontal, true, false, false, [], 0,
-                                    double.NegativeInfinity, double.PositiveInfinity, default, out _, work, token);
+                                bool oppositeNatural = mode == SvgGlyphLcdMode.Natural && !horizontal;
+                                int count = Gather(segments, mapped, center, !horizontal, false, scratch, mode, oppositeNatural, work, token, out _);
+                                CellCoverage perpendicular = Classify(scratch[..count], sample, !horizontal, true, false, oppositeNatural, [], 0,
+                                    double.NegativeInfinity, double.PositiveInfinity, new(segments, mapped, center, false, mode), out _, work, token);
                                 if ((perpendicular & CellCoverage.Dropout) != 0) missing[index] = CellCoverage.None;
                             }
                             CellCoverage wide = ((cell & CellCoverage.LowerWideGap) != 0 ? CellCoverage.LowerGap : CellCoverage.None)
@@ -662,8 +668,9 @@ internal static class SvgGlyphLcdCoverage
                 if (upper ? a.Y < sample && sample <= c.Y || c.Y < sample && sample <= a.Y : a.Y <= sample && sample < c.Y || c.Y <= sample && sample < a.Y)
                 {
                     double position = a.X + (c.X - a.X) * (sample - a.Y) / (c.Y - a.Y);
-                    scratch[count++] = new(position, c.Y > a.Y ? 1 : -1)
-                    { DropoutPosition = legacy && horizontal ? NaturalLineProfile(position, sample, a, c, work, token) : legacy ? position : Math.Floor(position * 64 + .5) / 64 };
+                    // Span ownership retains the analytical crossing; the
+                    // shared crossing value rounds its dropout coordinate.
+                    scratch[count++] = new(position, c.Y > a.Y ? 1 : -1);
                 }
                 continue;
             }
@@ -683,29 +690,6 @@ internal static class SvgGlyphLcdCoverage
             scratch[j] = item;
         }
         return count;
-        static double NaturalLineProfile(double crossing, double sample, OpenTypeOutlinePoint a, OpenTypeOutlinePoint c, ParserWorkCounter work, CancellationToken token)
-        {
-            // Adapts FreeType 2.13.2 ftraster.c Line_Up/Line_Down. Natural
-            // smart line profiles retain a guard bit. Seed the first crossed
-            // cell with signed nearest interpolation, then carry the remainder
-            // in contour direction. Skip directly to the requested cell;
-            // span ownership and stub checks keep the analytic crossing.
-            work.Consume(token);
-            const int precision = 128;
-            long ax = -(long)(a.X * precision) - precision / 2, cx = -(long)(c.X * precision) - precision / 2;
-            long ay = (long)(a.Y * precision) - precision / 2, cy = (long)(c.Y * precision) - precision / 2;
-            long target = (long)(sample * precision) - precision / 2;
-            if (ay > cy) { ay = -ay; cy = -cy; target = -target; }
-            long first = (long)Math.Ceiling(ay / (double)precision) * precision;
-            long dx = cx - ax, dy = cy - ay, steps = (target - first) / precision;
-            if (dy <= 0 || steps < 0) return crossing;
-            Int128 initial = (Int128)dx * (first - ay);
-            long seed = ax + (long)((initial < 0 ? -1 : 1) * ((Int128.Abs(initial) + dy / 2) / dy));
-            long step = (long)((Int128)precision * dx / dy);
-            long remainder = (long)((Int128)precision * Int128.Abs(dx) % dy);
-            Int128 position = seed + (Int128)steps * step + (Int128)steps * remainder / dy * Math.Sign(dx);
-            return -(double)(position + precision / 2) / precision;
-        }
         static void Include(double t, OpenTypeQuadraticSegment source, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, double A, double B, double sample, bool horizontal, bool upper, bool legacy, SvgGlyphLcdMode mode, Span<Crossing> scratch, ParserWorkCounter work, CancellationToken token, ref int count)
         {
             if (t is < 0 or > 1) return;
