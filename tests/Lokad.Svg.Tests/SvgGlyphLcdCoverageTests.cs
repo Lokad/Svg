@@ -128,9 +128,10 @@ public sealed partial class SvgGlyphLcdCoverageTests
         // Original CC0 font: UPEM 1024, em 16, rectangle (0,0)-(384,1),
         // prep SCANCTRL 511, SCANTYPE 2 or 4. Native symmetric LCD texture
         // at an interior pixel is respectively (0,0,0) or (28,28,28).
-        OpenTypeQuadraticSegment[] segments = Rectangle(0, 0, 6, 1d / 64);
+        // Upward font Y maps to negative device Y; native row -1 owns it.
+        OpenTypeQuadraticSegment[] segments = Rectangle(0, -1d / 64, 6, 0);
         SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[8];
-        Assert.Equal(new SvgGlyphRgbCoverage(expected, expected, expected), SvgGlyphLcdCoverage.GetCoverage(segments, 2, 0, scratch, enabled, new(long.MaxValue), CancellationToken.None));
+        Assert.Equal(new SvgGlyphRgbCoverage(expected, expected, expected), SvgGlyphLcdCoverage.GetCoverage(segments, 2, -1, scratch, enabled, new(long.MaxValue), CancellationToken.None));
     }
 
     [Fact]
@@ -265,11 +266,11 @@ public sealed partial class SvgGlyphLcdCoverageTests
     public void Unprepared_pressure_route_keeps_independent_native_dropout_coverage()
     {
         RenderBudget budget = new(1_000);
-        OpenTypeQuadraticSegment[] segments = Rectangle(0, 0, 6, 1d / 64);
+        OpenTypeQuadraticSegment[] segments = Rectangle(0, -1d / 64, 6, 0);
         Assert.Null(SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, budget, new(long.MaxValue), CancellationToken.None));
         SvgGlyphLcdCoverage.DropoutBounds bounds = SvgGlyphLcdCoverage.PrepareBounds(segments, true, new(long.MaxValue), CancellationToken.None);
         // Same unchanged independent native thin-stroke result as above.
-        Assert.Equal(new SvgGlyphRgbCoverage(28, 28, 28), SvgGlyphLcdCoverage.GetCoverage(segments, 2, 0, new SvgGlyphLcdCoverage.Crossing[8], bounds, new(long.MaxValue), CancellationToken.None));
+        Assert.Equal(new SvgGlyphRgbCoverage(28, 28, 28), SvgGlyphLcdCoverage.GetCoverage(segments, 2, -1, new SvgGlyphLcdCoverage.Crossing[8], bounds, new(long.MaxValue), CancellationToken.None));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(0, budget.Snapshot().DeniedReservationCount);
     }

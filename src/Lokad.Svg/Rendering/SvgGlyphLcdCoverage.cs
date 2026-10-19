@@ -149,7 +149,9 @@ internal static class SvgGlyphLcdCoverage
         if (leftBound == rightBound) { leftBound = Math.Floor(minX); rightBound = Math.Ceiling(maxX); }
         if (topBound == bottomBound)
         {
-            if (mode == SvgGlyphLcdMode.Natural && minY < maxY) topBound = bottomBound - 1;
+            // A positive-height glyph keeps its rounded exclusive bottom;
+            // moving that bound down changes the selected row and filter weight.
+            if (minY < maxY) topBound = bottomBound - 1;
             else { topBound = Math.Floor(minY); bottomBound = Math.Ceiling(maxY); }
         }
         return new(dropouts, leftBound, topBound, rightBound, bottomBound) { Simple = simpleDropouts, Mode = mode, ExcludeStubs = excludeStubs };
@@ -453,9 +455,10 @@ internal static class SvgGlyphLcdCoverage
                     bool endpoint = false;
                     for (int side = 0; side < 2; side++)
                     {
-                        // A symmetric smart half-scan can end at the exact
-                        // vertex that supplies a wide corner's continuation.
-                        if (side != 0 && (!endpoint || mode != SvgGlyphLcdMode.Natural && (simple || stage == 0))) break;
+                        // Full scans retain terminating vertices from either
+                        // directed limit. Symmetric smart half-scans only own
+                        // an exact gap endpoint through the opposite limit.
+                        if (side != 0 && (!endpoint || mode != SvgGlyphLcdMode.Natural && simple)) break;
                         bool pending = false;
                         for (int index = 0; index < candidates.Length; index++) { work.Consume(token); pending |= missing[index] != CellCoverage.None; }
                         if (!pending) break;
@@ -479,7 +482,7 @@ internal static class SvgGlyphLcdCoverage
                             double center = origin + index;
                             bool includeVertex = mode == SvgGlyphLcdMode.Natural || stage == 0 && endpoint;
                             bool includeTouch = stage != 0 || side != 0 || endpoint && includeVertex;
-                            bool boundaryVertex = side != 0 && mode == SvgGlyphLcdMode.Symmetric;
+                            bool boundaryVertex = stage != 0 && side != 0 && mode == SvgGlyphLcdMode.Symmetric;
                             // A half-scan overshoot must reach the chosen cell
                             // center. The symmetric opposite limit instead owns
                             // an exact gap endpoint, as on the full scan.

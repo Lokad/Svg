@@ -7,6 +7,27 @@ namespace Lokad.Svg.Tests;
 public sealed partial class SvgGlyphLcdCoverageTests
 {
     [Theory]
+    [InlineData(0, false, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
+    [InlineData(0, true, "AAAAAAAAAAAAAAAAAAAAAAAAAA8ZHg4FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
+    [InlineData(1, false, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
+    [InlineData(1, true, "AAAAAAAAAAAAAAAAAAAAAAAAAAsaHxQFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
+    [InlineData(3, false, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
+    [InlineData(3, true, "AAAAAAAAAAAAAAAAAAAAAAAAAAUUGRQFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
+    public void Symmetric_stubs_preserve_the_opposite_limit_at_a_full_scan_vertex(int shift, bool enabled, string rgb)
+    {
+        // Original CC0 triangle, independent DirectWrite RGB: UPEM 2048,
+        // em 32, origin (20.25,80), gasp 15, SCANCTRL 511 / SCANTYPE 2/5.
+        // At shift zero the rightmost vertex belongs to the opposite directed
+        // limit. Adjacent phases and disabled dropouts retain their full masks.
+        OpenTypeOutlinePoint a = P(16 + shift, 200), b = P(80 + shift, 200), c = P(40 + shift, 212);
+        OpenTypeQuadraticSegment[] segments = [new(a, b, b), new(b, c, c), new(c, a, a),
+            .. Rectangle(30 + 1d / 3, 64, 31 + 1d / 3, 80)];
+        AssertSymmetricNativeRows(segments, enabled, false, enabled, 19, 75, 5, 4, rgb);
+
+        static OpenTypeOutlinePoint P(int x, int y) => new(20 + 1d / 3 + x / 64d, 80 - y / 64d);
+    }
+
+    [Theory]
     [InlineData(0, false, "AAAAAAAAAAAAAAAAAAAAAAAAAAspSHSLbTYAAAAAAAAAAAAAAAUODgkAAAAAAAAAAAAAAAAAAAAAAAAA")]
     [InlineData(0, true, "AAAAAAAAAAAAAAAAAAAAAAAAAA8uTXSLbTYAAAAAAAAAAAAAAAUODgkAAAAAAAAAAAAAAAAAAAAAAAAA")]
     [InlineData(1, false, "AAAAAAAAAAAAAAAAAAAAAAAAAAspSHSLbTYAAAAAAAAAAAAAAAAJCQkAAAAAAAAAAAAAAAAAAAAAAAAA")]

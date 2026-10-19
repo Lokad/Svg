@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve symmetric Windows thin-glyph bounds and terminating vertices from
+  both directed limits of a full scan, keeping half-scan stub rules distinct.
 - Preserve natural Windows glyph bounds and quantized line dropout crossings;
   retain first-pass corners supported by both scan directions.
 - Preserve signed ideal-outline half rounding and authored scanner controls in

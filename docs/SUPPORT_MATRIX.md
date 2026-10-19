@@ -274,9 +274,8 @@ retain implied half-unit ordinates through direction-normalized subdivision
 before six-bit profile emission. Scan ordinates stay six-bit; on-grid curves
 retain their span profile for midpoint selection. Fill, span ownership and stub
 continuation retain separate crossings.
-Natural line smart midpoints retain a guard bit, seed interpolation at the first
-crossed cell and carry its signed remainder in contour direction. Analytical
-line crossings still determine span ownership and stub continuation.
+Natural line smart midpoints round crossings to 1/64 sampling cells independently
+of the analytical crossings used for span ownership and stub continuation.
 [Line controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.NaturalLines.cs)
 cover distinct slopes, reversed contours and signed origins.
 [Native ordinate controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.NaturalOrdinates.cs)
@@ -286,9 +285,15 @@ ordinary line-span ownership.
 cover monotonic bands, an on-grid guard and turning rings at both retained
 strike phases.
 Symmetric smart dropout control retains corners supported by both scan
-directions; half-scan continuation owns exact gap-endpoint vertices. Original
+directions and terminating vertices from either directed limit of a full scan;
+half-scan continuation owns exact gap-endpoint vertices. Original
 [corner controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.SymmetricCorners.cs)
 also protect nearby phases, excluded upright/bar stubs and disabled dropouts.
+[Stub controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.SymmetricStubs.cs)
+distinguish full-scan vertices from half-scan overshoot. Positive-height glyphs
+whose rounded height collapses retain their exclusive bottom bound;
+[thin-glyph controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.SymmetricBounds.cs)
+protect the selected row and filter weight, including negative origins.
 Straight-edge smart midpoint selection rounds symmetric crossings to 1/64
 sampling cells before averaging. [Native midpoint controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.SmartMidpoints.cs)
 cover both scan directions, signed positions and rounding counterexamples.
