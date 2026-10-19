@@ -713,7 +713,8 @@ internal static class SvgGlyphLcdCoverage
             // Six LCD columns expand one glyph-grid X unit. Smart midpoint
             // profiles use rounded native points on that grid; fractional X
             // endpoints retain their independent half-unit crossing precision.
-            // Preserve authored profiles when no point precision was lost.
+            // Integral monotonic scans share the parameter profile unless a
+            // flat crossing tangent requires its authored grid profile.
             // Span and stub eligibility keep the separate legacy profile.
             if (legacy && horizontal && t is > 0 and < 1 && derivative != 0)
             {
@@ -724,6 +725,8 @@ internal static class SvgGlyphLcdCoverage
                     double precise = p.X + t * (2 * (q.X - p.X) + t * (p.X - 2 * q.X + r.X));
                     dropoutPosition = FixedProfile(t, precise, sample, p, q, r, horizontal, fractional ? ConicProfile.NaturalSmart : ConicProfile.NaturalSmartGrid, work, token);
                 }
+                else if (q.Y > Math.Min(p.Y, r.Y) && q.Y < Math.Max(p.Y, r.Y) && q.X > Math.Min(p.X, r.X))
+                    dropoutPosition = ParameterProfile(t, p.X, q.X, r.X, work, token);
             }
             scratch[count++] = new(crossing, Math.Sign(derivative)) { DropoutPosition = dropoutPosition };
 
@@ -732,6 +735,21 @@ internal static class SvgGlyphLcdCoverage
                 if (!fractional) return Map(point, horizontal, SvgGlyphLcdMode.Natural);
                 double x = Math.Floor(point.X * 384 + .5) / 64, y = Math.Floor(point.Y * 128 + .5) / 128;
                 return horizontal ? new(y, x) : new(x, y);
+            }
+
+            static double ParameterProfile(double t, double a, double b, double c, ParserWorkCounter work, CancellationToken token)
+            {
+                double precision = 64;
+                for (int depth = 0; depth < 32; depth++)
+                {
+                    work.Consume(token);
+                    double lo = Math.Floor(t * precision) / precision, hi = Math.Ceiling(t * precision) / precision;
+                    double first = a + lo * (2 * (b - a) + lo * (a - 2 * b + c));
+                    double second = a + hi * (2 * (b - a) + hi * (a - 2 * b + c));
+                    if (Math.Abs(first - second) <= 1d / 32) return Math.Ceiling(Math.Max(first, second) * 64) / 64;
+                    precision *= 2;
+                }
+                throw new SvgException(SvgErrorCode.LimitExceeded, "The smart glyph profile exceeds its bounded parameter precision.");
             }
 
             static double FixedProfile(double t, double crossing, double sample, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, bool horizontal, ConicProfile profile, ParserWorkCounter work, CancellationToken token)
@@ -743,19 +761,7 @@ internal static class SvgGlyphLcdCoverage
                 // flat tangents and device-upturn controls on their established
                 // profile; ordinary spans and stub eligibility remain separate.
                 if (fractional && b.Y > Math.Min(a.Y, c.Y) && b.Y < Math.Max(a.Y, c.Y) && b.X >= Math.Min(a.X, c.X))
-                {
-                    double precision = 64;
-                    for (int depth = 0; depth < 32; depth++)
-                    {
-                        work.Consume(token);
-                        double lo = Math.Floor(t * precision) / precision, hi = Math.Ceiling(t * precision) / precision;
-                        double first = a.X + lo * (2 * (b.X - a.X) + lo * (a.X - 2 * b.X + c.X));
-                        double second = a.X + hi * (2 * (b.X - a.X) + hi * (a.X - 2 * b.X + c.X));
-                        if (Math.Abs(first - second) <= 1d / 32) return Math.Ceiling(Math.Max(first, second) * 64) / 64;
-                        precision *= 2;
-                    }
-                    throw new SvgException(SvgErrorCode.LimitExceeded, "The smart glyph profile exceeds its bounded parameter precision.");
-                }
+                    return ParameterProfile(t, a.X, b.X, c.X, work, token);
                 const int scanPrecision = 64;
                 int crossingPrecision = fractional ? 128 : scanPrecision;
                 // Adapts FreeType 2.13.2 ftraster.c: fixed-point midpoint

@@ -130,9 +130,10 @@ Windows conic fill preserves control-midpoint rounding through turning arcs.
 Natural smart dropout profiles recover rounded grid points where span rounding
 loses precision, preserving integral-point and fractional-endpoint profiles
 separately from ordinary fill and span/stub eligibility.
-Fractional monotonic scans bound their parameter precision before smart ordinate
-emission; turning scans, flat tangents and controls above both endpoints retain
-their existing profiles. Subdivision and precision work stay bounded and cancellable.
+Fractional and integral monotonic scans share bounded parameter precision before
+smart ordinate emission; integral scans with flat crossing tangents retain their
+authored profile. Turning scans, flat scan tangents and controls above both
+endpoints retain their existing profiles. Precision work stays bounded and cancellable.
 Exact references are platform-specific. See the [font support boundary](SUPPORT_MATRIX.md#text-and-fonts)
 and [public qualification](../tests/Research/public-font-qualification/README.md).
 

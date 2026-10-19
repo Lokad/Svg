@@ -2,8 +2,8 @@
 
 ## Unreleased
 
-- Preserve natural Windows fractional conic smart ordinates with bounded
-  parameter precision, retaining existing turning and flat-tangent profiles.
+- Preserve natural Windows fractional and integral conic smart ordinates with
+  bounded parameter precision, retaining existing turning and flat-tangent profiles.
 - Correct natural Windows conic smart midpoints where glyph-grid rounding loses
   point precision, preserving integral-point and fractional-endpoint profiles.
 - Preserve ordinary Windows conic fill through turning arcs, rounding control
