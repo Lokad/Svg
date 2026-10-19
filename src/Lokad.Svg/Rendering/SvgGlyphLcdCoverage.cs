@@ -585,7 +585,9 @@ internal static class SvgGlyphLcdCoverage
                     // Native clockwise font contours include exact center
                     // borders; their reverse excludes them. Device Y points
                     // downward, and exchanging axes reverses the winding.
-                    bool closed = horizontal ? previous > 0 : previous < 0;
+                    // Natural legacy spans can restore an existing dropout
+                    // candidate through either contour direction.
+                    bool closed = natural || (horizontal ? previous > 0 : previous < 0);
                     if (sample > left && sample < right || boundary && closed)
                     {
                         value |= CellCoverage.Interior;

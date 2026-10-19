@@ -134,6 +134,8 @@ Fractional and integral monotonic scans share bounded parameter precision before
 smart ordinate emission; integral scans with flat crossing tangents retain their
 authored profile. Turning scans, flat scan tangents and controls above both
 endpoints retain their existing profiles. Precision work stays bounded and cancellable.
+Natural legacy spans restore existing dropout candidates on either contour
+direction; ordinary borders retain directed ownership.
 Exact references are platform-specific. See the [font support boundary](SUPPORT_MATRIX.md#text-and-fonts)
 and [public qualification](../tests/Research/public-font-qualification/README.md).
 

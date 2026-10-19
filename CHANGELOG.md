@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve natural smart dropout candidates on closed span boundaries through
+  contour reversal, retaining ordinary directed border ownership.
 - Preserve natural Windows fractional and integral conic smart ordinates with
   bounded parameter precision, retaining existing turning and flat-tangent profiles.
 - Correct natural Windows conic smart midpoints where glyph-grid rounding loses
