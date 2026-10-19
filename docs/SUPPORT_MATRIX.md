@@ -273,9 +273,12 @@ Symmetric smart dropout control retains corners supported by both scan
 directions; half-scan continuation owns exact gap-endpoint vertices. Original
 [corner controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.SymmetricCorners.cs)
 also protect nearby phases, excluded upright/bar stubs and disabled dropouts.
-Smart midpoint selection rounds symmetric profile crossings to 1/64 sampling
-cells before averaging. [Native midpoint controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.SmartMidpoints.cs)
+Straight-edge smart midpoint selection rounds symmetric crossings to 1/64
+sampling cells before averaging. [Native midpoint controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.SmartMidpoints.cs)
 cover both scan directions, signed positions and rounding counterexamples.
+Conic dropout selection retains bounded twelve-bit profiles separately from
+ordinary fill; [native conic controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.SymmetricConics.cs)
+cover small implied-point caps, curved stems, nearby phases and signed positions.
 Fitted initial points and control values retain Windows floating-point scale
 precision and signed half-unit rounding, as do axial original distances and
 font-unit control writes. [Original native controls](../tests/Research/windows-font-unit-scaling/README.md)

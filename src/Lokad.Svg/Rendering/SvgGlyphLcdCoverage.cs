@@ -33,8 +33,11 @@ internal readonly record struct SvgGlyphRgbCoverage(byte Red, byte Green, byte B
 internal static class SvgGlyphLcdCoverage
 {
     private const int CellColumns = 11;
-    /// <summary>One directed scan crossing in borrowed scratch; never retained.</summary>
-    internal readonly record struct Crossing(double Position, int Direction);
+    /// <summary>One directed crossing with independent fill/dropout positions in borrowed scratch; never retained.</summary>
+    internal readonly record struct Crossing(double Position, int Direction)
+    {
+        internal double DropoutPosition { get; init; } = Math.Floor(Position * 64 + .5) / 64;
+    }
 
     internal readonly record struct MappedSegment(OpenTypeOutlinePoint Start, OpenTypeOutlinePoint Control, OpenTypeOutlinePoint End, bool IsLine);
 
@@ -548,16 +551,16 @@ internal static class SvgGlyphLcdCoverage
         static CellCoverage Classify(ReadOnlySpan<Crossing> crossings, double sample, bool horizontal, bool dropouts, bool simple, bool natural, ReadOnlySpan<CellCoverage> earlier, int earlierOffset, double lowerBound, double upperBound, DropoutScan scan, out double precedingDropout, ParserWorkCounter work, CancellationToken token)
         {
             precedingDropout = double.NegativeInfinity;
-            int winding = 0; double left = 0; CellCoverage value = CellCoverage.None;
+            int winding = 0; double left = 0, profileLeft = 0; CellCoverage value = CellCoverage.None;
             double previousDropout = double.NegativeInfinity;
             for (int i = 0; i < crossings.Length;)
             {
-                double position = crossings[i].Position; int previous = winding;
+                double position = crossings[i].Position, profilePosition = crossings[i].DropoutPosition; int previous = winding;
                 // Coalesce coincident transitions before deciding ownership.
                 // Zero-width spans and tangencies remain eligible for enabled
                 // smart dropouts, while normal winding still cancels.
                 do { work.Consume(token); winding += crossings[i++].Direction; } while (i < crossings.Length && crossings[i].Position == position);
-                if (previous == 0 && winding != 0) left = position;
+                if (previous == 0 && winding != 0) { left = position; profileLeft = profilePosition; }
                 else if (previous != 0 && winding == 0)
                 {
                     double right = position; if (!(right > left)) continue;
@@ -573,28 +576,28 @@ internal static class SvgGlyphLcdCoverage
                     }
                     if (closed && sample >= left && sample <= right) value |= CellCoverage.Closed;
                     if (boundary) value |= CellCoverage.Boundary;
-                    if (dropouts && IsDropout(left, right, crossings, sample, horizontal, simple, natural, earlier, earlierOffset, lowerBound, upperBound, ref previousDropout, scan, work, token, out bool lowerGap))
+                    if (dropouts && IsDropout(left, right, profileLeft, profilePosition, crossings, sample, horizontal, simple, natural, earlier, earlierOffset, lowerBound, upperBound, ref previousDropout, scan, work, token, out bool lowerGap))
                         value |= CellCoverage.Dropout | (lowerGap ? CellCoverage.LowerGap : CellCoverage.UpperGap) | (right - left >= .5 ? lowerGap ? CellCoverage.LowerWideGap : CellCoverage.UpperWideGap : CellCoverage.None);
                 }
-                else if (dropouts && previous == 0 && winding == 0 && IsDropout(position, position, crossings, sample, horizontal, simple, natural, earlier, earlierOffset, lowerBound, upperBound, ref previousDropout, scan, work, token, out bool lowerGap)) value |= CellCoverage.Dropout | (lowerGap ? CellCoverage.LowerGap : CellCoverage.UpperGap);
+                else if (dropouts && previous == 0 && winding == 0 && IsDropout(position, position, profilePosition, profilePosition, crossings, sample, horizontal, simple, natural, earlier, earlierOffset, lowerBound, upperBound, ref previousDropout, scan, work, token, out bool lowerGap)) value |= CellCoverage.Dropout | (lowerGap ? CellCoverage.LowerGap : CellCoverage.UpperGap);
             }
             return value;
 
-            static bool IsDropout(double start, double end, ReadOnlySpan<Crossing> crossings, double sample, bool horizontal, bool simple, bool natural, ReadOnlySpan<CellCoverage> earlier, int earlierOffset, double lowerBound, double upperBound, ref double previousDropout, DropoutScan scan, ParserWorkCounter work, CancellationToken token, out bool lowerGap)
+            static bool IsDropout(double start, double end, double profileStart, double profileEnd, ReadOnlySpan<Crossing> crossings, double sample, bool horizontal, bool simple, bool natural, ReadOnlySpan<CellCoverage> earlier, int earlierOffset, double lowerBound, double upperBound, ref double previousDropout, DropoutScan scan, ParserWorkCounter work, CancellationToken token, out bool lowerGap)
             {
                 lowerGap = false;
                 double first = Math.Ceiling(start - .5), last = Math.Floor(end - .5);
                 if (first != last + 1) return false;
-                // Symmetric smart selection averages crossings rounded to 1/64
-                // sampling cells. Round absolute positions toward positive
-                // infinity at ties, including negative device coordinates.
+                // Straight profiles retain 1/64 sampling cells; conic profiles
+                // use bounded high-precision subdivision independently of fill.
+                // The smart bias below preserves the straight-profile tie rule.
                 double midpoint = !simple && !natural && scan.Mode == SvgGlyphLcdMode.Symmetric
-                    ? (Math.Floor(start * 64 + .5) + Math.Floor(end * 64 + .5)) / 128
+                    ? (profileStart + profileEnd) * .5
                     : (start + end) * .5;
                 // Natural SMART's 63/64-cell term is evaluated in upward
                 // coordinates after the fixed-point profile's center shift.
                 double selected = simple ? horizontal ? first : last
-                    : natural ? horizontal ? Math.Ceiling(midpoint + 1d / 128) - 1 : Math.Floor(midpoint - 1d / 128)
+                    : natural || scan.Mode == SvgGlyphLcdMode.Symmetric ? horizontal ? Math.Ceiling(midpoint + 1d / 128) - 1 : Math.Floor(midpoint - 1d / 128)
                     : horizontal ? Math.Floor(midpoint) : Math.Ceiling(midpoint) - 1;
                 // A tip on an exclusive contour bound selects the other cell.
                 if (selected < lowerBound || selected >= upperBound) selected = selected == first ? last : first;
@@ -653,11 +656,11 @@ internal static class SvgGlyphLcdCoverage
                 continue;
             }
             double A = a.Y - 2 * b.Y + c.Y, B = 2 * (b.Y - a.Y), C = a.Y - sample;
-            if (A == 0) { if (B != 0) Include(-C / B, a, b, c, A, B, sample, horizontal, upper, legacy, scratch, work, token, ref count); continue; }
+            if (A == 0) { if (B != 0) Include(-C / B, a, b, c, A, B, sample, horizontal, upper, legacy, mode, scratch, work, token, ref count); continue; }
             double discriminant = B * B - 4 * A * C; if (discriminant < 0) continue;
             double root = Math.Sqrt(discriminant);
-            Include((-B + root) / (2 * A), a, b, c, A, B, sample, horizontal, upper, legacy, scratch, work, token, ref count);
-            if (root != 0) Include((-B - root) / (2 * A), a, b, c, A, B, sample, horizontal, upper, legacy, scratch, work, token, ref count);
+            Include((-B + root) / (2 * A), a, b, c, A, B, sample, horizontal, upper, legacy, mode, scratch, work, token, ref count);
+            if (root != 0) Include((-B - root) / (2 * A), a, b, c, A, B, sample, horizontal, upper, legacy, mode, scratch, work, token, ref count);
         }
         for (int i = 1; i < count; i++)
         {
@@ -668,7 +671,7 @@ internal static class SvgGlyphLcdCoverage
             scratch[j] = item;
         }
         return count;
-        static void Include(double t, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, double A, double B, double sample, bool horizontal, bool upper, bool legacy, Span<Crossing> scratch, ParserWorkCounter work, CancellationToken token, ref int count)
+        static void Include(double t, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, double A, double B, double sample, bool horizontal, bool upper, bool legacy, SvgGlyphLcdMode mode, Span<Crossing> scratch, ParserWorkCounter work, CancellationToken token, ref int count)
         {
             if (t is < 0 or > 1) return;
             double derivative = B + 2 * A * t;
@@ -679,22 +682,27 @@ internal static class SvgGlyphLcdCoverage
             // Horner evaluation leaves a constant coordinate exact. A
             // Bernstein sum can drift across a center on a straight stem.
             double crossing = a.X + t * (2 * (b.X - a.X) + t * (a.X - 2 * b.X + c.X));
+            double analytic = crossing;
             if (t is > 0 and < 1 && derivative != 0)
-                crossing = legacy ? Legacy(t, crossing, sample, a, b, c, horizontal, work, token) : Adjust(crossing, sample, a, b, c, horizontal, work, token);
-            scratch[count++] = new(crossing, Math.Sign(derivative));
+                crossing = legacy ? Legacy(t, crossing, sample, a, b, c, horizontal, false, work, token) : Adjust(crossing, sample, a, b, c, horizontal, work, token);
+            double dropoutPosition = !legacy && mode == SvgGlyphLcdMode.Symmetric && t is > 0 and < 1 && derivative != 0
+                ? Legacy(t, analytic, sample, a, b, c, horizontal, true, work, token) : Math.Floor(crossing * 64 + .5) / 64;
+            scratch[count++] = new(crossing, Math.Sign(derivative)) { DropoutPosition = dropoutPosition };
 
-            static double Legacy(double t, double crossing, double sample, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, bool horizontal, ParserWorkCounter work, CancellationToken token)
+            static double Legacy(double t, double crossing, double sample, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, bool horizontal, bool highPrecision, ParserWorkCounter work, CancellationToken token)
             {
-                // FreeType 2.13.2 ftraster.c: fixed F26 midpoint subdivision,
-                // then signed linear interpolation below half a scan cell.
+                int precision = highPrecision ? 4096 : 64;
+                // Adapts FreeType 2.13.2 ftraster.c: fixed-point midpoint
+                // subdivision, then signed linear interpolation. Natural uses
+                // six-bit profiles; symmetric conics use twelve-bit profiles.
                 // The original analytic root selects a non-monotonic branch;
                 // monotonic leaves are selected by their actual scan ordinate.
                 int xs = horizontal ? -1 : 1, ys = horizontal ? 1 : -1;
-                (long X, long Y) p = ((long)(a.X * 64) * xs, (long)(a.Y * 64) * ys);
-                (long X, long Y) q = ((long)(b.X * 64) * xs, (long)(b.Y * 64) * ys);
-                (long X, long Y) r = ((long)(c.X * 64) * xs, (long)(c.Y * 64) * ys);
-                long target = (long)(sample * 64) * ys;
-                if (horizontal && q.Y >= Math.Min(p.Y, r.Y) && q.Y <= Math.Max(p.Y, r.Y))
+                (long X, long Y) p = ((long)(a.X * precision) * xs, (long)(a.Y * precision) * ys);
+                (long X, long Y) q = ((long)(b.X * precision) * xs, (long)(b.Y * precision) * ys);
+                (long X, long Y) r = ((long)(c.X * precision) * xs, (long)(c.Y * precision) * ys);
+                long target = (long)(sample * precision) * ys;
+                if (!highPrecision && horizontal && q.Y >= Math.Min(p.Y, r.Y) && q.Y <= Math.Max(p.Y, r.Y))
                 {
                     // Native monotonic profiles round implied X endpoints on
                     // the glyph grid before LCD expansion. A real control
@@ -708,8 +716,8 @@ internal static class SvgGlyphLcdCoverage
                     work.Consume(token);
                     bool monotonic = q.Y >= Math.Min(p.Y, r.Y) && q.Y <= Math.Max(p.Y, r.Y);
                     if (monotonic && p.Y > r.Y) { p.Y = -p.Y; q.Y = -q.Y; r.Y = -r.Y; target = -target; }
-                    if (monotonic && r.Y - p.Y < 32)
-                        return r.Y == p.Y ? crossing : (p.X + (long)((Int128)(r.X - p.X) * (target - p.Y) / (r.Y - p.Y))) / 64d * xs;
+                    if (monotonic && r.Y - p.Y < (highPrecision ? 256 : 32))
+                        return r.Y == p.Y ? crossing : (p.X + (long)((Int128)(r.X - p.X) * (target - p.Y) / (r.Y - p.Y))) / (double)precision * xs;
                     (long X, long Y) left = ((p.X + q.X) >> 1, (p.Y + q.Y) >> 1);
                     (long X, long Y) right = ((q.X + r.X) >> 1, (q.Y + r.Y) >> 1);
                     (long X, long Y) middle = ((p.X + 2 * q.X + r.X) >> 2, (p.Y + 2 * q.Y + r.Y) >> 2);
