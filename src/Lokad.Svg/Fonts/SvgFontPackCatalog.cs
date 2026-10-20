@@ -278,11 +278,12 @@ public sealed class SvgFontPackCatalog
     {
         if (entries is null) return [];
         var fallbacks = new List<string>(entries.Length);
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (WireFallback? entry in entries)
         {
             if (entry is null) throw InvalidManifest("The font pack manifest contains an empty fallback entry.");
             string family = RequiredText(entry.Family, "fallback font family");
-            if (!fallbacks.Contains(family, StringComparer.OrdinalIgnoreCase)) fallbacks.Add(family);
+            if (seen.Add(family)) fallbacks.Add(family);
         }
         return fallbacks.ToArray();
     }

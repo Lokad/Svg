@@ -27,6 +27,18 @@ public sealed class SvgFontPackCatalogTests
     private const string HashB = "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
 
     [Fact]
+    public void Large_fallback_lists_keep_first_spelling_and_source_order()
+    {
+        string[] families = Enumerable.Range(0, 16_000).Select(index => "Family" + index).ToArray();
+        string fallbacks = System.Text.Json.JsonSerializer.Serialize(families.Concat(families.Reverse().Select(family => family.ToUpperInvariant()))
+            .Select(family => new { family }));
+        SvgFontPackCatalog catalog = Parse(Manifest("test-pack", fallbacks,
+            """{ "requestedFamily": "Example", "resolvedFamily": "Example", "relativeFontFile": "files/regular.ttf" }"""));
+
+        Assert.Equal(families, catalog.FallbackFamilies);
+    }
+
+    [Fact]
     public void Parses_public_manifest_defaults_case_insensitively_and_ignores_unknown_properties()
     {
         SvgFontPackCatalog catalog = Parse("""
