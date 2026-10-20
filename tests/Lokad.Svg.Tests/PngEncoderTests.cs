@@ -290,6 +290,29 @@ public sealed class PngEncoderTests
         return pixels;
     }
 
+    [Theory]
+    [InlineData(127)]
+    [InlineData(128)]
+    [InlineData(180)]
+    [InlineData(181)]
+    public void Owned_and_caller_memory_limits_match_stream_output_near_idat_boundaries(int side)
+    {
+        byte[] pixels = new byte[side * side * 4];
+        uint state = 0x12345678;
+        for (int index = 0; index < pixels.Length; index++) { state = state * 1664525 + 1013904223; pixels[index] = (byte)(state >> 24); }
+        using MemoryStream stream = new();
+        int length = PngEncoder.EncodeTo(side, side, pixels, stream, new RenderBudget(long.MaxValue), int.MaxValue, CancellationToken.None);
+        byte[] expected = stream.ToArray();
+        byte[] destination = new byte[length];
+
+        Assert.Equal(expected, PngEncoder.Encode(side, side, pixels, length, CancellationToken.None));
+        Assert.Equal(length, PngEncoder.EncodeInto(side, side, pixels, destination, length, CancellationToken.None));
+        Assert.Equal(expected, destination);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => PngEncoder.Encode(side, side, pixels, length - 1, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => PngEncoder.EncodeInto(side, side, pixels, destination, length - 1, CancellationToken.None)).ErrorCode);
+        Assert.True(CountBoundedIdatChunks(expected) >= 1);
+    }
+
     private static byte[] CreateHighEntropyPixels()
     {
         byte[] pixels = new byte[512 * 512 * 4];

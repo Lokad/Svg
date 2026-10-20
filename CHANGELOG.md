@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Calculate PNG compression allowances directly instead of iterating over the
+  configured output limit on every memory conversion.
 - Reject URI-escaped FontProbe pack traversal before issuing an HTTP request.
 - Grow contour storage only for short output buffers; preserve depth, segment
   and numeric failures without repeated allocation or masked diagnostics.

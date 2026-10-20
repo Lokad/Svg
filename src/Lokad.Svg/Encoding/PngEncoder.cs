@@ -154,14 +154,11 @@ internal static class PngEncoder
 
     private static int GetMaximumCompressedLength(int maximumEncodedPngBytes)
     {
-        int maximumCompressedLength = 0;
-        for (int idatChunkCount = 1; ; idatChunkCount++)
-        {
-            long lowerBound = (long)(idatChunkCount - 1) * MaximumIdatPayloadBytes;
-            long upperBound = Math.Min((long)idatChunkCount * MaximumIdatPayloadBytes, (long)maximumEncodedPngBytes - FixedPngBytesWithoutIdat - (long)idatChunkCount * PngChunkOverheadBytes);
-            if (upperBound <= lowerBound) return maximumCompressedLength;
-            maximumCompressedLength = checked((int)upperBound);
-        }
+        // Pay for complete IDAT chunks first; a final partial chunk needs its own overhead.
+        int available = maximumEncodedPngBytes - FixedPngBytesWithoutIdat;
+        int chunkBytes = MaximumIdatPayloadBytes + PngChunkOverheadBytes;
+        return available / chunkBytes * MaximumIdatPayloadBytes
+            + Math.Max(0, available % chunkBytes - PngChunkOverheadBytes);
     }
 
     private static void WritePng(int width, int height, PngSegmentedBuffer compressed, Span<byte> output, PngWorkCounter workCounter, CancellationToken cancellationToken)
