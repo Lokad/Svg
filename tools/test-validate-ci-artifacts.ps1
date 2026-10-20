@@ -325,15 +325,16 @@ $remoteChrome = Join-Path $runDirectory 'chrome-remote-worker'
 $remoteFingerprintPath = Copy-ChromeFingerprint $remoteChrome
 $remoteFingerprint = Get-Content -LiteralPath $remoteFingerprintPath -Raw | ConvertFrom-Json
 $remoteOs = if ($Platform -eq 'Windows') { 'Microsoft Windows Server 2025 (recorded worker)' } else { 'Ubuntu 24.04.3 LTS (recorded worker)' }
+$remoteHostFramework = if ([Runtime.InteropServices.RuntimeInformation]::FrameworkDescription -ceq '.NET 9.0.7') { '.NET 9.0.8' } else { '.NET 9.0.7' }
 $remoteFingerprint.operatingSystem = $remoteOs
-$remoteFingerprint.hostRuntimeFramework = '.NET 9.0.7'
+$remoteFingerprint.hostRuntimeFramework = $remoteHostFramework
 $remoteFingerprint.captureToolRuntimeFramework = '.NET 10.0.8'
 $remoteFingerprint.dotnetRuntimes = @('10.0.8')
 $remoteFingerprint | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $remoteFingerprintPath -NoNewline -Encoding utf8
 $remoteMemory = Join-Path $runDirectory 'memory-remote-worker'
 $remoteSummaryPath = Copy-MemorySummary $remoteMemory
 $remoteSummary = Get-Content -LiteralPath $remoteSummaryPath.FullName -Raw | ConvertFrom-Json
-$remoteSummary.hostRuntimeFramework = '.NET 9.0.7'
+$remoteSummary.hostRuntimeFramework = $remoteHostFramework
 $remoteSummary.dotnetRuntimes = @('10.0.8')
 $remoteSummary.runtimeFingerprint.operatingSystem = $remoteOs
 $remoteSummary.runtimeFingerprint.runtimeFramework = '.NET 10.0.8'
@@ -369,7 +370,7 @@ foreach ($name in @('version', 'chromiumRevision', 'platform', 'archiveSha256', 
     $remoteFingerprint.$fingerprintName = $otherPin.$name
 }
 $remoteFingerprint.operatingSystem = if ($otherPlatform -eq 'Windows') { 'Microsoft Windows Server 2025' } else { 'Ubuntu 24.04.3 LTS' }
-$remoteFingerprint.hostRuntimeFramework = '.NET 9.0.7'
+$remoteFingerprint.hostRuntimeFramework = $remoteHostFramework
 foreach ($name in $goodNames) {
     $stderrPath = Join-Path $remoteChrome ($name + '.stderr.txt')
     $stderr = Get-Content -LiteralPath $stderrPath -Raw | ConvertFrom-Json

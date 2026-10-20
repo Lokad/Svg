@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Remove abandoned rasterizer prototypes, unused helpers and dormant parser modes.
+- Validate downloaded CI artifacts against their recorded environment; retain
+  producing-worker checks in CI.
 - Reuse each rendered leaf's cascaded declarations across parsing stages,
   preserving instance inheritance and deferred paint opacity.
 - Retire historical corporate-sweep tooling, aggregate reports and unconsumed
