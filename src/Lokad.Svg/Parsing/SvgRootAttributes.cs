@@ -17,12 +17,6 @@ internal readonly record struct SvgRootAttributes(SvgInheritedPresentation Inher
 
     internal double? UserViewportHeight => ViewBox?.Height ?? Height?.Resolve(ContainingViewport?.Height, 150) ?? ContainingViewport?.Height ?? 150;
 
-    internal static SvgRootAttributes Parse(XmlReader reader, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        SvgElementAttributePolicy.ValidateRoot(reader, workCounter, cancellationToken);
-        return ParseValues(reader, namedColors, default, workCounter, cancellationToken);
-    }
-
     /// <summary>Applies the collected root stylesheet before inherited presentation and intrinsic dimensions are resolved.</summary>
     internal static SvgRootAttributes Parse(XmlReader reader, IReadOnlyDictionary<string, SvgColor> namedColors, BudgetedParserList<CssRule> rules, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {

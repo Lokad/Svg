@@ -283,13 +283,6 @@ internal sealed class SvgPolygonFill : ISvgGeometryContent
         return Create(points, contourEnds, signs, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), color, hasFill, isEvenOdd, mapping, clip, reservation, budget);
     }
 
-    /// <summary>Creates one polygon fill carrying retained quadratic spans; adopts the caller scene reservation when supplied, which must cover exactly points, contourEnds, signs, quad spans and cubic spans, and otherwise reserves exact scene storage. Ownership transfers to the fill in both cases.</summary>
-    /// <summary>Creates one polygon fill carrying retained quadratic spans but no cubic spans.</summary>
-    internal static SvgPolygonFill Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgColor color, bool hasFill, bool isEvenOdd, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation, RenderBudget budget)
-    {
-        return Create(points, contourEnds, signs, quadSpans, Array.Empty<SvgCubicSpan>(), color, hasFill, isEvenOdd, mapping, clip, reservation, budget);
-    }
-
     /// <summary>Creates one polygon fill carrying retained quadratic and cubic spans.</summary>
     internal static SvgPolygonFill Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgColor color, bool hasFill, bool isEvenOdd, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation, RenderBudget budget)
     {
@@ -636,12 +629,6 @@ internal sealed class SvgPatternPolygon : ISvgGeometryContent
     internal SvgPolygonMapping Mapping { get; }
 
     internal SvgClipBox? Clip { get; }
-
-    /// <summary>Creates one pattern outline without recorded curves; spans stay empty on this route.</summary>
-    internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgRectangle content, SvgSolidPaint? contentPaint, double originX, double originY, double tileWidth, double tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
-    {
-        return Create(points, contourEnds, signs, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), content, contentPaint, originX, originY, tileWidth, tileHeight, hasFill, isEvenOdd, opacity, mapping, clip, budget);
-    }
 
     /// <summary>Creates one pattern outline carrying retained spans with exact scene storage.</summary>
     internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRectangle content, SvgSolidPaint? contentPaint, double originX, double originY, double tileWidth, double tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)

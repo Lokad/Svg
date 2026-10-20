@@ -93,12 +93,6 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
         return new SvgResolvedPaintableElement(painted, ResolveTransform(reader), ResolvePresentation(painted, acceptsStroke), OutputMagnification) { StrokeHostMap = StrokeHostMap };
     }
 
-    internal SvgResolvedPaintableElement ResolveShape(XmlReader reader, bool acceptsStroke, bool allowsDirectTextFontProperties)
-    {
-        SvgComputedStyle style = ResolveStyle(reader, allowsDirectTextFontProperties);
-        return new SvgResolvedPaintableElement(style, ResolveTransform(reader), ResolvePresentation(style, acceptsStroke), OutputMagnification) { StrokeHostMap = StrokeHostMap };
-    }
-
     /// <summary>Resolves direct text paint and retains its inline font declarations from the same bounded style scan.</summary>
     internal SvgResolvedDirectTextElement ResolveTextShape(XmlReader reader)
     {

@@ -23,12 +23,6 @@ internal sealed class BudgetedGeometryBuilder : IDisposable
         catch { geometry.Dispose(); throw; }
     }
 
-    internal void AddRange(ReadOnlySpan<SvgGeometry> geometries)
-    {
-        try { _items.AddRange(geometries); }
-        catch { foreach (SvgGeometry geometry in geometries) geometry.Dispose(); throw; }
-    }
-
     internal ReadOnlySpan<SvgGeometry> AsSpan() => _items.AsSpan();
 
     internal OwnedParserArray<SvgGeometry> Detach() => _items.Detach();

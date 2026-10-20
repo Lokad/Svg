@@ -180,14 +180,6 @@ internal static class SvgRootParser
         catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
     }
 
-    /// <summary>Parses one SVG document with a known root and output magnification for adaptive flattening.</summary>
-    internal static SvgRoot Parse(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken, double outputScaleX, double outputScaleY)
-    {
-        ArgumentNullException.ThrowIfNull(workCounter);
-        try { return ParseCore(svg, limits, budget, fontSnapshot, workCounter, cancellationToken, SvgAffineTransform.FromScale(outputScaleX, outputScaleY), null, 1); }
-        catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
-    }
-
     /// <summary>Parses one SVG document with a known root, output magnification and explicit viewport for nested percentage bases.</summary>
     internal static SvgRoot Parse(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken, double outputScaleX, double outputScaleY, SvgViewport? explicitViewport)
         => Parse(svg, limits, budget, fontSnapshot, workCounter, cancellationToken, SvgAffineTransform.FromScale(outputScaleX, outputScaleY), explicitViewport);
