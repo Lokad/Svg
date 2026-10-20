@@ -9,7 +9,7 @@ internal static class SvgXmlReaderPolicy
 {
     private const int PrologWorkspaceBytes = 32 * 1024;
 
-    /// <remarks>The caller retains immutable input and reserves its ordinary XML-reader workspace. This method owns and releases a fixed prolog workspace before returning settings. Prolog traversals charge the caller's work counter and check cancellation in bounded chunks. It creates no DOM or whole-input string, never resolves a resource, and is safe for concurrent independent calls. Internal subsets and duplicate declarations are rejected before the main reader can skip them.</remarks>
+    /// <remarks>The caller retains immutable input and reserves its ordinary XML-reader workspace. This method owns and releases a fixed prolog workspace plus any allowance for unusually long declaration tokens before returning settings. Prolog traversals charge the caller's work counter and check cancellation in bounded chunks. It creates no DOM or whole-input string, never resolves a resource, and is safe for concurrent independent calls. Internal subsets and duplicate declarations are rejected before the main reader can skip them.</remarks>
     internal static XmlReaderSettings Create(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -34,22 +34,19 @@ internal static class SvgXmlReaderPolicy
             using RenderBudget.BudgetReservation reservation = budget.Reserve(PrologWorkspaceBytes, SvgMemoryCategory.Parser);
             System.Text.Encoding encoding = stride switch { 2 => bigEndian ? System.Text.Encoding.BigEndianUnicode : System.Text.Encoding.Unicode, 4 => new UTF32Encoding(bigEndian, true, true), _ => System.Text.Encoding.UTF8 };
             // Let the BCL interpret the XML declaration's encoding, including aliases
-            // and supplied encoding providers. Prohibit DTDs during this single-node
-            // probe, which runs only when an XML declaration starts the document.
+            // and supplied encoding providers. Compact only unquoted whitespace:
+            // the BCL materializes this node, so padding must not grow its storage.
+            // Preserve the BOM, byte encoding and quoted values for BCL validation.
             if (start == offset && Match(bytes, start, stride, bigEndian, "<?xml") && IsSpace(Unit(bytes, start + 5 * stride, stride, bigEndian)))
             {
-                int end = start;
-                int quote = 0;
-                while (end < bytes.Length)
-                {
-                    if ((end - start) % ParserWorkCounter.ByteCheckpointSize == 0) workCounter.Consume(token);
-                    int value = Unit(bytes, end, stride, bigEndian);
-                    if (quote != 0) { if (value == quote) quote = 0; }
-                    else if (value is '\'' or '"') quote = value;
-                    else if (value == '?' && Unit(bytes, end + stride, stride, bigEndian) == '>') break;
-                    end += stride;
-                }
-                using ReadOnlyMemoryStream probeStream = new(svg);
+                int length = CompactDeclaration(bytes, stride, bigEndian, offset, Span<byte>.Empty, workCounter, token);
+                // The fixed workspace covers ordinary declarations and reader buffers.
+                // Longer tokens retain their grammar and get an explicit allowance for
+                // the compact bytes and the BCL's decoded node and growth buffers.
+                if (length > 1024) reservation.Grow(16L * length);
+                byte[] compact = new byte[length];
+                CompactDeclaration(bytes, stride, bigEndian, offset, compact, workCounter, token);
+                using ReadOnlyMemoryStream probeStream = new(compact);
                 using XmlTextReader probe = new(probeStream) { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null };
                 if (!probe.Read() || probe.NodeType != XmlNodeType.XmlDeclaration) throw Malformed();
                 encoding = probe.Encoding ?? throw Malformed();
@@ -94,6 +91,39 @@ internal static class SvgXmlReaderPolicy
             {
                 foreach (char value in expected) { if (Unit(input, position, unit, be) != value) return false; position += unit; }
                 return true;
+            }
+
+            static int CompactDeclaration(ReadOnlySpan<byte> input, int stride, bool bigEndian, int offset,
+                Span<byte> output, ParserWorkCounter counter, CancellationToken token)
+            {
+                int length = offset;
+                if (!output.IsEmpty) input[..offset].CopyTo(output);
+                int quote = 0;
+                bool previousSpace = false;
+                for (int position = offset; input.Length - position >= stride; position += stride)
+                {
+                    if ((position - offset) % ParserWorkCounter.ByteCheckpointSize == 0)
+                    {
+                        SvgXmlPrologProbe.Checkpoint(position - offset);
+                        counter.Consume(token);
+                    }
+                    int value = Unit(input, position, stride, bigEndian);
+                    bool space = quote == 0 && IsSpace(value);
+                    if (!(space && previousSpace))
+                    {
+                        if (!output.IsEmpty) input.Slice(position, stride).CopyTo(output[length..]);
+                        length += stride;
+                    }
+                    previousSpace = space;
+                    if (quote != 0) { if (value == quote) quote = 0; }
+                    else if (value is '\'' or '"') quote = value;
+                    else if (value == '?' && Unit(input, position + stride, stride, bigEndian) == '>')
+                    {
+                        if (!output.IsEmpty) input.Slice(position + stride, stride).CopyTo(output[length..]);
+                        return length + stride;
+                    }
+                }
+                throw Malformed();
             }
 
             static bool MatchText(ref PrologCursor input, ReadOnlySpan<char> expected)

@@ -9,6 +9,59 @@ public sealed class SvgDoctypeTests
 {
     private const string RedSvg = "<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2' viewBox='0 0 1 1' preserveAspectRatio='none'><rect width='1' height='1' fill='red'/></svg>";
 
+    [Theory]
+    [InlineData("utf8")]
+    [InlineData("utf8-bom")]
+    [InlineData("utf16le-bom")]
+    [InlineData("utf16be-bom")]
+    [InlineData("utf16le")]
+    [InlineData("utf16be")]
+    [InlineData("utf32le-bom")]
+    [InlineData("utf32be-bom")]
+    [InlineData("latin1")]
+    public void Padded_declarations_preserve_encoding_and_rendering(string encoding)
+    {
+        byte[] original = Encode("<!DOCTYPE svg>" + RedSvg, encoding, true);
+        byte[] padded = Encode("<!DOCTYPE svg>" + RedSvg, encoding, true, new string(' ', 20_000) + "\t\r\n");
+        Assert.Equal(SvgConverter.ConvertToPng(original, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(padded, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+        Assert.Empty(SvgFontRequestDiscovery.Discover(padded, CancellationToken.None));
+    }
+
+    [Theory]
+    [InlineData("<?xml {0}version='1.0' encoding='ASCII'{0}?>", true)]
+    [InlineData("<?xml{0}version{0}={0}\"1.0\"{0}encoding='iso-8859-1'{0}standalone='yes'{0}?>", true)]
+    [InlineData("<?xml{0}version='1.0' encoding='utf-{0}8'?>", false)]
+    [InlineData("<?xml{0}version='1.{0}0'?>", false)]
+    [InlineData("<?xml{0}version='1.0' standalone='y{0}es'?>", false)]
+    [InlineData("<?xml{0}version='1.0'encoding='UTF-8'?>", false)]
+    [InlineData("<?xml{0}encoding='UTF-8' version='1.0'?>", false)]
+    [InlineData("<?xml{0}version='1.0' version='1.0'?>", false)]
+    [InlineData("<?xml{0}version='1.0'", false)]
+    public void Declaration_compaction_preserves_grammar_and_quoted_values(string declaration, bool admitted)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(string.Format(System.Globalization.CultureInfo.InvariantCulture,
+            declaration, new string(' ', 4096)) + "<!DOCTYPE svg>" + RedSvg);
+        if (admitted)
+            Assert.Equal(SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(RedSvg), SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+                SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+        else
+            Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() =>
+                SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
+    }
+
+    [Fact]
+    public void Long_declaration_tokens_reserve_storage_before_the_encoding_probe()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<?xml version='1.0' encoding='" + new string('x', 10_000) + "'?>" + RedSvg);
+        RenderBudget budget = new(32 * 1024);
+        SvgException denied = Assert.Throws<SvgException>(() => SvgXmlReaderPolicy.Create(input,
+            SvgRenderLimits.Default, budget, new ParserWorkCounter(1000), CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
+        Assert.Equal(1, budget.Snapshot().DeniedReservationCount);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     public static IEnumerable<object[]> Documents()
     {
         (string Prolog, bool Admitted)[] cases =
@@ -202,6 +255,40 @@ public sealed class SvgDoctypeTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
+    public void Padded_declaration_work_denial_and_cancellation_release_storage(bool discovery)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<?xml version='1.0'" + new string(' ', 100_000) + "?>" + RedSvg);
+        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        ParserWorkCounter counter = new(2);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(CancellationToken.None)).ErrorCode);
+        Assert.Equal(2, counter.Used);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+
+        counter = new(1000);
+        using CancellationTokenSource cancellation = new();
+        int checkpoint = -1;
+        using IDisposable observer = SvgXmlPrologProbe.Arm(position =>
+        {
+            if (position >= ParserWorkCounter.ByteCheckpointSize)
+            {
+                checkpoint = position;
+                cancellation.Cancel();
+            }
+        });
+        Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => Run(cancellation.Token)).CancellationToken);
+        Assert.Equal(ParserWorkCounter.ByteCheckpointSize, checkpoint);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+
+        void Run(CancellationToken token)
+        {
+            if (discovery) SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, counter, budget, token);
+            else { using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, counter, token); }
+        }
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
     public void Prolog_workspace_is_reserved_before_allocation_and_released_on_denial(bool discovery)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<!DOCTYPE svg>" + RedSvg);
@@ -216,17 +303,21 @@ public sealed class SvgDoctypeTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
-    [Fact]
-    public void Guard_allocation_is_bounded_for_long_comments_and_system_identifiers()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Guard_allocation_is_bounded_for_long_prolog_padding(bool declaration)
     {
         RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
-        byte[] small = System.Text.Encoding.UTF8.GetBytes("<!--x--><!DOCTYPE svg SYSTEM 'uri'>" + RedSvg);
-        byte[] large = System.Text.Encoding.UTF8.GetBytes("<!--" + new string('x', 1_000_000) + "--><!DOCTYPE svg SYSTEM '" + new string('y', 1_000_000) + "'>" + RedSvg);
+        byte[] small = System.Text.Encoding.UTF8.GetBytes((declaration ? "<?xml version='1.0' ?>" : "<!--x--><!DOCTYPE svg SYSTEM 'uri'>") + RedSvg);
+        byte[] large = System.Text.Encoding.UTF8.GetBytes((declaration ? "<?xml version='1.0'" + new string(' ', 1_000_000) + "?>"
+            : "<!--" + new string('x', 1_000_000) + "--><!DOCTYPE svg SYSTEM '" + new string('y', 1_000_000) + "'>") + RedSvg);
         _ = Measure(small);
         _ = Measure(large);
         long smallBytes = Measure(small);
         long largeBytes = Measure(large);
         Assert.InRange(largeBytes, 0, smallBytes + 16_384);
+        Assert.InRange(largeBytes, 0, 32 * 1024);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
 
         long Measure(byte[] input)
@@ -237,7 +328,9 @@ public sealed class SvgDoctypeTests
         }
     }
 
-    private static byte[] Encode(string document, string name, bool includeDeclaration)
+    private static byte[] Encode(string document, string name, bool includeDeclaration) => Encode(document, name, includeDeclaration, " ");
+
+    private static byte[] Encode(string document, string name, bool includeDeclaration, string padding)
     {
         (System.Text.Encoding encoding, bool bom, string declaration) = name switch
         {
@@ -252,7 +345,7 @@ public sealed class SvgDoctypeTests
             "latin1" => (System.Text.Encoding.Latin1, false, "ISO-8859-1"),
             _ => throw new ArgumentException("Unknown encoding.", nameof(name))
         };
-        byte[] bytes = encoding.GetBytes((includeDeclaration ? "<?xml version='1.0' encoding='" + declaration + "'?><!--é-->" : "") + document);
+        byte[] bytes = encoding.GetBytes((includeDeclaration ? "<?xml" + padding + "version='1.0'" + padding + "encoding='" + declaration + "'" + padding + "?><!--é-->" : "") + document);
         return bom ? [.. encoding.GetPreamble(), .. bytes] : bytes;
     }
 }
