@@ -11,19 +11,20 @@ no extra identity hashes.
 keeps the recipe that produced it. Do not mass-update recipe revisions or replace
 pixels to accommodate renderer output.
 
-## Historical corporate cohort
+## Retained export evidence
 
-The immutable [selection](inventory/corporate-cohort-v1.json) declares 27 documents
-and 258 variants with root-only materializations. Source/license details live in
-[source metadata](inventory/corporate-cohort-sources.json), the
-[upstream response](inventory/corporate-cohort-upstream.json) and each document's
-`sourceMetadata`. These public-domain assets retain their trademark considerations;
-they are separate from the original CC0 catalog and are not package content.
+The former corporate sweep, capture command and aggregate measurements live in
+Git history; its document-count and percentage gates are [retired](../README.md#retired-collections).
+[Export sources](inventory/export-sources.json), the original
+[source metadata](inventory/corporate-cohort-sources.json) and
+[upstream response](inventory/corporate-cohort-upstream.json) retain source/license
+facts independently of the retired selection. These public-domain exports retain
+their trademark considerations and are not package content.
 
-The [Windows](inventory/corporate-cohort-current.json) and
-[Linux](inventory/corporate-cohort-linux64.json) records retain platform outcomes
-and references. This collection serves [optional measurement](../../tools/README.md#historical-corporate-cohort);
-its former whole-document/percentage gates are [retired](../README.md#retired-collections).
-The intended-size `inv-027` regression and its [native-route evidence](inventory/inv-027-native-route.json)
-remain active. Ford keeps its original reference identities. Reusable inputs,
-expected behavior and capture provenance belong here; raw diagnostics stay local.
+The intended-size `inv-027` regression keeps its [capture contract](inventory/inv-027-reference.json)
+and [native-route evidence](inventory/inv-027-native-route.json). Ford retains its
+original [variant references](inventory/inv-002-variants.json). Other retained
+native witnesses keep their [capture contracts](inventory/retained-export-references.json).
+Unconsumed cohort-only PNGs and root materializations are retired with the sweep.
+Reusable inputs, expected behavior and capture provenance belong here; raw
+diagnostics stay local.

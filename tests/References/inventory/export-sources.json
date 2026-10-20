@@ -1,0 +1,428 @@
+[
+  {
+    "id": "inv-001",
+    "sourcePath": "tests/Fixtures/candidates/inv-001.svg",
+    "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
+    "name": "SimpleLogin logo",
+    "sourceMetadata": {
+      "source": "Wikimedia Commons, File:SimpleLogin logo.svg. Retrieval 2026-09-26.",
+      "license": "PD-logo (simplelogin.io/press via Commons).",
+      "retrievalDate": "2026-09-26.",
+      "archetypes": "flat mark, linear gradient (2 stops)."
+    },
+    "rootAttributes": {
+      "width": "58.894",
+      "height": "57.681",
+      "viewBox": "0 0 58.894 57.681"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json"
+  },
+  {
+    "id": "inv-002",
+    "sourcePath": "tests/Fixtures/candidates/inv-002.svg",
+    "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+    "name": "Ford simple text logo",
+    "sourceMetadata": {
+      "source": "Wikimedia Commons, File:Ford simple text logo.svg. Retrieval 2026-09-26.",
+      "license": "PD-textlogo (ford.es via Commons).",
+      "retrievalDate": "2026-09-26.",
+      "archetypes": "text-as-paths outlined wordmark."
+    },
+    "rootAttributes": {
+      "viewBox": "0 0 500 200",
+      "width": "100%",
+      "height": "100%"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json"
+  },
+  {
+    "id": "inv-003",
+    "sourcePath": "tests/Fixtures/candidates/inv-003.svg",
+    "inputSha256": "a0b8cfefbf49be3b5d2e25f06f7592ef6249fa5d225a9843fdd37ff5c7450f1f",
+    "name": "Simple DirectMedia Layer (SDL) logo",
+    "sourceMetadata": {
+      "source": "Wikimedia Commons, File:Simple DirectMedia Layer, Logo.svg. Retrieval 2026-09-26.",
+      "license": "PD-textlogo (vectorised by uploader via Commons).",
+      "retrievalDate": "2026-09-26.",
+      "archetypes": "flat mark, radial gradient."
+    },
+    "rootAttributes": {
+      "width": "737.8",
+      "height": "371"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json"
+  },
+  {
+    "id": "inv-004",
+    "sourcePath": "tests/Fixtures/candidates/inv-004.svg",
+    "inputSha256": "bd196823376965820189695ee07a6ec6bcb792564653ef1d66bad5b2142dc5f5",
+    "name": "UAAR logo 2012",
+    "sourceMetadata": {
+      "source": "Wikimedia Commons, File:UAAR logo 2012.svg. Retrieval 2026-09-26.",
+      "license": "PD-TextLogo (vectorialized from PNG via Commons).",
+      "retrievalDate": "2026-09-26.",
+      "archetypes": "path mark."
+    },
+    "rootAttributes": {
+      "width": "594.87946",
+      "height": "739.14392",
+      "viewBox": "0 0 594.87943 739.14391"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json"
+  },
+  {
+    "id": "inv-005",
+    "sourcePath": "tests/Fixtures/candidates/inv-005.svg",
+    "inputSha256": "1f631699b6559197bf7a1163546388dd095f84e2b2e77a47a4dc2703b6c628b6",
+    "name": "SimpleX.chat logo",
+    "sourceMetadata": {
+      "source": "Wikimedia Commons, File:SimpleX.chat logo.svg. Retrieval 2026-09-26.",
+      "license": "PD-text-logo (github simplex-chat via Commons).",
+      "retrievalDate": "2026-09-26.",
+      "archetypes": "clipped composition."
+    },
+    "rootAttributes": {
+      "width": "815",
+      "height": "233",
+      "viewBox": "0 0 815 233"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json"
+  },
+  {
+    "id": "inv-006",
+    "sourcePath": "tests/Fixtures/candidates/inv-006.svg",
+    "inputSha256": "4a921b949c4dfda7a885b27d1a4eb693bdacb33ecc7a18bc41c9b9e985938588",
+    "name": "Omega logo",
+    "sourceMetadata": {
+      "source": "Wikimedia Commons, File:Omega logo.svg. Retrieval 2026-09-26.",
+      "license": "PD (Commons).",
+      "retrievalDate": "2026-09-26.",
+      "archetypes": "physical mm units, flat mark, defs container."
+    },
+    "rootAttributes": {
+      "width": "56.916664mm",
+      "height": "22.167889mm",
+      "viewBox": "0 0 56.916664 22.167889"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json"
+  },
+  {
+    "id": "inv-007",
+    "sourcePath": "tests/Fixtures/candidates/inv-007.svg",
+    "inputSha256": "dd9881fb39562630e4c13c97d8cf78c905f456d5461c77df8b18c91dd521658c",
+    "name": "Zeppelin logo",
+    "sourceMetadata": {
+      "source": "Wikimedia Commons, File:Zeppelin logo.svg. Retrieval 2026-09-26.",
+      "license": "PD (Commons).",
+      "retrievalDate": "2026-09-26.",
+      "archetypes": "transforms without viewBox."
+    },
+    "rootAttributes": {
+      "width": "500",
+      "height": "143"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json"
+  },
+  {
+    "id": "inv-008",
+    "sourcePath": "tests/Fixtures/candidates/inv-008.svg",
+    "inputSha256": "bbb81e14eab6c57ec3876c4a7e116fd38351f94b94a0a5bde954186a878b2de3",
+    "name": "Eisenbahn und Häfen logo",
+    "sourceMetadata": {
+      "source": "Wikimedia Commons, File:Eisenbahn und Häfen logo.svg. Retrieval 2026-09-26.",
+      "license": "PD (Commons).",
+      "retrievalDate": "2026-09-26.",
+      "archetypes": "stroked axis-aligned polyline."
+    },
+    "rootAttributes": {
+      "width": "72",
+      "height": "72"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json"
+  },
+  {
+    "id": "inv-009",
+    "sourcePath": "tests/Fixtures/candidates/inv-009.svg",
+    "inputSha256": "c8882446b5c341a41b0848187f375868ae4c94cc56efb7a2cfd5c5998f80971e",
+    "name": "Rede Manchete",
+    "sourceMetadata": {
+      "source": "Wikimedia Commons, File:Rede Manchete.svg. Retrieval 2026-09-26.",
+      "license": "PD (Commons).",
+      "retrievalDate": "2026-09-26.",
+      "archetypes": "strokes, round caps, degenerate zero-length segments."
+    },
+    "rootAttributes": {
+      "width": "500",
+      "height": "500"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json"
+  },
+  {
+    "id": "inv-010",
+    "sourcePath": "tests/Fixtures/candidates/inv-010.svg",
+    "inputSha256": "6be57e308a793eeead287b1601d31c95a1862de7fa9834625bc7c0a222d199a7",
+    "name": "ROC HCVS logo",
+    "sourceMetadata": {
+      "source": "Wikimedia Commons, File:ROC HCVS logo.svg. Retrieval 2026-09-26.",
+      "license": "PD (Commons).",
+      "retrievalDate": "2026-09-26.",
+      "archetypes": "dashed stroke."
+    },
+    "rootAttributes": {
+      "width": "200",
+      "height": "200"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json"
+  },
+  {
+    "id": "inv-011",
+    "sourcePath": "tests/Fixtures/candidates/inv-011.svg",
+    "inputSha256": "2be4865eaac5f4d128a6cf60dcc4f4f05e77939f96cda398ebf190e3f3190570",
+    "name": "Logo of Indonesian Red Cross",
+    "sourceMetadata": {
+      "source": "Wikimedia Commons, File:Logo of Indonesian Red Cross.svg. Retrieval 2026-09-26.",
+      "license": "PD (Commons).",
+      "retrievalDate": "2026-09-26.",
+      "archetypes": "viewBox-only viewport (no width/height), fractional coordinates."
+    },
+    "rootAttributes": {
+      "viewBox": "0 0 512 500"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json"
+  },
+  {
+    "id": "inv-012",
+    "sourcePath": "tests/Fixtures/candidates/inv-012.svg",
+    "inputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
+    "name": "SG Rotation Leipzig",
+    "sourceMetadata": {
+      "source": "Wikimedia Commons, File:SG Rotation Leipzig.svg. Retrieval 2026-09-26.",
+      "license": "PD (Commons).",
+      "retrievalDate": "2026-09-26.",
+      "archetypes": "many-contour wordmark, ellipse primitive, px units (unrenderable: DOCTYPE present)."
+    },
+    "rootAttributes": {
+      "width": "395.681px",
+      "height": "402.978px",
+      "viewBox": "0 0 395.681 402.978"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json"
+  },
+  {
+    "id": "inv-019",
+    "sourcePath": "tests/Fixtures/candidates/inv-019.svg",
+    "inputSha256": "469234acfdb4870e675bc2ad23ed8bf84a60f6a536d15cb5bb55dcf6943f15c1",
+    "name": "Tokyo Tsukurou",
+    "sourceMetadata": {
+      "source": "Wikimedia Commons, File:Tokyo Tsukurou.svg. Retrieval 2026-09-26.",
+      "license": "PD (Commons).",
+      "retrievalDate": "2026-09-26.",
+      "archetypes": "use-element instancing with transforms, circle primitives, sodipodi metadata."
+    },
+    "rootAttributes": {
+      "viewBox": "0 0 400 400",
+      "height": "400",
+      "width": "400"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json"
+  },
+  {
+    "id": "inv-020",
+    "sourcePath": "tests/Fixtures/candidates/inv-020.svg",
+    "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
+    "name": "Artsy-logo-mask",
+    "sourceMetadata": {
+      "source": "Wikimedia Commons, File:Artsy-logo-mask.svg. Retrieval 2026-09-26.",
+      "license": "PD (Commons).",
+      "retrievalDate": "2026-09-26.",
+      "archetypes": "Illustrator export profile, nonzero viewBox origin, version/enable-background/xml:space attributes (unrenderable: DOCTYPE present; no mask element despite title)."
+    },
+    "rootAttributes": {
+      "width": "1092.28px",
+      "height": "1093.651px",
+      "viewBox": "698.22 220.136 1092.28 1093.651"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json"
+  },
+  {
+    "id": "inv-026",
+    "sourcePath": "tests/Fixtures/candidates/inv-026.svg",
+    "inputSha256": "8de9a98498ab873dccc2ec90387c70572dc5298f084d4d344ab92b246a308d19",
+    "name": "Logo of the Party of Changes (Russia)",
+    "sourceMetadata": {
+      "source": "Wikimedia Commons, File:Logo of the Party of Changes (Russia).svg. Retrieval 2026-09-26.",
+      "license": "PD (Commons).",
+      "retrievalDate": "2026-09-26.",
+      "archetypes": "deeply nested wordmark, mm units, fractional coordinates."
+    },
+    "rootAttributes": {
+      "viewBox": "0 0 542.38336 148.05098",
+      "height": "148.05098mm",
+      "width": "542.38336mm"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json"
+  },
+  {
+    "id": "inv-027",
+    "sourcePath": "tests/Fixtures/candidates/inv-027.svg",
+    "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+    "name": "YouTube grey icon (2017)",
+    "sourceMetadata": {
+      "source": "Wikimedia Commons, File:YouTube grey icon (2017).svg. Retrieval 2026-09-26.",
+      "license": "PD-shape (Commons; depicted mark may carry trademark considerations).",
+      "retrievalDate": "2026-09-26.",
+      "archetypes": "nested svg viewport, style-sized dimensions, fractional curves."
+    },
+    "rootAttributes": {
+      "viewBox": "0 0 28.57  20",
+      "style": "pointer-events: none; display: block; width: 100%; height: 100%;"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json"
+  },
+  {
+    "id": "inv-040",
+    "sourcePath": "tests/Fixtures/candidates/inv-040.svg",
+    "inputSha256": "f7b0143b5ffe962021a45e93d241bf8140623a3439255c0cf010185ac69bd2e6",
+    "name": "Liputan 6 logo (2019)",
+    "sourceMetadata": {
+      "source": "Wikimedia Commons, File:Liputan 6 logo 2019.svg. Retrieval 2026-09-27. Upstream verification 2026-09-27 via Commons API: size 2620 and SHA-1 8888b4400ca119a75e451d1ab41e0b9a4114e03d match local bytes; LicenseShortName=Public domain (Restrictions=trademarked).",
+      "license": "PD-textlogo (Commons; depicted mark is trademarked).",
+      "retrievalDate": "2026-09-27.",
+      "archetypes": "outlined wordmark, paths-only letterforms, evenodd counters, gradient fill, fractional coordinates, single-quote syntax."
+    },
+    "rootAttributes": {
+      "width": "166",
+      "height": "22",
+      "viewBox": "0 0 166 22"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json"
+  },
+  {
+    "id": "inv-066",
+    "sourcePath": "tests/Fixtures/candidates/inv-066.svg",
+    "inputSha256": "3d231022940ebd788637e6ac532128b65304676d2404cf88101a7e0f4190634d",
+    "name": "NASA worm logotype",
+    "sourceMetadata": {
+      "source": "Wikimedia Commons, File:NASA Worm logo.svg. Retrieval 2026-09-27. Upstream verification 2026-09-27 via Commons API: size 2056 and SHA-1 a61b8bd68e3ae435c998f95d0651bdd434b974f4 match local bytes; LicenseShortName=Public domain.",
+      "license": "PD (Commons, US federal work; depicted insignia may carry non-copyright use restrictions).",
+      "retrievalDate": "2026-09-27.",
+      "archetypes": "outlined wordmark, fractional curves, counters, fractional dimensions, solid fills."
+    },
+    "rootAttributes": {
+      "width": "508.204",
+      "height": "141.732"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json"
+  },
+  {
+    "id": "inv-092",
+    "sourcePath": "tests/Fixtures/candidates/inv-092.svg",
+    "inputSha256": "71393b18081d477c03ec2f75828ccb19590d67a1f7b67068eab32f9aadad2232",
+    "name": "Blur wordmark",
+    "sourceMetadata": {
+      "source": "Wikimedia Commons, File:Blur-logo.svg. Retrieval 2026-09-27. Upstream verification 2026-09-27 via Commons API: size 4021 and SHA-1 c59bd600dca3ede660db304685abcadc768bccfc match local bytes; LicenseShortName=Public domain.",
+      "license": "PD (Commons, logo; depicted marks may carry trademark considerations).",
+      "retrievalDate": "2026-09-27.",
+      "archetypes": "fractional closed-cubic wordmark, root-style fill-rule and clip-rule, decimal pt dimensions, editor namespaces."
+    },
+    "rootAttributes": {
+      "viewBox": "0 0 600 322",
+      "width": "600.0pt",
+      "height": "322.0pt"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json"
+  },
+  {
+    "id": "inv-095",
+    "sourcePath": "tests/Fixtures/candidates/inv-095.svg",
+    "inputSha256": "54bb728904e14583753fcde786a9901b53ca9c8401ac207fb516841f9863c55a",
+    "name": "Nike",
+    "rootAttributes": {
+      "width": "1000",
+      "height": "356.39",
+      "viewBox": "135.5 361.38 1000 356.39"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json#inv-095"
+  },
+  {
+    "id": "inv-096",
+    "sourcePath": "tests/Fixtures/candidates/inv-096.svg",
+    "inputSha256": "0caeab22755b4ffe27adf39b595f8c8c8a16b687e600bae63666392b55afb0c4",
+    "name": "Toyota",
+    "rootAttributes": {
+      "width": "950",
+      "height": "612.5",
+      "viewBox": "0 0 251.4 162.1"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json#inv-096"
+  },
+  {
+    "id": "inv-097",
+    "sourcePath": "tests/Fixtures/candidates/inv-097.svg",
+    "inputSha256": "9431dae56a362881149c18f5d9a36eed8e6875a77342057362f0b2a70ea440ff",
+    "name": "Pepsi",
+    "rootAttributes": {
+      "width": "799.61",
+      "height": "799.59",
+      "viewBox": "0 0 211.56 211.56"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json#inv-097"
+  },
+  {
+    "id": "inv-098",
+    "sourcePath": "tests/Fixtures/candidates/inv-098.svg",
+    "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
+    "name": "Target",
+    "rootAttributes": {
+      "width": "768",
+      "height": "768",
+      "viewBox": "-3.825 -3.825 135.15 135.15"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json#inv-098"
+  },
+  {
+    "id": "inv-099",
+    "sourcePath": "tests/Fixtures/candidates/inv-099.svg",
+    "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
+    "name": "IBM",
+    "rootAttributes": {
+      "width": "1075px",
+      "height": "401.15px",
+      "viewBox": "0 0 1075 401.15"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json#inv-099"
+  },
+  {
+    "id": "inv-100",
+    "sourcePath": "tests/Fixtures/candidates/inv-100.svg",
+    "inputSha256": "d96e17feff64d1c5f61b2c2ca80e666110b6b6e2ccd3b317696905cc24ec6ae9",
+    "name": "IKEA",
+    "rootAttributes": {
+      "width": "100",
+      "height": "40"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json#inv-100"
+  },
+  {
+    "id": "inv-101",
+    "sourcePath": "tests/Fixtures/candidates/inv-101.svg",
+    "inputSha256": "a33a47a20c0ec6b0c13af43ae681bf73023e4a35f792cb055700e94d467f236d",
+    "name": "Google",
+    "rootAttributes": {
+      "viewBox": "0 0 272 92",
+      "width": "272",
+      "height": "92"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json#inv-101"
+  },
+  {
+    "id": "inv-102",
+    "sourcePath": "tests/Fixtures/candidates/inv-102.svg",
+    "inputSha256": "4fc464932a70e200ec6e825228543a8b3d3d12f73be9e47caee1d9a421daf52d",
+    "name": "Coca-Cola",
+    "rootAttributes": {
+      "viewBox": "0 0 615.08 192.94"
+    },
+    "provenance": "tests/References/inventory/corporate-cohort-sources.json#inv-102"
+  }
+]

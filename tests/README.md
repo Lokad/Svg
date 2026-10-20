@@ -70,7 +70,9 @@ before production adoption; public success makes no claim about that deployment.
 The upstream selection replaced full logo/export/icon/authored-sheet membership.
 Old document-count and percentage gates are retired. Local manifests identify
 surviving focused cases; assets needed for font provenance, API/resource contracts,
-benchmarks or [opt-in cohort measurement](../tools/README.md#historical-corporate-cohort)
-remain under those contracts without counting as active full documents.
-`CorporateCohortReferenceTests` retains the intended-size `inv-027` cubic-routing
-regression and its native-picture evidence.
+benchmarks remain under those contracts without counting as active full documents.
+The corporate capture/measurement workflow and its aggregate reports are retired
+to Git history. [Export provenance](References/README.md#retained-export-evidence)
+and focused references remain with their current consumers.
+[SvgCubicRouteReferenceTests](Lokad.Svg.VisualTests/SvgCubicRouteReferenceTests.cs)
+retains the intended-size `inv-027` cubic-routing regression and native-picture evidence.

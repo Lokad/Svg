@@ -156,27 +156,3 @@ additional identity hashes.
 For resource, package and isolated-conversion commands, see the repository
 [diagnostics](../README.md#diagnostic-tools). [FontProbe](Lokad.Svg.FontProbe/README.md)
 documents explicit local/HTTP font acquisition and host responsibilities.
-
-## Historical corporate cohort
-
-These opt-in commands measure a frozen historical selection, outside active
-[document qualification](../tests/README.md#retired-collections):
-
-```powershell
-tools/capture-corporate-cohort.ps1 -OutputDirectory artifacts/corporate-captures -CacheDirectory artifacts/chrome
-tools/capture-corporate-cohort.ps1 -OutputDirectory artifacts/corporate-large -CacheDirectory artifacts/chrome -CaseId inv-020-large-transparent,inv-026-large-transparent
-dotnet tools/Lokad.Svg.VisualDiff/bin/Release/net10.0/Lokad.Svg.VisualDiff.dll --cohort . artifacts/corporate-captures artifacts/corporate-report
-```
-
-Use the explicit Linux pin/cache for Linux capture. The batch authenticates the
-pin, frozen recipe/options and inputs, takes three sequential fresh captures per
-configuration and atomically updates `captures.json` with PNGs, stderr and failures.
-Only stable healthy triples qualify. Measurement verifies captures or banked
-references from the same platform, renders with default SDK limits and emits
-candidates plus `summary.json`. It separates capture failure, missing reference,
-renderer rejection, exact output and known differences, with alpha/hole witnesses.
-Every declared variant must be exact for a document to count as exact.
-
-Cohort mode exits zero when measurement completes, including differences and
-rejections; the two-PNG mode is the exactness gate. Neither command admits
-references or changes the selection. Historical experiments remain in Git history.

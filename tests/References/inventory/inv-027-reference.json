@@ -1,0 +1,66 @@
+{
+  "id": "inv-027",
+  "sourcePath": "tests/Fixtures/candidates/inv-027.svg",
+  "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+  "sourceMetadata": {
+    "source": "Wikimedia Commons, File:YouTube grey icon (2017).svg. Retrieval 2026-09-26.",
+    "license": "PD-shape (Commons; depicted mark may carry trademark considerations).",
+    "retrievalDate": "2026-09-26.",
+    "archetypes": "nested svg viewport, style-sized dimensions, fractional curves."
+  },
+  "rootAttributes": {
+    "viewBox": "0 0 28.57  20",
+    "style": "pointer-events: none; display: block; width: 100%; height: 100%;"
+  },
+  "oraclePin": {
+    "version": "153.0.8010.52",
+    "chromiumRevision": "1681091",
+    "platform": "win64",
+    "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/win64/chrome-win64.zip",
+    "archiveSha256": "df4854428c509fcf2f790ac448bca3f994151bcff22008236fa7c4587294fbe1",
+    "executableRelativePath": "chrome-win64/chrome.exe",
+    "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+    "captureRecipeRevision": "3"
+  },
+  "variant": {
+    "id": "inv-027-intended-transparent",
+    "size": "intended",
+    "logicalViewport": {
+      "width": 572,
+      "height": 400
+    },
+    "outputScale": 1,
+    "width": 572,
+    "height": 400,
+    "background": "transparent",
+    "renderInput": "tests/Fixtures/candidates/inv-027.svg",
+    "renderInputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+    "oracleInput": "tests/References/inventory/cohort-inputs/inv-027-intended.svg",
+    "oracleInputSha256": "ddc987599512a069d24bc1fbcf04933796f16a19d1a15299896639e3feaf5d5c",
+    "addedViewBox": null,
+    "oracleTransportAdmitted": true
+  },
+  "referencePng": "inv-027-intended-transparent.png",
+  "referenceSha256": "8394bca8920d0b1ec5122c1893252c902fef2c073953bbfbb40e77d8d2aea9ed",
+  "captureProvenance": {
+    "date": "2026-10-05",
+    "oracleInputSha256": "ddc987599512a069d24bc1fbcf04933796f16a19d1a15299896639e3feaf5d5c",
+    "captures": [
+      {
+        "pngSha256": "8394bca8920d0b1ec5122c1893252c902fef2c073953bbfbb40e77d8d2aea9ed",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "pngSha256": "8394bca8920d0b1ec5122c1893252c902fef2c073953bbfbb40e77d8d2aea9ed",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "pngSha256": "8394bca8920d0b1ec5122c1893252c902fef2c073953bbfbb40e77d8d2aea9ed",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      }
+    ]
+  }
+}

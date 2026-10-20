@@ -1,0 +1,640 @@
+{
+  "oraclePin": {
+    "version": "153.0.8010.52",
+    "chromiumRevision": "1681091",
+    "platform": "win64",
+    "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/win64/chrome-win64.zip",
+    "archiveSha256": "df4854428c509fcf2f790ac448bca3f994151bcff22008236fa7c4587294fbe1",
+    "executableRelativePath": "chrome-win64/chrome.exe",
+    "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+    "captureRecipeRevision": "3"
+  },
+  "references": [
+    {
+      "variant": {
+        "id": "inv-005-small-transparent",
+        "size": "small",
+        "logicalViewport": {
+          "width": 407,
+          "height": 116
+        },
+        "outputScale": 1,
+        "width": 407,
+        "height": 116,
+        "background": "transparent",
+        "renderInput": "tests/Fixtures/candidates/inv-005.svg",
+        "renderInputSha256": "1f631699b6559197bf7a1163546388dd095f84e2b2e77a47a4dc2703b6c628b6",
+        "oracleInput": "tests/References/inventory/cohort-inputs/inv-005-small.svg",
+        "oracleInputSha256": "4dec9b32e55a700bffc94db50363d6390234829f14454bc67adac70c00eed751",
+        "addedViewBox": null,
+        "oracleTransportAdmitted": true
+      },
+      "referencePng": "inv-005-small-transparent.png",
+      "referenceSha256": "4744a937543a747dc0e059c64640dc39c5132ca5a6c3aaf8f82f996932cd3d86",
+      "captureProvenance": {
+        "oracleInputSha256": "4dec9b32e55a700bffc94db50363d6390234829f14454bc67adac70c00eed751",
+        "captureRecipeRevision": "3",
+        "captureDate": "2026-10-06",
+        "captures": [
+          {
+            "pngSha256": "4744a937543a747dc0e059c64640dc39c5132ca5a6c3aaf8f82f996932cd3d86",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "4744a937543a747dc0e059c64640dc39c5132ca5a6c3aaf8f82f996932cd3d86",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "4744a937543a747dc0e059c64640dc39c5132ca5a6c3aaf8f82f996932cd3d86",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          }
+        ]
+      }
+    },
+    {
+      "variant": {
+        "id": "inv-005-small-white",
+        "size": "small",
+        "logicalViewport": {
+          "width": 407,
+          "height": 116
+        },
+        "outputScale": 1,
+        "width": 407,
+        "height": 116,
+        "background": "white",
+        "renderInput": "tests/Fixtures/candidates/inv-005.svg",
+        "renderInputSha256": "1f631699b6559197bf7a1163546388dd095f84e2b2e77a47a4dc2703b6c628b6",
+        "oracleInput": "tests/References/inventory/cohort-inputs/inv-005-small.svg",
+        "oracleInputSha256": "4dec9b32e55a700bffc94db50363d6390234829f14454bc67adac70c00eed751",
+        "addedViewBox": null,
+        "oracleTransportAdmitted": true
+      },
+      "referencePng": "inv-005-small-white.png",
+      "referenceSha256": "0941121061206a7b5c5d2b7cdafd4c45ab39e40548f265190ffb8e77148f533c",
+      "captureProvenance": {
+        "oracleInputSha256": "4dec9b32e55a700bffc94db50363d6390234829f14454bc67adac70c00eed751",
+        "captureRecipeRevision": "3",
+        "captureDate": "2026-10-06",
+        "captures": [
+          {
+            "pngSha256": "0941121061206a7b5c5d2b7cdafd4c45ab39e40548f265190ffb8e77148f533c",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "0941121061206a7b5c5d2b7cdafd4c45ab39e40548f265190ffb8e77148f533c",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "0941121061206a7b5c5d2b7cdafd4c45ab39e40548f265190ffb8e77148f533c",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          }
+        ]
+      }
+    },
+    {
+      "variant": {
+        "id": "inv-005-small-black",
+        "size": "small",
+        "logicalViewport": {
+          "width": 407,
+          "height": 116
+        },
+        "outputScale": 1,
+        "width": 407,
+        "height": 116,
+        "background": "black",
+        "renderInput": "tests/Fixtures/candidates/inv-005.svg",
+        "renderInputSha256": "1f631699b6559197bf7a1163546388dd095f84e2b2e77a47a4dc2703b6c628b6",
+        "oracleInput": "tests/References/inventory/cohort-inputs/inv-005-small.svg",
+        "oracleInputSha256": "4dec9b32e55a700bffc94db50363d6390234829f14454bc67adac70c00eed751",
+        "addedViewBox": null,
+        "oracleTransportAdmitted": true
+      },
+      "referencePng": "inv-005-small-black.png",
+      "referenceSha256": "e9305057945cfef4e8d9ab47d061686a4d6a2945361e7f7f4898d0628891e293",
+      "captureProvenance": {
+        "oracleInputSha256": "4dec9b32e55a700bffc94db50363d6390234829f14454bc67adac70c00eed751",
+        "captureRecipeRevision": "3",
+        "captureDate": "2026-10-06",
+        "captures": [
+          {
+            "pngSha256": "e9305057945cfef4e8d9ab47d061686a4d6a2945361e7f7f4898d0628891e293",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "e9305057945cfef4e8d9ab47d061686a4d6a2945361e7f7f4898d0628891e293",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "e9305057945cfef4e8d9ab47d061686a4d6a2945361e7f7f4898d0628891e293",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          }
+        ]
+      }
+    },
+    {
+      "variant": {
+        "id": "inv-005-historical-300x293-transparent",
+        "size": "historical-300x293",
+        "logicalViewport": {
+          "width": 300,
+          "height": 293
+        },
+        "outputScale": 1,
+        "width": 300,
+        "height": 293,
+        "background": "transparent",
+        "renderInput": "tests/Fixtures/candidates/inv-005.svg",
+        "renderInputSha256": "1f631699b6559197bf7a1163546388dd095f84e2b2e77a47a4dc2703b6c628b6",
+        "oracleInput": "tests/References/inventory/cohort-inputs/inv-005-historical-300x293.svg",
+        "oracleInputSha256": "d272636bb56f65ef55f6838177901434ae8ba3058d054df433b96e6258afc4a6",
+        "addedViewBox": null,
+        "oracleTransportAdmitted": true
+      },
+      "referencePng": "inv-005-historical-300x293-transparent.png",
+      "referenceSha256": "d0c6ff5180a3142a841fe5748219f82609537de0f22ff7c4ecd698399aaba0e9",
+      "captureProvenance": {
+        "oracleInputSha256": "d272636bb56f65ef55f6838177901434ae8ba3058d054df433b96e6258afc4a6",
+        "captureRecipeRevision": "3",
+        "captureDate": "2026-10-06",
+        "captures": [
+          {
+            "pngSha256": "d0c6ff5180a3142a841fe5748219f82609537de0f22ff7c4ecd698399aaba0e9",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "d0c6ff5180a3142a841fe5748219f82609537de0f22ff7c4ecd698399aaba0e9",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "d0c6ff5180a3142a841fe5748219f82609537de0f22ff7c4ecd698399aaba0e9",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          }
+        ]
+      }
+    },
+    {
+      "variant": {
+        "id": "inv-005-historical-300x293-white",
+        "size": "historical-300x293",
+        "logicalViewport": {
+          "width": 300,
+          "height": 293
+        },
+        "outputScale": 1,
+        "width": 300,
+        "height": 293,
+        "background": "white",
+        "renderInput": "tests/Fixtures/candidates/inv-005.svg",
+        "renderInputSha256": "1f631699b6559197bf7a1163546388dd095f84e2b2e77a47a4dc2703b6c628b6",
+        "oracleInput": "tests/References/inventory/cohort-inputs/inv-005-historical-300x293.svg",
+        "oracleInputSha256": "d272636bb56f65ef55f6838177901434ae8ba3058d054df433b96e6258afc4a6",
+        "addedViewBox": null,
+        "oracleTransportAdmitted": true
+      },
+      "referencePng": "inv-005-historical-300x293-white.png",
+      "referenceSha256": "064cb744858f01fd7756282e92d9b624e5b19650363c2a4a9e455097fb65f8f2",
+      "captureProvenance": {
+        "oracleInputSha256": "d272636bb56f65ef55f6838177901434ae8ba3058d054df433b96e6258afc4a6",
+        "captureRecipeRevision": "3",
+        "captureDate": "2026-10-06",
+        "captures": [
+          {
+            "pngSha256": "064cb744858f01fd7756282e92d9b624e5b19650363c2a4a9e455097fb65f8f2",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "064cb744858f01fd7756282e92d9b624e5b19650363c2a4a9e455097fb65f8f2",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "064cb744858f01fd7756282e92d9b624e5b19650363c2a4a9e455097fb65f8f2",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          }
+        ]
+      }
+    },
+    {
+      "variant": {
+        "id": "inv-005-historical-300x293-black",
+        "size": "historical-300x293",
+        "logicalViewport": {
+          "width": 300,
+          "height": 293
+        },
+        "outputScale": 1,
+        "width": 300,
+        "height": 293,
+        "background": "black",
+        "renderInput": "tests/Fixtures/candidates/inv-005.svg",
+        "renderInputSha256": "1f631699b6559197bf7a1163546388dd095f84e2b2e77a47a4dc2703b6c628b6",
+        "oracleInput": "tests/References/inventory/cohort-inputs/inv-005-historical-300x293.svg",
+        "oracleInputSha256": "d272636bb56f65ef55f6838177901434ae8ba3058d054df433b96e6258afc4a6",
+        "addedViewBox": null,
+        "oracleTransportAdmitted": true
+      },
+      "referencePng": "inv-005-historical-300x293-black.png",
+      "referenceSha256": "87c78f585e5f016c44a25b03eddfb1201cc0a66b474c9701b0c52b06d68a3d39",
+      "captureProvenance": {
+        "oracleInputSha256": "d272636bb56f65ef55f6838177901434ae8ba3058d054df433b96e6258afc4a6",
+        "captureRecipeRevision": "3",
+        "captureDate": "2026-10-06",
+        "captures": [
+          {
+            "pngSha256": "87c78f585e5f016c44a25b03eddfb1201cc0a66b474c9701b0c52b06d68a3d39",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "87c78f585e5f016c44a25b03eddfb1201cc0a66b474c9701b0c52b06d68a3d39",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "87c78f585e5f016c44a25b03eddfb1201cc0a66b474c9701b0c52b06d68a3d39",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          }
+        ]
+      }
+    },
+    {
+      "variant": {
+        "id": "inv-027-small-transparent",
+        "size": "small",
+        "logicalViewport": {
+          "width": 286,
+          "height": 200
+        },
+        "outputScale": 1,
+        "width": 286,
+        "height": 200,
+        "background": "transparent",
+        "renderInput": "tests/Fixtures/candidates/inv-027.svg",
+        "renderInputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+        "oracleInput": "tests/References/inventory/cohort-inputs/inv-027-small.svg",
+        "oracleInputSha256": "7125a33490974cdb3c396051850b98f39c51117b97500f955f6d82a8d9ed1967",
+        "addedViewBox": null,
+        "oracleTransportAdmitted": true
+      },
+      "referencePng": "inv-027-small-transparent.png",
+      "referenceSha256": "dd3be78797f0b1059c06a97e9eb7d1b15674ce619ae5c3ea4ed3f343382f04e7",
+      "captureProvenance": {
+        "date": "2026-10-05",
+        "oracleInputSha256": "7125a33490974cdb3c396051850b98f39c51117b97500f955f6d82a8d9ed1967",
+        "captures": [
+          {
+            "pngSha256": "dd3be78797f0b1059c06a97e9eb7d1b15674ce619ae5c3ea4ed3f343382f04e7",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "dd3be78797f0b1059c06a97e9eb7d1b15674ce619ae5c3ea4ed3f343382f04e7",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "dd3be78797f0b1059c06a97e9eb7d1b15674ce619ae5c3ea4ed3f343382f04e7",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      }
+    },
+    {
+      "variant": {
+        "id": "inv-027-small-white",
+        "size": "small",
+        "logicalViewport": {
+          "width": 286,
+          "height": 200
+        },
+        "outputScale": 1,
+        "width": 286,
+        "height": 200,
+        "background": "white",
+        "renderInput": "tests/Fixtures/candidates/inv-027.svg",
+        "renderInputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+        "oracleInput": "tests/References/inventory/cohort-inputs/inv-027-small.svg",
+        "oracleInputSha256": "7125a33490974cdb3c396051850b98f39c51117b97500f955f6d82a8d9ed1967",
+        "addedViewBox": null,
+        "oracleTransportAdmitted": true
+      },
+      "referencePng": "inv-027-small-white.png",
+      "referenceSha256": "404f8643bb1de816f3a3e5edd2b932a89271f9f3493881586e028828550cd834",
+      "captureProvenance": {
+        "date": "2026-10-05",
+        "oracleInputSha256": "7125a33490974cdb3c396051850b98f39c51117b97500f955f6d82a8d9ed1967",
+        "captures": [
+          {
+            "pngSha256": "404f8643bb1de816f3a3e5edd2b932a89271f9f3493881586e028828550cd834",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "404f8643bb1de816f3a3e5edd2b932a89271f9f3493881586e028828550cd834",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "404f8643bb1de816f3a3e5edd2b932a89271f9f3493881586e028828550cd834",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      }
+    },
+    {
+      "variant": {
+        "id": "inv-027-small-black",
+        "size": "small",
+        "logicalViewport": {
+          "width": 286,
+          "height": 200
+        },
+        "outputScale": 1,
+        "width": 286,
+        "height": 200,
+        "background": "black",
+        "renderInput": "tests/Fixtures/candidates/inv-027.svg",
+        "renderInputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+        "oracleInput": "tests/References/inventory/cohort-inputs/inv-027-small.svg",
+        "oracleInputSha256": "7125a33490974cdb3c396051850b98f39c51117b97500f955f6d82a8d9ed1967",
+        "addedViewBox": null,
+        "oracleTransportAdmitted": true
+      },
+      "referencePng": "inv-027-small-black.png",
+      "referenceSha256": "9aeba839555265e7753dcb4031cb7d22d96015ef5b0dffd189a2b8947b7326bf",
+      "captureProvenance": {
+        "date": "2026-10-05",
+        "oracleInputSha256": "7125a33490974cdb3c396051850b98f39c51117b97500f955f6d82a8d9ed1967",
+        "captures": [
+          {
+            "pngSha256": "9aeba839555265e7753dcb4031cb7d22d96015ef5b0dffd189a2b8947b7326bf",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "9aeba839555265e7753dcb4031cb7d22d96015ef5b0dffd189a2b8947b7326bf",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "9aeba839555265e7753dcb4031cb7d22d96015ef5b0dffd189a2b8947b7326bf",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      }
+    },
+    {
+      "variant": {
+        "id": "inv-027-intended-white",
+        "size": "intended",
+        "logicalViewport": {
+          "width": 572,
+          "height": 400
+        },
+        "outputScale": 1,
+        "width": 572,
+        "height": 400,
+        "background": "white",
+        "renderInput": "tests/Fixtures/candidates/inv-027.svg",
+        "renderInputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+        "oracleInput": "tests/References/inventory/cohort-inputs/inv-027-intended.svg",
+        "oracleInputSha256": "ddc987599512a069d24bc1fbcf04933796f16a19d1a15299896639e3feaf5d5c",
+        "addedViewBox": null,
+        "oracleTransportAdmitted": true
+      },
+      "referencePng": "inv-027-intended-white.png",
+      "referenceSha256": "56676902d3573fe918e1a3f50656d7fc4fba6ddd205a4a84909fad189a617ce2",
+      "captureProvenance": {
+        "date": "2026-10-05",
+        "oracleInputSha256": "ddc987599512a069d24bc1fbcf04933796f16a19d1a15299896639e3feaf5d5c",
+        "captures": [
+          {
+            "pngSha256": "56676902d3573fe918e1a3f50656d7fc4fba6ddd205a4a84909fad189a617ce2",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "56676902d3573fe918e1a3f50656d7fc4fba6ddd205a4a84909fad189a617ce2",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "56676902d3573fe918e1a3f50656d7fc4fba6ddd205a4a84909fad189a617ce2",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      }
+    },
+    {
+      "variant": {
+        "id": "inv-027-intended-black",
+        "size": "intended",
+        "logicalViewport": {
+          "width": 572,
+          "height": 400
+        },
+        "outputScale": 1,
+        "width": 572,
+        "height": 400,
+        "background": "black",
+        "renderInput": "tests/Fixtures/candidates/inv-027.svg",
+        "renderInputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+        "oracleInput": "tests/References/inventory/cohort-inputs/inv-027-intended.svg",
+        "oracleInputSha256": "ddc987599512a069d24bc1fbcf04933796f16a19d1a15299896639e3feaf5d5c",
+        "addedViewBox": null,
+        "oracleTransportAdmitted": true
+      },
+      "referencePng": "inv-027-intended-black.png",
+      "referenceSha256": "1d93a7ff74ab8407756d8fe5e15d185f97a294c7180e68725b96b5daacec1963",
+      "captureProvenance": {
+        "date": "2026-10-05",
+        "oracleInputSha256": "ddc987599512a069d24bc1fbcf04933796f16a19d1a15299896639e3feaf5d5c",
+        "captures": [
+          {
+            "pngSha256": "1d93a7ff74ab8407756d8fe5e15d185f97a294c7180e68725b96b5daacec1963",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "1d93a7ff74ab8407756d8fe5e15d185f97a294c7180e68725b96b5daacec1963",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "1d93a7ff74ab8407756d8fe5e15d185f97a294c7180e68725b96b5daacec1963",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      }
+    },
+    {
+      "variant": {
+        "id": "inv-027-large-transparent",
+        "size": "large",
+        "logicalViewport": {
+          "width": 1144,
+          "height": 800
+        },
+        "outputScale": 1,
+        "width": 1144,
+        "height": 800,
+        "background": "transparent",
+        "renderInput": "tests/Fixtures/candidates/inv-027.svg",
+        "renderInputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+        "oracleInput": "tests/References/inventory/cohort-inputs/inv-027-large.svg",
+        "oracleInputSha256": "97e3c11172b26eda6d2ba50ae2775cc7ee9a6bf3ead94b8a36356caf6bb4df31",
+        "addedViewBox": null,
+        "oracleTransportAdmitted": true
+      },
+      "referencePng": "inv-027-large-transparent.png",
+      "referenceSha256": "a8b410480ffeb48e58c7486e1b0a103e03a2a4b9a92937285085a3a67372e0fb",
+      "captureProvenance": {
+        "date": "2026-10-05",
+        "oracleInputSha256": "97e3c11172b26eda6d2ba50ae2775cc7ee9a6bf3ead94b8a36356caf6bb4df31",
+        "captures": [
+          {
+            "pngSha256": "a8b410480ffeb48e58c7486e1b0a103e03a2a4b9a92937285085a3a67372e0fb",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "a8b410480ffeb48e58c7486e1b0a103e03a2a4b9a92937285085a3a67372e0fb",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "a8b410480ffeb48e58c7486e1b0a103e03a2a4b9a92937285085a3a67372e0fb",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      }
+    },
+    {
+      "variant": {
+        "id": "inv-027-large-white",
+        "size": "large",
+        "logicalViewport": {
+          "width": 1144,
+          "height": 800
+        },
+        "outputScale": 1,
+        "width": 1144,
+        "height": 800,
+        "background": "white",
+        "renderInput": "tests/Fixtures/candidates/inv-027.svg",
+        "renderInputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+        "oracleInput": "tests/References/inventory/cohort-inputs/inv-027-large.svg",
+        "oracleInputSha256": "97e3c11172b26eda6d2ba50ae2775cc7ee9a6bf3ead94b8a36356caf6bb4df31",
+        "addedViewBox": null,
+        "oracleTransportAdmitted": true
+      },
+      "referencePng": "inv-027-large-white.png",
+      "referenceSha256": "46bf6943af3c9b6f84df09601b54fc91039180e02f597508dc45b087e7250017",
+      "captureProvenance": {
+        "date": "2026-10-05",
+        "oracleInputSha256": "97e3c11172b26eda6d2ba50ae2775cc7ee9a6bf3ead94b8a36356caf6bb4df31",
+        "captures": [
+          {
+            "pngSha256": "46bf6943af3c9b6f84df09601b54fc91039180e02f597508dc45b087e7250017",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "46bf6943af3c9b6f84df09601b54fc91039180e02f597508dc45b087e7250017",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "46bf6943af3c9b6f84df09601b54fc91039180e02f597508dc45b087e7250017",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      }
+    },
+    {
+      "variant": {
+        "id": "inv-027-large-black",
+        "size": "large",
+        "logicalViewport": {
+          "width": 1144,
+          "height": 800
+        },
+        "outputScale": 1,
+        "width": 1144,
+        "height": 800,
+        "background": "black",
+        "renderInput": "tests/Fixtures/candidates/inv-027.svg",
+        "renderInputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+        "oracleInput": "tests/References/inventory/cohort-inputs/inv-027-large.svg",
+        "oracleInputSha256": "97e3c11172b26eda6d2ba50ae2775cc7ee9a6bf3ead94b8a36356caf6bb4df31",
+        "addedViewBox": null,
+        "oracleTransportAdmitted": true
+      },
+      "referencePng": "inv-027-large-black.png",
+      "referenceSha256": "afbc8597fffbd447241ef4a90ec96f00ddf8b85651a4075ad6a1644f6e0a9cf8",
+      "captureProvenance": {
+        "date": "2026-10-05",
+        "oracleInputSha256": "97e3c11172b26eda6d2ba50ae2775cc7ee9a6bf3ead94b8a36356caf6bb4df31",
+        "captures": [
+          {
+            "pngSha256": "afbc8597fffbd447241ef4a90ec96f00ddf8b85651a4075ad6a1644f6e0a9cf8",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "afbc8597fffbd447241ef4a90ec96f00ddf8b85651a4075ad6a1644f6e0a9cf8",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "afbc8597fffbd447241ef4a90ec96f00ddf8b85651a4075ad6a1644f6e0a9cf8",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      }
+    }
+  ]
+}
