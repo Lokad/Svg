@@ -6,8 +6,9 @@ namespace Lokad.Svg.Rendering;
 /// the policy flatness. Callers map control points through <see cref="SvgAffineTransform"/> first; this
 /// kernel works in device space so the flatness bound reads directly in device pixels.</para>
 /// <para>Expansion is bounded twice: the policy segment cap and the caller buffer capacity. Exhausting the
-/// subdivision depth or either expansion bound fails with <see cref="SvgErrorCode.LimitExceeded"/>, as does
-/// any non-finite intermediate. Non-finite control points and invalid policies are caller contract
+/// subdivision depth or policy segment cap fails with <see cref="SvgErrorCode.LimitExceeded"/>, as does
+/// any non-finite intermediate. A short output buffer returns false so callers can grow storage without
+/// retrying geometry failures. Non-finite control points and invalid policies are caller contract
 /// violations reported as <see cref="ArgumentOutOfRangeException"/>.</para>
 /// <para>This is pure geometry. Coverage quantization and pixel fidelity of flattened curves are separate
 /// calibration concerns. Callers charge one curve-expansion work unit per appended segment; this kernel
@@ -19,24 +20,29 @@ internal static class SvgCurveFlatten
     internal const int MaximumSupportedDepth = 1024;
 
     /// <summary>Appends the flattened quadratic polyline after <paramref name="start"/>, ending exactly at <paramref name="end"/>.</summary>
-    /// <returns>The number of appended points, which is at least one.</returns>
-    internal static int FlattenQuadratic(SvgDevicePoint start, SvgDevicePoint control, SvgDevicePoint end, SvgFlattenPolicy policy, Span<SvgDevicePoint> output, CancellationToken cancellationToken)
+    /// <returns>True on success, with the appended count in <paramref name="written"/>; false only when
+    /// output is too short, with a zero count. Discard partial output on failure. Policy and numeric failures throw.</returns>
+    internal static bool TryFlattenQuadratic(SvgDevicePoint start, SvgDevicePoint control, SvgDevicePoint end, SvgFlattenPolicy policy, Span<SvgDevicePoint> output, CancellationToken cancellationToken, out int written)
     {
+        written = 0;
         ValidatePoint(start, nameof(start));
         ValidatePoint(control, nameof(control));
         ValidatePoint(end, nameof(end));
         policy.Validate();
         cancellationToken.ThrowIfCancellationRequested();
         int appended = 0;
-        SubdivideQuadratic(start.X, start.Y, control.X, control.Y, end.X, end.Y, 0, policy, output, ref appended, cancellationToken);
+        if (!SubdivideQuadratic(start.X, start.Y, control.X, control.Y, end.X, end.Y, 0, policy, output, ref appended, cancellationToken)) return false;
         cancellationToken.ThrowIfCancellationRequested();
-        return appended;
+        written = appended;
+        return true;
     }
 
     /// <summary>Appends the flattened cubic polyline after <paramref name="start"/>, ending exactly at <paramref name="end"/>.</summary>
-    /// <returns>The number of appended points, which is at least one.</returns>
-    internal static int FlattenCubic(SvgDevicePoint start, SvgDevicePoint firstControl, SvgDevicePoint secondControl, SvgDevicePoint end, SvgFlattenPolicy policy, Span<SvgDevicePoint> output, CancellationToken cancellationToken)
+    /// <returns>True on success, with the appended count in <paramref name="written"/>; false only when
+    /// output is too short, with a zero count. Discard partial output on failure. Policy and numeric failures throw.</returns>
+    internal static bool TryFlattenCubic(SvgDevicePoint start, SvgDevicePoint firstControl, SvgDevicePoint secondControl, SvgDevicePoint end, SvgFlattenPolicy policy, Span<SvgDevicePoint> output, CancellationToken cancellationToken, out int written)
     {
+        written = 0;
         ValidatePoint(start, nameof(start));
         ValidatePoint(firstControl, nameof(firstControl));
         ValidatePoint(secondControl, nameof(secondControl));
@@ -44,17 +50,17 @@ internal static class SvgCurveFlatten
         policy.Validate();
         cancellationToken.ThrowIfCancellationRequested();
         int appended = 0;
-        SubdivideCubic(start.X, start.Y, firstControl.X, firstControl.Y, secondControl.X, secondControl.Y, end.X, end.Y, 0, policy, output, ref appended, cancellationToken);
+        if (!SubdivideCubic(start.X, start.Y, firstControl.X, firstControl.Y, secondControl.X, secondControl.Y, end.X, end.Y, 0, policy, output, ref appended, cancellationToken)) return false;
         cancellationToken.ThrowIfCancellationRequested();
-        return appended;
+        written = appended;
+        return true;
     }
 
-    private static void SubdivideQuadratic(double startX, double startY, double controlX, double controlY, double endX, double endY, int depth, SvgFlattenPolicy policy, Span<SvgDevicePoint> output, ref int appended, CancellationToken cancellationToken)
+    private static bool SubdivideQuadratic(double startX, double startY, double controlX, double controlY, double endX, double endY, int depth, SvgFlattenPolicy policy, Span<SvgDevicePoint> output, ref int appended, CancellationToken cancellationToken)
     {
         if (QuadraticDeviation(startX, startY, controlX, controlY, endX, endY) <= policy.Flatness)
         {
-            AppendPoint(output, ref appended, endX, endY, policy, cancellationToken);
-            return;
+            return AppendPoint(output, ref appended, endX, endY, policy, cancellationToken);
         }
 
         if (depth >= policy.MaximumDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "Curve flattening exceeds the supported subdivision depth.");
@@ -64,16 +70,15 @@ internal static class SvgCurveFlatten
         double rightY = RequireFinite((controlY + endY) / 2);
         double middleX = RequireFinite((leftX + rightX) / 2);
         double middleY = RequireFinite((leftY + rightY) / 2);
-        SubdivideQuadratic(startX, startY, leftX, leftY, middleX, middleY, depth + 1, policy, output, ref appended, cancellationToken);
-        SubdivideQuadratic(middleX, middleY, rightX, rightY, endX, endY, depth + 1, policy, output, ref appended, cancellationToken);
+        return SubdivideQuadratic(startX, startY, leftX, leftY, middleX, middleY, depth + 1, policy, output, ref appended, cancellationToken)
+            && SubdivideQuadratic(middleX, middleY, rightX, rightY, endX, endY, depth + 1, policy, output, ref appended, cancellationToken);
     }
 
-    private static void SubdivideCubic(double startX, double startY, double firstControlX, double firstControlY, double secondControlX, double secondControlY, double endX, double endY, int depth, SvgFlattenPolicy policy, Span<SvgDevicePoint> output, ref int appended, CancellationToken cancellationToken)
+    private static bool SubdivideCubic(double startX, double startY, double firstControlX, double firstControlY, double secondControlX, double secondControlY, double endX, double endY, int depth, SvgFlattenPolicy policy, Span<SvgDevicePoint> output, ref int appended, CancellationToken cancellationToken)
     {
         if (CubicDeviation(startX, startY, firstControlX, firstControlY, secondControlX, secondControlY, endX, endY) <= policy.Flatness)
         {
-            AppendPoint(output, ref appended, endX, endY, policy, cancellationToken);
-            return;
+            return AppendPoint(output, ref appended, endX, endY, policy, cancellationToken);
         }
 
         if (depth >= policy.MaximumDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "Curve flattening exceeds the supported subdivision depth.");
@@ -89,8 +94,8 @@ internal static class SvgCurveFlatten
         double rightMidY = RequireFinite((middleY + rightY) / 2);
         double splitX = RequireFinite((leftMidX + rightMidX) / 2);
         double splitY = RequireFinite((leftMidY + rightMidY) / 2);
-        SubdivideCubic(startX, startY, leftX, leftY, leftMidX, leftMidY, splitX, splitY, depth + 1, policy, output, ref appended, cancellationToken);
-        SubdivideCubic(splitX, splitY, rightMidX, rightMidY, rightX, rightY, endX, endY, depth + 1, policy, output, ref appended, cancellationToken);
+        return SubdivideCubic(startX, startY, leftX, leftY, leftMidX, leftMidY, splitX, splitY, depth + 1, policy, output, ref appended, cancellationToken)
+            && SubdivideCubic(splitX, splitY, rightMidX, rightMidY, rightX, rightY, endX, endY, depth + 1, policy, output, ref appended, cancellationToken);
     }
 
     private static double QuadraticDeviation(double startX, double startY, double controlX, double controlY, double endX, double endY)
@@ -136,12 +141,14 @@ internal static class SvgCurveFlatten
         return RequireFinite(beyond) / chordLength;
     }
 
-    private static void AppendPoint(Span<SvgDevicePoint> output, ref int appended, double x, double y, SvgFlattenPolicy policy, CancellationToken cancellationToken)
+    private static bool AppendPoint(Span<SvgDevicePoint> output, ref int appended, double x, double y, SvgFlattenPolicy policy, CancellationToken cancellationToken)
     {
-        if (appended >= policy.MaximumSegments || appended >= output.Length) throw new SvgException(SvgErrorCode.LimitExceeded, "Curve flattening exceeds the supported expansion range.");
+        if (appended >= policy.MaximumSegments) throw new SvgException(SvgErrorCode.LimitExceeded, "Curve flattening exceeds the supported expansion range.");
+        if (appended >= output.Length) return false;
         if ((appended & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
         output[appended] = new SvgDevicePoint(x, y);
         appended++;
+        return true;
     }
 
     private static void ValidatePoint(SvgDevicePoint point, string parameterName)

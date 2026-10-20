@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Grow contour storage only for short output buffers; preserve depth, segment
+  and numeric failures without repeated allocation or masked diagnostics.
 - Honor cancellation on cached FontProbe HTTP reads and safely publish cached
   font bytes across concurrent readers.
 - Reject unsupported transparency and malformed PNG input in the independent

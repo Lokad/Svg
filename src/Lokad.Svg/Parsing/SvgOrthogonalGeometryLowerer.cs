@@ -1558,7 +1558,8 @@ internal ref struct SvgOrthogonalGeometryLowering
                         SvgDevicePoint control = SvgNativePathStroke.MapPoint(map, command.Control.Device());
                         if (builder is null)
                         {
-                            int added = SvgCurveFlatten.FlattenQuadratic(current, control, end, policy, samples, token);
+                            if (!SvgCurveFlatten.TryFlattenQuadratic(current, control, end, policy, samples, token, out int added))
+                                throw new SvgException(SvgErrorCode.LimitExceeded, "Curve flattening exceeds the supported expansion range.");
                             for (int point = 0; point < added; point++) work.Consume(token);
                             points = checked(points + added);
                         }

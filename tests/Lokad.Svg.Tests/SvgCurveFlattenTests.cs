@@ -118,26 +118,27 @@ public sealed class SvgCurveFlattenTests
     {
         SvgDevicePoint[] buffer = new SvgDevicePoint[16];
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => SvgCurveFlatten.FlattenQuadratic(new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 0), new SvgDevicePoint(8, 0), default, buffer, CancellationToken.None));
-        Assert.Throws<ArgumentOutOfRangeException>(() => SvgCurveFlatten.FlattenCubic(new SvgDevicePoint(0, 0), new SvgDevicePoint(2, 0), new SvgDevicePoint(6, 0), new SvgDevicePoint(8, 0), default, buffer, CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgCurveFlatten.TryFlattenQuadratic(new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 0), new SvgDevicePoint(8, 0), default, buffer, CancellationToken.None, out _));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgCurveFlatten.TryFlattenCubic(new SvgDevicePoint(0, 0), new SvgDevicePoint(2, 0), new SvgDevicePoint(6, 0), new SvgDevicePoint(8, 0), default, buffer, CancellationToken.None, out _));
     }
 
     [Fact]
     public void Segment_cap_throws_LimitExceeded()
     {
         SvgFlattenPolicy policy = new(0.5, 64, 1);
-        SvgDevicePoint[] buffer = new SvgDevicePoint[64];
+        SvgDevicePoint[] buffer = new SvgDevicePoint[1];
 
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgCurveFlatten.FlattenQuadratic(new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 8), new SvgDevicePoint(8, 0), policy, buffer, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgCurveFlatten.TryFlattenQuadratic(new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 8), new SvgDevicePoint(8, 0), policy, buffer, CancellationToken.None, out _)).ErrorCode);
     }
 
     [Fact]
-    public void Buffer_capacity_throws_LimitExceeded()
+    public void Buffer_capacity_returns_false()
     {
         SvgFlattenPolicy policy = new(0.5, 64, 256);
         SvgDevicePoint[] buffer = new SvgDevicePoint[1];
 
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgCurveFlatten.FlattenQuadratic(new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 8), new SvgDevicePoint(8, 0), policy, buffer, CancellationToken.None)).ErrorCode);
+        Assert.False(SvgCurveFlatten.TryFlattenQuadratic(new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 8), new SvgDevicePoint(8, 0), policy, buffer, CancellationToken.None, out int count));
+        Assert.Equal(0, count);
     }
 
     [Fact]
@@ -146,7 +147,7 @@ public sealed class SvgCurveFlattenTests
         SvgFlattenPolicy policy = new(0.5, 1, 256);
         SvgDevicePoint[] buffer = new SvgDevicePoint[256];
 
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgCurveFlatten.FlattenQuadratic(new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 8), new SvgDevicePoint(8, 0), policy, buffer, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgCurveFlatten.TryFlattenQuadratic(new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 8), new SvgDevicePoint(8, 0), policy, buffer, CancellationToken.None, out _)).ErrorCode);
     }
 
     [Fact]
@@ -155,8 +156,8 @@ public sealed class SvgCurveFlattenTests
         SvgFlattenPolicy policy = new(0.5, 64, 256);
         SvgDevicePoint[] buffer = new SvgDevicePoint[256];
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => SvgCurveFlatten.FlattenQuadratic(new SvgDevicePoint(0, 0), new SvgDevicePoint(double.NaN, 0), new SvgDevicePoint(8, 0), policy, buffer, CancellationToken.None));
-        Assert.Throws<ArgumentOutOfRangeException>(() => SvgCurveFlatten.FlattenCubic(new SvgDevicePoint(0, 0), new SvgDevicePoint(2, 0), new SvgDevicePoint(6, double.PositiveInfinity), new SvgDevicePoint(8, 0), policy, buffer, CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgCurveFlatten.TryFlattenQuadratic(new SvgDevicePoint(0, 0), new SvgDevicePoint(double.NaN, 0), new SvgDevicePoint(8, 0), policy, buffer, CancellationToken.None, out _));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgCurveFlatten.TryFlattenCubic(new SvgDevicePoint(0, 0), new SvgDevicePoint(2, 0), new SvgDevicePoint(6, double.PositiveInfinity), new SvgDevicePoint(8, 0), policy, buffer, CancellationToken.None, out _));
     }
 
     [Fact]
@@ -165,7 +166,7 @@ public sealed class SvgCurveFlattenTests
         SvgFlattenPolicy policy = new(0.5, 64, 256);
         SvgDevicePoint[] buffer = new SvgDevicePoint[256];
 
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgCurveFlatten.FlattenQuadratic(new SvgDevicePoint(0, 0), new SvgDevicePoint(1e308, 1e308), new SvgDevicePoint(8, 0), policy, buffer, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgCurveFlatten.TryFlattenQuadratic(new SvgDevicePoint(0, 0), new SvgDevicePoint(1e308, 1e308), new SvgDevicePoint(8, 0), policy, buffer, CancellationToken.None, out _)).ErrorCode);
     }
 
     [Fact]
@@ -174,7 +175,7 @@ public sealed class SvgCurveFlattenTests
         SvgFlattenPolicy policy = new(0.5, 64, 256);
         SvgDevicePoint[] buffer = new SvgDevicePoint[256];
 
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgCurveFlatten.FlattenQuadratic(new SvgDevicePoint(-1e308, 0), new SvgDevicePoint(1e308, 0), new SvgDevicePoint(-1e308, 0), policy, buffer, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgCurveFlatten.TryFlattenQuadratic(new SvgDevicePoint(-1e308, 0), new SvgDevicePoint(1e308, 0), new SvgDevicePoint(-1e308, 0), policy, buffer, CancellationToken.None, out _)).ErrorCode);
     }
 
     [Fact]
@@ -185,7 +186,7 @@ public sealed class SvgCurveFlattenTests
         using CancellationTokenSource cancelled = new();
         cancelled.Cancel();
 
-        Assert.Throws<OperationCanceledException>(() => SvgCurveFlatten.FlattenQuadratic(new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 0), new SvgDevicePoint(8, 0), policy, buffer, cancelled.Token));
+        Assert.Throws<OperationCanceledException>(() => SvgCurveFlatten.TryFlattenQuadratic(new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 0), new SvgDevicePoint(8, 0), policy, buffer, cancelled.Token, out _));
     }
 
     [Fact]
@@ -216,7 +217,7 @@ public sealed class SvgCurveFlattenTests
     {
         SvgFlattenPolicy policy = new(flatness, 64, 256);
         SvgDevicePoint[] buffer = new SvgDevicePoint[256];
-        int count = SvgCurveFlatten.FlattenQuadratic(start, control, end, policy, buffer, CancellationToken.None);
+        Assert.True(SvgCurveFlatten.TryFlattenQuadratic(start, control, end, policy, buffer, CancellationToken.None, out int count));
         return buffer[..count];
     }
 
@@ -224,7 +225,7 @@ public sealed class SvgCurveFlattenTests
     {
         SvgFlattenPolicy policy = new(flatness, 64, 256);
         SvgDevicePoint[] buffer = new SvgDevicePoint[256];
-        int count = SvgCurveFlatten.FlattenCubic(start, firstControl, secondControl, end, policy, buffer, CancellationToken.None);
+        Assert.True(SvgCurveFlatten.TryFlattenCubic(start, firstControl, secondControl, end, policy, buffer, CancellationToken.None, out int count));
         return buffer[..count];
     }
 }

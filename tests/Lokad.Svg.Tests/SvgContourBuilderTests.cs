@@ -309,6 +309,106 @@ public sealed class SvgContourBuilderTests
         Assert.Equal(new SvgDevicePoint(16, 0), contour[span.EndIndex]);
         Assert.True(span.EndIndex > span.StartIndex);
     }
+
+    [Theory]
+    [InlineData("quadratic", 1, 1024, "subdivision depth")]
+    [InlineData("cubic", 1, 1024, "subdivision depth")]
+    [InlineData("arc", 1, 1024, "subdivision depth")]
+    [InlineData("ellipse", 1, 1024, "subdivision depth")]
+    [InlineData("quadratic", 64, 1, "expansion range")]
+    [InlineData("cubic", 64, 1, "expansion range")]
+    [InlineData("arc", 64, 1, "expansion range")]
+    [InlineData("ellipse", 64, 1, "expansion range")]
+    public void Growing_builder_propagates_policy_failures_without_growing(string shape, int depth, int segments, string message)
+    {
+        SvgContourBuilder builder = SvgContourBuilder.CreateGrowing(4096, 4);
+        if (shape != "ellipse") builder.BeginContour(new SvgDevicePoint(100, 0));
+        int count = builder.PointCount;
+        int capacity = builder.PointCapacity;
+
+        SvgException error = Assert.Throws<SvgException>(() => AppendCurve(builder, shape, new SvgFlattenPolicy(0.01, depth, segments)));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode);
+        Assert.Contains(message, error.Message);
+        Assert.Equal(capacity, builder.PointCapacity);
+        Assert.Equal(count, builder.PointCount);
+        Assert.Equal(0, builder.ContourCount);
+    }
+
+    [Theory]
+    [InlineData("quadratic")]
+    [InlineData("cubic")]
+    [InlineData("ellipse")]
+    public void Growing_builder_propagates_numeric_failures_without_growing(string shape)
+    {
+        SvgContourBuilder builder = SvgContourBuilder.CreateGrowing(4096, 4);
+        SvgFlattenPolicy policy = new(0.25, 64, 1024);
+        if (shape != "ellipse") builder.BeginContour(new SvgDevicePoint(0, 0));
+        int count = builder.PointCount;
+        int capacity = builder.PointCapacity;
+
+        SvgException error = Assert.Throws<SvgException>(() =>
+        {
+            switch (shape)
+            {
+                case "quadratic": builder.AddQuadratic(new(0, 1e308), new(-1e308, 0), policy, CancellationToken.None); break;
+                case "cubic": builder.AddCubic(new(0, 1e308), new(1e308, 1e308), new(-1e308, 0), policy, CancellationToken.None); break;
+                case "ellipse": builder.AddEllipse(new(1e308, 0), 1e308, 1, policy, CancellationToken.None); break;
+                default: throw new InvalidOperationException("Unknown curve shape.");
+            }
+        });
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode);
+        Assert.Contains("numeric range", error.Message);
+        Assert.Equal(capacity, builder.PointCapacity);
+        Assert.Equal(count, builder.PointCount);
+        Assert.Equal(0, builder.ContourCount);
+    }
+
+    [Theory]
+    [InlineData("quadratic", false)]
+    [InlineData("quadratic", true)]
+    [InlineData("cubic", false)]
+    [InlineData("cubic", true)]
+    [InlineData("arc", false)]
+    [InlineData("arc", true)]
+    [InlineData("ellipse", false)]
+    [InlineData("ellipse", true)]
+    public void Growing_curve_output_matches_fixed_points_and_retained_spans(string shape, bool retainSpans)
+    {
+        SvgFlattenPolicy policy = new(0.001, 64, 4096);
+        SvgContourBuilder fixedBuilder = new(4096, 4);
+        SvgContourBuilder growingBuilder = SvgContourBuilder.CreateGrowing(4096, 4);
+        foreach (SvgContourBuilder builder in new[] { fixedBuilder, growingBuilder })
+        {
+            if (retainSpans)
+            {
+                builder.EnableQuadSpanRetention();
+                builder.EnableCubicSpanRetention();
+            }
+            if (shape != "ellipse") builder.BeginContour(new SvgDevicePoint(100, 0));
+            AppendCurve(builder, shape, policy);
+            if (shape != "ellipse") builder.EndContour();
+        }
+
+        Assert.True(growingBuilder.PointCount > 64);
+        Assert.InRange(growingBuilder.PointCapacity, 65, 4095);
+        Assert.Equal(fixedBuilder.GetContour(0).ToArray(), growingBuilder.GetContour(0).ToArray());
+        Assert.Equal(fixedBuilder.GetQuadSpans(), growingBuilder.GetQuadSpans());
+        Assert.Equal(fixedBuilder.GetCubicSpans(), growingBuilder.GetCubicSpans());
+    }
+
+    private static void AppendCurve(SvgContourBuilder builder, string shape, SvgFlattenPolicy policy)
+    {
+        switch (shape)
+        {
+            case "quadratic": builder.AddQuadratic(new(100, 100), new(0, 100), policy, CancellationToken.None); break;
+            case "cubic": builder.AddCubic(new(100, 100), new(0, 0), new(0, 100), policy, CancellationToken.None); break;
+            case "arc": builder.AddArc(100, 100, 0, false, true, new(0, 100), policy, CancellationToken.None); break;
+            case "ellipse": builder.AddEllipse(new(0, 0), 100, 100, policy, CancellationToken.None); break;
+            default: throw new InvalidOperationException("Unknown curve shape.");
+        }
+    }
     [Fact]
     public void Quad_spans_stay_empty_without_retention_and_clear_resets()
     {

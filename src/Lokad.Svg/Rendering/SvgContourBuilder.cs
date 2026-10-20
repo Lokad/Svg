@@ -113,20 +113,10 @@ internal sealed class SvgContourBuilder
         RequireOpenContour();
         SvgDevicePoint current = _points[_pointCount - 1];
         int before = _pointCount;
-        while (true)
-        {
-            try
-            {
-                _pointCount += SvgCurveFlatten.FlattenQuadratic(current, control, end, policy, _points.AsSpan(_pointCount), cancellationToken);
-                RecordQuadSpan(before - 1 - _openStart, _pointCount - 1 - _openStart, control, 1f);
-                return;
-            }
-            catch (SvgException)
-            {
-                _pointCount = before;
-                GrowPoints();
-            }
-        }
+        int added;
+        while (!SvgCurveFlatten.TryFlattenQuadratic(current, control, end, policy, _points.AsSpan(_pointCount), cancellationToken, out added)) GrowPoints();
+        _pointCount += added;
+        RecordQuadSpan(before - 1 - _openStart, _pointCount - 1 - _openStart, control, 1f);
     }
 
     /// <summary>Appends a rational quadratic with caller-bounded fallback samples and retained controls.</summary>
@@ -207,20 +197,10 @@ internal sealed class SvgContourBuilder
         RequireOpenContour();
         SvgDevicePoint current = _points[_pointCount - 1];
         int before = _pointCount;
-        while (true)
-        {
-            try
-            {
-                _pointCount += SvgCurveFlatten.FlattenCubic(current, firstControl, secondControl, end, policy, _points.AsSpan(_pointCount), cancellationToken);
-                RecordCubicSpan(before - 1 - _openStart, _pointCount - 1 - _openStart, firstControl, secondControl);
-                return;
-            }
-            catch (SvgException)
-            {
-                _pointCount = before;
-                GrowPoints();
-            }
-        }
+        int added;
+        while (!SvgCurveFlatten.TryFlattenCubic(current, firstControl, secondControl, end, policy, _points.AsSpan(_pointCount), cancellationToken, out added)) GrowPoints();
+        _pointCount += added;
+        RecordCubicSpan(before - 1 - _openStart, _pointCount - 1 - _openStart, firstControl, secondControl);
     }
 
     /// <summary>Appends the endpoint arc from the current point to <paramref name="end"/> as samples.</summary>
@@ -234,19 +214,9 @@ internal sealed class SvgContourBuilder
         else
         {
             int before = _pointCount;
-            while (true)
-            {
-                try
-                {
-                    _pointCount += SvgEllipticalArc.Sample(arc, policy, _points.AsSpan(_pointCount), cancellationToken);
-                    break;
-                }
-                catch (SvgException)
-                {
-                    _pointCount = before;
-                    GrowPoints();
-                }
-            }
+            int added;
+            while (!SvgEllipticalArc.TrySample(arc, policy, _points.AsSpan(_pointCount), cancellationToken, out added)) GrowPoints();
+            _pointCount += added;
             if (_retainCubicSpans && Math.Abs(arc.SweepRadians) <= Math.PI / 2 + 1e-9)
             {
                 (SvgDevicePoint first, SvgDevicePoint second) = SvgEllipticalArc.CubicControls(arc, arc.StartAngleRadians, arc.StartAngleRadians + arc.SweepRadians);
@@ -295,18 +265,9 @@ internal sealed class SvgContourBuilder
             }
         }
         int start = _pointCount;
-        while (true)
-        {
-            try
-            {
-                _pointCount += SvgEllipticalArc.SampleFull(center, radiusX, radiusY, 0, policy, _points.AsSpan(_pointCount), cancellationToken);
-                break;
-            }
-            catch (SvgException)
-            {
-                GrowPoints();
-            }
-        }
+        int added;
+        while (!SvgEllipticalArc.TrySampleFull(center, radiusX, radiusY, 0, policy, _points.AsSpan(_pointCount), cancellationToken, out added)) GrowPoints();
+        _pointCount += added;
         _starts[_contourCount] = start;
         _ends[_contourCount] = _pointCount;
         _contourCount++;

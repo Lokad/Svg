@@ -77,9 +77,11 @@ internal static class SvgEllipticalArc
     /// from the chord beyond the policy flatness. Interior samples lie on the ellipse; the final point
     /// is exactly <see cref="SvgNormalizedArc.End"/>, which the true curve reaches by construction.</para>
     /// </remarks>
-    /// <returns>The number of appended points, which is at least one.</returns>
-    internal static int Sample(SvgNormalizedArc arc, SvgFlattenPolicy policy, Span<SvgDevicePoint> output, CancellationToken cancellationToken)
+    /// <returns>True on success, with the appended count in <paramref name="written"/>; false only when
+    /// output is too short, with a zero count. Discard partial output on failure. Policy and numeric failures throw.</returns>
+    internal static bool TrySample(SvgNormalizedArc arc, SvgFlattenPolicy policy, Span<SvgDevicePoint> output, CancellationToken cancellationToken, out int written)
     {
+        written = 0;
         if (arc.Kind != SvgArcKind.Line && arc.Kind != SvgArcKind.Arc) throw new ArgumentOutOfRangeException(nameof(arc));
         ValidatePoint(arc.Start, nameof(arc));
         ValidatePoint(arc.Center, nameof(arc));
@@ -92,20 +94,21 @@ internal static class SvgEllipticalArc
         int appended = 0;
         if (arc.Kind == SvgArcKind.Line)
         {
-            AppendSample(output, ref appended, arc.End.X, arc.End.Y, policy, cancellationToken);
+            if (!AppendSample(output, ref appended, arc.End.X, arc.End.Y, policy, cancellationToken)) return false;
         }
         else
         {
             double endAngle = RequireFinite(arc.StartAngleRadians + arc.SweepRadians);
-            SubdivideArc(arc, arc.StartAngleRadians, endAngle, 0, policy, output, ref appended, cancellationToken);
+            if (!SubdivideArc(arc, arc.StartAngleRadians, endAngle, 0, policy, output, ref appended, cancellationToken)) return false;
             output[appended - 1] = arc.End;
         }
 
         cancellationToken.ThrowIfCancellationRequested();
-        return appended;
+        written = appended;
+        return true;
     }
 
-    private static void SubdivideArc(SvgNormalizedArc arc, double fromAngle, double toAngle, int depth, SvgFlattenPolicy policy, Span<SvgDevicePoint> output, ref int appended, CancellationToken cancellationToken)
+    private static bool SubdivideArc(SvgNormalizedArc arc, double fromAngle, double toAngle, int depth, SvgFlattenPolicy policy, Span<SvgDevicePoint> output, ref int appended, CancellationToken cancellationToken)
     {
         double middleAngle = RequireFinite((fromAngle + toAngle) / 2);
         SvgDevicePoint from = ArcPoint(arc, fromAngle);
@@ -113,13 +116,12 @@ internal static class SvgEllipticalArc
         SvgDevicePoint to = ArcPoint(arc, toAngle);
         if (ChordDeviation(middle, from, to) <= policy.Flatness)
         {
-            AppendSample(output, ref appended, to.X, to.Y, policy, cancellationToken);
-            return;
+            return AppendSample(output, ref appended, to.X, to.Y, policy, cancellationToken);
         }
 
         if (depth >= policy.MaximumDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "Elliptical arc sampling exceeds the supported subdivision depth.");
-        SubdivideArc(arc, fromAngle, middleAngle, depth + 1, policy, output, ref appended, cancellationToken);
-        SubdivideArc(arc, middleAngle, toAngle, depth + 1, policy, output, ref appended, cancellationToken);
+        return SubdivideArc(arc, fromAngle, middleAngle, depth + 1, policy, output, ref appended, cancellationToken)
+            && SubdivideArc(arc, middleAngle, toAngle, depth + 1, policy, output, ref appended, cancellationToken);
     }
 
     /// <summary>Appends one full ellipse loop, starting exactly at the angle-zero origin.</summary>
@@ -128,9 +130,11 @@ internal static class SvgEllipticalArc
     /// duplicate and its implicit closing edge is a tested chord. A flatness above the loop extent
     /// collapses each quarter to its right end, and rotation leads the four cardinal samples with the origin.</para>
     /// </remarks>
-    /// <returns>The number of appended points, which is at least four.</returns>
-    internal static int SampleFull(SvgDevicePoint center, double radiusX, double radiusY, double rotationRadians, SvgFlattenPolicy policy, Span<SvgDevicePoint> output, CancellationToken cancellationToken)
+    /// <returns>True on success, with the appended count in <paramref name="written"/>; false only when
+    /// output is too short, with a zero count. Discard partial output on failure. Policy and numeric failures throw.</returns>
+    internal static bool TrySampleFull(SvgDevicePoint center, double radiusX, double radiusY, double rotationRadians, SvgFlattenPolicy policy, Span<SvgDevicePoint> output, CancellationToken cancellationToken, out int written)
     {
+        written = 0;
         ValidatePoint(center, nameof(center));
         if (!double.IsFinite(radiusX) || !double.IsFinite(radiusY) || radiusX <= 0 || radiusY <= 0) throw new ArgumentOutOfRangeException(nameof(radiusX));
         if (!double.IsFinite(rotationRadians)) throw new ArgumentOutOfRangeException(nameof(rotationRadians));
@@ -140,10 +144,10 @@ internal static class SvgEllipticalArc
         SvgNormalizedArc loop = SvgNormalizedArc.CreateArc(origin, center, radiusX, radiusY, rotationRadians, 0, 2 * Math.PI, origin);
         int appended = 0;
         double quarter = Math.PI / 2;
-        SubdivideArc(loop, 0, quarter, 0, policy, output, ref appended, cancellationToken);
-        SubdivideArc(loop, quarter, 2 * quarter, 0, policy, output, ref appended, cancellationToken);
-        SubdivideArc(loop, 2 * quarter, 3 * quarter, 0, policy, output, ref appended, cancellationToken);
-        SubdivideArc(loop, 3 * quarter, 4 * quarter, 0, policy, output, ref appended, cancellationToken);
+        if (!SubdivideArc(loop, 0, quarter, 0, policy, output, ref appended, cancellationToken)
+            || !SubdivideArc(loop, quarter, 2 * quarter, 0, policy, output, ref appended, cancellationToken)
+            || !SubdivideArc(loop, 2 * quarter, 3 * quarter, 0, policy, output, ref appended, cancellationToken)
+            || !SubdivideArc(loop, 3 * quarter, 4 * quarter, 0, policy, output, ref appended, cancellationToken)) return false;
         output[appended - 1] = origin;
         for (int index = appended - 1; index > 0; index--)
         {
@@ -152,7 +156,8 @@ internal static class SvgEllipticalArc
 
         output[0] = origin;
         cancellationToken.ThrowIfCancellationRequested();
-        return appended;
+        written = appended;
+        return true;
     }
 
     /// <summary>Converts one arc section to cubic Bezier controls with matching endpoints.</summary>
@@ -213,12 +218,14 @@ internal static class SvgEllipticalArc
         return RequireFinite(Math.Abs(chordX * armY - chordY * armX)) / Math.Sqrt(chordSquared);
     }
 
-    private static void AppendSample(Span<SvgDevicePoint> output, ref int appended, double x, double y, SvgFlattenPolicy policy, CancellationToken cancellationToken)
+    private static bool AppendSample(Span<SvgDevicePoint> output, ref int appended, double x, double y, SvgFlattenPolicy policy, CancellationToken cancellationToken)
     {
-        if (appended >= policy.MaximumSegments || appended >= output.Length) throw new SvgException(SvgErrorCode.LimitExceeded, "Elliptical arc sampling exceeds the supported expansion range.");
+        if (appended >= policy.MaximumSegments) throw new SvgException(SvgErrorCode.LimitExceeded, "Elliptical arc sampling exceeds the supported expansion range.");
+        if (appended >= output.Length) return false;
         if ((appended & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
         output[appended] = new SvgDevicePoint(x, y);
         appended++;
+        return true;
     }
     private static void ValidatePoint(SvgDevicePoint point, string parameterName)
     {
