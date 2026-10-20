@@ -107,42 +107,6 @@ public sealed class SvgPolygonCoverageTests
     }
 
     [Fact]
-    public void Device_transform_maps_identity()
-    {
-        SvgDeviceTransform transform = new(1, 0, 1, 0);
-
-        Assert.Equal(new SvgDevicePoint(3, 5), transform.Apply(new SvgPoint(3, 5)));
-    }
-
-    [Fact]
-    public void Device_transform_applies_output_scale_and_offset()
-    {
-        SvgDeviceTransform transform = new(2, 10, 2, 20);
-
-        Assert.Equal(new SvgDevicePoint(16, 28), transform.Apply(new SvgPoint(3, 4)));
-    }
-
-    [Fact]
-    public void Device_transform_reflects_mirrored_geometry()
-    {
-        SvgDeviceTransform transform = new(-1, 8, 1, 0);
-
-        Assert.Equal(new SvgDevicePoint(7, 1), transform.Apply(new SvgPoint(1, 1)));
-        Assert.Equal(new SvgDevicePoint(1, 2), transform.Apply(new SvgPoint(7, 2)));
-        Assert.Equal(new SvgDevicePoint(6, 7), transform.Apply(new SvgPoint(2, 7)));
-    }
-
-    [Fact]
-    public void Device_transform_rejects_nonfinite_results()
-    {
-        SvgDeviceTransform infiniteScale = new(double.PositiveInfinity, 0, 1, 0);
-        SvgDeviceTransform infiniteOffset = new(1, double.NaN, 1, 0);
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => infiniteScale.Apply(new SvgPoint(1, 1))).ErrorCode);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => infiniteOffset.Apply(new SvgPoint(1, 1))).ErrorCode);
-    }
-
-    [Fact]
     public void Fractional_phase_triangle_preserves_area()
     {
         SvgDevicePoint[] triangle = [new SvgDevicePoint(0.5, 0.5), new SvgDevicePoint(8.5, 0.5), new SvgDevicePoint(0.5, 8.5)];
@@ -153,7 +117,7 @@ public sealed class SvgPolygonCoverageTests
     [Fact]
     public void Scaled_research_triangle_preserves_scaled_area()
     {
-        SvgDeviceTransform scaleTwo = new(2, 0, 2, 0);
+        SvgAffineTransform scaleTwo = SvgAffineTransform.FromScale(2, 2);
         SvgPoint[] source = [new SvgPoint(1, 1), new SvgPoint(7, 2), new SvgPoint(2, 7)];
         SvgDevicePoint[] triangle = [scaleTwo.Apply(source[0]), scaleTwo.Apply(source[1]), scaleTwo.Apply(source[2])];
 
@@ -164,7 +128,7 @@ public sealed class SvgPolygonCoverageTests
     [Fact]
     public void Reflected_triangle_preserves_area()
     {
-        SvgDeviceTransform mirror = new(-1, 8, 1, 0);
+        SvgAffineTransform mirror = SvgAffineTransform.FromScaleOffset(-1, 1, 8, 0);
         SvgPoint[] source = [new SvgPoint(0, 0), new SvgPoint(8, 0), new SvgPoint(0, 8)];
         SvgDevicePoint[] triangle = [mirror.Apply(source[0]), mirror.Apply(source[1]), mirror.Apply(source[2])];
 

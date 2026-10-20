@@ -5,9 +5,6 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Encoding;
 
-/// <summary>Retains one decoded solid-color image with its intrinsic dimensions.</summary>
-internal readonly record struct DecodedSolidImage(SvgColor Color, int Width, int Height);
-
 /// <summary>Transfers decoded raster ownership to the caller; uniform images retain only their color.</summary>
 internal readonly record struct DecodedPngImage(SvgColor Color, int Width, int Height, DecodedPngRaster? Raster);
 
@@ -50,17 +47,8 @@ internal static class PngImageDecoder
 
     private static uint[]? _crcTable;
 
-    internal static DecodedSolidImage DecodeSolidColor(ReadOnlyMemory<byte> png, SvgRenderLimits limits, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        DecodedPngImage image = Decode(png, limits, budget, workCounter, cancellationToken, false);
-        return new(image.Color, image.Width, image.Height);
-    }
-
     /// <summary>Returns uniform color or adopts a premultiplied raster; the caller releases any returned raster on every exit.</summary>
     internal static DecodedPngImage Decode(ReadOnlyMemory<byte> png, SvgRenderLimits limits, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => Decode(png, limits, budget, workCounter, cancellationToken, true);
-
-    private static DecodedPngImage Decode(ReadOnlyMemory<byte> png, SvgRenderLimits limits, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool retainRaster)
     {
         ArgumentNullException.ThrowIfNull(limits);
         ArgumentNullException.ThrowIfNull(budget);
@@ -212,10 +200,10 @@ internal static class PngImageDecoder
         {
             throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data carries corrupt compressed pixel data.");
         }
-        return ScanPixels(pixels, width, height, channels, transparent, palette, isPaletteType, (int)rowBytes, budget, workCounter, cancellationToken, retainRaster);
+        return ScanPixels(pixels, width, height, channels, transparent, palette, isPaletteType, (int)rowBytes, budget, workCounter, cancellationToken);
     }
 
-    private static DecodedPngImage ScanPixels(byte[] pixels, int width, int height, int channels, byte[]? transparent, byte[]? palette, bool isPaletteType, int rowBytes, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool retainRaster)
+    private static DecodedPngImage ScanPixels(byte[] pixels, int width, int height, int channels, byte[]? transparent, byte[]? palette, bool isPaletteType, int rowBytes, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (isPaletteType && palette is null) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data is missing its palette chunk.");
         if (isPaletteType && transparent is not null && transparent.Length > 256) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data has a malformed transparency chunk.");
@@ -271,7 +259,6 @@ internal static class PngImageDecoder
                     }
                     else if (pixelRed != red || pixelGreen != green || pixelBlue != blue || pixelAlpha != alpha)
                     {
-                        if (!retainRaster) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid-color embedded PNG data are implemented.");
                         if (raster is null)
                         {
                             raster = DecodedPngRaster.Create(width, height, budget);

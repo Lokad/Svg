@@ -192,7 +192,8 @@ public sealed class SvgFilterPlaybackTests
         SvgRenderOptions options = new(null, 1, new(255, 255, 255, 255), SvgRenderLimits.Default);
         byte[] png = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
         RenderBudget budget = new(1_000_000);
-        DecodedSolidImage image = PngImageDecoder.DecodeSolidColor(png, options.Limits, budget, new ParserWorkCounter(options.Limits.MaximumWorkUnits), CancellationToken.None);
+        DecodedPngImage image = PngImageDecoder.Decode(png, options.Limits, budget, new ParserWorkCounter(options.Limits.MaximumWorkUnits), CancellationToken.None);
+        Assert.Null(image.Raster);
         Assert.Equal(new SvgColor(127, 127, 255, 255), image.Color);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -437,7 +438,8 @@ public sealed class SvgFilterPlaybackTests
         SvgRenderOptions options = new(null, 1, new(255, 255, 255, 255), SvgRenderLimits.Default);
         byte[] png = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
         RenderBudget budget = new(1_000_000);
-        DecodedSolidImage image = PngImageDecoder.DecodeSolidColor(png, options.Limits, budget, new ParserWorkCounter(options.Limits.MaximumWorkUnits), CancellationToken.None);
+        DecodedPngImage image = PngImageDecoder.Decode(png, options.Limits, budget, new ParserWorkCounter(options.Limits.MaximumWorkUnits), CancellationToken.None);
+        Assert.Null(image.Raster);
         Assert.Equal(new SvgColor(255, 127, 127, 255), image.Color);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

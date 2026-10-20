@@ -307,17 +307,6 @@ internal static class SvgStyleSheet
         return -1;
     }
 
-    private static int FindCharacter(ReadOnlySpan<char> value, char character, int position, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        while (position < value.Length)
-        {
-            ConsumeCheckpoint(position, workCounter, cancellationToken);
-            if (value[position] == character) return position;
-            position++;
-        }
-        return -1;
-    }
-
     private static bool ContainsCharacter(string value, char character, int start, int end, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         SvgCssQuotedState quotes = default;

@@ -39,7 +39,7 @@ internal readonly record struct SvgImageSyntax(string Href, double X, double Y, 
     }
 
     /// <summary>Maps one solid image into its placement box under the effective aspect policy.</summary>
-    internal static SvgRectangle MapPlacement(string? preserveAspectRatio, SvgImageSyntax syntax, DecodedSolidImage image, double width, double height)
+    internal static SvgRectangle MapPlacement(string? preserveAspectRatio, SvgImageSyntax syntax, DecodedPngImage image, double width, double height)
     {
         if (image.Width * height == image.Height * width) return new(syntax.X, syntax.Y, width, height, default, true, null);
         (SvgViewBoxAlignment horizontalAlignment, SvgViewBoxAlignment verticalAlignment, SvgViewBoxFit fit) = ParsePlacementAspectRatio(preserveAspectRatio);

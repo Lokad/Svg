@@ -178,9 +178,8 @@ internal static class SvgLeafParser
                 string? aspect = reader.GetAttribute("preserveAspectRatio");
                 if (image.Raster is null && !retainBitmap && element.Transform.IsAxisAligned)
                 {
-                    DecodedSolidImage solid = new(image.Color, image.Width, image.Height);
-                    SvgRectangle placement = SvgImageSyntax.MapPlacement(aspect, syntax, solid, width, height);
-                    SvgRectangle rectangle = element.Transform.Apply(placement with { Color = solid.Color, HasFill = element.Presentation.HasFill });
+                    SvgRectangle placement = SvgImageSyntax.MapPlacement(aspect, syntax, image, width, height);
+                    SvgRectangle rectangle = element.Transform.Apply(placement with { Color = image.Color, HasFill = element.Presentation.HasFill });
                     if (frame is not null) rectangle = frame.Value.Clip.ClipRectangle(frame.Value.Shift(rectangle));
                     return SvgGeometry.FromRectangle(rectangle);
                 }

@@ -214,26 +214,28 @@ public sealed class PngImageDecoderTests
         Assert.Equal(new SvgColor(128, 128, 128, 0), color);
     }
 
-    [Fact]
-    public void Rejects_a_two_color_pixel_row()
+    [Theory]
+    [InlineData("iVBORw0KGgoAAAANSUhEUgAAAAIAAAABCAIAAAB7QOjdAAAADUlEQVR4nGP4zwAE/wEHAAH/4iOeWQAAAABJRU5ErkJggg==")]
+    [InlineData("iVBORw0KGgoAAAANSUhEUgAAAAIAAAABCAMAAADD/I+4AAAABlBMVEX/AAAAAP9sof2OAAAAC0lEQVR4nGNgYAQAAAQAAr96P0oAAAAASUVORK5CYII=")]
+    public void Decodes_two_color_rgb_and_palette_rows(string base64)
     {
-        SvgException exception = Assert.Throws<SvgException>(() => Decode("iVBORw0KGgoAAAANSUhEUgAAAAIAAAABCAIAAAB7QOjdAAAADUlEQVR4nGP4zwAE/wEHAAH/4iOeWQAAAABJRU5ErkJggg=="));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        RenderBudget budget = new(100_000);
+        DecodedPngImage image = PngImageDecoder.Decode(Convert.FromBase64String(base64), SvgRenderLimits.Default, budget, new ParserWorkCounter(10_000), CancellationToken.None);
+        try
+        {
+            Assert.Equal(2, image.Width);
+            Assert.Equal(1, image.Height);
+            Assert.NotNull(image.Raster);
+            Assert.Equal(new byte[] { 255, 0, 0, 255, 0, 0, 255, 255 }, image.Raster.Pixels);
+        }
+        finally { image.Raster?.Dispose(); }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]
     public void Rejects_interlaced_data()
     {
         SvgException exception = Assert.Throws<SvgException>(() => Decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAAHncGNIAAAADElEQVR4nGP4z8AAAAMBAQDJ/pLvAAAAAElFTkSuQmCC"));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
-    }
-
-    [Fact]
-    public void Rejects_palette_data()
-    {
-        SvgException exception = Assert.Throws<SvgException>(() => Decode("iVBORw0KGgoAAAANSUhEUgAAAAIAAAABCAMAAADD/I+4AAAABlBMVEX/AAAAAP9sof2OAAAAC0lEQVR4nGNgYAQAAAQAAr96P0oAAAAASUVORK5CYII="));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
@@ -263,7 +265,6 @@ public sealed class PngImageDecoderTests
     }
 
     [Theory]
-    [InlineData("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAABFaP0WAAAABlBMVEX/AAAA/wDSh+9xAAAADklEQVR4nGNgYGRgZAAAAAwAAzi4CA8AAAAASUVORK5CYII=", SvgErrorCode.UnsupportedFeature)]
     [InlineData("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAABFaP0WAAAABlBMVEX/AAAA/wDSh+9xAAAADklEQVR4nGNgZWVgZQUAAEIAFbGAWJQAAAAASUVORK5CYII=", SvgErrorCode.MalformedInput)]
     [InlineData("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAABFaP0WAAAAC0lEQVR4nGNgAAEAAAYAAf6MZ8gAAAAASUVORK5CYII=", SvgErrorCode.MalformedInput)]
     [InlineData("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAABFaP0WAAAAA1BMVEX/AAAZ4gk3AAAAA1BMVEX/AAAZ4gk3AAAAC0lEQVR4nGNgAAEAAAYAAf6MZ8gAAAAASUVORK5CYII=", SvgErrorCode.MalformedInput)]
@@ -568,7 +569,13 @@ public sealed class PngImageDecoderTests
 
     private static SvgColor Decode(byte[] png, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        return PngImageDecoder.DecodeSolidColor(png, SvgRenderLimits.Default, budget, workCounter, cancellationToken).Color;
+        DecodedPngImage image = PngImageDecoder.Decode(png, SvgRenderLimits.Default, budget, workCounter, cancellationToken);
+        try
+        {
+            Assert.Null(image.Raster);
+            return image.Color;
+        }
+        finally { image.Raster?.Dispose(); }
     }
     private static byte[] ImageSvg(string base64)
     {
@@ -715,6 +722,6 @@ public sealed class PngImageDecoderTests
     private sealed record TestChunk(string Type, byte[] Data, int Offset = 0, uint StoredCrc = 0);    private static SvgColor Decode(string base64)
     {
         byte[] png = System.Convert.FromBase64String(base64);
-        return PngImageDecoder.DecodeSolidColor(png, SvgRenderLimits.Default, new RenderBudget(100_000), new ParserWorkCounter(10_000), CancellationToken.None).Color;
+        return Decode(png, new RenderBudget(100_000), new ParserWorkCounter(10_000), CancellationToken.None);
     }
 }

@@ -23,7 +23,8 @@ public sealed class SvgOpacityLayerTests
         SvgRenderOptions options = new(null, 1, new SvgColor(255, 255, 255, 255), SvgRenderLimits.Default);
         byte[] expected = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
         RenderBudget decodeBudget = new(options.Limits.MaximumAccountedBytes);
-        DecodedSolidImage decoded = PngImageDecoder.DecodeSolidColor(expected, options.Limits, decodeBudget, new ParserWorkCounter(options.Limits.MaximumWorkUnits), CancellationToken.None);
+        DecodedPngImage decoded = PngImageDecoder.Decode(expected, options.Limits, decodeBudget, new ParserWorkCounter(options.Limits.MaximumWorkUnits), CancellationToken.None);
+        Assert.Null(decoded.Raster);
         Assert.Equal(new SvgColor(whiteLane, whiteLane, 255, 255), decoded.Color);
         Assert.Equal(0, decodeBudget.Snapshot().CurrentBytes);
         byte[] destination = new byte[expected.Length];
