@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "selectionDate": "2026-10-17",
-  "selectionStatus": "Selection frozen at 460a67df before fresh comparisons; native references qualified before renderer comparisons. Renderer qualification and coverage retirement pending.",
+  "selectionStatus": "Selection frozen at 460a67df before fresh comparisons; native references qualified before renderer comparisons. Renderer qualification and coverage retirement are complete.",
   "oracle": "Pinned Chrome 153.0.8010.52 only; upstream expected images and pass tables are unused.",
   "purpose": "F1 finite feature-selected replacement full-document collection; preserved micro-tests cover additional distinctions and known defects.",
   "cases": [
