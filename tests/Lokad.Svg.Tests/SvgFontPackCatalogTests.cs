@@ -52,7 +52,7 @@ public sealed class SvgFontPackCatalogTests
     [Fact]
     public void Resolves_requested_and_resolved_family_names_with_deterministic_style_selection()
     {
-        SvgFontPackCatalog catalog = Parse(Manifest(
+        SvgFontPackCatalog catalog = Parse(Manifest("test-pack", "[]",
             """{ "requestedFamily": "Alias", "resolvedFamily": "Family", "relativeFontFile": "files/regular.ttf", "weight": 400, "italic": false }""",
             """{ "requestedFamily": "Alias", "resolvedFamily": "Family", "relativeFontFile": "files/bold.ttf", "weight": 700, "italic": false }""",
             """{ "requestedFamily": "Alias", "resolvedFamily": "Family", "relativeFontFile": "files/italic.ttf", "weight": 400, "italic": true }"""));
@@ -114,14 +114,13 @@ public sealed class SvgFontPackCatalogTests
     [Fact]
     public void Resolves_configured_fallback_before_the_deterministic_final_face()
     {
-        SvgFontPackCatalog catalog = Parse(Manifest(
+        SvgFontPackCatalog catalog = Parse(Manifest("test-pack", """[{ "family": "Fallback" }]""",
             """{ "requestedFamily": "First", "resolvedFamily": "First", "relativeFontFile": "files/first.ttf", "weight": 400, "italic": false }""",
             """{ "requestedFamily": "Fallback", "resolvedFamily": "Fallback", "relativeFontFile": "files/fallback.ttf", "weight": 400, "italic": false }""",
-            """{ "requestedFamily": "Math", "resolvedFamily": "Math", "relativeFontFile": "files/math.ttf", "weight": 400, "italic": false, "hasMathTable": true }""",
-            fallbacks: """[{ "family": "Fallback" }]"""));
+            """{ "requestedFamily": "Math", "resolvedFamily": "Math", "relativeFontFile": "files/math.ttf", "weight": 400, "italic": false, "hasMathTable": true }"""));
 
         SvgFontPackResolution configured = catalog.Resolve(new SvgFontFaceRequest("missing", 400, false));
-        SvgFontPackCatalog noFallback = Parse(Manifest(
+        SvgFontPackCatalog noFallback = Parse(Manifest("test-pack", "[]",
             """{ "requestedFamily": "Math", "resolvedFamily": "Math", "relativeFontFile": "files/math.ttf", "weight": 400, "italic": false, "hasMathTable": true }""",
             """{ "requestedFamily": "Text", "resolvedFamily": "Text", "relativeFontFile": "files/text.ttf", "weight": 400, "italic": false }"""));
         SvgFontPackResolution final = noFallback.Resolve(new SvgFontFaceRequest("missing", 400, false));
@@ -135,7 +134,7 @@ public sealed class SvgFontPackCatalogTests
     [Fact]
     public void Bounded_catalog_resolution_charges_candidate_scans_and_checks_cancellation()
     {
-        SvgFontPackCatalog catalog = Parse(Manifest(
+        SvgFontPackCatalog catalog = Parse(Manifest("test-pack", "[]",
             """{ "requestedFamily": "Alias", "resolvedFamily": "Family", "relativeFontFile": "files/regular.ttf", "weight": 400, "italic": false }""",
             """{ "requestedFamily": "Alias", "resolvedFamily": "Family", "relativeFontFile": "files/bold.ttf", "weight": 700, "italic": false }"""));
 
@@ -156,7 +155,7 @@ public sealed class SvgFontPackCatalogTests
     [InlineData("files//file.ttf")]
     public void Rejects_unsafe_font_file_paths(string path)
     {
-        SvgException exception = Assert.Throws<SvgException>(() => Parse(Manifest("""{ "requestedFamily": "Example", "resolvedFamily": "Example", "relativeFontFile": "REPLACE", "weight": 400, "italic": false }""".Replace("REPLACE", path, StringComparison.Ordinal))));
+        SvgException exception = Assert.Throws<SvgException>(() => Parse(Manifest("test-pack", "[]", """{ "requestedFamily": "Example", "resolvedFamily": "Example", "relativeFontFile": "REPLACE", "weight": 400, "italic": false }""".Replace("REPLACE", path, StringComparison.Ordinal))));
 
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
     }
@@ -164,15 +163,16 @@ public sealed class SvgFontPackCatalogTests
     [Fact]
     public void Rejects_a_mismatched_pack_identifier()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(Manifest("""{ "requestedFamily": "Example", "resolvedFamily": "Example", "relativeFontFile": "files/regular.ttf", "weight": 400, "italic": false }""", "other-pack")), "test-pack"));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(Manifest("other-pack", "[]", """{ "requestedFamily": "Example", "resolvedFamily": "Example", "relativeFontFile": "files/regular.ttf", "weight": 400, "italic": false }""")), "test-pack"));
 
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+        Assert.Contains("packId does not match", exception.Message);
     }
 
     [Fact]
     public void Rejects_an_unsafe_requested_pack_identifier()
     {
-        Assert.Throws<ArgumentException>(() => SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(Manifest("""{ "requestedFamily": "Example", "resolvedFamily": "Example", "relativeFontFile": "files/regular.ttf", "weight": 400, "italic": false }""")), "../test-pack"));
+        Assert.Throws<ArgumentException>(() => SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(Manifest("test-pack", "[]", """{ "requestedFamily": "Example", "resolvedFamily": "Example", "relativeFontFile": "files/regular.ttf", "weight": 400, "italic": false }""")), "../test-pack"));
     }
 
     [Fact]
@@ -191,12 +191,10 @@ public sealed class SvgFontPackCatalogTests
 
     private static SvgFontPackCatalog Parse(string manifest) => SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
 
-    private static string Manifest(string firstFace, string? secondFace = null, string? thirdFace = null, string? fallbacks = null, string packId = "test-pack")
+    private static string Manifest(string packId, string fallbacks, params string[] faces)
     {
-        string?[] candidates = [firstFace, secondFace, thirdFace];
-        string[] faces = candidates.Where(static face => face is not null).Cast<string>().ToArray();
         string[] paths = faces.Select(face => face.Contains("bold.ttf", StringComparison.Ordinal) ? "files/bold.ttf" : face.Contains("italic.ttf", StringComparison.Ordinal) ? "files/italic.ttf" : face.Contains("fallback.ttf", StringComparison.Ordinal) ? "files/fallback.ttf" : face.Contains("first.ttf", StringComparison.Ordinal) ? "files/first.ttf" : face.Contains("math.ttf", StringComparison.Ordinal) ? "files/math.ttf" : face.Contains("text.ttf", StringComparison.Ordinal) ? "files/text.ttf" : "files/regular.ttf").Distinct(StringComparer.Ordinal).ToArray();
         string files = string.Join(",", paths.Select((path, index) => "{ \"relativePath\": \"" + path + "\", \"byteSize\": " + (index + 1) + ", \"sha256\": \"" + (index == 0 ? HashA : HashB) + "\" }"));
-        return "{ \"packId\": \"" + packId + "\", \"files\": [" + files + "], \"families\": [" + string.Join(",", faces) + "], \"fallbacks\": " + (fallbacks ?? "[]") + " }";
+        return "{ \"packId\": \"" + packId + "\", \"files\": [" + files + "], \"families\": [" + string.Join(",", faces) + "], \"fallbacks\": " + fallbacks + " }";
     }
 }

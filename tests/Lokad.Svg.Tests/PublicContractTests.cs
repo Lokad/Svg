@@ -11,12 +11,12 @@ public sealed class PublicContractTests
     [Fact]
     public void Font_pack_public_contract_requires_explicit_selection_and_cancellation_parameters()
     {
-        MethodInfo parse = typeof(SvgFontPackCatalog).GetMethod(nameof(SvgFontPackCatalog.Parse), BindingFlags.Public | BindingFlags.Static)!;
-        MethodInfo resolve = typeof(SvgFontPackCatalog).GetMethod(nameof(SvgFontPackCatalog.Resolve), BindingFlags.Public | BindingFlags.Instance)!;
-        MethodInfo bind = typeof(SvgFontPackCatalog).GetMethod(nameof(SvgFontPackCatalog.Bind), BindingFlags.Public | BindingFlags.Instance)!;
-        MethodInfo acquire = typeof(SvgFontPackCatalog).GetMethod(nameof(SvgFontPackCatalog.AcquireAsync), BindingFlags.Public | BindingFlags.Instance)!;
-        MethodInfo getBytes = typeof(ISvgFontProgramSource).GetMethod(nameof(ISvgFontProgramSource.GetBytesAsync), BindingFlags.Public | BindingFlags.Instance)!;
-        MethodInfo getSource = typeof(ISvgFontProgramSourceProvider).GetMethod(nameof(ISvgFontProgramSourceProvider.GetSourceAsync), BindingFlags.Public | BindingFlags.Instance)!;
+        MethodInfo parse = ConvertMethod(typeof(SvgFontPackCatalog), nameof(SvgFontPackCatalog.Parse), typeof(ReadOnlyMemory<byte>), typeof(string));
+        MethodInfo resolve = ConvertMethod(typeof(SvgFontPackCatalog), nameof(SvgFontPackCatalog.Resolve), typeof(SvgFontFaceRequest));
+        MethodInfo bind = ConvertMethod(typeof(SvgFontPackCatalog), nameof(SvgFontPackCatalog.Bind), typeof(SvgFontPackResolution), typeof(ISvgFontProgramSource));
+        MethodInfo acquire = ConvertMethod(typeof(SvgFontPackCatalog), nameof(SvgFontPackCatalog.AcquireAsync), typeof(SvgFontPackResolution), typeof(ISvgFontProgramSourceProvider), typeof(CancellationToken));
+        MethodInfo getBytes = ConvertMethod(typeof(ISvgFontProgramSource), nameof(ISvgFontProgramSource.GetBytesAsync), typeof(CancellationToken));
+        MethodInfo getSource = ConvertMethod(typeof(ISvgFontProgramSourceProvider), nameof(ISvgFontProgramSourceProvider.GetSourceAsync), typeof(SvgFontPackFile), typeof(CancellationToken));
         MethodInfo[] snapshots = typeof(SvgFontSnapshot).GetMethods(BindingFlags.Public | BindingFlags.Static).Where(method => method.Name == nameof(SvgFontSnapshot.CreateAsync)).ToArray();
 
         Assert.All(parse.GetParameters(), parameter => Assert.False(parameter.HasDefaultValue));
@@ -1027,7 +1027,7 @@ public sealed class PublicContractTests
 
         public override Span<byte> GetSpan() => _storage;
 
-        public override MemoryHandle Pin(int elementIndex = 0) => throw new NotSupportedException();
+        public override MemoryHandle Pin(int elementIndex) => throw new NotSupportedException();
 
         public override void Unpin() { }
 

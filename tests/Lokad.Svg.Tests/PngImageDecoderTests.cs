@@ -719,7 +719,12 @@ public sealed class PngImageDecoderTests
         return crc ^ 0xFFFFFFFFu;
     }
 
-    private sealed record TestChunk(string Type, byte[] Data, int Offset = 0, uint StoredCrc = 0);    private static SvgColor Decode(string base64)
+    private sealed record TestChunk(string Type, byte[] Data, int Offset, uint StoredCrc)
+    {
+        internal TestChunk(string type, byte[] data) : this(type, data, 0, 0) { }
+    }
+
+    private static SvgColor Decode(string base64)
     {
         byte[] png = System.Convert.FromBase64String(base64);
         return Decode(png, new RenderBudget(100_000), new ParserWorkCounter(10_000), CancellationToken.None);
