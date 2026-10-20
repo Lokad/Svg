@@ -89,8 +89,9 @@ public sealed class SvgPatternUseReplayTests
         SvgColor red = new(255, 0, 0, 255), blue = new(0, 0, 255, 255);
         SvgGradientStop[] stops = stopCount == 2 ? [new(.25, red), new(.75, blue)]
             : [new(.25, red), new(.4, red), new(.6, blue), new(.75, blue)];
-        SvgShaderPaint inner = SvgShaderPaint.RadialRamp(stops, red, blue, .25, .75, .1, 1, 32);
-        SvgShaderPaint outer = SvgShaderPaint.RadialRamp(stops, red, blue, .25, .75, .9, 1, 32);
+        using SvgGradientRamp ramp = SvgGradientRamp.Create(stops, red, blue, .25, .75, new(10_000), new(10), CancellationToken.None);
+        SvgShaderPaint inner = ramp.SampleRadial(.1, 1, 32);
+        SvgShaderPaint outer = ramp.SampleRadial(.9, 1, 32);
         Assert.InRange(inner.Red, .99f, 1f);
         Assert.InRange(inner.Blue, 0f, .01f);
         Assert.InRange(outer.Red, 0f, .01f);

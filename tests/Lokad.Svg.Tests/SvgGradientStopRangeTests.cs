@@ -40,7 +40,8 @@ public sealed class SvgGradientStopRangeTests
         SvgGradientStop[] stops = new SvgGradientStop[256];
         for (int i = 0; i < stops.Length; i++) stops[i] = new(i / 255d, red);
         for (int i = 126; i <= 129; i++) stops[i] = new(.5, i == 129 ? cyan : red);
-        SvgShaderPaint sample = SvgShaderPaint.Ramp(stops, red, red, 0, 1, .5, 1f, 32);
+        using SvgGradientRamp ramp = SvgGradientRamp.Create(stops, red, red, 0, 1, new(100_000), new(256), CancellationToken.None);
+        SvgShaderPaint sample = ramp.SampleLinear(.5, 1f, 32);
         Assert.InRange(sample.Red, 0f, .01f);
         Assert.InRange(sample.Green, .99f, 1f);
         Assert.InRange(sample.Blue, .99f, 1f);

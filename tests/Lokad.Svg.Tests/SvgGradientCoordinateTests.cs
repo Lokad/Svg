@@ -101,6 +101,7 @@ public sealed class SvgGradientCoordinateTests
         SvgGradientStop[] stops = [new(0, new(23, 169, 205, 255)) { Alpha = .27f }, new(1, new(195, 213, 55, 255)) { Alpha = .81f }];
         SvgRectangle box = new(0, 0, 640, 320, default, true, null);
         SvgCpuRasterGrid grid = new(640, 320);
+        using SvgGradientRamp ramp = SvgGradientRamp.Create(stops, stops[0].Color, stops[1].Color, 0, 1, new(1), new(1), CancellationToken.None);
         foreach (string row in rows.Skip(1))
         {
             string[] v = row.Split(',');
@@ -129,7 +130,7 @@ public sealed class SvgGradientCoordinateTests
             // Repeating a sample exercises the cached bitmap matrix.
             Assert.True(v[0] == "linear" ? coordinates.TryLinear(x, y, grid.GetBitmapOrigin(x, y), out double cached) : coordinates.TryRadial(x, y, grid.GetBitmapOrigin(x, y), out cached));
             Assert.Equal(position, cached);
-            SvgShaderPaint sample = SvgShaderPaint.Ramp(stops, stops[0].Color, stops[1].Color, 0, 1, Math.Clamp(position, 0, 1), 201, grid.GetGradientDither(x, y));
+            SvgShaderPaint sample = ramp.SampleLinear(Math.Clamp(position, 0, 1), 201 / 255f, grid.GetGradientDither(x, y));
             uint[] expectedLanes = v.Skip(16).Take(4).Select(value => uint.Parse(value, CultureInfo.InvariantCulture)).ToArray();
             uint[] actualLanes = [BitConverter.SingleToUInt32Bits(sample.Red), BitConverter.SingleToUInt32Bits(sample.Green), BitConverter.SingleToUInt32Bits(sample.Blue), BitConverter.SingleToUInt32Bits(sample.Alpha)];
             Assert.True(expectedLanes.SequenceEqual(actualLanes), row + "; actual lanes " + string.Join(",", actualLanes));
@@ -147,6 +148,7 @@ public sealed class SvgGradientCoordinateTests
         SvgGradientStop[] stops = [new(0, new(23, 169, 205, 255)) { Alpha = .27f }, new(1, new(195, 213, 55, 255)) { Alpha = .81f }];
         SvgRectangle box = new(0, 0, 1476, 742, default, true, null);
         SvgCpuRasterGrid grid = new(1476, 742);
+        using SvgGradientRamp ramp = SvgGradientRamp.Create(stops, stops[0].Color, stops[1].Color, 0, 1, new(1), new(1), CancellationToken.None);
         foreach (string row in rows.Skip(1))
         {
             string[] cells = row.Split(',');
@@ -163,7 +165,7 @@ public sealed class SvgGradientCoordinateTests
             Assert.Equal(expectedOrigin, grid.GetBitmapOrigin(x, y));
             Assert.True(coordinates.TryRadial(x, y, grid.GetBitmapOrigin(x, y), out double position), row);
             Assert.Equal(uint.Parse(cells[19], CultureInfo.InvariantCulture), BitConverter.SingleToUInt32Bits((float)position));
-            SvgShaderPaint sample = SvgShaderPaint.Ramp(stops, stops[0].Color, stops[1].Color, 0, 1, Math.Clamp(position, 0, 1), 201, grid.GetGradientDither(x, y));
+            SvgShaderPaint sample = ramp.SampleLinear(Math.Clamp(position, 0, 1), 201 / 255f, grid.GetGradientDither(x, y));
             uint[] lanes = [BitConverter.SingleToUInt32Bits(sample.Red), BitConverter.SingleToUInt32Bits(sample.Green), BitConverter.SingleToUInt32Bits(sample.Blue), BitConverter.SingleToUInt32Bits(sample.Alpha)];
             Assert.Equal(cells.Skip(20).Take(4).Select(x => uint.Parse(x, CultureInfo.InvariantCulture)), lanes);
             byte[] destination = [11, 23, 37, 97];

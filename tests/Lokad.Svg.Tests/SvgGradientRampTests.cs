@@ -28,7 +28,7 @@ public sealed class SvgGradientRampTests
         foreach (int matrix in new[] { 0, 63 })
         {
             SvgShaderPaint expected = default;
-            Exception? previous = Record.Exception(() => expected = radial ? SvgShaderPaint.RadialRamp(stops, start, end, .1, .8, position, opacity, matrix) : SvgShaderPaint.Ramp(stops, start, end, .1, .8, position, opacity, matrix));
+            Exception? previous = Record.Exception(() => expected = radial ? SvgGradientReference.RadialRamp(stops, start, end, .1, .8, position, opacity, matrix) : SvgGradientReference.Ramp(stops, start, end, .1, .8, position, opacity, matrix));
             if (previous is null) EqualBits(expected, radial ? ramp.SampleRadial(position, opacity, matrix) : ramp.SampleLinear(position, opacity, matrix));
             else
             {
@@ -58,7 +58,7 @@ public sealed class SvgGradientRampTests
             {
                 foreach (double position in new[] { -.25, 0d, .125, double.BitDecrement(.375), .375, double.BitIncrement(.375), .5, .875, 1d, 1.25 })
                 foreach (float opacity in new[] { .37f, 1f })
-                    EqualBits(radial ? SvgShaderPaint.RadialRamp(stops, first, stops[^1].Color, stops[0].Offset, stops[^1].Offset, position, opacity, 32) : SvgShaderPaint.Ramp(stops, first, stops[^1].Color, stops[0].Offset, stops[^1].Offset, position, opacity, 32),
+                    EqualBits(radial ? SvgGradientReference.RadialRamp(stops, first, stops[^1].Color, stops[0].Offset, stops[^1].Offset, position, opacity, 32) : SvgGradientReference.Ramp(stops, first, stops[^1].Color, stops[0].Offset, stops[^1].Offset, position, opacity, 32),
                         radial ? ramp.SampleRadial(position, opacity, 32) : ramp.SampleLinear(position, opacity, 32));
             }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
