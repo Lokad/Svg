@@ -21,7 +21,7 @@
       "license": "CC0-1.0",
       "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
       "fontPack": "font-pack.json",
-      "qualification": "healthy-native-references-and-font-use-qualified; renderer-pending",
+      "qualification": "The declared 512x256 document requires exact Windows/Linux reference pixels through all twelve raw/prepared APIs.",
       "selection": "Declared before reference capture or screening. Keep original 704 bytes, all four text runs, two positioned tspan lines, painted local path and original aliases/typography. Nominal public preview is 512x256; qualify an explicit matching viewport, not an auto-image screenshot.",
       "reference": "references/commons-svg-translate-textpath-512x256-transparent.png",
       "linuxReference": "references/linux64/commons-svg-translate-textpath-512x256-transparent.png",
@@ -69,8 +69,7 @@
           "profileCleaned": true
         }
       ],
-      "platformReferencesByteIdentical": false,
-      "currentDependency": "Whole document renders through 12 APIs after shared scalar positions, element-free path bodies, mirrored composite point assembly, integer hinting-size repair, near-point Latin light topology and device font advances/SVG fragment positions. Linux matches the unchanged native reference exactly. Shared symmetric LCD strike quantization, fractional implied midpoints and quadratic endpoint winding reduce Windows to 237 changed pixels (maximum channel error 31); the scaled-strike control is exact on both platforms. Finish the Windows edge/coverage gap before counting completion across both platforms."
+      "platformReferencesByteIdentical": false
     },
     {
       "id": "scalar-x-reset",

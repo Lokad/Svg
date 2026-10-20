@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Decouple the independent pixel comparer from the renderer and simplify memory
+  probe reporting without changing CLI/report formats.
 - Remove abandoned rasterizer prototypes, unread parser/raster state and dormant
   parser/filter modes. Share painted stroke lowering and trim unused arguments.
 - Validate downloaded CI artifacts against their recorded environment; retain
