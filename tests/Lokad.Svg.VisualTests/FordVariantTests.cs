@@ -84,7 +84,7 @@ public sealed class FordVariantTests
         Assert.Equal(evidence.RootElement.GetProperty("inputSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(input)));
         SvgRenderOptions options = new(new SvgViewport(1000, 400), 1, SvgColor.Transparent, SvgRenderLimits.Default);
         RenderBudget parsing = new(options.Limits.MaximumAccountedBytes);
-        (double scaleX, double scaleY) = SvgConverter.TryResolveOutputScales(input, options, parsing, CancellationToken.None);
+        (double scaleX, double scaleY) = SvgPreparationTestHelper.GetOutputScales(input, options, parsing, CancellationToken.None);
         using SvgRoot scene = SvgRootParser.Parse(input, options.Limits, parsing, null, new ParserWorkCounter(options.Limits.MaximumWorkUnits), CancellationToken.None, scaleX, scaleY, options.Viewport);
         RgbaImage output = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(input, options, CancellationToken.None), 400_000);
         RgbaImage oracle = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(directory, "inv-002-1000x400-transparent.png")), 400_000);
@@ -187,7 +187,7 @@ public sealed class FordVariantTests
         int row = witness.GetProperty("row").GetInt32();
         SvgRenderOptions options = new(new SvgViewport(1000, 400), 1, SvgColor.Transparent, SvgRenderLimits.Default);
         RenderBudget parsing = new(options.Limits.MaximumAccountedBytes);
-        (double scaleX, double scaleY) = SvgConverter.TryResolveOutputScales(input, options, parsing, CancellationToken.None);
+        (double scaleX, double scaleY) = SvgPreparationTestHelper.GetOutputScales(input, options, parsing, CancellationToken.None);
         using SvgRoot root = SvgRootParser.Parse(input, options.Limits, parsing, null, new ParserWorkCounter(options.Limits.MaximumWorkUnits), CancellationToken.None, scaleX, scaleY, options.Viewport);
         var polygon = root.Geometries.Where(geometry => geometry.Kind == SvgGeometryKind.PolygonFill).ElementAt(1).Polygon;
         SvgDevicePoint[] points = polygon.Points.Select(point => new SvgDevicePoint(point.X * scaleX, point.Y * scaleY)).ToArray();

@@ -201,12 +201,17 @@ public static class SvgConverter
     private static RasterizedConversion PrepareRasterizationCore(ReadOnlyMemory<byte> svg, SvgRenderOptions options, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
-        if (options.RasterBounds is not null)
+        ParserWorkCounter counter = workCounter ?? new(options.Limits.MaximumWorkUnits);
+        SvgRoot root;
+        try
         {
-            workCounter ??= new ParserWorkCounter(options.Limits.MaximumWorkUnits);
-            options = ResolveRasterOptions(svg, options, budget, workCounter, cancellationToken);
+            using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, options.Limits, budget, counter, cancellationToken);
+            options = preparation.ResolveRasterOptions(options);
+            SvgAffineTransform outputMap = preparation.GetOutputMap(options);
+            root = SvgRootParser.ParsePrepared(svg, options.Limits, budget, options.FontSnapshot, counter, cancellationToken,
+                outputMap, options.Viewport, options.OutputScale, preparation);
         }
-        SvgRoot root = ParseRoot(svg, options, budget, workCounter, cancellationToken);
+        catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
         try
         {
             if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.", null, root.UnsupportedDiagnostic);
@@ -4227,66 +4232,6 @@ public static class SvgConverter
         if (viewBox is not SvgViewBox box) return (outputScale, 0, outputScale, 0);
         (double horizontalScale, double verticalScale, double horizontalOffset, double verticalOffset) = SvgGeometrySyntax.MapViewBox(box, width, height);
         return (horizontalScale * outputScale, horizontalOffset * outputScale, verticalScale * outputScale, verticalOffset * outputScale);
-    }
-
-    /// <summary>Probes root dimensions and the output transform without lowering, falling back to unit scales when the root cannot be resolved.</summary>
-    internal static (double HorizontalScale, double VerticalScale) TryResolveOutputScales(ReadOnlyMemory<byte> svg, SvgRenderOptions options, RenderBudget budget, CancellationToken cancellationToken)
-    {
-        SvgAffineTransform map = TryResolveOutputMap(svg, options, budget, cancellationToken);
-        return (map.A, map.D);
-    }
-
-    internal static SvgAffineTransform TryResolveOutputMap(ReadOnlyMemory<byte> svg, SvgRenderOptions options, RenderBudget budget, CancellationToken cancellationToken)
-    {
-        try
-        {
-            using RenderBudget.BudgetReservation workspace = budget.Reserve(SvgRootParser.GetXmlReaderWorkspaceBytes(svg.Length, options.Limits.MaximumAttributesPerElement), SvgMemoryCategory.Parser);
-            ParserWorkCounter probe = new(options.Limits.MaximumWorkUnits);
-            XmlReaderSettings settings = SvgXmlReaderPolicy.Create(svg, options.Limits, budget, probe, cancellationToken);
-            using BudgetedParserList<CssRule> rules = new(budget, SvgMemoryCategory.Parser, probe, cancellationToken);
-            using BudgetedParserStringStore strings = new(budget);
-            SvgRootStyleSheetParser.Collect(svg, settings, options.Limits, rules, strings, budget, probe, cancellationToken);
-            using ReadOnlyMemoryStream stream = new(svg);
-            using XmlReader reader = XmlReader.Create(stream, settings);
-            while (reader.Read())
-            {
-                probe.Consume(cancellationToken);
-                if (reader.NodeType != XmlNodeType.Element) continue;
-                if (!reader.LocalName.Equals("svg", StringComparison.Ordinal)) return SvgAffineTransform.Identity;
-                SvgRootAttributes root = SvgRootAttributes.Parse(reader, SvgRootParser.CssNamedColors, rules, probe, cancellationToken);
-                (double width, double height) = ResolveOutputDimensions(options.Viewport, root.Width, root.Height, root.ViewBox);
-                (double horizontalScale, double offsetX, double verticalScale, double offsetY) = GetViewBoxTransform(root.ViewBox, width, height, options.OutputScale);
-                if (!double.IsFinite(horizontalScale) || !double.IsFinite(verticalScale) || horizontalScale <= 0 || verticalScale <= 0) return SvgAffineTransform.Identity;
-                return SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, offsetX, offsetY);
-            }
-
-            return SvgAffineTransform.Identity;
-        }
-        catch (OperationCanceledException) { throw; }
-        catch (Exception exception) when (exception is SvgException or XmlException or InvalidOperationException or OverflowException)
-        {
-            return SvgAffineTransform.Identity;
-        }
-    }
-
-    /// <summary>Resolves explicit raster fitting before resource acquisition or native glyph/geometry preparation.</summary>
-    internal static SvgRenderOptions ResolveRasterOptions(ReadOnlyMemory<byte> svg, SvgRenderOptions options, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        if (options.RasterBounds is null || options.ResolvedRasterSize is not null) return options;
-        try
-        {
-            SvgDocumentDimensions dimensions = SvgDocumentSizing.Inspect(svg, options, budget, workCounter, cancellationToken);
-            return options.WithRasterSize(dimensions.GetRasterSize(options.OutputScale, options.RasterBounds, options.Limits));
-        }
-        catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
-    }
-
-    private static SvgRoot ParseRoot(ReadOnlyMemory<byte> svg, SvgRenderOptions options, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
-    {
-        SvgAffineTransform outputMap = TryResolveOutputMap(svg, options, budget, cancellationToken);
-        ParserWorkCounter counter = workCounter ?? new ParserWorkCounter(options.Limits.MaximumWorkUnits);
-        try { return SvgRootParser.Parse(svg, options.Limits, budget, options.FontSnapshot, counter, cancellationToken, outputMap, options.Viewport, options.OutputScale); }
-        catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
     }
 
     private static void BlendSourceOver(Span<byte> destination, SvgColor source)

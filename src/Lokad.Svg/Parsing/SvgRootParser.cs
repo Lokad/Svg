@@ -206,15 +206,19 @@ internal static class SvgRootParser
 
     private static SvgRoot ParseCore(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken, SvgAffineTransform outputMap, SvgViewport? explicitViewport, double rasterScale)
     {
-        if (svg.Length > limits.MaximumInputBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
-        using RenderBudget.BudgetReservation xmlReaderWorkspace = budget.Reserve(GetXmlReaderWorkspaceBytes(svg.Length, limits.MaximumAttributesPerElement), SvgMemoryCategory.Parser);
-        XmlReaderSettings settings = SvgXmlReaderPolicy.Create(svg, limits, budget, workCounter, cancellationToken);
-        using BudgetedParserList<CssRule> styleRules = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        using BudgetedParserStringStore styleStrings = new(budget);
-        SvgRootStyleSheetParser.Collect(svg, settings, limits, styleRules, styleStrings, budget, workCounter, cancellationToken);
+        using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, limits, budget, workCounter, cancellationToken);
+        return ParsePrepared(svg, limits, budget, fontSnapshot, workCounter, cancellationToken, outputMap, explicitViewport, rasterScale, preparation);
+    }
+
+    /// <summary>Lowers a scene while borrowing the caller's collected styles and reader workspace.</summary>
+    internal static SvgRoot ParsePrepared(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget,
+        Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken,
+        SvgAffineTransform outputMap, SvgViewport? explicitViewport, double rasterScale, SvgDocumentPreparation preparation)
+    {
         using ReadOnlyMemoryStream stream = new(svg);
-        using XmlReader reader = XmlReader.Create(stream, settings);
-        return SvgDocumentTraversal.Parse(reader, limits, budget, CssNamedColors, fontSnapshot, workCounter, cancellationToken, outputMap, explicitViewport, styleRules, styleStrings, rasterScale);
+        using XmlReader reader = XmlReader.Create(stream, preparation.Settings);
+        return SvgDocumentTraversal.Parse(reader, limits, budget, CssNamedColors, fontSnapshot, workCounter, cancellationToken,
+            outputMap, explicitViewport, preparation.Rules, preparation.Strings, rasterScale);
     }
 
     internal static long GetXmlReaderWorkspaceBytes(int inputBytes, int maximumAttributes)

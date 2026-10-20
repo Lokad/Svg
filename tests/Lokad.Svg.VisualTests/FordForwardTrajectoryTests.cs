@@ -40,7 +40,7 @@ public sealed class FordForwardTrajectoryTests
         RgbaImage reference = PngRgbaDecoder.Decode(oracleBytes, 100 * 100);
         SvgRenderOptions options = SvgRenderOptions.Default;
         RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
-        (double horizontalScale, double verticalScale) = SvgConverter.TryResolveOutputScales(svg, options, budget, CancellationToken.None);
+        (double horizontalScale, double verticalScale) = SvgPreparationTestHelper.GetOutputScales(svg, options, budget, CancellationToken.None);
         SvgRoot root = SvgRootParser.Parse(svg, options.Limits, budget, null, new ParserWorkCounter(options.Limits.MaximumWorkUnits), CancellationToken.None, horizontalScale, verticalScale, options.Viewport);
         int fills = 0;
         foreach (SvgGeometry geometry in root.Geometries)
@@ -109,7 +109,7 @@ public sealed class FordForwardTrajectoryTests
         byte[] svg = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "candidates", "inv-002.svg"));
         SvgRenderOptions options = new(new SvgViewport(500, 200), 1, SvgColor.Transparent, SvgRenderLimits.Default);
         RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
-        (double horizontalScale, double verticalScale) = SvgConverter.TryResolveOutputScales(svg, options, budget, CancellationToken.None);
+        (double horizontalScale, double verticalScale) = SvgPreparationTestHelper.GetOutputScales(svg, options, budget, CancellationToken.None);
         SvgRoot root = SvgRootParser.Parse(svg, options.Limits, budget, null, new ParserWorkCounter(options.Limits.MaximumWorkUnits), CancellationToken.None, horizontalScale, verticalScale, options.Viewport);
         List<string> fills = new();
         foreach (SvgGeometry geometry in root.Geometries)
@@ -219,7 +219,7 @@ public sealed class FordForwardTrajectoryTests
         RgbaImage reference = PngRgbaDecoder.Decode(oracleBytes, 100 * 100);
         SvgRenderOptions options = SvgRenderOptions.Default;
         RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
-        (double horizontalScale, double verticalScale) = SvgConverter.TryResolveOutputScales(svg, options, budget, CancellationToken.None);
+        (double horizontalScale, double verticalScale) = SvgPreparationTestHelper.GetOutputScales(svg, options, budget, CancellationToken.None);
         SvgRoot root = SvgRootParser.Parse(svg, options.Limits, budget, null, new ParserWorkCounter(options.Limits.MaximumWorkUnits), CancellationToken.None, horizontalScale, verticalScale, options.Viewport);
         int fills = 0;
         foreach (SvgGeometry geometry in root.Geometries)

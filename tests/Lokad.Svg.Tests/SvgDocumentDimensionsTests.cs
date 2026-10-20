@@ -108,9 +108,10 @@ public sealed class SvgDocumentDimensionsTests
         RenderBudget denied = new(1);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgDocumentSizing.Inspect(svg, SvgRenderOptions.Default, denied, new(10_000), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        Assert.Throws<System.Xml.XmlException>(() => SvgDocumentSizing.Inspect(
+        SvgException malformed = Assert.Throws<SvgException>(() => SvgDocumentSizing.Inspect(
             "<svg xmlns='http://www.w3.org/2000/svg'><style>svg{width:40px}</style><g>"u8.ToArray(),
             SvgRenderOptions.Default, budget, new(10_000), CancellationToken.None));
+        Assert.Equal(SvgErrorCode.MalformedInput, malformed.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 

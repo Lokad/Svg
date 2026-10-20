@@ -57,30 +57,7 @@ internal static class SvgDocumentSizing
     internal static SvgDocumentDimensions Inspect(ReadOnlyMemory<byte> svg, SvgRenderOptions options, RenderBudget budget,
         ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        if (svg.Length > options.Limits.MaximumInputBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
-        using RenderBudget.BudgetReservation workspace = budget.Reserve(SvgRootParser.GetXmlReaderWorkspaceBytes(svg.Length, options.Limits.MaximumAttributesPerElement), SvgMemoryCategory.Parser);
-        XmlReaderSettings settings = SvgXmlReaderPolicy.Create(svg, options.Limits, budget, workCounter, cancellationToken);
-        using BudgetedParserList<CssRule> rules = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        using BudgetedParserStringStore strings = new(budget);
-        SvgRootStyleSheetParser.Collect(svg, settings, options.Limits, rules, strings, budget, workCounter, cancellationToken);
-        using ReadOnlyMemoryStream stream = new(svg);
-        using XmlReader reader = XmlReader.Create(stream, settings);
-        SvgRootSyntax? syntax = null;
-        int nodes = 0;
-        while (reader.Read())
-        {
-            workCounter.Consume(cancellationToken);
-            if (reader.NodeType != XmlNodeType.Element) continue;
-            SvgStructuralAdmission.ValidateElementStructure(reader, options.Limits);
-            if (nodes++ >= options.Limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
-            if (syntax is not null) continue;
-            SvgStructuralAdmission.ThrowIfNotSvgRoot(reader);
-            SvgElementAttributePolicy.ValidateRoot(reader, workCounter, cancellationToken);
-            InlineStyle sheet = SvgRootStyleSheetParser.ResolveRoot(reader.GetAttribute("id"), reader.GetAttribute("class"), rules, workCounter, cancellationToken);
-            InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
-            syntax = SvgRootSyntax.ParseComputed(reader, inline, sheet, workCounter, cancellationToken);
-        }
-        if (syntax is not SvgRootSyntax root) throw new SvgException(SvgErrorCode.MalformedInput, "The document must contain an SVG root element.");
-        return Resolve(options.Viewport, root.Width, root.Height, root.ViewBox);
+        using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, options.Limits, budget, workCounter, cancellationToken);
+        return preparation.InspectDimensions(options);
     }
 }

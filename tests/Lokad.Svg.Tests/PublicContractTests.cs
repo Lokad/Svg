@@ -141,7 +141,7 @@ public sealed class PublicContractTests
     [Fact]
     public void Background_initialization_respects_the_public_shared_work_limit()
     {
-        SvgRenderLimits limits = new(200_000, 1_024, 16, 16, 1_024, 16, 16, 2);
+        SvgRenderLimits limits = new(200_000, 1_024, 16, 16, 1_024, 16, 16, 4);
         SvgRenderOptions options = new(new SvgViewport(1, 1), 1, new SvgColor(1, 2, 3, 255), limits);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray(), options, CancellationToken.None));
@@ -153,7 +153,7 @@ public sealed class PublicContractTests
     [Fact]
     public void Png_preprocessing_respects_the_public_shared_work_limit()
     {
-        SvgRenderLimits limits = new(200_000, 1_024, 16, 16, 1_024, 16, 16, 2);
+        SvgRenderLimits limits = new(200_000, 1_024, 16, 16, 1_024, 16, 16, 4);
         SvgRenderOptions options = new(new SvgViewport(1, 1), 1, SvgColor.Transparent, limits);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray(), options, CancellationToken.None));
@@ -799,7 +799,7 @@ public sealed class PublicContractTests
     {
         SvgRenderLimits insufficient = new(131_071, 1024, 2, 4, 1024, 1, 1, 1);
         SvgRenderOptions insufficientOptions = new(null, 1, SvgColor.Transparent, insufficient);
-        SvgRenderLimits sufficient = new(131_072, 1024, 2, 4, 1024, 1, 1, 32);
+        SvgRenderLimits sufficient = new(131_072, 1024, 2, 4, 1024, 1, 1, 64);
         SvgRenderOptions sufficientOptions = new(null, 1, SvgColor.Transparent, sufficient);
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray();
 
@@ -830,7 +830,7 @@ public sealed class PublicContractTests
     [Fact]
     public void Caller_destination_does_not_reserve_owned_png_output()
     {
-        SvgRenderLimits limits = new(131_072, 1024, 2, 4, 1024, 1, 1, 32);
+        SvgRenderLimits limits = new(131_072, 1024, 2, 4, 1024, 1, 1, 64);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
         byte[] destination = new byte[70];
 
@@ -842,7 +842,7 @@ public sealed class PublicContractTests
     [Fact]
     public void Writable_stream_destination_does_not_reserve_owned_png_output()
     {
-        SvgRenderLimits limits = new(131_072, 1024, 2, 4, 1024, 1, 1, 32);
+        SvgRenderLimits limits = new(131_072, 1024, 2, 4, 1024, 1, 1, 64);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
         using MemoryStream destination = new(70);
 

@@ -57,7 +57,7 @@ public sealed class SvgVectorEffectTests
         SvgRenderOptions options = SvgRenderOptions.Default;
         RenderBudget measured = new(8_000_000);
         ParserWorkCounter work = new(1_000_000);
-        SvgAffineTransform outputMap = SvgConverter.TryResolveOutputMap(input, options, measured, CancellationToken.None);
+        SvgAffineTransform outputMap = SvgPreparationTestHelper.GetOutputMap(input, options, measured, CancellationToken.None);
         byte[] expected;
         using (SvgRoot root = SvgRootParser.Parse(input, options.Limits, measured, null, work, CancellationToken.None, outputMap, null))
             expected = SvgConverter.ConvertToPng(root, options, measured, CancellationToken.None).ToArray();
@@ -85,7 +85,7 @@ public sealed class SvgVectorEffectTests
         byte[] input = TextEncoding.UTF8.GetBytes(Document("viewBox='0 0 4 4'", "<path d='M1 1C1 3 3 3 3 1' fill='none' stroke='red' stroke-width='.5' vector-effect='non-scaling-stroke'/>"));
         RenderBudget budget = new(8_000_000);
         SvgRenderOptions options = SvgRenderOptions.Default;
-        SvgAffineTransform outputMap = SvgConverter.TryResolveOutputMap(input, options, budget, CancellationToken.None);
+        SvgAffineTransform outputMap = SvgPreparationTestHelper.GetOutputMap(input, options, budget, CancellationToken.None);
         using (SvgRoot root = SvgRootParser.Parse(input, options.Limits, budget, null, new(1_000_000), CancellationToken.None, outputMap, null))
         {
             byte[] expected;

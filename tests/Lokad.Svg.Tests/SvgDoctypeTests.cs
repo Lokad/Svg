@@ -48,7 +48,8 @@ public sealed class SvgDoctypeTests
         {
             using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)) Assert.Single(root.Rectangles);
             Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, new ParserWorkCounter(1000), budget, CancellationToken.None));
-            Assert.Equal((4.0, 6.0), SvgConverter.TryResolveOutputScales(input, new SvgRenderOptions(new SvgViewport(4, 6), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None));
+            SvgAffineTransform map = SvgPreparationTestHelper.GetOutputMap(input, new SvgRenderOptions(new SvgViewport(4, 6), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None);
+            Assert.Equal((4.0, 6.0), (map.A, map.D));
             Assert.Equal(SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(RedSvg), SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
         }
         else

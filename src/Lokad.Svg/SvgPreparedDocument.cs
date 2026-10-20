@@ -30,13 +30,14 @@ public sealed class SvgPreparedDocument : IDisposable
         if (options.FontSnapshot is not null) throw new ArgumentException("Prepared document options must not supply a separate font snapshot.", nameof(options));
         var workCounter = new ParserWorkCounter(options.Limits.MaximumWorkUnits);
         RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
-        options = SvgConverter.ResolveRasterOptions(svg, options, budget, workCounter, cancellationToken);
+        using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, options.Limits, budget, workCounter, cancellationToken);
+        options = preparation.ResolveRasterOptions(options);
         SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(svg, catalog, provider, options.Limits, options.FontSelectionPolicy, workCounter, cancellationToken).ConfigureAwait(false);
         try
         {
             SvgRenderOptions preparedOptions = options.WithFontSnapshot(snapshot);
-            SvgAffineTransform outputMap = SvgConverter.TryResolveOutputMap(svg, options, budget, cancellationToken);
-            SvgRoot root = SvgRootParser.Parse(svg, options.Limits, budget, snapshot, workCounter, cancellationToken, outputMap, options.Viewport, options.OutputScale);
+            SvgAffineTransform outputMap = preparation.GetOutputMap(options);
+            SvgRoot root = SvgRootParser.ParsePrepared(svg, options.Limits, budget, snapshot, workCounter, cancellationToken, outputMap, options.Viewport, options.OutputScale, preparation);
             if (root.HasUnsupportedChild)
             {
                 root.Dispose();

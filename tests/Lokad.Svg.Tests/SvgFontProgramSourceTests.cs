@@ -113,7 +113,7 @@ public sealed class SvgFontProgramSourceTests
     {
         SvgFontPackCatalog catalog = CreateCatalog([1, 2, 3, 4]);
         var provider = new RecordingProvider(new Dictionary<string, ISvgFontProgramSource>());
-        SvgRenderLimits limits = new(200_000, 1_024, 16, 16, 1_024, 16, 16, 30);
+        SvgRenderLimits limits = new(200_000, 1_024, 16, 16, 1_024, 16, 16, 32);
         SvgRenderOptions options = new(new SvgViewport(1, 1), 1, SvgColor.Transparent, limits);
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray();
 
