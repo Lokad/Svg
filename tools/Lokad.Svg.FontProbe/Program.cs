@@ -69,6 +69,15 @@ internal static class Program
             Console.WriteLine("outcome=host-error");
             return 4;
         }
+
+        static void ValidatePackId(string packId)
+        {
+            if (string.IsNullOrWhiteSpace(packId) || packId is "." or ".." || packId.IndexOfAny(['/', '\\', ':', '?', '#']) >= 0) throw new HostSourceException();
+            string decoded;
+            try { decoded = Uri.UnescapeDataString(packId); }
+            catch (UriFormatException) { throw new HostSourceException(); }
+            if (decoded is "." or ".." || decoded.IndexOfAny(['/', '\\']) >= 0) throw new HostSourceException();
+        }
     }
 
     private static bool TryParseArguments(string[] arguments, out ProbeOptions? options)
@@ -178,11 +187,6 @@ internal static class Program
     {
         if (!Uri.TryCreate(source, UriKind.Absolute, out Uri? uri) || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps) || !string.IsNullOrEmpty(uri.Query) || !string.IsNullOrEmpty(uri.Fragment)) throw new HostSourceException();
         return uri.AbsoluteUri.EndsWith("/", StringComparison.Ordinal) ? uri : new Uri(uri.AbsoluteUri + "/", UriKind.Absolute);
-    }
-
-    private static void ValidatePackId(string packId)
-    {
-        if (string.IsNullOrWhiteSpace(packId) || packId is "." or ".." || packId.IndexOfAny(['/', '\\', ':', '?', '#']) >= 0) throw new HostSourceException();
     }
 
     private static async ValueTask<byte[]> DownloadHttpAsync(HttpClient client, Uri uri, long maximumBytes, int maximumAttempts, CancellationToken cancellationToken)

@@ -22,6 +22,8 @@ dotnet run -c Release --project tools/Lokad.Svg.FontProbe -- --source-uri <https
 The source URI must be absolute HTTP(S), end at a directory, and have no query or
 fragment. The host has no credential, endpoint or platform discovery; configure
 authentication outside the tracked command and source code.
+Pack IDs must be single relative path segments. Literal or URI-escaped dot
+segments and separators are rejected before any HTTP request.
 
 The command uses manifest aliases and fallback families. Applications that need
 generic-family mappings supply `SvgFontSelectionPolicy` explicitly when creating

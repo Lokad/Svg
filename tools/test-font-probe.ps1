@@ -99,6 +99,36 @@ $listener = [Net.HttpListener]::new()
 $listener.Prefixes.Add($sourceRoot)
 $listener.Start()
 try {
+    # Keep one pending receive through rejection checks and the following valid request.
+    # A rejected pack ID must exit without contacting even this loopback server.
+    $contextTask = $listener.GetContextAsync()
+    foreach ($unsafePackId in @('.', '..', '%2e', '%2e%2e', '.%2E', '%2E.', 'pack%2fescape', 'pack%5Cescape'))
+    {
+        $rejectedOutput = Join-Path $runDirectory 'unsafe-pack.png'
+        $rejectedStart = [System.Diagnostics.ProcessStartInfo]::new('dotnet')
+        $rejectedStart.UseShellExecute = $false
+        $rejectedStart.CreateNoWindow = $true
+        $rejectedStart.RedirectStandardOutput = $true
+        $rejectedStart.RedirectStandardError = $true
+        foreach ($argument in @($probeTool, '--source-uri', ($sourceRoot + 'fonts/'), '--pack-id', $unsafePackId, '--svg', $emptySvgPath, '--output', $rejectedOutput)) { $rejectedStart.ArgumentList.Add($argument) }
+        $rejectedProcess = [System.Diagnostics.Process]::Start($rejectedStart)
+        if ($null -eq $rejectedProcess) { throw 'Could not start the unsafe-pack font probe.' }
+        try {
+            $rejectedOutputTask = $rejectedProcess.StandardOutput.ReadToEndAsync()
+            $rejectedErrorTask = $rejectedProcess.StandardError.ReadToEndAsync()
+            if (-not $rejectedProcess.WaitForExit($TimeoutMilliseconds))
+            {
+                $rejectedProcess.Kill($true)
+                throw 'The unsafe-pack font probe did not reject its input before the timeout.'
+            }
+            if ($contextTask.IsCompleted) { throw 'An unsafe pack ID caused an HTTP request before rejection.' }
+            if ($rejectedProcess.ExitCode -ne 4 -or $rejectedOutputTask.GetAwaiter().GetResult().Trim() -cne 'outcome=host-error' -or -not [string]::IsNullOrWhiteSpace($rejectedErrorTask.GetAwaiter().GetResult()) -or (Test-Path -LiteralPath $rejectedOutput))
+            {
+                throw 'The unsafe-pack font probe did not preserve its host-error outcome without output.'
+            }
+        }
+        finally { $rejectedProcess.Dispose() }
+    }
     $start = [System.Diagnostics.ProcessStartInfo]::new('dotnet')
     $start.UseShellExecute = $false
     $start.CreateNoWindow = $true
@@ -110,7 +140,6 @@ try {
     try {
         $standardOutputTask = $process.StandardOutput.ReadToEndAsync()
         $standardErrorTask = $process.StandardError.ReadToEndAsync()
-        $contextTask = $listener.GetContextAsync()
         if (-not $contextTask.Wait($TimeoutMilliseconds))
         {
             $process.Kill($true)
