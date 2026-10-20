@@ -25,8 +25,8 @@ These cases do not establish general SVG throughput or Linux performance.
 
 ## Earlier benchmark run (2026-10-17)
 
-Measured **2026-10-17** at revision `397c8ea2`, using the current renderer in a
-clean checkout. Results describe these workloads on one Windows host; they do
+Measured **2026-10-17** at revision `397c8ea2` in a clean checkout.
+Results describe these workloads on one Windows host; they do
 not establish general SVG throughput or Linux performance.
 
 Environment: Intel Xeon W-2223 3.60 GHz (4 cores / 8 threads), Windows 10 22H2,

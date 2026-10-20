@@ -410,7 +410,7 @@ public sealed class PublicContractTests
     }
 
     [Fact]
-    public void Cancellation_is_observed_before_the_unimplemented_renderer()
+    public void Cancellation_is_observed_before_input_validation()
     {
         using CancellationTokenSource source = new();
         source.Cancel();
@@ -432,7 +432,7 @@ public sealed class PublicContractTests
     }
 
     [Fact]
-    public void Malformed_root_fails_before_the_unimplemented_renderer()
+    public void Non_SVG_root_is_categorized_as_malformed_input()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<not-svg/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
 

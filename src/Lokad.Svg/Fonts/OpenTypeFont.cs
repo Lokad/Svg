@@ -972,26 +972,6 @@ internal static partial class OpenTypeFont
         else workCounter.Consume(cancellationToken);
     }
 
-    private static OpenTypeTableRange FindTable(ReadOnlySpan<byte> data, uint wantedTag, string name)
-        => FindTable(data, wantedTag, name, null, CancellationToken.None);
-
-    private static OpenTypeTableRange FindTable(ReadOnlySpan<byte> data, uint wantedTag, string name, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
-    {
-        int count = ReadUInt16(data, 4);
-        for (int index = 0; index < count; index++)
-        {
-            Consume(workCounter, cancellationToken);
-            int entry = 12 + index * 16;
-            if (ReadUInt32(data, entry) != wantedTag) continue;
-            uint offset = ReadUInt32(data, entry + 8);
-            uint length = ReadUInt32(data, entry + 12);
-            if (offset > int.MaxValue || length > int.MaxValue) throw InvalidFont("The SFNT " + name + " table range exceeds the supported input size.");
-            RequireRange(data, (int)offset, (int)length, "SFNT " + name + " table");
-            return new OpenTypeTableRange((int)offset, (int)length);
-        }
-        throw InvalidFont("The SFNT font is missing its " + name + " table.");
-    }
-
     private static OpenTypeTableRange RequiredTable(IReadOnlyDictionary<uint, OpenTypeTableRange> tables, uint tag, string name)
         => tables.TryGetValue(tag, out OpenTypeTableRange range) ? range : throw InvalidFont("The SFNT font is missing its " + name + " table.");
 

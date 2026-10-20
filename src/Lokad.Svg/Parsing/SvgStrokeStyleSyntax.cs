@@ -9,24 +9,6 @@ internal static class SvgStrokeStyleSyntax
 {
 
 
-    /// <summary>Validates one stroke style attribute value, ignoring namespaces already cleared by the caller.</summary>
-    internal static void ValidateAttribute(string localName, string value)
-    {
-        ValidateAttribute(localName, value, false);
-    }
-
-    /// <summary>Validates one stroke style attribute value, admitting round and square caps and round joins on kernel-stroked shapes.</summary>
-    internal static void ValidateAttribute(string localName, string value, bool allowNonButt)
-    {
-        ValidateAttribute(localName, value, allowNonButt, false, false);
-    }
-
-    /// <summary>Validates one stroke style attribute value, additionally admitting square caps on band-stroked lines.</summary>
-    internal static void ValidateAttribute(string localName, string value, bool allowNonButt, bool allowSquareCap, bool allowClosedLoopCaps)
-    {
-        ValidateAttribute(localName, value, allowNonButt, allowSquareCap, allowClosedLoopCaps, false, false);
-    }
-
     /// <summary>Validates one stroke style attribute value, additionally admitting round joins on rounded rectangles and bevel joins on admitted shapes.</summary>
     internal static void ValidateAttribute(string localName, string value, bool allowNonButt, bool allowSquareCap, bool allowClosedLoopCaps, bool allowRoundJoin, bool allowBevelJoin)
     {
@@ -289,11 +271,6 @@ internal static class SvgStrokeStyleSyntax
         RequireBandCapJoin(reader, elementName, true, true, false, false, workCounter, cancellationToken);
     }
 
-    internal static void RequireButtOrSquareCapJoin(XmlReader reader, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        RequireBandCapJoin(reader, elementName, true, false, false, false, workCounter, cancellationToken);
-    }
-
     private static void RequireBandCapJoin(XmlReader reader, string elementName, bool allowSquare, bool allowRound, bool allowRoundJoin, bool allowBevelJoin, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(reader);
@@ -319,5 +296,3 @@ internal static class SvgStrokeStyleSyntax
         return miterLimit;
     }
 }
-
-internal readonly record struct SvgPaintLineStrokeStyle(SvgLineSyntax Syntax, double[]? DashEntries, SvgStrokeCap Linecap, double? PathLength);
