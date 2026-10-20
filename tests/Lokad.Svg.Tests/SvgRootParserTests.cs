@@ -4075,7 +4075,7 @@ public sealed class SvgRootParserTests
         ParserWorkCounter workCounter = new(1);
         using SvgDocumentState state = new(budget, workCounter, CancellationToken.None);
         state.StyleRules.Add(new CssRule(".selected", new(0, 1, 0), default, false));
-        SvgRootAttributes root = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, null, null, 255, null, null, null, null);
+        SvgRootAttributes root = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, null, null, null, null);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgRenderedLeafParser.TryParse(reader, true, true, root, state, SvgRenderLimits.Default, budget, new Dictionary<string, SvgColor>(), null, workCounter, CancellationToken.None));
 

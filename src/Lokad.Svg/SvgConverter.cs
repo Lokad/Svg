@@ -22,7 +22,7 @@ public static partial class SvgConverter
     private const int GlyphSamplesPerAxis = 4;
     private enum PathCoordinateSpace { User, Device }
     /// <summary>Owns mapped polygon points with raster bounds, clip and their surface reservation until the rasterizer releases them.</summary>
-    private readonly record struct MappedPolygon(SvgDevicePoint[] Points, int StartX, int StartY, int EndX, int EndY, int PathStartX, int PathStartY, int PathEndX, int PathEndY, (double Left, double Top, double Right, double Bottom)? Clip, SvgClipAntialiasing ClipAntialiasing, bool ClipContainsPath, SvgDeviceBounds CompleteBounds, bool HasFractionalEdge, SvgQuadSpan[] QuadSpans, SvgCubicSpan[] CubicSpans, RenderBudget.BudgetReservation? Reservation, int[] ContourEnds, int[]? Signs, SvgPreparedPathContours? Authored, SvgAffineTransform AuthoredMap, SvgPolygonMapping Mapping) : IDisposable
+    private readonly record struct MappedPolygon(SvgDevicePoint[] Points, int StartX, int StartY, int EndX, int EndY, int PathStartX, int PathStartY, int PathEndX, int PathEndY, (double Left, double Top, double Right, double Bottom)? Clip, SvgClipAntialiasing ClipAntialiasing, bool ClipContainsPath, SvgDeviceBounds CompleteBounds, SvgQuadSpan[] QuadSpans, SvgCubicSpan[] CubicSpans, RenderBudget.BudgetReservation? Reservation, int[] ContourEnds, int[]? Signs, SvgPreparedPathContours? Authored, SvgAffineTransform AuthoredMap, SvgPolygonMapping Mapping) : IDisposable
     {
         public void Dispose() { Reservation?.Dispose(); Authored?.Dispose(); }
 
@@ -2311,7 +2311,7 @@ public static partial class SvgConverter
                 // Device-size fitting can collapse every contour. Release replay
                 // scratch and return a nonpainting owner without reserving zero bytes.
                 authored?.Dispose();
-                return new([], 0, 0, 0, 0, 0, 0, 0, 0, null, SvgClipAntialiasing.None, true, default, false, [], [], null, [], null, null, SvgAffineTransform.Identity, mapping);
+                return new([], 0, 0, 0, 0, 0, 0, 0, 0, null, SvgClipAntialiasing.None, true, default, [], [], null, [], null, null, SvgAffineTransform.Identity, mapping);
             }
             bool transferred = false;
             try
@@ -2329,7 +2329,6 @@ public static partial class SvgConverter
                     SvgDevicePoint[] mapped = new SvgDevicePoint[points.Length];
                     SvgQuadSpan[] mappedSpans = MapQuadSpanControls(quadSpans, pointScaleX, pointOffsetX, pointScaleY, pointOffsetY, outputWidth, outputHeight, mapping is SvgPolygonMapping.NativeStrokeEdges or SvgPolygonMapping.NativeFillEdges or SvgPolygonMapping.FlattenedCurves, out bool canvasContainsQuads, authored is null ? null : authoredMap, cancellationToken);
                     SvgCubicSpan[] mappedCubics = MapCubicSpanControls(cubicSpans, pointScaleX, pointOffsetX, pointScaleY, pointOffsetY, outputWidth, outputHeight, out bool canvasContainsCubics, authored is null ? null : authoredMap, cancellationToken);
-                    bool hasFractionalEdge = false;
                     bool nativeConics = Array.Exists(quadSpans, static span => span.ConicWeight != 1f);
                     double left = double.PositiveInfinity;
                     double top = double.PositiveInfinity;
@@ -2346,7 +2345,6 @@ public static partial class SvgConverter
                             edgeX = native.X; edgeY = native.Y;
                         }
                         mapped[index] = new SvgDevicePoint(edgeX, edgeY);
-                        if (edgeX != Math.Truncate(edgeX) || edgeY != Math.Truncate(edgeY)) hasFractionalEdge = true;
                         if (edgeX < left) left = edgeX;
                         if (edgeY < top) top = edgeY;
                         if (edgeX > right) right = edgeX;
@@ -2399,7 +2397,7 @@ public static partial class SvgConverter
                             && bounds.Left <= completeLeft && bounds.Top <= completeTop && bounds.Right >= completeRight && bounds.Bottom >= completeBottom;
                     }
                     transferred = true;
-                    return new MappedPolygon(mapped, startX, startY, endX, endY, pathStartX, pathStartY, pathEndX, pathEndY, mappedClip, clip?.Antialiasing ?? SvgClipAntialiasing.None, clipContainsPath, completeBounds, hasFractionalEdge, mappedSpans, mappedCubics, mappedReservation, contourEnds, signs, authored, authoredMap, mapping);
+                    return new MappedPolygon(mapped, startX, startY, endX, endY, pathStartX, pathStartY, pathEndX, pathEndY, mappedClip, clip?.Antialiasing ?? SvgClipAntialiasing.None, clipContainsPath, completeBounds, mappedSpans, mappedCubics, mappedReservation, contourEnds, signs, authored, authoredMap, mapping);
                 }
                 catch
                 {

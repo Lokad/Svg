@@ -37,8 +37,6 @@ internal readonly record struct SvgSymbolContentGroup(int Depth, int Start, stri
 internal sealed class SvgSymbolContent : IDisposable
 {
     private readonly RenderBudget _budget;
-    private readonly ParserWorkCounter _work;
-    private readonly CancellationToken _token;
     private readonly RenderBudget.BudgetReservation _owner;
     private readonly BudgetedParserList<SvgSymbolContentNode> _building;
     private readonly BudgetedParserList<SvgSymbolContentGroup> _groups;
@@ -51,7 +49,7 @@ internal sealed class SvgSymbolContent : IDisposable
 
     private SvgSymbolContent(RenderBudget budget, ParserWorkCounter work, CancellationToken token, SvgSymbolPresentation presentation, RenderBudget.BudgetReservation owner)
     {
-        _budget = budget; _work = work; _token = token; _owner = owner; _rootPresentation = presentation;
+        _budget = budget; _owner = owner; _rootPresentation = presentation;
         _building = new(budget, SvgMemoryCategory.Parser, work, token);
         _groups = new(budget, SvgMemoryCategory.Parser, work, token);
     }

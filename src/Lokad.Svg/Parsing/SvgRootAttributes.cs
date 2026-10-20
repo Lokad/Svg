@@ -4,7 +4,7 @@ using Lokad.Svg.Rendering;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Represents the bounded supported root attributes before child traversal starts.</summary>
-internal readonly record struct SvgRootAttributes(SvgInheritedPresentation InheritedPresentation, SvgInheritedTextStyle InheritedTextStyle, SvgInheritedStrokeStyle InheritedStroke, string? Id, string? Class, byte Opacity, SvgRootLength? Width, SvgRootLength? Height, SvgViewBox? ViewBox, string? FillRule)
+internal readonly record struct SvgRootAttributes(SvgInheritedPresentation InheritedPresentation, SvgInheritedTextStyle InheritedTextStyle, SvgInheritedStrokeStyle InheritedStroke, SvgRootLength? Width, SvgRootLength? Height, SvgViewBox? ViewBox, string? FillRule)
 {
     internal SvgPaintOpacity SourceOpacity { get; init; }
     internal string? ClipRule { get; init; }
@@ -47,7 +47,7 @@ internal readonly record struct SvgRootAttributes(SvgInheritedPresentation Inher
         { StrokeStyle = SvgInheritedStrokeStyle.Default.ResolveChild(style), PaintOrder = style.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers };
         SvgTextDecorationStyle? decoration = SvgTextDecorationSyntax.Resolve(reader, inline, sheet, null, decorationPaint.GlyphPaint);
         if (decoration is not null) text = text.WithDecoration(decoration);
-        return new SvgRootAttributes(new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, SvgAffineTransform.Identity) { OwnOpacity = style.GetOpacity(), PaintServerFill = presentation.PaintServerFill, Markers = SvgMarkerStyle.Resolve(style, default), PaintOrder = style.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers }, text, new SvgInheritedStrokeStyle(style.Linecap, style.Linejoin, style.Dasharray, style.Dashoffset, style.Width, style.Miterlimit, style.StrokeOpacity, style.Stroke), reader.GetAttribute("id"), reader.GetAttribute("class"), presentation.Opacity, syntax.Width, syntax.Height, syntax.ViewBox, style.FillRule) { SourceOpacity = style.GetOpacity(), ClipRule = style.ClipRule };
+        return new SvgRootAttributes(new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, SvgAffineTransform.Identity) { OwnOpacity = style.GetOpacity(), PaintServerFill = presentation.PaintServerFill, Markers = SvgMarkerStyle.Resolve(style, default), PaintOrder = style.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers }, text, new SvgInheritedStrokeStyle(style.Linecap, style.Linejoin, style.Dasharray, style.Dashoffset, style.Width, style.Miterlimit, style.StrokeOpacity, style.Stroke), syntax.Width, syntax.Height, syntax.ViewBox, style.FillRule) { SourceOpacity = style.GetOpacity(), ClipRule = style.ClipRule };
         static SvgTextWhitespaceMode ValidateXmlSpace(string? value)
         {
             // Only the two spec-defined values are accepted so anything else fails fast;

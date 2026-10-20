@@ -58,7 +58,7 @@ internal static class SvgGroupParser
             if (!SvgLocalUrl.TryParseId(filter, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local filter url references are implemented.");
             if (!reader.IsEmptyElement && resolved.Presentation.IsDisplayed) filterId = state.Strings.Copy(id);
         }
-        return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, resolved.Presentation, resolved.TextStyle, combined != 255 || sourceOpacity.Value != 1, hasMaskScope, resolved.Stroke, resolved.FillRule) { HasFilter = filterId is not null, HasDeferredMask = deferredMask is not null, RecordingScope = contentScope, ClipRule = style.ClipRule ?? context.InheritedClipRule, ClipPathId = clipId is null ? null : state.Strings.Copy(clipId) }, combined, deferredMask) { FilterId = filterId, LengthBases = context.LengthBases, SourceOpacity = sourceOpacity, RecordingScope = opacityScope };
+        return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, resolved.Presentation, resolved.TextStyle, combined != 255 || sourceOpacity.Value != 1, hasMaskScope, resolved.Stroke, resolved.FillRule) { HasFilter = filterId is not null, HasDeferredMask = deferredMask is not null, RecordingScope = contentScope, ClipRule = style.ClipRule ?? context.InheritedClipRule, ClipPathId = clipId is null ? null : state.Strings.Copy(clipId) }, deferredMask) { FilterId = filterId, LengthBases = context.LengthBases, SourceOpacity = sourceOpacity, RecordingScope = opacityScope };
     }
 
     /// <summary>Pushes the referenced mask content box for child coverage checks, reporting whether a scope was pushed.</summary>
@@ -73,8 +73,8 @@ internal static class SvgGroupParser
     }
 }
 
-/// <summary>Couples a stored child context with the opacity required to enter its isolated surface.</summary>
-internal readonly record struct SvgParsedGroup(SvgGroupScope Scope, byte Opacity, string? DeferredMask)
+/// <summary>Couples a stored child context with deferred effects and source opacity for its isolated surface.</summary>
+internal readonly record struct SvgParsedGroup(SvgGroupScope Scope, string? DeferredMask)
 {
     internal string? FilterId { get; init; }
     internal SvgViewportLengthBases LengthBases { get; init; }

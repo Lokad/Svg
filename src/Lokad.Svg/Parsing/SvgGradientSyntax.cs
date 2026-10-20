@@ -37,7 +37,7 @@ internal readonly record struct SvgRadialGradient(SvgColor Start, SvgColor End, 
 }
 
 /// <summary>Retains one parsed radial-gradient definition with attribute explicitness for href inheritance.</summary>
-internal readonly record struct SvgRadialTemplate(double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, int VectorCount, bool HasCenterX, bool HasCenterY, bool HasRadius, bool HasFocalX, bool HasFocalY, bool HasFocalRadius);
+internal readonly record struct SvgRadialTemplate(double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, int VectorCount, bool HasFocalX, bool HasFocalY, bool HasFocalRadius);
 
 /// <summary>Retains one linear-gradient href inheritance whose target was missing at registration for document-end resolution.</summary>
 internal readonly record struct PendingLinearGradientHref(string Id, string HrefId, SvgGradientTemplate Template, SvgGradientStop[] Stops);
@@ -154,7 +154,7 @@ internal static class SvgGradientSyntax
         double focalRadius = rawFocalRadius is null ? 0 : ParseAxis(rawFocalRadius);
         if (focalRadius < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Focal radius cannot be negative.");
         string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
-        return new SvgRadialTemplate(centerX, centerY, radius, focalX, focalY, focalRadius, isUserSpace, gradientTransform, transformValue is not null, units is not null, spreadMethod, spread is not null, href, vectorCount, rawCenterX is not null, rawCenterY is not null, rawRadius is not null, rawFocalX is not null, rawFocalY is not null, rawFocalRadius is not null);
+        return new SvgRadialTemplate(centerX, centerY, radius, focalX, focalY, focalRadius, isUserSpace, gradientTransform, transformValue is not null, units is not null, spreadMethod, spread is not null, href, vectorCount, rawFocalX is not null, rawFocalY is not null, rawFocalRadius is not null);
     }
 
     private static SvgGradientTransform ParseGradientTransform(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken)

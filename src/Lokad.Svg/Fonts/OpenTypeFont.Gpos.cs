@@ -41,7 +41,7 @@ internal static partial class OpenTypeFont
         int markClasses = 0, markSets = 0, definitionMinor = 0;
         bool definitionsRead = false, filteredPairs = false;
         int previous = -1;
-        var graph = new OpenTypeGposPairTable(table, feature, lookups, 0, null, 0);
+        var graph = new OpenTypeGposPairTable(table, feature, lookups, 0, 0);
         while (TryGetNextKernLookup(data, graph, ref previous, out int lookup, workCounter, cancellationToken))
         {
             int type = ReadUInt16(data, lookup);
@@ -112,7 +112,7 @@ internal static partial class OpenTypeFont
                 else throw new SvgException(SvgErrorCode.UnsupportedFeature, "This GPOS kern lookup type or format is not supported.");
             }
         }
-        return graph with { PairPosOffset = firstPair, Gdef = definitionsRead ? gdef : null, GlyphClassOffset = glyphClasses, HasFilteredPairs = filteredPairs };
+        return graph with { PairPosOffset = firstPair, GlyphClassOffset = glyphClasses, HasFilteredPairs = filteredPairs };
 
         static void ValidatePairSubtable(ReadOnlySpan<byte> data, OpenTypeTableRange table, int offset, ushort glyphCount, ParserWorkCounter? workCounter, CancellationToken token)
         {

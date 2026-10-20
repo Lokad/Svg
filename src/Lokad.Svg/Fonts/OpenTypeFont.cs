@@ -1015,7 +1015,7 @@ internal readonly record struct OpenTypeTableRange(int Offset, int Length);
 internal readonly record struct OpenTypeKernTable(OpenTypeTableRange Range, int PairOffset, int PairCount);
 
 /// <summary>Identifies the validated borrowed records for one admitted GPOS PairPos format-1 kern lookup.</summary>
-internal readonly record struct OpenTypeGposPairTable(OpenTypeTableRange Range, int FeatureOffset, int LookupListOffset, int PairPosOffset, OpenTypeTableRange? Gdef, int GlyphClassOffset)
+internal readonly record struct OpenTypeGposPairTable(OpenTypeTableRange Range, int FeatureOffset, int LookupListOffset, int PairPosOffset, int GlyphClassOffset)
 {
     internal bool HasFilteredPairs { get; init; }
 }

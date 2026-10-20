@@ -78,7 +78,7 @@ internal static partial class OpenTypeFont
                 }
             }
         }
-        return new OpenTypeGsubLigatureTable(table, lookup);
+        return new OpenTypeGsubLigatureTable(lookup);
     }
 
     /// <summary>Matches contiguous Basic Latin letters within one spacing/position interval, in font preference order. Borrows all inputs; bounded and cancellable.</summary>
@@ -132,4 +132,4 @@ internal static partial class OpenTypeFont
 }
 
 /// <summary>Borrowed offsets in validated immutable font bytes; retains no owner or mutable shared state.</summary>
-internal readonly record struct OpenTypeGsubLigatureTable(OpenTypeTableRange Range, int LookupOffset);
+internal readonly record struct OpenTypeGsubLigatureTable(int LookupOffset);

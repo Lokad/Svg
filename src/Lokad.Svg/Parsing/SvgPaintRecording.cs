@@ -46,7 +46,7 @@ internal readonly record struct SvgPaintBounds(float Left, float Top, float Righ
     }
 }
 internal enum SvgPaintOrigin { Solid, PaintServer }
-internal readonly record struct SvgRecordedPaintStyle(SvgPaintOpacity ElementOpacity, float FillAlpha, float FillShaderAlpha, float StrokeAlpha, float StrokeShaderAlpha, SvgPaintOrigin FillOrigin, SvgPaintOrigin StrokeOrigin, bool HasFillOperation, bool HasLocalClip, SvgRecordingScope Scope, SvgRecordingScope OpacityScope)
+internal readonly record struct SvgRecordedPaintStyle(SvgPaintOpacity ElementOpacity, float FillAlpha, float FillShaderAlpha, float StrokeAlpha, float StrokeShaderAlpha, SvgPaintOrigin FillOrigin, SvgPaintOrigin StrokeOrigin, bool HasFillOperation, SvgRecordingScope Scope, SvgRecordingScope OpacityScope)
 {
     internal SvgPaintBounds? VisualBounds { get; init; }
     internal SvgPaintBounds? ObjectBounds { get; init; }
@@ -114,7 +114,7 @@ internal static class SvgPaintRecording
             fill.FillOpacity.Alpha / 255f, (stroke.Alpha / 255f) * strokeOpacity.Value, strokeOpacity.Alpha / 255f,
             fillServer ? SvgPaintOrigin.PaintServer : SvgPaintOrigin.Solid,
             style.Stroke is not null && SvgLocalUrl.TryParseId(style.Stroke, out _) ? SvgPaintOrigin.PaintServer : SvgPaintOrigin.Solid,
-            fill.HasFill, reader.GetAttribute("clip-path") is not null, drawScope, opacityScope) { PaintOrder = style.PaintOrder ?? context.InheritedPresentation.PaintOrder, ObjectBounds = objectBounds, SourceObjectBox = sourceObjectBox, VisualBounds = strokeBoundsInflation > 0 ? PrimitiveBounds(reader, context, frame, strokeBoundsInflation, out _) : null, StrokeBoundsInflation = strokeBoundsInflation };
+            fill.HasFill, drawScope, opacityScope) { PaintOrder = style.PaintOrder ?? context.InheritedPresentation.PaintOrder, ObjectBounds = objectBounds, SourceObjectBox = sourceObjectBox, VisualBounds = strokeBoundsInflation > 0 ? PrimitiveBounds(reader, context, frame, strokeBoundsInflation, out _) : null, StrokeBoundsInflation = strokeBoundsInflation };
 
         static SvgPaintBounds? PrimitiveBounds(XmlReader input, SvgPaintableElementContext element, SvgViewportFrame? viewport, float inflation, out SvgPaintBounds? sourceObjectBox)
         {

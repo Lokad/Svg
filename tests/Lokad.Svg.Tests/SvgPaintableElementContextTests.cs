@@ -49,7 +49,7 @@ public sealed class SvgPaintableElementContextTests
         ParserWorkCounter workCounter = new(100);
         using SvgDocumentState state = new(new RenderBudget(10_000), workCounter, CancellationToken.None);
         SvgInheritedPresentation rootPresentation = new(new SvgPaint(new SvgColor(1, 2, 3, 255), false, SvgPaintOpacity.Opaque, new SvgColor(4, 5, 6, 255), false), true, true, SvgAffineTransform.Identity);
-        SvgRootAttributes root = new(rootPresentation, SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, null, null, 255, null, null, null, null);
+        SvgRootAttributes root = new(rootPresentation, SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, null, null, null, null);
 
         SvgPaintableElementContext rootContext = SvgPaintableElementContext.Create(reader, false, root, state, new Dictionary<string, SvgColor>(), workCounter, CancellationToken.None);
 
