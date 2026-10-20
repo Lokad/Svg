@@ -7,6 +7,31 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgDocumentDimensionsTests
 {
     [Theory]
+    [InlineData("1e2")]
+    [InlineData("1E2")]
+    [InlineData("1e+2")]
+    [InlineData("1E+2")]
+    [InlineData("1e2px")]
+    [InlineData("1e0in")]
+    public void Scientific_notation_is_shared_by_inspection_and_rendering(string length)
+    {
+        double expected = length.EndsWith("in", StringComparison.Ordinal) ? 96 : 100;
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes($"<svg xmlns='http://www.w3.org/2000/svg' width='{length}' height='1'/>");
+        Assert.Equal(expected, SvgConverter.InspectDimensions(svg, SvgRenderOptions.Default, CancellationToken.None).LogicalViewport.Width);
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None);
+        Assert.Equal((int)expected, BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(16, 4)));
+    }
+
+    [Theory]
+    [InlineData("1e-2", 0.01)]
+    [InlineData("1E-2", 0.01)]
+    public void Inspection_accepts_negative_exponents(string length, double expected)
+    {
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes($"<svg xmlns='http://www.w3.org/2000/svg' width='{length}' height='1'/>");
+        Assert.Equal(expected, SvgConverter.InspectDimensions(svg, SvgRenderOptions.Default, CancellationToken.None).LogicalViewport.Width);
+    }
+
+    [Theory]
     [InlineData("", 300, 150, SvgDimensionSource.Fallback, SvgDimensionSource.Fallback)]
     [InlineData("viewBox='10 20 40 80'", 300, 150, SvgDimensionSource.Fallback, SvgDimensionSource.Fallback)]
     [InlineData("width='1in' height='72pt'", 96, 96, SvgDimensionSource.Declaration, SvgDimensionSource.Declaration)]
@@ -88,6 +113,10 @@ public sealed class SvgDocumentDimensionsTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'/><svg/>", SvgErrorCode.MalformedInput)]
     [InlineData("<other/>", SvgErrorCode.MalformedInput)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='12em'/>", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='1e2em'/>", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='1e2rem'/>", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='1e2vh'/>", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='1e+'/>", SvgErrorCode.MalformedInput)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' style='width:12em'/>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='0'/>", SvgErrorCode.MalformedInput)]
     public void Inspection_reports_input_errors_without_best_effort_success(string xml, SvgErrorCode expected)
