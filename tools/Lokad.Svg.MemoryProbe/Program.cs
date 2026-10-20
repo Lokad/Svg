@@ -34,58 +34,21 @@ internal static class Program
             if (options.Mode == ProbeMode.XmlReader)
             {
                 XmlReaderWorkspaceMeasurement measurement = XmlReaderWorkspaceProbe.Measure(svg, SvgRenderLimits.Default);
-                WriteReport("xml-reader-measured", stopwatch, process, null, null, inputBytes, inputSha256, cancellationMode, null,
-                    xmlReaderManagedAllocatedBytes: measurement.ManagedAllocatedBytes,
-                    xmlReaderWorkspaceBytes: measurement.WorkspaceBytes,
-                    xmlReaderTouchedCharacters: measurement.TouchedCharacters,
-                    xmlReaderTextNodeCount: measurement.TextNodeCount,
-                    xmlReaderSetupManagedAllocatedBytes: measurement.ReaderSetupManagedAllocatedBytes,
-                    xmlReaderTraversalManagedAllocatedBytes: measurement.ReaderTraversalManagedAllocatedBytes,
-                    xmlReaderAttributeAccessManagedAllocatedBytes: measurement.AttributeAccessManagedAllocatedBytes);
+                WriteXmlReaderReport(measurement);
                 return 0;
             }
             if (options.Mode == ProbeMode.FontDiscovery)
             {
                 FontDiscoveryMeasurement measurement = await FontDiscoveryProbe.MeasureAsync(svg, CreateLimits(options.MaximumAccountedBytes, null), cancellation?.Token ?? CancellationToken.None).ConfigureAwait(false);
-                if (measurement.Cancelled)
-                {
-                    WriteReport("cancelled", stopwatch, process, null, null, inputBytes, inputSha256, cancellationMode, null,
-                        providerCalls: measurement.ProviderCalls,
-                        discoveryRequestCount: measurement.DiscoveryRequestCount,
-                        discoveryCurrentBytes: measurement.DiscoveryCurrentBytes,
-                        discoveryPeakBytes: measurement.DiscoveryPeakBytes,
-                        discoveryDeniedReservations: measurement.DiscoveryDeniedReservations);
-                    return 3;
-                }
-
-                SvgErrorCode? discoveryFailure = measurement.SnapshotErrorCode ?? measurement.DiscoveryErrorCode;
-                if (discoveryFailure is not null)
-                {
-                    WriteReport("svg-error", stopwatch, process, null, discoveryFailure, inputBytes, inputSha256, cancellationMode, null,
-                        providerCalls: measurement.ProviderCalls,
-                        discoveryRequestCount: measurement.DiscoveryRequestCount,
-                        discoveryCurrentBytes: measurement.DiscoveryCurrentBytes,
-                        discoveryPeakBytes: measurement.DiscoveryPeakBytes,
-                        discoveryDeniedReservations: measurement.DiscoveryDeniedReservations);
-                    return 1;
-                }
-
-                WriteReport("success", stopwatch, process, null, null, inputBytes, inputSha256, cancellationMode, null,
-                    providerCalls: measurement.ProviderCalls,
-                    discoveryRequestCount: measurement.DiscoveryRequestCount,
-                    discoveryCurrentBytes: measurement.DiscoveryCurrentBytes,
-                    discoveryPeakBytes: measurement.DiscoveryPeakBytes,
-                    discoveryDeniedReservations: measurement.DiscoveryDeniedReservations);
-                return 0;
+                return WriteFontDiscoveryReport(measurement);
             }
             conversionCancellation = options.CancelAfterConversionStartMilliseconds is int conversionDelay ? new CancellationTokenSource(conversionDelay) : null;
-            backgroundCancellation = options.CancelAfterBackgroundStartMilliseconds is int backgroundDelay ? new CancellationTokenSource() : null;
-            if (backgroundCancellation is not null)
+            if (options.CancelAfterBackgroundStartMilliseconds is int backgroundDelay)
             {
+                backgroundCancellation = new CancellationTokenSource();
                 CancellationTokenSource capturedCancellation = backgroundCancellation;
-                int capturedDelay = options.CancelAfterBackgroundStartMilliseconds!.Value;
                 backgroundProbe = BackgroundInitializationProbe.Arm(
-                    () => { backgroundInitializationStarted = true; capturedCancellation.CancelAfter(capturedDelay); },
+                    () => { backgroundInitializationStarted = true; capturedCancellation.CancelAfter(backgroundDelay); },
                     () => { backgroundCancellationObserved = true; });
             }
             CancellationToken cancellationToken = backgroundCancellation?.Token ?? conversionCancellation?.Token ?? cancellation?.Token ?? CancellationToken.None;
@@ -94,23 +57,23 @@ internal static class Program
             try { png = SvgConverter.ConvertToPng(svg, CreateOptions(options.MaximumAccountedBytes, options.MaximumWorkUnits, options.BackgroundColor), cancellationToken); }
             finally { conversionManagedAllocatedBytes = GC.GetTotalAllocatedBytes(precise: true) - allocationStart; }
             File.WriteAllBytes(options.OutputPath, png.Span);
-            WriteReport("success", stopwatch, process, png.Length, null, inputBytes, inputSha256, cancellationMode, conversionManagedAllocatedBytes, backgroundInitializationStarted, backgroundCancellationObserved);
+            WriteReportHeader("success", png.Length, null);
             return 0;
         }
         catch (SvgException exception)
         {
-            WriteReport("svg-error", stopwatch, process, null, exception.ErrorCode, inputBytes, inputSha256, cancellationMode, conversionManagedAllocatedBytes, backgroundInitializationStarted, backgroundCancellationObserved);
+            WriteReportHeader("svg-error", null, exception.ErrorCode);
             return 1;
         }
         catch (OperationCanceledException) when ((cancellation is { IsCancellationRequested: true }) || (conversionCancellation is { IsCancellationRequested: true }) || (backgroundCancellation is { IsCancellationRequested: true }))
         {
-            WriteReport("cancelled", stopwatch, process, null, null, inputBytes, inputSha256, cancellationMode, conversionManagedAllocatedBytes, backgroundInitializationStarted, backgroundCancellationObserved);
+            WriteReportHeader("cancelled", null, null);
             return 3;
         }
         catch (Exception exception)
         {
             Console.Error.WriteLine(exception);
-            WriteReport("unhandled-" + exception.GetType().Name, stopwatch, process, null, null, inputBytes, inputSha256, cancellationMode, conversionManagedAllocatedBytes, backgroundInitializationStarted, backgroundCancellationObserved);
+            WriteReportHeader("unhandled-" + exception.GetType().Name, null, null);
             return 4;
         }
         finally
@@ -118,6 +81,50 @@ internal static class Program
             backgroundProbe?.Dispose();
             backgroundCancellation?.Dispose();
             conversionCancellation?.Dispose();
+        }
+
+        void WriteReportHeader(string outcome, int? pngBytes, SvgErrorCode? svgErrorCode)
+        {
+            process.Refresh();
+            Console.WriteLine("outcome=" + outcome);
+            Console.WriteLine("elapsedMilliseconds=" + stopwatch.ElapsedMilliseconds);
+            Console.WriteLine("peakWorkingSetBytes=" + process.PeakWorkingSet64);
+            Console.WriteLine("operatingSystem=" + RuntimeInformation.OSDescription);
+            Console.WriteLine("processArchitecture=" + RuntimeInformation.ProcessArchitecture);
+            Console.WriteLine("runtimeFramework=" + RuntimeInformation.FrameworkDescription);
+            Console.WriteLine("cancellationMode=" + cancellationMode);
+            Console.WriteLine("backgroundInitializationStarted=" + backgroundInitializationStarted.ToString().ToLowerInvariant());
+            Console.WriteLine("backgroundCancellationObserved=" + backgroundCancellationObserved.ToString().ToLowerInvariant());
+            if (conversionManagedAllocatedBytes is not null) Console.WriteLine("conversionManagedAllocatedBytes=" + conversionManagedAllocatedBytes.Value);
+            if (inputBytes is not null) Console.WriteLine("inputBytes=" + inputBytes.Value);
+            if (inputSha256 is not null) Console.WriteLine("inputSha256=" + inputSha256);
+            if (pngBytes is not null) Console.WriteLine("pngBytes=" + pngBytes.Value);
+            if (svgErrorCode is not null) Console.WriteLine("svgErrorCode=" + svgErrorCode.Value);
+        }
+
+        void WriteXmlReaderReport(XmlReaderWorkspaceMeasurement measurement)
+        {
+            WriteReportHeader("xml-reader-measured", null, null);
+            Console.WriteLine("xmlReaderManagedAllocatedBytes=" + measurement.ManagedAllocatedBytes);
+            Console.WriteLine("xmlReaderWorkspaceBytes=" + measurement.WorkspaceBytes);
+            Console.WriteLine("xmlReaderTouchedCharacters=" + measurement.TouchedCharacters);
+            Console.WriteLine("xmlReaderTextNodeCount=" + measurement.TextNodeCount);
+            Console.WriteLine("xmlReaderSetupManagedAllocatedBytes=" + measurement.ReaderSetupManagedAllocatedBytes);
+            Console.WriteLine("xmlReaderTraversalManagedAllocatedBytes=" + measurement.ReaderTraversalManagedAllocatedBytes);
+            Console.WriteLine("xmlReaderAttributeAccessManagedAllocatedBytes=" + measurement.AttributeAccessManagedAllocatedBytes);
+        }
+
+        int WriteFontDiscoveryReport(FontDiscoveryMeasurement measurement)
+        {
+            SvgErrorCode? failure = measurement.SnapshotErrorCode ?? measurement.DiscoveryErrorCode;
+            string outcome = measurement.Cancelled ? "cancelled" : failure is not null ? "svg-error" : "success";
+            WriteReportHeader(outcome, null, measurement.Cancelled ? null : failure);
+            Console.WriteLine("providerCalls=" + measurement.ProviderCalls);
+            if (measurement.DiscoveryRequestCount is not null) Console.WriteLine("discoveryRequestCount=" + measurement.DiscoveryRequestCount.Value);
+            Console.WriteLine("discoveryCurrentBytes=" + measurement.DiscoveryCurrentBytes);
+            Console.WriteLine("discoveryPeakBytes=" + measurement.DiscoveryPeakBytes);
+            Console.WriteLine("discoveryDeniedReservations=" + measurement.DiscoveryDeniedReservations);
+            return measurement.Cancelled ? 3 : failure is not null ? 1 : 0;
         }
     }
 
@@ -198,37 +205,6 @@ internal static class Program
         if (maximumAccountedBytes is null && maximumWorkUnits is null) return SvgRenderLimits.Default;
         SvgRenderLimits defaults = SvgRenderLimits.Default;
         return new SvgRenderLimits(maximumAccountedBytes ?? defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension, defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands, maximumWorkUnits ?? defaults.MaximumWorkUnits, defaults.MaximumXmlDepth);
-    }
-
-    private static void WriteReport(string outcome, Stopwatch stopwatch, Process process, int? pngBytes, SvgErrorCode? svgErrorCode, int? inputBytes, string? inputSha256, string cancellationMode, long? conversionManagedAllocatedBytes, bool backgroundInitializationStarted = false, bool backgroundCancellationObserved = false, long? xmlReaderManagedAllocatedBytes = null, long? xmlReaderWorkspaceBytes = null, long? xmlReaderTouchedCharacters = null, long? xmlReaderTextNodeCount = null, long? xmlReaderSetupManagedAllocatedBytes = null, long? xmlReaderTraversalManagedAllocatedBytes = null, long? xmlReaderAttributeAccessManagedAllocatedBytes = null, int? providerCalls = null, int? discoveryRequestCount = null, long? discoveryCurrentBytes = null, long? discoveryPeakBytes = null, long? discoveryDeniedReservations = null)
-    {
-        process.Refresh();
-        Console.WriteLine("outcome=" + outcome);
-        Console.WriteLine("elapsedMilliseconds=" + stopwatch.ElapsedMilliseconds);
-        Console.WriteLine("peakWorkingSetBytes=" + process.PeakWorkingSet64);
-        Console.WriteLine("operatingSystem=" + RuntimeInformation.OSDescription);
-        Console.WriteLine("processArchitecture=" + RuntimeInformation.ProcessArchitecture);
-        Console.WriteLine("runtimeFramework=" + RuntimeInformation.FrameworkDescription);
-        Console.WriteLine("cancellationMode=" + cancellationMode);
-        Console.WriteLine("backgroundInitializationStarted=" + backgroundInitializationStarted.ToString().ToLowerInvariant());
-        Console.WriteLine("backgroundCancellationObserved=" + backgroundCancellationObserved.ToString().ToLowerInvariant());
-        if (conversionManagedAllocatedBytes is not null) Console.WriteLine("conversionManagedAllocatedBytes=" + conversionManagedAllocatedBytes.Value);
-        if (inputBytes is not null) Console.WriteLine("inputBytes=" + inputBytes.Value);
-        if (inputSha256 is not null) Console.WriteLine("inputSha256=" + inputSha256);
-        if (pngBytes is not null) Console.WriteLine("pngBytes=" + pngBytes.Value);
-        if (svgErrorCode is not null) Console.WriteLine("svgErrorCode=" + svgErrorCode.Value);
-        if (xmlReaderManagedAllocatedBytes is not null) Console.WriteLine("xmlReaderManagedAllocatedBytes=" + xmlReaderManagedAllocatedBytes.Value);
-        if (xmlReaderWorkspaceBytes is not null) Console.WriteLine("xmlReaderWorkspaceBytes=" + xmlReaderWorkspaceBytes.Value);
-        if (xmlReaderTouchedCharacters is not null) Console.WriteLine("xmlReaderTouchedCharacters=" + xmlReaderTouchedCharacters.Value);
-        if (xmlReaderTextNodeCount is not null) Console.WriteLine("xmlReaderTextNodeCount=" + xmlReaderTextNodeCount.Value);
-        if (xmlReaderSetupManagedAllocatedBytes is not null) Console.WriteLine("xmlReaderSetupManagedAllocatedBytes=" + xmlReaderSetupManagedAllocatedBytes.Value);
-        if (xmlReaderTraversalManagedAllocatedBytes is not null) Console.WriteLine("xmlReaderTraversalManagedAllocatedBytes=" + xmlReaderTraversalManagedAllocatedBytes.Value);
-        if (xmlReaderAttributeAccessManagedAllocatedBytes is not null) Console.WriteLine("xmlReaderAttributeAccessManagedAllocatedBytes=" + xmlReaderAttributeAccessManagedAllocatedBytes.Value);
-        if (providerCalls is not null) Console.WriteLine("providerCalls=" + providerCalls.Value);
-        if (discoveryRequestCount is not null) Console.WriteLine("discoveryRequestCount=" + discoveryRequestCount.Value);
-        if (discoveryCurrentBytes is not null) Console.WriteLine("discoveryCurrentBytes=" + discoveryCurrentBytes.Value);
-        if (discoveryPeakBytes is not null) Console.WriteLine("discoveryPeakBytes=" + discoveryPeakBytes.Value);
-        if (discoveryDeniedReservations is not null) Console.WriteLine("discoveryDeniedReservations=" + discoveryDeniedReservations.Value);
     }
 
     private sealed record ProbeOptions(string InputPath, string OutputPath, long? MaximumAccountedBytes, SvgColor BackgroundColor, int? CancelAfterMilliseconds, int? CancelAfterConversionStartMilliseconds, int? CancelAfterBackgroundStartMilliseconds, int? MaximumWorkUnits, ProbeMode Mode);
