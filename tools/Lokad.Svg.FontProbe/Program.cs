@@ -370,21 +370,22 @@ internal static class Program
     private sealed class HttpFontProgramSource(HttpClient httpClient, Uri uri, long maximumBytes, int maximumAttempts, HttpFontProgramSourceProvider provider) : ISvgFontProgramSource
     {
         private readonly SemaphoreSlim _gate = new(1, 1);
-        private ReadOnlyMemory<byte>? _cachedBytes;
+        private byte[]? _cachedBytes;
 
         public string StableId => "http-font-program";
 
         public async ValueTask<ReadOnlyMemory<byte>> GetBytesAsync(CancellationToken cancellationToken)
         {
-            if (_cachedBytes is ReadOnlyMemory<byte> cached) return cached;
+            cancellationToken.ThrowIfCancellationRequested();
+            if (Volatile.Read(ref _cachedBytes) is byte[] cached) return cached;
             await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
-                if (_cachedBytes is ReadOnlyMemory<byte> rechecked) return rechecked;
+                if (_cachedBytes is byte[] rechecked) return rechecked;
                 byte[] bytes;
                 try { bytes = await DownloadHttpAsync(httpClient, uri, maximumBytes, maximumAttempts, cancellationToken).ConfigureAwait(false); }
                 catch (HostSourceException) { throw new SvgException(SvgErrorCode.UnresolvedResource, "The HTTP font program could not be read."); }
-                if (provider.TryReserveCache(bytes.Length)) _cachedBytes = bytes;
+                if (provider.TryReserveCache(bytes.Length)) Volatile.Write(ref _cachedBytes, bytes);
                 return bytes;
             }
             finally

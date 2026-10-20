@@ -46,6 +46,22 @@ public sealed class HttpFontProgramSourceProviderTests
     }
 
     [Fact]
+    public async Task Cached_reads_honor_cancellation_without_discarding_the_cache()
+    {
+        var handler = new SuccessHandler([1, 2, 3]);
+        using var client = new HttpClient(handler);
+        ISvgFontProgramSource source = await GetSourceAsync(client);
+        Assert.Equal([1, 2, 3], (await source.GetBytesAsync(CancellationToken.None)).ToArray());
+        using var cancellation = new CancellationTokenSource();
+        cancellation.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await source.GetBytesAsync(cancellation.Token));
+
+        Assert.Equal([1, 2, 3], (await source.GetBytesAsync(CancellationToken.None)).ToArray());
+        Assert.Equal(1, handler.RequestCount);
+    }
+
+    [Fact]
     public async Task Retries_transient_transport_failures_before_caching_success()
     {
         var handler = new TransientFailureHandler(2, [4, 5]);

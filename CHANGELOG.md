@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Honor cancellation on cached FontProbe HTTP reads and safely publish cached
+  font bytes across concurrent readers.
 - Reject unsupported transparency and malformed PNG input in the independent
   pixel comparer instead of reporting false equality or crashing on overflow.
 - Decouple the independent pixel comparer from the renderer and simplify memory
