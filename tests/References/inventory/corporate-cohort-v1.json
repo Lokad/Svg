@@ -54,7 +54,7 @@
       "name": "SimpleLogin logo",
       "role": "development",
       "stratum": "corporate-mark",
-      "provenance": "docs/INVENTORY.md#inv-001",
+      "provenance": "tests/References/inventory/corporate-cohort-sources.json",
       "primaryStratumReason": "Emblem, monogram or composed badge; accompanying lettering is secondary.",
       "variants": [
         {
@@ -240,7 +240,7 @@
       "name": "Ford simple text logo",
       "role": "development",
       "stratum": "outlined-wordmark",
-      "provenance": "docs/INVENTORY.md#inv-002",
+      "provenance": "tests/References/inventory/corporate-cohort-sources.json",
       "primaryStratumReason": "Brand name/acronym is the dominant outlined lettering; surrounding decoration is secondary.",
       "variants": [
         {
@@ -424,7 +424,7 @@
       "name": "Simple DirectMedia Layer (SDL) logo",
       "role": "development",
       "stratum": "outlined-wordmark",
-      "provenance": "docs/INVENTORY.md#inv-003",
+      "provenance": "tests/References/inventory/corporate-cohort-sources.json",
       "primaryStratumReason": "Brand name/acronym is the dominant outlined lettering; surrounding decoration is secondary.",
       "variants": [
         {
@@ -609,7 +609,7 @@
       "name": "UAAR logo 2012",
       "role": "development",
       "stratum": "outlined-wordmark",
-      "provenance": "docs/INVENTORY.md#inv-004",
+      "provenance": "tests/References/inventory/corporate-cohort-sources.json",
       "primaryStratumReason": "Brand name/acronym is the dominant outlined lettering; surrounding decoration is secondary.",
       "variants": [
         {
@@ -794,7 +794,7 @@
       "name": "SimpleX.chat logo",
       "role": "development",
       "stratum": "outlined-wordmark",
-      "provenance": "docs/INVENTORY.md#inv-005",
+      "provenance": "tests/References/inventory/corporate-cohort-sources.json",
       "primaryStratumReason": "Brand name/acronym is the dominant outlined lettering; surrounding decoration is secondary.",
       "variants": [
         {
@@ -1033,7 +1033,7 @@
       "name": "Omega logo",
       "role": "development",
       "stratum": "outlined-wordmark",
-      "provenance": "docs/INVENTORY.md#inv-006",
+      "provenance": "tests/References/inventory/corporate-cohort-sources.json",
       "primaryStratumReason": "Brand name/acronym is the dominant outlined lettering; surrounding decoration is secondary.",
       "variants": [
         {
@@ -1271,7 +1271,7 @@
       "name": "Zeppelin logo",
       "role": "development",
       "stratum": "outlined-wordmark",
-      "provenance": "docs/INVENTORY.md#inv-007",
+      "provenance": "tests/References/inventory/corporate-cohort-sources.json",
       "primaryStratumReason": "Brand name/acronym is the dominant outlined lettering; surrounding decoration is secondary.",
       "variants": [
         {
@@ -1456,7 +1456,7 @@
       "name": "Eisenbahn und Häfen logo",
       "role": "development",
       "stratum": "corporate-mark",
-      "provenance": "docs/INVENTORY.md#inv-008",
+      "provenance": "tests/References/inventory/corporate-cohort-sources.json",
       "primaryStratumReason": "Emblem, monogram or composed badge; accompanying lettering is secondary.",
       "variants": [
         {
@@ -1640,7 +1640,7 @@
       "name": "Rede Manchete",
       "role": "development",
       "stratum": "corporate-mark",
-      "provenance": "docs/INVENTORY.md#inv-009",
+      "provenance": "tests/References/inventory/corporate-cohort-sources.json",
       "primaryStratumReason": "Emblem, monogram or composed badge; accompanying lettering is secondary.",
       "variants": [
         {
@@ -1824,7 +1824,7 @@
       "name": "ROC HCVS logo",
       "role": "development",
       "stratum": "corporate-mark",
-      "provenance": "docs/INVENTORY.md#inv-010",
+      "provenance": "tests/References/inventory/corporate-cohort-sources.json",
       "primaryStratumReason": "Emblem, monogram or composed badge; accompanying lettering is secondary.",
       "variants": [
         {
@@ -2007,7 +2007,7 @@
       "name": "Logo of Indonesian Red Cross",
       "role": "development",
       "stratum": "corporate-mark",
-      "provenance": "docs/INVENTORY.md#inv-011",
+      "provenance": "tests/References/inventory/corporate-cohort-sources.json",
       "primaryStratumReason": "Emblem, monogram or composed badge; accompanying lettering is secondary.",
       "variants": [
         {
@@ -2300,7 +2300,7 @@
       "name": "SG Rotation Leipzig",
       "role": "development",
       "stratum": "corporate-mark",
-      "provenance": "docs/INVENTORY.md#inv-012",
+      "provenance": "tests/References/inventory/corporate-cohort-sources.json",
       "primaryStratumReason": "Circular club badge with ring lettering; the badge composition is primary.",
       "variants": [
         {
@@ -2486,7 +2486,7 @@
       "name": "Tokyo Tsukurou",
       "role": "development",
       "stratum": "corporate-mark",
-      "provenance": "docs/INVENTORY.md#inv-019",
+      "provenance": "tests/References/inventory/corporate-cohort-sources.json",
       "primaryStratumReason": "Emblem, monogram or composed badge; accompanying lettering is secondary.",
       "variants": [
         {
@@ -2671,7 +2671,7 @@
       "name": "Artsy-logo-mask",
       "role": "development",
       "stratum": "corporate-mark",
-      "provenance": "docs/INVENTORY.md#inv-020",
+      "provenance": "tests/References/inventory/corporate-cohort-sources.json",
       "primaryStratumReason": "Emblem, monogram or composed badge; accompanying lettering is secondary.",
       "variants": [
         {
@@ -2857,7 +2857,7 @@
       "name": "Logo of the Party of Changes (Russia)",
       "role": "development",
       "stratum": "outlined-wordmark",
-      "provenance": "docs/INVENTORY.md#inv-026",
+      "provenance": "tests/References/inventory/corporate-cohort-sources.json",
       "primaryStratumReason": "Brand name/acronym is the dominant outlined lettering; surrounding decoration is secondary.",
       "variants": [
         {
@@ -3095,7 +3095,7 @@
       "name": "YouTube grey icon (2017)",
       "role": "development",
       "stratum": "corporate-mark",
-      "provenance": "docs/INVENTORY.md#inv-027",
+      "provenance": "tests/References/inventory/corporate-cohort-sources.json",
       "primaryStratumReason": "Emblem, monogram or composed badge; accompanying lettering is secondary.",
       "variants": [
         {
@@ -3281,7 +3281,7 @@
       "name": "Liputan 6 logo (2019)",
       "role": "development",
       "stratum": "outlined-wordmark",
-      "provenance": "docs/INVENTORY.md#inv-040",
+      "provenance": "tests/References/inventory/corporate-cohort-sources.json",
       "primaryStratumReason": "Brand name/acronym is the dominant outlined lettering; surrounding decoration is secondary.",
       "variants": [
         {
@@ -3465,7 +3465,7 @@
       "name": "NASA worm logotype",
       "role": "development",
       "stratum": "outlined-wordmark",
-      "provenance": "docs/INVENTORY.md#inv-066",
+      "provenance": "tests/References/inventory/corporate-cohort-sources.json",
       "primaryStratumReason": "Brand name/acronym is the dominant outlined lettering; surrounding decoration is secondary.",
       "variants": [
         {
@@ -3650,7 +3650,7 @@
       "name": "Blur wordmark",
       "role": "development",
       "stratum": "outlined-wordmark",
-      "provenance": "docs/INVENTORY.md#inv-092",
+      "provenance": "tests/References/inventory/corporate-cohort-sources.json",
       "primaryStratumReason": "Brand name/acronym is the dominant outlined lettering; surrounding decoration is secondary.",
       "variants": [
         {

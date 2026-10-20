@@ -4,8 +4,8 @@ Lokad.Svg renders a subset of static SVG to PNG on .NET 10, on Windows and Linux
 without runtime package dependencies. This document describes the current
 implementation. It does not claim full SVG or browser conformance.
 
-This matrix covers the 0.3.0-preview.1 development tree. Published 0.2.0 has its
-own [release matrix](https://github.com/Lokad/Svg/blob/v0.2.0/docs/SUPPORT_MATRIX.md).
+This matrix covers the 0.3.0-preview.1 development tree. Published 0.2.0 has a
+narrower font boundary; see [release notes](../CHANGELOG.md).
 
 Scripts/events, animation, a mutable DOM, foreignObject HTML and arbitrary external
 documents are unsupported. Rendering does not discover filesystem/network resources.
@@ -184,162 +184,58 @@ forward/missing result names have categorized failures.
 
 ### Text and fonts
 
-Fonts are explicit host-supplied resources through the existing manifest,
-catalog and provider interfaces. Regular, bold, real italic and intentional
-fallback use supplied programs; no machine-font discovery or synthetic style is
-introduced. Required missing programs/glyphs cannot silently disappear or fall
-back to machine fonts. The host owns acquisition, credentials, retries and caches.
-See [FontProbe](../tools/Lokad.Svg.FontProbe/README.md) for local/HTTP host usage.
+Fonts are explicit host-supplied manifest/catalog/provider resources. The host
+owns acquisition, credentials, retries and caches; rendering does not discover
+machine fonts or synthesize styles. Required unavailable/corrupt programs and
+missing glyphs fail explicitly. [FontProbe](../tools/Lokad.Svg.FontProbe/README.md)
+shows local/HTTP usage.
 
-Family lists preserve order, quoted names, CSS escapes and inheritance. Missing
-families are skipped before catalog fallback. Quoted priority punctuation, braces
-and comment markers remain part of a family name through inline/stylesheet
-parsing; an actual priority suffix retains its cascade behavior. SvgFontFaceRequest.FromCss
-exposes decoded named/generic candidates. SvgFontSelectionPolicy supplies host
-generic mappings and ordered fallback restrictions to snapshot/prepared-document
-creation; quoted "serif" remains a literal name. Existing single-family
-catalog resolution retains its fallback behavior. Selection uses one program
-per covered interval: SVG-based snapshot/prepared creation lazily acquires
-alternatives for missing admitted scalars, trying later authored families before
-host fallback. Kerning/ligatures stay within a selected face; positioning, spans
-and text paths retain their layout. Combining/joining fallback does not expand
-the shaping subset below. Missing-everywhere requests keep scalar/index/source
-diagnostics; required corrupt or unavailable bytes are not silently skipped.
-Raw conversion uses only the supplied snapshot. Request-only snapshot creation
-has no text coverage to inspect and retains its first-face selection contract;
-callers can explicitly supply prepared alternatives for the same request.
-Ordinary shaped text keeps fractional glyph offsets when scaled. Paint-origin
-rounding follows absolute span resets; text paths and fitted-spacing text retain
-their separate character-metric rules.
-The [ordered-family document](../tests/Research/font-family-stacks/README.md)
-and [mixed-coverage document](../tests/Research/glyph-fallback/README.md) retain
-supplied-program metrics and frozen Windows/Linux pixels.
+`SvgFontFaceRequest.FromCss` preserves ordered named/generic families, quoting,
+escapes and inheritance; punctuation inside quotes remains literal, including
+quoted "serif". `SvgFontSelectionPolicy` supplies host generic mappings and ordered
+fallback restrictions for snapshots/prepared documents. Missing authored families
+are skipped before host fallback. SVG-based preparation lazily acquires later
+families for missing admitted scalars, selecting one program per covered interval.
+Kerning/ligatures stay within a selected face; spans, positioning and text paths
+retain their layout. Missing-everywhere requests keep scalar/index/source
+diagnostics. Request-only snapshot creation has no coverage to inspect and keeps
+first-face selection; callers may supply prepared alternatives explicitly. Raw
+conversion uses only its supplied snapshot. Existing single-family catalog
+resolution retains its fallback behavior.
 
-Supported format: standalone static TrueType, face index 0. Text supports
-horizontal LTR ASCII/tested precomposed Latin and covered supplementary scalars;
-text/CDATA/whitespace order; nested `tspan`; inherited/per-span family, size,
-weight, style, paint and visibility; scalar/list x/y/dx/dy/rotate; start/middle/end
-anchors; letter/word spacing; explicit lines; textLength spacing/spacingAndGlyphs;
-and alphabetic/middle/hanging baselines. Affine glyphs admit solid/gradient/pattern
-fills and strokes, dashes/non-scaling strokes and paint order. Underline, overline
-and line-through use the supported solid-decoration subset.
+| Area | Supported boundary |
+| --- | --- |
+| Programs | Standalone static TrueType, face index 0, including composites and bounded hinting. Other executed instructions fail explicitly. |
+| Characters | Horizontal LTR ASCII, tested precomposed Latin and covered supplementary scalars; no bidi/joining/complex-script or mark shaping. |
+| Layout | Text/CDATA/whitespace order, nested `tspan`, inherited/per-span family/size/weight/style/paint/visibility, scalar/list x/y/dx/dy/rotate, start/middle/end anchors, letter/word spacing, explicit lines, textLength spacing/spacingAndGlyphs and alphabetic/middle/hanging baselines. |
+| Paint | Affine glyph solid/gradient/pattern fills and strokes, dashes, non-scaling strokes and paint order; solid underline/overline/line-through decorations. |
+| Text paths | One local open/closed geometry path per run, transformed/curved paths, supplied advances/kerning, length/percentage startOffset, anchors/tangents, `method="align"`, `spacing="exact"` and mixed direct/path text. |
+| Ligatures | Default Latin/DFLT Basic Latin, one unfiltered type-4 lookup, format-1 subtables, coverage 1/2 and two to eight components in font order. Nonzero spacing or positioned-span boundaries prevent merging. |
 
-Text paths use one local open/closed geometry path per run, supplied advances and
-kerning, length/percentage startOffset, anchors/tangents, `method="align"` and
-`spacing="exact"`, including transformed/curved paths and mixed direct/path text.
+Pair positioning selects the default Latin language system before DFLT, sharing
+selection with ligatures. Feature tags repeated in other language systems do not
+invalidate it. Selected GPOS kerning, including zero adjustments, supersedes legacy
+kern without parsing unused legacy contents; all SFNT table ranges remain validated.
+Required legacy kerning admits one horizontal format-0 subtable.
 
-Shaping is limited to bounded pair positioning and default Basic Latin ligatures:
-Latin/DFLT default language, one unfiltered type-4 lookup, format-1 subtables,
-coverage 1/2 and two to eight components in font order. Nonzero spacing or
-positioned-span boundaries prevent ligature merging.
+Type-2 pair lookups admit RIGHT_TO_LEFT (irrelevant for that type), IgnoreBaseGlyphs
+and IgnoreLigatures with bounded GDEF classes. Each lookup selects its next eligible
+partner within a font/size/absolute-position chunk. IgnoreMarks, mark attachment
+classes and format-1 mark-filtering sets admit non-mark label runs with validated
+GDEF metadata; actual mark positioning is unsupported. Reserved flags, invalid
+classes/set indices and table ranges fail explicitly.
 
-Pair positioning selects the default Latin language system before
-DFLT, sharing selection with ligatures. Repeated feature tags in other language
-systems do not invalidate the selected feature. Language-specific shaping remains
-outside this subset.
-Selected GPOS kerning takes precedence over legacy kern, including zero
-adjustments. Superseded legacy contents are not parsed; all SFNT table ranges
-remain validated. Required legacy kerning retains its single horizontal format-0
-subtable boundary. The [precedence document](../tests/Research/kerning-precedence/README.md)
-retains independent metrics and frozen Windows/Linux pixels.
+Ordinary shaped text preserves fractional offsets when scaled and rounds paint
+origins after absolute span resets. Text paths and fitted-spacing text use their
+own character-metric rules. Fitting/coverage matches platform-specific numerical
+rules; the exact embedded family `Courier New` enables its Windows one-cell span
+policy, which a catalog alias to another program cannot enable. See
+[font rasterization](RASTERIZATION_DESIGN.md#supplied-fonts) for internal invariants
+and [font qualification](../tests/README.md#qualification) for evidence.
 
-Type-2 pair lookups admit RIGHT_TO_LEFT (irrelevant to that lookup type),
-IgnoreBaseGlyphs and IgnoreLigatures with bounded GDEF classes. Each lookup
-filters starting glyphs and finds its own next eligible partner within a
-font/size/absolute-position chunk. IgnoreMarks, mark attachment classes and
-format-1 mark-filtering sets admit supported non-mark label runs with validated
-GDEF metadata; actual mark positioning remains unsupported. Reserved flags,
-invalid classes, set indices and table ranges fail explicitly. The
-[lookup-filter document](../tests/Research/kerning-flags/README.md) retains
-independent glyph/advance evidence and exact Windows/Linux outputs.
-
-The [static TrueType compatibility controls](../tests/Research/static-truetype-fonts/README.md)
-also cover Liberation Sans Regular 2.1.5 and DejaVu Sans 2.37, including composites,
-kerning/ligatures and Windows hinting. Font acquisition and fallback remain explicit;
-these controls retain the same font-format and shaping boundaries.
-
-The bounded hint interpreter includes stack/dual projection vectors, physical
-super-rounding, line intersections, projected coordinate and relative moves, signed MIN/MAX,
-ODD/EVEN predicates and curve-tag range changes. Fitting preserves the native
-Windows/Linux rounding distinctions and simple/composite outline tags. Other
-executed instructions outside the supported subset fail explicitly.
-Windows MIRP/MSIRP retain native horizontal cut-in, including coincident-point
-placement; composite CVT writes retain their operand units. Windows also retains
-native curve-tag changes and the documented VacuFormRound function-zero switch.
-Natural LCD dropout selection retains nearest-row lower bounds, observes earlier
-surviving spans and rounds monotonic conic endpoints before LCD expansion.
-Excluded stubs cannot suppress later strokes; turning arcs retain their distinct
-subdivision behavior. Restored candidates observe the same ordered neighbors,
-and reduced conic equations stay within their terminal bounds.
-Original native controls cover these cases.
-At fractional horizontal glyph-grid endpoints, natural conic smart midpoints
-retain implied half-unit ordinates through direction-normalized subdivision
-before six-bit profile emission. Scan ordinates stay six-bit; on-grid curves
-retain their span profile for midpoint selection. Fill, span ownership and stub
-continuation retain separate crossings.
-Natural line smart midpoints round crossings to 1/64 sampling cells independently
-of the analytical crossings used for span ownership and stub continuation.
-[Line controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.NaturalLines.cs)
-cover distinct slopes, reversed contours and signed origins.
-[Native ordinate controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.NaturalOrdinates.cs)
-cover half-unit curves, adjacent phases, signed origins, both stub policies and
-ordinary line-span ownership.
-[Interpolation controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.NaturalInterpolation.cs)
-cover monotonic bands, an on-grid guard and turning rings at both retained
-strike phases.
-Symmetric smart dropout control retains corners supported by both scan
-directions and terminating vertices from either directed limit of a full scan;
-half-scan continuation owns exact gap-endpoint vertices. Original
-[corner controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.SymmetricCorners.cs)
-also protect nearby phases, excluded upright/bar stubs and disabled dropouts.
-[Stub controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.SymmetricStubs.cs)
-distinguish full-scan vertices from half-scan overshoot. Positive-height glyphs
-whose rounded height collapses retain their exclusive bottom bound;
-[thin-glyph controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.SymmetricBounds.cs)
-protect the selected row and filter weight, including negative origins.
-Straight-edge smart midpoint selection rounds symmetric crossings to 1/64
-sampling cells before averaging. [Native midpoint controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.SmartMidpoints.cs)
-cover both scan directions, signed positions and rounding counterexamples.
-Conic dropout selection retains bounded six-bit profiles with normalized scan
-direction separately from ordinary fill; [native conic controls](../tests/Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.SymmetricConics.cs)
-cover implied-point caps, curved stems/tips, nearby phases and signed positions.
-Fitted initial points and control values retain Windows floating-point scale
-precision and signed half-unit rounding, as do axial original distances and
-font-unit control writes. [Original native controls](../tests/Research/windows-font-unit-scaling/README.md)
-cover fractional strikes, signed halves and identity composites.
-Latin light fitting keeps nearby edges distinct according to the measured
-standard stem width, with a quarter-pixel maximum merging allowance.
-Mapped Latin non-base glyphs retain scale adjustment and stem fitting but skip
-alignment-zone matches. Classification follows glyph identity through cmap aliases
-and composites; it does not enable mark shaping.
-Pending edges constrain fitted stems unless the bound would collapse the stem
-to a quarter pixel or less; unlinked serifs retain their original relative offsets.
-Instruction-free static programs retain their metric origins and native masks,
-including simple Windows tip dropout control distinct from smart dropout control.
-Windows selects natural or symmetric LCD sampling from the supplied font's
-bounded gasp recommendations and actual raster size. Natural sampling retains
-native fixed-point curve/dropout decisions, including excluded stubs and exact
-terminating vertices. Rounded glyph bounds preserve thin strokes; line dropout
-crossings round independently of analytical span and stub crossings.
-Natural first-pass corners remain eligible when both scans select the same cell.
-Half-scan overshoot must reach the selected cell center;
-neighboring full scans retain exact vertex continuation, with the symmetric
-opposite-limit endpoint rule kept distinct.
-Authored simple dropout modes remain distinct from smart modes and preserve
-scan-control bounds and component state. The
-[original span document](../tests/Research/windows-font-span-extension/README.md)
-qualifies the Windows one-cell span extension for the exact embedded family
-`Courier New`. A catalog alias to another program does not enable that policy.
-Font-selected unfitted Windows ranges retain integer-size
-flags, signed point rounding and inherited metric origins; component assembly
-precedes final device rounding. Material scanner controls still use the bounded
-interpreter while the painted outline keeps its ideal positions. Programs without
-scanner effects remain unnecessary in unfitted ranges; ranges requiring fitting
-execute the bounded interpreter. Windows/Linux numerical rules remain separate.
-
-Unsupported: wrapping, bidi/joining/complex scripts, general GSUB/GPOS/mark
-positioning, other lookup flags/types/formats, vertical text, path stretch/auto
-spacing, variable/color/bitmap fonts, CFF/CFF2 and WOFF/WOFF2.
+Unsupported: wrapping, vertical text, language-specific/general GSUB/GPOS, other
+lookup flags/types/formats, path stretch/auto spacing, variable/color/bitmap fonts,
+CFF/CFF2 and WOFF/WOFF2.
 
 ## Resource limits and memory accounting
 
@@ -365,22 +261,6 @@ adversarial checks cover limits, cancellation/retry, cleanup and output integrit
 
 ## Qualification
 
-The renderer is qualified on Windows and Linux against frozen platform-specific
-Chrome references, using the [26-document upstream collection](../tests/Research/upstream-static-documents/README.md)
-and [focused geometry/paint regressions](../tests/Research/native-path-replay/manifest.json).
-Comparison requires exact decoded RGBA8, ignoring RGB only where both pixels have
-zero alpha. These cases establish their declared outputs, not general SVG coverage.
-[INVENTORY](INVENTORY.md) indexes retained evidence.
-
-Current [Windows/Linux CI](https://github.com/Lokad/Svg/actions/runs/39030907217)
-passes for renderer revision `397c8ea2`, including 8,121 tests per platform,
-package/notices, installed consumers and resource/font-host checks. See
-[BENCHMARKS](BENCHMARKS.md) for current measurements and
-[RASTERIZATION_DESIGN](RASTERIZATION_DESIGN.md) for implementation details.
-
-[Public font qualification](../tests/Research/public-font-qualification/README.md)
-covers regular, bold, real italic and intentional fallback end to end, including
-acquisition, intended-face selection, independent metrics and exact Windows/Linux
-rendering. Standalone qualification is complete. The four private deployed-manifest
-requests remain pending before production adoption; public success makes no claim
-of compatibility with that deployment. Builds and CI need no private configuration.
+[Tests and provenance](../tests/README.md#qualification) defines platform reference
+coverage and the remaining private deployment gate. [Benchmarks](BENCHMARKS.md)
+records dated performance measurements.

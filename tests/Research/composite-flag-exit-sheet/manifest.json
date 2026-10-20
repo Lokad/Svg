@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See tests/README.md#retired-collections.",
   "fontPack": "font-pack.json",
   "fontPackId": "public-composite-flags",
   "fontProgram": "fonts/CompositeFlags.ttf",

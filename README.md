@@ -30,10 +30,10 @@ Memory accounting follows the [approximate resource policy](docs/SUPPORT_MATRIX.
 
 Qualification covers the [26 upstream documents](tests/Research/upstream-static-documents/README.md)
 and focused regressions against frozen Windows/Linux references, plus
-[package and installed-consumer checks](https://github.com/Lokad/Svg/actions/workflows/ci.yml).
+[package and installed-consumer checks](.github/workflows/ci.yml).
 These results establish the declared outputs, not general SVG completeness.
-Public regular, bold, real italic and fallback fonts are qualified; four private
-deployed-manifest requests remain pending before production adoption.
+See [qualification](tests/README.md#qualification) for font evidence and the
+remaining private deployment gate.
 
 ## Development
 
@@ -59,7 +59,8 @@ dotnet run -c Release --project benchmarks/Lokad.Svg.Benchmarks
 
 [BENCHMARKS](docs/BENCHMARKS.md) records measured results and reproduction conditions.
 [RASTERIZATION_DESIGN](docs/RASTERIZATION_DESIGN.md) explains the renderer;
-[INVENTORY](docs/INVENTORY.md) describes the retained regression collection.
+[Tests and provenance](tests/README.md) describes regression collections and admission.
+The [documentation index](docs/README.md) maps the remaining guides.
 
 ## Diagnostic tools
 
@@ -79,6 +80,6 @@ dotnet run -c Release --project tools/Lokad.Svg.MemoryProbe -- tests/Fixtures/or
 
 [FontProbe](tools/Lokad.Svg.FontProbe/README.md) documents explicit local/HTTP font
 sources. Endpoints, credentials, caches and transport remain host-owned; ordinary
-builds and CI require no private configuration. [Oracle tooling](docs/ORACLE.md)
-and [visual comparison](docs/VISUAL_COMPARISON.md) describe reference capture and
-pixel diagnostics. Keep local diagnostic output under the ignored `artifacts/` tree.
+builds and CI require no private configuration. The [tools guide](tools/README.md)
+documents reference capture, research probes and pixel comparison. Keep generated
+diagnostic output under the ignored `artifacts/` tree.

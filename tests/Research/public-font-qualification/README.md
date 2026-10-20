@@ -21,12 +21,10 @@ This bank adds one focused control, no corpus document or API-combination quota.
 Font-format/shaping limits and library ownership/resource contracts remain unchanged.
 T3-public qualifies standalone use; the original four T3-private deployed-manifest
 requests remain pending before production adoption. Public success makes no claim
-of compatibility with that deployment. The [support contract](../../../docs/SUPPORT_MATRIX.md#qualification)
-records both gates.
+of compatibility with that deployment. The [test guide](../../README.md#qualification) records both gates.
 
 All four end-to-end requests pass on Windows/Linux, including exact italic pixels.
 No production renderer correction, manifest conversion or package dependency was
-needed. Final [S17 CI](https://github.com/Lokad/Svg/actions/runs/38941225820) is terminal green
-for substantive revision `a3346605`: **8,137 tests/platform**, including all four
-requests and package/installed-consumer checks. Standalone qualification is complete;
-private production-adoption validation remains pending.
+needed. [CI](../../../.github/workflows/ci.yml) runs these requests and
+package/installed-consumer checks. Private production-adoption validation remains
+pending.

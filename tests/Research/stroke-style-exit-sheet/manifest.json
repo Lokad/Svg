@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See docs/INVENTORY.md.",
+  "purpose": "Focused behavior regressions after F1 full-document replacement. Font-contract fixtures, where present, serve existing intended-font/provenance checks and are excluded from full-document enumeration. See tests/README.md#retired-collections.",
   "declarationBaseRevision": "816db741f329104e5976f99f9cfb6010ae1a6ed8",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",

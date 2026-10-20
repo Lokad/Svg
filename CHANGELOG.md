@@ -78,7 +78,7 @@
 ## 0.2.0 - 2026-10-18
 
 Published on [NuGet.org](https://www.nuget.org/packages/Lokad.Svg/0.2.0).
-Source: [`v0.2.0`](https://github.com/Lokad/Svg/tree/v0.2.0).
+Source tag: `v0.2.0`.
 
 - Add `SvgConverter.InspectDimensions` to inspect CSS-resolved root dimensions,
   viewBox/aspect mapping, logical viewport and fallback provenance without fonts
@@ -103,7 +103,7 @@ Source: [`v0.2.0`](https://github.com/Lokad/Svg/tree/v0.2.0).
 ## 0.1.0 - 2026-10-17
 
 Published on [NuGet.org](https://www.nuget.org/packages/Lokad.Svg/0.1.0).
-Source: [`v0.1.0`](https://github.com/Lokad/Svg/tree/v0.1.0).
+Source tag: `v0.1.0`.
 
 Initial release of the managed SVG-to-PNG renderer for .NET 10 on Windows and
 Linux, with no runtime package dependencies.

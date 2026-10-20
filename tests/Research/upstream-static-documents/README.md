@@ -3,8 +3,8 @@
 This finite selection is frozen before fresh renderer comparisons. It replaces
 full logo/export/icon/authored-sheet membership after qualification and coverage
 disposition; existing micro-tests, known-bug, API/resource and font-host contracts
-stay. All selected outputs are exact on both platforms; fixture retirement and
-[finished-batch qualification](https://github.com/Lokad/Svg/actions/runs/38986391708) are complete.
+stay. All selected outputs are exact on both platforms. The
+[test guide](../../README.md) defines admission and qualification.
 
 The [manifest](manifest.json) records 26 unchanged documents, original hashes,
 pinned upstream identity/license, feature purpose, one viewport/scale/background
@@ -73,22 +73,11 @@ cleanup and identical triples. Intended text differs from absent-font controls
 on both platforms; real italic also differs from regular-font substitution.
 Their references, hashes and provenance are retained in the manifest.
 
-The ignored [selection study](../../../artifacts/full-fixture-replacement-20261017/)
-retains upstream inventories and candidate review. [The inventory](../../../docs/INVENTORY.md)
-records acceptance and completed qualification. The selection declaration records
-corpus provenance; finished renderer qualification is linked below.
+## Verification
 
-Current targeted results are **26/26 exact on Windows/Linux**.
-[Composed-effect qualification](../../../artifacts/full-fixture-replacement-20261017/effect-order-qualified-results.json)
-records the final unchanged output, six focused effect-order regressions and
-523 core / 1,963 visual-resource checks per platform.
-[The inventory](../../../docs/INVENTORY.md#f1-retirement-dispositions-2026-10-17) records completed fixture
-retirement and final verification.
-
-[Rectangle source qualification](../../../artifacts/full-fixture-replacement-20261017/rectangle-source-qualified-results.json)
-and [rounded clip/viewport/PNG qualification](../../../artifacts/full-fixture-replacement-20261017/composition-qualified-results.json)
-record the corrections, promoted unchanged group-use regression, source/glyph
-controls and material denial/cancellation/cleanup/retry. The latter covers 414
-core checks per platform and the linked Windows groups / coherent 761-case Linux
-visual-resource run. Initial failure records stay in the ignored study; historical
-counts do not override the finished qualification.
+The [manifest](manifest.json) declares expected outcomes, original input/font
+hashes and platform references. [SvgUpstreamDocumentTests](../../Lokad.Svg.VisualTests/SvgUpstreamDocumentTests.cs)
+verifies those contracts and exact rendering. All 26 declared outputs are exact
+on Windows/Linux; focused effect/viewport/PNG/rectangle controls retain diagnosed
+behavior independently. See [retired collections](../../README.md#retired-collections)
+for the replacement of earlier full-document sweeps.

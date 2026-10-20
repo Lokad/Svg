@@ -1,0 +1,76 @@
+# Tests and provenance
+
+Run the offline suite from the repository root:
+
+```powershell
+dotnet restore --locked-mode
+dotnet build -c Release --no-restore
+dotnet test -c Release --no-build
+```
+
+Use `--filter FullyQualifiedName~TestClassName` on a test project for focused
+checks. The [CI workflow](../.github/workflows/ci.yml) runs Windows/Linux tests,
+browser/resource/font-host smoke checks and package/installed-consumer checks.
+[Developer tools](../tools/README.md) documents capture and research procedures.
+
+## Collections
+
+| Collection | Role and source of truth |
+| --- | --- |
+| [Upstream static documents](Research/upstream-static-documents/README.md) | 26 documents selected by feature from pinned upstream inventories, each with one recipe, supplied fonts where needed and separate Windows/Linux references. |
+| [Original fixtures](Fixtures/manifest.json) | Small CC0 regressions with independent semantic-support and fidelity statuses; oracle metadata under `References/`. |
+| [Research probes](Research/manifest.json) | Categorized rejections or measured renders, including known differences. A reference alone does not imply support. |
+| Focused banks under [Research/](Research/README.md) | Feature-specific manifests/READMEs, including [native paths](Research/native-path-replay/manifest.json), [bounded sizing](Research/bounded-raster-sizing/README.md) and [static TrueType](Research/static-truetype-fonts/README.md). |
+| [Core tests](Lokad.Svg.Tests/) and [visual tests](Lokad.Svg.VisualTests/) | Geometry, numerical, API, ownership, resource and rendering contracts. |
+| [Font-host tests](Lokad.Svg.FontProbe.Tests/) | Explicit font acquisition and host integration. |
+
+Manifests own asset identities, options and expected outcomes. Offline tests use
+committed assets without downloads, private configuration or `external/`. Focused
+banks complement whole documents; document totals and exhaustive combination
+quotas are not completion criteria.
+
+## Fixture admission
+
+1. Declare a stable ID, source/revision, creator, license and rights evidence,
+   dimensions, feature purpose, viewport/scale/background and required font programs
+   before screening renderer output. Keep original bytes and notices.
+2. Compute lowercase SHA-256 hashes from actual files. In the original fixture
+   catalog, `originalSha256` preserves bytes before the CC0 SPDX header was added;
+   `materializedSha256` identifies the rendered asset. Declare capture-only root
+   sizing/font bindings separately, preserving the original drawing and requested
+   font identity. Keep original and materialized identities distinct.
+3. Follow the [capture rules](../tools/README.md#capture-and-reference-rules).
+   Retain input/resource/reference hashes, platform browser pin, recipe revision
+   and capture options in the collection's manifest/reference metadata.
+4. Require a reviewed reference and an [exact independent comparison](../tools/README.md#pixel-comparison)
+   before declaring fidelity `exact`. Unsupported entries retain their reason and
+   provenance and stay outside exact comparison until admitted.
+
+[FixtureManifestTests](Lokad.Svg.VisualTests/FixtureManifestTests.cs) audits and
+renders every exact fixture. Research and feature-bank tests enforce their own
+schemas/outcomes. Do not rewrite paths/text, add tolerance or replace references
+to accommodate the candidate. A changed capture contract needs separate
+qualification while preserving the old provenance.
+
+## Qualification
+
+Windows and Linux use separate frozen Chrome references. Passing cases establish
+the declared outputs, not general SVG completeness. Assess qualification through
+the committed manifests/tests and CI results for the relevant revision; historical
+test totals are not ongoing gates.
+
+[Public font qualification](Research/public-font-qualification/README.md) covers
+regular, bold, real italic and intentional fallback: acquisition, intended-face
+selection, independent metrics and exact platform rendering. Standalone
+qualification is complete. Four private deployed-manifest requests remain pending
+before production adoption; public success makes no claim about that deployment.
+
+## Retired collections
+
+The upstream selection replaced full logo/export/icon/authored-sheet membership.
+Old document-count and percentage gates are retired. Local manifests identify
+surviving focused cases; assets needed for font provenance, API/resource contracts,
+benchmarks or [opt-in cohort measurement](../tools/README.md#historical-corporate-cohort)
+remain under those contracts without counting as active full documents.
+`CorporateCohortReferenceTests` retains the intended-size `inv-027` cubic-routing
+regression and its native-picture evidence.

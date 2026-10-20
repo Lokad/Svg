@@ -55,5 +55,5 @@ Pop-Location
 
 For cold observations, build `tools/Lokad.Svg.MemoryProbe` in Release and run its
 DLL in three fresh processes per linked input, using the command in [README](../README.md#diagnostic-tools).
-Keep compilation outside measurement. Raw reports for this run remain under
-[the ignored results directory](../artifacts/public-gap-corrections-20261017/benchmarks/).
+Keep compilation outside measurement. The command above generates local JSON
+reports; the tables here retain the measured results.

@@ -6,10 +6,8 @@ software renderer within the [supported subset](SUPPORT_MATRIX.md#supported-svg-
 Native numerical behavior is reproduced by managed kernels; no browser, native
 rasterizer or machine-font service participates in conversion.
 
-This document describes the current architecture. Detailed experiments and
-superseded checkpoints remain in [Git history](https://github.com/Lokad/Svg/blob/48da1627/docs/RASTERIZATION_DESIGN.md).
-[INVENTORY](INVENTORY.md) records regression coverage and [BENCHMARKS](BENCHMARKS.md)
-records measurements.
+The [support matrix](SUPPORT_MATRIX.md) owns public boundaries;
+[tests](../tests/README.md) and [benchmarks](BENCHMARKS.md) own validation and measurements.
 
 ## Pipeline and ownership
 
@@ -97,9 +95,8 @@ through an owned mask scene. Mask children composite in source order before
 alpha/luminance conversion. Retained clips/masks bind in the final scene owner,
 including nested instances and pattern content.
 
-For one element, composition follows **filter → mask → clip → opacity**. A child
-clip remains inside an ancestor's effect. Group opacity isolates the composed
-children instead of multiplying each child independently.
+Effects obey the [composition contract](SUPPORT_MATRIX.md#clips-masks-and-composition).
+Isolation and restoration must apply each clip/opacity once.
 
 [Filter playback](../src/Lokad.Svg/Rendering/SvgFilterPlayback.cs) retains primitive
 regions, result dependencies, operating color spaces and source-bitmap placement.
@@ -112,37 +109,27 @@ clips enclose group isolation, applying coverage once when opacity restores.
 
 ## Supplied fonts
 
-The host supplies manifest/catalog/provider inputs and owns acquisition, retry,
-caching, credentials and transport. Rendering consumes verified immutable font
-bytes; it does not invoke resource acquisition implicitly.
+Rendering consumes verified immutable font bytes supplied by the host. Shared
+bounded layout preserves text/span order, metrics, positioning, admitted shaping
+and paint. Composite replay retains component placement and metric origins.
+Windows uses matched TrueType/LCD coverage and preblend; Linux uses matched Latin
+light fitting and grayscale coverage. Exact references are platform-specific.
 
-Shared bounded layout retains text/tspan order, positioning, metrics, admitted
-kerning/ligatures, text paths and paint. Outline replay preserves composite
-component placement and metric selection. Windows uses its matched TrueType/LCD
-coverage and preblend rules; Linux uses its matched light fitting and grayscale
-rules. The bounded TrueType interpreter keeps projection and freedom separate;
-the Windows target uses ClearType's hint grid for projections with a horizontal
-component while preparation still rounds on the physical grid. Simple and
-composite fitting share metric initialization; subpixel-positioned hints retain
-the linear advance. Windows font-unit conversion retains float scale precision
-before coordinate rounding; other targets retain their fixed-point scales.
-Windows conic fill preserves control-midpoint rounding through turning arcs.
-Natural smart dropout profiles recover rounded grid points where span rounding
-loses precision, preserving integral-point and fractional-endpoint profiles
-separately from ordinary fill and span/stub eligibility.
-Fractional and integral monotonic scans share bounded parameter precision before
-smart ordinate emission; integral scans with flat crossing tangents retain their
-authored profile. Turning scans, flat scan tangents and controls above both
-endpoints retain their existing profiles. Precision work stays bounded and cancellable.
-Natural legacy spans restore existing dropout candidates on either contour
-direction; ordinary borders retain directed ownership.
-Integral turning profiles and flat scan tangents normalize descending intervals.
-Whole-grid parameter intervals bound scan and crossing spread; fractional
-endpoints retain six-bit parameter precision. Flat minima round their weighted
-crossing midpoint separately from their control midpoints. These profiles share
-the bounded scan while preserving distinct native rounding.
-Exact references are platform-specific. See the [font support boundary](SUPPORT_MATRIX.md#text-and-fonts)
-and [public qualification](../tests/Research/public-font-qualification/README.md).
+The bounded interpreter keeps projection/freedom vectors and physical/hint grids
+separate. Windows font-unit conversion retains floating-point scale precision
+before signed rounding; other targets retain their fixed-point scales. Font-selected
+unfitted ranges retain scanner effects without painting fitted point movements.
+Linux light fitting retains standard-stem edge separation, non-base classification,
+pending-edge collapse bounds and relative serif offsets.
+
+Windows natural/symmetric LCD modes follow bounded gasp data at actual raster
+size. Ordinary fill, smart dropout profiles, span ownership and stub continuation
+keep distinct crossing/rounding rules. Preserve implied half-unit points, six-bit
+profiles, scan direction, turning/flat-tangent subdivisions and full/half-scan
+endpoint ownership. Rounding bounds must preserve thin strokes. Do not combine
+these numerical stages merely because their continuous geometry is equivalent.
+The `SvgGlyphLcdCoverageTests.*` controls in [core tests](../tests/Lokad.Svg.Tests/)
+protect these distinctions; feature-specific font manifests retain native evidence.
 
 ## Limits and cancellation
 
@@ -159,15 +146,8 @@ failure must preserve cleanup, borrowed-storage validity and output contracts.
 
 ## Maintaining fidelity
 
-Use unchanged SVG/options/fonts and frozen platform references to diagnose a
-mismatch. Reduce it to an independent control, correct the shared mechanism and
-preserve established exact results. [Oracle capture](ORACLE.md) and
-[pixel comparison](VISUAL_COMPARISON.md) define the evidence: decoded RGBA8 must
-match exactly, ignoring RGB only where both pixels have zero alpha. Tolerance or
-candidate-driven reference replacement does not close an admitted failure.
-
-Run targeted checks during correction and full qualification at meaningful
-checkpoints. Keep visual cases, representative API checks and resource regressions
-independent. Update this design only for lasting architectural changes; keep
-chronological experiment logs in local study artifacts and change descriptions.
-Adapted algorithms retain their source notices and [third-party notices](../THIRD_PARTY_NOTICES.txt).
+Use unchanged SVG/options/fonts and frozen platform references. Reduce a mismatch
+to an independent control, correct the shared mechanism and preserve established
+exact results. [Research and comparison procedures](../tools/README.md#research-probes)
+define the workflow. Keep experiment logs out of this architectural guide.
+Adapted algorithms retain source notices and [third-party notices](../THIRD_PARTY_NOTICES.txt).
