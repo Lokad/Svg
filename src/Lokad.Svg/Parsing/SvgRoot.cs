@@ -48,6 +48,12 @@ internal readonly record struct SvgAxisAlignedLine(double X1, double Y1, double 
 
 internal enum SvgGeometryKind { Invalid, Rectangle, AxisAlignedLine, OrthogonalBand, GlyphContours, PatternFill, GradientFill, GradientStroke, PolygonFill, RadialGradient, GradientPolygon, RadialPolygon, PatternPolygon, EmbeddedImage }
 
+/// <summary>Owns the reference payload of one tagged scene geometry.</summary>
+/// <remarks>Implementors retain their contour/paint/resource storage until scene disposal.
+/// Borrowers must finish first; disposal must release owned reservations idempotently.
+/// Construction, mutation and disposal belong to the conversion thread.</remarks>
+internal interface ISvgGeometryContent : IDisposable { }
+
 /// <summary>Represents retained scene geometry independently from its raster fast path.</summary>
 internal readonly struct SvgGeometry
 {
@@ -61,207 +67,29 @@ internal readonly struct SvgGeometry
     private readonly SvgGeometryKind _kind;
     private readonly SvgRectangle _rectangle;
     private readonly SvgAxisAlignedLine _axisAlignedLine;
-    private readonly SvgGlyphGeometry? _glyph;
-    private readonly SvgPatternGeometry? _pattern;
-    private readonly SvgGradientGeometry? _gradient;
-    private readonly SvgGradientStrokeGeometry? _gradientStroke;
-    private readonly SvgRadialGeometry? _radial;
-    private readonly SvgPolygonFill? _polygon;
-    private readonly SvgGradientPolygon? _gradientPolygon;
-    private readonly SvgRadialPolygon? _radialPolygon;
-    private readonly SvgPatternPolygon? _patternPolygon;
-    private readonly SvgImageGeometry? _image;
-
-    private SvgGeometry(SvgImageGeometry image)
-    {
-        _kind = SvgGeometryKind.EmbeddedImage;
-        _image = image;
-    }
+    private readonly ISvgGeometryContent? _content;
 
     private SvgGeometry(SvgGeometryKind kind, SvgRectangle rectangle)
     {
         _kind = kind;
         _rectangle = rectangle;
-        _axisAlignedLine = default;
-        _glyph = null;
-        _pattern = null;
-        _gradient = null;
-        _gradientStroke = null;
-        _radial = null;
-        _polygon = null;
-        _gradientPolygon = null;
-        _radialPolygon = null;
-        _patternPolygon = null;
     }
 
     private SvgGeometry(SvgAxisAlignedLine axisAlignedLine)
     {
         _kind = SvgGeometryKind.AxisAlignedLine;
-        _rectangle = default;
         _axisAlignedLine = axisAlignedLine;
-        _glyph = null;
-        _pattern = null;
-        _gradient = null;
-        _gradientStroke = null;
-        _radial = null;
-        _polygon = null;
-        _gradientPolygon = null;
-        _radialPolygon = null;
-        _patternPolygon = null;
     }
 
-    private SvgGeometry(SvgGlyphGeometry glyph)
+    private SvgGeometry(SvgGeometryKind kind, ISvgGeometryContent content)
     {
-        ArgumentNullException.ThrowIfNull(glyph);
-        _kind = SvgGeometryKind.GlyphContours;
-        _rectangle = default;
-        _axisAlignedLine = default;
-        _glyph = glyph;
-        _pattern = null;
-        _gradient = null;
-        _gradientStroke = null;
-        _radial = null;
-        _polygon = null;
-        _gradientPolygon = null;
-        _radialPolygon = null;
-        _patternPolygon = null;
+        ArgumentNullException.ThrowIfNull(content);
+        _kind = kind;
+        _content = content;
     }
 
-    private SvgGeometry(SvgPatternGeometry pattern)
-    {
-        ArgumentNullException.ThrowIfNull(pattern);
-        _kind = SvgGeometryKind.PatternFill;
-        _rectangle = default;
-        _axisAlignedLine = default;
-        _glyph = null;
-        _pattern = pattern;
-        _gradient = null;
-        _gradientStroke = null;
-        _radial = null;
-        _polygon = null;
-        _gradientPolygon = null;
-        _radialPolygon = null;
-        _patternPolygon = null;
-    }
-
-    private SvgGeometry(SvgGradientGeometry gradient)
-    {
-        ArgumentNullException.ThrowIfNull(gradient);
-        _kind = SvgGeometryKind.GradientFill;
-        _rectangle = default;
-        _axisAlignedLine = default;
-        _glyph = null;
-        _pattern = null;
-        _gradient = gradient;
-        _gradientStroke = null;
-        _radial = null;
-        _polygon = null;
-        _gradientPolygon = null;
-        _radialPolygon = null;
-        _patternPolygon = null;
-    }
-
-    private SvgGeometry(SvgGradientStrokeGeometry gradientStroke)
-    {
-        ArgumentNullException.ThrowIfNull(gradientStroke);
-        _kind = SvgGeometryKind.GradientStroke;
-        _rectangle = default;
-        _axisAlignedLine = default;
-        _glyph = null;
-        _pattern = null;
-        _gradient = null;
-        _gradientStroke = gradientStroke;
-        _polygon = null;
-        _gradientPolygon = null;
-        _radialPolygon = null;
-        _patternPolygon = null;
-    }
-
-    private SvgGeometry(SvgRadialGeometry radial)
-    {
-        ArgumentNullException.ThrowIfNull(radial);
-        _kind = SvgGeometryKind.RadialGradient;
-        _rectangle = default;
-        _axisAlignedLine = default;
-        _glyph = null;
-        _pattern = null;
-        _gradient = null;
-        _gradientStroke = null;
-        _radial = radial;
-        _polygon = null;
-        _gradientPolygon = null;
-        _radialPolygon = null;
-        _patternPolygon = null;
-    }
-
-    private SvgGeometry(SvgPolygonFill polygon)
-    {
-        ArgumentNullException.ThrowIfNull(polygon);
-        _kind = SvgGeometryKind.PolygonFill;
-        _rectangle = default;
-        _axisAlignedLine = default;
-        _glyph = null;
-        _pattern = null;
-        _gradient = null;
-        _gradientStroke = null;
-        _radial = null;
-        _polygon = polygon;
-        _gradientPolygon = null;
-        _radialPolygon = null;
-        _patternPolygon = null;
-    }
-
-    private SvgGeometry(SvgGradientPolygon polygon)
-    {
-        ArgumentNullException.ThrowIfNull(polygon);
-        _kind = SvgGeometryKind.GradientPolygon;
-        _rectangle = default;
-        _axisAlignedLine = default;
-        _glyph = null;
-        _pattern = null;
-        _gradient = null;
-        _gradientStroke = null;
-        _radial = null;
-        _polygon = null;
-        _gradientPolygon = polygon;
-        _radialPolygon = null;
-        _patternPolygon = null;
-    }
-
-    private SvgGeometry(SvgRadialPolygon polygon)
-    {
-        ArgumentNullException.ThrowIfNull(polygon);
-        _kind = SvgGeometryKind.RadialPolygon;
-        _rectangle = default;
-        _axisAlignedLine = default;
-        _glyph = null;
-        _pattern = null;
-        _gradient = null;
-        _gradientStroke = null;
-        _radial = null;
-        _polygon = null;
-        _gradientPolygon = null;
-        _radialPolygon = polygon;
-        _patternPolygon = null;
-    }
-
-    private SvgGeometry(SvgPatternPolygon polygon)
-    {
-        ArgumentNullException.ThrowIfNull(polygon);
-        _kind = SvgGeometryKind.PatternPolygon;
-        _rectangle = default;
-        _axisAlignedLine = default;
-        _glyph = null;
-        _pattern = null;
-        _gradient = null;
-        _gradientStroke = null;
-        _radial = null;
-        _polygon = null;
-        _gradientPolygon = null;
-        _radialPolygon = null;
-        _patternPolygon = null;
-        _patternPolygon = polygon;
-    }
+    private T GetContent<T>(SvgGeometryKind kind, string message) where T : class, ISvgGeometryContent
+        => _kind == kind && _content is T value ? value : throw new InvalidOperationException(message);
 
     internal SvgGeometryKind Kind => _kind;
 
@@ -296,93 +124,65 @@ internal readonly struct SvgGeometry
             : throw new InvalidOperationException("This SVG geometry does not contain an axis-aligned line.");
 
     internal SvgGlyphGeometry Glyph
-        => _kind == SvgGeometryKind.GlyphContours
-            ? _glyph ?? throw new InvalidOperationException("This SVG geometry does not contain glyph contours.")
-            : throw new InvalidOperationException("This SVG geometry does not contain glyph contours.");
+        => GetContent<SvgGlyphGeometry>(SvgGeometryKind.GlyphContours, "This SVG geometry does not contain glyph contours.");
 
     internal static SvgGeometry FromRectangle(SvgRectangle rectangle) => new(SvgGeometryKind.Rectangle, rectangle);
 
-    internal static SvgGeometry FromImage(SvgImageGeometry image) => new(image);
+    internal static SvgGeometry FromImage(SvgImageGeometry image) => new(SvgGeometryKind.EmbeddedImage, image);
 
-    internal SvgImageGeometry Image => _kind == SvgGeometryKind.EmbeddedImage
-        ? _image ?? throw new InvalidOperationException("This SVG geometry does not contain decoded image pixels.")
-        : throw new InvalidOperationException("This SVG geometry does not contain decoded image pixels.");
+    internal SvgImageGeometry Image
+        => GetContent<SvgImageGeometry>(SvgGeometryKind.EmbeddedImage, "This SVG geometry does not contain decoded image pixels.");
 
     internal static SvgGeometry FromAxisAlignedLine(SvgAxisAlignedLine line) => new(line);
 
     internal static SvgGeometry FromOrthogonalBand(SvgRectangle band) => new(SvgGeometryKind.OrthogonalBand, band);
 
-    internal static SvgGeometry FromGlyphContours(SvgGlyphGeometry glyph) => new(glyph);
+    internal static SvgGeometry FromGlyphContours(SvgGlyphGeometry glyph) => new(SvgGeometryKind.GlyphContours, glyph);
 
-    internal static SvgGeometry FromPatternFill(SvgPatternGeometry pattern) => new(pattern);
+    internal static SvgGeometry FromPatternFill(SvgPatternGeometry pattern) => new(SvgGeometryKind.PatternFill, pattern);
 
-    internal static SvgGeometry FromGradientFill(SvgGradientGeometry gradient) => new(gradient);
+    internal static SvgGeometry FromGradientFill(SvgGradientGeometry gradient) => new(SvgGeometryKind.GradientFill, gradient);
 
-    internal static SvgGeometry FromGradientStroke(SvgGradientStrokeGeometry gradientStroke) => new(gradientStroke);
+    internal static SvgGeometry FromGradientStroke(SvgGradientStrokeGeometry gradientStroke) => new(SvgGeometryKind.GradientStroke, gradientStroke);
 
-    internal static SvgGeometry FromRadialFill(SvgRadialGeometry radial) => new(radial);
+    internal static SvgGeometry FromRadialFill(SvgRadialGeometry radial) => new(SvgGeometryKind.RadialGradient, radial);
 
-    internal static SvgGeometry FromPolygonFill(SvgPolygonFill polygon) => new(polygon);
+    internal static SvgGeometry FromPolygonFill(SvgPolygonFill polygon) => new(SvgGeometryKind.PolygonFill, polygon);
 
-    internal static SvgGeometry FromGradientPolygon(SvgGradientPolygon polygon) => new(polygon);
+    internal static SvgGeometry FromGradientPolygon(SvgGradientPolygon polygon) => new(SvgGeometryKind.GradientPolygon, polygon);
 
-    internal static SvgGeometry FromRadialPolygon(SvgRadialPolygon polygon) => new(polygon);
+    internal static SvgGeometry FromRadialPolygon(SvgRadialPolygon polygon) => new(SvgGeometryKind.RadialPolygon, polygon);
 
-    internal static SvgGeometry FromPatternPolygon(SvgPatternPolygon polygon) => new(polygon);
+    internal static SvgGeometry FromPatternPolygon(SvgPatternPolygon polygon) => new(SvgGeometryKind.PatternPolygon, polygon);
 
     internal SvgGradientGeometry Gradient
-        => _kind == SvgGeometryKind.GradientFill
-            ? _gradient ?? throw new InvalidOperationException("This SVG geometry does not contain gradient stops.")
-            : throw new InvalidOperationException("This SVG geometry does not contain gradient stops.");
+        => GetContent<SvgGradientGeometry>(SvgGeometryKind.GradientFill, "This SVG geometry does not contain gradient stops.");
 
     internal SvgPatternGeometry Pattern
-        => _kind == SvgGeometryKind.PatternFill
-            ? _pattern ?? throw new InvalidOperationException("This SVG geometry does not contain pattern tile content.")
-            : throw new InvalidOperationException("This SVG geometry does not contain pattern tile content.");
+        => GetContent<SvgPatternGeometry>(SvgGeometryKind.PatternFill, "This SVG geometry does not contain pattern tile content.");
 
     internal SvgGradientStrokeGeometry GradientStroke
-        => _kind == SvgGeometryKind.GradientStroke
-            ? _gradientStroke ?? throw new InvalidOperationException("This SVG geometry does not contain gradient stroke bands.")
-            : throw new InvalidOperationException("This SVG geometry does not contain gradient stroke bands.");
+        => GetContent<SvgGradientStrokeGeometry>(SvgGeometryKind.GradientStroke, "This SVG geometry does not contain gradient stroke bands.");
 
     internal SvgRadialGeometry Radial
-        => _kind == SvgGeometryKind.RadialGradient
-            ? _radial ?? throw new InvalidOperationException("This SVG geometry does not contain radial stops.")
-            : throw new InvalidOperationException("This SVG geometry does not contain radial stops.");
+        => GetContent<SvgRadialGeometry>(SvgGeometryKind.RadialGradient, "This SVG geometry does not contain radial stops.");
 
     internal SvgPolygonFill Polygon
-        => _kind == SvgGeometryKind.PolygonFill
-            ? _polygon ?? throw new InvalidOperationException("This SVG geometry does not contain polygon contours.")
-            : throw new InvalidOperationException("This SVG geometry does not contain polygon contours.");
+        => GetContent<SvgPolygonFill>(SvgGeometryKind.PolygonFill, "This SVG geometry does not contain polygon contours.");
 
     internal SvgGradientPolygon GradientPolygon
-        => _kind == SvgGeometryKind.GradientPolygon
-            ? _gradientPolygon ?? throw new InvalidOperationException("This SVG geometry does not contain gradient polygon contours.")
-            : throw new InvalidOperationException("This SVG geometry does not contain gradient polygon contours.");
+        => GetContent<SvgGradientPolygon>(SvgGeometryKind.GradientPolygon, "This SVG geometry does not contain gradient polygon contours.");
 
     internal SvgRadialPolygon RadialPolygon
-        => _kind == SvgGeometryKind.RadialPolygon
-            ? _radialPolygon ?? throw new InvalidOperationException("This SVG geometry does not contain radial polygon contours.")
-            : throw new InvalidOperationException("This SVG geometry does not contain radial polygon contours.");
+        => GetContent<SvgRadialPolygon>(SvgGeometryKind.RadialPolygon, "This SVG geometry does not contain radial polygon contours.");
 
     internal SvgPatternPolygon PatternPolygon
-        => _kind == SvgGeometryKind.PatternPolygon
-            ? _patternPolygon ?? throw new InvalidOperationException("This SVG geometry does not contain pattern polygon contours.")
-            : throw new InvalidOperationException("This SVG geometry does not contain pattern polygon contours.");
+        => GetContent<SvgPatternPolygon>(SvgGeometryKind.PatternPolygon, "This SVG geometry does not contain pattern polygon contours.");
 
     internal void Dispose()
     {
-        if (_kind == SvgGeometryKind.EmbeddedImage) _image?.Dispose();
         AuthoredPath?.Dispose();
-        if (_kind == SvgGeometryKind.GlyphContours) _glyph?.Dispose();
-        if (_kind == SvgGeometryKind.PatternFill) _pattern?.Dispose();
-        if (_kind == SvgGeometryKind.GradientFill) _gradient?.Dispose();
-        if (_kind == SvgGeometryKind.GradientStroke) _gradientStroke?.Dispose();
-        if (_kind == SvgGeometryKind.PolygonFill) _polygon?.Dispose();
-        if (_kind == SvgGeometryKind.GradientPolygon) _gradientPolygon?.Dispose();
-        if (_kind == SvgGeometryKind.RadialPolygon) _radialPolygon?.Dispose();
-        if (_kind == SvgGeometryKind.PatternPolygon) _patternPolygon?.Dispose();
-        if (_kind == SvgGeometryKind.RadialGradient) _radial?.Dispose();
+        _content?.Dispose();
     }
 
     internal static SvgRectangle[] ToRectangles(ReadOnlySpan<SvgGeometry> geometries)
@@ -434,7 +234,7 @@ internal enum SvgPolygonMapping
 /// clip box stays in the same space and intersects raster bounds there. Scene storage covers all three arrays
 /// exactly; callers charge raster work per evaluated pixel, matching rectangle bands.</para>
 /// </remarks>
-internal sealed class SvgPolygonFill : IDisposable
+internal sealed class SvgPolygonFill : ISvgGeometryContent
 {
     private RenderBudget.BudgetReservation? _reservation;
 
@@ -528,7 +328,7 @@ internal sealed class SvgPolygonFill : IDisposable
 }
 
 /// <summary>Owns retained linear-gradient polygon contour arrays with their paint box and scene-memory reservation until the scene is disposed.</summary>
-internal sealed class SvgGradientPolygon : IDisposable
+internal sealed class SvgGradientPolygon : ISvgGeometryContent
 {
     private RenderBudget.BudgetReservation? _reservation;
 
@@ -638,7 +438,7 @@ internal sealed class SvgGradientPolygon : IDisposable
 }
 
 /// <summary>Owns retained radial-gradient polygon contour arrays with their paint box and scene-memory reservation until the scene is disposed.</summary>
-internal sealed class SvgRadialPolygon : IDisposable
+internal sealed class SvgRadialPolygon : ISvgGeometryContent
 {
     private RenderBudget.BudgetReservation? _reservation;
     private RenderBudget.BudgetReservation? _paintReservation;
@@ -758,7 +558,7 @@ internal sealed class SvgRadialPolygon : IDisposable
 }
 
 /// <summary>Owns retained pattern-tile polygon contour arrays with their integer tile grid and scene-memory reservation until the scene is disposed.</summary>
-internal sealed class SvgPatternPolygon : IDisposable
+internal sealed class SvgPatternPolygon : ISvgGeometryContent
 {
     private RenderBudget.BudgetReservation? _reservation;
 
@@ -899,7 +699,7 @@ internal sealed class SvgPatternPolygon : IDisposable
 }
 
 /// <summary>Owns retained glyph contour arrays and their scene-memory reservation until the scene is disposed.</summary>
-internal sealed class SvgGlyphGeometry : IDisposable
+internal sealed class SvgGlyphGeometry : ISvgGeometryContent
 {
     private RenderBudget.BudgetReservation? _reservation;
 
@@ -1009,7 +809,7 @@ internal sealed class SvgGlyphGeometry : IDisposable
 }
 
 /// <summary>Owns retained pattern tile content with its integer grid and fill region.</summary>
-internal sealed class SvgPatternGeometry : IDisposable
+internal sealed class SvgPatternGeometry : ISvgGeometryContent
 {
     internal SvgPatternGeometry(SvgRectangle Content, double OriginX, double OriginY, double TileWidth, double TileHeight, SvgRectangle Fill, byte Opacity, SvgStroke? Stroke)
     {
@@ -1078,7 +878,7 @@ internal sealed class SvgPatternGeometry : IDisposable
 }
 
 /// <summary>Owns retained linear-gradient stops with their bounding-box vector and fill region.</summary>
-internal sealed class SvgGradientGeometry : IDisposable
+internal sealed class SvgGradientGeometry : ISvgGeometryContent
 {
     internal SvgGradientGeometry(SvgLinearGradient Gradient, SvgRectangle Box, SvgRectangle Fill, byte Opacity, SvgStroke? Stroke)
     {
@@ -1111,7 +911,7 @@ internal sealed class SvgGradientGeometry : IDisposable
 }
 
 /// <summary>Owns retained radial paint-value storage with its circle and fill region; the scene separately reserves shared stops.</summary>
-internal sealed class SvgRadialGeometry : IDisposable
+internal sealed class SvgRadialGeometry : ISvgGeometryContent
 {
     private RenderBudget.BudgetReservation? _paintReservation;
 
@@ -1168,7 +968,7 @@ internal sealed class SvgRadialGeometry : IDisposable
 }
 
 /// <summary>Retains one solid fill with four gradient-evaluated stroke bands.</summary>
-internal sealed class SvgGradientStrokeGeometry : IDisposable
+internal sealed class SvgGradientStrokeGeometry : ISvgGeometryContent
 {
     internal SvgGradientStrokeGeometry(SvgRectangle Fill, SvgRectangle Top, SvgRectangle Bottom, SvgRectangle Left, SvgRectangle Right, SvgLinearGradient Gradient, SvgRectangle Box, byte Opacity, bool HasStroke)
     {

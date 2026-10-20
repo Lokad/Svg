@@ -6,7 +6,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Owns decoded image pixels and retains their independent placement and paint maps.</summary>
 /// <remarks>The scene is the sole owner. Raster operations borrow immutable pixels;
 /// a clipped successor transfers ownership during single-threaded preparation.</remarks>
-internal sealed class SvgImageGeometry : IDisposable
+internal sealed class SvgImageGeometry : ISvgGeometryContent
 {
     private DecodedPngRaster? _raster;
 
