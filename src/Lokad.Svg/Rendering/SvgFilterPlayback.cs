@@ -261,7 +261,6 @@ internal static class SvgFilterPlayback
 
     }
 
-    private enum CropRounding { PixelCenter, Outward }
     internal static SvgFilterResult Apply(ReadOnlySpan<byte> source, int width, int height,
         SvgFilterResource resource, SvgFilterDeviceMap map, RenderBudget budget, long availableWork, CancellationToken token)
     {
@@ -356,7 +355,7 @@ internal static class SvgFilterPlayback
                         work += SvgGaussianBlur.ApplyRescaled(input, output, width, height, deviation, inputBounds, regions[index], placement,
                             inputLinear, colorSpace, index == finalIndex && colorSpace == SvgFilterColorSpace.LinearRgb ? AllocateSamples() : Span<SvgShaderPaint>.Empty,
                             budget, availableWork - work, token);
-                        if (map.Regions is not null && deferredImage is null) Clip(output, regions[index], CropRounding.Outward);
+                        if (map.Regions is not null && deferredImage is null) Clip(output, regions[index]);
                         continue;
                     }
                     // A CPU kernel consumes stored working-space pixels; shader
@@ -388,7 +387,7 @@ internal static class SvgFilterPlayback
                                 ConvertColor(input, converted.Pixels, SvgFilterColorSpace.LinearRgb);
                                 work += SvgGaussianBlur.Apply(converted.Pixels, output, width, height, deviation, budget, availableWork - work, token);
                                 linear[index] = true;
-                                if (map.Regions is not null && deferredImage is null) Clip(output, regions[index], CropRounding.Outward);
+                                if (map.Regions is not null && deferredImage is null) Clip(output, regions[index]);
                                 continue;
                             }
                             linear[index] = true;
@@ -483,7 +482,7 @@ internal static class SvgFilterPlayback
                         Charge(bytes);
                         ReadInput(merged, index, graphic).CopyTo(output);
                         linear[index] = merged.Index >= 0 && linear[merged.Index];
-                        if (map.Regions is not null && deferredImage is null) Clip(output, regions[index], CropRounding.Outward);
+                        if (map.Regions is not null && deferredImage is null) Clip(output, regions[index]);
                         continue;
                     }
                     bool destinationLinear = colorSpace == SvgFilterColorSpace.LinearRgb;
@@ -540,7 +539,7 @@ internal static class SvgFilterPlayback
                     linear[index] = destinationLinear;
                 }
                 else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filter primitive is not implemented.");
-                if (map.Regions is not null && deferredImage is null) Clip(output, regions[index], CropRounding.Outward);
+                if (map.Regions is not null && deferredImage is null) Clip(output, regions[index]);
             }
             if (count > 0 && linear[finalIndex])
             {
@@ -704,10 +703,10 @@ internal static class SvgFilterPlayback
         }
 
 
-        void Clip(Span<byte> pixels, SvgPaintBounds region, CropRounding rounding)
+        void Clip(Span<byte> pixels, SvgPaintBounds region)
         {
-            int left = Bound(region.Left, width, rounding, false), right = Bound(region.Right, width, rounding, true);
-            int top = Bound(region.Top, height, rounding, false), bottom = Bound(region.Bottom, height, rounding, true);
+            int left = Bound(region.Left, width, false), right = Bound(region.Right, width, true);
+            int top = Bound(region.Top, height, false), bottom = Bound(region.Bottom, height, true);
             Charge(bytes);
             for (int row = 0; row < height; row++)
             {
@@ -716,9 +715,8 @@ internal static class SvgFilterPlayback
                 if (row < top || row >= bottom || right <= left) scan.Clear();
                 else { scan[..(left * 4)].Clear(); scan[(right * 4)..].Clear(); }
             }
-            static int Bound(float value, int maximum, CropRounding rounding, bool upper)
-                => value <= 0 ? 0 : value >= maximum ? maximum : rounding == CropRounding.PixelCenter
-                    ? (int)Math.Floor(value + .5) : upper ? (int)Math.Ceiling(value) : (int)Math.Floor(value);
+            static int Bound(float value, int maximum, bool upper)
+                => value <= 0 ? 0 : value >= maximum ? maximum : upper ? (int)Math.Ceiling(value) : (int)Math.Floor(value);
         }
 
         SvgConstantShaderPaint ShadowTint(SvgFilterPrimitive primitive, SvgFilterColorSpace colorSpace)

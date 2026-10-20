@@ -9,7 +9,7 @@ namespace Lokad.Svg.Parsing;
 /// All construction is parser-thread confined, budgeted, work charged and cancellation aware.</remarks>
 internal static class SvgRenderedGroupSourceParser
 {
-    internal static void BeginGroup(XmlReader reader, bool directChild, SvgRootAttributes root, SvgDocumentState state, SvgRenderLimits limits,
+    internal static void BeginGroup(XmlReader reader, SvgRootAttributes root, SvgDocumentState state, SvgRenderLimits limits,
         IReadOnlyDictionary<string, SvgColor> colors, ParserWorkCounter work, CancellationToken token)
     {
         string? id = reader.LocalName == "g" ? reader.GetAttribute("id") : null;
@@ -17,7 +17,7 @@ internal static class SvgRenderedGroupSourceParser
         if (id is not null && (state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _)
             || state.RenderedGroupDefinitions.TryGetValue(id, out _)))
             throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
-        SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, colors, work, token);
+        SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, colors, work, token);
         SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, work, token).ResolveOpacity(context.InheritedPresentation.ElementOpacity);
         SvgSymbolContent content;
         if (state.RenderedGroupContent is null)

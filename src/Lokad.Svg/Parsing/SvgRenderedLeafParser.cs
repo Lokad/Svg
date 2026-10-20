@@ -7,12 +7,12 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Routes supported rendered leaves through their bounded lowerers outside XML traversal.</summary>
 internal static class SvgRenderedLeafParser
 {
-    internal static bool TryParse(XmlReader reader, bool directChild, bool isEligible, SvgRootAttributes root, SvgDocumentState state, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static bool TryParse(XmlReader reader, bool isEligible, SvgRootAttributes root, SvgDocumentState state, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (!isEligible || reader.NamespaceURI != "http://www.w3.org/2000/svg") return false;
         if (state.DefinitionsDepth >= 0) return false;
         if (!ValidateLeafAttributes(reader, workCounter, cancellationToken)) return false;
-        SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken).PrepareStyle(reader);
+        SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken).PrepareStyle(reader);
 
         string? textId = reader.LocalName == "text" ? reader.GetAttribute("id") : null;
         if (reader.LocalName == "text" && (state.RenderedGroupContent is not null || textId is not null))

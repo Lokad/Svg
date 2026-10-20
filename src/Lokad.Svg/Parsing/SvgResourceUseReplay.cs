@@ -16,7 +16,7 @@ internal static class SvgResourceUseReplay
     internal static SvgResourceUse Retain(XmlReader reader, SvgRootAttributes root, SvgDocumentState state,
         IReadOnlyDictionary<string, SvgColor> colors, ParserWorkCounter work, CancellationToken token)
     {
-        SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, colors, work, token);
+        SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, colors, work, token);
         return Retain(reader, context, root, state);
     }
 
@@ -29,7 +29,7 @@ internal static class SvgResourceUseReplay
     internal static SvgResourceUse RetainPattern(XmlReader reader, SvgRootAttributes root, SvgDocumentState state,
         IReadOnlyDictionary<string, SvgColor> colors, ParserWorkCounter work, CancellationToken token)
     {
-        SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, colors, work, token);
+        SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, colors, work, token);
         return Retain(reader, context, new(root.UserViewportWidth, root.UserViewportHeight), state, true);
     }
 

@@ -14,7 +14,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     internal bool RetainInstanceStrokePath { get; init; }
     internal SvgComputedStyle? AuthoredStyle { get; init; }
     internal string? InheritedClipRule { get; init; }
-    internal static SvgPaintableElementContext Create(XmlReader reader, bool directChild, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static SvgPaintableElementContext Create(XmlReader reader, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         SvgInheritedPresentation inheritedPresentation = state.Groups.Count == 0 ? root.InheritedPresentation : state.Groups[^1].InheritedPresentation;
         // Opacity is not inherited through an intervening viewport or defs node.

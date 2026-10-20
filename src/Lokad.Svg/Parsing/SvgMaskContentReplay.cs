@@ -37,7 +37,7 @@ internal static class SvgMaskContentReplay
         }
         if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on mask content are not implemented.");
         bool clipped = reader.GetAttribute("clip-path") is not null;
-        SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, colors, work, token);
+        SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, colors, work, token);
         SvgDefinitionLeafSource source = SvgDefinitionLeafSource.Capture(reader, context, state);
         if (state.MaskReplayChildCount == 0) state.MaskReplayChildStart = state.MaskReplayChildren.Count;
         state.MaskReplayChildren.Add(new(source, context with { AuthoredStyle = source.AuthoredStyle, StyleSheet = default }));

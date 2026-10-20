@@ -136,7 +136,7 @@ internal static class SvgDocumentTraversal
                     }
                     SvgClipBox box = new(clipOriginX, clipOriginY, viewport.Width * clipScaleX, viewport.Height * clipScaleY);
                     if (parentClip is not null) box = box.Intersect(parentClip.Value);
-                    SvgPaintableElementContext viewportContext = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
+                    SvgPaintableElementContext viewportContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
                     InlineStyle viewportInline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
                     SvgComputedStyle viewportStyle = SvgComputedStyle.Resolve(reader, viewportInline, viewportContext.StyleSheet);
                     SvgInheritedContainer inheritedViewport = SvgContainerInheritance.Resolve(reader, viewportInline, viewportStyle, viewportContext.StyleSheet, viewportContext.InheritedPresentation,
@@ -178,7 +178,7 @@ internal static class SvgDocumentTraversal
                         }
                     }
                 }
-                else if (SvgRenderedLeafParser.TryParse(reader, directChild, inScope, root, state, limits, budget, namedColors, fontSnapshot, workCounter, cancellationToken))
+                else if (SvgRenderedLeafParser.TryParse(reader, inScope, root, state, limits, budget, namedColors, fontSnapshot, workCounter, cancellationToken))
                 {
                     // Rendered leaves admit no rendered children: an explicitly closed leaf with an element-free
                     // subtree renders exactly like the self-closing form, while any child element keeps the
@@ -193,8 +193,8 @@ internal static class SvgDocumentTraversal
                 }
                 else if (inScope && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName))
                 {
-                    SvgParsedGroup parsedGroup = SvgGroupParser.Parse(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
-                    SvgRenderedGroupSourceParser.BeginGroup(reader, directChild, root, state, limits, namedColors, workCounter, cancellationToken);
+                    SvgParsedGroup parsedGroup = SvgGroupParser.Parse(reader, root, state, namedColors, workCounter, cancellationToken);
+                    SvgRenderedGroupSourceParser.BeginGroup(reader, root, state, limits, namedColors, workCounter, cancellationToken);
                     if (!reader.IsEmptyElement)
                     {
                         SvgViewportFrame? filterParent = parsedGroup.Scope.HasFilter ? state.EffectiveFrame : null;

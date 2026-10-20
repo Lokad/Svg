@@ -299,7 +299,7 @@ internal static class SvgOrthogonalShapeParser
             using BudgetedParserList<SvgPoint> noFractionPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noFractionEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using SvgOrthogonalGeometryLowering fractionalLowering = new(noFractionPoints, noFractionEnds, elementName, false, fractionalEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-            filled = fractionalLowering.LowerFractionalPointList(fractionalPoints, SvgPolygonMapping.FiniteEdges, shape, frame, budget) with { ElementCount = fractionalPoints.Count + 1 };
+            filled = fractionalLowering.LowerFractionalPointList(fractionalPoints, shape, frame, budget) with { ElementCount = fractionalPoints.Count + 1 };
             try
             {
                 if (shaderFill) filled = RepaintFractionalFill(filled);

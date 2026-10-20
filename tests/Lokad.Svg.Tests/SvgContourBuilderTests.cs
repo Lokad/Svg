@@ -167,7 +167,7 @@ public sealed class SvgContourBuilderTests
     public void Ellipse_appends_standalone_loop()
     {
         SvgContourBuilder builder = new(256, 4);
-        builder.AddEllipse(new SvgDevicePoint(4, 4), 8, 8, 0, new SvgFlattenPolicy(0.5, 64, 256), CancellationToken.None);
+        builder.AddEllipse(new SvgDevicePoint(4, 4), 8, 8, new SvgFlattenPolicy(0.5, 64, 256), CancellationToken.None);
 
         Assert.Equal(1, builder.ContourCount);
         ReadOnlySpan<SvgDevicePoint> contour = builder.GetContour(0);
@@ -181,10 +181,10 @@ public sealed class SvgContourBuilderTests
         SvgContourBuilder builder = new(256, 4);
         builder.BeginContour(new SvgDevicePoint(0, 0));
 
-        Assert.Throws<InvalidOperationException>(() => builder.AddEllipse(new SvgDevicePoint(4, 4), 8, 8, 0, new SvgFlattenPolicy(0.5, 64, 256), CancellationToken.None));
+        Assert.Throws<InvalidOperationException>(() => builder.AddEllipse(new SvgDevicePoint(4, 4), 8, 8, new SvgFlattenPolicy(0.5, 64, 256), CancellationToken.None));
         builder.EndContour();
-        Assert.Throws<ArgumentOutOfRangeException>(() => builder.AddEllipse(new SvgDevicePoint(4, 4), 0, 8, 0, new SvgFlattenPolicy(0.5, 64, 256), CancellationToken.None));
-        Assert.Throws<ArgumentOutOfRangeException>(() => builder.AddEllipse(new SvgDevicePoint(double.NaN, 4), 8, 8, 0, new SvgFlattenPolicy(0.5, 64, 256), CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => builder.AddEllipse(new SvgDevicePoint(4, 4), 0, 8, new SvgFlattenPolicy(0.5, 64, 256), CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => builder.AddEllipse(new SvgDevicePoint(double.NaN, 4), 8, 8, new SvgFlattenPolicy(0.5, 64, 256), CancellationToken.None));
     }
 
     [Fact]

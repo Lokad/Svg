@@ -38,7 +38,7 @@ internal static class SvgDefinitionParser
             string? id = reader.GetAttribute("id");
             if (id is not null && (id == state.SymbolId || state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _) || state.RenderedGroupDefinitions.TryGetValue(id, out _)))
                 throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
-            SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
+            SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
             SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, workCounter, cancellationToken, true);
             SvgRetainedTextSource source = SvgRetainedTextSource.Capture(reader, context, state, limits);
             state.NodeCount += source.ChildNodeCount; state.TextCharacterCount += source.CharacterCount;
@@ -74,7 +74,7 @@ internal static class SvgDefinitionParser
             else if (reader.LocalName == "circle" || reader.LocalName == "ellipse") SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, workCounter, cancellationToken);
             else if (reader.LocalName == "image") SvgElementAttributePolicy.ValidateImage(reader, workCounter, cancellationToken);
             else SvgElementAttributePolicy.ValidatePointList(reader, reader.LocalName, workCounter, cancellationToken);
-            SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
+            SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
             if (symbolChild)
             {
                 SvgSymbolPresentation symbol = (state.SymbolDefinition ?? throw new InvalidOperationException("Symbol children require a presentation context.")).Presentation;
@@ -160,7 +160,7 @@ internal static class SvgDefinitionParser
             bool marker = reader.LocalName == "marker";
             if (!marker) SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
             InlineStyle sheet = SvgDocumentStyleResolver.Resolve(reader, state, workCounter, cancellationToken);
-            SvgPaintableElementContext markerContext = marker ? SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken) : default;
+            SvgPaintableElementContext markerContext = marker ? SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken) : default;
             SvgComputedStyle style = marker ? markerContext.ResolveStyle(reader) : SvgComputedStyleResolver.Resolve(reader, sheet, workCounter, cancellationToken);
             state.MarkerDefinition = marker ? SvgMarkerSyntax.Parse(reader, style, new(state.EffectiveFrame?.ViewportWidth ?? root.UserViewportWidth, state.EffectiveFrame?.ViewportHeight ?? root.UserViewportHeight), markerContext.InheritedTextStyle, markerContext.StyleSheet, workCounter, cancellationToken) : null;
             SvgPaint inheritedPaint = marker ? markerContext.InheritedPresentation.Paint : SvgPaint.Default;
@@ -181,7 +181,7 @@ internal static class SvgDefinitionParser
             if (!marker) presentation = presentation with
             {
                 TextStyleSource = SvgRetainedTextSource.CaptureElement(reader,
-                    SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken), state, limits)
+                    SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken), state, limits)
             };
             string? id = reader.GetAttribute("id");
             if (id is not null && (state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _) || state.RenderedGroupDefinitions.TryGetValue(id, out _))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
@@ -208,7 +208,7 @@ internal static class SvgDefinitionParser
             state.ClipRectangleSource = null;
             state.ClipPolygon = null;
             state.ClipIsObjectBoundingBox = SvgClipPathSyntax.ParseClipUnits(reader.GetAttribute("clipPathUnits"));
-            SvgPaintableElementContext clipParent = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
+            SvgPaintableElementContext clipParent = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
             SvgComputedStyle clipParentStyle = SvgComputedStyleResolver.Resolve(reader, clipParent.StyleSheet, workCounter, cancellationToken);
             state.ClipIsEvenOdd = SvgClipPathSyntax.ParseClipRule((clipParentStyle.ClipRule ?? clipParent.InheritedClipRule ?? "nonzero").AsSpan());
             if (reader.IsEmptyElement)
@@ -232,7 +232,7 @@ internal static class SvgDefinitionParser
             {
                 PromoteClipRectangle(state, workCounter, cancellationToken);
                 SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
-                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
                 SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, state.ClipIsObjectBoundingBox ? new(1, 1) : context.LengthBases);
                 // A resource uses its own child map; ancestors place the referencing element.
                 SvgAffineTransform clipTransform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken);
@@ -263,7 +263,7 @@ internal static class SvgDefinitionParser
             {
                 PromoteClipRectangle(state, workCounter, cancellationToken);
                 SvgElementAttributePolicy.ValidatePath(reader, workCounter, cancellationToken);
-                SvgPaintableElementContext clipContext = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                SvgPaintableElementContext clipContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
                 // A resource uses its own child map; ancestors place the referencing element.
                 SvgAffineTransform clipTransform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken);
                 SvgComputedStyle clipStyle = SvgComputedStyleResolver.Resolve(reader, clipContext.StyleSheet, workCounter, cancellationToken);
@@ -294,7 +294,7 @@ internal static class SvgDefinitionParser
             {
                 PromoteClipRectangle(state, workCounter, cancellationToken);
                 SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, workCounter, cancellationToken);
-                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
                 SvgViewportLengthBases clipBases = state.ClipIsObjectBoundingBox ? new(1, 1) : context.LengthBases;
                 if (reader.GetAttribute("id") is {} ovalId)
                 {
@@ -333,7 +333,7 @@ internal static class SvgDefinitionParser
         if ((inDefinitions || directChild || groupNestedDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "mask")
         {
             SvgElementAttributePolicy.ValidateMask(reader, workCounter, cancellationToken);
-            SvgPaintableElementContext maskContext = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
+            SvgPaintableElementContext maskContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
             // A resource inherits presentation, while its content coordinates start
             // at the resource rather than at a rendered definition ancestor.
             maskContext = maskContext with { InheritedPresentation = maskContext.InheritedPresentation with { Transform = SvgAffineTransform.Identity } };
@@ -406,7 +406,7 @@ internal static class SvgDefinitionParser
             if (state.MaskContentBuilder is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element mask content is implemented.");
             if (SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName))
             {
-                SvgPaintableElementContext maskContext = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                SvgPaintableElementContext maskContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
                 if (SvgGradientSyntax.IsGradientFill(maskContext.ResolveStyle(reader).Fill))
                 {
                     if (state.MaskValue is not null || state.MaskContentGeometries is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element mask content is implemented.");
@@ -428,7 +428,7 @@ internal static class SvgDefinitionParser
             {
                 if (state.MaskValue is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-rectangle masks are implemented.");
                 SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
-                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
                 SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
                 SvgResolvedPaintableElement element = context.ResolveShape(reader, false);
                 if (!element.Presentation.IsPainted) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Invisible mask content is not implemented.");
@@ -443,7 +443,7 @@ internal static class SvgDefinitionParser
                 SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, workCounter, cancellationToken);
                 if (reader.GetAttribute("clip-path") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths on mask content are not implemented.");
                 if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on mask content are not implemented.");
-                SvgPaintableElementContext contentContext = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                SvgPaintableElementContext contentContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
                 using SvgParsedGeometry lowered = SvgLeafParser.ParseCircle(reader, contentContext, null, state);
                 try
                 {
@@ -467,7 +467,7 @@ internal static class SvgDefinitionParser
             state.PatternTemplate = SvgPatternSyntax.ParsePatternElement(reader, state, workCounter, cancellationToken);
             if (state.PatternTemplate.Href is not null) state.HasPatternTemplateReferences = true;
             state.PatternTile = state.PatternTemplate.Grid;
-            SvgPaintableElementContext patternContext = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
+            SvgPaintableElementContext patternContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
             InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
             SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, patternContext.StyleSheet).ResolveOpacity(patternContext.InheritedPresentation.ElementOpacity);
             if (style.GetOpacity().Value != 1)
@@ -504,7 +504,7 @@ internal static class SvgDefinitionParser
             }
             if (reader.LocalName == "g")
             {
-                SvgParsedGroup group = SvgGroupParser.Parse(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                SvgParsedGroup group = SvgGroupParser.Parse(reader, root, state, namedColors, workCounter, cancellationToken);
                 if (!reader.IsEmptyElement)
                 {
                     SvgSceneBuilder builder = GetPatternContentBuilder(state, workCounter, cancellationToken);
@@ -535,7 +535,7 @@ internal static class SvgDefinitionParser
             }
             if (reader.LocalName is "rect" or "circle" or "ellipse" or "path" or "polygon" or "polyline" or "line" or "image" or "text")
             {
-                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
                 SvgComputedStyle style = context.ResolveStyle(reader, reader.LocalName == "text");
                 if (reader.LocalName is "image" or "text" || reader.GetAttribute("clip-path") is not null || reader.GetAttribute("mask") is not null || style.Filter is {} filter && filter.Trim() != "none")
                 {
@@ -570,7 +570,7 @@ internal static class SvgDefinitionParser
             if (reader.LocalName == "rect" && KeepsLegacyRectanglePaint() && state.PatternTemplate.KeepsLegacyRectangle && state.PatternContentBuilder is null && state.PatternTile?.Content is null)
             {
                 SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
-                SvgPaintableElementContext tileContext = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                SvgPaintableElementContext tileContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
                 tileContext = tileContext with { InheritedPresentation = tileContext.InheritedPresentation with { Transform = SvgAffineTransform.Identity } };
                 // The tile payload retains a resolved rectangle, so its paint must be resolved before storing it.
                 using SvgParsedGeometry parsedContent = SvgLeafParser.ParseRectangleCore(reader, tileContext, null, state);
@@ -622,7 +622,7 @@ internal static class SvgDefinitionParser
                     default: SvgElementAttributePolicy.ValidatePointList(reader, reader.LocalName, workCounter, cancellationToken); break;
                 }
                 SvgSceneBuilder builder = GetPatternContentBuilder(state, workCounter, cancellationToken);
-                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
                 SvgComputedStyle style = context.ResolveStyle(reader);
                 RejectPatternContentPaint(style, state);
                 AdoptLeaf(LowerInstanceSource(reader, context, state));
@@ -636,7 +636,7 @@ internal static class SvgDefinitionParser
 
             bool KeepsLegacyRectanglePaint()
             {
-                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
                 SvgComputedStyle style = context.ResolveStyle(reader);
                 bool hasFill = style.Fill is {} fill ? !fill.Trim().Equals("none", StringComparison.Ordinal) : context.InheritedPresentation.Paint.HasFill;
                 bool hasStroke = (style.Stroke ?? context.InheritedStroke.Stroke) is {} stroke && !stroke.Trim().Equals("none", StringComparison.Ordinal);
@@ -684,7 +684,7 @@ internal static class SvgDefinitionParser
         if (state.DefinitionsDepth < 0 && (directChild || state.GroupDepth > 0 || state.Viewports.Count > 0) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName))
         {
             SvgElementAttributePolicy.ValidateDefinitionContainer(reader, workCounter, cancellationToken);
-            SvgPaintableElementContext definitionContext = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
+            SvgPaintableElementContext definitionContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
             InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
             SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, definitionContext.StyleSheet);
             SvgInheritedContainer inherited = SvgContainerInheritance.Resolve(reader, inline, style, definitionContext.StyleSheet, definitionContext.InheritedPresentation,
@@ -696,7 +696,7 @@ internal static class SvgDefinitionParser
         if (state.DefinitionsDepth < 0 && (directChild || isEligible) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "use")
         {
             SvgElementAttributePolicy.ValidateUse(reader, workCounter, cancellationToken);
-            SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
+            SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
             SvgViewportFrame? parentFrame = state.EffectiveFrame;
             double? baseWidth = parentFrame?.ViewportWidth ?? root.UserViewportWidth;
             double? baseHeight = parentFrame?.ViewportHeight ?? root.UserViewportHeight;

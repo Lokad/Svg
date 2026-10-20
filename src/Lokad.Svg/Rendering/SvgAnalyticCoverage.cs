@@ -510,16 +510,10 @@ internal ref partial struct SvgAnalyticCoverage
         return SetLineFixed(fixedX0, fixedY0, fixedX1, fixedY1);
     }
     /// <summary>Builds one walker edge from pinned fixed-point endpoints without float re-encoding.</summary>
-    /// <remarks>Analytic curve steppers emit pre-snapped fixed endpoints like Skia updateLine; re-encoding through floats would shift negative values by truncation, so this path enters fixed space directly with the same winding, slope and inverse-DY construction as SetLine.</remarks>
+    /// <remarks>Analytic curve steppers emit pre-snapped fixed endpoints like Skia updateLine; re-encoding through floats would shift negative values by truncation. Orient endpoints bottom-to-top, reversing winding for downward input, with the same slope and inverse-DY construction as SetLine.</remarks>
     private static AnalyticEdge? SetLineFixed(int x0, int y0, int x1, int y1)
     {
-        return SetLineWound(x0, y0, x1, y1, 1);
-    }
-    /// <summary>Builds one walker edge with caller winding, negating on downward swaps exactly like updateLine.</summary>
-    /// <remarks>Analytic curve setup orients pieces bottom-to-top while recording path-direction winding; each emitted segment keeps that winding unless it steps downward, when the swap negates it. Deriving winding from final order instead would flip swapped pieces and corrupt nonzero interiors on non-convex contours.</remarks>
-    private static AnalyticEdge? SetLineWound(int x0, int y0, int x1, int y1, int winding)
-    {
-        if (winding != 1 && winding != -1) throw new ArgumentOutOfRangeException(nameof(winding));
+        int winding = 1;
         if (y0 > y1)
         {
             (x0, x1) = (x1, x0);

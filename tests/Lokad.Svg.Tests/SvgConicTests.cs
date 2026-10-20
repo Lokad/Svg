@@ -155,7 +155,7 @@ public sealed class SvgConicTests
     {
         SvgContourBuilder builder = new(64, 1);
         builder.EnableQuadSpanRetention();
-        builder.AddEllipse(new(100_000_000, 100_000_000), 1, 1, 0, new(.25, 12, 64), CancellationToken.None);
+        builder.AddEllipse(new(100_000_000, 100_000_000), 1, 1, new(.25, 12, 64), CancellationToken.None);
         Assert.Equal(0, builder.ContourCount);
         Assert.Empty(builder.GetQuadSpans());
     }
@@ -165,7 +165,7 @@ public sealed class SvgConicTests
     {
         SvgContourBuilder builder = new(64, 1);
         builder.EnableQuadSpanRetention();
-        SvgException error = Assert.Throws<SvgException>(() => builder.AddEllipse(new(2e38, 0), 2e38, 2e38, 0, new(.25, 12, 64), CancellationToken.None));
+        SvgException error = Assert.Throws<SvgException>(() => builder.AddEllipse(new(2e38, 0), 2e38, 2e38, new(.25, 12, 64), CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode);
     }
 }

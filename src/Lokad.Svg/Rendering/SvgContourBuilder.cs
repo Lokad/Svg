@@ -255,23 +255,21 @@ internal sealed class SvgContourBuilder
         }
     }
 
-    /// <summary>Appends one sampled full-ellipse loop as a sealed contour.</summary>
+    /// <summary>Appends one axis-aligned full-ellipse loop as a sealed contour.</summary>
     /// <remarks>
-    /// <para>The ellipse stands alone: an open contour is a misuse. Corner radii and rotation arrive in
-    /// the device frame under the caller transform, matching endpoint arcs; general-affine ellipse axes
-    /// need user-space sampling owned by a later slice.</para>
+    /// <para>The ellipse stands alone: an open contour is a misuse. The caller provides device-frame
+    /// center and radii; general-affine ovals map their native source verbs separately.</para>
     /// <para>Axis-aligned retained ovals use float bounds and four rational quarter verbs. Eager samples
     /// remain available to fallback consumers; the explicit final endpoint keeps the last span intact.
     /// Callers reserve point/contour and retained-span columns before construction.</para>
     /// </remarks>
-    internal void AddEllipse(SvgDevicePoint center, double radiusX, double radiusY, double rotationRadians, SvgFlattenPolicy policy, CancellationToken cancellationToken)
+    internal void AddEllipse(SvgDevicePoint center, double radiusX, double radiusY, SvgFlattenPolicy policy, CancellationToken cancellationToken)
     {
         if (_openStart >= 0) throw new InvalidOperationException("A contour is already open.");
         if (_contourCount >= _starts.Length) GrowContours();
         ValidatePoint(center, nameof(center));
         if (!double.IsFinite(radiusX) || !double.IsFinite(radiusY) || radiusX <= 0 || radiusY <= 0) throw new ArgumentOutOfRangeException(nameof(radiusX));
-        if (!double.IsFinite(rotationRadians)) throw new ArgumentOutOfRangeException(nameof(rotationRadians));
-        if (_retainSpans && rotationRadians == 0)
+        if (_retainSpans)
         {
             // Native ovals retain four rational verbs built from float bounds.
             float left = (float)center.X - (float)radiusX, right = (float)center.X + (float)radiusX;
@@ -301,7 +299,7 @@ internal sealed class SvgContourBuilder
         {
             try
             {
-                _pointCount += SvgEllipticalArc.SampleFull(center, radiusX, radiusY, rotationRadians, policy, _points.AsSpan(_pointCount), cancellationToken);
+                _pointCount += SvgEllipticalArc.SampleFull(center, radiusX, radiusY, 0, policy, _points.AsSpan(_pointCount), cancellationToken);
                 break;
             }
             catch (SvgException)

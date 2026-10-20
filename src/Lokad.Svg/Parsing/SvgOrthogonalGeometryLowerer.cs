@@ -184,7 +184,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(budget);
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         int[] ends = MapDiagonalContours(transform, frame, mapped);
-        return RetainIntegerPointList(FinishGradientPolygonFill(mapped, ends, gradient, box, hasFill, opacity, SvgPolygonMapping.QuarterEdges, frame, budget), hasFill, transform, frame, budget);
+        return RetainIntegerPointList(FinishGradientPolygonFill(mapped, ends, gradient, box, hasFill, opacity, frame, budget), hasFill, transform, frame, budget);
     }
 
     /// <summary>Lowers diagonal radial-gradient polygons with separated simple contours to retained device points with their paint box.</summary>
@@ -193,7 +193,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(budget);
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         int[] ends = MapDiagonalContours(transform, frame, mapped);
-        return RetainIntegerPointList(FinishRadialPolygonFill(mapped, ends, gradient, box, hasFill, opacity, SvgPolygonMapping.QuarterEdges, frame, budget), hasFill, transform, frame, budget);
+        return RetainIntegerPointList(FinishRadialPolygonFill(mapped, ends, gradient, box, hasFill, opacity, frame, budget), hasFill, transform, frame, budget);
     }
 
     /// <summary>Retains original integer polygon/polyline fill verbs alongside normalized paint geometry.</summary>
@@ -371,7 +371,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                     }
                 }
             }
-            else builder.AddEllipse(center, mappedRadiusX, mappedRadiusY, 0, flattenPolicy, _cancellationToken);
+            else builder.AddEllipse(center, mappedRadiusX, mappedRadiusY, flattenPolicy, _cancellationToken);
             conics = builder.GetQuadSpans();
             ends = new int[builder.ContourCount];
             for (int contour = 0; contour < builder.ContourCount; contour++)
@@ -466,7 +466,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         points.Add(new(right, y));
         points.Add(new(right, bottom));
         points.Add(new(x, bottom));
-        return LowerFractionalPointList(points, SvgPolygonMapping.FiniteEdges, element, frame, budget) with { ElementCount = 0 };
+        return LowerFractionalPointList(points, element, frame, budget) with { ElementCount = 0 };
     }
 
     /// <summary>Lowers rounded rectangles with retained native source conics and finite affine placement.</summary>
@@ -872,7 +872,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     /// commands and its composed scene map, with storage/work charged before allocation and cancellation
     /// checked through the shared budgeted list. Partial failure releases both scene and command owners.
     /// Explicit polygon closure stays distinct from the implicit fill closure of a polyline.</remarks>
-    internal SvgParsedGeometry LowerFractionalPointList(BudgetedParserList<SvgFractionalPoint> points, SvgPolygonMapping mapping, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
+    internal SvgParsedGeometry LowerFractionalPointList(BudgetedParserList<SvgFractionalPoint> points, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(budget);
@@ -896,7 +896,7 @@ internal ref struct SvgOrthogonalGeometryLowering
 
         if (mapped.Count < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed fractional " + _elementName + " contours are implemented.");
         int[] ends = [mapped.Count];
-        SvgParsedGeometry result = FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, mapping, frame, budget);
+        SvgParsedGeometry result = FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, SvgPolygonMapping.FiniteEdges, frame, budget);
         OwnedParserArray<SvgAuthoredPathCommand> owned = new([], null);
         try
         {
@@ -3785,12 +3785,12 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Retains one gradient polygon fill from validated separated contours with scene-owned storage.</summary>
-    private SvgParsedGeometry FinishGradientPolygonFill(BudgetedParserList<SvgDevicePoint> mapped, int[] ends, SvgLinearGradient gradient, SvgRectangle box, bool hasFill, byte opacity, SvgPolygonMapping mapping, SvgViewportFrame? frame, RenderBudget budget)
+    private SvgParsedGeometry FinishGradientPolygonFill(BudgetedParserList<SvgDevicePoint> mapped, int[] ends, SvgLinearGradient gradient, SvgRectangle box, bool hasFill, byte opacity, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(mapped);
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(budget);
-        SeparatedContours separated = PrepareSeparatedContours(mapped, ends, mapping, budget);
+        SeparatedContours separated = PrepareSeparatedContours(mapped, ends, SvgPolygonMapping.QuarterEdges, budget);
         return RetainGradientPolygonFill(separated.Points, separated.Ends, separated.Signs, gradient, box, hasFill, opacity, _isEvenOdd, separated.Mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, separated.SceneReservation, budget);
     }
 
@@ -3808,12 +3808,12 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Retains one radial polygon fill from validated separated contours with scene-owned storage.</summary>
-    private SvgParsedGeometry FinishRadialPolygonFill(BudgetedParserList<SvgDevicePoint> mapped, int[] ends, SvgRadialGradient gradient, SvgRectangle box, bool hasFill, byte opacity, SvgPolygonMapping mapping, SvgViewportFrame? frame, RenderBudget budget)
+    private SvgParsedGeometry FinishRadialPolygonFill(BudgetedParserList<SvgDevicePoint> mapped, int[] ends, SvgRadialGradient gradient, SvgRectangle box, bool hasFill, byte opacity, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(mapped);
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(budget);
-        SeparatedContours separated = PrepareSeparatedContours(mapped, ends, mapping, budget);
+        SeparatedContours separated = PrepareSeparatedContours(mapped, ends, SvgPolygonMapping.QuarterEdges, budget);
         return RetainRadialPolygonFill(separated.Points, separated.Ends, separated.Signs, gradient, box, hasFill, opacity, _isEvenOdd, separated.Mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, separated.SceneReservation, budget);
     }
 

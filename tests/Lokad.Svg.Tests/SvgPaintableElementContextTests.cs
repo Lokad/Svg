@@ -51,11 +51,11 @@ public sealed class SvgPaintableElementContextTests
         SvgInheritedPresentation rootPresentation = new(new SvgPaint(new SvgColor(1, 2, 3, 255), false, SvgPaintOpacity.Opaque, new SvgColor(4, 5, 6, 255), false), true, true, SvgAffineTransform.Identity);
         SvgRootAttributes root = new(rootPresentation, SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, null, null, null, null);
 
-        SvgPaintableElementContext rootContext = SvgPaintableElementContext.Create(reader, false, root, state, new Dictionary<string, SvgColor>(), workCounter, CancellationToken.None);
+        SvgPaintableElementContext rootContext = SvgPaintableElementContext.Create(reader, root, state, new Dictionary<string, SvgColor>(), workCounter, CancellationToken.None);
 
         SvgInheritedPresentation groupPresentation = new(new SvgPaint(new SvgColor(7, 8, 9, 255), true, new SvgPaintOpacity(128, 128 / 255f), new SvgColor(10, 11, 12, 255), true), false, false, SvgAffineTransform.FromScaleOffset(2, 3, 4, 5));
         state.Groups.Add(new SvgGroupScope(1, SvgGroupKind.Group, groupPresentation, SvgInheritedTextStyle.Default, false, false, SvgInheritedStrokeStyle.Default, "evenodd"));
-        SvgPaintableElementContext groupContext = SvgPaintableElementContext.Create(reader, false, root, state, new Dictionary<string, SvgColor>(), workCounter, CancellationToken.None);
+        SvgPaintableElementContext groupContext = SvgPaintableElementContext.Create(reader, root, state, new Dictionary<string, SvgColor>(), workCounter, CancellationToken.None);
 
         Assert.Equal(rootPresentation, rootContext.InheritedPresentation);
         Assert.Equal(groupPresentation, groupContext.InheritedPresentation);
