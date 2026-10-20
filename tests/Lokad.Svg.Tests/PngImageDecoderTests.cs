@@ -6,6 +6,41 @@ namespace Lokad.Svg.Tests;
 
 public sealed class PngImageDecoderTests
 {
+    [Theory]
+    [InlineData(64)]
+    [InlineData(256)]
+    public void Fragmented_idat_capacity_and_growth_are_accounted_before_allocation(int side)
+    {
+        int rowBytes = side * 4;
+        byte[] pixels = new byte[(rowBytes + 1) * side];
+        byte[] compressed;
+        using (MemoryStream bytes = new())
+        {
+            using (var zlib = new System.IO.Compression.ZLibStream(bytes, System.IO.Compression.CompressionLevel.NoCompression, true)) zlib.Write(pixels);
+            compressed = bytes.ToArray();
+        }
+        byte[] single = BuildPng([new("IHDR", TestIhdr(side, side, 6)), new("IDAT", compressed), new("IEND", [])]);
+        byte[] split = BuildPng([new("IHDR", TestIhdr(side, side, 6)), new("IDAT", compressed[..^1]), new("IDAT", compressed[^1..]), new("IEND", [])]);
+        byte[] unchanged = split.ToArray();
+        long limit = 2L * compressed.Length + 2 * rowBytes + 64;
+        RenderBudget tight = new(limit);
+        Assert.Equal(SvgColor.Transparent, Decode(single, tight, new(100_000), CancellationToken.None));
+        Assert.Equal(0, tight.Snapshot().CurrentBytes);
+        SvgException denied = Assert.Throws<SvgException>(() => Decode(split, tight, new(100_000), CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
+        Assert.Equal(1, tight.Snapshot().DeniedReservationCount);
+        Assert.Equal(0, tight.Snapshot().CurrentBytes);
+
+        RenderBudget roomy = new(8L * compressed.Length);
+        Assert.Equal(SvgColor.Transparent, Decode(split, roomy, new(100_000), CancellationToken.None));
+        // The retained doubled compressed buffer coexists with unfiltered pixels.
+        Assert.True(roomy.Snapshot().PeakBytes >= 2L * (compressed.Length - 1) + pixels.Length + 2 * rowBytes);
+        Assert.Equal(0, roomy.Snapshot().CurrentBytes);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Decode(split, roomy, new(2), CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, roomy.Snapshot().CurrentBytes);
+        Assert.Equal(unchanged, split);
+    }
+
     public static IEnumerable<object[]> InvalidChunkStructures()
     {
         List<TestChunk> rgb = ParseChunks(BuiltRgb());
@@ -578,7 +613,9 @@ public sealed class PngImageDecoderTests
     public void Denied_pixel_storage_rejects_decode_without_retention()
     {
         byte[] png = System.Convert.FromBase64String(RedPixel);
-        RenderBudget budget = new(20);
+        RenderBudget measured = new(100_000);
+        _ = Decode(png, measured, new(10_000), CancellationToken.None);
+        RenderBudget budget = new(measured.Snapshot().PeakBytes - 1);
 
         SvgException exception = Assert.Throws<SvgException>(() => Decode(png, budget, new ParserWorkCounter(10_000), CancellationToken.None));
 

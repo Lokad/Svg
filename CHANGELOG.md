@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Account for retained embedded-PNG compressed capacity and overlapping growth
+  buffers before allocation, including fragmented image-data chunks.
 - Admit scanline scratch storage before allocation and omit unused orientation
   arrays when explicit contour votes are supplied.
 - Reject malformed embedded PNG chunk types, separated image-data chunks and

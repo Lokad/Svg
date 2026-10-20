@@ -65,7 +65,6 @@ internal static class PngImageDecoder
         bool seenSignificantBits = false;
         using var compressed = new MemoryStream();
         using var storage = new WorkingStorage(budget);
-        long compressedLength = 0;
         int position = PngSignature.Length;
         bool seenHeader = false;
         bool seenEnd = false;
@@ -111,9 +110,9 @@ internal static class PngImageDecoder
                 if (imageDataEnded || isPaletteType && palette is null) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data misplaces its image data.");
                 if (length > 0)
                 {
-                    compressedLength += length;
-                    if (compressedLength > limits.MaximumAccountedBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded PNG data exceeds the configured accounting limit.");
-                    storage.ReserveCompressed(compressedLength);
+                    long requiredLength = compressed.Length + length;
+                    if (requiredLength > limits.MaximumAccountedBytes || requiredLength > Array.MaxLength) throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded PNG data exceeds the configured storage limit.");
+                    storage.EnsureCompressedCapacity(compressed, (int)requiredLength);
                 }
                 compressed.Write(data);
                 seenImageData = true;
@@ -384,9 +383,15 @@ internal static class PngImageDecoder
 
         internal void ReserveTransparency(int length) => _transparency = _budget.Reserve(length, SvgMemoryCategory.Parser);
 
-        internal void ReserveCompressed(long total)
+        internal void EnsureCompressedCapacity(MemoryStream stream, int requiredLength)
         {
-            RenderBudget.BudgetReservation next = _budget.Reserve(total, SvgMemoryCategory.Parser);
+            if (requiredLength <= stream.Capacity) return;
+            // Set capacity explicitly so Write cannot allocate uncharged spare
+            // storage. Keep the old allowance through allocation and copying.
+            int capacity = (int)Math.Min(Array.MaxLength, Math.Max(256L, Math.Max(requiredLength, 2L * stream.Capacity)));
+            RenderBudget.BudgetReservation next = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount<byte>(capacity), SvgMemoryCategory.Parser);
+            try { stream.Capacity = capacity; }
+            catch { next.Dispose(); throw; }
             _compressed?.Dispose();
             _compressed = next;
         }
