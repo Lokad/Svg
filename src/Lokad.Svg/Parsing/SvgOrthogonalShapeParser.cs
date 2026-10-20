@@ -79,7 +79,7 @@ internal static class SvgOrthogonalShapeParser
             using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, contourEnds, true);
             if (!paintOutline && !paintRadialOutline && !paintPatternOutline && reader.GetAttribute("mask") is null && reader.GetAttribute("clip-path") is null && state.MaskScopes.Count == 0) DropSingletonContours(points, contourEnds, context.WorkCounter, context.CancellationToken);
-            if (contourEnds.Count == 0 || AllContoursDegenerate(points, contourEnds))
+            if (contourEnds.Count == 0 || AllContoursDegenerate(contourEnds))
             {
                 // Sealed subpaths with fewer than three points enclose no area, so the fill contributes nothing while stroke lowering still outlines every subpath.
                 using BudgetedParserList<SvgGeometry> empty = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
@@ -178,7 +178,7 @@ internal static class SvgOrthogonalShapeParser
                 using BudgetedParserList<SvgPoint> noStrokePoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
                 using BudgetedParserList<int> noStrokeEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
                 using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, "path", true, false, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-                stroked = strokeLowering.LowerStrokePath(d, commandCount, hasArc, hasCurve, pathStrokeShape, stroke.Value.Color, pathStrokeShape.Presentation.IsPainted, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, budget);
+                stroked = strokeLowering.LowerStrokePath(d, commandCount, hasCurve, pathStrokeShape, stroke.Value.Color, pathStrokeShape.Presentation.IsPainted, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, budget);
                 try
                 {
                     if (paintPathOutline || paintPathRadial || paintPathPattern)
@@ -417,7 +417,7 @@ internal static class SvgOrthogonalShapeParser
         using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, true);
         using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         contourEnds.Add(points.Count);
-        if (AllContoursDegenerate(points, contourEnds))
+        if (AllContoursDegenerate(contourEnds))
         {
             // A sealed subpath with fewer than three points encloses no area, so the fill contributes nothing while stroke lowering still outlines it.
             shape = context.ResolveShape(fillStyle, reader, true);
@@ -671,7 +671,7 @@ internal static class SvgOrthogonalShapeParser
             && state.Gradients.TryGetValue(outlinePaintId, out gradient);
     }
 
-    internal static bool AllContoursDegenerate(BudgetedParserList<SvgPoint> contourPoints, BudgetedParserList<int> ends)
+    internal static bool AllContoursDegenerate(BudgetedParserList<int> ends)
     {
         if (ends.Count == 0) return false;
         int start = 0;

@@ -1401,7 +1401,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Strokes path data with the caller cap and join styles into one nonzero outline fill, tracking explicit closepath seals.</summary>
-    internal SvgParsedGeometry LowerStrokePath(string d, int commandCount, bool hasArc, bool hasCurves, SvgResolvedPaintableElement element, SvgColor color, bool hasFill, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
+    internal SvgParsedGeometry LowerStrokePath(string d, int commandCount, bool hasCurves, SvgResolvedPaintableElement element, SvgColor color, bool hasFill, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
         if (commandCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path stroke command count exceeds the configured path-command limit.");

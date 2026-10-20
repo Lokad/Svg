@@ -659,7 +659,7 @@ internal static class SvgRenderedLeafParser
                     text.BeginTextChunk(false);
                     SvgTextPathReference parsed = SvgTextPathSyntax.Parse(subtree, workCounter, cancellationToken);
                     textPath = parsed with { PathId = state.Strings.Copy(parsed.PathId) };
-                    InlineStyle pathStyle = SvgDocumentStyleResolver.Resolve(subtree, false, state, workCounter, cancellationToken);
+                    InlineStyle pathStyle = SvgDocumentStyleResolver.Resolve(subtree, state, workCounter, cancellationToken);
                     if (!pathStyle.Equals(default(InlineStyle))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Styles on text-path children are not implemented.");
                     childStyle = new(SvgTextSyntax.ParseWhitespaceMode(subtree, null, inheritedStyle.WhitespaceMode), inheritedStyle.LetterSpacing) { Paint = inheritedStyle.Paint, Font = inheritedStyle.Font };
                 }
@@ -667,7 +667,7 @@ internal static class SvgRenderedLeafParser
                 {
                     if (subtree.LocalName != "tspan") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bounded text span children are implemented.");
                     SvgElementAttributePolicy.ValidateTextSpan(subtree, workCounter, cancellationToken);
-                    InlineStyle styleSheet = SvgDocumentStyleResolver.Resolve(subtree, false, state, workCounter, cancellationToken);
+                    InlineStyle styleSheet = SvgDocumentStyleResolver.Resolve(subtree, state, workCounter, cancellationToken);
                     if (!SvgTextSyntax.TryParseTspanStyle(subtree, inheritedStyle, styleSheet, workCounter, cancellationToken, out childStyle)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bounded whitespace, scalar positioning and solid-paint tspan children are implemented.");
                     if (textPath is not null && childStyle.PositionOffset is SvgTextPositionOffset pathOffset && (pathOffset.X is not null || pathOffset.Y is not null)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Absolute span coordinates on text paths are not implemented.");
                 }

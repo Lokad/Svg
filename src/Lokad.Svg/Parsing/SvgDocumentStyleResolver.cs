@@ -5,6 +5,6 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Maps the current streaming document context to the bounded stylesheet cascade.</summary>
 internal static class SvgDocumentStyleResolver
 {
-    internal static InlineStyle Resolve(XmlReader reader, bool directChild, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static InlineStyle Resolve(XmlReader reader, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         => SvgStyleSheet.Resolve(reader, state.StyleRules, state.CssAncestors, workCounter, cancellationToken);
 }

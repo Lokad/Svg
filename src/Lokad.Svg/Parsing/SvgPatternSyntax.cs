@@ -122,7 +122,7 @@ internal static class SvgPatternSyntax
                     catch { repaint.Dispose(); throw; }
                 }
                 filled.Dispose();
-                return SvgGradientSyntax.AppendPaintFillStrokePath(new SvgParsedGeometry(repainted.Detach(), filled.ElementCount), d, commandCount, hasArc, hasCurve, reader, context, elementName, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
+                return SvgGradientSyntax.AppendPaintFillStrokePath(new SvgParsedGeometry(repainted.Detach(), filled.ElementCount), d, commandCount, hasCurve, context, elementName, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
             }
             catch { foreach (SvgGeometry geometry in repainted.AsSpan()) geometry.Dispose(); filled.Discard(); throw; }
         }
@@ -149,7 +149,7 @@ internal static class SvgPatternSyntax
                 using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
                 foreach (SvgGeometry existing in white.Geometries) repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, frame is {} viewport ? SvgAffineTransform.FromScaleOffset(1, 1, viewport.OffsetX, viewport.OffsetY).ComposeChecked(transform) : transform, budget)));
                 white.Dispose();
-                return SvgGradientSyntax.AppendPaintFillStroke(new SvgParsedGeometry(repainted.Detach(), white.ElementCount) { SourceObjectBox = pointObjectBox, SourceObjectMap = pointObjectMap }, reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
+                return SvgGradientSyntax.AppendPaintFillStroke(new SvgParsedGeometry(repainted.Detach(), white.ElementCount) { SourceObjectBox = pointObjectBox, SourceObjectMap = pointObjectMap }, reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
             }
             catch { white.Dispose(); throw; }
         }
@@ -167,7 +167,7 @@ internal static class SvgPatternSyntax
                 context.WorkCounter.Consume(context.CancellationToken);
                 bands[bandIndex] = SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, bands[bandIndex].Rectangle, opacity, null) { ContentPaint = tile.Content?.SolidPaint, VectorContent = tile.VectorContent, ContentViewBox = tile.ContentViewBox, Coordinates = tile.Coordinates, ShaderPlacement = tile.VectorContent is null ? SvgAffineTransform.Identity : paintPlacement.ComposeChecked(tile.VectorPlacement), PaintMatrices = paintMatrices });
             }
-            return SvgGradientSyntax.AppendPaintFillStroke(solid, reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
+            return SvgGradientSyntax.AppendPaintFillStroke(solid, reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
         }
         catch { solid.Discard(); throw; }
     }
@@ -223,7 +223,7 @@ internal static class SvgPatternSyntax
             }
             else if (SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width ?? reader.GetAttribute("stroke-width"))) zeroPaintStrokeWidth = true;
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
-            SvgStroke? probe = SvgLeafParser.ParseRectangleStroke(new SvgColor(255, 255, 255, 255), style.Width ?? reader.GetAttribute("stroke-width"), transform, placement.X, placement.Y, placement.Width, placement.Height, 255, painted);
+            SvgStroke? probe = SvgLeafParser.ParseRectangleStroke(new SvgColor(255, 255, 255, 255), style.Width ?? reader.GetAttribute("stroke-width"), transform, placement.Width, placement.Height, 255, painted);
             if (probe is null && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width ?? reader.GetAttribute("stroke-width"))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width gradient strokes no larger than the rectangle dimensions are implemented.");
             halfWidth = probe is null ? 0 : probe.Value.Width / 2d;
             strokeWidth = probe is null ? 0 : checked((int)probe.Value.Width);
@@ -278,7 +278,7 @@ internal static class SvgPatternSyntax
         if (style.Stroke is null || style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase)) return null;
         SvgColor strokeColor = SvgPaintResolver.ResolveStrokeColor(style.Stroke, style.Color, context.InheritedPresentation.Paint, context.NamedColors);
         if (style.StrokeOpacity is not null) strokeColor = SvgPaintResolver.ApplyOpacity(strokeColor, SvgColorParser.ParseOpacity(style.StrokeOpacity));
-        return SvgLeafParser.ParseRectangleStroke(strokeColor, style.Width ?? reader.GetAttribute("stroke-width"), transform, placement.X, placement.Y, placement.Width, placement.Height, opacity, painted);
+        return SvgLeafParser.ParseRectangleStroke(strokeColor, style.Width ?? reader.GetAttribute("stroke-width"), transform, placement.Width, placement.Height, opacity, painted);
     }
 
     /// <summary>Reports whether a stroke references a locally defined pattern tile.</summary>
@@ -344,7 +344,7 @@ internal static class SvgPatternSyntax
             fillColor = SvgPaintResolver.ResolveFillColor(presentation.Paint, opacity);
             hasFill = presentation.Paint.HasFill && painted;
         }
-        SvgStroke? probe = SvgLeafParser.ParseRectangleStroke(new SvgColor(255, 255, 255, 255), style.Width ?? reader.GetAttribute("stroke-width"), transform, placement.X, placement.Y, placement.Width, placement.Height, 255, painted);
+        SvgStroke? probe = SvgLeafParser.ParseRectangleStroke(new SvgColor(255, 255, 255, 255), style.Width ?? reader.GetAttribute("stroke-width"), transform, placement.Width, placement.Height, 255, painted);
         if (probe is null && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width ?? reader.GetAttribute("stroke-width"))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width pattern strokes no larger than the rectangle dimensions are implemented.");
         double halfWidth = probe is null ? 0 : probe.Value.Width / 2d;
         int strokeWidth = probe is null ? 0 : checked((int)probe.Value.Width);

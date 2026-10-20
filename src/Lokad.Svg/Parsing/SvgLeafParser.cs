@@ -79,7 +79,7 @@ internal static class SvgLeafParser
         if (rounded) return LowerRoundedRect(reader, context, syntax, cornerX, cornerY, effectiveFrame, state);
         SvgResolvedPaintableElement element = context.ResolveShape(reader, true);
         SvgRectangle rectangle = element.Transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, element.Presentation.Color, element.Presentation.HasFill, null));
-        SvgStroke? stroke = ParseRectangleStroke(element.Presentation.StrokeColor, element.Style.Width ?? syntax.StrokeWidth, element.Transform, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, element.Presentation.Opacity, rectangle.HasFill);
+        SvgStroke? stroke = ParseRectangleStroke(element.Presentation.StrokeColor, element.Style.Width ?? syntax.StrokeWidth, element.Transform, rectangle.Width, rectangle.Height, element.Presentation.Opacity, rectangle.HasFill);
         if (stroke is not null && SvgStrokeStyleSyntax.ParseDasharray(element.Style.Dasharray) is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid (none) stroke dash arrays are implemented.");
         if (stroke is not null && effectiveFrame is not null && effectiveFrame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
         if (effectiveFrame is not null) rectangle = ClipStrokedRectangle(rectangle, stroke, effectiveFrame.Value);
@@ -407,7 +407,7 @@ internal static class SvgLeafParser
         SvgResolvedPaintableElement element = context.ResolveShape(reader, true);
         SvgAffineTransform localTransform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), context.WorkCounter, context.CancellationToken);
         SvgRectangle rectangle = localTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, element.Presentation.Color, element.Presentation.HasFill, null));
-        SvgStroke? stroke = ParseRectangleStroke(element.Presentation.StrokeColor, element.Style.Width ?? syntax.StrokeWidth, localTransform, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, element.Presentation.Opacity, rectangle.HasFill);
+        SvgStroke? stroke = ParseRectangleStroke(element.Presentation.StrokeColor, element.Style.Width ?? syntax.StrokeWidth, localTransform, rectangle.Width, rectangle.Height, element.Presentation.Opacity, rectangle.HasFill);
         if (stroke is not null && SvgStrokeStyleSyntax.ParseDasharray(element.Style.Dasharray) is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid (none) stroke dash arrays are implemented.");
         SvgSolidPaint? solidPaint = element.Style.GetOpacity().Value == 1 ? SvgPaintResolver.ResolveSolidPaint(element.Presentation.Paint) : null;
         return new SvgParsedRectangle(SvgGeometry.FromRectangle(rectangle with { Stroke = element.Presentation.IsPainted ? stroke : null }) with { SolidPaint = solidPaint }, element.Style);
@@ -763,7 +763,7 @@ internal static class SvgLeafParser
             using SvgOrthogonalGeometryLowering lowering = new(noPoints, noEnds, "line", false, false, int.MaxValue, state.Budget, context.WorkCounter, context.CancellationToken);
             using RenderBudget.BudgetReservation pathReservation = state.Budget.Reserve(256, SvgMemoryCategory.Parser);
             string path = FormattableString.Invariant($"M{syntax.X1} {syntax.Y1} L{syntax.X2} {syntax.Y2}");
-            return lowering.LowerStrokePath(path, 2, false, false, element, stroke.Value.Color, element.Presentation.IsPainted,
+            return lowering.LowerStrokePath(path, 2, false, element, stroke.Value.Color, element.Presentation.IsPainted,
                 stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern,
                 stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, state.Budget);
 
@@ -833,7 +833,7 @@ internal static class SvgLeafParser
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local line paints are implemented.");
             using RenderBudget.BudgetReservation textOwner = state.Budget.Reserve(256, SvgMemoryCategory.Parser);
             string path = FormattableString.Invariant($"M{syntax.X1} {syntax.Y1} L{syntax.X2} {syntax.Y2}");
-            SvgParsedGeometry outlines = lowering.LowerStrokePath(path, 2, false, false, white, stroke.Value.Color, white.Presentation.IsPainted && !(useLinear && linear.IsEmpty) && !(useRadial && radial.IsEmpty),
+            SvgParsedGeometry outlines = lowering.LowerStrokePath(path, 2, false, white, stroke.Value.Color, white.Presentation.IsPainted && !(useLinear && linear.IsEmpty) && !(useRadial && radial.IsEmpty),
                 stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset,
                 stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, state.Budget);
             try
@@ -947,7 +947,7 @@ internal static class SvgLeafParser
         return frame.Clip.ClipRectangle(shifted);
     }
 
-    internal static SvgStroke? ParseRectangleStroke(SvgColor? color, string? widthValue, SvgAffineTransform transform, double x, double y, double width, double height, byte opacity, bool hasFill)
+    internal static SvgStroke? ParseRectangleStroke(SvgColor? color, string? widthValue, SvgAffineTransform transform, double width, double height, byte opacity, bool hasFill)
     {
         if (color is null) { return null; }
         if (!transform.IsTranslation || (hasFill && opacity != 255)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only rectangle strokes under translations, with opacity only when fill-less, are implemented.");

@@ -159,7 +159,7 @@ internal static class SvgDefinitionParser
         {
             bool marker = reader.LocalName == "marker";
             if (!marker) SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
-            InlineStyle sheet = SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken);
+            InlineStyle sheet = SvgDocumentStyleResolver.Resolve(reader, state, workCounter, cancellationToken);
             SvgPaintableElementContext markerContext = marker ? SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken) : default;
             SvgComputedStyle style = marker ? markerContext.ResolveStyle(reader) : SvgComputedStyleResolver.Resolve(reader, sheet, workCounter, cancellationToken);
             state.MarkerDefinition = marker ? SvgMarkerSyntax.Parse(reader, style, new(state.EffectiveFrame?.ViewportWidth ?? root.UserViewportWidth, state.EffectiveFrame?.ViewportHeight ?? root.UserViewportHeight), markerContext.InheritedTextStyle, markerContext.StyleSheet, workCounter, cancellationToken) : null;
