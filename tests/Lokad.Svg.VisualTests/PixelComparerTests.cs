@@ -85,6 +85,101 @@ public sealed class PixelComparerTests
     }
 
     [Fact]
+    public void Independent_decoder_reads_rgb_with_optional_palette_and_ancillary_chunks()
+    {
+        byte[] data = Compress([0, 10, 20, 30]);
+        byte[] png = CreatePng(("IHDR", Header(1, 1, 2)), ("PLTE", [10, 20, 30]),
+            ("tEXt", "key\0value"u8.ToArray()), ("IDAT", data[..2]), ("IDAT", data[2..]), ("IEND", []));
+
+        Assert.Equal(new byte[] { 10, 20, 30, 255 }, PngRgbaDecoder.Decode(png, 1).Pixels);
+    }
+
+    [Fact]
+    public void Independent_decoder_rejects_transparency_instead_of_comparing_it_as_opaque()
+    {
+        byte[] png = CreatePng(("IHDR", Header(1, 1, 2)), ("tRNS", [0, 10, 0, 20, 0, 30]),
+            ("IDAT", Compress([0, 10, 20, 30])), ("IEND", []));
+
+        Assert.Throws<NotSupportedException>(() => PngRgbaDecoder.Decode(png, 1));
+    }
+
+    [Theory]
+    [InlineData(10, 1)]
+    [InlineData(11, 1)]
+    [InlineData(12, 2)]
+    public void Independent_decoder_rejects_invalid_header_methods(int offset, byte value)
+    {
+        byte[] header = Header(1, 1, 6);
+        header[offset] = value;
+        byte[] png = CreatePng(("IHDR", header), ("IDAT", Compress([0, 10, 20, 30, 40])), ("IEND", []));
+
+        Assert.Throws<InvalidDataException>(() => PngRgbaDecoder.Decode(png, 1));
+    }
+
+    [Fact]
+    public void Independent_decoder_rejects_unknown_critical_chunks()
+    {
+        byte[] png = CreatePng(("IHDR", Header(1, 1, 6)), ("ABCD", []),
+            ("IDAT", Compress([0, 10, 20, 30, 40])), ("IEND", []));
+
+        Assert.Throws<NotSupportedException>(() => PngRgbaDecoder.Decode(png, 1));
+    }
+
+    [Theory]
+    [InlineData(0x7fffffffu)]
+    [InlineData(0x80000000u)]
+    [InlineData(0xffffffffu)]
+    public void Independent_decoder_rejects_oversized_chunk_lengths_without_overflow(uint length)
+    {
+        byte[] png = (byte[])OnePixelRgbaPng.Clone();
+        BinaryPrimitives.WriteUInt32BigEndian(png.AsSpan(8), length);
+
+        Assert.Throws<InvalidDataException>(() => PngRgbaDecoder.Decode(png, 1));
+    }
+
+    [Theory]
+    [InlineData(0u, 1u)]
+    [InlineData(1u, 0u)]
+    [InlineData(0xffffffffu, 1u)]
+    [InlineData(1u, 0x80000000u)]
+    public void Independent_decoder_rejects_invalid_dimensions_without_overflow(uint width, uint height)
+    {
+        byte[] png = CreatePng(("IHDR", Header(width, height, 6)), ("IEND", []));
+
+        Assert.Throws<InvalidDataException>(() => PngRgbaDecoder.Decode(png, int.MaxValue));
+    }
+
+    [Theory]
+    [InlineData(2u, 1u, 1)]
+    [InlineData(536870912u, 1u, int.MaxValue)]
+    [InlineData(1u, 536870911u, int.MaxValue)]
+    public void Independent_decoder_bounds_pixel_and_scanline_storage(uint width, uint height, int maximumPixels)
+    {
+        byte[] png = CreatePng(("IHDR", Header(width, height, 6)), ("IEND", []));
+
+        Assert.Throws<NotSupportedException>(() => PngRgbaDecoder.Decode(png, maximumPixels));
+    }
+
+    [Fact]
+    public void Independent_decoder_rejects_missing_or_out_of_order_chunks()
+    {
+        byte[] header = Header(1, 1, 6);
+        byte[] data = Compress([0, 10, 20, 30, 40]);
+        byte[][] invalid = [
+            CreatePng(("tEXt", []), ("IHDR", header), ("IDAT", data), ("IEND", [])),
+            CreatePng(("IDAT", data), ("IHDR", header), ("IEND", [])),
+            CreatePng(("IHDR", header), ("IHDR", header), ("IDAT", data), ("IEND", [])),
+            CreatePng(("IHDR", header), ("IEND", [])),
+            CreatePng(("IHDR", header), ("IDAT", data)),
+            CreatePng(("IHDR", header), ("IDAT", data[..2]), ("tEXt", []), ("IDAT", data[2..]), ("IEND", [])),
+            CreatePng(("IHDR", header), ("IDAT", data), ("PLTE", [10, 20, 30]), ("IEND", [])),
+            CreatePng(("IHDR", header), ("IDAT", data), ("IEND", []), ("tEXt", []))
+        ];
+
+        Assert.All(invalid, png => Assert.Throws<InvalidDataException>(() => PngRgbaDecoder.Decode(png, 1)));
+    }
+
+    [Fact]
     public void Independent_decoder_reads_production_encoder_output()
     {
         byte[] source = [10, 20, 30, 40, 50, 60, 70, 80];
@@ -431,35 +526,51 @@ public sealed class PixelComparerTests
     }
 
     private static byte[] CreateOnePixelRgbaPng()
+        => CreatePng(("IHDR", Header(1, 1, 6)), ("IDAT", Compress([0, 10, 20, 30, 40])), ("IEND", []));
+
+    private static byte[] Header(uint width, uint height, byte colorType)
+    {
+        byte[] header = new byte[13];
+        BinaryPrimitives.WriteUInt32BigEndian(header, width);
+        BinaryPrimitives.WriteUInt32BigEndian(header.AsSpan(4), height);
+        header[8] = 8;
+        header[9] = colorType;
+        return header;
+    }
+
+    private static byte[] Compress(ReadOnlySpan<byte> scanline)
+    {
+        using MemoryStream compressed = new();
+        using (ZLibStream zlib = new(compressed, CompressionLevel.NoCompression, true)) zlib.Write(scanline);
+        return compressed.ToArray();
+    }
+
+    private static byte[] CreatePng(params (string Type, byte[] Data)[] chunks)
     {
         using MemoryStream result = new();
         result.Write([137, 80, 78, 71, 13, 10, 26, 10]);
-        WriteChunk(result, "IHDR"u8, [0, 0, 0, 1, 0, 0, 0, 1, 8, 6, 0, 0, 0]);
-        using MemoryStream compressed = new();
-        using (ZLibStream zlib = new(compressed, CompressionLevel.NoCompression, true)) zlib.Write([0, 10, 20, 30, 40]);
-        WriteChunk(result, "IDAT"u8, compressed.ToArray());
-        WriteChunk(result, "IEND"u8, []);
+        foreach ((string type, byte[] data) in chunks) WriteChunk(result, System.Text.Encoding.ASCII.GetBytes(type), data);
         return result.ToArray();
-    }
 
-    private static void WriteChunk(Stream destination, ReadOnlySpan<byte> type, ReadOnlySpan<byte> data)
-    {
-        Span<byte> length = stackalloc byte[4];
-        BinaryPrimitives.WriteUInt32BigEndian(length, checked((uint)data.Length));
-        destination.Write(length);
-        destination.Write(type);
-        destination.Write(data);
-        uint crc = 0xffffffff;
-        foreach (byte value in type) crc = CrcStep(crc, value);
-        foreach (byte value in data) crc = CrcStep(crc, value);
-        BinaryPrimitives.WriteUInt32BigEndian(length, ~crc);
-        destination.Write(length);
-    }
+        static void WriteChunk(Stream destination, ReadOnlySpan<byte> type, ReadOnlySpan<byte> data)
+        {
+            Span<byte> length = stackalloc byte[4];
+            BinaryPrimitives.WriteUInt32BigEndian(length, checked((uint)data.Length));
+            destination.Write(length);
+            destination.Write(type);
+            destination.Write(data);
+            uint crc = 0xffffffff;
+            foreach (byte value in type) crc = CrcStep(crc, value);
+            foreach (byte value in data) crc = CrcStep(crc, value);
+            BinaryPrimitives.WriteUInt32BigEndian(length, ~crc);
+            destination.Write(length);
+        }
 
-    private static uint CrcStep(uint crc, byte value)
-    {
-        crc ^= value;
-        for (int bit = 0; bit < 8; bit++) crc = (crc >> 1) ^ ((crc & 1) == 0 ? 0u : 0xedb88320u);
-        return crc;
+        static uint CrcStep(uint crc, byte value)
+        {
+            crc ^= value;
+            for (int bit = 0; bit < 8; bit++) crc = (crc >> 1) ^ ((crc & 1) == 0 ? 0u : 0xedb88320u);
+            return crc;
+        }
     }
 }

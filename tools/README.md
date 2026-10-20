@@ -88,8 +88,10 @@ pixels have zero alpha; all partial-alpha differences fail. PNG compression need
 not match. JSON `PixelComparison` output includes changed pixels, maximum/mean/RMS
 error, separate alpha error and mismatch bounds.
 
-The independent decoder accepts bounded non-interlaced RGB8/RGBA8 PNGs. Format
-expansion must preserve CRC/decoded-size checks and remain independent of the
+The independent decoder accepts bounded non-interlaced RGB8/RGBA8 PNGs without
+`tRNS` transparency; convert these images to RGBA8 first. It rejects malformed
+headers/chunk ordering and unknown critical chunks, and checks CRCs and decoded
+storage sizes. Format expansion must remain independent of the
 production image decoder. Tolerance or candidate-driven reference replacement
 does not close an admitted failure.
 

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reject unsupported transparency and malformed PNG input in the independent
+  pixel comparer instead of reporting false equality or crashing on overflow.
 - Decouple the independent pixel comparer from the renderer and simplify memory
   probe reporting without changing CLI/report formats.
 - Remove abandoned rasterizer prototypes, unread parser/raster state and dormant

@@ -3,7 +3,7 @@ using System.IO.Compression;
 
 namespace Lokad.Svg.VisualDiff;
 
-/// <summary>Decodes the non-interlaced, 8-bit RGBA PNG subset used by the initial oracle.</summary>
+/// <summary>Independently decodes bounded, non-interlaced RGB8/RGBA8 PNGs without tRNS transparency.</summary>
 public static class PngRgbaDecoder
 {
     private static readonly byte[] Signature = [137, 80, 78, 71, 13, 10, 26, 10];
@@ -18,35 +18,57 @@ public static class PngRgbaDecoder
         int height = 0;
         int bytesPerPixel = 0;
         bool headerSeen = false;
+        bool paletteSeen = false;
+        bool dataSeen = false;
+        bool dataEnded = false;
         using MemoryStream compressed = new();
         while (position < input.Length)
         {
             if (input.Length - position < 12) throw new InvalidDataException("PNG chunk is truncated.");
-            int length = checked((int)BinaryPrimitives.ReadUInt32BigEndian(input[position..]));
-            if (length < 0 || input.Length - position - 12 < length) throw new InvalidDataException("PNG chunk length is invalid.");
+            uint declaredLength = BinaryPrimitives.ReadUInt32BigEndian(input[position..]);
+            if (declaredLength > (uint)(input.Length - position - 12)) throw new InvalidDataException("PNG chunk length is invalid.");
+            int length = (int)declaredLength;
             ReadOnlySpan<byte> type = input.Slice(position + 4, 4);
+            foreach (byte letter in type)
+                if (letter is not (>= (byte)'A' and <= (byte)'Z') and not (>= (byte)'a' and <= (byte)'z')) throw new InvalidDataException("PNG chunk type is invalid.");
+            if ((type[2] & 32) != 0) throw new InvalidDataException("PNG chunk type has an invalid reserved bit.");
             ReadOnlySpan<byte> data = input.Slice(position + 8, length);
             uint declaredCrc = BinaryPrimitives.ReadUInt32BigEndian(input.Slice(position + 8 + length, 4));
             if (declaredCrc != Crc32(type, data)) throw new InvalidDataException("PNG chunk CRC is invalid.");
+            if (!headerSeen && !type.SequenceEqual("IHDR"u8)) throw new InvalidDataException("PNG header must be the first chunk.");
+            if (dataSeen && !type.SequenceEqual("IDAT"u8)) dataEnded = true;
             if (type.SequenceEqual("IHDR"u8))
             {
                 if (headerSeen || length != 13) throw new InvalidDataException("PNG header is invalid.");
-                width = checked((int)BinaryPrimitives.ReadUInt32BigEndian(data));
-                height = checked((int)BinaryPrimitives.ReadUInt32BigEndian(data[4..]));
-                if (width <= 0 || height <= 0 || (long)width * height > maximumPixels || data[8] != 8 || data[12] != 0) throw new NotSupportedException("Only bounded non-interlaced RGB8/RGBA8 PNG images are supported.");
+                uint declaredWidth = BinaryPrimitives.ReadUInt32BigEndian(data);
+                uint declaredHeight = BinaryPrimitives.ReadUInt32BigEndian(data[4..]);
+                if (declaredWidth is 0 or > int.MaxValue || declaredHeight is 0 or > int.MaxValue) throw new InvalidDataException("PNG dimensions are invalid.");
+                width = (int)declaredWidth;
+                height = (int)declaredHeight;
+                if (data[10] != 0 || data[11] != 0 || data[12] > 1) throw new InvalidDataException("PNG header methods are invalid.");
+                if ((long)width * height > maximumPixels || data[8] != 8 || data[12] != 0) throw new NotSupportedException("Only bounded non-interlaced RGB8/RGBA8 PNG images are supported.");
                 bytesPerPixel = data[9] switch { 2 => 3, 6 => 4, _ => throw new NotSupportedException("Only bounded non-interlaced RGB8/RGBA8 PNG images are supported.") };
+                if ((long)width * height * 4 > Array.MaxLength || ((long)width * bytesPerPixel + 1) * height > Array.MaxLength) throw new NotSupportedException("PNG decoded storage exceeds the supported range.");
                 headerSeen = true;
+            }
+            else if (type.SequenceEqual("PLTE"u8))
+            {
+                if (paletteSeen || dataSeen || length == 0 || length > 768 || length % 3 != 0) throw new InvalidDataException("PNG palette is invalid.");
+                paletteSeen = true; // Optional suggested palettes do not change truecolor samples.
             }
             else if (type.SequenceEqual("IDAT"u8))
             {
-                if (!headerSeen) throw new InvalidDataException("PNG data precedes its header.");
+                if (dataEnded) throw new InvalidDataException("PNG data chunks must be consecutive.");
+                dataSeen = true;
                 compressed.Write(data);
             }
             else if (type.SequenceEqual("IEND"u8))
             {
-                if (length != 0 || position + length + 12 != input.Length) throw new InvalidDataException("PNG end chunk is invalid.");
+                if (!dataSeen || length != 0 || position + length + 12 != input.Length) throw new InvalidDataException("PNG end chunk is invalid.");
                 return Inflate(compressed, width, height, bytesPerPixel);
             }
+            else if (type.SequenceEqual("tRNS"u8)) throw new NotSupportedException("PNG tRNS transparency is not supported; use RGBA8.");
+            else if ((type[0] & 32) == 0) throw new NotSupportedException("PNG critical chunk is not supported.");
             position += length + 12;
         }
 
