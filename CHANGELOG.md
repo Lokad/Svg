@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Admit scanline scratch storage before allocation and omit unused orientation
+  arrays when explicit contour votes are supplied.
 - Reject malformed embedded PNG chunk types, separated image-data chunks and
   invalid palette/transparency ordering before rendering or publishing output.
 - Reuse coincident stroke tangent lookahead to keep long degenerate prefixes

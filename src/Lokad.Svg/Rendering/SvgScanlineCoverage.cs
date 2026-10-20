@@ -5,7 +5,7 @@ namespace Lokad.Svg.Rendering;
 /// <summary>Answers per-pixel coverage queries for one scanline row across retained device contours.</summary>
 /// <remarks>
 /// <para>Membership resolves before coverage: row preparation collects signed edge crossings and per-edge touched pixel ranges, sorts both by x, then sweeps per-contour signed winding into interval totals. A pixel evaluates through the shared fan path unless its square touches no contour edge (within an adaptive epsilon) and its interval total is zero; skipped pixels match a fan total of exactly zero under that epsilon discipline, while everything else keeps existing values bitwise. Roles weight nonzero magnitudes, signs weight even-odd magnitudes, and the role-less path accumulates signed winding exactly like the unwound fan sum.</para>
-/// <para>Ownership: construction reserves caller-charged scratch storage sized by ScratchByteCount and releases it through Dispose; this type allocates nothing else and holds no budget itself. Cancellation is observed while scanning edges, sorting crossings and sweeping intervals; MightCover is pure. Instances are single-threaded like the raster loops that own them, and queries assume ascending pixel order only for cache efficiency, never for correctness.</para>
+/// <para>Ownership: construction reserves scratch storage before allocating its arrays and releases the reservation through Dispose. Cancellation is observed while scanning edges, sorting crossings and sweeping intervals; MightCover is pure. Instances are single-threaded like the raster loops that own them, and queries assume ascending pixel order only for cache efficiency, never for correctness.</para>
 /// </remarks>
 internal ref struct SvgScanlineCoverage
 {
@@ -61,15 +61,6 @@ internal ref struct SvgScanlineCoverage
 
     public void Dispose() => _reservation?.Dispose();
 
-    /// <summary>Returns the caller-reserved scratch byte count for one fill with the given point and contour counts.</summary>
-    internal static long ScratchByteCount(int pointCount, int contourCount)
-    {
-        long bytes;
-        try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<double>(pointCount) + ParserCollectionMemory.GetArrayByteCount<int>(pointCount) + ParserCollectionMemory.GetArrayByteCount<int>(pointCount) + ParserCollectionMemory.GetArrayByteCount<int>(pointCount) + ParserCollectionMemory.GetArrayByteCount<int>(contourCount) + ParserCollectionMemory.GetArrayByteCount<int>(contourCount) + ParserCollectionMemory.GetArrayByteCount<double>(pointCount + 1) + ParserCollectionMemory.GetArrayByteCount<int>(pointCount + 1)); }
-        catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage storage exceeds the supported accounting range."); }
-        return bytes;
-    }
-
     /// <summary>Validates retained contours like the shared fan path, then reserves scanline scratch for one fill.</summary>
     /// <remarks>Validation mirrors the fan coverage guards exactly (partitioned ends, role counts and values) so malformed payloads fail identically; the returned setup cost covers validation, epsilon calibration and plain-mode orientation scoring for the caller work ledger.</remarks>
     internal static SvgScanlineCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, int xStart, int xEnd, RenderBudget budget, out long setupWork, CancellationToken cancellationToken)
@@ -97,27 +88,29 @@ internal ref struct SvgScanlineCoverage
             if (ay > maxAbs) maxAbs = ay;
         }
         double epsilon = Math.Max(0.000000001, maxAbs * 0.000000000000001);
-        int[] orientations = new int[ends.Length];
-        if (!hasVotes)
-        {
-            int start = 0;
-            for (int contour = 0; contour < ends.Length; contour++)
-            {
-                if ((contour & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
-                orientations[contour] = ContourOrientation(points, start, ends[contour]);
-                start = ends[contour];
-            }
-        }
+        int[] orientations;
         double[] crossX;
         int[] crossContour;
         int[] touchLo;
         int[] touchHi;
         double[] segmentX;
         int[] segmentTotal;
-        int[] winding = new int[ends.Length];
-        RenderBudget.BudgetReservation? scratch = points.Length == 0 && ends.Length == 0 ? null : budget.Reserve(ScratchByteCount(points.Length, ends.Length), SvgMemoryCategory.Surface);
+        int[] winding;
+        RenderBudget.BudgetReservation? scratch = points.Length == 0 && ends.Length == 0 ? null : budget.Reserve(ScratchByteCount(points.Length, ends.Length, hasVotes), SvgMemoryCategory.Surface);
         try
         {
+            orientations = hasVotes ? Array.Empty<int>() : new int[ends.Length];
+            if (!hasVotes)
+            {
+                int start = 0;
+                for (int contour = 0; contour < ends.Length; contour++)
+                {
+                    if ((contour & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
+                    orientations[contour] = ContourOrientation(points, start, ends[contour]);
+                    start = ends[contour];
+                }
+            }
+            winding = new int[ends.Length];
             crossX = new double[points.Length];
             crossContour = new int[points.Length];
             touchLo = new int[points.Length];
@@ -130,6 +123,19 @@ internal ref struct SvgScanlineCoverage
         catch { scratch?.Dispose(); throw; }
         setupWork = (long)points.Length + ends.Length;
         return new SvgScanlineCoverage(points, ends, votes, isEvenOdd, hasVotes, orientations, xStart, xEnd, epsilon, allFinite, crossX, crossContour, touchLo, touchHi, winding, segmentX, segmentTotal, scratch);
+
+        static long ScratchByteCount(int pointCount, int contourCount, bool hasVotes)
+        {
+            try
+            {
+                return checked(ParserCollectionMemory.GetArrayByteCount<double>(pointCount)
+                    + 3 * ParserCollectionMemory.GetArrayByteCount<int>(pointCount)
+                    + (hasVotes ? 1 : 2) * ParserCollectionMemory.GetArrayByteCount<int>(contourCount)
+                    + ParserCollectionMemory.GetArrayByteCount<double>(pointCount + 1)
+                    + ParserCollectionMemory.GetArrayByteCount<int>(pointCount + 1));
+            }
+            catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage storage exceeds the supported accounting range."); }
+        }
     }
 
     /// <summary>Returns the authored orientation sign of one closed contour ring.</summary>

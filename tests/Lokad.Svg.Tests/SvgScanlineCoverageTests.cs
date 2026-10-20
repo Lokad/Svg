@@ -5,6 +5,44 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgScanlineCoverageTests
 {
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Denied_scratch_storage_does_not_allocate_contour_arrays(bool voted)
+    {
+        const int count = 100_000;
+        SvgDevicePoint[] points = new SvgDevicePoint[count * 3];
+        int[] ends = new int[count];
+        int[] roles = new int[count];
+        for (int index = 0; index < count; index++)
+        {
+            points[index * 3] = new(0, 0); points[index * 3 + 1] = new(1, 0); points[index * 3 + 2] = new(0, 1);
+            ends[index] = index * 3 + 3; roles[index] = 1;
+        }
+        _ = Measure(points.AsSpan(0, 3), ends.AsSpan(0, 1), voted ? [1] : null);
+        _ = Measure(points, ends, voted ? roles : null);
+        long small = Measure(points.AsSpan(0, 3), ends.AsSpan(0, 1), voted ? [1] : null);
+        long large = Measure(points, ends, voted ? roles : null);
+        Assert.InRange(large, 0, small + 4096);
+
+        static long Measure(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, int[]? roles)
+        {
+            RenderBudget budget = new(1);
+            long before = GC.GetAllocatedBytesForCurrentThread();
+            try
+            {
+                using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, [], false, roles, 0, 1, budget, out _, CancellationToken.None);
+                Assert.Fail("The one-byte budget must reject scratch storage.");
+            }
+            catch (SvgException exception) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
+            long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+            Assert.Equal(0, budget.Snapshot().PeakBytes);
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+            Assert.Equal(1, budget.Snapshot().DeniedReservationCount);
+            return allocated;
+        }
+    }
+
     [Fact]
     public void Skipped_pixels_match_zero_fan_total_on_simple_triangle()
     {
