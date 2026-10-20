@@ -53,7 +53,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
 
     private static SvgDefinitionLeafSource Capture(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, bool unconstructed)
     {
-        SvgComputedStyle raw = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, context.WorkCounter, context.CancellationToken);
+        SvgComputedStyle raw = context.AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, context.WorkCounter, context.CancellationToken);
         SvgComputedStyle authored = new(Copy(raw.Color), Copy(raw.Fill), Copy(raw.FillOpacity), Copy(raw.Stroke),
             Copy(raw.Display), Copy(raw.Visibility), Copy(raw.Opacity), Copy(raw.FillRule))
         {

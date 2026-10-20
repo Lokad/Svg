@@ -12,7 +12,7 @@ internal static class SvgRenderedLeafParser
         if (!isEligible || reader.NamespaceURI != "http://www.w3.org/2000/svg") return false;
         if (state.DefinitionsDepth >= 0) return false;
         if (!ValidateLeafAttributes(reader, workCounter, cancellationToken)) return false;
-        SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
+        SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken).PrepareStyle(reader);
 
         string? textId = reader.LocalName == "text" ? reader.GetAttribute("id") : null;
         if (reader.LocalName == "text" && (state.RenderedGroupContent is not null || textId is not null))
@@ -20,7 +20,7 @@ internal static class SvgRenderedLeafParser
             if (textId is not null && (state.Definitions.TryGetValue(textId, out _) || state.GroupSnapshots.TryGetValue(textId, out _) || state.RenderedGroupDefinitions.TryGetValue(textId, out _)))
                 throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
             int sourceDepth = reader.Depth;
-            SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, workCounter, cancellationToken, true);
+            SvgComputedStyle style = context.AuthoredStyle ?? throw new InvalidOperationException("A rendered leaf requires prepared declarations.");
             bool displayed = SvgPresentationResolver.ParseDisplay(style.Display);
             bool? visible = style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true);
             SvgRetainedTextSource source = SvgRetainedTextSource.Capture(reader, context, state, limits);
@@ -82,6 +82,7 @@ internal static class SvgRenderedLeafParser
         SvgDocumentState state, SvgRenderLimits limits, RenderBudget budget, SvgFontSnapshot? fontSnapshot,
         ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        context = context.PrepareStyle(reader);
         SvgComputedStyle style = context.ResolveStyle(reader, reader.LocalName == "text");
         if (style.Filter is not string filter || filter.Trim() == "none")
             return ParseContent(reader, context, root, state, limits, budget, fontSnapshot, workCounter, cancellationToken);

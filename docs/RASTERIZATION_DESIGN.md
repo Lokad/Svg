@@ -25,6 +25,10 @@ is released. Partial construction and conversion failure release owned storage.
 reader workspace and collected styles across sizing, output mapping and scene
 lowering. Metadata traversal consumes the same work allowance as conversion;
 font acquisition retains its separate discovery lifetime.
+Rendered leaves prepare their cascaded declarations once and reuse that value
+through deferred paints, filters, markers, recording and geometry lowering.
+Instance inheritance and deferred opacity apply afterward, so retained sources
+can bind independently for each replay.
 [SvgPreparedDocument](../src/Lokad.Svg/SvgPreparedDocument.cs) retains one prepared
 scene/font operation and permits one conversion. Caller-owned font bytes remain
 immutable and valid for the documented snapshot lifetime.

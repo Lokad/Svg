@@ -76,7 +76,7 @@ internal static class SvgRenderedGroupSourceParser
     {
         if (state.RenderedGroupContent is not {} content) return;
         if (!SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName)) { content.AddUnsupported(); return; }
-        SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, context.WorkCounter, context.CancellationToken);
+        SvgComputedStyle style = context.AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, context.WorkCounter, context.CancellationToken);
         bool displayed = SvgPresentationResolver.ParseDisplay(style.Display);
         bool? visible = style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true);
         SvgDefinition source = new([], false, null, null) { LeafSource = SvgDefinitionLeafSource.CaptureUnconstructed(reader, context, state), SourceDisplayed = displayed, SourceVisible = visible };

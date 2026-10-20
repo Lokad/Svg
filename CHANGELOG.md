@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reuse each rendered leaf's cascaded declarations across parsing stages,
+  preserving instance inheritance and deferred paint opacity.
 - Share document styles and reader workspace across sizing, output mapping and
   scene lowering; include metadata preparation in the conversion work limit.
 - Compact retained geometry and share polygon raster traversal while preserving

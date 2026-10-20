@@ -8,6 +8,7 @@ namespace Lokad.Svg.Benchmarks;
 public class SvgSceneBenchmarks
 {
     private byte[] _rectangles = [];
+    private byte[] _inlineRectangles = [];
 
     [GlobalSetup]
     public void SetUp()
@@ -19,8 +20,14 @@ public class SvgSceneBenchmarks
                 .Append("' width='6' height='6'/>");
         }
         _rectangles = System.Text.Encoding.UTF8.GetBytes(svg.Append("</svg>").ToString());
+        _inlineRectangles = System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(_rectangles)
+            .Replace("<style>rect{fill:red}</style>", string.Empty, StringComparison.Ordinal)
+            .Replace("<rect ", "<rect style='fill:red' ", StringComparison.Ordinal));
     }
 
     [Benchmark]
     public int ConvertStyledRectangles() => SvgConverter.ConvertToPng(_rectangles, SvgRenderOptions.Default, CancellationToken.None).Length;
+
+    [Benchmark]
+    public int ConvertInlineStyledRectangles() => SvgConverter.ConvertToPng(_inlineRectangles, SvgRenderOptions.Default, CancellationToken.None).Length;
 }

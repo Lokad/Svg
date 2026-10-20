@@ -52,14 +52,18 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
         return new SvgPaintableElementContext(inheritedPresentation, inheritedTextStyle, inheritedStroke, SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken), namedColors, workCounter, cancellationToken, state.OutputMagnification, inheritedFillRule) { StrokeHostMap = state.OutputMap, InheritedClipRule = state.Groups.Count == 0 ? root.ClipRule : state.Groups[^1].ClipRule, RecordingScope = state.Groups.Count == 0 ? new(1) : state.Groups[^1].RecordingScope, LengthBases = lengthBases };
     }
 
-    internal SvgComputedStyle ResolveStyle(XmlReader reader)
+    /// <summary>Retains this leaf's cascaded declarations before applying instance inheritance or deferred opacity.</summary>
+    /// <remarks>The context stays local to this element or its retained source. Replay and paint overrides
+    /// keep their own inherited state; no reader, mutable cache or extra owner is retained.</remarks>
+    internal SvgPaintableElementContext PrepareStyle(XmlReader reader)
     {
-        SvgComputedStyle style = InheritedStroke.ApplyTo(AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, StyleSheet, WorkCounter, CancellationToken));
-        style = style.ResolveVectorEffect(InheritedPresentation.NonScalingStroke).ResolveOpacity(InheritedPresentation.ElementOpacity) with { PaintOrder = style.PaintOrder ?? InheritedPresentation.PaintOrder };
-        if (DeferPaintOpacity) style = style with { Opacity = null, ComputedOpacity = null };
-        if (style.Fill is null && InheritedPresentation.PaintServerFill is string fill) style = style with { Fill = fill };
-        return style.FillRule is null && InheritedFillRule is not null ? style with { FillRule = InheritedFillRule } : style;
+        return AuthoredStyle is not null ? this : this with
+        {
+            AuthoredStyle = SvgComputedStyleResolver.Resolve(reader, StyleSheet, WorkCounter, CancellationToken, reader.LocalName == "text")
+        };
     }
+
+    internal SvgComputedStyle ResolveStyle(XmlReader reader) => ResolveStyle(reader, false);
 
     internal SvgComputedStyle ResolveStyle(XmlReader reader, bool allowsDirectTextFontProperties)
     {
