@@ -6,6 +6,65 @@ namespace Lokad.Svg.Tests;
 
 public sealed class PngImageDecoderTests
 {
+    public static IEnumerable<object[]> InvalidChunkStructures()
+    {
+        List<TestChunk> rgb = ParseChunks(BuiltRgb());
+        foreach (string name in new[] { "1aAa", "a1Aa", "aa1a", "aaA1", "aaaa" })
+            yield return [name, BuildPng([rgb[0], new(name, []), rgb[1], rgb[2]])];
+        yield return ["ancillary-before-header", BuildPng([new("aaAa", []), .. rgb])];
+        yield return ["separated-image-data", BuildPng([rgb[0], rgb[1], new("aaAa", []), new("IDAT", []), rgb[2]])];
+        byte[] compressed = rgb[1].Data;
+        yield return ["separated-image-payload", BuildPng([rgb[0], new("IDAT", compressed[..3]), new("aaAa", []), new("IDAT", compressed[3..]), rgb[2]])];
+        yield return ["late-transparency", BuildPng([rgb[0], rgb[1], new("tRNS", [0, 255, 0, 0, 0, 0]), rgb[2]])];
+        yield return ["palette-after-transparency", BuildPng([rgb[0], new("tRNS", [0, 255, 0, 0, 0, 0]), new("PLTE", [255, 0, 0]), rgb[1], rgb[2]])];
+        List<TestChunk> indexed = ParseChunks(BuiltPalette());
+        yield return ["indexed-transparency-before-palette", BuildPng([indexed[0], new("tRNS", [128]), indexed[1], indexed[2], indexed[3]])];
+        yield return ["transparency-exceeds-palette", BuildPng([indexed[0], indexed[1], new("tRNS", [128, 128, 128]), indexed[2], indexed[3]])];
+        foreach (byte colorType in new byte[] { 0, 4 })
+            yield return ["grayscale-palette-" + colorType, BuildPng([new("IHDR", TestIhdr(1, 1, colorType)), new("PLTE", [255, 0, 0]), rgb[1], rgb[2]])];
+        yield return ["missing-image-data", BuildPng([rgb[0], rgb[2]])];
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidChunkStructures))]
+    public async Task Invalid_chunk_structures_fail_before_public_output(string scenario, byte[] png)
+    {
+        Assert.NotEmpty(scenario);
+        byte[] unchanged = png.ToArray();
+        RenderBudget budget = new(100_000);
+        SvgException error = Assert.Throws<SvgException>(() => Decode(png, budget, new(10_000), CancellationToken.None));
+        Assert.Equal(SvgErrorCode.MalformedInput, error.ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(unchanged, png);
+        byte[] svg = ImageSvg(Convert.ToBase64String(png));
+        foreach (OutputForm form in Enum.GetValues<OutputForm>())
+            Assert.Equal(SvgErrorCode.MalformedInput, (await Assert.ThrowsAsync<SvgException>(() => ConvertPublicPng(svg, form))).ErrorCode);
+    }
+
+    [Fact]
+    public async Task Adjacent_image_chunks_and_valid_ancillary_placement_preserve_public_pixels()
+    {
+        List<TestChunk> original = ParseChunks(BuiltRgb());
+        byte[] compressed = original[1].Data;
+        byte[] split = BuildPng([original[0], new("aaAa", []), new("IDAT", []), new("IDAT", compressed[..3]),
+            new("IDAT", []), new("IDAT", compressed[3..]), new("IDAT", []), new("aaAA", []), original[2]]);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), DecodeBuilt(split));
+        byte[] expected = (await ConvertPublicPng(ImageSvg(Convert.ToBase64String(BuiltRgb())), OutputForm.Owned)).ToArray();
+        foreach (OutputForm form in Enum.GetValues<OutputForm>())
+            Assert.Equal(expected, (await ConvertPublicPng(ImageSvg(Convert.ToBase64String(split)), form)).ToArray());
+    }
+
+    [Fact]
+    public void Palette_before_transparency_retains_truecolor_and_indexed_alpha()
+    {
+        List<TestChunk> rgb = ParseChunks(BuiltRgb());
+        byte[] truecolor = BuildPng([rgb[0], new("PLTE", [255, 0, 0]), new("tRNS", [0, 255, 0, 0, 0, 0]), rgb[1], rgb[2]]);
+        Assert.Equal(new SvgColor(255, 0, 0, 0), DecodeBuilt(truecolor));
+        List<TestChunk> indexed = ParseChunks(BuiltPalette());
+        indexed.Insert(2, new("tRNS", [128]));
+        Assert.Equal(new SvgColor(255, 0, 0, 128), DecodeBuilt(BuildPng(indexed)));
+    }
+
     [Theory]
     [InlineData(0)]
     [InlineData(2)]
@@ -251,7 +310,9 @@ public sealed class PngImageDecoderTests
     [Fact]
     public void Decodes_a_palette_pixel_through_palette_transparency()
     {
-        SvgColor color = Decode("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAABFaP0WAAAABlBMVEX/AAAA/wDSh+9xAAAADklEQVR4nGNgZGRgZAQAABIABVUZwSwAAAACdFJOU/+ACA+zagAAAABJRU5ErkJggg==");
+        SvgColor color = DecodeBuilt(BuildPng([
+            new("IHDR", TestIhdr(2, 2, 3)), new("PLTE", [255, 0, 0, 0, 255, 0]),
+            new("tRNS", [255, 128]), new("IDAT", ZlibCompress([0, 1, 1, 0, 1, 1])), new("IEND", [])]));
 
         Assert.Equal(new SvgColor(0, 255, 0, 128), color);
     }
@@ -259,7 +320,9 @@ public sealed class PngImageDecoderTests
     [Fact]
     public void Decodes_a_transparent_palette_pixel()
     {
-        SvgColor color = Decode("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAABFaP0WAAAABlBMVEX/AAAA/wDSh+9xAAAADklEQVR4nGNgZGRgZAQAABIABVUZwSwAAAACdFJOU/8A5bcwSgAAAABJRU5ErkJggg==");
+        SvgColor color = DecodeBuilt(BuildPng([
+            new("IHDR", TestIhdr(2, 2, 3)), new("PLTE", [255, 0, 0, 0, 255, 0]),
+            new("tRNS", [255, 0]), new("IDAT", ZlibCompress([0, 1, 1, 0, 1, 1])), new("IEND", [])]));
 
         Assert.Equal(new SvgColor(0, 255, 0, 0), color);
     }
@@ -442,7 +505,7 @@ public sealed class PngImageDecoderTests
     }
 
     [Fact]
-    public void Late_transparency_still_applies()
+    public void Rejects_late_transparency()
     {
         byte[] png = BuildPng(
         [
@@ -452,7 +515,7 @@ public sealed class PngImageDecoderTests
             new TestChunk("IEND", []),
         ]);
 
-        Assert.Equal(new SvgColor(128, 128, 128, 0), DecodeBuilt(png));
+        Assert.Equal(SvgErrorCode.MalformedInput, DecodeBuiltError(png));
     }
 
     [Fact]

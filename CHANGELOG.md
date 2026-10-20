@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reject malformed embedded PNG chunk types, separated image-data chunks and
+  invalid palette/transparency ordering before rendering or publishing output.
 - Reuse coincident stroke tangent lookahead to keep long degenerate prefixes
   within linear work while preserving native outlines and cap behavior.
 - Deduplicate font-pack fallback names in linear time while retaining their

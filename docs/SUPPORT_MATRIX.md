@@ -136,7 +136,9 @@ Resource attribute/declaration locations have distinct boundaries:
 
 PNG decoding supports non-interlaced 8-bit RGB, RGBA, grayscale, grayscale-alpha
 and indexed images, including tRNS and sBIT when every channel retains eight
-significant bits. Chunk ordering, CRCs and bounded decompression are validated.
+significant bits. Chunk names/reserved bits, ordering, palette/transparency
+relationships, CRCs and bounded decompression are validated. IDAT chunks must be
+consecutive; transparency must precede image data and follow any palette.
 Image placement supports finite geometry/viewBox percentages, meet/slice
 alignments, `preserveAspectRatio="none"` and general affine maps.
 

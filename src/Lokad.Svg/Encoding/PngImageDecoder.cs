@@ -61,6 +61,7 @@ internal static class PngImageDecoder
         byte[]? transparent = null;
         byte[]? palette = null;
         bool seenImageData = false;
+        bool imageDataEnded = false;
         bool seenSignificantBits = false;
         using var compressed = new MemoryStream();
         using var storage = new WorkingStorage(budget);
@@ -75,11 +76,17 @@ internal static class PngImageDecoder
             int length = BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(position, 4));
             if (length < 0 || length > png.Length - position - 12) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data has an invalid chunk length.");
             ReadOnlySpan<byte> type = png.Span.Slice(position + 4, 4);
+            foreach (byte letter in type)
+                if (letter is not (>= (byte)'A' and <= (byte)'Z') and not (>= (byte)'a' and <= (byte)'z'))
+                    throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data has an invalid chunk type.");
+            if ((type[2] & 0x20) != 0) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data has an invalid chunk-type reserved bit.");
             ReadOnlySpan<byte> data = png.Span.Slice(position + 8, length);
             uint expectedCrc = BinaryPrimitives.ReadUInt32BigEndian(png.Span.Slice(position + 8 + length, 4));
             workCounter.ConsumeBytes(length, cancellationToken);
             if (ComputeCrc(type, data) != expectedCrc) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data fails its chunk integrity check.");
             if (seenEnd) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data continues after its end chunk.");
+            if (!seenHeader && !type.SequenceEqual("IHDR"u8)) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data must start with its header chunk.");
+            if (seenImageData && !type.SequenceEqual("IDAT"u8)) imageDataEnded = true;
             if (type.SequenceEqual("IHDR"u8))
             {
                 if (seenHeader || position != PngSignature.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data misplaces its header chunk.");
@@ -101,7 +108,7 @@ internal static class PngImageDecoder
             }
             else if (type.SequenceEqual("IDAT"u8))
             {
-                if (!seenHeader || seenEnd) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data misplaces its image data.");
+                if (imageDataEnded || isPaletteType && palette is null) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data misplaces its image data.");
                 if (length > 0)
                 {
                     compressedLength += length;
@@ -113,7 +120,7 @@ internal static class PngImageDecoder
             }
             else if (type.SequenceEqual("PLTE"u8))
             {
-                if (!seenHeader || seenEnd || seenImageData) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data misplaces its palette chunk.");
+                if (seenImageData || transparent is not null || channels <= 2 && !isPaletteType) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data misplaces its palette chunk.");
                 if (palette is not null) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data repeats its palette chunk.");
                 if (length == 0 || length % 3 != 0 || length > 768) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data has a malformed palette chunk.");
                 storage.ReservePalette(length);
@@ -122,15 +129,17 @@ internal static class PngImageDecoder
             }
             else if (type.SequenceEqual("IEND"u8))
             {
-                if (!seenHeader || seenEnd) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data misplaces its end chunk.");
+                if (!seenImageData) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data misplaces its end chunk.");
                 if (length != 0) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data has a malformed end chunk.");
                 seenEnd = true;
             }
             else if (type.SequenceEqual("tRNS"u8))
             {
-                if (!seenHeader || seenEnd) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data misplaces its transparency chunk.");
+                if (seenImageData || isPaletteType && palette is null) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data misplaces its transparency chunk.");
                 if (transparent is not null) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data repeats its transparency chunk.");
                 ValidateTransparencyLength(data, channels, isPaletteType);
+                if (isPaletteType && palette is not null && length > palette.Length / 3)
+                    throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG transparency exceeds its palette entry count.");
                 if (length > 0)
                 {
                     storage.ReserveTransparency(length);
@@ -148,7 +157,7 @@ internal static class PngImageDecoder
             }
             else if (type.SequenceEqual("sBIT"u8))
             {
-                if (!seenHeader || seenSignificantBits || seenImageData || palette is not null)
+                if (seenSignificantBits || seenImageData || palette is not null)
                     throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data misplaces or repeats its significant-bit chunk.");
                 if (length != (isPaletteType ? 3 : channels))
                     throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data has a malformed significant-bit chunk.");
