@@ -107,8 +107,7 @@
       "width": 640,
       "height": 520,
       "background": "transparent",
-      "role": "fidelity",
-      "remainingGap": "Root viewBox width enlargement is repaired by the inv-142 host-coordinate stroke change. A separate native conic coverage discrepancy remains at 98 pixels, maximum alpha error 7, against the unchanged 640x520 reference; retain under G3/G4."
+      "role": "fidelity"
     },
     {
       "id": "wide-circle-small",

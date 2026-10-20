@@ -188,8 +188,7 @@
       "reference": "references/translated-rectangle-source.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original numeric mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "remainingGap": "Retain the existing 85-pixel native rectangle-fringe difference under G3/G4."
+      "role": "fidelity"
     },
     {
       "id": "translated-large-blur",

@@ -449,15 +449,7 @@
     "byteIdenticalToFrozenReferences": false
   },
   "rendererQualification": {
-    "status": "document exact; composite control mask pending",
-    "documentsComplete": 1,
-    "documentsDeclared": 1,
-    "controlsExact": 6,
-    "controlsDeclared": 7,
-    "fontAdmission": "ordered bounded pair-list/class kerning and USE_MY_METRICS components",
-    "remainingDocumentBlocker": "none for the declared original output",
-    "additionalControlBlocker": "Windows native composite-accent mask fidelity",
-    "linuxControlsExact": 7,
-    "windowsControlsExact": 6
+    "status": "The seven retained controls require exact Windows/Linux pixels; wider composite coverage is outside this bank.",
+    "fontAdmission": "ordered bounded pair-list/class kerning and USE_MY_METRICS components"
   }
 }

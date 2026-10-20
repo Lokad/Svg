@@ -356,7 +356,7 @@ internal static partial class OpenTypeFont
         if (header is not OpenTypeGlyphHeader value) throw new InvalidOperationException("A nonempty glyph did not return a header.");
         if (value.IsComposite)
         {
-            if (!allowComposite) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Composite TrueType glyph decoding is not implemented yet.");
+            if (!allowComposite) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A composite glyph cannot be decoded as a simple glyph.");
             return new(new([], 0, glyph), null, value);
         }
         if (value.ContourCount > MaximumSimpleGlyphContours) throw new SvgException(SvgErrorCode.LimitExceeded, "The simple glyph contour count exceeds the supported limit.");
