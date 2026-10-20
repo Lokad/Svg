@@ -2,7 +2,4 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="../../src/Lokad.Svg/Lokad.Svg.csproj" />
-  </ItemGroup>
 </Project>
