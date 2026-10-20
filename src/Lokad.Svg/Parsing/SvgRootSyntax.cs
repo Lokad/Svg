@@ -11,7 +11,7 @@ internal readonly record struct SvgRootLength(double Value, bool IsPercentage)
     internal double Resolve(double? viewportSide, double defaultSide)
     {
         if (!IsPercentage) return Value;
-        double resolved = (viewportSide ?? defaultSide) * Value / 100;
+        double resolved = SvgGeometrySyntax.MultiplyDivide(viewportSide ?? defaultSide, Value, 100);
         if (!double.IsFinite(resolved)) throw new SvgException(SvgErrorCode.LimitExceeded, "Percentage root dimensions exceed the admitted numeric range.");
         return resolved;
     }

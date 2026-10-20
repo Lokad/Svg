@@ -77,11 +77,24 @@ internal static class SvgGeometrySyntax
             if (baseValue is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Percentage viewport dimensions require known parent dimensions.");
             ReadOnlySpan<char> number = token[..^1].TrimEnd();
             if (!double.TryParse(number, NumberStyles.Float, CultureInfo.InvariantCulture, out double percent) || !double.IsFinite(percent)) throw new SvgException(SvgErrorCode.MalformedInput, "Percentage viewport dimensions must be finite numbers.");
-            double resolved = percent * baseValue.Value / 100;
+            double resolved = MultiplyDivide(percent, baseValue.Value, 100);
             if (!double.IsFinite(resolved)) throw new SvgException(SvgErrorCode.LimitExceeded, "Percentage viewport dimensions exceed the admitted numeric range.");
             return resolved;
         }
         return ParseRectangleCoordinate(value);
+    }
+
+    /// <summary>Computes a finite length times a finite factor over a positive divisor, retaining ordinary rounding while avoiding intermediate range loss.</summary>
+    internal static double MultiplyDivide(double length, double factor, double divisor)
+    {
+        double product = length * factor;
+        if (double.IsNormal(product) || length == 0 || factor == 0) return product / divisor;
+        int lengthExponent = Math.ILogB(length);
+        int factorExponent = Math.ILogB(factor);
+        int divisorExponent = Math.ILogB(divisor);
+        double fraction = Math.ScaleB(length, -lengthExponent) * (Math.ScaleB(factor, -factorExponent)
+            / Math.ScaleB(divisor, -divisorExponent));
+        return Math.ScaleB(fraction, lengthExponent + factorExponent - divisorExponent);
     }
     /// <summary>Parses one finite direct-text coordinate without the rectangle fast path's quarter-pixel restriction.</summary>
     internal static double ParseTextCoordinate(string value)

@@ -29,13 +29,13 @@ internal static class SvgDocumentSizing
             {
                 if (width is not null && height is null)
                 {
-                    logicalHeight = logicalWidth * box.Height / box.Width;
+                    logicalHeight = SvgGeometrySyntax.MultiplyDivide(logicalWidth, box.Height, box.Width);
                     heightSource = SvgDimensionSource.AspectRatio;
                     heightFallback = widthFallback;
                 }
                 else if (height is not null && width is null)
                 {
-                    logicalWidth = logicalHeight * box.Width / box.Height;
+                    logicalWidth = SvgGeometrySyntax.MultiplyDivide(logicalHeight, box.Width, box.Height);
                     widthSource = SvgDimensionSource.AspectRatio;
                     widthFallback = heightFallback;
                 }

@@ -7,6 +7,46 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgDocumentDimensionsTests
 {
     [Theory]
+    [InlineData("width='1e308'", "100 100", 1e308)]
+    [InlineData("height='1e308'", "100 100", 1e308)]
+    [InlineData("width='1e-300'", "1e-38 1e-38", 1e-300)]
+    [InlineData("height='1e-300'", "1e-38 1e-38", 1e-300)]
+    [InlineData("width='1e-280'", "1e-38 1e-38", 1e-280)]
+    public void Aspect_ratio_sizing_avoids_intermediate_range_loss(string dimension, string box, double expected)
+    {
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes($"<svg xmlns='http://www.w3.org/2000/svg' {dimension} viewBox='0 0 {box}'/>");
+        SvgDocumentDimensions result = SvgConverter.InspectDimensions(svg, SvgRenderOptions.Default, CancellationToken.None);
+        Assert.Equal(new SvgViewport(expected, expected), result.LogicalViewport);
+    }
+
+    [Fact]
+    public void Percentage_sizing_can_fit_a_large_finite_viewport()
+    {
+        SvgRenderOptions options = new(new SvgViewport(1e308, 1e308), 1, SvgColor.Transparent,
+            SvgRenderLimits.Default, null, new(1, 1, null));
+        byte[] plain = "<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray();
+        byte[] percentage = "<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'/>"u8.ToArray();
+        Assert.Equal(new SvgViewport(1e308, 1e308), SvgConverter.InspectDimensions(percentage, options, CancellationToken.None).LogicalViewport);
+        Assert.Equal(SvgConverter.ConvertToPng(plain, options, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(percentage, options, CancellationToken.None).ToArray());
+        Assert.Equal(1e308, SvgGeometrySyntax.ParseViewportDimension("100%", 1e308));
+        Assert.Equal(-1e308, SvgGeometrySyntax.ParseViewportDimension("-100%", 1e308));
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+            SvgGeometrySyntax.ParseViewportDimension("10000%", 1e308)).ErrorCode);
+    }
+
+    [Theory]
+    [InlineData("width='1e308' viewBox='0 0 1 100'", SvgErrorCode.LimitExceeded)]
+    [InlineData("height='1e308' viewBox='0 0 100 1'", SvgErrorCode.LimitExceeded)]
+    [InlineData("width='1e-320' viewBox='0 0 1e38 1e-38'", SvgErrorCode.MalformedInput)]
+    public void Actual_sizing_range_failures_keep_their_error_category(string attributes, SvgErrorCode expected)
+    {
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes($"<svg xmlns='http://www.w3.org/2000/svg' {attributes}/>");
+        Assert.Equal(expected, Assert.Throws<SvgException>(() => SvgConverter.InspectDimensions(svg,
+            SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
+    }
+
+    [Theory]
     [InlineData("1e2")]
     [InlineData("1E2")]
     [InlineData("1e+2")]
