@@ -10,13 +10,9 @@ internal static class CmapLookupProbe
         ArgumentNullException.ThrowIfNull(callback);
         Action? previous = Callback.Value;
         Callback.Value = callback;
-        return new Restoration(previous);
+        return new SvgProbeScope<Action>(Callback, previous);
     }
 
     internal static void Started() => Callback.Value?.Invoke();
 
-    private sealed class Restoration(Action? previous) : IDisposable
-    {
-        public void Dispose() => Callback.Value = previous;
-    }
 }

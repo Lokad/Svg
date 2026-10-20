@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Share document styles and reader workspace across sizing, output mapping and
+  scene lowering; include metadata preparation in the conversion work limit.
+- Compact retained geometry and share polygon raster traversal while preserving
+  native paint/coverage rules. Remove obsolete transform and solid-only PNG paths.
 - Preserve whole-grid conic scan precision and flat-minimum smart midpoints,
   including explicit split outlines and reversed counter-arcs.
 - Normalize integral turning glyph profiles by scan direction, preserving

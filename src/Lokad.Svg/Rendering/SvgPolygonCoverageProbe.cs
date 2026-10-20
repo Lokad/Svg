@@ -13,7 +13,7 @@ internal static class SvgPolygonCoverageProbe
         ArgumentNullException.ThrowIfNull(onFanEvaluated);
         Action? previous = CallbackForCurrentExecution.Value;
         CallbackForCurrentExecution.Value = onFanEvaluated;
-        return new Scope(previous);
+        return new SvgProbeScope<Action>(CallbackForCurrentExecution, previous);
     }
 
     /// <summary>Runs the execution-context callback cached on the current thread; unarmed evaluations avoid AsyncLocal lookup.</summary>
@@ -22,15 +22,4 @@ internal static class SvgPolygonCoverageProbe
         CallbackForCurrentThread?.Invoke();
     }
 
-    private sealed class Scope(Action? previous) : IDisposable
-    {
-        private Action? _previous = previous;
-        private int _disposed;
-
-        public void Dispose()
-        {
-            if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
-            CallbackForCurrentExecution.Value = Interlocked.Exchange(ref _previous, null);
-        }
-    }
 }

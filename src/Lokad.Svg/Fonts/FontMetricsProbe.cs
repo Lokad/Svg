@@ -10,7 +10,7 @@ internal static class FontMetricsProbe
         ArgumentNullException.ThrowIfNull(callback);
         Action? previous = Callback.Value;
         Callback.Value = callback;
-        return new Restoration(previous);
+        return new SvgProbeScope<Action>(Callback, previous);
     }
 
     internal static void TableRecordVisited()
@@ -20,8 +20,4 @@ internal static class FontMetricsProbe
         callback?.Invoke();
     }
 
-    private sealed class Restoration(Action? previous) : IDisposable
-    {
-        public void Dispose() => Callback.Value = previous;
-    }
 }

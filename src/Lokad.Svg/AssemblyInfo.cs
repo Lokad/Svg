@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
 
-// The budget ledger has arithmetic invariants that cannot be established through
-// the unimplemented public renderer. Keep this narrow test seam source-level.
+// Internal validation and probes observe ownership and numerical invariants
+// without adding public diagnostic APIs. Keep these test seams source-level.
 [assembly: InternalsVisibleTo("Lokad.Svg.Tests")]
 [assembly: InternalsVisibleTo("Lokad.Svg.VisualTests")]
 [assembly: InternalsVisibleTo("Lokad.Svg.MemoryProbe")]

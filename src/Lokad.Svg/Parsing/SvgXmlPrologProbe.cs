@@ -11,22 +11,9 @@ internal static class SvgXmlPrologProbe
         ArgumentNullException.ThrowIfNull(onCheckpoint);
         Action<int>? previous = Observer.Value;
         Observer.Value = onCheckpoint;
-        return new Scope(previous);
+        return new SvgProbeScope<Action<int>>(Observer, previous);
     }
 
     internal static void Checkpoint(int position) => Observer.Value?.Invoke(position);
 
-    private sealed class Scope(Action<int>? previous) : IDisposable
-    {
-        private Action<int>? _previous = previous;
-        private bool _disposed;
-
-        public void Dispose()
-        {
-            if (_disposed) return;
-            Observer.Value = _previous;
-            _previous = null;
-            _disposed = true;
-        }
-    }
 }

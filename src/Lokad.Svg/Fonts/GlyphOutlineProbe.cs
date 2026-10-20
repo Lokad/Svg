@@ -12,7 +12,7 @@ internal static class GlyphOutlineProbe
         ArgumentNullException.ThrowIfNull(callback);
         Action? previous = Callback.Value;
         Callback.Value = callback;
-        return new Scope(previous);
+        return new SvgProbeScope<Action>(Callback, previous);
     }
 
     internal static void SegmentTransformed()
@@ -23,15 +23,4 @@ internal static class GlyphOutlineProbe
         callback();
     }
 
-    private sealed class Scope(Action? previous) : IDisposable
-    {
-        private Action? _previous = previous;
-        private int _disposed;
-
-        public void Dispose()
-        {
-            if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
-            Callback.Value = Interlocked.Exchange(ref _previous, null);
-        }
-    }
 }

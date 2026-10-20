@@ -32,7 +32,7 @@ internal static class GlyphDecoderBudgetProbe
         ArgumentNullException.ThrowIfNull(callback);
         Action<GlyphDecoderBudgetPhase, RenderBudgetSnapshot>? previous = Callback.Value;
         Callback.Value = callback;
-        return new Scope(previous);
+        return new SvgProbeScope<Action<GlyphDecoderBudgetPhase, RenderBudgetSnapshot>>(Callback, previous);
     }
 
     internal static void Reserved(GlyphDecoderBudgetPhase phase, RenderBudget? budget)
@@ -41,10 +41,4 @@ internal static class GlyphDecoderBudgetProbe
         Callback.Value?.Invoke(phase, budget.Snapshot());
     }
 
-    private sealed class Scope(Action<GlyphDecoderBudgetPhase, RenderBudgetSnapshot>? previous) : IDisposable
-    {
-        private Action<GlyphDecoderBudgetPhase, RenderBudgetSnapshot>? _previous = previous;
-
-        public void Dispose() => Callback.Value = Interlocked.Exchange(ref _previous, null);
-    }
 }

@@ -15,7 +15,7 @@ internal static class GlyphCoverageProbe
         ArgumentNullException.ThrowIfNull(onStarted);
         Action? previous = CallbackForCurrentExecution.Value;
         CallbackForCurrentExecution.Value = onStarted;
-        return new Scope(previous);
+        return new SvgProbeScope<Action>(CallbackForCurrentExecution, previous);
     }
 
     /// <summary>Consumes the armed callback before coverage samples begin.</summary>
@@ -27,15 +27,4 @@ internal static class GlyphCoverageProbe
         callback();
     }
 
-    private sealed class Scope(Action? previous) : IDisposable
-    {
-        private Action? _previous = previous;
-        private int _disposed;
-
-        public void Dispose()
-        {
-            if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
-            CallbackForCurrentExecution.Value = Interlocked.Exchange(ref _previous, null);
-        }
-    }
 }

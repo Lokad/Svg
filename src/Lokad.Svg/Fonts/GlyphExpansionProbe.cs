@@ -11,7 +11,7 @@ internal static class GlyphExpansionProbe
         ArgumentNullException.ThrowIfNull(callback);
         Action? previous = Callback.Value;
         Callback.Value = callback;
-        return new Scope(previous);
+        return new SvgProbeScope<Action>(Callback, previous);
     }
 
     /// <summary>Observes every expansion entry without changing the one-shot cancellation callback.</summary>
@@ -20,7 +20,7 @@ internal static class GlyphExpansionProbe
         ArgumentNullException.ThrowIfNull(observer);
         Action? previous = Observer.Value;
         Observer.Value = observer;
-        return new ObserverScope(previous);
+        return new SvgProbeScope<Action>(Observer, previous);
     }
 
     internal static void Started()
@@ -31,13 +31,4 @@ internal static class GlyphExpansionProbe
         callback?.Invoke();
     }
 
-    private sealed class Scope(Action? previous) : IDisposable
-    {
-        public void Dispose() => Callback.Value = previous;
-    }
-
-    private sealed class ObserverScope(Action? previous) : IDisposable
-    {
-        public void Dispose() => Observer.Value = previous;
-    }
 }

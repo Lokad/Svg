@@ -21,9 +21,17 @@ The [support matrix](SUPPORT_MATRIX.md) owns public boundaries;
 Forward definitions resolve after registration. Resource references borrow their
 owning scene; sealed child scenes retain the storage needed after parser staging
 is released. Partial construction and conversion failure release owned storage.
+[Document preparation](../src/Lokad.Svg/Parsing/SvgDocumentPreparation.cs) shares
+reader workspace and collected styles across sizing, output mapping and scene
+lowering. Metadata traversal consumes the same work allowance as conversion;
+font acquisition retains its separate discovery lifetime.
 [SvgPreparedDocument](../src/Lokad.Svg/SvgPreparedDocument.cs) retains one prepared
 scene/font operation and permits one conversion. Caller-owned font bytes remain
 immutable and valid for the documented snapshot lifetime.
+
+Scene geometry keeps inline primitive values and one typed reference payload,
+rather than a reference slot for every paint/geometry variant. The payload owns
+its resource reservations; authored-path ownership remains separate.
 
 ## Geometry and native raster routes
 
@@ -36,6 +44,10 @@ Flattening too early changes curvature, bounds and fringe coverage.
 with winding intervals and native fixed-point advancement. Convex, compound and
 clipped paths retain their own eligibility checks. Rectangle, frame, hairline and
 fallback routes remain where their numerical behavior differs.
+
+[Polygon traversal](../src/Lokad.Svg/SvgConverter.PolygonRaster.cs) shares analytic/
+fallback preparation, row work, fringe bounds and scratch ownership across solid,
+linear, radial and pattern paints. Sampling and paint arithmetic stay specialized.
 
 Whole-path bounds select mask versus direct/run painting; clipped bitmap bounds
 limit storage. Direct paint events and pending additive runs remain distinct.

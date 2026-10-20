@@ -12,7 +12,7 @@ internal static class BackgroundInitializationProbe
         ArgumentNullException.ThrowIfNull(onCancellationObserved);
         Callbacks? previous = CallbacksForCurrentExecution.Value;
         CallbacksForCurrentExecution.Value = new Callbacks(onStarted, onCancellationObserved);
-        return new Scope(previous);
+        return new SvgProbeScope<Callbacks>(CallbacksForCurrentExecution, previous);
     }
 
     /// <summary>Records that opaque-background initialization has started and consumes the start callback.</summary>
@@ -41,14 +41,4 @@ internal static class BackgroundInitializationProbe
         internal bool CancellationObserved { get; set; }
     }
 
-    private sealed class Scope(Callbacks? previous) : IDisposable
-    {
-        private Callbacks? _previous = previous;
-
-        public void Dispose()
-        {
-            Callbacks? previous = Interlocked.Exchange(ref _previous, null);
-            CallbacksForCurrentExecution.Value = previous;
-        }
-    }
 }
