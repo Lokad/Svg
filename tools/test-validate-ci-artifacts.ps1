@@ -80,8 +80,8 @@ function Write-Fingerprint([string] $Directory, [string] $RunId, [string[]] $Can
     $fingerprint | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $Directory "pinned-chrome-smoke-$RunId.json") -NoNewline -Encoding utf8
 }
 
-function Invoke-Validator([string] $ChromeDirectory, [string] $MemoryDirectory) {
-    return & $validator -Platform $Platform -ChromeDirectory $ChromeDirectory -MemoryDirectory $MemoryDirectory 2>&1
+function Invoke-Validator([string] $ChromeDirectory, [string] $MemoryDirectory, [switch] $RequireCurrentHost) {
+    return & $validator -Platform $Platform -ChromeDirectory $ChromeDirectory -MemoryDirectory $MemoryDirectory -RequireCurrentHost:$RequireCurrentHost 2>&1
 }
 
 $runId = [Guid]::NewGuid().ToString('N')
@@ -110,6 +110,7 @@ foreach ($name in $goodNames) {
 }
 Write-Fingerprint $goodDirectory $runId $goodNames $goodHashes
 Invoke-Validator $goodDirectory $memoryDirectory | Out-Null
+Invoke-Validator $goodDirectory $memoryDirectory -RequireCurrentHost | Out-Null
 
 $pixelDirectory = Join-Path $runDirectory 'chrome-pixel-mismatch'
 New-Item -ItemType Directory -Force -Path $pixelDirectory | Out-Null
@@ -318,4 +319,66 @@ Assert-MemoryRejects 'memory-host-mismatch' '*host runtime framework*' 'a mismat
     param($summary)
     $summary.hostRuntimeFramework = '.NET 0.0.0'
 }
+
+# Downloaded artifacts carry their producing environment, independently of this reviewer.
+$remoteChrome = Join-Path $runDirectory 'chrome-remote-worker'
+$remoteFingerprintPath = Copy-ChromeFingerprint $remoteChrome
+$remoteFingerprint = Get-Content -LiteralPath $remoteFingerprintPath -Raw | ConvertFrom-Json
+$remoteOs = if ($Platform -eq 'Windows') { 'Microsoft Windows Server 2025 (recorded worker)' } else { 'Ubuntu 24.04.3 LTS (recorded worker)' }
+$remoteFingerprint.operatingSystem = $remoteOs
+$remoteFingerprint.hostRuntimeFramework = '.NET 9.0.7'
+$remoteFingerprint.captureToolRuntimeFramework = '.NET 10.0.8'
+$remoteFingerprint.dotnetRuntimes = @('10.0.8')
+$remoteFingerprint | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $remoteFingerprintPath -NoNewline -Encoding utf8
+$remoteMemory = Join-Path $runDirectory 'memory-remote-worker'
+$remoteSummaryPath = Copy-MemorySummary $remoteMemory
+$remoteSummary = Get-Content -LiteralPath $remoteSummaryPath.FullName -Raw | ConvertFrom-Json
+$remoteSummary.hostRuntimeFramework = '.NET 9.0.7'
+$remoteSummary.dotnetRuntimes = @('10.0.8')
+$remoteSummary.runtimeFingerprint.operatingSystem = $remoteOs
+$remoteSummary.runtimeFingerprint.runtimeFramework = '.NET 10.0.8'
+foreach ($entry in $remoteSummary.reports) {
+    $entry.report.operatingSystem = $remoteOs
+    $entry.report.runtimeFramework = '.NET 10.0.8'
+}
+$remoteSummary | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $remoteSummaryPath.FullName -NoNewline -Encoding utf8
+Invoke-Validator $remoteChrome $remoteMemory | Out-Null
+try { Invoke-Validator $remoteChrome $remoteMemory -RequireCurrentHost | Out-Null; throw 'Current-host validation accepted a different worker.' }
+catch { if ($_.Exception.Message -like 'Current-host validation accepted*' -or "$_" -notlike '*operating system*') { throw } }
+
+$remoteFingerprint.operatingSystem = [Runtime.InteropServices.RuntimeInformation]::OSDescription
+$remoteSummary.runtimeFingerprint.operatingSystem = $remoteFingerprint.operatingSystem
+foreach ($entry in $remoteSummary.reports) { $entry.report.operatingSystem = $remoteFingerprint.operatingSystem }
+$remoteFingerprint | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $remoteFingerprintPath -NoNewline -Encoding utf8
+$remoteSummary | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $remoteSummaryPath.FullName -NoNewline -Encoding utf8
+Invoke-Validator $remoteChrome $remoteMemory | Out-Null
+try { Invoke-Validator $remoteChrome $remoteMemory -RequireCurrentHost | Out-Null; throw 'Current-host validation accepted a different runtime.' }
+catch { if ($_.Exception.Message -like 'Current-host validation accepted*' -or "$_" -notlike '*host runtime framework*') { throw } }
+
+$remoteFingerprint.hostRuntimeFramework = 'invalid-runtime'
+$remoteFingerprint | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $remoteFingerprintPath -NoNewline -Encoding utf8
+Assert-ValidatorRejects $remoteChrome $remoteMemory '*not a .NET runtime framework*' 'a malformed recorded host runtime'
+
+# A reviewer can also inspect the other platform's complete artifacts without running its browser.
+$otherPlatform = if ($Platform -eq 'Windows') { 'Linux' } else { 'Windows' }
+$otherPinPath = Join-Path $PSScriptRoot $(if ($otherPlatform -eq 'Windows') { 'chrome-for-testing.json' } else { 'chrome-for-testing.linux64.json' })
+$otherPin = Get-Content -LiteralPath $otherPinPath -Raw | ConvertFrom-Json
+$remoteFingerprint.pinSha256 = (Get-FileHash -LiteralPath $otherPinPath -Algorithm SHA256).Hash.ToLowerInvariant()
+foreach ($name in @('version', 'chromiumRevision', 'platform', 'archiveSha256', 'executableSha256', 'captureRecipeRevision')) {
+    $fingerprintName = if ($name -eq 'version') { 'pinVersion' } else { $name }
+    $remoteFingerprint.$fingerprintName = $otherPin.$name
+}
+$remoteFingerprint.operatingSystem = if ($otherPlatform -eq 'Windows') { 'Microsoft Windows Server 2025' } else { 'Ubuntu 24.04.3 LTS' }
+$remoteFingerprint.hostRuntimeFramework = '.NET 9.0.7'
+foreach ($name in $goodNames) {
+    $stderrPath = Join-Path $remoteChrome ($name + '.stderr.txt')
+    $stderr = Get-Content -LiteralPath $stderrPath -Raw | ConvertFrom-Json
+    $stderr.chromeLaunch.executableName = [IO.Path]::GetFileName($otherPin.executableRelativePath)
+    $stderr | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $stderrPath -Encoding utf8
+}
+$remoteSummary.runtimeFingerprint.operatingSystem = $remoteFingerprint.operatingSystem
+foreach ($entry in $remoteSummary.reports) { $entry.report.operatingSystem = $remoteFingerprint.operatingSystem }
+$remoteFingerprint | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $remoteFingerprintPath -NoNewline -Encoding utf8
+$remoteSummary | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $remoteSummaryPath.FullName -NoNewline -Encoding utf8
+& $validator -Platform $otherPlatform -ChromeDirectory $remoteChrome -MemoryDirectory $remoteMemory | Out-Null
 Write-Output "Validator artifact scenarios passed: $runDirectory"

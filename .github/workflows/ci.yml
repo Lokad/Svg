@@ -51,7 +51,7 @@ jobs:
       - shell: pwsh
         run: tools/test-font-probe.ps1 -ResultsDirectory artifacts/font-probe
       - shell: pwsh
-        run: tools/validate-ci-artifacts.ps1 -Platform ${{ runner.os }} -ChromeDirectory artifacts/chrome-smoke -MemoryDirectory artifacts/memory-probe
+        run: tools/validate-ci-artifacts.ps1 -Platform ${{ runner.os }} -ChromeDirectory artifacts/chrome-smoke -MemoryDirectory artifacts/memory-probe -RequireCurrentHost
       - shell: pwsh
         run: tools/test-validate-ci-artifacts.ps1 -ResultsDirectory artifacts/validator-selftest -Platform ${{ runner.os }}
       - if: always()

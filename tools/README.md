@@ -148,6 +148,9 @@ tools/validate-ci-artifacts.ps1 -Platform Linux -ChromeDirectory path/to/chrome-
 ```
 
 Validation checks pins, hashes, exact captures and retained memory reports/inputs.
+Recorded OS descriptions and host runtimes must agree between the Chrome and
+memory artifacts; the reviewer's OS and runtime may differ. CI adds
+`-RequireCurrentHost` to also match those records against the producing worker.
 It establishes artifact consistency, not GitHub provenance: record the successful
 workflow URL, commit and job conclusion separately. Git/CI identify code; hashes
 identify assets/browser/output. Source snippets, assemblies and logs need no

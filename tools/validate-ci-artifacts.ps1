@@ -5,7 +5,8 @@ param(
     [Parameter(Mandatory = $true)]
     [string] $ChromeDirectory,
     [Parameter(Mandatory = $true)]
-    [string] $MemoryDirectory
+    [string] $MemoryDirectory,
+    [switch] $RequireCurrentHost
 )
 
 $ErrorActionPreference = 'Stop'
@@ -48,18 +49,22 @@ function Get-SingleFile([string] $Directory, [string] $Filter, [string] $Context
 function Assert-PlatformOsArchitecture([object] $Fingerprint, [string] $Context)
 {
     $operatingSystem = [string](Get-RequiredProperty $Fingerprint 'operatingSystem' $Context)
-    # This gate validates fresh artifacts on their producing CI worker. Linux descriptions can be
-    # distribution names such as Ubuntu; classify the worker through the runtime API instead.
-    $expectedPlatform = [Runtime.InteropServices.OSPlatform]::Create($Platform.ToUpperInvariant())
-    if (-not [Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($expectedPlatform)) { Fail "Validator worker does not run $Platform." }
-    Assert-Equal ([Runtime.InteropServices.RuntimeInformation]::OSDescription) $operatingSystem "$Context operating system"
+    # Linux descriptions can be distribution names without the word Linux.
+    # The Chrome pin establishes the declared platform; OS descriptions must agree across reports.
+    $windowsDescription = $operatingSystem -match '\bWindows\b'
+    if (($Platform -eq 'Windows') -ne $windowsDescription) { Fail "$Context operating system does not match the declared $Platform platform." }
+    if ($RequireCurrentHost) {
+        $expectedPlatform = [Runtime.InteropServices.OSPlatform]::Create($Platform.ToUpperInvariant())
+        if (-not [Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($expectedPlatform)) { Fail "Validator worker does not run $Platform." }
+        Assert-Equal ([Runtime.InteropServices.RuntimeInformation]::OSDescription) $operatingSystem "$Context operating system"
+    }
     Assert-Equal 'X64' (Get-RequiredProperty $Fingerprint 'processArchitecture' $Context) "$Context process architecture"
 }
 
-function Assert-PlatformFingerprint([object] $Fingerprint, [string] $Context)
+function Assert-HostRuntime([object] $Framework, [string] $Context)
 {
-    Assert-PlatformOsArchitecture $Fingerprint $Context
-    Assert-Equal ([Runtime.InteropServices.RuntimeInformation]::FrameworkDescription) (Get-RequiredProperty $Fingerprint 'runtimeFramework' $Context) "$Context runtime framework"
+    if ([string]$Framework -cnotmatch '^\.NET \d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$') { Fail "$Context is not a .NET runtime framework." }
+    if ($RequireCurrentHost) { Assert-Equal ([Runtime.InteropServices.RuntimeInformation]::FrameworkDescription) $Framework $Context }
 }
 
 function Test-ChromeArtifact
@@ -83,7 +88,7 @@ function Test-ChromeArtifact
     $referenceHash = Get-Hash $reference
     Assert-Hash (Get-RequiredProperty $fingerprint 'referenceSha256' 'Chrome fingerprint') $referenceHash 'Chrome reference hash'
     Assert-PlatformOsArchitecture $fingerprint 'Chrome fingerprint'
-    Assert-Equal ([Runtime.InteropServices.RuntimeInformation]::FrameworkDescription) (Get-RequiredProperty $fingerprint 'hostRuntimeFramework' 'Chrome fingerprint') 'Chrome host runtime framework'
+    Assert-HostRuntime (Get-RequiredProperty $fingerprint 'hostRuntimeFramework' 'Chrome fingerprint') 'Chrome host runtime framework'
     $chromeRuntimes = @(Get-RequiredProperty $fingerprint 'dotnetRuntimes' 'Chrome fingerprint')
     if ($chromeRuntimes.Count -eq 0) { Fail 'Chrome fingerprint lists no .NET runtimes.' }
     foreach ($runtimeVersion in $chromeRuntimes) { if ([string]$runtimeVersion -notmatch '^\d+\.\d+\.\d+$') { Fail "Chrome fingerprint lists a malformed runtime version: $runtimeVersion" } }
@@ -123,7 +128,7 @@ function Test-ChromeArtifact
         Assert-Hash $candidateHash (Get-Hash $candidatePath) "Chrome candidate $candidateName file hash"
         if ($null -eq $stableHash) { $stableHash = $candidateHash }
         elseif ($candidateHash -cne $stableHash) { Fail "Chrome candidate $candidateName is not byte-identical to the first fresh-process capture." }
-        & dotnet $comparisonTool $reference $candidatePath
+        & dotnet $comparisonTool $reference $candidatePath | Out-Null
         if ($LASTEXITCODE -ne 0) { Fail "Chrome candidate $candidateName differs from its reference pixels." }
         $diagnostic = $diagnostics[$index]
         $stderrName = [string](Get-RequiredProperty $diagnostic 'stderrFile' 'Chrome diagnostic')
@@ -145,9 +150,10 @@ function Test-ChromeArtifact
         if ($null -eq $launch.PSObject.Properties['stderr'] -or $null -eq $launch.PSObject.Properties['stderrTruncated']) { Fail 'Chrome launch is missing bounded stderr.' }
         if ($launch.stderr -match 'Sandbox cannot access executable' -or [regex]::Matches($launch.stderr, 'Network service crashed or was terminated').Count -ge 2) { Fail 'Chrome stderr contradicts healthy startup.' }
     }
+    return $fingerprint
 }
 
-function Test-MemoryArtifact
+function Test-MemoryArtifact([object] $ChromeFingerprint)
 {
     $summaryFile = Get-SingleFile $MemoryDirectory '*-summary.json' 'Memory probe artifact'
     $summary = Get-Content -LiteralPath $summaryFile.FullName -Raw | ConvertFrom-Json
@@ -159,7 +165,10 @@ function Test-MemoryArtifact
     Assert-Hash (Get-RequiredProperty $summary 'fixtureSha256' 'Memory summary') $fixtureHash 'Memory fixture hash'
     $runtimeFingerprint = Get-RequiredProperty $summary 'runtimeFingerprint' 'Memory summary'
     Assert-PlatformOsArchitecture $runtimeFingerprint 'Memory summary'
-    Assert-Equal ([Runtime.InteropServices.RuntimeInformation]::FrameworkDescription) (Get-RequiredProperty $summary 'hostRuntimeFramework' 'Memory summary') 'Memory host runtime framework'
+    Assert-Equal $ChromeFingerprint.operatingSystem $runtimeFingerprint.operatingSystem 'Memory summary operating system'
+    $hostFramework = Get-RequiredProperty $summary 'hostRuntimeFramework' 'Memory summary'
+    Assert-HostRuntime $hostFramework 'Memory host runtime framework'
+    Assert-Equal $ChromeFingerprint.hostRuntimeFramework $hostFramework 'Memory host runtime framework'
     $dotnetRuntimes = @(Get-RequiredProperty $summary 'dotnetRuntimes' 'Memory summary')
     if ($dotnetRuntimes.Count -eq 0) { Fail 'Memory summary lists no .NET runtimes.' }
     foreach ($runtimeVersion in $dotnetRuntimes) { if ([string]$runtimeVersion -notmatch '^\d+\.\d+\.\d+$') { Fail "Memory summary lists a malformed runtime version: $runtimeVersion" } }
@@ -222,6 +231,6 @@ function Test-MemoryArtifact
     Assert-Equal ([IO.FileInfo]::new($successOutput).Length) (Get-RequiredProperty $reportsByName['success'] 'pngBytes' 'Memory success report') 'Memory success PNG byte count'
 }
 
-Test-ChromeArtifact
-Test-MemoryArtifact
+$chromeFingerprint = Test-ChromeArtifact
+Test-MemoryArtifact $chromeFingerprint
 Write-Output "Validated $Platform CI artifact contents. This checks artifact consistency only; retain the GitHub run URL, commit and successful conclusion separately before treating it as remote evidence."
