@@ -124,8 +124,7 @@ internal static class PngImageDecoder
                 if (palette is not null) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data repeats its palette chunk.");
                 if (length == 0 || length % 3 != 0 || length > 768) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data has a malformed palette chunk.");
                 storage.ReservePalette(length);
-                try { palette = data.ToArray(); }
-                catch { storage.ReleasePalette(); throw; }
+                palette = data.ToArray();
             }
             else if (type.SequenceEqual("IEND"u8))
             {
@@ -143,8 +142,7 @@ internal static class PngImageDecoder
                 if (length > 0)
                 {
                     storage.ReserveTransparency(length);
-                    try { transparent = data.ToArray(); }
-                    catch { storage.ReleaseTransparency(); throw; }
+                    transparent = data.ToArray();
                 }
                 else
                 {
@@ -384,19 +382,7 @@ internal static class PngImageDecoder
 
         internal void ReservePalette(int length) => _palette = _budget.Reserve(length, SvgMemoryCategory.Parser);
 
-        internal void ReleasePalette()
-        {
-            _palette?.Dispose();
-            _palette = null;
-        }
-
         internal void ReserveTransparency(int length) => _transparency = _budget.Reserve(length, SvgMemoryCategory.Parser);
-
-        internal void ReleaseTransparency()
-        {
-            _transparency?.Dispose();
-            _transparency = null;
-        }
 
         internal void ReserveCompressed(long total)
         {
