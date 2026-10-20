@@ -1,5 +1,26 @@
 # Renderer measurements
 
+## Leaf declaration reuse (2026-10-20)
+
+Compared `596d05f6` with `9b9828fe` on the same i7-14700KF/Windows/.NET host
+described below. Two alternating fresh-process pairs ran serially, with tiered
+compilation disabled and affinity to logical processor 2. Each workload had 500
+warmups and seven samples of 500 conversions, excluding input setup. Times are
+the range of the two process medians.
+
+| Workload | Allocated bytes/op, before → after | Median ms, before | Median ms, after |
+| --- | ---: | ---: | ---: |
+| 256 stylesheet rectangles | ≈762,748 → ≈762,748 | 2.7197–2.9599 | 2.1022–2.1430 |
+| 256 inline-style rectangles | 787,092 → ≈746,132 | 2.7233–2.7879 | 2.0392–2.0872 |
+
+Both inputs are defined in [SvgSceneBenchmarks](../benchmarks/Lokad.Svg.Benchmarks/SvgSceneBenchmarks.cs).
+Inline declarations parse 256 times instead of 1,536 times, saving about 40,960
+allocated bytes per conversion (5.2%). The outlined-wordmark, gradient-clip and
+isolated-opacity controls retain their allocation counts. All five output PNG
+hashes are unchanged. Timing varies between processes; these short Windows runs
+do not establish general throughput or Linux performance. Measurements use the
+same direct `Stopwatch`/allocation-counter method described below.
+
 ## Simplification comparison (2026-10-20)
 
 Compared `ee993567` with `6c2def9b` on an Intel Core i7-14700KF, Windows build
