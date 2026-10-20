@@ -29,14 +29,14 @@ internal static class SvgGeometrySyntax
 
             int nameStart = position;
             while (position < input.Length && char.IsAsciiLetter(input[position])) position++;
-            if (nameStart == position) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), nonzero scale(), and nonzero axis-aligned matrix() transforms are implemented.");
+            if (nameStart == position) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A transform function name is required.");
             ReadOnlySpan<char> name = input[nameStart..position];
             while (position < input.Length && char.IsWhiteSpace(input[position])) position++;
-            if (position == input.Length || input[position] != '(') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), nonzero scale(), and nonzero axis-aligned matrix() transforms are implemented.");
+            if (position == input.Length || input[position] != '(') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Transform arguments must start with '('.");
             position++;
             int argumentsStart = position;
             while (position < input.Length && input[position] != ')') position++;
-            if (position == input.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), nonzero scale(), and nonzero axis-aligned matrix() transforms are implemented.");
+            if (position == input.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Transform arguments must end with ')'.");
             SvgAffineTransform function = ParseTransformFunction(name, input[argumentsStart..position], workCounter, cancellationToken);
             // Local scale/translate lists use native float axis storage until a
             // matrix, rotation or skew promotes the list to double precision.
@@ -227,7 +227,7 @@ internal static class SvgGeometrySyntax
         bool isRotate = name.Equals("rotate", StringComparison.OrdinalIgnoreCase);
         bool isSkewX = name.Equals("skewX", StringComparison.OrdinalIgnoreCase);
         bool isSkewY = name.Equals("skewY", StringComparison.OrdinalIgnoreCase);
-        if (!isMatrix && !isTranslate && !name.Equals("scale", StringComparison.OrdinalIgnoreCase) && !isRotate && !isSkewX && !isSkewY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotate(), skew(), and nonzero axis-aligned matrix() transforms are implemented.");
+        if (!isMatrix && !isTranslate && !name.Equals("scale", StringComparison.OrdinalIgnoreCase) && !isRotate && !isSkewX && !isSkewY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The transform function is not supported.");
         if (isTranslate) return ParseTranslate(arguments, workCounter, cancellationToken);
         if (isRotate) return ParseRotate(arguments, workCounter, cancellationToken);
         if (isSkewX || isSkewY) return ParseSkew(arguments, isSkewY, workCounter, cancellationToken);
@@ -246,7 +246,7 @@ internal static class SvgGeometrySyntax
             if (scaleX * scaleY - skewY * skewX == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonsingular finite matrix() transforms are implemented.");
             if (skewX == 0 && skewY == 0)
             {
-                if (scaleX == 0 || scaleY == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonzero axis-aligned or similar finite matrix() transforms are implemented.");
+                if (scaleX == 0 || scaleY == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Matrix scale factors must be nonzero.");
                 return SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX, offsetY);
             }
             return SvgAffineTransform.FromMatrix(scaleX, skewY, skewX, scaleY, offsetX, offsetY);
@@ -278,12 +278,12 @@ internal static class SvgGeometrySyntax
         DelimitedTokenReader tokens = new(arguments);
         while (tokens.TryReadValue(out ReadOnlySpan<char> value))
         {
-            if (valueCount == values.Length) throw new SvgException(SvgErrorCode.MalformedInput, "skew() requires one angle.");
+            if (valueCount == values.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Skew transforms require one angle.");
             values[valueCount++] = ParseTransformCoordinate(value, workCounter, cancellationToken);
         }
-        if (valueCount != 1) throw new SvgException(SvgErrorCode.MalformedInput, "skew() requires one angle.");
+        if (valueCount != 1) throw new SvgException(SvgErrorCode.MalformedInput, "Skew transforms require one angle.");
         double slope = Math.Tan(values[0] * (Math.PI / 180d));
-        if (!double.IsFinite(slope)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite skew() slopes are implemented.");
+        if (!double.IsFinite(slope)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Skew transform slopes must be finite.");
         return skewY ? SvgAffineTransform.FromMatrix(1, slope, 0, 1, 0, 0) : SvgAffineTransform.FromMatrix(1, 0, slope, 1, 0, 0);
     }
 
