@@ -74,6 +74,9 @@ internal static class SvgNativePathStroke
         Stroker state = new(radius, miterLimit, cap, join, resolutionScale, output, inner, cusps, fitted, work, token);
         Span<SvgEndpointConic> arcs = stackalloc SvgEndpointConic[SvgEndpointArc.MaximumConicCount];
         SvgDevicePoint rawCurrent = default, rawFirst = default;
+        int tangentIndex = -1;
+        SvgDevicePoint tangentOrigin = default;
+        bool futureTangent = false;
         for (int index = 0; index < commands.Length; index++)
         {
             work.Consume(token);
@@ -83,7 +86,18 @@ internal static class SvgNativePathStroke
                 case SvgAuthoredPathVerb.Move: state.Move(Point.Narrow(MapPoint(constructionMap, command.First))); rawCurrent = rawFirst = command.First; break;
                 case SvgAuthoredPathVerb.Line:
                     Point endpoint = Point.Narrow(MapPoint(constructionMap, command.First));
-                    bool future = state.NeedsLookahead(endpoint) && HasFutureTangent(commands[(index + 1)..], constructionMap, endpoint.Device(), work, token);
+                    bool future = false;
+                    if (state.NeedsLookahead(endpoint))
+                    {
+                        // A scan crosses only commands coincident with this origin.
+                        // Reuse it until the tangent/contour boundary or origin changes.
+                        if (index >= tangentIndex || endpoint.Device() != tangentOrigin)
+                        {
+                            tangentOrigin = endpoint.Device();
+                            (tangentIndex, futureTangent) = FindFutureTangent(commands, index + 1, constructionMap, tangentOrigin, work, token);
+                        }
+                        future = futureTangent;
+                    }
                     state.Line(endpoint, future); state.LastLine = true; rawCurrent = command.First; break;
                 case SvgAuthoredPathVerb.Quadratic: state.Quadratic(Point.Narrow(MapPoint(constructionMap, command.First)), Point.Narrow(MapPoint(constructionMap, command.Second)), 1, false); state.LastLine = false; rawCurrent = command.Second; break;
                 case SvgAuthoredPathVerb.Conic: state.Quadratic(Point.Narrow(MapPoint(constructionMap, command.First)), Point.Narrow(MapPoint(constructionMap, command.Second)), (float)command.Third.X, true); state.LastLine = false; rawCurrent = command.Second; break;
@@ -106,25 +120,25 @@ internal static class SvgNativePathStroke
         }
         state.Finish(false, state.LastLine);
 
-        static bool HasFutureTangent(ReadOnlySpan<SvgAuthoredPathCommand> remaining, SvgAffineTransform map,
+        static (int Index, bool HasTangent) FindFutureTangent(ReadOnlySpan<SvgAuthoredPathCommand> commands, int start, SvgAffineTransform map,
             SvgDevicePoint current, ParserWorkCounter work, CancellationToken token)
         {
-            // Called only by the teeny-line branch through the state below. Bound
-            // lookahead by the source command count and charge every inspected verb.
-            foreach (SvgAuthoredPathCommand command in remaining)
+            // Charge each inspected verb, including the cached range's boundary.
+            for (int index = start; index < commands.Length; index++)
             {
                 work.Consume(token);
-                if (command.Verb is SvgAuthoredPathVerb.Move or SvgAuthoredPathVerb.End or SvgAuthoredPathVerb.Close) return false;
+                SvgAuthoredPathCommand command = commands[index];
+                if (command.Verb is SvgAuthoredPathVerb.Move or SvgAuthoredPathVerb.End or SvgAuthoredPathVerb.Close) return (index, false);
                 if (command.Verb == SvgAuthoredPathVerb.Line)
-                { SvgDevicePoint end = MapPoint(map, command.First); if (current != end) return true; current = end; }
+                { SvgDevicePoint end = MapPoint(map, command.First); if (current != end) return (index, true); current = end; }
                 else if (command.Verb is SvgAuthoredPathVerb.Conic or SvgAuthoredPathVerb.Quadratic)
-                { SvgDevicePoint end = MapPoint(map, command.Second); if (current != MapPoint(map, command.First) || current != end) return true; current = end; }
+                { SvgDevicePoint end = MapPoint(map, command.Second); if (current != MapPoint(map, command.First) || current != end) return (index, true); current = end; }
                 else if (command.Verb == SvgAuthoredPathVerb.Cubic)
-                { SvgDevicePoint end = MapPoint(map, command.Third); if (current != MapPoint(map, command.First) || current != MapPoint(map, command.Second) || current != end) return true; current = end; }
+                { SvgDevicePoint end = MapPoint(map, command.Third); if (current != MapPoint(map, command.First) || current != MapPoint(map, command.Second) || current != end) return (index, true); current = end; }
                 else if (command.Verb == SvgAuthoredPathVerb.Arc)
-                { SvgDevicePoint end = MapPoint(map, command.Third); if (current != end) return true; current = end; }
+                { SvgDevicePoint end = MapPoint(map, command.Third); if (current != end) return (index, true); current = end; }
             }
-            return false;
+            return (commands.Length, false);
         }
 
         static void BuildRectangle(SvgRecognizedRectangle rectangle, float radius, float limit, SvgStrokeJoin join,

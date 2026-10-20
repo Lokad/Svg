@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reuse coincident stroke tangent lookahead to keep long degenerate prefixes
+  within linear work while preserving native outlines and cap behavior.
 - Deduplicate font-pack fallback names in linear time while retaining their
   original order and first spelling.
 - Calculate PNG compression allowances directly instead of iterating over the

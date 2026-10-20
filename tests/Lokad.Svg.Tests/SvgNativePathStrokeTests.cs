@@ -9,6 +9,103 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgNativePathStrokeTests
 {
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public void Coincident_prefix_lookahead_is_linear_and_preserves_contours_and_curve_tangents(bool squareCap, bool mapped)
+    {
+        SvgAuthoredPathCommand move = new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(2, 2), default, default);
+        SvgAuthoredPathCommand duplicate = new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(2, 2), default, default);
+        SvgAuthoredPathCommand[][] tails =
+        [
+            [],
+            [new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(8, 2), default, default)],
+            [new(SvgAuthoredPathVerb.Quadratic, SvgAuthoredArcFlags.None, new(5, 1), new(8, 2), default)],
+            [new(SvgAuthoredPathVerb.Conic, SvgAuthoredArcFlags.None, new(5, 1), new(8, 2), new(.75, 0))],
+            [new(SvgAuthoredPathVerb.Cubic, SvgAuthoredArcFlags.None, new(3, 1), new(7, 3), new(8, 2))],
+            [new(SvgAuthoredPathVerb.Arc, SvgAuthoredArcFlags.Sweep, new(3, 2), default, new(8, 2))],
+            [new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default)],
+            [new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(10, 2), default, default),
+                new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(14, 2), default, default)],
+            [new(SvgAuthoredPathVerb.End, SvgAuthoredArcFlags.None, default, default, default),
+                new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(8, 2), default, default)]
+        ];
+        SvgAffineTransform map = mapped ? new(2, .25, .5, 3, .25, -.5) : SvgAffineTransform.Identity;
+        SvgStrokeCap cap = squareCap ? SvgStrokeCap.Square : SvgStrokeCap.Round;
+        foreach (SvgAuthoredPathCommand[] tail in tails)
+        {
+            SvgAuthoredPathCommand[] shortPath = [move, duplicate, .. tail];
+            SvgAuthoredPathCommand[] longPath = [move, .. Enumerable.Repeat(duplicate, 15_000), .. tail];
+            RenderBudget budget = new(1_000_000);
+            using (BudgetedParserList<SvgStrokeOutlineCommand> expected = new(budget, SvgMemoryCategory.Geometry))
+            using (BudgetedParserList<SvgStrokeOutlineCommand> actual = new(budget, SvgMemoryCategory.Geometry))
+            {
+                SvgNativePathStroke.Build(shortPath, 1, 4, cap, SvgStrokeJoin.Miter, 1, map, expected, budget, new(10_000), CancellationToken.None);
+                SvgNativePathStroke.Build(longPath, 1, 4, cap, SvgStrokeJoin.Miter, 1, map, actual, budget,
+                    new(6 * longPath.Length + 10_000), CancellationToken.None);
+                Assert.Equal(expected.AsSpan().ToArray(), actual.AsSpan().ToArray());
+            }
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        }
+    }
+
+    [Theory]
+    [InlineData("round")]
+    [InlineData("square")]
+    public void Public_conversion_of_coincident_prefixes_matches_the_same_line(string cap)
+    {
+        string duplicates = string.Concat(Enumerable.Repeat("L2 2 ", 15_000));
+        byte[] expected = SvgConverter.ConvertToPng(Input(string.Empty), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        Assert.Equal(expected, SvgConverter.ConvertToPng(Input(duplicates), SvgRenderOptions.Default, CancellationToken.None).ToArray());
+
+        byte[] Input(string prefix) => System.Text.Encoding.UTF8.GetBytes(
+            $"<svg xmlns='http://www.w3.org/2000/svg' width='8' height='4'><path d='M2 2 {prefix}L6 2' fill='none' stroke='red' stroke-width='2' stroke-linecap='{cap}'/></svg>");
+    }
+
+    [Fact]
+    public void Lookahead_restarts_when_a_teeny_line_changes_the_origin()
+    {
+        SvgAuthoredPathCommand move = new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(2, 2), default, default);
+        SvgAuthoredPathCommand first = new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(2, 2), default, default);
+        SvgAuthoredPathCommand second = first with { First = new(2.00001, 2) };
+        SvgAuthoredPathCommand end = first with { First = new(6, 2) };
+        SvgAuthoredPathCommand[] shortPath = [move, first, second, end];
+        SvgAuthoredPathCommand[] longPath = [move, .. Enumerable.Repeat(first, 8000), .. Enumerable.Repeat(second, 8000), end];
+        RenderBudget budget = new(1_000_000);
+        using (BudgetedParserList<SvgStrokeOutlineCommand> expected = new(budget, SvgMemoryCategory.Geometry))
+        using (BudgetedParserList<SvgStrokeOutlineCommand> actual = new(budget, SvgMemoryCategory.Geometry))
+        {
+            Build(shortPath, expected, budget, new(10_000), CancellationToken.None);
+            Build(longPath, actual, budget, new(6 * longPath.Length + 10_000), CancellationToken.None);
+            Assert.Equal(expected.AsSpan().ToArray(), actual.AsSpan().ToArray());
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Coincident_lookahead_denial_releases_storage_and_allows_retry()
+    {
+        SvgAuthoredPathCommand[] path =
+        [
+            new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(2, 2), default, default),
+            .. Enumerable.Repeat(new SvgAuthoredPathCommand(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(2, 2), default, default), 15_000),
+            new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(6, 2), default, default)
+        ];
+        RenderBudget budget = new(1_000_000);
+        using (BudgetedParserList<SvgStrokeOutlineCommand> output = new(budget, SvgMemoryCategory.Geometry))
+        {
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+                Build(path, output, budget, new(1000), CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, output.Count);
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+            Build(path, output, budget, new(100_000), CancellationToken.None);
+            Assert.NotEqual(0, output.Count);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     [Fact]
     public void Curve_offsets_joins_caps_and_closure_match_compiled_native_float_bits()
     {
