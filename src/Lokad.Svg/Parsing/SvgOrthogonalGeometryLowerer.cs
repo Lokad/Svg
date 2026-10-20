@@ -922,46 +922,26 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Strokes original fractional polyline verbs; sampled shape curves retain their separate contour route.</summary>
-    internal SvgParsedGeometry LowerStrokePointList(BudgetedParserList<SvgFractionalPoint> points, bool closed, bool hasCurves, SvgResolvedPaintableElement element, SvgColor color, bool hasFill, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
+    internal SvgParsedGeometry LowerStrokePointList(BudgetedParserList<SvgFractionalPoint> points, bool closed, SvgResolvedPaintableElement element, SvgColor color, bool hasFill, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(budget);
         if (points.Count >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _elementName + " stroke point count exceeds the configured path-command limit.");
         if (points.Count < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed fractional " + _elementName + " contours are implemented.");
-        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, hasCurves);
-        if (!hasCurves)
-        {
-            double deviceWidth = NativeStrokeDeviceWidth(width, element.Transform, deviceMap, frame, nonScaling);
-            using RenderBudget.BudgetReservation sourceOwner = budget.Reserve(128, SvgMemoryCategory.Geometry);
-            using BudgetedParserList<SvgAuthoredPathCommand> authored = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
-            for (int index = 0; index < points.Count; index++)
-            {
-                _workCounter.Consume(_cancellationToken);
-                authored.Add(new(index == 0 ? SvgAuthoredPathVerb.Move : SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None,
-                    new(points[index].X, points[index].Y), default, default));
-            }
-            if (closed) authored.Add(new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
-            authored.Add(new(SvgAuthoredPathVerb.End, SvgAuthoredArcFlags.None, default, default, default));
-            return LowerNativeStrokeCommands(authored, deviceMap, deviceWidth, width, miterLimit, cap, join, dashes,
-                dashOffset, pathLength, nonScaling, color, hasFill, element.OutputMagnification, element.StrokeHostMap, frame, budget, SvgAuthoredStrokeShape.Path, SvgNativeStrokeResolution.MappedPath) with { ElementCount = points.Count + 1 };
-        }
-        int pointCapacity = points.Count + 1 > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : points.Count + 1;
-        long scratchBytes;
-        try { scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1)); }
-        catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }
-        using RenderBudget.BudgetReservation scratch = budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
-        SvgContourBuilder builder = new(pointCapacity, 1);
-        builder.BeginContour(deviceMap.Apply(points[0].X, points[0].Y));
-        for (int index = 1; index < points.Count; index++)
+        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, false);
+        double deviceWidth = NativeStrokeDeviceWidth(width, element.Transform, deviceMap, frame, nonScaling);
+        using RenderBudget.BudgetReservation sourceOwner = budget.Reserve(128, SvgMemoryCategory.Geometry);
+        using BudgetedParserList<SvgAuthoredPathCommand> authored = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+        for (int index = 0; index < points.Count; index++)
         {
             _workCounter.Consume(_cancellationToken);
-            builder.AddLine(deviceMap.Apply(points[index].X, points[index].Y));
+            authored.Add(new(index == 0 ? SvgAuthoredPathVerb.Move : SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None,
+                new(points[index].X, points[index].Y), default, default));
         }
-
-        builder.EndContour();
-        bool[] closedEnds = [closed];
-        SvgParsedGeometry stroked = LowerStrokeContours(builder, closedEnds, hasCurves, element.Transform, width, miterLimit, cap, join, dashes, dashOffset, pathLength, nonScaling, color, hasFill, frame, budget);
-        return stroked with { ElementCount = points.Count + 1 };
+        if (closed) authored.Add(new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
+        authored.Add(new(SvgAuthoredPathVerb.End, SvgAuthoredArcFlags.None, default, default, default));
+        return LowerNativeStrokeCommands(authored, deviceMap, deviceWidth, width, miterLimit, cap, join, dashes,
+            dashOffset, pathLength, nonScaling, color, hasFill, element.OutputMagnification, element.StrokeHostMap, frame, budget, SvgAuthoredStrokeShape.Path, SvgNativeStrokeResolution.MappedPath) with { ElementCount = points.Count + 1 };
     }
 
     /// <summary>Strokes one original integer point contour through the shared native verb constructor.</summary>

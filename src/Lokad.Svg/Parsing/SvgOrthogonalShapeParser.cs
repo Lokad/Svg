@@ -228,14 +228,14 @@ internal static class SvgOrthogonalShapeParser
         return (commands, curve, arc, fractional);
     }
 
-    internal static BudgetedParserList<SvgPoint> TokenizeBands(XmlReader reader, string elementName, bool isPath, bool allowDiagonal, int maximumGeometryElements, RenderBudget budget, SvgPaintableElementContext context, BudgetedParserList<int> contourEnds)
+    internal static BudgetedParserList<SvgPoint> TokenizeBands(XmlReader reader, string elementName, bool isPath, int maximumGeometryElements, RenderBudget budget, SvgPaintableElementContext context, BudgetedParserList<int> contourEnds)
     {
         if (isPath)
         {
             using SvgRenderablePathData renderData = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
             string d = renderData.Value;
             BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, contourEnds, false);
-            try { SvgOrthogonalGeometryLowering.ValidateContours(points, contourEnds, elementName, context.WorkCounter, context.CancellationToken, allowDiagonal); }
+            try { SvgOrthogonalGeometryLowering.ValidateContours(points, contourEnds, elementName, context.WorkCounter, context.CancellationToken, true); }
             catch { points.Dispose(); throw; }
             return points;
         }
@@ -243,7 +243,6 @@ internal static class SvgOrthogonalShapeParser
         BudgetedParserList<SvgPoint> pointList = SvgOrthogonalGeometryTokenizer.ParsePointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, false);
         try
         {
-            if (!allowDiagonal) SvgOrthogonalGeometryLowering.ValidateSimpleContour(pointList, elementName, context.WorkCounter, context.CancellationToken);
             contourEnds.Add(pointList.Count);
         }
         catch { pointList.Dispose(); throw; }
@@ -326,7 +325,7 @@ internal static class SvgOrthogonalShapeParser
                 {
                     fractionalStroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, fractionalStrokeStyle, fractionalStrokeShape, elementName, true);
                     if (fractionalStroke is null) return filled;
-                    fractionalStroked = fractionalLowering.LowerStrokePointList(fractionalPoints, elementName == "polygon", false, fractionalStrokeShape, fractionalStroke.Value.Color, fractionalStrokeShape.Presentation.IsPainted, fractionalStroke.Value.Width, fractionalStroke.Value.MiterLimit, fractionalStroke.Value.Cap, fractionalStroke.Value.Join, fractionalStroke.Value.DashPattern, fractionalStroke.Value.DashOffset, fractionalStroke.Value.PathLength, fractionalStroke.Value.NonScalingStroke, frame, budget);
+                    fractionalStroked = fractionalLowering.LowerStrokePointList(fractionalPoints, elementName == "polygon", fractionalStrokeShape, fractionalStroke.Value.Color, fractionalStrokeShape.Presentation.IsPainted, fractionalStroke.Value.Width, fractionalStroke.Value.MiterLimit, fractionalStroke.Value.Cap, fractionalStroke.Value.Join, fractionalStroke.Value.DashPattern, fractionalStroke.Value.DashOffset, fractionalStroke.Value.PathLength, fractionalStroke.Value.NonScalingStroke, frame, budget);
                     try
                     {
                         if (paintOutline || paintRadialOutline || paintPatternOutline)

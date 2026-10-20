@@ -196,12 +196,9 @@ public static partial class SvgConverter
     }
 
     private static RasterizedConversion PrepareRasterizationCore(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
-        => PrepareRasterizationCore(svg, options, null, cancellationToken);
-
-    private static RasterizedConversion PrepareRasterizationCore(ReadOnlyMemory<byte> svg, SvgRenderOptions options, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
-        ParserWorkCounter counter = workCounter ?? new(options.Limits.MaximumWorkUnits);
+        ParserWorkCounter counter = new(options.Limits.MaximumWorkUnits);
         SvgRoot root;
         try
         {

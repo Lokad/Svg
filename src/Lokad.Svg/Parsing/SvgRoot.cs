@@ -663,10 +663,6 @@ internal sealed class SvgPatternPolygon : ISvgGeometryContent
         return new SvgPatternPolygon(points, contourEnds, signs, quadSpans, cubicSpans, content, contentPaint, originX, originY, tileWidth, tileHeight, hasFill, isEvenOdd, opacity, mapping, clip, reservation) { VectorContent = vectorContent, ShaderPlacement = shaderPlacement, ContentViewBox = contentViewBox, Coordinates = coordinates, PaintMatrices = paintMatrices };
     }
 
-    /// <summary>Repaints one solid outline as a pattern-tile outline, rendering empty tiles as unpainted fills. Callers admit the paint once for identical errors.</summary>
-    internal static SvgGeometry RepaintOutline(SvgPolygonFill solid, SvgPatternTile tile, byte opacity, RenderBudget budget)
-        => RepaintOutline(solid, tile, opacity, SvgAffineTransform.Identity, budget);
-
     /// <summary>Repaints a retained contour while composing placement only for vector tiles; legacy tile pixels keep their established route.</summary>
     internal static SvgGeometry RepaintOutline(SvgPolygonFill solid, SvgPatternTile tile, byte opacity, SvgAffineTransform shaderPlacement, RenderBudget budget)
     {

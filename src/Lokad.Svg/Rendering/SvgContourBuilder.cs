@@ -69,9 +69,6 @@ internal sealed class SvgContourBuilder
     /// <summary>Gets the current point storage length, growing toward the maximum.</summary>
     internal int PointCapacity => _points.Length;
 
-    /// <summary>Gets the current contour storage length, growing toward the maximum.</summary>
-    internal int ContourCapacity => _starts.Length;
-
     /// <summary>Gets the stored point count across open and sealed contours.</summary>
     internal int PointCount => _pointCount;
 

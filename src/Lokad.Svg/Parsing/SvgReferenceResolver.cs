@@ -1726,7 +1726,7 @@ internal static class SvgReferenceResolver
         int adjustedCommand = pendingUse.Slot.CommandIndex + commandShift;
         int insertedCommands = scene.ReplaceWithMany(pendingUse.Slot with { CommandIndex = adjustedCommand }, applied);
         commandShift += insertedCommands;
-        ShiftPendingCommandRanges(state, adjustedCommand + 1, insertedCommands, true, workCounter, cancellationToken);
+        ShiftPendingCommandRanges(state, adjustedCommand + 1, insertedCommands, workCounter, cancellationToken);
     }
 
     private static byte ResolveDeferredMaskValue(string maskReference, SvgDocumentState document)
@@ -1807,10 +1807,10 @@ internal static class SvgReferenceResolver
     private static double ColumnLength(double x, double y) => Math.Sqrt(x * x + y * y);
 
     /// <summary>Shifts retained command ranges after an insertion, keeping deferred group clips and masks aligned.</summary>
-    /// <remarks>Starts at an inserted end marker or expanded-reference boundary move right.
-    /// Starts at an inserted begin marker stay in place so the containing range includes its child scope.
+    /// <remarks>Starts and ends at or after the insertion move right. Callers choose a position
+    /// after an enclosing begin marker so its range continues to include the inserted child scope.
     /// Each visited range consumes bounded work and observes cancellation; the scene owner releases partial insertions on failure.</remarks>
-    internal static void ShiftPendingCommandRanges(SvgDocumentState state, int insertPosition, int insertedCount, bool shiftStartsAtInsertion, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static void ShiftPendingCommandRanges(SvgDocumentState state, int insertPosition, int insertedCount, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(workCounter);
@@ -1820,7 +1820,7 @@ internal static class SvgReferenceResolver
             workCounter.Consume(cancellationToken);
             SvgPendingTextRun pending = state.PendingTextRuns[textIndex];
             if (!ReferenceEquals(pending.Scene, state.Scene)) continue;
-            if (pending.CommandIndex > insertPosition || shiftStartsAtInsertion && pending.CommandIndex == insertPosition)
+            if (pending.CommandIndex >= insertPosition)
                 state.PendingTextRuns[textIndex] = pending with { CommandIndex = pending.CommandIndex + insertedCount };
         }
         for (int groupIndex = 0; groupIndex < state.PendingGroupClips.Count; groupIndex++)
@@ -1828,7 +1828,7 @@ internal static class SvgReferenceResolver
             workCounter.Consume(cancellationToken);
             PendingGroupClip group = state.PendingGroupClips[groupIndex];
             if (!ReferenceEquals(group.Scene, state.Scene)) continue;
-            int first = group.FirstCommandIndex > insertPosition || shiftStartsAtInsertion && group.FirstCommandIndex == insertPosition ? group.FirstCommandIndex + insertedCount : group.FirstCommandIndex;
+            int first = group.FirstCommandIndex >= insertPosition ? group.FirstCommandIndex + insertedCount : group.FirstCommandIndex;
             int end = group.EndCommandIndex >= insertPosition ? group.EndCommandIndex + insertedCount : group.EndCommandIndex;
             state.PendingGroupClips[groupIndex] = group with { FirstCommandIndex = first, EndCommandIndex = end };
         }
@@ -1837,7 +1837,7 @@ internal static class SvgReferenceResolver
             workCounter.Consume(cancellationToken);
             PendingGroupMask mask = state.PendingGroupMasks[maskIndex];
             if (!ReferenceEquals(mask.Scene, state.Scene)) continue;
-            int first = mask.FirstCommandIndex > insertPosition || shiftStartsAtInsertion && mask.FirstCommandIndex == insertPosition ? mask.FirstCommandIndex + insertedCount : mask.FirstCommandIndex;
+            int first = mask.FirstCommandIndex >= insertPosition ? mask.FirstCommandIndex + insertedCount : mask.FirstCommandIndex;
             int end = mask.EndCommandIndex >= insertPosition ? mask.EndCommandIndex + insertedCount : mask.EndCommandIndex;
             state.PendingGroupMasks[maskIndex] = mask with { FirstCommandIndex = first, EndCommandIndex = end };
         }

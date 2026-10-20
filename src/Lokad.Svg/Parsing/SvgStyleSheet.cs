@@ -78,9 +78,6 @@ internal static class SvgStyleSheet
         throw new XmlException("Stylesheet content is not closed.");
     }
 
-    internal static bool HasCssClass(string? value, string expected, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => HasCssClass(value, expected.AsSpan(), workCounter, cancellationToken);
-
     internal static bool HasCssClass(string? value, ReadOnlySpan<char> expected, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (value is null) return false;

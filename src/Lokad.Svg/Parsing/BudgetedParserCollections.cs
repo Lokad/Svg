@@ -511,15 +511,6 @@ internal sealed class BudgetedParserList<T> : IDisposable where T : struct
         _items[_count] = default;
     }
 
-    internal bool Any(Func<T, bool> predicate)
-    {
-        for (int index = 0; index < _count; index++)
-        {
-            if (predicate(_items[index])) return true;
-        }
-        return false;
-    }
-
     internal OwnedParserArray<T> Detach()
     {
         if (_count == 0)

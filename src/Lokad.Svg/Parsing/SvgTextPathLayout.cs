@@ -174,7 +174,7 @@ internal static class SvgTextPathLayout
                 }
             }
             int inserted = state.Scene.ResolvePaintPlaceholder(pending.CommandIndex, tail);
-            SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.CommandIndex + 1, inserted, true, work, token);
+            SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.CommandIndex + 1, inserted, work, token);
             for (int useIndex = 0; inserted != 0 && useIndex < state.PendingUses.Count; useIndex++)
             {
                 work.Consume(token);

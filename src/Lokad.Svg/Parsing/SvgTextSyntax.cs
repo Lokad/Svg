@@ -106,8 +106,6 @@ internal readonly record struct SvgTextPositionOffset
 
     /// <summary>Gets the explicitly specified vertical relative offset, if present.</summary>
     internal double? Dy { get; }
-
-    internal bool IsZero => X is null && Y is null && Dx is null or 0 && Dy is null or 0;
 }
 
 /// <summary>Identifies a normalized UTF-16 boundary, optional absolute coordinates, and offsets applied before one positioned glyph.</summary>

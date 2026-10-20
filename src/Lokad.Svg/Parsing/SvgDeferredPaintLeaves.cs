@@ -61,7 +61,7 @@ internal static class SvgDeferredPaintLeaves
                 SvgRenderedLeafParser.ParseResolved(pending.Source, pending.Context, root, state, limits,
                     state.Budget, null, work, token);
                 int inserted = state.Scene.ResolvePaintPlaceholder(pending.CommandIndex, tail);
-                SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.CommandIndex + 1, inserted, true, work, token);
+                SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.CommandIndex + 1, inserted, work, token);
                 if (inserted != 0)
                 {
                     for (int useIndex = 0; useIndex < state.PendingUses.Count; useIndex++)
