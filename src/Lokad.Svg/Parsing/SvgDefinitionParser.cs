@@ -211,6 +211,7 @@ internal static class SvgDefinitionParser
             SvgPaintableElementContext clipParent = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
             SvgComputedStyle clipParentStyle = SvgComputedStyleResolver.Resolve(reader, clipParent.StyleSheet, workCounter, cancellationToken);
             state.ClipIsEvenOdd = SvgClipPathSyntax.ParseClipRule((clipParentStyle.ClipRule ?? clipParent.InheritedClipRule ?? "nonzero").AsSpan());
+            state.ClipIsVisible = SvgPresentationResolver.ParseVisibility(clipParentStyle.Visibility, clipParent.InheritedPresentation.IsVisible);
             if (reader.IsEmptyElement)
             {
                 if (state.ClipPathId is not null) RegisterClipBox(state, workCounter, cancellationToken);
@@ -225,22 +226,29 @@ internal static class SvgDefinitionParser
             {
                 if (state.ClipIsObjectBoundingBox) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse referenced clip content is implemented.");
                 if (state.ClipBox is not null || state.ClipPolygon is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element clip content is implemented.");
-                state.ClipUse = SvgResourceUseReplay.Retain(reader, root, state, namedColors, workCounter, cancellationToken);
+                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
+                context = context with { InheritedPresentation = context.InheritedPresentation with { IsDisplayed = true, IsVisible = state.ClipIsVisible } };
+                state.ClipUse = SvgResourceUseReplay.Retain(reader, context, root, state);
                 return true;
             }
             if (reader.LocalName == "rect")
             {
-                PromoteClipRectangle(state, workCounter, cancellationToken);
                 SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
                 InlineStyle clipInline = SvgInlineStyleParser.ParseGeometry(reader.GetAttribute("style"), workCounter, cancellationToken);
-                SvgComputedStyle.ValidateGeometryDimensions(reader, clipInline, context.StyleSheet);
+                SvgComputedStyle clipStyle = SvgComputedStyle.Resolve(reader, clipInline, context.StyleSheet);
                 SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, state.ClipIsObjectBoundingBox ? new(1, 1) : context.LengthBases);
                 // A resource uses its own child map; ancestors place the referencing element.
                 SvgAffineTransform clipTransform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken);
                 SvgAffineViewportClip source = new(new(syntax.X, syntax.Y, syntax.Width, syntax.Height), clipTransform);
                 string? nestedClip = SvgClipPathSyntax.ResolveClipId(reader, state);
                 nestedClip = nestedClip is null ? null : state.Strings.Copy(nestedClip);
+                if (!SvgPresentationResolver.IsPainted(clipStyle.Display, clipStyle.Visibility, true, state.ClipIsVisible))
+                {
+                    state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                    return true;
+                }
+                PromoteClipRectangle(state, workCounter, cancellationToken);
                 double radiusX = syntax.CornerX ?? syntax.CornerY ?? 0;
                 double radiusY = syntax.CornerY ?? syntax.CornerX ?? 0;
                 if (radiusX > 0 && radiusY > 0 && syntax.Width > 0 && syntax.Height > 0)
@@ -263,7 +271,6 @@ internal static class SvgDefinitionParser
             }
             if (reader.LocalName == "path")
             {
-                PromoteClipRectangle(state, workCounter, cancellationToken);
                 SvgElementAttributePolicy.ValidatePath(reader, workCounter, cancellationToken);
                 SvgPaintableElementContext clipContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
                 // A resource uses its own child map; ancestors place the referencing element.
@@ -276,7 +283,7 @@ internal static class SvgDefinitionParser
                     // Ordinary uses replay authored paint/stroke independently of stroke-free clip coverage.
                     SvgDefinition source = new([], false, null, null)
                     {
-                        LeafSource = SvgDefinitionLeafSource.CaptureUnconstructed(reader, clipContext, state),
+                        LeafSource = SvgDefinitionLeafSource.CaptureUnconstructed(reader, clipContext with { AuthoredStyle = clipStyle }, state),
                         SourceDisplayed = SvgPresentationResolver.ParseDisplay(clipStyle.Display),
                         SourceVisible = clipStyle.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(clipStyle.Visibility, true)
                     };
@@ -285,18 +292,23 @@ internal static class SvgDefinitionParser
                 bool isEvenOdd = clipStyle.ClipRule is null ? state.ClipIsEvenOdd : SvgClipPathSyntax.ParseClipRule(clipStyle.ClipRule.AsSpan());
                 string? nestedClip = SvgClipPathSyntax.ResolveClipId(reader, state);
                 nestedClip = nestedClip is null ? null : state.Strings.Copy(nestedClip);
-                SvgClipPolygon clipContent = ParseClipPathPolygon(reader.GetAttribute("d"), clipTransform, isEvenOdd, state, workCounter, cancellationToken)
+                bool visible = SvgPresentationResolver.IsPainted(clipStyle.Display, clipStyle.Visibility, true, state.ClipIsVisible);
+                if (visible) PromoteClipRectangle(state, workCounter, cancellationToken);
+                SvgClipPolygon clipContent = ParseClipPathPolygon(reader.GetAttribute("d"), clipTransform, isEvenOdd, visible, state, workCounter, cancellationToken)
                     with { IsObjectBoundingBox = state.ClipIsObjectBoundingBox };
-                clipContent = clipContent with { NestedClipId = nestedClip, UsesNativeReplay = clipContent.UsesNativeReplay || nestedClip is not null };
-                AppendClipChild(clipContent, state, workCounter, cancellationToken);
+                if (visible)
+                {
+                    clipContent = clipContent with { NestedClipId = nestedClip, UsesNativeReplay = clipContent.UsesNativeReplay || nestedClip is not null };
+                    AppendClipChild(clipContent, state, workCounter, cancellationToken);
+                }
                 state.HasUnsupportedContent |= !reader.IsEmptyElement;
                 return true;
             }
             if (reader.LocalName is "circle" or "ellipse")
             {
-                PromoteClipRectangle(state, workCounter, cancellationToken);
                 SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, workCounter, cancellationToken);
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
+                SvgComputedStyle clipStyle = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, workCounter, cancellationToken);
                 SvgViewportLengthBases clipBases = state.ClipIsObjectBoundingBox ? new(1, 1) : context.LengthBases;
                 if (reader.GetAttribute("id") is {} ovalId)
                 {
@@ -304,11 +316,19 @@ internal static class SvgDefinitionParser
                         throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
                     state.Definitions.TryAdd(state.Strings.Copy(ovalId), new([], false, null, null)
                     {
-                        LeafSource = SvgDefinitionLeafSource.CaptureUnconstructed(reader, context, state)
+                        LeafSource = SvgDefinitionLeafSource.CaptureUnconstructed(reader, context with { AuthoredStyle = clipStyle }, state),
+                        SourceDisplayed = SvgPresentationResolver.ParseDisplay(clipStyle.Display),
+                        SourceVisible = clipStyle.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(clipStyle.Visibility, true)
                     });
                 }
                 SvgEllipseSyntax oval = reader.LocalName == "circle" ? SvgEllipseSyntax.ParseCircle(reader, clipBases) : SvgEllipseSyntax.ParseEllipse(reader, clipBases);
                 SvgAffineTransform childMap = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken);
+                if (!SvgPresentationResolver.IsPainted(clipStyle.Display, clipStyle.Visibility, true, state.ClipIsVisible))
+                {
+                    state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                    return true;
+                }
+                PromoteClipRectangle(state, workCounter, cancellationToken);
                 using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Scene, workCounter, cancellationToken);
                 if (!SvgOrthogonalGeometryLowering.AppendNativeEllipseCommands(commands, oval.CenterX, oval.CenterY, oval.RadiusX, oval.RadiusY))
                 {
@@ -1119,7 +1139,7 @@ internal static class SvgDefinitionParser
             }
         }
 
-        static SvgClipPolygon ParseClipPathPolygon(string? pathData, SvgAffineTransform clipTransform, bool isEvenOdd, SvgDocumentState clipState, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static SvgClipPolygon ParseClipPathPolygon(string? pathData, SvgAffineTransform clipTransform, bool isEvenOdd, bool visible, SvgDocumentState clipState, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(clipState);
             ArgumentNullException.ThrowIfNull(workCounter);
@@ -1133,6 +1153,7 @@ internal static class SvgDefinitionParser
             SvgFlattenPolicy flattenPolicy = new(SvgOrthogonalGeometryLowering.FlattenFlatness, SvgOrthogonalGeometryLowering.FlattenMaxDepth, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand);
             using BudgetedParserList<SvgAuthoredPathCommand> authored = new(clipState.Budget, SvgMemoryCategory.Scene, workCounter, cancellationToken);
             SvgPathDataParser.ParsePath(pathData, clipTransform, builder, flattenPolicy, letters, workCounter, cancellationToken, null, authored);
+            if (!visible) return new([], []);
             using BudgetedParserList<SvgDevicePoint> stripped = new(clipState.Budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
             using BudgetedParserList<int> strippedEnds = new(clipState.Budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
             for (int contour = 0; contour < builder.ContourCount; contour++)

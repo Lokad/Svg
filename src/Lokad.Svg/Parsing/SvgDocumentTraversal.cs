@@ -414,6 +414,7 @@ internal static class SvgDocumentTraversal
                     state.ClipRectangleSource = null;
                     state.ClipPolygon = null;
                     state.ClipIsObjectBoundingBox = false;
+                    state.ClipIsVisible = true;
                 }
                 state.SymbolDefinition?.EndGroup(reader.Depth, state);
                 SvgRenderedGroupSourceParser.EndGroup(reader.Depth, state, workCounter, cancellationToken);

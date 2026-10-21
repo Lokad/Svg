@@ -123,6 +123,11 @@ local instances and forward definitions. Alpha/luminance masks support ordered
 vector/text content, clipping, local uses, both region/content unit systems and
 transformed finite regions.
 
+Hidden clip children do not contribute to the silhouette; visibility inherits
+from the resource's own ancestors and can be overridden by a child. Display on
+`clipPath` or its ancestors does not disable the resource. Fill/stroke paint and
+opacity do not suppress raw clip geometry.
+
 For one element, composition follows **filter → mask → clip → opacity**. A child
 clip remains inside an ancestor's effect. Group opacity isolates the composed
 children rather than multiplying each child's opacity independently.

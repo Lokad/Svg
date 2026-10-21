@@ -126,6 +126,11 @@ internal static class SvgResourceUseReplay
                         points = fill.Points; path = geometry.AuthoredPath;
                     }
                     if (points is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Empty referenced clip content is not implemented.");
+                    if (!reference.IsDisplayed || !source.SourceDisplayed || !(source.SourceVisible ?? reference.IsVisible))
+                    {
+                        state.Clips.TryAdd(pending.Id, new(0, 0, 0, 0));
+                        continue;
+                    }
                     state.DefinitionReservations.Add(state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(1), SvgMemoryCategory.Geometry));
                     SvgDevicePoint[] copy = new SvgDevicePoint[points.Length];
                     for (int point = 0; point < points.Length; point++) { work.Consume(token); copy[point] = points[point]; }
