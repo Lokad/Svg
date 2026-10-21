@@ -21,6 +21,8 @@ public sealed partial class OpenTypeFontTests
     [InlineData("<text font-family='Example' font-size='100' y='3' fill='red' stroke='red'><tspan stroke='none' fill='blue'>A</tspan></text>", "fill='blue'")]
     [InlineData("<g stroke='red' fill='red'><text font-family='Example' font-size='100' y='3'><tspan>A</tspan></text></g><style>text>tspan{fill:blue;stroke:none}</style>", "fill='blue'")]
     [InlineData("<text font-family='Example' font-size='100' y='3' color='red' fill='currentColor'><tspan color='blue'>A</tspan></text>", "fill='blue'")]
+    [InlineData("<g color='blue'><text font-family='Example' font-size='100' y='3' color='currentColor' fill='currentColor'>A</text></g>", "fill='blue'")]
+    [InlineData("<text font-family='Example' font-size='100' y='3' color='blue' fill='currentColor'><tspan color='currentColor'>A</tspan></text>", "fill='blue'")]
     [InlineData("<text font-family='Example' font-size='100' y='3' fill='red'><tspan fill='green' style='fill:blue!important'>A</tspan></text>", "fill='blue'")]
     [InlineData("<text font-family='Example' font-size='100' y='3' fill='red'><tspan fill='green' style='fill:inherit!important'>A</tspan></text>", "fill='red'")]
     [InlineData("<text font-family='Example' font-size='100' y='3' fill='none'><tspan fill='blue'>A</tspan></text>", "fill='blue'")]

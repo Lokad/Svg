@@ -174,6 +174,8 @@ CSS width/height declarations on rectangles and embedded images report
 declarations on nonapplicable targets do not affect rendering.
 Solid colors and paint keywords ignore surrounding whitespace in attributes and
 CSS; literal color limits apply to the authored token before normalization.
+`color:currentColor` uses the inherited color. Fill/stroke `currentColor` resolves
+against each element's own color, including after inheritance and local instancing.
 
 Unsupported: imports, media/supports rules, pseudo-classes/elements, sibling
 selectors, layout, variables, animation and web fonts. The resource declaration
