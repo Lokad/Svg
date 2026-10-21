@@ -1397,17 +1397,6 @@ internal sealed class SvgSceneBuilder : IDisposable
         return position;
     }
 
-    /// <summary>Moves one appended leaf's commands into its reserved drawing position.</summary>
-    /// <remarks>Geometry and paint owners remain in this scene. Empty leaves retain one explicit nonpainting
-    /// command. Command scratch reserves before allocation; copy work observes cancellation and teardown
-    /// releases every retained owner after partial failure.</remarks>
-    internal int ResolvePaintPlaceholder(int position, int tailStart)
-    {
-        if (_commands.Count == tailStart)
-            AddGeometry(SvgGeometry.FromRectangle(new(0, 0, 0, 0, SvgColor.Transparent, false, null)));
-        return _commands.ReplacePlaceholderWithTail(position, tailStart);
-    }
-
     internal SvgSceneSlot AddReferencePlaceholder()
     {
         SvgSceneSlot slot = new(_geometries.Count, _commands.Count);
@@ -1691,29 +1680,6 @@ internal sealed class BudgetedSceneList<T> : IDisposable where T : struct
         }
         CopyWithCheckpoints(items, _items.AsSpan(index, items.Length));
         _count += items.Length;
-    }
-
-    /// <summary>Moves the appended tail over one earlier placeholder while preserving intervening order.</summary>
-    /// <remarks>Items borrow their resource owners. This list owns only array storage; scratch is reserved
-    /// before allocation, and every copy block observes caller work and cancellation.</remarks>
-    internal int ReplacePlaceholderWithTail(int index, int tailStart)
-    {
-        if (index < 0 || index >= tailStart || tailStart >= _count) throw new ArgumentOutOfRangeException(nameof(index));
-        int length = _count - tailStart;
-        using RenderBudget.BudgetReservation scratch = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount<T>(length), SvgMemoryCategory.Parser);
-        T[] tail = new T[length];
-        CopyWithCheckpoints(_items.AsSpan(tailStart, length), tail);
-        int inserted = length - 1;
-        for (int remaining = tailStart - index - 1; remaining > 0; remaining -= CopyCheckpointItems)
-        {
-            _workCounter.Consume(_cancellationToken);
-            int count = Math.Min(CopyCheckpointItems, remaining);
-            int source = index + 1 + remaining - count;
-            _items.AsSpan(source, count).CopyTo(_items.AsSpan(source + inserted, count));
-        }
-        CopyWithCheckpoints(tail, _items.AsSpan(index, length));
-        _items[--_count] = default;
-        return inserted;
     }
 
     /// <summary>Drops a compacted tail without releasing borrowed resource owners; array storage remains reserved until detach or disposal.</summary>

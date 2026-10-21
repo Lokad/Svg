@@ -40,13 +40,15 @@ internal static class SvgDeferredPaintLeaves
     }
 
     /// <summary>Replays retained leaves through the ordinary lowerers after all local paint definitions resolve.</summary>
-    /// <remarks>Descending command positions keep unprocessed paint slots stable. Appended commands move
-    /// into their original slots; geometry and recorded-paint owners stay in the same scene. Every snapshot
-    /// copy, command move and range shift charges work and observes cancellation. Failure releases all owners
-    /// through document teardown. Existing use, clip and mask ranges follow each inserted command.</remarks>
+    /// <remarks>Descending command positions keep unprocessed paint slots stable. One batch rebuilds
+    /// drawing order and remaps existing and newly emitted scopes. Geometry and recorded-paint owners
+    /// stay in the same scene. Snapshot copies and command/range traversals charge work and cancellation;
+    /// failure releases all owners through document teardown.</remarks>
     internal static void Resolve(SvgRootAttributes root, SvgDocumentState state, SvgRenderLimits limits,
         ParserWorkCounter work, CancellationToken token)
     {
+        if (state.DeferredPaintLeaves.Count == 0) return;
+        using SvgPaintCommandBatch commands = new(state, state.Scene, work, token);
         for (int index = state.DeferredPaintLeaves.Count - 1; index >= 0; index--)
         {
             work.Consume(token);
@@ -57,21 +59,10 @@ internal static class SvgDeferredPaintLeaves
             {
                 for (int scope = 0; scope < pending.MaskScopeCount; scope++)
                     state.MaskScopes.Add(state.MaskScopeSnapshots[pending.MaskScopeStart + scope]);
-                int tail = state.Scene.CommandCount;
+                SvgPaintCommandEmission emission = commands.Begin(pending.CommandIndex);
                 SvgRenderedLeafParser.ParseResolved(pending.Source, pending.Context, root, state, limits,
                     state.Budget, null, work, token);
-                int inserted = state.Scene.ResolvePaintPlaceholder(pending.CommandIndex, tail);
-                SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.CommandIndex + 1, inserted, work, token);
-                if (inserted != 0)
-                {
-                    for (int useIndex = 0; useIndex < state.PendingUses.Count; useIndex++)
-                    {
-                        work.Consume(token);
-                        PendingUse use = state.PendingUses[useIndex];
-                        if (use.Slot.CommandIndex > pending.CommandIndex)
-                            state.PendingUses[useIndex] = use with { Slot = use.Slot with { CommandIndex = use.Slot.CommandIndex + inserted } };
-                    }
-                }
+                commands.Retain(emission);
             }
             finally
             {
@@ -79,5 +70,6 @@ internal static class SvgDeferredPaintLeaves
                 if (pending.Frame is not null) state.Viewports.RemoveLast();
             }
         }
+        commands.Complete();
     }
 }

@@ -30,13 +30,18 @@ internal static class SvgPatternUseReplay
         {
             work.Consume(token);
             // Descending positions preserve every unresolved slot when a use expands to several draws.
-            for (int index = pending.FirstUse + pending.UseCount - 1; index >= pending.FirstUse; index--)
+            if (pending.UseCount != 0)
             {
-                work.Consume(token);
-                SvgPatternContentUse use = state.PatternUses[index];
-                int tail = pending.Builder.CommandCount;
-                SvgResourceUseReplay.AppendPatternUse(use.Use, pending.Builder, state, work, token);
-                pending.Builder.ResolvePaintPlaceholder(use.CommandIndex, tail);
+                using SvgPaintCommandBatch commands = new(state, pending.Builder, work, token);
+                for (int index = pending.FirstUse + pending.UseCount - 1; index >= pending.FirstUse; index--)
+                {
+                    work.Consume(token);
+                    SvgPatternContentUse use = state.PatternUses[index];
+                    SvgPaintCommandEmission emission = commands.Begin(use.CommandIndex);
+                    SvgResourceUseReplay.AppendPatternUse(use.Use, pending.Builder, state, work, token);
+                    commands.Retain(emission);
+                }
+                commands.Complete();
             }
             for (int index = pending.FirstScope; index < pending.FirstScope + pending.ScopeCount; index++)
                 ApplyScope(state.PatternScopes?[index] ?? throw new InvalidOperationException("Retained pattern scopes require their source registry."), pending.Builder, state, false, work, token);

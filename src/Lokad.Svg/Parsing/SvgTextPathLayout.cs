@@ -57,11 +57,13 @@ internal static class SvgTextPathLayout
     /// <summary>Resolves only the appended source-local suffix; earlier document runs remain borrowed and untouched.</summary>
     internal static void Resolve(SvgDocumentState state, int first, SvgRenderLimits limits, ParserWorkCounter work, CancellationToken token)
     {
+        if (state.PendingTextRuns.Count == first) return;
+        using SvgPaintCommandBatch commands = new(state, state.Scene, work, token);
         for (int index = state.PendingTextRuns.Count - 1; index >= first; index--)
         {
             work.Consume(token);
             SvgPendingTextRun pending = state.PendingTextRuns[index];
-            int tail = state.Scene.CommandCount;
+            SvgPaintCommandEmission emission = commands.Begin(pending.CommandIndex);
             SvgTextRun run;
             if (pending.Reference is not {} reference)
             {
@@ -173,16 +175,10 @@ internal static class SvgTextPathLayout
                     SvgTextGlyphPainter.Emit(run, pending.Placement, placements.AsSpan(), pending.ViewportClip, pending.Color, state, limits.MaximumPathCommands, state.Budget, work, token);
                 }
             }
-            int inserted = state.Scene.ResolvePaintPlaceholder(pending.CommandIndex, tail);
-            SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.CommandIndex + 1, inserted, work, token);
-            for (int useIndex = 0; inserted != 0 && useIndex < state.PendingUses.Count; useIndex++)
-            {
-                work.Consume(token);
-                PendingUse use = state.PendingUses[useIndex];
-                if (state.DefinitionReplayScene is null && use.Slot.CommandIndex > pending.CommandIndex) state.PendingUses[useIndex] = use with { Slot = use.Slot with { CommandIndex = use.Slot.CommandIndex + inserted } };
-            }
+            commands.Retain(emission);
             run.Dispose();
             pending.Owner.Dispose();
         }
+        commands.Complete();
     }
 }
