@@ -129,6 +129,8 @@ Resource attribute/declaration locations have distinct boundaries:
   `clipPath` container itself is unsupported.
 - `clip-path` in inline styles or stylesheets is unsupported. CSS `clip-rule`
   support does not enable that declaration.
+- A `use` child inside `clipPath` supports single-contour referenced content.
+  Referenced compound paths are unsupported; direct compound clip content works.
 - Embedded image targets can be clipped/masked and patterns can contain images,
   but an `image` child inside a mask is unsupported.
 
