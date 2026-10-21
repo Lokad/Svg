@@ -7,7 +7,30 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgStyleSheetTests
 {
     [Theory]
+    [InlineData("<style xmlns='http://www.w3.org/2000/svg'>$</style>")]
+    [InlineData("<s:style xmlns:s='http://www.w3.org/2000/svg'>$</s:style>")]
+    [InlineData("<style xmlns:metadata='urn:metadata' type='text/css' id='sheet'>$</style>")]
+    public void Stylesheet_namespace_declarations_preserve_cascade_sizing_and_discovery(string sheet)
+    {
+        const string shape = "<rect width='8' height='8'/>";
+        sheet = sheet.Replace("$", "svg{width:8px;height:8px} rect{fill:red}", StringComparison.Ordinal);
+        byte[] expected = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect width='8' height='8' fill='red'/></svg>"u8.ToArray();
+        foreach (string content in new[] { sheet + shape, shape + sheet, "<defs>" + sheet + "</defs>" + shape })
+        {
+            byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'>" + content + "</svg>");
+            Assert.Equal(SvgConverter.ConvertToPng(expected, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+                SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+            Assert.Equal(new SvgViewport(8, 8), SvgConverter.InspectDimensions(input, SvgRenderOptions.Default, CancellationToken.None).LogicalViewport);
+            RenderBudget budget = new(1_000_000);
+            Assert.Empty(Lokad.Svg.Fonts.SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, new(10_000), budget, CancellationToken.None));
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        }
+    }
+
+    [Theory]
     [InlineData("<style/>")]
+    [InlineData("<style xmlns='http://www.w3.org/2000/svg'/>")]
+    [InlineData("<s:style xmlns:s='http://www.w3.org/2000/svg'/>")]
     [InlineData("<style></style>")]
     [InlineData("<style> \t\r\n </style>")]
     [InlineData("<style>/*empty*/</style>")]
@@ -376,6 +399,11 @@ public sealed class SvgStyleSheetTests
     [InlineData("<style id='sheet'/>", false)]
     [InlineData("<style type='text/css' id='sheet'/>", false)]
     [InlineData("<style type='text/plain'/>", true)]
+    [InlineData("<style xmlns='http://www.w3.org/2000/svg'/>", false)]
+    [InlineData("<s:style xmlns:s='http://www.w3.org/2000/svg' type='text/css'/>", false)]
+    [InlineData("<style xmlns:metadata='urn:metadata' id='sheet'/>", false)]
+    [InlineData("<style xmlns='http://www.w3.org/2000/svg' media='screen'/>", true)]
+    [InlineData("<style xmlns='http://www.w3.org/2000/svg' type='text/plain'/>", true)]
     public void Rejects_stylesheet_element_attributes(string element, bool throws)
     {
         using XmlReader reader = XmlReader.Create(new StringReader(element));
@@ -389,6 +417,8 @@ public sealed class SvgStyleSheetTests
         else
         {
             SvgRootStyleSheetParser.ThrowIfAttributed(reader);
+            Assert.Equal(XmlNodeType.Element, reader.NodeType);
+            Assert.Equal("style", reader.LocalName);
         }
     }
 

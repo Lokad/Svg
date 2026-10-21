@@ -153,7 +153,8 @@ Selectors include SVG element names, IDs, classes, attribute selectors, selector
 lists, element+ID/class, descendants and children. Rules apply through admitted
 root, group, symbol, nested-SVG and resource trees. Specificity, source order,
 inline priority, inheritance and `!important` are implemented.
-Empty, whitespace-only and comment-only stylesheets are no-ops.
+Empty, whitespace-only and comment-only stylesheets are no-ops. XML namespace
+declarations on `style` elements are accepted.
 
 Declarations cover color/fill/stroke and their opacity, stroke width/caps/joins/
 miter/dashes, display/visibility/opacity, fill-rule/clip-rule, paint-order, filter,
