@@ -190,10 +190,19 @@ internal static class SvgStyleSheet
 
         internal void Append(XmlReader reader)
         {
+            _workCounter.Consume(_cancellationToken);
+            using RenderBudget.BudgetReservation probeOwner = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount<char>(1), SvgMemoryCategory.Parser);
+            char[] probe = new char[1];
             while (true)
             {
                 _workCounter.Consume(_cancellationToken);
-                EnsureCapacity(_length + 1);
+                if (_length == _characters.Length)
+                {
+                    // Prove that another character exists before growing a full buffer.
+                    if (reader.ReadValueChunk(probe, 0, 1) == 0) return;
+                    EnsureCapacity(_length + 1);
+                    _characters[_length++] = probe[0];
+                }
                 int read = reader.ReadValueChunk(_characters, _length, _characters.Length - _length);
                 if (read == 0) return;
                 _length += read;

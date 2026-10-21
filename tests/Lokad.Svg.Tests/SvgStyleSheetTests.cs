@@ -313,12 +313,13 @@ public sealed class SvgStyleSheetTests
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<style>x</style>"));
         Assert.True(reader.Read());
-        RenderBudget budget = new(1);
+        RenderBudget budget = new(1_000_000);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgStyleSheet.ReadElementText(reader, budget, new ParserWorkCounter(0), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, budget.Snapshot().BytesByCategory[(int)SvgMemoryCategory.Parser]);
+        Assert.Equal(0, budget.Snapshot().PeakBytes);
     }
 
     [Fact]

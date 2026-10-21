@@ -75,10 +75,46 @@ internal static class SvgRootStyleSheetParser
         reader.MoveToElement();
     }
 
-    /// <summary>Consumes an already collected stylesheet during the ordinary structural traversal.</summary>
+    /// <summary>Consumes an already collected stylesheet with bounded scratch, without retaining its text.</summary>
     internal static void Consume(XmlReader reader, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         ThrowIfAttributed(reader);
-        using OwnedStyleSheetText text = SvgStyleSheet.ReadElementText(reader, budget, workCounter, cancellationToken);
+        if (reader.IsEmptyElement) return;
+        using XmlReader subtree = reader.ReadSubtree();
+        if (!subtree.Read()) throw new XmlException("Stylesheet content is missing.");
+        RenderBudget.BudgetReservation? owner = null;
+        char[] chunk = [];
+        try
+        {
+            while (subtree.Read())
+            {
+                workCounter.Consume(cancellationToken);
+                switch (subtree.NodeType)
+                {
+                    case XmlNodeType.Text:
+                    case XmlNodeType.CDATA:
+                    case XmlNodeType.Whitespace:
+                    case XmlNodeType.SignificantWhitespace:
+                        if (chunk.Length == 0)
+                        {
+                            owner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<char>(4096), SvgMemoryCategory.Parser);
+                            chunk = new char[4096];
+                        }
+                        while (true)
+                        {
+                            workCounter.Consume(cancellationToken);
+                            if (subtree.ReadValueChunk(chunk, 0, chunk.Length) == 0) break;
+                        }
+                        break;
+                    case XmlNodeType.Element:
+                        throw new XmlException("Stylesheet content must not contain child elements.");
+                    case XmlNodeType.EndElement:
+                        return;
+                }
+            }
+            throw new XmlException("Stylesheet content is not closed.");
+        }
+        finally { owner?.Dispose(); }
     }
 }
