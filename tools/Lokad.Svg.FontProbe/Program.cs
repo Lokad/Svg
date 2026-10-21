@@ -166,12 +166,12 @@ internal static class Program
     private static ValueTask<byte[]> ReadSvgInputAsync(string path, long maximumBytes, CancellationToken cancellationToken)
         => path == "-" ? ReadBoundedStreamAsync(Console.OpenStandardInput(), maximumBytes, cancellationToken) : ReadLocalFileAsync(path, maximumBytes, cancellationToken);
 
-    /// <summary>Copies one caller-selected SVG byte stream without seeking, decoding or retaining bytes beyond its configured limit.</summary>
+    /// <summary>Copies a borrowed byte stream without seeking, decoding or retaining bytes beyond its nonnegative quota; the caller keeps stream ownership.</summary>
     internal static async ValueTask<byte[]> ReadBoundedStreamAsync(Stream source, long maximumBytes, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(source);
-        if (!source.CanRead) throw new ArgumentException("SVG input must be readable.", nameof(source));
-        if (maximumBytes <= 0 || maximumBytes > int.MaxValue) throw new ArgumentOutOfRangeException(nameof(maximumBytes));
+        if (!source.CanRead) throw new ArgumentException("Input must be readable.", nameof(source));
+        if (maximumBytes < 0 || maximumBytes > int.MaxValue) throw new ArgumentOutOfRangeException(nameof(maximumBytes));
         using var destination = new MemoryStream();
         var chunk = new byte[64 * 1024];
         while (true)
@@ -217,15 +217,7 @@ internal static class Program
         using HttpResponseMessage response = await client.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode || response.Content.Headers.ContentLength is long declared && declared > maximumBytes) throw new HostSourceException();
         await using Stream content = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        using var destination = new MemoryStream();
-        var chunk = new byte[64 * 1024];
-        while (true)
-        {
-            int read = await content.ReadAsync(chunk, cancellationToken).ConfigureAwait(false);
-            if (read == 0) return destination.ToArray();
-            if (read > maximumBytes - destination.Length) throw new HostSourceException();
-            destination.Write(chunk, 0, read);
-        }
+        return await ReadBoundedStreamAsync(content, maximumBytes, cancellationToken).ConfigureAwait(false);
     }
 
     private sealed record ProbeOptions(string PackId, string SvgPath, string OutputPath, string? ManifestPath, string? FontRoot, string? SourceUri);

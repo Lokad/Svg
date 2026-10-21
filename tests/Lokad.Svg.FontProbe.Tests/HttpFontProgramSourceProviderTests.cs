@@ -25,6 +25,38 @@ public sealed class HttpFontProgramSourceProviderTests
         await Assert.ThrowsAsync<Program.HostSourceException>(async () => await Program.ReadBoundedStreamAsync(source, 2, CancellationToken.None));
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Zero_quota_accepts_only_an_empty_stream(bool hasData)
+    {
+        await using var source = new ChunkedReadStream(hasData ? [1] : [], 1);
+        if (hasData)
+            await Assert.ThrowsAsync<Program.HostSourceException>(async () => await Program.ReadBoundedStreamAsync(source, 0, CancellationToken.None));
+        else Assert.Empty(await Program.ReadBoundedStreamAsync(source, 0, CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task Empty_declared_http_program_reaches_font_validation_without_a_transport_failure()
+    {
+        var handler = new SuccessHandler([]);
+        using var client = new HttpClient(handler);
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse("""
+            { "packId": "test-pack", "files": [{ "relativePath": "empty.ttf", "byteSize": 0, "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855" }], "families": [{ "requestedFamily": "Example", "resolvedFamily": "Example", "relativeFontFile": "empty.ttf" }] }
+            """u8.ToArray(), "test-pack");
+        var provider = new Program.HttpFontProgramSourceProvider(client, new Uri("https://example.test/test-pack/"), 3, 32, 3);
+        ISvgFontProgramSource source = await provider.GetSourceAsync(Assert.Single(catalog.Files), CancellationToken.None)
+            ?? throw new InvalidOperationException("The HTTP provider did not return a source.");
+
+        Assert.Empty((await source.GetBytesAsync(CancellationToken.None)).ToArray());
+        Assert.Empty((await source.GetBytesAsync(CancellationToken.None)).ToArray());
+        SvgException failure = await Assert.ThrowsAsync<SvgException>(async () =>
+            await SvgFontSnapshot.CreateAsync(catalog, [new("Example", 400, false)], provider, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.MalformedInput, failure.ErrorCode);
+        Assert.Equal(SvgFontFailureStage.Format, failure.FontDiagnostic?.Stage);
+        Assert.Equal(1, handler.RequestCount);
+    }
+
     [Fact]
     public async Task Coalesces_concurrent_reads_and_reuses_the_bounded_cache()
     {
