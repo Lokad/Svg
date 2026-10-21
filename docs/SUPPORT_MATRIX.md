@@ -89,6 +89,7 @@ Root and nested viewports preserve their own percentage bases, aspect maps and
 physical clips. Instance presentation follows authored/inherited precedence;
 referencing an alias excludes the source's ancestors. Missing/cyclic references
 have categorized failures. Perspective transforms are unsupported.
+Transform lists accept whitespace or comma separators between functions.
 
 ### Gradients and patterns
 

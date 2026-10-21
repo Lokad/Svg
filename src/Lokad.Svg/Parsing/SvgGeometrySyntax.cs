@@ -16,16 +16,11 @@ internal static class SvgGeometrySyntax
         ReadOnlySpan<char> input = value.AsSpan();
         SvgAffineTransform transform = SvgAffineTransform.Identity;
         int position = 0;
-        bool hasFunction = false;
         bool fullMatrix = false;
         while (true)
         {
             while (position < input.Length && char.IsWhiteSpace(input[position])) position++;
-            if (position == input.Length)
-            {
-                if (!hasFunction) return transform;
-                return transform;
-            }
+            if (position == input.Length) return transform;
 
             int nameStart = position;
             while (position < input.Length && char.IsAsciiLetter(input[position])) position++;
@@ -43,8 +38,7 @@ internal static class SvgGeometrySyntax
             // Enclosing groups still compose their finished local maps in double.
             fullMatrix |= !(name.Equals("translate", StringComparison.OrdinalIgnoreCase) || name.Equals("scale", StringComparison.OrdinalIgnoreCase));
             transform = fullMatrix ? transform.ComposeChecked(function) : ComposeAxis(transform, function);
-            position++;
-            hasFunction = true;
+            position = SkipTransformSeparator(input, position + 1);
         }
 
         static SvgAffineTransform ComposeAxis(SvgAffineTransform outer, SvgAffineTransform inner)
@@ -55,6 +49,18 @@ internal static class SvgGeometrySyntax
             return SvgAffineTransform.FromScaleOffset((float)outer.A * (float)inner.A, (float)outer.D * (float)inner.D,
                 (float)outer.A * (float)inner.E + (float)outer.E, (float)outer.D * (float)inner.F + (float)outer.F).ComposeChecked(SvgAffineTransform.Identity);
         }
+    }
+
+    /// <summary>Consumes an optional comma between functions, rejecting a trailing separator.</summary>
+    internal static int SkipTransformSeparator(ReadOnlySpan<char> input, int position)
+    {
+        while (position < input.Length && char.IsWhiteSpace(input[position])) position++;
+        if (position < input.Length && input[position] == ',')
+        {
+            do { position++; } while (position < input.Length && char.IsWhiteSpace(input[position]));
+            if (position == input.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A transform function is required after a comma.");
+        }
+        return position;
     }
 
     internal static double ParseRectangleCoordinate(string value)

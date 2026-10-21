@@ -178,15 +178,10 @@ internal static class SvgGradientSyntax
         ReadOnlySpan<char> input = value.AsSpan();
         SvgGradientTransform transform = SvgGradientTransform.Identity;
         int position = 0;
-        bool hasFunction = false;
         while (true)
         {
             while (position < input.Length && char.IsWhiteSpace(input[position])) position++;
-            if (position == input.Length)
-            {
-                if (!hasFunction) return transform;
-                return transform;
-            }
+            if (position == input.Length) return transform;
             int nameStart = position;
             while (position < input.Length && char.IsAsciiLetter(input[position])) position++;
             if (nameStart == position) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotation, and finite matrix() gradient transforms are implemented.");
@@ -198,8 +193,7 @@ internal static class SvgGradientSyntax
             while (position < input.Length && input[position] != ')') position++;
             if (position == input.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotation, and finite matrix() gradient transforms are implemented.");
             transform = SvgGradientTransform.Compose(transform, ParseGradientTransformFunction(name, input[argumentsStart..position], workCounter, cancellationToken));
-            position++;
-            hasFunction = true;
+            position = SvgGeometrySyntax.SkipTransformSeparator(input, position + 1);
         }
     }
 
