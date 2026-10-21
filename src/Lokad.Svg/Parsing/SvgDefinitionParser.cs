@@ -465,7 +465,6 @@ internal static class SvgDefinitionParser
             SvgElementAttributePolicy.ValidatePattern(reader, workCounter, cancellationToken);
             state.PatternId = reader.GetAttribute("id");
             state.PatternTemplate = SvgPatternSyntax.ParsePatternElement(reader, state, workCounter, cancellationToken);
-            if (state.PatternTemplate.Href is not null) state.HasPatternTemplateReferences = true;
             state.PatternTile = state.PatternTemplate.Grid;
             SvgPaintableElementContext patternContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
             InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
@@ -1696,9 +1695,14 @@ internal static class SvgDefinitionParser
             state.PatternContentBuilder = null;
             tile = tile with { Content = null, VectorContent = content };
         }
-        SvgPatternDefinition definition = new(retainedId, state.PatternTemplate, tile, state.PatternRectangleSource, state.PatternRectangleContext, false);
+        SvgPatternDefinition definition = new(state.PatternTemplate, tile, state.PatternRectangleSource, state.PatternRectangleContext, false);
         if (!state.PatternDefinitions.TryAdd(retainedId, definition)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG pattern ids must be unique.");
-        if (definition.Template.Href is null && !state.Patterns.TryAdd(retainedId, tile)) throw new InvalidOperationException("A pattern must register once.");
+        if (definition.Template.Href is null)
+        {
+            if (!state.Patterns.TryAdd(retainedId, tile)) throw new InvalidOperationException("A pattern must register once.");
+        }
+        else state.PendingPatternReferences.Add(new(retainedId));
+        state.PatternDefinitionVersion++;
     }
 
     internal static void RegisterMaskContent(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)

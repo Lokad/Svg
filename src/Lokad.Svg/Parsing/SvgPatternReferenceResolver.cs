@@ -5,21 +5,21 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Resolves local pattern templates iteratively with charged graph storage and work.</summary>
 /// <remarks>Single-conversion state; content aliases borrow a parent-owned scene. Cleanup ignores
 /// cancellation; all new scenes are adopted once or disposed on failure. Missing forward targets
-/// remain pending at a defs boundary and have an explicit unsupported outcome at document end.</remarks>
+/// remain pending at a defs boundary and have an explicit unsupported outcome at document end.
+/// Each pass visits shared blocked chains once and retries only after new definitions arrive.</remarks>
 internal static class SvgPatternReferenceResolver
 {
     internal static void Resolve(SvgDocumentState state, bool requireComplete, ParserWorkCounter work, CancellationToken token)
     {
         if (!state.HasPatternTemplateReferences) return;
-        using BudgetedParserList<SvgPatternReferenceFrame> roots = new(state.Budget, SvgMemoryCategory.Parser, work, token);
-        foreach (SvgPatternDefinition definition in state.PatternDefinitions.Values)
+        int version = state.PatternDefinitionVersion;
+        if (!requireComplete && state.PatternResolutionVersion == version) return;
+        using BudgetedParserList<SvgPatternReferenceFrame> path = new(state.Budget, SvgMemoryCategory.Parser, work, token);
+        int retained = 0;
+        foreach (SvgPatternReferenceFrame root in state.PendingPatternReferences.AsSpan())
         {
             work.Consume(token);
-            if (!state.Patterns.TryGetValue(definition.Id, out _)) roots.Add(new(definition.Id));
-        }
-        using BudgetedParserList<SvgPatternReferenceFrame> path = new(state.Budget, SvgMemoryCategory.Parser, work, token);
-        foreach (SvgPatternReferenceFrame root in roots.AsSpan())
-        {
+            if (state.Patterns.TryGetValue(root.Id, out _)) continue;
             path.Add(root);
             while (path.Count != 0)
             {
@@ -29,13 +29,12 @@ internal static class SvgPatternReferenceResolver
                 if (!state.PatternDefinitions.TryGetValue(id, out SvgPatternDefinition definition))
                 {
                     if (requireComplete) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A local pattern template target is not defined.");
-                    foreach (SvgPatternReferenceFrame frame in path.AsSpan())
-                    {
-                        work.Consume(token);
-                        if (state.PatternDefinitions.TryGetValue(frame.Id, out SvgPatternDefinition pending))
-                            state.PatternDefinitions.Replace(frame.Id, pending with { IsVisiting = false });
-                    }
-                    path.Clear();
+                    BlockPath();
+                    break;
+                }
+                if (!requireComplete && definition.BlockedVersion == version)
+                {
+                    BlockPath();
                     break;
                 }
                 SvgPatternTemplate template = definition.Template;
@@ -69,6 +68,24 @@ internal static class SvgPatternReferenceResolver
                 if (!state.Patterns.TryAdd(id, tile)) throw new InvalidOperationException("Resolved patterns register once.");
                 path.RemoveLast();
             }
+            if (!state.Patterns.TryGetValue(root.Id, out _)) state.PendingPatternReferences[retained++] = root;
+        }
+        while (state.PendingPatternReferences.Count > retained)
+        {
+            work.Consume(token);
+            state.PendingPatternReferences.RemoveLast();
+        }
+        state.PatternResolutionVersion = version;
+
+        void BlockPath()
+        {
+            foreach (SvgPatternReferenceFrame frame in path.AsSpan())
+            {
+                work.Consume(token);
+                if (state.PatternDefinitions.TryGetValue(frame.Id, out SvgPatternDefinition pending))
+                    state.PatternDefinitions.Replace(frame.Id, pending with { IsVisiting = false, BlockedVersion = version });
+            }
+            path.Clear();
         }
     }
 

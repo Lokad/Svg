@@ -63,6 +63,7 @@ internal sealed class SvgDocumentState : IDisposable
         MaskContentBoxes = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         Patterns = new BudgetedParserDictionary<string, SvgPatternTile>(budget, SvgMemoryCategory.Parser, PatternStorageBytes);
         PatternDefinitions = new(budget, SvgMemoryCategory.Parser, checked(64 + (int)ParserCollectionMemory.GetArrayByteCount<SvgPatternDefinition>(1)));
+        PendingPatternReferences = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         Gradients = new BudgetedParserDictionary<string, SvgLinearGradient>(budget, SvgMemoryCategory.Parser, GradientStorageBytes);
         RadialGradients = new BudgetedParserDictionary<string, SvgRadialGradient>(budget, SvgMemoryCategory.Parser, RadialGradientStorageBytes);
         GradientStops = new BudgetedParserList<SvgGradientStop>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -178,8 +179,12 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal BudgetedParserDictionary<string, SvgPatternTile> Patterns { get; }
     internal BudgetedParserDictionary<string, SvgPatternDefinition> PatternDefinitions { get; }
+    internal BudgetedParserList<SvgPatternReferenceFrame> PendingPatternReferences { get; }
     internal SvgPatternTemplate PatternTemplate { get; set; }
-    internal bool HasPatternTemplateReferences { get; set; }
+    internal bool HasPatternTemplateReferences => PendingPatternReferences.Count != 0;
+    // Only registration changes graph reachability; scene promotion leaves it unchanged.
+    internal int PatternDefinitionVersion { get; set; }
+    internal int PatternResolutionVersion { get; set; }
 
     internal BudgetedParserDictionary<string, SvgLinearGradient> Gradients { get; }
 
@@ -444,6 +449,7 @@ internal sealed class SvgDocumentState : IDisposable
         PatternUses.Dispose();
         Patterns.Dispose();
         PatternDefinitions.Dispose();
+        PendingPatternReferences.Dispose();
         Gradients.Dispose();
         RadialGradients.Dispose();
         GradientStops.Dispose();
