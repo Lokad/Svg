@@ -1416,16 +1416,17 @@ internal sealed class SvgSceneBuilder : IDisposable
         return slot;
     }
 
-    /// <summary>Expands one deferred reference placeholder into its resolved geometries, returning the inserted extra-command count that later slots must add.</summary>
+    /// <summary>Adopts resolved reference geometries into stable slots, returning the first extra geometry index.</summary>
     /// <remarks>Adopts the input owners on entry. On failure the scene keeps adopted geometries and this method
-    /// releases the remainder. Extra command storage reserves before allocation; copy loops charge work and cancellation.</remarks>
-    internal int ReplaceWithMany(SvgSceneSlot slot, ReadOnlySpan<SvgGeometry> applied)
+    /// releases the remainder. Geometry growth charges work/storage and observes cancellation. The caller
+    /// batches extra commands separately; zero or one geometry needs no command expansion. Single-threaded.</remarks>
+    internal int AdoptReferenceGeometries(SvgSceneSlot slot, ReadOnlySpan<SvgGeometry> applied)
     {
         // Empty targets resolve to a typed non-painting geometry without shifting later commands.
         if (applied.Length == 0)
         {
             _geometries[slot.GeometryIndex] = SvgGeometry.FromRectangle(new(0, 0, 0, 0, SvgColor.Transparent, false, null));
-            return 0;
+            return -1;
         }
         int adopted = 0;
         try
@@ -1434,18 +1435,14 @@ internal sealed class SvgSceneBuilder : IDisposable
             _geometries[slot.GeometryIndex] = applied[0];
             adopted = 1;
             _commands[slot.CommandIndex] = new SvgDrawCommand(SvgDrawCommandKind.Geometry, slot.GeometryIndex, 255, null, -1, 255);
-            if (applied.Length == 1) return 0;
+            if (applied.Length == 1) return -1;
             int firstGeometryIndex = _geometries.Count;
-            for (; adopted < applied.Length; adopted++) _geometries.Add(applied[adopted]);
-            using RenderBudget.BudgetReservation commandOwner = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(applied.Length - 1), SvgMemoryCategory.Parser);
-            SvgDrawCommand[] extra = new SvgDrawCommand[applied.Length - 1];
-            for (int index = 0; index < extra.Length; index++)
+            for (; adopted < applied.Length; adopted++)
             {
                 _workCounter.Consume(_cancellationToken);
-                extra[index] = new SvgDrawCommand(SvgDrawCommandKind.Geometry, firstGeometryIndex + index, 255, null, -1, 255);
+                _geometries.Add(applied[adopted]);
             }
-            _commands.Insert(slot.CommandIndex + 1, extra);
-            return extra.Length;
+            return firstGeometryIndex;
         }
         catch { for (int index = adopted; index < applied.Length; index++) applied[index].Dispose(); throw; }
     }

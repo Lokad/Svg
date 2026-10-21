@@ -41,6 +41,7 @@ internal readonly record struct PendingUse(SvgSceneSlot Slot, SvgUseReference Re
 /// <summary>Applies typed local references through their geometry-specific supported transforms.</summary>
 internal static class SvgReferenceResolver
 {
+    private readonly record struct UseCommandExpansion(int CommandIndex, int FirstGeometryIndex, int Count);
     /// <summary>Resolves an already parsed local reference immediately or retains its typed placeholder for document-end resolution.</summary>
 
     internal static void ResolveOrDefer(SvgUseReference reference, BudgetedParserDictionary<string, SvgDefinition> definitions, BudgetedParserList<PendingUse> pendingUses, SvgSceneBuilder scene, SvgViewportFrame? frame, byte? mask, string? maskReference, SvgDeferredClip? deferredClip, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -1660,9 +1661,14 @@ internal static class SvgReferenceResolver
         return transformed with { Color = new SvgColor(transformed.Color.Red, transformed.Color.Green, transformed.Color.Blue, MultiplyAlpha(transformed.Color.Alpha, reference.Opacity)), IsPainted = transformed.IsPainted && reference.IsPainted };
     }
 
+    /// <summary>Resolves forward uses with one command rebuild and one remapping of retained scene ranges.</summary>
+    /// <remarks>Adopted geometry stays scene-owned on failure. Temporary expansion/map/command storage
+    /// is reserved before growth, traversals charge work and cancellation, and each conversion owns its state.
+    /// Empty/single-geometry targets preserve command slots without rebuilding or mapping arrays.</remarks>
     internal static void ResolvePendingUses(BudgetedParserDictionary<string, SvgDefinition> definitions, BudgetedParserList<PendingUse> pendingUses, SvgSceneBuilder scene, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        int commandShift = 0;
+        if (pendingUses.Count == 0) return;
+        using BudgetedParserList<UseCommandExpansion> expansions = new(state.Budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         for (int pendingUseIndex = 0; pendingUseIndex < pendingUses.Count; pendingUseIndex++)
         {
             workCounter.Consume(cancellationToken);
@@ -1671,7 +1677,65 @@ internal static class SvgReferenceResolver
             {
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only supported local geometry use references are implemented.");
             }
-            InsertResolvedUse(definition, pendingUse, scene, state, ref commandShift, workCounter, cancellationToken);
+            SvgGeometry[] applied = ResolveUseGeometries(definition, pendingUse, state, workCounter, cancellationToken);
+            int firstExtra = scene.AdoptReferenceGeometries(pendingUse.Slot, applied);
+            if (applied.Length > 1) expansions.Add(new(pendingUse.Slot.CommandIndex, firstExtra, applied.Length - 1));
+        }
+        if (expansions.Count == 0) return;
+
+        // Existing slots and geometry indices stay stable until all references are adopted.
+        // Rebuild drawing order once, then map each retained command boundary once.
+        int commandCount = scene.CommandCount;
+        using RenderBudget.BudgetReservation mapOwner = state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<int>(commandCount + 1), SvgMemoryCategory.Parser);
+        int[] positions = new int[commandCount + 1];
+        BudgetedSceneList<SvgDrawCommand> commands = new(state.Budget, workCounter, cancellationToken);
+        bool transferred = false;
+        try
+        {
+            int expansionIndex = 0;
+            for (int index = 0; index < commandCount; index++)
+            {
+                workCounter.Consume(cancellationToken);
+                positions[index] = commands.Count;
+                commands.Add(scene.CommandAt(index));
+                if (expansionIndex == expansions.Count || expansions[expansionIndex].CommandIndex != index) continue;
+                UseCommandExpansion expansion = expansions[expansionIndex++];
+                for (int extra = 0; extra < expansion.Count; extra++)
+                {
+                    workCounter.Consume(cancellationToken);
+                    commands.Add(new(SvgDrawCommandKind.Geometry, expansion.FirstGeometryIndex + extra, 255, null, -1, 255));
+                }
+            }
+            if (expansionIndex != expansions.Count) throw new InvalidOperationException("Pending reference slots must follow drawing order.");
+            positions[commandCount] = commands.Count;
+            RemapRanges(positions);
+            scene.AdoptCommands(commands);
+            transferred = true;
+        }
+        finally { if (!transferred) commands.Dispose(); }
+
+        void RemapRanges(ReadOnlySpan<int> map)
+        {
+            for (int index = 0; index < state.PendingTextRuns.Count; index++)
+            {
+                workCounter.Consume(cancellationToken);
+                SvgPendingTextRun pending = state.PendingTextRuns[index];
+                if (ReferenceEquals(pending.Scene, scene)) state.PendingTextRuns[index] = pending with { CommandIndex = map[pending.CommandIndex] };
+            }
+            for (int index = 0; index < state.PendingGroupClips.Count; index++)
+            {
+                workCounter.Consume(cancellationToken);
+                PendingGroupClip pending = state.PendingGroupClips[index];
+                if (ReferenceEquals(pending.Scene, scene))
+                    state.PendingGroupClips[index] = pending with { FirstCommandIndex = map[pending.FirstCommandIndex], EndCommandIndex = pending.EndCommandIndex < 0 ? pending.EndCommandIndex : map[pending.EndCommandIndex] };
+            }
+            for (int index = 0; index < state.PendingGroupMasks.Count; index++)
+            {
+                workCounter.Consume(cancellationToken);
+                PendingGroupMask pending = state.PendingGroupMasks[index];
+                if (ReferenceEquals(pending.Scene, scene))
+                    state.PendingGroupMasks[index] = pending with { FirstCommandIndex = map[pending.FirstCommandIndex], EndCommandIndex = pending.EndCommandIndex < 0 ? pending.EndCommandIndex : map[pending.EndCommandIndex] };
+            }
         }
     }
 
@@ -1715,18 +1779,6 @@ internal static class SvgReferenceResolver
             return applied;
         }
         catch { foreach (SvgGeometry geometry in applied) geometry.Dispose(); throw; }
-    }
-
-    /// <summary>Inserts one resolved use instance into its scene placeholder, advancing the shared command shift.</summary>
-    private static void InsertResolvedUse(SvgDefinition definition, PendingUse pendingUse, SvgSceneBuilder scene, SvgDocumentState state, ref int commandShift, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(state);
-        ArgumentNullException.ThrowIfNull(workCounter);
-        SvgGeometry[] applied = ResolveUseGeometries(definition, pendingUse, state, workCounter, cancellationToken);
-        int adjustedCommand = pendingUse.Slot.CommandIndex + commandShift;
-        int insertedCommands = scene.ReplaceWithMany(pendingUse.Slot with { CommandIndex = adjustedCommand }, applied);
-        commandShift += insertedCommands;
-        ShiftPendingCommandRanges(state, adjustedCommand + 1, insertedCommands, workCounter, cancellationToken);
     }
 
     private static byte ResolveDeferredMaskValue(string maskReference, SvgDocumentState document)

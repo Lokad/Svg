@@ -27,6 +27,8 @@
   repeated pattern-template graph walks across defs blocks and later shapes.
 - Resolve gradient template chains without order-dependent rescans and reject
   duplicate IDs consistently across linear, radial and forward definitions.
+- Keep polygon clips compatible with unrelated group instances, and expand
+  forward uses without repeated command/range shifts.
 - Simplify renderer/tool internals and diagnostic reporting, validate downloaded
   CI artifacts against their recorded host, and retire historical corporate-sweep
   tooling and aggregate reports while retaining focused evidence and provenance.
