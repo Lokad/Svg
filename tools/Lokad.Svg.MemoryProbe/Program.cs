@@ -10,7 +10,7 @@ internal static class Program
     {
         if (!TryParseArguments(arguments, out ProbeOptions? options) || options is null)
         {
-            Console.Error.WriteLine("Usage: Lokad.Svg.MemoryProbe <input.svg> <output.png> [--mode conversion|xml-reader|font-discovery] [--maximum-accounted-bytes <positive-int64>] [--background-color <r,g,b,a>] [--cancel-after-ms <positive-int32>] [--cancel-after-conversion-start-ms <positive-int32>] [--cancel-after-background-start-ms <positive-int32>] [--maximum-work-units <positive-int32>]");
+            Console.Error.WriteLine("Usage: Lokad.Svg.MemoryProbe <input.svg> <output.png> [--mode conversion|xml-reader|font-discovery] [--maximum-accounted-bytes <positive-int64>] [--background-color <r,g,b,a>] [--cancel-after-ms <positive-int32>] [--cancel-after-conversion-start-ms <positive-int32>] [--cancel-after-background-start-ms <nonnegative-int32; 0 cancels synchronously>] [--maximum-work-units <positive-int32>]");
             return 2;
         }
 
@@ -48,7 +48,12 @@ internal static class Program
                 backgroundCancellation = new CancellationTokenSource();
                 CancellationTokenSource capturedCancellation = backgroundCancellation;
                 backgroundProbe = BackgroundInitializationProbe.Arm(
-                    () => { backgroundInitializationStarted = true; capturedCancellation.CancelAfter(backgroundDelay); },
+                    () =>
+                    {
+                        backgroundInitializationStarted = true;
+                        if (backgroundDelay == 0) capturedCancellation.Cancel();
+                        else capturedCancellation.CancelAfter(backgroundDelay);
+                    },
                     () => { backgroundCancellationObserved = true; });
             }
             CancellationToken cancellationToken = backgroundCancellation?.Token ?? conversionCancellation?.Token ?? cancellation?.Token ?? CancellationToken.None;
@@ -170,7 +175,7 @@ internal static class Program
                 if (cancelAfterMilliseconds is not null || cancelAfterBackgroundStartMilliseconds is not null) return false;
                 cancelAfterConversionStartMilliseconds = parsedConversionDelay;
             }
-            else if (option == "--cancel-after-background-start-ms" && int.TryParse(value, out int parsedBackgroundDelay) && parsedBackgroundDelay > 0)
+            else if (option == "--cancel-after-background-start-ms" && int.TryParse(value, out int parsedBackgroundDelay) && parsedBackgroundDelay >= 0)
             {
                 if (cancelAfterMilliseconds is not null || cancelAfterConversionStartMilliseconds is not null) return false;
                 cancelAfterBackgroundStartMilliseconds = parsedBackgroundDelay;

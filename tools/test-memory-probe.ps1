@@ -186,7 +186,7 @@ if ($parserCancelled['outcome'] -ne 'cancelled' -or $parserCancelled['cancellati
 $backgroundCancellationInput = Join-Path $ResultsDirectory "$runId-background-cancellation.svg"
 [IO.File]::WriteAllText($backgroundCancellationInput, '<svg xmlns="http://www.w3.org/2000/svg" width="4096" height="4096"/>', [Text.UTF8Encoding]::new($false))
 $backgroundCancellationOutput = Join-Path $ResultsDirectory "$runId-background-cancellation.png"
-$backgroundCancelled = Invoke-Probe -Name 'background-cancellation' -InputPath $backgroundCancellationInput -Output $backgroundCancellationOutput -ExpectedExitCode 3 -ExtraArguments @('--background-color', '1,2,3,255', '--cancel-after-background-start-ms', '1')
+$backgroundCancelled = Invoke-Probe -Name 'background-cancellation' -InputPath $backgroundCancellationInput -Output $backgroundCancellationOutput -ExpectedExitCode 3 -ExtraArguments @('--background-color', '1,2,3,255', '--cancel-after-background-start-ms', '0')
 if ($backgroundCancelled['outcome'] -ne 'cancelled' -or $backgroundCancelled['cancellationMode'] -ne 'after-background-start' -or $backgroundCancelled['backgroundInitializationStarted'] -ne 'true' -or $backgroundCancelled['backgroundCancellationObserved'] -ne 'true' -or [long]$backgroundCancelled['conversionManagedAllocatedBytes'] -lt 64MB -or (Test-Path -LiteralPath $backgroundCancellationOutput)) { throw 'The opaque-background cancellation probe did not observe cancellation in the initialized background loop.' }
 
 $discoveryDeepGroupsInput = Join-Path $ResultsDirectory "$runId-font-discovery-deep-groups.svg"

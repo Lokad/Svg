@@ -123,6 +123,11 @@ and [the test guide](../tests/README.md) only for collection/admission changes.
 
 ## Smoke checks and CI evidence
 
+The memory smoke cancels synchronously when background initialization starts
+(`--cancel-after-background-start-ms 0`), so its phase assertion is independent
+of timer scheduling. Positive delays remain available for manual diagnostics;
+they may cancel in a later phase.
+
 The Chrome smoke requires exactly three fresh-process captures, each exact
 against its stored reference and byte-identical to the others. It also checks
 child failure/parent timeout, destination preservation and profile/root cleanup.
