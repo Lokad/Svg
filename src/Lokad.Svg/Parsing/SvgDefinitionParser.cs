@@ -649,6 +649,7 @@ internal static class SvgDefinitionParser
         {
             SvgElementAttributePolicy.ValidateRadialGradient(reader, workCounter, cancellationToken);
             state.RadialGradientId = reader.GetAttribute("id");
+            if (state.RadialGradientId is {} radialId) state.RadialGradientId = ClaimGradientId(state, radialId, workCounter, cancellationToken);
             SvgRadialTemplate template = SvgGradientSyntax.ParseRadialVector(reader, workCounter, cancellationToken);
             state.RadialGradient = template;
             if (!reader.IsEmptyElement) state.RadialGradientDepth = reader.Depth;
@@ -660,6 +661,7 @@ internal static class SvgDefinitionParser
         {
             SvgElementAttributePolicy.ValidateLinearGradient(reader, workCounter, cancellationToken);
             state.GradientId = reader.GetAttribute("id");
+            if (state.GradientId is {} linearId) state.GradientId = ClaimGradientId(state, linearId, workCounter, cancellationToken);
             SvgGradientTemplate template = SvgGradientSyntax.ParseLinearVector(reader, workCounter, cancellationToken);
             state.Gradient = template;
             if (!reader.IsEmptyElement) state.GradientDepth = reader.Depth;
@@ -1217,6 +1219,15 @@ internal static class SvgDefinitionParser
             box = new SvgClipBox(minX, minY, maxX - minX, maxY - minY);
             return true;
         }
+    }
+
+    private static string ClaimGradientId(SvgDocumentState state, string id, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        workCounter.Consume(cancellationToken);
+        if (state.GradientIds.TryGetValue(id, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
+        string retained = state.Strings.Copy(id);
+        if (!state.GradientIds.TryAdd(retained, 0)) throw new InvalidOperationException("Gradient identifiers register once.");
+        return retained;
     }
 
     internal static void RegisterGradient(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)

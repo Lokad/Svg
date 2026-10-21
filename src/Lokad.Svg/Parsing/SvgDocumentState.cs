@@ -66,6 +66,7 @@ internal sealed class SvgDocumentState : IDisposable
         PendingPatternReferences = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         Gradients = new BudgetedParserDictionary<string, SvgLinearGradient>(budget, SvgMemoryCategory.Parser, GradientStorageBytes);
         RadialGradients = new BudgetedParserDictionary<string, SvgRadialGradient>(budget, SvgMemoryCategory.Parser, RadialGradientStorageBytes);
+        GradientIds = new(budget, SvgMemoryCategory.Parser, 64);
         GradientStops = new BudgetedParserList<SvgGradientStop>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingTextRuns = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -189,6 +190,7 @@ internal sealed class SvgDocumentState : IDisposable
     internal BudgetedParserDictionary<string, SvgLinearGradient> Gradients { get; }
 
     internal BudgetedParserDictionary<string, SvgRadialGradient> RadialGradients { get; }
+    internal BudgetedParserDictionary<string, byte> GradientIds { get; }
 
     internal BudgetedParserList<int> ClipDepths { get; }
 
@@ -452,6 +454,7 @@ internal sealed class SvgDocumentState : IDisposable
         PendingPatternReferences.Dispose();
         Gradients.Dispose();
         RadialGradients.Dispose();
+        GradientIds.Dispose();
         GradientStops.Dispose();
         MaskScopes.Dispose();
         MaskScopeSnapshots.Dispose();
