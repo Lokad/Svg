@@ -21,7 +21,9 @@ internal static class SvgSymbolContentParser
         id = id is null ? null : state.Strings.Copy(id);
         if (definitionRoot) state.SymbolId = id;
         InlineStyle sheet = SvgDocumentStyleResolver.Resolve(reader, state, work, token);
-        SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, sheet, work, token);
+        InlineStyle inline = reader.LocalName == "use" ? SvgInlineStyleParser.ParseUse(reader.GetAttribute("style"), work, token)
+            : SvgInlineStyleParser.Parse(reader.GetAttribute("style"), work, token);
+        SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, sheet);
         SvgPaintOpacity? strokeOpacity = style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity);
         SvgMarkerStyle markers = new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, work, token);
         bool displayed = SvgPresentationResolver.ParseDisplay(style.Display);
@@ -54,7 +56,8 @@ internal static class SvgSymbolContentParser
             SvgPaintableElementContext context = new(new(inherited.Paint, true, true, SvgAffineTransform.Identity) { OwnOpacity = inherited.SourceOpacity, Markers = inherited.Markers, PaintOrder = inherited.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers, PaintServerFill = inherited.PaintServerFill }, root.InheritedTextStyle, inherited.Stroke, sheet, colors, work, token, state.OutputMagnification, null) { RecordingScope = new(1) };
             double? width = state.SymbolViewBox?.Width ?? root.UserViewportWidth;
             double? height = state.SymbolViewBox?.Height ?? root.UserViewportHeight;
-            SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, width, height, state);
+            context = context with { AuthoredStyle = style };
+            SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, inline, state.Strings, width, height, state);
             SvgPaintOpacity? fillOpacity = style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity);
             SvgColor? color = style.Color is null ? null : SvgColorParser.Parse(style.Color, colors);
             SvgInheritedStrokeStyle stroke = new(Copy(style.Linecap), Copy(style.Linejoin), Copy(style.Dasharray), Copy(style.Dashoffset), Copy(style.Width), Copy(style.Miterlimit), Copy(style.StrokeOpacity), Copy(style.Stroke));

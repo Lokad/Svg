@@ -79,7 +79,7 @@ internal enum InlineImportantProperties : long
 /// <summary>Parses the bounded inline declaration subset shared by element and stylesheet rules.</summary>
 internal static class SvgInlineStyleParser
 {
-    private enum Target : byte { Presentation, DirectText, Geometry }
+    private enum Target : byte { Presentation, DirectText, Geometry, LocalUse }
     internal static InlineStyle Parse(string? value) => value is null ? default : Parse(value.AsSpan());
 
     internal static InlineStyle Parse(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -106,6 +106,10 @@ internal static class SvgInlineStyleParser
 
     internal static InlineStyle ParseGeometry(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         => value is null ? default : ParseCore(value.AsSpan(), workCounter, cancellationToken, null, Target.Geometry);
+
+    /// <summary>Parses use declarations once, retaining the existing paint-only and container admission rules.</summary>
+    internal static InlineStyle ParseUse(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => value is null ? default : ParseCore(value.AsSpan(), workCounter, cancellationToken, null, Target.LocalUse);
 
     private static InlineStyle ParseCore(ReadOnlySpan<char> value, ParserWorkCounter? workCounter, CancellationToken cancellationToken, BudgetedParserStringStore? strings, Target target)
     {
@@ -143,6 +147,7 @@ internal static class SvgInlineStyleParser
                 TryStripImportant(propertyValue, out ReadOnlySpan<char> stopValue);
                 if (property.Equals("stop-opacity", StringComparison.OrdinalIgnoreCase)) _ = SvgColorParser.ParsePaintOpacity(stopValue.ToString());
                 else if (!stopValue.Equals("currentColor", StringComparison.OrdinalIgnoreCase)) _ = SvgColorParser.Parse(stopValue.ToString(), SvgRootParser.CssNamedColors);
+                if (target == Target.LocalUse) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inline style property '" + property.ToString() + "' is not implemented.");
             }
             else if (property.Equals("stroke-linecap", StringComparison.OrdinalIgnoreCase)) { ValidateStrokeDeclaration("stroke-linecap", propertyValue); Set(ref linecap, InlineImportantProperties.Linecap, property, propertyValue, strings, ref important, true); }
             else if (property.Equals("stroke-linejoin", StringComparison.OrdinalIgnoreCase)) { ValidateStrokeDeclaration("stroke-linejoin", propertyValue); Set(ref linejoin, InlineImportantProperties.Linejoin, property, propertyValue, strings, ref important, true); }

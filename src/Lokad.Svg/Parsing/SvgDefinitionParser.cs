@@ -703,10 +703,12 @@ internal static class SvgDefinitionParser
         {
             SvgElementAttributePolicy.ValidateUse(reader, workCounter, cancellationToken);
             SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
+            InlineStyle inline = SvgInlineStyleParser.ParseUse(reader.GetAttribute("style"), workCounter, cancellationToken);
+            context = context with { AuthoredStyle = SvgComputedStyle.Resolve(reader, inline, context.StyleSheet) };
             SvgViewportFrame? parentFrame = state.EffectiveFrame;
             double? baseWidth = parentFrame?.ViewportWidth ?? root.UserViewportWidth;
             double? baseHeight = parentFrame?.ViewportHeight ?? root.UserViewportHeight;
-            SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, baseWidth, baseHeight, state);
+            SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, inline, state.Strings, baseWidth, baseHeight, state);
             SvgRenderedGroupSourceParser.CaptureUse(reader, context, reference, state);
             SvgDeferredClip? deferredClip = ResolveDeferredClip(reader, reference, state);
             SvgViewportFrame? useFrame;

@@ -37,6 +37,8 @@ lowering. Metadata traversal consumes the same work allowance as conversion;
 font acquisition retains its separate discovery lifetime.
 Rendered leaves prepare their cascaded declarations once and reuse that value
 through deferred paints, filters, markers, recording and geometry lowering.
+Local uses share one inline parse and authored style across reference, resource
+and retained-group preparation, preserving their existing admission rules.
 Instance inheritance and deferred opacity apply afterward, so retained sources
 can bind independently for each replay.
 [SvgPreparedDocument](../src/Lokad.Svg/SvgPreparedDocument.cs) retains one prepared

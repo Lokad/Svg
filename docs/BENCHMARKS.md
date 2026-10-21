@@ -1,5 +1,16 @@
 # Renderer measurements
 
+## Local-use declaration reuse (2026-10-21)
+
+Compared `54989ec6` with local-use declaration reuse on the same Windows/.NET host
+described below. Two alternating fresh-process pairs ran serially with tiered
+compilation disabled; each used 200 warmups and seven samples of 200 conversions,
+excluding setup. The 256 inline-styled uses in
+[SvgSceneBenchmarks](../benchmarks/Lokad.Svg.Benchmarks/SvgSceneBenchmarks.cs)
+allocate 2,126,809 bytes/op instead of 2,180,057, saving 53,248 bytes (2.4%).
+The PNG is byte-identical. Process medians were 5.91–5.94 ms before and
+5.36–5.56 ms after; these short runs do not establish general or Linux throughput.
+
 ## Leaf declaration reuse (2026-10-20)
 
 Compared `596d05f6` with `9b9828fe` on the same i7-14700KF/Windows/.NET host

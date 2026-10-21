@@ -86,7 +86,7 @@ internal static class SvgRenderedGroupSourceParser
     internal static void CaptureUse(XmlReader reader, SvgPaintableElementContext context, SvgUseReference reference, SvgDocumentState state)
     {
         if (state.RenderedGroupContent is not {} content) return;
-        SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, context.WorkCounter, context.CancellationToken);
+        SvgComputedStyle style = context.AuthoredStyle ?? throw new InvalidOperationException("Use capture requires prepared declarations.");
         SvgInheritedStrokeStyle stroke = new(Copy(style.Linecap), Copy(style.Linejoin), Copy(style.Dasharray), Copy(style.Dashoffset),
             Copy(style.Width), Copy(style.Miterlimit), Copy(style.StrokeOpacity), Copy(style.Stroke));
         reference = reference with { Transform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), context.WorkCounter, context.CancellationToken),
