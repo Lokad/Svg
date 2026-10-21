@@ -63,7 +63,24 @@ internal static class SvgTextPathLayout
         {
             work.Consume(token);
             SvgPendingTextRun pending = state.PendingTextRuns[index];
+            if (!ReferenceEquals(pending.Scene, state.Scene)) continue;
             SvgPaintCommandEmission emission = commands.Begin(pending.CommandIndex);
+            Emit(state, index, limits, work, token);
+            commands.Retain(emission);
+        }
+        commands.Complete();
+    }
+
+    /// <summary>Emits one queued run into its recorded scene; the caller replaces its paint slot in source order.</summary>
+    /// <remarks>The document retains ownership on failure. Success releases the run and metadata allowance;
+    /// teardown is idempotent. The temporary scene binding is restored even on work denial or cancellation.</remarks>
+    internal static void Emit(SvgDocumentState state, int index, SvgRenderLimits limits, ParserWorkCounter work, CancellationToken token)
+    {
+        SvgPendingTextRun pending = state.PendingTextRuns[index];
+        SvgSceneBuilder? previous = state.DefinitionReplayScene;
+        if (!ReferenceEquals(pending.Scene, state.Scene)) state.DefinitionReplayScene = pending.Scene;
+        try
+        {
             SvgTextRun run;
             if (pending.Reference is not {} reference)
             {
@@ -175,10 +192,9 @@ internal static class SvgTextPathLayout
                     SvgTextGlyphPainter.Emit(run, pending.Placement, placements.AsSpan(), pending.ViewportClip, pending.Color, state, limits.MaximumPathCommands, state.Budget, work, token);
                 }
             }
-            commands.Retain(emission);
             run.Dispose();
             pending.Owner.Dispose();
         }
-        commands.Complete();
+        finally { state.DefinitionReplayScene = previous; }
     }
 }

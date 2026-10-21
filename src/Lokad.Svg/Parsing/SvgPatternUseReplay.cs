@@ -27,26 +27,33 @@ internal static class SvgPatternUseReplay
         state.PatternUseCount++;
     }
 
-    /// <summary>Expands uses, locates balanced tile scopes once and compacts clip-only markers once.</summary>
+    /// <summary>Expands text and uses together, locates balanced tile scopes once and compacts clip-only markers once.</summary>
     /// <remarks>Original and replay-created command ranges stay within their owning scene. Scope starts
     /// follow batch expansion directly, independently of inherited recording identities. Nested clip work
     /// visits only the containing ranges. All scratch is budget-owned and observes work/cancellation;
     /// failure leaves adopted scene resources with document teardown.</remarks>
-    internal static void Resolve(SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    internal static void Resolve(SvgDocumentState state, SvgRenderLimits limits, ParserWorkCounter work, CancellationToken token)
     {
         foreach (SvgDeferredPatternContent pending in state.DeferredPatternContents.AsSpan())
         {
             work.Consume(token);
             SvgPendingCommandStart replayStart = state.PendingCommandEnd;
-            if (pending.UseCount != 0)
+            if (pending.UseCount != 0 || pending.FirstCommands.Text != pending.EndCommands.Text)
             {
                 using SvgPaintCommandBatch commands = new(state, pending.Builder, pending.FirstCommands, pending.EndCommands, work, token);
-                for (int index = pending.FirstUse + pending.UseCount - 1; index >= pending.FirstUse; index--)
+                int textIndex = pending.EndCommands.Text - 1;
+                int useIndex = pending.FirstUse + pending.UseCount - 1;
+                // Both registries retain ascending source slots. Merge their tails so
+                // neither kind needs intermediate slot remapping or another scene rebuild.
+                while (textIndex >= pending.FirstCommands.Text || useIndex >= pending.FirstUse)
                 {
                     work.Consume(token);
-                    SvgPatternContentUse use = state.PatternUses[index];
-                    SvgPaintCommandEmission emission = commands.Begin(use.CommandIndex);
-                    SvgResourceUseReplay.AppendPatternUse(use.Use, pending.Builder, state, work, token);
+                    bool text = textIndex >= pending.FirstCommands.Text && (useIndex < pending.FirstUse
+                        || state.PendingTextRuns[textIndex].CommandIndex > state.PatternUses[useIndex].CommandIndex);
+                    int position = text ? state.PendingTextRuns[textIndex].CommandIndex : state.PatternUses[useIndex].CommandIndex;
+                    SvgPaintCommandEmission emission = commands.Begin(position);
+                    if (text) SvgTextPathLayout.Emit(state, textIndex--, limits, work, token);
+                    else SvgResourceUseReplay.AppendPatternUse(state.PatternUses[useIndex--].Use, pending.Builder, state, work, token);
                     commands.Retain(emission);
                 }
                 Span<SvgPatternContentScope> scopes = pending.ScopeCount == 0 ? []

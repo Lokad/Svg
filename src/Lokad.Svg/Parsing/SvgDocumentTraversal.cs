@@ -495,7 +495,7 @@ internal static class SvgDocumentTraversal
                     state.ValidateSymbolReferences(workCounter, cancellationToken);
                     SvgResourceUseReplay.Resolve(state, workCounter, cancellationToken);
                     SvgMaskContentReplay.Resolve(root, state, workCounter, cancellationToken);
-                    SvgPatternUseReplay.Resolve(state, workCounter, cancellationToken);
+                    SvgPatternUseReplay.Resolve(state, limits, workCounter, cancellationToken);
                     SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, state, workCounter, cancellationToken);
                     SvgClipPathSyntax.ResolvePendingLeafClips(state, workCounter, cancellationToken);
                     SvgClipPathSyntax.ResolvePendingGroupClips(state, workCounter, cancellationToken);

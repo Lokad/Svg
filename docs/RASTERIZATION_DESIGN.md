@@ -25,8 +25,9 @@ Anonymous pattern teardown drops its deferred entries before disposing staging.
 Gradient and pattern templates wake their dependents when ready. Deferred paint,
 text and tile-use commands replace their placeholders in batches; existing scope
 boundaries and scopes created during replay map separately into final draw order.
-Text replay maps only its retained source ranges. Pattern group boundaries follow
-use expansion, and clip-only markers compact once after scope binding.
+Text replay emits into its recorded scene and maps only its retained source
+ranges. Tile text and uses expand together before pattern group binding;
+clip-only markers compact once afterward.
 [Document preparation](../src/Lokad.Svg/Parsing/SvgDocumentPreparation.cs) shares
 reader workspace and collected styles across sizing, output mapping and scene
 lowering. Metadata traversal consumes the same work allowance as conversion;
