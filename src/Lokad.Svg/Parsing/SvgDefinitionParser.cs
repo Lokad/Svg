@@ -233,6 +233,8 @@ internal static class SvgDefinitionParser
                 PromoteClipRectangle(state, workCounter, cancellationToken);
                 SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
+                InlineStyle clipInline = SvgInlineStyleParser.ParseGeometry(reader.GetAttribute("style"), workCounter, cancellationToken);
+                SvgComputedStyle.ValidateGeometryDimensions(reader, clipInline, context.StyleSheet);
                 SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, state.ClipIsObjectBoundingBox ? new(1, 1) : context.LengthBases);
                 // A resource uses its own child map; ancestors place the referencing element.
                 SvgAffineTransform clipTransform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken);

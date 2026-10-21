@@ -165,10 +165,13 @@ declarations on `style` elements are accepted.
 
 Declarations cover color/fill/stroke and their opacity, stroke width/caps/joins/
 miter/dashes, display/visibility/opacity, fill-rule/clip-rule, paint-order, filter,
-marker properties, overflow, parsed width/height and the text/font properties
+marker properties, overflow, root width/height and the text/font properties
 listed below. Each property retains its target/value restrictions; this is not a
 general CSS declaration parser. `paint-order` accepts normal or distinct
 fill/stroke/markers lists, appending omitted operations.
+CSS width/height declarations on rectangles and embedded images report
+`UnsupportedFeature`; use XML dimension attributes on these elements. Dimension
+declarations on nonapplicable targets do not affect rendering.
 Solid colors and paint keywords ignore surrounding whitespace in attributes and
 CSS; literal color limits apply to the authored token before normalization.
 
