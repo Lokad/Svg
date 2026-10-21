@@ -91,6 +91,9 @@ referencing an alias excludes the source's ancestors. Missing/cyclic references
 have categorized failures. Perspective transforms are unsupported.
 Transform lists accept whitespace or comma separators between functions.
 
+For rendered groups referenced by `use`, source-group opacity isolation, clips
+or masks on the referenced group, and nested viewport content are unsupported.
+
 ### Gradients and patterns
 
 Linear and radial gradients support objectBoundingBox/userSpaceOnUse units,
