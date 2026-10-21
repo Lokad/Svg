@@ -200,6 +200,7 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal BudgetedParserList<PendingUse> PendingUses { get; }
     internal BudgetedParserList<SvgPendingTextRun> PendingTextRuns { get; }
+    internal SvgPendingCommandStart PendingCommandEnd => new(PendingTextRuns.Count, PendingGroupClips.Count, PendingGroupMasks.Count);
 
     /// <summary>Gets closed source-group boundaries used to enforce instance composition gates.</summary>
     internal BudgetedParserDictionary<string, SvgGroupSnapshot> GroupSnapshots { get; }
@@ -301,6 +302,7 @@ internal sealed class SvgDocumentState : IDisposable
     internal int PatternUseStart { get; set; }
     internal int PatternUseCount { get; set; }
     internal int PatternScopeStart { get; set; }
+    internal SvgPendingCommandStart PatternCommandStart { get; set; }
     internal BudgetedParserList<SvgPatternContentScope>? PatternScopes { get; set; }
 
     internal string? MaskId { get; set; }

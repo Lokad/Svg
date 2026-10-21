@@ -480,6 +480,7 @@ internal static class SvgDefinitionParser
                 inherited = inherited with { Presentation = inherited.Presentation with { PaintServerFill = state.Strings.Copy(fill) } };
             }
             state.PatternScopeStart = state.PatternScopes?.Count ?? 0;
+            state.PatternCommandStart = state.PendingCommandEnd;
             state.Groups.Add(new(reader.Depth, SvgGroupKind.Pattern, inherited.Presentation with { Transform = SvgAffineTransform.Identity }, inherited.TextStyle, false, false, inherited.Stroke, inherited.FillRule)
                 { RecordingScope = patternContext.RecordingScope, ClipRule = style.ClipRule ?? patternContext.InheritedClipRule });
             if (!reader.IsEmptyElement) state.PatternDepth = reader.Depth;
@@ -510,6 +511,7 @@ internal static class SvgDefinitionParser
                     bool clip = group.Scope.ClipPathId is not null && !group.Scope.HasFilter;
                     bool mask = group.DeferredMask is not null;
                     bool isolate = !group.Scope.HasFilter && group.Scope.IsolatesOpacity || clip || mask;
+                    int firstCommand = builder.CommandCount;
                     if (isolate) builder.BeginSourceOpacityScope(group.SourceOpacity, group.RecordingScope);
                     if (group.FilterId is {} filterId)
                     {
@@ -525,7 +527,7 @@ internal static class SvgDefinitionParser
                     if (clip || mask)
                     {
                         state.PatternScopes ??= new(state.Budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-                        state.PatternScopes.Add(new(group.Scope.ClipPathId, group.DeferredMask, group.Scope.InheritedPresentation.Transform, group.RecordingScope, group.Scope.IsolatesOpacity));
+                        state.PatternScopes.Add(new(group.Scope.ClipPathId, group.DeferredMask, group.Scope.InheritedPresentation.Transform, firstCommand, group.Scope.IsolatesOpacity));
                     }
                     state.Groups.Add(group.Scope with { Kind = SvgGroupKind.PatternGroup, IsolatesOpacity = isolate });
                     state.GroupDepth++;
@@ -1705,7 +1707,7 @@ internal static class SvgDefinitionParser
             SvgVectorContent content = SvgVectorContent.CreatePending(state.Budget);
             try { state.Scene.AdoptVectorContent(content); }
             catch { content.Dispose(); throw; }
-            state.DeferredPatternContents.Add(new(builder, content, state.PatternUseStart, state.PatternUseCount, state.PatternScopeStart, scopeCount));
+            state.DeferredPatternContents.Add(new(builder, content, state.PatternUseStart, state.PatternUseCount, state.PatternScopeStart, scopeCount, state.PatternCommandStart, state.PendingCommandEnd));
             state.PatternContentBuilder = null;
             tile = tile with { Content = null, VectorContent = content };
         }

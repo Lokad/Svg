@@ -24,11 +24,10 @@ internal sealed class SvgPaintCommandBatch : IDisposable
     private readonly CancellationToken _token;
     private readonly SvgPendingCommandStart _first;
     private readonly int _originalCount;
-    private readonly int _originalClips;
-    private readonly int _originalMasks;
+    private readonly SvgPendingCommandStart _end;
     private readonly BudgetedParserList<Replacement> _replacements;
 
-    internal SvgPaintCommandBatch(SvgDocumentState state, SvgSceneBuilder scene, SvgPendingCommandStart first, ParserWorkCounter work, CancellationToken token)
+    internal SvgPaintCommandBatch(SvgDocumentState state, SvgSceneBuilder scene, SvgPendingCommandStart first, SvgPendingCommandStart end, ParserWorkCounter work, CancellationToken token)
     {
         _state = state;
         _scene = scene;
@@ -36,8 +35,7 @@ internal sealed class SvgPaintCommandBatch : IDisposable
         _token = token;
         _first = first;
         _originalCount = scene.CommandCount;
-        _originalClips = state.PendingGroupClips.Count;
-        _originalMasks = state.PendingGroupMasks.Count;
+        _end = end;
         _replacements = new(state.Budget, SvgMemoryCategory.Parser, work, token);
     }
 
@@ -53,7 +51,10 @@ internal sealed class SvgPaintCommandBatch : IDisposable
         _replacements.Add(new(emission, _scene.CommandCount - emission.TailStart, _state.PendingGroupClips.Count, _state.PendingGroupMasks.Count));
     }
 
-    internal void Complete()
+    internal void Complete() => Complete(Span<SvgPatternContentScope>.Empty);
+
+    /// <summary>Also remaps retained tile-group starts while the batch owns its boundary map.</summary>
+    internal void Complete(Span<SvgPatternContentScope> scopes)
     {
         if (_replacements.Count == 0) return;
         using RenderBudget.BudgetReservation mapOwner = _state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<int>(_originalCount + 1), SvgMemoryCategory.Parser);
@@ -80,10 +81,12 @@ internal sealed class SvgPaintCommandBatch : IDisposable
                 }
             }
             positions[_originalCount] = commands.Count;
-            // Pattern staging scopes bind after use expansion and have no original command ranges.
-            // Avoid walking unrelated document metadata once for every tile scene.
-            if (ReferenceEquals(_scene, _state.Scene))
-                SvgReferenceResolver.RemapPendingCommandRanges(_state, _scene, positions, _first, _originalClips, _originalMasks, _work, _token);
+            SvgReferenceResolver.RemapPendingCommandRanges(_state, _scene, positions, _first, _end, _work, _token);
+            for (int index = 0; index < scopes.Length; index++)
+            {
+                _work.Consume(_token);
+                scopes[index] = scopes[index] with { FirstCommandIndex = positions[scopes[index].FirstCommandIndex] };
+            }
             foreach (Replacement replacement in _replacements.AsSpan())
             {
                 _work.Consume(_token);

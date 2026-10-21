@@ -33,6 +33,8 @@
 - Batch deferred paint, text and pattern-use commands while preserving original
   scope boundaries and scopes created during replay. Keep retained text remapping
   local to its source, independent of unrelated document ranges.
+- Index pattern group boundaries once and compact clip-only markers together;
+  retain separate sibling masks and filtered leaf boundaries through expansion.
 - Simplify renderer/tool internals and diagnostic reporting, validate downloaded
   CI artifacts against their recorded host, and retire historical corporate-sweep
   tooling and aggregate reports while retaining focused evidence and provenance.

@@ -48,7 +48,7 @@ internal static class SvgDeferredPaintLeaves
         ParserWorkCounter work, CancellationToken token)
     {
         if (state.DeferredPaintLeaves.Count == 0) return;
-        using SvgPaintCommandBatch commands = new(state, state.Scene, default, work, token);
+        using SvgPaintCommandBatch commands = new(state, state.Scene, default, state.PendingCommandEnd, work, token);
         for (int index = state.DeferredPaintLeaves.Count - 1; index >= 0; index--)
         {
             work.Consume(token);

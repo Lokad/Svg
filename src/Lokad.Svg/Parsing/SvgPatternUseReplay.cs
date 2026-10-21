@@ -4,10 +4,11 @@ using Lokad.Svg.Rendering;
 namespace Lokad.Svg.Parsing;
 
 internal readonly record struct SvgPatternContentUse(SvgResourceUse Use, int CommandIndex);
-internal readonly record struct SvgPatternContentScope(string? ClipId, string? MaskId, SvgAffineTransform Map, SvgRecordingScope Scope, bool HasOpacity);
+internal readonly record struct SvgPatternContentScope(string? ClipId, string? MaskId, SvgAffineTransform Map, int FirstCommandIndex, bool HasOpacity);
 
 /// <summary>The document owns the staging builder; the parent scene owns content borrowed by pattern paints.</summary>
-internal readonly record struct SvgDeferredPatternContent(SvgSceneBuilder Builder, SvgVectorContent Content, int FirstUse, int UseCount, int FirstScope, int ScopeCount);
+internal readonly record struct SvgDeferredPatternContent(SvgSceneBuilder Builder, SvgVectorContent Content, int FirstUse, int UseCount,
+    int FirstScope, int ScopeCount, SvgPendingCommandStart FirstCommands, SvgPendingCommandStart EndCommands);
 
 /// <summary>Resolves ordered local tile instances through existing reference and premultiplied scene machinery.</summary>
 /// <remarks>References borrow document-owned strings and definitions. The staging builder retains all mapped
@@ -15,6 +16,8 @@ internal readonly record struct SvgDeferredPatternContent(SvgSceneBuilder Builde
 /// cancellation aware. Content becomes immutable before the root scene is returned.</remarks>
 internal static class SvgPatternUseReplay
 {
+    private readonly record struct ScopeRange(int First, int End);
+
     internal static void Retain(XmlReader reader, SvgRootAttributes root, SvgDocumentState state,
         IReadOnlyDictionary<string, SvgColor> colors, SvgSceneBuilder builder, ParserWorkCounter work, CancellationToken token)
     {
@@ -24,15 +27,20 @@ internal static class SvgPatternUseReplay
         state.PatternUseCount++;
     }
 
+    /// <summary>Expands uses, locates balanced tile scopes once and compacts clip-only markers once.</summary>
+    /// <remarks>Original and replay-created command ranges stay within their owning scene. Scope starts
+    /// follow batch expansion directly, independently of inherited recording identities. Nested clip work
+    /// visits only the containing ranges. All scratch is budget-owned and observes work/cancellation;
+    /// failure leaves adopted scene resources with document teardown.</remarks>
     internal static void Resolve(SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
         foreach (SvgDeferredPatternContent pending in state.DeferredPatternContents.AsSpan())
         {
             work.Consume(token);
-            // Descending positions preserve every unresolved slot when a use expands to several draws.
+            SvgPendingCommandStart replayStart = state.PendingCommandEnd;
             if (pending.UseCount != 0)
             {
-                using SvgPaintCommandBatch commands = new(state, pending.Builder, default, work, token);
+                using SvgPaintCommandBatch commands = new(state, pending.Builder, pending.FirstCommands, pending.EndCommands, work, token);
                 for (int index = pending.FirstUse + pending.UseCount - 1; index >= pending.FirstUse; index--)
                 {
                     work.Consume(token);
@@ -41,107 +49,136 @@ internal static class SvgPatternUseReplay
                     SvgResourceUseReplay.AppendPatternUse(use.Use, pending.Builder, state, work, token);
                     commands.Retain(emission);
                 }
-                commands.Complete();
+                Span<SvgPatternContentScope> scopes = pending.ScopeCount == 0 ? []
+                    : (state.PatternScopes ?? throw new InvalidOperationException("Retained pattern scopes require their source registry.")).AsMutableSpan().Slice(pending.FirstScope, pending.ScopeCount);
+                commands.Complete(scopes);
             }
-            for (int index = pending.FirstScope; index < pending.FirstScope + pending.ScopeCount; index++)
-                ApplyScope(state.PatternScopes?[index] ?? throw new InvalidOperationException("Retained pattern scopes require their source registry."), pending.Builder, state, false, work, token);
-            // Clip-only marker removal changes command positions. Record mask ranges only afterwards.
-            for (int index = pending.FirstScope; index < pending.FirstScope + pending.ScopeCount; index++)
-            {
-                SvgPatternContentScope scope = state.PatternScopes?[index] ?? throw new InvalidOperationException("Retained pattern scopes require their source registry.");
-                if (scope.MaskId is not null) ApplyScope(scope, pending.Builder, state, true, work, token);
-            }
+            BindScopes(pending, replayStart, state.PendingCommandEnd, state, work, token);
         }
 
-        // Scope identities survive use expansion, unlike absolute command offsets.
-        // Bind through the ordinary resource clip machinery before the scene seals.
-        static void ApplyScope(SvgPatternContentScope clip, SvgSceneBuilder builder, SvgDocumentState state, bool bindMask, ParserWorkCounter work, CancellationToken token)
+        static void BindScopes(SvgDeferredPatternContent pending, SvgPendingCommandStart replayStart, SvgPendingCommandStart replayEnd,
+            SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
         {
-            int depth = 0;
-            int first = -1;
-            SvgLeafMaskOperation? scopeClip = bindMask ? null : BindScopeClip();
-            SvgLeafMaskBinding? lastInner = null, lastBinding = null;
+            if (pending.ScopeCount == 0) return;
+            SvgSceneBuilder builder = pending.Builder;
+            ReadOnlySpan<SvgPatternContentScope> scopes = (state.PatternScopes
+                ?? throw new InvalidOperationException("Retained pattern scopes require their source registry.")).AsSpan().Slice(pending.FirstScope, pending.ScopeCount);
+            using BudgetedParserList<ScopeRange> ranges = new(state.Budget, SvgMemoryCategory.Parser, work, token);
+            using BudgetedParserList<int> stack = new(state.Budget, SvgMemoryCategory.Parser, work, token);
+            int nextScope = 0;
             for (int index = 0; index < builder.CommandCount; index++)
             {
                 work.Consume(token);
                 SvgDrawCommand command = builder.CommandAt(index);
-                if (first < 0)
+                if (command.Kind == SvgDrawCommandKind.BeginGroup)
                 {
-                    if (command.Kind != SvgDrawCommandKind.BeginGroup || command.GeometryIndex != clip.Scope.Value) continue;
-                    first = index;
+                    int scope = nextScope < scopes.Length && scopes[nextScope].FirstCommandIndex == index ? nextScope++ : -1;
+                    if (scope >= 0) ranges.Add(new(index, -1));
+                    stack.Add(scope);
                 }
-                if (command.Kind == SvgDrawCommandKind.BeginGroup) depth++;
-                else if (command.Kind == SvgDrawCommandKind.EndGroup && --depth == 0)
+                else if (command.Kind == SvgDrawCommandKind.EndGroup)
                 {
-                    if (bindMask && clip.MaskId is {} maskId)
-                    {
-                        state.PendingGroupMasks.Add(new(maskId, first, index, 0, null, clip.Map, builder));
-                        return;
-                    }
-                    if (!clip.HasOpacity && clip.MaskId is null)
-                    {
-                        // Clip-only groups do not create an isolated color surface.
-                        // Their stable markers were needed only until uses expanded.
-                        BudgetedSceneList<SvgDrawCommand> commands = new(state.Budget, work, token);
-                        bool transferred = false;
-                        try
-                        {
-                            for (int copy = 0; copy < builder.CommandCount; copy++)
-                            {
-                                work.Consume(token);
-                                if (copy != first && copy != index) commands.Add(builder.CommandAt(copy));
-                            }
-                            builder.AdoptCommands(commands);
-                            transferred = true;
-                        }
-                        finally { if (!transferred) commands.Dispose(); }
-                    }
-                    return;
+                    if (stack.Count == 0) throw new InvalidOperationException("A retained pattern scope requires balanced groups.");
+                    int scope = stack[^1];
+                    stack.RemoveLast();
+                    if (scope >= 0) ranges[scope] = ranges[scope] with { End = index };
                 }
-                if (bindMask || command.Kind != SvgDrawCommandKind.Geometry || clip.ClipId is not {} clipId) continue;
-                SvgLeafMaskBinding? inner = builder.GeometryAt(command.GeometryIndex).LeafMask;
-                if (lastBinding is null || !ReferenceEquals(lastInner, inner))
-                {
-                    lastInner = inner;
-                    lastBinding = scopeClip is null
-                        ? SvgClipPathSyntax.BindResourceClip(clipId, clip.Map, inner, state, work, token)
-                        : SvgLeafMaskComposition.NewBinding(state, scopeClip, inner);
-                }
-                builder.AssignLeafMask(command.GeometryIndex, lastBinding);
             }
-            throw new InvalidOperationException("A retained pattern scope requires a balanced source group.");
+            if (stack.Count != 0 || nextScope != scopes.Length) throw new InvalidOperationException("A retained pattern scope requires balanced source boundaries.");
 
-            SvgLeafMaskOperation? BindScopeClip()
+            bool compact = false;
+            for (int scopeIndex = 0; scopeIndex < scopes.Length; scopeIndex++)
             {
-                if (clip.ClipId is not {} id) return null;
-                bool rectangle = state.ObjectClips.TryGetValue(id, out SvgClipBox fractions);
-                state.ClipPolygons.TryGetValue(id, out SvgClipPolygon polygon);
-                if (!rectangle && !polygon.IsObjectBoundingBox && polygon.NestedClipId is null) return null;
-                SvgSceneBuilder? previous = state.DefinitionReplayScene;
-                state.DefinitionReplayScene = builder;
+                work.Consume(token);
+                SvgPatternContentScope scope = scopes[scopeIndex];
+                ScopeRange range = ranges[scopeIndex];
+                compact |= !scope.HasOpacity && scope.MaskId is null;
+                if (scope.ClipId is not {} clipId) continue;
+                SvgLeafMaskOperation? scopeClip = BindScopeClip(scope, range, builder, state, work, token);
+                SvgLeafMaskBinding? lastInner = null, lastBinding = null;
+                for (int index = range.First + 1; index < range.End; index++)
+                {
+                    work.Consume(token);
+                    SvgDrawCommand command = builder.CommandAt(index);
+                    if (command.Kind != SvgDrawCommandKind.Geometry) continue;
+                    SvgLeafMaskBinding? inner = builder.GeometryAt(command.GeometryIndex).LeafMask;
+                    if (lastBinding is null || !ReferenceEquals(lastInner, inner))
+                    {
+                        lastInner = inner;
+                        lastBinding = scopeClip is null
+                            ? SvgClipPathSyntax.BindResourceClip(clipId, scope.Map, inner, state, work, token)
+                            : SvgLeafMaskComposition.NewBinding(state, scopeClip, inner);
+                    }
+                    builder.AssignLeafMask(command.GeometryIndex, lastBinding);
+                }
+            }
+
+            int count = builder.CommandCount;
+            using RenderBudget.BudgetReservation? mapOwner = compact
+                ? state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<int>(count + 1), SvgMemoryCategory.Parser) : null;
+            int[] positions = compact ? new int[count + 1] : [];
+            if (compact)
+            {
+                for (int index = 0; index < scopes.Length; index++)
+                {
+                    work.Consume(token);
+                    if (!scopes[index].HasOpacity && scopes[index].MaskId is null)
+                        positions[ranges[index].First] = positions[ranges[index].End] = -1;
+                }
+                BudgetedSceneList<SvgDrawCommand> commands = new(state.Budget, work, token);
+                bool transferred = false;
                 try
                 {
-                    if (!polygon.IsObjectBoundingBox && polygon.NestedClipId is not null)
-                        return SvgClipPathSyntax.DeferNestedResourceMask(id, clip.Map, state);
-                    SvgObjectBoundingClip target = new(clip.Map, null);
-                    int scopeDepth = 0;
-                    for (int index = 0; index < builder.CommandCount; index++)
+                    for (int index = 0; index < count; index++)
                     {
                         work.Consume(token);
-                        SvgDrawCommand command = builder.CommandAt(index);
-                        if (scopeDepth == 0 && (command.Kind != SvgDrawCommandKind.BeginGroup || command.GeometryIndex != clip.Scope.Value)) continue;
-                        if (command.Kind == SvgDrawCommandKind.BeginGroup) scopeDepth++;
-                        else if (command.Kind == SvgDrawCommandKind.EndGroup && --scopeDepth == 0)
-                            return rectangle ? target.Register(fractions, state, work, token) : target.Register(polygon, state, work, token);
-                        // Bounds and clip content both belong to the tile scene. Collect
-                        // the complete target before other clips can trim its geometry.
-                        if (command.Kind == SvgDrawCommandKind.Geometry)
-                            target.Add(builder.GeometryAt(command.GeometryIndex), state, work, token);
+                        bool remove = positions[index] < 0;
+                        positions[index] = commands.Count;
+                        if (!remove) commands.Add(builder.CommandAt(index));
                     }
-                    throw new InvalidOperationException("A retained pattern scope requires a balanced source group.");
+                    positions[count] = commands.Count;
+                    SvgReferenceResolver.RemapPendingCommandRanges(state, builder, positions, pending.FirstCommands, pending.EndCommands, work, token);
+                    SvgReferenceResolver.RemapPendingCommandRanges(state, builder, positions, replayStart, replayEnd, work, token);
+                    builder.AdoptCommands(commands);
+                    transferred = true;
                 }
-                finally { state.DefinitionReplayScene = previous; }
+                finally { if (!transferred) commands.Dispose(); }
             }
+            for (int index = 0; index < scopes.Length; index++)
+            {
+                work.Consume(token);
+                SvgPatternContentScope scope = scopes[index];
+                if (scope.MaskId is not {} id) continue;
+                ScopeRange range = ranges[index];
+                state.PendingGroupMasks.Add(new(id, compact ? positions[range.First] : range.First,
+                    compact ? positions[range.End] : range.End, 0, null, scope.Map, builder));
+            }
+        }
+
+        static SvgLeafMaskOperation? BindScopeClip(SvgPatternContentScope clip, ScopeRange range, SvgSceneBuilder builder,
+            SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+        {
+            if (clip.ClipId is not {} id) return null;
+            bool rectangle = state.ObjectClips.TryGetValue(id, out SvgClipBox fractions);
+            state.ClipPolygons.TryGetValue(id, out SvgClipPolygon polygon);
+            if (!rectangle && !polygon.IsObjectBoundingBox && polygon.NestedClipId is null) return null;
+            SvgSceneBuilder? previous = state.DefinitionReplayScene;
+            state.DefinitionReplayScene = builder;
+            try
+            {
+                if (!polygon.IsObjectBoundingBox && polygon.NestedClipId is not null)
+                    return SvgClipPathSyntax.DeferNestedResourceMask(id, clip.Map, state);
+                SvgObjectBoundingClip target = new(clip.Map, null);
+                for (int index = range.First + 1; index < range.End; index++)
+                {
+                    work.Consume(token);
+                    SvgDrawCommand command = builder.CommandAt(index);
+                    if (command.Kind == SvgDrawCommandKind.Geometry)
+                        target.Add(builder.GeometryAt(command.GeometryIndex), state, work, token);
+                }
+                return rectangle ? target.Register(fractions, state, work, token) : target.Register(polygon, state, work, token);
+            }
+            finally { state.DefinitionReplayScene = previous; }
         }
     }
 

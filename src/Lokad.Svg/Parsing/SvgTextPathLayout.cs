@@ -58,7 +58,7 @@ internal static class SvgTextPathLayout
     internal static void Resolve(SvgDocumentState state, SvgPendingCommandStart first, SvgRenderLimits limits, ParserWorkCounter work, CancellationToken token)
     {
         if (state.PendingTextRuns.Count == first.Text) return;
-        using SvgPaintCommandBatch commands = new(state, state.Scene, first, work, token);
+        using SvgPaintCommandBatch commands = new(state, state.Scene, first, state.PendingCommandEnd, work, token);
         for (int index = state.PendingTextRuns.Count - 1; index >= first.Text; index--)
         {
             work.Consume(token);

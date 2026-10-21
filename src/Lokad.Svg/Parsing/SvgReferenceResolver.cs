@@ -1708,7 +1708,7 @@ internal static class SvgReferenceResolver
             }
             if (expansionIndex != expansions.Count) throw new InvalidOperationException("Pending reference slots must follow drawing order.");
             positions[commandCount] = commands.Count;
-            RemapPendingCommandRanges(state, scene, positions, default, state.PendingGroupClips.Count, state.PendingGroupMasks.Count, workCounter, cancellationToken);
+            RemapPendingCommandRanges(state, scene, positions, default, state.PendingCommandEnd, workCounter, cancellationToken);
             scene.AdoptCommands(commands);
             transferred = true;
         }
@@ -1841,33 +1841,33 @@ internal static class SvgReferenceResolver
     /// source-local starts exclude unrelated document prefixes. Every visited entry charges work and
     /// cancellation, and document teardown handles partial failure.</remarks>
     internal static void RemapPendingCommandRanges(SvgDocumentState state, SvgSceneBuilder scene, ReadOnlySpan<int> positions,
-        SvgPendingCommandStart start, int clipCount, int maskCount, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        SvgPendingCommandStart start, SvgPendingCommandStart end, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(workCounter);
-        for (int textIndex = start.Text; textIndex < state.PendingTextRuns.Count; textIndex++)
+        for (int textIndex = start.Text; textIndex < end.Text; textIndex++)
         {
             workCounter.Consume(cancellationToken);
             SvgPendingTextRun pending = state.PendingTextRuns[textIndex];
             if (ReferenceEquals(pending.Scene, scene)) state.PendingTextRuns[textIndex] = pending with { CommandIndex = positions[pending.CommandIndex] };
         }
-        for (int groupIndex = start.Clip; groupIndex < clipCount; groupIndex++)
+        for (int groupIndex = start.Clip; groupIndex < end.Clip; groupIndex++)
         {
             workCounter.Consume(cancellationToken);
             PendingGroupClip group = state.PendingGroupClips[groupIndex];
             if (!ReferenceEquals(group.Scene, scene)) continue;
             int first = positions[group.FirstCommandIndex];
-            int end = group.EndCommandIndex < 0 ? group.EndCommandIndex : positions[group.EndCommandIndex];
-            state.PendingGroupClips[groupIndex] = group with { FirstCommandIndex = first, EndCommandIndex = end };
+            int last = group.EndCommandIndex < 0 ? group.EndCommandIndex : positions[group.EndCommandIndex];
+            state.PendingGroupClips[groupIndex] = group with { FirstCommandIndex = first, EndCommandIndex = last };
         }
-        for (int maskIndex = start.Mask; maskIndex < maskCount; maskIndex++)
+        for (int maskIndex = start.Mask; maskIndex < end.Mask; maskIndex++)
         {
             workCounter.Consume(cancellationToken);
             PendingGroupMask mask = state.PendingGroupMasks[maskIndex];
             if (!ReferenceEquals(mask.Scene, scene)) continue;
             int first = positions[mask.FirstCommandIndex];
-            int end = mask.EndCommandIndex < 0 ? mask.EndCommandIndex : positions[mask.EndCommandIndex];
-            state.PendingGroupMasks[maskIndex] = mask with { FirstCommandIndex = first, EndCommandIndex = end };
+            int last = mask.EndCommandIndex < 0 ? mask.EndCommandIndex : positions[mask.EndCommandIndex];
+            state.PendingGroupMasks[maskIndex] = mask with { FirstCommandIndex = first, EndCommandIndex = last };
         }
         if (state.DefinitionReplayScene is null && ReferenceEquals(scene, state.Scene))
             for (int index = 0; index < state.PendingUses.Count; index++)

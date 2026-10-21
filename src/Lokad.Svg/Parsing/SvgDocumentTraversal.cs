@@ -323,6 +323,7 @@ internal static class SvgDocumentTraversal
                     state.PatternUseStart = 0;
                     state.PatternUseCount = 0;
                     state.PatternScopeStart = 0;
+                    state.PatternCommandStart = default;
                     state.PatternTemplate = default;
                     state.PatternDepth = -1;
                     state.PatternId = null;
