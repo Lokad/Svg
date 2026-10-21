@@ -29,7 +29,6 @@ internal static class SvgStyleSheet
             }
             position = closingBrace + 1;
         }
-        if (rules.Count == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A stylesheet must contain a supported selector rule.");
     }
 
     internal static InlineStyle Resolve(XmlReader reader, BudgetedParserList<CssRule> rules, SvgCssAncestorContext ancestors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -56,6 +55,8 @@ internal static class SvgStyleSheet
 
     internal static OwnedStyleSheetText ReadElementText(XmlReader reader, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+        if (reader.IsEmptyElement) return new(string.Empty, null);
         using XmlReader subtree = reader.ReadSubtree();
         if (!subtree.Read()) throw new XmlException("Stylesheet content is missing.");
         using BudgetedStyleSheetTextBuffer text = new(budget, workCounter, cancellationToken);

@@ -6,6 +6,30 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgStyleSheetTests
 {
+    [Theory]
+    [InlineData("<style/>")]
+    [InlineData("<style></style>")]
+    [InlineData("<style> \t\r\n </style>")]
+    [InlineData("<style>/*empty*/</style>")]
+    [InlineData("<style><![CDATA[ /*empty*/ ]]></style>")]
+    [InlineData("<style><!--empty--></style>")]
+    public void Empty_sheets_are_no_ops_in_any_source_order(string empty)
+    {
+        const string rule = "<style>rect{fill:red}</style>";
+        foreach (string styles in new[] { empty, empty + rule, rule + empty, "<defs>" + empty + "</defs>" + rule })
+        {
+            byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'>"
+                + styles + "<rect width='4' height='4' fill='red'/></svg>");
+            byte[] control = "<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><rect width='4' height='4' fill='red'/></svg>"u8.ToArray();
+            Assert.Equal(SvgConverter.ConvertToPng(control, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+                SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+            Assert.Equal(new SvgViewport(4, 4), SvgConverter.InspectDimensions(input, SvgRenderOptions.Default, CancellationToken.None).LogicalViewport);
+            RenderBudget budget = new(1_000_000);
+            Assert.Empty(Lokad.Svg.Fonts.SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, new(10_000), budget, CancellationToken.None));
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        }
+    }
+
     [Fact]
     public void Removing_a_selector_comment_does_not_introduce_a_descendant_combinator()
     {
