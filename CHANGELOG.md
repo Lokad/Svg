@@ -2,111 +2,30 @@
 
 ## Unreleased
 
-- Account for retained embedded-PNG compressed capacity and overlapping growth
-  buffers before allocation, including fragmented image-data chunks.
-- Admit scanline scratch storage before allocation and omit unused orientation
-  arrays when explicit contour votes are supplied.
-- Reject malformed embedded PNG chunk types, separated image-data chunks and
-  invalid palette/transparency ordering before rendering or publishing output.
-- Reuse coincident stroke tangent lookahead to keep long degenerate prefixes
-  within linear work while preserving native outlines and cap behavior.
-- Deduplicate font-pack fallback names in linear time while retaining their
-  original order and first spelling.
-- Calculate PNG compression allowances directly instead of iterating over the
-  configured output limit on every memory conversion.
-- Reject URI-escaped FontProbe pack traversal before issuing an HTTP request.
-- Grow contour storage only for short output buffers; preserve depth, segment
-  and numeric failures without repeated allocation or masked diagnostics.
-- Honor cancellation on cached FontProbe HTTP reads and safely publish cached
-  font bytes across concurrent readers.
-- Reject unsupported transparency and malformed PNG input in the independent
-  pixel comparer instead of reporting false equality or crashing on overflow.
-- Decouple the independent pixel comparer from the renderer and simplify memory
-  probe reporting without changing CLI/report formats.
-- Remove abandoned rasterizer prototypes, unread parser/raster state and dormant
-  parser/filter modes. Share painted stroke lowering and trim unused arguments.
-- Validate downloaded CI artifacts against their recorded environment; retain
-  producing-worker checks in CI.
-- Reuse each rendered leaf's cascaded declarations across parsing stages,
-  preserving instance inheritance and deferred paint opacity.
-- Retire historical corporate-sweep tooling, aggregate reports and unconsumed
-  assets while retaining source provenance and focused native-reference controls.
-- Share document styles and reader workspace across sizing, output mapping and
-  scene lowering; include metadata preparation in the conversion work limit.
-- Compact retained geometry and share polygon raster traversal while preserving
-  native paint/coverage rules. Remove obsolete transform and solid-only PNG paths.
-- Preserve whole-grid conic scan precision and flat-minimum smart midpoints,
-  including explicit split outlines and reversed counter-arcs.
-- Normalize integral turning glyph profiles by scan direction, preserving
-  natural dropout coverage for reversed contours and explicit endpoints.
-- Preserve natural smart dropout candidates on closed span boundaries through
-  contour reversal, retaining ordinary directed border ownership.
-- Preserve natural Windows fractional and integral conic smart ordinates with
-  bounded parameter precision, retaining existing turning and flat-tangent profiles.
-- Correct natural Windows conic smart midpoints where glyph-grid rounding loses
-  point precision, preserving integral-point and fractional-endpoint profiles.
-- Preserve ordinary Windows conic fill through turning arcs, rounding control
-  midpoints before reducing the monotonic scan equation.
-- Preserve symmetric Windows thin-glyph bounds and terminating vertices from
-  both directed limits of a full scan, keeping half-scan stub rules distinct.
-- Preserve natural Windows glyph bounds and quantized line dropout crossings;
-  retain first-pass corners supported by both scan directions.
-- Preserve signed ideal-outline half rounding and authored scanner controls in
-  Windows unfitted ranges, without painting fitted point movements. Distinguish
-  full-scan vertex continuation from half-scan stub overshoot.
-- Retain implied half-unit precision in Windows natural conic smart midpoints
-  at fractional horizontal glyph-grid endpoints, preserving separate fill,
-  span and stub-continuation crossings.
-- Retain independent symmetric conic dropout profiles and normalize their scan
-  direction, preserving native small-cap, curved-stem and curved-tip cells.
-- Round symmetric Windows smart-dropout profile crossings before midpoint
-  selection, preserving native cells on both axes and at negative positions.
-
-- Preserve Windows symmetric smart dropout corners supported by both scans,
-  with exact gap-endpoint ownership during half-scan continuation.
-- Preserve Windows font-unit precision at fractional sizes for initial points,
-  control values, axial original distances and font-unit control writes.
-- Preserve Linux Latin non-base glyph fitting through cmap aliases and composite
-  glyphs, skipping alignment-zone matching while retaining scale and stem fitting.
-- Preserve ordered neighbors when restoring Windows dropout candidates, and
-  clamp reduced conic equations to their native terminal bounds.
-- Extend bounded TrueType hinting with physical super-rounding, projection
-  vectors, coordinate/relative moves, MIN/MAX and ODD/EVEN, preserving native
-  Windows/Linux rounding and glyph-local state.
-- Carry instructed curve-tag changes through simple and composite outlines,
-  and allow valid relative jumps across balanced conditionals.
-- Parse ordered CSS font families and add explicit host generic/fallback policy
-  for font snapshots and prepared documents, preserving legacy catalog selection.
-- Select supplied-font coverage per admitted scalar, lazily acquiring later
-  authored families before host fallback. Preserve mixed-face advances, spans,
-  positioning and text paths, with bounded acquisition and meaningful failures.
-- Correct valid instruction-free TrueType metric origins and native Windows
-  simple dropout control, including the interaction between both scan passes.
-- Preserve quoted font-family punctuation through inline/stylesheet priority,
-  brace and comment handling.
-- Match native signed half-unit scaling in TrueType points/control values and
-  bound Latin light edge merging by the font's measured standard stem width.
-- Select Windows natural/symmetric LCD profiles from font gasp data at actual
-  raster size, and preserve native curve, smart-dropout and stub behavior.
-- Preserve fractional glyph offsets when scaling ordinary SVG text; round paint
-  origins after absolute span resets while retaining character and text-path metrics.
-- Honor font-selected Windows unfitted ranges while preserving native integer
-  sizing, component placement, signed point rounding and inherited metric origins.
-- Correct Linux Latin light stem bounds against pending edges, preserving the
-  native quarter-pixel collapse guard and unlinked serif offsets.
-- Correct natural Windows LCD stub continuation at exact neighboring vertices
-  and bound half-scan overshoot to the selected pixel center.
-- Prefer selected GPOS kerning, including zero adjustments, over unused legacy
-  kern contents. Preserve SFNT bounds and validation of required legacy data.
-- Admit applicable pair-positioning lookup flags and bounded GDEF metadata.
-  Filter base/ligature glyphs within font, size and absolute-position runs;
-  preserve the explicit unsupported boundary for actual mark positioning.
-- Extend bounded hinting with ISECT, native MIRP/MSIRP cut-in, and composite
-  font-unit CVT writes; preserve native curve-tag and legacy rounding controls.
-- Carry authored simple dropout modes into Windows coverage, and reproduce its
-  source-family span policy with original public fonts and unchanged references.
-- Correct natural Windows LCD lower bounds, ordered dropout neighbors and
-  monotonic conic endpoint rounding. Excluded stubs cannot suppress later strokes.
+- Add ordered CSS font-family lists through `SvgFontFaceRequest.FromCss` and
+  explicit host generic/fallback mappings through `SvgFontSelectionPolicy`.
+  Preserve quoted names, escapes, inheritance and bounded canonical round trips.
+- Acquire supplied-font fallbacks lazily for missing admitted scalars, preserving
+  mixed-face layout, kerning, ligatures, spans, text paths and failure diagnostics.
+- Extend bounded static TrueType hinting and composite support. Honor selected
+  fitting modes, metric origins and Windows/Linux raster profiles, with improved
+  conic, thin-stroke, dropout, stem and fractional-size glyph fidelity.
+- Support applicable pair-positioning lookup flags and GDEF base/ligature filters.
+  Prefer selected GPOS kerning, including zero adjustments, over legacy kern data;
+  actual mark positioning remains unsupported.
+- Reserve embedded-PNG growth and scanline scratch before allocation; improve
+  temporary-storage cleanup, cancellation and failure classification. Document
+  the 135-device-pixel drop-shadow deviation limit and report it directly.
+- Validate embedded PNG chunk structure and ordering, and reject malformed input
+  or unsupported transparency in the independent pixel comparer. Reject escaped
+  FontProbe pack traversal before requests; make its shared HTTP cache
+  cancellation-aware and thread-safe.
+- Reduce repeated CSS, geometry and PNG sizing work; keep coincident stroke
+  lookahead and catalog fallback deduplication linear. Share document preparation
+  and polygon traversal, with more compact retained geometry.
+- Simplify renderer/tool internals and diagnostic reporting, validate downloaded
+  CI artifacts against their recorded host, and retire historical corporate-sweep
+  tooling and aggregate reports while retaining focused evidence and provenance.
 
 ## 0.2.0 - 2026-10-18
 
