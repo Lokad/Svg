@@ -328,8 +328,6 @@ internal sealed class SvgDocumentState : IDisposable
     internal bool ClipIsObjectBoundingBox { get; set; }
     internal bool ClipIsEvenOdd { get; set; }
 
-    internal bool GroupUseExpanded { get; set; }
-
     internal SvgMarkerDefinition? MarkerDefinition { get; set; }
     internal string? SymbolId { get; set; }
 

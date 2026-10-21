@@ -263,7 +263,6 @@ internal static class SvgClipPathSyntax
                     }
                     if (parent is not null && !parent.Value.IsTrivial && clipPolygon.ContourEnds.Length != 1 && !clipPolygon.UsesNativeReplay)
                         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Polygon clip-paths in transformed viewports are not implemented.");
-                    if (state.GroupUseExpanded) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Polygon clip-paths with use instances are not implemented.");
                     if (pending.GeometryCount == 0) continue;
                     if (clipPolygon.ContourEnds.Length == 1 || clipPolygon.UsesNativeReplay)
                     {
