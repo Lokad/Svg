@@ -63,6 +63,8 @@ internal readonly record struct SvgComputedStyle(string? Color, string? Fill, st
         string? resolved = inlineImportant && inlineValue is not null ? inlineValue
             : styleSheetImportant && styleSheetValue is not null ? styleSheetValue
             : inlineValue ?? styleSheetValue ?? reader.GetAttribute(attribute);
+        // Attribute admission and CSS parsing bound the authored token first.
+        if (resolved is not null && attribute is "color" or "fill" or "stroke") resolved = resolved.Trim();
         if (attribute.StartsWith("marker-", StringComparison.Ordinal)) return resolved;
         if (attribute is not ("paint-order" or "overflow") && resolved is not null && SvgInlineStyleParser.TryMapPaintKeyword(attribute.AsSpan(), resolved.AsSpan(), out string? mapped))
             return mapped == SvgInlineStyleParser.InheritedValue && SvgInlineStyleParser.IsInheritedPaintProperty(attribute.AsSpan()) ? null : mapped;

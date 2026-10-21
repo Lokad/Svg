@@ -161,6 +161,8 @@ marker properties, overflow, parsed width/height and the text/font properties
 listed below. Each property retains its target/value restrictions; this is not a
 general CSS declaration parser. `paint-order` accepts normal or distinct
 fill/stroke/markers lists, appending omitted operations.
+Solid colors and paint keywords ignore surrounding whitespace in attributes and
+CSS; literal color limits apply to the authored token before normalization.
 
 Unsupported: imports, media/supports rules, pseudo-classes/elements, sibling
 selectors, layout, variables, animation and web fonts. The resource declaration

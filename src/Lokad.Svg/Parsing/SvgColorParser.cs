@@ -29,6 +29,7 @@ internal static class SvgColorParser
     internal static SvgColor Parse(string value, IReadOnlyDictionary<string, SvgColor> namedColors)
     {
         if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "CSS color values exceed the configured syntax limit.");
+        value = value.Trim();
         if (value.Equals("transparent", StringComparison.OrdinalIgnoreCase)) return SvgColor.Transparent;
         if (namedColors.TryGetValue(value, out SvgColor namedColor)) return namedColor;
         if (TryParseFunctionalRgb(value, out SvgColor functionalColor)) return functionalColor;
