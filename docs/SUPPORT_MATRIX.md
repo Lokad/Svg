@@ -148,6 +148,8 @@ relationships, CRCs and bounded decompression are validated. IDAT chunks must be
 consecutive; transparency must precede image data and follow any palette.
 Image placement supports finite geometry/viewBox percentages, meet/slice
 alignments, `preserveAspectRatio="none"` and general affine maps.
+Images ignore inherited and CSS fill/stroke paint; display, visibility and
+element/group opacity still apply.
 
 Unsupported: interlaced/16-bit PNG, reduced-significance sBIT, color-management or
 orientation conversion, JPEG/GIF/WebP and external image fetching.

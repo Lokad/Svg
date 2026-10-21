@@ -166,9 +166,8 @@ internal static class SvgLeafParser
             double? baseWidth, double? baseHeight, SvgRenderLimits limits, RenderBudget budget, bool retainBitmap)
         {
             SvgImageSyntax syntax = SvgImageSyntax.Parse(reader, baseWidth, baseHeight);
-            SvgComputedStyle style = context.ResolveStyle(reader);
-            // SVG fill does not paint image pixels; a container's shader cannot recolor them.
-            if (SvgPatternSyntax.IsPatternFill(style.Fill)) style = style with { Fill = "white" };
+            // Images use decoded pixels; shape fill/stroke cannot suppress or repaint them.
+            SvgComputedStyle style = context.ResolveStyle(reader) with { Fill = "white", Stroke = "none" };
             SvgResolvedPaintableElement element = context.ResolveShape(style, reader, false);
             double width = syntax.Width ?? baseWidth ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Omitted image dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             double height = syntax.Height ?? baseHeight ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Omitted image dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
