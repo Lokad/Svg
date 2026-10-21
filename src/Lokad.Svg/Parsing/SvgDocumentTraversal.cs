@@ -305,6 +305,23 @@ internal static class SvgDocumentTraversal
                     if (state.PatternContentBuilder is {} unused)
                     {
                         // Anonymous resources own no deferred scene. Drop borrowed ranges before disposal.
+                        while (state.PendingTextRuns.Count > state.PatternCommandStart.Text)
+                        {
+                            workCounter.Consume(cancellationToken);
+                            SvgPendingTextRun text = state.PendingTextRuns[^1];
+                            text.Run?.Dispose(); text.Continuation?.Dispose(); text.Owner.Dispose();
+                            state.PendingTextRuns.RemoveLast();
+                        }
+                        while (state.PendingGroupClips.Count > state.PatternCommandStart.Clip)
+                        {
+                            workCounter.Consume(cancellationToken);
+                            state.PendingGroupClips.RemoveLast();
+                        }
+                        while (state.PendingGroupMasks.Count > state.PatternCommandStart.Mask)
+                        {
+                            workCounter.Consume(cancellationToken);
+                            state.PendingGroupMasks.RemoveLast();
+                        }
                         while (state.PendingLeafMasks.Count > 0 && ReferenceEquals(state.PendingLeafMasks[^1].Scene, unused))
                         {
                             workCounter.Consume(cancellationToken);
@@ -314,6 +331,17 @@ internal static class SvgDocumentTraversal
                         {
                             workCounter.Consume(cancellationToken);
                             state.PendingLeafClips.RemoveLast();
+                        }
+                        while (state.PatternUseCount > 0)
+                        {
+                            workCounter.Consume(cancellationToken);
+                            state.PatternUses.RemoveLast();
+                            state.PatternUseCount--;
+                        }
+                        while (state.PatternScopes is {} scopes && scopes.Count > state.PatternScopeStart)
+                        {
+                            workCounter.Consume(cancellationToken);
+                            scopes.RemoveLast();
                         }
                         unused.Dispose();
                     }
