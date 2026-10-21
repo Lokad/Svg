@@ -35,6 +35,7 @@ internal static class SvgElementAttributePolicy
         while (reader.MoveToNextAttribute())
         {
             workCounter.Consume(cancellationToken);
+            if (reader.NamespaceURI == "http://www.w3.org/2000/xmlns/") continue;
             if (reader.NamespaceURI.Length == 0 && reader.LocalName == "id")
             {
                 if (reader.Value.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG identifiers and class values exceed the configured syntax limit.");
