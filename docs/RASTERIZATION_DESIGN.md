@@ -22,6 +22,7 @@ Forward definitions resolve after registration. Resource references borrow their
 owning scene; sealed child scenes retain the storage needed after parser staging
 is released. Partial construction and conversion failure release owned storage.
 Anonymous pattern teardown drops its deferred entries before disposing staging.
+Open groups retain their deferred clip/mask indices and close those entries directly.
 Gradient and pattern templates wake their dependents when ready. Deferred paint,
 text and tile-use commands replace their placeholders in batches; existing scope
 boundaries and scopes created during replay map separately into final draw order.

@@ -201,7 +201,7 @@ internal static class SvgDocumentTraversal
                         bool filterViewport = filterParent is { HasAffineClipScope: false } viewportParent && viewportParent.Clip != SvgClipBox.Unbounded;
                         state.Groups.Add(parsedGroup.Scope with { HasFilterViewportScope = filterViewport, PreviousFilterViewportDepth = state.FilterViewportDepth });
                         string? groupId = reader.GetAttribute("id");
-                        state.GroupSnapshotStarts.Add(new SvgGroupSnapshotStart(groupId is null ? null : state.Strings.Copy(groupId), reader.GetAttribute("clip-path") is not null, reader.GetAttribute("mask") is not null));
+                        SvgGroupSnapshotStart snapshot = new(groupId is null ? null : state.Strings.Copy(groupId), reader.GetAttribute("clip-path") is not null, reader.GetAttribute("mask") is not null);
                         if (parsedGroup.Scope.Kind == SvgGroupKind.Switch) state.Switches.Add(new SwitchScope(reader.Depth, false));
                         string? groupClipId = parsedGroup.Scope.ClipPathId;
                         if (groupClipId is not null && !parsedGroup.Scope.HasFilter)
@@ -216,6 +216,7 @@ internal static class SvgDocumentTraversal
                             else
                             {
                                 SvgViewportFrame? groupParent = state.EffectiveFrame;
+                                snapshot = snapshot with { PendingClip = state.PendingGroupClips.Count };
                                 state.PendingGroupClips.Add(new PendingGroupClip(state.Strings.Copy(groupClipId), groupParent, parsedGroup.Scope.InheritedPresentation.Transform, state.Scene.CommandCount, -1, reader.Depth, state.Scene));
                                 SvgClipBox passthrough = groupParent?.Clip ?? SvgClipBox.Unbounded;
                                 state.Viewports.Add(new SvgViewportFrame(groupParent?.OffsetX ?? 0, groupParent?.OffsetY ?? 0, groupParent?.ScaleX ?? 1, groupParent?.ScaleY ?? 1, groupParent?.ViewportWidth, groupParent?.ViewportHeight, passthrough, reader.Depth));
@@ -229,6 +230,7 @@ internal static class SvgDocumentTraversal
                                 [new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, clippedParent.Clip, -1, 255) { RegionKind = SvgLayerRegionKind.Viewport }]);
                         if (parsedGroup.DeferredMask is not null)
                         {
+                            snapshot = snapshot with { PendingMask = state.PendingGroupMasks.Count };
                             state.PendingGroupMasks.Add(new PendingGroupMask(parsedGroup.DeferredMask, state.Scene.CommandCount, -1, reader.Depth, state.EffectiveFrame, parsedGroup.Scope.InheritedPresentation.Transform, state.Scene));
                         }
                         if (parsedGroup.Scope.IsolatesOpacity || parsedGroup.Scope.HasDeferredMask || parsedGroup.Scope.HasFilter)
@@ -249,6 +251,7 @@ internal static class SvgDocumentTraversal
                             }
                         }
                         if (parsedGroup.Scope.HasFilter) state.FilterViewportDepth = reader.Depth;
+                        state.GroupSnapshotStarts.Add(snapshot);
                     }
                 }
                 else if (inScope && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "style")
@@ -459,25 +462,17 @@ internal static class SvgDocumentTraversal
                         state.FilterViewportDepth = group.PreviousFilterViewportDepth;
                     }
                     if (group.HasFilter && group.HasDeferredMask) state.Scene.EndOpacityScope();
-                    for (int pendingGroupIndex = state.PendingGroupClips.Count - 1; pendingGroupIndex >= 0; pendingGroupIndex--)
+                    if (snapshotStart.PendingClip is {} pendingGroupIndex)
                     {
                         workCounter.Consume(cancellationToken);
                         PendingGroupClip pendingGroup = state.PendingGroupClips[pendingGroupIndex];
-                        if (pendingGroup.Depth == reader.Depth && pendingGroup.EndCommandIndex < 0)
-                        {
-                            state.PendingGroupClips[pendingGroupIndex] = pendingGroup with { EndCommandIndex = state.Scene.CommandCount };
-                            break;
-                        }
+                        state.PendingGroupClips[pendingGroupIndex] = pendingGroup with { EndCommandIndex = state.Scene.CommandCount };
                     }
-                    for (int pendingMaskIndex = state.PendingGroupMasks.Count - 1; pendingMaskIndex >= 0; pendingMaskIndex--)
+                    if (snapshotStart.PendingMask is {} pendingMaskIndex)
                     {
                         workCounter.Consume(cancellationToken);
                         PendingGroupMask pendingMask = state.PendingGroupMasks[pendingMaskIndex];
-                        if (pendingMask.Depth == reader.Depth && pendingMask.EndCommandIndex < 0)
-                        {
-                            state.PendingGroupMasks[pendingMaskIndex] = pendingMask with { EndCommandIndex = state.Scene.CommandCount };
-                            break;
-                        }
+                        state.PendingGroupMasks[pendingMaskIndex] = pendingMask with { EndCommandIndex = state.Scene.CommandCount };
                     }
                     if (group.IsolatesOpacity || group.HasDeferredMask || group.HasFilter)
                     {

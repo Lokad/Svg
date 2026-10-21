@@ -499,5 +499,10 @@ internal enum SvgGroupKind { Group, Link, Switch, Mask, Pattern, PatternGroup }
 internal readonly record struct SvgGroupSnapshot(bool IsolatesOpacity, bool HasClip, bool HasMask, bool HasViewport);
 
 /// <summary>Tracks one open group boundary, aligned with the group scope stack.</summary>
-internal readonly record struct SvgGroupSnapshotStart(string? Id, bool HasClip, bool HasMask);
+internal readonly record struct SvgGroupSnapshotStart(string? Id, bool HasClip, bool HasMask)
+{
+    /// <summary>Identifies this group's open deferred bindings; closed siblings remain outside its lifetime.</summary>
+    internal int? PendingClip { get; init; }
+    internal int? PendingMask { get; init; }
+}
 
