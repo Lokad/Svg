@@ -58,6 +58,8 @@ internal sealed record SvgRetainedFilter(SvgFilterBinding Binding)
 /// Sealed resources are immutable and borrowed by playback; disposal is owned by the enclosing scene.</remarks>
 internal sealed class SvgFilterArena : IDisposable
 {
+    private readonly record struct SourceRange(int First, int End);
+
     private readonly RenderBudget.BudgetReservation _owner;
     private readonly ParserWorkCounter _work;
     private readonly CancellationToken _token;
@@ -144,6 +146,8 @@ internal sealed class SvgFilterArena : IDisposable
     {
         if (!_hasPendingClips) return;
         if (_sealed || _disposed) throw new InvalidOperationException("Filter construction is closed.");
+        using BudgetedParserList<SourceRange> ranges = new(state.Budget, SvgMemoryCategory.Parser, _work, _token);
+        bool indexed = false;
         for (int index = 0; index < _bindings.Count; index++)
         {
             _work.Consume(_token);
@@ -166,34 +170,64 @@ internal sealed class SvgFilterArena : IDisposable
             SvgObjectBoundingClip TargetBounds()
             {
                 SvgObjectBoundingClip target = new(binding.Transform, null);
-                bool found = false;
-                int depth = 0;
-                for (int commandIndex = 0; commandIndex < scene.CommandCount; commandIndex++)
+                if (!indexed) IndexSources();
+                SourceRange range = ranges[index];
+                if (range.First < 0 || range.End < 0)
+                    throw new SvgException(SvgErrorCode.MalformedInput, "Filter output clip requires a balanced source scope.");
+                for (int commandIndex = range.First + 1; commandIndex < range.End; commandIndex++)
                 {
                     _work.Consume(_token);
                     SvgDrawCommand command = scene.CommandAt(commandIndex);
-                    if (!found)
-                    {
-                        if (command.Kind == SvgDrawCommandKind.BeginGroup && command.RegionKind == SvgLayerRegionKind.Filter && command.MaskContentIndex == index)
-                            found = true;
-                        continue;
-                    }
-                    if (command.Kind == SvgDrawCommandKind.BeginGroup) depth++;
-                    else if (command.Kind == SvgDrawCommandKind.EndGroup)
-                    {
-                        if (depth-- == 0) return target;
-                    }
-                    else if (command.Kind == SvgDrawCommandKind.Geometry)
+                    if (command.Kind == SvgDrawCommandKind.Geometry)
                     {
                         SvgGeometry geometry = scene.GeometryAt(command.GeometryIndex);
                         if (!scene.GetRecordedPaintValue(geometry.RecordedPaint).IsMarkerContent)
                             target.Add(geometry, state, _work, _token);
                     }
                 }
-                throw new SvgException(SvgErrorCode.MalformedInput, "Filter output clip requires a balanced source scope.");
+                return target;
             }
         }
         _hasPendingClips = false;
+
+        // Object-box clips need native geometry bounds within their own source.
+        // Index balanced boundaries once, only when such a clip is encountered.
+        void IndexSources()
+        {
+            for (int index = 0; index < _bindings.Count; index++) ranges.Add(new(-1, -1));
+            using BudgetedParserList<int> stack = new(state.Budget, SvgMemoryCategory.Parser, _work, _token);
+            for (int commandIndex = 0; commandIndex < scene.CommandCount; commandIndex++)
+            {
+                _work.Consume(_token);
+                SvgDrawCommand command = scene.CommandAt(commandIndex);
+                if (command.Kind == SvgDrawCommandKind.BeginGroup)
+                {
+                    int selected = -1;
+                    if (command.RegionKind == SvgLayerRegionKind.Filter)
+                    {
+                        int binding = command.MaskContentIndex;
+                        if ((uint)binding >= (uint)_bindings.Count)
+                            throw new SvgException(SvgErrorCode.MalformedInput, "Filter output clip requires a valid source binding.");
+                        // Match the original first-source rule if a binding is reused.
+                        if (ranges[binding].First < 0)
+                        {
+                            ranges[binding] = new(commandIndex, -1);
+                            selected = binding;
+                        }
+                    }
+                    stack.Add(selected);
+                }
+                else if (command.Kind == SvgDrawCommandKind.EndGroup)
+                {
+                    if (stack.Count == 0) throw new SvgException(SvgErrorCode.MalformedInput, "Filter output clip requires a balanced source scope.");
+                    int binding = stack[^1];
+                    stack.RemoveLast();
+                    if (binding >= 0) ranges[binding] = ranges[binding] with { End = commandIndex };
+                }
+            }
+            if (stack.Count != 0) throw new SvgException(SvgErrorCode.MalformedInput, "Filter output clip requires a balanced source scope.");
+            indexed = true;
+        }
     }
 
     /// <summary>Borrows a resolved output clip while command emission is still constructing this scene.</summary>

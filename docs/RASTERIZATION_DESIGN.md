@@ -129,7 +129,8 @@ regions, result dependencies, operating color spaces and source-bitmap placement
 Padded source capture, cropped storage, intermediate image subsets and restoration
 into a parent bitmap remain separate. Preserve source origins when translating
 or bounding blur work; source capture and final painting must use the same maps.
-Filter sources preserve native rectangle coverage and layer-bound rounding;
+Filter sources preserve native rectangle coverage and layer-bound rounding.
+Object-box output clips index balanced source ranges once before measuring targets.
 sRGB and linear-RGB image sampling retain their distinct precision. Resource
 clips enclose group isolation, applying coverage once when opacity restores.
 
