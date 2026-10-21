@@ -328,6 +328,8 @@ internal static class SvgFilterPlayback
                 // unclassified infinity in the internal deviation contract.
                 if (primitive.Kind == SvgFilterPrimitiveKind.GaussianBlur)
                 { sigmaX = Math.Min(sigmaX, 532); sigmaY = Math.Min(sigmaY, 532); }
+                else if (primitive.Kind == SvgFilterPrimitiveKind.DropShadow && ((float)sigmaX > 135 || (float)sigmaY > 135))
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Drop-shadow deviations above 135 device pixels per axis are not implemented.");
                 else if (sigmaX > float.MaxValue || sigmaY > float.MaxValue)
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "This filter primitive requires unimplemented deviation rescaling.");
                 SvgGaussianDeviation deviation = new((float)sigmaX, (float)sigmaY);

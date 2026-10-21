@@ -515,6 +515,54 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Theory]
+    [InlineData("135 0", 1, "", true)]
+    [InlineData("0 135", 1, "", true)]
+    [InlineData("136 0", 1, "", false)]
+    [InlineData("0 136", 1, "", false)]
+    [InlineData("67.5 0", 2, "", true)]
+    [InlineData("67.501 0", 2, "", false)]
+    [InlineData("0 33.75", 1, "scale(1 4)", true)]
+    [InlineData("0 33.751", 1, "scale(1 4)", false)]
+    [InlineData("270 0", .5, "", true)]
+    [InlineData("270.001 0", .5, "", false)]
+    [InlineData("135.000001 0", 1, "", true)]
+    [InlineData("135.00001 0", 1, "", false)]
+    public void Shadow_deviations_observe_mapped_axis_bounds_and_release_storage(string deviation, double outputScale, string transform, bool accepted)
+    {
+        string placement = transform.Length == 0 ? "" : " transform='" + transform + "'";
+        byte[] input = Document("<defs><filter id='f'><feDropShadow stdDeviation='" + deviation + "'/></filter></defs>"
+            + "<g" + placement + "><rect width='4' height='4' fill='red' filter='url(#f)'/></g>");
+        byte[] unchanged = input.ToArray();
+        SvgRenderOptions options = new(null, outputScale, SvgColor.Transparent, SvgRenderLimits.Default);
+        RenderBudget budget = new(2_000_000);
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        {
+            long retained = budget.Snapshot().CurrentBytes;
+            if (accepted)
+            {
+                using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, options, budget, CancellationToken.None);
+                Assert.Contains(Enumerable.Range(0, surface.Width * surface.Height), pixel => surface.Pixels[pixel * 4 + 3] > 0);
+            }
+            else Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
+            {
+                using SvgConverter.RasterizedSurface rejected = SvgConverter.Rasterize(scene, options, budget, CancellationToken.None);
+            }).ErrorCode);
+            Assert.Equal(retained, budget.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        using MemoryStream output = new();
+        if (accepted) Assert.True(SvgConverter.ConvertToPng(input, output, options, CancellationToken.None) > 0);
+        else
+        {
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, output, options, CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, output.Length);
+            byte[] gaussian = System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(input).Replace("feDropShadow", "feGaussianBlur", StringComparison.Ordinal));
+            Assert.True(SvgConverter.ConvertToPng(gaussian, options, CancellationToken.None).Length > 0);
+        }
+        Assert.Equal(unchanged, input);
+    }
+
+    [Theory]
     [InlineData("<feOffset dx='.5'/>")]
     [InlineData("<feGaussianBlur stdDeviation='.5'/>")]
     [InlineData("<feDropShadow stdDeviation='1e300'/>")]
