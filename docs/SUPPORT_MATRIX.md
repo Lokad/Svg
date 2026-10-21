@@ -205,6 +205,11 @@ first-face selection; callers may supply prepared alternatives explicitly. Raw
 conversion uses only its supplied snapshot. Existing single-family catalog
 resolution retains its fallback behavior.
 
+CSS family requests admit at most 256 families and 1,024 UTF-16 code units per
+decoded name. Both authored and canonical list text must fit 4,096 code units;
+normalization that exceeds this bound fails immediately with `LimitExceeded`.
+SVG scalar attributes and inline property values retain their 256-character bound.
+
 | Area | Supported boundary |
 | --- | --- |
 | Programs | Standalone static TrueType, face index 0, including composites and bounded hinting. Other executed instructions fail explicitly. |

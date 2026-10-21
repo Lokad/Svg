@@ -102,6 +102,67 @@ public sealed class SvgFontFamilyTests
         => Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgFontFaceRequest.FromCss(css, 400, false)).ErrorCode);
 
     [Fact]
+    public void A_maximum_length_canonical_list_round_trips_with_all_families()
+    {
+        string[] names = Enumerable.Range(0, 256).Select(index => "Family" + index.ToString("D8", System.Globalization.CultureInfo.InvariantCulture)).ToArray();
+        names[^1] += "XX";
+        SvgFontFaceRequest request = SvgFontFaceRequest.FromCss(string.Join(',', names), 700, true);
+        Assert.Equal(4096, request.Family.Length);
+        SvgFontFaceRequest inherited = SvgFontFaceRequest.FromCss(request.Family, 700, true);
+        Assert.Equal(names, inherited.Families.Select(family => family.Name));
+        Assert.All(inherited.Families, family => Assert.False(family.IsGeneric));
+        Assert.True(request.Matches(inherited));
+        Assert.Equal(request.Family, inherited.Family);
+        names[^1] += 'X';
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontFaceRequest.FromCss(string.Join(',', names), 700, true)).ErrorCode);
+    }
+
+    [Theory]
+    [InlineData('\x1F')]
+    [InlineData('\x7F')]
+    public void Expanded_control_escapes_round_trip_near_the_character_bound(char control)
+    {
+        string name = new(control, 1023);
+        SvgFontFaceRequest request = SvgFontFaceRequest.FromCss("\"" + name + "\"", 400, false);
+        Assert.Equal(4094, request.Family.Length);
+        ParserWorkCounter work = new(4094);
+        SvgFontFaceRequest inherited = SvgFontFaceRequest.FromCss(request.Family, 400, false, null, work, CancellationToken.None);
+        Assert.Equal(name, Assert.Single(inherited.Families).Name);
+        Assert.Equal(request.Family, inherited.Family);
+        Assert.True(request.Matches(inherited));
+        Assert.Equal(4094, work.Used);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    public void Oversized_canonical_text_is_rejected_on_the_first_parse(int spelling)
+    {
+        string css = spelling switch
+        {
+            0 => string.Join(',', Enumerable.Range(0, 256).Select(index => "Family" + index.ToString("D9", System.Globalization.CultureInfo.InvariantCulture))),
+            1 => "\"" + new string('\x7F', 1024) + "\"",
+            _ => "\"" + string.Concat(Enumerable.Repeat("\\1F", 1024)) + "\""
+        };
+        Assert.True(css.Length <= 4096);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontFaceRequest.FromCss(css, 400, false)).ErrorCode);
+    }
+
+    [Fact]
+    public void Decoded_name_bound_is_preserved_within_a_round_trippable_list()
+    {
+        string name = new('a', 1024);
+        SvgFontFaceRequest request = SvgFontFaceRequest.FromCss("'" + name + "', 'serif', serif", 400, false);
+        SvgFontFaceRequest inherited = SvgFontFaceRequest.FromCss(request.Family, 400, false);
+        Assert.Equal(name, inherited.Families[0].Name);
+        Assert.False(inherited.Families[1].IsGeneric);
+        Assert.True(inherited.Families[2].IsGeneric);
+        Assert.True(request.Matches(inherited));
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontFaceRequest.FromCss(name + 'a', 400, false)).ErrorCode);
+    }
+
+    [Fact]
     public void Tokenization_is_bounded_and_observes_shared_work_and_original_cancellation()
     {
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontFaceRequest.FromCss(new string('a', 4097), 400, false)).ErrorCode);

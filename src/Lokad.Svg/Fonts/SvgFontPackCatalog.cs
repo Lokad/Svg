@@ -439,6 +439,7 @@ public sealed class SvgFontFaceRequest
     }
 
     /// <summary>Parses an ordered CSS family list, preserving generic versus quoted literal requests.</summary>
+    /// <remarks>Both input and canonical text are limited to 4,096 UTF-16 code units, with at most 256 families and 1,024 code units per decoded name.</remarks>
     public static SvgFontFaceRequest FromCss(string familyList, int weight, bool italic)
         => FromCss(familyList, weight, italic, null, null, CancellationToken.None);
 

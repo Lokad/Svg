@@ -97,6 +97,8 @@ internal static class SvgFontFamilySyntax
                 }
                 canonical.Append('"');
             }
+            if (canonical.Length > MaximumCharacters)
+                throw new SvgException(SvgErrorCode.LimitExceeded, "The canonical CSS font-family list exceeds the supported character bound.");
             if (position == value.Length) break;
             if (Read() != ',') throw Invalid();
             SkipSeparators();
