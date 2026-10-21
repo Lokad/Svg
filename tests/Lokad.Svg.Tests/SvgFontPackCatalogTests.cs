@@ -4,7 +4,7 @@ using Lokad.Svg.Parsing;
 
 namespace Lokad.Svg.Tests;
 
-public sealed class SvgFontPackCatalogTests
+public sealed partial class SvgFontPackCatalogTests
 {
 
     [Fact]

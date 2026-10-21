@@ -330,13 +330,24 @@ public sealed class SvgFontPackCatalog
         int selectedStyle = selected.Italic == request.Italic ? 0 : 1000;
         int comparison = candidateStyle.CompareTo(selectedStyle);
         if (comparison != 0) return comparison < 0;
-        comparison = Math.Abs(candidate.Weight - request.Weight).CompareTo(Math.Abs(selected.Weight - request.Weight));
+        comparison = request.IsCssRequest
+            ? CssWeightOrder(candidate.Weight, request.Weight).CompareTo(CssWeightOrder(selected.Weight, request.Weight))
+            : Math.Abs(candidate.Weight - request.Weight).CompareTo(Math.Abs(selected.Weight - request.Weight));
         if (comparison != 0) return comparison < 0;
         comparison = StringComparer.OrdinalIgnoreCase.Compare(candidate.ResolvedFamily, selected.ResolvedFamily);
         if (comparison != 0) return comparison < 0;
         comparison = StringComparer.Ordinal.Compare(candidate.File.RelativePath, selected.File.RelativePath);
         if (comparison != 0) return comparison < 0;
         return candidate.FaceIndex < selected.FaceIndex;
+
+        // CSS searches each weight range in order; negative values sort a range descending.
+        static (int Phase, int Order) CssWeightOrder(int weight, int target)
+        {
+            if (target < 400) return weight <= target ? (0, -weight) : (1, weight);
+            if (target > 500) return weight >= target ? (0, weight) : (1, -weight);
+            return weight >= target && weight <= 500 ? (0, weight)
+                : weight < target ? (1, -weight) : (2, weight);
+        }
     }
 
     private static void Consume(ParserWorkCounter? workCounter, CancellationToken cancellationToken)
@@ -416,7 +427,7 @@ public sealed class SvgFontFaceRequest
 {
     private readonly bool _cssRequest;
     internal SvgSourceContext? SourceContext { get; init; }
-    /// <summary>Initializes a requested family, positive CSS-like weight and italic flag.</summary>
+    /// <summary>Initializes one literal family request with positive weight and italic flag; catalog matching retains nearest-weight selection.</summary>
     public SvgFontFaceRequest(string family, int weight, bool italic)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(family);
@@ -439,7 +450,7 @@ public sealed class SvgFontFaceRequest
     }
 
     /// <summary>Parses an ordered CSS family list, preserving generic versus quoted literal requests.</summary>
-    /// <remarks>Both input and canonical text are limited to 4,096 UTF-16 code units, with at most 256 families and 1,024 code units per decoded name.</remarks>
+    /// <remarks>Catalog matching uses CSS weight fallback. Both input and canonical text are limited to 4,096 UTF-16 code units, with at most 256 families and 1,024 code units per decoded name.</remarks>
     public static SvgFontFaceRequest FromCss(string familyList, int weight, bool italic)
         => FromCss(familyList, weight, italic, null, null, CancellationToken.None);
 

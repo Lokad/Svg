@@ -219,8 +219,10 @@ Kerning/ligatures stay within a selected face; spans, positioning and text paths
 retain their layout. Missing-everywhere requests keep scalar/index/source
 diagnostics. Request-only snapshot creation has no coverage to inspect and keeps
 first-face selection; callers may supply prepared alternatives explicitly. Raw
-conversion uses only its supplied snapshot. Existing single-family catalog
-resolution retains its fallback behavior.
+conversion uses only its supplied snapshot. After style matching, CSS requests
+use [directional weight fallback](https://www.w3.org/TR/css-fonts-4/#font-style-matching),
+including the 400–500 range. Literal `SvgFontFaceRequest` constructor requests
+retain nearest-weight selection and existing fallback behavior.
 
 CSS family requests admit at most 256 families and 1,024 UTF-16 code units per
 decoded name. Both authored and canonical list text must fit 4,096 code units;
