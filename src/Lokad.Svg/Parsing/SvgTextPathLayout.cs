@@ -52,14 +52,14 @@ internal static class SvgTextPathLayout
     /// <remarks>Existing scene/source owners provide raster replay. Every path/glyph/command step charges work;
     /// document teardown releases queued runs and partially adopted glyphs on denial or cancellation.</remarks>
     internal static void Resolve(SvgDocumentState state, SvgRenderLimits limits, ParserWorkCounter work, CancellationToken token)
-        => Resolve(state, 0, limits, work, token);
+        => Resolve(state, default, limits, work, token);
 
     /// <summary>Resolves only the appended source-local suffix; earlier document runs remain borrowed and untouched.</summary>
-    internal static void Resolve(SvgDocumentState state, int first, SvgRenderLimits limits, ParserWorkCounter work, CancellationToken token)
+    internal static void Resolve(SvgDocumentState state, SvgPendingCommandStart first, SvgRenderLimits limits, ParserWorkCounter work, CancellationToken token)
     {
-        if (state.PendingTextRuns.Count == first) return;
-        using SvgPaintCommandBatch commands = new(state, state.Scene, work, token);
-        for (int index = state.PendingTextRuns.Count - 1; index >= first; index--)
+        if (state.PendingTextRuns.Count == first.Text) return;
+        using SvgPaintCommandBatch commands = new(state, state.Scene, first, work, token);
+        for (int index = state.PendingTextRuns.Count - 1; index >= first.Text; index--)
         {
             work.Consume(token);
             SvgPendingTextRun pending = state.PendingTextRuns[index];

@@ -5,6 +5,9 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Marks the commands and scope ranges appended by one deferred paint emission.</summary>
 internal readonly record struct SvgPaintCommandEmission(int Position, int TailStart, int FirstClip, int FirstMask);
 
+/// <summary>Identifies the first retained text, clip and mask entries belonging to a source replay.</summary>
+internal readonly record struct SvgPendingCommandStart(int Text, int Clip, int Mask);
+
 /// <summary>Replaces descending paint placeholders with appended commands in one ordered rebuild.</summary>
 /// <remarks>Single-threaded, conversion-local scratch borrows the scene and document. Geometry and paint
 /// owners never move. Emissions must follow descending original positions and append commands only.
@@ -19,17 +22,19 @@ internal sealed class SvgPaintCommandBatch : IDisposable
     private readonly SvgSceneBuilder _scene;
     private readonly ParserWorkCounter _work;
     private readonly CancellationToken _token;
+    private readonly SvgPendingCommandStart _first;
     private readonly int _originalCount;
     private readonly int _originalClips;
     private readonly int _originalMasks;
     private readonly BudgetedParserList<Replacement> _replacements;
 
-    internal SvgPaintCommandBatch(SvgDocumentState state, SvgSceneBuilder scene, ParserWorkCounter work, CancellationToken token)
+    internal SvgPaintCommandBatch(SvgDocumentState state, SvgSceneBuilder scene, SvgPendingCommandStart first, ParserWorkCounter work, CancellationToken token)
     {
         _state = state;
         _scene = scene;
         _work = work;
         _token = token;
+        _first = first;
         _originalCount = scene.CommandCount;
         _originalClips = state.PendingGroupClips.Count;
         _originalMasks = state.PendingGroupMasks.Count;
@@ -78,7 +83,7 @@ internal sealed class SvgPaintCommandBatch : IDisposable
             // Pattern staging scopes bind after use expansion and have no original command ranges.
             // Avoid walking unrelated document metadata once for every tile scene.
             if (ReferenceEquals(_scene, _state.Scene))
-                SvgReferenceResolver.RemapPendingCommandRanges(_state, _scene, positions, _originalClips, _originalMasks, _work, _token);
+                SvgReferenceResolver.RemapPendingCommandRanges(_state, _scene, positions, _first, _originalClips, _originalMasks, _work, _token);
             foreach (Replacement replacement in _replacements.AsSpan())
             {
                 _work.Consume(_token);

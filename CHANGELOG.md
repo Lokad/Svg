@@ -31,7 +31,8 @@
 - Keep polygon clips compatible with unrelated group instances, and expand
   forward uses without repeated command/range shifts.
 - Batch deferred paint, text and pattern-use commands while preserving original
-  scope boundaries and scopes created during replay.
+  scope boundaries and scopes created during replay. Keep retained text remapping
+  local to its source, independent of unrelated document ranges.
 - Simplify renderer/tool internals and diagnostic reporting, validate downloaded
   CI artifacts against their recorded host, and retire historical corporate-sweep
   tooling and aggregate reports while retaining focused evidence and provenance.

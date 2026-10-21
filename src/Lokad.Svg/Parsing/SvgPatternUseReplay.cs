@@ -32,7 +32,7 @@ internal static class SvgPatternUseReplay
             // Descending positions preserve every unresolved slot when a use expands to several draws.
             if (pending.UseCount != 0)
             {
-                using SvgPaintCommandBatch commands = new(state, pending.Builder, work, token);
+                using SvgPaintCommandBatch commands = new(state, pending.Builder, default, work, token);
                 for (int index = pending.FirstUse + pending.UseCount - 1; index >= pending.FirstUse; index--)
                 {
                     work.Consume(token);

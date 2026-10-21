@@ -1708,7 +1708,7 @@ internal static class SvgReferenceResolver
             }
             if (expansionIndex != expansions.Count) throw new InvalidOperationException("Pending reference slots must follow drawing order.");
             positions[commandCount] = commands.Count;
-            RemapPendingCommandRanges(state, scene, positions, state.PendingGroupClips.Count, state.PendingGroupMasks.Count, workCounter, cancellationToken);
+            RemapPendingCommandRanges(state, scene, positions, default, state.PendingGroupClips.Count, state.PendingGroupMasks.Count, workCounter, cancellationToken);
             scene.AdoptCommands(commands);
             transferred = true;
         }
@@ -1838,19 +1838,20 @@ internal static class SvgReferenceResolver
     /// <summary>Remaps original command boundaries once after a batch rebuild, excluding newly appended scope ranges.</summary>
     /// <remarks>Only matching scene identities move; negative open ends stay negative. Root use slots have
     /// document scene identity implicitly. The caller owns the borrowed boundary map and scene storage;
-    /// every visited entry charges work and cancellation, and document teardown handles partial failure.</remarks>
+    /// source-local starts exclude unrelated document prefixes. Every visited entry charges work and
+    /// cancellation, and document teardown handles partial failure.</remarks>
     internal static void RemapPendingCommandRanges(SvgDocumentState state, SvgSceneBuilder scene, ReadOnlySpan<int> positions,
-        int clipCount, int maskCount, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        SvgPendingCommandStart start, int clipCount, int maskCount, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(workCounter);
-        for (int textIndex = 0; textIndex < state.PendingTextRuns.Count; textIndex++)
+        for (int textIndex = start.Text; textIndex < state.PendingTextRuns.Count; textIndex++)
         {
             workCounter.Consume(cancellationToken);
             SvgPendingTextRun pending = state.PendingTextRuns[textIndex];
             if (ReferenceEquals(pending.Scene, scene)) state.PendingTextRuns[textIndex] = pending with { CommandIndex = positions[pending.CommandIndex] };
         }
-        for (int groupIndex = 0; groupIndex < clipCount; groupIndex++)
+        for (int groupIndex = start.Clip; groupIndex < clipCount; groupIndex++)
         {
             workCounter.Consume(cancellationToken);
             PendingGroupClip group = state.PendingGroupClips[groupIndex];
@@ -1859,7 +1860,7 @@ internal static class SvgReferenceResolver
             int end = group.EndCommandIndex < 0 ? group.EndCommandIndex : positions[group.EndCommandIndex];
             state.PendingGroupClips[groupIndex] = group with { FirstCommandIndex = first, EndCommandIndex = end };
         }
-        for (int maskIndex = 0; maskIndex < maskCount; maskIndex++)
+        for (int maskIndex = start.Mask; maskIndex < maskCount; maskIndex++)
         {
             workCounter.Consume(cancellationToken);
             PendingGroupMask mask = state.PendingGroupMasks[maskIndex];

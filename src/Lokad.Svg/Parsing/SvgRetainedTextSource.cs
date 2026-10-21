@@ -160,7 +160,7 @@ internal sealed class SvgRetainedTextSource
             { StrokeHostMap = state.OutputMap.ComposeChecked(placement), LengthBases = reference.LengthBases, RecordingScope = reference.RecordingScope };
             SvgRenderedLeafParser.ParseResolved(reader, context, environment.Root, state, environment.Limits, state.Budget, environment.Fonts, work, token);
             if (state.DeferredTextFailure is {} failure) throw failure;
-            SvgTextPathLayout.Resolve(state, previousPaths, environment.Limits, work, token);
+            SvgTextPathLayout.Resolve(state, new(previousPaths, previousClips, previousMasks), environment.Limits, work, token);
             SvgClipPathSyntax.ResolvePendingGroupClips(state, previousClips, work, token);
             SvgMaskSyntax.ResolvePendingGroupMasks(state, previousMasks, work, token);
             SvgLeafMaskComposition.Emit(state, staging, work, token);

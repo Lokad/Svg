@@ -46,7 +46,7 @@ public sealed class SvgDeferredCommandExpansionTests
             state.PendingGroupClips.Add(new("c", null, SvgAffineTransform.Identity, 1, -1, 0, foreign));
             state.PendingGroupMasks.Add(new("m", 1, 3, 0, null, SvgAffineTransform.Identity, state.Scene));
             state.PendingGroupMasks.Add(new("m", 1, -1, 0, null, SvgAffineTransform.Identity, foreign));
-            using SvgPaintCommandBatch commands = new(state, state.Scene, work, CancellationToken.None);
+            using SvgPaintCommandBatch commands = new(state, state.Scene, default, work, CancellationToken.None);
             SvgPaintCommandEmission later = commands.Begin(second);
             state.Scene.AddGeometries([rectangle, rectangle]);
             state.PendingGroupClips.Add(new("c", null, SvgAffineTransform.Identity, later.TailStart, later.TailStart + 2, 0, state.Scene));
@@ -81,7 +81,7 @@ public sealed class SvgDeferredCommandExpansionTests
         using (SvgDocumentState state = new(budget, work, cancellation.Token))
         {
             int slot = state.Scene.AddPaintPlaceholder();
-            using SvgPaintCommandBatch commands = new(state, state.Scene, work, cancellation.Token);
+            using SvgPaintCommandBatch commands = new(state, state.Scene, default, work, cancellation.Token);
             SvgPaintCommandEmission emission = commands.Begin(slot);
             commands.Retain(emission);
             cancellation.Cancel();
