@@ -161,6 +161,105 @@ public sealed class SvgPatternTextReplayTests
         }
     }
 
+    [Theory]
+    [InlineData("fill", false)]
+    [InlineData("fill", true)]
+    [InlineData("stroke", false)]
+    [InlineData("stroke", true)]
+    [InlineData("group", false)]
+    [InlineData("alias", true)]
+    public async Task Recursive_pattern_text_uses_fail_during_parsing(string kind, bool path)
+    {
+        using SvgFontSnapshot fonts = await CreateFonts();
+        string paint = kind == "stroke" ? " fill='none' stroke='url(#p)' stroke-width='.5'" : " fill='url(#p)'";
+        string text = Text(path, paint);
+        string source = kind == "group" ? "<g id='t'>" + text + "</g>"
+            : text.Replace("<text ", "<text id='t' ", StringComparison.Ordinal);
+        if (kind == "alias") source += "<use id='alias' href='#t'/>";
+        byte[] input = Input("<defs>" + source + Pattern("p", "<use href='#" + (kind == "alias" ? "alias" : "t") + "'/>") + Resources + "</defs><rect width='16' height='8' fill='url(#p)'/>");
+        RenderBudget budget = new(2_000_000);
+        // Parsing must reject the dependency before attempting public rasterization.
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
+        {
+            using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, fonts, new(100_000), CancellationToken.None);
+        }).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => Render(input, fonts)).ErrorCode);
+    }
+
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public async Task Nested_pattern_text_rejection_is_independent_of_definition_order(bool path, bool forward)
+    {
+        using SvgFontSnapshot fonts = await CreateFonts();
+        string outer = Pattern("p", Text(path, " fill='url(#q)'"));
+        string inner = Pattern("q", "<rect width='8' height='8' fill='red'/>");
+        byte[] input = Input("<defs>" + (forward ? outer + inner : inner + outer) + Resources + "</defs><rect width='16' height='8' fill='url(#p)'/>");
+        RenderBudget budget = new(2_000_000);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
+        {
+            using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, fonts, new(100_000), CancellationToken.None);
+        }).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => Render(input, fonts)).ErrorCode);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Root_text_uses_keep_ordinary_pattern_paints(bool path)
+    {
+        using SvgFontSnapshot fonts = await CreateFonts();
+        Assert.Equal(Render(Build(false), fonts), Render(Build(true), fonts));
+
+        byte[] Build(bool use)
+        {
+            string text = Text(path, " fill='url(#q)'");
+            return Input("<defs>" + Pattern("q", "<rect width='8' height='8' fill='red'/>")
+                + (use ? text.Replace("<text ", "<text id='t' ", StringComparison.Ordinal) : "")
+                + Resources + "</defs>" + (use ? "<use href='#t'/>" : text));
+        }
+    }
+
+    [Fact]
+    public async Task Rejected_pattern_text_uses_release_owners_on_denial_and_cancellation()
+    {
+        using SvgFontSnapshot fonts = await CreateFonts();
+        byte[] input = Input("<defs>" + Text(true, " fill='url(#p)'").Replace("<text ", "<text id='t' ", StringComparison.Ordinal)
+            + Pattern("p", "<use href='#t'/>") + Resources + "</defs><rect width='16' height='8' fill='url(#p)'/>");
+        RenderBudget measured = new(2_000_000);
+        ParserWorkCounter work = new(100_000);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
+        {
+            using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, fonts, work, CancellationToken.None);
+        }).ErrorCode);
+        Assert.Equal(0, measured.Snapshot().CurrentBytes);
+        for (long limit = 0; limit < work.Used; limit++)
+        {
+            RenderBudget denied = new(2_000_000);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, fonts, new(limit), CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        }
+        long peak = measured.Snapshot().PeakBytes;
+        for (long limit = 1; limit < peak; limit += 4096) DenyMemory(limit);
+        DenyMemory(peak - 1);
+        using CancellationTokenSource cancellation = new();
+        cancellation.Cancel();
+        RenderBudget cancelled = new(2_000_000);
+        Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, fonts, new(100_000), cancellation.Token)).CancellationToken);
+        Assert.Equal(0, cancelled.Snapshot().CurrentBytes);
+
+        void DenyMemory(long limit)
+        {
+            RenderBudget denied = new(limit);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, fonts, new(100_000), CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        }
+    }
+
     private static byte[] Mixed(bool path, string effects)
         => Input("<defs>" + Pattern("p", "<use href='#r' x='6'/><g opacity='.7' mask='url(#m)'><g clip-path='url(#c)'>"
             + Text(path, effects) + "<use href='#r' x='4'/></g><g clip-path='url(#c)'>" + Text(path, " fill='blue'")

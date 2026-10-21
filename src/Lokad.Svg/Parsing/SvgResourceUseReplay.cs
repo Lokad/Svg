@@ -170,8 +170,7 @@ internal static class SvgResourceUseReplay
                 foreach (SvgGeometry geometry in mapped)
                 {
                     work.Consume(token);
-                    if (geometry.Kind is SvgGeometryKind.PatternFill or SvgGeometryKind.PatternPolygon)
-                        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern paints inside pattern content are not implemented.");
+                    SvgPatternUseReplay.RejectNestedPaint(geometry);
                 }
             AppendMaskUse(use, use.Reference, mapped, builder, state, work, token);
             adopted = true;

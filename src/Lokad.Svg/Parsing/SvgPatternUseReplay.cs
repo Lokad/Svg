@@ -198,8 +198,21 @@ internal static class SvgPatternUseReplay
         foreach (SvgDeferredPatternContent pending in state.DeferredPatternContents.AsSpan())
         {
             work.Consume(token);
+            for (int index = 0; index < pending.Builder.GeometryCount; index++)
+            {
+                work.Consume(token);
+                RejectNestedPaint(pending.Builder.GeometryAt(index));
+            }
             SvgLeafMaskComposition.Emit(state, pending.Builder, work, token);
             pending.Content.Complete(pending.Builder.Build());
         }
+    }
+
+    /// <summary>Rejects nested paint dependencies after source expansion, including paints carried by glyph payloads.</summary>
+    internal static void RejectNestedPaint(SvgGeometry geometry)
+    {
+        if (geometry.Kind is SvgGeometryKind.PatternFill or SvgGeometryKind.PatternPolygon
+            || geometry.Kind == SvgGeometryKind.GlyphContours && geometry.Glyph.Shader is SvgTextPatternShader)
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern paints inside pattern content are not implemented.");
     }
 }

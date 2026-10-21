@@ -30,6 +30,7 @@ Deferred paint and text replay emit into their recorded scenes and map only
 their retained source ranges. Tile paints, text and uses expand together after
 definitions resolve and before pattern group binding;
 clip-only markers compact once afterward.
+Expanded tile paints, including glyph shaders, are validated before scene sealing.
 [Document preparation](../src/Lokad.Svg/Parsing/SvgDocumentPreparation.cs) shares
 reader workspace and collected styles across sizing, output mapping and scene
 lowering. Metadata traversal consumes the same work allowance as conversion;
