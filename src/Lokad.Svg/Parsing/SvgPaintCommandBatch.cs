@@ -5,8 +5,8 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Marks the commands and scope ranges appended by one deferred paint emission.</summary>
 internal readonly record struct SvgPaintCommandEmission(int Position, int TailStart, int FirstClip, int FirstMask);
 
-/// <summary>Identifies the first retained text, clip and mask entries belonging to a source replay.</summary>
-internal readonly record struct SvgPendingCommandStart(int Text, int Clip, int Mask);
+/// <summary>Identifies the first retained text, clip, mask and paint entries belonging to a source replay.</summary>
+internal readonly record struct SvgPendingCommandStart(int Text, int Clip, int Mask, int Paint);
 
 /// <summary>Replaces descending paint placeholders with appended commands in one ordered rebuild.</summary>
 /// <remarks>Single-threaded, conversion-local scratch borrows the scene and document. Geometry and paint

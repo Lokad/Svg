@@ -1845,6 +1845,12 @@ internal static class SvgReferenceResolver
     {
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(workCounter);
+        for (int paintIndex = start.Paint; paintIndex < end.Paint; paintIndex++)
+        {
+            workCounter.Consume(cancellationToken);
+            SvgDeferredPaintLeaf pending = state.DeferredPaintLeaves[paintIndex];
+            if (ReferenceEquals(pending.Scene, scene)) state.DeferredPaintLeaves[paintIndex] = pending with { CommandIndex = positions[pending.CommandIndex] };
+        }
         for (int textIndex = start.Text; textIndex < end.Text; textIndex++)
         {
             workCounter.Consume(cancellationToken);

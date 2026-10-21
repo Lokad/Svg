@@ -308,6 +308,11 @@ internal static class SvgDocumentTraversal
                     if (state.PatternContentBuilder is {} unused)
                     {
                         // Anonymous resources own no deferred scene. Drop borrowed ranges before disposal.
+                        while (state.DeferredPaintLeaves.Count > state.PatternCommandStart.Paint)
+                        {
+                            workCounter.Consume(cancellationToken);
+                            state.DeferredPaintLeaves.RemoveLast();
+                        }
                         while (state.PendingTextRuns.Count > state.PatternCommandStart.Text)
                         {
                             workCounter.Consume(cancellationToken);
@@ -490,7 +495,7 @@ internal static class SvgDocumentTraversal
                     state.ValidateSymbolReferences(workCounter, cancellationToken);
                     SvgResourceUseReplay.Resolve(state, workCounter, cancellationToken);
                     SvgMaskContentReplay.Resolve(root, state, workCounter, cancellationToken);
-                    SvgPatternUseReplay.Resolve(state, limits, workCounter, cancellationToken);
+                    SvgPatternUseReplay.Resolve(root, state, limits, workCounter, cancellationToken);
                     SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, state, workCounter, cancellationToken);
                     SvgClipPathSyntax.ResolvePendingLeafClips(state, workCounter, cancellationToken);
                     SvgClipPathSyntax.ResolvePendingGroupClips(state, workCounter, cancellationToken);

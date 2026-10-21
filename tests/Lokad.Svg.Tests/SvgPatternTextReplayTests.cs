@@ -93,6 +93,22 @@ public sealed class SvgPatternTextReplayTests
         Assert.Equal(SvgErrorCode.UnresolvedResource, Assert.Throws<SvgException>(() => Render(input, fonts)).ErrorCode);
     }
 
+    [Fact]
+    public async Task Forward_tile_paints_expand_in_order_with_text_paths_and_private_text_uses()
+    {
+        using SvgFontSnapshot fonts = await CreateFonts();
+        Assert.Equal(Render(Build(false), fonts), Render(Build(true), fonts));
+
+        static byte[] Build(bool forward)
+        {
+            const string gradient = "<linearGradient id='paint'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient>";
+            string pattern = Pattern("p", "<rect width='8' height='8' fill='url(#paint)'/>" + Text(true, "")
+                + "<g clip-path='url(#c)' mask='url(#m)'><rect width='4' height='4' fill='url(#paint)'/><use href='#t'/>" + Text(true, " fill='blue'") + "</g><rect x='6' width='2' height='8' fill='url(#paint)'/>");
+            return Input("<defs><text id='t' font-family='Example' font-size='8'><textPath href='#base'>AA</textPath></text>"
+                + (forward ? pattern + gradient : gradient + pattern) + Resources + "</defs><rect width='16' height='8' fill='url(#p)'/>");
+        }
+    }
+
     [Theory]
     [InlineData(128)]
     [InlineData(512)]

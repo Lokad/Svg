@@ -536,9 +536,11 @@ internal static class SvgDefinitionParser
             }
             if (reader.LocalName is "rect" or "circle" or "ellipse" or "path" or "polygon" or "polyline" or "line" or "image" or "text")
             {
-                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
+                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken).PrepareStyle(reader);
                 SvgComputedStyle style = context.ResolveStyle(reader, reader.LocalName == "text");
-                if (reader.LocalName is "image" or "text" || reader.GetAttribute("clip-path") is not null || reader.GetAttribute("mask") is not null || style.Filter is {} filter && filter.Trim() != "none")
+                bool rendered = reader.LocalName is "image" or "text" || reader.GetAttribute("clip-path") is not null || reader.GetAttribute("mask") is not null || style.Filter is {} filter && filter.Trim() != "none";
+                bool deferred = SvgDeferredPaintLeaves.NeedsReplay(reader, context, state);
+                if (rendered || deferred)
                 {
                     if (!SvgRenderedLeafParser.ValidateLeafAttributes(reader, workCounter, cancellationToken))
                         throw new InvalidOperationException("Pattern replay requires a supported leaf.");
@@ -556,7 +558,8 @@ internal static class SvgDefinitionParser
                     state.DefinitionReplayScene = builder;
                     try
                     {
-                        _ = SvgRenderedLeafParser.ParseResolved(reader, context, root, state, limits, state.Budget, fontSnapshot, workCounter, cancellationToken);
+                        if (deferred) SvgDeferredPaintLeaves.Retain(reader, context, state, rendered ? SvgDeferredPaintKind.Rendered : SvgDeferredPaintKind.PatternDefinition);
+                        else _ = SvgRenderedLeafParser.ParseResolved(reader, context, root, state, limits, state.Budget, fontSnapshot, workCounter, cancellationToken);
                     }
                     finally { state.DefinitionReplayScene = null; state.OutputTextScale = previousTextScale; }
                     if (!textContent && !reader.IsEmptyElement)
@@ -1842,7 +1845,7 @@ internal static class SvgDefinitionParser
         state.ClipPolygon = null;
     }
 
-    private static void RejectPatternContentPaint(SvgComputedStyle style, SvgDocumentState state)
+    internal static void RejectPatternContentPaint(SvgComputedStyle style, SvgDocumentState state)
     {
         if (style.Fill is {} fill && SvgLocalUrl.TryParseId(fill, out string fillId) && (fillId == state.PatternId || state.Patterns.TryGetValue(fillId, out _))
             || style.Stroke is {} stroke && SvgLocalUrl.TryParseId(stroke, out string strokeId) && (strokeId == state.PatternId || state.Patterns.TryGetValue(strokeId, out _)))

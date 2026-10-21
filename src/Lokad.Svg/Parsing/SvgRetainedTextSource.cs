@@ -142,6 +142,7 @@ internal sealed class SvgRetainedTextSource
         int previousNodes = state.NodeCount, previousCharacters = state.TextCharacterCount, previousPaths = state.PendingTextRuns.Count;
         int previousFilterDepth = state.FilterGroupDepth;
         int previousClips = state.PendingGroupClips.Count, previousMasks = state.PendingGroupMasks.Count;
+        int previousPaints = state.DeferredPaintLeaves.Count;
         using SvgSceneBuilder staging = new(state.Budget, work, token);
         SvgSceneStorage? storage = null;
         try
@@ -160,7 +161,7 @@ internal sealed class SvgRetainedTextSource
             { StrokeHostMap = state.OutputMap.ComposeChecked(placement), LengthBases = reference.LengthBases, RecordingScope = reference.RecordingScope };
             SvgRenderedLeafParser.ParseResolved(reader, context, environment.Root, state, environment.Limits, state.Budget, environment.Fonts, work, token);
             if (state.DeferredTextFailure is {} failure) throw failure;
-            SvgTextPathLayout.Resolve(state, new(previousPaths, previousClips, previousMasks), environment.Limits, work, token);
+            SvgTextPathLayout.Resolve(state, new(previousPaths, previousClips, previousMasks, previousPaints), environment.Limits, work, token);
             SvgClipPathSyntax.ResolvePendingGroupClips(state, previousClips, work, token);
             SvgMaskSyntax.ResolvePendingGroupMasks(state, previousMasks, work, token);
             SvgLeafMaskComposition.Emit(state, staging, work, token);
