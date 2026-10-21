@@ -1581,7 +1581,14 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Retains stroke outline loops as one nonzero fill through shared contour separation.</summary>
-    /// <remarks>Solid straight-source outlines separate per centerline subpath: weld compaction, identical-contour merging and the touch and mixed-contact resolvers run within each subpath exactly like fills, so each ring resolves its own outer and hole loops into its band; crossing subdivision additionally runs on sets carrying ProperCrossing for intra-loop self-crossing splits, while crossing-free sets bypass it since subdivision re-tiles exact abutments by whole quanta and churns multi-loop sets to its cap; coincident splicing stays bypassed for strokes with no measured win resolving there; contained-loop drop runs fill-only since containment inside an outer ring does not imply coverage for stroke bands; the mixed sweep skips coincident sets whose subdivision churn feeds it without resolving; dashed runs keep the legacy tiling since abutting run outlines re-tile boundaries without changing geometry; unresolvable spike retraces keep their legacy loops through the unresolved fallback instead of denying. Sibling-subpath bands then combine through global nonzero winding roles, which is exact wherever coverage is full because each band paints its own interior and no foreign hole cancels it; shared fringe may double where bands overlap instead of merging into union boundaries, and bitwise-identical duplicate loops still merge through the cross-group post-pass with sign agreement. Winding roles resolve closed outer and inner rings per subpath, then role zero lifts to plus one for non-degenerate loops: a zero role on such a loop always means a same-wound painted island (holes resolve to minus one and degenerate loops contribute nothing). Dashed-run union stays queued behind row-6 dash completion with outline-level evidence.</remarks>
+    /// <remarks>Solid straight-source outlines resolve outer/hole loops per centerline subpath, then
+    /// combine bands through nonzero winding. Non-degenerate zero-role loops are painted islands
+    /// and become positive; identical duplicates merge only with matching winding signs.
+    /// Crossing subdivision requires ProperCrossing. Coincident splicing and contained-loop removal
+    /// remain disabled for strokes; the mixed sweep skips coincident sets. Unresolved spike retraces
+    /// retain their fallback loops, while dashed/flattened sources keep directed stroke lowering.
+    /// Full interior coverage remains exact, but overlapping sibling fringes can double because the
+    /// bands are not unioned. Preserve these numerical boundaries when changing contour separation.</remarks>
     private SvgParsedGeometry FinishStrokeFill(SvgContourBuilder outlines, int[] loopSubpaths, SvgColor color, bool hasFill, bool flattenedCenterline, bool isDashedStroke, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(outlines);
