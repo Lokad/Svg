@@ -82,7 +82,7 @@ internal readonly record struct SvgTextStrokePaint(SvgInheritedStrokeStyle Style
         _ = SvgStrokeStyleSyntax.ParseLinecap(Style.Linecap);
         _ = SvgStrokeStyleSyntax.ParseLinejoin(Style.Linejoin, true);
         _ = SvgStrokeStyleSyntax.ParseMiterLimit(Style.Miterlimit);
-        _ = SvgStrokeStyleSyntax.ParseDasharray(Style.Dasharray);
+        SvgStrokeStyleSyntax.ValidateDasharray(Style.Dasharray, true);
         _ = SvgStrokeStyleSyntax.ParseDashoffset(Style.Dashoffset);
         // A shader supplies color at replay. White retains the independent
         // stroke/element opacity while the shared outline uses only the width.

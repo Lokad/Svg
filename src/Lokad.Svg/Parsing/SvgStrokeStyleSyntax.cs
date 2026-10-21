@@ -7,14 +7,12 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Validates the admitted stroke style subset shared by attributes and style declarations.</summary>
 internal static class SvgStrokeStyleSyntax
 {
-
-
     /// <summary>Validates one stroke style attribute value, additionally admitting round joins on rounded rectangles and bevel joins on admitted shapes.</summary>
     internal static void ValidateAttribute(string localName, string value, bool allowNonButt, bool allowSquareCap, bool allowClosedLoopCaps, bool allowRoundJoin, bool allowBevelJoin)
     {
         if (localName == "stroke-linecap") ValidateLinecap(value.AsSpan(), allowNonButt, allowSquareCap, allowClosedLoopCaps);
         else if (localName == "stroke-linejoin") ValidateLinejoin(value.AsSpan(), allowNonButt || allowRoundJoin, allowBevelJoin);
-        else if (localName == "stroke-dasharray") ValidateDasharray(value.AsSpan(), allowNonButt);
+        else if (localName == "stroke-dasharray") ValidateDasharray(value, allowNonButt);
         else if (localName == "stroke-dashoffset") ValidateDashoffset(value.AsSpan());
     }
 
@@ -79,22 +77,30 @@ internal static class SvgStrokeStyleSyntax
         _ = ParseDashoffsetValue(value);
     }
 
-    private static void ValidateDasharray(ReadOnlySpan<char> value, bool allowNonButt)
+    /// <summary>Validates a borrowed dash pattern under the caller's admission policy without materializing an owned array.</summary>
+    internal static void ValidateDasharray(string? value, bool allowNonButt)
     {
-        if (value.Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        if (value is null || value.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
         if (!allowNonButt) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid (none) stroke dash arrays are implemented.");
-        _ = ParseDashEntries(value);
+        Span<double> entries = stackalloc double[MaximumDashEntries];
+        _ = ParseDashEntries(value.AsSpan(), entries);
     }
 
     /// <summary>Bounds retained dash pattern entries; longer lists stay explicitly unsupported.</summary>
     internal const int MaximumDashEntries = 8;
 
-    /// <summary>Parses one dash pattern, returning nothing for an absent or solid pattern.</summary>
+    /// <summary>Materializes one owned dash pattern, returning nothing for an absent or solid pattern.</summary>
     internal static double[]? ParseDasharray(string? value)
     {
         if (value is null) return null;
         if (value.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) return null;
-        return ParseDashEntries(value.AsSpan());
+        Span<double> entries = stackalloc double[MaximumDashEntries];
+        int count = ParseDashEntries(value.AsSpan(), entries);
+        bool doubled = (count & 1) == 1;
+        double[] pattern = new double[doubled ? count * 2 : count];
+        entries[..count].CopyTo(pattern);
+        if (doubled) Array.Copy(pattern, 0, pattern, count, count);
+        return pattern;
     }
 
     /// <summary>Parses one dash offset in user units, defaulting to zero like SVG.</summary>
@@ -114,25 +120,18 @@ internal static class SvgStrokeStyleSyntax
         return result;
     }
 
-    private static double[] ParseDashEntries(ReadOnlySpan<char> value)
+    private static int ParseDashEntries(ReadOnlySpan<char> value, Span<double> entries)
     {
         SvgGeometrySyntax.DelimitedTokenReader tokens = new(value);
         int count = 0;
         while (tokens.TryReadValue(out ReadOnlySpan<char> entry))
         {
             if (count >= MaximumDashEntries) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only dash arrays with at most eight entries are implemented.");
-            _ = ParseDashEntry(entry);
-            count++;
+            entries[count++] = ParseDashEntry(entry);
         }
 
         if (count == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid (none) stroke dash arrays are implemented.");
-        tokens = new(value);
-        bool doubled = (count & 1) == 1;
-        double[] pattern = new double[doubled ? count * 2 : count];
-        int index = 0;
-        while (tokens.TryReadValue(out ReadOnlySpan<char> entry)) pattern[index++] = ParseDashEntry(entry);
-        if (doubled) Array.Copy(pattern, 0, pattern, count, count);
-        return pattern;
+        return count;
     }
 
     private static double ParseDashEntry(ReadOnlySpan<char> entry)
