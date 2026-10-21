@@ -277,7 +277,6 @@ internal static class SvgDocumentTraversal
                 if (reader.Depth == state.DescriptionDepth) state.DescriptionDepth = -1;
                 if (reader.Depth == state.DefinitionsDepth)
                 {
-                    SvgDefinitionParser.DrainPendingGradientHrefs(state, workCounter, cancellationToken);
                     SvgPatternReferenceResolver.Resolve(state, false, workCounter, cancellationToken);
                 }
                 if (reader.Depth == state.DefinitionsDepth) { state.DefinitionsDepth = -1; state.DefinitionInheritance = null; }

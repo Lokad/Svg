@@ -39,11 +39,25 @@ internal readonly record struct SvgRadialGradient(SvgColor Start, SvgColor End, 
 /// <summary>Retains one parsed radial-gradient definition with attribute explicitness for href inheritance.</summary>
 internal readonly record struct SvgRadialTemplate(double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, int VectorCount, bool HasFocalX, bool HasFocalY, bool HasFocalRadius);
 
-/// <summary>Retains one linear-gradient href inheritance whose target was missing at registration for document-end resolution.</summary>
-internal readonly record struct PendingLinearGradientHref(string Id, string HrefId, SvgGradientTemplate Template, SvgGradientStop[] Stops);
+/// <summary>Retains one pending linear template and the next alias waiting on the same target.</summary>
+internal readonly record struct PendingLinearGradientHref(string Id, SvgGradientTemplate Template, SvgGradientStop[] Stops)
+{
+    internal SvgPendingGradientReference? Next { get; init; }
+}
 
-/// <summary>Retains one radial-gradient href inheritance whose target was missing at registration for document-end resolution.</summary>
-internal readonly record struct PendingRadialGradientHref(string Id, string HrefId, SvgRadialTemplate Template, SvgGradientStop[] Stops);
+/// <summary>Retains one pending radial template and the next alias waiting on the same target.</summary>
+internal readonly record struct PendingRadialGradientHref(string Id, SvgRadialTemplate Template, SvgGradientStop[] Stops)
+{
+    internal SvgPendingGradientReference? Next { get; init; }
+}
+
+internal enum SvgGradientKind { Linear, Radial }
+
+/// <summary>Identifies a stable slot in the document's append-only pending template lists.</summary>
+internal readonly record struct SvgPendingGradientReference(SvgGradientKind Kind, int Index);
+
+/// <summary>Shares gradient-ID admission with the waiting-list head, including targets not yet defined.</summary>
+internal readonly record struct SvgGradientRegistration(bool IsDefined, SvgPendingGradientReference? FirstDependent);
 
 /// <summary>Retains one admitted affine gradient transform with finite coordinates.</summary>
 /// <remarks>Coefficients follow the SVG matrix(a b c d e f) convention shared with contour transforms: x prime equals A times x plus C times y plus E, and y prime equals B times x plus D times y plus F. Composition applies the inner transform first. Diagonal inputs evaluate bitwise-identically to the former scale-plus-offset form.</remarks>

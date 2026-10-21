@@ -25,6 +25,8 @@
   and polygon traversal, with more compact retained geometry.
 - Treat empty stylesheets as no-ops, bound stylesheet discard storage, and avoid
   repeated pattern-template graph walks across defs blocks and later shapes.
+- Resolve gradient template chains without order-dependent rescans and reject
+  duplicate IDs consistently across linear, radial and forward definitions.
 - Simplify renderer/tool internals and diagnostic reporting, validate downloaded
   CI artifacts against their recorded host, and retire historical corporate-sweep
   tooling and aggregate reports while retaining focused evidence and provenance.

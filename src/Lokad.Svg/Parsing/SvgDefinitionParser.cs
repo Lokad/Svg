@@ -1224,9 +1224,11 @@ internal static class SvgDefinitionParser
     private static string ClaimGradientId(SvgDocumentState state, string id, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         workCounter.Consume(cancellationToken);
-        if (state.GradientIds.TryGetValue(id, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
+        bool known = state.GradientRegistrations.TryGetValue(id, out SvgGradientRegistration registration);
+        if (known && registration.IsDefined) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
         string retained = state.Strings.Copy(id);
-        if (!state.GradientIds.TryAdd(retained, 0)) throw new InvalidOperationException("Gradient identifiers register once.");
+        if (known) state.GradientRegistrations.Replace(id, registration with { IsDefined = true });
+        else if (!state.GradientRegistrations.TryAdd(retained, new(true, null))) throw new InvalidOperationException("Gradient identifiers register once.");
         return retained;
     }
 
@@ -1253,9 +1255,9 @@ internal static class SvgDefinitionParser
         (double x1, double y1, double x2, double y2, bool isUserSpace, SvgGradientSpread spread, double referenceScaleX, double referenceScaleY, bool hasLinearRotation) = ResolveGradientVector(template, state);
         SvgLinearGradient gradient = new(start, end, x1, y1, x2, y2, offset1, offset2, isEmpty, isUserSpace, spread, stops, referenceScaleX, referenceScaleY, hasLinearRotation)
         { SourcePaint = RetainSourcePaint(template, state, workCounter, cancellationToken) };
-        string retainedId = state.Strings.Copy(state.GradientId ?? throw new InvalidOperationException("Gradient registration requires an identifier."));
-        if (!state.Gradients.TryAdd(retainedId, gradient)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
-        DrainPendingGradientHrefs(state, workCounter, cancellationToken);
+        string retainedId = state.GradientId ?? throw new InvalidOperationException("Gradient registration requires an identifier.");
+        if (!state.Gradients.TryAdd(retainedId, gradient)) throw new InvalidOperationException("Resolved gradients register once.");
+        ResolveGradientDependents(state, retainedId, workCounter, cancellationToken);
 
         static SvgLinearPaintMap RetainSourcePaint(SvgGradientTemplate source, SvgDocumentState document, ParserWorkCounter work, CancellationToken token)
         {
@@ -1273,12 +1275,12 @@ internal static class SvgDefinitionParser
         }
     }
 
-    /// <summary>Retains one linear-gradient href inheritance whose target is not registered yet for document-end resolution.</summary>
+    /// <summary>Retains a linear template and its authored stops until its target registers.</summary>
     private static void StashPendingLinearGradient(SvgDocumentState state, SvgGradientTemplate template, string hrefId, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(workCounter);
-        string id = state.Strings.Copy(state.GradientId ?? throw new InvalidOperationException("Gradient registration requires an identifier."));
+        string id = state.GradientId ?? throw new InvalidOperationException("Gradient registration requires an identifier.");
         string href = state.Strings.Copy(hrefId.AsSpan());
         string hrefRef = state.Strings.Copy(("#" + hrefId).AsSpan());
         SvgGradientStop[] stops = AllocateGradientStops(state);
@@ -1288,24 +1290,53 @@ internal static class SvgDefinitionParser
             stops[index] = state.GradientStops[index];
         }
         workCounter.Consume(cancellationToken);
-        state.PendingLinearGradientHrefs.Add(new PendingLinearGradientHref(id, href, template with { Href = hrefRef }, stops));
+        SvgPendingGradientReference reference = new(SvgGradientKind.Linear, state.PendingLinearGradientHrefs.Count);
+        SvgPendingGradientReference? next = LinkPendingGradient(state, href, reference, workCounter, cancellationToken);
+        state.PendingLinearGradientHrefs.Add(new(id, template with { Href = hrefRef }, stops) { Next = next });
     }
 
-    /// <summary>Resolves deferred gradient href inheritances whose targets registered later, in dependency order across both gradient kinds.</summary>
-    /// <remarks>Targets still missing stay pending without error so later definitions and the document-end pass can resolve chains; callers charge one work unit per scanned entry plus the registration work itself.</remarks>
-    internal static void DrainPendingGradientHrefs(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static SvgPendingGradientReference? LinkPendingGradient(SvgDocumentState state, string target, SvgPendingGradientReference reference,
+        ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(state);
-        ArgumentNullException.ThrowIfNull(workCounter);
-        if (state.DrainingGradientHrefs) return;
+        workCounter.Consume(cancellationToken);
+        if (state.GradientRegistrations.TryGetValue(target, out SvgGradientRegistration registration))
+        {
+            state.GradientRegistrations.Replace(target, registration with { FirstDependent = reference });
+            return registration.FirstDependent;
+        }
+        if (!state.GradientRegistrations.TryAdd(target, new(false, reference))) throw new InvalidOperationException("Gradient waiting lists register once.");
+        return null;
+    }
+
+    /// <summary>Wakes only aliases of a newly resolved gradient, visiting each dependency once across both kinds.</summary>
+    /// <remarks>Document-owned lists keep stable indices and borrow their stop arrays until teardown.
+    /// Links and ready storage are reserved before growth; traversal charges work and observes cancellation.
+    /// Nested registrations append to the same iterative stack without recursion. State is conversion-local.</remarks>
+    private static void ResolveGradientDependents(SvgDocumentState state, string target, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        workCounter.Consume(cancellationToken);
+        if (state.GradientRegistrations.TryGetValue(target, out SvgGradientRegistration registration) && registration.FirstDependent is {} first)
+        {
+            state.GradientRegistrations.Replace(target, registration with { FirstDependent = null });
+            SvgPendingGradientReference? next = first;
+            while (next is {} reference)
+            {
+                workCounter.Consume(cancellationToken);
+                state.ReadyGradientHrefs.Add(reference);
+                next = reference.Kind == SvgGradientKind.Linear ? state.PendingLinearGradientHrefs[reference.Index].Next : state.PendingRadialGradientHrefs[reference.Index].Next;
+            }
+        }
+        if (state.DrainingGradientHrefs || state.ReadyGradientHrefs.Count == 0) return;
         state.DrainingGradientHrefs = true;
         try
         {
-            while (state.PendingLinearGradientHrefs.Count > 0 || state.PendingRadialGradientHrefs.Count > 0)
+            while (state.ReadyGradientHrefs.Count > 0)
             {
-                bool resolvedAny = DrainPendingLinearGradientHrefs(state, workCounter, cancellationToken);
-                resolvedAny |= DrainPendingRadialGradientHrefs(state, workCounter, cancellationToken);
-                if (!resolvedAny) break;
+                workCounter.Consume(cancellationToken);
+                SvgPendingGradientReference reference = state.ReadyGradientHrefs[^1];
+                state.ReadyGradientHrefs.RemoveLast();
+                if (reference.Kind == SvgGradientKind.Linear) RegisterPendingLinearGradient(state, state.PendingLinearGradientHrefs[reference.Index], workCounter, cancellationToken);
+                else RegisterPendingRadialGradient(state, state.PendingRadialGradientHrefs[reference.Index], workCounter, cancellationToken);
             }
         }
         finally
@@ -1319,56 +1350,27 @@ internal static class SvgDefinitionParser
     {
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(workCounter);
-        DrainPendingGradientHrefs(state, workCounter, cancellationToken);
         if (state.PendingLinearGradientHrefs.Count > 0 || state.PendingRadialGradientHrefs.Count > 0)
         {
             state.ThrowOnMissingGradientHref = true;
             try
             {
-                if (state.PendingLinearGradientHrefs.Count > 0) RegisterPendingLinearGradient(state, state.PendingLinearGradientHrefs[0], workCounter, cancellationToken);
-                if (state.PendingRadialGradientHrefs.Count > 0) RegisterPendingRadialGradient(state, state.PendingRadialGradientHrefs[0], workCounter, cancellationToken);
+                foreach (PendingLinearGradientHref pending in state.PendingLinearGradientHrefs.AsSpan())
+                {
+                    workCounter.Consume(cancellationToken);
+                    if (!state.Gradients.TryGetValue(pending.Id, out _)) RegisterPendingLinearGradient(state, pending, workCounter, cancellationToken);
+                }
+                foreach (PendingRadialGradientHref pending in state.PendingRadialGradientHrefs.AsSpan())
+                {
+                    workCounter.Consume(cancellationToken);
+                    if (!state.RadialGradients.TryGetValue(pending.Id, out _)) RegisterPendingRadialGradient(state, pending, workCounter, cancellationToken);
+                }
             }
             finally
             {
                 state.ThrowOnMissingGradientHref = false;
             }
         }
-    }
-
-    private static bool DrainPendingLinearGradientHrefs(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        bool resolvedAny = false;
-        for (int index = state.PendingLinearGradientHrefs.Count - 1; index >= 0; index--)
-        {
-            workCounter.Consume(cancellationToken);
-            PendingLinearGradientHref pending = state.PendingLinearGradientHrefs[index];
-            if (!state.Gradients.TryGetValue(pending.HrefId, out _) && !state.RadialGradients.TryGetValue(pending.HrefId, out _)) continue;
-            RegisterPendingLinearGradient(state, pending, workCounter, cancellationToken);
-            int last = state.PendingLinearGradientHrefs.Count - 1;
-            if (index != last) state.PendingLinearGradientHrefs[index] = state.PendingLinearGradientHrefs[last];
-            state.PendingLinearGradientHrefs.RemoveLast();
-            resolvedAny = true;
-        }
-
-        return resolvedAny;
-    }
-
-    private static bool DrainPendingRadialGradientHrefs(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        bool resolvedAny = false;
-        for (int index = state.PendingRadialGradientHrefs.Count - 1; index >= 0; index--)
-        {
-            workCounter.Consume(cancellationToken);
-            PendingRadialGradientHref pending = state.PendingRadialGradientHrefs[index];
-            if (!state.Gradients.TryGetValue(pending.HrefId, out _) && !state.RadialGradients.TryGetValue(pending.HrefId, out _)) continue;
-            RegisterPendingRadialGradient(state, pending, workCounter, cancellationToken);
-            int last = state.PendingRadialGradientHrefs.Count - 1;
-            if (index != last) state.PendingRadialGradientHrefs[index] = state.PendingRadialGradientHrefs[last];
-            state.PendingRadialGradientHrefs.RemoveLast();
-            resolvedAny = true;
-        }
-
-        return resolvedAny;
     }
 
     private static void RegisterPendingLinearGradient(SvgDocumentState state, PendingLinearGradientHref pending, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -1442,18 +1444,17 @@ internal static class SvgDefinitionParser
             SvgGradientTransform map = template.Transform;
             gradient = gradient with { NativePaintMatrices = new(new((float)map.A, (float)map.C, (float)map.E, (float)map.B, (float)map.D, (float)map.F), SvgAffineTransform.Identity) };
         }
-        string retainedId = state.Strings.Copy(state.RadialGradientId ?? throw new InvalidOperationException("Radial gradient registration requires an identifier."));
-        if (state.Gradients.TryGetValue(retainedId, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
-        if (!state.RadialGradients.TryAdd(retainedId, gradient)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
-        DrainPendingGradientHrefs(state, workCounter, cancellationToken);
+        string retainedId = state.RadialGradientId ?? throw new InvalidOperationException("Radial gradient registration requires an identifier.");
+        if (!state.RadialGradients.TryAdd(retainedId, gradient)) throw new InvalidOperationException("Resolved gradients register once.");
+        ResolveGradientDependents(state, retainedId, workCounter, cancellationToken);
     }
 
-    /// <summary>Retains one radial-gradient href inheritance whose target is not registered yet for document-end resolution.</summary>
+    /// <summary>Retains a radial template and its authored stops until its target registers.</summary>
     private static void StashPendingRadialGradient(SvgDocumentState state, SvgRadialTemplate template, string hrefId, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(workCounter);
-        string id = state.Strings.Copy(state.RadialGradientId ?? throw new InvalidOperationException("Radial gradient registration requires an identifier."));
+        string id = state.RadialGradientId ?? throw new InvalidOperationException("Radial gradient registration requires an identifier.");
         string href = state.Strings.Copy(hrefId.AsSpan());
         string hrefRef = state.Strings.Copy(("#" + hrefId).AsSpan());
         SvgGradientStop[] stops = AllocateGradientStops(state);
@@ -1463,7 +1464,9 @@ internal static class SvgDefinitionParser
             stops[index] = state.GradientStops[index];
         }
         workCounter.Consume(cancellationToken);
-        state.PendingRadialGradientHrefs.Add(new PendingRadialGradientHref(id, href, template with { Href = hrefRef }, stops));
+        SvgPendingGradientReference reference = new(SvgGradientKind.Radial, state.PendingRadialGradientHrefs.Count);
+        SvgPendingGradientReference? next = LinkPendingGradient(state, href, reference, workCounter, cancellationToken);
+        state.PendingRadialGradientHrefs.Add(new(id, template with { Href = hrefRef }, stops) { Next = next });
     }
 
     private static (SvgColor Start, SvgColor End, double Offset1, double Offset2, bool IsEmpty, SvgGradientStop[] Stops) ResolveRadialStops(SvgDocumentState state, SvgRadialTemplate template, ParserWorkCounter work, CancellationToken token)

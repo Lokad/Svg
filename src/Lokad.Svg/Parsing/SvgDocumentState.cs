@@ -66,7 +66,8 @@ internal sealed class SvgDocumentState : IDisposable
         PendingPatternReferences = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         Gradients = new BudgetedParserDictionary<string, SvgLinearGradient>(budget, SvgMemoryCategory.Parser, GradientStorageBytes);
         RadialGradients = new BudgetedParserDictionary<string, SvgRadialGradient>(budget, SvgMemoryCategory.Parser, RadialGradientStorageBytes);
-        GradientIds = new(budget, SvgMemoryCategory.Parser, 64);
+        GradientRegistrations = new(budget, SvgMemoryCategory.Parser, 64 + System.Runtime.CompilerServices.Unsafe.SizeOf<SvgGradientRegistration>());
+        ReadyGradientHrefs = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         GradientStops = new BudgetedParserList<SvgGradientStop>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingTextRuns = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -190,7 +191,8 @@ internal sealed class SvgDocumentState : IDisposable
     internal BudgetedParserDictionary<string, SvgLinearGradient> Gradients { get; }
 
     internal BudgetedParserDictionary<string, SvgRadialGradient> RadialGradients { get; }
-    internal BudgetedParserDictionary<string, byte> GradientIds { get; }
+    internal BudgetedParserDictionary<string, SvgGradientRegistration> GradientRegistrations { get; }
+    internal BudgetedParserList<SvgPendingGradientReference> ReadyGradientHrefs { get; }
 
     internal BudgetedParserList<int> ClipDepths { get; }
 
@@ -230,7 +232,7 @@ internal sealed class SvgDocumentState : IDisposable
     internal bool DeferringFilterClip { get; set; }
     internal bool DeferringFilterMask { get; set; }
 
-    /// <summary>Gets or sets whether a gradient href drain is already running, guarding reentrant drains during nested registration.</summary>
+    /// <summary>Guards the iterative ready stack while registrations enqueue their newly unblocked aliases.</summary>
     internal bool DrainingGradientHrefs { get; set; }
 
     /// <summary>Gets or sets whether missing gradient href targets throw at registration instead of deferring, used for the document-end leftover pass.</summary>
@@ -454,7 +456,8 @@ internal sealed class SvgDocumentState : IDisposable
         PendingPatternReferences.Dispose();
         Gradients.Dispose();
         RadialGradients.Dispose();
-        GradientIds.Dispose();
+        GradientRegistrations.Dispose();
+        ReadyGradientHrefs.Dispose();
         GradientStops.Dispose();
         MaskScopes.Dispose();
         MaskScopeSnapshots.Dispose();
