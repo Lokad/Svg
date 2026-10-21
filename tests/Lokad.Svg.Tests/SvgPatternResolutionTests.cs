@@ -7,6 +7,79 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgPatternResolutionTests
 {
     [Theory]
+    [InlineData(128, false, false)]
+    [InlineData(256, false, false)]
+    [InlineData(512, false, false)]
+    [InlineData(1024, false, false)]
+    [InlineData(512, true, false)]
+    [InlineData(512, false, true)]
+    [InlineData(512, true, true)]
+    public void Separate_defs_and_unrelated_definitions_do_not_retry_blocked_aliases(int count, bool chain, bool unrelated)
+    {
+        RenderBudget budget = new(30_000_000);
+        ParserWorkCounter work = new(count * 60 + 2000);
+        using (SvgRoot root = SvgRootParser.Parse(SeparateDefinitions(count, true, chain, unrelated), SvgRenderLimits.Default, budget, null, work, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
+            Assert.Equal(new byte[] { 255, 0, 0, 255 }, surface.Pixels.AsSpan(0, 4).ToArray());
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Seven_thousand_separate_alias_definitions_match_one_defs_block()
+        => Assert.Equal(Render(SeparateDefinitions(7000, false, false, false)), Render(SeparateDefinitions(7000, true, false, false)));
+
+    [Fact]
+    public void Cancellation_before_ready_aliases_drain_releases_waiting_and_ready_storage()
+    {
+        RenderBudget budget = new(1_000_000);
+        ParserWorkCounter work = new(10_000);
+        using CancellationTokenSource cancellation = new();
+        using (SvgDocumentState state = new(budget, work, cancellation.Token))
+        {
+            SvgPatternTemplate template = default;
+            state.PatternDefinitions.TryAdd("alias", new(template with { Href = "base" }, template.Grid, null, default, false));
+            SvgPatternReferenceResolver.Register(state, "alias", work, cancellation.Token);
+            state.PatternDefinitions.TryAdd("base", new(template, template.Grid, null, default, false));
+            state.Patterns.TryAdd("base", template.Grid);
+            SvgPatternReferenceResolver.Register(state, "base", work, cancellation.Token);
+            cancellation.Cancel();
+            Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgPatternReferenceResolver.Resolve(state, true, work, cancellation.Token)).CancellationToken);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [InlineData("<pattern id='p' href='#missing'/>", "not defined")]
+    [InlineData("<pattern id='p' href='#p'/>", "Cyclic")]
+    [InlineData("<pattern id='p' href='#q'/></defs><defs><pattern id='q' href='#p'/>", "Cyclic")]
+    public void Waiting_templates_keep_missing_and_cycle_diagnostics(string definitions, string message)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs>" + definitions + "</defs></svg>");
+        RenderBudget budget = new(1_000_000);
+        SvgException failure = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, failure.ErrorCode);
+        Assert.Contains(message, failure.Message, StringComparison.Ordinal);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    private static byte[] SeparateDefinitions(int count, bool split, bool chain, bool unrelated)
+    {
+        StringBuilder xml = new("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs>");
+        for (int index = 0; index < count; index++)
+        {
+            xml.Append("<pattern id='a").Append(index).Append("' href='#").Append(chain && index + 1 < count ? "a" + (index + 1) : "base").Append("'/>");
+            if (split) xml.Append("</defs><defs>");
+        }
+        if (unrelated)
+            for (int index = 0; index < count; index++)
+                xml.Append("<pattern id='u").Append(index).Append("' patternUnits='userSpaceOnUse' width='8' height='8'/></defs><rect width='1' height='1'/><defs>");
+        xml.Append("<pattern id='base' patternUnits='userSpaceOnUse' width='8' height='8'><rect width='4' height='4' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#a0)'/></svg>");
+        return System.Text.Encoding.UTF8.GetBytes(xml.ToString());
+    }
+
+    private static byte[] Render(byte[] input) => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
+
+    [Theory]
     [InlineData(false, false)]
     [InlineData(false, true)]
     [InlineData(true, false)]

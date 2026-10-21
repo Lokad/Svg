@@ -39,11 +39,7 @@ internal readonly record struct SvgPatternTemplate(double? X, double? Y, double?
 
 /// <summary>Borrowed definition content and its bounded graph state; the parent scene owns all tile scenes.</summary>
 internal readonly record struct SvgPatternDefinition(SvgPatternTemplate Template, SvgPatternTile Tile,
-    SvgDefinitionLeafSource? RectangleSource, SvgPaintableElementContext RectangleContext, bool IsVisiting)
-{
-    /// <summary>Memoizes an unresolved chain until registration changes the graph.</summary>
-    internal int BlockedVersion { get; init; }
-}
+    SvgDefinitionLeafSource? RectangleSource, SvgPaintableElementContext RectangleContext, bool IsVisiting);
 
-/// <summary>Stores one template graph frame in the bounded iterative resolver.</summary>
-internal readonly record struct SvgPatternReferenceFrame(string Id);
+/// <summary>Links one retained alias to the next waiter on its target, or -1 at the end.</summary>
+internal readonly record struct SvgPendingPatternReference(string Id, int Next);

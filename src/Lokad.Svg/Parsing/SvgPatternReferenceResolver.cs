@@ -6,86 +6,96 @@ namespace Lokad.Svg.Parsing;
 /// <remarks>Single-conversion state; content aliases borrow a parent-owned scene. Cleanup ignores
 /// cancellation; all new scenes are adopted once or disposed on failure. Missing forward targets
 /// remain pending at a defs boundary and have an explicit unsupported outcome at document end.
-/// Each pass visits shared blocked chains once and retries only after new definitions arrive.</remarks>
+/// Waiting links and an iterative ready stack visit each dependency once across definition blocks.</remarks>
 internal static class SvgPatternReferenceResolver
 {
+    /// <summary>Queues a ready alias or links it to its unresolved target; concrete definitions wake their waiters.</summary>
+    /// <remarks>Document-owned lists keep stable indices; dictionary keys borrow retained template IDs.
+    /// Storage is reserved before growth, and registration charges work and observes cancellation.</remarks>
+    internal static void Register(SvgDocumentState state, string id, ParserWorkCounter work, CancellationToken token)
+    {
+        work.Consume(token);
+        if (!state.PatternDefinitions.TryGetValue(id, out SvgPatternDefinition definition)) throw new InvalidOperationException("Pattern registration requires retained metadata.");
+        if (definition.Template.Href is not {} target)
+        {
+            WakeDependents(state, id, work, token);
+            return;
+        }
+        int index = state.PendingPatternReferences.Count;
+        bool ready = state.Patterns.TryGetValue(target, out _);
+        bool waiting = state.WaitingPatternReferences.TryGetValue(target, out int first);
+        state.PendingPatternReferences.Add(new(id, !ready && waiting ? first : -1));
+        state.UnresolvedPatternReferences++;
+        if (ready) state.ReadyPatternReferences.Add(index);
+        else if (waiting) state.WaitingPatternReferences.Replace(target, index);
+        else if (!state.WaitingPatternReferences.TryAdd(target, index)) throw new InvalidOperationException("Pattern waiting lists register once.");
+    }
+
     internal static void Resolve(SvgDocumentState state, bool requireComplete, ParserWorkCounter work, CancellationToken token)
     {
         if (!state.HasPatternTemplateReferences) return;
-        int version = state.PatternDefinitionVersion;
-        if (!requireComplete && state.PatternResolutionVersion == version) return;
-        using BudgetedParserList<SvgPatternReferenceFrame> path = new(state.Budget, SvgMemoryCategory.Parser, work, token);
-        int retained = 0;
-        foreach (SvgPatternReferenceFrame root in state.PendingPatternReferences.AsSpan())
+        while (state.ReadyPatternReferences.Count != 0)
+        {
+            work.Consume(token);
+            int index = state.ReadyPatternReferences[^1];
+            state.ReadyPatternReferences.RemoveLast();
+            string id = state.PendingPatternReferences[index].Id;
+            if (!state.PatternDefinitions.TryGetValue(id, out SvgPatternDefinition definition)) throw new InvalidOperationException("Ready patterns retain their template metadata.");
+            SvgPatternTemplate template = definition.Template;
+            SvgPatternTile tile = definition.Tile;
+            string target = template.Href ?? throw new InvalidOperationException("A ready pattern must be an unresolved alias.");
+            if (!state.Patterns.TryGetValue(target, out SvgPatternTile parent) || !state.PatternDefinitions.TryGetValue(target, out SvgPatternDefinition source))
+                throw new InvalidOperationException("A ready pattern requires a resolved target.");
+            template = template.Inherit(source.Template);
+            SvgPatternTile grid = template.Grid;
+            if (!tile.HasContent)
+            {
+                if (parent.VectorContent is null && source.Tile.VectorContent is not null) parent = source.Tile;
+                if (parent.VectorContent is null && source.RectangleSource is {} rectangle)
+                {
+                    SvgVectorContent content = PromoteRectangle(rectangle, source.RectangleContext, state, work, token);
+                    parent = parent with { Content = null, VectorContent = content };
+                    state.PatternDefinitions.Replace(target, source with { Tile = parent });
+                }
+                tile = grid with { VectorContent = parent.VectorContent };
+            }
+            else tile = grid with { Content = tile.Content, VectorContent = tile.VectorContent };
+            state.PatternDefinitions.Replace(id, definition with { Template = template, Tile = tile });
+            if (!state.Patterns.TryAdd(id, tile)) throw new InvalidOperationException("Resolved patterns register once.");
+            state.UnresolvedPatternReferences--;
+            WakeDependents(state, id, work, token);
+        }
+        if (!requireComplete || !state.HasPatternTemplateReferences) return;
+
+        // An unresolved component cannot reach a concrete target after the ready stack drains.
+        // Follow its single outgoing edge iteratively to retain missing-target/cycle diagnostics.
+        foreach (SvgPendingPatternReference root in state.PendingPatternReferences.AsSpan())
         {
             work.Consume(token);
             if (state.Patterns.TryGetValue(root.Id, out _)) continue;
-            path.Add(root);
-            while (path.Count != 0)
+            string id = root.Id;
+            while (true)
             {
                 work.Consume(token);
-                string id = path[^1].Id;
-                if (state.Patterns.TryGetValue(id, out _)) { path.RemoveLast(); continue; }
                 if (!state.PatternDefinitions.TryGetValue(id, out SvgPatternDefinition definition))
-                {
-                    if (requireComplete) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A local pattern template target is not defined.");
-                    BlockPath();
-                    break;
-                }
-                if (!requireComplete && definition.BlockedVersion == version)
-                {
-                    BlockPath();
-                    break;
-                }
-                SvgPatternTemplate template = definition.Template;
-                SvgPatternTile tile = definition.Tile;
-                if (template.Href is {} target)
-                {
-                    if (!state.Patterns.TryGetValue(target, out SvgPatternTile parent))
-                    {
-                        if (definition.IsVisiting) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Cyclic pattern templates are not implemented.");
-                        state.PatternDefinitions.Replace(id, definition with { IsVisiting = true });
-                        path.Add(new(target));
-                        continue;
-                    }
-                    if (!state.PatternDefinitions.TryGetValue(target, out SvgPatternDefinition source)) throw new InvalidOperationException("Resolved patterns retain their template metadata.");
-                    template = template.Inherit(source.Template);
-                    SvgPatternTile grid = template.Grid;
-                    if (!tile.HasContent)
-                    {
-                        if (parent.VectorContent is null && source.Tile.VectorContent is not null) parent = source.Tile;
-                        if (parent.VectorContent is null && source.RectangleSource is {} rectangle)
-                        {
-                            SvgVectorContent content = PromoteRectangle(rectangle, source.RectangleContext, state, work, token);
-                            parent = parent with { Content = null, VectorContent = content };
-                            state.PatternDefinitions.Replace(target, source with { Tile = parent });
-                        }
-                        tile = grid with { VectorContent = parent.VectorContent };
-                    }
-                    else tile = grid with { Content = tile.Content, VectorContent = tile.VectorContent };
-                }
-                state.PatternDefinitions.Replace(id, definition with { Template = template, Tile = tile, IsVisiting = false });
-                if (!state.Patterns.TryAdd(id, tile)) throw new InvalidOperationException("Resolved patterns register once.");
-                path.RemoveLast();
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "A local pattern template target is not defined.");
+                if (definition.IsVisiting) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Cyclic pattern templates are not implemented.");
+                state.PatternDefinitions.Replace(id, definition with { IsVisiting = true });
+                id = definition.Template.Href ?? throw new InvalidOperationException("Unresolved patterns must retain their target.");
             }
-            if (!state.Patterns.TryGetValue(root.Id, out _)) state.PendingPatternReferences[retained++] = root;
         }
-        while (state.PendingPatternReferences.Count > retained)
+    }
+
+    private static void WakeDependents(SvgDocumentState state, string target, ParserWorkCounter work, CancellationToken token)
+    {
+        work.Consume(token);
+        if (!state.WaitingPatternReferences.TryGetValue(target, out int next) || next < 0) return;
+        state.WaitingPatternReferences.Replace(target, -1);
+        while (next >= 0)
         {
             work.Consume(token);
-            state.PendingPatternReferences.RemoveLast();
-        }
-        state.PatternResolutionVersion = version;
-
-        void BlockPath()
-        {
-            foreach (SvgPatternReferenceFrame frame in path.AsSpan())
-            {
-                work.Consume(token);
-                if (state.PatternDefinitions.TryGetValue(frame.Id, out SvgPatternDefinition pending))
-                    state.PatternDefinitions.Replace(frame.Id, pending with { IsVisiting = false, BlockedVersion = version });
-            }
-            path.Clear();
+            state.ReadyPatternReferences.Add(next);
+            next = state.PendingPatternReferences[next].Next;
         }
     }
 

@@ -64,6 +64,8 @@ internal sealed class SvgDocumentState : IDisposable
         Patterns = new BudgetedParserDictionary<string, SvgPatternTile>(budget, SvgMemoryCategory.Parser, PatternStorageBytes);
         PatternDefinitions = new(budget, SvgMemoryCategory.Parser, checked(64 + (int)ParserCollectionMemory.GetArrayByteCount<SvgPatternDefinition>(1)));
         PendingPatternReferences = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        WaitingPatternReferences = new(budget, SvgMemoryCategory.Parser, 64 + sizeof(int));
+        ReadyPatternReferences = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         Gradients = new BudgetedParserDictionary<string, SvgLinearGradient>(budget, SvgMemoryCategory.Parser, GradientStorageBytes);
         RadialGradients = new BudgetedParserDictionary<string, SvgRadialGradient>(budget, SvgMemoryCategory.Parser, RadialGradientStorageBytes);
         GradientRegistrations = new(budget, SvgMemoryCategory.Parser, 64 + System.Runtime.CompilerServices.Unsafe.SizeOf<SvgGradientRegistration>());
@@ -181,12 +183,12 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal BudgetedParserDictionary<string, SvgPatternTile> Patterns { get; }
     internal BudgetedParserDictionary<string, SvgPatternDefinition> PatternDefinitions { get; }
-    internal BudgetedParserList<SvgPatternReferenceFrame> PendingPatternReferences { get; }
+    internal BudgetedParserList<SvgPendingPatternReference> PendingPatternReferences { get; }
+    internal BudgetedParserDictionary<string, int> WaitingPatternReferences { get; }
+    internal BudgetedParserList<int> ReadyPatternReferences { get; }
     internal SvgPatternTemplate PatternTemplate { get; set; }
-    internal bool HasPatternTemplateReferences => PendingPatternReferences.Count != 0;
-    // Only registration changes graph reachability; scene promotion leaves it unchanged.
-    internal int PatternDefinitionVersion { get; set; }
-    internal int PatternResolutionVersion { get; set; }
+    internal bool HasPatternTemplateReferences => UnresolvedPatternReferences != 0;
+    internal int UnresolvedPatternReferences { get; set; }
 
     internal BudgetedParserDictionary<string, SvgLinearGradient> Gradients { get; }
 
@@ -452,6 +454,8 @@ internal sealed class SvgDocumentState : IDisposable
         Patterns.Dispose();
         PatternDefinitions.Dispose();
         PendingPatternReferences.Dispose();
+        WaitingPatternReferences.Dispose();
+        ReadyPatternReferences.Dispose();
         Gradients.Dispose();
         RadialGradients.Dispose();
         GradientRegistrations.Dispose();

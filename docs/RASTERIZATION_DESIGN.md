@@ -21,6 +21,9 @@ The [support matrix](SUPPORT_MATRIX.md) owns public boundaries;
 Forward definitions resolve after registration. Resource references borrow their
 owning scene; sealed child scenes retain the storage needed after parser staging
 is released. Partial construction and conversion failure release owned storage.
+Gradient and pattern templates wake their dependents when ready. Deferred paint,
+text and tile-use commands replace their placeholders in batches; existing scope
+boundaries and scopes created during replay map separately into final draw order.
 [Document preparation](../src/Lokad.Svg/Parsing/SvgDocumentPreparation.cs) shares
 reader workspace and collected styles across sizing, output mapping and scene
 lowering. Metadata traversal consumes the same work allowance as conversion;

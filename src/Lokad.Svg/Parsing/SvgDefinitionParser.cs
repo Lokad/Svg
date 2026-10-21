@@ -1715,8 +1715,7 @@ internal static class SvgDefinitionParser
         {
             if (!state.Patterns.TryAdd(retainedId, tile)) throw new InvalidOperationException("A pattern must register once.");
         }
-        else state.PendingPatternReferences.Add(new(retainedId));
-        state.PatternDefinitionVersion++;
+        SvgPatternReferenceResolver.Register(state, retainedId, workCounter, cancellationToken);
     }
 
     internal static void RegisterMaskContent(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)

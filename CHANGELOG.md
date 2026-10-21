@@ -24,7 +24,8 @@
   lookahead and catalog fallback deduplication linear. Share document preparation
   and polygon traversal, with more compact retained geometry.
 - Treat empty stylesheets as no-ops, bound stylesheet discard storage, and avoid
-  repeated pattern-template graph walks across defs blocks and later shapes.
+  repeated pattern-template graph walks across defs blocks and later shapes;
+  wake aliases only when their template dependencies resolve.
 - Resolve gradient template chains without order-dependent rescans and reject
   duplicate IDs consistently across linear, radial and forward definitions.
 - Keep polygon clips compatible with unrelated group instances, and expand
