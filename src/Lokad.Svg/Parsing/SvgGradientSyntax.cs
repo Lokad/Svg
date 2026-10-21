@@ -327,24 +327,28 @@ internal static class SvgGradientSyntax
         SvgPaintOpacity stopOpacity = SvgColorParser.ParsePaintOpacity(styleOpacity ?? reader.GetAttribute("stop-opacity"));
         workCounter.Consume(cancellationToken);
         return new SvgGradientStop(offset, new SvgColor(color.Red, color.Green, color.Blue, SvgReferenceResolver.MultiplyAlpha(color.Alpha, stopOpacity.Alpha))) { Alpha = color.Alpha * (1f / 255f) * stopOpacity.Value };
-    }
 
-    /// <summary>Reads stop-color and stop-opacity declarations from one stop style attribute, ignoring other properties.</summary>
-    /// <remarks>Style declarations outrank presentation attributes per CSS, so callers prefer these values; unknown or malformed declarations stay tolerated like editor cruft while values themselves parse strictly. Charges one work unit per declaration, and observes cancellation.</remarks>
-    private static void ParseStopStyle(string value, out string? styleColor, out string? styleOpacity, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        styleColor = null;
-        styleOpacity = null;
-        foreach (string declaration in value.Split(';'))
+        // Stop styles outrank attributes and resolve each property by importance,
+        // then source order. Unrecognized exporter declarations remain ignored.
+        static void ParseStopStyle(string value, out string? styleColor, out string? styleOpacity, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
-            workCounter.Consume(cancellationToken);
-            int colon = declaration.IndexOf(':');
-            if (colon < 0) continue;
-            string name = declaration[..colon].Trim();
-            string declared = declaration[(colon + 1)..].Trim();
-            if (declared.EndsWith("!important", StringComparison.OrdinalIgnoreCase)) declared = declared[..^10].TrimEnd();
-            if (name.Equals("stop-color", StringComparison.OrdinalIgnoreCase)) styleColor = declared;
-            else if (name.Equals("stop-opacity", StringComparison.OrdinalIgnoreCase)) styleOpacity = declared;
+            styleColor = null;
+            styleOpacity = null;
+            bool colorImportant = false, opacityImportant = false;
+            foreach (Range range in value.AsSpan().Split(';'))
+            {
+                workCounter.Consume(cancellationToken);
+                ReadOnlySpan<char> declaration = value.AsSpan()[range];
+                int colon = declaration.IndexOf(':');
+                if (colon < 0) continue;
+                ReadOnlySpan<char> name = declaration[..colon].Trim();
+                bool color = name.Equals("stop-color", StringComparison.OrdinalIgnoreCase);
+                bool opacity = name.Equals("stop-opacity", StringComparison.OrdinalIgnoreCase);
+                if (!color && !opacity) continue;
+                bool important = SvgInlineStyleParser.TryStripImportant(declaration[(colon + 1)..].Trim(), out ReadOnlySpan<char> declared);
+                if (color && (!colorImportant || important)) { styleColor = declared.ToString(); colorImportant = important; }
+                if (opacity && (!opacityImportant || important)) { styleOpacity = declared.ToString(); opacityImportant = important; }
+            }
         }
     }
 

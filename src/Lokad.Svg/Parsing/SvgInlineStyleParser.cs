@@ -275,20 +275,6 @@ internal static class SvgInlineStyleParser
             SvgGradientSyntax.ValidateColorInterpolation(stripped);
         }
 
-        static bool TryStripImportant(ReadOnlySpan<char> value, out ReadOnlySpan<char> stripped)
-        {
-            stripped = value;
-            ReadOnlySpan<char> trimmed = value.Trim();
-            if (trimmed.Length <= 9 || !trimmed[^9..].Equals("important".AsSpan(), StringComparison.OrdinalIgnoreCase)) return false;
-            ReadOnlySpan<char> before = trimmed[..^9].TrimEnd();
-            if (before.IsEmpty || before[^1] != '!') return false;
-            SvgCssQuotedState quotes = default;
-            for (int index = 0; index < before.Length; index++)
-                if (!quotes.IsSyntax(before[index]) && index == before.Length - 1) return false;
-            stripped = before[..^1].TrimEnd();
-            return true;
-        }
-
         static bool ContainsUnquotedImportant(ReadOnlySpan<char> value)
         {
             SvgCssQuotedState quotes = default;
@@ -296,6 +282,21 @@ internal static class SvgInlineStyleParser
                 if (quotes.IsSyntax(value[index]) && value[index] == '!' && value[index..].StartsWith("!important".AsSpan(), StringComparison.OrdinalIgnoreCase)) return true;
             return false;
         }
+    }
+
+    /// <summary>Strips a trailing unquoted importance marker, preserving the declaration's other text.</summary>
+    internal static bool TryStripImportant(ReadOnlySpan<char> value, out ReadOnlySpan<char> stripped)
+    {
+        stripped = value;
+        ReadOnlySpan<char> trimmed = value.Trim();
+        if (trimmed.Length <= 9 || !trimmed[^9..].Equals("important".AsSpan(), StringComparison.OrdinalIgnoreCase)) return false;
+        ReadOnlySpan<char> before = trimmed[..^9].TrimEnd();
+        if (before.IsEmpty || before[^1] != '!') return false;
+        SvgCssQuotedState quotes = default;
+        for (int index = 0; index < before.Length; index++)
+            if (!quotes.IsSyntax(before[index]) && index == before.Length - 1) return false;
+        stripped = before[..^1].TrimEnd();
+        return true;
     }
 
 

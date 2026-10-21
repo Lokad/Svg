@@ -103,7 +103,8 @@ filters and supplied-font text.
 Current restrictions:
 
 - Percentage coordinates in userSpaceOnUse gradients are unsupported.
-- Gradient stops accept literal color/opacity attributes and stop inline styles.
+- Gradient stops accept literal color/opacity attributes and stop inline styles,
+  with per-property `!important` priority and source order.
   Stylesheet `stop-color`/`stop-opacity`, gradient resource/stop `currentColor`
   and gradient-container `color` are unsupported.
 - Gradient interpolation in linearRGB is unsupported; filter operating color
