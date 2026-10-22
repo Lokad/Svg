@@ -99,6 +99,8 @@ radius copies the other resolved radius; omitting both paints nothing.
 Omitted/empty point lists paint nothing. Repeated and closing vertices, and
 one/two-point lists, follow the same fill/stroke rules for all numeric spellings;
 markers retain the authored vertices.
+Polygon/polyline point coordinates are bare SVG numbers; CSS length units such
+as px are unsupported in these numeric lists.
 
 Root and nested viewports preserve their own percentage bases, aspect maps and
 physical clips. Instance presentation follows authored/inherited precedence;

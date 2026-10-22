@@ -199,7 +199,7 @@ internal static class SvgOrthogonalGeometryTokenizer
                 if ((vertexCount & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
                 if (!values.TryReadValue(out ReadOnlySpan<char> y)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer " + elementName + " elements are implemented.");
                 if (vertexCount >= maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, elementName + " vertex count exceeds the configured path-command limit.");
-                points.Add(new SvgPoint(SvgGeometrySyntax.ParseInteger(x), SvgGeometrySyntax.ParseInteger(y)));
+                points.Add(new SvgPoint(IntegerPoint(x, elementName), IntegerPoint(y, elementName)));
                 vertexCount++;
             }
             if (points.Count < 3 && (!allowDegenerateContours || points.Count < 2 || points[0] == points[1])) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer " + elementName + " elements are implemented.");
@@ -214,6 +214,14 @@ internal static class SvgOrthogonalGeometryTokenizer
         {
             points.Dispose();
             throw;
+        }
+
+        static int IntegerPoint(ReadOnlySpan<char> value, string elementName)
+        {
+            double number = ParsePointCoordinate(value, elementName);
+            if (number != Math.Truncate(number) || number < int.MinValue || number > int.MaxValue)
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, elementName + " point coordinates must be bounded integers on this route.");
+            return (int)number;
         }
     }
 
@@ -233,7 +241,7 @@ internal static class SvgOrthogonalGeometryTokenizer
                 if ((vertexCount & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
                 if (!values.TryReadValue(out ReadOnlySpan<char> y)) throw new SvgException(SvgErrorCode.MalformedInput, elementName + " points must pair every x coordinate with a y coordinate.");
                 if (vertexCount >= maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, elementName + " vertex count exceeds the configured path-command limit.");
-                points.Add(new SvgFractionalPoint(ParseFractionalCoordinate(x, elementName), ParseFractionalCoordinate(y, elementName)));
+                points.Add(new SvgFractionalPoint(ParsePointCoordinate(x, elementName), ParsePointCoordinate(y, elementName)));
                 vertexCount++;
             }
             if (points.Count < minimumPoints) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The " + elementName + " has too few vertices for its geometry consumer.");
@@ -246,13 +254,10 @@ internal static class SvgOrthogonalGeometryTokenizer
         }
     }
 
-    private static double ParseFractionalCoordinate(ReadOnlySpan<char> value, string elementName)
+    private static double ParsePointCoordinate(ReadOnlySpan<char> token, string elementName)
     {
-        ReadOnlySpan<char> token = value.Trim();
         if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, elementName + " point values exceed the configured syntax limit.");
-        if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
-        else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.MalformedInput, elementName + " point coordinates must be finite numbers.");
-        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.MalformedInput, elementName + " point coordinates must be finite numbers.");
+        if (!double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.MalformedInput, elementName + " point coordinates must be finite bare numbers.");
         return result;
     }
 
