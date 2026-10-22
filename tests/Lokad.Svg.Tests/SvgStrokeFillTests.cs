@@ -1022,12 +1022,12 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
-    public void All_zero_dash_renders_fill_only()
+    public void All_zero_dash_preserves_solid_stroke()
     {
         byte[] dashed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='blue' stroke='red' stroke-width='2' stroke-dasharray='0,0'/></svg>", out _, out _);
-        byte[] unstroked = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='blue'/></svg>", out _, out _);
+        byte[] solid = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='blue' stroke='red' stroke-width='2'/></svg>", out _, out _);
 
-        Assert.Equal(unstroked, dashed);
+        Assert.Equal(solid, dashed);
     }
 
     [Fact]

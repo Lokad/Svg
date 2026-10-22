@@ -85,6 +85,8 @@ supplies its own user-space percentage bases; raster scaling does not change the
 Geometry retains authored curves through affine placement and stroke construction.
 Fill and stroke paints may differ. Butt/round/square caps, miter/round/bevel joins,
 dash phase and non-scaling widths apply through admitted local instances.
+All-zero dash lists render as solid strokes; zero-length dashes with positive
+gaps retain their ordinary cap-dependent behavior.
 Rectangles support dashed solid/gradient/pattern strokes; zero-size rectangles
 paint nothing. Line endpoints accept finite fractional bare-number/px values;
 percentage endpoints and other endpoint units are unsupported.

@@ -9,8 +9,10 @@ public sealed class SvgStrokeStyleSyntaxTests
     [InlineData(" nOnE ", null)]
     [InlineData("2px, 3", new double[] { 2, 3 })]
     [InlineData(".5 1e1 2.25px", new double[] { .5, 10, 2.25, .5, 10, 2.25 })]
-    [InlineData("0", new double[] { 0, 0 })]
-    [InlineData("0 0", new double[] { 0, 0 })]
+    [InlineData("0", null)]
+    [InlineData("0 0", null)]
+    [InlineData("0px -0px 0e0", null)]
+    [InlineData("0 4", new double[] { 0, 4 })]
     [InlineData("1 2 3 4 5 6 7 8", new double[] { 1, 2, 3, 4, 5, 6, 7, 8 })]
     public void Dash_materialization_preserves_values_and_odd_pattern_repetition(string? value, double[]? expected)
     {

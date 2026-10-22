@@ -519,10 +519,8 @@ internal static class SvgLeafParser
                     return LowerPaintedCircleStroke(reader, context, syntax, elementName, false, element, filled, strokeGradient, strokeCircle, strokeTile, paintStrokeLinear, paintStrokeRadial, nonScalingStroke, frame, state);
                 SvgStroke? ellipseStroke = ParseCircleStroke(element, reader);
                 if (ellipseStroke is null || !element.Presentation.IsPainted) return filled;
-                string? ellipseDashes = element.Style.Dasharray;
-                if (ellipseDashes is not null && !ellipseDashes.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                if (SvgStrokeStyleSyntax.ParseDasharray(element.Style.Dasharray) is {} ellipseDashPattern)
                 {
-                    double[] ellipseDashPattern = SvgStrokeStyleSyntax.ParseDasharray(ellipseDashes) ?? throw new SvgException(SvgErrorCode.MalformedInput, "Ellipse dash arrays cannot be empty.");
                     double ellipseDashOffset = SvgStrokeStyleSyntax.ParseDashoffset(element.Style.Dashoffset);
                     double? ellipseDashPathLength = SvgStrokeStyleSyntax.ParsePathLength(element.Style.PathLength ?? reader.GetAttribute("pathLength"));
                     double ellipseDashMiterLimit = SvgStrokeStyleSyntax.ParseMiterLimit(element.Style.Miterlimit ?? reader.GetAttribute("stroke-miterlimit"));
@@ -540,10 +538,8 @@ internal static class SvgLeafParser
                 return LowerPaintedCircleStroke(reader, context, syntax, elementName, true, element, filled, strokeGradient, strokeCircle, strokeTile, paintStrokeLinear, paintStrokeRadial, nonScalingStroke, frame, state);
             SvgStroke? stroke = ParseCircleStroke(element, reader);
             if (stroke is null || !element.Presentation.IsPainted) return filled;
-            string? circleDashes = element.Style.Dasharray;
-            if (circleDashes is not null && !circleDashes.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (SvgStrokeStyleSyntax.ParseDasharray(element.Style.Dasharray) is {} dashPattern)
             {
-                double[] dashPattern = SvgStrokeStyleSyntax.ParseDasharray(circleDashes) ?? throw new SvgException(SvgErrorCode.MalformedInput, "Circle dash arrays cannot be empty.");
                 double dashOffset = SvgStrokeStyleSyntax.ParseDashoffset(element.Style.Dashoffset);
                 double? dashPathLength = SvgStrokeStyleSyntax.ParsePathLength(element.Style.PathLength ?? reader.GetAttribute("pathLength"));
                 double dashMiterLimit = SvgStrokeStyleSyntax.ParseMiterLimit(element.Style.Miterlimit ?? reader.GetAttribute("stroke-miterlimit"));

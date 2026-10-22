@@ -96,6 +96,9 @@ internal static class SvgStrokeStyleSyntax
         if (value.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) return null;
         Span<double> entries = stackalloc double[MaximumDashEntries];
         int count = ParseDashEntries(value.AsSpan(), entries);
+        bool solid = true;
+        foreach (double entry in entries[..count]) solid &= entry == 0;
+        if (solid) return null;
         bool doubled = (count & 1) == 1;
         double[] pattern = new double[doubled ? count * 2 : count];
         entries[..count].CopyTo(pattern);
@@ -189,15 +192,6 @@ internal static class SvgStrokeStyleSyntax
         SvgStrokeJoin join = ParseLinejoin(style.Linejoin, allowBevelJoin);
         double[]? dashes = ParseDasharray(style.Dasharray);
         double dashOffset = ParseDashoffset(style.Dashoffset);
-        if (dashes is not null)
-        {
-            bool hasPositive = false;
-            foreach (double entry in dashes)
-            {
-                if (entry > 0) hasPositive = true;
-            }
-            if (!hasPositive) return null;
-        }
         bool nonScaling = shape.Style.NonScalingStroke;
         double? pathLength = ParsePathLength(style.PathLength ?? reader.GetAttribute("pathLength"));
         if (pathLength == 0 && dashes is not null)
