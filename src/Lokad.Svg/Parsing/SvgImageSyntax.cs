@@ -9,7 +9,7 @@ internal readonly record struct SvgImageSyntax(string Href, double X, double Y, 
 {
     internal static SvgImageSyntax Parse(XmlReader reader, double? baseWidth, double? baseHeight)
     {
-        string href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink") ?? throw new SvgException(SvgErrorCode.MalformedInput, "An image element requires an href.");
+        string href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink") ?? string.Empty;
         double x = ParsePosition(reader.GetAttribute("x"), baseWidth);
         double y = ParsePosition(reader.GetAttribute("y"), baseHeight);
         double? width = ParseDimension(reader.GetAttribute("width"), baseWidth);

@@ -9,7 +9,7 @@ internal readonly record struct SvgRenderablePathData(string Value, int CommandC
 {
     internal static SvgRenderablePathData Read(string? value, int maximumCommands, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
-        if (value is null) throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
+        value ??= string.Empty;
         (int length, int count) = SvgPathDataParser.ReadRenderablePrefix(value, maximumCommands, work, token);
         if (length == value.Length) return new(value, count, null);
         if (length == 0) return new(string.Empty, count, null);

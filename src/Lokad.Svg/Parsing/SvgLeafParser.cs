@@ -171,6 +171,12 @@ internal static class SvgLeafParser
             SvgResolvedPaintableElement element = context.ResolveShape(style, reader, false);
             double width = syntax.Width ?? baseWidth ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Omitted image dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             double height = syntax.Height ?? baseHeight ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Omitted image dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
+            if (syntax.Href.Length == 0)
+            {
+                SvgRectangle empty = element.Transform.Apply(new SvgRectangle(syntax.X, syntax.Y, width, height, default, false, null));
+                if (frame is not null) empty = frame.Value.Clip.ClipRectangle(frame.Value.Shift(empty));
+                return SvgGeometry.FromRectangle(empty);
+            }
             DecodedPngImage image = DecodeImage(syntax.Href, limits, budget, context.WorkCounter, context.CancellationToken);
             try
             {

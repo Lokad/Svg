@@ -94,6 +94,8 @@ strokes whose centerline lies just beyond an edge.
 Rectangles support dashed solid/gradient/pattern strokes; zero-size rectangles
 paint nothing. Line endpoints accept finite fractional bare-number/px values;
 percentage endpoints and other endpoint units are unsupported.
+Omitted circle radii and path data paint nothing. An ellipse with one omitted
+radius copies the other resolved radius; omitting both paints nothing.
 
 Root and nested viewports preserve their own percentage bases, aspect maps and
 physical clips. Instance presentation follows authored/inherited precedence;
@@ -185,6 +187,7 @@ relationships, CRCs and bounded decompression are validated. IDAT chunks must be
 consecutive; transparency must precede image data and follow any palette.
 Image placement supports finite geometry/viewBox percentages, meet/slice
 alignments, `preserveAspectRatio="none"` and general affine maps.
+Images with absent or empty href values paint nothing.
 Percentages and omitted dimensions resolve in each instance's viewport,
 including nested viewBox and symbol instances.
 Images ignore inherited and CSS fill/stroke paint; display, visibility and

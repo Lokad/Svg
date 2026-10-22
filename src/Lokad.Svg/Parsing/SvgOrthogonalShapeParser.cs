@@ -20,6 +20,13 @@ internal static class SvgOrthogonalShapeParser
     internal static SvgParsedGeometry ParsePathCore(XmlReader reader, SvgPaintableElementContext context, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
+        using SvgRenderablePathData renderData = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+        string d = renderData.Value;
+        if (d.Length == 0)
+        {
+            using BudgetedParserList<SvgGeometry> empty = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            return new(empty.Detach(), renderData.CommandCount + 1);
+        }
         if (SvgGradientSyntax.IsGradientFill(style.Fill) && SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)
             && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width))
         {
@@ -42,14 +49,12 @@ internal static class SvgOrthogonalShapeParser
             if (state.Patterns.TryGetValue(SvgGradientSyntax.ParsePaintId(style.Fill), out _)) return SvgPatternSyntax.LowerPatternBands(reader, context, style, state, "path", true, maximumGeometryElements, budget, frame);
             return SvgGradientSyntax.LowerGradientBands(reader, context, style, state, "path", true, maximumGeometryElements, budget, frame);
         }
-        using SvgRenderablePathData renderData = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-        string d = renderData.Value;
         (_, bool hasCurve, bool hasArc, bool hasFractional) = ScanPathData(d, context.WorkCounter, context.CancellationToken);
         int commandCount = renderData.CommandCount;
         SvgResolvedPaintableElement shape;
         SvgParsedGeometry filled;
         shape = context.ResolveShape(fillStyle, reader, true);
-        if (d.Length == 0 || !shape.Presentation.HasFill && !context.RetainInstanceStrokePath && SvgLocalUrl.ReadReference(reader, "mask") is null && SvgLocalUrl.ReadReference(reader, "clip-path") is null && state.MaskScopes.Count == 0)
+        if (!shape.Presentation.HasFill && !context.RetainInstanceStrokePath && SvgLocalUrl.ReadReference(reader, "mask") is null && SvgLocalUrl.ReadReference(reader, "clip-path") is null && state.MaskScopes.Count == 0)
         {
             // Unpainted fills contribute no area here. Stroke paint resolves its
             // required source box below; native stroking retains every subpath.
