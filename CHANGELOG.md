@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Decode local UTF-8 URI fragments once across paint/effect resources, templates,
+  text paths and font discovery, avoiding accidental binding to literal encoded IDs.
 - Check authored filter lengths and marker orientations before trimming, including
   orientation keywords; preserve the existing scalar-token limit and cleanup on rejection.
 - Preserve source-independent filters on paintless geometry and empty local uses,

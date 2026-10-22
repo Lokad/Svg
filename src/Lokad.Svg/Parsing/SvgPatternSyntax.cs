@@ -29,7 +29,7 @@ internal static class SvgPatternSyntax
         {
             if (!href.StartsWith('#') || href.Length == 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local pattern templates are implemented.");
             if (href.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern template identifiers exceed the syntax limit.");
-            target = state.Strings.Copy(href.AsSpan(1));
+            target = SvgLocalUrl.CopyFragment(href.AsSpan(1), state.Strings);
         }
         string? transform = reader.GetAttribute("patternTransform");
         string? aspect = reader.GetAttribute("preserveAspectRatio");

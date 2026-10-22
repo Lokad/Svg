@@ -44,6 +44,6 @@ internal static class SvgTextPathSyntax
         if (anchor is not null) work.ConsumeText(anchor.Length, token);
         SvgTextAnchor? resolvedAnchor = anchor is null || SvgCssWhitespace.Trim(anchor).Equals("inherit", StringComparison.OrdinalIgnoreCase)
             ? null : SvgTextSyntax.ParseAnchor(anchor, SvgTextAnchor.Start);
-        return new(href[1..], distance, percentage, resolvedAnchor);
+        return new(SvgLocalUrl.ParseFragment(href.AsSpan(1)), distance, percentage, resolvedAnchor);
     }
 }

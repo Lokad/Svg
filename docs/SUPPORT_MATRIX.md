@@ -273,6 +273,9 @@ Filter-region lengths and marker orientations check the complete authored value
 against the 256-character scalar limit before trimming padding or units.
 Local `url(...)` function names and the filter `none` keyword ignore ASCII case;
 referenced identifiers keep their case.
+Local URL and href fragments decode UTF-8 percent escapes once, including template
+references, text paths and font-resource discovery. Literal Unicode remains
+unchanged; malformed escapes, invalid UTF-8 and encoded ASCII whitespace reject.
 Local URLs accept surrounding padding and trailing ASCII URI whitespace. Leading
 whitespace inside a quoted URI and ASCII whitespace within its fragment reject;
 they do not bind a different identifier after trimming.
@@ -295,6 +298,7 @@ overflow. Lengths include absolute units, known-axis percentages and em/ex from
 supplied font metrics. Paint/visibility and stroke presentation inherit through
 marker content. A marker's display property does not suppress its content;
 a symbol's `display:none` does suppress its instances.
+Forward marker resources on retained symbol paths remain unsupported.
 
 Supported filter primitives are `feGaussianBlur`, `feOffset`, `feFlood`,
 `feComposite` over/in, `feMerge`, `feBlend` normal/multiply/screen and

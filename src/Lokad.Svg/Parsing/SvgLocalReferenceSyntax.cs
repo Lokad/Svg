@@ -19,7 +19,7 @@ internal readonly record struct SvgLocalReferenceSyntax(string Id, double X, dou
         double? width = ParseDimension(reader.GetAttribute("width"), baseWidth);
         double? height = ParseDimension(reader.GetAttribute("height"), baseHeight);
         if (string.IsNullOrEmpty(href)) return new(string.Empty, x, y, width, height);
-        return new SvgLocalReferenceSyntax(strings.Copy(href.AsSpan(1)), x, y, width, height);
+        return new SvgLocalReferenceSyntax(SvgLocalUrl.CopyFragment(href.AsSpan(1), strings), x, y, width, height);
     }
 
     /// <summary>Preserves href precedence, including an empty href overriding xlink:href.</summary>

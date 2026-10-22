@@ -114,7 +114,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
         string? href = SvgLocalReferenceSyntax.ReadHref(reader);
         if (href is null || href.Length < 2 || href[0] != '#') return null;
         if (href.Length - 1 > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Local font-source identifiers exceed the syntax limit.");
-        return _state.Strings.Copy(href.AsSpan(1));
+        return SvgLocalUrl.CopyFragment(href.AsSpan(1), _state.Strings);
     }
 
     /// <summary>Emits referenced face/paint/filter requests before font acquisition.</summary>

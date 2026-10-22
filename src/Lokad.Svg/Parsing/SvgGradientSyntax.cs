@@ -306,9 +306,9 @@ internal static class SvgGradientSyntax
     internal static string ParseGradientHrefId(string? value)
     {
         if (value is null || value.Length < 2 || !value.StartsWith("#", StringComparison.Ordinal)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local gradient references are implemented.");
-        string id = value.Substring(1);
+        ReadOnlySpan<char> id = value.AsSpan(1);
         if (id.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local gradient references are implemented.");
-        return id;
+        return SvgLocalUrl.ParseFragment(id);
     }
 
     internal static bool IsGradientFill(string? fill)
