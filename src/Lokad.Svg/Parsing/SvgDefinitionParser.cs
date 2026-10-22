@@ -100,6 +100,9 @@ internal static class SvgDefinitionParser
             // definition location. Keep the existing bounded source adapter.
             bool deferredOval = reader.LocalName is "circle" or "ellipse"
                 && (IsPercentage("cx") || IsPercentage("cy") || IsPercentage("r") || IsPercentage("rx") || IsPercentage("ry"));
+            // Keep rectangle definition validation below; live instances reconstruct authored percentages.
+            bool relativeRectangle = reader.LocalName == "rect"
+                && (IsPercentage("x") || IsPercentage("y") || IsPercentage("width") || IsPercentage("height") || IsPercentage("rx") || IsPercentage("ry"));
             bool IsPercentage(string attribute)
                 => reader.GetAttribute(attribute) is {} value && value.AsSpan().Trim().EndsWith("%", StringComparison.Ordinal);
             // Dormant geometry does not paint. Keep its source when an inherited or
@@ -125,13 +128,13 @@ internal static class SvgDefinitionParser
                 SvgDefinition source = deferredSource ? definition : BindSymbolFill(definition, reader, context, state, workCounter, cancellationToken, false);
                 SvgComputedStyle sourceStyle = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, workCounter, cancellationToken);
                 definition = definition with { SourceFillBindings = source.SymbolFillBindings, SourceDisplayed = SvgPresentationResolver.ParseDisplay(sourceStyle.Display), SourceVisible = sourceStyle.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(sourceStyle.Visibility, true), LeafSource = reader.LocalName == "image"
-                    ? SvgDefinitionLeafSource.CaptureImage(reader, context, state, limits) : deferredSource
+                    ? SvgDefinitionLeafSource.CaptureImage(reader, context, state, limits) : deferredSource || relativeRectangle
                         ? SvgDefinitionLeafSource.CaptureUnconstructed(reader, context, state) : SvgDefinitionLeafSource.Capture(reader, context, state) };
                 if (symbolChild)
                 {
                     definition = BindSymbolFill(definition, reader, context, state, workCounter, cancellationToken, true);
                     SvgSymbolDefinitionBuilder builder = state.SymbolDefinition ?? throw new InvalidOperationException("Symbol children require an open definition builder.");
-                    if (reader.LocalName == "image" || deferredSource) { builder.EnableContent(); state.HasRetainedSymbolContent = true; }
+                    if (reader.LocalName == "image" || deferredSource || relativeRectangle) { builder.EnableContent(); state.HasRetainedSymbolContent = true; }
                     builder.Add(definition);
                     retained = true;
                 }

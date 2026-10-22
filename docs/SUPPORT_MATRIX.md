@@ -93,6 +93,8 @@ Root and nested viewports preserve their own percentage bases, aspect maps and
 physical clips. Instance presentation follows authored/inherited precedence;
 referencing an alias excludes the source's ancestors. Missing/cyclic references
 have categorized failures. Perspective transforms are unsupported.
+Percentage rectangle positions, dimensions and corner radii resolve in each
+instance's viewport, including nested viewBox and symbol instances.
 Transform lists accept whitespace or comma separators between functions.
 
 For rendered groups referenced by `use`, source-group opacity isolation, clips
