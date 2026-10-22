@@ -30,6 +30,13 @@ internal static class SvgOrthogonalGeometryTokenizer
                 {
                     if ((commandIndex++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
                     moveCommand = tokens.ReadCommand();
+                    if (justClosed && moveCommand is 'Z' or 'z')
+                    {
+                        // Another close leaves the current point and sealed contour unchanged.
+                        // Authored commands remain available to stroke/marker parsing and limits.
+                        hasMore = !tokens.End;
+                        continue;
+                    }
                     if (moveCommand is 'M' or 'm') justClosed = false;
                     else if (justClosed && moveCommand is 'L' or 'l' or 'H' or 'h' or 'V' or 'v') continuedContour = true;
                     else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
