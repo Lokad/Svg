@@ -19,7 +19,7 @@ internal readonly record struct SvgRecordedPaintValue(SvgPaintOperationIdentity 
     // Resource paint stays independent when its host instance binds fill and stroke.
     internal bool IsStroke { get => (Role & SvgRecordedPaintRole.Stroke) != 0; init => Role = value ? Role | SvgRecordedPaintRole.Stroke : Role & ~SvgRecordedPaintRole.Stroke; }
     internal bool IsMarkerContent { get => (Role & SvgRecordedPaintRole.MarkerContent) != 0; init => Role = value ? Role | SvgRecordedPaintRole.MarkerContent : Role & ~SvgRecordedPaintRole.MarkerContent; }
-    /// <summary>Marks a non-painting empty target that carries retained effects without contributing geometry bounds.</summary>
+    /// <summary>Marks a non-painting target carrying effects; only real source bounds contribute to ancestors.</summary>
     internal bool IsEffectAnchor { get => (Role & SvgRecordedPaintRole.EffectAnchor) != 0; init => Role = value ? Role | SvgRecordedPaintRole.EffectAnchor : Role & ~SvgRecordedPaintRole.EffectAnchor; }
     /// <summary>Retains the previous constructor contract; source recording assigns the stroke role explicitly.</summary>
     internal SvgRecordedPaintValue(SvgPaintOperationIdentity identity, float alpha, bool foldable, SvgRecordingScope scope, SvgPaintOpacity elementOpacity, SvgRecordingScope opacityScope)
@@ -55,6 +55,7 @@ internal readonly record struct SvgRecordedPaintStyle(SvgPaintOpacity ElementOpa
     internal SvgPaintBounds? SourceObjectBox { get; init; }
     internal float StrokeBoundsInflation { get; init; }
     internal SvgPaintOrder PaintOrder { get; init; }
+    internal bool IsSuppressedSource { get; init; }
 }
 
 // Retains source paint and recording state until playback; parser budgets own staging and scene values.
@@ -90,6 +91,57 @@ internal static class SvgPaintRecording
         SvgRecordedPaintValue paint = new(state.NewPaintOperationIdentity(), 0, false,
             scope, SvgPaintOpacity.Opaque, scope) { IsEffectAnchor = true };
         return SvgGeometry.FromRectangle(default) with { RecordedPaint = scene.RegisterRecordedPaint(paint) };
+    }
+
+    /// <summary>Records an empty eligible source for an active filter without inventing painted geometry.</summary>
+    /// <remarks>Only empty batches need fallback bounds parsing. Native parsers retain authored limits,
+    /// work and cancellation; the document owns paint metadata and the returned batch owns its container.</remarks>
+    internal static SvgParsedGeometry Attach(SvgParsedGeometry parsed, SvgRecordedPaintStyle source, XmlReader reader,
+        SvgPaintableElementContext context, SvgViewportFrame? frame, int maximumCommands, SvgDocumentState state)
+    {
+        if (parsed.Geometries.Length != 0 || state.FilterGroupDepth <= 0 || !context.InheritedPresentation.IsDisplayed
+            || !SvgPresentationResolver.ParseDisplay(context.ResolveStyle(reader).Display))
+            return Attach(parsed, source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
+        try
+        {
+            SvgPaintBounds? bounds = source.ObjectBounds;
+            if (bounds is null)
+            {
+                SvgRectangle box;
+                if (reader.LocalName == "path")
+                {
+                    using SvgRenderablePathData data = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumCommands, state.Budget, context.WorkCounter, context.CancellationToken);
+                    if (data.Value.Length == 0) return parsed;
+                    using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Parser, context.WorkCounter, context.CancellationToken);
+                    SvgPathDataParser.ParseCommands(data.Value, maximumCommands, context.WorkCounter, context.CancellationToken, commands);
+                    box = SvgPathBounds.Compute(commands.AsSpan(), context.WorkCounter, context.CancellationToken);
+                }
+                else if (reader.LocalName is "polygon" or "polyline")
+                {
+                    using BudgetedParserList<SvgFractionalPoint> points = SvgOrthogonalGeometryTokenizer.ParseFractionalPointList(reader.GetAttribute("points") ?? string.Empty,
+                        reader.LocalName, maximumCommands, state.Budget, context.WorkCounter, context.CancellationToken, 0);
+                    if (points.Count == 0) return parsed;
+                    float left = float.PositiveInfinity, top = float.PositiveInfinity, right = float.NegativeInfinity, bottom = float.NegativeInfinity;
+                    foreach (SvgFractionalPoint point in points.AsSpan())
+                    {
+                        context.WorkCounter.Consume(context.CancellationToken);
+                        left = MathF.Min(left, (float)point.X); right = MathF.Max(right, (float)point.X);
+                        top = MathF.Min(top, (float)point.Y); bottom = MathF.Max(bottom, (float)point.Y);
+                    }
+                    box = new(left, top, right - left, bottom - top, default, false, null);
+                }
+                else return parsed;
+                bounds = new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height))
+                    .Map(SvgViewportFrame.MapGeometry(context.ResolveTransform(reader), frame), context.WorkCounter, context.CancellationToken);
+            }
+            SvgRecordedPaintValue paint = new(state.NewPaintOperationIdentity(), 0, false, source.Scope, source.ElementOpacity, source.OpacityScope)
+            { IsEffectAnchor = true, ObjectBounds = bounds, VisualBounds = source.VisualBounds ?? bounds, PaintOrder = source.PaintOrder };
+            using BudgetedGeometryBuilder anchor = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            anchor.Add(SvgGeometry.FromRectangle(default) with { RecordedPaint = state.Scene.RegisterRecordedPaint(paint) });
+            parsed.Dispose();
+            return new(anchor.Detach(), parsed.ElementCount);
+        }
+        catch { parsed.Discard(); throw; }
     }
 
     /// <summary>Retains material glyph bounds for filtered source groups; glyph color/opacity remains baked once in its existing paint.</summary>
@@ -143,30 +195,35 @@ internal static class SvgPaintRecording
             if (reader.LocalName != "rect" && SvgStrokeStyleSyntax.ParseLinecap(style.Linecap) == SvgStrokeCap.Square) expansion = MathF.Max(expansion, MathF.Sqrt(2));
             strokeBoundsInflation = half * expansion;
         }
-        SvgPaintBounds? objectBounds = PrimitiveBounds(reader, context, frame, 0, out SvgPaintBounds? sourceObjectBox);
+        SvgPaintBounds? objectBounds = PrimitiveBounds(reader, context, frame, 0, out SvgPaintBounds? sourceObjectBox, out bool suppressedSource);
         return new(style.GetOpacity(), SvgPaintResolver.ResolveSolidPaint(fill).Alpha,
             fill.FillOpacity.Alpha / 255f, (stroke.Alpha / 255f) * strokeOpacity.Value, strokeOpacity.Alpha / 255f,
             fillServer ? SvgPaintOrigin.PaintServer : SvgPaintOrigin.Solid,
             style.Stroke is not null && SvgLocalUrl.TryParseId(style.Stroke, out _) ? SvgPaintOrigin.PaintServer : SvgPaintOrigin.Solid,
-            fill.HasFill, drawScope, opacityScope) { PaintOrder = style.PaintOrder ?? context.InheritedPresentation.PaintOrder, ObjectBounds = objectBounds, SourceObjectBox = sourceObjectBox, VisualBounds = strokeBoundsInflation > 0 ? PrimitiveBounds(reader, context, frame, strokeBoundsInflation, out _) : null, StrokeBoundsInflation = strokeBoundsInflation };
+            fill.HasFill, drawScope, opacityScope) { IsSuppressedSource = suppressedSource || !context.InheritedPresentation.IsDisplayed || !SvgPresentationResolver.ParseDisplay(style.Display), PaintOrder = style.PaintOrder ?? context.InheritedPresentation.PaintOrder, ObjectBounds = objectBounds, SourceObjectBox = sourceObjectBox, VisualBounds = strokeBoundsInflation > 0 ? PrimitiveBounds(reader, context, frame, strokeBoundsInflation, out _, out _) : null, StrokeBoundsInflation = strokeBoundsInflation };
 
-        static SvgPaintBounds? PrimitiveBounds(XmlReader input, SvgPaintableElementContext element, SvgViewportFrame? viewport, float inflation, out SvgPaintBounds? sourceObjectBox)
+        static SvgPaintBounds? PrimitiveBounds(XmlReader input, SvgPaintableElementContext element, SvgViewportFrame? viewport, float inflation, out SvgPaintBounds? sourceObjectBox, out bool suppressedSource)
         {
             sourceObjectBox = null;
+            suppressedSource = false;
             element.WorkCounter.Consume(element.CancellationToken);
             SvgPaintBounds bounds;
             switch (input.LocalName)
             {
                 case "rect":
                     SvgRectangleSyntax rectangle = SvgRectangleSyntax.Parse(input, element.LengthBases);
+                    suppressedSource = rectangle.Width == 0 || rectangle.Height == 0;
                     bounds = new((float)rectangle.X, (float)rectangle.Y, (float)(rectangle.X + rectangle.Width), (float)(rectangle.Y + rectangle.Height));
                     break;
                 case "image":
                     // Image lowering records bounds after decoding resolves intrinsic dimensions.
+                    SvgImageSyntax image = SvgImageSyntax.Parse(input, element.LengthBases.Width, element.LengthBases.Height);
+                    suppressedSource = image.Href.Length == 0 || image.Width == 0 || image.Height == 0;
                     return null;
                 case "circle":
                 case "ellipse":
                     SvgEllipseSyntax ellipse = input.LocalName == "circle" ? SvgEllipseSyntax.ParseCircle(input, element.LengthBases) : SvgEllipseSyntax.ParseEllipse(input, element.LengthBases);
+                    suppressedSource = ellipse.RadiusX == 0 || ellipse.RadiusY == 0;
                     bounds = new((float)(ellipse.CenterX - ellipse.RadiusX), (float)(ellipse.CenterY - ellipse.RadiusY),
                         (float)(ellipse.CenterX + ellipse.RadiusX), (float)(ellipse.CenterY + ellipse.RadiusY));
                     break;
@@ -301,7 +358,7 @@ internal static class SvgPaintRecording
 
             SvgRecordedPaint GetPaint(ref SvgRecordedPaint cached, SvgPaintOperationIdentity identity, float alpha, bool foldable)
             {
-                if (cached.Identity == 0) cached = state.Scene.RegisterRecordedPaint(new(identity, alpha, foldable, source.Scope, source.ElementOpacity, source.OpacityScope) { PaintOrder = source.PaintOrder, IsStroke = identity == strokeId, VisualBounds = visualBounds, ObjectBounds = objectBounds });
+                if (cached.Identity == 0) cached = state.Scene.RegisterRecordedPaint(new(identity, alpha, foldable, source.Scope, source.ElementOpacity, source.OpacityScope) { PaintOrder = source.PaintOrder, IsStroke = identity == strokeId, IsEffectAnchor = source.IsSuppressedSource, VisualBounds = source.IsSuppressedSource ? null : visualBounds, ObjectBounds = source.IsSuppressedSource ? null : objectBounds });
                 return cached;
             }
         }

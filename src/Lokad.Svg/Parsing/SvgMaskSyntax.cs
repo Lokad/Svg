@@ -434,7 +434,8 @@ internal static class SvgMaskSyntax
             SvgDrawCommand command = state.Scene.CommandAt(commandIndex);
             if (command.Kind != SvgDrawCommandKind.Geometry) continue;
             SvgGeometry geometry = state.Scene.GeometryAt(command.GeometryIndex);
-            if (state.Scene.GetRecordedPaintValue(geometry.RecordedPaint).IsEffectAnchor) continue;
+            SvgRecordedPaintValue paint = state.Scene.GetRecordedPaintValue(geometry.RecordedPaint);
+            if (paint.IsEffectAnchor && paint.ObjectBounds is null) continue;
             SvgRectangle box = RecordedObjectBox(geometry, state, workCounter, cancellationToken);
             if (box.X < left) left = box.X;
             if (box.Y < top) top = box.Y;

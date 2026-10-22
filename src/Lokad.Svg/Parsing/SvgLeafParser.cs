@@ -157,7 +157,7 @@ internal static class SvgLeafParser
             // paint, but must restore outside an authored mask like other leaves.
             float alpha = geometry.Kind == SvgGeometryKind.Rectangle ? geometry.Rectangle.Color.Alpha / 255f : 1;
             SvgRecordedPaintValue paint = new(state.NewPaintOperationIdentity(), alpha, true, source.Scope, source.ElementOpacity, source.OpacityScope)
-            { ObjectBounds = bounds };
+            { IsEffectAnchor = source.IsSuppressedSource, ObjectBounds = source.IsSuppressedSource ? null : bounds };
             return geometry with { RecordedPaint = state.Scene.RegisterRecordedPaint(paint) };
         }
         catch { geometry.Dispose(); throw; }
@@ -686,7 +686,7 @@ internal static class SvgLeafParser
                 source = source with { VisualBounds = LineVisualBounds(reader, context, frame) ?? source.VisualBounds };
         }
         catch { parsed.Discard(); throw; }
-        SvgParsedGeometry recorded = SvgPaintRecording.Attach(parsed, markers.HasMarkers ? source with { ElementOpacity = SvgPaintOpacity.Opaque } : source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
+        SvgParsedGeometry recorded = SvgPaintRecording.Attach(parsed, markers.HasMarkers ? source with { ElementOpacity = SvgPaintOpacity.Opaque } : source, reader, context, frame, int.MaxValue, state);
         return SvgMarkerRenderer.AttachLine(recorded, reader, context, source, frame, state, markers);
 
         static SvgPaintBounds? LineVisualBounds(XmlReader input, SvgPaintableElementContext element, SvgViewportFrame? viewport)

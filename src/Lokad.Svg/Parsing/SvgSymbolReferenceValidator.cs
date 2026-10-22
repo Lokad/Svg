@@ -44,7 +44,7 @@ internal sealed class SvgSymbolReferenceValidator : IDisposable
             SvgSymbolContentNode node = frame.Range.Content.Nodes[frame.Next];
             _stack[^1] = frame with { Next = frame.Next + 1 };
             if (node.Kind != SvgSymbolContentKind.Use) continue;
-            if (!_state.Definitions.TryGetValue(node.Reference.Id, out SvgDefinition target) && !_state.RenderedGroupDefinitions.TryGetValue(node.Reference.Id, out target))
+            if (!SvgReferenceResolver.TryGetDefinition(node.Reference, _state.Definitions, out SvgDefinition target) && !_state.RenderedGroupDefinitions.TryGetValue(node.Reference.Id, out target))
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local references in symbol content are implemented.");
             if (target.SymbolContent is {} child) Push(child);
         }

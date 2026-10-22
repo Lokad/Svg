@@ -753,8 +753,10 @@ internal static class SvgDefinitionParser
             if (clipAttribute is null) return null;
             string clipId = SvgClipPathSyntax.ParseClipId(clipAttribute);
             if (SvgClipPathSyntax.IsDisabled(clipId, document)) return null;
+            if (useReference.Filter is {} filter && !SvgCssWhitespace.Trim(filter).Equals("none", StringComparison.OrdinalIgnoreCase))
+                return new SvgDeferredClip(document.Strings.Copy(clipId), document.EffectiveFrame, useReader.Depth);
             bool clipKnown = document.Clips.TryGetValue(clipId, out _) || document.ObjectClips.TryGetValue(clipId, out _);
-            bool definitionKnown = document.Definitions.TryGetValue(useReference.Id, out _);
+            bool definitionKnown = SvgReferenceResolver.TryGetDefinition(useReference, document.Definitions, out _);
             if (document.Clips.TryGetValue(clipId, out _) && useReference.Transform != SvgAffineTransform.Identity)
                 return new SvgDeferredClip(document.Strings.Copy(clipId), document.EffectiveFrame, useReader.Depth);
             if (definitionKnown && clipKnown) return null;
@@ -776,7 +778,7 @@ internal static class SvgDefinitionParser
             string? clipAttribute = SvgLocalUrl.ReadReference(useReader, "clip-path");
             if (clipAttribute is null) return SvgClipPathSyntax.ResolveLeafClip(useReader, document);
             if (!document.ObjectClips.TryGetValue(SvgClipPathSyntax.ParseClipId(clipAttribute), out _)) return SvgClipPathSyntax.ResolveLeafClip(useReader, document);
-            if (!document.Definitions.TryGetValue(useReference.Id, out SvgDefinition definition)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "objectBoundingBox clip paths on forward use references are not implemented.");
+            if (!SvgReferenceResolver.TryGetDefinition(useReference, document.Definitions, out SvgDefinition definition)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "objectBoundingBox clip paths on forward use references are not implemented.");
             if (definition.SymbolViewBox is SvgViewBox symbolBox) return ResolveSymbolUseClipFrame(useReader, useReference, document, definition, symbolBox);
             double left = double.PositiveInfinity;
             double top = double.PositiveInfinity;
@@ -791,7 +793,7 @@ internal static class SvgDefinitionParser
                 right = Math.Max(right, placed.X + placed.Width);
                 bottom = Math.Max(bottom, placed.Y + placed.Height);
             }
-            SvgRectangle instanceBox = new(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, true, null);
+            SvgRectangle instanceBox = double.IsPositiveInfinity(left) ? default : new(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, true, null);
             return SvgClipPathSyntax.ResolveLeafClipOrPlacement(useReader, document, document.EffectiveFrame, instanceBox);
         }
 
@@ -2016,7 +2018,7 @@ internal static class SvgDefinitionParser
         _ = SvgLineSyntax.Parse(reader);
         SvgComputedStyle style = context.ResolveStyle(reader);
         string? stroke = style.Stroke ?? context.InheritedStroke.Stroke;
-        if (stroke is null || stroke == "none" || SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width)) return new([], false, null, null);
+        if ((stroke is null || stroke == "none" || SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width)) && state.FilterGroupDepth <= 0) return new([], false, null, null);
         return new(RetainParsedGeometries(SvgLeafParser.ParseLine(reader, context, null, state), state, context.WorkCounter, context.CancellationToken), false, null, null);
     }
 
@@ -2036,17 +2038,19 @@ internal static class SvgDefinitionParser
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Markers on shapes other than lines and paths are not implemented.");
         string? clipId = SvgClipPathSyntax.ResolveClipId(reader, state);
         bool previousClipDeferral = state.DeferringLeafClip;
+        int previousFilterDepth = state.FilterGroupDepth;
         state.DeferringLeafClip |= clipId is not null;
         SvgDefinition definition;
         try
         {
+            if (filtered && isDisplayed) state.FilterGroupDepth++;
             definition = reader.LocalName == "rect"
                 ? new(RetainParsedGeometries(SvgLeafParser.ParseRectangle(reader, context, null, state), state, context.WorkCounter, context.CancellationToken), false, null, null)
                 : reader.LocalName == "image" ? ParseImageSource(reader, context, state)
                 : reader.LocalName == "line" ? ParseLineDefinition(reader, context, state)
                 : ParseShapeDefinition(reader, context, state, null, false);
         }
-        finally { state.DeferringLeafClip = previousClipDeferral; }
+        finally { state.DeferringLeafClip = previousClipDeferral; state.FilterGroupDepth = previousFilterDepth; }
         try
         {
             if (filtered && isDisplayed && SvgPresentationResolver.ParseDisplay(sourceStyle.Display) && SvgPaintRecording.IsFilterSource(reader, context))

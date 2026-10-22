@@ -12,7 +12,7 @@ internal static class SvgSymbolContentParser
         SvgSymbolDefinitionBuilder builder = state.SymbolDefinition ?? throw new InvalidOperationException("Symbol content requires an open builder.");
         if (reader.LocalName == "g") SvgElementAttributePolicy.ValidateGroup(reader, work, token);
         else SvgElementAttributePolicy.ValidateUse(reader, work, token);
-        if (SvgLocalUrl.ReadReference(reader, "mask") is not null)
+        if (reader.LocalName == "g" && SvgLocalUrl.ReadReference(reader, "mask") is not null)
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks within retained symbol containers are not implemented.");
         string? clipId = Copy(SvgClipPathSyntax.ResolveClipId(reader, state));
         string? id = reader.GetAttribute("id");

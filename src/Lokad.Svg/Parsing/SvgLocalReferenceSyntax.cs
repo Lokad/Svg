@@ -5,8 +5,8 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Parses the policy-validated bounded local-use reference syntax before style resolution.</summary>
 internal readonly record struct SvgLocalReferenceSyntax(string Id, double X, double Y, double? Width, double? Height)
 {
-    /// <summary>Returns absence for an omitted/empty source after validating the element's placement lengths.</summary>
-    internal static SvgLocalReferenceSyntax? Parse(XmlReader reader, BudgetedParserStringStore strings, double? baseWidth, double? baseHeight, ParserWorkCounter work, CancellationToken token)
+    /// <summary>Retains placement even for an omitted/empty source; its empty identifier is never looked up.</summary>
+    internal static SvgLocalReferenceSyntax Parse(XmlReader reader, BudgetedParserStringStore strings, double? baseWidth, double? baseHeight, ParserWorkCounter work, CancellationToken token)
     {
         string? href = ReadHref(reader);
         if (!string.IsNullOrEmpty(href))
@@ -18,7 +18,7 @@ internal readonly record struct SvgLocalReferenceSyntax(string Id, double X, dou
         double y = ParsePosition(reader.GetAttribute("y"), baseHeight, work, token);
         double? width = ParseDimension(reader.GetAttribute("width"), baseWidth);
         double? height = ParseDimension(reader.GetAttribute("height"), baseHeight);
-        if (string.IsNullOrEmpty(href)) return null;
+        if (string.IsNullOrEmpty(href)) return new(string.Empty, x, y, width, height);
         return new SvgLocalReferenceSyntax(strings.Copy(href.AsSpan(1)), x, y, width, height);
     }
 

@@ -13,7 +13,7 @@ internal static class SvgOrthogonalShapeParser
         SvgMarkerStyle markers = SvgMarkerStyle.Resolve(context.ResolveStyle(reader), context.InheritedPresentation.Markers);
         context = context with { DeferPaintOpacity = true };
         SvgParsedGeometry parsed = ParsePathCore(reader, context, maximumGeometryElements, budget, frame, state);
-        SvgParsedGeometry recorded = SvgPaintRecording.Attach(parsed, markers.HasMarkers ? source with { ElementOpacity = SvgPaintOpacity.Opaque } : source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
+        SvgParsedGeometry recorded = SvgPaintRecording.Attach(parsed, markers.HasMarkers ? source with { ElementOpacity = SvgPaintOpacity.Opaque } : source, reader, context, frame, maximumGeometryElements, state);
         return SvgMarkerRenderer.AttachVertices(recorded, reader, context, source, frame, state, markers, maximumGeometryElements);
     }
 
@@ -261,7 +261,7 @@ internal static class SvgOrthogonalShapeParser
         context = context with { DeferPaintOpacity = true };
         SvgParsedGeometry parsed = ParsePointListCore(reader, elementName, context, maximumGeometryElements, budget, frame, state);
         SvgParsedGeometry recorded = SvgPaintRecording.Attach(parsed, markers.HasMarkers ? source with { ElementOpacity = SvgPaintOpacity.Opaque } : source,
-            reader.LocalName, state, context.WorkCounter, context.CancellationToken);
+            reader, context, frame, maximumGeometryElements, state);
         return SvgMarkerRenderer.AttachVertices(recorded, reader, context, source, frame, state, markers, maximumGeometryElements);
     }
 

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Preserve source-independent filters on paintless geometry and empty local uses,
+  with real source bounds for ancestor effects. Keep suppressed leaves out of
+  those bounds and preserve filter, mask, clip and opacity order through instances
+  and resource content. See the [filter-source regressions](tests/Lokad.Svg.Tests/OpenTypeFontTests.PaintlessFilterSources.cs).
 - Add ordered CSS font-family lists through `SvgFontFaceRequest.FromCss` and
   explicit host generic/fallback mappings through `SvgFontSelectionPolicy`.
   Preserve quoted names, escapes, inheritance and bounded canonical round trips.

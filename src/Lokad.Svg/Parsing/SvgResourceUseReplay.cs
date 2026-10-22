@@ -13,7 +13,7 @@ internal readonly record struct SvgDeferredResourceUse(string Id, SvgResourceUse
 /// All scans and replay charge parser work and observe cancellation. Cleanup is single-threaded.</remarks>
 internal static class SvgResourceUseReplay
 {
-    /// <summary>Consumes one admitted use leaf; an absent href produces no resource reference or placeholder.</summary>
+    /// <summary>Consumes one admitted use leaf; a source-less filter owner retains transparent input.</summary>
     internal static SvgResourceUse? Retain(XmlReader reader, SvgRootAttributes root, SvgDocumentState state,
         IReadOnlyDictionary<string, SvgColor> colors, ParserWorkCounter work, CancellationToken token)
     {
@@ -98,7 +98,7 @@ internal static class SvgResourceUseReplay
                 state.Clips.TryAdd(pending.Id, new(0, 0, 0, 0));
                 continue;
             }
-            if (!state.Definitions.TryGetValue(pending.Use.Reference.Id, out SvgDefinition source))
+            if (!SvgReferenceResolver.TryGetDefinition(pending.Use.Reference, state.Definitions, out SvgDefinition source))
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local geometry references in resource content are implemented.");
             if (kind == SvgResourceUseKind.Clip && (source.StrokeContent is not null || source.SymbolContent is not null || source.RenderedGroupId is not null))
             {
@@ -111,7 +111,9 @@ internal static class SvgResourceUseReplay
             SvgUseReference reference = pending.Use.Reference;
             if (kind == SvgResourceUseKind.Clip)
                 reference = reference with { FillOverride = new(new(255, 255, 255, 255), true, SvgPaintOpacity.Opaque, new(255, 255, 255, 255), false), PaintServerId = null, PaintServerFill = null, Opacity = 255 };
-            SvgGeometry[] mapped = SvgReferenceResolver.Apply(source, reference with { Opacity = 255 }, null, state, work, token);
+            SvgGeometry[] mapped = kind == SvgResourceUseKind.Clip
+                ? SvgReferenceResolver.Apply(source, reference with { Opacity = 255 }, null, state, work, token)
+                : SvgReferenceResolver.ApplyFilterSource(source, reference with { Opacity = 255 }, null, state, work, token);
             bool adopted = false;
             try
             {
@@ -176,10 +178,10 @@ internal static class SvgResourceUseReplay
     private static void AppendUse(SvgResourceUse use, SvgSceneBuilder builder, SvgDocumentState state, SvgResourceUseKind kind, ParserWorkCounter work, CancellationToken token)
     {
         work.Consume(token);
-        if (!state.Definitions.TryGetValue(use.Reference.Id, out SvgDefinition source)
+        if (!SvgReferenceResolver.TryGetDefinition(use.Reference, state.Definitions, out SvgDefinition source)
             && !state.RenderedGroupDefinitions.TryGetValue(use.Reference.Id, out source))
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local geometry references in resource content are implemented.");
-        SvgGeometry[] mapped = SvgReferenceResolver.Apply(source, use.Reference with { Opacity = 255 }, null, state, work, token);
+        SvgGeometry[] mapped = SvgReferenceResolver.ApplyFilterSource(source, use.Reference with { Opacity = 255 }, null, state, work, token);
         bool adopted = false;
         try
         {
@@ -214,34 +216,7 @@ internal static class SvgResourceUseReplay
             // Native use clipping surrounds the isolated mask/filter result. Its bounds
             // also constrain mask-content construction; source effects remain inside.
             if (use.ClipId is {} id)
-            {
-                if (!state.ClipPolygons.TryGetValue(id, out SvgClipPolygon clip))
-                {
-                    SvgLeafMaskBinding? previousInner = null, binding = null;
-                    foreach (ref SvgGeometry geometry in mapped.AsSpan())
-                    {
-                        work.Consume(token);
-                        if (binding is null || !ReferenceEquals(previousInner, geometry.LeafMask))
-                        {
-                            previousInner = geometry.LeafMask;
-                            binding = SvgClipPathSyntax.BindResourceClip(id, placement, previousInner, state, work, token);
-                        }
-                        geometry = geometry with { LeafMask = binding };
-                    }
-                }
-                else
-                {
-                    (SvgClipBox bounds, int contentIndex) = clip.Register(placement, clip.UsesNativeReplay, state, builder, work, token);
-                    SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
-                    operation.Resolved = true; operation.Value = 255; operation.Region = clip.UsesMaskFallback ? null : bounds;
-                    operation.ContentIndex = contentIndex; operation.RegionKind = clip.UsesMaskFallback ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.AffineViewport;
-                    for (int geometryIndex = 0; geometryIndex < mapped.Length; geometryIndex++)
-                    {
-                        work.Consume(token);
-                        mapped[geometryIndex] = mapped[geometryIndex] with { LeafMask = SvgLeafMaskComposition.NewBinding(state, operation, mapped[geometryIndex].LeafMask) };
-                    }
-                }
-            }
+                SvgClipPathSyntax.ApplyResourceClip(mapped, id, placement, state, work, token);
             SvgPaintRecording.WrapInstance(mapped, reference.SourceOpacity, reference.RecordingScope, state, work, token);
             builder.AddGeometries(mapped);
         }

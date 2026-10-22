@@ -29,7 +29,8 @@ internal struct SvgObjectBoundingClip
     internal void Add(SvgGeometry geometry, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
         work.Consume(token);
-        if (state.Scene.GetRecordedPaintValue(geometry.RecordedPaint).IsEffectAnchor) return;
+        SvgRecordedPaintValue paint = state.Scene.GetRecordedPaintValue(geometry.RecordedPaint);
+        if (paint.IsEffectAnchor && paint.ObjectBounds is null) return;
         SvgRectangle bounds;
         if (geometry.AuthoredPath is {} source)
         {
