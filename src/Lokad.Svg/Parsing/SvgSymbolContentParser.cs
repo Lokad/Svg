@@ -22,7 +22,7 @@ internal static class SvgSymbolContentParser
         if (definitionRoot) state.SymbolId = id;
         InlineStyle sheet = SvgDocumentStyleResolver.Resolve(reader, state, work, token);
         InlineStyle inline = reader.LocalName == "use" ? SvgInlineStyleParser.ParseUse(reader.GetAttribute("style"), work, token)
-            : SvgInlineStyleParser.Parse(reader.GetAttribute("style"), work, token);
+            : SvgInlineStyleParser.Parse(reader.GetAttribute("style"), work, token, true);
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, sheet);
         SvgPaintOpacity? strokeOpacity = style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity);
         SvgMarkerStyle markers = new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, work, token);

@@ -18,7 +18,7 @@ internal static class SvgRenderedGroupSourceParser
             || state.RenderedGroupDefinitions.TryGetValue(id, out _)))
             throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
         SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, colors, work, token);
-        SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, work, token).ResolveOpacity(context.InheritedPresentation.ElementOpacity);
+        SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, work, token, true).ResolveOpacity(context.InheritedPresentation.ElementOpacity);
         SvgSymbolContent content;
         if (state.RenderedGroupContent is null)
         {

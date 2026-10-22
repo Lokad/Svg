@@ -74,7 +74,7 @@ internal sealed class SvgPatternContentSelection : IDisposable
                     string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
                     string? target = href is { Length: > 1 } && href[0] == '#' ? strings.Copy(href.AsSpan(1)) : null;
                     pattern = patterns.Count;
-                    SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, SvgStyleSheet.Resolve(reader, rules, ancestors, work, token), work, token);
+                    SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, SvgStyleSheet.Resolve(reader, rules, ancestors, work, token), work, token, true);
                     patterns.Add(new(id, target, Dimension("width"), Dimension("height"), SvgPresentationResolver.ParseDisplay(style.Display), false, Resolution.New, -1));
                     ids.TryAdd(id, pattern);
                 }
@@ -115,7 +115,7 @@ internal sealed class SvgPatternContentSelection : IDisposable
             double? Dimension(string name) => reader.GetAttribute(name) is {} value ? SvgGeometrySyntax.ParseRectangleCoordinate(value) : null;
             bool HasFilter()
             {
-                SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, SvgStyleSheet.Resolve(reader, rules, ancestors, work, token), work, token);
+                SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, SvgStyleSheet.Resolve(reader, rules, ancestors, work, token), work, token, true);
                 return style.Filter is {} filter && filter.Trim() != "none" && SvgPresentationResolver.ParseDisplay(style.Display);
             }
         }
