@@ -138,8 +138,8 @@ internal static class SvgMaskContentReplay
             }
             else if (child.Source.LocalName == "use")
             {
-                SvgResourceUse reference = SvgResourceUseReplay.Retain(child.Source, context, state.MaskReplayBases, state);
-                SvgResourceUseReplay.AppendMaskUse(reference, builder, state, work, token);
+                if (SvgResourceUseReplay.Retain(child.Source, context, state.MaskReplayBases, state) is {} reference)
+                    SvgResourceUseReplay.AppendMaskUse(reference, builder, state, work, token);
             }
             else
             {

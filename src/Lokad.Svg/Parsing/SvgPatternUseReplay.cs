@@ -21,7 +21,7 @@ internal static class SvgPatternUseReplay
     internal static void Retain(XmlReader reader, SvgRootAttributes root, SvgDocumentState state,
         IReadOnlyDictionary<string, SvgColor> colors, SvgSceneBuilder builder, ParserWorkCounter work, CancellationToken token)
     {
-        SvgResourceUse reference = SvgResourceUseReplay.RetainPattern(reader, root, state, colors, work, token);
+        if (SvgResourceUseReplay.RetainPattern(reader, root, state, colors, work, token) is not {} reference) return;
         if (state.PatternUseCount == 0) state.PatternUseStart = state.PatternUses.Count;
         state.PatternUses.Add(new(reference, builder.AddPaintPlaceholder()));
         state.PatternUseCount++;

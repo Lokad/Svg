@@ -57,7 +57,12 @@ internal static class SvgSymbolContentParser
             double? width = state.SymbolViewBox?.Width ?? root.UserViewportWidth;
             double? height = state.SymbolViewBox?.Height ?? root.UserViewportHeight;
             context = context with { AuthoredStyle = style };
-            SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, inline, state.Strings, width, height, state);
+            if (SvgLocalReferenceParser.ParseUse(reader, context, inline, state.Strings, width, height, state) is not {} reference)
+            {
+                if (id is { Length: > 0 }) state.Definitions.TryAdd(state.Strings.Copy(id), new([], false, null, null));
+                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, work, token);
+                return true;
+            }
             SvgPaintOpacity? fillOpacity = style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity);
             SvgColor? color = style.Color is null ? null : SvgColorParser.Parse(style.Color, colors);
             SvgInheritedStrokeStyle stroke = new(Copy(style.Linecap), Copy(style.Linejoin), Copy(style.Dasharray), Copy(style.Dashoffset), Copy(style.Width), Copy(style.Miterlimit), Copy(style.StrokeOpacity), Copy(style.Stroke));

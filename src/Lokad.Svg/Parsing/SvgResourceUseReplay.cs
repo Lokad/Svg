@@ -13,27 +13,28 @@ internal readonly record struct SvgDeferredResourceUse(string Id, SvgResourceUse
 /// All scans and replay charge parser work and observe cancellation. Cleanup is single-threaded.</remarks>
 internal static class SvgResourceUseReplay
 {
-    internal static SvgResourceUse Retain(XmlReader reader, SvgRootAttributes root, SvgDocumentState state,
+    /// <summary>Consumes one admitted use leaf; an absent href produces no resource reference or placeholder.</summary>
+    internal static SvgResourceUse? Retain(XmlReader reader, SvgRootAttributes root, SvgDocumentState state,
         IReadOnlyDictionary<string, SvgColor> colors, ParserWorkCounter work, CancellationToken token)
     {
         SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, colors, work, token);
         return Retain(reader, context, root, state);
     }
 
-    internal static SvgResourceUse Retain(XmlReader reader, SvgPaintableElementContext context, SvgRootAttributes root, SvgDocumentState state)
+    internal static SvgResourceUse? Retain(XmlReader reader, SvgPaintableElementContext context, SvgRootAttributes root, SvgDocumentState state)
         => Retain(reader, context, new SvgViewportLengthBases(root.UserViewportWidth, root.UserViewportHeight), state);
 
-    internal static SvgResourceUse Retain(XmlReader reader, SvgPaintableElementContext context, SvgViewportLengthBases bases, SvgDocumentState state)
+    internal static SvgResourceUse? Retain(XmlReader reader, SvgPaintableElementContext context, SvgViewportLengthBases bases, SvgDocumentState state)
         => Retain(reader, context, bases, state, false);
 
-    internal static SvgResourceUse RetainPattern(XmlReader reader, SvgRootAttributes root, SvgDocumentState state,
+    internal static SvgResourceUse? RetainPattern(XmlReader reader, SvgRootAttributes root, SvgDocumentState state,
         IReadOnlyDictionary<string, SvgColor> colors, ParserWorkCounter work, CancellationToken token)
     {
         SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, colors, work, token);
         return Retain(reader, context, new(root.UserViewportWidth, root.UserViewportHeight), state, true);
     }
 
-    private static SvgResourceUse Retain(XmlReader reader, SvgPaintableElementContext context, SvgViewportLengthBases bases, SvgDocumentState state, bool allowMask)
+    private static SvgResourceUse? Retain(XmlReader reader, SvgPaintableElementContext context, SvgViewportLengthBases bases, SvgDocumentState state, bool allowMask)
     {
         ParserWorkCounter work = context.WorkCounter;
         CancellationToken token = context.CancellationToken;
@@ -41,7 +42,11 @@ internal static class SvgResourceUseReplay
         if (!allowMask && SvgLocalUrl.ReadReference(reader, "mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on mask content are not implemented.");
         InlineStyle inline = SvgInlineStyleParser.ParseUse(reader.GetAttribute("style"), work, token);
         context = context with { AuthoredStyle = SvgComputedStyle.Resolve(reader, inline, context.StyleSheet) };
-        SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, inline, state.Strings, bases.Width, bases.Height, state);
+        if (SvgLocalReferenceParser.ParseUse(reader, context, inline, state.Strings, bases.Width, bases.Height, state) is not {} reference)
+        {
+            SvgStructuralAdmission.ConsumeLeafChildren(reader, state, work, token);
+            return null;
+        }
         string? clip = SvgLocalUrl.ReadReference(reader, "clip-path");
         string? clipId = clip is null ? null : state.Strings.Copy(SvgClipPathSyntax.ParseClipId(clip));
         SvgComputedStyle style = context.ResolveStyle(reader);

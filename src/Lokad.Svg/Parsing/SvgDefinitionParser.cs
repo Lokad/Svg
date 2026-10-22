@@ -226,14 +226,15 @@ internal static class SvgDefinitionParser
         }
         if (state.ClipPathDepth >= 0 && reader.Depth == state.ClipPathDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg")
         {
-            if (state.ClipUse is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element clip content is implemented.");
+            if (state.ClipUse is not null && reader.LocalName != "use") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element clip content is implemented.");
             if (reader.LocalName == "use")
             {
-                if (state.ClipIsObjectBoundingBox) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse referenced clip content is implemented.");
-                if (state.ClipBox is not null || state.ClipPolygon is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element clip content is implemented.");
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
                 context = context with { InheritedPresentation = context.InheritedPresentation with { IsDisplayed = true, IsVisible = state.ClipIsVisible } };
-                state.ClipUse = SvgResourceUseReplay.Retain(reader, context, root, state);
+                if (SvgResourceUseReplay.Retain(reader, context, root, state) is not {} use) return true;
+                if (state.ClipIsObjectBoundingBox) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse referenced clip content is implemented.");
+                if (state.ClipUse is not null || state.ClipBox is not null || state.ClipPolygon is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element clip content is implemented.");
+                state.ClipUse = use;
                 return true;
             }
             if (reader.LocalName == "rect")
@@ -716,7 +717,11 @@ internal static class SvgDefinitionParser
             SvgViewportFrame? parentFrame = state.EffectiveFrame;
             double? baseWidth = parentFrame?.ViewportWidth ?? root.UserViewportWidth;
             double? baseHeight = parentFrame?.ViewportHeight ?? root.UserViewportHeight;
-            SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, inline, state.Strings, baseWidth, baseHeight, state);
+            if (SvgLocalReferenceParser.ParseUse(reader, context, inline, state.Strings, baseWidth, baseHeight, state) is not {} reference)
+            {
+                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
+                return true;
+            }
             SvgRenderedGroupSourceParser.CaptureUse(reader, context, reference, state);
             SvgDeferredClip? deferredClip = ResolveDeferredClip(reader, reference, state);
             SvgViewportFrame? useFrame;

@@ -6,9 +6,9 @@ namespace Lokad.Svg.Parsing;
 internal static class SvgLocalReferenceParser
 {
     /// <summary>Consumes this element's parsed inline declarations and context-owned authored style without rescanning them.</summary>
-    internal static SvgUseReference ParseUse(XmlReader reader, SvgPaintableElementContext context, InlineStyle inline, BudgetedParserStringStore strings, double? baseWidth, double? baseHeight, SvgDocumentState state)
+    internal static SvgUseReference? ParseUse(XmlReader reader, SvgPaintableElementContext context, InlineStyle inline, BudgetedParserStringStore strings, double? baseWidth, double? baseHeight, SvgDocumentState state)
     {
-        SvgLocalReferenceSyntax syntax = SvgLocalReferenceSyntax.Parse(reader, strings, baseWidth, baseHeight, context.WorkCounter, context.CancellationToken);
+        if (SvgLocalReferenceSyntax.Parse(reader, strings, baseWidth, baseHeight, context.WorkCounter, context.CancellationToken) is not {} syntax) return null;
         SvgComputedStyle authored = context.AuthoredStyle ?? throw new InvalidOperationException("Use declarations must be prepared before reference parsing.");
         SvgComputedStyle style = context.ResolveStyle(reader);
         SvgMarkerStyle markers = SvgMarkerStyle.Resolve(style, context.InheritedPresentation.Markers);

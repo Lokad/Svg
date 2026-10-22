@@ -111,7 +111,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
     private string? Target(XmlReader reader)
     {
         _work.Consume(_token);
-        string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
+        string? href = SvgLocalReferenceSyntax.ReadHref(reader);
         if (href is null || href.Length < 2 || href[0] != '#') return null;
         if (href.Length - 1 > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Local font-source identifiers exceed the syntax limit.");
         return _state.Strings.Copy(href.AsSpan(1));
