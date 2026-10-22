@@ -132,6 +132,10 @@ from the resource's own ancestors and can be overridden by a child. Display on
 `clipPath` or its ancestors does not disable the resource. Fill/stroke paint and
 opacity do not suppress raw clip geometry.
 
+IDs on clip rectangles, rounded rectangles, paths, circles and ellipses remain
+available to ordinary local instances, with authored paint/stroke independent of
+the clip.
+
 For one element, composition follows **filter → mask → clip → opacity**. A child
 clip remains inside an ancestor's effect. Group opacity isolates the composed
 children rather than multiplying each child's opacity independently.

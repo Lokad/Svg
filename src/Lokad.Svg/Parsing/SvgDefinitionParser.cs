@@ -237,6 +237,7 @@ internal static class SvgDefinitionParser
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
                 InlineStyle clipInline = SvgInlineStyleParser.ParseGeometry(reader.GetAttribute("style"), workCounter, cancellationToken);
                 SvgComputedStyle clipStyle = SvgComputedStyle.Resolve(reader, clipInline, context.StyleSheet);
+                RetainClipSource(reader, context, clipStyle, state);
                 SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, state.ClipIsObjectBoundingBox ? new(1, 1) : context.LengthBases);
                 // A resource uses its own child map; ancestors place the referencing element.
                 SvgAffineTransform clipTransform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken);
@@ -276,19 +277,7 @@ internal static class SvgDefinitionParser
                 // A resource uses its own child map; ancestors place the referencing element.
                 SvgAffineTransform clipTransform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken);
                 SvgComputedStyle clipStyle = SvgComputedStyleResolver.Resolve(reader, clipContext.StyleSheet, workCounter, cancellationToken);
-                if (reader.GetAttribute("id") is {} pathId)
-                {
-                    if (state.Definitions.TryGetValue(pathId, out _) || state.GroupSnapshots.TryGetValue(pathId, out _) || state.RenderedGroupDefinitions.TryGetValue(pathId, out _))
-                        throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
-                    // Ordinary uses replay authored paint/stroke independently of stroke-free clip coverage.
-                    SvgDefinition source = new([], false, null, null)
-                    {
-                        LeafSource = SvgDefinitionLeafSource.CaptureUnconstructed(reader, clipContext with { AuthoredStyle = clipStyle }, state),
-                        SourceDisplayed = SvgPresentationResolver.ParseDisplay(clipStyle.Display),
-                        SourceVisible = clipStyle.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(clipStyle.Visibility, true)
-                    };
-                    state.Definitions.TryAdd(state.Strings.Copy(pathId), source);
-                }
+                RetainClipSource(reader, clipContext, clipStyle, state);
                 bool isEvenOdd = clipStyle.ClipRule is null ? state.ClipIsEvenOdd : SvgClipPathSyntax.ParseClipRule(clipStyle.ClipRule.AsSpan());
                 string? nestedClip = SvgClipPathSyntax.ResolveClipId(reader, state);
                 nestedClip = nestedClip is null ? null : state.Strings.Copy(nestedClip);
@@ -310,17 +299,7 @@ internal static class SvgDefinitionParser
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
                 SvgComputedStyle clipStyle = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, workCounter, cancellationToken);
                 SvgViewportLengthBases clipBases = state.ClipIsObjectBoundingBox ? new(1, 1) : context.LengthBases;
-                if (reader.GetAttribute("id") is {} ovalId)
-                {
-                    if (state.Definitions.TryGetValue(ovalId, out _) || state.GroupSnapshots.TryGetValue(ovalId, out _) || state.RenderedGroupDefinitions.TryGetValue(ovalId, out _))
-                        throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
-                    state.Definitions.TryAdd(state.Strings.Copy(ovalId), new([], false, null, null)
-                    {
-                        LeafSource = SvgDefinitionLeafSource.CaptureUnconstructed(reader, context with { AuthoredStyle = clipStyle }, state),
-                        SourceDisplayed = SvgPresentationResolver.ParseDisplay(clipStyle.Display),
-                        SourceVisible = clipStyle.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(clipStyle.Visibility, true)
-                    });
-                }
+                RetainClipSource(reader, context, clipStyle, state);
                 SvgEllipseSyntax oval = reader.LocalName == "circle" ? SvgEllipseSyntax.ParseCircle(reader, clipBases) : SvgEllipseSyntax.ParseEllipse(reader, clipBases);
                 SvgAffineTransform childMap = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken);
                 if (!SvgPresentationResolver.IsPainted(clipStyle.Display, clipStyle.Visibility, true, state.ClipIsVisible))
@@ -1137,6 +1116,20 @@ internal static class SvgDefinitionParser
                     start = end;
                 }
             }
+        }
+
+        static void RetainClipSource(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state)
+        {
+            if (reader.GetAttribute("id") is not string id) return;
+            if (state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _) || state.RenderedGroupDefinitions.TryGetValue(id, out _))
+                throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+            // Ordinary uses replay authored paint/stroke independently of stroke-free clip coverage.
+            state.Definitions.TryAdd(state.Strings.Copy(id), new([], false, null, null)
+            {
+                LeafSource = SvgDefinitionLeafSource.CaptureUnconstructed(reader, context with { AuthoredStyle = style }, state),
+                SourceDisplayed = SvgPresentationResolver.ParseDisplay(style.Display),
+                SourceVisible = style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true)
+            });
         }
 
         static SvgClipPolygon ParseClipPathPolygon(string? pathData, SvgAffineTransform clipTransform, bool isEvenOdd, bool visible, SvgDocumentState clipState, ParserWorkCounter workCounter, CancellationToken cancellationToken)
