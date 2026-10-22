@@ -87,6 +87,8 @@ Fill and stroke paints may differ. Butt/round/square caps, miter/round/bevel joi
 dash phase and non-scaling widths apply through admitted local instances.
 All-zero dash lists render as solid strokes; zero-length dashes with positive
 gaps retain their ordinary cap-dependent behavior.
+Rectangular clips and viewports clip the full painted width of lines, including
+strokes whose centerline lies just beyond an edge.
 Rectangles support dashed solid/gradient/pattern strokes; zero-size rectangles
 paint nothing. Line endpoints accept finite fractional bare-number/px values;
 percentage endpoints and other endpoint units are unsupported.

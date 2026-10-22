@@ -81,7 +81,7 @@ internal readonly record struct SvgViewportFrame(double OffsetX, double OffsetY,
     /// <summary>Shifts one fill box into viewport-parent space, then clips it to the viewport.</summary>
     internal SvgRectangle ClipShifted(SvgRectangle rectangle) => Clip.ClipRectangle(Shift(rectangle));
 
-    /// <summary>Shifts one axis-aligned line into viewport-parent space, then clips its segment.</summary>
+    /// <summary>Shifts one axis-aligned line into viewport-parent space and clips its painted stroke band.</summary>
     internal SvgGeometry ClipShifted(SvgAxisAlignedLine line) => Clip.ClipLine(Shift(line));
 }
 

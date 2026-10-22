@@ -4229,13 +4229,15 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Clips_an_axis_aligned_line_to_its_nested_viewport_box()
+    public void Retains_the_original_line_band_and_its_nested_viewport_clip()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><svg x='8' y='8' width='32' height='32'><line x1='0' y1='10' x2='64' y2='10' stroke='red' stroke-width='2'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Equal(SvgGeometryKind.AxisAlignedLine, geometry.Kind);
-        Assert.Equal(new SvgAxisAlignedLine(8, 18, 40, 18, new SvgColor(255, 0, 0, 255), true, 2), geometry.AxisAlignedLine);
+        Assert.Equal(SvgGeometryKind.OrthogonalBand, geometry.Kind);
+        Assert.Equal(new SvgRectangle(8, 17, 64, 2, new SvgColor(255, 0, 0, 255), true, null), geometry.Rectangle with { Clip = null });
+        SvgClipBox clip = Assert.IsType<SvgClipBox>(geometry.Rectangle.Clip);
+        Assert.Equal((8d, 8d, 32d, 32d), (clip.X, clip.Y, clip.Width, clip.Height));
     }
 
     [Fact]

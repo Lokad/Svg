@@ -48,27 +48,12 @@ internal readonly record struct SvgClipBox(double X, double Y, double Width, dou
     internal bool Contains(double left, double top, double right, double bottom)
         => left >= X && top >= Y && right <= Right && bottom <= Bottom;
 
-    /// <summary>Clips one axis-aligned line to this viewport, shortening its segment.</summary>
+    /// <summary>Clips the painted stroke band while retaining its original edges.</summary>
     internal SvgGeometry ClipLine(SvgAxisAlignedLine line)
     {
-        if (line.X1 != line.X2)
-        {
-            if (line.Y1 < Y || line.Y1 > Bottom) return EmptyBand(line.Color);
-            double start = Math.Max(Math.Min(line.X1, line.X2), X);
-            double end = Math.Min(Math.Max(line.X1, line.X2), Right);
-            if (end <= start) return EmptyBand(line.Color);
-            return SvgGeometry.FromAxisAlignedLine(line with { X1 = start, X2 = end, Y1 = line.Y1, Y2 = line.Y1 });
-        }
-        else
-        {
-            if (line.X1 < X || line.X1 > Right) return EmptyBand(line.Color);
-            double start = Math.Max(Math.Min(line.Y1, line.Y2), Y);
-            double end = Math.Min(Math.Max(line.Y1, line.Y2), Bottom);
-            if (end <= start) return EmptyBand(line.Color);
-            return SvgGeometry.FromAxisAlignedLine(line with { X1 = line.X1, X2 = line.X1, Y1 = start, Y2 = end });
-        }
+        SvgRectangle band = line.ToStrokeBand();
+        return Contains(band.X, band.Y, band.X + band.Width, band.Y + band.Height)
+            ? SvgGeometry.FromAxisAlignedLine(line)
+            : SvgGeometry.FromOrthogonalBand(ClipRectangle(band));
     }
-
-    private static SvgGeometry EmptyBand(SvgColor color)
-        => SvgGeometry.FromOrthogonalBand(new SvgRectangle(0, 0, 0, 0, color, false, null));
 }

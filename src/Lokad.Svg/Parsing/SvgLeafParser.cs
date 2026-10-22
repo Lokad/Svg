@@ -723,6 +723,11 @@ internal static class SvgLeafParser
         {
             if (linecap == SvgStrokeCap.Round)
             {
+                double radius = strokeWidth / 2d;
+                if (frame is {} viewport && !viewport.Clip.Contains(
+                    Math.Min(syntax.X1, syntax.X2) - radius, Math.Min(syntax.Y1, syntax.Y2) - radius,
+                    Math.Max(syntax.X1, syntax.X2) + radius, Math.Max(syntax.Y1, syntax.Y2) + radius))
+                    return LowerNativeLine();
                 return LowerRoundCapLine();
             }
             SvgAxisAlignedLine line = new(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, color, painted, strokeWidth);
