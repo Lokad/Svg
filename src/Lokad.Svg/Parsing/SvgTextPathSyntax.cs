@@ -31,13 +31,14 @@ internal static class SvgTextPathSyntax
         if (href.Length > SvgSyntaxLimits.MaximumIdentifierCharacters + 1) throw new SvgException(SvgErrorCode.LimitExceeded, "The text-path reference exceeds the configured identifier limit.");
         if (!href.StartsWith('#')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local text-path references are implemented.");
         if (href.Length == 1 || href.AsSpan(1).IndexOfAny(" \t\r\n#".AsSpan()) >= 0) throw new SvgException(SvgErrorCode.MalformedInput, "The text-path reference requires one nonempty identifier.");
-        if (reader.GetAttribute("method") is string method && method.Trim() != "align") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only aligned text paths are implemented.");
-        if (reader.GetAttribute("spacing") is string spacing && spacing.Trim() != "exact") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only exact text-path spacing is implemented.");
+        if (reader.GetAttribute("method") is string method && SvgCssWhitespace.Trim(method) != "align") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only aligned text paths are implemented.");
+        if (reader.GetAttribute("spacing") is string spacing && SvgCssWhitespace.Trim(spacing) != "exact") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only exact text-path spacing is implemented.");
         string offset = reader.GetAttribute("startOffset") ?? "0";
         work.ConsumeText(offset.Length, token);
-        ReadOnlySpan<char> value = offset.AsSpan().Trim();
+        ReadOnlySpan<char> value = offset.AsSpan().Trim(SvgCssWhitespace.Characters);
         if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "The text-path offset exceeds the configured syntax limit.");
         bool percentage = value.EndsWith("%", StringComparison.Ordinal);
+        if (percentage && value.Length > 1 && SvgCssWhitespace.Is(value[^2])) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text-path percentage units must follow their number without a gap.");
         double distance = SvgGeometrySyntax.ParseTextCoordinate(percentage ? value[..^1].ToString() : offset);
         string? anchor = reader.GetAttribute("text-anchor");
         if (anchor is not null) work.ConsumeText(anchor.Length, token);

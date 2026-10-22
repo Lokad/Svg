@@ -6,6 +6,9 @@ namespace Lokad.Svg.Parsing;
 /// <remarks>Callers retain their grammar, token bounds and finite-double validation. This bounded, allocation-free additional pass charges the shared counter and observes its cancellation token. Numeric range classification remains with the caller. There is no retained state or storage ownership.</remarks>
 internal static class SvgFloatNumber
 {
+    /// <summary>Admits one numeric token after the caller handles grammar whitespace and units.</summary>
+    internal const NumberStyles TokenStyles = NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent;
+
     internal static float ReadValidated(ReadOnlySpan<char> token, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         workCounter.ConsumeBytes(checked(token.Length * 2), cancellationToken);
@@ -35,7 +38,7 @@ internal static class SvgFloatNumber
         if (token[0] == '-') value = -value;
         if (exponentAt >= 0 && value != 0)
         {
-            double exponent = double.Parse(token[(exponentAt + 1)..], NumberStyles.Float, CultureInfo.InvariantCulture);
+            double exponent = double.Parse(token[(exponentAt + 1)..], SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture);
             value *= (float)Math.Pow(10, exponent);
         }
         return value;

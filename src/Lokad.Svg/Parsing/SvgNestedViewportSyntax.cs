@@ -17,7 +17,7 @@ internal readonly record struct SvgNestedViewportSyntax(double X, double Y, doub
     /// <summary>Validates the admitted viewport overflow shared by attributes and style declarations.</summary>
     internal static void ValidateOverflow(ReadOnlySpan<char> value)
     {
-        if (value.Trim().Equals("hidden".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        if (SvgCssWhitespace.Trim(value).Equals("hidden".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only hidden viewport overflow is implemented.");
     }
 

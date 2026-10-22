@@ -30,7 +30,7 @@ internal readonly record struct SvgRootSyntax(SvgRootLength? Width, SvgRootLengt
         SvgRootLength? ParseStyleLength(string? value, string attribute)
         {
             if (value is null) return null;
-            ReadOnlySpan<char> token = value.AsSpan().Trim();
+            ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
             // Root auto (including the initial value inherited at the root) resolves as 100%, replacing XML dimensions.
             if (token.Equals("auto".AsSpan(), StringComparison.OrdinalIgnoreCase) || token.Equals("inherit".AsSpan(), StringComparison.OrdinalIgnoreCase)) return new(100, true);
             try { return SvgGeometrySyntax.ParseRootLength(value); }
@@ -57,11 +57,11 @@ internal readonly record struct SvgRootSyntax(SvgRootLength? Width, SvgRootLengt
         static void ValidateRootPosition(string? value)
         {
             if (value is null) return;
-            ReadOnlySpan<char> token = value.AsSpan().Trim();
+            ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
             if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Root position values exceed the configured syntax limit.");
-            if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
+            if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2];
             else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px root positions are implemented.");
-            if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double position) || !double.IsFinite(position)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Root positions must be finite numbers.");
+            if (!double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double position) || !double.IsFinite(position)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Root positions must be finite numbers.");
         }
     }
 }

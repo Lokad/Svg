@@ -34,7 +34,7 @@ internal readonly record struct SvgTextPositionLists(string? X, string? Y, strin
     internal static double ReadToken(ReadOnlySpan<char> token, bool allowPixels)
     {
         if (allowPixels && token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2];
-        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double value) || !double.IsFinite(value))
+        if (!double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double value) || !double.IsFinite(value))
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text coordinate lists must contain finite numbers.");
         return value;
     }

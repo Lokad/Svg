@@ -34,7 +34,7 @@ internal readonly record struct SvgMarkerStyle(string? Start, string? Mid, strin
         return new(Select(Start, inherited.Start), Select(Mid, inherited.Mid), Select(End, inherited.End));
         static string? Select(string? value, string? parent)
         {
-            string? input = value?.Trim();
+            string? input = value is null ? null : SvgCssWhitespace.Trim(value);
             return input is null || input.Equals("inherit", StringComparison.OrdinalIgnoreCase) || input.Equals("unset", StringComparison.OrdinalIgnoreCase)
                 ? parent : input.Equals("initial", StringComparison.OrdinalIgnoreCase) ? "none" : input;
         }
@@ -58,7 +58,7 @@ internal static class SvgMarkerSyntax
     {
         if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters)
             throw new SvgException(SvgErrorCode.LimitExceeded, "Marker references exceed the configured syntax limit.");
-        ReadOnlySpan<char> input = value.Trim();
+        ReadOnlySpan<char> input = SvgCssWhitespace.Trim(value);
         if (input.Equals("none", StringComparison.OrdinalIgnoreCase) || input.Equals("inherit", StringComparison.OrdinalIgnoreCase)
             || input.Equals("unset", StringComparison.OrdinalIgnoreCase) || input.Equals("initial", StringComparison.OrdinalIgnoreCase)) return;
         if (!SvgLocalUrl.TryParseId(input.ToString(), out _))
@@ -73,7 +73,7 @@ internal static class SvgMarkerSyntax
     {
         SvgElementAttributePolicy.ValidateMarker(reader, work, token);
         string overflow = style.Overflow ?? "hidden";
-        bool visibleOverflow = overflow.AsSpan().Trim().Equals("visible", StringComparison.OrdinalIgnoreCase);
+        bool visibleOverflow = SvgCssWhitespace.Trim(overflow.AsSpan()).Equals("visible", StringComparison.OrdinalIgnoreCase);
         if (!visibleOverflow) SvgNestedViewportSyntax.ValidateOverflow(overflow);
         _ = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), work, token);
         SvgInheritedTextStyle? font = null;
@@ -84,7 +84,7 @@ internal static class SvgMarkerSyntax
         string units = reader.GetAttribute("markerUnits") ?? "strokeWidth";
         if (units is not ("strokeWidth" or "userSpaceOnUse"))
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only strokeWidth and userSpaceOnUse marker units are implemented.");
-        string orient = (reader.GetAttribute("orient") ?? "0").Trim();
+        string orient = SvgCssWhitespace.Trim(reader.GetAttribute("orient") ?? "0");
         SvgMarkerOrientation orientation = orient == "auto" ? SvgMarkerOrientation.Auto
             : orient == "auto-start-reverse" ? SvgMarkerOrientation.AutoStartReverse : SvgMarkerOrientation.Angle;
         double angle = orientation == SvgMarkerOrientation.Angle ? Angle(orient) : 0;
@@ -98,7 +98,7 @@ internal static class SvgMarkerSyntax
         {
             if (value is null) return fallback;
             ValidateLength(value);
-            ReadOnlySpan<char> input = value.AsSpan().Trim();
+            ReadOnlySpan<char> input = value.AsSpan().Trim(SvgCssWhitespace.Characters);
             if (input.EndsWith('%'))
             {
                 if (basis is not {} extent) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Percentage marker coordinates require a known enclosing viewport.");
@@ -136,7 +136,7 @@ internal static class SvgMarkerSyntax
         double Angle(string value)
         {
             ValidateLength(value);
-            ReadOnlySpan<char> input = value.AsSpan().Trim();
+            ReadOnlySpan<char> input = value.AsSpan().Trim(SvgCssWhitespace.Characters);
             double scale = 1;
             int suffix = 3;
             if (input.EndsWith("deg", StringComparison.Ordinal)) { }
@@ -155,7 +155,7 @@ internal static class SvgMarkerSyntax
         }
         double Number(ReadOnlySpan<char> value, bool svgAngle)
         {
-            if (value.Trim().Length != value.Length || !double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out double number) || !double.IsFinite(number))
+            if (SvgCssWhitespace.Trim(value).Length != value.Length || !double.TryParse(value, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double number) || !double.IsFinite(number))
                 throw new SvgException(SvgErrorCode.MalformedInput, "Marker values must be finite numbers.");
             return Finite(svgAngle ? SvgFloatNumber.ReadValidated(value, work, token) : number);
         }

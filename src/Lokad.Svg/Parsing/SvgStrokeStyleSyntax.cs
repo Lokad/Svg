@@ -117,7 +117,7 @@ internal static class SvgStrokeStyleSyntax
     private static double ParseDashoffsetValue(ReadOnlySpan<char> value)
     {
         ReadOnlySpan<char> token = value.Trim(SvgCssWhitespace.Characters);
-        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd(SvgCssWhitespace.Characters);
+        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2];
         else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash offsets are implemented.");
         if (!double.TryParse(token, CssNumberStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash offsets are implemented.");
         if (result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash offsets are implemented.");
@@ -141,7 +141,7 @@ internal static class SvgStrokeStyleSyntax
     private static double ParseDashEntry(ReadOnlySpan<char> entry)
     {
         ReadOnlySpan<char> token = entry.Trim(SvgCssWhitespace.Characters);
-        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd(SvgCssWhitespace.Characters);
+        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2];
         else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash array entries are implemented.");
         if (!double.TryParse(token, CssNumberStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash array entries are implemented.");
         if (result < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Dash array lengths cannot be negative.");
@@ -159,7 +159,7 @@ internal static class SvgStrokeStyleSyntax
     internal static double ParseStrokeWidth(string? value, string elementName)
     {
         ReadOnlySpan<char> token = (value ?? "1").AsSpan().Trim(SvgCssWhitespace.Characters);
-        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd(SvgCssWhitespace.Characters);
+        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2];
         else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px " + elementName + " stroke widths are implemented.");
         if (!double.TryParse(token, CssNumberStyles, CultureInfo.InvariantCulture, out double strokeWidth) || !double.IsFinite(strokeWidth) || strokeWidth > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px " + elementName + " stroke widths are implemented.");
         if (strokeWidth < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive " + elementName + " stroke widths are implemented.");
@@ -170,7 +170,7 @@ internal static class SvgStrokeStyleSyntax
     internal static bool IsZeroStrokeWidth(string? value)
     {
         ReadOnlySpan<char> token = (value ?? "1").AsSpan().Trim(SvgCssWhitespace.Characters);
-        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd(SvgCssWhitespace.Characters);
+        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2];
         else if (token.Length > 0 && (char.IsLetter(token[^1]) || token.EndsWith("%"))) return false;
         if (!double.TryParse(token, CssNumberStyles, CultureInfo.InvariantCulture, out double strokeWidth) || !double.IsFinite(strokeWidth) || strokeWidth > int.MaxValue) return false;
         return strokeWidth == 0;

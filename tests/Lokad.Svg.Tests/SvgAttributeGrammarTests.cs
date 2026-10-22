@@ -94,6 +94,39 @@ public sealed class SvgAttributeGrammarTests
     public void Css_dash_lists_keep_their_own_whitespace_grammar()
         => Assert.Equal(new double[] { 2, 1 }, SvgStrokeStyleSyntax.ParseDasharray("2\f,\f1"));
 
+    [Theory]
+    [InlineData("shape")]
+    [InlineData("group")]
+    [InlineData("gradient")]
+    [InlineData("pattern")]
+    public void Svg_transform_parameters_are_numbers_without_css_length_units(string scope)
+    {
+        Assert.NotEmpty(Render(Input(scope, "translate(2 1)")));
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => Render(Input(scope, "translate(2px 1)"))).ErrorCode);
+    }
+
+    [Theory]
+    [InlineData("shape", "\u00a0translate(2 1)")]
+    [InlineData("gradient", "translate\u2003(2 1)")]
+    [InlineData("aspect", "\u00a0none")]
+    [InlineData("aspect", "none\u2003")]
+    public void Svg_grammar_does_not_repair_non_ascii_token_boundaries(string scope, string value)
+        => Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => Render(Input(scope, value))).ErrorCode);
+
+    [Theory]
+    [InlineData(",.5 1")]
+    [InlineData(".5,,1")]
+    [InlineData(".5, ,1")]
+    [InlineData(".5 1,")]
+    public void Blur_lists_preserve_required_numeric_values(string value)
+        => Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => Render(Input("blur", value))).ErrorCode);
+
+    [Theory]
+    [InlineData(".5,1")]
+    [InlineData(" .5 , 1 ")]
+    public void Blur_lists_preserve_valid_comma_whitespace(string value)
+        => Assert.Equal(Render(Input("blur", ".5 1")), Render(Input("blur", value)));
+
     private static byte[] Input(string scope, string value)
     {
         const string stops = "<stop stop-color='red'/><stop offset='1' stop-color='blue'/>";
@@ -105,6 +138,7 @@ public sealed class SvgAttributeGrammarTests
             "spread" => "<defs><linearGradient id='p' x2='.5' spreadMethod='" + value + "'>" + stops + "</linearGradient></defs><rect width='8' height='8' fill='url(#p)'/>",
             "aspect" => "<svg width='8' height='8' viewBox='0 0 8 4' preserveAspectRatio='" + value + "'><rect width='8' height='4' fill='red'/></svg>",
             "viewbox" => "<svg width='8' height='8' viewBox='" + value + "'><rect width='2' height='2' fill='red'/></svg>",
+            "blur" => "<defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='8' height='8'><feGaussianBlur stdDeviation='" + value + "'/></filter></defs><rect x='2' y='2' width='4' height='4' fill='red' filter='url(#f)'/>",
             _ => "<rect width='2' height='2' fill='red' transform='" + value + "'/>"
         };
         return System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'>" + body + "</svg>");

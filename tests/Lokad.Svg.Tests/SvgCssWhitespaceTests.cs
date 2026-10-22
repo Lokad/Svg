@@ -63,10 +63,12 @@ public sealed class SvgCssWhitespaceTests
     [InlineData("\u00a0fill", "red")]
     [InlineData("fill\u2003", "red")]
     [InlineData("paint-order", "stroke\u00a0fill")]
+    [InlineData("stroke-width", "2 px")]
+    [InlineData("stroke-dashoffset", "1 px")]
     public void Malformed_css_tokens_reject_without_changing_their_value(string property, string value)
     {
-        Assert.Throws<SvgException>(() => Render("<rect width='8' height='8' style='" + property + ":" + value + "'/>"));
-        Assert.Throws<SvgException>(() => Render("<style>rect{" + property + ":" + value + "}</style><rect width='8' height='8'/>"));
+        Assert.Throws<SvgException>(() => Render("<rect width='8' height='8' stroke='blue' style='" + property + ":" + value + "'/>"));
+        Assert.Throws<SvgException>(() => Render("<style>rect{" + property + ":" + value + "}</style><rect width='8' height='8' stroke='blue'/>"));
     }
 
     [Fact]

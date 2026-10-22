@@ -125,10 +125,11 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
             double sigmaX = kind == SvgFilterPrimitiveKind.DropShadow ? 2 : 0, sigmaY = sigmaX;
             if (reader.GetAttribute("stdDeviation") is string deviation)
             {
-                ReadOnlySpan<char> values = deviation.AsSpan().Trim();
-                int separator = values.IndexOfAny(" ,\t\r\n".AsSpan());
-                sigmaX = Number(separator < 0 ? values : values[..separator]);
-                sigmaY = separator < 0 ? sigmaX : Number(values[(separator + 1)..].TrimStart(" ,\t\r\n".AsSpan()));
+                SvgGeometrySyntax.DelimitedTokenReader values = new(deviation.AsSpan(), SvgNumberListSyntax.Svg, 0);
+                if (!values.TryReadValue(out ReadOnlySpan<char> first)) throw new SvgException(SvgErrorCode.MalformedInput, "Blur deviations require one or two numbers.");
+                sigmaX = Number(first);
+                sigmaY = values.TryReadValue(out ReadOnlySpan<char> second) ? Number(second) : sigmaX;
+                if (values.TryReadValue(out _)) throw new SvgException(SvgErrorCode.MalformedInput, "Blur deviations require one or two numbers.");
                 if (sigmaX < 0 || sigmaY < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Blur deviations must be nonnegative.");
             }
             double dx = reader.GetAttribute("dx") is string x ? Number(x.AsSpan()) : kind == SvgFilterPrimitiveKind.DropShadow ? 2 : 0;
@@ -238,17 +239,19 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
     private static SvgFilterLength Length(string? value, SvgFilterLength fallback)
     {
         if (value is null) return fallback;
-        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
         bool percent = token.EndsWith("%", StringComparison.Ordinal);
         if (percent) token = token[..^1];
         else if (token.EndsWith("px", StringComparison.Ordinal)) token = token[..^2];
+        if (!token.IsEmpty && SvgCssWhitespace.Is(token[^1])) throw new SvgException(SvgErrorCode.MalformedInput, "Filter length units must follow their number without a gap.");
         return new(Number(token), percent);
     }
 
     private static double Number(ReadOnlySpan<char> token)
     {
         if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter number exceeds the syntax limit.");
-        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double number) || !double.IsFinite(number))
+        token = SvgCssWhitespace.Trim(token);
+        if (!double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double number) || !double.IsFinite(number))
             throw new SvgException(SvgErrorCode.MalformedInput, "Filter values must be finite numbers.");
         return number;
     }

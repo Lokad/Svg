@@ -200,13 +200,13 @@ internal static class SvgGradientSyntax
         int position = 0;
         while (true)
         {
-            while (position < input.Length && char.IsWhiteSpace(input[position])) position++;
+            while (position < input.Length && SvgCssWhitespace.Is(input[position])) position++;
             if (position == input.Length) return transform;
             int nameStart = position;
             while (position < input.Length && char.IsAsciiLetter(input[position])) position++;
             if (nameStart == position) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotation, and finite matrix() gradient transforms are implemented.");
             ReadOnlySpan<char> name = input[nameStart..position];
-            while (position < input.Length && char.IsWhiteSpace(input[position])) position++;
+            while (position < input.Length && SvgCssWhitespace.Is(input[position])) position++;
             if (position == input.Length || input[position] != '(') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotation, and finite matrix() gradient transforms are implemented.");
             position++;
             int argumentsStart = position;
@@ -266,8 +266,8 @@ internal static class SvgGradientSyntax
 
     private static double ParseGradientTransformCoordinate(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        ReadOnlySpan<char> token = value.Trim();
-        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient transform coordinates must be finite bounded numbers.");
+        ReadOnlySpan<char> token = SvgCssWhitespace.Trim(value);
+        if (!double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient transform coordinates must be finite bounded numbers.");
         return SvgFloatNumber.ReadValidated(token, workCounter, cancellationToken);
     }
 
@@ -283,11 +283,11 @@ internal static class SvgGradientSyntax
     /// <summary>Validates the admitted default color interpolation shared by attributes and style declarations.</summary>
     internal static void ValidateColorInterpolation(ReadOnlySpan<char> value)
     {
-        if (value.Trim().Equals("sRGB".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        if (SvgCssWhitespace.Trim(value).Equals("sRGB".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only sRGB color interpolation is implemented.");
     }
 
-    private static bool ContainsPercentage(string? value) => value is not null && value.AsSpan().Trim().EndsWith("%");
+    private static bool ContainsPercentage(string? value) => value is not null && value.AsSpan().Trim(SvgCssWhitespace.Characters).EndsWith("%");
 
     internal static string ParsePaintId(string? value)
     {
@@ -317,11 +317,11 @@ internal static class SvgGradientSyntax
     internal static double ParseStopOffset(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (value is null) return 0;
-        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
         if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Gradient stop values exceed the configured syntax limit.");
         bool percentage = token.EndsWith("%");
-        if (percentage) token = token[..^1].TrimEnd();
-        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.MalformedInput, "Gradient stop offsets must be finite numbers.");
+        if (percentage) token = token[..^1];
+        if (!double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.MalformedInput, "Gradient stop offsets must be finite numbers.");
         float native = SvgFloatNumber.ReadValidated(token, workCounter, cancellationToken);
         // Finite legacy tokens can overflow intermediate float place values,
         // including long leading-zero forms. Keep clamping free of NaN/Infinity.
@@ -1252,11 +1252,11 @@ internal static class SvgGradientSyntax
 
     private static double ParseAxis(string value)
     {
-        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
         if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Gradient coordinate values exceed the configured syntax limit.");
         bool percentage = token.EndsWith("%");
-        if (percentage) token = token[..^1].TrimEnd();
-        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient coordinates must be finite bounded numbers.");
+        if (percentage) token = token[..^1];
+        if (!double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient coordinates must be finite bounded numbers.");
         return percentage ? (float)result / 100f : result;
     }
 }

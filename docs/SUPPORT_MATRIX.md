@@ -110,6 +110,8 @@ child content still undergo the ordinary validation and limits.
 Percentage rectangle positions, dimensions and corner radii resolve in each
 instance's viewport, including nested viewBox and symbol instances.
 Transform lists accept whitespace or comma separators between functions.
+Length numbers and units form one contiguous token; SVG transform arguments are
+bare numbers and do not accept CSS length units.
 SVG transform function names and SVG-specific enumeration values, including
 spreadMethod and preserveAspectRatio, retain their literal case.
 ViewBox, transform, text-position and dash lists retain required values around

@@ -20,14 +20,14 @@ internal static class SvgGeometrySyntax
         bool fullMatrix = false;
         while (true)
         {
-            while (position < input.Length && char.IsWhiteSpace(input[position])) position++;
+            while (position < input.Length && SvgCssWhitespace.Is(input[position])) position++;
             if (position == input.Length) return transform;
 
             int nameStart = position;
             while (position < input.Length && char.IsAsciiLetter(input[position])) position++;
             if (nameStart == position) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A transform function name is required.");
             ReadOnlySpan<char> name = input[nameStart..position];
-            while (position < input.Length && char.IsWhiteSpace(input[position])) position++;
+            while (position < input.Length && SvgCssWhitespace.Is(input[position])) position++;
             if (position == input.Length || input[position] != '(') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Transform arguments must start with '('.");
             position++;
             int argumentsStart = position;
@@ -55,10 +55,10 @@ internal static class SvgGeometrySyntax
     /// <summary>Consumes an optional comma between functions, rejecting a trailing separator.</summary>
     internal static int SkipTransformSeparator(ReadOnlySpan<char> input, int position)
     {
-        while (position < input.Length && char.IsWhiteSpace(input[position])) position++;
+        while (position < input.Length && SvgCssWhitespace.Is(input[position])) position++;
         if (position < input.Length && input[position] == ',')
         {
-            do { position++; } while (position < input.Length && char.IsWhiteSpace(input[position]));
+            do { position++; } while (position < input.Length && SvgCssWhitespace.Is(input[position]));
             if (position == input.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A transform function is required after a comma.");
         }
         return position;
@@ -66,24 +66,24 @@ internal static class SvgGeometrySyntax
 
     internal static double ParseRectangleCoordinate(string value)
     {
-        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
         if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle coordinate values exceed the configured syntax limit.");
-        if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
+        if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2];
         else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px rectangle coordinates are implemented.");
-        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle coordinates must be finite bounded numbers.");
+        if (!double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle coordinates must be finite bounded numbers.");
         return result;
     }
 
     /// <summary>Resolves an explicit bare-number or percentage viewport dimension against its base.</summary>
     internal static double ParseViewportDimension(string value, double? baseValue)
     {
-        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
         if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Viewport dimension values exceed the configured syntax limit.");
         if (token.EndsWith("%"))
         {
             if (baseValue is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Percentage viewport dimensions require known parent dimensions.");
-            ReadOnlySpan<char> number = token[..^1].TrimEnd();
-            if (!double.TryParse(number, NumberStyles.Float, CultureInfo.InvariantCulture, out double percent) || !double.IsFinite(percent)) throw new SvgException(SvgErrorCode.MalformedInput, "Percentage viewport dimensions must be finite numbers.");
+            ReadOnlySpan<char> number = token[..^1];
+            if (!double.TryParse(number, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double percent) || !double.IsFinite(percent)) throw new SvgException(SvgErrorCode.MalformedInput, "Percentage viewport dimensions must be finite numbers.");
             double resolved = MultiplyDivide(percent, baseValue.Value, 100);
             if (!double.IsFinite(resolved)) throw new SvgException(SvgErrorCode.LimitExceeded, "Percentage viewport dimensions exceed the admitted numeric range.");
             return resolved;
@@ -106,11 +106,11 @@ internal static class SvgGeometrySyntax
     /// <summary>Parses one finite direct-text coordinate without the rectangle fast path's quarter-pixel restriction.</summary>
     internal static double ParseTextCoordinate(string value)
     {
-        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
         if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Text coordinate values exceed the configured syntax limit.");
-        if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
+        if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2];
         else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px text coordinates are implemented.");
-        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text coordinates must be finite numbers.");
+        if (!double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text coordinates must be finite numbers.");
         return result;
     }
 
@@ -128,23 +128,23 @@ internal static class SvgGeometrySyntax
 
     internal static int ParseInteger(ReadOnlySpan<char> value)
     {
-        ReadOnlySpan<char> token = value.Trim();
+        ReadOnlySpan<char> token = SvgCssWhitespace.Trim(value);
         if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Integer coordinate values exceed the configured syntax limit.");
-        if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
+        if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2];
         else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px integer rectangle coordinates are implemented.");
-        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result != Math.Truncate(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer rectangle coordinates are implemented.");
+        if (!double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result != Math.Truncate(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer rectangle coordinates are implemented.");
         return checked((int)result);
     }
 
     internal static SvgRootLength? ParseRootLength(string? value)
     {
         if (value is null) return null;
-        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
         if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Root length values exceed the configured syntax limit.");
         if (token.EndsWith("%", StringComparison.Ordinal))
         {
-            ReadOnlySpan<char> number = token[..^1].TrimEnd();
-            if (!double.TryParse(number, NumberStyles.Float, CultureInfo.InvariantCulture, out double percent) || !double.IsFinite(percent) || percent <= 0) throw new SvgException(SvgErrorCode.MalformedInput, "Root dimensions must be finite positive lengths.");
+            ReadOnlySpan<char> number = token[..^1];
+            if (!double.TryParse(number, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double percent) || !double.IsFinite(percent) || percent <= 0) throw new SvgException(SvgErrorCode.MalformedInput, "Root dimensions must be finite positive lengths.");
             return new SvgRootLength(percent, true);
         }
         return new SvgRootLength(ParseLength(value) ?? throw new InvalidOperationException("Root length parsing returned no value."), false);
@@ -153,19 +153,19 @@ internal static class SvgGeometrySyntax
     internal static double? ParseLength(string? value)
     {
         if (value is null) return null;
-        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
         if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Root length values exceed the configured syntax limit.");
         double multiplier = 1;
         bool hasSupportedUnit = false;
-        if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) { token = token[..^2].TrimEnd(); hasSupportedUnit = true; }
-        else if (token.EndsWith("in", StringComparison.OrdinalIgnoreCase)) { token = token[..^2].TrimEnd(); multiplier = 96; hasSupportedUnit = true; }
-        else if (token.EndsWith("cm", StringComparison.OrdinalIgnoreCase)) { token = token[..^2].TrimEnd(); multiplier = 96d / 2.54d; hasSupportedUnit = true; }
-        else if (token.EndsWith("mm", StringComparison.OrdinalIgnoreCase)) { token = token[..^2].TrimEnd(); multiplier = 96d / 25.4d; hasSupportedUnit = true; }
-        else if (token.EndsWith("pt", StringComparison.OrdinalIgnoreCase)) { token = token[..^2].TrimEnd(); multiplier = 96d / 72d; hasSupportedUnit = true; }
-        else if (token.EndsWith("pc", StringComparison.OrdinalIgnoreCase)) { token = token[..^2].TrimEnd(); multiplier = 16; hasSupportedUnit = true; }
+        if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) { token = token[..^2]; hasSupportedUnit = true; }
+        else if (token.EndsWith("in", StringComparison.OrdinalIgnoreCase)) { token = token[..^2]; multiplier = 96; hasSupportedUnit = true; }
+        else if (token.EndsWith("cm", StringComparison.OrdinalIgnoreCase)) { token = token[..^2]; multiplier = 96d / 2.54d; hasSupportedUnit = true; }
+        else if (token.EndsWith("mm", StringComparison.OrdinalIgnoreCase)) { token = token[..^2]; multiplier = 96d / 25.4d; hasSupportedUnit = true; }
+        else if (token.EndsWith("pt", StringComparison.OrdinalIgnoreCase)) { token = token[..^2]; multiplier = 96d / 72d; hasSupportedUnit = true; }
+        else if (token.EndsWith("pc", StringComparison.OrdinalIgnoreCase)) { token = token[..^2]; multiplier = 16; hasSupportedUnit = true; }
         else if (token.IndexOfAny("%mivc".AsSpan()) >= 0 || (token.Length > 0 && char.IsLetter(token[^1]))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number, px, in, cm, mm, pt, pc, and percent root dimensions are implemented.");
         if (hasSupportedUnit && token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number, px, in, cm, mm, pt, pc, and percent root dimensions are implemented.");
-        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result <= 0 || !double.IsFinite(result *= multiplier)) throw new SvgException(SvgErrorCode.MalformedInput, "Root dimensions must be finite positive CSS pixel lengths.");
+        if (!double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result <= 0 || !double.IsFinite(result *= multiplier)) throw new SvgException(SvgErrorCode.MalformedInput, "Root dimensions must be finite positive CSS pixel lengths.");
         return result;
     }
 
@@ -218,7 +218,7 @@ internal static class SvgGeometrySyntax
         DelimitedTokenReader tokens = new(value, SvgNumberListSyntax.Svg, 0);
         while (tokens.TryReadValue(out ReadOnlySpan<char> token))
         {
-            if (valueCount == values.Length || !double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double validated) || !double.IsFinite(validated)) throw new SvgException(SvgErrorCode.MalformedInput, "viewBox must contain four finite numbers with positive width and height.");
+            if (valueCount == values.Length || !double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double validated) || !double.IsFinite(validated)) throw new SvgException(SvgErrorCode.MalformedInput, "viewBox must contain four finite numbers with positive width and height.");
             float native = SvgFloatNumber.ReadValidated(token, workCounter, cancellationToken);
             if (!float.IsFinite(native) || valueCount >= 2 && native == 0 && validated > 0) throw new SvgException(SvgErrorCode.LimitExceeded, "viewBox values exceed the admitted float range.");
             values[valueCount++] = native;
@@ -311,21 +311,20 @@ internal static class SvgGeometrySyntax
 
     private static double ParseTransformCoordinate(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        ReadOnlySpan<char> token = value.Trim();
+        ReadOnlySpan<char> token = SvgCssWhitespace.Trim(value);
         if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Transform coordinate values exceed the configured syntax limit.");
-        if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
-        else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px transform coordinates are implemented.");
-        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite transform coordinates are implemented.");
+        if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number transform coordinates are implemented.");
+        if (!double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite transform coordinates are implemented.");
         return SvgFloatNumber.ReadValidated(token, workCounter, cancellationToken);
     }
 
     internal static (SvgViewBoxAlignment HorizontalAlignment, SvgViewBoxAlignment VerticalAlignment, SvgViewBoxFit Fit) ParsePreserveAspectRatio(string? value)
     {
         if (value is null || value.Equals("xMidYMid meet", StringComparison.Ordinal)) return (SvgViewBoxAlignment.Mid, SvgViewBoxAlignment.Mid, SvgViewBoxFit.Meet);
-        value = value.Trim();
+        value = SvgCssWhitespace.Trim(value);
         int separator = value.IndexOfAny([' ', '\t', '\r', '\n']);
         string alignment = separator < 0 ? value : value[..separator];
-        SvgViewBoxFit fit = separator < 0 ? SvgViewBoxFit.Meet : value[(separator + 1)..].Trim() switch
+        SvgViewBoxFit fit = separator < 0 ? SvgViewBoxFit.Meet : SvgCssWhitespace.Trim(value[(separator + 1)..]) switch
         {
             "meet" => SvgViewBoxFit.Meet,
             "slice" => SvgViewBoxFit.Slice,
@@ -384,11 +383,11 @@ internal static class SvgGeometrySyntax
     {
         string noun = kind == SvgViewportCoordinateKind.Oval ? "oval" : "rectangle";
         string label = kind == SvgViewportCoordinateKind.Oval ? "Oval" : "Rectangle";
-        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
         if (!token.EndsWith("%", StringComparison.Ordinal)) return ParseRectangleCoordinate(value);
         if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, $"{label} coordinate values exceed the configured syntax limit.");
         if (basis is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, $"Percentage {noun} coordinates require a known user-space viewport.");
-        if (!double.TryParse(token[..^1].TrimEnd(), NumberStyles.Float, CultureInfo.InvariantCulture, out double percent) || !double.IsFinite(percent))
+        if (!double.TryParse(token[..^1], SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double percent) || !double.IsFinite(percent))
             throw new SvgException(SvgErrorCode.MalformedInput, $"Percentage {noun} coordinates must be finite numbers.");
         // Native SVG lengths narrow the percentage and viewport before resolving in user space.
         float resolved = (float)percent * (float)basis.Value / 100f;

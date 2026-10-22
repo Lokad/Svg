@@ -77,9 +77,9 @@ internal static class SvgMaskSyntax
 
     private static double ParseMaskFraction(string value)
     {
-        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
         if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Mask region values exceed the configured syntax limit.");
-        if (token.Length == 0 || !double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number mask region fractions are implemented.");
+        if (token.Length == 0 || !double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number mask region fractions are implemented.");
         return result;
     }
     internal static bool ParseMaskType(string? value)
