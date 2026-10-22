@@ -508,7 +508,7 @@ internal static class SvgTextFontSyntax
     internal static string ResolveFamily(string? authored, string? inherited)
     {
         if (authored is null) return inherited ?? "serif";
-        ReadOnlySpan<char> token = authored.AsSpan().Trim();
+        ReadOnlySpan<char> token = SvgCssWhitespace.Trim(authored.AsSpan());
         if (token.Equals("inherit", StringComparison.OrdinalIgnoreCase) || token.Equals("unset", StringComparison.OrdinalIgnoreCase)) return inherited ?? "serif";
         if (token.Equals("initial", StringComparison.OrdinalIgnoreCase)) return "serif";
         return ParseFamily(authored);
