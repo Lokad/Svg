@@ -1512,13 +1512,12 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
-    public void Round_join_on_line_stroke_stays_unsupported()
+    public void Round_join_on_line_stroke_is_inert()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><line x1='0' y1='4' x2='8' y2='4' stroke='red' stroke-width='2' stroke-linejoin='round'/></svg>");
-
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        const string input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><line x1='0' y1='4' x2='8' y2='4' stroke='red' stroke-width='2' stroke-linejoin='round'/></svg>";
+        byte[] pixels = RenderPixels(input, out _, out _);
+        Assert.Equal(RenderPixels(input.Replace(" stroke-linejoin='round'", "", StringComparison.Ordinal), out _, out _), pixels);
+        Assert.Equal(4080, AlphaSum(pixels));
     }
 
     [Fact]
