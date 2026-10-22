@@ -77,9 +77,9 @@ internal static class SvgTextInheritance
         SvgTextWhitespaceMode xmlMode = xmlSpace is null ? inherited.WhitespaceMode : ParseContainerXmlSpace(xmlSpace);
         SvgTextWhitespaceMode whitespaceMode = whiteSpace is null ? xmlMode : SvgTextSyntax.ParseCssWhitespaceMode(whiteSpace);
         string? letterSpacingValue = letterSpacing ?? reader.GetAttribute("letter-spacing");
-        double resolvedLetterSpacing = letterSpacingValue is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacingValue);
+        double resolvedLetterSpacing = letterSpacingValue is null ? inherited.LetterSpacing : SvgTextSyntax.ParseSpacing(letterSpacingValue);
         string? wordSpacingValue = wordSpacing ?? reader.GetAttribute("word-spacing");
-        double resolvedWordSpacing = wordSpacingValue is null ? inherited.WordSpacing : SvgTextSyntax.ParseWordSpacing(wordSpacingValue);
+        double resolvedWordSpacing = wordSpacingValue is null ? inherited.WordSpacing : SvgTextSyntax.ParseSpacing(wordSpacingValue);
         return new SvgInheritedTextStyle(family, weight, italic, fontSize, whitespaceMode, resolvedLetterSpacing, SvgTextSyntax.ParseAnchor(reader.GetAttribute("text-anchor"), inherited.Anchor)) { WordSpacing = resolvedWordSpacing, Decoration = inherited.Decoration };
     }
 }

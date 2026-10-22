@@ -303,7 +303,7 @@ internal static class SvgTextSyntax
         double fontSize = sizeValue is null ? inherited.FontSize : SvgGeometrySyntax.ParseFontSize(sizeValue);
         if (fontSize <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text font-size must be positive.");
         string? letterSpacingValue = letterSpacing ?? reader.GetAttribute("letter-spacing");
-        double parsedLetterSpacing = letterSpacingValue is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacingValue);
+        double parsedLetterSpacing = letterSpacingValue is null ? inherited.LetterSpacing : ParseSpacing(letterSpacingValue);
         SvgTextAnchor anchor = ParseAnchor(reader.GetAttribute("text-anchor"), inherited.Anchor);
         string? x = reader.GetAttribute("x"), y = reader.GetAttribute("y"), dx = reader.GetAttribute("dx"), dy = reader.GetAttribute("dy"), rotate = reader.GetAttribute("rotate");
         double firstX = SvgTextPositionLists.ReadFirst(x, out bool manyX), firstY = SvgTextPositionLists.ReadFirst(y, out bool manyY);
@@ -327,7 +327,7 @@ internal static class SvgTextSyntax
         };
         return new SvgTextStyle(SvgFontFaceRequest.FromCss(family, weight, italic), fontSize, firstX, firstY, firstDx, firstDy, parsedLetterSpacing, anchor, reader.GetAttribute("id") ?? string.Empty)
         { PositionLists = lists, TextLength = textLength, LengthAdjust = lengthAdjust, Baseline = baseline,
-            WordSpacing = (wordSpacing ?? reader.GetAttribute("word-spacing")) is string specifiedWordSpacing ? ParseWordSpacing(specifiedWordSpacing) : inherited.WordSpacing,
+            WordSpacing = (wordSpacing ?? reader.GetAttribute("word-spacing")) is string specifiedWordSpacing ? ParseSpacing(specifiedWordSpacing) : inherited.WordSpacing,
             SourceContext = SvgSourceContext.Capture(reader) };
     }
 
@@ -344,8 +344,8 @@ internal static class SvgTextSyntax
     internal static SvgTextWhitespaceMode ParseWhitespaceMode(XmlReader reader)
         => ParseWhitespaceMode(reader, null, SvgTextWhitespaceMode.Default);
 
-    /// <summary>Resolves normal or a finite user-space/px word-spacing length; percentages remain outside the admitted length subset.</summary>
-    internal static double ParseWordSpacing(string value)
+    /// <summary>Resolves normal or a finite user-space/px letter/word spacing length; percentages remain outside the admitted length subset.</summary>
+    internal static double ParseSpacing(string value)
         => value.Trim().Equals("normal", StringComparison.OrdinalIgnoreCase) ? 0 : SvgGeometrySyntax.ParseTextCoordinate(value);
 
     /// <summary>Parses the bounded CSS whitespace values shared by direct text and its inheriting containers.</summary>
@@ -458,7 +458,7 @@ internal static class SvgTextSyntax
         double? firstDy = dy is null ? null : SvgTextPositionLists.ReadFirst(dy, out _);
         if (rotate is not null) _ = SvgTextPositionLists.ReadFirst(rotate, false, out _);
         SvgTextPositionOffset? positionOffset = x is null && y is null && dx is null && dy is null ? null : new(firstX, firstY, firstDx, firstDy);
-        style = new SvgTextSpanStyle(mode, letterSpacing is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacing), positionOffset)
+        style = new SvgTextSpanStyle(mode, letterSpacing is null ? inherited.LetterSpacing : ParseSpacing(letterSpacing), positionOffset)
         { PositionLists = new(x, y, dx, dy, rotate),
             Paint = SvgTextPaintStyle.ResolveSpan(SvgComputedStyle.Resolve(reader, parsedInline, styleSheet), inherited.Paint),
             Font = SvgTextInheritance.Resolve(reader, inherited.Font, SvgInlineStyleParser.MergeFont(parsedInline.TextFont, parsedInline.Important, styleSheet.TextFont, styleSheet.Important), null, null,
