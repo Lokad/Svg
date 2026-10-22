@@ -5,6 +5,35 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgCssSelectorTests
 {
+    public static IEnumerable<object[]> ClassSeparators()
+    {
+        foreach (int character in new[] { 0x20, 0x9, 0xa, 0xd }) yield return [character, true];
+        foreach (int character in new[] { 0x85, 0xa0, 0x1680, 0x2000, 0x2001, 0x2002, 0x2003, 0x2004,
+            0x2005, 0x2006, 0x2007, 0x2008, 0x2009, 0x200a, 0x2028, 0x2029, 0x202f, 0x205f, 0x3000, 0x200b, 0xfeff })
+            yield return [character, false];
+    }
+
+    [Theory]
+    [MemberData(nameof(ClassSeparators))]
+    public void Class_membership_uses_ascii_separators_without_splitting_unicode_tokens(int character, bool matches)
+    {
+        string separator = "&#x" + character.ToString("x") + ";";
+        foreach (string classes in new[] { "cold" + separator + "hot", "hot" + separator + "cold", separator + "hot" + separator })
+        foreach (string scope in new[] { "svg", "g", "rect", "use", "symbol" })
+        {
+            string geometry = scope switch
+            {
+                "svg" => "<svg width='12' height='12' class='" + classes + "'><rect width='12' height='12'/></svg>",
+                "g" => "<g class='" + classes + "'><rect width='12' height='12'/></g>",
+                "rect" => "<rect width='12' height='12' class='" + classes + "'/>",
+                "use" => "<defs><rect id='s' width='12' height='12'/></defs><use href='#s' class='" + classes + "'/>",
+                _ => "<defs><symbol id='s' class='" + classes + "'><rect width='12' height='12'/></symbol></defs><use href='#s'/>"
+            };
+            Assert.Equal(Render("<rect width='12' height='12' fill='" + (matches ? "red" : "blue") + "'/>"),
+                Render("<style>.hot{fill:red}</style><g fill='blue'>" + geometry + "</g>"));
+        }
+    }
+
     [Theory]
     [InlineData(".outer .target", "<g class='outer'><g>{0}</g></g>", true)]
     [InlineData(".outer>.target", "<g class='outer'><g>{0}</g></g>", false)]

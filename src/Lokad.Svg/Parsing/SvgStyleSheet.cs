@@ -88,12 +88,14 @@ internal static class SvgStyleSheet
         while (position < classes.Length)
         {
             ConsumeCheckpoint(position, workCounter, cancellationToken);
-            while (position < classes.Length && char.IsWhiteSpace(classes[position])) { ConsumeCheckpoint(position, workCounter, cancellationToken); position++; }
+            while (position < classes.Length && IsSeparator(classes[position])) { ConsumeCheckpoint(position, workCounter, cancellationToken); position++; }
             int start = position;
-            while (position < classes.Length && !char.IsWhiteSpace(classes[position])) { ConsumeCheckpoint(position, workCounter, cancellationToken); position++; }
+            while (position < classes.Length && !IsSeparator(classes[position])) { ConsumeCheckpoint(position, workCounter, cancellationToken); position++; }
             if (classes[start..position].Equals(expected, StringComparison.Ordinal)) return true;
         }
         return false;
+
+        static bool IsSeparator(char character) => character is ' ' or '\t' or '\n' or '\r' or '\f';
     }
 
     private static OwnedStyleSheetText StripComments(string value, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
