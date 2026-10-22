@@ -26,7 +26,6 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
     private int _attribute = -1;
 
     internal SvgRenderLimits? ImageLimits { get; private set; }
-    internal SvgViewportLengthBases ImageBases { get; private set; }
 
     private SvgDefinitionLeafSource(string element, Attribute[] attributes, SvgComputedStyle authored,
         SvgInheritedStrokeStyle constructedStroke, IReadOnlyDictionary<string, SvgColor> colors,
@@ -47,7 +46,6 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
     {
         SvgDefinitionLeafSource source = Capture(reader, context, state, true);
         source.ImageLimits = limits;
-        source.ImageBases = context.LengthBases;
         return source;
     }
 
@@ -135,7 +133,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
     }
 
     /// <summary>Replays a referenced image through ordinary decoding/placement with the complete instance map.</summary>
-    /// <remarks>Source attributes and original limits/bases stay borrowed from this document. The caller owns
+    /// <remarks>Source attributes and original limits stay borrowed from this document; lengths use the live instance viewport. The caller owns
     /// returned image/path geometry; failed decode or binding releases partial owners under existing work/cancellation.</remarks>
     internal SvgDefinition LowerImage(SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state)
     {
@@ -144,7 +142,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
         SvgPaintableElementContext context = new(new(reference.InheritedFill, reference.IsDisplayed, reference.IsVisible, placement)
             { OwnOpacity = reference.ElementParentOpacity }, SvgInheritedTextStyle.Default, reference.InheritedStroke,
             default, _colors, _work, _token, state.OutputMagnification, reference.InheritedFillRule)
-        { AuthoredStyle = _authored, LengthBases = ImageBases, RecordingScope = reference.RecordingScope };
+        { AuthoredStyle = _authored, LengthBases = reference.LengthBases, RecordingScope = reference.RecordingScope };
         SvgDefinition result = SvgDefinitionParser.LowerInstanceSource(this, context, state);
         try
         {

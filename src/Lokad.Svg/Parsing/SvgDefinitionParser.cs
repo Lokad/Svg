@@ -2028,7 +2028,7 @@ internal static class SvgDefinitionParser
         {
             if (reader is not SvgDefinitionLeafSource source || source.ImageLimits is not {} limits)
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Image source replay requires retained resource limits.");
-            SvgGeometry image = SvgLeafParser.ParseImage(reader, context, null, source.ImageBases.Width, source.ImageBases.Height, limits, state);
+            SvgGeometry image = SvgLeafParser.ParseImage(reader, context, null, context.LengthBases.Width, context.LengthBases.Height, limits, state);
             try
             {
                 using BudgetedParserList<SvgGeometry> batch = new(state.Budget, SvgMemoryCategory.Scene, context.WorkCounter, context.CancellationToken);

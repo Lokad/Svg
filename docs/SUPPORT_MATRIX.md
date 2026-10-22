@@ -172,6 +172,8 @@ relationships, CRCs and bounded decompression are validated. IDAT chunks must be
 consecutive; transparency must precede image data and follow any palette.
 Image placement supports finite geometry/viewBox percentages, meet/slice
 alignments, `preserveAspectRatio="none"` and general affine maps.
+Percentages and omitted dimensions resolve in each instance's viewport,
+including nested viewBox and symbol instances.
 Images ignore inherited and CSS fill/stroke paint; display, visibility and
 element/group opacity still apply.
 
