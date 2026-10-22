@@ -116,6 +116,9 @@ systems, viewBox/aspect maps, fractional origins and sizes, affine placement and
 bounded repetition. Tile content may include
 ordered vectors, groups, local uses, opacity, gradients, embedded PNGs, admitted
 filters and supplied-font text.
+Referenced patterns remain available under `display:none` on the pattern or its
+definition ancestors. Inherited paint and visibility still apply to tile content;
+`display:none` on rendered tile children suppresses those children.
 
 Current restrictions:
 

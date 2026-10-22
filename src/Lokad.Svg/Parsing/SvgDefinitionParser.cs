@@ -485,7 +485,8 @@ internal static class SvgDefinitionParser
             }
             state.PatternScopeStart = state.PatternScopes?.Count ?? 0;
             state.PatternCommandStart = state.PendingCommandEnd;
-            state.Groups.Add(new(reader.Depth, SvgGroupKind.Pattern, inherited.Presentation with { Transform = SvgAffineTransform.Identity }, inherited.TextStyle, false, false, inherited.Stroke, inherited.FillRule)
+            // A paint server remains available under display:none; its rendered children still resolve display normally.
+            state.Groups.Add(new(reader.Depth, SvgGroupKind.Pattern, inherited.Presentation with { Transform = SvgAffineTransform.Identity, IsDisplayed = true }, inherited.TextStyle, false, false, inherited.Stroke, inherited.FillRule)
                 { RecordingScope = patternContext.RecordingScope, ClipRule = style.ClipRule ?? patternContext.InheritedClipRule });
             if (!reader.IsEmptyElement) state.PatternDepth = reader.Depth;
             else
