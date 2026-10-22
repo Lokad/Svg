@@ -73,8 +73,9 @@ missing dimensions use 300×150, including with a viewBox. A single dimension us
 the viewBox ratio when present, or the other axis's default when absent. Percentages
 use an explicit viewport or the corresponding 300/150 fallback base. The existing
 caller viewport overrides absent/absolute root dimensions. Supported CSS applies
-before this resolution, including later embedded rules; unsupported sizing units
-fail rather than silently defaulting.
+before this resolution, including later embedded rules. Winning root CSS `auto`
+and `inherit` dimensions resolve as 100%, replacing XML dimensions. Unsupported
+sizing units fail rather than silently defaulting.
 
 Child percentage lengths use the resolved logical viewport when there is no
 viewBox, including when a caller viewport overrides root dimensions. A viewBox

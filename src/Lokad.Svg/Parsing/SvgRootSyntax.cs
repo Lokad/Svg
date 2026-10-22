@@ -31,7 +31,8 @@ internal readonly record struct SvgRootSyntax(SvgRootLength? Width, SvgRootLengt
         {
             if (value is null) return null;
             ReadOnlySpan<char> token = value.AsSpan().Trim();
-            if (token.Equals("auto".AsSpan(), StringComparison.OrdinalIgnoreCase) || token.Equals("inherit".AsSpan(), StringComparison.OrdinalIgnoreCase)) return null;
+            // Root auto (including the initial value inherited at the root) resolves as 100%, replacing XML dimensions.
+            if (token.Equals("auto".AsSpan(), StringComparison.OrdinalIgnoreCase) || token.Equals("inherit".AsSpan(), StringComparison.OrdinalIgnoreCase)) return new(100, true);
             try { return SvgGeometrySyntax.ParseRootLength(value); }
             catch (SvgException exception) { SvgSourceContext.Attach(reader, exception, attribute, value); throw; }
         }

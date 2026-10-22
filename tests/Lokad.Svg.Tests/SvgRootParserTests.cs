@@ -246,11 +246,12 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Ignores_auto_inline_style_width_for_root_attribute()
+    public void Resolves_auto_inline_style_width_as_viewport_percentage()
     {
-        SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='12' style='width: auto'/>"), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='12' style='width: auto'/>"), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(12, root.Width?.Value);
+        Assert.Equal(100, root.Width?.Value);
+        Assert.True(root.Width?.IsPercentage);
         Assert.False(root.HasUnsupportedChild);
     }
 
