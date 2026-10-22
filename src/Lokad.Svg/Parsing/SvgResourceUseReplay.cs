@@ -46,7 +46,7 @@ internal static class SvgResourceUseReplay
         string? clipId = clip is null ? null : state.Strings.Copy(SvgClipPathSyntax.ParseClipId(clip));
         SvgComputedStyle style = context.ResolveStyle(reader);
         bool evenOdd = style.ClipRule is null ? state.ClipIsEvenOdd : SvgClipPathSyntax.ParseClipRule(style.ClipRule.AsSpan());
-        state.HasUnsupportedContent |= !reader.IsEmptyElement;
+        SvgStructuralAdmission.ConsumeLeafChildren(reader, state, work, token);
         return new(reference, clipId, evenOdd);
     }
 

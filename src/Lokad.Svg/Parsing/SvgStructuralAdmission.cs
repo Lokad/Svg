@@ -46,6 +46,18 @@ internal static class SvgStructuralAdmission
         return new(hasElements, nodeCount);
     }
 
+    /// <summary>Consumes a live document leaf after its attributes are retained, updating structural counts and unsupported-child state.</summary>
+    /// <remarks>Self-closing retained readers need no traversal. Live readers borrow the document's limits;
+    /// the shared consumer meters every child and cancellation without allocating retained storage.</remarks>
+    internal static void ConsumeLeafChildren(XmlReader reader, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        if (reader.IsEmptyElement) return;
+        SvgRenderLimits limits = state.TextReplay?.Limits ?? throw new InvalidOperationException("Leaf traversal requires document limits.");
+        SvgLeafSubtree subtree = ConsumeLeafSubtree(reader, limits, state.NodeCount, work, token);
+        state.NodeCount = subtree.NodeCount;
+        state.HasUnsupportedContent |= subtree.HasUnsupportedChildren;
+    }
+
     /// <summary>Rejects a document whose root is not an SVG element in the SVG namespace.</summary>
     internal static void ThrowIfNotSvgRoot(XmlReader reader)
     {
@@ -54,5 +66,5 @@ internal static class SvgStructuralAdmission
     }
 }
 
-/// <summary>Reports whether a consumed leaf body contains elements and the resulting document node count.</summary>
-internal readonly record struct SvgLeafSubtree(bool HasElements, int NodeCount);
+/// <summary>Reports unsupported children, excluding inert descriptions, and the resulting document node count.</summary>
+internal readonly record struct SvgLeafSubtree(bool HasUnsupportedChildren, int NodeCount);

@@ -253,9 +253,10 @@ internal static class SvgFontRequestDiscovery
                     bool isKnownContent = isSvgElement && (SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName) || reader.LocalName is ("svg" or "g" or "a" or "switch" or "text" or "use" or "style" or "defs" or "title" or "desc" or "metadata" or "symbol" or "marker" or "clipPath" or "mask" or "image" or "pattern" or "linearGradient" or "radialGradient" or "stop"));
                     bool isInertForeignElement = !isSvgElement && reader.IsEmptyElement;
                     bool unsupportedContainer = (!rootElement && (reader.LocalName == "style" || (reader.LocalName == "symbol" && !symbolDefinition))) || (!rootElement && reader.LocalName == "svg" && !plainViewport) || (!directChild && !hasGroupAncestor && viewportSizes.Count == 0 && reader.LocalName == "defs");
-                    bool nonemptyUnsupportedLeaf = !reader.IsEmptyElement && reader.LocalName is ("use" or "image");
-                    bool rendererRejectsKnownContent = isSvgElement && (unsupportedContainer || nonemptyUnsupportedLeaf);
-                    bool consumeGeometryBody = !sterile && !insideDirectText && isSvgElement && SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName) && !reader.IsEmptyElement && (parentAllowsText || definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1);
+                    bool rendererRejectsKnownContent = isSvgElement && unsupportedContainer;
+                    bool consumeGeometryBody = !sterile && !insideDirectText && isSvgElement
+                        && (SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName) || reader.LocalName is "use" or "image")
+                        && !reader.IsEmptyElement && (parentAllowsText || definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1);
                     // Retain requests admitted before this point: lowering still paints them before conversion rejects the unsupported sibling, so clearing here would omit a font lowering requires.
                     if (!sterile && !hasUnsupportedContent && inertDepth < 0 && !insideDirectText && parentAllowsText && ((!isKnownContent && !isInertForeignElement) || rendererRejectsKnownContent))
                     {
@@ -323,7 +324,7 @@ internal static class SvgFontRequestDiscovery
                     {
                         SvgLeafSubtree subtree = SvgStructuralAdmission.ConsumeLeafSubtree(reader, limits, nodeCount, workCounter, cancellationToken);
                         nodeCount = subtree.NodeCount;
-                        hasUnsupportedContent |= subtree.HasElements;
+                        hasUnsupportedContent |= subtree.HasUnsupportedChildren;
                     }
                     else if (reader.IsEmptyElement)
                     {

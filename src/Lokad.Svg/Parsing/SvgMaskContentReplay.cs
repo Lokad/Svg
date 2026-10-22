@@ -73,7 +73,7 @@ internal static class SvgMaskContentReplay
             state.MaskUse = null;
             state.MaskHasReplayContent = true;
         }
-        state.HasUnsupportedContent |= !group && !reader.IsEmptyElement;
+        if (!group) SvgStructuralAdmission.ConsumeLeafChildren(reader, state, work, token);
         return true;
     }
 

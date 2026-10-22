@@ -5,6 +5,25 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgLeafSubtreeTests
 {
+    [Theory]
+    [InlineData("clipPath")]
+    [InlineData("mask")]
+    [InlineData("pattern")]
+    [InlineData("linearGradient")]
+    public void Resource_leaf_descriptions_obey_document_structural_limits(string resource)
+    {
+        string child = resource == "linearGradient" ? "stop" : "rect";
+        string attributes = string.Join(' ', Enumerable.Range(0, 9).Select(index => "a" + index + "='v'"));
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><" + resource + " id='r'><" + child + "><title><x " + attributes + "/></title></" + child + "></" + resource + "></defs></svg>");
+        foreach ((int nodes, int depth, int attributeLimit) in new[] { (5, 128, 256), (100, 5, 256), (100, 128, 8) })
+        {
+            SvgRenderLimits limits = new(1_000_000, 100_000, 1024, 1_000_000, 1_000_000, nodes, 1000, 100_000, depth, attributeLimit);
+            Lokad.Svg.Rendering.RenderBudget budget = new(1_000_000);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, budget, CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        }
+    }
+
     [Fact]
     public void Element_free_leaf_bodies_leave_the_reader_on_their_closing_element()
     {
@@ -14,7 +33,7 @@ public sealed class SvgLeafSubtreeTests
 
         SvgLeafSubtree subtree = SvgStructuralAdmission.ConsumeLeafSubtree(reader, SvgRenderLimits.Default, 2, new ParserWorkCounter(100), CancellationToken.None);
 
-        Assert.False(subtree.HasElements);
+        Assert.False(subtree.HasUnsupportedChildren);
         Assert.Equal(2, subtree.NodeCount);
         Assert.Equal(XmlNodeType.EndElement, reader.NodeType);
         Assert.Equal("path", reader.LocalName);
@@ -45,7 +64,7 @@ public sealed class SvgLeafSubtreeTests
 
         SvgLeafSubtree subtree = SvgStructuralAdmission.ConsumeLeafSubtree(reader, SvgRenderLimits.Default, 7, new ParserWorkCounter(100), CancellationToken.None);
 
-        Assert.True(subtree.HasElements);
+        Assert.True(subtree.HasUnsupportedChildren);
         Assert.Equal(9, subtree.NodeCount);
         Assert.Equal("path", reader.LocalName);
     }

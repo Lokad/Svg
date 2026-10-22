@@ -181,15 +181,13 @@ internal static class SvgDocumentTraversal
                 }
                 else if (SvgRenderedLeafParser.TryParse(reader, inScope, root, state, limits, budget, namedColors, fontSnapshot, workCounter, cancellationToken))
                 {
-                    // Rendered leaves admit no rendered children: an explicitly closed leaf with an element-free
-                    // subtree renders exactly like the self-closing form, while any child element keeps the
-                    // unsupported flag (animation, unknown and nested content stay rejected). Text consumes
-                    // its own subtree and keeps its path.
+                    // Balanced leaves share the self-closing behavior; inert descriptions remain allowed.
+                    // Drawing, animation and unknown children stay unsupported. Text owns its own subtree.
                     if (!textElement && !reader.IsEmptyElement)
                     {
                         SvgLeafSubtree subtree = SvgStructuralAdmission.ConsumeLeafSubtree(reader, limits, state.NodeCount, workCounter, cancellationToken);
                         state.NodeCount = subtree.NodeCount;
-                        state.HasUnsupportedContent |= subtree.HasElements;
+                        state.HasUnsupportedContent |= subtree.HasUnsupportedChildren;
                     }
                 }
                 else if (inScope && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName))

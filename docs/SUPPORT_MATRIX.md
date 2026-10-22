@@ -162,6 +162,9 @@ opacity do not suppress raw clip geometry.
 IDs on clip rectangles, rounded rectangles, paths, circles and ellipses remain
 available to ordinary local instances, with authored paint/stroke independent of
 the clip.
+Geometric leaves, local uses and gradient stops accept self-closing or balanced
+XML forms, including inert comments/descriptions. Drawing children remain
+unsupported on those leaves.
 
 For one element, composition follows **filter → mask → clip → opacity**. A child
 clip remains inside an ancestor's effect. Group opacity isolates the composed
@@ -176,8 +179,9 @@ Resource attribute/declaration locations have distinct boundaries:
   `clipPath` container itself is unsupported.
 - `clip-path` in inline styles or stylesheets is unsupported. CSS `clip-rule`
   support does not enable that declaration.
-- A `use` child inside `clipPath` supports single-contour referenced content.
-  Referenced compound paths are unsupported; direct compound clip content works.
+- A `use` child inside `clipPath` supports one referenced contour. Plain rectangle
+  instances and empty/compound sources are unsupported; direct rectangles and
+  compound clip paths work.
 - Embedded image targets can be clipped/masked and patterns can contain images,
   but an `image` child inside a mask is unsupported.
 

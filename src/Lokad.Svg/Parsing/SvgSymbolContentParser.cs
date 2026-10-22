@@ -64,7 +64,7 @@ internal static class SvgSymbolContentParser
             int start = content.AddUse(reference, fillOpacity, color, strokeOpacity, stroke, style.PaintOrder, markers,
                 SvgRetainedTextSource.CaptureElement(reader, context, state, state.TextReplay?.Limits ?? throw new InvalidOperationException("Use capture requires document limits.")), clipId, style.Fill is not null, displayed, visible);
             if (id is not null) state.Definitions.TryAdd(id, new([], false, null, null) { SymbolContent = new(content, start, 1), BorrowedFromSymbol = true });
-            state.HasUnsupportedContent |= !reader.IsEmptyElement;
+            SvgStructuralAdmission.ConsumeLeafChildren(reader, state, work, token);
         }
         return true;
 

@@ -153,7 +153,7 @@ internal static class SvgDefinitionParser
             {
                 SvgLeafSubtree subtree = SvgStructuralAdmission.ConsumeLeafSubtree(reader, limits, state.NodeCount, workCounter, cancellationToken);
                 state.NodeCount = subtree.NodeCount;
-                state.HasUnsupportedContent |= subtree.HasElements;
+                state.HasUnsupportedContent |= subtree.HasUnsupportedChildren;
             }
             return inDefinitions;
         }
@@ -249,7 +249,7 @@ internal static class SvgDefinitionParser
                 nestedClip = nestedClip is null ? null : state.Strings.Copy(nestedClip);
                 if (!SvgPresentationResolver.IsPainted(clipStyle.Display, clipStyle.Visibility, true, state.ClipIsVisible))
                 {
-                    state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                    SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
                     return true;
                 }
                 PromoteClipRectangle(state, workCounter, cancellationToken);
@@ -270,7 +270,7 @@ internal static class SvgDefinitionParser
                 }
                 else AppendClipChild(CreateClipRectangle(source, state, workCounter, cancellationToken) with
                     { NestedClipId = nestedClip, UsesNativeReplay = nestedClip is not null }, state, workCounter, cancellationToken);
-                state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
                 return true;
             }
             if (reader.LocalName == "path")
@@ -293,7 +293,7 @@ internal static class SvgDefinitionParser
                     clipContent = clipContent with { NestedClipId = nestedClip, UsesNativeReplay = clipContent.UsesNativeReplay || nestedClip is not null };
                     AppendClipChild(clipContent, state, workCounter, cancellationToken);
                 }
-                state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
                 return true;
             }
             if (reader.LocalName is "circle" or "ellipse")
@@ -307,7 +307,7 @@ internal static class SvgDefinitionParser
                 SvgAffineTransform childMap = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken);
                 if (!SvgPresentationResolver.IsPainted(clipStyle.Display, clipStyle.Visibility, true, state.ClipIsVisible))
                 {
-                    state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                    SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
                     return true;
                 }
                 PromoteClipRectangle(state, workCounter, cancellationToken);
@@ -328,7 +328,7 @@ internal static class SvgDefinitionParser
                     AppendClipChild(CreateClipSource(commands.Detach(), childMap, childMap.IsAxisAligned, nestedClip, state, workCounter, cancellationToken),
                         state, workCounter, cancellationToken);
                 }
-                state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
                 return true;
             }
             state.HasUnsupportedContent = true;
@@ -424,7 +424,7 @@ internal static class SvgDefinitionParser
                         SvgPaintRecording.AdoptLeafScene(lowered, builder, state);
                     }
                     catch { foreach (SvgGeometry geometry in lowered.Geometries) geometry.Dispose(); throw; }
-                    state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                    SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
                     return true;
                 }
             }
@@ -438,7 +438,7 @@ internal static class SvgDefinitionParser
                 if (!element.Presentation.IsPainted) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Invisible mask content is not implemented.");
                 state.MaskValue = SvgMaskSyntax.InterpretValue(element.Presentation.Color, state.MaskIsAlpha);
                 state.MaskContentBox = element.Transform.Apply(new SvgClipBox(syntax.X, syntax.Y, syntax.Width, syntax.Height));
-                state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
                 return true;
             }
             if (reader.LocalName == "circle")
@@ -458,7 +458,7 @@ internal static class SvgDefinitionParser
                     state.MaskContentBox = UnionMaskContentBox(state.MaskContentGeometries, workCounter, cancellationToken);
                 }
                 catch { lowered.Discard(); throw; }
-                state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
                 return true;
             }
             state.HasUnsupportedContent = true;
@@ -572,7 +572,7 @@ internal static class SvgDefinitionParser
                     {
                         SvgLeafSubtree subtree = SvgStructuralAdmission.ConsumeLeafSubtree(reader, limits, state.NodeCount, workCounter, cancellationToken);
                         state.NodeCount = subtree.NodeCount;
-                        state.HasUnsupportedContent |= subtree.HasElements;
+                        state.HasUnsupportedContent |= subtree.HasUnsupportedChildren;
                     }
                     return true;
                 }
@@ -594,7 +594,7 @@ internal static class SvgDefinitionParser
                         RejectPatternContentPaint(style, state);
                         SvgSceneBuilder builder = GetPatternContentBuilder(state, workCounter, cancellationToken);
                         SvgPaintRecording.AdoptLeafScene(LowerInstanceSource(reader, tileContext, state), builder, state);
-                        state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                        SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
                         return true;
                     }
                     SvgGeometry validated = parsedContent.Geometries[0];
@@ -604,7 +604,7 @@ internal static class SvgDefinitionParser
                     // legacy one-leaf fast path, while vector scenes need native opacity/stroke recording.
                     state.PatternRectangleSource = SvgDefinitionLeafSource.Capture(reader, tileContext, state);
                     state.PatternRectangleContext = tileContext;
-                    state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                    SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
                     return true;
 
                     static bool CanKeepLegacyContent(SvgParsedGeometry parsed, SvgPatternTile tile)
@@ -636,7 +636,7 @@ internal static class SvgDefinitionParser
                 SvgComputedStyle style = context.ResolveStyle(reader);
                 RejectPatternContentPaint(style, state);
                 AdoptLeaf(LowerInstanceSource(reader, context, state));
-                state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
                 return true;
 
                 void AdoptLeaf(SvgDefinition lowered) => SvgPaintRecording.AdoptLeafScene(lowered, builder, state);
@@ -687,7 +687,7 @@ internal static class SvgDefinitionParser
                 if (state.GradientStops.Count >= SvgGradientSyntax.MaximumGradientStops) throw new SvgException(SvgErrorCode.LimitExceeded, "Gradient stop count exceeds the supported limit.");
                 SvgElementAttributePolicy.ValidateGradientStop(reader, workCounter, cancellationToken);
                 state.GradientStops.Add(SvgGradientSyntax.ParseStop(reader, namedColors, workCounter, cancellationToken));
-                state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
                 return true;
             }
             state.HasUnsupportedContent = true;
@@ -725,7 +725,7 @@ internal static class SvgDefinitionParser
             else useFrame = deferredClip.Value.Parent;
             string? maskAttribute = SvgLocalUrl.ReadReference(reader, "mask");
             SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, useFrame, ResolveDeferredMaskValue(reader, state), maskAttribute is null ? null : state.Strings.Copy(maskAttribute), deferredClip, state, workCounter, cancellationToken);
-            state.HasUnsupportedContent |= !reader.IsEmptyElement;
+            SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
             return true;
         }
         return false;
