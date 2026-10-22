@@ -1268,7 +1268,8 @@ internal static class SvgDefinitionParser
             if (template.VectorCount is > 0 and < 4 && template.HasUnits) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Partial gradient vector overrides with gradient unit overrides are not implemented.");
             if (template.HasUnits && template.VectorCount == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient unit overrides without vector overrides are not implemented.");
         }
-        if (!state.ThrowOnMissingGradientHref && template.Href is not null && (state.GradientStops.Count == 0 || template.VectorCount < 4))
+        bool inheritAttributes = template.VectorCount == 4 && (!template.HasUnits || !template.HasTransform || !template.HasSpread);
+        if (!state.ThrowOnMissingGradientHref && template.Href is not null && (state.GradientStops.Count == 0 || template.VectorCount < 4 || inheritAttributes))
         {
             string hrefId = SvgGradientSyntax.ParseGradientHrefId(template.Href);
             if (!state.Gradients.TryGetValue(hrefId, out _) && !state.RadialGradients.TryGetValue(hrefId, out _))
@@ -1278,6 +1279,19 @@ internal static class SvgDefinitionParser
             }
         }
         (SvgColor start, SvgColor end, double offset1, double offset2, bool isEmpty, SvgGradientStop[] stops) = ResolveGradientStops(state, template, workCounter, cancellationToken);
+        if (inheritAttributes && template.Href is {} href)
+        {
+            var inherited = ResolveGradientTemplateAttributes(href, state);
+            // A complete replacement vector applies the resolved definition map once.
+            template = template with
+            {
+                IsUserSpace = template.HasUnits ? template.IsUserSpace : inherited.IsUserSpace,
+                Spread = template.HasSpread ? template.Spread : inherited.Spread,
+                Transform = template.HasTransform ? template.Transform : inherited.Transform,
+                HasTransform = true,
+                Href = null,
+            };
+        }
         (double x1, double y1, double x2, double y2, bool isUserSpace, SvgGradientSpread spread, double referenceScaleX, double referenceScaleY, bool hasLinearRotation) = ResolveGradientVector(template, state);
         SvgLinearGradient gradient = new(start, end, x1, y1, x2, y2, offset1, offset2, isEmpty, isUserSpace, spread, stops, referenceScaleX, referenceScaleY, hasLinearRotation)
         { SourcePaint = RetainSourcePaint(template, state, workCounter, cancellationToken) };
@@ -1452,7 +1466,8 @@ internal static class SvgDefinitionParser
         if (template.Href is not null && template.VectorCount > 0 && template.VectorCount < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Partial radial vector overrides are not implemented.");
         if (template.Href is not null && template.VectorCount == 0 && (template.HasFocalX || template.HasFocalY || template.HasFocalRadius)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Partial radial vector overrides are not implemented.");
         if (template.HasUnits && template.VectorCount == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Radial unit overrides without vector overrides are not implemented.");
-        if (!state.ThrowOnMissingGradientHref && template.Href is not null && (state.GradientStops.Count == 0 || (template.VectorCount == 0 && !template.HasFocalX && !template.HasFocalY && !template.HasFocalRadius)))
+        bool inheritAttributes = template.VectorCount == 3 && (!template.HasUnits || !template.HasTransform || !template.HasSpread);
+        if (!state.ThrowOnMissingGradientHref && template.Href is not null && (state.GradientStops.Count == 0 || template.VectorCount == 0 || inheritAttributes))
         {
             string hrefId = SvgGradientSyntax.ParseGradientHrefId(template.Href);
             if (!state.Gradients.TryGetValue(hrefId, out _) && !state.RadialGradients.TryGetValue(hrefId, out _))
@@ -1462,9 +1477,26 @@ internal static class SvgDefinitionParser
             }
         }
         (SvgColor start, SvgColor end, double offset1, double offset2, bool isEmpty, SvgGradientStop[] stops) = ResolveRadialStops(state, template, workCounter, cancellationToken);
+        if (inheritAttributes && template.Href is {} href)
+        {
+            var inherited = ResolveGradientTemplateAttributes(href, state);
+            // A complete replacement vector applies the resolved definition map once.
+            template = template with
+            {
+                IsUserSpace = template.HasUnits ? template.IsUserSpace : inherited.IsUserSpace,
+                Spread = template.HasSpread ? template.Spread : inherited.Spread,
+                Transform = template.HasTransform ? template.Transform : inherited.Transform,
+                HasTransform = true,
+                Href = null,
+            };
+        }
         (double centerX, double centerY, double radius, double focalX, double focalY, double focalRadius, bool isUserSpace, SvgGradientSpread spread, double referenceScaleX, double referenceScaleY, bool hasRadialRotation, SvgGradientTransform inverse, bool hasGeneralTransform) = ResolveRadialVector(template, state);
         if (!isUserSpace) ValidateRadialFocalCircle(centerX, centerY, radius, focalX, focalY, focalRadius);
-        SvgRadialGradient gradient = new(start, end, centerX, centerY, radius, focalX, focalY, focalRadius, offset1, offset2, isEmpty, isUserSpace, spread, stops, referenceScaleX, referenceScaleY, hasRadialRotation, inverse, hasGeneralTransform);
+        SvgRadialGradient gradient = new(start, end, centerX, centerY, radius, focalX, focalY, focalRadius, offset1, offset2, isEmpty, isUserSpace, spread, stops, referenceScaleX, referenceScaleY, hasRadialRotation, inverse, hasGeneralTransform)
+        {
+            TemplateTransform = template.HasTransform ? template.Transform
+                : template.Href is {} parentHref ? ResolveGradientTemplateAttributes(parentHref, state).Transform : SvgGradientTransform.Identity,
+        };
         if (hasGeneralTransform && template.HasTransform)
         {
             SvgGradientTransform map = template.Transform;
@@ -1473,6 +1505,17 @@ internal static class SvgDefinitionParser
         string retainedId = state.RadialGradientId ?? throw new InvalidOperationException("Radial gradient registration requires an identifier.");
         if (!state.RadialGradients.TryAdd(retainedId, gradient)) throw new InvalidOperationException("Resolved gradients register once.");
         ResolveGradientDependents(state, retainedId, workCounter, cancellationToken);
+    }
+
+    /// <summary>Reads independently inherited attributes from a resolved local template without owning storage.</summary>
+    private static (bool IsUserSpace, SvgGradientTransform Transform, SvgGradientSpread Spread) ResolveGradientTemplateAttributes(string href, SvgDocumentState state)
+    {
+        string id = SvgGradientSyntax.ParseGradientHrefId(href);
+        if (state.Gradients.TryGetValue(id, out SvgLinearGradient linear))
+            return (linear.IsUserSpace, linear.SourcePaint?.Data.Local ?? SvgGradientTransform.Identity, linear.Spread);
+        if (state.RadialGradients.TryGetValue(id, out SvgRadialGradient radial))
+            return (radial.IsUserSpace, radial.TemplateTransform, radial.Spread);
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
     }
 
     /// <summary>Retains a radial template and its authored stops until its target registers.</summary>

@@ -106,9 +106,11 @@ or masks on the referenced group, and nested viewport content are unsupported.
 
 Linear and radial gradients support objectBoundingBox/userSpaceOnUse units,
 affine gradient transforms, local templates, pad/repeat/reflect spread and sRGB
-color interpolation. Radial paints include focal-circle parameters. Patterns
-support both tile/content unit systems, viewBox/aspect maps, fractional origins
-and sizes, affine placement and bounded repetition. Tile content may include
+color interpolation. Radial paints include focal-circle parameters. Gradient
+templates retain inherited units, transforms and spread methods when the child
+supplies a complete replacement vector. Patterns support both tile/content unit
+systems, viewBox/aspect maps, fractional origins and sizes, affine placement and
+bounded repetition. Tile content may include
 ordered vectors, groups, local uses, opacity, gradients, embedded PNGs, admitted
 filters and supplied-font text.
 

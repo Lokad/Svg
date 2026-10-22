@@ -29,6 +29,9 @@ internal readonly record struct SvgGradientTemplate(double X1, double Y1, double
 /// <remarks>ReferenceScaleX and ReferenceScaleY multiply every scale map applied to the stored circle after the local definition, so raster evaluation inverts the exact paint map under non-uniform referencing transforms.</remarks>
 internal readonly record struct SvgRadialGradient(SvgColor Start, SvgColor End, double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops, double ReferenceScaleX, double ReferenceScaleY, bool HasRotation, SvgGradientTransform Inverse, bool HasGeneralTransform)
 {
+    /// <summary>Retains the effective definition transform for templates that replace the complete vector.</summary>
+    internal SvgGradientTransform TemplateTransform { get; init; } = SvgGradientTransform.Identity;
+
     /// <summary>Retains the local shader matrix separately from referencing maps so bitmap translation precedes their float concatenation.</summary>
     internal SvgGradientPaintMatrices? NativePaintMatrices { get; init; }
 
