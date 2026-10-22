@@ -88,14 +88,12 @@ internal static class SvgStyleSheet
         while (position < classes.Length)
         {
             ConsumeCheckpoint(position, workCounter, cancellationToken);
-            while (position < classes.Length && IsSeparator(classes[position])) { ConsumeCheckpoint(position, workCounter, cancellationToken); position++; }
+            while (position < classes.Length && SvgCssWhitespace.Is(classes[position])) { ConsumeCheckpoint(position, workCounter, cancellationToken); position++; }
             int start = position;
-            while (position < classes.Length && !IsSeparator(classes[position])) { ConsumeCheckpoint(position, workCounter, cancellationToken); position++; }
+            while (position < classes.Length && !SvgCssWhitespace.Is(classes[position])) { ConsumeCheckpoint(position, workCounter, cancellationToken); position++; }
             if (classes[start..position].Equals(expected, StringComparison.Ordinal)) return true;
         }
         return false;
-
-        static bool IsSeparator(char character) => character is ' ' or '\t' or '\n' or '\r' or '\f';
     }
 
     private static OwnedStyleSheetText StripComments(string value, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -245,7 +243,7 @@ internal static class SvgStyleSheet
 
     private static int SkipWhitespace(string value, int position, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        while (position < value.Length && char.IsWhiteSpace(value[position])) { ConsumeCheckpoint(position, workCounter, cancellationToken); position++; }
+        while (position < value.Length && SvgCssWhitespace.Is(value[position])) { ConsumeCheckpoint(position, workCounter, cancellationToken); position++; }
         return position;
     }
 
@@ -293,7 +291,7 @@ internal static class SvgStyleSheet
 
         internal bool TryRead(out ReadOnlySpan<char> token)
         {
-            while (_position < _value.Length && char.IsWhiteSpace(_value[_position])) { ConsumeCheckpoint(_position, _workCounter, _cancellationToken); _position++; }
+            while (_position < _value.Length && SvgCssWhitespace.Is(_value[_position])) { ConsumeCheckpoint(_position, _workCounter, _cancellationToken); _position++; }
             if (_position == _value.Length)
             {
                 token = default;
@@ -312,7 +310,7 @@ internal static class SvgStyleSheet
                 char value = _value[_position];
                 if (value == '[') attribute = true;
                 else if (value == ']') attribute = false;
-                else if (!attribute && (char.IsWhiteSpace(value) || value == '>')) break;
+                else if (!attribute && (SvgCssWhitespace.Is(value) || value == '>')) break;
                 ConsumeCheckpoint(_position, _workCounter, _cancellationToken);
                 _position++;
             }
@@ -341,7 +339,7 @@ internal static class SvgStyleSheet
             {
                 int start = _position;
                 while (_position < _value.Length && _value[_position] != ',') { ConsumeCheckpoint(_position, _workCounter, _cancellationToken); _position++; }
-                selector = _value[start.._position].Trim();
+                selector = SvgCssWhitespace.Trim(_value[start.._position]);
                 if (_position < _value.Length) _position++;
                 if (!selector.IsEmpty) return true;
             }

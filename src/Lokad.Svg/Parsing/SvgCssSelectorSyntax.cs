@@ -95,10 +95,10 @@ internal static class SvgCssSelectorSyntax
                 ReadOnlySpan<char> attribute = _value.Slice(_position + 1, end - 1);
                 _position += end + 1;
                 int separator = attribute.IndexOf('=');
-                value = (separator < 0 ? attribute : attribute[..separator]).Trim();
+                value = SvgCssWhitespace.Trim(separator < 0 ? attribute : attribute[..separator]);
                 if (!value.SequenceEqual("id") && !value.SequenceEqual("class")) throw Unsupported();
                 if (separator < 0) { kind = ComponentKind.AttributePresent; return true; }
-                expected = attribute[(separator + 1)..].Trim();
+                expected = SvgCssWhitespace.Trim(attribute[(separator + 1)..]);
                 if (expected.Length >= 2 && expected[0] is '\'' or '"' && expected[^1] == expected[0]) expected = expected[1..^1];
                 ValidateIdentifier(expected);
                 kind = ComponentKind.AttributeEquals;
@@ -142,13 +142,13 @@ internal static class SvgCssSelectorSyntax
         internal bool Read(out ReadOnlySpan<char> pattern, out bool child)
         {
             child = false; pattern = default;
-            while (_position > 0 && char.IsWhiteSpace(_value[_position - 1])) _position--;
+            while (_position > 0 && SvgCssWhitespace.Is(_value[_position - 1])) _position--;
             if (_position == 0) return false;
             if (_started && _value[_position - 1] == '>')
             {
                 child = true;
                 _position--;
-                while (_position > 0 && char.IsWhiteSpace(_value[_position - 1])) _position--;
+                while (_position > 0 && SvgCssWhitespace.Is(_value[_position - 1])) _position--;
             }
             int end = _position;
             bool attribute = false;
@@ -157,7 +157,7 @@ internal static class SvgCssSelectorSyntax
                 char value = _value[_position - 1];
                 if (value == ']') attribute = true;
                 else if (value == '[') attribute = false;
-                else if (!attribute && (char.IsWhiteSpace(value) || value == '>')) break;
+                else if (!attribute && (SvgCssWhitespace.Is(value) || value == '>')) break;
                 _position--;
             }
             pattern = _value[_position..end];

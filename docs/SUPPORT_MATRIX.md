@@ -209,8 +209,11 @@ orientation conversion, JPEG/GIF/WebP and external image fetching.
 
 ### Static CSS
 
-Selectors include SVG element names, IDs, classes, attribute selectors, selector
-lists, element+ID/class, descendants and children. Rules apply through admitted
+Selectors include bounded unescaped ASCII SVG element names, IDs and classes,
+id/class presence or exact-equality attribute selectors, selector lists,
+element+ID/class, descendants and children. CSS separators use ASCII whitespace;
+other Unicode characters are retained in identifiers and rejected when outside
+this selector subset. Rules apply through admitted
 root, group, symbol, nested-SVG and resource trees. Specificity, source order,
 inline priority, inheritance and `!important` are implemented.
 Empty, whitespace-only and comment-only stylesheets are no-ops. XML namespace
