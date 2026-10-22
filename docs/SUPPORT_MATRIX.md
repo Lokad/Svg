@@ -326,6 +326,9 @@ rules; the exact embedded family `Courier New` enables its Windows one-cell span
 policy, which a catalog alias to another program cannot enable. See
 [font rasterization](RASTERIZATION_DESIGN.md#supplied-fonts) for internal invariants
 and [font qualification](../tests/README.md#qualification) for evidence.
+Zero textLength preserves natural layout. Spacing adjustment also preserves
+natural metrics and anchoring when shaping leaves only one glyph; positive
+spacingAndGlyphs still scales that glyph.
 
 Unsupported: wrapping, vertical text, language-specific/general GSUB/GPOS, other
 lookup flags/types/formats, path stretch/auto spacing, variable/color/bitmap fonts,
