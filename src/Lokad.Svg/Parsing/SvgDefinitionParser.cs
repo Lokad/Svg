@@ -192,7 +192,9 @@ internal static class SvgDefinitionParser
             state.SymbolViewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), workCounter, cancellationToken);
             state.SymbolDefinition = SvgSymbolDefinitionBuilder.Create(state.Budget, workCounter, cancellationToken, presentation);
             state.SymbolDefinition.EstablishesViewport = true;
-            if (shaderFill is not null || marker || presentation.IsHidden || presentation.IsVisible is not null || presentation.Markers.HasMarkers || presentation.InheritsOpacity || sheet != default)
+            // Keep authored symbol fill-rule on its scope. A flattened child reconstructed
+            // for an instance would otherwise inherit the caller's rule instead.
+            if (shaderFill is not null || marker || presentation.IsHidden || presentation.IsVisible is not null || presentation.Markers.HasMarkers || presentation.InheritsOpacity || presentation.FillRule is not null || sheet != default)
             {
                 state.SymbolDefinition.EnableContent();
                 state.HasRetainedSymbolContent = true;
