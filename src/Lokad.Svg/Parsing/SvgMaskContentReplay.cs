@@ -51,16 +51,18 @@ internal static class SvgMaskContentReplay
             if (reader.IsEmptyElement) SvgDefinitionParser.RegisterSymbol(state, work, token);
             else state.SymbolDepth = reader.Depth;
         }
-        bool requiresVectorPaint = false;
+        bool requiresReplay = false;
         if (reader.LocalName is "rect" or "circle" && !SvgGradientSyntax.IsGradientFill(source.AuthoredStyle.Fill))
         {
             SvgResolvedShapePresentation paint = context.ResolveShape(reader, true).Presentation;
             SvgColor fill = paint.Color;
-            requiresVectorPaint = paint.HasFill && paint.StrokeColor is not null
-                || !state.MaskIsAlpha && (fill.Red != fill.Green || fill.Red != fill.Blue
-                    || paint.StrokeColor is {} stroke && (stroke.Red != stroke.Green || stroke.Red != stroke.Blue));
+            // Empty/hidden content and stroke-only shapes need the same ordered
+            // scene behavior as their grouped forms, rather than a painted shortcut.
+            requiresReplay = !paint.HasFill || paint.StrokeColor is not null
+                || !state.MaskIsAlpha && (fill.Red != fill.Green || fill.Red != fill.Blue)
+                || reader.LocalName == "circle" && SvgEllipseSyntax.ParseCircle(reader, context.LengthBases).RadiusX == 0;
         }
-        if (!clipped && !requiresVectorPaint && !state.MaskObjectBoundingBoxContent && !group && state.MaskReplayChildCount == 1 && (reader.LocalName is "use" or "rect" or "circle"
+        if (!clipped && !requiresReplay && !state.MaskObjectBoundingBoxContent && !group && state.MaskReplayChildCount == 1 && (reader.LocalName is "use" or "rect" or "circle"
             || SvgGradientSyntax.IsGradientFill(context.ResolveStyle(reader).Fill))) return false;
         if (!state.MaskHasReplayContent)
         {
