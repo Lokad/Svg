@@ -94,7 +94,7 @@ internal static class SvgElementAttributePolicy
                 bool isInheritedStrokeStyle = reader.LocalName == "stroke-dasharray" || reader.LocalName == "stroke-dashoffset" || reader.LocalName == "stroke-linecap" || reader.LocalName == "stroke-linejoin";
                 bool isInheritedContainer = isInheritedStrokeStyle && kind is SvgElementKind.Group or SvgElementKind.Root or SvgElementKind.Use or SvgElementKind.Pattern or SvgElementKind.Marker or SvgElementKind.Text or SvgElementKind.TextSpan;
                 bool roundInstanceJoin = kind == SvgElementKind.Use && reader.LocalName == "stroke-linejoin";
-                if (reader.NamespaceURI.Length == 0) SvgStrokeStyleSyntax.ValidateAttribute(reader, reader.LocalName, reader.Value, kind is SvgElementKind.Path or SvgElementKind.PointList or SvgElementKind.Circle or SvgElementKind.Line or SvgElementKind.Rectangle || isInheritedContainer, kind == SvgElementKind.Line || isInheritedContainer, kind == SvgElementKind.Rectangle || isInheritedContainer, (reader.LocalName == "stroke-linejoin" && kind == SvgElementKind.Rectangle && HasNonzeroRoundedCorners(reader)) || roundInstanceJoin || isInheritedContainer, kind is SvgElementKind.Path or SvgElementKind.Circle or SvgElementKind.PointList or SvgElementKind.Rectangle || isInheritedContainer, workCounter, cancellationToken);
+                if (reader.NamespaceURI.Length == 0) SvgStrokeStyleSyntax.ValidateAttribute(reader, reader.LocalName, reader.Value, kind is SvgElementKind.Path or SvgElementKind.PointList or SvgElementKind.Circle or SvgElementKind.Line or SvgElementKind.Rectangle || isInheritedContainer, kind == SvgElementKind.Line || isInheritedContainer, kind == SvgElementKind.Rectangle || isInheritedContainer, (reader.LocalName == "stroke-linejoin" && kind == SvgElementKind.Rectangle && HasNonzeroRoundedCorners(reader)) || roundInstanceJoin || isInheritedContainer, kind is SvgElementKind.Path or SvgElementKind.Circle or SvgElementKind.PointList or SvgElementKind.Rectangle or SvgElementKind.Line || isInheritedContainer, workCounter, cancellationToken);
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "font-variant") SvgTextFontSyntax.ValidateFontVariant(reader.Value.AsSpan());
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "color-interpolation") SvgGradientSyntax.ValidateColorInterpolation(reader.Value.AsSpan());
                         if (reader.NamespaceURI.Length == 0 && reader.LocalName == "overflow")
@@ -193,11 +193,10 @@ internal static class SvgElementAttributePolicy
     internal static bool HasNonzeroRoundedCorners(XmlReader reader)
     {
         return IsNonzeroCornerRadius(reader.GetAttribute("rx")) || IsNonzeroCornerRadius(reader.GetAttribute("ry"));
-    }
 
-    private static bool IsNonzeroCornerRadius(string? value)
-    {
-        return value is not null && SvgGeometrySyntax.ParseRectangleCoordinate(value) != 0;
+        // Admission needs only zero/nonzero. Lowering resolves the actual viewport.
+        static bool IsNonzeroCornerRadius(string? value)
+            => value is not null && SvgGeometrySyntax.ParseViewportCoordinate(value, 1, SvgViewportCoordinateKind.Rectangle) != 0;
     }
 
     private static bool IsScalarValueAttribute(string name) => name is "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-width" or "stroke-miterlimit" or "stroke-opacity" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray" or "stroke-dashoffset" or "vector-effect" or "clip-rule" or "opacity" or "display" or "visibility" or "version" or "baseProfile" or "focusable" or "target" or "rel" or "hreflang" or "download" or "type" or "clip-path" or "clipPathUnits" or "mask" or "mask-type" or "patternUnits" or "patternContentUnits" or "x1" or "y1" or "x2" or "y2" or "offset" or "stop-color" or "stop-opacity" or "gradientUnits" or "spreadMethod" or "cx" or "cy" or "r" or "fx" or "fy" or "fr" or "x" or "y" or "dx" or "dy" or "x1" or "y1" or "x2" or "y2" or "width" or "height" or "rx" or "ry" or "viewBox" or "preserveAspectRatio" or "overflow" or "text-anchor" or "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "word-spacing" or "text-decoration" or "space";

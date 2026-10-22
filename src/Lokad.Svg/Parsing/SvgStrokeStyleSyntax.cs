@@ -259,10 +259,10 @@ internal static class SvgStrokeStyleSyntax
         RequireBandCapJoin(reader, elementName, solid, solid, solid && SvgElementAttributePolicy.HasNonzeroRoundedCorners(reader), solid && SvgElementAttributePolicy.HasNonzeroRoundedCorners(reader), workCounter, cancellationToken);
     }
 
-    /// <summary>Rejects round caps and non-miter joins where strokes lower to fixed bands with square tip extension.</summary>
+    /// <summary>Validates supported caps and inert joins on a single line without imposing polygon-join restrictions.</summary>
     internal static void RequireLineCapJoin(XmlReader reader, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        RequireBandCapJoin(reader, elementName, true, true, false, false, workCounter, cancellationToken);
+        RequireBandCapJoin(reader, elementName, true, true, true, true, workCounter, cancellationToken);
     }
 
     private static void RequireBandCapJoin(XmlReader reader, string elementName, bool allowSquare, bool allowRound, bool allowRoundJoin, bool allowBevelJoin, ParserWorkCounter workCounter, CancellationToken cancellationToken)
