@@ -24,7 +24,9 @@ internal static class SvgShapePresentationResolver
 
     internal static void ValidateFillRule(string? value)
     {
-        if (value is null || value.Equals("nonzero", StringComparison.OrdinalIgnoreCase) || value.Equals("evenodd", StringComparison.OrdinalIgnoreCase)) return;
+        if (value is null) return;
+        ReadOnlySpan<char> token = SvgCssWhitespace.Trim(value);
+        if (token.Equals("nonzero", StringComparison.OrdinalIgnoreCase) || token.Equals("evenodd", StringComparison.OrdinalIgnoreCase)) return;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonzero and evenodd fill rules are implemented.");
     }
 

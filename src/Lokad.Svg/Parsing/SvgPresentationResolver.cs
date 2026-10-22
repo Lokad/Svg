@@ -29,16 +29,19 @@ internal static class SvgPresentationResolver
 
     internal static bool ParseDisplay(string? value)
     {
-        if (value is null || value.Equals("inline", StringComparison.OrdinalIgnoreCase) || value.Equals("block", StringComparison.OrdinalIgnoreCase)) return true;
-        if (value.Equals("none", StringComparison.OrdinalIgnoreCase)) return false;
+        if (value is null) return true;
+        ReadOnlySpan<char> token = SvgCssWhitespace.Trim(value);
+        if (token.Equals("inline", StringComparison.OrdinalIgnoreCase) || token.Equals("block", StringComparison.OrdinalIgnoreCase)) return true;
+        if (token.Equals("none", StringComparison.OrdinalIgnoreCase)) return false;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only inline, block and none display values are implemented.");
     }
 
     internal static bool ParseVisibility(string? value, bool inheritedVisibility)
     {
         if (value is null) return inheritedVisibility;
-        if (value.Equals("visible", StringComparison.OrdinalIgnoreCase)) return true;
-        if (value.Equals("hidden", StringComparison.OrdinalIgnoreCase)) return false;
+        ReadOnlySpan<char> token = SvgCssWhitespace.Trim(value);
+        if (token.Equals("visible", StringComparison.OrdinalIgnoreCase)) return true;
+        if (token.Equals("hidden", StringComparison.OrdinalIgnoreCase)) return false;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only visible and hidden visibility values are implemented.");
     }
 }

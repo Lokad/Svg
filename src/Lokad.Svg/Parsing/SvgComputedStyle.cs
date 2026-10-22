@@ -81,6 +81,7 @@ internal readonly record struct SvgComputedStyle(string? Color, string? Fill, st
             : inlineValue ?? styleSheetValue ?? reader.GetAttribute(attribute);
         // Attribute admission and CSS parsing bound the authored token first.
         if (resolved is not null && attribute is "color" or "fill" or "stroke") resolved = resolved.Trim();
+        if (resolved is not null && attribute is "display" or "visibility" or "fill-rule") resolved = SvgCssWhitespace.Trim(resolved);
         // Resolve color's self-reference as inheritance after the cascade has selected its declaration.
         if (attribute == "color" && resolved is not null && resolved.Equals("currentColor", StringComparison.OrdinalIgnoreCase)) return null;
         if (attribute.StartsWith("marker-", StringComparison.Ordinal)) return resolved;
