@@ -19,10 +19,10 @@ internal static class SvgLocalUrl
         ReadOnlySpan<char> token = SvgCssWhitespace.Trim(value.AsSpan());
         if (token.Length < 7 || !token.StartsWith("url(".AsSpan(), StringComparison.OrdinalIgnoreCase) || !token.EndsWith(")".AsSpan(), StringComparison.Ordinal)) return false;
         ReadOnlySpan<char> inner = SvgCssWhitespace.Trim(token[4..^1]);
-        if (inner.Length >= 2 && (inner[0] == (char)34 || inner[0] == (char)39) && inner[^1] == inner[0]) inner = SvgCssWhitespace.Trim(inner[1..^1]);
+        if (inner.Length >= 2 && (inner[0] == (char)34 || inner[0] == (char)39) && inner[^1] == inner[0]) inner = inner[1..^1].TrimEnd(SvgCssWhitespace.Characters);
         if (inner.Length < 2 || inner[0] != (char)35) return false;
-        ReadOnlySpan<char> reference = SvgCssWhitespace.Trim(inner[1..]);
-        if (reference.IsEmpty || reference.IndexOfAny((char)34, (char)39) >= 0 || reference.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) return false;
+        ReadOnlySpan<char> reference = inner[1..];
+        if (reference.IsEmpty || reference.IndexOfAny((char)34, (char)39) >= 0 || reference.IndexOfAny(SvgCssWhitespace.Characters) >= 0 || reference.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) return false;
         id = reference.ToString();
         return true;
     }
