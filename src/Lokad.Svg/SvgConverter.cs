@@ -584,7 +584,8 @@ public static partial class SvgConverter
                 requestedRight = Math.Min(requestedRight, filterClip.Right); requestedBottom = Math.Min(requestedBottom, filterClip.Bottom);
             }
             if (requestedRight <= requestedLeft || requestedBottom <= requestedTop) return end + 1;
-            if (right + paddingX < requestedLeft || bottom + paddingY < requestedTop || left - paddingX > requestedRight || top - paddingY > requestedBottom) return end + 1;
+            if (right > left && bottom > top
+                && (right + paddingX < requestedLeft || bottom + paddingY < requestedTop || left - paddingX > requestedRight || top - paddingY > requestedBottom)) return end + 1;
             SvgCpuBitmapOrigin? imageShaderOrigin = null;
             {
                 bool objectSourceUnits = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox;
@@ -625,12 +626,14 @@ public static partial class SvgConverter
                 right = sourceBounds.Right * horizontalScale + horizontalOffset;
                 bottom = sourceBounds.Bottom * verticalScale + verticalOffset;
             }
+            // Empty source scopes still run their filter graph over transparent input.
+            if (right <= left || bottom <= top)
+                (left, top, right, bottom) = (requestedLeft, requestedTop, requestedRight, requestedBottom);
             double replayPaddingX = resource.Primitives.Items.Length > 1 ? paddingX : offsetPaddingX;
             double replayPaddingY = resource.Primitives.Items.Length > 1 ? paddingY : offsetPaddingY;
             double frameLeft = Math.Floor(Math.Min(left, requestedLeft - replayPaddingX)), frameTop = Math.Floor(Math.Min(top, requestedTop - replayPaddingY));
             double frameWidth = Math.Ceiling(Math.Max(right, requestedRight + replayPaddingX)) - frameLeft;
             double frameHeight = Math.Ceiling(Math.Max(bottom, requestedBottom + replayPaddingY)) - frameTop;
-            if (right <= left || bottom <= top) return end + 1;
             if (!double.IsFinite(frameWidth) || !double.IsFinite(frameHeight) || frameWidth > options.Limits.MaximumDimension || frameHeight > options.Limits.MaximumDimension
                 || frameWidth * frameHeight > options.Limits.MaximumPixels || frameWidth * frameHeight > int.MaxValue / 4)
                 throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source and halo exceed the configured surface limits.");
@@ -649,7 +652,8 @@ public static partial class SvgConverter
             long copyWork = (long)sw * sh * 4 + end - first;
             if (copyWork >= options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source capture exceeds the work limit.");
             workUnits += copyWork;
-            using RenderBudget.BudgetReservation commandsOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(end - first), SvgMemoryCategory.Scene);
+            using RenderBudget.BudgetReservation? commandsOwner = end > first
+                ? budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(end - first), SvgMemoryCategory.Scene) : null;
             SvgDrawCommand[] sourceCommands = new SvgDrawCommand[end - first];
             for (int index = first; index < end; index++) { cancellationToken.ThrowIfCancellationRequested(); sourceCommands[index - first] = root.Commands[index]; }
             SvgRenderLimits limits = options.Limits;
@@ -1108,7 +1112,7 @@ public static partial class SvgConverter
                     foreach (SvgFilterInput input in resource.MergeInputs.Items.AsSpan(final.MergeFirst, final.MergeCount)) Add(input);
                 else Add(new(primitives.Length - 1));
                 workUnits += planWork.Used;
-                if (placements.Count == 0) return true;
+                if (placements.Count == 0 || end == first) return true;
                 using RenderBudget.BudgetReservation commandOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(end - first), SvgMemoryCategory.Scene);
                 SvgDrawCommand[] draws = new SvgDrawCommand[end - first];
                 Charge(draws.Length);

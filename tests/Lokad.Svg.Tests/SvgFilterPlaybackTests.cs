@@ -199,10 +199,10 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
-    public void Hidden_and_empty_groups_do_not_activate_dormant_filter_failures()
+    public void Hidden_groups_do_not_activate_dormant_filter_failures()
     {
         byte[] plain = Document("<rect width='4' height='4' fill='blue'/>");
-        byte[] withGroups = Document("<g display='none' filter='url(#missing)'><rect width='4' height='4'/></g><g filter='url(#missing)'/><rect width='4' height='4' fill='blue'/>");
+        byte[] withGroups = Document("<g display='none' filter='url(#missing)'><rect width='4' height='4'/></g><g display='none' filter='url(#missing)'/><rect width='4' height='4' fill='blue'/>");
         Assert.Equal(SvgConverter.ConvertToPng(plain, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
             SvgConverter.ConvertToPng(withGroups, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }

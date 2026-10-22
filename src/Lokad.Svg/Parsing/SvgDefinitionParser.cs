@@ -510,7 +510,7 @@ internal static class SvgDefinitionParser
             if (reader.LocalName == "g")
             {
                 SvgParsedGroup group = SvgGroupParser.Parse(reader, root, state, namedColors, workCounter, cancellationToken);
-                if (!reader.IsEmptyElement)
+                if (!reader.IsEmptyElement || group.Scope.HasFilter)
                 {
                     SvgSceneBuilder builder = GetPatternContentBuilder(state, workCounter, cancellationToken);
                     bool clip = group.Scope.ClipPathId is not null && !group.Scope.HasFilter;

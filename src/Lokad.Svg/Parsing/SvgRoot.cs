@@ -1580,15 +1580,16 @@ internal sealed class SvgSceneBuilder : IDisposable
         void RemoveEmptyGroups()
         {
             // Deferred resource bindings need authored boundaries until resolution
-            // finishes. An empty balanced scope then has no paint to isolate, and
-            // removing it must also remove any now-empty enclosing scopes.
+            // finishes. Empty filter scopes can generate paint from transparent
+            // input; retain them and their enclosing composition scopes.
             int retained = 0;
             for (int index = 0; index < _commands.Count; index++)
             {
                 _workCounter.Consume(_cancellationToken);
                 SvgDrawCommand command = _commands[index];
                 if (command.Kind == SvgDrawCommandKind.EndGroup && retained > 0
-                    && _commands[retained - 1].Kind == SvgDrawCommandKind.BeginGroup)
+                    && _commands[retained - 1].Kind == SvgDrawCommandKind.BeginGroup
+                    && _commands[retained - 1].RegionKind != SvgLayerRegionKind.Filter)
                     retained--;
                 else _commands[retained++] = command;
             }

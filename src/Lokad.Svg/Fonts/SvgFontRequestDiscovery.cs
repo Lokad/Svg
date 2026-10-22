@@ -83,7 +83,7 @@ internal static class SvgFontRequestDiscovery
         {
             XmlReaderSettings settings = SvgXmlReaderPolicy.Create(svg, limits, budget, workCounter, cancellationToken);
             SvgRootStyleSheetParser.Collect(svg, settings, limits, styleRules, styleStrings, budget, workCounter, cancellationToken);
-            using SvgPatternContentSelection? patternContents = SvgPatternContentSelection.Create(svg, settings, limits, styleStrings, budget, workCounter, cancellationToken);
+            using SvgPatternContentSelection? patternContents = SvgPatternContentSelection.Create(svg, settings, limits, styleRules, styleStrings, budget, workCounter, cancellationToken);
             using SvgInstanceFontDiscovery? instanceFonts = SvgInstanceFontDiscovery.Collect(svg, settings, limits, styleRules, styleStrings, budget, workCounter, cancellationToken);
             using SvgCssAncestorContext ancestors = new(styleRules, budget, workCounter, cancellationToken);
             using ReadOnlyMemoryStream stream = new(svg);

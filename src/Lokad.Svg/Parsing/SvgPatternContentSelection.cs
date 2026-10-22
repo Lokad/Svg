@@ -20,7 +20,7 @@ internal sealed class SvgPatternContentSelection : IDisposable
     internal bool RequiresContent(string? id) => id is not null && _needed.TryGetValue(id, out _);
 
     internal static SvgPatternContentSelection? Create(ReadOnlyMemory<byte> svg, XmlReaderSettings settings,
-        SvgRenderLimits limits, BudgetedParserStringStore strings, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        SvgRenderLimits limits, BudgetedParserList<CssRule> rules, BudgetedParserStringStore strings, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         ReadOnlySpan<byte> bytes = svg.Span;
@@ -33,12 +33,14 @@ internal sealed class SvgPatternContentSelection : IDisposable
             using BudgetedParserDictionary<string, int> ids = new(budget, SvgMemoryCategory.Parser, 96);
             using BudgetedParserList<Scope> scopes = new(budget, SvgMemoryCategory.Parser, work, token);
             using BudgetedParserList<int> path = new(budget, SvgMemoryCategory.Parser, work, token);
+            using SvgCssAncestorContext ancestors = new(rules, budget, work, token);
             using ReadOnlyMemoryStream stream = new(svg);
             using XmlReader reader = XmlReader.Create(stream, settings);
             int nodes = 0, rootDepth = -1;
             while (reader.Read())
             {
                 work.Consume(token);
+                ancestors.Observe(reader, 0);
                 if (reader.NodeType == XmlNodeType.EndElement)
                 {
                     if (scopes.Count > 0 && scopes[^1].Depth == reader.Depth) scopes.RemoveLast();
@@ -57,9 +59,9 @@ internal sealed class SvgPatternContentSelection : IDisposable
                     selected = !parent.Consumed && reader.GetAttribute("systemLanguage") is null;
                     if (selected) scopes[^1] = parent with { Consumed = true };
                 }
-                // An empty group creates no tile payload, so an alias containing only it still inherits content.
+                // An empty group creates a tile payload only when its active filter can produce output.
                 if (parent.Pattern >= 0 && scopes.Count > 0 && svgElement && !SvgStructuralVocabulary.IsDescriptiveElement(reader.LocalName)
-                    && (reader.LocalName != "g" || !reader.IsEmptyElement))
+                    && (reader.LocalName != "g" || !reader.IsEmptyElement || HasFilter()))
                     patterns[parent.Pattern] = patterns[parent.Pattern] with { HasContent = true };
                 int pattern = -1;
                 if (selected && svgElement && reader.LocalName == "pattern" && (reader.Depth == rootDepth + 1 || parent.Definitions)
@@ -105,6 +107,11 @@ internal sealed class SvgPatternContentSelection : IDisposable
             return result;
 
             double? Dimension(string name) => reader.GetAttribute(name) is {} value ? SvgGeometrySyntax.ParseRectangleCoordinate(value) : null;
+            bool HasFilter()
+            {
+                SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, SvgStyleSheet.Resolve(reader, rules, ancestors, work, token), work, token);
+                return style.Filter is {} filter && filter.Trim() != "none" && SvgPresentationResolver.ParseDisplay(style.Display);
+            }
         }
         catch { result.Dispose(); throw; }
     }

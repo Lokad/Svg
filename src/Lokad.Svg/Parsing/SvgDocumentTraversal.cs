@@ -196,7 +196,7 @@ internal static class SvgDocumentTraversal
                 {
                     SvgParsedGroup parsedGroup = SvgGroupParser.Parse(reader, root, state, namedColors, workCounter, cancellationToken);
                     SvgRenderedGroupSourceParser.BeginGroup(reader, root, state, limits, namedColors, workCounter, cancellationToken);
-                    if (!reader.IsEmptyElement)
+                    if (!reader.IsEmptyElement || parsedGroup.Scope.HasFilter)
                     {
                         SvgViewportFrame? filterParent = parsedGroup.Scope.HasFilter ? state.EffectiveFrame : null;
                         bool filterViewport = filterParent is { HasAffineClipScope: false } viewportParent && viewportParent.Clip != SvgClipBox.Unbounded;
@@ -274,7 +274,10 @@ internal static class SvgDocumentTraversal
                 if (state.HasUnsupportedContent && state.UnsupportedDiagnostic is null && sourceContext is {} unsupportedSource)
                     state.UnsupportedDiagnostic = unsupportedSource.Describe(string.Empty, string.Empty);
             }
-            if (reader.NodeType == XmlNodeType.EndElement)
+            // An empty filtered group has the same effect lifetime as its explicitly closed form.
+            bool closeEmptyFilter = reader.NodeType == XmlNodeType.Element && reader.IsEmptyElement
+                && state.Groups.Count > 0 && state.Groups[^1].Depth == reader.Depth && state.Groups[^1].HasFilter;
+            if (reader.NodeType == XmlNodeType.EndElement || closeEmptyFilter)
             {
                 if (reader.Depth == state.FilterDepth) SvgDefinitionParser.RegisterFilter(state);
                 if (reader.Depth == state.SkipDepth) state.SkipDepth = -1;

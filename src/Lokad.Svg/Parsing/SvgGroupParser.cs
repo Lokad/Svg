@@ -19,6 +19,13 @@ internal static class SvgGroupParser
             resolved = resolved with { Presentation = resolved.Presentation with { PaintServerFill = state.Strings.Copy(fill) } };
         }
         resolved = resolved with { Presentation = resolved.Presentation with { Markers = resolved.Presentation.Markers.Retain(state, workCounter, cancellationToken) } };
+        string? filterId = null;
+        if (style.Filter is string filter && filter.Trim() != "none")
+        {
+            if (!SvgLocalUrl.TryParseId(filter, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local filter url references are implemented.");
+            if (resolved.Presentation.IsDisplayed) filterId = state.Strings.Copy(id);
+        }
+        bool hasScope = !reader.IsEmptyElement || filterId is not null;
         string? maskReference = reader.GetAttribute("mask");
         byte? mask = null;
         string? deferredMask = null;
@@ -26,7 +33,7 @@ internal static class SvgGroupParser
         {
             string maskId = SvgMaskSyntax.ParseMaskId(maskReference);
             if (state.Masks.TryGetValue(maskId, out byte knownMask)) mask = knownMask;
-            else if (reader.IsEmptyElement) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
+            else if (!hasScope) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
             else deferredMask = state.Strings.Copy(maskId);
             if (mask is not null && SvgMaskSyntax.HasCustomRegion(reader, state))
             {
@@ -34,7 +41,7 @@ internal static class SvgGroupParser
                 deferredMask = state.Strings.Copy(maskId);
                 mask = null;
             }
-            if (mask is not null && !reader.IsEmptyElement)
+            if (mask is not null && hasScope)
             {
                 // Preserve mask multiplication before outer opacity. Deferred resolution
                 // retains both factors on an isolated group, including uniform masks
@@ -44,7 +51,7 @@ internal static class SvgGroupParser
             }
         }
         byte combined = mask is null ? resolved.Opacity : SvgReferenceResolver.MultiplyAlpha(resolved.Opacity, mask.Value);
-        bool hasMaskScope = reader.IsEmptyElement ? false : PushMaskScope(reader, state);
+        bool hasMaskScope = hasScope && PushMaskScope(reader, state);
         SvgGroupKind kind = reader.LocalName == "switch" ? SvgGroupKind.Switch : SvgStructuralVocabulary.IsGroupContainer(reader.LocalName) ? SvgGroupKind.Group : SvgGroupKind.Link;
         SvgPaintOpacity sourceOpacity = style.GetOpacity();
         SvgRecordingScope opacityScope = context.RecordingScope.Value == 0 ? new(1) : context.RecordingScope;
@@ -52,12 +59,6 @@ internal static class SvgGroupParser
             opacityScope = state.NewRecordingScope();
         SvgRecordingScope contentScope = maskReference is null ? opacityScope : state.NewRecordingScope();
         string? clipId = SvgClipPathSyntax.ResolveClipId(reader, state);
-        string? filterId = null;
-        if (style.Filter is string filter && filter.Trim() != "none")
-        {
-            if (!SvgLocalUrl.TryParseId(filter, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local filter url references are implemented.");
-            if (!reader.IsEmptyElement && resolved.Presentation.IsDisplayed) filterId = state.Strings.Copy(id);
-        }
         return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, resolved.Presentation, resolved.TextStyle, combined != 255 || sourceOpacity.Value != 1, hasMaskScope, resolved.Stroke, resolved.FillRule) { HasFilter = filterId is not null, HasDeferredMask = deferredMask is not null, RecordingScope = contentScope, ClipRule = style.ClipRule ?? context.InheritedClipRule, ClipPathId = clipId is null ? null : state.Strings.Copy(clipId) }, deferredMask) { FilterId = filterId, LengthBases = context.LengthBases, SourceOpacity = sourceOpacity, RecordingScope = opacityScope };
     }
 

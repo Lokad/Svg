@@ -208,7 +208,7 @@ internal static class SvgRootParser
         SvgAffineTransform outputMap, SvgViewport? explicitViewport, double rasterScale, SvgDocumentPreparation preparation)
     {
         using SvgPatternContentSelection? patternContents = SvgPatternContentSelection.Create(svg, preparation.Settings,
-            limits, preparation.Strings, budget, workCounter, cancellationToken);
+            limits, preparation.Rules, preparation.Strings, budget, workCounter, cancellationToken);
         using ReadOnlyMemoryStream stream = new(svg);
         using XmlReader reader = XmlReader.Create(stream, preparation.Settings);
         return SvgDocumentTraversal.Parse(reader, limits, budget, CssNamedColors, fontSnapshot, workCounter, cancellationToken,
