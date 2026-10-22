@@ -185,14 +185,14 @@ internal static class SvgClipPathSyntax
         }
         return ResolveLeafClip(reader, state);
     }
-    /// <summary>Retains unresolved or generally placed leaf clips; defined axis clips keep their qualified direct route.</summary>
+    /// <summary>Retains unresolved or transformed leaf clips; known clips on identity targets keep the direct route.</summary>
     internal static string? PendingClipId(XmlReader reader, SvgDocumentState state, SvgPaintableElementContext context)
     {
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(state);
         string? id = ResolveClipId(reader, state);
         if (id is null) return null;
-        if (state.Clips.TryGetValue(id, out _) && context.ResolveTransform(reader).IsAxisAligned) return null;
+        if (state.Clips.TryGetValue(id, out _) && context.ResolveTransform(reader) == SvgAffineTransform.Identity) return null;
         return state.Strings.Copy(id);
     }
 

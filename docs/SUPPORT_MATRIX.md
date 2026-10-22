@@ -132,9 +132,10 @@ Current restrictions:
 
 Clip paths support the geometry above, ordered child unions, compound fills,
 user-space/object-box coordinates and affine maps. Clip bindings resolve through
-local instances and forward definitions. Alpha/luminance masks support ordered
-vector/text content, clipping, local uses, both region/content unit systems and
-transformed finite regions.
+local instances and forward definitions. Rectangular leaf clips follow the
+target's own and inherited transforms in both definition orders.
+Alpha/luminance masks support ordered vector/text content, clipping, local uses,
+both region/content unit systems and transformed finite regions.
 
 Hidden clip children do not contribute to the silhouette; visibility inherits
 from the resource's own ancestors and can be overridden by a child. Display on

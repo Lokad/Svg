@@ -1727,9 +1727,10 @@ internal static class SvgReferenceResolver
             && state.ClipPolygons.TryGetValue(clipReference.ClipId, out SvgClipPolygon clipContent) && clipContent.IsObjectBoundingBox
             ? clipContent : null;
         bool nativeClip = pendingUse.DeferredClip is {} nativeReference
-            && state.ClipPolygons.TryGetValue(nativeReference.ClipId, out SvgClipPolygon nativeContent) && !nativeContent.IsObjectBoundingBox;
+            && (state.ClipPolygons.TryGetValue(nativeReference.ClipId, out SvgClipPolygon nativeContent) && !nativeContent.IsObjectBoundingBox
+                || state.Clips.TryGetValue(nativeReference.ClipId, out _) && !pendingUse.Reference.Transform.IsAxisAligned);
         if (pendingUse.DeferredClip is SvgDeferredClip deferred)
-            frame = boundingClip is null && !nativeClip ? ResolveDeferredClipFrame(definition, pendingUse.Reference, deferred, state) : deferred.Parent;
+            frame = boundingClip is null && !nativeClip ? ResolveDeferredClipFrame(definition, pendingUse.Reference, deferred, state, workCounter, cancellationToken) : deferred.Parent;
         byte? mask = pendingUse.Mask;
         if (pendingUse.MaskReference is not null && mask is null && !state.MaskContents.TryGetValue(SvgMaskSyntax.ParseMaskId(pendingUse.MaskReference), out _)) mask = ResolveDeferredMaskValue(pendingUse.MaskReference, state);
         SvgGeometry[] applied = ApplyInstanceMask(definition, pendingUse.Reference, frame, mask, pendingUse.MaskReference, state, workCounter, cancellationToken);
@@ -1767,15 +1768,14 @@ internal static class SvgReferenceResolver
         return value;
     }
 
-    private static SvgViewportFrame ResolveDeferredClipFrame(SvgDefinition definition, SvgUseReference reference, SvgDeferredClip deferred, SvgDocumentState document)
+    private static SvgViewportFrame ResolveDeferredClipFrame(SvgDefinition definition, SvgUseReference reference, SvgDeferredClip deferred, SvgDocumentState document, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(document);
         if (!document.ObjectClips.TryGetValue(deferred.ClipId, out SvgClipBox fractions))
         {
             if (document.Clips.TryGetValue(deferred.ClipId, out SvgClipBox box))
             {
-                if (deferred.Parent is not null && deferred.Parent.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
-                SvgClipBox userClip = deferred.Parent is null ? box : deferred.Parent.Value.Clip.Intersect(box);
+                SvgClipBox userClip = SvgClipPathSyntax.MapGroupClip(box, reference.Transform, deferred.Parent, workCounter, cancellationToken);
                 return new SvgViewportFrame(deferred.Parent?.OffsetX ?? 0, deferred.Parent?.OffsetY ?? 0, deferred.Parent?.ScaleX ?? 1, deferred.Parent?.ScaleY ?? 1, deferred.Parent?.ViewportWidth, deferred.Parent?.ViewportHeight, userClip, deferred.Depth);
             }
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clip-path references are implemented.");

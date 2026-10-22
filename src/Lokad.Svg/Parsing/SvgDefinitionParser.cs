@@ -737,6 +737,8 @@ internal static class SvgDefinitionParser
             string clipId = SvgClipPathSyntax.ParseClipId(clipAttribute);
             bool clipKnown = document.Clips.TryGetValue(clipId, out _) || document.ObjectClips.TryGetValue(clipId, out _);
             bool definitionKnown = document.Definitions.TryGetValue(useReference.Id, out _);
+            if (document.Clips.TryGetValue(clipId, out _) && useReference.Transform != SvgAffineTransform.Identity)
+                return new SvgDeferredClip(document.Strings.Copy(clipId), document.EffectiveFrame, useReader.Depth);
             if (definitionKnown && clipKnown) return null;
             if (!clipKnown) return new SvgDeferredClip(document.Strings.Copy(clipId), document.EffectiveFrame, useReader.Depth);
             if (document.ObjectClips.TryGetValue(clipId, out _)) return new SvgDeferredClip(document.Strings.Copy(clipId), document.EffectiveFrame, useReader.Depth);
