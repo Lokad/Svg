@@ -33,7 +33,6 @@ internal struct SvgStyleCascade
     private string? _width;
     private string? _miterlimit;
     private string? _strokeOpacity;
-    private string? _pathLength;
     private string? _geometryWidth;
     private string? _geometryHeight;
     private string? _overflow;
@@ -66,7 +65,6 @@ internal struct SvgStyleCascade
     private CssDeclarationRank _widthRank;
     private CssDeclarationRank _miterlimitRank;
     private CssDeclarationRank _strokeOpacityRank;
-    private CssDeclarationRank _pathLengthRank;
     private CssDeclarationRank _geometryWidthRank;
     private CssDeclarationRank _geometryHeightRank;
 
@@ -104,7 +102,6 @@ internal struct SvgStyleCascade
         Apply(ref _width, ref _widthRank, style.Width, (style.Important & InlineImportantProperties.Width) != 0, specificity);
         Apply(ref _miterlimit, ref _miterlimitRank, style.Miterlimit, (style.Important & InlineImportantProperties.Miterlimit) != 0, specificity);
         Apply(ref _strokeOpacity, ref _strokeOpacityRank, style.StrokeOpacity, (style.Important & InlineImportantProperties.StrokeOpacity) != 0, specificity);
-        Apply(ref _pathLength, ref _pathLengthRank, style.PathLength, (style.Important & InlineImportantProperties.PathLength) != 0, specificity);
     }
 
     internal InlineStyle ToInlineStyle()
@@ -140,10 +137,9 @@ internal struct SvgStyleCascade
         if (_widthRank.Important) important |= InlineImportantProperties.Width;
         if (_miterlimitRank.Important) important |= InlineImportantProperties.Miterlimit;
         if (_strokeOpacityRank.Important) important |= InlineImportantProperties.StrokeOpacity;
-        if (_pathLengthRank.Important) important |= InlineImportantProperties.PathLength;
         if (_geometryWidthRank.Important) important |= InlineImportantProperties.GeometryWidth;
         if (_geometryHeightRank.Important) important |= InlineImportantProperties.GeometryHeight;
-        return new InlineStyle(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing, WordSpacing = _wordSpacing, TextDecoration = _textDecoration, Linecap = _linecap, Linejoin = _linejoin, Dasharray = _dasharray, Dashoffset = _dashoffset, Width = _width, Miterlimit = _miterlimit, StrokeOpacity = _strokeOpacity, PathLength = _pathLength, ClipRule = _clipRule, PaintOrder = _paintOrder, Filter = _filter, MarkerEnd = _markerEnd, MarkerMid = _markerMid, MarkerStart = _markerStart, Overflow = _overflow, GeometryWidth = _geometryWidth, GeometryHeight = _geometryHeight, Important = important };
+        return new InlineStyle(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing, WordSpacing = _wordSpacing, TextDecoration = _textDecoration, Linecap = _linecap, Linejoin = _linejoin, Dasharray = _dasharray, Dashoffset = _dashoffset, Width = _width, Miterlimit = _miterlimit, StrokeOpacity = _strokeOpacity, ClipRule = _clipRule, PaintOrder = _paintOrder, Filter = _filter, MarkerEnd = _markerEnd, MarkerMid = _markerMid, MarkerStart = _markerStart, Overflow = _overflow, GeometryWidth = _geometryWidth, GeometryHeight = _geometryHeight, Important = important };
     }
 
     private static void Apply(ref string? value, ref CssDeclarationRank currentRank, string? candidate, bool candidateImportant, CssSpecificity specificity)

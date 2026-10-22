@@ -995,24 +995,6 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
-    public void Inline_path_length_matches_direct_attribute()
-    {
-        byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0,4 8,4 8,6' fill='none' stroke='red' stroke-width='2' stroke-dasharray='3 1' style='pathLength: 14'/></svg>", out _, out _);
-        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0,4 8,4 8,6' fill='none' stroke='red' stroke-width='2' stroke-dasharray='3 1' pathLength='14'/></svg>", out _, out _);
-
-        Assert.Equal(direct, styled);
-    }
-
-    [Fact]
-    public void Stylesheet_path_length_matches_direct_attribute()
-    {
-        byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><style>.d { pathLength: 14; }</style><polyline class='d' points='0,4 8,4 8,6' fill='none' stroke='red' stroke-width='2' stroke-dasharray='3 1'/></svg>", out _, out _);
-        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0,4 8,4 8,6' fill='none' stroke='red' stroke-width='2' stroke-dasharray='3 1' pathLength='14'/></svg>", out _, out _);
-
-        Assert.Equal(direct, styled);
-    }
-
-    [Fact]
     public void Odd_dasharray_doubles()
     {
         byte[] odd = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><polyline points='2,2 12,2 12,6' fill='none' stroke='red' stroke-width='2' stroke-dasharray='4,4,4'/></svg>", out _, out _);

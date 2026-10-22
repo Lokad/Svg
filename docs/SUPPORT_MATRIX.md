@@ -246,6 +246,8 @@ marker properties, overflow, root width/height and the text/font properties
 listed below. Each property retains its target/value restrictions; this is not a
 general CSS declaration parser. `paint-order` accepts normal or distinct
 fill/stroke/markers lists, appending omitted operations.
+`pathLength` is an XML number attribute, not a CSS property; declarations in
+inline styles or stylesheets report `UnsupportedFeature`.
 CSS width/height declarations on rectangles and embedded images report
 `UnsupportedFeature`; use XML dimension attributes on these elements. Dimension
 declarations on nonapplicable targets do not affect rendering.

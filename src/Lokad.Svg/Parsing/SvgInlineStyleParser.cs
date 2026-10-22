@@ -24,7 +24,6 @@ internal readonly record struct InlineStyle(string? Color, string? Fill, string?
     internal string? GeometryHeight { get; init; }
     internal string? Miterlimit { get; init; }
     internal string? StrokeOpacity { get; init; }
-    internal string? PathLength { get; init; }
     internal string? ClipRule { get; init; }
     internal string? PaintOrder { get; init; }
     internal string? MarkerStart { get; init; }
@@ -62,7 +61,6 @@ internal enum InlineImportantProperties : long
     Width = 1 << 18,
     Miterlimit = 1 << 19,
     StrokeOpacity = 1 << 20,
-    PathLength = 1 << 21,
     GeometryWidth = 1 << 22,
     GeometryHeight = 1 << 23,
     ClipRule = 1 << 24,
@@ -116,7 +114,7 @@ internal static class SvgInlineStyleParser
         bool allowsDirectTextFontProperties = target == Target.DirectText;
         string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null, clipRule = null, paintOrder = null;
         string? family = null, weight = null, fontStyle = null, size = null, whiteSpace = null, letterSpacing = null, wordSpacing = null, textDecoration = null;
-        string? linecap = null, linejoin = null, dasharray = null, dashoffset = null, width = null, miterlimit = null, strokeOpacity = null, pathLength = null, geometryWidth = null, geometryHeight = null;
+        string? linecap = null, linejoin = null, dasharray = null, dashoffset = null, width = null, miterlimit = null, strokeOpacity = null, geometryWidth = null, geometryHeight = null;
         string? markerStart = null, markerMid = null, markerEnd = null, filter = null, overflow = null;
         InlineImportantProperties important = InlineImportantProperties.None;
         Span<char> commentScratch = stackalloc char[2 * SvgSyntaxLimits.MaximumValueTokenCharacters + 1];
@@ -159,7 +157,6 @@ internal static class SvgInlineStyleParser
             else if (property.Equals("stroke-width", StringComparison.OrdinalIgnoreCase)) Set(ref width, InlineImportantProperties.Width, property, propertyValue, strings, ref important, true);
             else if (property.Equals("stroke-miterlimit", StringComparison.OrdinalIgnoreCase)) Set(ref miterlimit, InlineImportantProperties.Miterlimit, property, propertyValue, strings, ref important, true);
             else if (property.Equals("stroke-opacity", StringComparison.OrdinalIgnoreCase)) Set(ref strokeOpacity, InlineImportantProperties.StrokeOpacity, property, propertyValue, strings, ref important, true);
-            else if (property.Equals("pathLength", StringComparison.OrdinalIgnoreCase)) Set(ref pathLength, InlineImportantProperties.PathLength, property, propertyValue, strings, ref important, false);
             else if (property.Equals("width", StringComparison.OrdinalIgnoreCase)) Set(ref geometryWidth, InlineImportantProperties.GeometryWidth, property, propertyValue, strings, ref important, false);
             else if (property.Equals("height", StringComparison.OrdinalIgnoreCase)) Set(ref geometryHeight, InlineImportantProperties.GeometryHeight, property, propertyValue, strings, ref important, false);
             else if (property.Equals("clip-rule", StringComparison.OrdinalIgnoreCase)) { ValidateClipDeclaration(propertyValue); Set(ref clipRule, InlineImportantProperties.ClipRule, property, propertyValue, strings, ref important, true); }
@@ -208,7 +205,7 @@ internal static class SvgInlineStyleParser
             else if (property.Equals("pointer-events", StringComparison.OrdinalIgnoreCase) || property.Equals("cursor", StringComparison.OrdinalIgnoreCase)) { } // UI behavior never affects static pixels.
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inline style property '" + property.ToString() + "' is not implemented.");
         }
-        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size), WhiteSpace = whiteSpace, LetterSpacing = letterSpacing, WordSpacing = wordSpacing, TextDecoration = textDecoration, Linecap = linecap, Linejoin = linejoin, Dasharray = dasharray, Dashoffset = dashoffset, Width = width, Miterlimit = miterlimit, StrokeOpacity = strokeOpacity, PathLength = pathLength, ClipRule = clipRule, PaintOrder = paintOrder, MarkerStart = markerStart, MarkerMid = markerMid, MarkerEnd = markerEnd, Filter = filter, Overflow = overflow, GeometryWidth = geometryWidth, GeometryHeight = geometryHeight, Important = important };
+        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size), WhiteSpace = whiteSpace, LetterSpacing = letterSpacing, WordSpacing = wordSpacing, TextDecoration = textDecoration, Linecap = linecap, Linejoin = linejoin, Dasharray = dasharray, Dashoffset = dashoffset, Width = width, Miterlimit = miterlimit, StrokeOpacity = strokeOpacity, ClipRule = clipRule, PaintOrder = paintOrder, MarkerStart = markerStart, MarkerMid = markerMid, MarkerEnd = markerEnd, Filter = filter, Overflow = overflow, GeometryWidth = geometryWidth, GeometryHeight = geometryHeight, Important = important };
 
         static void Set(ref string? slot, InlineImportantProperties flag, ReadOnlySpan<char> property, ReadOnlySpan<char> rawValue, BudgetedParserStringStore? strings, ref InlineImportantProperties important, bool mapKeywords)
         {
