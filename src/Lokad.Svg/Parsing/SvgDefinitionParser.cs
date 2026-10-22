@@ -1710,7 +1710,7 @@ internal static class SvgDefinitionParser
         {
             SvgDefinitionLeafSource first = state.PatternRectangleSource ?? throw new InvalidOperationException("Rectangle promotion requires retained source attributes.");
             SvgPaintableElementContext previous = state.PatternRectangleContext;
-            SvgPaintRecording.AdoptLeafScene(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, previous.InheritedPresentation.PaintOrder, previous.InheritedPresentation.Markers, previous.InheritedPresentation.ElementOpacity, previous.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, previous.LengthBases, false, state), builder, state);
+            SvgPaintRecording.AdoptLeafScene(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, previous.InheritedPresentation.PaintOrder, previous.InheritedPresentation.Markers, previous.InheritedPresentation.ElementOpacity, previous.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, previous.LengthBases, false, previous.InheritedPresentation.IsDisplayed, state), builder, state);
             state.PatternTile = tile with { Content = null };
         }
         return builder;
@@ -1938,6 +1938,10 @@ internal static class SvgDefinitionParser
     /// <remarks>The caller owns returned geometries. Document reservations own array/binding storage; failure releases
     /// native geometry and every lowerer observes the supplied work, cancellation and memory bounds.</remarks>
     internal static SvgDefinition LowerInstanceSource(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state)
+        => LowerInstanceSource(reader, context, state, context.InheritedPresentation.IsDisplayed);
+
+    /// <summary>Retains ordinary raw geometry while activating source filters only for the instance's actual display state.</summary>
+    internal static SvgDefinition LowerInstanceSource(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, bool isDisplayed)
     {
         SvgComputedStyle sourceStyle = context.ResolveStyle(reader);
         bool filtered = sourceStyle.Filter is {} filter && filter.Trim() != "none";
@@ -1959,7 +1963,8 @@ internal static class SvgDefinitionParser
         finally { state.DeferringLeafClip = previousClipDeferral; }
         try
         {
-            SvgPaintRecording.WrapFilter(definition.Geometries, sourceStyle.Filter, context.ResolveTransform(reader), context.LengthBases, state, context.WorkCounter, context.CancellationToken);
+            if (isDisplayed && SvgPresentationResolver.ParseDisplay(sourceStyle.Display))
+                SvgPaintRecording.WrapFilter(definition.Geometries, sourceStyle.Filter, context.ResolveTransform(reader), context.LengthBases, state, context.WorkCounter, context.CancellationToken);
             SvgReferenceResolver.ApplyMask(definition.Geometries, null, null, reader.GetAttribute("mask"), state, context.WorkCounter, context.CancellationToken);
             if (clipId is not null)
                 SvgClipPathSyntax.ApplyResourceClip(definition.Geometries, clipId, context.ResolveTransform(reader), state, context.WorkCounter, context.CancellationToken);

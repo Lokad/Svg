@@ -128,7 +128,7 @@ internal static class SvgPatternReferenceResolver
     {
         using SvgSceneBuilder builder = new(state.Budget, work, token);
         SvgDefinition lowered = source.Lower(context.InheritedStroke, context.InheritedPresentation.Paint,
-            context.InheritedFillRule, context.InheritedPresentation.PaintServerFill, context.InheritedPresentation.PaintOrder, context.InheritedPresentation.Markers, context.InheritedPresentation.ElementOpacity, context.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, context.LengthBases, false, state);
+            context.InheritedFillRule, context.InheritedPresentation.PaintServerFill, context.InheritedPresentation.PaintOrder, context.InheritedPresentation.Markers, context.InheritedPresentation.ElementOpacity, context.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, context.LengthBases, false, context.InheritedPresentation.IsDisplayed, state);
         SvgPaintRecording.AdoptLeafScene(lowered, builder, state);
         SvgLeafMaskComposition.Emit(state, builder, work, token);
         SvgVectorContent content = SvgVectorContent.Create(builder.Build(), state.Budget);

@@ -135,7 +135,7 @@ internal static class SvgReferenceResolver
                     if (geometry.LeafMask is not null && source.GetAttribute("mask") is not null)
                         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Instance stroke construction on masked definitions is not implemented.");
                 }
-                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers, reference.ElementParentOpacity, reference.NonScalingStroke, PlainInstancePlacement(reference, frame), definition.InstanceLengthBases(reference), retainMappedContour, state);
+                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers, reference.ElementParentOpacity, reference.NonScalingStroke, PlainInstancePlacement(reference, frame), definition.InstanceLengthBases(reference), retainMappedContour, reference.IsDisplayed, state);
                 try { return Apply(constructed with { SymbolViewBox = definition.SymbolViewBox, EstablishesViewport = definition.EstablishesViewport }, reference with { StrokeOverride = null, PaintServerId = null, PaintServerFill = null }, frame, state, workCounter, cancellationToken); }
                 finally { foreach (SvgGeometry geometry in constructed.Geometries) geometry.Dispose(); }
             }
@@ -884,7 +884,8 @@ internal static class SvgReferenceResolver
         try
         {
             foreach (SvgGeometry geometry in sources) SvgMaskSyntax.ValidateMaskScopes(state, geometry);
-            SvgPaintRecording.WrapFilter(sources, reference.Filter, PlainInstancePlacement(reference, frame), reference.LengthBases, state, workCounter, cancellationToken);
+            if (reference.IsDisplayed)
+                SvgPaintRecording.WrapFilter(sources, reference.Filter, PlainInstancePlacement(reference, frame), reference.LengthBases, state, workCounter, cancellationToken);
             if (mask is null && maskReference is null) return SvgPaintRecording.WrapInstance(sources, reference.SourceOpacity, reference.RecordingScope, state, workCounter, cancellationToken);
             ApplyMask(sources, frame, mask, maskReference, PlainInstancePlacement(reference, frame), state, workCounter, cancellationToken);
             return SvgPaintRecording.WrapInstance(sources, reference.SourceOpacity, reference.RecordingScope, state, workCounter, cancellationToken);

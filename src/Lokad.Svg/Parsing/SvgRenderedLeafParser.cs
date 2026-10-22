@@ -87,6 +87,9 @@ internal static class SvgRenderedLeafParser
         if (style.Filter is not string filter || filter.Trim() == "none")
             return ParseContent(reader, context, root, state, limits, budget, fontSnapshot, workCounter, cancellationToken);
         if (!SvgLocalUrl.TryParseId(filter, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local filter url references are implemented.");
+        if (!context.InheritedPresentation.IsDisplayed || !SvgPresentationResolver.ParseDisplay(style.Display))
+            return ParseContent(reader, context with { AuthoredStyle = style with { Filter = null } }, root,
+                state, limits, budget, fontSnapshot, workCounter, cancellationToken);
         int start = state.Scene.CommandCount, firstGeometry = state.Scene.GeometryCount;
         string? clip = SvgClipPathSyntax.ResolveClipId(reader, state);
         string? mask = reader.GetAttribute("mask") is {} maskReference ? state.Strings.Copy(SvgMaskSyntax.ParseMaskId(maskReference)) : null;

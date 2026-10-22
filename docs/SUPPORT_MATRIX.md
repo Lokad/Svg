@@ -209,6 +209,9 @@ Supported filter primitives are `feGaussianBlur`, `feOffset`, `feFlood`,
 `feDropShadow`. Filters support SourceGraphic, SourceAlpha, earlier local results,
 filter/primitive regions, both unit systems, sRGB/linearRGB operating spaces and
 local CSS filter references. Intermediate surfaces and primitive work are bounded.
+An element suppressed by its own or an ancestor's `display:none` does not activate
+filters. Visible elements with no fill or transparent paint can still produce
+filter output, such as a flood.
 `feDropShadow` supports deviations up to 135 device pixels on each axis after
 mapping and float rounding; transforms and output scale affect this limit.
 Larger shadow deviations fail with `UnsupportedFeature`. `feGaussianBlur` uses
