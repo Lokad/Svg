@@ -83,6 +83,7 @@ internal static class SvgFontRequestDiscovery
         {
             XmlReaderSettings settings = SvgXmlReaderPolicy.Create(svg, limits, budget, workCounter, cancellationToken);
             SvgRootStyleSheetParser.Collect(svg, settings, limits, styleRules, styleStrings, budget, workCounter, cancellationToken);
+            using SvgPatternContentSelection? patternContents = SvgPatternContentSelection.Create(svg, settings, limits, styleStrings, budget, workCounter, cancellationToken);
             using SvgInstanceFontDiscovery? instanceFonts = SvgInstanceFontDiscovery.Collect(svg, settings, limits, styleRules, styleStrings, budget, workCounter, cancellationToken);
             using SvgCssAncestorContext ancestors = new(styleRules, budget, workCounter, cancellationToken);
             using ReadOnlyMemoryStream stream = new(svg);
@@ -226,6 +227,7 @@ internal static class SvgFontRequestDiscovery
                         double? patternHeight = reader.GetAttribute("height") is {} height ? SvgGeometrySyntax.ParseRectangleCoordinate(height) : null;
                         bool noTemplate = reader.GetAttribute("href") is null && reader.GetAttribute("href", "http://www.w3.org/1999/xlink") is null;
                         patternHasSize = patternWidth != 0 && patternHeight != 0 && (!noTemplate || patternWidth is not null && patternHeight is not null);
+                        patternHasSize |= patternContents?.RequiresContent(reader.GetAttribute("id")) == true;
                         if (!reader.IsEmptyElement)
                         {
                             patternDepth = reader.Depth;

@@ -121,6 +121,9 @@ Referenced patterns remain available under `display:none` on the pattern or its
 definition ancestors. Inherited paint and visibility still apply to tile content;
 `display:none` on rendered tile children suppresses those children.
 Font preparation uses the same resource display rules for supplied-font tile text.
+Template content, including images, effects and supplied-font text, survives zero
+or omitted base tile dimensions when an alias supplies nonzero effective dimensions.
+Patterns whose effective tile size stays zero remain inert.
 
 Current restrictions:
 

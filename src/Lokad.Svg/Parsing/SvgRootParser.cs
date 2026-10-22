@@ -207,10 +207,12 @@ internal static class SvgRootParser
         Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken,
         SvgAffineTransform outputMap, SvgViewport? explicitViewport, double rasterScale, SvgDocumentPreparation preparation)
     {
+        using SvgPatternContentSelection? patternContents = SvgPatternContentSelection.Create(svg, preparation.Settings,
+            limits, preparation.Strings, budget, workCounter, cancellationToken);
         using ReadOnlyMemoryStream stream = new(svg);
         using XmlReader reader = XmlReader.Create(stream, preparation.Settings);
         return SvgDocumentTraversal.Parse(reader, limits, budget, CssNamedColors, fontSnapshot, workCounter, cancellationToken,
-            outputMap, explicitViewport, preparation.Rules, preparation.Strings, rasterScale);
+            outputMap, explicitViewport, preparation.Rules, preparation.Strings, rasterScale, patternContents);
     }
 
     internal static long GetXmlReaderWorkspaceBytes(int inputBytes, int maximumAttributes)

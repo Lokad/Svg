@@ -147,6 +147,8 @@ internal sealed class SvgDocumentState : IDisposable
         : Viewports[^1].Depth < FilterViewportDepth ? Viewports[^1] with { Clip = SvgClipBox.Unbounded } : Viewports[^1];
 
     internal BudgetedParserList<CssRule> StyleRules { get; }
+    /// <summary>Borrows the parser-owned pattern selection until traversal finishes.</summary>
+    internal SvgPatternContentSelection? PatternContents { get; set; }
 
     internal SvgCssAncestorContext CssAncestors { get; }
 

@@ -551,7 +551,8 @@ internal static class SvgDefinitionParser
                         throw new InvalidOperationException("Pattern replay requires a supported leaf.");
                     RejectPatternContentPaint(style, state);
                     SvgPatternTemplate template = state.PatternTemplate;
-                    if (template.Width == 0 || template.Height == 0 || template.Href is null && (template.Width is null || template.Height is null))
+                    if ((template.Width == 0 || template.Height == 0 || template.Href is null && (template.Width is null || template.Height is null))
+                        && state.PatternContents?.RequiresContent(state.PatternId) != true)
                         context = context with { InheritedPresentation = context.InheritedPresentation with { IsDisplayed = false } };
                     SvgSceneBuilder builder = GetPatternContentBuilder(state, workCounter, cancellationToken);
                     if (state.DefinitionReplayScene is not null) throw new InvalidOperationException("Definition leaf replay cannot nest.");
