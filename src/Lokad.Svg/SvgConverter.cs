@@ -420,6 +420,7 @@ public static partial class SvgConverter
                 {
                     SvgGeometry geometry = root.Geometries[command.GeometryIndex];
                     SvgRecordedPaintValue paint = GetRecordedPaintValue(geometry.RecordedPaint);
+                    if (paint.IsEffectAnchor) continue;
                     SvgPaintBounds box, visual;
                     if (geometry.AuthoredPath is {} path)
                     {
@@ -791,6 +792,12 @@ public static partial class SvgConverter
                         if (item.Kind == SvgDrawCommandKind.Geometry)
                         {
                             SvgGeometry geometry = root.Geometries[item.GeometryIndex];
+                            if (GetRecordedPaintValue(geometry.RecordedPaint).IsEffectAnchor)
+                            {
+                                geometries[geometryCount] = geometry;
+                                commands[index - first + 1] = item with { GeometryIndex = geometryCount++ };
+                                continue;
+                            }
                             if (geometry.Kind == SvgGeometryKind.GlyphContours && geometry.Glyph.Source is not null)
                             {
                                 geometries[geometryCount] = geometry;
@@ -823,7 +830,7 @@ public static partial class SvgConverter
                         commands[index - first + 1] = item;
                     }
                     commands[^1] = root.Commands[end];
-                    if (objectBounds is not {} objects || visualBounds is not {} visual) return end + 1;
+                    SvgPaintBounds objects = objectBounds ?? default, visual = visualBounds ?? default;
                     SvgFilterBinding local = binding with { Transform = layerMap, ObjectBounds = objects, VisualBounds = visual };
                     SvgPaintBounds layerRegion = FilterRegion(local, resource, preparation, SvgAffineTransform.Identity);
                     bool objectUnits = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox;
@@ -1440,7 +1447,9 @@ public static partial class SvgConverter
                     continue;
                 }
                 SvgGeometry geometry = root.Geometries[value.GeometryIndex];
-                SvgPaintBounds? visualBounds = GetRecordedPaintValue(geometry.RecordedPaint).VisualBounds;
+                SvgRecordedPaintValue paint = GetRecordedPaintValue(geometry.RecordedPaint);
+                if (paint.IsEffectAnchor) continue;
+                SvgPaintBounds? visualBounds = paint.VisualBounds;
                 if (visualBounds is {} visual && (sourcePlacement == SvgAffineTransform.Identity || geometry.AuthoredPath is null))
                 {
                     IncludeBox(new(visual.Left, visual.Top, visual.Right - visual.Left, visual.Bottom - visual.Top, default, false, null), outputMap, 0);

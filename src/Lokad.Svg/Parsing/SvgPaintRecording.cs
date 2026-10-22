@@ -13,12 +13,14 @@ internal readonly record struct SvgRecordedPaint(int Identity)
 internal readonly record struct SvgRecordingScope(int Value);
 internal readonly record struct SvgPaintOperationIdentity(int Value);
 [Flags]
-internal enum SvgRecordedPaintRole : byte { Fill = 0, Stroke = 1, MarkerContent = 2 }
+internal enum SvgRecordedPaintRole : byte { Fill = 0, Stroke = 1, MarkerContent = 2, EffectAnchor = 4 }
 internal readonly record struct SvgRecordedPaintValue(SvgPaintOperationIdentity Identity, float Alpha, bool Foldable, SvgRecordedPaintRole Role, SvgPaintOrder PaintOrder, SvgRecordingScope Scope, SvgPaintOpacity ElementOpacity, SvgRecordingScope OpacityScope)
 {
     // Resource paint stays independent when its host instance binds fill and stroke.
     internal bool IsStroke { get => (Role & SvgRecordedPaintRole.Stroke) != 0; init => Role = value ? Role | SvgRecordedPaintRole.Stroke : Role & ~SvgRecordedPaintRole.Stroke; }
     internal bool IsMarkerContent { get => (Role & SvgRecordedPaintRole.MarkerContent) != 0; init => Role = value ? Role | SvgRecordedPaintRole.MarkerContent : Role & ~SvgRecordedPaintRole.MarkerContent; }
+    /// <summary>Marks a non-painting empty target that carries retained effects without contributing geometry bounds.</summary>
+    internal bool IsEffectAnchor { get => (Role & SvgRecordedPaintRole.EffectAnchor) != 0; init => Role = value ? Role | SvgRecordedPaintRole.EffectAnchor : Role & ~SvgRecordedPaintRole.EffectAnchor; }
     /// <summary>Retains the previous constructor contract; source recording assigns the stroke role explicitly.</summary>
     internal SvgRecordedPaintValue(SvgPaintOperationIdentity identity, float alpha, bool foldable, SvgRecordingScope scope, SvgPaintOpacity elementOpacity, SvgRecordingScope opacityScope)
         : this(identity, alpha, foldable, SvgRecordedPaintRole.Fill, SvgPaintOrder.FillStrokeMarkers, scope, elementOpacity, opacityScope) { }

@@ -35,7 +35,7 @@ internal static class SvgSymbolContentRenderer
                             // Retained effects attach to a geometry batch. A non-painting
                             // empty target carries the scope through the existing emitter.
                             SvgRecordedPaintValue paint = new(state.NewPaintOperationIdentity(), 0, false,
-                                frame.Scope, SvgPaintOpacity.Opaque, frame.Scope) { ObjectBounds = default(SvgPaintBounds), VisualBounds = default(SvgPaintBounds) };
+                                frame.Scope, SvgPaintOpacity.Opaque, frame.Scope) { IsEffectAnchor = true };
                             output.Add(SvgGeometry.FromRectangle(default) with { RecordedPaint = state.Scene.RegisterRecordedPaint(paint) });
                         }
                         SvgPaintRecording.WrapFilter(output.AsMutableSpan().Slice(frame.OutputStart), filter, state, work, token);

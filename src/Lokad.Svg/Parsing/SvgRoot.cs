@@ -1560,6 +1560,7 @@ internal sealed class SvgSceneBuilder : IDisposable
                 {
                     SvgGeometry geometry = _geometries[command.GeometryIndex];
                     SvgRecordedPaintValue paint = GetRecordedPaintValue(geometry.RecordedPaint);
+                    if (paint.IsEffectAnchor) continue;
                     if (paint.ObjectBounds is not {} box) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group filter descendants require retained source bounds.");
                     Include(paint.IsMarkerContent ? null : box, paint.VisualBounds ?? box);
                 }

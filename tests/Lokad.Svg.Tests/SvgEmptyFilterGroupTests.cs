@@ -10,6 +10,24 @@ public sealed class SvgEmptyFilterGroupTests
     private const string Red = "<rect width='32' height='32' fill='red'/>";
 
     [Theory]
+    [InlineData("filter='url(#outer)'")]
+    [InlineData("clip-path='url(#box)'")]
+    [InlineData("mask='url(#boxmask)'")]
+    public void Retained_empty_filter_scopes_do_not_enlarge_ancestor_object_bounds(string attributes)
+    {
+        const string effects = "<defs><filter id='outer'><feOffset dx='0'/></filter><clipPath id='box' clipPathUnits='objectBoundingBox'><rect width='1' height='1'/></clipPath><mask id='boxmask' mask-type='alpha' maskUnits='objectBoundingBox' x='0' y='0' width='1' height='1' maskContentUnits='objectBoundingBox'><rect width='1' height='1' fill='white'/></mask></defs>";
+        foreach (string ending in new[] { "/>", "></g>" })
+        {
+            string content = "<g filter='url(#f)'" + ending + "<rect x='8' y='8' width='8' height='8' fill='blue'/>";
+            byte[] expected = attributes.StartsWith("clip-path", StringComparison.Ordinal)
+                ? Render("<rect x='8' y='8' width='8' height='8' fill='blue'/>")
+                : Render(Filter + effects + "<g " + attributes + ">" + content + "</g>");
+            Assert.Equal(expected,
+                Render(Filter + effects + "<defs><g id='s'>" + content + "</g></defs><g " + attributes + "><use href='#s'/></g>"));
+        }
+    }
+
+    [Theory]
     [InlineData("/>")]
     [InlineData("></g>")]
     [InlineData("><g/></g>")]
