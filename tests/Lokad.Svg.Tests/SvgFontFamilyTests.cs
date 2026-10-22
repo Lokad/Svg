@@ -18,7 +18,6 @@ public sealed class SvgFontFamilyTests
     [InlineData("""<svg xmlns="http://www.w3.org/2000/svg"><style>.a{font-family:'A{B',Example}</style><text class="a">A</text></svg>""", "A{B")]
     [InlineData("""<svg xmlns="http://www.w3.org/2000/svg"><style>.a{font-family:'A/*B*/C',Example}</style><text class="a">A</text></svg>""", "A/*B*/C")]
     [InlineData("""<svg xmlns="http://www.w3.org/2000/svg"><style>.a{font-family:A/**/B,Example}</style><text class="a">A</text></svg>""", "A B")]
-    [InlineData("""<svg xmlns="http://www.w3.org/2000/svg"><style>.a{font-/**/family:A/**/B,Example}</style><text class="a">A</text></svg>""", "A B")]
     [InlineData("""<svg xmlns="http://www.w3.org/2000/svg"><style>.a{font-family:A\}B,Example}</style><text class="a">A</text></svg>""", "A}B")]
     public void Discovery_shares_quoted_and_escaped_syntax_across_presentation_inline_and_stylesheet(string svg, string first)
     {

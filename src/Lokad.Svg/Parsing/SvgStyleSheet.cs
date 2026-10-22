@@ -100,73 +100,18 @@ internal static class SvgStyleSheet
 
     private static OwnedStyleSheetText StripComments(string value, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        int sourceIndex = 0;
-        int removedCharacters = 0;
-        SvgCssQuotedState quotes = default;
-        bool declarations = false, propertyValue = false;
-        while (sourceIndex < value.Length)
-        {
-            if ((sourceIndex & 4095) == 0) workCounter.Consume(cancellationToken);
-            bool syntax = quotes.IsSyntax(value[sourceIndex]);
-            if (syntax && value[sourceIndex] == '{') { declarations = true; propertyValue = false; }
-            else if (syntax && value[sourceIndex] == '}') { declarations = false; propertyValue = false; }
-            else if (syntax && declarations && value[sourceIndex] == ':') propertyValue = true;
-            else if (syntax && value[sourceIndex] == ';') propertyValue = false;
-            if (!syntax || value[sourceIndex] != '/' || sourceIndex + 1 == value.Length || value[sourceIndex + 1] != '*') { sourceIndex++; continue; }
-            int commentStart = sourceIndex;
-            sourceIndex += 2;
-            while (sourceIndex + 1 < value.Length && (value[sourceIndex] != '*' || value[sourceIndex + 1] != '/'))
-            {
-                if ((sourceIndex & 4095) == 0) workCounter.Consume(cancellationToken);
-                sourceIndex++;
-            }
-            if (sourceIndex + 1 >= value.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Stylesheet comments must be terminated.");
-            sourceIndex += 2;
-            // Preserve value token boundaries and the established removal
-            // of comments inside selectors and property names.
-            removedCharacters += sourceIndex - commentStart - (propertyValue ? 1 : 0);
-        }
-        if (removedCharacters == 0) return new(value, null);
-        int commentlessLength = value.Length - removedCharacters;
-        if (commentlessLength == 0) return new(string.Empty, null);
-        RenderBudget.BudgetReservation reservation = budget.Reserve(GetStringByteCount(commentlessLength), SvgMemoryCategory.Parser);
+        int length = SvgCssComments.Normalize(value, [], SvgCssCommentContext.StyleSheet, workCounter, cancellationToken);
+        if (length == value.Length) return new(value, null);
+        if (length == 0) return new(string.Empty, null);
+        RenderBudget.BudgetReservation reservation = budget.Reserve(GetStringByteCount(length), SvgMemoryCategory.Parser);
         try
         {
-            return new(string.Create(commentlessLength, (Value: value, WorkCounter: workCounter, CancellationToken: cancellationToken), static (destination, state) =>
+            return new(string.Create(length, (Value: value, Work: workCounter, Token: cancellationToken), static (destination, state) =>
             {
-                int sourceIndex = 0;
-                int destinationIndex = 0;
-                SvgCssQuotedState quotes = default;
-                bool declarations = false, propertyValue = false;
-                while (sourceIndex < state.Value.Length)
-                {
-                    if ((sourceIndex & 4095) == 0) state.WorkCounter.Consume(state.CancellationToken);
-                    bool syntax = quotes.IsSyntax(state.Value[sourceIndex]);
-                    if (syntax && state.Value[sourceIndex] == '{') { declarations = true; propertyValue = false; }
-                    else if (syntax && state.Value[sourceIndex] == '}') { declarations = false; propertyValue = false; }
-                    else if (syntax && declarations && state.Value[sourceIndex] == ':') propertyValue = true;
-                    else if (syntax && state.Value[sourceIndex] == ';') propertyValue = false;
-                    if (!syntax || state.Value[sourceIndex] != '/' || sourceIndex + 1 == state.Value.Length || state.Value[sourceIndex + 1] != '*')
-                    {
-                        destination[destinationIndex++] = state.Value[sourceIndex++];
-                        continue;
-                    }
-                    sourceIndex += 2;
-                    if (propertyValue) destination[destinationIndex++] = ' ';
-                    while (state.Value[sourceIndex] != '*' || state.Value[sourceIndex + 1] != '/')
-                    {
-                        if ((sourceIndex & 4095) == 0) state.WorkCounter.Consume(state.CancellationToken);
-                        sourceIndex++;
-                    }
-                    sourceIndex += 2;
-                }
+                SvgCssComments.Normalize(state.Value, destination, SvgCssCommentContext.StyleSheet, state.Work, state.Token);
             }), reservation);
         }
-        catch
-        {
-            reservation.Dispose();
-            throw;
-        }
+        catch { reservation.Dispose(); throw; }
     }
 
     private static long GetStringByteCount(int characterCount) => checked(32 + (long)characterCount * sizeof(char));

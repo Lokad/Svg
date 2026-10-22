@@ -349,10 +349,12 @@ internal static class SvgGradientSyntax
             styleColor = null;
             styleOpacity = null;
             bool colorImportant = false, opacityImportant = false;
-            foreach (Range range in value.AsSpan().Split(';'))
+            Span<char> commentScratch = stackalloc char[2 * SvgSyntaxLimits.MaximumValueTokenCharacters + 1];
+            SvgInlineStyleParser.SvgInlineDeclarationReader declarations = new(value, workCounter, cancellationToken);
+            while (declarations.TryRead(out ReadOnlySpan<char> raw))
             {
                 workCounter.Consume(cancellationToken);
-                ReadOnlySpan<char> declaration = value.AsSpan()[range];
+                ReadOnlySpan<char> declaration = SvgCssComments.NormalizeDeclaration(raw, commentScratch, workCounter, cancellationToken);
                 int colon = declaration.IndexOf(':');
                 if (colon < 0) continue;
                 ReadOnlySpan<char> name = declaration[..colon].Trim();

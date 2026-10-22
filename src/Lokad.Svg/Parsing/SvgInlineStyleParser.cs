@@ -119,9 +119,12 @@ internal static class SvgInlineStyleParser
         string? linecap = null, linejoin = null, dasharray = null, dashoffset = null, width = null, miterlimit = null, strokeOpacity = null, pathLength = null, geometryWidth = null, geometryHeight = null;
         string? markerStart = null, markerMid = null, markerEnd = null, filter = null, overflow = null;
         InlineImportantProperties important = InlineImportantProperties.None;
+        Span<char> commentScratch = stackalloc char[2 * SvgSyntaxLimits.MaximumValueTokenCharacters + 1];
         SvgInlineDeclarationReader declarations = new(value, workCounter, cancellationToken);
-        while (declarations.TryRead(out ReadOnlySpan<char> declaration))
+        while (declarations.TryRead(out ReadOnlySpan<char> rawDeclaration))
         {
+            ReadOnlySpan<char> declaration = SvgCssComments.NormalizeDeclaration(rawDeclaration, commentScratch, workCounter, cancellationToken);
+            if (declaration.IsEmpty) continue;
             int separator = declaration.IndexOf(':');
             if (separator <= 0) throw new SvgException(SvgErrorCode.MalformedInput, "Inline style declarations must use property:value syntax.");
             ReadOnlySpan<char> property = declaration[..separator].Trim();
@@ -407,7 +410,16 @@ internal static class SvgInlineStyleParser
                 while (_position < _value.Length)
                 {
                     char character = _value[_position];
-                    if (quotes.IsSyntax(character) && character == ';') break;
+                    if (quotes.IsSyntax(character))
+                    {
+                        if (character == ';') break;
+                        if (character == '/' && _position + 1 < _value.Length && _value[_position + 1] == '*')
+                        {
+                            _position = SvgCssComments.SkipComment(_value, _position, _workCounter, _cancellationToken);
+                            ConsumeCheckpoints();
+                            continue;
+                        }
+                    }
                     _position++; ConsumeCheckpoints();
                 }
                 if (!quotes.IsClosed) throw new SvgException(SvgErrorCode.MalformedInput, "An inline style string is not closed.");

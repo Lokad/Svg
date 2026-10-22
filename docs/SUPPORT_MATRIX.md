@@ -198,6 +198,8 @@ root, group, symbol, nested-SVG and resource trees. Specificity, source order,
 inline priority, inheritance and `!important` are implemented.
 Empty, whitespace-only and comment-only stylesheets are no-ops. XML namespace
 declarations on `style` and `defs` elements are accepted.
+CSS comments work in embedded, inline and gradient-stop styles, preserving token
+boundaries and literal text inside quoted strings.
 
 Declarations cover color/fill/stroke and their opacity, stroke width/caps/joins/
 miter/dashes, display/visibility/opacity, fill-rule/clip-rule, paint-order, filter,
