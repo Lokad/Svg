@@ -1969,7 +1969,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Ignores_standard_block_comments_in_stylesheets()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>/* palette */ re/* type */ct { /* fill */ f/* property */ill: red; }</style><rect width='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>/* palette */ rect/* type */ { /* property */ fill: /* value */red; }</style><rect width='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
     }
