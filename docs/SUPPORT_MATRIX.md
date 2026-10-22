@@ -260,6 +260,9 @@ quoted family names and local references retain their Unicode characters; family
 names containing non-ASCII whitespace do not become CSS global keywords.
 Local `url(...)` function names and the filter `none` keyword ignore ASCII case;
 referenced identifiers keep their case.
+Comma-separated RGB/RGBA channels must use either numbers or percentages
+throughout; modern space-separated channels may mix them. Modern RGB/RGBA and
+HSL/HSLA function aliases accept an optional slash-separated alpha value.
 `color:currentColor` uses the inherited color. Fill/stroke `currentColor` resolves
 against each element's own color, including after inheritance and local instancing.
 

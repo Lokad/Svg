@@ -56,6 +56,8 @@ internal static class SvgColorParser
         if (!hasAlpha && !isRgb) { color = default; return false; }
         FunctionalColorTokenReader tokens = new(value.AsSpan((hasAlpha ? 5 : 4)..^1), value.Contains(','));
         if (!tokens.TryRead(out ReadOnlySpan<char> redToken) || !tokens.TryRead(out ReadOnlySpan<char> greenToken) || !tokens.TryRead(out ReadOnlySpan<char> blueToken) || !TryParseRgbChannel(redToken, out byte red) || !TryParseRgbChannel(greenToken, out byte green) || !TryParseRgbChannel(blueToken, out byte blue)) throw new SvgException(SvgErrorCode.MalformedInput, "RGB color channels must be decimal bytes.");
+        if (tokens.IsCommaSeparated && (redToken.EndsWith('%') != greenToken.EndsWith('%') || redToken.EndsWith('%') != blueToken.EndsWith('%')))
+            throw new SvgException(SvgErrorCode.MalformedInput, "Comma-separated RGB channels must use either numbers or percentages throughout.");
         byte alpha = 255;
         if (tokens.IsCommaSeparated)
         {
@@ -94,14 +96,12 @@ internal static class SvgColorParser
         FunctionalColorTokenReader tokens = new(value.AsSpan((hasAlpha ? 5 : 4)..^1), value.Contains(','));
         if (!tokens.TryRead(out ReadOnlySpan<char> hueToken) || !tokens.TryRead(out ReadOnlySpan<char> saturationToken) || !tokens.TryRead(out ReadOnlySpan<char> lightnessToken) || !double.TryParse(hueToken, CssNumberStyles, CultureInfo.InvariantCulture, out double hue) || !double.IsFinite(hue) || !TryParsePercentage(saturationToken, out double saturation) || !TryParsePercentage(lightnessToken, out double lightness)) throw new SvgException(SvgErrorCode.MalformedInput, "HSL colors require a hue and percentage saturation/lightness channels.");
         byte alpha = 255;
-        bool hasSpecifiedAlpha = false;
         if (tokens.IsCommaSeparated)
         {
             if (hasAlpha)
             {
                 if (!tokens.TryRead(out ReadOnlySpan<char> alphaToken) || tokens.TryRead(out _)) throw new SvgException(SvgErrorCode.MalformedInput, "HSL colors require a hue and percentage saturation/lightness channels.");
                 alpha = ParseAlpha(alphaToken);
-                hasSpecifiedAlpha = true;
             }
             else if (tokens.TryRead(out _)) throw new SvgException(SvgErrorCode.MalformedInput, "HSL colors require a hue and percentage saturation/lightness channels.");
         }
@@ -109,9 +109,7 @@ internal static class SvgColorParser
         {
             if (!separator.SequenceEqual("/".AsSpan()) || !tokens.TryRead(out ReadOnlySpan<char> alphaToken) || tokens.TryRead(out _)) throw new SvgException(SvgErrorCode.MalformedInput, "HSL colors require a hue and percentage saturation/lightness channels.");
             alpha = ParseAlpha(alphaToken);
-            hasSpecifiedAlpha = true;
         }
-        if (hasAlpha && !hasSpecifiedAlpha) throw new SvgException(SvgErrorCode.MalformedInput, "HSL colors require a hue and percentage saturation/lightness channels.");
         hue = ((hue % 360) + 360) % 360;
         double chroma = (1 - Math.Abs(2 * lightness - 1)) * saturation;
         double secondary = chroma * (1 - Math.Abs((hue / 60 % 2) - 1));
