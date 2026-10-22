@@ -29,7 +29,7 @@ internal static class SvgGroupParser
         string? maskReference = SvgLocalUrl.ReadReference(reader, "mask");
         byte? mask = null;
         string? deferredMask = null;
-        if (maskReference is not null)
+        if (maskReference is not null && !SvgMaskSyntax.IsDisabled(SvgMaskSyntax.ParseMaskId(maskReference), state))
         {
             string maskId = SvgMaskSyntax.ParseMaskId(maskReference);
             if (state.Masks.TryGetValue(maskId, out byte knownMask)) mask = knownMask;

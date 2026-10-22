@@ -905,6 +905,7 @@ internal static class SvgReferenceResolver
     {
         if ((maskReference is null && mask is null) || geometries.IsEmpty) return;
         string? maskId = maskReference is null ? null : SvgMaskSyntax.ParseMaskId(maskReference);
+        if (maskId is not null && SvgMaskSyntax.IsDisabled(maskId, state)) return;
         int contentIndex = -1;
         SvgMaskContent? spatialContent = null;
         if (mask is null)

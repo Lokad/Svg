@@ -167,6 +167,9 @@ definition ancestors does not disable the resource. A clipPath's own CSS
 `display:none` makes its references contribute no clipping; an empty or hidden
 child instead contributes an empty silhouette. Fill/stroke paint and
 opacity do not suppress raw clip geometry.
+Likewise, a mask's own CSS `display:none` removes its binding and region; a hidden
+definition ancestor leaves it available. An empty or hidden mask child remains
+an empty mask, suppressing its target rather than removing the binding.
 
 IDs on clip rectangles, rounded rectangles, paths, circles and ellipses remain
 available to ordinary local instances, with authored paint/stroke independent of

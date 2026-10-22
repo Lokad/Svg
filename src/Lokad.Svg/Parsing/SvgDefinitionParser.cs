@@ -344,7 +344,7 @@ internal static class SvgDefinitionParser
             SvgPaintableElementContext maskContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
             // A resource inherits presentation, while its content coordinates start
             // at the resource rather than at a rendered definition ancestor.
-            maskContext = maskContext with { InheritedPresentation = maskContext.InheritedPresentation with { Transform = SvgAffineTransform.Identity } };
+            maskContext = maskContext with { InheritedPresentation = maskContext.InheritedPresentation with { Transform = SvgAffineTransform.Identity, IsDisplayed = true } };
             InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
             SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, maskContext.StyleSheet).ResolveOpacity(maskContext.InheritedPresentation.ElementOpacity);
             // The resource container supplies inherited style; its children paint
@@ -364,6 +364,7 @@ internal static class SvgDefinitionParser
                 ClipRule = style.ClipRule ?? maskContext.InheritedClipRule
             };
             state.MaskId = reader.GetAttribute("id");
+            state.MaskIsDisplayed = SvgPresentationResolver.ParseDisplay(style.Display);
             state.MaskIsAlpha = SvgMaskSyntax.ParseMaskType(reader.GetAttribute("mask-type"));
             state.MaskObjectBoundingBoxContent = reader.GetAttribute("maskContentUnits") switch
             {
@@ -385,7 +386,11 @@ internal static class SvgDefinitionParser
             }
             if (reader.IsEmptyElement)
             {
-                if (state.MaskId is not null) RegisterMask(state, workCounter, cancellationToken);
+                if (state.MaskId is not null)
+                {
+                    if (state.MaskIsDisplayed) RegisterMask(state, workCounter, cancellationToken);
+                    else SvgMaskSyntax.RegisterDisabled(state, workCounter, cancellationToken);
+                }
                 state.MaskId = null;
                 state.MaskCustomRegion = null;
                 state.MaskFractionRegion = null;

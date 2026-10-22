@@ -13,6 +13,9 @@ internal readonly record struct SvgMaskSourceRange(int FirstChild, int ChildCoun
 /// surfaces, with charged replay and cancellation; cleanup never observes cancellation.</remarks>
 internal readonly record struct SvgMaskContent(SvgGeometry[] Geometries, byte Luminance, bool IsAlpha)
 {
+    /// <summary>Marks a resource whose own display removes the binding, independently of empty mask content.</summary>
+    internal bool IsDisabled { get; init; }
+
     /// <summary>Borrows a parser source slot; materialized scene content never retains this staging reference.</summary>
     internal SvgUniformMaskSource? UniformSource { get; init; }
     /// <summary>Borrows validated source snapshots until target-specific native replay finishes during preparation.</summary>

@@ -17,6 +17,23 @@ internal readonly record struct PendingGroupMask(string MaskId, int FirstCommand
 /// <summary>Parses bounded mask definitions and retains leaf values or isolated group operations.</summary>
 internal static class SvgMaskSyntax
 {
+    internal static bool IsDisabled(string id, SvgDocumentState state)
+        => state.MaskContents.TryGetValue(id, out SvgMaskContent content) && content.IsDisabled;
+
+    /// <summary>Registers an identity reference without a content region; staged arrays release here and other snapshots remain document-owned.</summary>
+    internal static void RegisterDisabled(SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        work.Consume(token);
+        string id = state.Strings.Copy(state.MaskId ?? throw new InvalidOperationException("Mask registration requires an identifier."));
+        if (state.Masks.TryGetValue(id, out _) || !state.MaskContents.TryAdd(id, new([], 255, state.MaskIsAlpha) { IsDisabled = true })
+            || !state.Masks.TryAdd(id, 255)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
+        if (state.MaskContentGeometries is {} geometries)
+        {
+            foreach (SvgGeometry geometry in geometries) geometry.Dispose();
+            state.MaskContentGeometries = null;
+        }
+    }
+
     /// <summary>Parses an explicit userSpaceOnUse mask region, returning null for the default region.</summary>
     internal static SvgClipBox? ParseMaskRegion(XmlReader reader, SvgViewportLengthBases bases)
     {
@@ -88,7 +105,7 @@ internal static class SvgMaskSyntax
         string? reference = SvgLocalUrl.ReadReference(reader, "mask");
         if (reference is null) return null;
         string id = ParseMaskId(reference);
-        return state.Strings.Copy(id);
+        return IsDisabled(id, state) ? null : state.Strings.Copy(id);
     }
 
     /// <summary>Interprets one opaque mask paint value under its mask type.</summary>
@@ -112,6 +129,12 @@ internal static class SvgMaskSyntax
         {
             workCounter.Consume(cancellationToken);
             PendingLeafMask pending = state.PendingLeafMasks[pendingIndex];
+            if (IsDisabled(pending.MaskId, state))
+            {
+                pending.Operation.Value = 255;
+                pending.Operation.Resolved = true;
+                continue;
+            }
             SvgSceneBuilder? previous = state.DefinitionReplayScene;
             state.DefinitionReplayScene = pending.Scene;
             try
@@ -283,6 +306,11 @@ internal static class SvgMaskSyntax
             state.DefinitionReplayScene = pending.Scene;
             try
             {
+                if (IsDisabled(pending.MaskId, state))
+                {
+                    RewriteGroupMaskScope(state, pending, 255, null, -1);
+                    continue;
+                }
                 SvgAffineTransform targetMap = pending.Transform;
                 if (pending.Parent is {} viewport) targetMap = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(targetMap);
                 SvgMaskTarget? nativeTarget = null;
