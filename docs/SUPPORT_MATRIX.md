@@ -76,6 +76,10 @@ caller viewport overrides absent/absolute root dimensions. Supported CSS applies
 before this resolution, including later embedded rules; unsupported sizing units
 fail rather than silently defaulting.
 
+Child percentage lengths use the resolved logical viewport when there is no
+viewBox, including when a caller viewport overrides root dimensions. A viewBox
+supplies its own user-space percentage bases; raster scaling does not change them.
+
 ### Geometry and strokes
 
 Geometry retains authored curves through affine placement and stroke construction.

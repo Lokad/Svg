@@ -12,10 +12,10 @@ internal readonly record struct SvgRootAttributes(SvgInheritedPresentation Inher
     /// <summary>Supplies the explicit containing viewport for percentage root dimensions during lowering.</summary>
     internal SvgViewport? ContainingViewport { get; init; }
 
-    /// <summary>Percentage lengths use the root viewBox extent when present, independently of output pixel dimensions.</summary>
-    internal double? UserViewportWidth => ViewBox?.Width ?? Width?.Resolve(ContainingViewport?.Width, 300) ?? ContainingViewport?.Width ?? 300;
+    /// <summary>Percentage lengths use the viewBox extent or resolved logical viewport, independently of output pixel dimensions.</summary>
+    internal double? UserViewportWidth => ViewBox?.Width ?? SvgDocumentSizing.ResolveViewportSide(Width, ContainingViewport?.Width, 300);
 
-    internal double? UserViewportHeight => ViewBox?.Height ?? Height?.Resolve(ContainingViewport?.Height, 150) ?? ContainingViewport?.Height ?? 150;
+    internal double? UserViewportHeight => ViewBox?.Height ?? SvgDocumentSizing.ResolveViewportSide(Height, ContainingViewport?.Height, 150);
 
     /// <summary>Applies the collected root stylesheet before inherited presentation and intrinsic dimensions are resolved.</summary>
     internal static SvgRootAttributes Parse(XmlReader reader, IReadOnlyDictionary<string, SvgColor> namedColors, BudgetedParserList<CssRule> rules, ParserWorkCounter workCounter, CancellationToken cancellationToken)

@@ -6,6 +6,11 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Shares root sizing between metadata inspection, output preparation and rendering.</summary>
 internal static class SvgDocumentSizing
 {
+    /// <summary>Resolves one logical viewport axis before aspect derivation; a supplied side overrides absent or absolute declarations.</summary>
+    internal static double ResolveViewportSide(SvgRootLength? length, double? suppliedSide, double defaultSide)
+        => suppliedSide is not null && length?.IsPercentage != true
+            ? suppliedSide.Value : length?.Resolve(suppliedSide, defaultSide) ?? defaultSide;
+
     internal static SvgDocumentDimensions Resolve(SvgViewport? viewport, SvgRootLength? width, SvgRootLength? height, SvgViewBox? viewBox)
     {
         double logicalWidth, logicalHeight;
@@ -14,15 +19,15 @@ internal static class SvgDocumentSizing
         bool heightFallback = height?.IsPercentage == true && viewport is null;
         if (viewport is SvgViewport supplied)
         {
-            logicalWidth = width?.IsPercentage == true ? width.Value.Resolve(supplied.Width, 300) : supplied.Width;
-            logicalHeight = height?.IsPercentage == true ? height.Value.Resolve(supplied.Height, 150) : supplied.Height;
+            logicalWidth = ResolveViewportSide(width, supplied.Width, 300);
+            logicalHeight = ResolveViewportSide(height, supplied.Height, 150);
             widthSource = width?.IsPercentage == true ? SvgDimensionSource.Declaration : SvgDimensionSource.Viewport;
             heightSource = height?.IsPercentage == true ? SvgDimensionSource.Declaration : SvgDimensionSource.Viewport;
         }
         else
         {
-            logicalWidth = width?.Resolve(null, 300) ?? 300;
-            logicalHeight = height?.Resolve(null, 150) ?? 150;
+            logicalWidth = ResolveViewportSide(width, null, 300);
+            logicalHeight = ResolveViewportSide(height, null, 150);
             widthSource = width is null ? SvgDimensionSource.Fallback : SvgDimensionSource.Declaration;
             heightSource = height is null ? SvgDimensionSource.Fallback : SvgDimensionSource.Declaration;
             if (viewBox is SvgViewBox box)
