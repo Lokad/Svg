@@ -30,7 +30,7 @@ internal static class SvgLeafParser
             return LowerTransformedFill(reader, context, syntax, frame, state);
         if (!earlyTransform.IsAxisAligned && !rounded)
         {
-            if (reader.GetAttribute("clip-path") is not null && !state.DeferringLeafClip && !state.DeferringFilterClip)
+            if (SvgLocalUrl.ReadReference(reader, "clip-path") is not null && !state.DeferringLeafClip && !state.DeferringFilterClip)
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths on transformed rectangle strokes are not implemented.");
             return LowerRoundedRect(reader, context, syntax, 0, 0, frame, state);
         }
@@ -93,7 +93,7 @@ internal static class SvgLeafParser
             SvgResolvedPaintableElement element = elementContext.ResolveShape(shader ? style with { Fill = "#ffffff", Stroke = "none" } : style, input, true);
             // Contour references use the existing deferred native clip binding.
             // Rectangle/object-box clips still need their own affine admission.
-            if (input.GetAttribute("clip-path") is not null && !document.DeferringLeafClip && !document.DeferringFilterClip)
+            if (SvgLocalUrl.ReadReference(input, "clip-path") is not null && !document.DeferringLeafClip && !document.DeferringFilterClip)
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths on transformed rectangle fills are not implemented.");
             if (rectangle.Width == 0 || rectangle.Height == 0 || element.Transform.A * element.Transform.D == element.Transform.B * element.Transform.C)
             {

@@ -202,7 +202,7 @@ internal static class SvgDocumentTraversal
                         bool filterViewport = filterParent is { HasAffineClipScope: false } viewportParent && viewportParent.Clip != SvgClipBox.Unbounded;
                         state.Groups.Add(parsedGroup.Scope with { HasFilterViewportScope = filterViewport, PreviousFilterViewportDepth = state.FilterViewportDepth, FilterGeometryStart = state.Scene.GeometryCount });
                         string? groupId = reader.GetAttribute("id");
-                        SvgGroupSnapshotStart snapshot = new(groupId is null ? null : state.Strings.Copy(groupId), reader.GetAttribute("clip-path") is not null, reader.GetAttribute("mask") is not null);
+                        SvgGroupSnapshotStart snapshot = new(groupId is null ? null : state.Strings.Copy(groupId), SvgLocalUrl.ReadReference(reader, "clip-path") is not null, SvgLocalUrl.ReadReference(reader, "mask") is not null);
                         if (parsedGroup.Scope.Kind == SvgGroupKind.Switch) state.Switches.Add(new SwitchScope(reader.Depth, false));
                         string? groupClipId = parsedGroup.Scope.ClipPathId;
                         if (groupClipId is not null && !parsedGroup.Scope.HasFilter)

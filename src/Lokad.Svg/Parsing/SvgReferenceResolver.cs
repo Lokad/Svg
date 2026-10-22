@@ -132,7 +132,7 @@ internal static class SvgReferenceResolver
                     workCounter.Consume(cancellationToken);
                     // Source replay reconstructs its opacity and marker viewport scopes.
                     // Authored masks still need the existing resource-binding boundary.
-                    if (geometry.LeafMask is not null && source.GetAttribute("mask") is not null)
+                    if (geometry.LeafMask is not null && SvgLocalUrl.GetReference(source.GetAttribute("mask")) is not null)
                         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Instance stroke construction on masked definitions is not implemented.");
                 }
                 SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers, reference.ElementParentOpacity, reference.NonScalingStroke, PlainInstancePlacement(reference, frame), definition.InstanceLengthBases(reference), retainMappedContour, reference.IsDisplayed, state);

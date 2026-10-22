@@ -50,7 +50,7 @@ internal static class SvgRenderedGroupSourceParser
             SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
         if (id is not null) state.RenderedGroupDefinitions.TryAdd(id, new([], false, null, null)
             { SymbolContent = new(content, 0, 0), BorrowedFromSymbol = true, RenderedGroupId = id });
-        if (reader.GetAttribute("clip-path") is not null || reader.GetAttribute("mask") is not null
+        if (SvgLocalUrl.ReadReference(reader, "clip-path") is not null || SvgLocalUrl.ReadReference(reader, "mask") is not null
             || style.Filter is string filter && filter.Trim() != "none") content.AddUnsupported();
         if (reader.IsEmptyElement) EndGroup(reader.Depth, state, work, token);
 
@@ -90,13 +90,13 @@ internal static class SvgRenderedGroupSourceParser
         SvgInheritedStrokeStyle stroke = new(Copy(style.Linecap), Copy(style.Linejoin), Copy(style.Dasharray), Copy(style.Dashoffset),
             Copy(style.Width), Copy(style.Miterlimit), Copy(style.StrokeOpacity), Copy(style.Stroke));
         reference = reference with { Transform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), context.WorkCounter, context.CancellationToken),
-            InheritedTransform = SvgAffineTransform.Identity, InheritedFillRule = Copy(style.FillRule), SourceMaskReference = Copy(reader.GetAttribute("mask")) };
+            InheritedTransform = SvgAffineTransform.Identity, InheritedFillRule = Copy(style.FillRule), SourceMaskReference = Copy(SvgLocalUrl.ReadReference(reader, "mask")) };
         content.AddUse(reference, style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity),
             style.Color is null ? null : SvgColorParser.Parse(style.Color, context.NamedColors),
             style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity), stroke, style.PaintOrder, new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, context.WorkCounter, context.CancellationToken),
             SvgRetainedTextSource.CaptureElement(reader, context, state, state.TextReplay?.Limits ?? throw new InvalidOperationException("Use capture requires document limits.")), null, style.Fill is not null,
             SvgPresentationResolver.ParseDisplay(style.Display), style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true));
-        if (reader.GetAttribute("clip-path") is not null) content.AddUnsupported();
+        if (SvgLocalUrl.ReadReference(reader, "clip-path") is not null) content.AddUnsupported();
 
         string? Copy(string? value)
         {

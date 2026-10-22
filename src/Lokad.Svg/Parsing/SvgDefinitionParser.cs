@@ -414,8 +414,8 @@ internal static class SvgDefinitionParser
                 if (SvgGradientSyntax.IsGradientFill(maskContext.ResolveStyle(reader).Fill))
                 {
                     if (state.MaskValue is not null || state.MaskContentGeometries is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element mask content is implemented.");
-                    if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on mask content are not implemented.");
-                    if (reader.GetAttribute("clip-path") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths on mask content are not implemented.");
+                    if (SvgLocalUrl.ReadReference(reader, "mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on mask content are not implemented.");
+                    if (SvgLocalUrl.ReadReference(reader, "clip-path") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths on mask content are not implemented.");
                     SvgDefinition lowered = LowerInstanceSource(reader, maskContext, state);
                     try
                     {
@@ -445,8 +445,8 @@ internal static class SvgDefinitionParser
             {
                 if (state.MaskValue is not null || state.MaskContentGeometries is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element mask content is implemented.");
                 SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, workCounter, cancellationToken);
-                if (reader.GetAttribute("clip-path") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths on mask content are not implemented.");
-                if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on mask content are not implemented.");
+                if (SvgLocalUrl.ReadReference(reader, "clip-path") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths on mask content are not implemented.");
+                if (SvgLocalUrl.ReadReference(reader, "mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on mask content are not implemented.");
                 SvgPaintableElementContext contentContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
                 using SvgParsedGeometry lowered = SvgLeafParser.ParseCircle(reader, contentContext, null, state);
                 try
@@ -543,7 +543,7 @@ internal static class SvgDefinitionParser
             {
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken).PrepareStyle(reader);
                 SvgComputedStyle style = context.ResolveStyle(reader, reader.LocalName == "text");
-                bool rendered = reader.LocalName is "image" or "text" || reader.GetAttribute("clip-path") is not null || reader.GetAttribute("mask") is not null || style.Filter is {} filter && filter.Trim() != "none";
+                bool rendered = reader.LocalName is "image" or "text" || SvgLocalUrl.ReadReference(reader, "clip-path") is not null || SvgLocalUrl.ReadReference(reader, "mask") is not null || style.Filter is {} filter && filter.Trim() != "none";
                 bool deferred = SvgDeferredPaintLeaves.NeedsReplay(reader, context, state);
                 if (rendered || deferred)
                 {
@@ -723,7 +723,7 @@ internal static class SvgDefinitionParser
                 useFrame = ResolveUseClipFrame(reader, reference, state);
             }
             else useFrame = deferredClip.Value.Parent;
-            string? maskAttribute = reader.GetAttribute("mask");
+            string? maskAttribute = SvgLocalUrl.ReadReference(reader, "mask");
             SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, useFrame, ResolveDeferredMaskValue(reader, state), maskAttribute is null ? null : state.Strings.Copy(maskAttribute), deferredClip, state, workCounter, cancellationToken);
             state.HasUnsupportedContent |= !reader.IsEmptyElement;
             return true;
@@ -734,7 +734,7 @@ internal static class SvgDefinitionParser
 
         static SvgDeferredClip? ResolveDeferredClip(XmlReader useReader, SvgUseReference useReference, SvgDocumentState document)
         {
-            string? clipAttribute = useReader.GetAttribute("clip-path");
+            string? clipAttribute = SvgLocalUrl.ReadReference(useReader, "clip-path");
             if (clipAttribute is null) return null;
             string clipId = SvgClipPathSyntax.ParseClipId(clipAttribute);
             bool clipKnown = document.Clips.TryGetValue(clipId, out _) || document.ObjectClips.TryGetValue(clipId, out _);
@@ -749,7 +749,7 @@ internal static class SvgDefinitionParser
 
         static byte? ResolveDeferredMaskValue(XmlReader useReader, SvgDocumentState document)
         {
-            string? maskAttribute = useReader.GetAttribute("mask");
+            string? maskAttribute = SvgLocalUrl.ReadReference(useReader, "mask");
             if (maskAttribute is null) return null;
             if (document.Masks.TryGetValue(SvgMaskSyntax.ParseMaskId(maskAttribute), out byte value)) return value;
             return null;
@@ -757,7 +757,7 @@ internal static class SvgDefinitionParser
 
         static SvgViewportFrame? ResolveUseClipFrame(XmlReader useReader, SvgUseReference useReference, SvgDocumentState document)
         {
-            string? clipAttribute = useReader.GetAttribute("clip-path");
+            string? clipAttribute = SvgLocalUrl.ReadReference(useReader, "clip-path");
             if (clipAttribute is null) return SvgClipPathSyntax.ResolveLeafClip(useReader, document);
             if (!document.ObjectClips.TryGetValue(SvgClipPathSyntax.ParseClipId(clipAttribute), out _)) return SvgClipPathSyntax.ResolveLeafClip(useReader, document);
             if (!document.Definitions.TryGetValue(useReference.Id, out SvgDefinition definition)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "objectBoundingBox clip paths on forward use references are not implemented.");
@@ -2017,7 +2017,7 @@ internal static class SvgDefinitionParser
         {
             if (isDisplayed && SvgPresentationResolver.ParseDisplay(sourceStyle.Display))
                 SvgPaintRecording.WrapFilter(definition.Geometries, sourceStyle.Filter, context.ResolveTransform(reader), context.LengthBases, state, context.WorkCounter, context.CancellationToken);
-            SvgReferenceResolver.ApplyMask(definition.Geometries, null, null, reader.GetAttribute("mask"), context.ResolveTransform(reader), state, context.WorkCounter, context.CancellationToken);
+            SvgReferenceResolver.ApplyMask(definition.Geometries, null, null, SvgLocalUrl.ReadReference(reader, "mask"), context.ResolveTransform(reader), state, context.WorkCounter, context.CancellationToken);
             if (clipId is not null)
                 SvgClipPathSyntax.ApplyResourceClip(definition.Geometries, clipId, context.ResolveTransform(reader), state, context.WorkCounter, context.CancellationToken);
             if (filtered) SvgPaintRecording.WrapInstance(definition.Geometries, sourceStyle.GetOpacity(), state.NewRecordingScope(), state, context.WorkCounter, context.CancellationToken);

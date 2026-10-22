@@ -85,7 +85,7 @@ internal static class SvgMaskSyntax
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(state);
         if (state.DeferringFilterMask) return null;
-        string? reference = reader.GetAttribute("mask");
+        string? reference = SvgLocalUrl.ReadReference(reader, "mask");
         if (reference is null) return null;
         string id = ParseMaskId(reference);
         return state.Strings.Copy(id);
@@ -262,7 +262,7 @@ internal static class SvgMaskSyntax
     {
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(state);
-        string? reference = reader.GetAttribute("mask");
+        string? reference = SvgLocalUrl.ReadReference(reader, "mask");
         return reference is not null && (state.MaskRegions.TryGetValue(ParseMaskId(reference), out _) || state.MaskFractionRegions.TryGetValue(ParseMaskId(reference), out _));
     }
 

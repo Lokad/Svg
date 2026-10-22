@@ -32,7 +32,7 @@ internal static class SvgClipPathSyntax
     internal static string? ResolveClipId(XmlReader reader, SvgDocumentState state)
     {
         if (state.DeferringFilterClip) return null;
-        string? reference = reader.GetAttribute("clip-path");
+        string? reference = SvgLocalUrl.ReadReference(reader, "clip-path");
         if (reference is null) return null;
         if (reference.Trim().Equals("inherit", StringComparison.Ordinal))
             return state.Groups.Count == 0 ? null : state.Groups[state.Groups.Count - 1].ClipPathId;

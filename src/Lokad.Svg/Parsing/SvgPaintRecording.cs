@@ -108,9 +108,9 @@ internal static class SvgPaintRecording
             : SvgPaintResolver.ResolveStrokeColor(style.Stroke, style.Color, context.InheritedPresentation.Paint, context.NamedColors);
         SvgPaintOpacity strokeOpacity = SvgColorParser.ParsePaintOpacity(style.StrokeOpacity);
         SvgRecordingScope opacityScope = context.RecordingScope.Value == 0 ? new(1) : context.RecordingScope;
-        if (reader.GetAttribute("clip-path") is not null || context.ResolveTransform(reader) != context.InheritedPresentation.Transform)
+        if (SvgLocalUrl.ReadReference(reader, "clip-path") is not null || context.ResolveTransform(reader) != context.InheritedPresentation.Transform)
             opacityScope = state.NewRecordingScope();
-        SvgRecordingScope drawScope = reader.GetAttribute("mask") is null ? opacityScope : state.NewRecordingScope();
+        SvgRecordingScope drawScope = SvgLocalUrl.ReadReference(reader, "mask") is null ? opacityScope : state.NewRecordingScope();
         float strokeBoundsInflation = 0;
         string? strokePaint = style.Stroke ?? context.InheritedStroke.Stroke;
         if (reader.LocalName is "path" or "polygon" or "polyline" or "rect" or "circle" or "ellipse" or "line" && strokePaint is not null && strokePaint != "none")

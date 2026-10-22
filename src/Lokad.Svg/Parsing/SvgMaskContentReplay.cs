@@ -35,8 +35,8 @@ internal static class SvgMaskContentReplay
             case "line": SvgElementAttributePolicy.ValidateLine(reader, work, token); break;
             default: SvgElementAttributePolicy.ValidatePointList(reader, reader.LocalName, work, token); break;
         }
-        if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on mask content are not implemented.");
-        bool clipped = reader.GetAttribute("clip-path") is not null;
+        if (SvgLocalUrl.ReadReference(reader, "mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on mask content are not implemented.");
+        bool clipped = SvgLocalUrl.ReadReference(reader, "clip-path") is not null;
         SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, colors, work, token);
         SvgDefinitionLeafSource source = SvgDefinitionLeafSource.Capture(reader, context, state);
         if (state.MaskReplayChildCount == 0) state.MaskReplayChildStart = state.MaskReplayChildren.Count;

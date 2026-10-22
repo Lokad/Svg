@@ -26,7 +26,7 @@ internal static class SvgGroupParser
             if (resolved.Presentation.IsDisplayed) filterId = state.Strings.Copy(id);
         }
         bool hasScope = !reader.IsEmptyElement || filterId is not null;
-        string? maskReference = reader.GetAttribute("mask");
+        string? maskReference = SvgLocalUrl.ReadReference(reader, "mask");
         byte? mask = null;
         string? deferredMask = null;
         if (maskReference is not null)
@@ -55,7 +55,7 @@ internal static class SvgGroupParser
         SvgGroupKind kind = reader.LocalName == "switch" ? SvgGroupKind.Switch : SvgStructuralVocabulary.IsGroupContainer(reader.LocalName) ? SvgGroupKind.Group : SvgGroupKind.Link;
         SvgPaintOpacity sourceOpacity = style.GetOpacity();
         SvgRecordingScope opacityScope = context.RecordingScope.Value == 0 ? new(1) : context.RecordingScope;
-        if (reader.GetAttribute("clip-path") is not null || resolved.Presentation.Transform != context.InheritedPresentation.Transform)
+        if (SvgLocalUrl.ReadReference(reader, "clip-path") is not null || resolved.Presentation.Transform != context.InheritedPresentation.Transform)
             opacityScope = state.NewRecordingScope();
         SvgRecordingScope contentScope = maskReference is null ? opacityScope : state.NewRecordingScope();
         string? clipId = SvgClipPathSyntax.ResolveClipId(reader, state);
@@ -65,7 +65,7 @@ internal static class SvgGroupParser
     /// <summary>Pushes the referenced mask content box for child coverage checks, reporting whether a scope was pushed.</summary>
     private static bool PushMaskScope(XmlReader reader, SvgDocumentState state)
     {
-        string? reference = reader.GetAttribute("mask");
+        string? reference = SvgLocalUrl.ReadReference(reader, "mask");
         if (reference is null) return false;
         if (state.MaskContents.TryGetValue(SvgMaskSyntax.ParseMaskId(reference), out _)) return false;
         if (!state.MaskContentBoxes.TryGetValue(SvgMaskSyntax.ParseMaskId(reference), out SvgClipBox scope)) return false;

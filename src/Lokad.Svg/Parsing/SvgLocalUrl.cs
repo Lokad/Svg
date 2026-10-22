@@ -1,8 +1,17 @@
 namespace Lokad.Svg.Parsing;
 
+using System.Xml;
+
 /// <summary>Parses one bounded local url reference shared by paint, clip, mask and pattern servers.</summary>
 internal static class SvgLocalUrl
 {
+    /// <summary>Reads an effect reference, retaining the initial none value as absence before scopes or URL binding.</summary>
+    internal static string? ReadReference(XmlReader reader, string attribute) => GetReference(reader.GetAttribute(attribute));
+
+    /// <summary>Normalizes a borrowed live or retained effect value without allocating or resolving its identifier.</summary>
+    internal static string? GetReference(string? value)
+        => value is null || value.AsSpan().Trim().Equals("none", StringComparison.OrdinalIgnoreCase) ? null : value;
+
     /// <summary>Extracts the referenced identifier from url spellings with optional quotes and surrounding whitespace.</summary>
     internal static bool TryParseId(string value, out string id)
     {

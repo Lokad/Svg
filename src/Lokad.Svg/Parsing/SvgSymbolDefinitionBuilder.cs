@@ -68,7 +68,7 @@ internal sealed class SvgSymbolDefinitionBuilder : IDisposable
     /// <summary>Transfers a complete child's geometries on success; the caller retains ownership if growth fails.</summary>
     internal void Add(SvgDefinition definition)
     {
-        if (_content is null && (definition.SourceVisible is not null || definition.LeafSource?.GetAttribute("clip-path") is not null)) _ = EnableContent();
+        if (_content is null && (definition.SourceVisible is not null || SvgLocalUrl.GetReference(definition.LeafSource?.GetAttribute("clip-path")) is not null)) _ = EnableContent();
         if (_content is null && definition.LeafSource?.LocalName == "rect")
             foreach (SvgGeometry geometry in definition.Geometries)
             {

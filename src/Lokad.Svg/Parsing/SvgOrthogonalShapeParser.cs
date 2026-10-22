@@ -49,7 +49,7 @@ internal static class SvgOrthogonalShapeParser
         SvgResolvedPaintableElement shape;
         SvgParsedGeometry filled;
         shape = context.ResolveShape(fillStyle, reader, true);
-        if (d.Length == 0 || !shape.Presentation.HasFill && !context.RetainInstanceStrokePath && reader.GetAttribute("mask") is null && reader.GetAttribute("clip-path") is null && state.MaskScopes.Count == 0)
+        if (d.Length == 0 || !shape.Presentation.HasFill && !context.RetainInstanceStrokePath && SvgLocalUrl.ReadReference(reader, "mask") is null && SvgLocalUrl.ReadReference(reader, "clip-path") is null && state.MaskScopes.Count == 0)
         {
             // Unpainted fills contribute no area here. Stroke paint resolves its
             // required source box below; native stroking retains every subpath.
@@ -78,7 +78,7 @@ internal static class SvgOrthogonalShapeParser
         {
             using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, contourEnds, true);
-            if (!paintOutline && !paintRadialOutline && !paintPatternOutline && reader.GetAttribute("mask") is null && reader.GetAttribute("clip-path") is null && state.MaskScopes.Count == 0) DropSingletonContours(points, contourEnds, context.WorkCounter, context.CancellationToken);
+            if (!paintOutline && !paintRadialOutline && !paintPatternOutline && SvgLocalUrl.ReadReference(reader, "mask") is null && SvgLocalUrl.ReadReference(reader, "clip-path") is null && state.MaskScopes.Count == 0) DropSingletonContours(points, contourEnds, context.WorkCounter, context.CancellationToken);
             if (contourEnds.Count == 0 || AllContoursDegenerate(contourEnds))
             {
                 // Sealed subpaths with fewer than three points enclose no area, so the fill contributes nothing while stroke lowering still outlines every subpath.

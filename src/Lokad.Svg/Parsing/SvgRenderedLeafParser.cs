@@ -92,7 +92,7 @@ internal static class SvgRenderedLeafParser
                 state, limits, budget, fontSnapshot, workCounter, cancellationToken);
         int start = state.Scene.CommandCount, firstGeometry = state.Scene.GeometryCount;
         string? clip = SvgClipPathSyntax.ResolveClipId(reader, state);
-        string? mask = reader.GetAttribute("mask") is {} maskReference ? state.Strings.Copy(SvgMaskSyntax.ParseMaskId(maskReference)) : null;
+        string? mask = SvgLocalUrl.ReadReference(reader, "mask") is {} maskReference ? state.Strings.Copy(SvgMaskSyntax.ParseMaskId(maskReference)) : null;
         SvgViewportFrame? parent = state.EffectiveFrame;
         SvgAffineTransform transform = context.ResolveTransform(reader);
         SvgAffineTransform filterTransform = SvgViewportFrame.MapGeometry(transform, parent);

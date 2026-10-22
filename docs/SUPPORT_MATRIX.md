@@ -139,10 +139,13 @@ Current restrictions:
 
 ### Clips, masks and composition
 
-Clip paths support the geometry above, ordered child unions, compound fills,
+Clip paths support rectangles (including rounded rectangles), paths, circles,
+ellipses and restricted local uses, ordered child unions, compound fills,
 user-space/object-box coordinates and affine maps. Clip bindings resolve through
 local instances and forward definitions. Rectangular leaf clips follow the
 target's own and inherited transforms in both definition orders.
+Direct line, polygon, polyline and text children of clip paths are unsupported;
+use equivalent admitted path geometry where applicable.
 Alpha/luminance masks support ordered vector/text content, clipping, local uses,
 both region/content unit systems and transformed finite regions.
 
@@ -158,6 +161,8 @@ the clip.
 For one element, composition follows **filter → mask → clip → opacity**. A child
 clip remains inside an ancestor's effect. Group opacity isolates the composed
 children rather than multiplying each child's opacity independently.
+Explicit `clip-path="none"` and `mask="none"` omit that element's binding; ancestor
+clips and masks still apply.
 
 Resource attribute/declaration locations have distinct boundaries:
 
