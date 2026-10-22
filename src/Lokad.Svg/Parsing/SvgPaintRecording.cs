@@ -60,6 +60,28 @@ internal readonly record struct SvgRecordedPaintStyle(SvgPaintOpacity ElementOpa
 // Retains source paint and recording state until playback; parser budgets own staging and scene values.
 internal static class SvgPaintRecording
 {
+    /// <summary>Distinguishes nonrenderable shape/image sources from eligible transparent input.</summary>
+    /// <remarks>Callers still lower and validate the element. This only gates its own filter;
+    /// enclosing containers and instances can filter transparent child input.</remarks>
+    internal static bool IsFilterSource(XmlReader reader, SvgPaintableElementContext context)
+    {
+        switch (reader.LocalName)
+        {
+            case "rect":
+                SvgRectangleSyntax rectangle = SvgRectangleSyntax.Parse(reader, context.LengthBases);
+                return rectangle.Width > 0 && rectangle.Height > 0;
+            case "circle":
+            case "ellipse":
+                SvgEllipseSyntax ellipse = reader.LocalName == "circle" ? SvgEllipseSyntax.ParseCircle(reader, context.LengthBases) : SvgEllipseSyntax.ParseEllipse(reader, context.LengthBases);
+                return ellipse.RadiusX > 0 && ellipse.RadiusY > 0;
+            case "image":
+                SvgImageSyntax image = SvgImageSyntax.Parse(reader, context.LengthBases.Width, context.LengthBases.Height);
+                return image.Href.Length > 0 && image.Width != 0 && image.Height != 0;
+            default:
+                return true;
+        }
+    }
+
     /// <summary>Creates a non-painting target that carries effects without contributing geometry bounds.</summary>
     /// <remarks>The scene owns charged paint metadata; the returned value owns no native storage.
     /// Registration shares the scene's work allowance and cancellation.</remarks>

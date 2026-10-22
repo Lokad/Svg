@@ -188,6 +188,13 @@ internal static class SvgLeafParser
                     ? SvgGeometrySyntax.MultiplyDivide(specifiedWidth, image.Height, image.Width) : image.Height);
                 bounds = new SvgPaintBounds((float)syntax.X, (float)syntax.Y, (float)(syntax.X + width), (float)(syntax.Y + height))
                     .Map(SvgViewportFrame.MapGeometry(element.Transform, frame), context.WorkCounter, context.CancellationToken);
+                if (width == 0 || height == 0)
+                {
+                    SvgRectangle empty = element.Transform.Apply(new SvgRectangle(syntax.X, syntax.Y, width, height, default, false, null));
+                    if (frame is not null) empty = frame.Value.Clip.ClipRectangle(frame.Value.Shift(empty));
+                    image.Raster?.Dispose();
+                    return SvgGeometry.FromRectangle(empty);
+                }
                 string? aspect = reader.GetAttribute("preserveAspectRatio");
                 if (image.Raster is null && !retainBitmap && element.Transform.IsAxisAligned)
                 {

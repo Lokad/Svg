@@ -2049,7 +2049,7 @@ internal static class SvgDefinitionParser
         finally { state.DeferringLeafClip = previousClipDeferral; }
         try
         {
-            if (isDisplayed && SvgPresentationResolver.ParseDisplay(sourceStyle.Display))
+            if (filtered && isDisplayed && SvgPresentationResolver.ParseDisplay(sourceStyle.Display) && SvgPaintRecording.IsFilterSource(reader, context))
                 SvgPaintRecording.WrapFilter(definition.Geometries, sourceStyle.Filter, context.ResolveTransform(reader), context.LengthBases, state, context.WorkCounter, context.CancellationToken);
             SvgReferenceResolver.ApplyMask(definition.Geometries, null, null, SvgLocalUrl.ReadReference(reader, "mask"), context.ResolveTransform(reader), state, context.WorkCounter, context.CancellationToken);
             if (clipId is not null)

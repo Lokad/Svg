@@ -299,6 +299,8 @@ local CSS filter references. Intermediate surfaces and primitive work are bounde
 An element suppressed by its own or an ancestor's `display:none` does not activate
 filters. Visible elements with no fill or transparent paint can still produce
 filter output, such as a flood.
+Zero-sized rectangles/circles/ellipses and images without a usable source suppress
+their own filters. An enclosing group or use can still filter transparent child input.
 Empty groups also run their filters over transparent input, including self-closing
 groups; display suppression and zero object-box filter regions still paint nothing.
 A referenced filter with no primitives produces empty output. This differs from
