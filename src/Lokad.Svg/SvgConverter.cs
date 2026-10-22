@@ -584,8 +584,6 @@ public static partial class SvgConverter
                 requestedRight = Math.Min(requestedRight, filterClip.Right); requestedBottom = Math.Min(requestedBottom, filterClip.Bottom);
             }
             if (requestedRight <= requestedLeft || requestedBottom <= requestedTop) return end + 1;
-            if (right > left && bottom > top
-                && (right + paddingX < requestedLeft || bottom + paddingY < requestedTop || left - paddingX > requestedRight || top - paddingY > requestedBottom)) return end + 1;
             SvgCpuBitmapOrigin? imageShaderOrigin = null;
             {
                 bool objectSourceUnits = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox;
@@ -601,17 +599,26 @@ public static partial class SvgConverter
                 SvgPaintBounds painted = new((float)(visual.Left * horizontalScale + horizontalOffset), (float)(visual.Top * verticalScale + verticalOffset),
                     (float)(visual.Right * horizontalScale + horizontalOffset), (float)(visual.Bottom * verticalScale + verticalOffset));
                 SvgPaintBounds hint = SvgFilterPlayback.SourceLayerBounds(resource, primitiveMap, sourceContext, painted, budget, sourceRequestWork, cancellationToken);
+                workUnits += sourceRequestWork.Used;
+                // Floods and later graph results can paint without source ink in the
+                // requested region. Cull only after propagating the filter bounds.
+                if (hint.Right + paddingX < requestedLeft || hint.Bottom + paddingY < requestedTop
+                    || hint.Left - paddingX > requestedRight || hint.Top - paddingY > requestedBottom) return end + 1;
                 double nativeLeft = Math.Floor(MathF.Max(hint.Left, needed.Left)) - 1, nativeTop = Math.Floor(MathF.Max(hint.Top, needed.Top)) - 1;
                 if (!double.IsFinite(nativeLeft) || !double.IsFinite(nativeTop) || nativeLeft < int.MinValue || nativeLeft > int.MaxValue || nativeTop < int.MinValue || nativeTop > int.MaxValue)
                     throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source origin exceeds the coordinate range.");
                 imageShaderOrigin = new((int)nativeLeft, (int)nativeTop);
-                workUnits += sourceRequestWork.Used;
-                if (boundedSource || nestedSourceBounds is not null || hasSourceImages)
+                double captureLeft = Math.Max(left, needed.Left), captureTop = Math.Max(top, needed.Top);
+                double captureRight = Math.Min(right, needed.Right), captureBottom = Math.Min(bottom, needed.Bottom);
+                if (captureRight <= captureLeft || captureBottom <= captureTop)
                 {
-                    double captureLeft = Math.Max(left, needed.Left), captureTop = Math.Max(top, needed.Top);
-                    double captureRight = Math.Min(right, needed.Right), captureBottom = Math.Min(bottom, needed.Bottom);
-                    if (captureRight > captureLeft && captureBottom > captureTop)
-                        (left, top, right, bottom) = (captureLeft, captureTop, captureRight, captureBottom);
+                    // The graph requests no drawable input here. Keep a transparent
+                    // source grid near its output instead of retaining remote ink.
+                    (left, top, right, bottom) = (requestedLeft, requestedTop, requestedRight, requestedBottom);
+                }
+                else if (boundedSource || nestedSourceBounds is not null || hasSourceImages)
+                {
+                    (left, top, right, bottom) = (captureLeft, captureTop, captureRight, captureBottom);
                 }
             }
             // Shifted and chained results may feed visible pixels from outside the
