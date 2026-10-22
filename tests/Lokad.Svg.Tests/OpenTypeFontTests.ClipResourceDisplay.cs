@@ -28,6 +28,7 @@ public sealed partial class OpenTypeFontTests
             SvgRenderOptions preparedOptions = new(null, 1, background, SvgRenderLimits.Default);
             byte[] input = Svg(true), expectedInput = Svg(false);
             byte[] expected = SvgConverter.ConvertToPng(expectedInput, rawOptions, CancellationToken.None).ToArray();
+            if (target == "text") Assert.NotEqual(SvgConverter.ConvertToPng(Document(""), rawOptions, CancellationToken.None).ToArray(), expected);
             Assert.Equal(expected, SvgConverter.ConvertToPng(input, rawOptions, CancellationToken.None).ToArray());
             using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, provider, preparedOptions, CancellationToken.None);
             Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
@@ -54,7 +55,7 @@ public sealed partial class OpenTypeFontTests
                     "use" => "<defs><path id='s' d='M0 0H8V8H0Z' fill='red'/></defs><use href='#s'" + effect + "/>",
                     "symbol" => "<defs><symbol id='s'><path d='M0 0H8V8H0Z' fill='red'" + effect + "/></symbol></defs><use href='#s'/>",
                     "pattern" => "<defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'" + effect + "/></pattern></defs><rect width='8' height='8' fill='url(#p)'/>",
-                    "text" => "<text x='.25' y='7' font-size='12' font-family='Example' fill='red'" + effect + ">A</text>",
+                    "text" => "<text x='.25' y='7' font-size='200' font-family='Example' fill='red'" + effect + ">A</text>",
                     _ => "<rect width='8' height='8' fill='red'" + effect + "/>"
                 };
                 string ancestors = "<defs><clipPath id='outer'><rect width='7' height='8'/></clipPath><path id='contour' d='M0 0H2V8H0Z'/></defs>";
