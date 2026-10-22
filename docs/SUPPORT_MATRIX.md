@@ -316,6 +316,9 @@ CSS family requests admit at most 256 families and 1,024 UTF-16 code units per
 decoded name. Both authored and canonical list text must fit 4,096 code units;
 normalization that exceeds this bound fails immediately with `LimitExceeded`.
 SVG scalar attributes and inline property values retain their 256-character bound.
+SVG font-weight values accept integers from 1 through 1000, normal and bold;
+other numeric/relative forms reject. Explicit public font request objects keep
+their documented positive-weight catalog selection contract.
 
 | Area | Supported boundary |
 | --- | --- |

@@ -520,8 +520,8 @@ internal static class SvgTextFontSyntax
         string token = SvgCssWhitespace.Trim(value);
         if (token.Equals("normal", StringComparison.OrdinalIgnoreCase)) return 400;
         if (token.Equals("bold", StringComparison.OrdinalIgnoreCase)) return 700;
-        if (int.TryParse(token, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out int weight) && weight > 0) return weight;
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive numeric, normal, and bold text font weights are supported.");
+        if (int.TryParse(token, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out int weight) && weight is >= 1 and <= 1000) return weight;
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer text font weights from 1 through 1000, normal and bold are supported.");
     }
 
     internal static bool ParseItalic(string value)
