@@ -200,7 +200,7 @@ internal static class SvgDocumentTraversal
                     {
                         SvgViewportFrame? filterParent = parsedGroup.Scope.HasFilter ? state.EffectiveFrame : null;
                         bool filterViewport = filterParent is { HasAffineClipScope: false } viewportParent && viewportParent.Clip != SvgClipBox.Unbounded;
-                        state.Groups.Add(parsedGroup.Scope with { HasFilterViewportScope = filterViewport, PreviousFilterViewportDepth = state.FilterViewportDepth });
+                        state.Groups.Add(parsedGroup.Scope with { HasFilterViewportScope = filterViewport, PreviousFilterViewportDepth = state.FilterViewportDepth, FilterGeometryStart = state.Scene.GeometryCount });
                         string? groupId = reader.GetAttribute("id");
                         SvgGroupSnapshotStart snapshot = new(groupId is null ? null : state.Strings.Copy(groupId), reader.GetAttribute("clip-path") is not null, reader.GetAttribute("mask") is not null);
                         if (parsedGroup.Scope.Kind == SvgGroupKind.Switch) state.Switches.Add(new SwitchScope(reader.Depth, false));
@@ -435,7 +435,10 @@ internal static class SvgDocumentTraversal
                 {
                     if (state.Groups[^1].HasFilter)
                     {
-                        (state.PatternContentBuilder ?? throw new InvalidOperationException("A filtered pattern group requires its replay builder.")).EndOpacityScope();
+                        SvgSceneBuilder builder = state.PatternContentBuilder ?? throw new InvalidOperationException("A filtered pattern group requires its replay builder.");
+                        if (builder.GeometryCount == state.Groups[^1].FilterGeometryStart)
+                            builder.AddGeometry(SvgPaintRecording.CreateEffectAnchor(builder, state, state.Groups[^1].RecordingScope));
+                        builder.EndOpacityScope();
                         state.FilterGroupDepth--;
                     }
                     if (state.Groups[^1].HasMaskScope) state.MaskScopes.RemoveLast();
@@ -468,6 +471,8 @@ internal static class SvgDocumentTraversal
                     if (group.Kind == SvgGroupKind.Group) state.GroupDepth--;
                     if (group.HasFilter)
                     {
+                        if (state.Scene.GeometryCount == group.FilterGeometryStart)
+                            state.Scene.AddGeometry(SvgPaintRecording.CreateEffectAnchor(state.Scene, state, group.RecordingScope));
                         state.FilterGroupDepth--;
                         state.FilterViewportDepth = group.PreviousFilterViewportDepth;
                     }

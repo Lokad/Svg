@@ -22,6 +22,7 @@ public sealed class SvgEmptyFilterGroupTests
             byte[] expected = attributes.StartsWith("clip-path", StringComparison.Ordinal)
                 ? Render("<rect x='8' y='8' width='8' height='8' fill='blue'/>")
                 : Render(Filter + effects + "<g " + attributes + ">" + content + "</g>");
+            Assert.Equal(expected, Render(Filter + effects + "<g " + attributes + ">" + content + "</g>"));
             Assert.Equal(expected,
                 Render(Filter + effects + "<defs><g id='s'>" + content + "</g></defs><g " + attributes + "><use href='#s'/></g>"));
         }

@@ -237,8 +237,10 @@ internal static class SvgLeafMaskComposition
                 {
                     depth++;
                     SvgLeafMaskBinding? outputClip = null;
+                    int anchorIndex = -1;
                     if (command.RegionKind == SvgLayerRegionKind.Filter)
                     {
+                        anchorIndex = index + 1;
                         bool ownedMask = command.RecordingScope.Value > 0 && index > 0 && scene.CommandAt(index - 1) is { Kind: SvgDrawCommandKind.BeginGroup } owner
                             && owner.RegionKind != SvgLayerRegionKind.Filter && owner.RecordingScope == command.RecordingScope;
                         if (!ownedMask) outputClip = scene.Filters.OutputClipAt(command.MaskContentIndex);
@@ -249,6 +251,30 @@ internal static class SvgLeafMaskComposition
                         // A mask and filter sharing one recording owner belong to
                         // the same element. Native clipping surrounds both layers.
                         outputClip = scene.Filters.OutputClipAt(filter.MaskContentIndex);
+                        anchorIndex = index + 2;
+                    }
+                    // Empty filtered sources carry ancestor bindings on a non-painting
+                    // anchor. Those bindings enclose the generated output, including
+                    // the filter's own mask/clip composition.
+                    if (anchorIndex >= 0 && anchorIndex < count && scene.CommandAt(anchorIndex) is { Kind: SvgDrawCommandKind.Geometry } anchorCommand)
+                    {
+                        SvgGeometry anchor = scene.GeometryAt(anchorCommand.GeometryIndex);
+                        if (scene.GetRecordedPaintValue(anchor.RecordedPaint).IsEffectAnchor && anchor.LeafMask is {} ancestors)
+                        {
+                            bool retainedFilter = false;
+                            for (SvgLeafMaskBinding? binding = ancestors; binding is not null; binding = binding.Inner)
+                                for (SvgLeafMaskOperation? operation = binding.Operation; operation is not null; operation = operation.Source)
+                                {
+                                    work.Consume(token);
+                                    retainedFilter |= operation.Filter is not null;
+                                }
+                            // A retained child's own filter stays inside this scope.
+                            if (!retainedFilter)
+                            {
+                                filterClips ??= new(state.Budget, SvgMemoryCategory.Parser, work, token);
+                                filterClips.Add(new(depth, ancestors));
+                            }
+                        }
                     }
                     if (outputClip is {} clip)
                     {
@@ -284,7 +310,7 @@ internal static class SvgLeafMaskComposition
                 if (index < count) commands.Add(command);
                 if (index < count && command.Kind == SvgDrawCommandKind.EndGroup)
                 {
-                    if (filterClips is { Count: > 0 } && filterClips[filterClips.Count - 1].Depth == depth) filterClips.RemoveLast();
+                    while (filterClips is { Count: > 0 } && filterClips[filterClips.Count - 1].Depth == depth) filterClips.RemoveLast();
                     depth--;
                 }
             }

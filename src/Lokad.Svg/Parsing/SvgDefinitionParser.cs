@@ -534,7 +534,7 @@ internal static class SvgDefinitionParser
                         state.PatternScopes ??= new(state.Budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
                         state.PatternScopes.Add(new(group.Scope.ClipPathId, group.DeferredMask, group.Scope.InheritedPresentation.Transform, firstCommand, group.Scope.IsolatesOpacity));
                     }
-                    state.Groups.Add(group.Scope with { Kind = SvgGroupKind.PatternGroup, IsolatesOpacity = isolate });
+                    state.Groups.Add(group.Scope with { Kind = SvgGroupKind.PatternGroup, IsolatesOpacity = isolate, FilterGeometryStart = builder.GeometryCount });
                     state.GroupDepth++;
                 }
                 return true;

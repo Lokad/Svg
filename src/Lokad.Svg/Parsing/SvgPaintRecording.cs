@@ -60,6 +60,16 @@ internal readonly record struct SvgRecordedPaintStyle(SvgPaintOpacity ElementOpa
 // Retains source paint and recording state until playback; parser budgets own staging and scene values.
 internal static class SvgPaintRecording
 {
+    /// <summary>Creates a non-painting target that carries effects without contributing geometry bounds.</summary>
+    /// <remarks>The scene owns charged paint metadata; the returned value owns no native storage.
+    /// Registration shares the scene's work allowance and cancellation.</remarks>
+    internal static SvgGeometry CreateEffectAnchor(SvgSceneBuilder scene, SvgDocumentState state, SvgRecordingScope scope)
+    {
+        SvgRecordedPaintValue paint = new(state.NewPaintOperationIdentity(), 0, false,
+            scope, SvgPaintOpacity.Opaque, scope) { IsEffectAnchor = true };
+        return SvgGeometry.FromRectangle(default) with { RecordedPaint = scene.RegisterRecordedPaint(paint) };
+    }
+
     /// <summary>Retains material glyph bounds for filtered source groups; glyph color/opacity remains baked once in its existing paint.</summary>
     internal static SvgGeometry RecordGlyph(SvgGlyphGeometry glyph, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
