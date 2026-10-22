@@ -219,12 +219,12 @@ internal static class SvgGradientSyntax
 
     private static SvgGradientTransform ParseGradientTransformFunction(ReadOnlySpan<char> name, ReadOnlySpan<char> arguments, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        bool isMatrix = name.Equals("matrix".AsSpan(), StringComparison.OrdinalIgnoreCase);
-        bool isTranslate = name.Equals("translate".AsSpan(), StringComparison.OrdinalIgnoreCase);
-        bool isRotate = name.Equals("rotate".AsSpan(), StringComparison.OrdinalIgnoreCase);
-        bool isSkewX = name.Equals("skewX".AsSpan(), StringComparison.OrdinalIgnoreCase);
-        bool isSkewY = name.Equals("skewY".AsSpan(), StringComparison.OrdinalIgnoreCase);
-        if (!isMatrix && !isTranslate && !isRotate && !isSkewX && !isSkewY && !name.Equals("scale".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotation, skew and finite matrix() gradient transforms are implemented.");
+        bool isMatrix = name.Equals("matrix".AsSpan(), StringComparison.Ordinal);
+        bool isTranslate = name.Equals("translate".AsSpan(), StringComparison.Ordinal);
+        bool isRotate = name.Equals("rotate".AsSpan(), StringComparison.Ordinal);
+        bool isSkewX = name.Equals("skewX".AsSpan(), StringComparison.Ordinal);
+        bool isSkewY = name.Equals("skewY".AsSpan(), StringComparison.Ordinal);
+        if (!isMatrix && !isTranslate && !isRotate && !isSkewX && !isSkewY && !name.Equals("scale".AsSpan(), StringComparison.Ordinal)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotation, skew and finite matrix() gradient transforms are implemented.");
         Span<double> values = stackalloc double[6];
         int valueCount = 0;
         SvgGeometrySyntax.DelimitedTokenReader tokens = new(arguments);
@@ -274,9 +274,9 @@ internal static class SvgGradientSyntax
 
     internal static SvgGradientSpread ParseSpreadMethod(string? value)
     {
-        if (value is null || value.Equals("pad", StringComparison.OrdinalIgnoreCase)) return SvgGradientSpread.Pad;
-        if (value.Equals("repeat", StringComparison.OrdinalIgnoreCase)) return SvgGradientSpread.Repeat;
-        if (value.Equals("reflect", StringComparison.OrdinalIgnoreCase)) return SvgGradientSpread.Reflect;
+        if (value is null || value.Equals("pad", StringComparison.Ordinal)) return SvgGradientSpread.Pad;
+        if (value.Equals("repeat", StringComparison.Ordinal)) return SvgGradientSpread.Repeat;
+        if (value.Equals("reflect", StringComparison.Ordinal)) return SvgGradientSpread.Reflect;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad, repeat and reflect gradient spread methods are implemented.");
     }
 

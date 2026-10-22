@@ -110,6 +110,8 @@ child content still undergo the ordinary validation and limits.
 Percentage rectangle positions, dimensions and corner radii resolve in each
 instance's viewport, including nested viewBox and symbol instances.
 Transform lists accept whitespace or comma separators between functions.
+SVG transform function names and SVG-specific enumeration values, including
+spreadMethod and preserveAspectRatio, retain their literal case.
 
 For rendered groups referenced by `use`, source-group opacity isolation, clips
 or masks on the referenced group, and nested viewport content are unsupported.

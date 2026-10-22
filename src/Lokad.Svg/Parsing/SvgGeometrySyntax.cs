@@ -36,7 +36,7 @@ internal static class SvgGeometrySyntax
             // Local scale/translate lists use native float axis storage until a
             // matrix, rotation or skew promotes the list to double precision.
             // Enclosing groups still compose their finished local maps in double.
-            fullMatrix |= !(name.Equals("translate", StringComparison.OrdinalIgnoreCase) || name.Equals("scale", StringComparison.OrdinalIgnoreCase));
+            fullMatrix |= !(name.Equals("translate", StringComparison.Ordinal) || name.Equals("scale", StringComparison.Ordinal));
             transform = fullMatrix ? transform.ComposeChecked(function) : ComposeAxis(transform, function);
             position = SkipTransformSeparator(input, position + 1);
         }
@@ -229,12 +229,12 @@ internal static class SvgGeometrySyntax
 
     private static SvgAffineTransform ParseTransformFunction(ReadOnlySpan<char> name, ReadOnlySpan<char> arguments, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        bool isMatrix = name.Equals("matrix", StringComparison.OrdinalIgnoreCase);
-        bool isTranslate = name.Equals("translate", StringComparison.OrdinalIgnoreCase);
-        bool isRotate = name.Equals("rotate", StringComparison.OrdinalIgnoreCase);
-        bool isSkewX = name.Equals("skewX", StringComparison.OrdinalIgnoreCase);
-        bool isSkewY = name.Equals("skewY", StringComparison.OrdinalIgnoreCase);
-        if (!isMatrix && !isTranslate && !name.Equals("scale", StringComparison.OrdinalIgnoreCase) && !isRotate && !isSkewX && !isSkewY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The transform function is not supported.");
+        bool isMatrix = name.Equals("matrix", StringComparison.Ordinal);
+        bool isTranslate = name.Equals("translate", StringComparison.Ordinal);
+        bool isRotate = name.Equals("rotate", StringComparison.Ordinal);
+        bool isSkewX = name.Equals("skewX", StringComparison.Ordinal);
+        bool isSkewY = name.Equals("skewY", StringComparison.Ordinal);
+        if (!isMatrix && !isTranslate && !name.Equals("scale", StringComparison.Ordinal) && !isRotate && !isSkewX && !isSkewY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The transform function is not supported.");
         if (isTranslate) return ParseTranslate(arguments, workCounter, cancellationToken);
         if (isRotate) return ParseRotate(arguments, workCounter, cancellationToken);
         if (isSkewX || isSkewY) return ParseSkew(arguments, isSkewY, workCounter, cancellationToken);
@@ -320,7 +320,7 @@ internal static class SvgGeometrySyntax
 
     internal static (SvgViewBoxAlignment HorizontalAlignment, SvgViewBoxAlignment VerticalAlignment, SvgViewBoxFit Fit) ParsePreserveAspectRatio(string? value)
     {
-        if (value is null || value.Equals("xMidYMid meet", StringComparison.OrdinalIgnoreCase)) return (SvgViewBoxAlignment.Mid, SvgViewBoxAlignment.Mid, SvgViewBoxFit.Meet);
+        if (value is null || value.Equals("xMidYMid meet", StringComparison.Ordinal)) return (SvgViewBoxAlignment.Mid, SvgViewBoxAlignment.Mid, SvgViewBoxFit.Meet);
         value = value.Trim();
         int separator = value.IndexOfAny([' ', '\t', '\r', '\n']);
         string alignment = separator < 0 ? value : value[..separator];
@@ -330,7 +330,7 @@ internal static class SvgGeometrySyntax
             "slice" => SvgViewBoxFit.Slice,
             _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only meet, slice, and none preserveAspectRatio values are implemented.")
         };
-        if (alignment.Equals("none", StringComparison.OrdinalIgnoreCase)) return (SvgViewBoxAlignment.None, SvgViewBoxAlignment.None, SvgViewBoxFit.None);
+        if (alignment.Equals("none", StringComparison.Ordinal)) return (SvgViewBoxAlignment.None, SvgViewBoxAlignment.None, SvgViewBoxFit.None);
         return alignment switch
         {
             "xMinYMin" => (SvgViewBoxAlignment.Min, SvgViewBoxAlignment.Min, fit), "xMidYMin" => (SvgViewBoxAlignment.Mid, SvgViewBoxAlignment.Min, fit), "xMaxYMin" => (SvgViewBoxAlignment.Max, SvgViewBoxAlignment.Min, fit), "xMinYMid" => (SvgViewBoxAlignment.Min, SvgViewBoxAlignment.Mid, fit), "xMidYMid" => (SvgViewBoxAlignment.Mid, SvgViewBoxAlignment.Mid, fit), "xMaxYMid" => (SvgViewBoxAlignment.Max, SvgViewBoxAlignment.Mid, fit), "xMinYMax" => (SvgViewBoxAlignment.Min, SvgViewBoxAlignment.Max, fit), "xMidYMax" => (SvgViewBoxAlignment.Mid, SvgViewBoxAlignment.Max, fit), "xMaxYMax" => (SvgViewBoxAlignment.Max, SvgViewBoxAlignment.Max, fit),
