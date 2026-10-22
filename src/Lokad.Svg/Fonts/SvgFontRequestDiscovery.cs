@@ -452,7 +452,7 @@ internal static class SvgFontRequestDiscovery
             {
                 InlineStyle sheet = SvgStyleSheet.Resolve(marker, styleRules, ancestors, workCounter, cancellationToken);
                 SvgMarkerDefinition definition = SvgMarkerSyntax.Parse(marker,
-                    SvgComputedStyleResolver.Resolve(marker, sheet, workCounter, cancellationToken),
+                    SvgComputedStyleResolver.Resolve(marker, sheet, workCounter, cancellationToken, true),
                     new(viewportSizes.Count == 0 ? rootWidth : viewportSizes[^1].Width, viewportSizes.Count == 0 ? rootHeight : viewportSizes[^1].Height),
                     inherited, sheet, workCounter, cancellationToken);
                 if (definition.FontLengths is {} lengths && definition.Width != 0 && definition.Height != 0 && marker.GetAttribute("id") is {} id)

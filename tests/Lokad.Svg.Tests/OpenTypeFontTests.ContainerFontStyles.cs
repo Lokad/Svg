@@ -11,6 +11,7 @@ public sealed partial class OpenTypeFontTests
     [InlineData("symbol-group")]
     [InlineData("pattern")]
     [InlineData("pattern-template")]
+    [InlineData("marker")]
     public async Task Font_inline_styles_remain_valid_when_containers_retain_sources(string scope)
     {
         (var catalog, var provider, _) = CreateExamplePack(CreateTriangleFont());
@@ -27,7 +28,7 @@ public sealed partial class OpenTypeFontTests
 
             byte[] Input(bool inline)
             {
-                bool ruleControl = !inline && scope.StartsWith("pattern", StringComparison.Ordinal);
+                bool ruleControl = !inline && (scope.StartsWith("pattern", StringComparison.Ordinal) || scope == "marker");
                 string declaration = inline ? "style='" + property + ":" + value + "'" : ruleControl ? "" : property + "='" + value + "'";
                 string text = "<text x='0' y='7'" + (property == "font-family" ? "" : " font-family='Example'") + (property == "font-size" ? "" : " font-size='200'") + ">A</text>";
                 string group = "<g id='g' " + declaration + ">" + text + "</g>";
@@ -38,9 +39,10 @@ public sealed partial class OpenTypeFontTests
                     "symbol-group" => "<defs><symbol id='s'>" + group + "</symbol></defs><use href='#s'/>",
                     "pattern" => "<defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse' " + declaration + ">" + text + "</pattern></defs><rect width='8' height='8' fill='url(#p)'/>",
                     "pattern-template" => "<defs><pattern id='base' patternUnits='userSpaceOnUse' " + declaration + ">" + text + "</pattern><pattern id='p' href='#base' width='8' height='8'/></defs><rect width='8' height='8' fill='url(#p)'/>",
+                    "marker" => "<defs><marker id='m' markerUnits='userSpaceOnUse' markerWidth='.01em' markerHeight='2' " + declaration + "><rect width='2' height='2'/></marker></defs><path d='M1 1H7' marker-start='url(#m)'/>",
                     _ => group
                 };
-                if (ruleControl) content = "<style>#" + (scope == "pattern" ? "p" : "base") + "{" + property + ":" + value + "}</style>" + content;
+                if (ruleControl) content = "<style>#" + (scope == "pattern" ? "p" : scope == "marker" ? "m" : "base") + "{" + property + ":" + value + "}</style>" + content;
                 return Document(content);
             }
         }
