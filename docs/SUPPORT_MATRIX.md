@@ -119,6 +119,7 @@ filters and supplied-font text.
 Referenced patterns remain available under `display:none` on the pattern or its
 definition ancestors. Inherited paint and visibility still apply to tile content;
 `display:none` on rendered tile children suppresses those children.
+Font preparation uses the same resource display rules for supplied-font tile text.
 
 Current restrictions:
 

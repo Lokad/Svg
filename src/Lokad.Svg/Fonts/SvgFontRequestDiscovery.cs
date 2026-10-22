@@ -217,6 +217,7 @@ internal static class SvgFontRequestDiscovery
                     if (!sterile && isSvgElement && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName)) hasUnsupportedContent = true;
                     bool patternDefinition = !sterile && isSvgElement && reader.LocalName == "pattern" && patternDepth < 0
                         && (definitionsDepth >= 0 ? reader.Depth == definitionsDepth + 1 : directChild || parentAllowsText && hasGroupAncestor);
+                    bool patternHasSize = true;
                     if (patternDefinition)
                     {
                         SvgElementAttributePolicy.ValidatePattern(reader, workCounter, cancellationToken);
@@ -224,8 +225,7 @@ internal static class SvgFontRequestDiscovery
                         double? patternWidth = reader.GetAttribute("width") is {} width ? SvgGeometrySyntax.ParseRectangleCoordinate(width) : null;
                         double? patternHeight = reader.GetAttribute("height") is {} height ? SvgGeometrySyntax.ParseRectangleCoordinate(height) : null;
                         bool noTemplate = reader.GetAttribute("href") is null && reader.GetAttribute("href", "http://www.w3.org/1999/xlink") is null;
-                        if (patternWidth == 0 || patternHeight == 0 || noTemplate && (patternWidth is null || patternHeight is null))
-                            style = style with { IsDisplayed = false };
+                        patternHasSize = patternWidth != 0 && patternHeight != 0 && (!noTemplate || patternWidth is not null && patternHeight is not null);
                         if (!reader.IsEmptyElement)
                         {
                             patternDepth = reader.Depth;
@@ -276,6 +276,8 @@ internal static class SvgFontRequestDiscovery
                     SvgTextWhitespaceMode inheritedTextWhitespaceMode = style.Text.WhitespaceMode;
                     string? specifiedWhiteSpace = null;
                     if (!sterile && isSvgElement && !rootElement && !insideDirectText && parentAllowsText && reader.LocalName is ("svg" or "defs" or "g" or "a" or "switch" or "pattern" or "text" or "use")) style = ApplyAttributes(reader, style, styleSheet, workCounter, cancellationToken, out specifiedWhiteSpace);
+                    // Referenced pattern content ignores resource/ancestor display, but zero-sized tiles stay inert.
+                    if (patternDefinition) style = style with { IsDisplayed = patternHasSize };
                     if (!sterile && parsedTextSpan is SvgTextSpanStyle parsedSpan)
                     {
                         SvgTextPaintStyle paint = parsedSpan.Paint;
