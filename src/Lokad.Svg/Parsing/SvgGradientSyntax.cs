@@ -357,11 +357,11 @@ internal static class SvgGradientSyntax
                 ReadOnlySpan<char> declaration = SvgCssComments.NormalizeDeclaration(raw, commentScratch, workCounter, cancellationToken);
                 int colon = declaration.IndexOf(':');
                 if (colon < 0) continue;
-                ReadOnlySpan<char> name = declaration[..colon].Trim();
+                ReadOnlySpan<char> name = SvgCssWhitespace.Trim(declaration[..colon]);
                 bool color = name.Equals("stop-color", StringComparison.OrdinalIgnoreCase);
                 bool opacity = name.Equals("stop-opacity", StringComparison.OrdinalIgnoreCase);
                 if (!color && !opacity) continue;
-                bool important = SvgInlineStyleParser.TryStripImportant(declaration[(colon + 1)..].Trim(), out ReadOnlySpan<char> declared);
+                bool important = SvgInlineStyleParser.TryStripImportant(SvgCssWhitespace.Trim(declaration[(colon + 1)..]), out ReadOnlySpan<char> declared);
                 if (color && (!colorImportant || important)) { styleColor = declared.ToString(); colorImportant = important; }
                 if (opacity && (!opacityImportant || important)) { styleOpacity = declared.ToString(); opacityImportant = important; }
             }

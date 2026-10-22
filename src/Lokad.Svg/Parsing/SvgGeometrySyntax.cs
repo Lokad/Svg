@@ -116,7 +116,8 @@ internal static class SvgGeometrySyntax
     /// <summary>Resolves an absolute font size in CSS pixels without admitting physical units for text positions.</summary>
     internal static double ParseFontSize(string value)
     {
-        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        ReadOnlySpan<char> token = SvgCssWhitespace.Trim(value.AsSpan());
+        if (SvgCssWhitespace.HasNonAsciiBoundaryWhitespace(token)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-ASCII whitespace is not a font size separator.");
         // Keep the existing finite bare/px validation and its unsupported-size outcomes.
         if (token.Length == 0 || token.EndsWith("px", StringComparison.OrdinalIgnoreCase) || !char.IsLetter(token[^1]) && token[^1] != '%') return ParseTextCoordinate(value);
         return ParseLength(value) ?? throw new InvalidOperationException("Font size parsing returned no value.");

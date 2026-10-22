@@ -243,7 +243,8 @@ declarations on nonapplicable targets do not affect rendering.
 Solid colors and paint keywords ignore surrounding ASCII whitespace in attributes and
 CSS; literal color limits apply to the authored token before normalization.
 Non-ASCII whitespace remains part of scalar tokens; unsupported values reject
-instead of becoming different colors, numbers or keywords. Quoted family names
+instead of becoming different colors, numbers or keywords, including font
+presentation attributes and gradient-stop declarations. Quoted family names
 and Unicode contents of local references retain their characters.
 Local `url(...)` function names and the filter `none` keyword ignore ASCII case;
 referenced identifiers keep their case.

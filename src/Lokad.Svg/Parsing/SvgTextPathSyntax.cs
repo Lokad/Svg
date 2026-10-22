@@ -41,7 +41,7 @@ internal static class SvgTextPathSyntax
         double distance = SvgGeometrySyntax.ParseTextCoordinate(percentage ? value[..^1].ToString() : offset);
         string? anchor = reader.GetAttribute("text-anchor");
         if (anchor is not null) work.ConsumeText(anchor.Length, token);
-        SvgTextAnchor? resolvedAnchor = anchor is null || anchor.Trim().Equals("inherit", StringComparison.OrdinalIgnoreCase)
+        SvgTextAnchor? resolvedAnchor = anchor is null || SvgCssWhitespace.Trim(anchor).Equals("inherit", StringComparison.OrdinalIgnoreCase)
             ? null : SvgTextSyntax.ParseAnchor(anchor, SvgTextAnchor.Start);
         return new(href[1..], distance, percentage, resolvedAnchor);
     }

@@ -76,6 +76,28 @@ public sealed class SvgCssWhitespaceTests
         Assert.Equal("' \u00a0\u2003 '", style.TextFont.Family);
         Assert.Equal("red", style.Fill);
         Assert.NotEqual(InlineImportantProperties.None, style.Important & InlineImportantProperties.Fill);
+        Assert.Equal(SvgTextDecorationLine.Underline | SvgTextDecorationLine.Overline, SvgTextDecorationSyntax.Parse("\funderline\fsolid\foverline\f"));
+    }
+
+    [Theory]
+    [MemberData(nameof(SvgCssSelectorTests.ClassSeparators), MemberType = typeof(SvgCssSelectorTests))]
+    public void Gradient_stop_styles_preserve_non_ascii_property_and_value_boundaries(int character, bool whitespace)
+    {
+        string separator = char.ConvertFromUtf32(character);
+        foreach (string property in new[] { "stop-color", "stop-opacity" })
+        foreach (string edge in new[] { "name-before", "name-after", "value-before", "value-after" })
+        {
+            string name = edge == "name-before" ? separator + property : edge == "name-after" ? property + separator : property;
+            string value = property == "stop-color" ? "red" : ".5";
+            string token = edge == "value-before" ? separator + value : edge == "value-after" ? value + separator : value;
+            string input = Gradient(name + ":" + token);
+            if (whitespace) Assert.Equal(Render(Gradient(property + ":" + value)), Render(input));
+            else if (edge.StartsWith("name", StringComparison.Ordinal)) Assert.Equal(Render(Gradient("")), Render(input));
+            else Assert.Throws<SvgException>(() => Render(input));
+        }
+
+        static string Gradient(string style)
+            => "<defs><linearGradient id='p'><stop style='" + style + "'/><stop offset='1' stop-color='blue'/></linearGradient></defs><rect width='8' height='8' fill='url(#p)'/>";
     }
 
     private static byte[] Render(string body)

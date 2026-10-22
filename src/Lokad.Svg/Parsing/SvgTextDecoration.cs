@@ -19,7 +19,7 @@ internal static class SvgTextDecorationSyntax
     {
         SvgTextDecorationLine lines = SvgTextDecorationLine.None;
         bool found = false, none = false, solid = false;
-        foreach (Range range in value.SplitAny((ReadOnlySpan<char>)" \t\r\n"))
+        foreach (Range range in value.SplitAny((ReadOnlySpan<char>)SvgCssWhitespace.Characters))
         {
             ReadOnlySpan<char> token = value[range];
             if (token.IsEmpty) continue;

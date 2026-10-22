@@ -346,13 +346,17 @@ internal static class SvgTextSyntax
 
     /// <summary>Resolves normal or a finite user-space/px letter/word spacing length; percentages remain outside the admitted length subset.</summary>
     internal static double ParseSpacing(string value)
-        => value.Trim().Equals("normal", StringComparison.OrdinalIgnoreCase) ? 0 : SvgGeometrySyntax.ParseTextCoordinate(value);
+    {
+        ReadOnlySpan<char> token = SvgCssWhitespace.Trim(value.AsSpan());
+        if (SvgCssWhitespace.HasNonAsciiBoundaryWhitespace(token)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-ASCII whitespace is not a text spacing separator.");
+        return token.Equals("normal", StringComparison.OrdinalIgnoreCase) ? 0 : SvgGeometrySyntax.ParseTextCoordinate(value);
+    }
 
     /// <summary>Parses the bounded CSS whitespace values shared by direct text and its inheriting containers.</summary>
     internal static SvgTextWhitespaceMode ParseCssWhitespaceMode(string value)
     {
         ArgumentNullException.ThrowIfNull(value);
-        string token = value.Trim();
+        string token = SvgCssWhitespace.Trim(value);
         if (token.Equals("normal", StringComparison.OrdinalIgnoreCase)) return SvgTextWhitespaceMode.Default;
         if (token.Equals("pre", StringComparison.OrdinalIgnoreCase)) return SvgTextWhitespaceMode.Preserve;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only normal and pre CSS white-space values are supported for direct text.");
@@ -486,7 +490,7 @@ internal static class SvgTextSyntax
     {
         if (value is null) return inherited;
         if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "The text anchor exceeds the configured syntax limit.");
-        string token = value.Trim();
+        string token = SvgCssWhitespace.Trim(value);
         if (token.Equals("inherit", StringComparison.OrdinalIgnoreCase)) return inherited;
         if (token.Equals("start", StringComparison.OrdinalIgnoreCase)) return SvgTextAnchor.Start;
         if (token.Equals("middle", StringComparison.OrdinalIgnoreCase)) return SvgTextAnchor.Middle;
@@ -513,25 +517,26 @@ internal static class SvgTextFontSyntax
     internal static int ParseWeight(string value)
     {
         ArgumentNullException.ThrowIfNull(value);
-        string token = value.Trim();
+        string token = SvgCssWhitespace.Trim(value);
         if (token.Equals("normal", StringComparison.OrdinalIgnoreCase)) return 400;
         if (token.Equals("bold", StringComparison.OrdinalIgnoreCase)) return 700;
-        if (int.TryParse(token, CultureInfo.InvariantCulture, out int weight) && weight > 0) return weight;
+        if (int.TryParse(token, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out int weight) && weight > 0) return weight;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive numeric, normal, and bold text font weights are supported.");
     }
 
     internal static bool ParseItalic(string value)
     {
         ArgumentNullException.ThrowIfNull(value);
-        if (value.Trim().Equals("normal", StringComparison.OrdinalIgnoreCase)) return false;
-        if (value.Trim().Equals("italic", StringComparison.OrdinalIgnoreCase)) return true;
+        ReadOnlySpan<char> token = SvgCssWhitespace.Trim(value.AsSpan());
+        if (token.Equals("normal", StringComparison.OrdinalIgnoreCase)) return false;
+        if (token.Equals("italic", StringComparison.OrdinalIgnoreCase)) return true;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only normal and italic text font styles are supported.");
     }
 
     /// <summary>Validates the admitted default font variant shared by attributes and style declarations.</summary>
     internal static void ValidateFontVariant(ReadOnlySpan<char> value)
     {
-        ReadOnlySpan<char> token = value.Trim();
+        ReadOnlySpan<char> token = SvgCssWhitespace.Trim(value);
         if (token.Equals("normal".AsSpan(), StringComparison.OrdinalIgnoreCase) || token.Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only normal font variants are implemented.");
     }
