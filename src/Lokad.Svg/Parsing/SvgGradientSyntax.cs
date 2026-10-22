@@ -227,7 +227,7 @@ internal static class SvgGradientSyntax
         if (!isMatrix && !isTranslate && !isRotate && !isSkewX && !isSkewY && !name.Equals("scale".AsSpan(), StringComparison.Ordinal)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotation, skew and finite matrix() gradient transforms are implemented.");
         Span<double> values = stackalloc double[6];
         int valueCount = 0;
-        SvgGeometrySyntax.DelimitedTokenReader tokens = new(arguments);
+        SvgGeometrySyntax.DelimitedTokenReader tokens = new(arguments, SvgNumberListSyntax.Svg, 0);
         while (tokens.TryReadValue(out ReadOnlySpan<char> value))
         {
             if (valueCount == values.Length) throw new SvgException(SvgErrorCode.MalformedInput, isMatrix ? "matrix() requires six coordinates." : "Transforms require one or two coordinates.");

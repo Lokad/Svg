@@ -4,6 +4,7 @@ using Lokad.Svg.Rendering;
 namespace Lokad.Svg.Parsing;
 
 internal enum SvgViewportCoordinateKind { Oval, Rectangle }
+internal enum SvgNumberListSyntax { Svg, Css }
 
 /// <summary>Parses the bounded numeric, transform, viewport, and viewBox syntax shared by supported geometry.</summary>
 internal static class SvgGeometrySyntax
@@ -214,7 +215,7 @@ internal static class SvgGeometrySyntax
         }
         Span<double> values = stackalloc double[4];
         int valueCount = 0;
-        DelimitedTokenReader tokens = new(value);
+        DelimitedTokenReader tokens = new(value, SvgNumberListSyntax.Svg, 0);
         while (tokens.TryReadValue(out ReadOnlySpan<char> token))
         {
             if (valueCount == values.Length || !double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double validated) || !double.IsFinite(validated)) throw new SvgException(SvgErrorCode.MalformedInput, "viewBox must contain four finite numbers with positive width and height.");
@@ -240,7 +241,7 @@ internal static class SvgGeometrySyntax
         if (isSkewX || isSkewY) return ParseSkew(arguments, isSkewY, workCounter, cancellationToken);
         Span<double> values = stackalloc double[6];
         int valueCount = 0;
-        DelimitedTokenReader tokens = new(arguments);
+        DelimitedTokenReader tokens = new(arguments, SvgNumberListSyntax.Svg, 0);
         while (tokens.TryReadValue(out ReadOnlySpan<char> value))
         {
             if (valueCount == values.Length) throw new SvgException(SvgErrorCode.MalformedInput, isMatrix ? "matrix() requires six coordinates." : "Transforms require one or two coordinates.");
@@ -268,7 +269,7 @@ internal static class SvgGeometrySyntax
     {
         Span<double> values = stackalloc double[3];
         int valueCount = 0;
-        DelimitedTokenReader tokens = new(arguments);
+        DelimitedTokenReader tokens = new(arguments, SvgNumberListSyntax.Svg, 0);
         while (tokens.TryReadValue(out ReadOnlySpan<char> value))
         {
             if (valueCount == values.Length) throw new SvgException(SvgErrorCode.MalformedInput, "rotate() requires one angle or one angle with a center point.");
@@ -282,7 +283,7 @@ internal static class SvgGeometrySyntax
     {
         Span<double> values = stackalloc double[1];
         int valueCount = 0;
-        DelimitedTokenReader tokens = new(arguments);
+        DelimitedTokenReader tokens = new(arguments, SvgNumberListSyntax.Svg, 0);
         while (tokens.TryReadValue(out ReadOnlySpan<char> value))
         {
             if (valueCount == values.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Skew transforms require one angle.");
@@ -298,7 +299,7 @@ internal static class SvgGeometrySyntax
     {
         Span<double> values = stackalloc double[2];
         int valueCount = 0;
-        DelimitedTokenReader tokens = new(arguments);
+        DelimitedTokenReader tokens = new(arguments, SvgNumberListSyntax.Svg, 0);
         while (tokens.TryReadValue(out ReadOnlySpan<char> value))
         {
             if (valueCount == values.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Transforms require one or two coordinates.");
@@ -341,22 +342,42 @@ internal static class SvgGeometrySyntax
     internal ref struct DelimitedTokenReader
     {
         private readonly ReadOnlySpan<char> _value;
+        private readonly SvgNumberListSyntax _syntax;
         private int _position;
+        private bool _hasValue;
 
-        internal DelimitedTokenReader(ReadOnlySpan<char> value) => _value = value;
+        internal DelimitedTokenReader(ReadOnlySpan<char> value, SvgNumberListSyntax syntax, int position)
+        {
+            _value = value;
+            _syntax = syntax;
+            _position = position;
+            _hasValue = position != 0;
+        }
         internal int Consumed => _position;
 
         internal bool TryReadValue(out ReadOnlySpan<char> value)
         {
-            while (_position < _value.Length && IsSeparator(_value[_position])) _position++;
+            while (_position < _value.Length && IsWhitespace(_value[_position])) _position++;
             if (_position == _value.Length) { value = default; return false; }
+            if (_value[_position] == ',')
+            {
+                if (!_hasValue) throw InvalidSeparator();
+                _position++;
+                while (_position < _value.Length && IsWhitespace(_value[_position])) _position++;
+                if (_position == _value.Length || _value[_position] == ',') throw InvalidSeparator();
+            }
             int start = _position;
-            while (_position < _value.Length && !IsSeparator(_value[_position])) _position++;
+            while (_position < _value.Length && _value[_position] != ',' && !IsWhitespace(_value[_position])) _position++;
             value = _value[start.._position];
+            _hasValue = true;
             return true;
         }
 
-        private static bool IsSeparator(char value) => value is ',' or ' ' or '\t' or '\r' or '\n';
+        private readonly bool IsWhitespace(char value) => _syntax == SvgNumberListSyntax.Css
+            ? SvgCssWhitespace.Is(value) : value is ' ' or '\t' or '\r' or '\n';
+
+        private readonly SvgException InvalidSeparator() => new(_syntax == SvgNumberListSyntax.Css ? SvgErrorCode.UnsupportedFeature : SvgErrorCode.MalformedInput,
+            "Numeric lists require a value before and after each comma.");
     }
 
     internal static double ParseViewportCoordinate(string value, double? basis, SvgViewportCoordinateKind kind)

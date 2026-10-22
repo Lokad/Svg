@@ -1,3 +1,5 @@
+using Lokad.Svg.Parsing;
+
 namespace Lokad.Svg.Tests;
 
 public sealed class SvgAttributeGrammarTests
@@ -31,6 +33,67 @@ public sealed class SvgAttributeGrammarTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => Render(Input(scope, changed))).ErrorCode);
     }
 
+    [Theory]
+    [InlineData("viewbox", ",0 0 4 4")]
+    [InlineData("viewbox", "0,,0,4,4")]
+    [InlineData("viewbox", "0 0 4 4,")]
+    [InlineData("shape", "translate(,2 1)")]
+    [InlineData("shape", "translate(2,,1)")]
+    [InlineData("shape", "translate(2, ,1)")]
+    [InlineData("shape", "translate(2 1,)")]
+    [InlineData("group", "rotate(90,,4,4)")]
+    [InlineData("gradient", "matrix(1,0,,0,1,2,1)")]
+    [InlineData("pattern", "scale(2,)")]
+    public void Numeric_lists_do_not_erase_missing_values(string scope, string value)
+    {
+        SvgException error = Assert.Throws<SvgException>(() => Render(Input(scope, value)));
+        Assert.Equal(SvgErrorCode.MalformedInput, error.ErrorCode);
+    }
+
+    [Theory]
+    [InlineData(" ")]
+    [InlineData(",")]
+    [InlineData(" , ")]
+    [InlineData("\t,\n")]
+    public void Numeric_lists_preserve_valid_comma_whitespace_combinations(string separator)
+    {
+        Assert.Equal(Render(Input("viewbox", "0 0 4 4")), Render(Input("viewbox", string.Join(separator, new[] { "0", "0", "4", "4" }))));
+        foreach (string scope in new[] { "shape", "group", "gradient", "pattern" })
+            Assert.Equal(Render(Input(scope, "translate(2 1)")), Render(Input(scope, "translate(2" + separator + "1)")));
+    }
+
+    [Theory]
+    [InlineData(",2 1")]
+    [InlineData("2,,1")]
+    [InlineData("2 1,")]
+    public void Dash_and_text_lists_reject_missing_comma_values(string value)
+    {
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgStrokeStyleSyntax.ParseDasharray(value)).ErrorCode);
+        Assert.Throws<SvgException>(() => SvgTextPositionLists.ReadFirst(value, out _));
+    }
+
+    [Theory]
+    [InlineData("0,1,2")]
+    [InlineData("0 , 1 , 2")]
+    [InlineData("0\t,\n1,2")]
+    public void Text_span_cursors_resume_at_the_original_list_position(string value)
+    {
+        SvgTextPositionSpanCursor cursor = new(new(0, 3, new(value, null, null, null, "0,10,20"), null));
+        for (int index = 0; index < 3; index++)
+        {
+            SvgTextPositionValue position = cursor.Next();
+            Assert.Equal((double?)index, position.X);
+            Assert.Equal((double?)(index * 10), position.Rotation);
+        }
+        SvgTextPositionValue end = cursor.Next();
+        Assert.Null(end.X);
+        Assert.Equal((double?)20, end.Rotation);
+    }
+
+    [Fact]
+    public void Css_dash_lists_keep_their_own_whitespace_grammar()
+        => Assert.Equal(new double[] { 2, 1 }, SvgStrokeStyleSyntax.ParseDasharray("2\f,\f1"));
+
     private static byte[] Input(string scope, string value)
     {
         const string stops = "<stop stop-color='red'/><stop offset='1' stop-color='blue'/>";
@@ -41,6 +104,7 @@ public sealed class SvgAttributeGrammarTests
             "pattern" => "<defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse' patternTransform='" + value + "'><rect width='2' height='4' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#p)'/>",
             "spread" => "<defs><linearGradient id='p' x2='.5' spreadMethod='" + value + "'>" + stops + "</linearGradient></defs><rect width='8' height='8' fill='url(#p)'/>",
             "aspect" => "<svg width='8' height='8' viewBox='0 0 8 4' preserveAspectRatio='" + value + "'><rect width='8' height='4' fill='red'/></svg>",
+            "viewbox" => "<svg width='8' height='8' viewBox='" + value + "'><rect width='2' height='2' fill='red'/></svg>",
             _ => "<rect width='2' height='2' fill='red' transform='" + value + "'/>"
         };
         return System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'>" + body + "</svg>");

@@ -31,9 +31,9 @@ internal struct SvgTextPositionSpanCursor
 
         static double? Read(string? source, ref int offset, bool pixels)
         {
-            SvgGeometrySyntax.DelimitedTokenReader reader = new(source.AsSpan(offset));
+            SvgGeometrySyntax.DelimitedTokenReader reader = new(source.AsSpan(), SvgNumberListSyntax.Svg, offset);
             bool found = reader.TryReadValue(out ReadOnlySpan<char> value);
-            offset += reader.Consumed;
+            offset = reader.Consumed;
             return found ? SvgTextPositionLists.ReadToken(value, pixels) : null;
         }
     }

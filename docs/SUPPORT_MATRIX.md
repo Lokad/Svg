@@ -112,6 +112,8 @@ instance's viewport, including nested viewBox and symbol instances.
 Transform lists accept whitespace or comma separators between functions.
 SVG transform function names and SVG-specific enumeration values, including
 spreadMethod and preserveAspectRatio, retain their literal case.
+ViewBox, transform, text-position and dash lists retain required values around
+commas; leading, repeated and trailing commas reject during tokenization.
 
 For rendered groups referenced by `use`, source-group opacity isolation, clips
 or masks on the referenced group, and nested viewport content are unsupported.

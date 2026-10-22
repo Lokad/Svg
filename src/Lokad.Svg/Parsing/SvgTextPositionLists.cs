@@ -20,7 +20,7 @@ internal readonly record struct SvgTextPositionLists(string? X, string? Y, strin
         if (value is null) return 0;
         if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters)
             throw new SvgException(SvgErrorCode.LimitExceeded, "Text coordinate lists exceed the configured syntax limit.");
-        SvgGeometrySyntax.DelimitedTokenReader reader = new(value.AsSpan());
+        SvgGeometrySyntax.DelimitedTokenReader reader = new(value.AsSpan(), SvgNumberListSyntax.Svg, 0);
         if (!reader.TryReadValue(out ReadOnlySpan<char> first))
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text coordinate lists must contain finite numbers.");
         double result = ReadToken(first, allowPixels);
@@ -44,9 +44,9 @@ internal readonly record struct SvgTextPositionLists(string? X, string? Y, strin
         RenderBudget budget, ParserWorkCounter? work, CancellationToken token)
     {
         using BudgetedParserList<SvgTextPositionAdjustment> positions = new(budget, SvgMemoryCategory.Parser, work, token);
-        SvgGeometrySyntax.DelimitedTokenReader xs = new(X.AsSpan()), ys = new(Y.AsSpan());
-        SvgGeometrySyntax.DelimitedTokenReader dxs = new(Dx.AsSpan()), dys = new(Dy.AsSpan());
-        SvgGeometrySyntax.DelimitedTokenReader rotations = new(Rotate.AsSpan());
+        SvgGeometrySyntax.DelimitedTokenReader xs = new(X.AsSpan(), SvgNumberListSyntax.Svg, 0), ys = new(Y.AsSpan(), SvgNumberListSyntax.Svg, 0);
+        SvgGeometrySyntax.DelimitedTokenReader dxs = new(Dx.AsSpan(), SvgNumberListSyntax.Svg, 0), dys = new(Dy.AsSpan(), SvgNumberListSyntax.Svg, 0);
+        SvgGeometrySyntax.DelimitedTokenReader rotations = new(Rotate.AsSpan(), SvgNumberListSyntax.Svg, 0);
         double? lastRotation = null;
         for (int skipped = 0; skipped < CharacterOffset; skipped++)
         {

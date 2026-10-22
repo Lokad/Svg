@@ -126,7 +126,7 @@ internal static class SvgStrokeStyleSyntax
 
     private static int ParseDashEntries(ReadOnlySpan<char> value, Span<double> entries)
     {
-        SvgGeometrySyntax.DelimitedTokenReader tokens = new(value);
+        SvgGeometrySyntax.DelimitedTokenReader tokens = new(value, SvgNumberListSyntax.Css, 0);
         int count = 0;
         while (tokens.TryReadValue(out ReadOnlySpan<char> entry))
         {
