@@ -116,7 +116,8 @@ filters and supplied-font text.
 
 Current restrictions:
 
-- Percentage coordinates in userSpaceOnUse gradients are unsupported.
+- Percentage coordinates in userSpaceOnUse gradients are unsupported, including
+  when the units are inherited from a template.
 - Gradient stops accept literal color/opacity attributes and stop inline styles,
   with per-property `!important` priority and source order.
   Stylesheet `stop-color`/`stop-opacity`, gradient resource/stop `currentColor`

@@ -23,7 +23,10 @@ internal readonly record struct SvgGradientStop(double Offset, SvgColor Color)
 }
 
 /// <summary>Retains one parsed linear-gradient definition with attribute explicitness for href inheritance.</summary>
-internal readonly record struct SvgGradientTemplate(double X1, double Y1, double X2, double Y2, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, int VectorCount, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, bool HasX1, bool HasY1, bool HasX2, bool HasY2);
+internal readonly record struct SvgGradientTemplate(double X1, double Y1, double X2, double Y2, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, int VectorCount, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, bool HasX1, bool HasY1, bool HasX2, bool HasY2)
+{
+    internal bool HasPercentageCoordinates { get; init; }
+}
 
 /// <summary>Retains one bounded radial gradient with a strictly inside focal point, contained focal circle and referencing scale record, with an inverse paint map for general transforms.</summary>
 /// <remarks>ReferenceScaleX and ReferenceScaleY multiply every scale map applied to the stored circle after the local definition, so raster evaluation inverts the exact paint map under non-uniform referencing transforms.</remarks>
@@ -40,7 +43,10 @@ internal readonly record struct SvgRadialGradient(SvgColor Start, SvgColor End, 
 }
 
 /// <summary>Retains one parsed radial-gradient definition with attribute explicitness for href inheritance.</summary>
-internal readonly record struct SvgRadialTemplate(double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, int VectorCount, bool HasFocalX, bool HasFocalY, bool HasFocalRadius);
+internal readonly record struct SvgRadialTemplate(double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, int VectorCount, bool HasFocalX, bool HasFocalY, bool HasFocalRadius)
+{
+    internal bool HasPercentageCoordinates { get; init; }
+}
 
 /// <summary>Retains one pending linear template and the next alias waiting on the same target.</summary>
 internal readonly record struct PendingLinearGradientHref(string Id, SvgGradientTemplate Template, SvgGradientStop[] Stops)
@@ -133,7 +139,8 @@ internal static class SvgGradientSyntax
         string? rawX2 = reader.GetAttribute("x2");
         string? rawY2 = reader.GetAttribute("y2");
         int vectorCount = (rawX1 is null ? 0 : 1) + (rawY1 is null ? 0 : 1) + (rawX2 is null ? 0 : 1) + (rawY2 is null ? 0 : 1);
-        if (isUserSpace && (ContainsPercentage(rawX1) || ContainsPercentage(rawY1) || ContainsPercentage(rawX2) || ContainsPercentage(rawY2))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Percentage userSpaceOnUse gradient coordinates are not implemented.");
+        bool hasPercentageCoordinates = ContainsPercentage(rawX1) || ContainsPercentage(rawY1) || ContainsPercentage(rawX2) || ContainsPercentage(rawY2);
+        ValidateCoordinateUnits(isUserSpace, hasPercentageCoordinates);
         double x1 = ParseAxis(rawX1 ?? "0");
         double y1 = ParseAxis(rawY1 ?? "0");
         double x2 = ParseAxis(rawX2 ?? (isUserSpace ? "0" : "1"));
@@ -141,7 +148,8 @@ internal static class SvgGradientSyntax
         string? transformValue = reader.GetAttribute("gradientTransform");
         SvgGradientTransform gradientTransform = ParseGradientTransform(transformValue, workCounter, cancellationToken);
         string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
-        return new SvgGradientTemplate(x1, y1, x2, y2, isUserSpace, gradientTransform, transformValue is not null, vectorCount, units is not null, spreadMethod, spread is not null, href, rawX1 is not null, rawY1 is not null, rawX2 is not null, rawY2 is not null);
+        return new SvgGradientTemplate(x1, y1, x2, y2, isUserSpace, gradientTransform, transformValue is not null, vectorCount, units is not null, spreadMethod, spread is not null, href, rawX1 is not null, rawY1 is not null, rawX2 is not null, rawY2 is not null)
+        { HasPercentageCoordinates = hasPercentageCoordinates };
     }
 
     internal static SvgRadialTemplate ParseRadialVector(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -161,7 +169,8 @@ internal static class SvgGradientSyntax
         string? rawFocalX = reader.GetAttribute("fx");
         string? rawFocalY = reader.GetAttribute("fy");
         int vectorCount = (rawCenterX is null ? 0 : 1) + (rawCenterY is null ? 0 : 1) + (rawRadius is null ? 0 : 1);
-        if (isUserSpace && (ContainsPercentage(rawCenterX) || ContainsPercentage(rawCenterY) || ContainsPercentage(rawRadius) || ContainsPercentage(rawFocalX) || ContainsPercentage(rawFocalY) || ContainsPercentage(rawFocalRadius))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Percentage userSpaceOnUse gradient coordinates are not implemented.");
+        bool hasPercentageCoordinates = ContainsPercentage(rawCenterX) || ContainsPercentage(rawCenterY) || ContainsPercentage(rawRadius) || ContainsPercentage(rawFocalX) || ContainsPercentage(rawFocalY) || ContainsPercentage(rawFocalRadius);
+        ValidateCoordinateUnits(isUserSpace, hasPercentageCoordinates);
         double centerX = ParseAxis(rawCenterX ?? (isUserSpace ? "0" : "0.5"));
         double centerY = ParseAxis(rawCenterY ?? (isUserSpace ? "0" : "0.5"));
         double radius = ParseAxis(rawRadius ?? (isUserSpace ? "0" : "0.5"));
@@ -171,7 +180,15 @@ internal static class SvgGradientSyntax
         double focalRadius = rawFocalRadius is null ? 0 : ParseAxis(rawFocalRadius);
         if (focalRadius < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Focal radius cannot be negative.");
         string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
-        return new SvgRadialTemplate(centerX, centerY, radius, focalX, focalY, focalRadius, isUserSpace, gradientTransform, transformValue is not null, units is not null, spreadMethod, spread is not null, href, vectorCount, rawFocalX is not null, rawFocalY is not null, rawFocalRadius is not null);
+        return new SvgRadialTemplate(centerX, centerY, radius, focalX, focalY, focalRadius, isUserSpace, gradientTransform, transformValue is not null, units is not null, spreadMethod, spread is not null, href, vectorCount, rawFocalX is not null, rawFocalY is not null, rawFocalRadius is not null)
+        { HasPercentageCoordinates = hasPercentageCoordinates };
+    }
+
+    /// <summary>Applies the same percentage boundary to explicit and resolved template units.</summary>
+    internal static void ValidateCoordinateUnits(bool isUserSpace, bool hasPercentageCoordinates)
+    {
+        if (isUserSpace && hasPercentageCoordinates)
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Percentage userSpaceOnUse gradient coordinates are not implemented.");
     }
 
     private static SvgGradientTransform ParseGradientTransform(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken)

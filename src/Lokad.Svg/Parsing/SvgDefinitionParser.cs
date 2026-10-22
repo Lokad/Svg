@@ -1605,6 +1605,7 @@ internal static class SvgDefinitionParser
             focalX = template.HasFocalX ? template.FocalX : centerX;
             focalY = template.HasFocalY ? template.FocalY : centerY;
         }
+        SvgGradientSyntax.ValidateCoordinateUnits(isUserSpace, template.HasPercentageCoordinates);
         if (isUserSpace) ValidateRadialFocalCircle(centerX, centerY, radius, focalX, focalY, focalRadius);
         if (template.HasTransform)
         {
@@ -1728,6 +1729,7 @@ internal static class SvgDefinitionParser
                 hasRotation = parent.HasRotation;
             }
         }
+        SvgGradientSyntax.ValidateCoordinateUnits(isUserSpace, template.HasPercentageCoordinates);
         if (template.HasTransform)
         {
             if ((template.Transform.B != 0 || template.Transform.C != 0) && !template.Transform.IsSimilarity())
