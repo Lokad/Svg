@@ -101,6 +101,8 @@ one/two-point lists, follow the same fill/stroke rules for all numeric spellings
 markers retain the authored vertices.
 Polygon/polyline point coordinates are bare SVG numbers; CSS length units such
 as px are unsupported in these numeric lists.
+Path numbers retain explicit signs and equivalent decimal/exponent spellings
+through integer and general geometry routes.
 
 Root and nested viewports preserve their own percentage bases, aspect maps and
 physical clips. Instance presentation follows authored/inherited precedence;

@@ -293,7 +293,7 @@ internal static class SvgOrthogonalGeometryTokenizer
     {
         if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Path coordinate values exceed the configured syntax limit.");
         if (value.IsEmpty) return false;
-        int start = value[0] == '-' ? 1 : 0;
+        int start = value[0] is '-' or '+' ? 1 : 0;
         if (start == value.Length) return false;
         for (int index = start; index < value.Length; index++) if (!char.IsAsciiDigit(value[index])) return false;
         return true;
