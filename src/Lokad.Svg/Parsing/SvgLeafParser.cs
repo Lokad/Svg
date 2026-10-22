@@ -662,7 +662,7 @@ internal static class SvgLeafParser
         try
         {
             if (parsed.Geometries.Length != 0)
-                source = source with { VisualBounds = LineVisualBounds(reader, context, frame) };
+                source = source with { VisualBounds = LineVisualBounds(reader, context, frame) ?? source.VisualBounds };
         }
         catch { parsed.Discard(); throw; }
         SvgParsedGeometry recorded = SvgPaintRecording.Attach(parsed, markers.HasMarkers ? source with { ElementOpacity = SvgPaintOpacity.Opaque } : source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
@@ -677,12 +677,11 @@ internal static class SvgLeafParser
             float halfWidth = (float)SvgStrokeStyleSyntax.ParseStrokeWidth(style.Width ?? line.StrokeWidth ?? "1", "line") / 2f;
             // A square tip's diagonal bounds the source stroke before dash segmentation.
             float inflation = halfWidth * MathF.Sqrt(2);
-            // Recording rounds the local visual bounds before the output viewport transform.
+            // Recording rounds local visual bounds before target and viewport placement.
             SvgPaintBounds bounds = new(MathF.Floor(MathF.Min((float)line.X1, (float)line.X2) - inflation), MathF.Floor(MathF.Min((float)line.Y1, (float)line.Y2) - inflation),
                 MathF.Ceiling(MathF.Max((float)line.X1, (float)line.X2) + inflation), MathF.Ceiling(MathF.Max((float)line.Y1, (float)line.Y2) + inflation));
-            return viewport is {} frame
-                ? bounds.Map(SvgAffineTransform.FromScaleOffset(frame.ScaleX, frame.ScaleY, frame.OffsetX, frame.OffsetY), element.WorkCounter, element.CancellationToken)
-                : bounds;
+            SvgAffineTransform placement = SvgViewportFrame.MapGeometry(element.ResolveTransform(input), viewport);
+            return placement == SvgAffineTransform.Identity ? bounds : bounds.Map(placement, element.WorkCounter, element.CancellationToken);
         }
     }
 

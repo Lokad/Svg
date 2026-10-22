@@ -222,6 +222,8 @@ local CSS filter references. Intermediate surfaces and primitive work are bounde
 An element suppressed by its own or an ancestor's `display:none` does not activate
 filters. Visible elements with no fill or transparent paint can still produce
 filter output, such as a flood.
+Filtered lines retain their full stroke bounds through target placement and local
+instances.
 `feDropShadow` supports deviations up to 135 device pixels on each axis after
 mapping and float rounding; transforms and output scale affect this limit.
 Larger shadow deviations fail with `UnsupportedFeature`. `feGaussianBlur` uses
