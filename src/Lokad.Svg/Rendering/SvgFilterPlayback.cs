@@ -87,7 +87,7 @@ internal static class SvgFilterPlayback
     {
         token.ThrowIfCancellationRequested();
         int count = resource.Primitives.Items.Length;
-        if (count == 0) return source;
+        if (count == 0) return default;
         using RenderBudget.BudgetReservation owner = budget.Reserve(2 * ParserCollectionMemory.GetArrayByteCount<SvgPaintBounds>(count), SvgMemoryCategory.Temporary);
         SvgPaintBounds[] regions = new SvgPaintBounds[count], bounds = new SvgPaintBounds[count];
         PrepareRegions(resource, regions, context, work, token);
@@ -146,7 +146,7 @@ internal static class SvgFilterPlayback
     {
         token.ThrowIfCancellationRequested();
         int count = resource.Primitives.Items.Length;
-        if (count == 0) return requested;
+        if (count == 0) return default;
         using RenderBudget.BudgetReservation owner = budget.Reserve(2 * ParserCollectionMemory.GetArrayByteCount<SvgPaintBounds>(count), SvgMemoryCategory.Temporary);
         SvgPaintBounds[] regions = new SvgPaintBounds[count], requests = new SvgPaintBounds[count];
         PrepareRegions(resource, regions, context, work, token);
@@ -298,7 +298,6 @@ internal static class SvgFilterPlayback
                 Charge(bytes);
                 outputs[0] = Allocate();
                 token.ThrowIfCancellationRequested();
-                source.CopyTo(outputs[0].Pixels);
             }
             for (int index = 0; index < count; index++)
             {
