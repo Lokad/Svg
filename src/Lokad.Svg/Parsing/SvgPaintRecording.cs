@@ -140,11 +140,8 @@ internal static class SvgPaintRecording
                     bounds = new((float)rectangle.X, (float)rectangle.Y, (float)(rectangle.X + rectangle.Width), (float)(rectangle.Y + rectangle.Height));
                     break;
                 case "image":
-                    SvgImageSyntax image = SvgImageSyntax.Parse(input, element.LengthBases.Width, element.LengthBases.Height);
-                    double imageWidth = image.Width ?? element.LengthBases.Width ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Image bounds require a known width.");
-                    double imageHeight = image.Height ?? element.LengthBases.Height ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Image bounds require a known height.");
-                    bounds = new((float)image.X, (float)image.Y, (float)(image.X + imageWidth), (float)(image.Y + imageHeight));
-                    break;
+                    // Image lowering records bounds after decoding resolves intrinsic dimensions.
+                    return null;
                 case "circle":
                 case "ellipse":
                     SvgEllipseSyntax ellipse = input.LocalName == "circle" ? SvgEllipseSyntax.ParseCircle(input, element.LengthBases) : SvgEllipseSyntax.ParseEllipse(input, element.LengthBases);

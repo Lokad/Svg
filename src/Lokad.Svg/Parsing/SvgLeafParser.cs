@@ -150,36 +150,44 @@ internal static class SvgLeafParser
     {
         SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, frame);
         SvgGeometry geometry = ParseImageCore(reader, context with { DeferPaintOpacity = true }, frame, baseWidth, baseHeight,
-            limits, state.Budget, source.ElementOpacity.Value != 1);
+            limits, state.Budget, source.ElementOpacity.Value != 1, out SvgPaintBounds bounds);
         try
         {
             // An image is one paint operation. Its opacity can fold into a single
             // paint, but must restore outside an authored mask like other leaves.
             float alpha = geometry.Kind == SvgGeometryKind.Rectangle ? geometry.Rectangle.Color.Alpha / 255f : 1;
             SvgRecordedPaintValue paint = new(state.NewPaintOperationIdentity(), alpha, true, source.Scope, source.ElementOpacity, source.OpacityScope)
-            { ObjectBounds = source.ObjectBounds, VisualBounds = source.VisualBounds };
+            { ObjectBounds = bounds };
             return geometry with { RecordedPaint = state.Scene.RegisterRecordedPaint(paint) };
         }
         catch { geometry.Dispose(); throw; }
 
         static SvgGeometry ParseImageCore(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame,
-            double? baseWidth, double? baseHeight, SvgRenderLimits limits, RenderBudget budget, bool retainBitmap)
+            double? baseWidth, double? baseHeight, SvgRenderLimits limits, RenderBudget budget, bool retainBitmap, out SvgPaintBounds bounds)
         {
             SvgImageSyntax syntax = SvgImageSyntax.Parse(reader, baseWidth, baseHeight);
             // Images use decoded pixels; shape fill/stroke cannot suppress or repaint them.
             SvgComputedStyle style = context.ResolveStyle(reader) with { Fill = "white", Stroke = "none" };
             SvgResolvedPaintableElement element = context.ResolveShape(style, reader, false);
-            double width = syntax.Width ?? baseWidth ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Omitted image dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
-            double height = syntax.Height ?? baseHeight ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Omitted image dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             if (syntax.Href.Length == 0)
             {
-                SvgRectangle empty = element.Transform.Apply(new SvgRectangle(syntax.X, syntax.Y, width, height, default, false, null));
+                bounds = new SvgPaintBounds((float)syntax.X, (float)syntax.Y, (float)(syntax.X + (syntax.Width ?? 0)), (float)(syntax.Y + (syntax.Height ?? 0)))
+                    .Map(SvgViewportFrame.MapGeometry(element.Transform, frame), context.WorkCounter, context.CancellationToken);
+                SvgRectangle empty = element.Transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width ?? 0, syntax.Height ?? 0, default, false, null));
                 if (frame is not null) empty = frame.Value.Clip.ClipRectangle(frame.Value.Shift(empty));
                 return SvgGeometry.FromRectangle(empty);
             }
             DecodedPngImage image = DecodeImage(syntax.Href, limits, budget, context.WorkCounter, context.CancellationToken);
             try
             {
+                // A specified side has already resolved its viewport percentage.
+                // Auto sides use the decoded intrinsic size/aspect, never the viewport.
+                double width = syntax.Width ?? (syntax.Height is {} specifiedHeight
+                    ? SvgGeometrySyntax.MultiplyDivide(specifiedHeight, image.Width, image.Height) : image.Width);
+                double height = syntax.Height ?? (syntax.Width is {} specifiedWidth
+                    ? SvgGeometrySyntax.MultiplyDivide(specifiedWidth, image.Height, image.Width) : image.Height);
+                bounds = new SvgPaintBounds((float)syntax.X, (float)syntax.Y, (float)(syntax.X + width), (float)(syntax.Y + height))
+                    .Map(SvgViewportFrame.MapGeometry(element.Transform, frame), context.WorkCounter, context.CancellationToken);
                 string? aspect = reader.GetAttribute("preserveAspectRatio");
                 if (image.Raster is null && !retainBitmap && element.Transform.IsAxisAligned)
                 {
@@ -193,9 +201,9 @@ internal static class SvgLeafParser
                 bool affine = !element.Transform.IsAxisAligned;
                 if (affine)
                 {
-                    SvgPaintBounds bounds = new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height))
+                    SvgPaintBounds mappedBounds = new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height))
                         .Map(element.Transform, context.WorkCounter, context.CancellationToken);
-                    box = new(bounds.Left, bounds.Top, bounds.Right - bounds.Left, bounds.Bottom - bounds.Top, default, element.Presentation.HasFill, null);
+                    box = new(mappedBounds.Left, mappedBounds.Top, mappedBounds.Right - mappedBounds.Left, mappedBounds.Bottom - mappedBounds.Top, default, element.Presentation.HasFill, null);
                 }
                 else box = element.Transform.Apply(box with { HasFill = element.Presentation.HasFill });
                 SvgAffineTransform reference = element.Transform;

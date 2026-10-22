@@ -207,12 +207,15 @@ consecutive; transparency must precede image data and follow any palette.
 Image placement supports finite geometry/viewBox percentages, meet/slice
 alignments, `preserveAspectRatio="none"` and general affine maps.
 Images with absent or empty href values paint nothing.
-Percentages and omitted dimensions resolve in each instance's viewport,
-including nested viewBox and symbol instances.
+Percentages resolve in each instance's viewport, including nested viewBox and
+symbol instances. Omitted image dimensions use the PNG's intrinsic size; if one
+side is specified, the omitted side follows its intrinsic aspect ratio.
 Images ignore inherited and CSS fill/stroke paint; display, visibility and
 element/group opacity still apply.
 Referenced images retain source opacity, clips, masks and filters through viewport
 clipping; filters can move source pixels into the viewport before output is clipped.
+Affine filter replay for image sources remains unsupported; ordinary affine image
+placement, clipping and masking are admitted.
 
 Unsupported: interlaced/16-bit PNG, reduced-significance sBIT, color-management or
 orientation conversion, JPEG/GIF/WebP and external image fetching.
