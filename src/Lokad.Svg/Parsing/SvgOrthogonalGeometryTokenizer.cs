@@ -381,7 +381,8 @@ internal static class SvgOrthogonalGeometryTokenizer
         }
     }
 
-    private ref struct DelimitedTokenReader
+    /// <summary>Streams borrowed point tokens with shared work and cancellation checkpoints, owning no storage.</summary>
+    internal ref struct DelimitedTokenReader
     {
         private readonly ReadOnlySpan<char> _value;
         private readonly ParserWorkCounter _workCounter;

@@ -20,16 +20,16 @@ internal static class SvgMarkerVertices
         using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Parser, work, token);
         if (reader.LocalName is "polygon" or "polyline")
         {
-            string values = reader.GetAttribute("points") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Marker point-list coordinates are required.");
+            string values = reader.GetAttribute("points") ?? string.Empty;
             using BudgetedParserList<SvgFractionalPoint> points = SvgOrthogonalGeometryTokenizer.ParseFractionalPointList(values,
-                reader.LocalName, maximumCommands, state.Budget, work, token, 2);
+                reader.LocalName, maximumCommands, state.Budget, work, token, 0);
             for (int index = 0; index < points.Count; index++)
             {
                 work.Consume(token);
                 commands.Add(new(index == 0 ? SvgAuthoredPathVerb.Move : SvgAuthoredPathVerb.Line,
                     SvgAuthoredArcFlags.None, new(points[index].X, points[index].Y), default, default));
             }
-            if (reader.LocalName == "polygon") commands.Add(new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
+            if (reader.LocalName == "polygon" && points.Count > 0) commands.Add(new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
             commands.Add(new(SvgAuthoredPathVerb.End, SvgAuthoredArcFlags.None, default, default, default));
         }
         else

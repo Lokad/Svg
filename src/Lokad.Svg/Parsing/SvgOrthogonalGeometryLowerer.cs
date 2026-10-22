@@ -894,7 +894,11 @@ internal ref struct SvgOrthogonalGeometryLowering
             mapped.Add(deviceMap.Apply(vertex.X, vertex.Y));
         }
 
-        if (mapped.Count < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed fractional " + _elementName + " contours are implemented.");
+        if (mapped.Count < 3)
+        {
+            using BudgetedParserList<SvgGeometry> empty = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+            return new(empty.Detach(), points.Count + 1);
+        }
         int[] ends = [mapped.Count];
         SvgParsedGeometry result = FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, SvgPolygonMapping.FiniteEdges, frame, budget);
         OwnedParserArray<SvgAuthoredPathCommand> owned = new([], null);
@@ -927,7 +931,11 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(budget);
         if (points.Count >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _elementName + " stroke point count exceeds the configured path-command limit.");
-        if (points.Count < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed fractional " + _elementName + " contours are implemented.");
+        if (points.Count == 0)
+        {
+            using BudgetedParserList<SvgGeometry> empty = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+            return new(empty.Detach(), 0);
+        }
         (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, false);
         double deviceWidth = NativeStrokeDeviceWidth(width, element.Transform, deviceMap, frame, nonScaling);
         using RenderBudget.BudgetReservation sourceOwner = budget.Reserve(128, SvgMemoryCategory.Geometry);

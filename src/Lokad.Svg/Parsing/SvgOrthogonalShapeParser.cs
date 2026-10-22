@@ -285,22 +285,23 @@ internal static class SvgOrthogonalShapeParser
         bool mappedOutline = (paintOutline || paintRadialOutline)
             && (!context.ResolveTransform(reader).IsAxisAligned || paintOutline && outlineCandidate.RequiresSourceMap);
         SvgComputedStyle fillStyle = (paintOutline || paintRadialOutline || paintPatternOutline) ? style with { Stroke = "none" } : style;
-        string pointsValue = reader.GetAttribute("points") ?? throw new SvgException(SvgErrorCode.MalformedInput, elementName + " points are required.");
-        bool hasFractional = pointsValue.Contains('.') || pointsValue.Contains('e') || pointsValue.Contains('E');
+        string pointsValue = reader.GetAttribute("points") ?? string.Empty;
+        bool generalPointList = pointsValue.Contains('.') || pointsValue.Contains('e') || pointsValue.Contains('E')
+            || RequiresGeneralLowering(pointsValue, maximumGeometryElements, context.WorkCounter, context.CancellationToken);
         bool shaderFill = SvgGradientSyntax.IsGradientFill(style.Fill);
         bool mappedLinearFill = shaderFill && state.Gradients.TryGetValue(SvgGradientSyntax.ParsePaintId(style.Fill), out SvgLinearGradient mappedGradient) && mappedGradient.RequiresSourceMap;
-        if (shaderFill && !hasFractional && !context.RetainInstanceStrokePath && !mappedLinearFill)
+        if (shaderFill && !generalPointList && !context.RetainInstanceStrokePath && !mappedLinearFill)
         {
             if (state.Patterns.TryGetValue(SvgGradientSyntax.ParsePaintId(style.Fill), out _)) return SvgPatternSyntax.LowerPatternBands(reader, context, style, state, elementName, false, maximumGeometryElements, budget, frame);
             return SvgGradientSyntax.LowerGradientBands(reader, context, style, state, elementName, false, maximumGeometryElements, budget, frame);
         }
         SvgResolvedPaintableElement shape;
         SvgParsedGeometry filled;
-        if (hasFractional || context.RetainInstanceStrokePath || mappedLinearFill)
+        if (generalPointList || context.RetainInstanceStrokePath || mappedLinearFill)
         {
             shape = context.ResolveShape(shaderFill ? fillStyle with { Fill = "#ffffff" } : fillStyle, reader, true);
             bool fractionalEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
-            using BudgetedParserList<SvgFractionalPoint> fractionalPoints = SvgOrthogonalGeometryTokenizer.ParseFractionalPointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            using BudgetedParserList<SvgFractionalPoint> fractionalPoints = SvgOrthogonalGeometryTokenizer.ParseFractionalPointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, 0);
             using BudgetedParserList<SvgPoint> noFractionPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noFractionEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using SvgOrthogonalGeometryLowering fractionalLowering = new(noFractionPoints, noFractionEnds, elementName, false, fractionalEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
@@ -367,6 +368,7 @@ internal static class SvgOrthogonalShapeParser
 
             SvgParsedGeometry RepaintFractionalFill(SvgParsedGeometry source)
             {
+                if (source.Geometries.Length == 0) return source;
                 string id = SvgGradientSyntax.ParsePaintId(style.Fill);
                 SvgAffineTransform transform = shape.Transform;
                 bool linear = state.Gradients.TryGetValue(id, out SvgLinearGradient gradient);
@@ -533,6 +535,26 @@ internal static class SvgOrthogonalShapeParser
                 return new SvgParsedGeometry(repainted.Detach(), white.ElementCount);
             }
             catch { white.Discard(); throw; }
+        }
+
+        static bool RequiresGeneralLowering(string values, int maximum, ParserWorkCounter work, CancellationToken token)
+        {
+            SvgOrthogonalGeometryTokenizer.DelimitedTokenReader tokens = new(values, work, token);
+            SvgPoint first = default, previous = default;
+            int count = 0;
+            bool repeated = false;
+            while (tokens.TryReadValue(out ReadOnlySpan<char> x))
+            {
+                work.Consume(token);
+                if (!tokens.TryReadValue(out ReadOnlySpan<char> y)) throw new SvgException(SvgErrorCode.MalformedInput, "Point coordinates must pair every x with a y.");
+                if (count >= maximum) throw new SvgException(SvgErrorCode.LimitExceeded, "Point-list vertex count exceeds the configured path-command limit.");
+                SvgPoint point = new(SvgGeometrySyntax.ParseInteger(x), SvgGeometrySyntax.ParseInteger(y));
+                if (count == 0) first = point;
+                else repeated |= point == previous;
+                previous = point;
+                count++;
+            }
+            return count < 3 || repeated || previous == first;
         }
 
         SvgParsedGeometry RepaintOutlinesAsPattern(SvgParsedGeometry white, SvgPatternTile paint, byte opacity, SvgAffineTransform placement, RenderBudget budget)

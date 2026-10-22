@@ -96,6 +96,9 @@ paint nothing. Line endpoints accept finite fractional bare-number/px values;
 percentage endpoints and other endpoint units are unsupported.
 Omitted circle radii and path data paint nothing. An ellipse with one omitted
 radius copies the other resolved radius; omitting both paints nothing.
+Omitted/empty point lists paint nothing. Repeated and closing vertices, and
+one/two-point lists, follow the same fill/stroke rules for all numeric spellings;
+markers retain the authored vertices.
 
 Root and nested viewports preserve their own percentage bases, aspect maps and
 physical clips. Instance presentation follows authored/inherited precedence;

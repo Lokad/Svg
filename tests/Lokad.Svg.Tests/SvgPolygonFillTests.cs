@@ -182,14 +182,16 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(polygon, 8, 6, 6));
     }
 
-    [Fact]
-    public void Duplicate_point_polygon_stays_unsupported()
+    [Theory]
+    [InlineData("0,0 8,8 8,8")]
+    [InlineData("0.5,0.5 7.5,0.5")]
+    [InlineData("0.5,0.5 0.5,0.5 0.5,0.5")]
+    public void Degenerate_point_list_fills_paint_nothing(string points)
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,8 8,8' fill='red'/></svg>");
-
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='" + points + "' fill='red'/></svg>");
+        byte[] empty = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'/>"u8.ToArray();
+        Assert.Equal(SvgConverter.ConvertToPng(empty, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Fact]
@@ -925,26 +927,6 @@ public sealed class SvgPolygonFillTests
         SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.MalformedInput, rejected.ErrorCode);
-    }
-
-    [Fact]
-    public void Fractional_point_list_pair_stays_unsupported()
-    {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0.5,0.5 7.5,0.5' fill='red'/></svg>");
-
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-    }
-
-    [Fact]
-    public void Fractional_duplicate_point_list_stays_unsupported()
-    {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0.5,0.5 0.5,0.5 0.5,0.5' fill='red'/></svg>");
-
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
     }
 
     [Fact]
