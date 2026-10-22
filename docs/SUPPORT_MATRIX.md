@@ -133,7 +133,9 @@ Patterns whose effective tile size stays zero remain inert.
 Current restrictions:
 
 - Percentage coordinates in userSpaceOnUse gradients are unsupported, including
-  when the units are inherited from a template.
+  when the units are inherited from a template. This includes omitted linear x2
+  (initially 100%) and radial cx/cy/r (initially 50%) unless a same-kind template
+  supplies numeric values. Object-box defaults and complete numeric vectors work.
 - Gradient stops accept literal color/opacity attributes and stop inline styles,
   with per-property `!important` priority and source order.
   Stylesheet `stop-color`/`stop-opacity`, gradient resource/stop `currentColor`

@@ -1469,7 +1469,7 @@ internal static class SvgDefinitionParser
         if (state.GradientStops.Count > SvgGradientSyntax.MaximumGradientStops) throw new SvgException(SvgErrorCode.LimitExceeded, "Gradient stop count exceeds the supported limit.");
         if (template.Href is not null && template.VectorCount > 0 && template.VectorCount < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Partial radial vector overrides are not implemented.");
         if (template.Href is not null && template.VectorCount == 0 && (template.HasFocalX || template.HasFocalY || template.HasFocalRadius)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Partial radial vector overrides are not implemented.");
-        if (template.HasUnits && template.VectorCount == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Radial unit overrides without vector overrides are not implemented.");
+        if (template.Href is not null && template.HasUnits && template.VectorCount == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Radial unit overrides without vector overrides are not implemented.");
         bool inheritAttributes = template.VectorCount == 3 && (!template.HasUnits || !template.HasTransform || !template.HasSpread);
         if (!state.ThrowOnMissingGradientHref && template.Href is not null && (state.GradientStops.Count == 0 || template.VectorCount == 0 || inheritAttributes))
         {
@@ -1567,6 +1567,7 @@ internal static class SvgDefinitionParser
         double radius = template.Radius;
         double focalRadius = template.FocalRadius;
         bool isUserSpace = template.IsUserSpace;
+        bool usesInitialVector = template.VectorCount < 3;
         double referenceScaleX = 1;
         double referenceScaleY = 1;
         SvgGradientSpread spread = template.Spread;
@@ -1580,6 +1581,7 @@ internal static class SvgDefinitionParser
             string vectorHrefId = SvgGradientSyntax.ParseGradientHrefId(template.Href);
             if (state.RadialGradients.TryGetValue(vectorHrefId, out SvgRadialGradient parent))
             {
+                usesInitialVector = false;
                 centerX = parent.CenterX;
                 centerY = parent.CenterY;
                 radius = parent.Radius;
@@ -1609,7 +1611,7 @@ internal static class SvgDefinitionParser
             focalX = template.HasFocalX ? template.FocalX : centerX;
             focalY = template.HasFocalY ? template.FocalY : centerY;
         }
-        SvgGradientSyntax.ValidateCoordinateUnits(isUserSpace, template.HasPercentageCoordinates);
+        SvgGradientSyntax.ValidateCoordinateUnits(isUserSpace, template.HasPercentageCoordinates || usesInitialVector);
         if (isUserSpace) ValidateRadialFocalCircle(centerX, centerY, radius, focalX, focalY, focalRadius);
         if (template.HasTransform)
         {
@@ -1704,6 +1706,7 @@ internal static class SvgDefinitionParser
         double x2 = template.X2;
         double y2 = template.Y2;
         bool isUserSpace = template.IsUserSpace;
+        bool usesInitialX2 = !template.HasX2;
         double referenceScaleX = 1;
         double referenceScaleY = 1;
         SvgGradientSpread spread = template.Spread;
@@ -1722,6 +1725,7 @@ internal static class SvgDefinitionParser
             }
             else
             {
+                usesInitialX2 = false;
                 x1 = template.HasX1 ? template.X1 : parent.X1;
                 y1 = template.HasY1 ? template.Y1 : parent.Y1;
                 x2 = template.HasX2 ? template.X2 : parent.X2;
@@ -1733,7 +1737,7 @@ internal static class SvgDefinitionParser
                 hasRotation = parent.HasRotation;
             }
         }
-        SvgGradientSyntax.ValidateCoordinateUnits(isUserSpace, template.HasPercentageCoordinates);
+        SvgGradientSyntax.ValidateCoordinateUnits(isUserSpace, template.HasPercentageCoordinates || usesInitialX2);
         if (template.HasTransform)
         {
             if ((template.Transform.B != 0 || template.Transform.C != 0) && !template.Transform.IsSimilarity())

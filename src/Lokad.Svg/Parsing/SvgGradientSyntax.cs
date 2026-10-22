@@ -188,7 +188,7 @@ internal static class SvgGradientSyntax
     internal static void ValidateCoordinateUnits(bool isUserSpace, bool hasPercentageCoordinates)
     {
         if (isUserSpace && hasPercentageCoordinates)
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Percentage userSpaceOnUse gradient coordinates are not implemented.");
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Percentage userSpaceOnUse gradient coordinates, including nonzero initial values, are not implemented.");
     }
 
     private static SvgGradientTransform ParseGradientTransform(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
