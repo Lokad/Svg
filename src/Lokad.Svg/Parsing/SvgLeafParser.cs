@@ -713,8 +713,9 @@ internal static class SvgLeafParser
         double[]? dashes = SvgStrokeStyleSyntax.ParseDasharray(style.Dasharray);
         SvgColor color = SvgPaintResolver.ApplyOpacity(strokeColor.Value, element.Presentation.Opacity);
         bool painted = element.Presentation.IsPainted;
-        // Native source strokes combine capped dash coverage before applying translucent paint.
-        if (linecap == SvgStrokeCap.Round && (dashes is not null || color.Alpha != 255)
+        // Native source strokes retain authored dash direction and combine translucent capped runs.
+        if (dashes is not null && (syntax.X1 > syntax.X2 || syntax.Y1 > syntax.Y2)
+            || linecap == SvgStrokeCap.Round && (dashes is not null || color.Alpha != 255)
             || linecap == SvgStrokeCap.Square && dashes is not null && (color.Alpha != 255 || Array.IndexOf(dashes, 0d) >= 0))
             return LowerNativeLine();
         if (linecap == SvgStrokeCap.Square && dashes is null) syntax = syntax.WithSquareCaps(strokeWidth);
