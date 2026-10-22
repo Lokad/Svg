@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Check authored filter lengths and marker orientations before trimming, including
+  orientation keywords; preserve the existing scalar-token limit and cleanup on rejection.
 - Preserve source-independent filters on paintless geometry and empty local uses,
   with real source bounds for ancestor effects. Keep suppressed leaves out of
   those bounds and preserve filter, mask, clip and opacity order through instances

@@ -84,7 +84,9 @@ internal static class SvgMarkerSyntax
         string units = reader.GetAttribute("markerUnits") ?? "strokeWidth";
         if (units is not ("strokeWidth" or "userSpaceOnUse"))
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only strokeWidth and userSpaceOnUse marker units are implemented.");
-        string orient = SvgCssWhitespace.Trim(reader.GetAttribute("orient") ?? "0");
+        string authoredOrient = reader.GetAttribute("orient") ?? "0";
+        ValidateLength(authoredOrient);
+        string orient = SvgCssWhitespace.Trim(authoredOrient);
         SvgMarkerOrientation orientation = orient == "auto" ? SvgMarkerOrientation.Auto
             : orient == "auto-start-reverse" ? SvgMarkerOrientation.AutoStartReverse : SvgMarkerOrientation.Angle;
         double angle = orientation == SvgMarkerOrientation.Angle ? Angle(orient) : 0;
@@ -135,7 +137,6 @@ internal static class SvgMarkerSyntax
 
         double Angle(string value)
         {
-            ValidateLength(value);
             ReadOnlySpan<char> input = value.AsSpan().Trim(SvgCssWhitespace.Characters);
             double scale = 1;
             int suffix = 3;

@@ -239,6 +239,8 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
     private static SvgFilterLength Length(string? value, SvgFilterLength fallback)
     {
         if (value is null) return fallback;
+        if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters)
+            throw new SvgException(SvgErrorCode.LimitExceeded, "Filter length exceeds the syntax limit.");
         ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
         bool percent = token.EndsWith("%", StringComparison.Ordinal);
         if (percent) token = token[..^1];

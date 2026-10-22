@@ -269,6 +269,8 @@ instead of becoming different colors, numbers or keywords, including font
 presentation attributes and gradient-stop declarations. Unquoted family identifiers,
 quoted family names and local references retain their Unicode characters; family
 names containing non-ASCII whitespace do not become CSS global keywords.
+Filter-region lengths and marker orientations check the complete authored value
+against the 256-character scalar limit before trimming padding or units.
 Local `url(...)` function names and the filter `none` keyword ignore ASCII case;
 referenced identifiers keep their case.
 Local URLs accept surrounding padding and trailing ASCII URI whitespace. Leading
