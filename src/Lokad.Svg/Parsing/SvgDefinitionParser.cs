@@ -215,6 +215,7 @@ internal static class SvgDefinitionParser
             state.ClipIsObjectBoundingBox = SvgClipPathSyntax.ParseClipUnits(reader.GetAttribute("clipPathUnits"));
             SvgPaintableElementContext clipParent = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
             SvgComputedStyle clipParentStyle = SvgComputedStyleResolver.Resolve(reader, clipParent.StyleSheet, workCounter, cancellationToken);
+            state.ClipIsDisplayed = SvgPresentationResolver.ParseDisplay(clipParentStyle.Display);
             state.ClipIsEvenOdd = SvgClipPathSyntax.ParseClipRule((clipParentStyle.ClipRule ?? clipParent.InheritedClipRule ?? "nonzero").AsSpan());
             state.ClipIsVisible = SvgPresentationResolver.ParseVisibility(clipParentStyle.Visibility, clipParent.InheritedPresentation.IsVisible);
             if (reader.IsEmptyElement)
@@ -744,6 +745,7 @@ internal static class SvgDefinitionParser
             string? clipAttribute = SvgLocalUrl.ReadReference(useReader, "clip-path");
             if (clipAttribute is null) return null;
             string clipId = SvgClipPathSyntax.ParseClipId(clipAttribute);
+            if (SvgClipPathSyntax.IsDisabled(clipId, document)) return null;
             bool clipKnown = document.Clips.TryGetValue(clipId, out _) || document.ObjectClips.TryGetValue(clipId, out _);
             bool definitionKnown = document.Definitions.TryGetValue(useReference.Id, out _);
             if (document.Clips.TryGetValue(clipId, out _) && useReference.Transform != SvgAffineTransform.Identity)
@@ -1841,7 +1843,8 @@ internal static class SvgDefinitionParser
         workCounter.Consume(cancellationToken);
         string retainedId = state.Strings.Copy(state.ClipPathId ?? throw new InvalidOperationException("Clip polygon registration requires an identifier."));
         SvgClipPolygon polygon = state.ClipPolygon ?? throw new InvalidOperationException("Clip polygon registration requires retained points.");
-        if (polygon.ChildCount > 1 && !polygon.IsResolvedUnion)
+        polygon = polygon with { IsDisabled = !state.ClipIsDisplayed };
+        if (!polygon.IsDisabled && polygon.ChildCount > 1 && !polygon.IsResolvedUnion)
         {
             SvgAuthoredPath previous = polygon.SourcePath ?? throw new InvalidOperationException("A child union requires source commands.");
             SvgAuthoredPath normalized = NormalizeUnion(polygon, state.Budget, workCounter, cancellationToken);
@@ -1921,6 +1924,15 @@ internal static class SvgDefinitionParser
         workCounter.Consume(cancellationToken);
         string retainedId = state.Strings.Copy(state.ClipPathId ?? throw new InvalidOperationException("Clip-path registration requires an identifier."));
         if (state.ClipPolygons.TryGetValue(retainedId, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
+        if (!state.ClipIsDisplayed)
+        {
+            if (state.Clips.TryGetValue(retainedId, out _) || state.ObjectClips.TryGetValue(retainedId, out _)
+                || !state.ClipPolygons.TryAdd(retainedId, new([], []) { IsDisabled = true }))
+                throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
+            state.ClipPolygon?.SourcePath?.Dispose();
+            state.ClipPolygon = null;
+            return;
+        }
         if (state.ClipIsObjectBoundingBox) { if (state.Clips.TryGetValue(retainedId, out _) || !state.ObjectClips.TryAdd(retainedId, state.ClipBox ?? new SvgClipBox(0, 0, 0, 0))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique."); } else if (state.ObjectClips.TryGetValue(retainedId, out _) || !state.Clips.TryAdd(retainedId, state.ClipBox ?? new SvgClipBox(0, 0, 0, 0))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
         state.ClipPolygon?.SourcePath?.Dispose();
         state.ClipPolygon = null;

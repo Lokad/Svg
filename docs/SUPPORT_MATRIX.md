@@ -161,7 +161,9 @@ both region/content unit systems and transformed finite regions.
 
 Hidden clip children do not contribute to the silhouette; visibility inherits
 from the resource's own ancestors and can be overridden by a child. Display on
-`clipPath` or its ancestors does not disable the resource. Fill/stroke paint and
+definition ancestors does not disable the resource. A clipPath's own CSS
+`display:none` makes its references contribute no clipping; an empty or hidden
+child instead contributes an empty silhouette. Fill/stroke paint and
 opacity do not suppress raw clip geometry.
 
 IDs on clip rectangles, rounded rectangles, paths, circles and ellipses remain

@@ -1722,6 +1722,8 @@ internal static class SvgReferenceResolver
     {
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(workCounter);
+        if (pendingUse.DeferredClip is {} inactive && SvgClipPathSyntax.IsDisabled(inactive.ClipId, state))
+            pendingUse = pendingUse with { DeferredClip = null };
         SvgViewportFrame? frame = pendingUse.Frame;
         SvgClipPolygon? boundingClip = pendingUse.DeferredClip is {} clipReference
             && state.ClipPolygons.TryGetValue(clipReference.ClipId, out SvgClipPolygon clipContent) && clipContent.IsObjectBoundingBox

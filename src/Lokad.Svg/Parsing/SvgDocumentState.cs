@@ -333,7 +333,9 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal bool ClipIsObjectBoundingBox { get; set; }
     internal bool ClipIsEvenOdd { get; set; }
-    /// <summary>Retains resource-local visibility for direct clip children; display does not suppress clip resources.</summary>
+    /// <summary>Retains the resource's own display independently of its definition ancestors.</summary>
+    internal bool ClipIsDisplayed { get; set; } = true;
+    /// <summary>Retains resource-local visibility inherited by direct clip children.</summary>
     internal bool ClipIsVisible { get; set; } = true;
 
     internal SvgMarkerDefinition? MarkerDefinition { get; set; }

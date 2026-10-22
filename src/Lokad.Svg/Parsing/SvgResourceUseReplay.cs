@@ -59,6 +59,11 @@ internal static class SvgResourceUseReplay
     {
         work.Consume(token);
         bool clip = kind == SvgResourceUseKind.Clip;
+        if (clip && !state.ClipIsDisplayed)
+        {
+            SvgDefinitionParser.RegisterClipBox(state, work, token);
+            return;
+        }
         string id = state.Strings.Copy((clip ? state.ClipPathId : state.MaskId) ?? throw new InvalidOperationException("Resource registration requires an identifier."));
         SvgResourceUse use = (clip ? state.ClipUse : state.MaskUse) ?? throw new InvalidOperationException("Resource registration requires a retained use.");
         if (clip)

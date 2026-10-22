@@ -10,6 +10,8 @@ internal readonly record struct SvgClipChild(SvgAuthoredPath Path, bool IsEvenOd
 /// <remarks>Points hold pre-device root-user coordinates. Every retained contour closes implicitly and has at least three vertices; ends partition the points exactly. Area-free short contours contribute no clip coverage. Compound paths replay directed winding or parity through the native clip scene, including holes, concavity, self-intersections and canceling coverage. Source commands remain borrowed from document staging.</remarks>
 internal readonly record struct SvgClipPolygon(SvgDevicePoint[] Points, int[] ContourEnds)
 {
+    /// <summary>A display-suppressed resource contributes no binding, unlike an empty silhouette.</summary>
+    internal bool IsDisabled { get; init; }
     /// <summary>Borrows immutable native path commands owned by the document's clip staging registry.</summary>
     internal SvgAuthoredPath? SourcePath { get; init; }
     internal bool IsEvenOdd { get; init; }

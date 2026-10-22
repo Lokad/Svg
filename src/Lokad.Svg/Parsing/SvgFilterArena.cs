@@ -153,7 +153,12 @@ internal sealed class SvgFilterArena : IDisposable
             _work.Consume(_token);
             SvgFilterBinding binding = _bindings[index];
             if (binding.ClipReferenceId is not {} id) continue;
-            SvgLeafMaskBinding clip;
+            if (SvgClipPathSyntax.IsDisabled(id, state))
+            {
+                _bindings[index] = binding with { ClipReferenceId = null, OutputClip = null };
+                continue;
+            }
+            SvgLeafMaskBinding? clip;
             SvgSceneBuilder? previous = state.DefinitionReplayScene;
             state.DefinitionReplayScene = scene;
             try

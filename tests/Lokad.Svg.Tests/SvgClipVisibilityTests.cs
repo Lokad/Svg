@@ -52,11 +52,12 @@ public sealed class SvgClipVisibilityTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void Display_none_on_the_resource_or_its_ancestor_does_not_disable_the_clip(bool ancestor)
+    public void Own_display_none_disables_the_clip_while_ancestor_display_preserves_it(bool ancestor)
     {
         string content = Clipped("<rect width='8' height='8'/>", "style='display:none'");
         if (ancestor) content = "<g display='none'>" + content.Replace("style='display:none'", "", StringComparison.Ordinal).Replace("</defs>", "</defs></g>", StringComparison.Ordinal);
-        Assert.Equal(Render("<rect width='8' height='8' fill='red'/>"), Render(content));
+        string expected = ancestor ? "<rect width='8' height='8' fill='red'/>" : "<rect width='16' height='16' fill='red'/>";
+        Assert.Equal(Render(expected), Render(content));
     }
 
     [Theory]

@@ -19,6 +19,9 @@ internal readonly record struct PendingGroupClip(string ClipId, SvgViewportFrame
 /// <summary>Parses the bounded clip-path reference syntax shared by clipped containers and leaves.</summary>
 internal static class SvgClipPathSyntax
 {
+    internal static bool IsDisabled(string id, SvgDocumentState state)
+        => state.ClipPolygons.TryGetValue(id, out SvgClipPolygon clip) && clip.IsDisabled;
+
     internal static string ParseClipId(string? value)
     {
         if (value is null) throw new SvgException(SvgErrorCode.MalformedInput, "A clip-path reference is required.");
@@ -34,18 +37,20 @@ internal static class SvgClipPathSyntax
         if (state.DeferringFilterClip) return null;
         string? reference = SvgLocalUrl.ReadReference(reader, "clip-path");
         if (reference is null) return null;
-        if (SvgCssWhitespace.Trim(reference).Equals("inherit", StringComparison.Ordinal))
-            return state.Groups.Count == 0 ? null : state.Groups[state.Groups.Count - 1].ClipPathId;
-        return ParseClipId(reference);
+        string? id = SvgCssWhitespace.Trim(reference).Equals("inherit", StringComparison.Ordinal)
+            ? state.Groups.Count == 0 ? null : state.Groups[state.Groups.Count - 1].ClipPathId
+            : ParseClipId(reference);
+        return id is not null && IsDisabled(id, state) ? null : id;
     }
 
     /// <summary>Binds a retained resource clip to source geometry through existing native clip operations.</summary>
     /// <remarks>Commands and mask scenes transfer to the parent scene owner. The binding borrows parser-owned operations;
     /// source arrays remain borrowed. Nested chains use bounded iterative scratch, reject cycles and preserve
     /// source map/order. All construction charges work and observes cancellation.</remarks>
-    internal static SvgLeafMaskBinding BindResourceClip(string id, SvgAffineTransform map, SvgLeafMaskBinding? inner,
+    internal static SvgLeafMaskBinding? BindResourceClip(string id, SvgAffineTransform map, SvgLeafMaskBinding? inner,
         SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
+        if (IsDisabled(id, state)) return inner;
         if (!state.ClipPolygons.TryGetValue(id, out SvgClipPolygon first) || first.NestedClipId is null)
             return BindSingle(id, map, inner, state, work, token);
         using BudgetedParserList<SvgNativeClipReference> chain = new(state.Budget, SvgMemoryCategory.Parser, work, token);
@@ -55,6 +60,7 @@ internal static class SvgClipPathSyntax
         while (true)
         {
             work.Consume(token);
+            if (IsDisabled(currentId, state)) break;
             if (!seen.TryAdd(currentId, 0)) throw new SvgException(SvgErrorCode.MalformedInput, "Cyclic clip-path references are not valid.");
             chain.Add(new(currentId, currentMap));
             if (!state.ClipPolygons.TryGetValue(currentId, out SvgClipPolygon content) || content.NestedClipId is not {} nestedId) break;
@@ -67,12 +73,13 @@ internal static class SvgClipPathSyntax
             SvgNativeClipReference clip = chain[index];
             inner = BindSingle(clip.Id, clip.Map, inner, state, work, token);
         }
-        return inner ?? throw new InvalidOperationException("A retained clip chain requires its root.");
+        return inner;
 
-        static SvgLeafMaskBinding BindSingle(string id, SvgAffineTransform map, SvgLeafMaskBinding? inner,
+        static SvgLeafMaskBinding? BindSingle(string id, SvgAffineTransform map, SvgLeafMaskBinding? inner,
             SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
         {
             work.Consume(token);
+            if (IsDisabled(id, state)) return inner;
             SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
             operation.Resolved = true;
             if (state.Clips.TryGetValue(id, out SvgClipBox box))
@@ -108,6 +115,7 @@ internal static class SvgClipPathSyntax
     internal static void ApplyResourceClip(Span<SvgGeometry> geometries, string id, SvgAffineTransform map,
         SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
+        if (IsDisabled(id, state)) return;
         bool rectangle = state.ObjectClips.TryGetValue(id, out SvgClipBox fractions);
         state.ClipPolygons.TryGetValue(id, out SvgClipPolygon polygon);
         SvgLeafMaskOperation? resourceClip = null;
@@ -205,6 +213,7 @@ internal static class SvgClipPathSyntax
         {
             workCounter.Consume(cancellationToken);
             PendingLeafClip pending = state.PendingLeafClips[pendingIndex];
+            if (IsDisabled(pending.ClipId, state)) continue;
             SvgSceneBuilder? previous = state.DefinitionReplayScene;
             state.DefinitionReplayScene = pending.Scene;
             try
@@ -661,7 +670,7 @@ internal static class SvgClipPathSyntax
         contour.RegionKind = SvgLayerRegionKind.AffineViewport;
         SvgLeafMaskBinding binding = SvgLeafMaskComposition.NewBinding(state, contour, null);
         string nestedId = polygon.NestedClipId ?? throw new InvalidOperationException("Nested clip replay requires a child clip.");
-        binding = BindResourceClip(nestedId, map.ComposeChecked(source.SceneMap), binding, state, work, token);
+        binding = BindResourceClip(nestedId, map.ComposeChecked(source.SceneMap), binding, state, work, token) ?? binding;
         builder.AddGeometry(SvgGeometry.FromRectangle(new(bounds.X - margin, bounds.Y - margin,
             bounds.Width + margin * 2, bounds.Height + margin * 2, new(255, 255, 255, 255), true, null)) with { LeafMask = binding });
         SvgLeafMaskComposition.Emit(state, builder, work, token);
@@ -687,6 +696,7 @@ internal static class SvgClipPathSyntax
         {
             workCounter.Consume(cancellationToken);
             PendingGroupClip pending = state.PendingGroupClips[pendingIndex];
+            if (IsDisabled(pending.ClipId, state)) continue;
             SvgSceneBuilder? previous = state.DefinitionReplayScene;
             state.DefinitionReplayScene = pending.Scene;
             try
