@@ -10,14 +10,17 @@ namespace Lokad.Svg.Parsing;
 internal sealed class SvgPatternContentSelection : IDisposable
 {
     private enum Resolution { New, Visiting, Ready, Invalid }
-    private readonly record struct Pattern(string Id, string? Target, double? Width, double? Height, bool HasContent, Resolution State, int Source);
+    private enum Selection { NeededContent, DisabledResource }
+    private readonly record struct Pattern(string Id, string? Target, double? Width, double? Height, bool IsDisplayed, bool HasContent, Resolution State, int Source);
     private readonly record struct Scope(int Depth, bool Drawing, bool Definitions, bool Switch, bool Consumed, int Pattern);
-    private readonly BudgetedParserDictionary<string, bool> _needed;
+    private readonly BudgetedParserDictionary<string, Selection> _selection;
 
     private SvgPatternContentSelection(RenderBudget budget)
-        => _needed = new(budget, SvgMemoryCategory.Parser, 96);
+        => _selection = new(budget, SvgMemoryCategory.Parser, 96);
 
-    internal bool RequiresContent(string? id) => id is not null && _needed.TryGetValue(id, out _);
+    internal bool RequiresContent(string? id) => id is not null && _selection.TryGetValue(id, out Selection value) && value == Selection.NeededContent;
+
+    internal bool IsDisplayed(string? id) => id is null || !_selection.TryGetValue(id, out Selection value) || value != Selection.DisabledResource;
 
     internal static SvgPatternContentSelection? Create(ReadOnlyMemory<byte> svg, XmlReaderSettings settings,
         SvgRenderLimits limits, BudgetedParserList<CssRule> rules, BudgetedParserStringStore strings, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
@@ -71,7 +74,8 @@ internal sealed class SvgPatternContentSelection : IDisposable
                     string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
                     string? target = href is { Length: > 1 } && href[0] == '#' ? strings.Copy(href.AsSpan(1)) : null;
                     pattern = patterns.Count;
-                    patterns.Add(new(id, target, Dimension("width"), Dimension("height"), false, Resolution.New, -1));
+                    SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, SvgStyleSheet.Resolve(reader, rules, ancestors, work, token), work, token);
+                    patterns.Add(new(id, target, Dimension("width"), Dimension("height"), SvgPresentationResolver.ParseDisplay(style.Display), false, Resolution.New, -1));
                     ids.TryAdd(id, pattern);
                 }
                 bool drawing = selected && !parent.Definitions && svgElement && (root || reader.LocalName is "svg" or "g" or "a" or "switch");
@@ -97,11 +101,13 @@ internal sealed class SvgPatternContentSelection : IDisposable
                     Pattern item = patterns[position];
                     Pattern? parent = item.Target is {} target && ids.TryGetValue(target, out int parentIndex) ? patterns[parentIndex] : null;
                     bool valid = item.Target is null || parent is { State: Resolution.Ready };
-                    item = item with { State = valid ? Resolution.Ready : Resolution.Invalid,
+                    bool displayed = item.IsDisplayed && parent?.IsDisplayed != false;
+                    item = item with { State = valid ? Resolution.Ready : Resolution.Invalid, IsDisplayed = displayed,
                         Width = item.Width ?? parent?.Width, Height = item.Height ?? parent?.Height,
-                        Source = item.HasContent ? position : parent?.Source ?? -1 };
+                        Source = !displayed ? -1 : item.HasContent ? position : parent?.Source ?? -1 };
                     patterns[position] = item;
-                    if (valid && item.Width > 0 && item.Height > 0 && item.Source >= 0) result._needed.TryAdd(patterns[item.Source].Id, true);
+                    if (valid && !displayed) result._selection.TryAdd(item.Id, Selection.DisabledResource);
+                    if (valid && item.Width > 0 && item.Height > 0 && item.Source >= 0) result._selection.TryAdd(patterns[item.Source].Id, Selection.NeededContent);
                 }
             }
             return result;
@@ -116,5 +122,5 @@ internal sealed class SvgPatternContentSelection : IDisposable
         catch { result.Dispose(); throw; }
     }
 
-    public void Dispose() => _needed.Dispose();
+    public void Dispose() => _selection.Dispose();
 }

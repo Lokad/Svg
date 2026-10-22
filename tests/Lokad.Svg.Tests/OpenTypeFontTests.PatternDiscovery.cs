@@ -19,7 +19,7 @@ public sealed partial class OpenTypeFontTests
     [InlineData("style='display:none'", true)]
     [InlineData("class='hidden'", false)]
     [InlineData("class='hidden'", true)]
-    public async Task Pattern_font_preparation_ignores_resource_and_definition_ancestor_display(string display, bool ancestor)
+    public async Task Pattern_font_preparation_honors_own_display_and_ignores_definition_ancestor_display(string display, bool ancestor)
     {
         foreach (bool multipleFiles in new[] { false, true })
         {
@@ -28,16 +28,19 @@ public sealed partial class OpenTypeFontTests
                 ? "<g " + display + "><defs>" + PatternFontDefinition(PatternFontSize, PatternFontText) + "</defs></g>"
                 : "<defs>" + PatternFontDefinition(PatternFontSize + " " + display, PatternFontText) + "</defs>";
             byte[] input = PatternFontInput("<style>.hidden{display:none}</style>" + definition + PatternFontTarget);
-            Assert.Equal("Example", Assert.Single(SvgFontRequestDiscovery.Discover(input, CancellationToken.None)).Family);
+            bool displayed = ancestor || display.Length == 0;
+            SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(input, CancellationToken.None);
+            if (displayed) Assert.Equal("Example", Assert.Single(requests).Family);
+            else Assert.Empty(requests);
             using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None);
-            Assert.Single(snapshot.Fonts);
+            Assert.Equal(displayed ? 1 : 0, snapshot.Fonts.Count);
             byte[] expected = SvgConverter.ConvertToPng(input, new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot), CancellationToken.None).ToArray();
-            Assert.False(SvgConverter.ConvertToPng(PatternFontInput(""), SvgRenderOptions.Default, CancellationToken.None).Span.SequenceEqual(expected));
+            Assert.Equal(!displayed, SvgConverter.ConvertToPng(PatternFontInput(""), SvgRenderOptions.Default, CancellationToken.None).Span.SequenceEqual(expected));
             using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
             Assert.Equal(expected, document.ConvertToPng(CancellationToken.None).ToArray());
             Assert.Null(document.RetainedSceneGeometries);
-            Assert.Equal(2, provider.RequestCount);
-            Assert.Equal(2, source.RequestCount);
+            Assert.Equal(displayed ? 2 : 0, provider.RequestCount);
+            Assert.Equal(displayed ? 2 : 0, source.RequestCount);
         }
     }
 
@@ -46,7 +49,7 @@ public sealed partial class OpenTypeFontTests
     [InlineData(false, true)]
     [InlineData(true, false)]
     [InlineData(true, true)]
-    public async Task Pattern_font_templates_keep_requests_in_both_definition_orders(bool hiddenBase, bool forward)
+    public async Task Pattern_font_templates_preserve_only_displayed_source_requests_in_both_orders(bool hiddenBase, bool forward)
     {
         string sourceDefinition = PatternFontDefinition(PatternFontSize + (hiddenBase ? " display='none'" : ""), PatternFontText).Replace("id='p'", "id='base'", StringComparison.Ordinal);
         string alias = "<pattern id='p' href='#base'" + (hiddenBase ? "" : " display='none'") + "/>";
@@ -55,11 +58,12 @@ public sealed partial class OpenTypeFontTests
         {
             (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = PatternFontPack(multipleFiles);
             using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
-            byte[] expected = SvgConverter.ConvertToPng(input, new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot), CancellationToken.None).ToArray();
+            byte[] expected = SvgConverter.ConvertToPng(PatternFontInput(""), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+            Assert.Equal(expected, SvgConverter.ConvertToPng(input, new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot), CancellationToken.None).ToArray());
             using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
             Assert.Equal(expected, document.ConvertToPng(CancellationToken.None).ToArray());
-            Assert.Equal(1, provider.RequestCount);
-            Assert.Equal(1, source.RequestCount);
+            Assert.Equal(hiddenBase ? 0 : 1, provider.RequestCount);
+            Assert.Equal(hiddenBase ? 0 : 1, source.RequestCount);
         }
     }
 
@@ -72,7 +76,7 @@ public sealed partial class OpenTypeFontTests
     [InlineData("width='16' height='16' visibility='hidden'", "")]
     public async Task Pattern_font_inert_tiles_and_children_do_not_acquire_fonts(string dimensions, string childDisplay)
     {
-        byte[] input = PatternFontInput("<defs>" + PatternFontDefinition(dimensions + " display='none'", "<g " + childDisplay + ">" + PatternFontText + "</g>") + "</defs>" + PatternFontTarget);
+        byte[] input = PatternFontInput("<defs>" + PatternFontDefinition(dimensions, "<g " + childDisplay + ">" + PatternFontText + "</g>") + "</defs>" + PatternFontTarget);
         foreach (bool multipleFiles in new[] { false, true })
         {
             (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = PatternFontPack(multipleFiles);
@@ -89,7 +93,7 @@ public sealed partial class OpenTypeFontTests
     [InlineData("visibility='hidden'", "visibility='visible'")]
     public async Task Pattern_font_display_reset_preserves_visibility_overrides_and_inherited_paint(string visibility, string childVisibility)
     {
-        byte[] input = PatternFontInput("<g fill='blue' display='none' " + visibility + "><defs>" + PatternFontDefinition(PatternFontSize + " style='display:none'", "<g " + childVisibility + ">" + PatternFontText + "</g>") + "</defs></g>" + PatternFontTarget);
+        byte[] input = PatternFontInput("<g fill='blue' display='none' " + visibility + "><defs>" + PatternFontDefinition(PatternFontSize, "<g " + childVisibility + ">" + PatternFontText + "</g>") + "</defs></g>" + PatternFontTarget);
         byte[] control = PatternFontInput("<g fill='blue'><defs>" + PatternFontDefinition(PatternFontSize, PatternFontText) + "</defs></g>" + PatternFontTarget);
         (SvgFontPackCatalog catalog, CountingFontProvider provider, _) = PatternFontPack(false);
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -100,7 +104,7 @@ public sealed partial class OpenTypeFontTests
     [Fact]
     public async Task Pattern_font_discovery_and_preparation_release_on_denial_cancellation_and_retry()
     {
-        byte[] input = PatternFontInput("<defs>" + PatternFontDefinition(PatternFontSize + " display='none'", PatternFontText) + "</defs>" + PatternFontTarget);
+        byte[] input = PatternFontInput("<defs>" + PatternFontDefinition(PatternFontSize, PatternFontText) + "</defs>" + PatternFontTarget);
         byte[] unchanged = input.ToArray();
         RenderBudget measured = new(1_000_000);
         ParserWorkCounter work = new(1_000_000);

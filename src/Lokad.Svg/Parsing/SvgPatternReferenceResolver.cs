@@ -48,7 +48,8 @@ internal static class SvgPatternReferenceResolver
                 throw new InvalidOperationException("A ready pattern requires a resolved target.");
             template = template.Inherit(source.Template);
             SvgPatternTile grid = template.Grid;
-            if (!tile.HasContent)
+            if (!template.IsDisplayed || !tile.HasContent && !source.Template.IsDisplayed) tile = grid;
+            else if (!tile.HasContent)
             {
                 if (parent.VectorContent is null && source.Tile.VectorContent is not null) parent = source.Tile;
                 if (parent.VectorContent is null && source.RectangleSource is {} rectangle)

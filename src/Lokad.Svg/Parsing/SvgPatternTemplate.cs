@@ -7,10 +7,14 @@ internal readonly record struct SvgPatternTemplate(double? X, double? Y, double?
     SvgAffineTransform? Transform, bool? UserSpaceUnits, bool? UserSpaceContentUnits, string? Href,
     SvgViewBox? ViewBox, (SvgViewBoxAlignment HorizontalAlignment, SvgViewBoxAlignment VerticalAlignment, SvgViewBoxFit Fit)? AspectRatio)
 {
+    /// <summary>Retains this resource's own availability; href inheritance does not override its display.</summary>
+    internal bool IsDisplayed { get; init; } = true;
+
     internal SvgPatternTemplate Inherit(SvgPatternTemplate parent)
         => new(X ?? parent.X, Y ?? parent.Y, Width ?? parent.Width, Height ?? parent.Height,
             Transform ?? parent.Transform, UserSpaceUnits ?? parent.UserSpaceUnits,
-            UserSpaceContentUnits ?? parent.UserSpaceContentUnits, null, ViewBox ?? parent.ViewBox, AspectRatio ?? parent.AspectRatio);
+            UserSpaceContentUnits ?? parent.UserSpaceContentUnits, null, ViewBox ?? parent.ViewBox, AspectRatio ?? parent.AspectRatio)
+        { IsDisplayed = IsDisplayed && parent.IsDisplayed };
 
     internal SvgPatternTile Grid
     {

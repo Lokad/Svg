@@ -17,7 +17,7 @@ public sealed class SvgPatternDisplayTests
     [InlineData("gradient")]
     [InlineData("image")]
     [InlineData("use")]
-    public void Referenced_tiles_ignore_display_on_the_resource_and_definition_ancestors(string kind)
+    public void Own_display_suppresses_tiles_while_definition_ancestor_display_preserves_them(string kind)
     {
         string content = kind switch
         {
@@ -35,7 +35,7 @@ public sealed class SvgPatternDisplayTests
         Assert.False(Render("").AsSpan().SequenceEqual(expected));
         foreach (string display in new[] { "display='none'", "style='display:none'", "class='hidden'" })
         {
-            Assert.Equal(expected, Render(resources + "<defs>" + Pattern("p", display, content) + "</defs>" + Target));
+            Assert.Equal(Render(""), Render(resources + "<defs>" + Pattern("p", display, content) + "</defs>" + Target));
             Assert.Equal(expected, Render(resources + "<g " + display + "><defs>" + Pattern("p", "", content) + "</defs></g>" + Target));
         }
     }
@@ -45,14 +45,14 @@ public sealed class SvgPatternDisplayTests
     [InlineData(false, true)]
     [InlineData(true, false)]
     [InlineData(true, true)]
-    public void Templates_keep_content_when_base_or_alias_is_hidden(bool hiddenBase, bool hiddenAlias)
+    public void Templates_only_paint_content_when_both_base_and_alias_are_displayed(bool hiddenBase, bool hiddenAlias)
     {
         foreach (string content in new[] { Rectangle, "<circle cx='4' cy='4' r='4' fill='red'/>" })
         foreach (bool forward in new[] { false, true })
         {
             string source = Pattern("base", hiddenBase ? "display='none'" : "", content);
             string alias = "<pattern id='p' href='#base'" + (hiddenAlias ? " display='none'" : "") + "/>";
-            Assert.Equal(Render("<defs>" + Pattern("p", "", content) + "</defs>" + Target),
+            Assert.Equal(Render(hiddenBase || hiddenAlias ? "" : "<defs>" + Pattern("p", "", content) + "</defs>" + Target),
                 Render("<defs>" + (forward ? alias + source : source + alias) + "</defs>" + Target));
         }
     }
@@ -64,7 +64,7 @@ public sealed class SvgPatternDisplayTests
     [InlineData("<g style='display:none'><circle cx='4' cy='4' r='4'/></g>")]
     [InlineData("<rect width='8' height='8' visibility='hidden'/>")]
     public void Display_and_visibility_on_actual_tile_children_remain_effective(string content)
-        => Assert.Equal(Render(""), Render("<defs>" + Pattern("p", "display='none'", content) + "</defs>" + Target));
+        => Assert.Equal(Render(""), Render("<defs>" + Pattern("p", "", content) + "</defs>" + Target));
 
     [Theory]
     [InlineData("visibility='hidden'", "<rect width='8' height='8'/>", false)]
@@ -72,7 +72,7 @@ public sealed class SvgPatternDisplayTests
     [InlineData("visibility='visible'", "<rect width='8' height='8'/>", true)]
     public void Resource_display_reset_preserves_inherited_paint_and_visibility(string visibility, string content, bool visible)
     {
-        string definition = "<g fill='red' " + visibility + "><defs>" + Pattern("p", "display='none'", content) + "</defs></g>";
+        string definition = "<g fill='red' " + visibility + "><defs>" + Pattern("p", "", content) + "</defs></g>";
         string hiddenDefinition = definition.Replace("<g ", "<g display='none' ", StringComparison.Ordinal);
         byte[] expected = Render(visible ? "<rect width='32' height='32' fill='red'/>" : "");
         Assert.Equal(expected, Render(definition + Target));
@@ -91,7 +91,7 @@ public sealed class SvgPatternDisplayTests
         string target = Target.Replace("/>", " " + effect + "/>", StringComparison.Ordinal);
         string content = "<g opacity='.5'><circle cx='4' cy='4' r='4' fill='red'/></g>";
         Assert.Equal(Render(resources + "<defs>" + Pattern("p", "", content) + "</defs>" + target),
-            Render(resources + "<g display='none'><defs>" + Pattern("p", "style='display:none'", content) + "</defs></g>" + target));
+            Render(resources + "<g display='none'><defs>" + Pattern("p", "", content) + "</defs></g>" + target));
     }
 
     [Theory]
@@ -99,15 +99,17 @@ public sealed class SvgPatternDisplayTests
     [InlineData("visibility='hidden'")]
     public void Hidden_targets_stay_hidden(string hidden)
     {
-        string definition = "<defs>" + Pattern("p", "display='none'", Rectangle) + "</defs>";
+        string definition = "<defs>" + Pattern("p", "", Rectangle) + "</defs>";
         Assert.Equal(Render(""), Render(definition + Target.Replace("/>", " " + hidden + "/>", StringComparison.Ordinal)));
         Assert.Equal(Render(""), Render(definition + "<g " + hidden + ">" + Target + "</g>"));
     }
 
-    [Fact]
-    public void Available_pattern_owners_release_on_denial_cancellation_and_retry()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Pattern_owners_release_on_denial_cancellation_and_retry(bool ownDisplayNone)
     {
-        string definition = "<g display='none'><defs>" + Pattern("p", "display='none'", "<use href='#shape'/>") + "</defs></g><defs><circle id='shape' cx='4' cy='4' r='4' fill='red'/></defs>";
+        string definition = "<g display='none'><defs>" + Pattern("p", ownDisplayNone ? "display='none'" : "", "<use href='#shape'/>") + "</defs></g><defs><circle id='shape' cx='4' cy='4' r='4' fill='red'/></defs>";
         byte[] input = Input(definition + Target);
         RenderBudget measured = new(1_000_000);
         ParserWorkCounter work = new(1_000_000);
@@ -124,7 +126,7 @@ public sealed class SvgPatternDisplayTests
         RenderBudget cancelled = new(1_000_000);
         Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, cancellation.Token)).CancellationToken);
         Assert.Equal(0, cancelled.Snapshot().CurrentBytes);
-        Assert.Equal(Render("<defs>" + Pattern("p", "", "<circle cx='4' cy='4' r='4' fill='red'/>") + "</defs>" + Target), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+        Assert.Equal(Render(ownDisplayNone ? "" : "<defs>" + Pattern("p", "", "<circle cx='4' cy='4' r='4' fill='red'/>") + "</defs>" + Target), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     private static string Pattern(string id, string attributes, string content)

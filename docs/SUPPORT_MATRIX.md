@@ -125,9 +125,11 @@ systems, viewBox/aspect maps, fractional origins and sizes, affine placement and
 bounded repetition. Tile content may include
 ordered vectors, groups, local uses, opacity, gradients, embedded PNGs, admitted
 filters and supplied-font text.
-Referenced patterns remain available under `display:none` on the pattern or its
-definition ancestors. Inherited paint and visibility still apply to tile content;
-`display:none` on rendered tile children suppresses those children.
+Definition ancestors with `display:none` do not disable patterns. A pattern's own
+`display:none` suppresses its paint and aliases, including aliases with their own
+children. An alias's own hidden display suppresses borrowed visible content too.
+Visible aliases with their own children replace the template content. Inherited paint and visibility
+still apply to tile content; `display:none` on rendered children suppresses them.
 Font preparation uses the same resource display rules for supplied-font tile text.
 Template content, including images, effects and supplied-font text, survives zero
 or omitted base tile dimensions when an alias supplies nonzero effective dimensions.

@@ -278,9 +278,9 @@ internal static class SvgFontRequestDiscovery
                     InlineStyle styleSheet = isSvgElement && reader.LocalName is ("svg" or "defs" or "g" or "a" or "switch" or "pattern" or "text" or "use") ? SvgStyleSheet.Resolve(reader, styleRules, ancestors, workCounter, cancellationToken) : default;
                     SvgTextWhitespaceMode inheritedTextWhitespaceMode = style.Text.WhitespaceMode;
                     string? specifiedWhiteSpace = null;
+                    // Reset definition-ancestor display before applying the resource's own declaration.
+                    if (patternDefinition) style = style with { IsDisplayed = patternHasSize && patternContents?.IsDisplayed(reader.GetAttribute("id")) != false };
                     if (!sterile && isSvgElement && !rootElement && !insideDirectText && parentAllowsText && reader.LocalName is ("svg" or "defs" or "g" or "a" or "switch" or "pattern" or "text" or "use")) style = ApplyAttributes(reader, style, styleSheet, workCounter, cancellationToken, out specifiedWhiteSpace);
-                    // Referenced pattern content ignores resource/ancestor display, but zero-sized tiles stay inert.
-                    if (patternDefinition) style = style with { IsDisplayed = patternHasSize };
                     if (!sterile && parsedTextSpan is SvgTextSpanStyle parsedSpan)
                     {
                         SvgTextPaintStyle paint = parsedSpan.Paint;

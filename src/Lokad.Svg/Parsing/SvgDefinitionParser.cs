@@ -489,8 +489,10 @@ internal static class SvgDefinitionParser
             }
             state.PatternScopeStart = state.PatternScopes?.Count ?? 0;
             state.PatternCommandStart = state.PendingCommandEnd;
-            // A paint server remains available under display:none; its rendered children still resolve display normally.
-            state.Groups.Add(new(reader.Depth, SvgGroupKind.Pattern, inherited.Presentation with { Transform = SvgAffineTransform.Identity, IsDisplayed = true }, inherited.TextStyle, false, false, inherited.Stroke, inherited.FillRule)
+            // Definition ancestors do not suppress a resource; its own display still controls its content and aliases.
+            bool patternDisplayed = SvgPresentationResolver.ParseDisplay(style.Display) && state.PatternContents?.IsDisplayed(state.PatternId) != false;
+            state.PatternTemplate = state.PatternTemplate with { IsDisplayed = patternDisplayed };
+            state.Groups.Add(new(reader.Depth, SvgGroupKind.Pattern, inherited.Presentation with { Transform = SvgAffineTransform.Identity, IsDisplayed = patternDisplayed }, inherited.TextStyle, false, false, inherited.Stroke, inherited.FillRule)
                 { RecordingScope = patternContext.RecordingScope, ClipRule = style.ClipRule ?? patternContext.InheritedClipRule });
             if (!reader.IsEmptyElement) state.PatternDepth = reader.Depth;
             else
@@ -1797,6 +1799,7 @@ internal static class SvgDefinitionParser
             state.PatternContentBuilder = null;
             tile = tile with { Content = null, VectorContent = content };
         }
+        if (!state.PatternTemplate.IsDisplayed) tile = tile with { Content = null, VectorContent = null };
         SvgPatternDefinition definition = new(state.PatternTemplate, tile, state.PatternRectangleSource, state.PatternRectangleContext, false);
         if (!state.PatternDefinitions.TryAdd(retainedId, definition)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG pattern ids must be unique.");
         if (definition.Template.Href is null)
