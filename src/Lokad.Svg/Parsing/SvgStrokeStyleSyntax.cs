@@ -7,6 +7,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Validates the admitted stroke style subset shared by attributes and style declarations.</summary>
 internal static class SvgStrokeStyleSyntax
 {
+    private const NumberStyles CssNumberStyles = NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent;
     /// <summary>Validates one stroke style attribute value, additionally admitting round joins on rounded rectangles and bevel joins on admitted shapes.</summary>
     internal static void ValidateAttribute(string localName, string value, bool allowNonButt, bool allowSquareCap, bool allowClosedLoopCaps, bool allowRoundJoin, bool allowBevelJoin)
     {
@@ -52,10 +53,10 @@ internal static class SvgStrokeStyleSyntax
 
     private static void ValidateLinecap(ReadOnlySpan<char> value, bool allowNonButt, bool allowSquareCap, bool allowClosedLoopCaps)
     {
-        if (value.Trim().Equals("butt".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
-        if (allowNonButt && value.Trim().Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
-        if ((allowNonButt || allowSquareCap) && value.Trim().Equals("square".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
-        if (allowClosedLoopCaps && (value.Trim().Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase) || value.Trim().Equals("square".AsSpan(), StringComparison.OrdinalIgnoreCase))) return;
+        if (value.Trim(SvgCssWhitespace.Characters).Equals("butt".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        if (allowNonButt && value.Trim(SvgCssWhitespace.Characters).Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        if ((allowNonButt || allowSquareCap) && value.Trim(SvgCssWhitespace.Characters).Equals("square".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        if (allowClosedLoopCaps && (value.Trim(SvgCssWhitespace.Characters).Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase) || value.Trim(SvgCssWhitespace.Characters).Equals("square".AsSpan(), StringComparison.OrdinalIgnoreCase))) return;
         if (allowNonButt) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only butt, round and square stroke linecaps are implemented.");
         if (allowSquareCap) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only butt and square stroke linecaps are implemented.");
         if (allowClosedLoopCaps) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only butt, square and round stroke linecaps are implemented.");
@@ -64,9 +65,9 @@ internal static class SvgStrokeStyleSyntax
 
     private static void ValidateLinejoin(ReadOnlySpan<char> value, bool allowNonButt, bool allowBevelJoin)
     {
-        if (value.Trim().Equals("miter".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
-        if (allowNonButt && value.Trim().Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
-        if (allowBevelJoin && value.Trim().Equals("bevel".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        if (value.Trim(SvgCssWhitespace.Characters).Equals("miter".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        if (allowNonButt && value.Trim(SvgCssWhitespace.Characters).Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        if (allowBevelJoin && value.Trim(SvgCssWhitespace.Characters).Equals("bevel".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
         if (allowNonButt && allowBevelJoin) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only miter, round and bevel stroke linejoins are implemented.");
         if (allowNonButt) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only miter and round stroke linejoins are implemented.");
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only miter stroke linejoins are implemented.");
@@ -80,7 +81,7 @@ internal static class SvgStrokeStyleSyntax
     /// <summary>Validates a borrowed dash pattern under the caller's admission policy without materializing an owned array.</summary>
     internal static void ValidateDasharray(string? value, bool allowNonButt)
     {
-        if (value is null || value.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        if (value is null || value.AsSpan().Trim(SvgCssWhitespace.Characters).Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
         if (!allowNonButt) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid (none) stroke dash arrays are implemented.");
         Span<double> entries = stackalloc double[MaximumDashEntries];
         _ = ParseDashEntries(value.AsSpan(), entries);
@@ -93,7 +94,7 @@ internal static class SvgStrokeStyleSyntax
     internal static double[]? ParseDasharray(string? value)
     {
         if (value is null) return null;
-        if (value.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) return null;
+        if (value.AsSpan().Trim(SvgCssWhitespace.Characters).Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) return null;
         Span<double> entries = stackalloc double[MaximumDashEntries];
         int count = ParseDashEntries(value.AsSpan(), entries);
         bool solid = true;
@@ -115,10 +116,10 @@ internal static class SvgStrokeStyleSyntax
 
     private static double ParseDashoffsetValue(ReadOnlySpan<char> value)
     {
-        ReadOnlySpan<char> token = value.Trim();
-        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
+        ReadOnlySpan<char> token = value.Trim(SvgCssWhitespace.Characters);
+        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd(SvgCssWhitespace.Characters);
         else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash offsets are implemented.");
-        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash offsets are implemented.");
+        if (!double.TryParse(token, CssNumberStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash offsets are implemented.");
         if (result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash offsets are implemented.");
         return result;
     }
@@ -139,10 +140,10 @@ internal static class SvgStrokeStyleSyntax
 
     private static double ParseDashEntry(ReadOnlySpan<char> entry)
     {
-        ReadOnlySpan<char> token = entry.Trim();
-        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
+        ReadOnlySpan<char> token = entry.Trim(SvgCssWhitespace.Characters);
+        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd(SvgCssWhitespace.Characters);
         else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash array entries are implemented.");
-        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash array entries are implemented.");
+        if (!double.TryParse(token, CssNumberStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash array entries are implemented.");
         if (result < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Dash array lengths cannot be negative.");
         if (result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dash array entries must be finite bounded numbers.");
         return result;
@@ -157,10 +158,10 @@ internal static class SvgStrokeStyleSyntax
     /// <summary>Parses a nonnegative finite stroke width for the shared outline kernel, which maps fractional offsets exactly like fractional geometry. Zero flows to callers as no-stroke; negatives stay denied.</summary>
     internal static double ParseStrokeWidth(string? value, string elementName)
     {
-        ReadOnlySpan<char> token = (value ?? "1").AsSpan().Trim();
-        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
+        ReadOnlySpan<char> token = (value ?? "1").AsSpan().Trim(SvgCssWhitespace.Characters);
+        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd(SvgCssWhitespace.Characters);
         else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px " + elementName + " stroke widths are implemented.");
-        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double strokeWidth) || !double.IsFinite(strokeWidth) || strokeWidth > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px " + elementName + " stroke widths are implemented.");
+        if (!double.TryParse(token, CssNumberStyles, CultureInfo.InvariantCulture, out double strokeWidth) || !double.IsFinite(strokeWidth) || strokeWidth > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px " + elementName + " stroke widths are implemented.");
         if (strokeWidth < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive " + elementName + " stroke widths are implemented.");
         return strokeWidth;
     }
@@ -168,10 +169,10 @@ internal static class SvgStrokeStyleSyntax
     /// <summary>Reports whether a stroke-width spelling denotes an exact zero without throwing.</summary>
     internal static bool IsZeroStrokeWidth(string? value)
     {
-        ReadOnlySpan<char> token = (value ?? "1").AsSpan().Trim();
-        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
+        ReadOnlySpan<char> token = (value ?? "1").AsSpan().Trim(SvgCssWhitespace.Characters);
+        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd(SvgCssWhitespace.Characters);
         else if (token.Length > 0 && (char.IsLetter(token[^1]) || token.EndsWith("%"))) return false;
-        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double strokeWidth) || !double.IsFinite(strokeWidth) || strokeWidth > int.MaxValue) return false;
+        if (!double.TryParse(token, CssNumberStyles, CultureInfo.InvariantCulture, out double strokeWidth) || !double.IsFinite(strokeWidth) || strokeWidth > int.MaxValue) return false;
         return strokeWidth == 0;
     }
 
@@ -210,7 +211,7 @@ internal static class SvgStrokeStyleSyntax
     internal static bool ParseVectorEffect(string? value, bool parent)
     {
         if (value is null) return false;
-        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
         if (token.Equals("inherit".AsSpan(), StringComparison.OrdinalIgnoreCase)) return parent;
         if (token.Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) return false;
         if (token.Equals("non-scaling-stroke".AsSpan(), StringComparison.OrdinalIgnoreCase)) return true;
@@ -221,8 +222,8 @@ internal static class SvgStrokeStyleSyntax
     internal static double? ParsePathLength(string? value)
     {
         if (value is null) return null;
-        ReadOnlySpan<char> token = value.AsSpan().Trim();
-        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number path lengths are implemented.");
+        ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
+        if (!double.TryParse(token, CssNumberStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number path lengths are implemented.");
         if (result < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Path length cannot be negative.");
         if (result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number path lengths are implemented.");
         return result;
@@ -232,7 +233,7 @@ internal static class SvgStrokeStyleSyntax
     internal static SvgStrokeCap ParseLinecap(string? value)
     {
         if (value is null) return SvgStrokeCap.Butt;
-        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
         if (token.Equals("butt".AsSpan(), StringComparison.OrdinalIgnoreCase)) return SvgStrokeCap.Butt;
         if (token.Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase)) return SvgStrokeCap.Round;
         if (token.Equals("square".AsSpan(), StringComparison.OrdinalIgnoreCase)) return SvgStrokeCap.Square;
@@ -243,7 +244,7 @@ internal static class SvgStrokeStyleSyntax
     internal static SvgStrokeJoin ParseLinejoin(string? value, bool allowBevel)
     {
         if (value is null) return SvgStrokeJoin.Miter;
-        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
         if (token.Equals("miter".AsSpan(), StringComparison.OrdinalIgnoreCase)) return SvgStrokeJoin.Miter;
         if (token.Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase)) return SvgStrokeJoin.Round;
         if (allowBevel && token.Equals("bevel".AsSpan(), StringComparison.OrdinalIgnoreCase)) return SvgStrokeJoin.Bevel;
@@ -270,14 +271,14 @@ internal static class SvgStrokeStyleSyntax
         ArgumentNullException.ThrowIfNull(workCounter);
         string? capAttribute = reader.GetAttribute("stroke-linecap");
         string? cap = capAttribute is null ? null : InlineStrokeDeclaration(reader, "stroke-linecap", workCounter, cancellationToken) ?? capAttribute;
-        bool butt = cap is null || cap.AsSpan().Trim().Equals("butt".AsSpan(), StringComparison.OrdinalIgnoreCase);
-        bool square = allowSquare && cap is not null && cap.AsSpan().Trim().Equals("square".AsSpan(), StringComparison.OrdinalIgnoreCase);
-        bool round = allowRound && cap is not null && cap.AsSpan().Trim().Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase);
+        bool butt = cap is null || cap.AsSpan().Trim(SvgCssWhitespace.Characters).Equals("butt".AsSpan(), StringComparison.OrdinalIgnoreCase);
+        bool square = allowSquare && cap is not null && cap.AsSpan().Trim(SvgCssWhitespace.Characters).Equals("square".AsSpan(), StringComparison.OrdinalIgnoreCase);
+        bool round = allowRound && cap is not null && cap.AsSpan().Trim(SvgCssWhitespace.Characters).Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase);
         if (!butt && !square && !round) throw new SvgException(SvgErrorCode.UnsupportedFeature, allowRound ? "Only butt, square and round stroke linecaps are implemented on " + elementName + " strokes." : allowSquare ? "Only butt and square stroke linecaps are implemented on " + elementName + " strokes." : "Only butt stroke linecaps are implemented on " + elementName + " strokes.");
         string? joinAttribute = reader.GetAttribute("stroke-linejoin");
         string? join = joinAttribute is null ? null : InlineStrokeDeclaration(reader, "stroke-linejoin", workCounter, cancellationToken) ?? joinAttribute;
-        bool roundJoin = allowRoundJoin && join is not null && join.AsSpan().Trim().Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase);
-        bool bevelJoin = allowBevelJoin && join is not null && join.AsSpan().Trim().Equals("bevel".AsSpan(), StringComparison.OrdinalIgnoreCase);        if (join is not null && !join.AsSpan().Trim().Equals("miter".AsSpan(), StringComparison.OrdinalIgnoreCase) && !roundJoin && !bevelJoin) throw new SvgException(SvgErrorCode.UnsupportedFeature, allowBevelJoin ? "Only miter, round and bevel stroke linejoins are implemented on " + elementName + " strokes." : allowRoundJoin ? "Only miter and round stroke linejoins are implemented on " + elementName + " strokes." : "Only miter stroke linejoins are implemented on " + elementName + " strokes.");
+        bool roundJoin = allowRoundJoin && join is not null && join.AsSpan().Trim(SvgCssWhitespace.Characters).Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase);
+        bool bevelJoin = allowBevelJoin && join is not null && join.AsSpan().Trim(SvgCssWhitespace.Characters).Equals("bevel".AsSpan(), StringComparison.OrdinalIgnoreCase);        if (join is not null && !join.AsSpan().Trim(SvgCssWhitespace.Characters).Equals("miter".AsSpan(), StringComparison.OrdinalIgnoreCase) && !roundJoin && !bevelJoin) throw new SvgException(SvgErrorCode.UnsupportedFeature, allowBevelJoin ? "Only miter, round and bevel stroke linejoins are implemented on " + elementName + " strokes." : allowRoundJoin ? "Only miter and round stroke linejoins are implemented on " + elementName + " strokes." : "Only miter stroke linejoins are implemented on " + elementName + " strokes.");
     }
 
     /// <summary>Parses a miter limit of at least one, defaulting to four like SVG.</summary>
@@ -285,7 +286,7 @@ internal static class SvgStrokeStyleSyntax
     {
         string token = value ?? "4";
         if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke miter limit values exceed the configured syntax limit.");
-        if (!double.TryParse(token.AsSpan().Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out double miterLimit) || !double.IsFinite(miterLimit) || miterLimit < 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only stroke miter limits of at least one are implemented.");
+        if (!double.TryParse(token.AsSpan().Trim(SvgCssWhitespace.Characters), CssNumberStyles, CultureInfo.InvariantCulture, out double miterLimit) || !double.IsFinite(miterLimit) || miterLimit < 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only stroke miter limits of at least one are implemented.");
         return miterLimit;
     }
 }

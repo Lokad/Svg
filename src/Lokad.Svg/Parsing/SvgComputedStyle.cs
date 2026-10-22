@@ -80,8 +80,12 @@ internal readonly record struct SvgComputedStyle(string? Color, string? Fill, st
             : styleSheetImportant && styleSheetValue is not null ? styleSheetValue
             : inlineValue ?? styleSheetValue ?? reader.GetAttribute(attribute);
         // Attribute admission and CSS parsing bound the authored token first.
-        if (resolved is not null && attribute is "color" or "fill" or "stroke") resolved = resolved.Trim();
-        if (resolved is not null && attribute is "display" or "visibility" or "fill-rule") resolved = SvgCssWhitespace.Trim(resolved);
+        if (resolved is not null)
+        {
+            resolved = SvgCssWhitespace.Trim(resolved);
+            if (SvgCssWhitespace.HasNonAsciiBoundaryWhitespace(resolved))
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-ASCII whitespace is not a separator for this presentation value.");
+        }
         // Resolve color's self-reference as inheritance after the cascade has selected its declaration.
         if (attribute == "color" && resolved is not null && resolved.Equals("currentColor", StringComparison.OrdinalIgnoreCase)) return null;
         if (attribute.StartsWith("marker-", StringComparison.Ordinal)) return resolved;

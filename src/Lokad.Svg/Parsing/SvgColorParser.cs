@@ -5,6 +5,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Parses the bounded CSS color and opacity token subset used by paint resolution.</summary>
 internal static class SvgColorParser
 {
+    private const NumberStyles CssNumberStyles = NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent;
     internal static byte ParseOpacity(string? value) => value is null ? (byte)255 : ParseOpacity(value.AsSpan());
 
     internal static byte ParseOpacity(ReadOnlySpan<char> value)
@@ -16,35 +17,35 @@ internal static class SvgColorParser
     private static SvgPaintOpacity ParsePaintOpacity(ReadOnlySpan<char> value)
     {
         if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Opacity values exceed the configured syntax limit.");
-        ReadOnlySpan<char> token = value.Trim();
+        ReadOnlySpan<char> token = SvgCssWhitespace.Trim(value);
         if (token.EndsWith("%"))
         {
-            if (!double.TryParse(token[..^1], NumberStyles.Float, CultureInfo.InvariantCulture, out double percentage) || !double.IsFinite(percentage) || percentage < 0 || percentage > 100) throw new SvgException(SvgErrorCode.MalformedInput, "Opacity percentages must be finite values from zero through one hundred.");
+            if (!double.TryParse(token[..^1], CssNumberStyles, CultureInfo.InvariantCulture, out double percentage) || !double.IsFinite(percentage) || percentage < 0 || percentage > 100) throw new SvgException(SvgErrorCode.MalformedInput, "Opacity percentages must be finite values from zero through one hundred.");
             return new SvgPaintOpacity(checked((byte)Math.Round(percentage * 255 / 100, MidpointRounding.AwayFromZero)), (float)(percentage / 100));
         }
-        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double opacity) || !double.IsFinite(opacity) || opacity < 0 || opacity > 1) throw new SvgException(SvgErrorCode.MalformedInput, "Fill opacity must be a finite value from zero through one.");
+        if (!double.TryParse(token, CssNumberStyles, CultureInfo.InvariantCulture, out double opacity) || !double.IsFinite(opacity) || opacity < 0 || opacity > 1) throw new SvgException(SvgErrorCode.MalformedInput, "Fill opacity must be a finite value from zero through one.");
         return new SvgPaintOpacity(checked((byte)Math.Round(opacity * 255, MidpointRounding.AwayFromZero)), (float)opacity);
     }
 
     internal static SvgColor Parse(string value, IReadOnlyDictionary<string, SvgColor> namedColors)
     {
         if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "CSS color values exceed the configured syntax limit.");
-        value = value.Trim();
+        value = SvgCssWhitespace.Trim(value);
         if (value.Equals("transparent", StringComparison.OrdinalIgnoreCase)) return SvgColor.Transparent;
         if (namedColors.TryGetValue(value, out SvgColor namedColor)) return namedColor;
         if (TryParseFunctionalRgb(value, out SvgColor functionalColor)) return functionalColor;
         if (TryParseFunctionalHsl(value, out functionalColor)) return functionalColor;
-        if (value.Length == 9 && value[0] == '#' && byte.TryParse(value.AsSpan(1, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte red8) && byte.TryParse(value.AsSpan(3, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte green8) && byte.TryParse(value.AsSpan(5, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte blue8) && byte.TryParse(value.AsSpan(7, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte alpha8)) return new SvgColor(red8, green8, blue8, alpha8);
-        if (value.Length == 7 && value[0] == '#' && byte.TryParse(value.AsSpan(1, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte red) && byte.TryParse(value.AsSpan(3, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte green) && byte.TryParse(value.AsSpan(5, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte blue)) return new SvgColor(red, green, blue, 255);
-        if (value.Length == 5 && value[0] == '#' && byte.TryParse(value.AsSpan(1, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte red4) && byte.TryParse(value.AsSpan(2, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte green4) && byte.TryParse(value.AsSpan(3, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte blue4) && byte.TryParse(value.AsSpan(4, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte alpha4)) return new SvgColor((byte)(red4 * 17), (byte)(green4 * 17), (byte)(blue4 * 17), (byte)(alpha4 * 17));
-        if (value.Length == 4 && value[0] == '#' && byte.TryParse(value.AsSpan(1, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out red) && byte.TryParse(value.AsSpan(2, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out green) && byte.TryParse(value.AsSpan(3, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out blue)) return new SvgColor((byte)(red * 17), (byte)(green * 17), (byte)(blue * 17), 255);
+        if (value.Length == 9 && value[0] == '#' && byte.TryParse(value.AsSpan(1, 2), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out byte red8) && byte.TryParse(value.AsSpan(3, 2), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out byte green8) && byte.TryParse(value.AsSpan(5, 2), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out byte blue8) && byte.TryParse(value.AsSpan(7, 2), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out byte alpha8)) return new SvgColor(red8, green8, blue8, alpha8);
+        if (value.Length == 7 && value[0] == '#' && byte.TryParse(value.AsSpan(1, 2), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out byte red) && byte.TryParse(value.AsSpan(3, 2), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out byte green) && byte.TryParse(value.AsSpan(5, 2), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out byte blue)) return new SvgColor(red, green, blue, 255);
+        if (value.Length == 5 && value[0] == '#' && byte.TryParse(value.AsSpan(1, 1), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out byte red4) && byte.TryParse(value.AsSpan(2, 1), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out byte green4) && byte.TryParse(value.AsSpan(3, 1), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out byte blue4) && byte.TryParse(value.AsSpan(4, 1), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out byte alpha4)) return new SvgColor((byte)(red4 * 17), (byte)(green4 * 17), (byte)(blue4 * 17), (byte)(alpha4 * 17));
+        if (value.Length == 4 && value[0] == '#' && byte.TryParse(value.AsSpan(1, 1), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out red) && byte.TryParse(value.AsSpan(2, 1), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out green) && byte.TryParse(value.AsSpan(3, 1), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out blue)) return new SvgColor((byte)(red * 17), (byte)(green * 17), (byte)(blue * 17), 255);
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "The CSS color name or syntax is not supported.");
     }
 
     private static byte ParseAlpha(ReadOnlySpan<char> value)
     {
         if (!value.EndsWith('%')) return ParseOpacity(value);
-        if (!double.TryParse(value[..^1], NumberStyles.Float, CultureInfo.InvariantCulture, out double percentage) || !double.IsFinite(percentage) || percentage < 0 || percentage > 100) throw new SvgException(SvgErrorCode.MalformedInput, "Alpha percentages must be finite values from zero through one hundred.");
+        if (!double.TryParse(value[..^1], CssNumberStyles, CultureInfo.InvariantCulture, out double percentage) || !double.IsFinite(percentage) || percentage < 0 || percentage > 100) throw new SvgException(SvgErrorCode.MalformedInput, "Alpha percentages must be finite values from zero through one hundred.");
         return checked((byte)Math.Round(percentage * 255 / 100, MidpointRounding.AwayFromZero));
     }
 
@@ -78,7 +79,7 @@ internal static class SvgColorParser
     {
         if (token.EndsWith('%'))
         {
-            bool valid = double.TryParse(token[..^1], NumberStyles.Float, CultureInfo.InvariantCulture, out double percentage) && double.IsFinite(percentage) && percentage >= 0 && percentage <= 100;
+            bool valid = double.TryParse(token[..^1], CssNumberStyles, CultureInfo.InvariantCulture, out double percentage) && double.IsFinite(percentage) && percentage >= 0 && percentage <= 100;
             value = valid ? checked((byte)Math.Round(percentage * 255 / 100, MidpointRounding.AwayFromZero)) : default;
             return valid;
         }
@@ -91,7 +92,7 @@ internal static class SvgColorParser
         bool isHsl = value.StartsWith("hsl(", StringComparison.OrdinalIgnoreCase) && value.EndsWith(')');
         if (!hasAlpha && !isHsl) { color = default; return false; }
         FunctionalColorTokenReader tokens = new(value.AsSpan((hasAlpha ? 5 : 4)..^1), value.Contains(','));
-        if (!tokens.TryRead(out ReadOnlySpan<char> hueToken) || !tokens.TryRead(out ReadOnlySpan<char> saturationToken) || !tokens.TryRead(out ReadOnlySpan<char> lightnessToken) || !double.TryParse(hueToken, NumberStyles.Float, CultureInfo.InvariantCulture, out double hue) || !double.IsFinite(hue) || !TryParsePercentage(saturationToken, out double saturation) || !TryParsePercentage(lightnessToken, out double lightness)) throw new SvgException(SvgErrorCode.MalformedInput, "HSL colors require a hue and percentage saturation/lightness channels.");
+        if (!tokens.TryRead(out ReadOnlySpan<char> hueToken) || !tokens.TryRead(out ReadOnlySpan<char> saturationToken) || !tokens.TryRead(out ReadOnlySpan<char> lightnessToken) || !double.TryParse(hueToken, CssNumberStyles, CultureInfo.InvariantCulture, out double hue) || !double.IsFinite(hue) || !TryParsePercentage(saturationToken, out double saturation) || !TryParsePercentage(lightnessToken, out double lightness)) throw new SvgException(SvgErrorCode.MalformedInput, "HSL colors require a hue and percentage saturation/lightness channels.");
         byte alpha = 255;
         bool hasSpecifiedAlpha = false;
         if (tokens.IsCommaSeparated)
@@ -123,7 +124,7 @@ internal static class SvgColorParser
     private static bool TryParsePercentage(ReadOnlySpan<char> token, out double value)
     {
         value = 0;
-        bool valid = token.EndsWith('%') && double.TryParse(token[..^1], NumberStyles.Float, CultureInfo.InvariantCulture, out value) && double.IsFinite(value) && value >= 0 && value <= 100;
+        bool valid = token.EndsWith('%') && double.TryParse(token[..^1], CssNumberStyles, CultureInfo.InvariantCulture, out value) && double.IsFinite(value) && value >= 0 && value <= 100;
         value /= valid ? 100 : 1;
         return valid;
     }
@@ -149,17 +150,17 @@ internal static class SvgColorParser
                 if (_finished) { token = default; return false; }
                 int start = _position;
                 while (_position < _value.Length && _value[_position] != ',') _position++;
-                token = _value[start.._position].Trim();
+                token = SvgCssWhitespace.Trim(_value[start.._position]);
                 if (_position == _value.Length) _finished = true;
                 else _position++;
                 return true;
             }
 
-            while (_position < _value.Length && char.IsWhiteSpace(_value[_position])) _position++;
+            while (_position < _value.Length && SvgCssWhitespace.Is(_value[_position])) _position++;
             if (_position == _value.Length) { token = default; return false; }
             if (_value[_position] == '/') { token = _value.Slice(_position, 1); _position++; return true; }
             int tokenStart = _position;
-            while (_position < _value.Length && !char.IsWhiteSpace(_value[_position]) && _value[_position] != '/') _position++;
+            while (_position < _value.Length && !SvgCssWhitespace.Is(_value[_position]) && _value[_position] != '/') _position++;
             token = _value[tokenStart.._position];
             return true;
         }

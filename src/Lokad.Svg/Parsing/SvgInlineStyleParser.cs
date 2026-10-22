@@ -127,8 +127,8 @@ internal static class SvgInlineStyleParser
             if (declaration.IsEmpty) continue;
             int separator = declaration.IndexOf(':');
             if (separator <= 0) throw new SvgException(SvgErrorCode.MalformedInput, "Inline style declarations must use property:value syntax.");
-            ReadOnlySpan<char> property = declaration[..separator].Trim();
-            ReadOnlySpan<char> propertyValue = declaration[(separator + 1)..].Trim();
+            ReadOnlySpan<char> property = declaration[..separator].Trim(SvgCssWhitespace.Characters);
+            ReadOnlySpan<char> propertyValue = declaration[(separator + 1)..].Trim(SvgCssWhitespace.Characters);
             if (propertyValue.Contains(':') && !property.Equals("font-family", StringComparison.OrdinalIgnoreCase))
                 throw new SvgException(SvgErrorCode.MalformedInput, "Inline style declarations must use property:value syntax.");
             if (property.Length > SvgSyntaxLimits.MaximumValueTokenCharacters || propertyValue.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Inline style property names and values exceed the configured syntax limit.");
@@ -213,6 +213,10 @@ internal static class SvgInlineStyleParser
         static void Set(ref string? slot, InlineImportantProperties flag, ReadOnlySpan<char> property, ReadOnlySpan<char> rawValue, BudgetedParserStringStore? strings, ref InlineImportantProperties important, bool mapKeywords)
         {
             bool isImportant = TryStripImportant(rawValue, out ReadOnlySpan<char> stripped);
+            // A family name can itself begin/end with a Unicode name character;
+            // other admitted scalar tokens cannot discard those characters.
+            if (flag != InlineImportantProperties.Family && SvgCssWhitespace.HasNonAsciiBoundaryWhitespace(stripped))
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-ASCII whitespace is not a separator for this CSS value.");
             if (stripped.IsEmpty) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Empty inline style declarations are not implemented.");
             if (ContainsUnquotedImportant(stripped)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Misplaced !important inline style declarations are not implemented.");
             if (mapKeywords && TryMapPaintKeyword(property, stripped, out string? mapped))
@@ -291,14 +295,14 @@ internal static class SvgInlineStyleParser
     internal static bool TryStripImportant(ReadOnlySpan<char> value, out ReadOnlySpan<char> stripped)
     {
         stripped = value;
-        ReadOnlySpan<char> trimmed = value.Trim();
+        ReadOnlySpan<char> trimmed = value.Trim(SvgCssWhitespace.Characters);
         if (trimmed.Length <= 9 || !trimmed[^9..].Equals("important".AsSpan(), StringComparison.OrdinalIgnoreCase)) return false;
-        ReadOnlySpan<char> before = trimmed[..^9].TrimEnd();
+        ReadOnlySpan<char> before = trimmed[..^9].TrimEnd(SvgCssWhitespace.Characters);
         if (before.IsEmpty || before[^1] != '!') return false;
         SvgCssQuotedState quotes = default;
         for (int index = 0; index < before.Length; index++)
             if (!quotes.IsSyntax(before[index]) && index == before.Length - 1) return false;
-        stripped = before[..^1].TrimEnd();
+        stripped = before[..^1].TrimEnd(SvgCssWhitespace.Characters);
         return true;
     }
 
@@ -324,7 +328,7 @@ internal static class SvgInlineStyleParser
     /// <returns>True when the value is a supported global keyword. Throws for unplumbed inheritance.</returns>
     internal static bool TryMapPaintKeyword(ReadOnlySpan<char> attribute, ReadOnlySpan<char> value, out string? mapped)
     {
-        ReadOnlySpan<char> token = value.Trim();
+        ReadOnlySpan<char> token = value.Trim(SvgCssWhitespace.Characters);
         if (token.Equals("inherit".AsSpan(), StringComparison.OrdinalIgnoreCase))
         {
             if (IsInheritedPaintProperty(attribute) || attribute.Equals("opacity".AsSpan(), StringComparison.OrdinalIgnoreCase))
@@ -423,7 +427,7 @@ internal static class SvgInlineStyleParser
                     _position++; ConsumeCheckpoints();
                 }
                 if (!quotes.IsClosed) throw new SvgException(SvgErrorCode.MalformedInput, "An inline style string is not closed.");
-                declaration = _value[start.._position].Trim();
+                declaration = _value[start.._position].Trim(SvgCssWhitespace.Characters);
                 if (_position < _value.Length) _position++;
                 ConsumeCheckpoints();
                 if (!declaration.IsEmpty) return true;

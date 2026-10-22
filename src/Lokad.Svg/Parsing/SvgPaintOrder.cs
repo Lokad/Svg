@@ -23,7 +23,7 @@ internal static class SvgPaintOrderSyntax
     {
         if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters)
             throw new SvgException(SvgErrorCode.LimitExceeded, "Paint order exceeds the configured syntax limit.");
-        ReadOnlySpan<char> input = value.Trim();
+        ReadOnlySpan<char> input = SvgCssWhitespace.Trim(value);
         if (input.Equals("inherit", StringComparison.OrdinalIgnoreCase) || input.Equals("unset", StringComparison.OrdinalIgnoreCase)) return null;
         if (input.Equals("normal", StringComparison.OrdinalIgnoreCase) || input.Equals("initial", StringComparison.OrdinalIgnoreCase)) return SvgPaintOrder.FillStrokeMarkers;
         Span<int> operations = stackalloc int[3];
@@ -31,7 +31,7 @@ internal static class SvgPaintOrderSyntax
         while (!input.IsEmpty)
         {
             int length = 0;
-            while (length < input.Length && !char.IsWhiteSpace(input[length])) length++;
+            while (length < input.Length && !SvgCssWhitespace.Is(input[length])) length++;
             ReadOnlySpan<char> token = input[..length];
             int operation = token.Equals("fill", StringComparison.OrdinalIgnoreCase) ? 0
                 : token.Equals("stroke", StringComparison.OrdinalIgnoreCase) ? 1
@@ -39,7 +39,7 @@ internal static class SvgPaintOrderSyntax
             if (operation < 0 || (seen & (1 << operation)) != 0 || count == 3)
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Paint order requires distinct fill, stroke and markers tokens.");
             operations[count++] = operation; seen |= 1 << operation;
-            input = input[length..].TrimStart();
+            input = input[length..].TrimStart(SvgCssWhitespace.Characters);
         }
         if (count == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Paint order cannot be empty.");
         for (int operation = 0; operation < 3; operation++)

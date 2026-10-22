@@ -48,7 +48,7 @@ internal static class SvgCssComments
                 if (character == '{') declarations = true;
                 else if (character == '}') declarations = false;
             }
-            bool whitespace = trim && syntax && character is ' ' or '\t' or '\n' or '\r' or '\f';
+            bool whitespace = trim && syntax && SvgCssWhitespace.Is(character);
             Append(character, whitespace, destination, ref written, ref trimmedLength);
             previous = character;
         }

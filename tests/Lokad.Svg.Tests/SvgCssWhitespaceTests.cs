@@ -21,6 +21,63 @@ public sealed class SvgCssWhitespaceTests
         }
     }
 
+    [Theory]
+    [MemberData(nameof(SvgCssSelectorTests.ClassSeparators), MemberType = typeof(SvgCssSelectorTests))]
+    public void Scalar_tokens_do_not_turn_unicode_characters_into_css_whitespace(int character, bool whitespace)
+    {
+        string separator = char.ConvertFromUtf32(character);
+        foreach ((string property, string value) in new[] { ("fill", "red"), ("stroke", "red"), ("color", "red"),
+            ("opacity", ".5"), ("fill-opacity", ".5"), ("stroke-opacity", ".5"),
+            ("display", "none"), ("visibility", "hidden"), ("fill-rule", "evenodd"), ("clip-rule", "evenodd"),
+            ("stroke-width", "2"), ("stroke-miterlimit", "4"), ("stroke-dasharray", "2 1"),
+            ("stroke-dashoffset", "1"), ("stroke-linecap", "round"), ("stroke-linejoin", "round"), ("filter", "none") })
+        foreach (string location in new[] { "attribute", "inline", "rule" })
+        {
+            string token = separator + value + separator;
+            string geometry = "<rect width='8' height='8' stroke-width='2'"
+                + (property == "fill" ? "" : " fill='currentColor'")
+                + (property == "color" ? "" : " color='green'")
+                + (property == "stroke" ? "" : " stroke='blue'");
+            if (property == "stroke-width") geometry = geometry.Replace(" stroke-width='2'", "");
+            string input = location switch
+            {
+                "attribute" => geometry + " " + property + "='" + token + "'/>",
+                "inline" => geometry + " style='" + property + ":" + token + "'/>",
+                _ => "<style>.p{" + property + ":" + token + "}</style>" + geometry + " class='p'/>"
+            };
+            if (whitespace) Assert.Equal(Render(geometry + " " + property + "='" + value + "'/>"), Render(input));
+            else
+            {
+                SvgException error = Assert.Throws<SvgException>(() => Render(input));
+                Assert.True(error.ErrorCode is SvgErrorCode.UnsupportedFeature or SvgErrorCode.MalformedInput);
+            }
+        }
+    }
+
+    [Theory]
+    [InlineData("fill", "# f f f")]
+    [InlineData("fill", "rgb(255\u00a00\u00a00)")]
+    [InlineData("fill", "rgba(255,0,0,\u2003.5)")]
+    [InlineData("fill", "hsl(\u00a00,100%,50%)")]
+    [InlineData("opacity", "50 %")]
+    [InlineData("\u00a0fill", "red")]
+    [InlineData("fill\u2003", "red")]
+    [InlineData("paint-order", "stroke\u00a0fill")]
+    public void Malformed_css_tokens_reject_without_changing_their_value(string property, string value)
+    {
+        Assert.Throws<SvgException>(() => Render("<rect width='8' height='8' style='" + property + ":" + value + "'/>"));
+        Assert.Throws<SvgException>(() => Render("<style>rect{" + property + ":" + value + "}</style><rect width='8' height='8'/>"));
+    }
+
+    [Fact]
+    public void Css_whitespace_preserves_quoted_unicode_and_form_feed_separation()
+    {
+        InlineStyle style = SvgInlineStyleParser.Parse("font-family:' \u00a0\u2003 ';\ffill:\fred\f!\fimportant\f", new(1000), CancellationToken.None, true);
+        Assert.Equal("' \u00a0\u2003 '", style.TextFont.Family);
+        Assert.Equal("red", style.Fill);
+        Assert.NotEqual(InlineImportantProperties.None, style.Important & InlineImportantProperties.Fill);
+    }
+
     private static byte[] Render(string body)
         => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'>" + body + "</svg>"), SvgRenderOptions.Default, CancellationToken.None).ToArray();
 }

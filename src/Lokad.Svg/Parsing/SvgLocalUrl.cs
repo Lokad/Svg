@@ -10,18 +10,18 @@ internal static class SvgLocalUrl
 
     /// <summary>Normalizes a borrowed live or retained effect value without allocating or resolving its identifier.</summary>
     internal static string? GetReference(string? value)
-        => value is null || value.AsSpan().Trim().Equals("none", StringComparison.OrdinalIgnoreCase) ? null : value;
+        => value is null || SvgCssWhitespace.Trim(value.AsSpan()).Equals("none", StringComparison.OrdinalIgnoreCase) ? null : value;
 
     /// <summary>Extracts the referenced identifier from url spellings with optional quotes and surrounding whitespace.</summary>
     internal static bool TryParseId(string value, out string id)
     {
         id = "";
-        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        ReadOnlySpan<char> token = SvgCssWhitespace.Trim(value.AsSpan());
         if (token.Length < 7 || !token.StartsWith("url(".AsSpan(), StringComparison.Ordinal) || !token.EndsWith(")".AsSpan(), StringComparison.Ordinal)) return false;
-        ReadOnlySpan<char> inner = token[4..^1].Trim();
-        if (inner.Length >= 2 && (inner[0] == (char)34 || inner[0] == (char)39) && inner[^1] == inner[0]) inner = inner[1..^1].Trim();
+        ReadOnlySpan<char> inner = SvgCssWhitespace.Trim(token[4..^1]);
+        if (inner.Length >= 2 && (inner[0] == (char)34 || inner[0] == (char)39) && inner[^1] == inner[0]) inner = SvgCssWhitespace.Trim(inner[1..^1]);
         if (inner.Length < 2 || inner[0] != (char)35) return false;
-        ReadOnlySpan<char> reference = inner[1..].Trim();
+        ReadOnlySpan<char> reference = SvgCssWhitespace.Trim(inner[1..]);
         if (reference.IsEmpty || reference.IndexOfAny((char)34, (char)39) >= 0 || reference.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) return false;
         id = reference.ToString();
         return true;

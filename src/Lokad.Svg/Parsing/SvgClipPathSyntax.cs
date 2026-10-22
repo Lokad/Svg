@@ -34,7 +34,7 @@ internal static class SvgClipPathSyntax
         if (state.DeferringFilterClip) return null;
         string? reference = SvgLocalUrl.ReadReference(reader, "clip-path");
         if (reference is null) return null;
-        if (reference.Trim().Equals("inherit", StringComparison.Ordinal))
+        if (SvgCssWhitespace.Trim(reference).Equals("inherit", StringComparison.Ordinal))
             return state.Groups.Count == 0 ? null : state.Groups[state.Groups.Count - 1].ClipPathId;
         return ParseClipId(reference);
     }
@@ -151,8 +151,8 @@ internal static class SvgClipPathSyntax
     /// <summary>Retains the independent nonzero or parity rule for native clip-content replay.</summary>
     internal static bool ParseClipRule(ReadOnlySpan<char> value)
     {
-        if (value.Trim().Equals("nonzero".AsSpan(), StringComparison.OrdinalIgnoreCase)) return false;
-        if (value.Trim().Equals("evenodd".AsSpan(), StringComparison.OrdinalIgnoreCase)) return true;
+        if (value.Trim(SvgCssWhitespace.Characters).Equals("nonzero".AsSpan(), StringComparison.OrdinalIgnoreCase)) return false;
+        if (value.Trim(SvgCssWhitespace.Characters).Equals("evenodd".AsSpan(), StringComparison.OrdinalIgnoreCase)) return true;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonzero and evenodd clip rules are implemented.");
     }
 
