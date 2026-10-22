@@ -181,6 +181,8 @@ Percentages and omitted dimensions resolve in each instance's viewport,
 including nested viewBox and symbol instances.
 Images ignore inherited and CSS fill/stroke paint; display, visibility and
 element/group opacity still apply.
+Referenced images retain source opacity, clips, masks and filters through viewport
+clipping; filters can move source pixels into the viewport before output is clipped.
 
 Unsupported: interlaced/16-bit PNG, reduced-significance sBIT, color-management or
 orientation conversion, JPEG/GIF/WebP and external image fetching.

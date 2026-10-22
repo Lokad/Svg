@@ -146,12 +146,9 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
         SvgDefinition result = SvgDefinitionParser.LowerInstanceSource(this, context, state);
         try
         {
-            if (frame is {} viewport)
-                for (int index = 0; index < result.Geometries.Length; index++)
-                {
-                    _work.Consume(_token);
-                    result.Geometries[index] = SvgClipPathSyntax.ApplyLeafClip(result.Geometries[index], viewport.Clip);
-                }
+            // The viewport clips completed source effects, preserving their paint bindings and full input bounds.
+            if (frame is { HasAffineClipScope: false } viewport && viewport.Clip != SvgClipBox.Unbounded)
+                SvgPaintRecording.WrapInstance(result.Geometries.AsSpan(), SvgPaintOpacity.Opaque, state.NewRecordingScope(), viewport.Clip, state, _work, _token);
             return result;
         }
         catch { foreach (SvgGeometry geometry in result.Geometries) geometry.Dispose(); throw; }

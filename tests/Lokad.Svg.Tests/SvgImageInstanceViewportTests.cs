@@ -81,16 +81,14 @@ public sealed class SvgImageInstanceViewportTests
     {
         const string resources = "<defs><clipPath id='c'><rect width='6' height='16'/></clipPath><mask id='m' mask-type='alpha' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><rect width='6' height='32' fill='white'/></mask><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feOffset dx='1' dy='1'/></filter></defs>";
         bool filtered = effect.StartsWith("filter", StringComparison.Ordinal);
-        // Compare filtered instances with explicit-size instances, preserving source-layer placement.
+        // Filters stay on the image source; filters on a use require group source bounds.
         string image = Image(true, "width='50%' height='50%'" + (filtered ? " " + effect : ""));
         string definition = "<defs>" + image + " id='s'/></defs>";
         const string viewport = "<svg width='16' height='16'>";
         foreach (string transform in new[] { "translate(2 3)", "scale(1.5 1)", "matrix(-1 0 0 1 16 0)" })
         {
             string attrs = " transform='" + transform + "' " + (filtered ? "" : effect) + "/>";
-            string expected = filtered
-                ? resources + "<defs>" + Image(true, "width='8' height='8' " + effect) + " id='s'/></defs>" + viewport + "<use href='#s'" + attrs + "</svg>"
-                : resources + viewport + image + attrs + "</svg>";
+            string expected = resources + viewport + image + attrs + "</svg>";
             Assert.True(Render(expected).AsSpan().SequenceEqual(
                 Render(resources + definition + viewport + "<use href='#s'" + attrs + "</svg>")), effect + "; " + transform);
         }
