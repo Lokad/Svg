@@ -88,6 +88,7 @@ internal readonly record struct SvgComputedStyle(string? Color, string? Fill, st
         }
         // Resolve color's self-reference as inheritance after the cascade has selected its declaration.
         if (attribute == "color" && resolved is not null && resolved.Equals("currentColor", StringComparison.OrdinalIgnoreCase)) return null;
+        if (attribute == "filter" && resolved is not null && resolved.Equals("none", StringComparison.OrdinalIgnoreCase)) return "none";
         if (attribute.StartsWith("marker-", StringComparison.Ordinal)) return resolved;
         if (attribute is not ("paint-order" or "overflow") && resolved is not null && SvgInlineStyleParser.TryMapPaintKeyword(attribute.AsSpan(), resolved.AsSpan(), out string? mapped))
             return mapped == SvgInlineStyleParser.InheritedValue && SvgInlineStyleParser.IsInheritedPaintProperty(attribute.AsSpan()) ? null : mapped;

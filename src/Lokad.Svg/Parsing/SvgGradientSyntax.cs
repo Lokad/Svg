@@ -312,7 +312,7 @@ internal static class SvgGradientSyntax
     }
 
     internal static bool IsGradientFill(string? fill)
-        => fill is not null && fill.StartsWith("url(", StringComparison.Ordinal);
+        => fill is not null && fill.StartsWith("url(", StringComparison.OrdinalIgnoreCase);
 
     internal static double ParseStopOffset(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
@@ -887,7 +887,7 @@ internal static class SvgGradientSyntax
     }
 
     internal static bool IsGradientStrokeUrl(string? stroke)
-        => stroke is not null && stroke.StartsWith("url(", StringComparison.Ordinal);
+        => stroke is not null && stroke.StartsWith("url(", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>Inverts one axis-aligned scale-plus-offset map, refusing singular scales.</summary>
     internal static bool TryInvertAxisMap(double scaleX, double scaleY, double offsetX, double offsetY, out SvgGradientTransform inverse)

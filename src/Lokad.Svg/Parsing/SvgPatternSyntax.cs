@@ -72,7 +72,7 @@ internal static class SvgPatternSyntax
     }
 
     internal static bool IsPatternFill(string? fill)
-        => fill is not null && fill.StartsWith("url(", StringComparison.Ordinal);
+        => fill is not null && fill.StartsWith("url(", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>Lowers one pattern-filled orthogonal path or point-list shape into pattern-evaluated rectangle bands.</summary>
     internal static SvgParsedGeometry LowerPatternBands(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, string elementName, bool isPath, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame)
@@ -284,7 +284,7 @@ internal static class SvgPatternSyntax
     /// <summary>Reports whether a stroke references a locally defined pattern tile.</summary>
     internal static bool IsPatternStroke(string? stroke, SvgDocumentState state)
     {
-        if (stroke is null || !stroke.StartsWith("url(", StringComparison.Ordinal)) return false;
+        if (stroke is null || !stroke.StartsWith("url(", StringComparison.OrdinalIgnoreCase)) return false;
         return state.Patterns.TryGetValue(ParsePatternId(stroke), out _);
     }
 

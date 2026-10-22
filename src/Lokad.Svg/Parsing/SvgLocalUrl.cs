@@ -17,7 +17,7 @@ internal static class SvgLocalUrl
     {
         id = "";
         ReadOnlySpan<char> token = SvgCssWhitespace.Trim(value.AsSpan());
-        if (token.Length < 7 || !token.StartsWith("url(".AsSpan(), StringComparison.Ordinal) || !token.EndsWith(")".AsSpan(), StringComparison.Ordinal)) return false;
+        if (token.Length < 7 || !token.StartsWith("url(".AsSpan(), StringComparison.OrdinalIgnoreCase) || !token.EndsWith(")".AsSpan(), StringComparison.Ordinal)) return false;
         ReadOnlySpan<char> inner = SvgCssWhitespace.Trim(token[4..^1]);
         if (inner.Length >= 2 && (inner[0] == (char)34 || inner[0] == (char)39) && inner[^1] == inner[0]) inner = SvgCssWhitespace.Trim(inner[1..^1]);
         if (inner.Length < 2 || inner[0] != (char)35) return false;

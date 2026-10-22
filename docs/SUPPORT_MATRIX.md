@@ -235,6 +235,8 @@ CSS; literal color limits apply to the authored token before normalization.
 Non-ASCII whitespace remains part of scalar tokens; unsupported values reject
 instead of becoming different colors, numbers or keywords. Quoted family names
 and Unicode contents of local references retain their characters.
+Local `url(...)` function names and the filter `none` keyword ignore ASCII case;
+referenced identifiers keep their case.
 `color:currentColor` uses the inherited color. Fill/stroke `currentColor` resolves
 against each element's own color, including after inheritance and local instancing.
 
