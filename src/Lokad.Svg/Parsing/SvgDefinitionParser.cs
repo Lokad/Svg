@@ -134,7 +134,7 @@ internal static class SvgDefinitionParser
                 {
                     definition = BindSymbolFill(definition, reader, context, state, workCounter, cancellationToken, true);
                     SvgSymbolDefinitionBuilder builder = state.SymbolDefinition ?? throw new InvalidOperationException("Symbol children require an open definition builder.");
-                    if (reader.LocalName == "image" || deferredSource || relativeRectangle) { builder.EnableContent(); state.HasRetainedSymbolContent = true; }
+                    if (reader.LocalName == "image" || deferredSource || relativeRectangle || SvgLocalUrl.ReadReference(reader, "mask") is not null) { builder.EnableContent(); state.HasRetainedSymbolContent = true; }
                     builder.Add(definition);
                     retained = true;
                 }

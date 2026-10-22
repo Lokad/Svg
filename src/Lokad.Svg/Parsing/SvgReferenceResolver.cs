@@ -47,7 +47,8 @@ internal static class SvgReferenceResolver
     internal static void ResolveOrDefer(SvgUseReference reference, BudgetedParserDictionary<string, SvgDefinition> definitions, BudgetedParserList<PendingUse> pendingUses, SvgSceneBuilder scene, SvgViewportFrame? frame, byte? mask, string? maskReference, SvgDeferredClip? deferredClip, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         workCounter.Consume(cancellationToken);
-        if (deferredClip is null && (maskReference is null || mask is not null) && definitions.TryGetValue(reference.Id, out SvgDefinition definition) && definition.SymbolContent is null)
+        if (deferredClip is null && (maskReference is null || mask is not null) && definitions.TryGetValue(reference.Id, out SvgDefinition definition) && definition.SymbolContent is null
+            && SvgLocalUrl.GetReference(definition.LeafSource?.GetAttribute("mask")) is null)
         {
             SvgGeometry[] applied = ApplyInstanceMask(definition, reference, frame, mask, maskReference, state, workCounter, cancellationToken);
             scene.AddGeometries(applied);
