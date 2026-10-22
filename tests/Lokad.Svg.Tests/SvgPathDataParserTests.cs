@@ -10,7 +10,7 @@ public sealed class SvgPathDataParserTests
     {
         Assert.Equal(0, Parse(null).ContourCount);
         Assert.Equal(0, Parse(string.Empty).ContourCount);
-        Assert.Equal(0, Parse("  ,\t\n ").ContourCount);
+        Assert.Equal(0, Parse("  \t\n ").ContourCount);
     }
 
     [Fact]
@@ -252,6 +252,7 @@ public sealed class SvgPathDataParserTests
     [Fact]
     public void Structural_violations_are_malformed()
     {
+        Assert.Equal(SvgErrorCode.MalformedInput, ParseError("  ,\t\n "));
         Assert.Equal(SvgErrorCode.MalformedInput, ParseError("L8 0Z"));
         Assert.Equal(SvgErrorCode.MalformedInput, ParseError("M0 0L1 1Z2 2"));
         Assert.Equal(SvgErrorCode.MalformedInput, ParseError("M10"));

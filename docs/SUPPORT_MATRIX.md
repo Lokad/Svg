@@ -103,6 +103,10 @@ Polygon/polyline point coordinates are bare SVG numbers; CSS length units such
 as px are unsupported in these numeric lists.
 Path numbers retain explicit signs and equivalent decimal/exponent spellings
 through integer and general geometry routes.
+Numeric syntax recovery retains completed path/clip-path segments; unsupported
+clip commands still reject. ASCII SVG whitespace and contextual commas do not
+erase missing coordinates.
+Polygon/polyline lists reject leading, repeated and trailing commas.
 
 Root and nested viewports preserve their own percentage bases, aspect maps and
 physical clips. Instance presentation follows authored/inherited precedence;

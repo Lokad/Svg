@@ -493,6 +493,7 @@ internal static class SvgPathDataParser
         private readonly CancellationToken _cancellationToken;
         private int _position;
         private int _nextCheckpoint;
+        private bool _hasValue;
 
         internal PathDataReader(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
@@ -507,24 +508,25 @@ internal static class SvgPathDataParser
         {
             get
             {
-                SkipSeparators();
-                ConsumeCheckpoints();
+                SkipWhitespace(ref _position);
+                ConsumeCheckpoints(_position);
                 return _position == _value.Length;
             }
         }
 
         internal char ReadCommand()
         {
-            SkipSeparators();
-            ConsumeCheckpoints();
+            SkipSeparators(ref _position);
+            ConsumeCheckpoints(_position);
             if (_position == _value.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Path data ends inside a command.");
+            _hasValue = false;
             return _value[_position++];
         }
 
         internal double ReadNumber()
         {
-            SkipSeparators();
-            ConsumeCheckpoints();
+            SkipSeparators(ref _position);
+            ConsumeCheckpoints(_position);
             int start = _position;
             if (_position < _value.Length && _value[_position] is '+' or '-') _position++;
             bool digits = false;
@@ -545,11 +547,13 @@ internal static class SvgPathDataParser
                 if (!exponentDigits) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data coordinates must be finite numbers.");
             }
 
-            ConsumeCheckpoints();
+            ConsumeCheckpoints(_position);
             ReadOnlySpan<char> token = _value[start.._position];
             if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Path number values exceed the configured syntax limit.");
             if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data coordinates must be finite numbers.");
-            return SvgFloatNumber.ReadValidated(token, _workCounter, _cancellationToken);
+            double number = SvgFloatNumber.ReadValidated(token, _workCounter, _cancellationToken);
+            _hasValue = true;
+            return number;
         }
 
         internal (double X, double Y) ReadPoint()
@@ -561,38 +565,57 @@ internal static class SvgPathDataParser
 
         internal bool ReadFlag()
         {
-            SkipSeparators();
-            ConsumeCheckpoints();
+            SkipSeparators(ref _position);
+            ConsumeCheckpoints(_position);
             if (_position == _value.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data arc flags must be 0 or 1.");
             char flag = _value[_position++];
             if (flag is not ('0' or '1')) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data arc flags must be 0 or 1.");
-            ConsumeCheckpoints();
+            ConsumeCheckpoints(_position);
+            _hasValue = true;
             return flag == '1';
         }
 
         internal bool PeekNumberStart()
         {
             int position = _position;
-            while (position < _value.Length && IsSeparator(_value[position])) position++;
+            SkipSeparators(ref position);
             if (position == _value.Length) return false;
             char next = _value[position];
             return char.IsAsciiDigit(next) || next is '-' or '+' or '.';
         }
 
-        private void SkipSeparators()
+        private void SkipSeparators(ref int position)
         {
-            while (_position < _value.Length && IsSeparator(_value[_position])) { ConsumeCheckpoints(); _position++; }
+            SkipWhitespace(ref position);
+            if (position < _value.Length && _value[position] == ',')
+            {
+                if (!_hasValue) throw new SvgException(SvgErrorCode.MalformedInput, "A path comma requires a preceding value.");
+                position++;
+                SkipWhitespace(ref position);
+                if (position == _value.Length || _value[position] == ',')
+                    throw new SvgException(SvgErrorCode.MalformedInput, "A path comma requires a following value or command.");
+            }
+            ConsumeCheckpoints(position);
         }
 
-        private void ConsumeCheckpoints()
+        private void SkipWhitespace(ref int position)
         {
-            while (_nextCheckpoint < _value.Length && _position >= _nextCheckpoint)
+            while (position < _value.Length && IsWhitespace(_value[position]))
+            {
+                ConsumeCheckpoints(position);
+                position++;
+            }
+        }
+
+        private void ConsumeCheckpoints(int position)
+        {
+            while (_nextCheckpoint < _value.Length && position >= _nextCheckpoint)
             {
                 _workCounter.Consume(_cancellationToken);
                 _nextCheckpoint += 4096;
             }
         }
 
-        private static bool IsSeparator(char value) => value == ',' || char.IsWhiteSpace(value);
+        private static bool IsWhitespace(char value) => value is ' ' or '\t' or '\r' or '\n';
     }
 }

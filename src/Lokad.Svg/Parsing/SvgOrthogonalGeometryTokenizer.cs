@@ -301,7 +301,7 @@ internal static class SvgOrthogonalGeometryTokenizer
 
     private static bool IsPathCommand(char value) => value is 'M' or 'm' or 'L' or 'l' or 'H' or 'h' or 'V' or 'v' or 'Z' or 'z';
 
-    private static bool IsPathSeparator(char value) => value == ',' || char.IsWhiteSpace(value);
+    private static bool IsPathSeparator(char value) => value is ',' or ' ' or '\t' or '\r' or '\n';
 
     private static bool IsPointSeparator(char value) => value is ',' or ' ' or '\t' or '\r' or '\n';
 
@@ -401,6 +401,7 @@ internal static class SvgOrthogonalGeometryTokenizer
         private readonly CancellationToken _cancellationToken;
         private int _position;
         private int _nextCheckpoint;
+        private bool _hasValue;
 
         internal DelimitedTokenReader(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
@@ -411,12 +412,21 @@ internal static class SvgOrthogonalGeometryTokenizer
 
         internal bool TryReadValue(out ReadOnlySpan<char> value)
         {
-            while (_position < _value.Length && IsPointSeparator(_value[_position])) { ConsumeCheckpoints(); _position++; }
+            while (_position < _value.Length && _value[_position] != ',' && IsPointSeparator(_value[_position])) { ConsumeCheckpoints(); _position++; }
+            if (_position < _value.Length && _value[_position] == ',')
+            {
+                if (!_hasValue) throw new SvgException(SvgErrorCode.MalformedInput, "Point-list commas require a preceding number.");
+                _position++;
+                while (_position < _value.Length && _value[_position] != ',' && IsPointSeparator(_value[_position])) { ConsumeCheckpoints(); _position++; }
+                if (_position == _value.Length || _value[_position] == ',')
+                    throw new SvgException(SvgErrorCode.MalformedInput, "Point-list commas require a following number.");
+            }
             ConsumeCheckpoints();
             if (_position == _value.Length) { value = default; return false; }
             int start = _position;
             while (_position < _value.Length && !IsPointSeparator(_value[_position])) { _position++; ConsumeCheckpoints(); }
             value = _value[start.._position];
+            _hasValue = true;
             return true;
         }
 

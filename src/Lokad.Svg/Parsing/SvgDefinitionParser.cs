@@ -290,7 +290,7 @@ internal static class SvgDefinitionParser
                 nestedClip = nestedClip is null ? null : state.Strings.Copy(nestedClip);
                 bool visible = SvgPresentationResolver.IsPainted(clipStyle.Display, clipStyle.Visibility, true, state.ClipIsVisible);
                 if (visible) PromoteClipRectangle(state, workCounter, cancellationToken);
-                SvgClipPolygon clipContent = ParseClipPathPolygon(reader.GetAttribute("d"), clipTransform, isEvenOdd, visible, state, workCounter, cancellationToken)
+                SvgClipPolygon clipContent = ParseClipPathPolygon(reader.GetAttribute("d"), clipTransform, isEvenOdd, visible, limits.MaximumPathCommands, state, workCounter, cancellationToken)
                     with { IsObjectBoundingBox = state.ClipIsObjectBoundingBox };
                 if (visible)
                 {
@@ -1155,12 +1155,15 @@ internal static class SvgDefinitionParser
             });
         }
 
-        static SvgClipPolygon ParseClipPathPolygon(string? pathData, SvgAffineTransform clipTransform, bool isEvenOdd, bool visible, SvgDocumentState clipState, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static SvgClipPolygon ParseClipPathPolygon(string? pathData, SvgAffineTransform clipTransform, bool isEvenOdd, bool visible, int maximumCommands, SvgDocumentState clipState, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(clipState);
             ArgumentNullException.ThrowIfNull(workCounter);
             if (string.IsNullOrWhiteSpace(pathData)) return new([], []);
             (int letters, bool hasCurve) = ScanClipPathData(pathData, workCounter, cancellationToken);
+            using SvgRenderablePathData renderData = SvgRenderablePathData.Read(pathData, maximumCommands, clipState.Budget, workCounter, cancellationToken);
+            pathData = renderData.Value;
+            if (pathData.Length == 0) return new([], []);
             int pointCapacity = (int)Math.Min(hasCurve ? (long)letters * (SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand + 1) : pathData.Length / 2L + 2, SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints);
             int contourCapacity = Math.Min(letters + 1, pointCapacity);
             long scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) * (hasCurve ? 2 : 1) + ((hasCurve ? 4 : 2) * ParserCollectionMemory.GetArrayByteCount<int>(contourCapacity)));

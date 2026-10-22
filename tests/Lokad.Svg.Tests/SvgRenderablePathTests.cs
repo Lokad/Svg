@@ -5,10 +5,13 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgRenderablePathTests
 {
-    [Fact]
-    public void Invalid_tail_cannot_hide_full_input_command_and_work_limits()
+    [Theory]
+    [InlineData("0")]
+    [InlineData(",")]
+    [InlineData("\u00a0")]
+    public void Invalid_tail_cannot_hide_full_input_command_and_work_limits(string error)
     {
-        string value = "M0 0H8V8H0Z0" + string.Concat(Enumerable.Repeat("M0 0", 20));
+        string value = "M0 0H8V8H0Z" + error + string.Concat(Enumerable.Repeat("M0 0", 20));
         RenderBudget budget = new(1_000_000);
         SvgException commands = Assert.Throws<SvgException>(() => SvgRenderablePathData.Read(value, 5, budget, new(100_000), CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, commands.ErrorCode);
