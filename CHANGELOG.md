@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Ship a self-contained package README and validate its local link targets in the
+  actual archive before the installed-consumer smoke check.
 - Preserve the original rectangular clip when a sibling rectangle is contained
   within it, retaining fractional coverage through instances and resources.
   Bind retained-group object-box clips after replay supplies their geometry bounds.

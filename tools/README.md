@@ -166,3 +166,5 @@ additional identity hashes.
 For resource, package and isolated-conversion commands, see the repository
 [diagnostics](../README.md#diagnostic-tools). [FontProbe](Lokad.Svg.FontProbe/README.md)
 documents explicit local/HTTP font acquisition and host responsibilities.
+The package smoke script checks inline README file links before building
+and running its clean installed-package consumer.

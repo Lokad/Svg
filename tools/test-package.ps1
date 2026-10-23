@@ -22,12 +22,23 @@ Add-Type -AssemblyName System.IO.Compression
 $archive = [IO.Compression.ZipFile]::OpenRead($package.FullName)
 try {
     $entries = @($archive.Entries | ForEach-Object FullName)
-    foreach ($required in @('LICENSE.txt', 'THIRD_PARTY_NOTICES.txt', 'README.md', 'lib/net10.0/Lokad.Svg.dll', 'lib/net10.0/Lokad.Svg.xml'))
+    foreach ($required in @('LICENSE.txt', 'THIRD_PARTY_NOTICES.txt', 'README.md', 'CHANGELOG.md', 'lib/net10.0/Lokad.Svg.dll', 'lib/net10.0/Lokad.Svg.xml'))
     {
-        if ($entries -notcontains $required) { throw "Package is missing required entry: $required" }
+        if ($entries -cnotcontains $required) { throw "Package is missing required entry: $required" }
     }
     if ($entries | Where-Object { $_.StartsWith('runtimes/', [StringComparison]::OrdinalIgnoreCase) }) { throw 'Package must not contain runtime-specific assets.' }
     if ($entries | Where-Object { $_.EndsWith('.svg', [StringComparison]::OrdinalIgnoreCase) }) { throw 'Package must not contain SVG fixtures.' }
+    $reader = [IO.StreamReader]::new($archive.GetEntry('README.md').Open())
+    try { $readme = $reader.ReadToEnd() }
+    finally { $reader.Dispose() }
+    $readmeBase = [Uri]::new('https://package.invalid/README.md')
+    foreach ($link in [regex]::Matches($readme, '\]\(\s*(?:<(?<target>[^>\r\n]+)>|(?<target>[^\s)]+))')) {
+        $target = $link.Groups['target'].Value
+        [Uri] $absoluteTarget = $null
+        if ([Uri]::TryCreate($target, [UriKind]::Absolute, [ref]$absoluteTarget)) { continue }
+        $entryPath = [Uri]::UnescapeDataString([Uri]::new($readmeBase, $target).AbsolutePath.TrimStart('/'))
+        if ($entries -cnotcontains $entryPath) { throw "Package README links to missing entry: $target" }
+    }
     $nuspecEntry = $archive.Entries | Where-Object { $_.FullName.EndsWith('.nuspec', [StringComparison]::OrdinalIgnoreCase) }
     if ($null -eq $nuspecEntry) { throw 'Package has no nuspec.' }
     $reader = [IO.StreamReader]::new($nuspecEntry.Open())
