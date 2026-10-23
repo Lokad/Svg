@@ -17,6 +17,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
     private readonly record struct Open(int Depth, int Index, bool CanDefine);
     private readonly record struct Pending(string Target, SvgInheritedContainer Context);
     private readonly record struct Visit(int Index, SvgInheritedContainer Context, VisitKind Kind, int Next, bool Target);
+    private readonly record struct SourceVisit(int Index, SvgInheritedContainer Context, VisitKind Kind, int Next, bool Target, bool HasObject, bool HasPaint);
     private readonly SvgDocumentState _state;
     private readonly SvgRenderLimits _limits;
     private readonly ParserWorkCounter _work;
@@ -28,6 +29,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
     private readonly BudgetedParserList<Pending> _pending;
     private readonly BudgetedParserList<int> _pendingMasks;
     private readonly BudgetedParserDictionary<int, SvgInheritedContainer> _maskContexts;
+    private readonly BudgetedParserDictionary<(int Line, int Position), int> _maskTargets;
 
     private SvgInstanceFontDiscovery(SvgRenderLimits limits, BudgetedParserList<CssRule> rules,
         BudgetedParserStringStore strings, RenderBudget budget, ParserWorkCounter work, CancellationToken token, bool markerGeometry, bool maskGeometry)
@@ -39,6 +41,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
         _pending = new(budget, SvgMemoryCategory.Parser, work, token);
         _pendingMasks = new(budget, SvgMemoryCategory.Parser, work, token);
         _maskContexts = new(budget, SvgMemoryCategory.Parser, 320);
+        _maskTargets = new(budget, SvgMemoryCategory.Parser, 96);
     }
 
     internal static SvgInstanceFontDiscovery? Collect(ReadOnlyMemory<byte> svg, XmlReaderSettings settings, SvgRenderLimits limits,
@@ -87,6 +90,8 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                 bool switchChild = open.Count != 0 && owner._nodes[open[^1].Index].Switch && reader.Depth == open[^1].Depth + 1;
                 if (kind == Kind.Opaque && reader.IsEmptyElement && !switchChild) continue;
                 int index = owner._nodes.Count;
+                if (kind == Kind.Container && SvgLocalUrl.ReadReference(reader, "mask") is not null && reader is IXmlLineInfo location && location.HasLineInfo())
+                    owner._maskTargets.TryAdd((location.LineNumber, location.LinePosition), index);
                 bool symbol = svgElement && reader.LocalName == "symbol", isSwitch = svgElement && reader.LocalName == "switch";
                 bool language = reader.GetAttribute("systemLanguage") is not null;
                 bool canDefine = kind != Kind.Opaque && (open.Count == 0 || open[^1].CanDefine);
@@ -145,18 +150,85 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
     }
 
     /// <summary>Queues a displayed target's mask, including filter output from an empty use source; font programs remain borrowed.</summary>
-    internal void AddMask(XmlReader reader, bool displayed, bool visible, string? ownFilter)
+    internal void AddMask(XmlReader reader, SvgInheritedContainer context, string? ownFilter)
     {
-        if (!displayed || SvgLocalUrl.ReadReference(reader, "mask") is not {} value) return;
-        // CaptureElement intentionally exposes a retained container header as empty;
-        // only the live scan can classify a self-closing group from this flag.
-        if (reader is not SvgRetainedTextSource.Reader && reader.IsEmptyElement
-            && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName) && SvgLocalUrl.GetReference(ownFilter) is null) return;
-        if (!SvgMaskSyntax.HasPaintableTarget(reader, visible, ownFilter)) return;
+        if (!context.Presentation.IsDisplayed || SvgLocalUrl.ReadReference(reader, "mask") is not {} value) return;
+        if (SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName) && SvgLocalUrl.GetReference(ownFilter) is null
+            && reader is IXmlLineInfo location && location.HasLineInfo()
+            && _maskTargets.TryGetValue((location.LineNumber, location.LinePosition), out int targetIndex)
+            && !HasSource(this, targetIndex, context)) return;
+        if (!SvgMaskSyntax.HasPaintableTarget(reader, context.Presentation.IsVisible, ownFilter)) return;
         if (SvgLocalUrl.GetReference(ownFilter) is null && reader.LocalName == "use" && Target(reader) is {} target && HasEmptyViewport(reader, target)) return;
         _work.Consume(_token);
         if (SvgLocalUrl.TryParseId(value, out string id) && _ids.TryGetValue(id, out int index) && _nodes[index].Kind == Kind.Mask)
             _pendingMasks.Add(index);
+
+        // This visit borrows the already retained graph. No glyphs or programs are
+        // constructed; object presence and possible paint stay independent so a
+        // descendant's empty-source filter cannot make a masked ancestor paint.
+        static bool HasSource(SvgInstanceFontDiscovery owner, int root, SvgInheritedContainer inherited)
+        {
+            if (owner._nodes[root].End == root + 1) return false;
+            using BudgetedParserList<SourceVisit> stack = new(owner._state.Budget, SvgMemoryCategory.Parser, owner._work, owner._token);
+            using BudgetedParserDictionary<int, bool> active = new(owner._state.Budget, SvgMemoryCategory.Parser, 64);
+            stack.Add(new(root, inherited, VisitKind.Enter, 0, false, false, false));
+            while (stack.Count != 0)
+            {
+                owner._work.Consume(owner._token);
+                SourceVisit visit = stack[^1]; Node node = owner._nodes[visit.Index];
+                if (visit.Kind == VisitKind.Exit || visit.Kind == VisitKind.Children && visit.Next >= node.End)
+                {
+                    if (active.TryGetValue(visit.Index, out _)) active.Replace(visit.Index, false);
+                    stack.RemoveLast();
+                    if (stack.Count == 0) return visit.HasObject && visit.HasPaint;
+                    SourceVisit parent = stack[^1];
+                    stack[^1] = parent with { HasObject = parent.HasObject || visit.HasObject, HasPaint = parent.HasPaint || visit.HasPaint };
+                    continue;
+                }
+                if (visit.Kind == VisitKind.Children)
+                {
+                    int child = visit.Next;
+                    stack[^1] = visit with { Next = node.Switch && !owner._nodes[child].Language ? node.End : owner._nodes[child].End };
+                    if (!node.Switch || !owner._nodes[child].Language) stack.Add(new(child, visit.Context, VisitKind.Enter, 0, false, false, false));
+                    continue;
+                }
+                stack[^1] = visit with { Kind = VisitKind.Exit };
+                if (node.Kind is Kind.Opaque or Kind.Mask || node.Kind == Kind.Definition && (!node.Symbol || !visit.Target)) continue;
+                if (active.TryGetValue(visit.Index, out bool visiting) && visiting)
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Cyclic local text source references are not implemented.");
+                if (!active.TryAdd(visit.Index, true)) active.Replace(visit.Index, true);
+                SvgRetainedTextSource source = node.Source ?? throw new InvalidOperationException("A mask target requires retained tokens.");
+                using SvgRetainedTextSource.Reader reader = source.OpenReader(0, owner._work, owner._token); reader.MoveToContent();
+                InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), owner._work, owner._token, true);
+                SvgComputedStyle computed = SvgComputedStyle.Resolve(reader, inline, reader.StyleSheet);
+                SvgInheritedContainer resolved = visit.Index == root ? visit.Context : SvgContainerInheritance.Resolve(reader, inline, computed, reader.StyleSheet,
+                    visit.Context.Presentation, visit.Context.FillRule, visit.Context.TextStyle, visit.Context.Stroke,
+                    SvgRootParser.CssNamedColors, owner._work, owner._token);
+                if (!resolved.Presentation.IsDisplayed) continue;
+                bool filter = SvgLocalUrl.GetReference(computed.Filter) is not null;
+                if (node.Kind == Kind.Text)
+                {
+                    // Nonempty text may override visibility in spans; metrics stay
+                    // with ordinary text preparation rather than this source test.
+                    stack[^1] = stack[^1] with { HasObject = source.CharacterCount != 0, HasPaint = source.CharacterCount != 0 };
+                    continue;
+                }
+                if (node.Kind == Kind.Geometry)
+                {
+                    bool geometry = SvgMaskSyntax.HasPaintableTarget(reader, true, null);
+                    stack[^1] = stack[^1] with { HasObject = geometry, HasPaint = geometry && (resolved.Presentation.IsVisible || filter) };
+                    continue;
+                }
+                stack[^1] = stack[^1] with { Context = resolved, HasPaint = filter };
+                if (node.Kind == Kind.Use)
+                {
+                    if (node.Target is {} target && !owner.HasEmptyViewport(reader, target) && owner._ids.TryGetValue(target, out int index))
+                        stack.Add(new(index, resolved, VisitKind.Enter, 0, true, false, false));
+                }
+                else stack[^1] = stack[^1] with { Kind = VisitKind.Children, Next = visit.Index + 1 };
+            }
+            return false;
+        }
     }
 
     private string? Target(XmlReader reader)
@@ -232,19 +304,19 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                 if (!resolved.Presentation.IsDisplayed) continue;
                 if (node.Kind == Kind.Use && node.Target is {} emptyTarget && HasEmptyViewport(reader, emptyTarget))
                 {
-                    AddMask(reader, true, resolved.Presentation.IsVisible, computed.Filter);
+                    AddMask(reader, resolved, computed.Filter);
                     continue;
                 }
                 if (node.Kind == Kind.Geometry)
                 {
-                    AddMask(reader, true, resolved.Presentation.IsVisible, computed.Filter);
+                    AddMask(reader, resolved, computed.Filter);
                     if (resolved.Presentation.IsVisible && (reader.LocalName != "path" || !string.IsNullOrWhiteSpace(reader.GetAttribute("d"))))
                     {
                         if (reader.LocalName is "line" or "path" or "polygon" or "polyline") addMarkers(resolved.Presentation.Markers);
                     }
                     continue;
                 }
-                AddMask(reader, true, resolved.Presentation.IsVisible, computed.Filter);
+                AddMask(reader, resolved, computed.Filter);
                 if (node.Kind == Kind.Use)
                 {
                     if (node.Target is {} target && _ids.TryGetValue(target, out int index)) stack.Add(new(index, resolved, VisitKind.Enter, 0, true));
@@ -284,7 +356,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                     foreach (SvgTextPaintSpan span in run.PaintSpans.Items) { _work.Consume(_token); painted |= span.Paint.IsPainted; ObservePaint(span.Paint); }
                 }
                 if (!painted) return;
-                AddMask(reader, true, paint.IsVisible, authoredStyle.Filter);
+                AddMask(reader, inherited with { Presentation = inherited.Presentation with { IsDisplayed = true, IsVisible = paint.IsVisible } }, authoredStyle.Filter);
                 if (authoredStyle.Filter is {} filter) addFilter(filter);
                 ObservePaint(paint.GlyphPaint);
                 SvgFontFaceRequest request = SvgFontFaceRequest.FromCss(style.Font.Family, style.Font.Weight, style.Font.Italic, style.SourceContext, _work, _token);
@@ -315,5 +387,5 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
         }
     }
 
-    public void Dispose() { _maskContexts.Dispose(); _pendingMasks.Dispose(); _pending.Dispose(); _ids.Dispose(); _nodes.Dispose(); _state.Dispose(); }
+    public void Dispose() { _maskTargets.Dispose(); _maskContexts.Dispose(); _pendingMasks.Dispose(); _pending.Dispose(); _ids.Dispose(); _nodes.Dispose(); _state.Dispose(); }
 }

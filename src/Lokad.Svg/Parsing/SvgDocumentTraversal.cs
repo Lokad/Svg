@@ -234,7 +234,7 @@ internal static class SvgDocumentTraversal
                         if (parsedGroup.DeferredMask is not null)
                         {
                             snapshot = snapshot with { PendingMask = state.PendingGroupMasks.Count };
-                            state.PendingGroupMasks.Add(new PendingGroupMask(parsedGroup.DeferredMask, state.Scene.CommandCount, -1, reader.Depth, state.EffectiveFrame, parsedGroup.Scope.InheritedPresentation.Transform, state.Scene));
+                            state.PendingGroupMasks.Add(new PendingGroupMask(parsedGroup.DeferredMask, state.Scene.CommandCount, -1, reader.Depth, state.EffectiveFrame, parsedGroup.Scope.InheritedPresentation.Transform, state.Scene, parsedGroup.Scope.HasFilter));
                         }
                         if (parsedGroup.Scope.IsolatesOpacity || parsedGroup.Scope.HasDeferredMask || parsedGroup.Scope.HasFilter)
                         {

@@ -44,17 +44,17 @@ public sealed class SvgDeferredCommandExpansionTests
             state.PendingTextRuns.Add(new(null, null, SvgAffineTransform.Identity, SvgColor.Transparent, second, budget.Reserve(1, SvgMemoryCategory.Parser), foreign));
             state.PendingGroupClips.Add(new("c", null, SvgAffineTransform.Identity, 1, 4, 0, state.Scene));
             state.PendingGroupClips.Add(new("c", null, SvgAffineTransform.Identity, 1, -1, 0, foreign));
-            state.PendingGroupMasks.Add(new("m", 1, 3, 0, null, SvgAffineTransform.Identity, state.Scene));
-            state.PendingGroupMasks.Add(new("m", 1, -1, 0, null, SvgAffineTransform.Identity, foreign));
+            state.PendingGroupMasks.Add(new("m", 1, 3, 0, null, SvgAffineTransform.Identity, state.Scene, false));
+            state.PendingGroupMasks.Add(new("m", 1, -1, 0, null, SvgAffineTransform.Identity, foreign, false));
             using SvgPaintCommandBatch commands = new(state, state.Scene, default, state.PendingCommandEnd, work, CancellationToken.None);
             SvgPaintCommandEmission later = commands.Begin(second);
             state.Scene.AddGeometries([rectangle, rectangle]);
             state.PendingGroupClips.Add(new("c", null, SvgAffineTransform.Identity, later.TailStart, later.TailStart + 2, 0, state.Scene));
-            state.PendingGroupMasks.Add(new("m", later.TailStart, later.TailStart + 1, 0, null, SvgAffineTransform.Identity, state.Scene));
+            state.PendingGroupMasks.Add(new("m", later.TailStart, later.TailStart + 1, 0, null, SvgAffineTransform.Identity, state.Scene, false));
             commands.Retain(later);
             SvgPaintCommandEmission earlier = commands.Begin(first);
             state.Scene.AddGeometries([rectangle, rectangle]);
-            state.PendingGroupMasks.Add(new("m", earlier.TailStart, earlier.TailStart + 2, 0, null, SvgAffineTransform.Identity, state.Scene));
+            state.PendingGroupMasks.Add(new("m", earlier.TailStart, earlier.TailStart + 2, 0, null, SvgAffineTransform.Identity, state.Scene, false));
             commands.Retain(earlier);
             commands.Complete();
 

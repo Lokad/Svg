@@ -4,7 +4,7 @@ using Lokad.Svg.Rendering;
 namespace Lokad.Svg.Parsing;
 
 internal readonly record struct SvgPatternContentUse(SvgResourceUse Use, int CommandIndex);
-internal readonly record struct SvgPatternContentScope(string? ClipId, string? MaskId, SvgAffineTransform Map, int FirstCommandIndex, bool HasOpacity);
+internal readonly record struct SvgPatternContentScope(string? ClipId, string? MaskId, SvgAffineTransform Map, int FirstCommandIndex, bool HasOpacity, bool HasOwnFilter);
 
 /// <summary>The document owns the staging builder; the parent scene owns content borrowed by pattern paints.</summary>
 internal readonly record struct SvgDeferredPatternContent(SvgSceneBuilder Builder, SvgVectorContent Content, int FirstUse, int UseCount,
@@ -161,7 +161,7 @@ internal static class SvgPatternUseReplay
                 if (scope.MaskId is not {} id) continue;
                 ScopeRange range = ranges[index];
                 state.PendingGroupMasks.Add(new(id, compact ? positions[range.First] : range.First,
-                    compact ? positions[range.End] : range.End, 0, null, scope.Map, builder));
+                    compact ? positions[range.End] : range.End, 0, null, scope.Map, builder, scope.HasOwnFilter));
             }
         }
 

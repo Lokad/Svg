@@ -242,6 +242,11 @@ mask dependencies; see the [target regressions](../tests/Lokad.Svg.Tests/OpenTyp
 Self-closing empty groups validate local mask references without constructing mask
 content. Filters on the group can still produce masked output; see the
 [empty-group regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.EmptyGroupMasks.cs).
+Balanced groups containing no source geometry, zero-sized primitives or hidden
+rectangle children also need no mask fonts. A group's own
+filter can generate masked output; an empty filtered descendant supplies no
+geometry bounds to the masked ancestor. Strokes and visible descendants remain
+live; see the [group-source regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.EmptyGroupSources.cs).
 Object-box mask regions require bare-number fractions; user-space regions also
 accept viewport percentages.
 For axis-aligned shape targets, spatial mask content must cover an explicit

@@ -11,8 +11,9 @@ internal readonly record struct PendingLeafMask(int FirstGeometryIndex, int Geom
 
 /// <summary>Retains one masked group command range whose mask reference resolves at document end.</summary>
 /// <remarks>Uniform and spatial group masks apply after child composition, independently of definition order.
-/// The conversion owns Scene through binding and emission; this range borrows its builder.</remarks>
-internal readonly record struct PendingGroupMask(string MaskId, int FirstCommandIndex, int EndCommandIndex, int Depth, SvgViewportFrame? Parent, SvgAffineTransform Transform, SvgSceneBuilder Scene);
+/// The conversion owns Scene through binding and emission; this range borrows its builder.
+/// HasOwnFilter describes this target's effect, independently of filters within its command range.</remarks>
+internal readonly record struct PendingGroupMask(string MaskId, int FirstCommandIndex, int EndCommandIndex, int Depth, SvgViewportFrame? Parent, SvgAffineTransform Transform, SvgSceneBuilder Scene, bool HasOwnFilter);
 
 /// <summary>Parses bounded mask definitions and retains leaf values or isolated group operations.</summary>
 internal static class SvgMaskSyntax
@@ -338,6 +339,14 @@ internal static class SvgMaskSyntax
                     RewriteGroupMaskScope(state, pending, 255, null, -1);
                     continue;
                 }
+                bool scalar = state.Masks.TryGetValue(pending.MaskId, out byte value);
+                if (!scalar && !state.MaskContents.TryGetValue(pending.MaskId, out _))
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
+                if (!pending.HasOwnFilter && !HasSource(state, pending, workCounter, cancellationToken))
+                {
+                    RewriteGroupMaskScope(state, pending, 0, null, -1);
+                    continue;
+                }
                 SvgAffineTransform targetMap = pending.Transform;
                 if (pending.Parent is {} viewport) targetMap = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(targetMap);
                 SvgMaskTarget? nativeTarget = null;
@@ -359,7 +368,6 @@ internal static class SvgMaskSyntax
                     : hasExplicitRegion || hasFractionRegion
                         ? ResolveGroupMaskRegion(state, pending, hasExplicitRegion, customRegion, fractionRegion, workCounter, cancellationToken)
                         : MaskRegion(GroupChildrenUnion(state, pending, workCounter, cancellationToken));
-                bool scalar = state.Masks.TryGetValue(pending.MaskId, out byte value);
                 if (!scalar || !targetMap.IsAxisAligned && state.MaskContents.TryGetValue(pending.MaskId, out _))
                 {
                     if (!state.MaskContents.TryGetValue(pending.MaskId, out SvgMaskContent content)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
@@ -385,6 +393,39 @@ internal static class SvgMaskSyntax
                 RewriteGroupMaskScope(state, pending, value, maskRegion, -1);
             }
             finally { state.DefinitionReplayScene = previous; }
+        }
+
+        static bool HasSource(SvgDocumentState state, PendingGroupMask pending, ParserWorkCounter work, CancellationToken token)
+        {
+            bool source = false, paint = false;
+            for (int index = pending.FirstCommandIndex; index < pending.EndCommandIndex; index++)
+            {
+                work.Consume(token);
+                SvgDrawCommand command = state.Scene.CommandAt(index);
+                if (command.Kind == SvgDrawCommandKind.BeginGroup && command.RegionKind == SvgLayerRegionKind.Filter) paint = true;
+                if (command.Kind != SvgDrawCommandKind.Geometry) continue;
+                SvgGeometry geometry = state.Scene.GeometryAt(command.GeometryIndex);
+                if (geometry.Kind == SvgGeometryKind.Invalid) continue;
+                SvgRecordedPaintValue recorded = state.Scene.GetRecordedPaintValue(geometry.RecordedPaint);
+                source |= !recorded.IsEffectAnchor || recorded.ObjectBounds is not null;
+                paint |= !recorded.IsEffectAnchor && geometry.Kind switch
+                {
+                    SvgGeometryKind.Rectangle => geometry.Rectangle.HasFill || geometry.Rectangle.Stroke is not null,
+                    SvgGeometryKind.OrthogonalBand => geometry.Rectangle.HasFill,
+                    SvgGeometryKind.AxisAlignedLine => geometry.AxisAlignedLine.IsPainted,
+                    SvgGeometryKind.PolygonFill => geometry.Polygon.HasFill,
+                    SvgGeometryKind.GradientPolygon => geometry.GradientPolygon.HasFill,
+                    SvgGeometryKind.RadialPolygon => geometry.RadialPolygon.HasFill,
+                    SvgGeometryKind.PatternPolygon => geometry.PatternPolygon.HasFill,
+                    SvgGeometryKind.GradientFill => geometry.Gradient.Fill.HasFill || geometry.Gradient.Stroke is not null,
+                    SvgGeometryKind.RadialGradient => geometry.Radial.Fill.HasFill || geometry.Radial.Stroke is not null,
+                    SvgGeometryKind.PatternFill => geometry.Pattern.Fill.HasFill || geometry.Pattern.Fill.Stroke is not null,
+                    SvgGeometryKind.GradientStroke => geometry.GradientStroke.Fill.HasFill || geometry.GradientStroke.HasStroke,
+                    _ => true,
+                };
+                if (source && paint) return true;
+            }
+            return false;
         }
 
         static bool GroupCovered(SvgDocumentState state, PendingGroupMask pending, SvgClipBox content, ParserWorkCounter workCounter, CancellationToken cancellationToken)

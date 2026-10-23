@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Skip mask fonts for empty group sources and hidden rectangle children, preserving their own filters
+  and suppressing empty descendant-filter output. Retain empty replay slots as
+  effect anchors rather than artificial geometry bounds.
 - Resolve mask references on self-closing empty groups in either source order
   without opening mask fonts; preserve filters that generate output.
 - Skip mask font construction for nonpainting primitive targets and disabled

@@ -47,8 +47,8 @@ public sealed class SvgForwardUseExpansionTests
             state.PendingTextRuns.Add(new(null, null, SvgAffineTransform.Identity, SvgColor.Transparent, 2, budget.Reserve(1, SvgMemoryCategory.Parser), foreign));
             state.PendingGroupClips.Add(new("c", null, SvgAffineTransform.Identity, 1, 4, 0, state.Scene));
             state.PendingGroupClips.Add(new("c", null, SvgAffineTransform.Identity, 1, -1, 0, foreign));
-            state.PendingGroupMasks.Add(new("m", 1, 3, 0, null, SvgAffineTransform.Identity, state.Scene));
-            state.PendingGroupMasks.Add(new("m", 1, -1, 0, null, SvgAffineTransform.Identity, foreign));
+            state.PendingGroupMasks.Add(new("m", 1, 3, 0, null, SvgAffineTransform.Identity, state.Scene, false));
+            state.PendingGroupMasks.Add(new("m", 1, -1, 0, null, SvgAffineTransform.Identity, foreign, false));
 
             SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, state, work, CancellationToken.None);
 

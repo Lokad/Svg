@@ -47,7 +47,7 @@ internal sealed class SvgPaintCommandBatch : IDisposable
         if ((uint)emission.Position >= (uint)_originalCount || _replacements.Count != 0 && emission.Position >= _replacements[^1].Emission.Position)
             throw new InvalidOperationException("Deferred paint slots must follow descending original drawing order.");
         if (_scene.CommandCount == emission.TailStart)
-            _scene.AddGeometry(SvgGeometry.FromRectangle(new(0, 0, 0, 0, SvgColor.Transparent, false, null)));
+            _scene.AddGeometry(SvgPaintRecording.CreateEffectAnchor(_scene, _state, default));
         _replacements.Add(new(emission, _scene.CommandCount - emission.TailStart, _state.PendingGroupClips.Count, _state.PendingGroupMasks.Count));
     }
 

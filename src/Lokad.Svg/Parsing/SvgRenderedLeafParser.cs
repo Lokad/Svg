@@ -149,7 +149,7 @@ internal static class SvgRenderedLeafParser
             state.Scene.InsertCommands(state.Scene.CommandCount, [new(SvgDrawCommandKind.EndGroup, 0, 255, null, -1, 255)]);
             maskFirst++; maskEnd++;
         }
-        if (mask is not null) state.PendingGroupMasks.Add(new(mask, maskFirst, maskEnd, 0, parent, transform, state.Scene));
+        if (mask is not null) state.PendingGroupMasks.Add(new(mask, maskFirst, maskEnd, 0, parent, transform, state.Scene, true));
         return parsed;
 
         static SvgPaintBounds Union(SvgPaintBounds? previous, SvgPaintBounds value)
@@ -451,7 +451,7 @@ internal static class SvgRenderedLeafParser
                         if (textClip is not null)
                             state.PendingGroupClips.Add(new(textClip, resourceParent, textElement.Transform, resourceStart, state.Scene.CommandCount, -1, state.Scene) { UsesNativeClip = true });
                         if (textMask is not null)
-                            state.PendingGroupMasks.Add(new(textMask, resourceStart, state.Scene.CommandCount, -1, resourceParent, textElement.Transform, state.Scene));
+                            state.PendingGroupMasks.Add(new(textMask, resourceStart, state.Scene.CommandCount, -1, resourceParent, textElement.Transform, state.Scene, false));
                     }
                     return true;
                 }
