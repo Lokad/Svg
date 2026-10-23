@@ -184,7 +184,7 @@ internal static class SvgMarkerRenderer
             positions[1] = new(SvgMarkerVertexRole.End, new(line.X2, line.Y2), angle);
         }
         catch { body.Discard(); throw; }
-        return Attach(body, positions, markers, reader, context, paint, frame, state);
+        return Attach(body, positions, markers, reader, context, paint, frame, state, int.MaxValue);
     }
 
     internal static SvgParsedGeometry AttachVertices(SvgParsedGeometry body, XmlReader reader, SvgPaintableElementContext context,
@@ -194,12 +194,12 @@ internal static class SvgMarkerRenderer
         BudgetedParserList<SvgMarkerPosition> positions;
         try { positions = SvgMarkerVertices.Read(reader, maximumCommands, state, context.WorkCounter, context.CancellationToken); }
         catch { body.Discard(); throw; }
-        using (positions) return Attach(body, positions.AsSpan(), markers, reader, context, paint, frame, state);
+        using (positions) return Attach(body, positions.AsSpan(), markers, reader, context, paint, frame, state, maximumCommands);
     }
 
     private static SvgParsedGeometry Attach(SvgParsedGeometry body, ReadOnlySpan<SvgMarkerPosition> positions,
         SvgMarkerStyle markers, XmlReader reader, SvgPaintableElementContext context,
-        SvgRecordedPaintStyle paint, SvgViewportFrame? frame, SvgDocumentState state)
+        SvgRecordedPaintStyle paint, SvgViewportFrame? frame, SvgDocumentState state, int maximumCommands)
     {
         ParserWorkCounter work = context.WorkCounter;
         CancellationToken token = context.CancellationToken;
@@ -261,7 +261,7 @@ internal static class SvgMarkerRenderer
                     { Antialiasing = SvgClipAntialiasing.None };
             }
             SvgPaintRecording.WrapInstance(output.AsMutableSpan(), paint.ElementOpacity, state.NewRecordingScope(), layerRegion, state, work, token);
-            return new(output.Detach(), body.ElementCount);
+            return SvgNativeVisualBounds.Cull(new(output.Detach(), body.ElementCount), reader, context, paint, frame, maximumCommands, state);
 
             void AddBody(bool strokeOperation)
             {
@@ -307,6 +307,19 @@ internal static class SvgMarkerRenderer
                 }
                 if (marker.Width == 0 || marker.Height == 0) return;
                 double unitScale = marker.StrokeWidthUnits ? width : 1;
+                bool nonScalingUnits = marker.StrokeWidthUnits && style.NonScalingStroke;
+                if (nonScalingUnits)
+                {
+                    SvgAffineTransform host = context.StrokeHostMap.ComposeChecked(
+                        SvgViewportFrame.MapGeometry(context.ResolveTransform(reader), frame));
+                    if (!host.TryInvert(out _)) return;
+                    // Stroke units use the root-mean-square scale of both axes,
+                    // including the live instance, viewport and output maps.
+                    float scale = (float)Math.Sqrt(((host.A * host.A + host.B * host.B)
+                        + (host.C * host.C + host.D * host.D)) / 2);
+                    unitScale = (float)width / scale;
+                    if (!double.IsFinite(unitScale)) return;
+                }
                 double angle = marker.Orientation == SvgMarkerOrientation.Angle ? marker.Angle : tangent;
                 if (start && marker.Orientation == SvgMarkerOrientation.AutoStartReverse) angle += 180;
                 SvgDevicePoint anchor = new(marker.RefX, marker.RefY);
@@ -317,19 +330,31 @@ internal static class SvgMarkerRenderer
                     anchor = new((float)mappedAnchor.X, (float)mappedAnchor.Y);
                 }
                 SvgAffineTransform local = SvgAffineTransform.FromTranslation(x, y)
-                    .ComposeChecked(SvgAffineTransform.FromRotationDegrees(angle))
-                    .ComposeChecked(SvgAffineTransform.FromScale(unitScale, unitScale))
-                    .ComposeChecked(SvgAffineTransform.FromTranslation(-anchor.X, -anchor.Y));
+                    .ComposeChecked(SvgAffineTransform.FromRotationDegrees(angle));
+                // Inverse stroke normalization can exceed the source coordinate
+                // range before the enclosing map cancels it. Keep that computed
+                // pose finite; ordinary reference placement validates the result.
+                local = nonScalingUnits
+                    ? local.Compose(SvgAffineTransform.FromScale(unitScale, unitScale))
+                        .Compose(SvgAffineTransform.FromTranslation(-anchor.X, -anchor.Y))
+                    : local.ComposeChecked(SvgAffineTransform.FromScale(unitScale, unitScale))
+                        .ComposeChecked(SvgAffineTransform.FromTranslation(-anchor.X, -anchor.Y));
                 // The marker's pose and content viewport are separate native matrices.
                 // Round the pose before composing the enclosing source transform.
+                double offsetX = nonScalingUnits ? Math.Clamp(local.E, -float.MaxValue, float.MaxValue) : local.E;
+                double offsetY = nonScalingUnits ? Math.Clamp(local.F, -float.MaxValue, float.MaxValue) : local.F;
                 SvgAffineTransform placement = context.ResolveTransform(reader).ComposeNative(new(
-                    (float)local.A, (float)local.B, (float)local.C, (float)local.D, (float)local.E, (float)local.F));
+                    (float)local.A, (float)local.B, (float)local.C, (float)local.D, (float)offsetX, (float)offsetY));
                 SvgUseReference reference = new(id, 0, 0, marker.Width, marker.Height, placement, SvgAffineTransform.Identity,
                     255, SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible), null, null, null)
-                { IsMarker = true, IsDisplayed = context.InheritedPresentation.IsDisplayed && SvgPresentationResolver.ParseDisplay(style.Display),
+                { IsMarker = true, HasInverseStrokePose = nonScalingUnits, IsDisplayed = context.InheritedPresentation.IsDisplayed && SvgPresentationResolver.ParseDisplay(style.Display),
                     IsVisible = SvgPresentationResolver.ParseVisibility(style.Visibility, context.InheritedPresentation.IsVisible),
                     InheritedFill = SvgPaint.Default, RecordingScope = state.NewRecordingScope(), AllowsSolidPaintAnalysis = true };
-                SvgGeometry[] mapped = SvgReferenceResolver.Apply(source, reference, frame, state, work, token);
+                bool previousPicture = state.IsResourcePicture;
+                SvgGeometry[] mapped;
+                state.IsResourcePicture = true;
+                try { mapped = SvgReferenceResolver.Apply(source, reference, frame, state, work, token); }
+                finally { state.IsResourcePicture = previousPicture; }
                 int transferred = 0;
                 try
                 {

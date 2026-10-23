@@ -99,9 +99,14 @@ internal static class SvgPaintRecording
     internal static SvgParsedGeometry Attach(SvgParsedGeometry parsed, SvgRecordedPaintStyle source, XmlReader reader,
         SvgPaintableElementContext context, SvgViewportFrame? frame, int maximumCommands, SvgDocumentState state)
     {
+        SvgComputedStyle style = context.ResolveStyle(reader);
         if (parsed.Geometries.Length != 0 || state.FilterGroupDepth <= 0 || !context.InheritedPresentation.IsDisplayed
-            || !SvgPresentationResolver.ParseDisplay(context.ResolveStyle(reader).Display))
-            return Attach(parsed, source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
+            || !SvgPresentationResolver.ParseDisplay(style.Display))
+        {
+            SvgParsedGeometry recorded = Attach(parsed, source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
+            return style.NonScalingStroke && !SvgMarkerStyle.Resolve(style, context.InheritedPresentation.Markers).HasMarkers
+                ? SvgNativeVisualBounds.Cull(recorded, reader, context, source, frame, maximumCommands, state) : recorded;
+        }
         try
         {
             SvgPaintBounds? bounds = source.ObjectBounds;

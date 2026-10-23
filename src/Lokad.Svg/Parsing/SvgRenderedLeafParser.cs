@@ -107,7 +107,7 @@ internal static class SvgRenderedLeafParser
         state.FilterGroupDepth++;
         try
         {
-            parsed = ParseContent(reader, context with { AuthoredStyle = style with { Filter = null, Opacity = null } }, root,
+            parsed = ParseContent(reader, context with { AuthoredStyle = style with { Filter = null, Opacity = null }, CanPaintEmptyNativeBounds = true }, root,
                 state, limits, budget, fontSnapshot, workCounter, cancellationToken);
         }
         finally

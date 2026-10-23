@@ -46,6 +46,8 @@ internal static class SvgDocumentTraversal
         state.OutputMagnification = System.Math.Max(System.Math.Abs(outputMap.A), System.Math.Abs(outputMap.D));
         state.OutputTextScale = outputMap.A / rasterScale;
         state.OutputMap = outputMap;
+        SvgViewport logicalViewport = SvgDocumentSizing.Resolve(explicitViewport, root.Width, root.Height, root.ViewBox).LogicalViewport;
+        state.OutputClip = new(0, 0, logicalViewport.Width * rasterScale, logicalViewport.Height * rasterScale);
         state.TextReplay = new(root, limits, fontSnapshot);
         if (root.SourceOpacity.Value != 1) state.Scene.BeginSourceOpacityScope(root.SourceOpacity, new(0));
         while (reader.Read())

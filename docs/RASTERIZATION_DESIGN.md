@@ -85,6 +85,12 @@ bounds and stored bitmap bounds distinct. Object-box paints/resources bind to
 pre-clip geometry. Cropping storage must preserve the logical device origin.
 Nested viewports keep the parent affine map outside their local viewBox map.
 
+[Non-scaling drawing bounds](../src/Lokad.Svg/Parsing/SvgNativeVisualBounds.cs)
+retain native source-dimension clamping, integer recording bounds and physical
+viewport projection. Resource pictures use local visual bounds without document
+drawing-record culling. Culled drawings keep inert anchors for object-box resources
+and filters that can generate pixels from transparent input.
+
 Sizing inspection and conversion share root CSS/unit resolution.
 Opt-in raster bounds choose one uniform output scale before lowering, leaving
 the logical viewport and percentage bases intact. Logical picture font sizing

@@ -2032,7 +2032,7 @@ internal static class SvgDefinitionParser
     {
         SvgComputedStyle sourceStyle = context.ResolveStyle(reader);
         bool filtered = sourceStyle.Filter is {} filter && filter.Trim() != "none";
-        if (filtered) context = context with { AuthoredStyle = sourceStyle with { Filter = null, Opacity = null, ComputedOpacity = null } };
+        if (filtered) context = context with { AuthoredStyle = sourceStyle with { Filter = null, Opacity = null, ComputedOpacity = null }, CanPaintEmptyNativeBounds = true };
         if (reader.LocalName is not ("line" or "path" or "polygon" or "polyline") && SvgMarkerStyle.Resolve(context.ResolveStyle(reader), context.InheritedPresentation.Markers).HasMarkers)
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Markers on shapes other than lines and paths are not implemented.");
         string? clipId = SvgClipPathSyntax.ResolveClipId(reader, state);

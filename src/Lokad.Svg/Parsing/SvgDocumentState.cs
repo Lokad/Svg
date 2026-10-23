@@ -134,6 +134,9 @@ internal sealed class SvgDocumentState : IDisposable
 
     /// <summary>Gets or sets the root and output magnification applied after lowering, which scales flattening tolerance.</summary>
     internal SvgAffineTransform OutputMap { get; set; } = SvgAffineTransform.Identity;
+    internal SvgClipBox? OutputClip { get; set; }
+    /// <summary>Identifies resource picture recording, whose display-item bounds do not cull replay.</summary>
+    internal bool IsResourcePicture { get; set; }
     internal double OutputMagnification { get; set; } = 1.0;
 
     /// <summary>Logical picture font scale before the caller's raster-resolution transform.</summary>

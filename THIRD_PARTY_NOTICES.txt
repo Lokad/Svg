@@ -108,14 +108,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Lokad.Svg also contains a managed adaptation of Chromium CPU tile sizing and
 bordered tile geometry, legacy sRGB color normalization and SVG text-fragment
-paint positioning, ordered text strokes and solid SVG text-decoration
-metrics/rectangle placement.
+paint positioning, ordered text strokes, solid SVG text-decoration
+metrics/rectangle placement and non-scaling-stroke drawing bounds.
 It has no Chromium runtime dependency.
 
 Source release tag: 153.0.8010.52
 Source files: cc/layers/tile_size_calculator.cc, cc/base/tiling_data.cc,
 cc/trees/layer_tree_settings.cc, cc/tiles/picture_layer_tiling.h and
 ui/gfx/color_conversions.cc, third_party/blink/renderer/core/paint/text_fragment_painter.cc,
+ui/gfx/geometry/size_f.h, ui/gfx/geometry/rect.cc,
+ui/gfx/geometry/rect_conversions.cc,
+third_party/blink/renderer/core/paint/svg_model_object_painter.h,
 third_party/blink/renderer/core/layout/inline/fragment_item.cc,
 third_party/blink/renderer/core/layout/geometry/physical_rect.h,
 third_party/blink/renderer/platform/geometry/layout_unit.h,

@@ -11,6 +11,8 @@ internal readonly record struct SvgUseReference(string Id, double X, double Y, d
     /// <summary>Records the absence of an instance opacity layer, using the validated source value rather than its rounded alpha byte.</summary>
     internal bool AllowsSolidPaintAnalysis { get; init; }
     internal bool IsMarker { get; init; }
+    /// <summary>Allows finite computed inverse stroke-unit poses until an enclosing source map cancels them; authored transforms retain their range checks.</summary>
+    internal bool HasInverseStrokePose { get; init; }
     internal SvgRecordingScope RecordingScope { get; init; }
     internal SvgPaintOpacity SourceOpacity { get; init; } = SvgPaintOpacity.Opaque;
     internal bool InheritsOpacity { get; init; }
@@ -111,7 +113,8 @@ internal static class SvgReferenceResolver
             // Native strokes need construction at the complete instance scale.
             // Path bands also retain one native draw for fractional AA and paint order.
             bool placedNativeStroke = false;
-            SvgAffineTransform strokePlacement = PlainInstancePlacement(reference, frame);
+            SvgAffineTransform strokePlacement = definition.SymbolViewBox is {} sourceBox
+                ? SymbolInstancePlacement(sourceBox, reference, frame) : PlainInstancePlacement(reference, frame);
             if (source.LocalName is "path" or "circle" or "ellipse" or "rect"
                 && (!strokePlacement.IsTranslation || source.LocalName == "rect" && frame is not null))
                 foreach (SvgGeometry geometry in definition.Geometries)
@@ -134,7 +137,7 @@ internal static class SvgReferenceResolver
                     || definition.Geometries[0].AuthoredPath is { StrokeStyle: null })
                 || !reference.Transform.IsAxisAligned && source.LocalName is "path" or "rect" or "polygon" or "polyline"
                 || placedNativeStroke
-                || source.LocalName == "line" && PlainInstancePlacement(reference, frame) != SvgAffineTransform.Identity;
+                || source.LocalName == "line" && strokePlacement != SvgAffineTransform.Identity;
             if (source.AuthoredStyle.VectorEffect is not null || retainMappedContour || state.FilterGroupDepth > 0 && definition.Geometries.Length == 0
                 || source.RequiresConstruction(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers))
             {
@@ -146,7 +149,7 @@ internal static class SvgReferenceResolver
                     if (geometry.LeafMask is not null && SvgLocalUrl.GetReference(source.GetAttribute("mask")) is not null)
                         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Instance stroke construction on masked definitions is not implemented.");
                 }
-                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers, reference.ElementParentOpacity, reference.NonScalingStroke, PlainInstancePlacement(reference, frame), definition.InstanceLengthBases(reference), retainMappedContour, reference.IsDisplayed, state);
+                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers, reference.ElementParentOpacity, reference.NonScalingStroke, strokePlacement, definition.InstanceLengthBases(reference), retainMappedContour, reference.IsDisplayed, state);
                 try { return Apply(constructed with { SymbolViewBox = definition.SymbolViewBox, EstablishesViewport = definition.EstablishesViewport }, reference with { StrokeOverride = null, PaintServerId = null, PaintServerFill = null }, frame, state, workCounter, cancellationToken); }
                 finally { foreach (SvgGeometry geometry in constructed.Geometries) geometry.Dispose(); }
             }
@@ -447,8 +450,11 @@ internal static class SvgReferenceResolver
 
     internal static SvgAffineTransform PlainInstancePlacement(SvgUseReference reference, SvgViewportFrame? frame)
     {
-        SvgAffineTransform placement = reference.Transform.ComposeChecked(SvgAffineTransform.FromScaleOffset(1, 1, reference.X, reference.Y));
-        return frame is {} viewport ? SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(placement) : placement;
+        SvgAffineTransform offset = SvgAffineTransform.FromScaleOffset(1, 1, reference.X, reference.Y);
+        SvgAffineTransform placement = reference.HasInverseStrokePose ? reference.Transform.Compose(offset) : reference.Transform.ComposeChecked(offset);
+        if (frame is not {} viewport) return placement;
+        SvgAffineTransform parent = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY);
+        return reference.HasInverseStrokePose ? parent.Compose(placement) : parent.ComposeChecked(placement);
     }
 
     internal static SvgAffineTransform SymbolInstancePlacement(SvgViewBox box, SvgUseReference reference, SvgViewportFrame? frame)
@@ -456,8 +462,11 @@ internal static class SvgReferenceResolver
         if (reference.Width is null || reference.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol placement requires known instance dimensions.");
         (double sx, double sy, double ox, double oy) = SvgGeometrySyntax.MapViewBox(box, reference.Width.Value, reference.Height.Value);
         if (reference.IsMarker) { sx = (float)sx; sy = (float)sy; ox = (float)ox; oy = (float)oy; }
-        SvgAffineTransform placement = reference.Transform.ComposeChecked(SvgAffineTransform.FromScaleOffset(sx, sy, ox + reference.X, oy + reference.Y));
-        return frame is {} viewport ? SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(placement) : placement;
+        SvgAffineTransform offset = SvgAffineTransform.FromScaleOffset(sx, sy, ox + reference.X, oy + reference.Y);
+        SvgAffineTransform placement = reference.HasInverseStrokePose ? reference.Transform.Compose(offset) : reference.Transform.ComposeChecked(offset);
+        if (frame is not {} viewport) return placement;
+        SvgAffineTransform parent = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY);
+        return reference.HasInverseStrokePose ? parent.Compose(placement) : parent.ComposeChecked(placement);
     }
 
     private static SvgGeometry ApplyPolygon(SvgGeometry source, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)

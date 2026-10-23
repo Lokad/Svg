@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Size strokeWidth markers against non-scaling strokes through instances and
+  viewports, including symbol viewBox maps. Preserve native drawing-bound clamping
+  and finite inverse placement; culled drawings retain object bounds and filters
+  that generate content independently of their source.
 - Ship a self-contained package README and validate its local link targets in the
   actual archive before the installed-consumer smoke check.
 - Preserve the original rectangular clip when a sibling rectangle is contained

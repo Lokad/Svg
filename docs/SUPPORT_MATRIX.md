@@ -319,6 +319,11 @@ overflow. Lengths include absolute units, known-axis percentages and em/ex from
 supplied font metrics. Paint/visibility and stroke presentation inherit through
 marker content. A marker's display property does not suppress its content;
 a symbol's `display:none` does suppress its instances.
+strokeWidth markers honor non-scaling strokes through instance and viewport
+placement; pattern tiles retain their separate source coordinates. At extreme
+transforms, these drawings can paint nothing when native visual bounds collapse.
+Their object bounds and eligibility for source-independent filters remain. See the
+[marker sizing regressions](../tests/Lokad.Svg.Tests/SvgNonScalingMarkerTests.cs).
 Forward marker resources on retained symbol paths remain unsupported.
 
 Supported filter primitives are `feGaussianBlur`, `feOffset`, `feFlood`,

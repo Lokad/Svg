@@ -181,7 +181,11 @@ internal static class SvgResourceUseReplay
         if (!SvgReferenceResolver.TryGetDefinition(use.Reference, state.Definitions, out SvgDefinition source)
             && !state.RenderedGroupDefinitions.TryGetValue(use.Reference.Id, out source))
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local geometry references in resource content are implemented.");
-        SvgGeometry[] mapped = SvgReferenceResolver.ApplyFilterSource(source, use.Reference with { Opacity = 255 }, null, state, work, token);
+        bool previousPicture = state.IsResourcePicture;
+        SvgGeometry[] mapped;
+        state.IsResourcePicture = true;
+        try { mapped = SvgReferenceResolver.ApplyFilterSource(source, use.Reference with { Opacity = 255 }, null, state, work, token); }
+        finally { state.IsResourcePicture = previousPicture; }
         bool adopted = false;
         try
         {

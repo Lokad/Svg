@@ -12,6 +12,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     internal bool DeferPaintOpacity { get; init; }
     internal SvgRecordingScope RecordingScope { get; init; }
     internal bool RetainInstanceStrokePath { get; init; }
+    internal bool CanPaintEmptyNativeBounds { get; init; }
     internal SvgComputedStyle? AuthoredStyle { get; init; }
     internal string? InheritedClipRule { get; init; }
     internal static SvgPaintableElementContext Create(XmlReader reader, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
