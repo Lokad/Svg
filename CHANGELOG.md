@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Avoid spending the work budget on Linux glyph fitting outside the raster target.
+
+- Categorize nonfinite native transform coordinates before affine construction,
+  retaining the offending SVG element and attribute in source diagnostics.
+
 - Size strokeWidth markers against non-scaling strokes through instances and
   viewports, including symbol viewBox maps. Preserve native drawing-bound clamping
   and finite inverse placement; culled drawings retain object bounds and filters

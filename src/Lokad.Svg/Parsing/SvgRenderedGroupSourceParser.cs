@@ -47,7 +47,7 @@ internal static class SvgRenderedGroupSourceParser
             new(paint, style.Fill is not null, fillOpacity, color, opacity, SvgPresentationResolver.ParseDisplay(style.Display),
                 style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true))
             { TextStyleSource = SvgRetainedTextSource.CaptureElement(reader, context, state, limits), InheritsOpacity = style.InheritsOpacity, Markers = presentation.Markers, PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId, Stroke = stroke, FillRule = fillRule, StrokeOpacity = style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity) },
-            SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
+            SvgGeometrySyntax.ParseElementTransform(reader, work, token));
         if (id is not null) state.RenderedGroupDefinitions.TryAdd(id, new([], false, null, null)
             { SymbolContent = new(content, 0, 0), BorrowedFromSymbol = true, RenderedGroupId = id });
         if (SvgLocalUrl.ReadReference(reader, "clip-path") is not null || SvgLocalUrl.ReadReference(reader, "mask") is not null
@@ -89,7 +89,7 @@ internal static class SvgRenderedGroupSourceParser
         SvgComputedStyle style = context.AuthoredStyle ?? throw new InvalidOperationException("Use capture requires prepared declarations.");
         SvgInheritedStrokeStyle stroke = new(Copy(style.Linecap), Copy(style.Linejoin), Copy(style.Dasharray), Copy(style.Dashoffset),
             Copy(style.Width), Copy(style.Miterlimit), Copy(style.StrokeOpacity), Copy(style.Stroke));
-        reference = reference with { Transform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), context.WorkCounter, context.CancellationToken),
+        reference = reference with { Transform = SvgGeometrySyntax.ParseElementTransform(reader, context.WorkCounter, context.CancellationToken),
             InheritedTransform = SvgAffineTransform.Identity, InheritedFillRule = Copy(style.FillRule), SourceMaskReference = Copy(SvgLocalUrl.ReadReference(reader, "mask")) };
         content.AddUse(reference, style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity),
             style.Color is null ? null : SvgColorParser.Parse(style.Color, context.NamedColors),

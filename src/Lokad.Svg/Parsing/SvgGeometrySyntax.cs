@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Xml;
 using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
@@ -9,6 +10,16 @@ internal enum SvgNumberListSyntax { Svg, Css }
 /// <summary>Parses the bounded numeric, transform, viewport, and viewBox syntax shared by supported geometry.</summary>
 internal static class SvgGeometrySyntax
 {
+    /// <summary>Parses an element's transform and retains its bounded source context on SVG failures.</summary>
+    /// <remarks>Borrows the parser-thread reader without advancing it or retaining storage.
+    /// Numeric parsing shares the caller's work counter and cancellation token.</remarks>
+    internal static SvgAffineTransform ParseElementTransform(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        string? value = reader.GetAttribute("transform");
+        try { return ParseTransform(value, workCounter, cancellationToken); }
+        catch (SvgException exception) { SvgSourceContext.Attach(reader, exception, "transform", value ?? string.Empty); throw; }
+    }
+
     internal static SvgAffineTransform ParseTransform(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (value is null) return SvgAffineTransform.Identity;
@@ -315,7 +326,9 @@ internal static class SvgGeometrySyntax
         if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Transform coordinate values exceed the configured syntax limit.");
         if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number transform coordinates are implemented.");
         if (!double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite transform coordinates are implemented.");
-        return SvgFloatNumber.ReadValidated(token, workCounter, cancellationToken);
+        float coordinate = SvgFloatNumber.ReadValidated(token, workCounter, cancellationToken);
+        if (!float.IsFinite(coordinate)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite transform coordinates are implemented.");
+        return coordinate;
     }
 
     internal static (SvgViewBoxAlignment HorizontalAlignment, SvgViewBoxAlignment VerticalAlignment, SvgViewBoxFit Fit) ParsePreserveAspectRatio(string? value)

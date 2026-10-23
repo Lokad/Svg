@@ -47,7 +47,7 @@ internal static class SvgSymbolContentParser
             content.BeginGroup(reader.Depth, definitionRoot ? null : id, presentation, new(paint, style.Fill is not null, opacity, color, sourceOpacity, displayed, visible)
                 { TextStyleSource = SvgRetainedTextSource.CaptureElement(reader, SvgPaintableElementContext.Create(reader, root, state, colors, work, token), state,
                     state.TextReplay?.Limits ?? throw new InvalidOperationException("Group capture requires document limits.")),
-                    Filter = Copy(style.Filter), ClipId = clipId, InheritsOpacity = style.InheritsOpacity, Markers = markers, PaintOrder = style.PaintOrder, PaintServerFill = shader ? shaderFill : null, PaintServerId = shader ? shaderId : null, FillRule = Copy(style.FillRule), Stroke = stroke, StrokeOpacity = strokeOpacity }, SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
+                    Filter = Copy(style.Filter), ClipId = clipId, InheritsOpacity = style.InheritsOpacity, Markers = markers, PaintOrder = style.PaintOrder, PaintServerFill = shader ? shaderFill : null, PaintServerId = shader ? shaderId : null, FillRule = Copy(style.FillRule), Stroke = stroke, StrokeOpacity = strokeOpacity }, SvgGeometrySyntax.ParseElementTransform(reader, work, token));
             if (!definitionRoot && id is not null) state.Definitions.TryAdd(id, new([], false, null, null) { SymbolContent = new(content, 0, 0), BorrowedFromSymbol = true });
             if (reader.IsEmptyElement) content.EndGroup(reader.Depth, state);
         }

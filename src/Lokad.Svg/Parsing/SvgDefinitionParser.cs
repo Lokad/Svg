@@ -247,7 +247,7 @@ internal static class SvgDefinitionParser
                 RetainClipSource(reader, context, clipStyle, state);
                 SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, state.ClipIsObjectBoundingBox ? new(1, 1) : context.LengthBases);
                 // A resource uses its own child map; ancestors place the referencing element.
-                SvgAffineTransform clipTransform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken);
+                SvgAffineTransform clipTransform = SvgGeometrySyntax.ParseElementTransform(reader, workCounter, cancellationToken);
                 SvgAffineViewportClip source = new(new(syntax.X, syntax.Y, syntax.Width, syntax.Height), clipTransform);
                 string? nestedClip = SvgClipPathSyntax.ResolveClipId(reader, state);
                 nestedClip = nestedClip is null ? null : state.Strings.Copy(nestedClip);
@@ -282,7 +282,7 @@ internal static class SvgDefinitionParser
                 SvgElementAttributePolicy.ValidatePath(reader, workCounter, cancellationToken);
                 SvgPaintableElementContext clipContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
                 // A resource uses its own child map; ancestors place the referencing element.
-                SvgAffineTransform clipTransform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken);
+                SvgAffineTransform clipTransform = SvgGeometrySyntax.ParseElementTransform(reader, workCounter, cancellationToken);
                 SvgComputedStyle clipStyle = SvgComputedStyleResolver.Resolve(reader, clipContext.StyleSheet, workCounter, cancellationToken);
                 RetainClipSource(reader, clipContext, clipStyle, state);
                 bool isEvenOdd = clipStyle.ClipRule is null ? state.ClipIsEvenOdd : SvgClipPathSyntax.ParseClipRule(clipStyle.ClipRule.AsSpan());
@@ -308,7 +308,7 @@ internal static class SvgDefinitionParser
                 SvgViewportLengthBases clipBases = state.ClipIsObjectBoundingBox ? new(1, 1) : context.LengthBases;
                 RetainClipSource(reader, context, clipStyle, state);
                 SvgEllipseSyntax oval = reader.LocalName == "circle" ? SvgEllipseSyntax.ParseCircle(reader, clipBases) : SvgEllipseSyntax.ParseEllipse(reader, clipBases);
-                SvgAffineTransform childMap = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken);
+                SvgAffineTransform childMap = SvgGeometrySyntax.ParseElementTransform(reader, workCounter, cancellationToken);
                 if (!SvgPresentationResolver.IsPainted(clipStyle.Display, clipStyle.Visibility, true, state.ClipIsVisible))
                 {
                     SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
@@ -2143,7 +2143,7 @@ internal static class SvgDefinitionParser
             if (definitionTransform is null) localContext = localContext with { RetainInstanceStrokePath = true };
             else
             {
-                SvgAffineTransform elementMap = SvgGeometrySyntax.ParseTransform(definitionTransform, context.WorkCounter, context.CancellationToken);
+                SvgAffineTransform elementMap = SvgGeometrySyntax.ParseElementTransform(reader, context.WorkCounter, context.CancellationToken);
                 if (elementMap.TryGetUniformScale(out double definitionScale) && Math.Abs(definitionScale - 1) <= 1e-9)
                     localContext = localContext with { RetainInstanceStrokePath = true };
             }
@@ -2267,7 +2267,7 @@ internal static class SvgDefinitionParser
         // Named live leaves also register a dormant source. Its authored map
         // needs the ordinary retained shape route before any use is encountered.
         bool nativeRectangle = context.RetainInstanceStrokePath
-            || !SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), context.WorkCounter, context.CancellationToken).IsAxisAligned
+            || !SvgGeometrySyntax.ParseElementTransform(reader, context.WorkCounter, context.CancellationToken).IsAxisAligned
             || SvgStrokeStyleSyntax.ParseLinejoin(style.Linejoin, true) != SvgStrokeJoin.Miter
             || SvgStrokeStyleSyntax.ParseDasharray(style.Dasharray) is not null || style.NonScalingStroke;
         if (!nativeRectangle && style.Stroke is string nativeStroke && !nativeStroke.AsSpan().Trim().Equals("none", StringComparison.OrdinalIgnoreCase))

@@ -75,7 +75,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
         return style.FillRule is null && InheritedFillRule is not null ? style with { FillRule = InheritedFillRule } : style;
     }
 
-    internal SvgAffineTransform ResolveTransform(XmlReader reader) => InheritedPresentation.Transform.ComposeChecked(SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), WorkCounter, CancellationToken));
+    internal SvgAffineTransform ResolveTransform(XmlReader reader) => InheritedPresentation.Transform.ComposeChecked(SvgGeometrySyntax.ParseElementTransform(reader, WorkCounter, CancellationToken));
 
     internal SvgResolvedShapePresentation ResolvePresentation(SvgComputedStyle style, bool acceptsStroke)
         => SvgShapePresentationResolver.Resolve(style, InheritedPresentation.Paint, InheritedPresentation.IsDisplayed, InheritedPresentation.IsVisible, acceptsStroke, NamedColors);
