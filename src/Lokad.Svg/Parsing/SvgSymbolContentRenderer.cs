@@ -164,7 +164,7 @@ internal static class SvgSymbolContentRenderer
         {
             if (reference.Width is null || reference.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol placement requires known instance dimensions.");
             SvgClipBox sourceViewport = new(reference.X, reference.Y, reference.Width.Value, reference.Height.Value);
-            if (!reference.Transform.IsAxisAligned)
+            if (!reference.IsMarker || !reference.Transform.IsAxisAligned)
             {
                 SvgAffineTransform clipMap = reference.Transform;
                 if (frame is {} parent) clipMap = SvgAffineTransform.FromScaleOffset(parent.ScaleX, parent.ScaleY, parent.OffsetX, parent.OffsetY).ComposeChecked(clipMap);

@@ -37,12 +37,17 @@ public sealed class SvgViewportOpacityTests
         RenderBudget budget = new(10_000_000);
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
-            SvgDrawCommand group = Assert.Single(scene.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup);
-            Assert.Equal(SvgLayerRegionKind.Viewport, group.RegionKind);
-            SvgClipBox clip = Assert.IsType<SvgClipBox>(group.MaskRegion);
+            SvgDrawCommand[] groups = scene.Commands.Where(command => command.Kind == SvgDrawCommandKind.BeginGroup).ToArray();
+            Assert.Equal(2, groups.Length);
+            Assert.Equal(SvgLayerRegionKind.AffineViewport, groups[0].RegionKind);
+            Assert.Equal(1, groups[0].SourceOpacity.Value);
+            Assert.True(groups[0].MaskContentIndex >= 0);
+            SvgClipBox clip = Assert.IsType<SvgClipBox>(groups[0].MaskRegion);
             Assert.Equal(new SvgClipBox(3.375, 4.625, 32, 24), clip);
-            Assert.Equal(.625f, group.SourceOpacity.Value);
-            Assert.Equal(255, group.MaskAlpha);
+            Assert.Equal(SvgLayerRegionKind.Mask, groups[1].RegionKind);
+            Assert.Null(groups[1].MaskRegion);
+            Assert.Equal(.625f, groups[1].SourceOpacity.Value);
+            Assert.All(groups, group => Assert.Equal(255, group.MaskAlpha));
             Assert.Equal(4, scene.Geometries.Length);
             Assert.All(scene.Geometries, geometry => Assert.Null(geometry.Polygon.Clip));
         }

@@ -1833,11 +1833,16 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Lowers_gradient_fills_on_symbol_instances()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><symbol id='s' viewBox='0 0 4 4'><rect x='0' y='0' width='4' height='4'/></symbol></defs><use href='#s' x='0' y='0' width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><symbol id='s' viewBox='0 0 4 4'><rect x='0' y='0' width='4' height='4'/></symbol></defs><use href='#s' x='0' y='0' width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null) { Clip = new(0, 0, 8, 8) }, geometry.Gradient.Fill);
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null), geometry.Gradient.Fill);
+        SvgDrawCommand clip = Assert.Single(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup);
+        Assert.Equal(SvgLayerRegionKind.AffineViewport, clip.RegionKind);
+        Assert.Equal(new SvgClipBox(0, 0, 8, 8), clip.MaskRegion);
+        Assert.True(clip.MaskContentIndex >= 0);
+        Assert.Equal(1, clip.SourceOpacity.Value);
     }
 
     [Fact]
