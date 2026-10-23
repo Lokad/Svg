@@ -100,26 +100,20 @@ public sealed class SvgShapeElementsTests
         Assert.Equal(new SvgColor(170, 0, 84, 255), Pixel(pixels, width, 32, 32));
     }
 
-    [Fact]
-    public void Rotated_then_scaled_gradient_chain_stays_unsupported()
+    [Theory]
+    [InlineData("rotate(45 32 32)", "scale(2 1)")]
+    [InlineData("scale(2 1)", "rotate(45 32 32)")]
+    public void Gradient_alias_transform_replaces_the_parent_map(string parentTransform, string childTransform)
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><linearGradient id='p' gradientUnits='userSpaceOnUse' x1='8' y1='32' x2='56' y2='32' gradientTransform='rotate(45 32 32)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><linearGradient id='g' href='#p' gradientTransform='scale(2 1)'/></defs><rect x='0' y='0' width='64' height='64' fill='url(#g)'/></svg>");
+        const string stops = "<stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/>";
+        string parent = "<linearGradient id='p' gradientUnits='userSpaceOnUse' x1='8' y1='32' x2='56' y2='32' gradientTransform='" + parentTransform + "'>" + stops + "</linearGradient>";
+        string alias = "<linearGradient id='g' href='#p' gradientTransform='" + childTransform + "'/>";
+        string standalone = parent.Replace("id='p'", "id='g'", StringComparison.Ordinal).Replace(parentTransform, childTransform, StringComparison.Ordinal);
+        byte[] actual = RenderPixels(Document(parent + alias), out _, out _);
+        Assert.Equal(RenderPixels(Document(standalone), out _, out _), actual);
+        Assert.NotEqual(RenderPixels(Document(parent.Replace("id='p'", "id='g'", StringComparison.Ordinal)), out _, out _), actual);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Only axis-aligned or similar linear gradient transforms are implemented.", rejected.Message);
-    }
-
-    [Fact]
-    public void Scaled_then_rotated_gradient_chain_stays_unsupported()
-    {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><linearGradient id='p' gradientUnits='userSpaceOnUse' x1='8' y1='32' x2='56' y2='32' gradientTransform='scale(2 1)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><linearGradient id='g' href='#p' gradientTransform='rotate(45 32 32)'/></defs><rect x='0' y='0' width='64' height='64' fill='url(#g)'/></svg>");
-
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Only axis-aligned or similar linear gradient transforms are implemented.", rejected.Message);
+        static string Document(string gradients) => "<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs>" + gradients + "</defs><rect width='64' height='64' fill='url(#g)'/></svg>";
     }
 
     [Fact]

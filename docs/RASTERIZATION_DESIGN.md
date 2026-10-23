@@ -30,6 +30,10 @@ Deferred paint and text replay emit into their recorded scenes and map only
 their retained source ranges. Tile paints, text and uses expand together after
 definitions resolve and before pattern group binding;
 clip-only markers compact once afterward.
+Gradient definitions retain original vectors separately from local paint maps;
+aliases resolve their attributes before mapping. Scene-owned radial metadata also
+retains focal declaration presence/units. Vector-free aliases share it while
+inheriting the local map.
 Expanded tile paints, including glyph shaders, are validated before scene sealing.
 [Document preparation](../src/Lokad.Svg/Parsing/SvgDocumentPreparation.cs) shares
 reader workspace and collected styles across sizing, output mapping and scene

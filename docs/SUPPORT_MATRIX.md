@@ -134,8 +134,14 @@ or masks on the referenced group, and nested viewport content are unsupported.
 Linear and radial gradients support objectBoundingBox/userSpaceOnUse units,
 affine gradient transforms, local templates, pad/repeat/reflect spread and sRGB
 color interpolation. Radial paints include focal-circle parameters. Gradient
-templates retain inherited units, transforms and spread methods when the child
-supplies a complete replacement vector. Patterns support both tile/content unit
+templates inherit coordinates independently of units, spread and the local map;
+a child's transform replaces the parent's map before placement. Cross-kind
+templates share stops and common attributes; the child's kind supplies its default
+vector. Declared radial focal fields survive replacement of the center/radius;
+focal coordinates absent throughout the chain follow the effective center. These
+rules apply to shape/text fills and strokes and admitted resource/instance replay; see the
+[template regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.GradientTemplateMaps.cs).
+Patterns support both tile/content unit
 systems, viewBox/aspect maps, fractional origins and sizes, affine placement and
 bounded repetition. Tile content may include
 ordered vectors, groups, local uses, opacity, gradients, embedded PNGs, admitted
@@ -153,9 +159,12 @@ Patterns whose effective tile size stays zero remain inert.
 Current restrictions:
 
 - Percentage coordinates in userSpaceOnUse gradients are unsupported, including
-  when the units are inherited from a template. This includes omitted linear x2
+  inherited focal percentages when units change. This includes omitted linear x2
   (initially 100%) and radial cx/cy/r (initially 50%) unless a same-kind template
   supplies numeric values. Object-box defaults and complete numeric vectors work.
+- Partial radial center/radius overrides and focal-only template overrides are
+  unsupported. Linear partial vectors cannot override units or borrow another
+  gradient kind's vector; unit overrides without replacement vectors are unsupported.
 - Gradient stops accept literal color/opacity attributes and stop inline styles,
   with per-property `!important` priority and source order.
   Stylesheet `stop-color`/`stop-opacity`, gradient resource/stop `currentColor`

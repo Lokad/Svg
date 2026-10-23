@@ -96,6 +96,38 @@ public sealed class SvgGradientTemplateAttributeTests
         Assert.Equal(Render(documents.Expected), Render(documents.Actual));
     }
 
+    [Fact]
+    public void Radial_aliases_share_raw_definition_storage_until_the_map_changes()
+    {
+        const string definitions = "<radialGradient id='base' cx='.4' cy='.5' r='.3' fx='.35' gradientTransform='matrix(1 0 .5 1 0 0)'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient><radialGradient id='alias' href='#base'/><radialGradient id='g' href='#alias' gradientTransform='translate(.1 0)'/>";
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs>" + definitions + "</defs><rect width='8' height='8' fill='url(#base)'/><rect x='8' width='8' height='8' fill='url(#alias)'/><rect x='16' width='8' height='8' fill='url(#g)'/></svg>");
+        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        {
+            Assert.Equal(3, root.Geometries.Length);
+            SvgRadialGradientSource original = Assert.IsType<SvgRadialGradientSource>(root.Geometries[0].Radial.Gradient.SourceDefinition);
+            Assert.Same(original, root.Geometries[1].Radial.Gradient.SourceDefinition);
+            Assert.NotSame(original, root.Geometries[2].Radial.Gradient.SourceDefinition);
+            Assert.True(original.HasFocalX);
+            Assert.False(original.HasFocalY);
+            Assert.Equal(.35, original.FocalX);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Denied_radial_definition_storage_preserves_the_scene_owner()
+    {
+        RenderBudget budget = new(SvgSceneBuilder.RecordedPaintOwnerBytes + SvgRadialGradientSource.RetainedStorageBytes - 1);
+        using (SvgSceneBuilder scene = new(budget, new(SvgRenderLimits.Default.MaximumWorkUnits), CancellationToken.None))
+        {
+            long before = budget.Snapshot().CurrentBytes;
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => scene.RetainRadialSource(default)).ErrorCode);
+            Assert.Equal(before, budget.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     private static (byte[] Actual, byte[] Expected) Documents(string kind, string attribute, bool forward, bool middle, bool ownStops)
     {
         string coordinates = kind == "linearGradient" ? "x1='0' y1='0' x2='16' y2='0'" : "cx='12' cy='16' r='8'";

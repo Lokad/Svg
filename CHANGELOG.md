@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Preserve original gradient-template coordinates and replace local affine maps
+  once through shape/text paints and resources. Keep explicitly inherited radial
+  focal fields when replacing center/radius; share immutable definition storage.
 - Decode local UTF-8 URI fragments once across paint/effect resources, templates,
   text paths and font discovery, avoiding accidental binding to literal encoded IDs.
 - Check authored filter lengths and marker orientations before trimming, including

@@ -1266,6 +1266,22 @@ internal sealed class SvgSceneBuilder : IDisposable
         catch { reservation.Dispose(); throw; }
     }
 
+    /// <summary>Reserves immutable radial definition coordinates separately from mapped paint storage.</summary>
+    internal SvgRadialGradientSource RetainRadialSource(SvgRadialTemplate template)
+    {
+        RenderBudget.BudgetReservation reservation = _budget.Reserve(SvgRadialGradientSource.RetainedStorageBytes, SvgMemoryCategory.Scene);
+        try
+        {
+            SvgRadialGradientSource source = new(template.CenterX, template.CenterY, template.Radius,
+                template.HasFocalX ? template.FocalX : template.CenterX, template.HasFocalY ? template.FocalY : template.CenterY,
+                template.FocalRadius, template.HasTransform ? template.Transform : SvgGradientTransform.Identity,
+                template.HasFocalX, template.HasFocalY, template.HasFocalRadius, template.PercentageFocalFields);
+            _paintReservations.Add(reservation);
+            return source;
+        }
+        catch { reservation.Dispose(); throw; }
+    }
+
     /// <summary>Shares one immutable text shader across a fragment's glyphs under scene ownership.</summary>
     /// <remarks>Reserves aggregate metadata and stop storage before publication. The scene releases
     /// storage on failure/disposal; the value borrows no parser state and is safe for concurrent draws.</remarks>

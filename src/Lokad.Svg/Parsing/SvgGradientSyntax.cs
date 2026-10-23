@@ -32,8 +32,9 @@ internal readonly record struct SvgGradientTemplate(double X1, double Y1, double
 /// <remarks>ReferenceScaleX and ReferenceScaleY multiply every scale map applied to the stored circle after the local definition, so raster evaluation inverts the exact paint map under non-uniform referencing transforms.</remarks>
 internal readonly record struct SvgRadialGradient(SvgColor Start, SvgColor End, double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops, double ReferenceScaleX, double ReferenceScaleY, bool HasRotation, SvgGradientTransform Inverse, bool HasGeneralTransform)
 {
-    /// <summary>Retains the effective definition transform for templates that replace the complete vector.</summary>
-    internal SvgGradientTransform TemplateTransform { get; init; } = SvgGradientTransform.Identity;
+    /// <summary>Borrows immutable definition coordinates before local or instance placement.</summary>
+    internal SvgRadialGradientSource? SourceDefinition { get; init; }
+    internal SvgGradientTransform TemplateTransform => SourceDefinition?.Transform ?? SvgGradientTransform.Identity;
 
     /// <summary>Retains the local shader matrix separately from referencing maps so bitmap translation precedes their float concatenation.</summary>
     internal SvgGradientPaintMatrices? NativePaintMatrices { get; init; }
@@ -46,6 +47,20 @@ internal readonly record struct SvgRadialGradient(SvgColor Start, SvgColor End, 
 internal readonly record struct SvgRadialTemplate(double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, int VectorCount, bool HasFocalX, bool HasFocalY, bool HasFocalRadius)
 {
     internal bool HasPercentageCoordinates { get; init; }
+    internal SvgRadialFocalFields PercentageFocalFields { get; init; }
+}
+
+[Flags]
+internal enum SvgRadialFocalFields : byte { None = 0, X = 1, Y = 2, Radius = 4 }
+
+/// <summary>Shares the unplaced radial vector and its local definition map under scene ownership.</summary>
+/// <remarks>Immutable metadata owns no arrays. The scene reserves before construction and retains
+/// the allowance through disposal; aliases never recover original coordinates by inverting rounded paint.</remarks>
+internal sealed record SvgRadialGradientSource(double CenterX, double CenterY, double Radius,
+    double FocalX, double FocalY, double FocalRadius, SvgGradientTransform Transform,
+    bool HasFocalX, bool HasFocalY, bool HasFocalRadius, SvgRadialFocalFields PercentageFocalFields)
+{
+    internal static long RetainedStorageBytes => 64L + 6 * sizeof(double) + 3 * sizeof(bool) + sizeof(byte) + System.Runtime.CompilerServices.Unsafe.SizeOf<SvgGradientTransform>();
 }
 
 /// <summary>Retains one pending linear template and the next alias waiting on the same target.</summary>
@@ -169,7 +184,10 @@ internal static class SvgGradientSyntax
         string? rawFocalX = reader.GetAttribute("fx");
         string? rawFocalY = reader.GetAttribute("fy");
         int vectorCount = (rawCenterX is null ? 0 : 1) + (rawCenterY is null ? 0 : 1) + (rawRadius is null ? 0 : 1);
-        bool hasPercentageCoordinates = ContainsPercentage(rawCenterX) || ContainsPercentage(rawCenterY) || ContainsPercentage(rawRadius) || ContainsPercentage(rawFocalX) || ContainsPercentage(rawFocalY) || ContainsPercentage(rawFocalRadius);
+        SvgRadialFocalFields percentageFocalFields = (ContainsPercentage(rawFocalX) ? SvgRadialFocalFields.X : SvgRadialFocalFields.None)
+            | (ContainsPercentage(rawFocalY) ? SvgRadialFocalFields.Y : SvgRadialFocalFields.None)
+            | (ContainsPercentage(rawFocalRadius) ? SvgRadialFocalFields.Radius : SvgRadialFocalFields.None);
+        bool hasPercentageCoordinates = ContainsPercentage(rawCenterX) || ContainsPercentage(rawCenterY) || ContainsPercentage(rawRadius) || percentageFocalFields != SvgRadialFocalFields.None;
         ValidateCoordinateUnits(isUserSpace, hasPercentageCoordinates);
         double centerX = ParseAxis(rawCenterX ?? (isUserSpace ? "0" : "0.5"));
         double centerY = ParseAxis(rawCenterY ?? (isUserSpace ? "0" : "0.5"));
@@ -181,7 +199,7 @@ internal static class SvgGradientSyntax
         if (focalRadius < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Focal radius cannot be negative.");
         string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
         return new SvgRadialTemplate(centerX, centerY, radius, focalX, focalY, focalRadius, isUserSpace, gradientTransform, transformValue is not null, units is not null, spreadMethod, spread is not null, href, vectorCount, rawFocalX is not null, rawFocalY is not null, rawFocalRadius is not null)
-        { HasPercentageCoordinates = hasPercentageCoordinates };
+        { HasPercentageCoordinates = hasPercentageCoordinates, PercentageFocalFields = percentageFocalFields };
     }
 
     /// <summary>Applies the same percentage boundary to explicit and resolved template units.</summary>

@@ -70,6 +70,27 @@ public sealed class SvgGradientTemplateUnitTests
         AssertPercentageRejected(Document(child + parent));
     }
 
+    [Theory]
+    [InlineData("fx", "40%", ".4")]
+    [InlineData("fy", "45%", ".45")]
+    [InlineData("fr", "5%", ".05")]
+    public void Inherited_focal_percentages_keep_their_units_when_the_vector_is_replaced(string axis, string percentage, string number)
+    {
+        foreach (bool forward in new[] { false, true })
+        foreach (bool ownStops in new[] { false, true })
+        {
+            const string coordinates = "cx='50%' cy='50%' r='45%' fx='.4' fy='.45' fr='.05'";
+            string parent = "<radialGradient id='base' " + coordinates.Replace(axis + "='" + number + "'", axis + "='" + percentage + "'", StringComparison.Ordinal) + ">" + Stops + "</radialGradient>";
+            const string middle = "<radialGradient id='middle' href='#base'/>";
+            string child = "<radialGradient id='g' href='#middle' gradientUnits='userSpaceOnUse' cx='.5' cy='.5' r='.45' gradientTransform='translate(0 0)' spreadMethod='pad'>" + (ownStops ? Stops : string.Empty) + "</radialGradient>";
+            AssertPercentageRejected(Document(forward ? child + middle + parent : parent + middle + child));
+            string numericParent = parent.Replace(percentage, number, StringComparison.Ordinal);
+            byte[] expected = Render(Document(numericParent + middle + child));
+            string replacement = child.Replace("id='g'", "id='g' " + axis + "='" + number + "'", StringComparison.Ordinal);
+            Assert.Equal(expected, Render(Document(forward ? replacement + middle + parent : parent + middle + replacement)));
+        }
+    }
+
     [Fact]
     public void Rejected_templates_leave_streams_empty_and_allow_an_absolute_retry()
     {

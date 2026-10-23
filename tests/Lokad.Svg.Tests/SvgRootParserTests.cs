@@ -6453,12 +6453,15 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_href_inherited_general_radial_transforms()
+    public void Href_radial_vectors_keep_the_effective_general_transform()
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='p' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient><radialGradient id='g' href='#p' gradientTransform='matrix(2 1 1 2 0 0)'/></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        const string parent = "<radialGradient id='p' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient>";
+        const string transform = "matrix(2 1 1 2 0 0)";
+        byte[] alias = Document(parent + "<radialGradient id='g' href='#p' gradientTransform='" + transform + "'/>");
+        byte[] standalone = Document(parent.Replace("id='p'", "id='g' gradientTransform='" + transform + "'", StringComparison.Ordinal));
+        Assert.Equal(SvgConverter.ConvertToPng(standalone, SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(alias, SvgRenderOptions.Default, CancellationToken.None).ToArray());
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Only axis-aligned or similar radial gradient transforms are implemented.", rejected.Message);
+        static byte[] Document(string gradients) => System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs>" + gradients + "</defs><rect width='8' height='8' fill='url(#g)'/></svg>");
     }
     [Fact]
     public void Rejects_partial_radial_vector_overrides()
