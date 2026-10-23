@@ -32,30 +32,22 @@ internal static class SvgGroupParser
             _ = SvgMaskSyntax.ParseMaskId(maskReference);
             maskReference = null;
         }
-        byte? mask = null;
         string? deferredMask = null;
-        if (maskReference is not null && !SvgMaskSyntax.IsDisabled(SvgMaskSyntax.ParseMaskId(maskReference), state))
+        if (maskReference is not null)
         {
             string maskId = SvgMaskSyntax.ParseMaskId(maskReference);
-            if (state.Masks.TryGetValue(maskId, out byte knownMask)) mask = knownMask;
-            else if (!hasScope) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
-            else deferredMask = state.Strings.Copy(maskId);
-            if (mask is not null && SvgMaskSyntax.HasCustomRegion(reader, state))
+            if (!hasScope)
             {
-                // Custom regions validate at document-end resolution (vacuous check), so a backward mask with a custom region takes the deferred path.
-                deferredMask = state.Strings.Copy(maskId);
-                mask = null;
+                state.EmptyGroupMaskReferences.Add(new(state.Strings.Copy(maskId)));
+                maskReference = null;
             }
-            if (mask is not null && hasScope)
+            else if (!SvgMaskSyntax.IsDisabled(maskId, state))
             {
-                // Preserve mask multiplication before outer opacity. Deferred resolution
-                // retains both factors on an isolated group, including uniform masks
-                // whose value must apply after all children have composed.
+                // Every live mask, including uniform masks, applies after child
+                // composition on the group's own isolation scope.
                 deferredMask = state.Strings.Copy(maskId);
-                mask = null;
             }
         }
-        byte combined = mask is null ? resolved.Opacity : SvgReferenceResolver.MultiplyAlpha(resolved.Opacity, mask.Value);
         bool hasMaskScope = hasScope && maskReference is not null && PushMaskScope(reader, state);
         SvgGroupKind kind = reader.LocalName == "switch" ? SvgGroupKind.Switch : SvgStructuralVocabulary.IsGroupContainer(reader.LocalName) ? SvgGroupKind.Group : SvgGroupKind.Link;
         SvgPaintOpacity sourceOpacity = style.GetOpacity();
@@ -64,7 +56,7 @@ internal static class SvgGroupParser
             opacityScope = state.NewRecordingScope();
         SvgRecordingScope contentScope = maskReference is null ? opacityScope : state.NewRecordingScope();
         string? clipId = SvgClipPathSyntax.ResolveClipId(reader, state);
-        return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, resolved.Presentation, resolved.TextStyle, combined != 255 || sourceOpacity.Value != 1, hasMaskScope, resolved.Stroke, resolved.FillRule) { HasFilter = filterId is not null, HasDeferredMask = deferredMask is not null, RecordingScope = contentScope, ClipRule = style.ClipRule ?? context.InheritedClipRule, ClipPathId = clipId is null ? null : state.Strings.Copy(clipId) }, deferredMask) { FilterId = filterId, LengthBases = context.LengthBases, SourceOpacity = sourceOpacity, RecordingScope = opacityScope };
+        return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, resolved.Presentation, resolved.TextStyle, resolved.Opacity != 255 || sourceOpacity.Value != 1, hasMaskScope, resolved.Stroke, resolved.FillRule) { HasFilter = filterId is not null, HasDeferredMask = deferredMask is not null, RecordingScope = contentScope, ClipRule = style.ClipRule ?? context.InheritedClipRule, ClipPathId = clipId is null ? null : state.Strings.Copy(clipId) }, deferredMask) { FilterId = filterId, LengthBases = context.LengthBases, SourceOpacity = sourceOpacity, RecordingScope = opacityScope };
     }
 
     /// <summary>Pushes the referenced mask content box for child coverage checks, reporting whether a scope was pushed.</summary>
@@ -87,4 +79,7 @@ internal readonly record struct SvgParsedGroup(SvgGroupScope Scope, string? Defe
     internal SvgPaintOpacity SourceOpacity { get; init; }
     internal SvgRecordingScope RecordingScope { get; init; }
 }
+
+/// <summary>A document-owned mask ID whose empty target needs validation without constructing mask content.</summary>
+internal readonly record struct SvgEmptyGroupMaskReference(string Id);
 

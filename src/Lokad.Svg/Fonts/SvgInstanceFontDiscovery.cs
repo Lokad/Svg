@@ -148,6 +148,10 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
     internal void AddMask(XmlReader reader, bool displayed, bool visible, string? ownFilter)
     {
         if (!displayed || SvgLocalUrl.ReadReference(reader, "mask") is not {} value) return;
+        // CaptureElement intentionally exposes a retained container header as empty;
+        // only the live scan can classify a self-closing group from this flag.
+        if (reader is not SvgRetainedTextSource.Reader && reader.IsEmptyElement
+            && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName) && SvgLocalUrl.GetReference(ownFilter) is null) return;
         if (!SvgMaskSyntax.HasPaintableTarget(reader, visible, ownFilter)) return;
         if (SvgLocalUrl.GetReference(ownFilter) is null && reader.LocalName == "use" && Target(reader) is {} target && HasEmptyViewport(reader, target)) return;
         _work.Consume(_token);

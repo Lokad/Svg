@@ -316,15 +316,6 @@ internal static class SvgMaskSyntax
         return box;
     }
 
-    /// <summary>Reports whether the referenced mask carries an explicit region.</summary>
-    internal static bool HasCustomRegion(XmlReader reader, SvgDocumentState state)
-    {
-        ArgumentNullException.ThrowIfNull(reader);
-        ArgumentNullException.ThrowIfNull(state);
-        string? reference = SvgLocalUrl.ReadReference(reader, "mask");
-        return reference is not null && (state.MaskRegions.TryGetValue(ParseMaskId(reference), out _) || state.MaskFractionRegions.TryGetValue(ParseMaskId(reference), out _));
-    }
-
     /// <summary>Resolves deferred group masks at document end, binding each authored isolation scope after use expansion.</summary>
     internal static void ResolvePendingGroupMasks(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         => ResolvePendingGroupMasks(state, 0, workCounter, cancellationToken);

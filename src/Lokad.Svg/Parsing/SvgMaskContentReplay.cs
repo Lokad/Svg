@@ -96,6 +96,12 @@ internal static class SvgMaskContentReplay
 
     internal static void Resolve(SvgRootAttributes root, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
+        foreach (SvgEmptyGroupMaskReference reference in state.EmptyGroupMaskReferences.AsSpan())
+        {
+            work.Consume(token);
+            if (!state.Masks.TryGetValue(reference.Id, out _) && !state.MaskContents.TryGetValue(reference.Id, out _))
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
+        }
         state.MaskReplayBases = new(root.UserViewportWidth, root.UserViewportHeight);
         foreach (SvgDeferredMaskContent pending in state.DeferredMaskContents.AsSpan())
         {

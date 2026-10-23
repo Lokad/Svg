@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Resolve mask references on self-closing empty groups in either source order
+  without opening mask fonts; preserve filters that generate output.
 - Skip mask font construction for nonpainting primitive targets and disabled
   groups or instances, retaining visible descendants, effect output and validation.
 - Treat zero-sized symbol and nested SVG viewports as empty before lowering

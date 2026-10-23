@@ -239,6 +239,9 @@ see the [discovery regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskD
 Declared zero-sized primitives, empty paths, and disabled groups/uses need no mask
 font programs. Visibility overrides and filters that produce output retain their
 mask dependencies; see the [target regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskTargets.cs).
+Self-closing empty groups validate local mask references without constructing mask
+content. Filters on the group can still produce masked output; see the
+[empty-group regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.EmptyGroupMasks.cs).
 Object-box mask regions require bare-number fractions; user-space regions also
 accept viewport percentages.
 For axis-aligned shape targets, spatial mask content must cover an explicit

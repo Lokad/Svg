@@ -87,6 +87,7 @@ internal sealed class SvgDocumentState : IDisposable
         LeafMaskOwners = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingLeafMasks = new BudgetedParserList<PendingLeafMask>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingGroupMasks = new BudgetedParserList<PendingGroupMask>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        EmptyGroupMaskReferences = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingLinearGradientHrefs = new BudgetedParserList<PendingLinearGradientHref>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingRadialGradientHrefs = new BudgetedParserList<PendingRadialGradientHref>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         MaskScopes = new BudgetedParserList<SvgClipBox>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -226,6 +227,9 @@ internal sealed class SvgDocumentState : IDisposable
     internal BudgetedParserList<PendingLeafMask> PendingLeafMasks { get; }
 
     internal BudgetedParserList<PendingGroupMask> PendingGroupMasks { get; }
+
+    /// <summary>Retains validation-only mask IDs for empty groups; strings and storage belong to this document.</summary>
+    internal BudgetedParserList<SvgEmptyGroupMaskReference> EmptyGroupMaskReferences { get; }
 
     internal BudgetedParserList<PendingLinearGradientHref> PendingLinearGradientHrefs { get; }
 
@@ -436,6 +440,7 @@ internal sealed class SvgDocumentState : IDisposable
         foreach (SvgLeafMaskOwner owner in LeafMaskOwners.AsSpan()) owner.Owner.Dispose();
         LeafMaskOwners.Dispose();
         PendingGroupMasks.Dispose();
+        EmptyGroupMaskReferences.Dispose();
         PendingLinearGradientHrefs.Dispose();
         PendingRadialGradientHrefs.Dispose();
         Definitions.Dispose();
