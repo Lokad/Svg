@@ -11,29 +11,51 @@ internal sealed class SvgPatternContentSelection : IDisposable
 {
     private enum Resolution { New, Visiting, Ready, Invalid }
     private enum Selection { NeededContent, DisabledResource }
-    private readonly record struct Pattern(string Id, string? Target, double? Width, double? Height, bool IsDisplayed, bool HasContent, Resolution State, int Source);
-    private readonly record struct Scope(int Depth, bool Drawing, bool Definitions, bool Switch, bool Consumed, int Pattern);
+    private enum EffectKind { Mask, Filter }
+    private readonly record struct EffectReference(string Id, EffectKind Kind);
+    private readonly record struct PatternEffect(int Pattern, EffectReference Reference);
+    private readonly record struct Pattern(string Id, string? Target, double? Width, double? Height, bool IsDisplayed, bool HasChildElements, Resolution State, int Source);
+    private readonly record struct Scope(int Depth, bool Drawing, bool Definitions, bool Switch, bool Consumed, int Pattern, int PatternOwner, bool Displayed, bool Visible, bool Inert);
     private readonly BudgetedParserDictionary<string, Selection> _selection;
+    private readonly BudgetedParserList<EffectReference> _unusedEffects;
 
-    private SvgPatternContentSelection(RenderBudget budget)
-        => _selection = new(budget, SvgMemoryCategory.Parser, 96);
+    private SvgPatternContentSelection(RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    {
+        _selection = new(budget, SvgMemoryCategory.Parser, 96);
+        _unusedEffects = new(budget, SvgMemoryCategory.Parser, work, token);
+    }
 
     internal bool RequiresContent(string? id) => id is not null && _selection.TryGetValue(id, out Selection value) && value == Selection.NeededContent;
 
     internal bool IsDisplayed(string? id) => id is null || !_selection.TryGetValue(id, out Selection value) || value != Selection.DisabledResource;
+
+    /// <summary>Checks omitted sources' displayed effect references without allocating bindings or constructing mask glyphs.</summary>
+    /// <remarks>Called before scene sealing; IDs borrow preparation strings. Traversal charges shared work/token and owns no resources.</remarks>
+    internal void ValidateUnusedEffects(SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        foreach (EffectReference reference in _unusedEffects.AsSpan())
+        {
+            work.Consume(token);
+            if (reference.Kind == EffectKind.Filter) _ = state.DocumentFilters.ResolveReference(reference.Id);
+            else if (!state.Masks.TryGetValue(reference.Id, out _) && !state.MaskContents.TryGetValue(reference.Id, out _))
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
+        }
+    }
 
     internal static SvgPatternContentSelection? Create(ReadOnlyMemory<byte> svg, XmlReaderSettings settings,
         SvgRenderLimits limits, BudgetedParserList<CssRule> rules, BudgetedParserStringStore strings, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         ReadOnlySpan<byte> bytes = svg.Span;
-        if (!bytes.Contains((byte)0) && (bytes.IndexOf("pattern"u8) < 0 || bytes.IndexOf("href"u8) < 0)) return null;
+        if (!bytes.Contains((byte)0) && bytes.IndexOf("pattern"u8) < 0) return null;
         work.ConsumeText(bytes.Length, token);
-        SvgPatternContentSelection result = new(budget);
+        SvgPatternContentSelection result = new(budget, work, token);
         try
         {
             using BudgetedParserList<Pattern> patterns = new(budget, SvgMemoryCategory.Parser, work, token);
             using BudgetedParserDictionary<string, int> ids = new(budget, SvgMemoryCategory.Parser, 96);
+            using BudgetedParserDictionary<string, bool> references = new(budget, SvgMemoryCategory.Parser, 96);
+            using BudgetedParserList<PatternEffect> effects = new(budget, SvgMemoryCategory.Parser, work, token);
             using BudgetedParserList<Scope> scopes = new(budget, SvgMemoryCategory.Parser, work, token);
             using BudgetedParserList<int> path = new(budget, SvgMemoryCategory.Parser, work, token);
             using SvgCssAncestorContext ancestors = new(rules, budget, work, token);
@@ -62,10 +84,23 @@ internal sealed class SvgPatternContentSelection : IDisposable
                     selected = !parent.Consumed && reader.GetAttribute("systemLanguage") is null;
                     if (selected) scopes[^1] = parent with { Consumed = true };
                 }
-                // An empty group creates a tile payload only when its active filter can produce output.
-                if (parent.Pattern >= 0 && scopes.Count > 0 && svgElement && !SvgStructuralVocabulary.IsDescriptiveElement(reader.LocalName)
-                    && (reader.LocalName != "g" || !reader.IsEmptyElement || HasFilter()))
-                    patterns[parent.Pattern] = patterns[parent.Pattern] with { HasContent = true };
+                // Any authored element child overrides template content, regardless
+                // of namespace, display, geometry or whether a scene is allocated.
+                if (parent.Pattern >= 0 && scopes.Count > 0)
+                    patterns[parent.Pattern] = patterns[parent.Pattern] with { HasChildElements = true };
+                SvgComputedStyle paint = default;
+                bool inert = parent.Inert || !svgElement || SvgStructuralVocabulary.IsDescriptiveElement(reader.LocalName);
+                bool paintable = !inert && (root || SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName)
+                    || SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName)
+                    || reader.LocalName is "svg" or "defs" or "pattern" or "symbol" or "mask" or "marker" or "text" or "tspan" or "use" or "image");
+                if (paintable)
+                {
+                    InlineStyle sheet = SvgStyleSheet.Resolve(reader, rules, ancestors, work, token);
+                    paint = reader.LocalName == "use"
+                        ? SvgComputedStyle.Resolve(reader, SvgInlineStyleParser.ParseUse(reader.GetAttribute("style"), work, token), sheet)
+                        : SvgComputedStyleResolver.Resolve(reader, sheet, work, token, true);
+                }
+                ObservePaint(paint.Fill); ObservePaint(paint.Stroke);
                 int pattern = -1;
                 if (selected && svgElement && reader.LocalName == "pattern" && (reader.Depth == rootDepth + 1 || parent.Definitions)
                     && reader.GetAttribute("id") is {} id)
@@ -74,13 +109,22 @@ internal sealed class SvgPatternContentSelection : IDisposable
                     string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
                     string? target = href is { Length: > 1 } && href[0] == '#' ? SvgLocalUrl.CopyFragment(href.AsSpan(1), strings) : null;
                     pattern = patterns.Count;
-                    SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, SvgStyleSheet.Resolve(reader, rules, ancestors, work, token), work, token, true);
-                    patterns.Add(new(id, target, Dimension("width"), Dimension("height"), SvgPresentationResolver.ParseDisplay(style.Display), false, Resolution.New, -1));
+                    patterns.Add(new(id, target, Dimension("width"), Dimension("height"), SvgPresentationResolver.ParseDisplay(paint.Display), false, Resolution.New, -1));
                     ids.TryAdd(id, pattern);
                 }
                 bool drawing = selected && !parent.Definitions && svgElement && (root || reader.LocalName is "svg" or "g" or "a" or "switch");
                 bool definitions = selected && !parent.Definitions && svgElement && reader.LocalName == "defs";
-                if (!reader.IsEmptyElement) scopes.Add(new(reader.Depth, drawing, definitions, drawing && reader.LocalName == "switch", false, pattern));
+                int patternOwner = pattern >= 0 ? pattern : root ? -1 : parent.PatternOwner;
+                bool displayed = (root || pattern >= 0 || parent.Displayed) && SvgPresentationResolver.ParseDisplay(paint.Display);
+                bool visible = SvgPresentationResolver.ParseVisibility(paint.Visibility, root || parent.Visible);
+                if (patternOwner >= 0 && displayed && paintable && (SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName)
+                    || SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName) || reader.LocalName is "text" or "use" or "image"))
+                {
+                    if (SvgMaskSyntax.HasPaintableTarget(reader, visible, paint.Filter))
+                        RetainEffect(SvgLocalUrl.ReadReference(reader, "mask"), EffectKind.Mask, patternOwner, effects, strings);
+                    if (SvgMaskSyntax.HasPaintableTarget(reader, true, null)) RetainEffect(SvgLocalUrl.GetReference(paint.Filter), EffectKind.Filter, patternOwner, effects, strings);
+                }
+                if (!reader.IsEmptyElement) scopes.Add(new(reader.Depth, drawing, definitions, drawing && reader.LocalName == "switch", false, pattern, patternOwner, displayed, visible, inert));
             }
             for (int index = 0; index < patterns.Count; index++)
             {
@@ -104,23 +148,40 @@ internal sealed class SvgPatternContentSelection : IDisposable
                     bool displayed = item.IsDisplayed && parent?.IsDisplayed != false;
                     item = item with { State = valid ? Resolution.Ready : Resolution.Invalid, IsDisplayed = displayed,
                         Width = item.Width ?? parent?.Width, Height = item.Height ?? parent?.Height,
-                        Source = !displayed ? -1 : item.HasContent ? position : parent?.Source ?? -1 };
+                        Source = !displayed ? -1 : item.HasChildElements ? position : parent?.Source ?? -1 };
                     patterns[position] = item;
                     if (valid && !displayed) result._selection.TryAdd(item.Id, Selection.DisabledResource);
-                    if (valid && item.Width > 0 && item.Height > 0 && item.Source >= 0) result._selection.TryAdd(patterns[item.Source].Id, Selection.NeededContent);
                 }
+            }
+            // Declared paint references are conservative consumers: sources in
+            // unused definitions may still be selected, but a template href alone
+            // never requires an overridden parent's glyphs or geometry.
+            foreach (Pattern item in patterns.AsSpan())
+            {
+                work.Consume(token);
+                if (item.State == Resolution.Ready && item.Width > 0 && item.Height > 0 && item.Source >= 0 && references.TryGetValue(item.Id, out _))
+                    result._selection.TryAdd(patterns[item.Source].Id, Selection.NeededContent);
+            }
+            foreach (PatternEffect effect in effects.AsSpan())
+            {
+                work.Consume(token);
+                if (patterns[effect.Pattern].IsDisplayed && !result.RequiresContent(patterns[effect.Pattern].Id)) result._unusedEffects.Add(effect.Reference);
             }
             return result;
 
             double? Dimension(string name) => reader.GetAttribute(name) is {} value ? SvgGeometrySyntax.ParseRectangleCoordinate(value) : null;
-            bool HasFilter()
+            static void RetainEffect(string? value, EffectKind kind, int patternOwner, BudgetedParserList<PatternEffect> effects, BudgetedParserStringStore strings)
             {
-                SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, SvgStyleSheet.Resolve(reader, rules, ancestors, work, token), work, token, true);
-                return style.Filter is {} filter && filter.Trim() != "none" && SvgPresentationResolver.ParseDisplay(style.Display);
+                if (value is not null && SvgLocalUrl.TryParseId(value, out string id)) effects.Add(new(patternOwner, new(strings.Copy(id), kind)));
+            }
+            void ObservePaint(string? value)
+            {
+                if (value is not null && SvgLocalUrl.TryParseId(value, out string id) && !references.TryGetValue(id, out _))
+                    references.TryAdd(strings.Copy(id), true);
             }
         }
         catch { result.Dispose(); throw; }
     }
 
-    public void Dispose() => _selection.Dispose();
+    public void Dispose() { _unusedEffects.Dispose(); _selection.Dispose(); }
 }

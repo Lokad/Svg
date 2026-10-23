@@ -253,19 +253,30 @@ internal sealed class SvgFilterArena : IDisposable
         _bindings[index] = _bindings[index] with { ObjectBounds = objectBounds, VisualBounds = visualBounds };
     }
 
+    /// <summary>Validates a borrowed local resource ID before sealing, charging work/cancellation without creating a binding.</summary>
+    internal int ResolveReference(string id)
+    {
+        _work.Consume(_token);
+        SvgFilterArena definitions = _resourceSource ?? this;
+        BudgetedParserDictionary<string, int> names = definitions._names ?? throw new InvalidOperationException("Filter names are unavailable.");
+        if (!names.TryGetValue(id, out int resource))
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local filter references are implemented.");
+        if (definitions._resources[resource].Rejection is {} rejected) throw new SvgException(rejected.Code, rejected.Message);
+        return resource;
+    }
+
     internal void Seal()
     {
         if (_sealed) return;
         if (_hasPendingClips) throw new InvalidOperationException("Filter output clips require command emission before sealing.");
         SvgFilterArena definitions = _resourceSource ?? this;
-        BudgetedParserDictionary<string, int> names = definitions._names ?? throw new InvalidOperationException("Filter names are unavailable.");
         for (int index = 0; index < _bindings.Count; index++)
         {
             _work.Consume(_token);
             SvgFilterBinding binding = _bindings[index];
             int resource = binding.ResourceIndex;
-            if (resource < 0 && (binding.ReferenceId is not {} id || !names.TryGetValue(id, out resource)))
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local filter references are implemented.");
+            if (resource < 0) resource = binding.ReferenceId is {} id ? ResolveReference(id)
+                : throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local filter references are implemented.");
             if ((uint)resource >= (uint)definitions._resources.Count) throw new InvalidOperationException("Retained filter resource is unavailable.");
             if (definitions._resources[resource].Rejection is {} rejected) throw new SvgException(rejected.Code, rejected.Message);
             _bindings[index] = binding with { ReferenceId = null, ResourceIndex = resource, OutputClip = null };

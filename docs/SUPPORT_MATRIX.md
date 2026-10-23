@@ -162,6 +162,12 @@ or masks on the referenced group, and nested viewport content are unsupported.
 
 ### Gradients and patterns
 
+Pattern aliases with local element children use that local content, including
+empty, descriptive and foreign elements. Childless aliases and aliases containing
+only text nodes or comments inherit their parent's content. Sources selected only
+through an overridden template need no font programs; see the
+[override regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.PatternOverrides.cs).
+
 Linear and radial gradients support objectBoundingBox/userSpaceOnUse units,
 affine gradient transforms, local templates, pad/repeat/reflect spread and sRGB
 color interpolation. Radial paints include focal-circle parameters. Gradient

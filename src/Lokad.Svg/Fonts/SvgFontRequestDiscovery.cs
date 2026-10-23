@@ -301,7 +301,8 @@ internal static class SvgFontRequestDiscovery
                     SvgTextWhitespaceMode inheritedTextWhitespaceMode = style.Text.WhitespaceMode;
                     string? specifiedWhiteSpace = null;
                     // Reset definition-ancestor display before applying the resource's own declaration.
-                    if (patternDefinition) style = style with { IsDisplayed = patternHasSize && patternContents?.IsDisplayed(reader.GetAttribute("id")) != false };
+                    if (patternDefinition) style = style with { IsDisplayed = patternHasSize && patternContents?.IsDisplayed(reader.GetAttribute("id")) != false
+                        && (patternContents?.RequiresContent(reader.GetAttribute("id")) ?? true) };
                     if (!sterile && isSvgElement && !rootElement && !insideDirectText && parentAllowsText && reader.LocalName is ("svg" or "defs" or "g" or "a" or "switch" or "pattern" or "text" or "use")) style = ApplyAttributes(reader, style, styleSheet, workCounter, cancellationToken, out specifiedWhiteSpace);
                     if (emptyViewport) style = style with { IsDisplayed = false };
                     if (!sterile && parsedTextSpan is SvgTextSpanStyle parsedSpan)

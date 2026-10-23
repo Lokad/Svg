@@ -78,13 +78,14 @@ public sealed partial class OpenTypeFontTests
             string middle = "<pattern id='middle' href='#base' width='16'>" + aliasContent + "</pattern>";
             const string alias = "<pattern id='p' href='#middle' height='16'/>";
             byte[] input = PatternFontInput("<defs>" + (forward ? alias + middle + source : source + middle + alias) + "</defs>" + PatternFontTarget);
-            string content = replacement ? "<rect width='8' height='8' fill='blue'/>" : PatternFontText;
+            bool inherits = !replacement && aliasContent.Length == 0;
+            string content = replacement ? "<rect width='8' height='8' fill='blue'/>" : inherits ? PatternFontText : "";
             byte[] control = PatternFontInput("<defs>" + PatternFontDefinition(PatternFontSize, content) + "</defs>" + PatternFontTarget);
             (SvgFontPackCatalog catalog, CountingFontProvider provider, _) = PatternFontPack(true);
             using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
             using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
             Assert.Equal(SvgConverter.ConvertToPng(control, new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts), CancellationToken.None).ToArray(), document.ConvertToPng(CancellationToken.None).ToArray());
-            Assert.Equal(replacement ? 0 : 1, provider.RequestCount);
+            Assert.Equal(inherits ? 1 : 0, provider.RequestCount);
         }
     }
 

@@ -49,7 +49,7 @@ public sealed partial class OpenTypeFontTests
     [InlineData(false, true)]
     [InlineData(true, false)]
     [InlineData(true, true)]
-    public async Task Pattern_font_templates_preserve_only_displayed_source_requests_in_both_orders(bool hiddenBase, bool forward)
+    public async Task Pattern_font_templates_with_disabled_alias_or_source_open_no_programs(bool hiddenBase, bool forward)
     {
         string sourceDefinition = PatternFontDefinition(PatternFontSize + (hiddenBase ? " display='none'" : ""), PatternFontText).Replace("id='p'", "id='base'", StringComparison.Ordinal);
         string alias = "<pattern id='p' href='#base'" + (hiddenBase ? "" : " display='none'") + "/>";
@@ -62,8 +62,8 @@ public sealed partial class OpenTypeFontTests
             Assert.Equal(expected, SvgConverter.ConvertToPng(input, new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot), CancellationToken.None).ToArray());
             using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
             Assert.Equal(expected, document.ConvertToPng(CancellationToken.None).ToArray());
-            Assert.Equal(hiddenBase ? 0 : 1, provider.RequestCount);
-            Assert.Equal(hiddenBase ? 0 : 1, source.RequestCount);
+            Assert.Equal(0, provider.RequestCount);
+            Assert.Equal(0, source.RequestCount);
         }
     }
 

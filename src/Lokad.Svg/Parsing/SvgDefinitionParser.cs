@@ -490,7 +490,8 @@ internal static class SvgDefinitionParser
             // Definition ancestors do not suppress a resource; its own display still controls its content and aliases.
             bool patternDisplayed = SvgPresentationResolver.ParseDisplay(style.Display) && state.PatternContents?.IsDisplayed(state.PatternId) != false;
             state.PatternTemplate = state.PatternTemplate with { IsDisplayed = patternDisplayed };
-            state.Groups.Add(new(reader.Depth, SvgGroupKind.Pattern, inherited.Presentation with { Transform = SvgAffineTransform.Identity, IsDisplayed = patternDisplayed }, inherited.TextStyle, false, false, inherited.Stroke, inherited.FillRule)
+            bool contentDisplayed = patternDisplayed && (state.PatternContents?.RequiresContent(state.PatternId) ?? true);
+            state.Groups.Add(new(reader.Depth, SvgGroupKind.Pattern, inherited.Presentation with { Transform = SvgAffineTransform.Identity, IsDisplayed = contentDisplayed }, inherited.TextStyle, false, false, inherited.Stroke, inherited.FillRule)
                 { RecordingScope = patternContext.RecordingScope, ClipRule = style.ClipRule ?? patternContext.InheritedClipRule });
             if (!reader.IsEmptyElement) state.PatternDepth = reader.Depth;
             else

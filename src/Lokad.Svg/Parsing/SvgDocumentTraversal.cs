@@ -60,6 +60,8 @@ internal static class SvgDocumentTraversal
                 SvgStructuralAdmission.ValidateElementStructure(reader, limits);
                 if (state.NodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                 state.NodeCount++;
+                if (state.PatternDepth >= 0 && reader.Depth == state.PatternDepth + 1)
+                    state.PatternTemplate = state.PatternTemplate with { HasChildElements = true };
                 bool skipped = state.SkipDepth >= 0 && reader.Depth > state.SkipDepth;
                 if (!skipped && state.Switches.Count > 0 && reader.Depth == state.Switches[state.Switches.Count - 1].Depth + 1)
                 {
@@ -504,6 +506,7 @@ internal static class SvgDocumentTraversal
                     if (state.DeferredTextFailure is {} textFailure) throw textFailure;
                     SvgTextPathLayout.Resolve(state, limits, workCounter, cancellationToken);
                     state.ValidateSymbolReferences(workCounter, cancellationToken);
+                    state.PatternContents?.ValidateUnusedEffects(state, workCounter, cancellationToken);
                     SvgResourceUseReplay.ResolveClips(state, workCounter, cancellationToken);
                     SvgMaskContentReplay.Resolve(root, state, workCounter, cancellationToken);
                     SvgPatternUseReplay.Resolve(root, state, limits, workCounter, cancellationToken);
