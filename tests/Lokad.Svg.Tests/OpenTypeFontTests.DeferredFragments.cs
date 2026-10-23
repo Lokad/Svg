@@ -49,7 +49,7 @@ public sealed partial class OpenTypeFontTests
                     _ => rectangle
                 };
                 string resources = "<defs>" + gradients + "</defs>";
-                // Forward paint lookup on a referenced leaf is a separate existing restriction.
+                // A live leaf use needs the referenced paint registry populated.
                 return System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + (chain && context != "use" ? content + resources : resources + content) + "</svg>");
             }
         }

@@ -86,6 +86,9 @@ supplies its own user-space percentage bases; raster scaling does not change the
 Geometry retains authored curves through affine placement and stroke construction.
 Fill and stroke paints may differ. Butt/round/square caps, miter/round/bevel joins,
 dash phase and non-scaling widths apply through admitted local instances.
+Dashed non-scaling strokes on lines, circles and curved paths do not support
+rotation or shear. Dashed gradient line strokes require uniform scaling; ordinary
+solid dashed strokes retain their separate affine support.
 All-zero dash lists render as solid strokes; zero-length dashes with positive
 gaps retain their ordinary cap-dependent behavior.
 Dash placement follows authored endpoint order on horizontal and vertical lines.
@@ -121,6 +124,13 @@ Root and nested viewports preserve their own percentage bases, aspect maps and
 physical clips. Instance presentation follows authored/inherited precedence;
 referencing an alias excludes the source's ancestors. Missing/cyclic references
 have categorized failures. Perspective transforms are unsupported.
+Zero scale factors and singular pattern transforms report `UnsupportedFeature`.
+Root and direct nested viewports support omitted/hidden overflow. Nested SVGs
+reject inline `style` attributes; stylesheets can supply supported declarations.
+Symbols reject the XML `overflow` attribute but accept CSS `overflow:hidden`.
+Nested SVGs inside retained symbol/pattern content are unsupported.
+For a referenced leaf's authored paint server, define the server before the live
+`use`; the leaf declaration itself may precede the server.
 An omitted or empty href leaves a use element without source geometry; an empty
 href takes precedence over xlink:href. Its own filter can still generate output
 over transparent input. Placement lengths and actual child content retain the
@@ -160,6 +170,10 @@ systems, viewBox/aspect maps, fractional origins and sizes, affine placement and
 bounded repetition. Tile content may include
 ordered vectors, groups, local uses, opacity, gradients, embedded PNGs, admitted
 filters and supplied-font text.
+Pattern x/y/width/height accept bare numbers and px, with percentages unsupported
+in either unit system. Opacity applies to tile children; the pattern container
+accepts only opacity 1. XML overflow accepts hidden/visible;
+CSS overflow supports hidden only.
 Definition ancestors with `display:none` do not disable patterns. A pattern's own
 `display:none` suppresses its paint and aliases, including aliases with their own
 children. An alias's own hidden display suppresses borrowed visible content too.
@@ -203,8 +217,12 @@ local instances and forward definitions. Rectangular leaf clips follow the
 target's own and inherited transforms in both definition orders.
 Direct line, polygon, polyline and text children of clip paths are unsupported;
 use equivalent admitted path geometry where applicable.
+Group children and XML transform/fill/opacity attributes on the clipPath container
+are unsupported; admitted child geometry retains its own transforms and clip rules.
 Alpha/luminance masks support ordered vector/text content, clipping, local uses,
 both region/content unit systems and transformed finite regions.
+Object-box mask regions require bare-number fractions; user-space regions also
+accept viewport percentages.
 
 Hidden clip children do not contribute to the silhouette; visibility inherits
 from the resource's own ancestors and can be overridden by a child. Display on
@@ -301,6 +319,11 @@ inline styles or stylesheets report `UnsupportedFeature`.
 CSS width/height declarations on rectangles and embedded images report
 `UnsupportedFeature`; use XML dimension attributes on these elements. Dimension
 declarations on nonapplicable targets do not affect rendering.
+Declaration admission depends on its target and location; see the
+[location contracts](../tests/Lokad.Svg.Tests/OpenTypeFontTests.SupportLocations.cs).
+On root/group/symbol/pattern containers, XML `color-interpolation-filters` is
+unsupported; CSS accepts only the inert default linearRGB. Set filter operating
+color spaces on the filter or its primitives.
 Solid colors and paint keywords ignore surrounding ASCII whitespace in attributes and
 CSS; literal color limits apply to the authored token before normalization.
 Non-ASCII whitespace remains part of scalar tokens; unsupported values reject
@@ -375,6 +398,8 @@ Unsupported: backdrop inputs, external filter images, displacement, turbulence,
 lighting, morphology, convolution, arithmetic composite, other blends,
 backdrop-filter and CSS filter-function lists. Recursive effects and
 forward/missing result names have categorized failures.
+Filter result/input names retain exact case and whitespace. Only built-in inputs
+and earlier exact result names resolve; unmatched names are unsupported.
 
 ### Text and fonts
 

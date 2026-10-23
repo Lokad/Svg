@@ -2176,7 +2176,7 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_group_attributes_that_remain_unimplemented()
+    public void Rejects_undefined_group_clip_references()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g clip-path='url(#clip)'><rect width='1' height='1'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
