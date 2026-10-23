@@ -107,6 +107,9 @@ values; overflow (including excessive integer padding) discards the entire point
 list, including markers and its own filter. Enclosing filters can still process
 transparent child input. Authored syntax and resource limits remain checked; see
 the [numeric regressions](../tests/Lokad.Svg.Tests/SvgPointListNumberTests.cs).
+Point-list drawing bounds follow native integer saturation before enclosing
+placement; [bounds regressions](../tests/Lokad.Svg.Tests/SvgPointListDrawingBoundsTests.cs)
+also cover cached instance and resource controls.
 Path numbers retain explicit signs and equivalent decimal/exponent spellings
 through integer and general geometry routes.
 Numeric syntax recovery retains completed path/clip-path segments; unsupported

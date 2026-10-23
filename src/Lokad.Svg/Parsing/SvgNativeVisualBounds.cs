@@ -5,7 +5,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Applies native non-scaling-stroke drawing bounds after the complete source and its markers are lowered.</summary>
+/// <summary>Applies native drawing bounds to point lists and non-scaling strokes after the complete source and its markers are lowered.</summary>
 /// <remarks>Replaces culled geometry with inert anchors, retaining object bounds for
 /// enclosing resources and eligible filters. Failure releases the batch. Temporary command storage
 /// shares the parser budget/work/token. Calls are parser-thread confined; no caller storage is retained.</remarks>
@@ -15,7 +15,10 @@ internal static class SvgNativeVisualBounds
         SvgRecordedPaintStyle paint, SvgViewportFrame? frame, int maximumCommands, SvgDocumentState state)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
-        if (parsed.Geometries.IsEmpty || !style.NonScalingStroke) return parsed;
+        if (parsed.Geometries.IsEmpty || !style.NonScalingStroke && reader.LocalName is not ("polygon" or "polyline")) return parsed;
+        // Ordinary cached sources still have a pending instance/viewBox map.
+        // Their live drawing bounds cannot be decided in definition coordinates.
+        if (!style.NonScalingStroke && (reader is SvgDefinitionLeafSource || state.DefinitionsDepth >= 0 || state.SymbolDepth >= 0)) return parsed;
         bool picture = state.IsResourcePicture || state.PatternDepth >= 0 || state.MaskDepth >= 0;
         if (picture && (context.CanPaintEmptyNativeBounds || reader.GetAttribute("transform") is {} ownTransform && !SvgCssWhitespace.Trim(ownTransform).AsSpan().IsEmpty))
             return parsed;
