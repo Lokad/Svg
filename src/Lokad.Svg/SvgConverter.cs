@@ -913,6 +913,11 @@ public static partial class SvgConverter
                         RestoreDeferredImage(image, deferred, sourceDevice, nativeSource, new((int)left, (int)top), new(restoreLeft, restoreTop, restoreRight, restoreBottom));
                         return end + 1;
                     }
+                    if (resource.Primitives.Items.Length > 0 && resource.Primitives.Items[^1].Kind == SvgFilterPrimitiveKind.Flood)
+                    {
+                        RestoreFlood(image, nativeImage, remainder, new((int)left, (int)top), new(restoreLeft, restoreTop, restoreRight, restoreBottom));
+                        return end + 1;
+                    }
                     SvgShaderMatrix imageToDevice = SvgShaderMatrix.Concat(
                         new((float)sourceDevice.A, (float)sourceDevice.C, (float)sourceDevice.E, (float)sourceDevice.B, (float)sourceDevice.D, (float)sourceDevice.F),
                         new(1, 0, nativeImage.Left - (nativeSource.Left - 1), 0, 1, nativeImage.Top - (nativeSource.Top - 1)));
@@ -963,6 +968,97 @@ public static partial class SvgConverter
                 {
                     if (!preparationCharged) workUnits += preparation.Used;
                     // Geometry and paint owners remain borrowed from the parent scene.
+                }
+
+                // Native floods fill with a uniform shader through the region's
+                // AA clip. Accumulate clip coverage before applying colored alpha.
+                void RestoreFlood(RasterizedSurface image, SvgPaintBounds bounds, SvgShaderMatrix transform,
+                    SvgCpuBitmapOrigin origin, SvgAnalyticClipBounds area)
+                {
+                    SvgRenderLimits limits = options.Limits;
+                    Charge(128);
+                    int sx = (int)Math.Clamp((double)bounds.Left - origin.X, 0, image.Width - 1);
+                    int sy = (int)Math.Clamp((double)bounds.Top - origin.Y, 0, image.Height - 1);
+                    int at = (sy * image.Width + sx) * 4;
+                    int opacity = Math.Clamp((int)MathF.Floor(command.SourceOpacity.Value * foldedOpacity * 255 + .5f), 0, 255);
+                    SvgConstantShaderPaint paint = new((byte)((image.Pixels[at] * opacity + 255) >> 8),
+                        (byte)((image.Pixels[at + 1] * opacity + 255) >> 8), (byte)((image.Pixels[at + 2] * opacity + 255) >> 8),
+                        (byte)((image.Pixels[at + 3] * opacity + 255) >> 8));
+                    Span<SvgDevicePoint> points = stackalloc SvgDevicePoint[4];
+                    points[0] = Map(bounds.Left, bounds.Top); points[1] = Map(bounds.Right, bounds.Top);
+                    points[2] = Map(bounds.Right, bounds.Bottom); points[3] = Map(bounds.Left, bounds.Bottom);
+                    bool clipped = !ContainsOutput(points, area);
+                    SvgAnalyticContourPreparation preparation = new(points, [4], [], false, null, SvgPolygonMapping.NativeFillEdges,
+                        [], [], area, outputWidth, outputHeight);
+                    scoped SvgAnalyticCoverage walker = default;
+                    try
+                    {
+                        if (clipped)
+                        {
+                            walker = SvgAnalyticCoverage.Prepare(ref preparation, area.Left, area.Right, area.Top, area.Bottom,
+                                new(area.Left, area.Right), new SvgAnalyticClipContext(area), SvgAnalyticPaintClip.Antialiased,
+                                limits.MaximumWorkUnits - workUnits, budget, out long setupWork, out bool eligible, cancellationToken);
+                            Charge(setupWork);
+                            if (!eligible) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine flood clip edges are outside the retained boundary.");
+                        }
+                        Charge((long)(area.Right - area.Left) * (area.Bottom - area.Top) * 4);
+                        Span<byte> clipPixel = stackalloc byte[4];
+                        for (int y = area.Top; y < area.Bottom; y++)
+                        {
+                            cancellationToken.ThrowIfCancellationRequested();
+                            if (clipped)
+                            {
+                                walker.PrepareRow(y, limits.MaximumWorkUnits - workUnits, out long rowWork, cancellationToken);
+                                Charge(rowWork);
+                            }
+                            for (int x = area.Left; x < area.Right; x++)
+                            {
+                                if ((x & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                                byte coverage = 255;
+                                if (clipped)
+                                {
+                                    clipPixel.Clear();
+                                    walker.PaintPixel(x - area.Left, clipPixel, SvgAnalyticPaint.Solid(new(0, 0, 0, 255)), SvgAnalyticClipCoverage.Full);
+                                    coverage = clipPixel[3];
+                                }
+                                if (activeViewportClip.Length != 0) coverage = (byte)((coverage * activeViewportClip[(y * outputWidth + x) * 4 + 3] + 127) / 255);
+                                paint.Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), coverage);
+                            }
+                        }
+                    }
+                    finally { walker.Dispose(); }
+
+                    SvgDevicePoint Map(float x, float y) => SvgAuthoredPath.MapPoint(
+                        new(transform.ScaleX, transform.SkewY, transform.SkewX, transform.ScaleY, transform.TranslateX, transform.TranslateY), new(x, y), new(0, 0));
+                    // Scalar affine form of SkRectPriv::QuadContainsRectMask.
+                    // The inset matches native coordinate rounding, not pixel tolerance.
+                    static bool ContainsOutput(ReadOnlySpan<SvgDevicePoint> corners, SvgAnalyticClipBounds output)
+                    {
+                        const float inset = 1e-3f;
+                        float a0 = (float)corners[0].Y - (float)corners[1].Y;
+                        float b0 = (float)corners[1].X - (float)corners[0].X;
+                        float a1 = (float)corners[1].Y - (float)corners[2].Y;
+                        float b1 = (float)corners[2].X - (float)corners[1].X;
+                        float sign = a0 * b1 - b0 * a1 < 0 ? -1 : 1;
+                        for (int edge = 0; edge < 4; edge++)
+                        {
+                            SvgDevicePoint p = corners[edge], q = corners[(edge + 1) & 3];
+                            float a = (float)p.Y - (float)q.Y, b = (float)q.X - (float)p.X;
+                            float c = (float)p.X * (float)q.Y - (float)p.Y * (float)q.X;
+                            for (int corner = 0; corner < 4; corner++)
+                            {
+                                float x = corner is 1 or 2 ? output.Right - inset : output.Left + inset;
+                                float y = corner >= 2 ? output.Bottom - inset : output.Top + inset;
+                                if (!(sign * (a * x + b * y + c) >= 0)) return false;
+                            }
+                        }
+                        return true;
+                    }
+                    void Charge(long amount)
+                    {
+                        if (amount > limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Affine flood restoration exceeds its work limit.");
+                        workUnits += amount;
+                    }
                 }
 
                 // Restores one retained source image; storage stays with its captured
@@ -1029,7 +1125,7 @@ public static partial class SvgConverter
                             walker = SvgAnalyticCoverage.Prepare(ref imagePreparation, area.Left, area.Right, area.Top, area.Bottom,
                                 new(area.Left, area.Right), new SvgAnalyticClipContext(imageClip), SvgAnalyticPaintClip.Antialiased,
                                 limits.MaximumWorkUnits - workUnits, budget, out long setupWork, out bool eligible, cancellationToken);
-                            workUnits += setupWork;
+                            Charge(setupWork);
                             if (!eligible) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Deferred affine image edges are outside the retained boundary.");
                         }
                         if (cropped)
@@ -1039,7 +1135,7 @@ public static partial class SvgConverter
                             cropWalker = SvgAnalyticCoverage.Prepare(ref cropPreparation, area.Left, area.Right, area.Top, area.Bottom,
                                 new(area.Left, area.Right), new SvgAnalyticClipContext(area), SvgAnalyticPaintClip.Antialiased,
                                 limits.MaximumWorkUnits - workUnits, budget, out long cropWork, out bool eligible, cancellationToken);
-                            workUnits += cropWork;
+                            Charge(cropWork);
                             if (!eligible) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Deferred affine crop edges are outside the retained boundary.");
                             int rowBytes = checked((area.Right - area.Left) * 4);
                             cropOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<byte>(rowBytes), SvgMemoryCategory.Surface);
@@ -1053,14 +1149,14 @@ public static partial class SvgConverter
                             if (!linear)
                             {
                                 walker.PrepareRow(y, limits.MaximumWorkUnits - workUnits, out long rowWork, cancellationToken);
-                                workUnits += rowWork;
+                                Charge(rowWork);
                             }
                             if (cropped)
                             {
                                 Charge((long)(area.Right - area.Left) * 2);
                                 cropRow.AsSpan().Clear();
                                 cropWalker.PrepareRow(y, limits.MaximumWorkUnits - workUnits, out long cropWork, cancellationToken);
-                                workUnits += cropWork;
+                                Charge(cropWork);
                                 for (int x = area.Left; x < area.Right; x++)
                                     cropWalker.PaintPixel(x - area.Left, cropRow.AsSpan((x - area.Left) * 4, 4),
                                         SvgAnalyticPaint.Solid(new(0, 0, 0, 255)), SvgAnalyticClipCoverage.Full);

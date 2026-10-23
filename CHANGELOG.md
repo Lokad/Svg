@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve antialiased region edges when restoring affine terminal flood filters,
+  including empty symbol sources; enforce the restoration path's complete work charge.
 - Let authored pattern child elements override inherited content even when they
   paint nothing; keep childless and text-only aliases inheriting. Avoid fonts in
   unreferenced or overridden pattern sources while retaining reference validation.
