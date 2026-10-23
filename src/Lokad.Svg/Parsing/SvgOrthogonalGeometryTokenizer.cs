@@ -236,21 +236,39 @@ internal static class SvgOrthogonalGeometryTokenizer
         {
             DelimitedTokenReader values = new(value, workCounter, cancellationToken);
             int vertexCount = 0;
+            bool invalidNativeCoordinate = false;
             while (values.TryReadValue(out ReadOnlySpan<char> x))
             {
                 if ((vertexCount & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
                 if (!values.TryReadValue(out ReadOnlySpan<char> y)) throw new SvgException(SvgErrorCode.MalformedInput, elementName + " points must pair every x coordinate with a y coordinate.");
                 if (vertexCount >= maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, elementName + " vertex count exceeds the configured path-command limit.");
-                points.Add(new SvgFractionalPoint(ParsePointCoordinate(x, elementName), ParsePointCoordinate(y, elementName)));
+                float px = NativeCoordinate(x, elementName, workCounter, cancellationToken);
+                float py = NativeCoordinate(y, elementName, workCounter, cancellationToken);
+                invalidNativeCoordinate |= !float.IsFinite(px) || !float.IsFinite(py);
+                if (!invalidNativeCoordinate) points.Add(new SvgFractionalPoint(px, py));
                 vertexCount++;
             }
-            if (points.Count < minimumPoints) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The " + elementName + " has too few vertices for its geometry consumer.");
+            if (vertexCount < minimumPoints) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The " + elementName + " has too few vertices for its geometry consumer.");
+            // A failed native number invalidates the complete SVG point list,
+            // including a valid prefix. Still validate all authored syntax/limits.
+            if (invalidNativeCoordinate) points.Clear();
             return points;
         }
         catch
         {
             points.Dispose();
             throw;
+        }
+
+        static float NativeCoordinate(ReadOnlySpan<char> token, string name, ParserWorkCounter work, CancellationToken cancellation)
+        {
+            _ = ParsePointCoordinate(token, name);
+            float native = SvgFloatNumber.ReadValidated(token, work, cancellation);
+            // SVG numbers reject positive exponents above the float decimal range,
+            // even for zero; other numeric consumers retain their own rules.
+            int exponentAt = token.IndexOfAny('e', 'E');
+            return exponentAt >= 0 && double.Parse(token[(exponentAt + 1)..], SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture) > 38
+                ? float.NaN : native;
         }
     }
 
