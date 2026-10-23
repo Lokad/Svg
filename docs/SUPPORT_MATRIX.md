@@ -285,6 +285,8 @@ referenced identifiers keep their case.
 Local URL and href fragments decode UTF-8 percent escapes once, including template
 references, text paths and font-resource discovery. Literal Unicode remains
 unchanged; malformed escapes, invalid UTF-8 and encoded ASCII whitespace reject.
+Gradient templates select the same escaped IDs before and after target declarations;
+see the [deferred-reference regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.DeferredFragments.cs).
 Local URLs accept surrounding padding and trailing ASCII URI whitespace. Leading
 whitespace inside a quoted URI and ASCII whitespace within its fragment reject;
 they do not bind a different identifier after trimming.

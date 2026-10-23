@@ -95,6 +95,56 @@ public sealed class SvgGradientResolutionTests
         }
     }
 
+    [Theory]
+    [InlineData("linearGradient")]
+    [InlineData("radialGradient")]
+    public void Deferred_encoded_ids_preserve_borrowed_storage_on_failure_and_allow_retry(string kind)
+    {
+        const long borrowedBytes = 73;
+        string definitions = "<" + kind + " id='g0' href='#middle'/><" + kind + " id='middle' href='#%25qq'/><" + kind + " id='%qq'><stop stop-color='red'/></" + kind + ">";
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><defs>" + definitions + "</defs><rect width='4' height='4' fill='url(#g0)'/></svg>");
+        RenderBudget measured = new(1_000_000);
+        ParserWorkCounter work = new(10_000);
+        using (RenderBudget.BudgetReservation borrowed = measured.Reserve(borrowedBytes, SvgMemoryCategory.Parser))
+        {
+            using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None)) { }
+            Assert.Equal(borrowedBytes, measured.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, measured.Snapshot().CurrentBytes);
+        for (long limit = 0; limit < work.Used; limit++)
+        {
+            RenderBudget denied = new(1_000_000);
+            using (RenderBudget.BudgetReservation borrowed = denied.Reserve(borrowedBytes, SvgMemoryCategory.Parser))
+            {
+                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
+                Assert.Equal(borrowedBytes, denied.Snapshot().CurrentBytes);
+            }
+            Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        }
+        long peak = measured.Snapshot().PeakBytes;
+        foreach (long limit in new[] { borrowedBytes + 1, (peak + borrowedBytes) / 2, peak - 1 })
+        {
+            RenderBudget denied = new(limit);
+            using (RenderBudget.BudgetReservation borrowed = denied.Reserve(borrowedBytes, SvgMemoryCategory.Parser))
+            {
+                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
+                Assert.Equal(borrowedBytes, denied.Snapshot().CurrentBytes);
+            }
+            Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        }
+        using CancellationTokenSource cancellation = new();
+        cancellation.Cancel();
+        RenderBudget cancelled = new(1_000_000);
+        using (RenderBudget.BudgetReservation borrowed = cancelled.Reserve(borrowedBytes, SvgMemoryCategory.Parser))
+        {
+            Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, cancellation.Token)).CancellationToken);
+            Assert.Equal(borrowedBytes, cancelled.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, cancelled.Snapshot().CurrentBytes);
+        byte[] control = "<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><rect width='4' height='4' fill='red'/></svg>"u8.ToArray();
+        Assert.Equal(SvgConverter.ConvertToPng(control, SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+    }
+
     private static byte[] Chain(int count, bool radial, bool reverse)
     {
         string kind = radial ? "radialGradient" : "linearGradient";

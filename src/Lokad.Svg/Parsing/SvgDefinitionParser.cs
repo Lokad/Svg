@@ -1390,8 +1390,8 @@ internal static class SvgDefinitionParser
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(workCounter);
         string id = state.GradientId ?? throw new InvalidOperationException("Gradient registration requires an identifier.");
-        string href = state.Strings.Copy(hrefId.AsSpan());
-        string hrefRef = state.Strings.Copy(("#" + hrefId).AsSpan());
+        string dependencyKey = state.Strings.Copy(hrefId);
+        string authoredHref = state.Strings.Copy(template.Href ?? throw new InvalidOperationException("Pending gradients require their authored href."));
         SvgGradientStop[] stops = AllocateGradientStops(state);
         for (int index = 0; index < stops.Length; index++)
         {
@@ -1400,8 +1400,8 @@ internal static class SvgDefinitionParser
         }
         workCounter.Consume(cancellationToken);
         SvgPendingGradientReference reference = new(SvgGradientKind.Linear, state.PendingLinearGradientHrefs.Count);
-        SvgPendingGradientReference? next = LinkPendingGradient(state, href, reference, workCounter, cancellationToken);
-        state.PendingLinearGradientHrefs.Add(new(id, template with { Href = hrefRef }, stops) { Next = next });
+        SvgPendingGradientReference? next = LinkPendingGradient(state, dependencyKey, reference, workCounter, cancellationToken);
+        state.PendingLinearGradientHrefs.Add(new(id, template with { Href = authoredHref }, stops) { Next = next });
     }
 
     private static SvgPendingGradientReference? LinkPendingGradient(SvgDocumentState state, string target, SvgPendingGradientReference reference,
@@ -1671,8 +1671,8 @@ internal static class SvgDefinitionParser
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(workCounter);
         string id = state.RadialGradientId ?? throw new InvalidOperationException("Radial gradient registration requires an identifier.");
-        string href = state.Strings.Copy(hrefId.AsSpan());
-        string hrefRef = state.Strings.Copy(("#" + hrefId).AsSpan());
+        string dependencyKey = state.Strings.Copy(hrefId);
+        string authoredHref = state.Strings.Copy(template.Href ?? throw new InvalidOperationException("Pending gradients require their authored href."));
         SvgGradientStop[] stops = AllocateGradientStops(state);
         for (int index = 0; index < stops.Length; index++)
         {
@@ -1681,8 +1681,8 @@ internal static class SvgDefinitionParser
         }
         workCounter.Consume(cancellationToken);
         SvgPendingGradientReference reference = new(SvgGradientKind.Radial, state.PendingRadialGradientHrefs.Count);
-        SvgPendingGradientReference? next = LinkPendingGradient(state, href, reference, workCounter, cancellationToken);
-        state.PendingRadialGradientHrefs.Add(new(id, template with { Href = hrefRef }, stops) { Next = next });
+        SvgPendingGradientReference? next = LinkPendingGradient(state, dependencyKey, reference, workCounter, cancellationToken);
+        state.PendingRadialGradientHrefs.Add(new(id, template with { Href = authoredHref }, stops) { Next = next });
     }
 
     private static (SvgColor Start, SvgColor End, double Offset1, double Offset2, bool IsEmpty, SvgGradientStop[] Stops) ResolveRadialStops(SvgDocumentState state, SvgRadialTemplate template, ParserWorkCounter work, CancellationToken token)

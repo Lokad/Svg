@@ -7,6 +7,8 @@
   focal fields when replacing center/radius; share immutable definition storage.
 - Decode local UTF-8 URI fragments once across paint/effect resources, templates,
   text paths and font discovery, avoiding accidental binding to literal encoded IDs.
+- Preserve escaped gradient hrefs through deferred registration so forward targets
+  select the same identifiers as earlier definitions.
 - Check authored filter lengths and marker orientations before trimming, including
   orientation keywords; preserve the existing scalar-token limit and cleanup on rejection.
 - Preserve source-independent filters on paintless geometry and empty local uses,
