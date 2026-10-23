@@ -3524,6 +3524,15 @@ public static partial class SvgConverter
                     }
                     if (OperatingSystem.IsLinux())
                     {
+                        // Native text recording uses the font layout bounds. Keep
+                        // an extra device pixel around them before avoiding fitting
+                        // glyphs that cannot reach this target surface.
+                        SvgPaintBounds layout = source.LayoutBounds(SvgAffineTransform.Identity, preparationWork, cancellationToken)
+                            .Map(SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset), preparationWork, cancellationToken);
+                        double fittingSize = source.DeviceFontSize(verticalScale);
+                        if (fittingSize is > 0 and <= 32767
+                            && (layout.Right < -1 || layout.Bottom < -1 || layout.Left > outputWidth + 1 || layout.Top > outputHeight + 1))
+                        { workUnits += preparationWork.Used; return; }
                         using SvgAuthoredPath path = source.CreateLatinLightPath(horizontalScale, horizontalOffset, verticalScale, verticalOffset, budget, preparationWork, cancellationToken);
                         if (path.Commands.IsEmpty) { workUnits += preparationWork.Used; return; }
                         Span<byte> preblend = stackalloc byte[256];

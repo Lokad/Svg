@@ -171,7 +171,7 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
     // Relax the remaining picture matrix before fitting, while retaining the
     // original placement for subpixel origin selection. Ordinary glyphs keep
     // their qualified device-size route.
-    private double DeviceFontSize(double scale)
+    internal double DeviceFontSize(double scale)
     {
         if (_pictureFontScale is not {} host) return _fontSize * scale;
         float recordedSize = SvgGlyphDeviceMetrics.GetEffectiveFontSize(_fontSize * host);
