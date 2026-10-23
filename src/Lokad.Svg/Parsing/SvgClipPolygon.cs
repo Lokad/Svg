@@ -15,7 +15,7 @@ internal readonly record struct SvgClipPolygon(SvgDevicePoint[] Points, int[] Co
     /// <summary>Borrows immutable native path commands owned by the document's clip staging registry.</summary>
     internal SvgAuthoredPath? SourcePath { get; init; }
     internal bool IsEvenOdd { get; init; }
-    /// <summary>Selects authored replay for curves, compound contours and combined child paths.</summary>
+    /// <summary>Selects authored replay for curves, compound contours and nontrivial unions; contained rectangles retain their primitive coverage.</summary>
     internal bool UsesNativeReplay { get; init; }
     /// <summary>Retains the native oval clip identity when its child map preserves axis-aligned oval bounds.</summary>
     internal bool IsOval { get; init; }
@@ -25,6 +25,7 @@ internal readonly record struct SvgClipPolygon(SvgDevicePoint[] Points, int[] Co
     internal string? NestedClipId { get; init; }
     /// <summary>Preserves the union of mapped child layout boxes independently of path union geometry.</summary>
     internal SvgPaintBounds? ResourceBounds { get; init; }
+    /// <summary>Counts authored children even when containment leaves one effective rectangle.</summary>
     internal int ChildCount { get; init; } = 1;
     /// <summary>Identifies an already resolved native boundary whose curve verbs must survive registration.</summary>
     internal bool IsResolvedUnion { get; init; }
@@ -39,9 +40,17 @@ internal readonly record struct SvgClipPolygon(SvgDevicePoint[] Points, int[] Co
         SvgSceneBuilder scene, ParserWorkCounter work, CancellationToken token)
     {
         if (!UsesMaskFallback)
+        {
+            // Containment leaves one original rectangle. Keep object-box polygon
+            // registration for admitted affine instances, but preserve rectangular
+            // coverage rather than adding a generic path's enclosing clip.
+            if (IsObjectBoundingBox && ChildCount > 1 && !UsesNativeReplay && ResourceBounds is {} rectangle)
+                return new SvgAffineViewportClip(new(rectangle.Left, rectangle.Top, rectangle.Right - rectangle.Left, rectangle.Bottom - rectangle.Top), map)
+                    .Register(state, scene, work, token);
             return SvgAffineViewportClip.RegisterContour(Points, ContourEnds, map,
                 IsOval ? SvgClipContentKind.OvalClipPath : SvgClipContentKind.ClipPath,
                 replaySource ? SourcePath : null, ResourceBounds, IsEvenOdd, state, scene, work, token);
+        }
         SvgClipChildRange range = Children ?? throw new InvalidOperationException("Clip fallback requires original child sources.");
         BudgetedParserList<SvgClipChild> children = state.ClipChildren ?? throw new InvalidOperationException("Clip child sources are missing.");
         using SvgSceneBuilder builder = new(state.Budget, work, token);

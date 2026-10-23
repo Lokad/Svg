@@ -196,6 +196,11 @@ definition ancestors does not disable the resource. A clipPath's own CSS
 `display:none` makes its references contribute no clipping; an empty or hidden
 child instead contributes an empty silhouette. Fill/stroke paint and
 opacity do not suppress raw clip geometry.
+Contained unrounded rectangles retain the containing rectangle's coverage through
+admitted instances/resources and either resource-unit system; see the
+[containment regressions](../tests/Lokad.Svg.Tests/SvgRectangleClipUnionTests.cs).
+Retained group instances bind object-box clips after replay supplies their geometry
+bounds, including when both the group and clip were defined before the instance.
 Likewise, a mask's own CSS `display:none` removes its binding and region; a hidden
 definition ancestor leaves it available. An empty or hidden mask child remains
 an empty mask, suppressing its target rather than removing the binding.

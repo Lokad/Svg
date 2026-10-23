@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Preserve the original rectangular clip when a sibling rectangle is contained
+  within it, retaining fractional coverage through instances and resources.
+  Bind retained-group object-box clips after replay supplies their geometry bounds.
 - Anchor text to its positioned advance extents, including relative shifts and
   backtracking; preserve separate native fragment-origin and anchor rounding.
 - Preserve independent fill, stroke, markers and effects when a gradient or

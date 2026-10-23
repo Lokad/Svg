@@ -1769,11 +1769,14 @@ internal static class SvgReferenceResolver
         SvgClipPolygon? boundingClip = pendingUse.DeferredClip is {} clipReference
             && state.ClipPolygons.TryGetValue(clipReference.ClipId, out SvgClipPolygon clipContent) && clipContent.IsObjectBoundingBox
             ? clipContent : null;
+        SvgClipBox? boundingRectangle = definition.SymbolContent is not null && definition.Geometries.Length == 0
+            && pendingUse.DeferredClip is {} rectangleReference
+            && state.ObjectClips.TryGetValue(rectangleReference.ClipId, out SvgClipBox fractions) ? fractions : null;
         bool nativeClip = pendingUse.DeferredClip is {} nativeReference
             && (state.ClipPolygons.TryGetValue(nativeReference.ClipId, out SvgClipPolygon nativeContent) && !nativeContent.IsObjectBoundingBox
                 || state.Clips.TryGetValue(nativeReference.ClipId, out _) && !pendingUse.Reference.Transform.IsAxisAligned);
         if (!filteredOutputClip && pendingUse.DeferredClip is SvgDeferredClip deferred)
-            frame = boundingClip is null && !nativeClip ? ResolveDeferredClipFrame(definition, pendingUse.Reference, deferred, state, workCounter, cancellationToken) : deferred.Parent;
+            frame = boundingClip is null && boundingRectangle is null && !nativeClip ? ResolveDeferredClipFrame(definition, pendingUse.Reference, deferred, state, workCounter, cancellationToken) : deferred.Parent;
         byte? mask = pendingUse.Mask;
         if (pendingUse.MaskReference is not null && mask is null && !state.MaskContents.TryGetValue(SvgMaskSyntax.ParseMaskId(pendingUse.MaskReference), out _)) mask = ResolveDeferredMaskValue(pendingUse.MaskReference, state);
         SvgGeometry[] applied = ApplyInstanceMask(definition, pendingUse.Reference, frame, mask, pendingUse.MaskReference,
@@ -1787,11 +1790,13 @@ internal static class SvgReferenceResolver
                     applied[index] = applied[index] with { LeafMask = SvgClipPathSyntax.BindResourceClip(bindingReference.ClipId,
                         PlainInstancePlacement(pendingUse.Reference, frame), applied[index].LeafMask, state, workCounter, cancellationToken) };
                 }
-            if (!filteredOutputClip && boundingClip is {} content)
+            if (!filteredOutputClip && (boundingClip is not null || boundingRectangle is not null))
             {
                 SvgObjectBoundingClip bounds = new(pendingUse.Reference.Transform, frame);
                 foreach (SvgGeometry geometry in applied) bounds.Add(geometry, state, workCounter, cancellationToken);
-                SvgLeafMaskOperation operation = bounds.Register(content, state, workCounter, cancellationToken);
+                SvgLeafMaskOperation operation = boundingClip is {} content
+                    ? bounds.Register(content, state, workCounter, cancellationToken)
+                    : bounds.Register(boundingRectangle.GetValueOrDefault(), state, workCounter, cancellationToken);
                 for (int index = 0; index < applied.Length; index++)
                 {
                     workCounter.Consume(cancellationToken);

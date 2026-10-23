@@ -756,10 +756,13 @@ internal static class SvgDefinitionParser
             if (useReference.Filter is {} filter && !SvgCssWhitespace.Trim(filter).Equals("none", StringComparison.OrdinalIgnoreCase))
                 return new SvgDeferredClip(document.Strings.Copy(clipId), document.EffectiveFrame, useReader.Depth);
             bool clipKnown = document.Clips.TryGetValue(clipId, out _) || document.ObjectClips.TryGetValue(clipId, out _);
-            bool definitionKnown = SvgReferenceResolver.TryGetDefinition(useReference, document.Definitions, out _);
+            bool definitionKnown = SvgReferenceResolver.TryGetDefinition(useReference, document.Definitions, out SvgDefinition definition);
             if (document.Clips.TryGetValue(clipId, out _) && useReference.Transform != SvgAffineTransform.Identity)
                 return new SvgDeferredClip(document.Strings.Copy(clipId), document.EffectiveFrame, useReader.Depth);
-            if (definitionKnown && clipKnown) return null;
+            // A retained group is known before its replay supplies geometry bounds.
+            bool needsRenderedBounds = definitionKnown && definition.SymbolContent is not null && definition.Geometries.Length == 0
+                && document.ObjectClips.TryGetValue(clipId, out _);
+            if (definitionKnown && clipKnown && !needsRenderedBounds) return null;
             if (!clipKnown) return new SvgDeferredClip(document.Strings.Copy(clipId), document.EffectiveFrame, useReader.Depth);
             if (document.ObjectClips.TryGetValue(clipId, out _)) return new SvgDeferredClip(document.Strings.Copy(clipId), document.EffectiveFrame, useReader.Depth);
             return null;
@@ -945,7 +948,9 @@ internal static class SvgDefinitionParser
             if (child.Points.Length == 0 && state.ClipPolygon is {} painted)
             {
                 child.SourcePath?.Dispose();
-                if (painted.NestedClipId is null && !painted.UsesNativeReplay && painted.ContourEnds.Length == 1 && TryGetAxisClipBox(painted.Points, work, token, out SvgClipBox box))
+                if (painted.NestedClipId is null && !painted.UsesNativeReplay && !painted.UsesMaskFallback
+                    && (!painted.IsObjectBoundingBox || painted.ChildCount == 1) && painted.ContourEnds.Length == 1
+                    && TryGetAxisClipBox(painted.Points, work, token, out SvgClipBox box))
                     state.ClipBox = box;
                 return;
             }
@@ -964,7 +969,9 @@ internal static class SvgDefinitionParser
             }
             else state.ClipPolygon = child;
             state.ClipBox = child.Points.Length == 0 ? new(0, 0, 0, 0)
-                : child.NestedClipId is null && !child.UsesNativeReplay && child.ContourEnds.Length == 1 && TryGetAxisClipBox(child.Points, work, token, out SvgClipBox clipRect) ? clipRect : null;
+                : child.NestedClipId is null && !child.UsesNativeReplay && !child.UsesMaskFallback
+                    && (!child.IsObjectBoundingBox || child.ChildCount == 1) && child.ContourEnds.Length == 1
+                    && TryGetAxisClipBox(child.Points, work, token, out SvgClipBox clipRect) ? clipRect : null;
         }
 
         // Borrow both input owners, bake each native child map once, then retain a
@@ -997,6 +1004,24 @@ internal static class SvgDefinitionParser
                     ResourceBounds = new(MathF.Min(a.Left, b.Left), MathF.Min(a.Top, b.Top), MathF.Max(a.Right, b.Right), MathF.Max(a.Bottom, b.Bottom)) };
             }
             SvgAuthoredPath firstPath = first.SourcePath ?? throw new InvalidOperationException("Clip children require retained source commands.");
+            // Containment preserves the original rectangle clip. Rebuilding it as
+            // a path introduces a separate enclosing clip at fractional edges.
+            // Keep authored children/counts for the bounded fallback and source
+            // bounds for later siblings, while copying the selected path owner.
+            if (!first.UsesNativeReplay && !next.UsesNativeReplay && first.ContourEnds.Length == 1 && next.ContourEnds.Length == 1
+                && TryGetAxisClipBox(first.Points, work, token, out SvgClipBox firstBox)
+                && TryGetAxisClipBox(next.Points, work, token, out SvgClipBox nextBox))
+            {
+                SvgClipPolygon? outer = firstBox.Contains(nextBox.X, nextBox.Y, nextBox.Right, nextBox.Bottom) ? first
+                    : nextBox.Contains(firstBox.X, firstBox.Y, firstBox.Right, firstBox.Bottom) ? next : null;
+                if (outer is {} containing)
+                {
+                    SvgAuthoredPath original = containing.SourcePath ?? throw new InvalidOperationException("A containing clip rectangle requires source commands.");
+                    SvgPaintBounds bounds = ChildBounds(containing, original, work, token);
+                    return containing with { SourcePath = original.Copy(SvgAffineTransform.Identity, state.Budget, work, token),
+                        Children = range, ChildCount = first.ChildCount + 1, ResourceBounds = bounds };
+                }
+            }
             if ((first.UsesNativeReplay && first.ChildCount == 1) || next.UsesNativeReplay
                 || (first.IsEvenOdd && first.ChildCount == 1) || next.IsEvenOdd || next.ContourEnds.Length != 1
                 || (first.ChildCount == 1 && first.ContourEnds.Length != 1) || first.IsResolvedUnion)
