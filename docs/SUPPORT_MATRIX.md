@@ -225,6 +225,8 @@ Alpha/luminance masks support ordered vector/text content, clipping, local uses,
 both region/content unit systems and transformed finite regions.
 Text content enters masks through groups or local uses; direct text children
 of a mask are unsupported.
+Unused mask text and explicitly empty mask regions need no font programs; see the
+[reachability regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskReachability.cs).
 Object-box mask regions require bare-number fractions; user-space regions also
 accept viewport percentages.
 For axis-aligned shape targets, spatial mask content must cover an explicit

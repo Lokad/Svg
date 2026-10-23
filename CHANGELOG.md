@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Defer mask scenes until target placement, skipping unused mask text and
+  explicitly empty regions. Share retained replay for single-use and grouped masks.
 - Admit inert `title`, `desc` and `metadata` children inside text, including
   retained instances, without spending the rendered-text character allowance.
 - Preserve fractional glyph coverage through symbol viewport clips, including

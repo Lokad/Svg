@@ -166,7 +166,7 @@ internal static class SvgRenderedLeafParser
         {
             case "rect":
                 string? deferredRectClip = SvgClipPathSyntax.PendingClipId(reader, state, context);
-                string? deferredRectMask = SvgMaskSyntax.PendingMaskId(reader, state);
+                string? deferredRectMask = SvgMaskSyntax.PendingMaskId(reader, state, context);
                 bool deferRectClip = deferredRectClip is not null;
                 int rectFirstGeometry = state.Scene.GeometryCount;
                 state.DeferringLeafClip = deferRectClip;
@@ -195,7 +195,7 @@ internal static class SvgRenderedLeafParser
                 return true;
             case "line":
                 string? deferredLineClip = SvgClipPathSyntax.PendingClipId(reader, state, context);
-                string? deferredLineMask = SvgMaskSyntax.PendingMaskId(reader, state);
+                string? deferredLineMask = SvgMaskSyntax.PendingMaskId(reader, state, context);
                 bool deferLineClip = deferredLineClip is not null;
                 int lineFirstGeometry = state.Scene.GeometryCount;
                 state.DeferringLeafClip = deferLineClip;
@@ -224,7 +224,7 @@ internal static class SvgRenderedLeafParser
                 return true;
             case "circle":
                 string? deferredCircleClip = SvgClipPathSyntax.PendingClipId(reader, state, context);
-                string? deferredCircleMask = SvgMaskSyntax.PendingMaskId(reader, state);
+                string? deferredCircleMask = SvgMaskSyntax.PendingMaskId(reader, state, context);
                 bool deferCircleClip = deferredCircleClip is not null;
                 int circleFirstGeometry = state.Scene.GeometryCount;
                 state.DeferringLeafClip = deferCircleClip;
@@ -253,7 +253,7 @@ internal static class SvgRenderedLeafParser
                 return true;
             case "ellipse":
                 string? deferredEllipseClip = SvgClipPathSyntax.PendingClipId(reader, state, context);
-                string? deferredEllipseMask = SvgMaskSyntax.PendingMaskId(reader, state);
+                string? deferredEllipseMask = SvgMaskSyntax.PendingMaskId(reader, state, context);
                 bool deferEllipseClip = deferredEllipseClip is not null;
                 int ellipseFirstGeometry = state.Scene.GeometryCount;
                 state.DeferringLeafClip = deferEllipseClip;
@@ -282,7 +282,7 @@ internal static class SvgRenderedLeafParser
                 return true;
             case "path":
                 string? deferredPathClip = SvgClipPathSyntax.PendingClipId(reader, state, context);
-                string? deferredPathMask = SvgMaskSyntax.PendingMaskId(reader, state);
+                string? deferredPathMask = SvgMaskSyntax.PendingMaskId(reader, state, context);
                 bool deferPathClip = deferredPathClip is not null;
                 int pathFirstGeometry = state.Scene.GeometryCount;
                 state.DeferringLeafClip = deferPathClip;
@@ -303,7 +303,7 @@ internal static class SvgRenderedLeafParser
                 return true;
             case "polygon" or "polyline":
                 string? deferredPointListClip = SvgClipPathSyntax.PendingClipId(reader, state, context);
-                string? deferredPointListMask = SvgMaskSyntax.PendingMaskId(reader, state);
+                string? deferredPointListMask = SvgMaskSyntax.PendingMaskId(reader, state, context);
                 bool deferPointListClip = deferredPointListClip is not null;
                 int pointListFirstGeometry = state.Scene.GeometryCount;
                 state.DeferringLeafClip = deferPointListClip;
@@ -325,7 +325,7 @@ internal static class SvgRenderedLeafParser
             case "image":
             {
                 string? deferredImageClip = SvgClipPathSyntax.PendingClipId(reader, state, context);
-                string? deferredImageMask = SvgMaskSyntax.PendingMaskId(reader, state);
+                string? deferredImageMask = SvgMaskSyntax.PendingMaskId(reader, state, context);
                 bool deferImageClip = deferredImageClip is not null;
                 int imageFirstGeometry = state.Scene.GeometryCount;
                 state.DeferringLeafClip = deferImageClip;
@@ -355,7 +355,7 @@ internal static class SvgRenderedLeafParser
                 SvgResolvedPaintableElement textElement = resolvedText.PaintableElement;
                 string? textClip = SvgClipPathSyntax.ResolveClipId(reader, state);
                 if (textClip is not null) textClip = state.Strings.Copy(textClip);
-                string? textMask = SvgMaskSyntax.PendingMaskId(reader, state);
+                string? textMask = SvgMaskSyntax.PendingMaskId(reader, state, context);
                 SvgViewportFrame? resourceParent = state.EffectiveFrame;
                 int resourceStart = state.Scene.CommandCount;
                 if (textClip is not null || textMask is not null)

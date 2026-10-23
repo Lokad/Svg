@@ -375,7 +375,6 @@ internal static class SvgDocumentTraversal
                     {
                         if (!state.MaskIsDisplayed) SvgMaskSyntax.RegisterDisabled(state, workCounter, cancellationToken);
                         else if (state.MaskHasReplayContent) SvgMaskContentReplay.Register(state, workCounter, cancellationToken);
-                        else if (state.MaskUse is not null) SvgResourceUseReplay.Register(state, SvgResourceUseKind.Mask, workCounter, cancellationToken);
                         else if (state.MaskContentBuilder is not null) RegisterMaskScene(state, workCounter, cancellationToken);
                         else if (state.MaskContentGeometries is not null) SvgDefinitionParser.RegisterMaskContent(state, workCounter, cancellationToken);
                         else SvgDefinitionParser.RegisterMask(state, workCounter, cancellationToken);
@@ -387,7 +386,6 @@ internal static class SvgDocumentTraversal
                     if (state.Groups.Count == 0 || state.Groups[^1].Kind != SvgGroupKind.Mask || state.Groups[^1].Depth != reader.Depth)
                         throw new InvalidOperationException("Mask presentation scope is unbalanced.");
                     state.Groups.RemoveLast();
-                    state.MaskUse = null;
                     state.MaskReplayChildCount = 0;
                     state.MaskHasReplayContent = false;
                     state.MaskDepth = -1;
@@ -406,7 +404,7 @@ internal static class SvgDocumentTraversal
                 {
                     if (state.ClipPathId is not null)
                     {
-                        if (state.ClipUse is not null) SvgResourceUseReplay.Register(state, SvgResourceUseKind.Clip, workCounter, cancellationToken);
+                        if (state.ClipUse is not null) SvgResourceUseReplay.RegisterClip(state, workCounter, cancellationToken);
                         else if (state.ClipBox is not null) SvgDefinitionParser.RegisterClipBox(state, workCounter, cancellationToken);
                         else if (state.ClipPolygon is not null) SvgDefinitionParser.RegisterClipPolygon(state, workCounter, cancellationToken);
                         else SvgDefinitionParser.RegisterClipBox(state, workCounter, cancellationToken);
@@ -504,7 +502,7 @@ internal static class SvgDocumentTraversal
                     if (state.DeferredTextFailure is {} textFailure) throw textFailure;
                     SvgTextPathLayout.Resolve(state, limits, workCounter, cancellationToken);
                     state.ValidateSymbolReferences(workCounter, cancellationToken);
-                    SvgResourceUseReplay.Resolve(state, workCounter, cancellationToken);
+                    SvgResourceUseReplay.ResolveClips(state, workCounter, cancellationToken);
                     SvgMaskContentReplay.Resolve(root, state, workCounter, cancellationToken);
                     SvgPatternUseReplay.Resolve(root, state, limits, workCounter, cancellationToken);
                     SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, state, workCounter, cancellationToken);

@@ -74,7 +74,7 @@ internal sealed class SvgDocumentState : IDisposable
         PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingTextRuns = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         DeferredPaintLeaves = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        DeferredResourceUses = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        DeferredClipUses = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         MaskReplayChildren = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         DeferredMaskContents = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PatternUses = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -110,7 +110,7 @@ internal sealed class SvgDocumentState : IDisposable
     internal int FilterDepth { get; set; } = -1;
 
     internal BudgetedParserList<SvgDeferredPaintLeaf> DeferredPaintLeaves { get; }
-    internal BudgetedParserList<SvgDeferredResourceUse> DeferredResourceUses { get; }
+    internal BudgetedParserList<SvgDeferredClipUse> DeferredClipUses { get; }
     internal BudgetedParserList<SvgMaskReplayChild> MaskReplayChildren { get; }
     internal BudgetedParserList<SvgDeferredMaskContent> DeferredMaskContents { get; }
     internal BudgetedParserList<SvgPatternContentUse> PatternUses { get; }
@@ -119,7 +119,6 @@ internal sealed class SvgDocumentState : IDisposable
     internal int MaskReplayChildCount { get; set; }
     internal int MaskGroupChildIndex { get; set; } = -1;
     internal bool MaskHasReplayContent { get; set; }
-    internal SvgResourceUse? MaskUse { get; set; }
     internal SvgResourceUse? ClipUse { get; set; }
 
     internal BudgetedParserStringStore Strings { get; }
@@ -425,7 +424,7 @@ internal sealed class SvgDocumentState : IDisposable
         foreach (SvgPendingTextRun pending in PendingTextRuns.AsSpan()) { pending.Run?.Dispose(); pending.Continuation?.Dispose(); pending.Owner.Dispose(); }
         PendingTextRuns.Dispose();
         DeferredPaintLeaves.Dispose();
-        DeferredResourceUses.Dispose();
+        DeferredClipUses.Dispose();
         MaskReplayChildren.Dispose();
         DeferredMaskContents.Dispose();
         GroupSnapshots.Dispose();

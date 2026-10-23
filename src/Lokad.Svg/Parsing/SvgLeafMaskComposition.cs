@@ -391,7 +391,7 @@ internal static class SvgLeafMaskComposition
                     {
                         SvgMaskContent placed = content.UniformSource is not null
                             ? SvgMaskContentReplay.ResolveUniformSource(nativeMask.Id, nativeMask.Map, state, work, token)
-                            : SvgMaskContentReplay.PlaceForTarget(content, nativeMask.Map, bounds, target, state, work, token);
+                            : SvgMaskContentReplay.PlaceForTarget(nativeMask.Id, content, nativeMask.Map, bounds, target, state, work, token);
                         operation.ContentIndex = scene.AddMaskContent(placed);
                         operation.Region = target.SceneBounds(work, token);
                     }

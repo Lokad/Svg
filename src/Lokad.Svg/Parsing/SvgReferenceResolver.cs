@@ -1024,7 +1024,7 @@ internal static class SvgReferenceResolver
         }
         if (spatialContent is {} placedContent)
         {
-            contentIndex = state.Scene.AddMaskContent(SvgMaskContentReplay.PlaceForTarget(placedContent, placement, fallback, nativeTarget, state, workCounter, cancellationToken));
+            contentIndex = state.Scene.AddMaskContent(SvgMaskContentReplay.PlaceForTarget(maskId ?? throw new InvalidOperationException("A spatial mask requires its retained id."), placedContent, placement, fallback, nativeTarget, state, workCounter, cancellationToken));
             mask = 255;
         }
         bool resolvedUniform = false;

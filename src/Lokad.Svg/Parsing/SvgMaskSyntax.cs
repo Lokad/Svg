@@ -96,8 +96,8 @@ internal static class SvgMaskSyntax
         return id;
     }
 
-    /// <summary>Retains one direct-leaf mask reference for composition after geometry and clip resolution.</summary>
-    internal static string? PendingMaskId(XmlReader reader, SvgDocumentState state)
+    /// <summary>Validates a direct-leaf mask reference and retains displayed targets for later composition.</summary>
+    internal static string? PendingMaskId(XmlReader reader, SvgDocumentState state, SvgPaintableElementContext context)
     {
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(state);
@@ -105,6 +105,7 @@ internal static class SvgMaskSyntax
         string? reference = SvgLocalUrl.ReadReference(reader, "mask");
         if (reference is null) return null;
         string id = ParseMaskId(reference);
+        if (!context.InheritedPresentation.IsDisplayed || !SvgPresentationResolver.ParseDisplay(context.ResolveStyle(reader, reader.LocalName == "text").Display)) return null;
         return IsDisabled(id, state) ? null : state.Strings.Copy(id);
     }
 
@@ -166,7 +167,7 @@ internal static class SvgMaskSyntax
                     nativeTarget = SvgMaskTarget.Create(pending.MaskId, spatialMap, collector.SourceBounds, state);
                 }
                 if (spatialContent is {} placedContent)
-                    pending.Operation.ContentIndex = state.Scene.AddMaskContent(SvgMaskContentReplay.PlaceForTarget(placedContent, spatialMap, objectBox, nativeTarget, state, workCounter, cancellationToken));
+                    pending.Operation.ContentIndex = state.Scene.AddMaskContent(SvgMaskContentReplay.PlaceForTarget(pending.MaskId, placedContent, spatialMap, objectBox, nativeTarget, state, workCounter, cancellationToken));
                 if (pending.Operation.ContentIndex < 0 && state.MaskContents.TryGetValue(pending.MaskId, out SvgMaskContent uniform)
                     && uniform.UniformSource is not null && state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox uniformBox))
                 {
@@ -337,7 +338,7 @@ internal static class SvgMaskSyntax
                 {
                     if (!state.MaskContents.TryGetValue(pending.MaskId, out SvgMaskContent content)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
                     SvgAffineTransform map = content.IsObjectBoundingBox || nativeTarget is not null ? targetMap : pending.Transform;
-                    int contentIndex = state.Scene.AddMaskContent(SvgMaskContentReplay.PlaceForTarget(content, map, GroupChildrenUnion(state, pending, workCounter, cancellationToken), nativeTarget, state, workCounter, cancellationToken));
+                    int contentIndex = state.Scene.AddMaskContent(SvgMaskContentReplay.PlaceForTarget(pending.MaskId, content, map, GroupChildrenUnion(state, pending, workCounter, cancellationToken), nativeTarget, state, workCounter, cancellationToken));
                     RewriteGroupMaskScope(state, pending, 255, maskRegion, contentIndex);
                     continue;
                 }

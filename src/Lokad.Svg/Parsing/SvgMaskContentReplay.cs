@@ -67,7 +67,7 @@ internal static class SvgMaskContentReplay
                 || !state.MaskIsAlpha && (fill.Red != fill.Green || fill.Red != fill.Blue)
                 || reader.LocalName == "circle" && SvgEllipseSyntax.ParseCircle(reader, context.LengthBases).RadiusX == 0;
         }
-        if (!clipped && !requiresReplay && !state.MaskObjectBoundingBoxContent && !group && state.MaskReplayChildCount == 1 && (reader.LocalName is "use" or "rect" or "circle"
+        if (!clipped && !requiresReplay && !state.MaskObjectBoundingBoxContent && !group && reader.LocalName != "use" && state.MaskReplayChildCount == 1 && (reader.LocalName is "rect" or "circle"
             || SvgGradientSyntax.IsGradientFill(context.ResolveStyle(reader).Fill))) return false;
         if (!state.MaskHasReplayContent)
         {
@@ -77,7 +77,6 @@ internal static class SvgMaskContentReplay
             state.MaskContentGeometries = null;
             state.MaskContentBox = null;
             state.MaskValue = null;
-            state.MaskUse = null;
             state.MaskHasReplayContent = true;
         }
         if (!group) SvgStructuralAdmission.ConsumeLeafChildren(reader, state, work, token);
@@ -102,8 +101,18 @@ internal static class SvgMaskContentReplay
         {
             work.Consume(token);
             SvgMaskSourceRange source = new(pending.FirstChild, pending.ChildCount);
-            SvgMaskContent content = Build(source, SvgAffineTransform.Identity, pending.IsAlpha, null, state, work, token);
-            state.MaskContents.Replace(pending.Id, content with { IsObjectBoundingBox = pending.IsObjectBoundingBox, ReplaySource = source });
+            for (int index = source.FirstChild; index < source.FirstChild + source.ChildCount; index++)
+            {
+                work.Consume(token);
+                SvgMaskReplayChild child = state.MaskReplayChildren[index];
+                if (child.Source.LocalName != "use") continue;
+                SvgResourceUse? use = SvgResourceUseReplay.Retain(child.Source, child.Context, state.MaskReplayBases, state);
+                if (use is {} retained && !SvgReferenceResolver.TryGetDefinition(retained.Reference, state.Definitions, out _)
+                    && !state.RenderedGroupDefinitions.TryGetValue(retained.Reference.Id, out _))
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local geometry references in resource content are implemented.");
+            }
+            state.MaskContents.Replace(pending.Id, new([], 255, pending.IsAlpha)
+                { IsObjectBoundingBox = pending.IsObjectBoundingBox, ReplaySource = source });
         }
     }
 
@@ -173,13 +182,17 @@ internal static class SvgMaskContentReplay
         finally { state.IsResourcePicture = previousPicture; }
     }
 
-    /// <summary>Places one borrowed mask through existing source replay when an affine map requires native reconstruction.</summary>
-    /// <remarks>Only preparation borrows source slots. Returned scenes own independent geometry and no staging
-    /// reference; partial lowering, clips and scene owners release on failure under shared work/cancellation.</remarks>
-    internal static SvgMaskContent PlaceForTarget(SvgMaskContent source, SvgAffineTransform map, SvgRectangle bounds,
+    /// <summary>Materializes a live mask and places its borrowed content through existing native replay.</summary>
+    /// <remarks>Only single-threaded preparation borrows source slots. Empty regions require no glyphs.
+    /// Identity content is cached in the document registry and owned by the adopting scene; returned content
+    /// keeps no staging reference. Shared work/cancellation cover replay and failures release scene owners.</remarks>
+    internal static SvgMaskContent PlaceForTarget(string id, SvgMaskContent source, SvgAffineTransform map, SvgRectangle bounds,
         SvgMaskTarget? target, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
         work.Consume(token);
+        if (state.MaskRegions.TryGetValue(id, out SvgClipBox explicitRegion) && (explicitRegion.Width == 0 || explicitRegion.Height == 0)
+            || state.MaskFractionRegions.TryGetValue(id, out SvgClipBox fractions) && (fractions.Width == 0 || fractions.Height == 0))
+            return new([], 255, source.IsAlpha);
         if (source.IsObjectBoundingBox)
         {
             if (bounds.Width <= 0 || bounds.Height <= 0) return new([], 255, source.IsAlpha);
@@ -194,7 +207,15 @@ internal static class SvgMaskContentReplay
             map = map.ComposeChecked(SvgAffineTransform.FromScaleOffset(local.Width, local.Height, local.X, local.Y));
         }
         map = map.ComposeChecked(source.CoordinateMap);
-        if (map.IsAxisAligned) return source with { CoordinateMap = map, ReplaySource = null };
+        if (map.IsAxisAligned)
+        {
+            if (source.VectorContent is null && source.ReplaySource is {} pending)
+            {
+                source = source with { VectorContent = Build(pending, SvgAffineTransform.Identity, source.IsAlpha, null, state, work, token).VectorContent };
+                state.MaskContents.Replace(id, source);
+            }
+            return source with { CoordinateMap = map, ReplaySource = null };
+        }
         SvgMaskSourceRange range = source.ReplaySource ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine mask content requires retained native sources.");
         SvgAffineViewportClip? region = target is {} clipped ? new(clipped.Region, clipped.Map) { IsBinary = true } : null;
         return Build(range, map, source.IsAlpha, region, state, work, token) with { UsesAffineTarget = true };
