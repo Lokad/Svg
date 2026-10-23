@@ -101,6 +101,10 @@ change dithering even when the real-valued transform is equivalent.
 Resolve inherited stroke paint before selecting a leaf's lowering route. Path
 gradients bind to the undashed centerline's native curve bounds, including open
 paths with no fill; flattened fill bounds and stroke extents are separate.
+Resolved empty servers affect only their own element-local paint. Recording and
+lowering share that availability, while unknown resources retain deferred lookup
+and authored values retain validation. Empty text strokes emit no outline: an
+invisible outline can enlarge a native layer and shift another paint's bitmap origin.
 Paint-filled paths and point lists compose ordinary fill and stroke lowering;
 recording applies opacity and paint order once. Affine linear/radial strokes and
 fractional pattern fills retain source commands, local bounds and composed paint

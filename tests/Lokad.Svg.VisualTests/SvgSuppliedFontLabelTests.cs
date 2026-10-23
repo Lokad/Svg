@@ -145,6 +145,59 @@ public sealed class SvgSuppliedFontLabelTests
         }
     }
 
+    public static IEnumerable<object[]> InertTextStrokeCases()
+    {
+        foreach (string server in new[] { "linear", "radial", "empty-pattern", "zero-pattern", "hidden-pattern" })
+        foreach (string consumer in new[] { "direct", "use", "symbol", "pattern" })
+        foreach (bool span in new[] { false, true })
+        {
+            if (consumer == "pattern" && server.Contains("pattern", StringComparison.Ordinal)) continue;
+            yield return [server, consumer, span];
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(InertTextStrokeCases))]
+    public async Task Inert_text_strokes_preserve_independent_paint_and_native_layer_bounds(string server, string consumer, bool span)
+    {
+        const string stops = "<stop stop-color='red'/><stop offset='1' stop-color='blue'/>";
+        const string tile = "<rect width='2' height='4' fill='red'/><rect x='2' width='2' height='4' fill='blue'/>";
+        string resources = "<linearGradient id='l'>" + stops + "</linearGradient><radialGradient id='r'>" + stops + "</radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'>" + tile + "</pattern>";
+        resources += server switch
+        {
+            "linear" => "<linearGradient id='e'/>",
+            "radial" => "<radialGradient id='e'/>",
+            "empty-pattern" => "<pattern id='e' patternUnits='userSpaceOnUse' width='4' height='4'/>",
+            "zero-pattern" => "<pattern id='e' patternUnits='userSpaceOnUse' width='0' height='4'>" + tile + "</pattern>",
+            _ => "<pattern id='e' patternUnits='userSpaceOnUse' width='4' height='4' display='none'>" + tile + "</pattern>"
+        };
+        foreach (string paint in new[] { "red", "url(#l)", "url(#r)", "url(#p)" })
+        {
+            if (consumer == "pattern" && paint == "url(#p)") continue;
+            byte[] input = Input("url(#e)"), control = Input("none");
+            using SvgFontSnapshot snapshot = await Prepare(input);
+            SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+            byte[] expected = SvgConverter.ConvertToPng(control, options, CancellationToken.None).ToArray();
+            Assert.Equal(expected, SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
+            using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, Catalog(), Provider(), SvgRenderOptions.Default, CancellationToken.None);
+            Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
+
+            byte[] Input(string stroke)
+            {
+                string attributes = "fill='" + paint + "' stroke='" + stroke + "' stroke-width='2'";
+                string node = "<text x='4' y='24' font-family='Example' font-size='20' " + (span ? "" : attributes) + ">" + (span ? "<tspan " + attributes + ">II</tspan>" : "II") + "</text>";
+                string body = consumer switch
+                {
+                    "use" => "<defs>" + node.Insert(node.IndexOf(' '), " id='source'") + "</defs><use href='#source'/>",
+                    "symbol" => "<defs><symbol id='source'>" + node + "</symbol></defs><use href='#source'/>",
+                    "pattern" => "<defs><pattern id='host' patternUnits='userSpaceOnUse' width='32' height='32'>" + node + "</pattern></defs><rect width='32' height='32' fill='url(#host)'/>",
+                    _ => node
+                };
+                return System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs>" + resources + "</defs>" + body + "</svg>");
+            }
+        }
+    }
+
     private static ValueTask<SvgFontSnapshot> Prepare(byte[] input)
         => SvgFontSnapshot.CreateAsync(input, Catalog(), Provider(), CancellationToken.None);
 

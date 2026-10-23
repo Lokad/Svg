@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Preserve independent fill, stroke, markers and effects when a gradient or
+  pattern paints nothing, including masks, local instances and supplied text.
+  Keep empty text strokes out of native layer bounds and defer forward mask paints.
 - Preserve original gradient-template coordinates and replace local affine maps
   once through shape/text paints and resources. Keep explicitly inherited radial
   focal fields when replacing center/radius; share immutable definition storage.

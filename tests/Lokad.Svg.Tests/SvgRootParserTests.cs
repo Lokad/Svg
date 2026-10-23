@@ -5365,10 +5365,12 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Inherits_transparency_through_gradient_href()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='b'/><linearGradient id='c' href='#b'/></defs><rect x='8' y='8' width='48' height='48' fill='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-
-        SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.False(geometry.Gradient.Fill.HasFill);
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='b'/><linearGradient id='c' href='#b'/></defs><rect x='8' y='8' width='48' height='48' fill='url(#c)'/></svg>"u8.ToArray();
+        using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
+        SvgRectangle bounds = SvgMaskSyntax.BoundingBox(Assert.Single(root.Geometries));
+        Assert.Equal((8d, 8d, 48d, 48d), (bounds.X, bounds.Y, bounds.Width, bounds.Height));
+        Assert.Equal(SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Fact]
@@ -5796,11 +5798,12 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Admits_an_empty_linear_gradient_as_transparent()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'/></defs><rect x='8' y='8' width='48' height='48' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-
-        SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-        Assert.False(geometry.Gradient.Fill.HasFill);
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'/></defs><rect x='8' y='8' width='48' height='48' fill='url(#g)'/></svg>"u8.ToArray();
+        using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
+        SvgRectangle bounds = SvgMaskSyntax.BoundingBox(Assert.Single(root.Geometries));
+        Assert.Equal((8d, 8d, 48d, 48d), (bounds.X, bounds.Y, bounds.Width, bounds.Height));
+        Assert.Equal(SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Fact]
@@ -6977,11 +6980,12 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Empty_pattern_tiles_leave_outlines_unpainted()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='e' width='8' height='8' patternUnits='userSpaceOnUse'></pattern></defs><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#e)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-
-        Assert.Equal(2, root.Geometries.Length);
-        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[1].Kind);
-        Assert.False(root.Geometries[1].Polygon.HasFill);
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='e' width='8' height='8' patternUnits='userSpaceOnUse'></pattern></defs><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#e)' stroke-width='2'/></svg>"u8.ToArray();
+        using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
+        SvgRectangle bounds = SvgMaskSyntax.BoundingBox(Assert.Single(root.Geometries));
+        Assert.Equal((0d, 0d, 8d, 8d), (bounds.X, bounds.Y, bounds.Width, bounds.Height));
+        Assert.Equal(SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
     [Fact]
     public void Lowers_bounding_box_gradient_strokes_on_curved_paths_as_outlines()

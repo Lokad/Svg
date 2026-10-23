@@ -18,6 +18,7 @@ internal static class SvgLeafParser
     {
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
         SvgComputedStyle patternStyle = context.ResolveStyle(reader);
+        if (SvgPaintResolver.RemoveInertServers(ref patternStyle, state, reader.LocalName)) context = context with { AuthoredStyle = patternStyle };
         _ = SvgStrokeStyleSyntax.ParseLinecap(patternStyle.Linecap);
         _ = SvgStrokeStyleSyntax.ParseLinejoin(patternStyle.Linejoin, true);
         SvgAffineTransform earlyTransform = context.ResolveTransform(reader);
@@ -273,6 +274,7 @@ internal static class SvgLeafParser
     private static SvgParsedGeometry LowerRoundedRect(XmlReader reader, SvgPaintableElementContext context, SvgRectangleSyntax syntax, double cornerX, double cornerY, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
+        if (SvgPaintResolver.RemoveInertServers(ref style, state, reader.LocalName)) context = context with { AuthoredStyle = style };
         SvgLinearGradient strokeGradient = default;
         SvgRadialGradient strokeCircle = default;
         SvgPatternTile strokeTile = default;
@@ -464,6 +466,7 @@ internal static class SvgLeafParser
     private static SvgParsedGeometry LowerEllipseShape(XmlReader reader, SvgPaintableElementContext context, SvgEllipseSyntax syntax, string elementName, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
+        if (SvgPaintResolver.RemoveInertServers(ref style, state, reader.LocalName)) context = context with { AuthoredStyle = style };
         SvgLinearGradient strokeGradient = default;
         SvgRadialGradient strokeCircle = default;
         SvgPatternTile strokeTile = default;
@@ -712,6 +715,7 @@ internal static class SvgLeafParser
         SvgStrokeStyleSyntax.RequireLineCapJoin(reader, "line", context.WorkCounter, context.CancellationToken);
         SvgComputedStyle style = context.ResolveStyle(reader);
         style = style with { Stroke = style.Stroke ?? context.InheritedStroke.Stroke };
+        if (SvgPaintResolver.RemoveInertServers(ref style, state, reader.LocalName)) context = context with { AuthoredStyle = style };
         if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) return LowerNativePaintStrokeLine(reader, context, style, syntax, state, frame);
         // A line has no fill operation, independently of its inherited fill server.
         if (SvgPatternSyntax.IsPatternFill(style.Fill)) style = style with { Fill = "none" };

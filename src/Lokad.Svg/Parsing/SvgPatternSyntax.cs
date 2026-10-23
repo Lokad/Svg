@@ -175,7 +175,7 @@ internal static class SvgPatternSyntax
     /// <summary>Lowers one pattern fill region shared by fill-only and fill-plus-stroke lowerings.</summary>
     internal static SvgGeometry LowerPatternFillGeometry(SvgPatternTile tile, SvgRectangle fill, bool fillHasFill, byte fillOpacity, SvgStroke? stroke, SvgAffineTransform shaderPlacement, SvgPatternPaintMatrices? paintMatrices)
     {
-        if (tile.TileWidth == 0 || tile.TileHeight == 0 || !tile.HasContent) return SvgGeometry.FromOrthogonalBand(new SvgRectangle(fill.X, fill.Y, fill.Width, fill.Height, SvgColor.Transparent, false, null));
+        if (tile.TileWidth == 0 || tile.TileHeight == 0 || !tile.HasContent) return SvgGeometry.FromOrthogonalBand(new SvgRectangle(fill.X, fill.Y, fill.Width, fill.Height, SvgColor.Transparent, false, stroke));
         return SvgGeometry.FromPatternFill(new SvgPatternGeometry(tile.Content?.Rectangle ?? default, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, fill with { HasFill = fillHasFill }, fillOpacity, stroke) { ShaderPlacement = shaderPlacement.ComposeChecked(tile.VectorPlacement), PaintMatrices = tile.VectorContent is null ? null : paintMatrices ?? new(shaderPlacement, tile.VectorPlacement), ContentPaint = tile.Content?.SolidPaint, VectorContent = tile.VectorContent, ContentViewBox = tile.ContentViewBox, Coordinates = tile.Coordinates });
     }
 

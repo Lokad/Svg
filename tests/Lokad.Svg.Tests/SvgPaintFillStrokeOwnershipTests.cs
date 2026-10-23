@@ -13,6 +13,10 @@ public sealed class SvgPaintFillStrokeOwnershipTests
     [InlineData("url(#linear)", "url(#pattern)")]
     [InlineData("url(#radial)", "#444444")]
     [InlineData("url(#pattern)", "#444444")]
+    [InlineData("url(#empty-linear)", "#444444")]
+    [InlineData("#444444", "url(#empty-linear)")]
+    [InlineData("url(#empty-pattern)", "url(#radial)")]
+    [InlineData("url(#linear)", "url(#empty-pattern)")]
     public void Every_parser_work_denial_releases_fill_and_partial_stroke_owners(string fill, string stroke)
     {
         byte[] input = TextEncoding.UTF8.GetBytes("""
@@ -21,6 +25,8 @@ public sealed class SvgPaintFillStrokeOwnershipTests
               <linearGradient id='linear'><stop stop-color='#dc442b'/><stop offset='1' stop-color='#3565cc'/></linearGradient>
               <radialGradient id='radial'><stop stop-color='#294dc9'/><stop offset='1' stop-color='#6cbb3c'/></radialGradient>
               <pattern id='pattern' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='#427ac9'/></pattern>
+              <linearGradient id='empty-linear'/>
+              <pattern id='empty-pattern' patternUnits='userSpaceOnUse' width='4' height='4'/>
             </defs>
             <path d='M6,25 Q21,3 36,25 Z'
             """ + " fill='" + fill + "' stroke='" + stroke + "' stroke-width='2'/></svg>");

@@ -856,7 +856,7 @@ internal static class SvgDefinitionParser
                     continue;
                 }
                 SvgColor color = geometries[index].Polygon.Color;
-                if (color.Red != color.Green || color.Red != color.Blue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only grayscale luminance mask content is implemented.");
+                if (!maskState.MaskIsAlpha && (color.Red != color.Green || color.Red != color.Blue)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only grayscale luminance mask content is implemented.");
                 if (!hasPaint) paint = color;
                 else if (!paint.Equals(color)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-paint mask content is implemented.");
                 hasPaint = true;
@@ -2060,6 +2060,7 @@ internal static class SvgDefinitionParser
         // while source aliases must exclude their definition ancestors.
         SvgComputedStyle authored = context.AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, work, token);
         SvgComputedStyle style = context.InheritedStroke.ApplyTo(authored);
+        _ = SvgPaintResolver.RemoveInertServers(ref style, state, reader.LocalName);
         SvgSymbolPresentation symbol = includesSymbolPresentation ? (state.SymbolDefinition ?? throw new InvalidOperationException("Symbol fills require a presentation context.")).Presentation : default;
         bool inherited = reader.LocalName != "line" && style.Fill is null && (!includesSymbolPresentation || !symbol.HasAuthoredFill);
         SvgPaintOpacity? opacity = style.FillOpacity is null ? (includesSymbolPresentation ? symbol.FillOpacity : null) : SvgColorParser.ParsePaintOpacity(style.FillOpacity);
@@ -2237,6 +2238,7 @@ internal static class SvgDefinitionParser
         SvgRectangleSyntax roundedSyntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
         if ((roundedSyntax.CornerX ?? roundedSyntax.CornerY ?? 0) != 0 || (roundedSyntax.CornerY ?? roundedSyntax.CornerX ?? 0) != 0) return ParseShapeDefinition(reader, context, state, symbolViewBox, true);
         SvgComputedStyle style = context.ResolveStyle(reader);
+        if (SvgPaintResolver.RemoveInertServers(ref style, state, reader.LocalName)) context = context with { AuthoredStyle = style };
         // Named live leaves also register a dormant source. Its authored map
         // needs the ordinary retained shape route before any use is encountered.
         bool nativeRectangle = context.RetainInstanceStrokePath

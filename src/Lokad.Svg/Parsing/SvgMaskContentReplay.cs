@@ -51,8 +51,13 @@ internal static class SvgMaskContentReplay
             if (reader.IsEmptyElement) SvgDefinitionParser.RegisterSymbol(state, work, token);
             else state.SymbolDepth = reader.Depth;
         }
-        bool requiresReplay = false;
-        if (reader.LocalName is "rect" or "circle" && !SvgGradientSyntax.IsGradientFill(source.AuthoredStyle.Fill))
+        // Shader strokes and unresolved fills need the ordinary geometry route.
+        // The single-color shortcut cannot resolve independent or forward paints.
+        string? fillServer = source.AuthoredStyle.Fill ?? context.InheritedPresentation.PaintServerFill;
+        bool pendingFill = fillServer is not null && SvgLocalUrl.TryParseId(fillServer, out string fillId)
+            && !state.Gradients.TryGetValue(fillId, out _) && !state.RadialGradients.TryGetValue(fillId, out _) && !state.Patterns.TryGetValue(fillId, out _);
+        bool requiresReplay = pendingFill || SvgGradientSyntax.IsGradientStrokeUrl(source.AuthoredStyle.Stroke ?? context.InheritedStroke.Stroke);
+        if (!requiresReplay && reader.LocalName is "rect" or "circle" && !SvgGradientSyntax.IsGradientFill(source.AuthoredStyle.Fill))
         {
             SvgResolvedShapePresentation paint = context.ResolveShape(reader, true).Presentation;
             SvgColor fill = paint.Color;

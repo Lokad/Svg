@@ -325,7 +325,7 @@ internal static class SvgMarkerRenderer
                 SvgAffineTransform placement = context.ResolveTransform(reader).ComposeNative(new(
                     (float)local.A, (float)local.B, (float)local.C, (float)local.D, (float)local.E, (float)local.F));
                 SvgUseReference reference = new(id, 0, 0, marker.Width, marker.Height, placement, SvgAffineTransform.Identity,
-                    255, context.ResolvePresentation(style, true).IsPainted, null, null, null)
+                    255, SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible), null, null, null)
                 { IsMarker = true, IsDisplayed = context.InheritedPresentation.IsDisplayed && SvgPresentationResolver.ParseDisplay(style.Display),
                     IsVisible = SvgPresentationResolver.ParseVisibility(style.Visibility, context.InheritedPresentation.IsVisible),
                     InheritedFill = SvgPaint.Default, RecordingScope = state.NewRecordingScope(), AllowsSolidPaintAnalysis = true };

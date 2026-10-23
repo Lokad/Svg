@@ -9,6 +9,38 @@ internal readonly record struct SvgPaint(SvgColor FillColor, bool HasFill, SvgPa
 /// <summary>Resolves the supported inherited paint subset independently of XML traversal.</summary>
 internal static class SvgPaintResolver
 {
+    /// <summary>Removes only resolved inert servers from an element-local style; unknown references retain normal admission.</summary>
+    /// <remarks>Definition tables are borrowed. Scalar stroke validation stays independent of paint
+    /// availability; no arrays, geometry, retained storage or font acquisition is created here.</remarks>
+    internal static bool RemoveInertServers(ref SvgComputedStyle style, SvgDocumentState state, string elementName)
+    {
+        if (!SvgGradientSyntax.IsGradientFill(style.Fill) && !SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) return false;
+        bool fill = IsInert(style.Fill, state);
+        bool stroke = IsInert(style.Stroke, state);
+        if (!fill && !stroke) return false;
+        if (stroke)
+        {
+            _ = SvgStrokeStyleSyntax.ParseStrokeWidth(style.Width, elementName);
+            _ = SvgStrokeStyleSyntax.ParseLinecap(style.Linecap);
+            _ = SvgStrokeStyleSyntax.ParseLinejoin(style.Linejoin, true);
+            _ = SvgStrokeStyleSyntax.ParseMiterLimit(style.Miterlimit);
+            SvgStrokeStyleSyntax.ValidateDasharray(style.Dasharray, true);
+            _ = SvgStrokeStyleSyntax.ParseDashoffset(style.Dashoffset);
+            _ = SvgStrokeStyleSyntax.ParsePathLength(style.PathLength);
+            if (style.StrokeOpacity is not null) _ = SvgColorParser.ParsePaintOpacity(style.StrokeOpacity);
+        }
+        style = style with { Fill = fill ? "none" : style.Fill, Stroke = stroke ? "none" : style.Stroke };
+        return true;
+
+        static bool IsInert(string? value, SvgDocumentState document)
+        {
+            if (value is null || !SvgLocalUrl.TryParseId(value, out string id)) return false;
+            if (document.Gradients.TryGetValue(id, out SvgLinearGradient linear)) return linear.IsEmpty;
+            if (document.RadialGradients.TryGetValue(id, out SvgRadialGradient radial)) return radial.IsEmpty;
+            return document.Patterns.TryGetValue(id, out SvgPatternTile tile) && (!tile.HasContent || tile.TileWidth == 0 || tile.TileHeight == 0);
+        }
+    }
+
     internal static SvgPaint Resolve(string? fill, string? fillOpacity, string? currentColor, SvgPaint inheritedPaint, IReadOnlyDictionary<string, SvgColor> namedColors)
     {
         SvgColor resolvedCurrentColor = currentColor is null ? inheritedPaint.CurrentColor : SvgColorParser.Parse(currentColor, namedColors);

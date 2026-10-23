@@ -155,6 +155,11 @@ Font preparation uses the same resource display rules for supplied-font tile tex
 Template content, including images, effects and supplied-font text, survives zero
 or omitted base tile dimensions when an alias supplies nonzero effective dimensions.
 Patterns whose effective tile size stays zero remain inert.
+Empty gradients and inert patterns suppress only their own paint operation.
+The independent fill/stroke, markers and effects remain; validation and source
+bounds still apply through admitted instances and resources. See the
+[paint-independence regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.InertPaintServers.cs)
+and [supplied-text checks](../tests/Lokad.Svg.VisualTests/SvgSuppliedFontLabelTests.cs).
 
 Current restrictions:
 

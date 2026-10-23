@@ -20,6 +20,7 @@ internal static class SvgOrthogonalShapeParser
     internal static SvgParsedGeometry ParsePathCore(XmlReader reader, SvgPaintableElementContext context, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
+        if (SvgPaintResolver.RemoveInertServers(ref style, state, reader.LocalName)) context = context with { AuthoredStyle = style };
         using SvgRenderablePathData renderData = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
         string d = renderData.Value;
         if (d.Length == 0)
@@ -268,6 +269,7 @@ internal static class SvgOrthogonalShapeParser
     internal static SvgParsedGeometry ParsePointListCore(XmlReader reader, string elementName, SvgPaintableElementContext context, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
+        if (SvgPaintResolver.RemoveInertServers(ref style, state, reader.LocalName)) context = context with { AuthoredStyle = style };
         if (SvgGradientSyntax.IsGradientFill(style.Fill) && SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)
             && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width))
         {

@@ -132,6 +132,9 @@ internal static class SvgTextGlyphPainter
         static void Stroke(SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> paths, SvgLeafMaskBinding? pathClip,
             SvgTextShader? shader, SvgColor fallback, int start, int end, SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
         {
+            // Empty servers have no stroke outline. Retaining one would enlarge
+            // native layer bounds and shift the surviving paint's bitmap origin.
+            if (shader is SvgTextLinearShader { Gradient.IsEmpty: true } or SvgTextRadialShader { Gradient.IsEmpty: true }) return;
             for (int index = start; index < end; index++)
             {
                 work.Consume(token);

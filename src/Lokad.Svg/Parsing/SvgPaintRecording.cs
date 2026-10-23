@@ -176,6 +176,7 @@ internal static class SvgPaintRecording
     internal static SvgRecordedPaintStyle Resolve(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgViewportFrame? frame)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
+        _ = SvgPaintResolver.RemoveInertServers(ref style, state, reader.LocalName);
         bool fillServer = style.Fill is not null && SvgLocalUrl.TryParseId(style.Fill, out _);
         SvgPaint fill = SvgPaintResolver.Resolve(fillServer ? "white" : style.Fill, style.FillOpacity, style.Color, context.InheritedPresentation.Paint, context.NamedColors);
         SvgColor stroke = style.Stroke is null || style.Stroke == "none" || SvgLocalUrl.TryParseId(style.Stroke, out _) ? new(255, 255, 255, 255)
