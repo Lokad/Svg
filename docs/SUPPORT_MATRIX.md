@@ -236,6 +236,9 @@ Grouped mask text inherits the resource's text style; explicit child declaration
 still override it. See the [inheritance regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskTextInheritance.cs).
 SVG-driven font preparation follows referenced mask text in its resource context;
 see the [discovery regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskDiscovery.cs).
+Declared zero-sized primitives, empty paths, and disabled groups/uses need no mask
+font programs. Visibility overrides and filters that produce output retain their
+mask dependencies; see the [target regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskTargets.cs).
 Object-box mask regions require bare-number fractions; user-space regions also
 accept viewport percentages.
 For axis-aligned shape targets, spatial mask content must cover an explicit

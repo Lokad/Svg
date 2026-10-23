@@ -1982,7 +1982,16 @@ internal static class SvgDefinitionParser
         {
             if (filtered && isDisplayed && SvgPresentationResolver.ParseDisplay(sourceStyle.Display) && SvgPaintRecording.IsFilterSource(reader, context))
                 SvgPaintRecording.WrapFilter(definition.Geometries, sourceStyle.Filter, context.ResolveTransform(reader), context.LengthBases, state, context.WorkCounter, context.CancellationToken);
-            SvgReferenceResolver.ApplyMask(definition.Geometries, null, null, SvgLocalUrl.ReadReference(reader, "mask"), context.ResolveTransform(reader), state, context.WorkCounter, context.CancellationToken);
+            string? mask = SvgLocalUrl.ReadReference(reader, "mask");
+            if (mask is not null)
+            {
+                _ = SvgMaskSyntax.ParseMaskId(mask);
+                bool visible = SvgPresentationResolver.ParseVisibility(sourceStyle.Visibility, context.InheritedPresentation.IsVisible);
+                if (isDisplayed && SvgPresentationResolver.ParseDisplay(sourceStyle.Display)
+                    && SvgMaskSyntax.HasPaintableTarget(reader, visible, filtered ? sourceStyle.Filter : null))
+                    SvgReferenceResolver.ApplyMask(definition.Geometries, null, null, mask,
+                        context.ResolveTransform(reader), state, context.WorkCounter, context.CancellationToken);
+            }
             if (clipId is not null)
                 SvgClipPathSyntax.ApplyResourceClip(definition.Geometries, clipId, context.ResolveTransform(reader), state, context.WorkCounter, context.CancellationToken);
             if (filtered) SvgPaintRecording.WrapInstance(definition.Geometries, sourceStyle.GetOpacity(), state.NewRecordingScope(), state, context.WorkCounter, context.CancellationToken);

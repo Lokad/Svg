@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Skip mask font construction for nonpainting primitive targets and disabled
+  groups or instances, retaining visible descendants, effect output and validation.
 - Treat zero-sized symbol and nested SVG viewports as empty before lowering
   children or acquiring their fonts; preserve ordinary use target dimensions
   and parent filters that generate paint from empty references.

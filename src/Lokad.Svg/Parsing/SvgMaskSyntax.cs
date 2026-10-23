@@ -105,8 +105,43 @@ internal static class SvgMaskSyntax
         string? reference = SvgLocalUrl.ReadReference(reader, "mask");
         if (reference is null) return null;
         string id = ParseMaskId(reference);
-        if (!context.InheritedPresentation.IsDisplayed || !SvgPresentationResolver.ParseDisplay(context.ResolveStyle(reader, reader.LocalName == "text").Display)) return null;
+        SvgComputedStyle style = context.ResolveStyle(reader, reader.LocalName == "text");
+        if (!context.InheritedPresentation.IsDisplayed || !SvgPresentationResolver.ParseDisplay(style.Display)
+            || !HasPaintableTarget(reader, SvgPresentationResolver.ParseVisibility(style.Visibility, context.InheritedPresentation.IsVisible), style.Filter)) return null;
         return IsDisabled(id, state) ? null : state.Strings.Copy(id);
+    }
+
+    /// <summary>Excludes known nonpainting primitive declarations while preserving descendant visibility and effect output.</summary>
+    /// <remarks>Only exact declared zero lengths are excluded. A 100-unit percentage base preserves the authored
+    /// number independently of the live viewport; positive extents are never narrowed to guessed native bounds.
+    /// Geometry parsing still validates and lowers the element under its actual viewport and shared budget.</remarks>
+    internal static bool HasPaintableTarget(XmlReader reader, bool visible, string? ownFilter)
+    {
+        switch (reader.LocalName)
+        {
+            case "rect":
+                if ((Dimension(reader, "width") ?? 0) == 0 || (Dimension(reader, "height") ?? 0) == 0) return false;
+                break;
+            case "circle":
+                if ((Dimension(reader, "r") ?? 0) == 0) return false;
+                break;
+            case "ellipse":
+                double? x = Dimension(reader, "rx"), y = Dimension(reader, "ry");
+                if ((x ?? y ?? 0) == 0 || (y ?? x ?? 0) == 0) return false;
+                break;
+            case "image":
+                if (string.IsNullOrEmpty(SvgLocalReferenceSyntax.ReadHref(reader)) || Dimension(reader, "width") == 0 || Dimension(reader, "height") == 0) return false;
+                break;
+            case "path":
+                if (string.IsNullOrWhiteSpace(reader.GetAttribute("d"))) return false;
+                break;
+            case "line": case "polygon": case "polyline": break;
+            default: return true;
+        }
+        return visible || SvgLocalUrl.GetReference(ownFilter) is not null;
+
+        static double? Dimension(XmlReader element, string attribute)
+            => element.GetAttribute(attribute) is {} value ? SvgGeometrySyntax.ParseViewportDimension(value, 100) : null;
     }
 
     /// <summary>Interprets one opaque mask paint value under its mask type.</summary>

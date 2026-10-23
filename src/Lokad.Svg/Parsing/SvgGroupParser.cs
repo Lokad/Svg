@@ -27,6 +27,11 @@ internal static class SvgGroupParser
         }
         bool hasScope = !reader.IsEmptyElement || filterId is not null;
         string? maskReference = SvgLocalUrl.ReadReference(reader, "mask");
+        if (maskReference is not null && !resolved.Presentation.IsDisplayed)
+        {
+            _ = SvgMaskSyntax.ParseMaskId(maskReference);
+            maskReference = null;
+        }
         byte? mask = null;
         string? deferredMask = null;
         if (maskReference is not null && !SvgMaskSyntax.IsDisabled(SvgMaskSyntax.ParseMaskId(maskReference), state))
@@ -51,7 +56,7 @@ internal static class SvgGroupParser
             }
         }
         byte combined = mask is null ? resolved.Opacity : SvgReferenceResolver.MultiplyAlpha(resolved.Opacity, mask.Value);
-        bool hasMaskScope = hasScope && PushMaskScope(reader, state);
+        bool hasMaskScope = hasScope && maskReference is not null && PushMaskScope(reader, state);
         SvgGroupKind kind = reader.LocalName == "switch" ? SvgGroupKind.Switch : SvgStructuralVocabulary.IsGroupContainer(reader.LocalName) ? SvgGroupKind.Group : SvgGroupKind.Link;
         SvgPaintOpacity sourceOpacity = style.GetOpacity();
         SvgRecordingScope opacityScope = context.RecordingScope.Value == 0 ? new(1) : context.RecordingScope;

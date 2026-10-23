@@ -39,7 +39,8 @@ internal static class SvgSymbolContentRenderer
                         SvgPaintRecording.WrapFilter(output.AsMutableSpan().Slice(frame.OutputStart), filter, state, work, token);
                         state.FilterGroupDepth--;
                     }
-                    SvgReferenceResolver.ApplyMask(output.AsMutableSpan().Slice(frame.OutputStart), null, null, frame.MaskReference, frame.MaskMap, state, work, token);
+                    if (frame.Context.Displayed)
+                        SvgReferenceResolver.ApplyMask(output.AsMutableSpan().Slice(frame.OutputStart), null, null, frame.MaskReference, frame.MaskMap, state, work, token);
                     Span<SvgGeometry> contents = output.AsMutableSpan().Slice(frame.OutputStart);
                     if (frame.AffineClip is not null && frame.Opacity.Value != 1)
                     {
@@ -107,8 +108,9 @@ internal static class SvgSymbolContentRenderer
                     AddMapped(target with { SymbolFillBindings = target.SourceFillBindings ?? target.SymbolFillBindings }, use, frame.Context.Clip);
                     if (use.IsDisplayed)
                         SvgPaintRecording.WrapFilter(output.AsMutableSpan().Slice(start), use.Filter, SvgReferenceResolver.PlainInstancePlacement(use, null), use.LengthBases, state, work, token);
-                    SvgReferenceResolver.ApplyMask(output.AsMutableSpan().Slice(start), null, null, node.Reference.SourceMaskReference,
-                        SvgReferenceResolver.PlainInstancePlacement(use, null), state, work, token);
+                    if (use.IsDisplayed)
+                        SvgReferenceResolver.ApplyMask(output.AsMutableSpan().Slice(start), null, null, node.Reference.SourceMaskReference,
+                            SvgReferenceResolver.PlainInstancePlacement(use, null), state, work, token);
                     if (node.Style.ClipId is {} clipId)
                         SvgClipPathSyntax.ApplyResourceClip(output.AsMutableSpan().Slice(start), clipId, SvgReferenceResolver.PlainInstancePlacement(use, null), state, work, token);
                     SvgPaintRecording.WrapInstance(output.AsMutableSpan().Slice(start), useOpacity, use.RecordingScope, state, work, token);

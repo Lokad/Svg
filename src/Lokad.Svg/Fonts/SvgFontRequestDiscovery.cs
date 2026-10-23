@@ -327,7 +327,8 @@ internal static class SvgFontRequestDiscovery
                         {
                             InlineStyle targetSheet = SvgStyleSheet.Resolve(reader, styleRules, ancestors, workCounter, cancellationToken);
                             SvgComputedStyle target = SvgComputedStyleResolver.Resolve(reader, targetSheet, workCounter, cancellationToken, true);
-                            instanceFonts.AddMask(reader, style.IsDisplayed && SvgPresentationResolver.ParseDisplay(target.Display), target.Filter);
+                            instanceFonts.AddMask(reader, style.IsDisplayed && SvgPresentationResolver.ParseDisplay(target.Display),
+                                SvgPresentationResolver.ParseVisibility(target.Visibility, style.IsVisible), target.Filter);
                         }
                     }
                     if (!sterile && inertDepth < 0 && isSvgElement && (SvgStructuralVocabulary.IsInertContainer(reader.LocalName) || symbolDefinition) && !reader.IsEmptyElement) inertDepth = reader.Depth;

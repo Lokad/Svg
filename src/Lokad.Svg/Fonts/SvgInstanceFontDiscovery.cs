@@ -145,9 +145,10 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
     }
 
     /// <summary>Queues a displayed target's mask, including filter output from an empty use source; font programs remain borrowed.</summary>
-    internal void AddMask(XmlReader reader, bool displayed, string? ownFilter)
+    internal void AddMask(XmlReader reader, bool displayed, bool visible, string? ownFilter)
     {
         if (!displayed || SvgLocalUrl.ReadReference(reader, "mask") is not {} value) return;
+        if (!SvgMaskSyntax.HasPaintableTarget(reader, visible, ownFilter)) return;
         if (SvgLocalUrl.GetReference(ownFilter) is null && reader.LocalName == "use" && Target(reader) is {} target && HasEmptyViewport(reader, target)) return;
         _work.Consume(_token);
         if (SvgLocalUrl.TryParseId(value, out string id) && _ids.TryGetValue(id, out int index) && _nodes[index].Kind == Kind.Mask)
@@ -227,19 +228,19 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                 if (!resolved.Presentation.IsDisplayed) continue;
                 if (node.Kind == Kind.Use && node.Target is {} emptyTarget && HasEmptyViewport(reader, emptyTarget))
                 {
-                    AddMask(reader, true, computed.Filter);
+                    AddMask(reader, true, resolved.Presentation.IsVisible, computed.Filter);
                     continue;
                 }
                 if (node.Kind == Kind.Geometry)
                 {
+                    AddMask(reader, true, resolved.Presentation.IsVisible, computed.Filter);
                     if (resolved.Presentation.IsVisible && (reader.LocalName != "path" || !string.IsNullOrWhiteSpace(reader.GetAttribute("d"))))
                     {
-                        AddMask(reader, true, computed.Filter);
                         if (reader.LocalName is "line" or "path" or "polygon" or "polyline") addMarkers(resolved.Presentation.Markers);
                     }
                     continue;
                 }
-                AddMask(reader, true, computed.Filter);
+                AddMask(reader, true, resolved.Presentation.IsVisible, computed.Filter);
                 if (node.Kind == Kind.Use)
                 {
                     if (node.Target is {} target && _ids.TryGetValue(target, out int index)) stack.Add(new(index, resolved, VisitKind.Enter, 0, true));
@@ -279,7 +280,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                     foreach (SvgTextPaintSpan span in run.PaintSpans.Items) { _work.Consume(_token); painted |= span.Paint.IsPainted; ObservePaint(span.Paint); }
                 }
                 if (!painted) return;
-                AddMask(reader, true, authoredStyle.Filter);
+                AddMask(reader, true, paint.IsVisible, authoredStyle.Filter);
                 if (authoredStyle.Filter is {} filter) addFilter(filter);
                 ObservePaint(paint.GlyphPaint);
                 SvgFontFaceRequest request = SvgFontFaceRequest.FromCss(style.Font.Family, style.Font.Weight, style.Font.Italic, style.SourceContext, _work, _token);
