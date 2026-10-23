@@ -562,7 +562,7 @@ internal static class SvgGradientSyntax
         SvgLinearGradient outlineGradient = default;
         bool paintStroke = !paintRadialStroke && SvgOrthogonalShapeParser.TryResolveOutlineGradient(style, state, out outlineGradient);
         SvgPatternTile outlineTile = default;
-        bool paintPatternStroke = !paintRadialStroke && !paintStroke && SvgOrthogonalShapeParser.TryResolveOutlinePattern(style, state, out outlineTile);
+        bool paintPatternStroke = !paintRadialStroke && !paintStroke && SvgOrthogonalShapeParser.TryResolveOutlinePattern(style, state, context.WorkCounter, context.CancellationToken, out outlineTile);
         SvgComputedStyle strokeStyle = (paintStroke || paintRadialStroke || paintPatternStroke) ? style with { Stroke = "#ffffff" } : style;
         SvgStrokeStyleSyntax.SvgAdmittedStroke? bandStroke = null;
         SvgResolvedPaintableElement bandStrokeShape = default;

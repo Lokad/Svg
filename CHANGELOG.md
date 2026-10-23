@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Preserve authored polygon/polyline fill coverage through fractional placement,
+  shader paints, instances and output scaling.
+- Share native pattern content for fills and strokes, preserving fractional
+  sampling and nested-viewport replay for single-rectangle tiles.
+
 - Avoid spending the work budget on Linux glyph fitting outside the raster target.
 
 - Categorize nonfinite native transform coordinates before affine construction,

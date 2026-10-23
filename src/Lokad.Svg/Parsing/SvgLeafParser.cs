@@ -121,7 +121,11 @@ internal static class SvgLeafParser
                 SvgRectangle box = new(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, default, false, null);
                 if (linear) gradient = SvgGradientSyntax.BindLinearSourceMap(gradient, box, source.SceneMap, document, elementContext.WorkCounter, elementContext.CancellationToken);
                 else if (radialPaint) radial = SvgGradientSyntax.BindRadialSourceMap(radial, box, source.SceneMap, elementContext.WorkCounter, elementContext.CancellationToken);
-                else tile = SvgPatternReferenceResolver.ForPlacement(paintId, tile, elementContext.StrokeHostMap.ComposeChecked(source.SceneMap), document, elementContext.WorkCounter, elementContext.CancellationToken);
+                else
+                {
+                    elementContext.StrokeHostMap.ComposeChecked(source.SceneMap);
+                    tile = SvgPatternReferenceResolver.ForReplay(paintId, tile, document, elementContext.WorkCounter, elementContext.CancellationToken);
+                }
                 byte opacity = SvgReferenceResolver.MultiplyAlpha(style.GetOpacity().Alpha, SvgColorParser.ParseOpacity(style.FillOpacity));
                 foreach (SvgGeometry geometry in filled.Geometries)
                 {
@@ -280,7 +284,7 @@ internal static class SvgLeafParser
         SvgPatternTile strokeTile = default;
         bool paintStrokeLinear = SvgOrthogonalShapeParser.TryResolveOutlineGradient(style, state, out strokeGradient);
         bool paintStrokeRadial = SvgOrthogonalShapeParser.TryResolveOutlineRadial(style, state, out strokeCircle);
-        bool paintStrokePattern = SvgOrthogonalShapeParser.TryResolveOutlinePattern(style, state, out strokeTile);
+        bool paintStrokePattern = SvgOrthogonalShapeParser.TryResolveOutlinePattern(style, state, context.WorkCounter, context.CancellationToken, out strokeTile);
         if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke) && !paintStrokeLinear && !paintStrokeRadial && !paintStrokePattern && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient strokes on rounded rectangles are not implemented.");
         SvgPatternTile tile = default;
         bool paintPattern = SvgPatternSyntax.IsPatternFill(style.Fill) && state.Patterns.TryGetValue(SvgPatternSyntax.ParsePatternId(style.Fill), out tile);
@@ -296,8 +300,8 @@ internal static class SvgLeafParser
         }
         if (paintPattern)
         {
-            tile = SvgPatternReferenceResolver.ForPlacement(SvgPatternSyntax.ParsePatternId(style.Fill), tile, context.StrokeHostMap.ComposeChecked(SvgViewportFrame.MapGeometry(transform, frame)),
-                state, context.WorkCounter, context.CancellationToken);
+            context.StrokeHostMap.ComposeChecked(SvgViewportFrame.MapGeometry(transform, frame));
+            tile = SvgPatternReferenceResolver.ForReplay(SvgPatternSyntax.ParsePatternId(style.Fill), tile, state, context.WorkCounter, context.CancellationToken);
         }
         SvgLinearGradient linear = default;
         SvgRadialGradient radial = default;
@@ -472,7 +476,7 @@ internal static class SvgLeafParser
         SvgPatternTile strokeTile = default;
         bool paintStrokeLinear = SvgOrthogonalShapeParser.TryResolveOutlineGradient(style, state, out strokeGradient);
         bool paintStrokeRadial = SvgOrthogonalShapeParser.TryResolveOutlineRadial(style, state, out strokeCircle);
-        bool paintStrokePattern = SvgOrthogonalShapeParser.TryResolveOutlinePattern(style, state, out strokeTile);
+        bool paintStrokePattern = SvgOrthogonalShapeParser.TryResolveOutlinePattern(style, state, context.WorkCounter, context.CancellationToken, out strokeTile);
         SvgPatternTile tile = default;
         bool paintPattern = SvgPatternSyntax.IsPatternFill(style.Fill) && state.Patterns.TryGetValue(SvgPatternSyntax.ParsePatternId(style.Fill), out tile);
         bool paintGradient = SvgGradientSyntax.IsGradientFill(style.Fill) && !paintPattern;
@@ -484,8 +488,8 @@ internal static class SvgLeafParser
         SvgAffineTransform transform = element.Transform;
         if (paintPattern)
         {
-            tile = SvgPatternReferenceResolver.ForPlacement(SvgPatternSyntax.ParsePatternId(style.Fill), tile, context.StrokeHostMap.ComposeChecked(SvgViewportFrame.MapGeometry(transform, frame)),
-                state, context.WorkCounter, context.CancellationToken);
+            context.StrokeHostMap.ComposeChecked(SvgViewportFrame.MapGeometry(transform, frame));
+            tile = SvgPatternReferenceResolver.ForReplay(SvgPatternSyntax.ParsePatternId(style.Fill), tile, state, context.WorkCounter, context.CancellationToken);
         }
         SvgLinearGradient linear = default;
         SvgRadialGradient radial = default;
@@ -854,7 +858,11 @@ internal static class SvgLeafParser
             bool useRadial = state.RadialGradients.TryGetValue(id, out radial);
             if (useLinear) linear = SvgGradientSyntax.BindLinearSourceMap(linear, box, map, state, context.WorkCounter, context.CancellationToken);
             else if (useRadial) radial = SvgGradientSyntax.BindRadialSourceMap(radial, box, map, context.WorkCounter, context.CancellationToken);
-            else if (state.Patterns.TryGetValue(id, out tile)) tile = SvgPatternReferenceResolver.ForPlacement(id, tile, context.StrokeHostMap.ComposeChecked(map), state, context.WorkCounter, context.CancellationToken);
+            else if (state.Patterns.TryGetValue(id, out tile))
+            {
+                context.StrokeHostMap.ComposeChecked(map);
+                tile = SvgPatternReferenceResolver.ForReplay(id, tile, state, context.WorkCounter, context.CancellationToken);
+            }
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local line paints are implemented.");
             using RenderBudget.BudgetReservation textOwner = state.Budget.Reserve(256, SvgMemoryCategory.Parser);
             string path = FormattableString.Invariant($"M{syntax.X1} {syntax.Y1} L{syntax.X2} {syntax.Y2}");

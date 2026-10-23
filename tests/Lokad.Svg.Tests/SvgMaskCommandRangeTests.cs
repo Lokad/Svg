@@ -32,7 +32,7 @@ public sealed class SvgMaskCommandRangeTests
     {
         const string masks = "<defs><mask id='a'><rect width='47' height='41' fill='#404040'/></mask><mask id='b'><rect width='47' height='41' fill='#c0c0c0'/></mask></defs>";
         const string body = "<g mask='url(#a)'><use href='#p'/></g><g mask='url(#b)'><rect x='19' y='11' width='21' height='23' fill='#3b82bd'/></g>";
-        const string target = "<defs><polygon id='p' points='0,0 10,0 10,4 4,4 4,10 0,10' fill='#b14676'/></defs>";
+        const string target = "<defs><g id='p' fill='#b14676'><rect width='10' height='4'/><rect y='4' width='4' height='6'/></g></defs>";
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='47' height='41'>" + (forward ? body + masks : masks + body) + target + "</svg>");
         RenderBudget budget = new(1_000_000);
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))

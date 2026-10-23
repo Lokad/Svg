@@ -43,7 +43,7 @@ internal static class SvgOrthogonalShapeParser
         }
         bool paintOutline = TryResolveOutlineGradient(style, state, out SvgLinearGradient outlineCandidate);
         bool paintRadialOutline = TryResolveOutlineRadial(style, state, out SvgRadialGradient outlineRadialCandidate);
-        bool paintPatternOutline = TryResolveOutlinePattern(style, state, out SvgPatternTile outlineTile);
+        bool paintPatternOutline = TryResolveOutlinePattern(style, state, context.WorkCounter, context.CancellationToken, out SvgPatternTile outlineTile);
         SvgComputedStyle fillStyle = (paintOutline || paintRadialOutline || paintPatternOutline) ? style with { Stroke = "none" } : style;
         if (SvgGradientSyntax.IsGradientFill(style.Fill))
         {
@@ -283,292 +283,139 @@ internal static class SvgOrthogonalShapeParser
         }
         bool paintOutline = TryResolveOutlineGradient(style, state, out SvgLinearGradient outlineCandidate);
         bool paintRadialOutline = TryResolveOutlineRadial(style, state, out SvgRadialGradient outlineRadialCandidate);
-        bool paintPatternOutline = TryResolveOutlinePattern(style, state, out SvgPatternTile outlineTile);
+        bool paintPatternOutline = TryResolveOutlinePattern(style, state, context.WorkCounter, context.CancellationToken, out SvgPatternTile outlineTile);
         bool mappedOutline = (paintOutline || paintRadialOutline)
             && (!context.ResolveTransform(reader).IsAxisAligned || paintOutline && outlineCandidate.RequiresSourceMap);
         SvgComputedStyle fillStyle = (paintOutline || paintRadialOutline || paintPatternOutline) ? style with { Stroke = "none" } : style;
         string pointsValue = reader.GetAttribute("points") ?? string.Empty;
-        bool generalPointList = pointsValue.Contains('.') || pointsValue.Contains('e') || pointsValue.Contains('E')
-            || RequiresGeneralLowering(pointsValue, maximumGeometryElements, context.WorkCounter, context.CancellationToken);
         bool shaderFill = SvgGradientSyntax.IsGradientFill(style.Fill);
-        bool mappedLinearFill = shaderFill && state.Gradients.TryGetValue(SvgGradientSyntax.ParsePaintId(style.Fill), out SvgLinearGradient mappedGradient) && mappedGradient.RequiresSourceMap;
-        if (shaderFill && !generalPointList && !context.RetainInstanceStrokePath && !mappedLinearFill)
-        {
-            if (state.Patterns.TryGetValue(SvgGradientSyntax.ParsePaintId(style.Fill), out _)) return SvgPatternSyntax.LowerPatternBands(reader, context, style, state, elementName, false, maximumGeometryElements, budget, frame);
-            return SvgGradientSyntax.LowerGradientBands(reader, context, style, state, elementName, false, maximumGeometryElements, budget, frame);
-        }
+        // Coordinate spelling must not select rectangle-band coverage.
         SvgResolvedPaintableElement shape;
         SvgParsedGeometry filled;
-        if (generalPointList || context.RetainInstanceStrokePath || mappedLinearFill)
-        {
-            shape = context.ResolveShape(shaderFill ? fillStyle with { Fill = "#ffffff" } : fillStyle, reader, true);
-            bool fractionalEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
-            using BudgetedParserList<SvgFractionalPoint> fractionalPoints = SvgOrthogonalGeometryTokenizer.ParseFractionalPointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, 0);
-            using BudgetedParserList<SvgPoint> noFractionPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-            using BudgetedParserList<int> noFractionEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-            using SvgOrthogonalGeometryLowering fractionalLowering = new(noFractionPoints, noFractionEnds, elementName, false, fractionalEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-            filled = fractionalLowering.LowerFractionalPointList(fractionalPoints, shape, frame, budget) with { ElementCount = fractionalPoints.Count + 1 };
-            try
-            {
-                if (shaderFill) filled = RepaintFractionalFill(filled);
-                SvgStrokeStyleSyntax.SvgAdmittedStroke? fractionalStroke;
-                SvgParsedGeometry fractionalStroked;
-                SvgLinearGradient fractionalGradient = default;
-                SvgRadialGradient fractionalCircle = default;
-                SvgComputedStyle fractionalStrokeStyle = shaderFill ? style with { Fill = "#ffffff" } : style;
-                SvgResolvedPaintableElement fractionalStrokeShape = shape;
-                if (paintOutline || paintRadialOutline || paintPatternOutline)
-                {
-                    if (paintOutline && !mappedOutline)
-                    {
-                        fractionalGradient = SvgGradientSyntax.MapUserSpaceVector(shape.Transform, outlineCandidate, frame);
-                        fractionalGradient = SvgGradientSyntax.MirrorBoundingBoxVector(shape.Transform, fractionalGradient);
-                    }
-                    else if (paintRadialOutline && !mappedOutline) fractionalCircle = SvgGradientSyntax.MapUserSpaceRadial(shape.Transform, outlineRadialCandidate, frame);
-                    // Lower the outline exactly as a solid stroke so caps, joins, dashes and transforms behave identically, then repaint it below. The solid color never reaches the scene.
-                    fractionalStrokeStyle = fractionalStrokeStyle with { Stroke = "#ffffff" };
-                    fractionalStrokeShape = context.ResolveShape(fractionalStrokeStyle, reader, true);
-                }
-                try
-                {
-                    fractionalStroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, fractionalStrokeStyle, fractionalStrokeShape, elementName, true);
-                    if (fractionalStroke is null) return filled;
-                    fractionalStroked = fractionalLowering.LowerStrokePointList(fractionalPoints, elementName == "polygon", fractionalStrokeShape, fractionalStroke.Value.Color, fractionalStrokeShape.Presentation.IsPainted, fractionalStroke.Value.Width, fractionalStroke.Value.MiterLimit, fractionalStroke.Value.Cap, fractionalStroke.Value.Join, fractionalStroke.Value.DashPattern, fractionalStroke.Value.DashOffset, fractionalStroke.Value.PathLength, fractionalStroke.Value.NonScalingStroke, frame, budget);
-                    try
-                    {
-                        if (paintOutline || paintRadialOutline || paintPatternOutline)
-                        {
-                            if (mappedOutline)
-                            {
-                                fractionalStroked = RepaintMappedStroke(fractionalStroked, paintOutline, outlineCandidate, outlineRadialCandidate, fractionalStrokeShape.Presentation.Opacity, state, context.WorkCounter, context.CancellationToken);
-                                return ConcatParsedGeometries(filled, fractionalStroked, budget, context.WorkCounter, context.CancellationToken);
-                            }
-                            bool needsFractionalBox = (paintOutline && !outlineCandidate.IsUserSpace) || (paintRadialOutline && !outlineRadialCandidate.IsUserSpace);
-                            SvgRectangle fractionalBox = default;
-                            if (needsFractionalBox && fractionalStroked.Geometries.Length > 0)
-                            {
-                                SvgAuthoredPath source = fractionalStroked.Geometries[0].AuthoredPath ?? throw new InvalidOperationException("Point-list strokes require retained source commands.");
-                                fractionalBox = source.SceneMap.Apply(source.StrokeStyle?.SourceBounds ?? SvgPathBounds.Compute(source.Commands, context.WorkCounter, context.CancellationToken));
-                            }
-                            using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-                            foreach (SvgGeometry existing in fractionalStroked.Geometries)
-                            {
-                                if (paintOutline) repainted.Add(existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, fractionalGradient, fractionalBox, fractionalStrokeShape.Presentation.Opacity, budget)));
-                                else if (paintRadialOutline) repainted.Add(existing.TransferAuthoredPathTo(SvgRadialPolygon.RepaintOutline(existing.Polygon, fractionalCircle, fractionalBox, fractionalStrokeShape.Presentation.Opacity, budget)));
-                                else repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, fractionalStrokeShape.Presentation.Opacity, SvgViewportFrame.MapGeometry(fractionalStrokeShape.Transform, frame), budget)));
-                            }
-                            fractionalStroked.Dispose();
-                            fractionalStroked = new SvgParsedGeometry(repainted.Detach(), fractionalStroked.ElementCount);
-                        }
-                    }
-                    catch { fractionalStroked.Discard(); throw; }
-                }
-                catch { filled.Discard(); throw; }
-                return ConcatParsedGeometries(filled, fractionalStroked, budget, context.WorkCounter, context.CancellationToken);
-            }
-            catch { filled.Discard(); throw; }
-
-            SvgParsedGeometry RepaintFractionalFill(SvgParsedGeometry source)
-            {
-                if (source.Geometries.Length == 0) return source;
-                string id = SvgGradientSyntax.ParsePaintId(style.Fill);
-                SvgAffineTransform transform = shape.Transform;
-                bool linear = state.Gradients.TryGetValue(id, out SvgLinearGradient gradient);
-                SvgRadialGradient circle = default;
-                bool radial = !linear && state.RadialGradients.TryGetValue(id, out circle);
-                SvgPatternTile tile = default;
-                bool pattern = !linear && !radial && state.Patterns.TryGetValue(id, out tile);
-                if (!linear && !radial && !pattern) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local paint references are implemented.");
-                if (linear)
-                {
-                    if ((!transform.IsAxisAligned || gradient.RequiresSourceMap) && source.Geometries.Length > 0)
-                    {
-                        SvgAuthoredPath path = source.Geometries[0].AuthoredPath ?? throw new InvalidOperationException("Mapped point-list fills require retained source commands.");
-                        SvgRectangle sourceBox = gradient.IsUserSpace ? default : SvgPathBounds.Compute(path.Commands, context.WorkCounter, context.CancellationToken);
-                        gradient = SvgGradientSyntax.BindLinearSourceMap(gradient, sourceBox, path.SceneMap, state, context.WorkCounter, context.CancellationToken);
-                    }
-                    else gradient = SvgGradientSyntax.MirrorBoundingBoxVector(transform, SvgGradientSyntax.MapUserSpaceVector(transform, gradient, frame));
-                    if (gradient.Stops.Length > 1 && gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && gradient.Spread != SvgGradientSpread.Pad)
-                        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
-                }
-                if (radial)
-                {
-                    if (!transform.IsAxisAligned && source.Geometries.Length > 0)
-                    {
-                        SvgAuthoredPath path = source.Geometries[0].AuthoredPath ?? throw new InvalidOperationException("Mapped point-list fills require retained source commands.");
-                        SvgRectangle sourceBox = circle.IsUserSpace ? default : SvgPathBounds.Compute(path.Commands, context.WorkCounter, context.CancellationToken);
-                        circle = SvgGradientSyntax.BindRadialSourceMap(circle, sourceBox, path.SceneMap, context.WorkCounter, context.CancellationToken);
-                    }
-                    else circle = SvgGradientSyntax.MapUserSpaceRadial(transform, circle, frame);
-                }
-                SvgAffineTransform patternMap = SvgViewportFrame.MapGeometry(transform, frame);
-                if (pattern) tile = SvgPatternReferenceResolver.ForPlacement(id, tile, context.StrokeHostMap.ComposeChecked(patternMap), state, context.WorkCounter, context.CancellationToken);
-                SvgRectangle box = linear && gradient.IsUserSpace || radial && circle.IsUserSpace || pattern ? default : BoxFromFilledGeometryBounds(source, context.WorkCounter, context.CancellationToken);
-                byte opacity = SvgReferenceResolver.MultiplyAlpha(style.GetOpacity().Alpha, SvgColorParser.ParseOpacity(style.FillOpacity));
-                using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-                try
-                {
-                    foreach (SvgGeometry existing in source.Geometries)
-                    {
-                        context.WorkCounter.Consume(context.CancellationToken);
-                        SvgGeometry mapped = linear ? existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, gradient, box, opacity, budget))
-                            : radial ? existing.TransferAuthoredPathTo(SvgRadialPolygon.RepaintOutline(existing.Polygon, circle, box, opacity, budget))
-                            : existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, patternMap, budget));
-                        try { repainted.Add(mapped); }
-                        catch { mapped.Dispose(); throw; }
-                    }
-                    source.Dispose();
-                    return new SvgParsedGeometry(repainted.Detach(), source.ElementCount) { SourceObjectBox = source.SourceObjectBox, SourceObjectMap = source.SourceObjectMap };
-                }
-                catch { foreach (SvgGeometry geometry in repainted.AsSpan()) geometry.Dispose(); source.Discard(); throw; }
-            }
-        }
-        using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, true);
-        using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-        contourEnds.Add(points.Count);
-        if (AllContoursDegenerate(contourEnds))
-        {
-            // A sealed subpath with fewer than three points encloses no area, so the fill contributes nothing while stroke lowering still outlines it.
-            shape = context.ResolveShape(fillStyle, reader, true);
-            using BudgetedParserList<SvgGeometry> empty = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-            filled = new SvgParsedGeometry(empty.Detach(), points.Count + 1);
-        }
-        else if (HasDiagonalContour(points, contourEnds))
-        {
-            shape = context.ResolveShape(fillStyle, reader, true);
-            bool diagonalEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
-            using SvgOrthogonalGeometryLowering diagonalLowering = new(points, contourEnds, elementName, false, diagonalEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-            filled = diagonalLowering.LowerPolygonFill(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame, budget);
-        }
-        else
-        {
-            SvgOrthogonalGeometryLowering.ValidateSimpleContour(points, elementName, context.WorkCounter, context.CancellationToken);
-            shape = context.ResolveShape(fillStyle, reader, true);
-            bool isEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
-            // Keep the same contour/clip ownership as the path spelling above.
-            if (!shape.Transform.IsAxisAligned || frame is { Clip.Antialiasing: not SvgClipAntialiasing.None })
-            {
-                using SvgOrthogonalGeometryLowering polygonLowering = new(points, contourEnds, elementName, false, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-                filled = polygonLowering.LowerPolygonFill(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame, budget);
-            }
-            else
-            {
-                using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, elementName, false, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-                filled = lowering.Lower(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame);
-            }
-        }
-
+        shape = context.ResolveShape(shaderFill ? fillStyle with { Fill = "#ffffff" } : fillStyle, reader, true);
+        bool evenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
+        using BudgetedParserList<SvgFractionalPoint> points = SvgOrthogonalGeometryTokenizer.ParseFractionalPointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, 0);
+        using BudgetedParserList<SvgPoint> emptyPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        using BudgetedParserList<int> emptyEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        using SvgOrthogonalGeometryLowering lowering = new(emptyPoints, emptyEnds, elementName, false, evenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+        filled = lowering.LowerPointListFill(points, shape, frame, budget) with { ElementCount = points.Count + 1 };
         try
         {
-            SvgRectangle sourceBox;
-            SvgAffineTransform sourceMap;
-            try
-            {
-                sourceBox = SvgGradientSyntax.BoxFromGradientBands(points, SvgAffineTransform.Identity, null, context);
-                sourceMap = frame is {} viewport
-                    ? SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(shape.Transform)
-                    : shape.Transform;
-            }
-            catch { filled.Discard(); throw; }
-            filled = filled with
-            {
-                SourceObjectBox = new((float)sourceBox.X, (float)sourceBox.Y, (float)(sourceBox.X + sourceBox.Width), (float)(sourceBox.Y + sourceBox.Height)),
-                SourceObjectMap = sourceMap,
-            };
+            if (shaderFill) filled = RepaintFill(filled);
             SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke;
             SvgParsedGeometry stroked;
-            SvgLinearGradient outlineGradient = default;
-            SvgRadialGradient outlineCircle = default;
-            SvgComputedStyle strokeStyle = style;
+            SvgLinearGradient strokeGradient = default;
+            SvgRadialGradient strokeCircle = default;
+            SvgComputedStyle strokeStyle = shaderFill ? style with { Fill = "#ffffff" } : style;
             SvgResolvedPaintableElement strokeShape = shape;
             if (paintOutline || paintRadialOutline || paintPatternOutline)
             {
                 if (paintOutline && !mappedOutline)
                 {
-                    outlineGradient = SvgGradientSyntax.MapUserSpaceVector(shape.Transform, outlineCandidate, frame);
-                    outlineGradient = SvgGradientSyntax.MirrorBoundingBoxVector(shape.Transform, outlineGradient);
+                    strokeGradient = SvgGradientSyntax.MapUserSpaceVector(shape.Transform, outlineCandidate, frame);
+                    strokeGradient = SvgGradientSyntax.MirrorBoundingBoxVector(shape.Transform, strokeGradient);
                 }
-                else if (paintRadialOutline && !mappedOutline) outlineCircle = SvgGradientSyntax.MapUserSpaceRadial(shape.Transform, outlineRadialCandidate, frame);
+                else if (paintRadialOutline && !mappedOutline) strokeCircle = SvgGradientSyntax.MapUserSpaceRadial(shape.Transform, outlineRadialCandidate, frame);
                 // Lower the outline exactly as a solid stroke so caps, joins, dashes and transforms behave identically, then repaint it below. The solid color never reaches the scene.
-                strokeStyle = style with { Stroke = "#ffffff" };
+                strokeStyle = strokeStyle with { Stroke = "#ffffff" };
                 strokeShape = context.ResolveShape(strokeStyle, reader, true);
             }
             try
             {
                 stroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, strokeStyle, strokeShape, elementName, true);
                 if (stroke is null) return filled;
-                using BudgetedParserList<SvgPoint> noStrokePoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-                using BudgetedParserList<int> noStrokeEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-                using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, elementName, false, false, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-                stroked = strokeLowering.LowerStrokePolyline(points, elementName == "polygon", strokeShape, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, stroke.Value.Color, strokeShape.Presentation.IsPainted, frame, budget);
+                stroked = lowering.LowerStrokePointList(points, elementName == "polygon", strokeShape, stroke.Value.Color, strokeShape.Presentation.IsPainted, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, budget);
                 try
-            {
-                if (mappedOutline) stroked = RepaintMappedStroke(stroked, paintOutline, outlineCandidate, outlineRadialCandidate, strokeShape.Presentation.Opacity, state, context.WorkCounter, context.CancellationToken);
-                else if (paintOutline) stroked = RepaintOutlinesAsGradient(stroked, outlineGradient, SvgGradientSyntax.BoxFromGradientBands(points, shape.Transform, frame, context), strokeShape.Presentation.Opacity, budget);
-                    else if (paintRadialOutline) stroked = RepaintOutlinesAsRadial(stroked, outlineCircle, SvgGradientSyntax.BoxFromGradientBands(points, shape.Transform, frame, context), strokeShape.Presentation.Opacity, budget);
-                    else if (paintPatternOutline) stroked = RepaintOutlinesAsPattern(stroked, outlineTile, strokeShape.Presentation.Opacity, SvgViewportFrame.MapGeometry(strokeShape.Transform, frame), budget);
-            }
-            catch { stroked.Discard(); throw; }
+                {
+                    if (paintOutline || paintRadialOutline || paintPatternOutline)
+                    {
+                        if (mappedOutline)
+                        {
+                            stroked = RepaintMappedStroke(stroked, paintOutline, outlineCandidate, outlineRadialCandidate, strokeShape.Presentation.Opacity, state, context.WorkCounter, context.CancellationToken);
+                            return ConcatParsedGeometries(filled, stroked, budget, context.WorkCounter, context.CancellationToken);
+                        }
+                        bool needsStrokeBox = (paintOutline && !outlineCandidate.IsUserSpace) || (paintRadialOutline && !outlineRadialCandidate.IsUserSpace);
+                        SvgRectangle strokeBox = default;
+                        if (needsStrokeBox && stroked.Geometries.Length > 0)
+                        {
+                            SvgAuthoredPath source = stroked.Geometries[0].AuthoredPath ?? throw new InvalidOperationException("Point-list strokes require retained source commands.");
+                            strokeBox = source.SceneMap.Apply(source.StrokeStyle?.SourceBounds ?? SvgPathBounds.Compute(source.Commands, context.WorkCounter, context.CancellationToken));
+                        }
+                        using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+                        foreach (SvgGeometry existing in stroked.Geometries)
+                        {
+                            if (paintOutline) repainted.Add(existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, strokeGradient, strokeBox, strokeShape.Presentation.Opacity, budget)));
+                            else if (paintRadialOutline) repainted.Add(existing.TransferAuthoredPathTo(SvgRadialPolygon.RepaintOutline(existing.Polygon, strokeCircle, strokeBox, strokeShape.Presentation.Opacity, budget)));
+                            else repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, strokeShape.Presentation.Opacity, SvgViewportFrame.MapGeometry(strokeShape.Transform, frame), budget)));
+                        }
+                        stroked.Dispose();
+                        stroked = new SvgParsedGeometry(repainted.Detach(), stroked.ElementCount);
+                    }
+                }
+                catch { stroked.Discard(); throw; }
             }
             catch { filled.Discard(); throw; }
             return ConcatParsedGeometries(filled, stroked, budget, context.WorkCounter, context.CancellationToken);
         }
         catch { filled.Discard(); throw; }
 
-        SvgParsedGeometry RepaintOutlinesAsGradient(SvgParsedGeometry white, SvgLinearGradient paint, SvgRectangle box, byte opacity, RenderBudget budget)
+        SvgParsedGeometry RepaintFill(SvgParsedGeometry source)
         {
+            if (source.Geometries.Length == 0) return source;
+            string id = SvgGradientSyntax.ParsePaintId(style.Fill);
+            SvgAffineTransform transform = shape.Transform;
+            bool linear = state.Gradients.TryGetValue(id, out SvgLinearGradient gradient);
+            SvgRadialGradient circle = default;
+            bool radial = !linear && state.RadialGradients.TryGetValue(id, out circle);
+            SvgPatternTile tile = default;
+            bool pattern = !linear && !radial && state.Patterns.TryGetValue(id, out tile);
+            if (!linear && !radial && !pattern) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local paint references are implemented.");
+            if (linear)
+            {
+                if ((!transform.IsAxisAligned || gradient.RequiresSourceMap) && source.Geometries.Length > 0)
+                {
+                    SvgAuthoredPath path = source.Geometries[0].AuthoredPath ?? throw new InvalidOperationException("Mapped point-list fills require retained source commands.");
+                    SvgRectangle sourceBox = gradient.IsUserSpace ? default : SvgPathBounds.Compute(path.Commands, context.WorkCounter, context.CancellationToken);
+                    gradient = SvgGradientSyntax.BindLinearSourceMap(gradient, sourceBox, path.SceneMap, state, context.WorkCounter, context.CancellationToken);
+                }
+                else gradient = SvgGradientSyntax.MirrorBoundingBoxVector(transform, SvgGradientSyntax.MapUserSpaceVector(transform, gradient, frame));
+                if (gradient.Stops.Length > 1 && gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && gradient.Spread != SvgGradientSpread.Pad)
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
+            }
+            if (radial)
+            {
+                if (!transform.IsAxisAligned && source.Geometries.Length > 0)
+                {
+                    SvgAuthoredPath path = source.Geometries[0].AuthoredPath ?? throw new InvalidOperationException("Mapped point-list fills require retained source commands.");
+                    SvgRectangle sourceBox = circle.IsUserSpace ? default : SvgPathBounds.Compute(path.Commands, context.WorkCounter, context.CancellationToken);
+                    circle = SvgGradientSyntax.BindRadialSourceMap(circle, sourceBox, path.SceneMap, context.WorkCounter, context.CancellationToken);
+                }
+                else circle = SvgGradientSyntax.MapUserSpaceRadial(transform, circle, frame);
+            }
+            SvgAffineTransform patternMap = SvgViewportFrame.MapGeometry(transform, frame);
+            if (pattern)
+            {
+                context.StrokeHostMap.ComposeChecked(patternMap);
+                tile = SvgPatternReferenceResolver.ForReplay(id, tile, state, context.WorkCounter, context.CancellationToken);
+            }
+            SvgRectangle box = linear && gradient.IsUserSpace || radial && circle.IsUserSpace || pattern ? default : BoxFromFilledGeometryBounds(source, context.WorkCounter, context.CancellationToken);
+            byte opacity = SvgReferenceResolver.MultiplyAlpha(style.GetOpacity().Alpha, SvgColorParser.ParseOpacity(style.FillOpacity));
+            using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             try
             {
-                using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-                foreach (SvgGeometry existing in white.Geometries) repainted.Add(existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, paint, box, opacity, budget)));
-                white.Dispose();
-                return new SvgParsedGeometry(repainted.Detach(), white.ElementCount);
+                foreach (SvgGeometry existing in source.Geometries)
+                {
+                    context.WorkCounter.Consume(context.CancellationToken);
+                    SvgGeometry mapped = linear ? existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, gradient, box, opacity, budget))
+                        : radial ? existing.TransferAuthoredPathTo(SvgRadialPolygon.RepaintOutline(existing.Polygon, circle, box, opacity, budget))
+                        : existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, patternMap, budget));
+                    try { repainted.Add(mapped); }
+                    catch { mapped.Dispose(); throw; }
+                }
+                source.Dispose();
+                return new SvgParsedGeometry(repainted.Detach(), source.ElementCount) { SourceObjectBox = source.SourceObjectBox, SourceObjectMap = source.SourceObjectMap };
             }
-            catch { white.Discard(); throw; }
-        }
-
-        SvgParsedGeometry RepaintOutlinesAsRadial(SvgParsedGeometry white, SvgRadialGradient paint, SvgRectangle box, byte opacity, RenderBudget budget)
-        {
-            try
-            {
-                using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-                foreach (SvgGeometry existing in white.Geometries) repainted.Add(existing.TransferAuthoredPathTo(SvgRadialPolygon.RepaintOutline(existing.Polygon, paint, box, opacity, budget)));
-                white.Dispose();
-                return new SvgParsedGeometry(repainted.Detach(), white.ElementCount);
-            }
-            catch { white.Discard(); throw; }
-        }
-
-        static bool RequiresGeneralLowering(string values, int maximum, ParserWorkCounter work, CancellationToken token)
-        {
-            SvgOrthogonalGeometryTokenizer.DelimitedTokenReader tokens = new(values, work, token);
-            SvgPoint first = default, previous = default;
-            int count = 0;
-            bool repeated = false;
-            while (tokens.TryReadValue(out ReadOnlySpan<char> x))
-            {
-                work.Consume(token);
-                if (!tokens.TryReadValue(out ReadOnlySpan<char> y)) throw new SvgException(SvgErrorCode.MalformedInput, "Point coordinates must pair every x with a y.");
-                if (count >= maximum) throw new SvgException(SvgErrorCode.LimitExceeded, "Point-list vertex count exceeds the configured path-command limit.");
-                SvgPoint point = new(SvgGeometrySyntax.ParseInteger(x), SvgGeometrySyntax.ParseInteger(y));
-                if (count == 0) first = point;
-                else repeated |= point == previous;
-                previous = point;
-                count++;
-            }
-            return count < 3 || repeated || previous == first;
-        }
-
-        SvgParsedGeometry RepaintOutlinesAsPattern(SvgParsedGeometry white, SvgPatternTile paint, byte opacity, SvgAffineTransform placement, RenderBudget budget)
-        {
-            try
-            {
-                using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-                foreach (SvgGeometry existing in white.Geometries) repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, paint, opacity, placement, budget)));
-                white.Dispose();
-                return new SvgParsedGeometry(repainted.Detach(), white.ElementCount);
-            }
-            catch { white.Discard(); throw; }
+            catch { foreach (SvgGeometry geometry in repainted.AsSpan()) geometry.Dispose(); source.Discard(); throw; }
         }
     }
 
@@ -681,13 +528,14 @@ internal static class SvgOrthogonalShapeParser
     }
 
     /// <summary>Resolves a pattern-tile stroke for outline repainting, leaving all other strokes to the solid path.</summary>
-    internal static bool TryResolveOutlinePattern(SvgComputedStyle style, SvgDocumentState state, out SvgPatternTile tile)
+    internal static bool TryResolveOutlinePattern(SvgComputedStyle style, SvgDocumentState state, ParserWorkCounter work, CancellationToken token, out SvgPatternTile tile)
     {
         tile = default;
-        string? strokePaint = style.Stroke;
-        return strokePaint is not null
-            && SvgPatternSyntax.IsPatternStroke(strokePaint, state)
-            && state.Patterns.TryGetValue(SvgPatternSyntax.ParsePatternId(strokePaint), out tile);
+        if (style.Stroke is not {} strokePaint || !SvgPatternSyntax.IsPatternStroke(strokePaint, state)) return false;
+        string id = SvgPatternSyntax.ParsePatternId(strokePaint);
+        if (!state.Patterns.TryGetValue(id, out tile)) return false;
+        tile = SvgPatternReferenceResolver.ForReplay(id, tile, state, work, token);
+        return true;
     }
 
     internal static bool TryResolveOutlineGradient(SvgComputedStyle style, SvgDocumentState state, out SvgLinearGradient gradient)

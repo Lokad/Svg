@@ -1519,11 +1519,11 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Lowers_pattern_tile_content_without_ancestor_transforms()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g transform='translate(4,0)'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect x='0' y='0' width='2' height='2' fill='red'/></pattern></defs></g><rect x='0' y='0' width='8' height='8' fill='url(#p)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g transform='translate(4,0)'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect x='0' y='0' width='2' height='2' fill='red'/></pattern></defs></g><rect x='0' y='0' width='8' height='8' fill='url(#p)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PatternFill, geometry.Kind);
-        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), geometry.Pattern.Content);
+        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), NativePatternRectangle(Assert.IsType<SvgVectorContent>(geometry.Pattern.VectorContent)));
     }
 
     [Fact]
@@ -1786,12 +1786,12 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Lowers_pattern_fills_on_use_instances()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern><rect id='r' x='0' y='0' width='4' height='8'/></defs><use href='#r' x='4' y='0' fill='url(#p)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern><rect id='r' x='0' y='0' width='4' height='8'/></defs><use href='#r' x='4' y='0' fill='url(#p)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PatternFill, geometry.Kind);
         Assert.Equal(new SvgRectangle(4, 0, 4, 8, default, true, null), geometry.Pattern.Fill);
-        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), geometry.Pattern.Content);
+        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), NativePatternRectangle(Assert.IsType<SvgVectorContent>(geometry.Pattern.VectorContent)));
     }
 
     [Fact]
@@ -2532,47 +2532,46 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Lowers_gradient_filled_polygons_into_gradient_bands()
+    public void Retains_gradient_filled_polygon_contours()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><polygon points='1,1 7,1 7,3 3,3 3,7 1,7' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><polygon points='1,1 7,1 7,3 3,3 3,7 1,7' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(2, root.Geometries.Length);
-        foreach (SvgGeometry geometry in root.Geometries)
-        {
-            Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-            Assert.Equal(new SvgRectangle(1, 1, 6, 6, default, true, null), geometry.Gradient.Box);
-        }
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientPolygon, geometry.Kind);
+        SvgRectangle box = geometry.GradientPolygon.Box;
+        Assert.Equal((1d, 1d, 6d, 6d), (box.X, box.Y, box.Width, box.Height));
+        Assert.Equal(7, Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath).Commands.Length);
     }
+
     [Fact]
     public void Lowers_gradient_filled_polygon_instances_through_placement()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><polygon id='p' points='0,0 8,0 8,4 4,4 4,8 0,8' fill='url(#g)'/></defs><use href='#p' x='8'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><polygon id='p' points='0,0 8,0 8,4 4,4 4,8 0,8' fill='url(#g)'/></defs><use href='#p' x='8'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(2, root.Geometries.Length);
-        foreach (SvgGeometry geometry in root.Geometries)
-        {
-            Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-            Assert.Equal(new SvgRectangle(8, 0, 8, 8, default, true, null), geometry.Gradient.Box);
-        }
-        Assert.Equal(new SvgRectangle(8, 0, 8, 4, default, true, null), root.Geometries[0].Gradient.Fill);
-        Assert.Equal(new SvgRectangle(8, 4, 4, 4, default, true, null), root.Geometries[1].Gradient.Fill);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientPolygon, geometry.Kind);
+        SvgRectangle box = geometry.GradientPolygon.Box;
+        Assert.Equal((8d, 0d, 8d, 8d), (box.X, box.Y, box.Width, box.Height));
+        SvgAuthoredPath source = Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath);
+        Assert.Equal(SvgAffineTransform.FromTranslation(8, 0), source.SceneMap);
+        Assert.Equal(7, source.Commands.Length);
     }
+
     [Fact]
     public void Lowers_symbol_gradient_instances_through_viewBox_mapping()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><symbol id='s' viewBox='0 0 4 4'><polygon points='0,0 4,0 4,2 2,2 2,4 0,4' fill='url(#g)'/></symbol></defs><use href='#s' width='8' height='8' opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><symbol id='s' viewBox='0 0 4 4'><polygon points='0,0 4,0 4,2 2,2 2,4 0,4' fill='url(#g)'/></symbol></defs><use href='#s' width='8' height='8' opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgRecordedPaintAssertions.ElementOpacity(root, new(128, 0.5f));
-        Assert.Equal(2, root.Geometries.Length);
-        foreach (SvgGeometry geometry in root.Geometries)
-        {
-            Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-            Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null), geometry.Gradient.Box);
-            Assert.Equal(255, geometry.Gradient.Opacity);
-        }
-        Assert.Equal(new SvgRectangle(0, 0, 8, 4, default, true, null) { Clip = new(0, 0, 8, 8) }, root.Geometries[0].Gradient.Fill);
-        Assert.Equal(new SvgRectangle(0, 4, 4, 4, default, true, null) { Clip = new(0, 0, 8, 8) }, root.Geometries[1].Gradient.Fill);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientPolygon, geometry.Kind);
+        SvgRectangle box = geometry.GradientPolygon.Box;
+        Assert.Equal((0d, 0d, 8d, 8d), (box.X, box.Y, box.Width, box.Height));
+        Assert.Equal(255, geometry.GradientPolygon.Opacity);
+        Assert.Equal(new SvgClipBox(0, 0, 8, 8), geometry.GradientPolygon.Clip);
+        Assert.Equal(SvgAffineTransform.FromScale(2, 2), Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath).SceneMap);
     }
+
     [Fact]
     public void Lowers_symbol_gradient_stroke_instances_through_viewBox_mapping()
     {
@@ -2839,40 +2838,39 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Retains_pattern_path_contours()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#p)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#p)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PatternPolygon, geometry.Kind);
-        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), geometry.PatternPolygon.Content);
+        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), NativePatternRectangle(Assert.IsType<SvgVectorContent>(geometry.PatternPolygon.VectorContent)));
         Assert.Equal(6, geometry.PatternPolygon.Points.Length);
         Assert.NotNull(geometry.AuthoredPath);
     }
 
     [Fact]
-    public void Lowers_pattern_filled_polygons_into_pattern_bands()
+    public void Retains_pattern_filled_polygon_contours()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><polygon points='1,1 7,1 7,3 3,3 3,7 1,7' fill='url(#p)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><polygon points='1,1 7,1 7,3 3,3 3,7 1,7' fill='url(#p)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(2, root.Geometries.Length);
-        foreach (SvgGeometry geometry in root.Geometries)
-        {
-            Assert.Equal(SvgGeometryKind.PatternFill, geometry.Kind);
-        }
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.PatternPolygon, geometry.Kind);
+        Assert.Equal(7, Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath).Commands.Length);
+        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new(255, 0, 0, 255), true, null),
+            NativePatternRectangle(Assert.IsType<SvgVectorContent>(geometry.PatternPolygon.VectorContent)));
     }
+
     [Fact]
     public void Lowers_pattern_filled_polygon_instances_through_placement()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='#ff0000'/></pattern></defs><defs><polygon id='q' points='0,0 8,0 8,4 4,4 4,8 0,8' fill='url(#p)'/></defs><use href='#q' x='8' opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='#ff0000'/></pattern></defs><defs><polygon id='q' points='0,0 8,0 8,4 4,4 4,8 0,8' fill='url(#p)'/></defs><use href='#q' x='8' opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgRecordedPaintAssertions.ElementOpacity(root, new(128, 0.5f));
-        Assert.Equal(2, root.Geometries.Length);
-        foreach (SvgGeometry geometry in root.Geometries)
-        {
-            Assert.Equal(SvgGeometryKind.PatternFill, geometry.Kind);
-            Assert.Equal(255, geometry.Pattern.Opacity);
-        }
-        Assert.Equal(new SvgRectangle(8, 0, 8, 4, default, true, null), root.Geometries[0].Pattern.Fill);
-        Assert.Equal(new SvgRectangle(8, 4, 4, 4, default, true, null), root.Geometries[1].Pattern.Fill);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.PatternPolygon, geometry.Kind);
+        Assert.Equal(255, geometry.PatternPolygon.Opacity);
+        SvgAuthoredPath source = Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath);
+        Assert.Equal(SvgAffineTransform.FromTranslation(8, 0), source.SceneMap);
+        Assert.Equal(7, source.Commands.Length);
     }
 
     [Fact]
@@ -3419,23 +3417,31 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Lowers_closed_axis_aligned_polygons_to_non_overlapping_rectangle_bands()
+    public void Retains_closed_axis_aligned_polygon_coverage()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><polygon points='0,0 3,0 3,1 1,1 1,3 0,3' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><polygon points='0,0 3,0 3,1 1,1 1,3 0,3' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
-            rectangle => Assert.Equal(new SvgRectangle(0, 0, 3, 1, new SvgColor(255, 0, 0, 255), true, null), rectangle),
-            rectangle => Assert.Equal(new SvgRectangle(0, 1, 1, 2, new SvgColor(255, 0, 0, 255), true, null), rectangle));
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+        SvgAuthoredPath source = Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath);
+        Assert.Equal(7, source.Commands.Length);
+        Assert.Equal(SvgAuthoredPathVerb.Close, source.Commands[^1].Verb);
+        SvgPathFillAssertions.MatchesIntegerBands(root,
+            [new(0, 0, 3, 1, new(255, 0, 0, 255), true, null), new(0, 1, 1, 2, new(255, 0, 0, 255), true, null)]);
     }
 
     [Fact]
-    public void Lowers_filled_axis_aligned_polylines_by_closing_the_fill_contour()
+    public void Retains_open_polyline_source_with_closed_fill_coverage()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><polyline points='0,0 3,0 3,1 1,1 1,3 0,3' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><polyline points='0,0 3,0 3,1 1,1 1,3 0,3' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
-            rectangle => Assert.Equal(new SvgRectangle(0, 0, 3, 1, new SvgColor(255, 0, 0, 255), true, null), rectangle),
-            rectangle => Assert.Equal(new SvgRectangle(0, 1, 1, 2, new SvgColor(255, 0, 0, 255), true, null), rectangle));
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+        SvgAuthoredPath source = Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath);
+        Assert.Equal(7, source.Commands.Length);
+        Assert.Equal(SvgAuthoredPathVerb.End, source.Commands[^1].Verb);
+        SvgPathFillAssertions.MatchesIntegerBands(root,
+            [new(0, 0, 3, 1, new(255, 0, 0, 255), true, null), new(0, 1, 1, 2, new(255, 0, 0, 255), true, null)]);
     }
 
     [Fact]
@@ -3462,7 +3468,7 @@ public sealed class SvgRootParserTests
             new SvgRectangle(3, 1, 1, 2, new SvgColor(0, 0, 0, 255), true, null),
             new SvgRectangle(0, 3, 4, 1, new SvgColor(0, 0, 0, 255), true, null),
         ];
-        Assert.Equal(expected, polygon.Rectangles);
+        SvgPathFillAssertions.MatchesIntegerBands(polygon, expected);
         SvgPathFillAssertions.MatchesIntegerBands(path, expected);
     }
 
@@ -4357,13 +4363,15 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Applies_a_fill_override_to_an_unstyled_orthogonal_band()
+    public void Applies_fill_override_to_retained_polygon_source()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><polygon id='p' points='0,0 4,0 4,4 0,4'/></defs><use href='#p' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><polygon id='p' points='0,0 4,0 4,4 0,4'/></defs><use href='#p' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Equal(SvgGeometryKind.Rectangle, geometry.Kind);
-        Assert.Equal(new SvgRectangle(0, 0, 4, 4, new SvgColor(0, 0, 255, 255), true, null), geometry.Rectangle);
+        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), geometry.Polygon.Color);
+        Assert.NotNull(geometry.AuthoredPath);
+        SvgPathFillAssertions.MatchesIntegerBands(root, [new(0, 0, 4, 4, new(0, 0, 255, 255), true, null)]);
     }
 
     [Fact]
@@ -4558,12 +4566,15 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Clips_forward_clip_paths_on_groups_with_use_instances()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g clip-path='url(#c)'><use href='#p'/></g><rect x='0' y='0' width='2' height='2' fill='blue'/><defs><polygon id='p' points='0,0 8,0 8,4 4,4 4,8 0,8' fill='red'/><clipPath id='c'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g clip-path='url(#c)'><use href='#p'/></g><rect x='0' y='0' width='2' height='2' fill='blue'/><defs><polygon id='p' points='0,0 8,0 8,4 4,4 4,8 0,8' fill='red'/><clipPath id='c'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(3, root.Geometries.Length);
-        Assert.Equal(new SvgRectangle(0, 0, 8, 4, new SvgColor(255, 0, 0, 255), true, null) { Clip = new(2, 2, 4, 4) }, root.Geometries[0].Rectangle);
-        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(0, 0, 255, 255), true, null), root.Geometries[1].Rectangle);
-        Assert.Equal(new SvgRectangle(0, 4, 4, 4, new SvgColor(255, 0, 0, 255), true, null) { Clip = new(2, 2, 4, 4) }, root.Geometries[2].Rectangle);
+        Assert.Equal(2, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[0].Kind);
+        Assert.Equal(new SvgClipBox(2, 2, 4, 4), root.Geometries[0].Polygon.Clip);
+        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new(0, 0, 255, 255), true, null), root.Geometries[1].Rectangle);
+        SvgPathFillAssertions.MatchesIntegerBands(root,
+            [new(2, 2, 4, 2, new(255, 0, 0, 255), true, null), new(2, 4, 2, 2, new(255, 0, 0, 255), true, null),
+             new(0, 0, 2, 2, new(0, 0, 255, 255), true, null)]);
     }
 
     [Fact]
@@ -6618,11 +6629,11 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Stamps_a_pattern_tile_across_its_fill_region()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='16' height='16' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><rect x='8' y='8' width='48' height='48' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='16' height='16' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><rect x='8' y='8' width='48' height='48' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PatternFill, geometry.Kind);
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), geometry.Pattern.Content);
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), NativePatternRectangle(Assert.IsType<SvgVectorContent>(geometry.Pattern.VectorContent)));
         Assert.Equal(new SvgRectangle(8, 8, 48, 48, new SvgColor(0, 0, 0, 0), true, null), geometry.Pattern.Fill);
     }
 
@@ -6663,11 +6674,12 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Shifts_pattern_content_through_translate_transforms()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='16' height='16' patternUnits='userSpaceOnUse' patternTransform='translate(2,3)'><rect width='8' height='8' fill='red'/></pattern></defs><rect x='8' y='8' width='48' height='48' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='16' height='16' patternUnits='userSpaceOnUse' patternTransform='translate(2,3)'><rect width='8' height='8' fill='red'/></pattern></defs><rect x='8' y='8' width='48' height='48' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PatternFill, geometry.Kind);
-        Assert.Equal(new SvgRectangle(2, 3, 8, 8, new SvgColor(255, 0, 0, 255), true, null), geometry.Pattern.Content);
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), NativePatternRectangle(Assert.IsType<SvgVectorContent>(geometry.Pattern.VectorContent)));
+        Assert.Equal(SvgAffineTransform.FromTranslation(2, 3), geometry.Pattern.ShaderPlacement);
         Assert.Equal(0, geometry.Pattern.OriginX);
         Assert.Equal(0, geometry.Pattern.OriginY);
     }
@@ -6700,12 +6712,19 @@ public sealed class SvgRootParserTests
         using SvgRoot faded = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red' opacity='0.5'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry fadedGeometry = Assert.Single(faded.Geometries);
-        Assert.Equal(new SvgColor(255, 0, 0, 128), fadedGeometry.Pattern.Content.Color);
-
+        Assert.NotNull(fadedGeometry.Pattern.VectorContent);
+        RenderBudget fadedBudget = new(1_000_000);
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(faded,
+            new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), fadedBudget, CancellationToken.None))
+            for (int y = 0; y < 8; y++)
+                for (int x = 0; x < 8; x++)
+                    Assert.Equal(x % 4 < 2 && y % 4 < 2 ? new byte[] { 255, 0, 0, 128 } : new byte[4],
+                        surface.Pixels.AsSpan((y * 8 + x) * 4, 4).ToArray());
+        Assert.Equal(0, fadedBudget.Snapshot().CurrentBytes);
         using SvgRoot scaled = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='1' height='1' fill='red' transform='scale(2)'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry scaledGeometry = Assert.Single(scaled.Geometries);
-        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), scaledGeometry.Pattern.Content);
+        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), NativePatternRectangle(Assert.IsType<SvgVectorContent>(scaledGeometry.Pattern.VectorContent)));
 
         using SvgRoot stroked = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect x='1' y='1' width='2' height='2' fill='red' stroke='blue' stroke-width='2'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
@@ -7380,7 +7399,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Isolates_backward_uniform_masks_around_expanded_grouped_use_content()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><g mask='url(#m)'><use href='#p'/></g><defs><polygon id='p' points='0,0 8,0 8,4 4,4 4,8 0,8' fill='red'/></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><g mask='url(#m)'><use href='#p'/></g><defs><g id='p' fill='red'><rect width='8' height='4'/><rect y='4' width='4' height='4'/></g></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgLeafMaskAssertions.UniformGroupScope(root, 128, null);
         Assert.Equal(2, root.Geometries.Length);
@@ -7774,6 +7793,13 @@ public sealed class SvgRootParserTests
             }
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    private static SvgRectangle NativePatternRectangle(SvgVectorContent content)
+    {
+        SvgGeometry geometry = Assert.Single(content.Scene.Geometries);
+        Assert.Equal(SvgGeometryKind.Rectangle, geometry.Kind);
+        return geometry.Rectangle;
     }
 
 }

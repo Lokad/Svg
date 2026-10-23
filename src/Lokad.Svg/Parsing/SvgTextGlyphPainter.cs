@@ -173,7 +173,8 @@ internal static class SvgTextGlyphPainter
             }
             if (state.Patterns.TryGetValue(id, out SvgPatternTile tile))
             {
-                tile = SvgPatternReferenceResolver.ForPlacement(id, tile, state.OutputMap.ComposeChecked(placement), state, work, token);
+                state.OutputMap.ComposeChecked(placement);
+                tile = SvgPatternReferenceResolver.ForReplay(id, tile, state, work, token);
                 SvgRectangle box = tile.Coordinates is null ? default : SvgTextLayoutBounds.Measure(run, paths, placement, work, token);
                 SvgGeometry content = SvgPatternSyntax.LowerPatternFillGeometry(tile, box, true, 255, null, placement, null);
                 if (content.Kind != SvgGeometryKind.PatternFill)

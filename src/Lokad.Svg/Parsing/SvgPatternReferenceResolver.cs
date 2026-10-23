@@ -100,17 +100,15 @@ internal static class SvgPatternReferenceResolver
         }
     }
 
-    /// <summary>Borrows native tile replay for affine placement and scaled strokes, preserving ordinary legacy tiles.</summary>
+    /// <summary>Borrows native tile replay before rectangle content is copied into referencing geometry.</summary>
     /// <remarks>The definition caches a parent-owned scene using the existing template promotion route.
-    /// Creation charges work/storage and observes cancellation; aliases borrow the same owner. Positive
-    /// axis placement keeps established legacy fill pixels; strokes retain source replay for later scaling. Failed promotion disposes every new owner.</remarks>
-    internal static SvgPatternTile ForPlacement(string id, SvgPatternTile tile, SvgAffineTransform devicePlacement,
+    /// Creation charges work/storage and observes cancellation; aliases borrow the same owner.
+    /// Callers preserve their target-map range checks separately; promotion is independent of placement.
+    /// Fills and strokes retain source replay for later instance/output placement. Failed promotion disposes every new owner.</remarks>
+    internal static SvgPatternTile ForReplay(string id, SvgPatternTile tile,
         SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
         if (tile.VectorContent is not null || tile.Content is null) return tile;
-        // Stroked content retains native replay even before the output scale is known.
-        if (devicePlacement.IsAxisAligned && devicePlacement.A >= 0 && devicePlacement.D >= 0
-            && tile.Content.Value.Rectangle.Stroke is null) return tile;
         work.Consume(token);
         if (!state.PatternDefinitions.TryGetValue(id, out SvgPatternDefinition definition)) throw new InvalidOperationException("Pattern replay requires retained definition content.");
         SvgVectorContent content;

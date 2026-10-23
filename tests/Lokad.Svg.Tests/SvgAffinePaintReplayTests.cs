@@ -6,7 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgAffinePaintReplayTests
 {
     [Fact]
-    public void Reflected_and_rotated_patterns_share_promoted_content_and_keep_ordinary_tiles()
+    public void Patterns_share_native_content_across_ordinary_reflected_and_rotated_placement()
     {
         byte[] input = Document(Pattern + "<path d='M2 2H16V16H2Z' fill='url(#p)' transform='translate(35 0) scale(-1 1)'/><path d='M2 2H16V16H2Z' fill='url(#p)' transform='rotate(19 20 20)'/><path d='M2 2H16V16H2Z' fill='url(#p)'/>");
         RenderBudget budget = new(8_000_000);
@@ -16,7 +16,7 @@ public sealed class SvgAffinePaintReplayTests
             Assert.Equal(3, paints.Length);
             Assert.NotNull(paints[0].VectorContent);
             Assert.Same(paints[0].VectorContent, paints[1].VectorContent);
-            Assert.Null(paints[2].VectorContent);
+            Assert.Same(paints[0].VectorContent, paints[2].VectorContent);
             using SvgConverter.RasterizedSurface output = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None);
             Assert.Contains(output.Pixels, value => value != 0);
         }

@@ -98,7 +98,9 @@ Omitted circle radii and path data paint nothing. An ellipse with one omitted
 radius copies the other resolved radius; omitting both paints nothing.
 Omitted/empty point lists paint nothing. Repeated and closing vertices, and
 one/two-point lists, follow the same fill/stroke rules for all numeric spellings;
-markers retain the authored vertices.
+markers retain the authored vertices. Integer and fractional point lists keep
+original fill contours through placement and paints; see the
+[coverage regressions](../tests/Lokad.Svg.Tests/SvgPointListCoverageTests.cs).
 Polygon/polyline point coordinates are bare SVG numbers; CSS length units such
 as px are unsupported in these numeric lists.
 Path numbers retain explicit signs and equivalent decimal/exponent spellings
@@ -156,6 +158,8 @@ still apply to tile content; `display:none` on rendered children suppresses them
 Font preparation uses the same resource display rules for supplied-font tile text.
 Template content, including images, effects and supplied-font text, survives zero
 or omitted base tile dimensions when an alias supplies nonzero effective dimensions.
+Pattern fills/strokes share retained content through instances, fractional
+placement and output scaling, including single-rectangle tiles.
 Patterns whose effective tile size stays zero remain inert.
 Empty gradients and inert patterns suppress only their own paint operation.
 The independent fill/stroke, markers and effects remain; validation and source

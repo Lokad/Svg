@@ -90,7 +90,8 @@ internal static class SvgPatternSyntax
         if (!state.Patterns.TryGetValue(patternId, out SvgPatternTile tile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern references are implemented.");
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
         SvgAffineTransform transform = context.ResolveTransform(reader);
-        tile = SvgPatternReferenceResolver.ForPlacement(patternId, tile, context.StrokeHostMap.ComposeChecked(SvgViewportFrame.MapGeometry(transform, frame)), state, context.WorkCounter, context.CancellationToken);
+        context.StrokeHostMap.ComposeChecked(SvgViewportFrame.MapGeometry(transform, frame));
+        tile = SvgPatternReferenceResolver.ForReplay(patternId, tile, state, context.WorkCounter, context.CancellationToken);
         if (tile.VectorContent is null && !transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned pattern transforms are implemented.");
         if (tile.VectorContent is null && (transform.A < 0 || transform.D < 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-reflected pattern fills are implemented.");
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
@@ -188,8 +189,8 @@ internal static class SvgPatternSyntax
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern rectangle strokes in scaled viewports are not implemented.");
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
         SvgAffineTransform transform = context.ResolveTransform(reader);
-        tile = SvgPatternReferenceResolver.ForPlacement(ParsePatternId(style.Fill), tile, context.StrokeHostMap.ComposeChecked(SvgViewportFrame.MapGeometry(transform, frame)),
-            state, context.WorkCounter, context.CancellationToken);
+        context.StrokeHostMap.ComposeChecked(SvgViewportFrame.MapGeometry(transform, frame));
+        tile = SvgPatternReferenceResolver.ForReplay(ParsePatternId(style.Fill), tile, state, context.WorkCounter, context.CancellationToken);
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         if (!transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned pattern transforms are implemented.");
         if (tile.VectorContent is null && (transform.A < 0 || transform.D < 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-reflected pattern fills are implemented.");

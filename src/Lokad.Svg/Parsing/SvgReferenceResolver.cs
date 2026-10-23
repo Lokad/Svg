@@ -439,7 +439,8 @@ internal static class SvgReferenceResolver
             string paintId = reference.PaintServerId ?? throw new InvalidOperationException("Instance paint lowering requires a paint-server reference.");
             if (state.Patterns.TryGetValue(paintId, out SvgPatternTile tile))
             {
-                tile = SvgPatternReferenceResolver.ForPlacement(paintId, tile, state.OutputMap.ComposeChecked(PlainInstancePlacement(reference, frame)), state, work, token);
+                state.OutputMap.ComposeChecked(PlainInstancePlacement(reference, frame));
+                tile = SvgPatternReferenceResolver.ForReplay(paintId, tile, state, work, token);
                 return LowerInstancePatternFill(tile, InstancePlacement(definition.Geometries[0].Rectangle, reference), reference, frame, null, SvgAffineTransform.Identity, null);
             }
             if (state.Gradients.TryGetValue(paintId, out SvgLinearGradient gradient)) return LowerInstanceGradientFill(gradient, InstancePlacement(definition.Geometries[0].Rectangle, reference), InstanceBox(definition.Geometries[0].Rectangle, reference, frame), reference, frame, null);
@@ -714,13 +715,43 @@ internal static class SvgReferenceResolver
     }
 
     /// <summary>Rejects nonuniform shader-outline instances without native source strokes; retained native commands preserve source construction through placement.</summary>
+    /// <summary>Keeps nonuniform symbol placement limited to retained orthogonal source contours.</summary>
+    /// <remarks>Borrows immutable commands; no storage is retained. The parser-thread caller shares work and cancellation.</remarks>
+    private static void RequireAdmittedSymbolPolygonScale(SvgGeometry geometry, double scaleX, double scaleY, ParserWorkCounter work, CancellationToken token)
+    {
+        if (scaleX == scaleY) return;
+        bool admitted = geometry.AuthoredPath is { SceneMap.IsAxisAligned: true };
+        if (admitted && geometry.AuthoredPath is {} path)
+        {
+            SvgDevicePoint current = default, first = default;
+            foreach (SvgAuthoredPathCommand command in path.Commands)
+            {
+                work.Consume(token);
+                switch (command.Verb)
+                {
+                    case SvgAuthoredPathVerb.Move: current = first = command.First; break;
+                    case SvgAuthoredPathVerb.Line:
+                        admitted = current.X == command.First.X || current.Y == command.First.Y;
+                        current = command.First; break;
+                    case SvgAuthoredPathVerb.Close:
+                    case SvgAuthoredPathVerb.End:
+                        admitted = current.X == first.X || current.Y == first.Y;
+                        current = first; break;
+                    default: admitted = false; break;
+                }
+                if (!admitted) break;
+            }
+        }
+        if (!admitted) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling requires retained orthogonal polygon commands.");
+    }
+
     private static void RequireUniformOutlineScales(SvgDefinition definition, SvgUseReference reference)
     {
         if (reference.Transform.IsUniformScale()) return;
         foreach (SvgGeometry source in definition.Geometries)
         {
             if (source.Kind is SvgGeometryKind.GradientPolygon or SvgGeometryKind.RadialPolygon or SvgGeometryKind.PatternPolygon
-                && source.AuthoredPath?.StrokeStyle is null)
+                && source.AuthoredPath is null)
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled outline strokes without native source commands on use instances are implemented.");
         }
     }
@@ -800,7 +831,7 @@ internal static class SvgReferenceResolver
             ArgumentNullException.ThrowIfNull(document);
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
-            if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of polygon content is not implemented.");
+            RequireAdmittedSymbolPolygonScale(geometry, scaleX, scaleY, workCounter, cancellationToken);
             RequireAdmittedSymbolMagnification(geometry, source.Mapping, scaleX, instance);
             using RenderBudget.BudgetReservation mappedReservation = document.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Points.Length), SvgMemoryCategory.Geometry);
             SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];
@@ -1315,7 +1346,7 @@ internal static class SvgReferenceResolver
             ArgumentNullException.ThrowIfNull(document);
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
-            if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of polygon content is not implemented.");
+            RequireAdmittedSymbolPolygonScale(geometry, scaleX, scaleY, workCounter, cancellationToken);
             RequireAdmittedSymbolMagnification(geometry, source.Mapping, scaleX, instance);
             using RenderBudget.BudgetReservation mappedReservation = document.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Points.Length), SvgMemoryCategory.Geometry);
             SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];
@@ -1419,7 +1450,7 @@ internal static class SvgReferenceResolver
             ArgumentNullException.ThrowIfNull(document);
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
-            if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of polygon content is not implemented.");
+            RequireAdmittedSymbolPolygonScale(geometry, scaleX, scaleY, workCounter, cancellationToken);
             RequireAdmittedSymbolMagnification(geometry, source.Mapping, scaleX, instance);
             using RenderBudget.BudgetReservation mappedReservation = document.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Points.Length), SvgMemoryCategory.Geometry);
             SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];
@@ -1440,7 +1471,7 @@ internal static class SvgReferenceResolver
                 mapped[index] = new SvgDevicePoint(placedX, placedY);
             }
             SvgRadialGradient circle = source.Gradient;
-            if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ScaleGeneralRadial(circle, scaleX, scaleY, offsetX + instance.X, offsetY + instance.Y) : circle with { CenterX = circle.CenterX * scaleX + offsetX + instance.X, CenterY = circle.CenterY * scaleY + offsetY + instance.Y, FocalX = circle.FocalX * scaleX + offsetX + instance.X, FocalY = circle.FocalY * scaleY + offsetY + instance.Y, Radius = circle.Radius * Math.Abs(scaleX), FocalRadius = circle.FocalRadius * Math.Abs(scaleX) };
+            if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ScaleGeneralRadial(circle, scaleX, scaleY, offsetX + instance.X, offsetY + instance.Y) : circle with { CenterX = circle.CenterX * scaleX + offsetX + instance.X, CenterY = circle.CenterY * scaleY + offsetY + instance.Y, FocalX = circle.FocalX * scaleX + offsetX + instance.X, FocalY = circle.FocalY * scaleY + offsetY + instance.Y, Radius = circle.Radius * Math.Abs(scaleX), FocalRadius = circle.FocalRadius * Math.Abs(scaleX), ReferenceScaleX = circle.ReferenceScaleX * scaleX, ReferenceScaleY = circle.ReferenceScaleY * scaleY };
             SvgRectangle contentBox = source.Box;
             SvgRectangle box = instance.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + instance.X, contentBox.Y * scaleY + offsetY + instance.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));
             if (viewportFrame is not null) box = viewportFrame.Value.Shift(box);
@@ -1473,7 +1504,7 @@ internal static class SvgReferenceResolver
             ArgumentNullException.ThrowIfNull(document);
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
-            if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of polygon content is not implemented.");
+            RequireAdmittedSymbolPolygonScale(geometry, scaleX, scaleY, workCounter, cancellationToken);
             RequireAdmittedSymbolMagnification(geometry, source.Mapping, scaleX, instance);
             if (viewportFrame is not null && viewportFrame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
             using RenderBudget.BudgetReservation mappedReservation = document.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Points.Length), SvgMemoryCategory.Geometry);

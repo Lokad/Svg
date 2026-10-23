@@ -466,7 +466,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         points.Add(new(right, y));
         points.Add(new(right, bottom));
         points.Add(new(x, bottom));
-        return LowerFractionalPointList(points, element, frame, budget) with { ElementCount = 0 };
+        return LowerPointListFill(points, element, frame, budget) with { ElementCount = 0 };
     }
 
     /// <summary>Lowers rounded rectangles with retained native source conics and finite affine placement.</summary>
@@ -872,7 +872,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     /// commands and its composed scene map, with storage/work charged before allocation and cancellation
     /// checked through the shared budgeted list. Partial failure releases both scene and command owners.
     /// Explicit polygon closure stays distinct from the implicit fill closure of a polyline.</remarks>
-    internal SvgParsedGeometry LowerFractionalPointList(BudgetedParserList<SvgFractionalPoint> points, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
+    internal SvgParsedGeometry LowerPointListFill(BudgetedParserList<SvgFractionalPoint> points, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(budget);
@@ -882,12 +882,14 @@ internal ref struct SvgOrthogonalGeometryLowering
         SvgFractionalPoint previous = default;
         SvgFractionalPoint first = default;
         bool hasKept = false;
+        bool diagonal = false;
         for (int index = 0; index < points.Count; index++)
         {
             _workCounter.Consume(_cancellationToken);
-            SvgFractionalPoint vertex = points[index];
+            SvgFractionalPoint vertex = new((float)points[index].X, (float)points[index].Y);
             if (hasKept && previous == vertex) continue;
             if (hasKept && vertex == first && index == points.Count - 1) continue;
+            if (hasKept && previous.X != vertex.X && previous.Y != vertex.Y) diagonal = true;
             if (!hasKept) first = vertex;
             previous = vertex;
             hasKept = true;
@@ -900,7 +902,34 @@ internal ref struct SvgOrthogonalGeometryLowering
             return new(empty.Detach(), points.Count + 1);
         }
         int[] ends = [mapped.Count];
-        SvgParsedGeometry result = FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, SvgPolygonMapping.FiniteEdges, frame, budget);
+        diagonal |= previous.X != first.X && previous.Y != first.Y;
+        if (_isEvenOdd && diagonal)
+        {
+            // Keep the established bounded even-odd crossing admission; native
+            // source commands do not require the normalized loops for painting.
+            SeparatedContours validated = PrepareSeparatedContours(mapped, ends, [], [], SvgPolygonMapping.FiniteEdges, budget, false);
+            validated.SceneReservation?.Dispose();
+        }
+        // Retain the native fill verbs, including touching and degenerate
+        // contours. Separating legacy polygons can reject valid point lists.
+        RenderBudget.BudgetReservation? reservation = ReserveScene(mapped.Count, ends.Length, _isEvenOdd ? ends.Length : 0, 0, 0, budget);
+        SvgParsedGeometry result;
+        try
+        {
+            SvgDevicePoint[] retained = new SvgDevicePoint[mapped.Count];
+            double limit = (double)(float)int.MaxValue;
+            for (int index = 0; index < retained.Length; index++)
+            {
+                _workCounter.Consume(_cancellationToken);
+                SvgDevicePoint vertex = mapped[index];
+                if (!double.IsFinite(vertex.X) || !double.IsFinite(vertex.Y) || Math.Abs(vertex.X) > limit || Math.Abs(vertex.Y) > limit)
+                    throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill coordinates exceed the admitted numeric range.");
+                retained[index] = vertex;
+            }
+            result = RetainPolygonFill(retained, ends, _isEvenOdd ? [1] : null, [], [], element.Presentation.Color,
+                element.Presentation.HasFill, _isEvenOdd, SvgPolygonMapping.FiniteEdges, frame?.Clip, reservation, budget);
+        }
+        catch { reservation?.Dispose(); throw; }
         OwnedParserArray<SvgAuthoredPathCommand> owned = new([], null);
         try
         {
@@ -3851,26 +3880,6 @@ internal ref struct SvgOrthogonalGeometryLowering
         _geometries.Dispose();
         _intersections.Dispose();
         _boundaries.Dispose();
-    }
-
-    internal static void ValidateSimpleContour(BudgetedParserList<SvgPoint> points, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        if (SvgContourTopology.Classify(points.AsSpan(), 0, points.Count) == SvgContourKind.Diagonal) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned " + elementName + " contours are implemented.");
-        for (int firstIndex = 0; firstIndex < points.Count; firstIndex++)
-        {
-            SvgPoint firstStart = points[firstIndex]; SvgPoint firstEnd = points[(firstIndex + 1) % points.Count];
-            bool firstHorizontal = firstStart.Y == firstEnd.Y;
-            for (int secondIndex = firstIndex + 1; secondIndex < points.Count; secondIndex++)
-            {
-                workCounter.Consume(cancellationToken);
-                SvgPoint secondStart = points[secondIndex]; SvgPoint secondEnd = points[(secondIndex + 1) % points.Count];
-                bool secondHorizontal = secondStart.Y == secondEnd.Y;
-                if (!EdgesIntersect(firstStart, firstEnd, firstHorizontal, secondStart, secondEnd, secondHorizontal)) continue;
-                bool adjacent = secondIndex == firstIndex + 1 || (firstIndex == 0 && secondIndex == points.Count - 1);
-                SvgPoint shared = secondIndex == firstIndex + 1 ? firstEnd : firstStart;
-                if (adjacent && firstHorizontal != secondHorizontal && (firstHorizontal ? new SvgPoint(secondStart.X, firstStart.Y) : new SvgPoint(firstStart.X, secondStart.Y)) != shared) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer " + elementName + " contours are implemented.");
-            }
-        }
     }
 
     internal static void ValidateContours(BudgetedParserList<SvgPoint> points, BudgetedParserList<int> contourEnds, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken)

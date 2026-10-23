@@ -111,6 +111,10 @@ Resolved empty servers affect only their own element-local paint. Recording and
 lowering share that availability, while unknown resources retain deferred lookup
 and authored values retain validation. Empty text strokes emit no outline: an
 invisible outline can enlarge a native layer and shift another paint's bitmap origin.
+Point lists keep native source floats and authored fill verbs through solid and
+shader lowering. Coordinate spelling does not select rectangle-band coverage.
+Pattern fills and strokes share a definition-owned replay scene; rectangle content
+must retain its target map before instance and viewport placement.
 Paint-filled paths and point lists compose ordinary fill and stroke lowering;
 recording applies opacity and paint order once. Affine linear/radial strokes and
 fractional pattern fills retain source commands, local bounds and composed paint
