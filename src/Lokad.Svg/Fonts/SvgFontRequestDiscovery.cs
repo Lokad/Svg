@@ -111,6 +111,11 @@ internal static class SvgFontRequestDiscovery
             {
                 workCounter.Consume(cancellationToken);
                 ancestors.Observe(reader, 0);
+                if (activeCandidateLevel >= 0 && descriptionDepth >= 0 && reader.NodeType != XmlNodeType.Element)
+                {
+                    if (reader.NodeType == XmlNodeType.EndElement && reader.Depth == descriptionDepth) descriptionDepth = -1;
+                    continue;
+                }
                 if (reader.NodeType == XmlNodeType.Element)
                 {
                     if (!hasRoot)
@@ -123,6 +128,17 @@ internal static class SvgFontRequestDiscovery
                     if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                     nodeCount++;
                     bool isSvgElement = reader.NamespaceURI == SvgNamespace;
+                    if (activeCandidateLevel >= 0 && (descriptionDepth >= 0 || isSvgElement && SvgStructuralVocabulary.IsDescriptiveElement(reader.LocalName)))
+                    {
+                        if (descriptionDepth >= 0)
+                        {
+                            if (isSvgElement && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName)) hasUnsupportedContent = true;
+                        }
+                        else if (!reader.IsEmptyElement) descriptionDepth = reader.Depth;
+                        // Preserve the enclosing candidate, whitespace and font
+                        // coverage chunk while still metering every ignored node.
+                        continue;
+                    }
                     if (isSvgElement && reader.LocalName is ("linearGradient" or "radialGradient" or "pattern") && reader.GetAttribute("id") is {} paintId)
                         paintServerIds.TryAdd(styleStrings.Copy(paintId), true);
                     if (isSvgElement && reader.LocalName == "filter" && reader.GetAttribute("id") is {} filterId)

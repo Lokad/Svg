@@ -610,11 +610,17 @@ internal static class SvgRenderedLeafParser
         using RenderBudget.BudgetReservation chunkReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount(4_096, sizeof(char)), SvgMemoryCategory.Parser);
         char[] chunk = new char[4_096];
         int depthOffset = element.Depth;
+        int descriptionDepth = -1;
         using XmlReader subtree = element.ReadSubtree();
         while (subtree.Read())
         {
             workCounter.Consume(cancellationToken);
             state.CssAncestors.Observe(subtree, depthOffset);
+            if (descriptionDepth >= 0 && subtree.NodeType != XmlNodeType.Element)
+            {
+                if (subtree.NodeType == XmlNodeType.EndElement && subtree.Depth == descriptionDepth) descriptionDepth = -1;
+                continue;
+            }
             if (subtree.NodeType is XmlNodeType.Text or XmlNodeType.CDATA or XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace)
             {
                 int read;
@@ -651,6 +657,20 @@ internal static class SvgRenderedLeafParser
                 if (childNodeCount >= remainingNodeCount) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                 childNodeCount++;
                 if (subtree.AttributeCount > maximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");
+                bool svg = subtree.NamespaceURI == "http://www.w3.org/2000/svg";
+                if (descriptionDepth >= 0)
+                {
+                    if (svg && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(subtree.LocalName))
+                        throw new SvgException(SvgErrorCode.UnsupportedFeature, "This content inside an SVG description is not implemented.");
+                    continue;
+                }
+                if (svg && SvgStructuralVocabulary.IsDescriptiveElement(subtree.LocalName))
+                {
+                    // Inert descriptions introduce neither a text chunk nor a
+                    // style/position scope. Their descendants still count above.
+                    if (!subtree.IsEmptyElement) descriptionDepth = subtree.Depth;
+                    continue;
+                }
                 SvgTextWhitespaceNormalizer inheritedNormalizer = whitespaceNormalizers[^1];
                 SvgTextSpanStyle inheritedStyle = new(inheritedNormalizer.Mode, inheritedNormalizer.LetterSpacing) { Paint = text.GetPaint(whitespaceNormalizers.Count - 1), Font = text.GetFont(whitespaceNormalizers.Count - 1) };
                 if (subtree.NamespaceURI != "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bounded SVG text children are implemented.");

@@ -43,7 +43,7 @@ internal sealed class SvgRetainedTextSource
         using BudgetedParserList<Attribute> attributes = new(state.Budget, SvgMemoryCategory.Parser, work, token);
         using BudgetedParserList<InlineStyle> styles = new(state.Budget, SvgMemoryCategory.Parser, work, token);
         using BudgetedParserList<int> open = new(state.Budget, SvgMemoryCategory.Parser, work, token);
-        int originalDepth = element.Depth, characters = 0, childNodes = 0;
+        int originalDepth = element.Depth, characters = 0, childNodes = 0, descriptionDepth = -1;
         using XmlReader? nested = descendants ? element.ReadSubtree() : null;
         XmlReader subtree = nested ?? element;
         bool next = !descendants || subtree.Read();
@@ -62,6 +62,9 @@ internal sealed class SvgRetainedTextSource
                 SvgStructuralAdmission.ValidateElementStructure(subtree, limits);
                 if (depth + originalDepth >= limits.MaximumXmlDepth)
                     throw new SvgException(SvgErrorCode.LimitExceeded, "Retained text exceeds the document depth limit.");
+                if (descriptionDepth < 0 && subtree.NamespaceURI == "http://www.w3.org/2000/svg"
+                    && SvgStructuralVocabulary.IsDescriptiveElement(subtree.LocalName) && !empty)
+                    descriptionDepth = depth;
                 InlineStyle sheet = depth == 0 ? context.StyleSheet
                     : SvgStyleSheet.Resolve(subtree, state.StyleRules, state.CssAncestors, work, token);
                 if (sheet != default) { styleIndex = styles.Count; styles.Add(sheet); }
@@ -78,9 +81,14 @@ internal sealed class SvgRetainedTextSource
             else if (subtree.NodeType is XmlNodeType.Text or XmlNodeType.CDATA or XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace)
             {
                 value = subtree.Value;
-                if (value.Length > SvgTextLimits.MaximumCharacters - state.TextCharacterCount - characters)
-                    throw new SvgException(SvgErrorCode.LimitExceeded, "Retained text exceeds the document character limit.");
-                characters += value.Length;
+                // Descriptive values retain ordinary input/storage accounting,
+                // but consume no rendered-text character allowance.
+                if (descriptionDepth < 0)
+                {
+                    if (value.Length > SvgTextLimits.MaximumCharacters - state.TextCharacterCount - characters)
+                        throw new SvgException(SvgErrorCode.LimitExceeded, "Retained text exceeds the document character limit.");
+                    characters += value.Length;
+                }
                 value = Copy(value);
             }
             int current = nodes.Count;
@@ -94,6 +102,7 @@ internal sealed class SvgRetainedTextSource
                 int start = open[^1]; open.RemoveLast();
                 nodes[start] = nodes[start] with { End = current };
             }
+            if (subtree.NodeType == XmlNodeType.EndElement && depth == descriptionDepth) descriptionDepth = -1;
             next = descendants && subtree.Read();
         }
         if (nodes.Count == 0 || open.Count != 0) throw new XmlException("Retained text is incomplete.");

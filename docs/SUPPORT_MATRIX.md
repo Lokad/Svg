@@ -223,6 +223,8 @@ Group children and XML transform/fill/opacity attributes on the clipPath contain
 are unsupported; admitted child geometry retains its own transforms and clip rules.
 Alpha/luminance masks support ordered vector/text content, clipping, local uses,
 both region/content unit systems and transformed finite regions.
+Text content enters masks through groups or local uses; direct text children
+of a mask are unsupported.
 Object-box mask regions require bare-number fractions; user-space regions also
 accept viewport percentages.
 For axis-aligned shape targets, spatial mask content must cover an explicit
@@ -449,6 +451,11 @@ their documented positive-weight catalog selection contract.
 | Paint | Affine glyph solid/gradient/pattern fills and strokes, dashes, non-scaling strokes and paint order; solid underline/overline/line-through decorations. |
 | Text paths | One local open/closed geometry path per run, transformed/curved paths, supplied advances/kerning, length/percentage startOffset, anchors/tangents, `method="align"`, `spacing="exact"` and mixed direct/path text. |
 | Ligatures | Default Latin/DFLT Basic Latin, one unfiltered type-4 lookup, format-1 subtables, coverage 1/2 and two to eight components in font order. Nonzero spacing or positioned-span boundaries prevent merging. |
+
+Text, spans and text paths admit inert `title`, `desc` and `metadata` subtrees.
+Their content uses no rendered-text character allowance; XML node/depth/attribute,
+input, memory and work limits still apply. See the
+[descriptive-text regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.DescriptiveText.cs).
 
 Pair positioning selects the default Latin language system before DFLT, sharing
 selection with ligatures. Feature tags repeated in other language systems do not
