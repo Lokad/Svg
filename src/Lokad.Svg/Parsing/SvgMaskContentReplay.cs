@@ -139,6 +139,7 @@ internal static class SvgMaskContentReplay
                         context.InheritedPresentation.IsDisplayed && context.InheritedPresentation.IsVisible, null, null, null)
                     {
                         InheritedFill = context.InheritedPresentation.Paint,
+                        InheritedTextStyle = context.InheritedTextStyle,
                         PaintServerFill = context.InheritedPresentation.PaintServerFill,
                         PaintServerId = context.InheritedPresentation.PaintServerFill is {} fill ? SvgGradientSyntax.ParsePaintId(fill) : null,
                         InheritedStroke = context.InheritedStroke,

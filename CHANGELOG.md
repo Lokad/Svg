@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve inherited text style when replaying grouped mask content, keeping
+  the resource's font and spacing independent of the masked target.
 - Defer mask scenes until target placement, skipping unused mask text and
   explicitly empty regions. Share retained replay for single-use and grouped masks.
 - Admit inert `title`, `desc` and `metadata` children inside text, including

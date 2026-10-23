@@ -227,6 +227,8 @@ Text content enters masks through groups or local uses; direct text children
 of a mask are unsupported.
 Unused mask text and explicitly empty mask regions need no font programs; see the
 [reachability regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskReachability.cs).
+Grouped mask text inherits the resource's text style; explicit child declarations
+still override it. See the [inheritance regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskTextInheritance.cs).
 Object-box mask regions require bare-number fractions; user-space regions also
 accept viewport percentages.
 For axis-aligned shape targets, spatial mask content must cover an explicit
