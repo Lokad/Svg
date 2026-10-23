@@ -2285,32 +2285,58 @@ public static partial class SvgConverter
                 return ApplyOpacity(SvgConstantShaderPaint.SampleAffine(source, image.Width, image.Height, x, y, false), true);
             }
 
-            // Borrow the retained source rectangle into the existing bounded path rasterizer.
-            // Its temporary surface carries coverage only; source pixels and paint opacity
-            // remain separate and are blended once into the parent destination.
+            // Borrow the retained rectangle into the current bitmap's path traversal.
+            // Its parent clip selects native mask/run coverage; a separate scene loses
+            // that classification. Apply viewport coverage once, during image painting.
             RasterizedSurface PrepareImageMask(SvgAuthoredPath sourcePath, SvgClipBox? clip, SvgRectangleRaster bounds)
             {
-                ParserWorkCounter preparation = new(options.Limits.MaximumWorkUnits - workUnits);
-                SvgAffineTransform deviceMap = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale,
-                    horizontalOffset - bounds.Left, verticalOffset - bounds.Top);
-                using SvgAuthoredPath path = sourcePath.Copy(deviceMap, budget, preparation, cancellationToken);
-                workUnits += preparation.Used;
-                SvgClipBox? localClip = clip is {} sourceClip ? deviceMap.Apply(sourceClip) : null;
-                using SvgPolygonFill fill = SvgPolygonFill.Create([], [], null, new(0, 0, 0, 255), true, false, SvgPolygonMapping.NativeFillEdges, localClip, null, budget);
-                using RenderBudget.BudgetReservation sceneOwner = budget.Reserve(256 + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(1)
-                    + ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(1), SvgMemoryCategory.Geometry);
-                SvgGeometry[] geometries = [SvgGeometry.FromPolygonFill(fill) with { AuthoredPath = path }];
-                SvgDrawCommand[] commands = [new(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)];
-                SvgRoot scene = new(null, null, null, geometries, commands, false, 0, null);
-                SvgRenderLimits limits = options.Limits;
-                long remaining = limits.MaximumWorkUnits - workUnits;
-                if (remaining <= 0) throw new SvgException(SvgErrorCode.LimitExceeded, "Image coverage exceeds the configured work limit.");
-                SvgRenderLimits bounded = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels,
-                    limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)remaining), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
-                SvgRenderOptions maskOptions = new(new SvgViewport(bounds.Right - bounds.Left, bounds.Bottom - bounds.Top), 1, SvgColor.Transparent, bounded);
-                RasterizedSurface result = Rasterize(scene, maskOptions, budget, RasterSurfaceMode.PremultipliedGlyph, cancellationToken);
-                workUnits += result.WorkUnits;
-                return result;
+                using MappedPolygon raster = MapPolygon([], [], null, false, [], [], SvgPolygonMapping.NativeFillEdges,
+                    clip, sourcePath, PathCoordinateSpace.User);
+                SvgAnalyticContourPreparation preparation = new(raster.Points, raster.ContourEnds, [], false,
+                    raster.Signs, raster.Mapping, raster.QuadSpans, raster.CubicSpans, raster.CompleteBounds.RoundOutForDispatch(),
+                    outputWidth, outputHeight, raster.Authored, raster.AuthoredMap);
+                int width = bounds.Right - bounds.Left, height = bounds.Bottom - bounds.Top;
+                RenderBudget.BudgetReservation reservation = budget.Reserve(checked(width * height * 4), SvgMemoryCategory.Surface);
+                try
+                {
+                    byte[] pixels = new byte[checked(width * height * 4)];
+                    SvgAnalyticPaint coveragePaint = SvgAnalyticPaint.Solid(new(0, 0, 0, 255));
+                    Span<byte> sample = stackalloc byte[4];
+                    foreach (SvgCpuRasterContext cpuTile in rasterGrid.GetContexts(new(bounds.Left, bounds.Top, bounds.Right, bounds.Bottom)))
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        if (workUnits >= options.Limits.MaximumWorkUnits)
+                            throw new SvgException(SvgErrorCode.LimitExceeded, "Image coverage traversal exceeds the configured work limit.");
+                        workUnits++;
+                        SvgCpuRasterContext context = LayerRasterContext(cpuTile);
+                        SvgAnalyticClipBounds area = new(Math.Max(context.Interior.Left, bounds.Left), Math.Max(context.Interior.Top, bounds.Top),
+                            Math.Min(context.Interior.Right, bounds.Right), Math.Min(context.Interior.Bottom, bounds.Bottom));
+                        if (area.Left >= area.Right || area.Top >= area.Bottom) continue;
+                        using PolygonRaster traversal = new(ref preparation, raster, context, ActiveClipBounds(context),
+                            PolygonPaintClip(raster, context), area, false, budget, ref workUnits, options.Limits.MaximumWorkUnits, cancellationToken);
+                        for (int y = traversal.StartY; y < traversal.EndY; y++)
+                        {
+                            traversal.PrepareRow(y, ref workUnits, options.Limits.MaximumWorkUnits, cancellationToken);
+                            SvgAnalyticScanWindow window = traversal.GetPaintWindow(ref workUnits, options.Limits.MaximumWorkUnits);
+                            for (int x = window.Left; x < window.Right; x++)
+                            {
+                                if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+                                sample.Clear();
+                                if (traversal.IsAnalytic)
+                                {
+                                    SvgAnalyticClipCoverage sourceClip = raster.Clip is {} rectangle
+                                        ? SvgAnalyticRectangleClip.GetCoverage(rectangle, raster.ClipAntialiasing, x, y) : SvgAnalyticClipCoverage.Full;
+                                    traversal.PaintPixel(x, sample, coveragePaint, sourceClip);
+                                }
+                                else if (traversal.MightCover(x)) sample[3] = CoverageAlpha(255, PixelCoverage(raster, raster.ContourEnds, [], false, raster.Signs, x, y, cancellationToken));
+                                pixels[((y - bounds.Top) * width + x - bounds.Left) * 4 + 3] = sample[3];
+                            }
+                        }
+                        if (!traversal.IsAnalytic) break;
+                    }
+                    return new(width, height, pixels, reservation, 0);
+                }
+                catch { reservation.Dispose(); throw; }
             }
         }
 

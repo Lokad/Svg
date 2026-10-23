@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve native affine image edge coverage inside symbol viewport clips,
+  including faint and nearly opaque fringes across bitmap and layer opacity.
 - Preserve owning use clips through x/y placement, forward references and real
   instance bounds. Keep clip coverage outside restored opacity/mask output and
   preserve single-paint opacity through pure clip scopes.

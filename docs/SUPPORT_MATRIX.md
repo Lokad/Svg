@@ -266,6 +266,8 @@ Images ignore inherited and CSS fill/stroke paint; display, visibility and
 element/group opacity still apply.
 Uniform PNGs keep bitmap alpha arithmetic through groups and instances; see the
 [image-opacity regressions](../tests/Lokad.Svg.Tests/SvgUniformImageOpacityTests.cs).
+Affine image edges retain the enclosing viewport's native coverage route; see the
+[symbol-image regressions](../tests/Lokad.Svg.Tests/SvgAffineImageClipTests.cs).
 Referenced images retain source opacity, clips, masks and filters through viewport
 clipping; filters can move source pixels into the viewport before output is clipped.
 Affine filter replay for image sources remains unsupported; ordinary affine image
