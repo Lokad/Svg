@@ -631,9 +631,6 @@ internal sealed class SvgPatternPolygon : ISvgGeometryContent
     internal SvgClipBox? Clip { get; }
 
     /// <summary>Creates one pattern outline carrying retained spans with exact scene storage.</summary>
-    internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRectangle content, SvgSolidPaint? contentPaint, double originX, double originY, double tileWidth, double tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
-        => Create(points, contourEnds, signs, quadSpans, cubicSpans, content, contentPaint, originX, originY, tileWidth, tileHeight, hasFill, isEvenOdd, opacity, mapping, clip, null, SvgAffineTransform.Identity, null, null, null, budget);
-
     /// <summary>Creates an outline borrowing its vector tile from the parent scene; disposal releases only contour storage.</summary>
     internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRectangle content, SvgSolidPaint? contentPaint, double originX, double originY, double tileWidth, double tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, SvgVectorContent? vectorContent, SvgAffineTransform shaderPlacement, SvgViewBox? contentViewBox, SvgPatternCoordinates? coordinates, SvgPatternPaintMatrices? paintMatrices, RenderBudget budget)
     {
@@ -733,9 +730,6 @@ internal sealed class SvgGlyphGeometry : ISvgGeometryContent
     }
 
     /// <summary>Adopts contours and positioned source metadata, releasing both on failed ownership transfer.</summary>
-    internal static SvgGlyphGeometry Create(SvgGlyphContourStorage contours, SvgColor color, SvgPreparedFont font, SvgPositionedGlyph position, double fontSize, RenderBudget budget)
-        => Create(contours, color, font, position, fontSize, SvgAffineTransform.Identity, null, budget);
-
     internal static SvgGlyphGeometry Create(SvgGlyphContourStorage contours, SvgColor color, SvgPreparedFont font, SvgPositionedGlyph position, double fontSize, SvgAffineTransform glyphMap, double? pictureFontScale, RenderBudget budget)
     {
         if (contours.Contours.Length == 0) return Create(contours, color);
@@ -852,9 +846,6 @@ internal sealed class SvgPatternGeometry : ISvgGeometryContent
     internal SvgPatternGeometry ClipTo(SvgClipBox box)
         => new(Content, OriginX, OriginY, TileWidth, TileHeight, box.ClipRectangle(Fill), Opacity, Stroke) { ShaderPlacement = ShaderPlacement, ContentPaint = ContentPaint, VectorContent = VectorContent, ContentViewBox = ContentViewBox, Coordinates = Coordinates, PaintMatrices = PaintMatrices };
 
-    internal SvgPatternGeometry Stamped(byte value)
-        => new(Content, OriginX, OriginY, TileWidth, TileHeight, Fill, SvgReferenceResolver.MultiplyAlpha(Opacity, value), Stroke is null ? null : new SvgStroke(new SvgColor(Stroke.Value.Color.Red, Stroke.Value.Color.Green, Stroke.Value.Color.Blue, SvgReferenceResolver.MultiplyAlpha(Stroke.Value.Color.Alpha, value)), Stroke.Value.Width)) { ShaderPlacement = ShaderPlacement, ContentPaint = ContentPaint, VectorContent = VectorContent, ContentViewBox = ContentViewBox, Coordinates = Coordinates, PaintMatrices = PaintMatrices };
-
     public void Dispose()
     {
     }
@@ -884,9 +875,6 @@ internal sealed class SvgGradientGeometry : ISvgGeometryContent
 
     internal SvgGradientGeometry ClipTo(SvgClipBox box)
         => new(Gradient, Box, box.ClipRectangle(Fill), Opacity, Stroke);
-
-    internal SvgGradientGeometry Stamped(byte value)
-        => new(Gradient, Box, Fill, SvgReferenceResolver.MultiplyAlpha(Opacity, value), Stroke is null ? null : new SvgStroke(new SvgColor(Stroke.Value.Color.Red, Stroke.Value.Color.Green, Stroke.Value.Color.Blue, SvgReferenceResolver.MultiplyAlpha(Stroke.Value.Color.Alpha, value)), Stroke.Value.Width));
 
     public void Dispose()
     {
@@ -995,9 +983,6 @@ internal sealed class SvgGradientStrokeGeometry : ISvgGeometryContent
 
     internal SvgGradientStrokeGeometry ClipTo(SvgClipBox box)
         => new(box.ClipRectangle(Fill), box.ClipRectangle(Top), box.ClipRectangle(Bottom), box.ClipRectangle(Left), box.ClipRectangle(Right), Gradient, Box, Opacity, HasStroke);
-
-    internal SvgGradientStrokeGeometry Stamped(byte value)
-        => new(Fill with { Color = new SvgColor(Fill.Color.Red, Fill.Color.Green, Fill.Color.Blue, SvgReferenceResolver.MultiplyAlpha(Fill.Color.Alpha, value)) }, Top, Bottom, Left, Right, Gradient, Box, SvgReferenceResolver.MultiplyAlpha(Opacity, value), HasStroke);
 
     public void Dispose()
     {

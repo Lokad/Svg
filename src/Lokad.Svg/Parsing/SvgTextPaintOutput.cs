@@ -35,7 +35,6 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
 
     internal SvgTextPaintStyle GetPaint(int scopeDepth) => _scopes[scopeDepth].Paint;
     internal SvgInheritedTextStyle GetFont(int scopeDepth) => _scopes[scopeDepth].Font;
-    internal void EnterPaintSpan(SvgTextPaintStyle paint) => EnterStyleSpan(paint, _scopes[^1].Font);
     internal void EnterStyleSpan(SvgTextPaintStyle paint, SvgInheritedTextStyle font) => _scopes.Add((paint, font));
     internal void ExitPaintSpan() => _scopes.RemoveLast();
 

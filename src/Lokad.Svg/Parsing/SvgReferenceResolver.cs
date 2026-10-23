@@ -932,10 +932,6 @@ internal static class SvgReferenceResolver
     /// <remarks>All metadata belongs to the document; cache growth and scans charge memory/work and observe cancellation.
     /// The caller releases geometry on failure and applies element opacity after this outer mask is attached.</remarks>
     internal static void ApplyMask(Span<SvgGeometry> geometries, SvgViewportFrame? frame, byte? mask, string? maskReference,
-        SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => ApplyMask(geometries, frame, mask, maskReference, SvgAffineTransform.Identity, state, workCounter, cancellationToken);
-
-    internal static void ApplyMask(Span<SvgGeometry> geometries, SvgViewportFrame? frame, byte? mask, string? maskReference,
         SvgAffineTransform placement, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if ((maskReference is null && mask is null) || geometries.IsEmpty) return;

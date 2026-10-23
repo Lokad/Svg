@@ -13,8 +13,6 @@ internal sealed class BudgetedGeometryBuilder : IDisposable
         _items = new(budget, category, workCounter, cancellationToken);
     }
 
-    internal int Count => _items.Count;
-
     internal SvgGeometry this[int index] => _items[index];
 
     internal void Add(SvgGeometry geometry)

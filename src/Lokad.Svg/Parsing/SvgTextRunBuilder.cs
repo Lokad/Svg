@@ -218,12 +218,6 @@ internal sealed class SvgTextRun : IDisposable
     private readonly SvgTextGlyphPaint? _defaultPaint;
     private readonly SvgGlyphDeviceMetrics? _deviceMetrics;
 
-    internal SvgTextRun(SvgTextStyle style, SvgPreparedFont font, SvgPositionedGlyphStorage glyphs)
-        : this(style, font, glyphs, null) { }
-
-    internal SvgTextRun(SvgTextStyle style, SvgPreparedFont font, SvgPositionedGlyphStorage glyphs, SvgTextGlyphPaint? defaultPaint)
-        : this(style, font, glyphs, defaultPaint, null) { }
-
     internal SvgTextRun(SvgTextStyle style, SvgPreparedFont font, SvgPositionedGlyphStorage glyphs, SvgTextGlyphPaint? defaultPaint,
         SvgGlyphDeviceMetrics? deviceMetrics)
     {

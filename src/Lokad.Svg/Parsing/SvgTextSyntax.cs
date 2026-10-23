@@ -279,10 +279,6 @@ internal static class SvgTextSyntax
         return Parse(reader, inline.TextFont, inherited, inline.LetterSpacing, inline.WordSpacing);
     }
 
-    /// <summary>Parses direct text font syntax from declarations already scanned by style resolution.</summary>
-    internal static SvgTextStyle Parse(XmlReader reader, SvgTextInlineFontProperties inline)
-        => Parse(reader, inline, SvgInheritedTextStyle.Default, null);
-
     /// <summary>Parses direct text declarations when no resolved scalar letter spacing is present.</summary>
     internal static SvgTextStyle Parse(XmlReader reader, SvgTextInlineFontProperties inline, SvgInheritedTextStyle inherited)
         => Parse(reader, inline, inherited, null);
@@ -339,10 +335,6 @@ internal static class SvgTextSyntax
         SvgTextWhitespaceMode xmlMode = value is null ? inherited : ParseXmlWhitespaceMode(value);
         return whiteSpace is null ? xmlMode : ParseCssWhitespaceMode(whiteSpace);
     }
-
-    /// <summary>Parses the direct-text-only XML whitespace mode with default CSS inheritance.</summary>
-    internal static SvgTextWhitespaceMode ParseWhitespaceMode(XmlReader reader)
-        => ParseWhitespaceMode(reader, null, SvgTextWhitespaceMode.Default);
 
     /// <summary>Resolves normal or a finite user-space/px letter/word spacing length; percentages remain outside the admitted length subset.</summary>
     internal static double ParseSpacing(string value)

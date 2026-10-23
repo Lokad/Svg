@@ -38,8 +38,6 @@ internal readonly record struct SvgComputedStyle(string? Color, string? Fill, st
     internal bool NonScalingStroke { get; init; }
     internal SvgComputedStyle ResolveVectorEffect(bool parent)
         => this with { NonScalingStroke = SvgStrokeStyleSyntax.ParseVectorEffect(VectorEffect, parent) };
-    internal static SvgComputedStyle Resolve(XmlReader reader, InlineStyle inlineStyle) => Resolve(reader, inlineStyle, default);
-
     internal static SvgComputedStyle Resolve(XmlReader reader, InlineStyle inlineStyle, InlineStyle styleSheet)
     {
         ValidateGeometryDimensions(reader, inlineStyle, styleSheet);

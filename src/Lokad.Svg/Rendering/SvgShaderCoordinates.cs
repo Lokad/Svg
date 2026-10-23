@@ -26,8 +26,6 @@ internal struct SvgShaderCoordinates
     private bool _hasPrepared;
     private bool _canSample;
 
-    private SvgShaderCoordinates(SvgShaderMatrix unit, SvgShaderMatrix paintMap) : this(unit, paintMap, null) { }
-
     private SvgShaderCoordinates(SvgShaderMatrix unit, SvgShaderMatrix paintMap, SvgShaderMatrix? localMatrix)
         : this(unit, paintMap, localMatrix, 0) { }
 

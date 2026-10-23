@@ -78,8 +78,6 @@ internal enum InlineImportantProperties : long
 internal static class SvgInlineStyleParser
 {
     private enum Target : byte { Presentation, DirectText, Geometry, LocalUse }
-    internal static InlineStyle Parse(string? value) => value is null ? default : Parse(value.AsSpan());
-
     internal static InlineStyle Parse(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         => value is null ? default : Parse(value.AsSpan(), workCounter, cancellationToken);
 
@@ -87,17 +85,11 @@ internal static class SvgInlineStyleParser
     internal static InlineStyle Parse(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool allowsDirectTextFontProperties)
         => value is null ? default : Parse(value.AsSpan(), workCounter, cancellationToken, allowsDirectTextFontProperties);
 
-    internal static InlineStyle Parse(ReadOnlySpan<char> value)
-        => ParseCore(value, null, default, null, Target.Presentation);
-
     internal static InlineStyle Parse(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         => ParseCore(value, workCounter, cancellationToken, null, Target.Presentation);
 
     private static InlineStyle Parse(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool allowsDirectTextFontProperties)
         => ParseCore(value, workCounter, cancellationToken, null, allowsDirectTextFontProperties ? Target.DirectText : Target.Presentation);
-
-    internal static InlineStyle Parse(ReadOnlySpan<char> value, BudgetedParserStringStore strings, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => ParseCore(value, workCounter, cancellationToken, strings, Target.Presentation);
 
     internal static InlineStyle Parse(ReadOnlySpan<char> value, BudgetedParserStringStore strings, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool allowsDirectTextFontProperties)
         => ParseCore(value, workCounter, cancellationToken, strings, allowsDirectTextFontProperties ? Target.DirectText : Target.Presentation);
