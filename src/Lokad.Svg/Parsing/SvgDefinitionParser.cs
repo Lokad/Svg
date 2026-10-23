@@ -731,13 +731,8 @@ internal static class SvgDefinitionParser
                 return true;
             }
             SvgRenderedGroupSourceParser.CaptureUse(reader, context, reference, state);
-            SvgDeferredClip? deferredClip = ResolveDeferredClip(reader, reference, state);
-            SvgViewportFrame? useFrame;
-            if (deferredClip is null)
-            {
-                useFrame = ResolveUseClipFrame(reader, reference, state);
-            }
-            else useFrame = deferredClip.Value.Parent;
+            SvgDeferredClip? deferredClip = ResolveDeferredClip(reader, state);
+            SvgViewportFrame? useFrame = deferredClip is null ? SvgClipPathSyntax.ResolveLeafClip(reader, state) : state.EffectiveFrame;
             string? maskAttribute = SvgLocalUrl.ReadReference(reader, "mask");
             SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, useFrame, ResolveDeferredMaskValue(reader, state), maskAttribute is null ? null : state.Strings.Copy(maskAttribute), deferredClip, state, workCounter, cancellationToken);
             SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
@@ -747,25 +742,11 @@ internal static class SvgDefinitionParser
 
         static string? CopyStyleValue(string? value, SvgDocumentState document) => value is null ? null : document.Strings.Copy(value);
 
-        static SvgDeferredClip? ResolveDeferredClip(XmlReader useReader, SvgUseReference useReference, SvgDocumentState document)
+        static SvgDeferredClip? ResolveDeferredClip(XmlReader useReader, SvgDocumentState document)
         {
-            string? clipAttribute = SvgLocalUrl.ReadReference(useReader, "clip-path");
-            if (clipAttribute is null) return null;
-            string clipId = SvgClipPathSyntax.ParseClipId(clipAttribute);
-            if (SvgClipPathSyntax.IsDisabled(clipId, document)) return null;
-            if (useReference.Filter is {} filter && !SvgCssWhitespace.Trim(filter).Equals("none", StringComparison.OrdinalIgnoreCase))
-                return new SvgDeferredClip(document.Strings.Copy(clipId), document.EffectiveFrame, useReader.Depth);
-            bool clipKnown = document.Clips.TryGetValue(clipId, out _) || document.ObjectClips.TryGetValue(clipId, out _);
-            bool definitionKnown = SvgReferenceResolver.TryGetDefinition(useReference, document.Definitions, out SvgDefinition definition);
-            if (document.Clips.TryGetValue(clipId, out _) && useReference.Transform != SvgAffineTransform.Identity)
-                return new SvgDeferredClip(document.Strings.Copy(clipId), document.EffectiveFrame, useReader.Depth);
-            // A retained group is known before its replay supplies geometry bounds.
-            bool needsRenderedBounds = definitionKnown && definition.SymbolContent is not null && definition.Geometries.Length == 0
-                && document.ObjectClips.TryGetValue(clipId, out _);
-            if (definitionKnown && clipKnown && !needsRenderedBounds) return null;
-            if (!clipKnown) return new SvgDeferredClip(document.Strings.Copy(clipId), document.EffectiveFrame, useReader.Depth);
-            if (document.ObjectClips.TryGetValue(clipId, out _)) return new SvgDeferredClip(document.Strings.Copy(clipId), document.EffectiveFrame, useReader.Depth);
-            return null;
+            string? id = SvgClipPathSyntax.ResolveClipId(useReader, document);
+            return id is null || SvgClipPathSyntax.IsDisabled(id, document) ? null
+                : new SvgDeferredClip(document.Strings.Copy(id));
         }
 
         static byte? ResolveDeferredMaskValue(XmlReader useReader, SvgDocumentState document)
@@ -774,52 +755,6 @@ internal static class SvgDefinitionParser
             if (maskAttribute is null) return null;
             if (document.Masks.TryGetValue(SvgMaskSyntax.ParseMaskId(maskAttribute), out byte value)) return value;
             return null;
-        }
-
-        static SvgViewportFrame? ResolveUseClipFrame(XmlReader useReader, SvgUseReference useReference, SvgDocumentState document)
-        {
-            string? clipAttribute = SvgLocalUrl.ReadReference(useReader, "clip-path");
-            if (clipAttribute is null) return SvgClipPathSyntax.ResolveLeafClip(useReader, document);
-            if (!document.ObjectClips.TryGetValue(SvgClipPathSyntax.ParseClipId(clipAttribute), out _)) return SvgClipPathSyntax.ResolveLeafClip(useReader, document);
-            if (!SvgReferenceResolver.TryGetDefinition(useReference, document.Definitions, out SvgDefinition definition)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "objectBoundingBox clip paths on forward use references are not implemented.");
-            if (definition.SymbolViewBox is SvgViewBox symbolBox) return ResolveSymbolUseClipFrame(useReader, useReference, document, definition, symbolBox);
-            double left = double.PositiveInfinity;
-            double top = double.PositiveInfinity;
-            double right = double.NegativeInfinity;
-            double bottom = double.NegativeInfinity;
-            foreach (SvgGeometry source in definition.Geometries)
-            {
-                SvgRectangle box = SvgMaskSyntax.BoundingBox(source);
-                SvgRectangle placed = useReference.Transform.Apply(new SvgRectangle(box.X + useReference.X, box.Y + useReference.Y, box.Width, box.Height, default, true, null));
-                left = Math.Min(left, placed.X);
-                top = Math.Min(top, placed.Y);
-                right = Math.Max(right, placed.X + placed.Width);
-                bottom = Math.Max(bottom, placed.Y + placed.Height);
-            }
-            SvgRectangle instanceBox = double.IsPositiveInfinity(left) ? default : new(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, true, null);
-            return SvgClipPathSyntax.ResolveLeafClipOrPlacement(useReader, document, document.EffectiveFrame, instanceBox);
-        }
-
-        static SvgViewportFrame? ResolveSymbolUseClipFrame(XmlReader useReader, SvgUseReference useReference, SvgDocumentState document, SvgDefinition definition, SvgViewBox symbolBox)
-        {
-            if (useReference.Width is null || useReference.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
-            double left = double.PositiveInfinity;
-            double top = double.PositiveInfinity;
-            double right = double.NegativeInfinity;
-            double bottom = double.NegativeInfinity;
-            foreach (SvgGeometry source in definition.Geometries)
-            {
-                SvgRectangle box = SvgMaskSyntax.BoundingBox(source);
-                SvgRectangle mapped = SvgReferenceResolver.MapSymbolBox(box, symbolBox, useReference.Width.Value, useReference.Height.Value);
-                SvgRectangle placed = useReference.Transform.Apply(new SvgRectangle(mapped.X + useReference.X, mapped.Y + useReference.Y, mapped.Width, mapped.Height, default, true, null));
-                left = Math.Min(left, placed.X);
-                top = Math.Min(top, placed.Y);
-                right = Math.Max(right, placed.X + placed.Width);
-                bottom = Math.Max(bottom, placed.Y + placed.Height);
-            }
-            SvgRectangle instanceBox = new(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, true, null);
-            SvgClipBox viewport = useReference.Transform.Apply(new SvgClipBox(useReference.X, useReference.Y, useReference.Width.Value, useReference.Height.Value));
-            return SvgClipPathSyntax.ResolveLeafClipOrPlacement(useReader, document, document.EffectiveFrame, viewport.ClipRectangle(instanceBox));
         }
 
         static SvgClipBox UnionMaskContentBox(SvgGeometry[] geometries, ParserWorkCounter workCounter, CancellationToken cancellationToken)

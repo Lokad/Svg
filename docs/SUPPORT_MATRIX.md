@@ -127,6 +127,9 @@ over transparent input. Placement lengths and actual child content retain the
 ordinary validation and limits.
 Percentage rectangle positions, dimensions and corner radii resolve in each
 instance's viewport, including nested viewBox and symbol instances.
+An owning use clip follows its x/y placement and enclosing transforms. It binds
+after the instance supplies its real geometry bounds; see the
+[placement regressions](../tests/Lokad.Svg.Tests/SvgUseClipPlacementTests.cs).
 Transform lists accept whitespace or comma separators between functions.
 Length numbers and units form one contiguous token; SVG transform arguments are
 bare numbers and do not accept CSS length units. Coordinates must remain finite
@@ -261,6 +264,8 @@ symbol instances. Omitted image dimensions use the PNG's intrinsic size; if one
 side is specified, the omitted side follows its intrinsic aspect ratio.
 Images ignore inherited and CSS fill/stroke paint; display, visibility and
 element/group opacity still apply.
+Uniform PNGs keep bitmap alpha arithmetic through groups and instances; see the
+[image-opacity regressions](../tests/Lokad.Svg.Tests/SvgUniformImageOpacityTests.cs).
 Referenced images retain source opacity, clips, masks and filters through viewport
 clipping; filters can move source pixels into the viewport before output is clipped.
 Affine filter replay for image sources remains unsupported; ordinary affine image

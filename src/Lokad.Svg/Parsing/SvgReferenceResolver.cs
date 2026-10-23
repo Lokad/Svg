@@ -36,8 +36,8 @@ internal readonly record struct SvgUseReference(string Id, double X, double Y, d
     internal SvgViewportLengthBases LengthBases { get; init; }
 }
 
-/// <summary>Retains one clip-path reference whose box needs a forward definition or clip-path definition.</summary>
-internal readonly record struct SvgDeferredClip(string ClipId, SvgViewportFrame? Parent, int Depth);
+/// <summary>Retains an owning use clip until the instance's complete source geometry is available.</summary>
+internal readonly record struct SvgDeferredClip(string ClipId);
 
 /// <summary>Records the placeholders that must be replaced when a forward local use reference resolves.</summary>
 internal readonly record struct PendingUse(SvgSceneSlot Slot, SvgUseReference Reference, SvgViewportFrame? Frame, byte? Mask, string? MaskReference, int MaskScopeStart, int MaskScopeCount, SvgDeferredClip? DeferredClip);
@@ -958,11 +958,13 @@ internal static class SvgReferenceResolver
                 SvgPaintRecording.WrapFilter(sources, reference.Filter, PlainInstancePlacement(reference, frame), reference.LengthBases, state, workCounter, cancellationToken);
             if (mask is not null || maskReference is not null)
                 ApplyMask(sources, frame, mask, maskReference, PlainInstancePlacement(reference, frame), state, workCounter, cancellationToken);
-            if (clipId is not null)
-                SvgClipPathSyntax.ApplyResourceClip(sources, clipId, PlainInstancePlacement(reference, frame), state, workCounter, cancellationToken);
             SvgClipBox? outputClip = reference.Filter is not null && frame is { HasAffineClipScope: false } output && output.Clip != SvgClipBox.Unbounded
                 ? output.Clip : null;
             SvgPaintRecording.WrapInstance(sources, reference.SourceOpacity, reference.RecordingScope, outputClip, state, workCounter, cancellationToken);
+            // The owning property clip surrounds the restored opacity/mask output.
+            // Moving it inside that surface changes byte coverage at shared edges.
+            if (clipId is not null)
+                SvgClipPathSyntax.ApplyResourceClip(sources, clipId, PlainInstancePlacement(reference, frame), state, workCounter, cancellationToken);
             return sources;
         }
         catch { foreach (SvgGeometry geometry in sources) geometry.Dispose(); throw; }
@@ -1804,45 +1806,12 @@ internal static class SvgReferenceResolver
         if (pendingUse.DeferredClip is {} inactive && SvgClipPathSyntax.IsDisabled(inactive.ClipId, state))
             pendingUse = pendingUse with { DeferredClip = null };
         SvgViewportFrame? frame = pendingUse.Frame;
-        bool filteredOutputClip = pendingUse.DeferredClip is not null && pendingUse.Reference.Filter is {} filter
-            && !SvgCssWhitespace.Trim(filter).Equals("none", StringComparison.OrdinalIgnoreCase);
-        SvgClipPolygon? boundingClip = pendingUse.DeferredClip is {} clipReference
-            && state.ClipPolygons.TryGetValue(clipReference.ClipId, out SvgClipPolygon clipContent) && clipContent.IsObjectBoundingBox
-            ? clipContent : null;
-        SvgClipBox? boundingRectangle = definition.SymbolContent is not null && definition.Geometries.Length == 0
-            && pendingUse.DeferredClip is {} rectangleReference
-            && state.ObjectClips.TryGetValue(rectangleReference.ClipId, out SvgClipBox fractions) ? fractions : null;
-        bool nativeClip = pendingUse.DeferredClip is {} nativeReference
-            && (state.ClipPolygons.TryGetValue(nativeReference.ClipId, out SvgClipPolygon nativeContent) && !nativeContent.IsObjectBoundingBox
-                || state.Clips.TryGetValue(nativeReference.ClipId, out _) && !pendingUse.Reference.Transform.IsAxisAligned);
-        if (!filteredOutputClip && pendingUse.DeferredClip is SvgDeferredClip deferred)
-            frame = boundingClip is null && boundingRectangle is null && !nativeClip ? ResolveDeferredClipFrame(definition, pendingUse.Reference, deferred, state, workCounter, cancellationToken) : deferred.Parent;
         byte? mask = pendingUse.Mask;
         if (pendingUse.MaskReference is not null && mask is null && !state.MaskContents.TryGetValue(SvgMaskSyntax.ParseMaskId(pendingUse.MaskReference), out _)) mask = ResolveDeferredMaskValue(pendingUse.MaskReference, state);
         SvgGeometry[] applied = ApplyInstanceMask(definition, pendingUse.Reference, frame, mask, pendingUse.MaskReference,
-            filteredOutputClip ? pendingUse.DeferredClip?.ClipId : null, state, workCounter, cancellationToken);
+            pendingUse.DeferredClip?.ClipId, state, workCounter, cancellationToken);
         try
         {
-            if (!filteredOutputClip && nativeClip && pendingUse.DeferredClip is {} bindingReference)
-                for (int index = 0; index < applied.Length; index++)
-                {
-                    workCounter.Consume(cancellationToken);
-                    applied[index] = applied[index] with { LeafMask = SvgClipPathSyntax.BindResourceClip(bindingReference.ClipId,
-                        PlainInstancePlacement(pendingUse.Reference, frame), applied[index].LeafMask, state, workCounter, cancellationToken) };
-                }
-            if (!filteredOutputClip && (boundingClip is not null || boundingRectangle is not null))
-            {
-                SvgObjectBoundingClip bounds = new(pendingUse.Reference.Transform, frame);
-                foreach (SvgGeometry geometry in applied) bounds.Add(geometry, state, workCounter, cancellationToken);
-                SvgLeafMaskOperation operation = boundingClip is {} content
-                    ? bounds.Register(content, state, workCounter, cancellationToken)
-                    : bounds.Register(boundingRectangle.GetValueOrDefault(), state, workCounter, cancellationToken);
-                for (int index = 0; index < applied.Length; index++)
-                {
-                    workCounter.Consume(cancellationToken);
-                    applied[index] = applied[index] with { LeafMask = SvgLeafMaskComposition.NewBinding(state, operation, applied[index].LeafMask) };
-                }
-            }
             if (pendingUse.MaskScopeCount > 0) foreach (SvgGeometry geometry in applied) SvgMaskSyntax.ValidateMaskScopeSnapshot(state, pendingUse.MaskScopeStart, pendingUse.MaskScopeCount, SvgMaskSyntax.BoundingBox(geometry));
             return applied;
         }
@@ -1855,63 +1824,6 @@ internal static class SvgReferenceResolver
         string maskId = SvgMaskSyntax.ParseMaskId(maskReference);
         if (!document.Masks.TryGetValue(maskId, out byte value)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
         return value;
-    }
-
-    private static SvgViewportFrame ResolveDeferredClipFrame(SvgDefinition definition, SvgUseReference reference, SvgDeferredClip deferred, SvgDocumentState document, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(document);
-        if (!document.ObjectClips.TryGetValue(deferred.ClipId, out SvgClipBox fractions))
-        {
-            if (document.Clips.TryGetValue(deferred.ClipId, out SvgClipBox box))
-            {
-                SvgClipBox userClip = SvgClipPathSyntax.MapGroupClip(box, reference.Transform, deferred.Parent, workCounter, cancellationToken);
-                return new SvgViewportFrame(deferred.Parent?.OffsetX ?? 0, deferred.Parent?.OffsetY ?? 0, deferred.Parent?.ScaleX ?? 1, deferred.Parent?.ScaleY ?? 1, deferred.Parent?.ViewportWidth, deferred.Parent?.ViewportHeight, userClip, deferred.Depth);
-            }
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clip-path references are implemented.");
-        }
-        if (deferred.Parent is not null && deferred.Parent.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
-        SvgRectangle instanceBox;
-        if (definition.SymbolViewBox is SvgViewBox symbolBox)
-        {
-            if (reference.Width is null || reference.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
-            double left = double.PositiveInfinity;
-            double top = double.PositiveInfinity;
-            double right = double.NegativeInfinity;
-            double bottom = double.NegativeInfinity;
-            foreach (SvgGeometry source in definition.Geometries)
-            {
-                SvgRectangle box = SvgMaskSyntax.BoundingBox(source);
-                SvgRectangle mapped = MapSymbolBox(box, symbolBox, reference.Width.Value, reference.Height.Value);
-                SvgRectangle placed = reference.Transform.Apply(new SvgRectangle(mapped.X + reference.X, mapped.Y + reference.Y, mapped.Width, mapped.Height, default, true, null));
-                left = Math.Min(left, placed.X);
-                top = Math.Min(top, placed.Y);
-                right = Math.Max(right, placed.X + placed.Width);
-                bottom = Math.Max(bottom, placed.Y + placed.Height);
-            }
-            SvgRectangle contentBox = new(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, true, null);
-            SvgClipBox viewport = reference.Transform.Apply(new SvgClipBox(reference.X, reference.Y, reference.Width.Value, reference.Height.Value));
-            instanceBox = viewport.ClipRectangle(contentBox);
-        }
-        else
-        {
-            double left = double.PositiveInfinity;
-            double top = double.PositiveInfinity;
-            double right = double.NegativeInfinity;
-            double bottom = double.NegativeInfinity;
-            foreach (SvgGeometry source in definition.Geometries)
-            {
-                SvgRectangle box = SvgMaskSyntax.BoundingBox(source);
-                SvgRectangle placed = reference.Transform.Apply(new SvgRectangle(box.X + reference.X, box.Y + reference.Y, box.Width, box.Height, default, true, null));
-                left = Math.Min(left, placed.X);
-                top = Math.Min(top, placed.Y);
-                right = Math.Max(right, placed.X + placed.Width);
-                bottom = Math.Max(bottom, placed.Y + placed.Height);
-            }
-            instanceBox = double.IsPositiveInfinity(left) ? default : new(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, true, null);
-        }
-        SvgClipBox resolved = new(instanceBox.X + fractions.X * instanceBox.Width, instanceBox.Y + fractions.Y * instanceBox.Height, fractions.Width * instanceBox.Width, fractions.Height * instanceBox.Height);
-        SvgClipBox clip = deferred.Parent is null ? resolved : deferred.Parent.Value.Clip.Intersect(resolved);
-        return new SvgViewportFrame(deferred.Parent?.OffsetX ?? 0, deferred.Parent?.OffsetY ?? 0, deferred.Parent?.ScaleX ?? 1, deferred.Parent?.ScaleY ?? 1, deferred.Parent?.ViewportWidth, deferred.Parent?.ViewportHeight, clip, deferred.Depth);
     }
 
     /// <summary>Returns the uniform scale factor of an axis-aligned or uniform transform for width scaling.</summary>

@@ -1289,17 +1289,23 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Clips_embedded_images_to_their_clip_path_box()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c'><rect x='2' y='2' width='4' height='4'/></clipPath></defs><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='8' height='8' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c'><rect x='2' y='2' width='4' height='4'/></clipPath></defs><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='8' height='8' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        SvgImageGeometry placedImage = Assert.Single(root.Geometries).Image;
+        Assert.Equal((0d, 0d, 8d, 8d), (placedImage.Box.X, placedImage.Box.Y, placedImage.Box.Width, placedImage.Box.Height));
+        Assert.Equal(new SvgConstantShaderPaint(255, 0, 0, 255), placedImage.UniformSample);
+        SvgPathFillAssertions.MatchesIntegerBands(root, [new(2, 2, 4, 4, new(255, 0, 0, 255), true, null)]);
     }
 
     [Fact]
     public void Clips_forward_clip_path_definitions_on_embedded_images()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='8' height='8' clip-path='url(#later)'/><defs><clipPath id='later'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='8' height='8' clip-path='url(#later)'/><defs><clipPath id='later'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        SvgImageGeometry placedImage = Assert.Single(root.Geometries).Image;
+        Assert.Equal((0d, 0d, 8d, 8d), (placedImage.Box.X, placedImage.Box.Y, placedImage.Box.Width, placedImage.Box.Height));
+        Assert.Equal(new SvgConstantShaderPaint(255, 0, 0, 255), placedImage.UniformSample);
+        SvgPathFillAssertions.MatchesIntegerBands(root, [new(2, 2, 4, 4, new(255, 0, 0, 255), true, null)]);
     }
 
     [Fact]
@@ -1311,9 +1317,12 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Applies_masks_to_embedded_images_without_changing_solid_content()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#ffffff'/></mask></defs><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='8' height='8' mask='url(#m)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#ffffff'/></mask></defs><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='8' height='8' mask='url(#m)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        SvgImageGeometry placedImage = Assert.Single(root.Geometries).Image;
+        Assert.Equal((0d, 0d, 8d, 8d), (placedImage.Box.X, placedImage.Box.Y, placedImage.Box.Width, placedImage.Box.Height));
+        Assert.Equal(new SvgConstantShaderPaint(255, 0, 0, 255), placedImage.UniformSample);
+        SvgPathFillAssertions.MatchesIntegerBands(root, [new(0, 0, 8, 8, new(255, 0, 0, 255), true, null)]);
     }
 
     [Fact]
@@ -1331,38 +1340,52 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Transforms_embedded_image_placement_through_the_admitted_subset()
     {
-        SvgRoot translated = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='4' height='4' transform='translate(4,0)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-        SvgRoot reflected = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='4' height='4' transform='translate(8,0) scale(-1,1)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot translated = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='4' height='4' transform='translate(4,0)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot reflected = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='4' height='4' transform='translate(8,0) scale(-1,1)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(4, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(translated.Rectangles));
-        Assert.Equal(new SvgRectangle(4, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(reflected.Rectangles));
+        SvgImageGeometry translatedImage = Assert.Single(translated.Geometries).Image;
+        Assert.Equal((4d, 0d, 4d, 4d), (translatedImage.Box.X, translatedImage.Box.Y, translatedImage.Box.Width, translatedImage.Box.Height));
+        Assert.Equal(new SvgConstantShaderPaint(255, 0, 0, 255), translatedImage.UniformSample);
+        SvgImageGeometry reflectedImage = Assert.Single(reflected.Geometries).Image;
+        Assert.Equal((4d, 0d, 4d, 4d), (reflectedImage.Box.X, reflectedImage.Box.Y, reflectedImage.Box.Width, reflectedImage.Box.Height));
+        Assert.Equal(new SvgConstantShaderPaint(255, 0, 0, 255), reflectedImage.UniformSample);
+        SvgPathFillAssertions.MatchesIntegerBands(translated, [new(4, 0, 4, 4, new(255, 0, 0, 255), true, null)]);
+        SvgPathFillAssertions.MatchesIntegerBands(reflected, [new(4, 0, 4, 4, new(255, 0, 0, 255), true, null)]);
     }
 
 
     [Fact]
     public void Renders_explicit_none_stretch_despite_aspect_mismatch()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='2'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='4' height='2' preserveAspectRatio='none'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='2'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='4' height='2' preserveAspectRatio='none'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
-        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
+        SvgImageGeometry placed = Assert.Single(root.Geometries).Image;
+        Assert.Equal((0d, 0d, 4d, 2d), (placed.Box.X, placed.Box.Y, placed.Box.Width, placed.Box.Height));
+        Assert.Equal(new SvgConstantShaderPaint(255, 0, 0, 255), placed.UniformSample);
+        SvgPathFillAssertions.MatchesIntegerBands(root, [new(0, 0, 4, 2, new(255, 0, 0, 255), true, null)]);
         Assert.False(root.HasUnsupportedChild);
     }
 
     [Fact]
     public void Maps_default_meet_placement_for_mismatched_aspects()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='2'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='4' height='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='2'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='4' height='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(1, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        SvgImageGeometry placedImage = Assert.Single(root.Geometries).Image;
+        Assert.Equal((1d, 0d, 2d, 2d), (placedImage.Box.X, placedImage.Box.Y, placedImage.Box.Width, placedImage.Box.Height));
+        Assert.Equal(new SvgConstantShaderPaint(255, 0, 0, 255), placedImage.UniformSample);
+        SvgPathFillAssertions.MatchesIntegerBands(root, [new(1, 0, 2, 2, new(255, 0, 0, 255), true, null)]);
     }
 
     [Fact]
     public void Maps_explicit_meet_placement_for_mismatched_aspects()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='2'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='4' height='2' preserveAspectRatio='xMidYMid meet'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='2'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='4' height='2' preserveAspectRatio='xMidYMid meet'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(1, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        SvgImageGeometry placedImage = Assert.Single(root.Geometries).Image;
+        Assert.Equal((1d, 0d, 2d, 2d), (placedImage.Box.X, placedImage.Box.Y, placedImage.Box.Width, placedImage.Box.Height));
+        Assert.Equal(new SvgConstantShaderPaint(255, 0, 0, 255), placedImage.UniformSample);
+        SvgPathFillAssertions.MatchesIntegerBands(root, [new(1, 0, 2, 2, new(255, 0, 0, 255), true, null)]);
     }
 
     [Theory]
@@ -1375,9 +1398,12 @@ public sealed class SvgRootParserTests
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'>" + image + "</svg>");
 
-        SvgRoot root = SvgRootParser.Parse(svg, SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse(svg, SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(x, y, width, height, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        SvgImageGeometry placedImage = Assert.Single(root.Geometries).Image;
+        Assert.Equal((x, y, width, height), (placedImage.Box.X, placedImage.Box.Y, placedImage.Box.Width, placedImage.Box.Height));
+        Assert.Equal(new SvgConstantShaderPaint(255, 0, 0, 255), placedImage.UniformSample);
+        SvgPathFillAssertions.MatchesIntegerBands(root, [new(x, y, width, height, new(255, 0, 0, 255), true, null)]);
     }
 
     [Theory]
@@ -1388,8 +1414,8 @@ public sealed class SvgRootParserTests
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'>" + image + "</svg>");
 
         using SvgRoot root = SvgRootParser.Parse(svg, SvgRenderLimits.Default, CancellationToken.None);
-        SvgRectangle rectangle = Assert.Single(root.Rectangles);
-        Assert.Equal(SvgGeometryKind.Rectangle, Assert.Single(root.Geometries).Kind);
+        SvgRectangle rectangle = Assert.Single(root.Geometries).Image.Box;
+        Assert.Equal(SvgGeometryKind.EmbeddedImage, Assert.Single(root.Geometries).Kind);
         Assert.True(rectangle.Height > 0 && rectangle.Height < rectangle.Width);
         Assert.Equal(rectangle.Width, rectangle.Y * 2 + rectangle.Height, 12);
     }
@@ -2996,9 +3022,10 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Clips_use_instances_to_their_clip_path_box()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/><clipPath id='c'><rect x='2' y='2' width='4' height='4'/></clipPath></defs><use href='#r' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/><clipPath id='c'><rect x='2' y='2' width='4' height='4'/></clipPath></defs><use href='#r' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null)]);
     }
 
     [Fact]
@@ -3057,9 +3084,10 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Clips_symbol_instances_to_their_clip_path_box()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='s' viewBox='0 0 8 8'><rect width='8' height='8' fill='red'/></symbol><clipPath id='c'><rect x='2' y='0' width='4' height='8'/></clipPath></defs><use href='#s' x='0' y='0' width='8' height='8' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='s' viewBox='0 0 8 8'><rect width='8' height='8' fill='red'/></symbol><clipPath id='c'><rect x='2' y='0' width='4' height='8'/></clipPath></defs><use href='#s' x='0' y='0' width='8' height='8' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(2, 0, 4, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [new SvgRectangle(2, 0, 4, 8, new SvgColor(255, 0, 0, 255), true, null)]);
     }
 
     [Fact]
@@ -4815,42 +4843,49 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Clips_polygon_use_instances_to_a_fractional_object_bounding_box()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><polygon id='p' points='0,0 8,0 0,8' fill='red'/></defs><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0.25' y='0.25' width='0.5' height='0.5'/></clipPath></defs><use href='#p' x='8' clip-path='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><polygon id='p' points='0,0 8,0 0,8' fill='red'/></defs><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0.25' y='0.25' width='0.5' height='0.5'/></clipPath></defs><use href='#p' x='8' clip-path='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
-        Assert.True(geometry.Polygon.Clip.HasValue);
-        Assert.Equal(new SvgClipBox(10, 2, 4, 4), geometry.Polygon.Clip.Value);
+        Assert.NotNull(geometry.AuthoredPath);
+        Assert.Contains(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup && command.MaskContentIndex >= 0);
+        using SvgRoot expected = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c'><rect x='10' y='2' width='4' height='4'/></clipPath></defs><polygon points='8,0 16,0 8,8' fill='red' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgPathFillAssertions.Equivalent(expected, root);
     }
 
     [Fact]
     public void Clips_forward_use_instances_to_their_object_bounding_box()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0.25' y='0.25' width='0.5' height='0.5'/></clipPath></defs><use href='#p' x='8' clip-path='url(#window)'/><defs><polygon id='p' points='0,0 8,0 0,8' fill='red'/></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0.25' y='0.25' width='0.5' height='0.5'/></clipPath></defs><use href='#p' x='8' clip-path='url(#window)'/><defs><polygon id='p' points='0,0 8,0 0,8' fill='red'/></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
-        Assert.True(geometry.Polygon.Clip.HasValue);
-        Assert.Equal(new SvgClipBox(10, 2, 4, 4), geometry.Polygon.Clip.Value);
+        Assert.NotNull(geometry.AuthoredPath);
+        Assert.Contains(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup && command.MaskContentIndex >= 0);
+        using SvgRoot expected = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c'><rect x='10' y='2' width='4' height='4'/></clipPath></defs><polygon points='8,0 16,0 8,8' fill='red' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgPathFillAssertions.Equivalent(expected, root);
     }
 
     [Fact]
     public void Clips_forward_symbol_use_instances_to_their_object_bounding_box()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0.25' y='0.25' width='0.5' height='0.5'/></clipPath></defs><use href='#s' width='8' height='8' clip-path='url(#window)'/><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='red'/></symbol></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0.25' y='0.25' width='0.5' height='0.5'/></clipPath></defs><use href='#s' width='8' height='8' clip-path='url(#window)'/><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='red'/></symbol></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
-        Assert.True(geometry.Polygon.Clip.HasValue);
-        Assert.Equal(new SvgClipBox(2, 2, 4, 4), geometry.Polygon.Clip.Value);
+        Assert.NotNull(geometry.AuthoredPath);
+        Assert.Contains(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup && command.MaskContentIndex >= 0);
+        using SvgRoot expected = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c'><rect x='2' y='2' width='4' height='4'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgPathFillAssertions.Equivalent(expected, root);
     }
 
     [Fact]
     public void Clips_forward_clip_path_use_instances_to_their_user_space_box()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/></defs><use href='#r' clip-path='url(#c)'/><defs><clipPath id='c'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/></defs><use href='#r' clip-path='url(#c)'/><defs><clipPath id='c'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null)]);
     }
 
     [Fact]
@@ -4864,12 +4899,14 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Clips_forward_clip_path_symbol_instances_to_their_user_space_box()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='red'/></symbol></defs><use href='#s' width='8' height='8' clip-path='url(#c)'/><defs><clipPath id='c'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='red'/></symbol></defs><use href='#s' width='8' height='8' clip-path='url(#c)'/><defs><clipPath id='c'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
-        Assert.True(geometry.Polygon.Clip.HasValue);
-        Assert.Equal(new SvgClipBox(2, 2, 4, 4), geometry.Polygon.Clip.Value);
+        Assert.NotNull(geometry.AuthoredPath);
+        Assert.Contains(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup && command.MaskContentIndex >= 0);
+        using SvgRoot expected = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c'><rect x='2' y='2' width='4' height='4'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgPathFillAssertions.Equivalent(expected, root);
     }
 
     [Fact]
@@ -5047,23 +5084,27 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Clips_symbol_use_instances_to_their_object_bounding_box()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='red'/></symbol></defs><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0.25' y='0.25' width='0.5' height='0.5'/></clipPath></defs><use href='#s' width='8' height='8' clip-path='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='red'/></symbol></defs><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0.25' y='0.25' width='0.5' height='0.5'/></clipPath></defs><use href='#s' width='8' height='8' clip-path='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
-        Assert.True(geometry.Polygon.Clip.HasValue);
-        Assert.Equal(new SvgClipBox(2, 2, 4, 4), geometry.Polygon.Clip.Value);
+        Assert.NotNull(geometry.AuthoredPath);
+        Assert.Contains(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup && command.MaskContentIndex >= 0);
+        using SvgRoot expected = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c'><rect x='2' y='2' width='4' height='4'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgPathFillAssertions.Equivalent(expected, root);
     }
 
     [Fact]
     public void Clips_plain_symbol_use_instances_to_their_object_bounding_box()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='s'><polygon points='0,0 8,0 0,8' fill='red'/></symbol></defs><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0.25' y='0.25' width='0.5' height='0.5'/></clipPath></defs><use href='#s' clip-path='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='s'><polygon points='0,0 8,0 0,8' fill='red'/></symbol></defs><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0.25' y='0.25' width='0.5' height='0.5'/></clipPath></defs><use href='#s' clip-path='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
-        Assert.True(geometry.Polygon.Clip.HasValue);
-        Assert.Equal(new SvgClipBox(2, 2, 4, 4), geometry.Polygon.Clip.Value);
+        Assert.NotNull(geometry.AuthoredPath);
+        Assert.Contains(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup && command.MaskContentIndex >= 0);
+        using SvgRoot expected = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c'><rect x='2' y='2' width='4' height='4'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgPathFillAssertions.Equivalent(expected, root);
     }
 
     [Fact]
@@ -6809,19 +6850,25 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Lowers_a_solid_embedded_image_to_a_rectangle()
+    public void Retains_a_uniform_embedded_image_without_allocating_a_pixel_array()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='8' y='8' width='48' height='48'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='8' y='8' width='48' height='48'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(8, 8, 48, 48, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        SvgImageGeometry placedImage = Assert.Single(root.Geometries).Image;
+        Assert.Equal((8d, 8d, 48d, 48d), (placedImage.Box.X, placedImage.Box.Y, placedImage.Box.Width, placedImage.Box.Height));
+        Assert.Equal(new SvgConstantShaderPaint(255, 0, 0, 255), placedImage.UniformSample);
+        SvgPathFillAssertions.MatchesIntegerBands(root, [new(8, 8, 48, 48, new(255, 0, 0, 255), true, null)]);
     }
 
     [Fact]
     public void Defaults_dimless_embedded_images_to_the_decoded_intrinsic_size()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='8' y='8'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='8' y='8'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(8, 8, 1, 1, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        SvgImageGeometry placedImage = Assert.Single(root.Geometries).Image;
+        Assert.Equal((8d, 8d, 1d, 1d), (placedImage.Box.X, placedImage.Box.Y, placedImage.Box.Width, placedImage.Box.Height));
+        Assert.Equal(new SvgConstantShaderPaint(255, 0, 0, 255), placedImage.UniformSample);
+        SvgPathFillAssertions.MatchesIntegerBands(root, [new(8, 8, 1, 1, new(255, 0, 0, 255), true, null)]);
     }
 
     [Fact]

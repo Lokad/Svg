@@ -155,7 +155,7 @@ internal static class SvgLeafParser
     {
         SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, frame);
         SvgGeometry geometry = ParseImageCore(reader, context with { DeferPaintOpacity = true }, frame, baseWidth, baseHeight,
-            limits, state.Budget, source.ElementOpacity.Value != 1, out SvgPaintBounds bounds);
+            limits, state.Budget, out SvgPaintBounds bounds);
         try
         {
             // An image is one paint operation. Its opacity can fold into a single
@@ -168,7 +168,7 @@ internal static class SvgLeafParser
         catch { geometry.Dispose(); throw; }
 
         static SvgGeometry ParseImageCore(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame,
-            double? baseWidth, double? baseHeight, SvgRenderLimits limits, RenderBudget budget, bool retainBitmap, out SvgPaintBounds bounds)
+            double? baseWidth, double? baseHeight, SvgRenderLimits limits, RenderBudget budget, out SvgPaintBounds bounds)
         {
             SvgImageSyntax syntax = SvgImageSyntax.Parse(reader, baseWidth, baseHeight);
             // Images use decoded pixels; shape fill/stroke cannot suppress or repaint them.
@@ -201,13 +201,6 @@ internal static class SvgLeafParser
                     return SvgGeometry.FromRectangle(empty);
                 }
                 string? aspect = reader.GetAttribute("preserveAspectRatio");
-                if (image.Raster is null && !retainBitmap && element.Transform.IsAxisAligned)
-                {
-                    SvgRectangle placement = SvgImageSyntax.MapPlacement(aspect, syntax, image, width, height);
-                    SvgRectangle rectangle = element.Transform.Apply(placement with { Color = image.Color, HasFill = element.Presentation.HasFill });
-                    if (frame is not null) rectangle = frame.Value.Clip.ClipRectangle(frame.Value.Shift(rectangle));
-                    return SvgGeometry.FromRectangle(rectangle);
-                }
                 (SvgRectangle box, SvgShaderMatrix local) = SvgImageSyntax.MapRasterPlacement(aspect, syntax, image.Width, image.Height, width, height);
                 SvgRectangle sourceBox = box;
                 bool affine = !element.Transform.IsAxisAligned;

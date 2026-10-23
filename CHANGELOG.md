@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Preserve owning use clips through x/y placement, forward references and real
+  instance bounds. Keep clip coverage outside restored opacity/mask output and
+  preserve single-paint opacity through pure clip scopes.
+- Keep uniform images as compact bitmap paints, preserving alpha and color
+  rounding through groups and local instances.
 - Preserve authored polygon/polyline fill coverage through fractional placement,
   shader paints, instances and output scaling.
 - Share native pattern content for fills and strokes, preserving fractional

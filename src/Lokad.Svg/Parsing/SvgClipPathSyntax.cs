@@ -117,7 +117,9 @@ internal static class SvgClipPathSyntax
     {
         if (IsDisabled(id, state)) return;
         bool rectangle = state.ObjectClips.TryGetValue(id, out SvgClipBox fractions);
-        state.ClipPolygons.TryGetValue(id, out SvgClipPolygon polygon);
+        bool hasPolygon = state.ClipPolygons.TryGetValue(id, out SvgClipPolygon polygon);
+        if (!rectangle && !hasPolygon && !state.Clips.TryGetValue(id, out _))
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clips on retained resource geometry are implemented.");
         SvgLeafMaskOperation? resourceClip = null;
         if (rectangle || polygon.IsObjectBoundingBox)
         {

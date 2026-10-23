@@ -1,5 +1,4 @@
 using System.Xml;
-using Lokad.Svg.Encoding;
 using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
@@ -36,27 +35,6 @@ internal readonly record struct SvgImageSyntax(string Href, double X, double Y, 
     {
         if (value is not null && value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "preserveAspectRatio values exceed the configured syntax limit.");
         return SvgGeometrySyntax.ParsePreserveAspectRatio(value);
-    }
-
-    /// <summary>Maps one solid image into its placement box under the effective aspect policy.</summary>
-    internal static SvgRectangle MapPlacement(string? preserveAspectRatio, SvgImageSyntax syntax, DecodedPngImage image, double width, double height)
-    {
-        if (image.Width * height == image.Height * width) return new(syntax.X, syntax.Y, width, height, default, true, null);
-        (SvgViewBoxAlignment horizontalAlignment, SvgViewBoxAlignment verticalAlignment, SvgViewBoxFit fit) = ParsePlacementAspectRatio(preserveAspectRatio);
-        if (fit == SvgViewBoxFit.None) return new(syntax.X, syntax.Y, width, height, default, true, null);
-        (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(new SvgViewBox(0, 0, image.Width, image.Height, horizontalAlignment, verticalAlignment, fit), width, height);
-        double left = syntax.X + offsetX;
-        double top = syntax.Y + offsetY;
-        double right = left + image.Width * scaleX;
-        double bottom = top + image.Height * scaleY;
-        if (fit == SvgViewBoxFit.Slice)
-        {
-            left = Math.Max(left, syntax.X);
-            top = Math.Max(top, syntax.Y);
-            right = Math.Min(right, syntax.X + width);
-            bottom = Math.Min(bottom, syntax.Y + height);
-        }
-        return new(left, top, right - left, bottom - top, default, true, null);
     }
 
     /// <summary>Retains the full pixel map separately from the meet/slice drawable box.</summary>
