@@ -49,13 +49,18 @@ public sealed class SvgStrokeStyleSyntaxTests
             SvgStrokeStyleSyntax.ValidateAttribute("stroke-dasharray", dasharray, true, true, true, true, true);
         }
         bool hasStroke = true;
-        long before = GC.GetAllocatedBytesForCurrentThread();
-        for (int index = 0; index < 4_096; index++)
+        long allocated = long.MaxValue;
+        // Fixed batches measure steady per-call storage, excluding one-time runtime warmup.
+        for (int sample = 0; sample < 3; sample++)
         {
-            hasStroke &= paint.HasStroke;
-            SvgStrokeStyleSyntax.ValidateAttribute("stroke-dasharray", dasharray, true, true, true, true, true);
+            long before = GC.GetAllocatedBytesForCurrentThread();
+            for (int index = 0; index < 4_096; index++)
+            {
+                hasStroke &= paint.HasStroke;
+                SvgStrokeStyleSyntax.ValidateAttribute("stroke-dasharray", dasharray, true, true, true, true, true);
+            }
+            allocated = Math.Min(allocated, GC.GetAllocatedBytesForCurrentThread() - before);
         }
-        long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
         Assert.True(hasStroke);
         Assert.InRange(allocated, 0, 1_024);
     }

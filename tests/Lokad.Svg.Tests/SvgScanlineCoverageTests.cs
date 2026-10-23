@@ -27,18 +27,24 @@ public sealed class SvgScanlineCoverageTests
 
         static long Measure(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, int[]? roles)
         {
-            RenderBudget budget = new(1);
-            long before = GC.GetAllocatedBytesForCurrentThread();
-            try
+            long allocated = long.MaxValue;
+            for (int sample = 0; sample < 3; sample++)
             {
-                using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, [], false, roles, 0, 1, budget, out _, CancellationToken.None);
-                Assert.Fail("The one-byte budget must reject scratch storage.");
+                RenderBudget budget = new(1);
+                SvgException? failure = null;
+                long before = GC.GetAllocatedBytesForCurrentThread();
+                try
+                {
+                    using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, [], false, roles, 0, 1, budget, out _, CancellationToken.None);
+                }
+                catch (SvgException exception) { failure = exception; }
+                allocated = Math.Min(allocated, GC.GetAllocatedBytesForCurrentThread() - before);
+                // Assertions are outside the measured interval, and every sample validates denial.
+                Assert.Equal(SvgErrorCode.LimitExceeded, failure?.ErrorCode);
+                Assert.Equal(0, budget.Snapshot().PeakBytes);
+                Assert.Equal(0, budget.Snapshot().CurrentBytes);
+                Assert.Equal(1, budget.Snapshot().DeniedReservationCount);
             }
-            catch (SvgException exception) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
-            long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
-            Assert.Equal(0, budget.Snapshot().PeakBytes);
-            Assert.Equal(0, budget.Snapshot().CurrentBytes);
-            Assert.Equal(1, budget.Snapshot().DeniedReservationCount);
             return allocated;
         }
     }

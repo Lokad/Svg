@@ -54,6 +54,11 @@ qualification while preserving the old provenance.
 
 ## Qualification
 
+Dash-validation and denied-scratch allocation gates take the minimum of three fixed
+warmed batches. Keep semantic assertions outside measured intervals and validate
+every sample's error and ownership results. Limits remain unchanged; per-call
+array/storage regressions must still fail.
+
 Windows and Linux use separate frozen Chrome references. Passing cases establish
 the declared outputs, not general SVG completeness. Assess qualification through
 the committed manifests/tests and CI results for the relevant revision; historical
