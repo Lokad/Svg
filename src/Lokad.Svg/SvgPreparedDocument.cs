@@ -21,7 +21,7 @@ public sealed class SvgPreparedDocument : IDisposable
         _budget = budget;
     }
 
-    /// <summary>Discovers required direct-text fonts and lowers the admitted scene, retaining verified font bytes until this document is disposed or converted once.</summary>
+    /// <summary>Discovers required text fonts and lowers the admitted scene, retaining verified font bytes until this document is disposed or converted once.</summary>
     public static async ValueTask<SvgPreparedDocument> CreateAsync(ReadOnlyMemory<byte> svg, SvgFontPackCatalog catalog, ISvgFontProgramSourceProvider provider, SvgRenderOptions options, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(catalog);

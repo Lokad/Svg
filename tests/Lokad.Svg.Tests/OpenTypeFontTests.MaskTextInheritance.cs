@@ -41,6 +41,10 @@ public sealed partial class OpenTypeFontTests
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(SvgConverter.ConvertToPng(control, options, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
+        (var catalog, var provider) = CreateMaskStylePack();
+        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
+        Assert.Equal(1, provider.RequestCount);
+        Assert.Equal(SvgConverter.ConvertToPng(control, options, CancellationToken.None).ToArray(), prepared.ConvertToPng(CancellationToken.None).ToArray());
         Assert.Equal(unchanged, input);
 
         byte[] Document(bool explicitText)
@@ -80,6 +84,10 @@ public sealed partial class OpenTypeFontTests
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
         byte[] expected = SvgConverter.ConvertToPng(Document(false), options, CancellationToken.None).ToArray();
         Assert.Equal(expected, SvgConverter.ConvertToPng(Document(true), options, CancellationToken.None).ToArray());
+        (var catalog, var provider) = CreateMaskStylePack();
+        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(Document(true), catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
+        Assert.Equal(1, provider.RequestCount);
+        Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
 
         byte[] Document(bool inheritedStyle)
         {
@@ -92,14 +100,19 @@ public sealed partial class OpenTypeFontTests
 
     private static ValueTask<SvgFontSnapshot> CreateMaskStyleFont()
     {
+        (var catalog, var provider) = CreateMaskStylePack();
+        return SvgFontSnapshot.CreateAsync(catalog, new[] { new SvgFontFaceRequest("Example", 700, true) }, provider, CancellationToken.None);
+    }
+
+    private static (SvgFontPackCatalog Catalog, CountingFontProvider Provider) CreateMaskStylePack()
+    {
         byte[] font = CreateTriangleAAndSpaceFont();
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
         for (int index = 0; index < metrics.NumberOfHMetrics; index++) WriteUInt16(font, metrics.Hmtx.Offset + index * 4, 40);
         string hash = Convert.ToHexString(SHA256.HashData(font));
         string manifest = "{\"packId\":\"mask-style\",\"files\":[{\"relativePath\":\"face.ttf\",\"byteSize\":" + font.Length + ",\"sha256\":\"" + hash + "\"}],\"families\":[{\"requestedFamily\":\"Example\",\"resolvedFamily\":\"Example\",\"relativeFontFile\":\"face.ttf\",\"weight\":700,\"italic\":true}]}";
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "mask-style");
-        SvgFontPackResolution selected = catalog.Resolve(new SvgFontFaceRequest("Example", 700, true));
-        return SvgFontSnapshot.CreateAsync(new[] { catalog.Bind(selected, new SvgMemoryFontProgramSource("mask-style", font)) }, CancellationToken.None);
+        return (catalog, new CountingFontProvider(new CountingFontSource(font)));
     }
 
 }

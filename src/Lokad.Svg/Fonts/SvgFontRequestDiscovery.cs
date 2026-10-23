@@ -291,7 +291,11 @@ internal static class SvgFontRequestDiscovery
                         else if (reader.LocalName == "symbol") SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
                         else if (reader.LocalName == "marker") ObserveMarkerDefinition(reader, style.Text);
                     }
-                    InlineStyle styleSheet = isSvgElement && reader.LocalName is ("svg" or "defs" or "g" or "a" or "switch" or "pattern" or "text" or "use") ? SvgStyleSheet.Resolve(reader, styleRules, ancestors, workCounter, cancellationToken) : default;
+                    InlineStyle styleSheet = isSvgElement && reader.LocalName is ("svg" or "defs" or "g" or "a" or "switch" or "pattern" or "text" or "use" or "mask") ? SvgStyleSheet.Resolve(reader, styleRules, ancestors, workCounter, cancellationToken) : default;
+                    if (!sterile && !insideDirectText && isSvgElement && reader.LocalName == "mask"
+                        && (directChild || parentAllowsText && hasGroupAncestor || definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1))
+                        instanceFonts?.RegisterMask(reader, SourceContext(style), styleSheet,
+                            new(viewportSizes.Count == 0 ? rootWidth : viewportSizes[^1].Width, viewportSizes.Count == 0 ? rootHeight : viewportSizes[^1].Height));
                     SvgTextWhitespaceMode inheritedTextWhitespaceMode = style.Text.WhitespaceMode;
                     string? specifiedWhiteSpace = null;
                     // Reset definition-ancestor display before applying the resource's own declaration.
@@ -313,10 +317,16 @@ internal static class SvgFontRequestDiscovery
                             && (reader.LocalName != "path" || !string.IsNullOrWhiteSpace(reader.GetAttribute("d"))))
                             ObserveMarkers(SvgMarkerStyle.Resolve(leaf, style.Markers));
                     }
-                    if (!sterile && !hasUnsupportedContent && inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement && reader.LocalName == "use")
-                        instanceFonts?.AddUse(reader, new(new(style.Paint, style.IsDisplayed, style.IsVisible, Lokad.Svg.Rendering.SvgAffineTransform.Identity)
-                            { Markers = style.Markers, OwnOpacity = style.ElementOpacity, PaintServerFill = style.PaintServerFill, PaintOrder = style.PaintOrder },
-                            style.Text, style.FillRule, style.ElementOpacity.Alpha, style.StrokeStyle with { Stroke = style.Stroke }));
+                    if (!sterile && !hasUnsupportedContent && inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement)
+                    {
+                        if (reader.LocalName == "use") instanceFonts?.AddUse(reader, SourceContext(style));
+                        if (instanceFonts is not null && SvgLocalUrl.ReadReference(reader, "mask") is not null)
+                        {
+                            InlineStyle targetSheet = SvgStyleSheet.Resolve(reader, styleRules, ancestors, workCounter, cancellationToken);
+                            SvgComputedStyle target = SvgComputedStyleResolver.Resolve(reader, targetSheet, workCounter, cancellationToken, true);
+                            instanceFonts.AddMask(reader, style.IsDisplayed && SvgPresentationResolver.ParseDisplay(target.Display));
+                        }
+                    }
                     if (!sterile && inertDepth < 0 && isSvgElement && (SvgStructuralVocabulary.IsInertContainer(reader.LocalName) || symbolDefinition) && !reader.IsEmptyElement) inertDepth = reader.Depth;
                     SvgTextWhitespaceMode whitespaceMode = SvgTextWhitespaceMode.Default;
                     if (inertDepth < 0 && !insideDirectText && isTextEligible)
@@ -463,6 +473,11 @@ internal static class SvgFontRequestDiscovery
                 result[index] = SvgFontFaceRequest.FromCss(family, key.Weight, key.Italic, key.SourceContext, workCounter, cancellationToken);
             }
             return result;
+
+            static SvgInheritedContainer SourceContext(TextStyle style)
+                => new(new(style.Paint, style.IsDisplayed, style.IsVisible, SvgAffineTransform.Identity)
+                    { Markers = style.Markers, OwnOpacity = style.ElementOpacity, PaintServerFill = style.PaintServerFill, PaintOrder = style.PaintOrder },
+                    style.Text, style.FillRule, style.ElementOpacity.Alpha, style.StrokeStyle with { Stroke = style.Stroke });
 
             void ObserveMarkerDefinition(XmlReader marker, SvgInheritedTextStyle inherited)
             {
