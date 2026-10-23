@@ -10,7 +10,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <PackageProjectUrl>https://github.com/Lokad/Svg</PackageProjectUrl>
-    <PackageReleaseNotes>Development preview. See https://github.com/Lokad/Svg/blob/master/CHANGELOG.md for implemented changes and scope.</PackageReleaseNotes>
+    <PackageReleaseNotes>Development preview. See CHANGELOG.md in this package for implemented changes and scope.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/Lokad/Svg</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>svg;png;rendering</PackageTags>
