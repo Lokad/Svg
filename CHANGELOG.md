@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Anchor text to its positioned advance extents, including relative shifts and
+  backtracking; preserve separate native fragment-origin and anchor rounding.
 - Preserve independent fill, stroke, markers and effects when a gradient or
   pattern paints nothing, including masks, local instances and supplied text.
   Keep empty text strokes out of native layer bounds and defer forward mask paints.

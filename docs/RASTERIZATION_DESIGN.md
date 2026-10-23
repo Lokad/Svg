@@ -149,6 +149,9 @@ clips enclose group isolation, applying coverage once when opacity restores.
 Rendering consumes verified immutable font bytes supplied by the host. Shared
 bounded layout preserves text/span order, metrics, positioning, admitted shaping
 and paint. Composite replay retains component placement and metric origins.
+Chunk anchors use the extrema of positioned advance edges, including backtracking.
+Ordinary fragment origins and anchor shifts truncate separately; merging those
+steps loses half-grid middle anchoring. Zero shifts avoid a redundant glyph pass.
 Windows uses matched TrueType/LCD coverage and preblend; Linux uses matched Latin
 light fitting and grayscale coverage. Exact references are platform-specific.
 

@@ -374,17 +374,7 @@ internal static class SvgGlyphLayout
                     }
                 }
                 double nominalOrigin = glyphs[chunkStart].X;
-                double nominalEnd = chunkEnd == positionedGlyphCount ? x : glyphs[chunkEnd].X;
-                double width = nominalEnd - nominalOrigin;
-                double chunkWidth = deviceMetrics is SvgGlyphDeviceMetrics widthMetrics ? widthMetrics.RoundWidth(width) : width;
-                double anchorOffset = anchor switch
-                {
-                    SvgTextAnchor.Start => 0,
-                    SvgTextAnchor.Middle => -chunkWidth / 2,
-                    SvgTextAnchor.End => -chunkWidth,
-                    _ => throw new ArgumentOutOfRangeException(nameof(anchor))
-                };
-                if (!double.IsFinite(anchorOffset)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text anchor exceeds the admitted numeric range.");
+                double anchorOrigin = 0, left = double.PositiveInfinity, right = double.NegativeInfinity;
                 for (int index = chunkStart; index < chunkEnd; index++)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -394,13 +384,37 @@ internal static class SvgGlyphLayout
                         ? nominalOrigin + chunkShift + positionMetrics.RoundOffset(localX) : glyphs[index].X;
                     ApplyPositionAdjustment(ref relativeX, ref relativeY, positionedX, originY, sourceOffset, positionAdjustments, ref positionAdjustmentIndex);
                     sourceOffset += sourceLengths is null ? char.IsSurrogatePair(text, sourceOffset) ? 2 : 1 : sourceLengths[index];
-                    double anchoredX = positionedX + anchorOffset + relativeX;
+                    double adjustedX = positionedX + relativeX;
+                    double advanceEdge = adjustedX + glyphs[index].Advance;
+                    if (index == chunkStart) anchorOrigin = adjustedX;
+                    left = Math.Min(left, Math.Min(adjustedX, advanceEdge));
+                    right = Math.Max(right, Math.Max(adjustedX, advanceEdge));
+                    double paintedX = adjustedX;
                     if (deviceMetrics is { UsesCharacterAdvances: false } originMetrics)
-                        anchoredX = RoundPaintOrigin(nominalOrigin + chunkShift + anchorOffset + relativeX, originMetrics.Scale) + originMetrics.RoundOffset(localX);
+                        paintedX = RoundPaintOrigin(nominalOrigin + chunkShift + relativeX, originMetrics.Scale) + originMetrics.RoundOffset(localX);
                     double adjustedY = glyphs[index].Y + relativeY;
-                    if (!double.IsFinite(anchoredX) || !double.IsFinite(adjustedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text anchor exceeds the admitted numeric range.");
-                    glyphs[index] = glyphs[index] with { X = anchoredX, Y = adjustedY };
+                    if (!double.IsFinite(paintedX) || !double.IsFinite(adjustedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text anchor exceeds the admitted numeric range.");
+                    glyphs[index] = glyphs[index] with { X = paintedX, Y = adjustedY };
                 }
+                double width = right - left;
+                double chunkWidth = deviceMetrics is SvgGlyphDeviceMetrics widthMetrics ? widthMetrics.RoundWidth(width) : width;
+                double anchorOffset = anchorOrigin - left + (anchor switch
+                {
+                    SvgTextAnchor.Start => 0,
+                    SvgTextAnchor.Middle => -chunkWidth / 2,
+                    SvgTextAnchor.End => -chunkWidth,
+                    _ => throw new ArgumentOutOfRangeException(nameof(anchor))
+                });
+                if (deviceMetrics is { UsesCharacterAdvances: false } anchorMetrics) anchorOffset = RoundPaintOrigin(anchorOffset, anchorMetrics.Scale);
+                if (!double.IsFinite(anchorOffset)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text anchor exceeds the admitted numeric range.");
+                if (anchorOffset != 0)
+                    for (int index = chunkStart; index < chunkEnd; index++)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested(); workCounter?.Consume(cancellationToken);
+                        double anchoredX = glyphs[index].X + anchorOffset;
+                        if (!double.IsFinite(anchoredX)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text anchor exceeds the admitted numeric range.");
+                        glyphs[index] = glyphs[index] with { X = anchoredX };
+                    }
                 chunkStart = chunkEnd;
                 chunkShift += chunkWidth - width;
             }
@@ -425,8 +439,9 @@ internal static class SvgGlyphLayout
         }
         finally { clusterReservation?.Dispose(); }
 
-        // Blink truncates the SVG paint rectangle after anchoring and absolute
-        // resets, while offsets inside an ordinary shaped fragment stay scalar.
+        // Fragment origins and chunk-anchor shifts truncate independently;
+        // combining them changes half-grid middle anchoring. Ordinary offsets
+        // within a shaped fragment retain scalar precision.
         static double RoundPaintOrigin(double origin, double scale)
             => MathF.Truncate((float)(origin * scale) * 64) / (scale * 64);
 

@@ -198,6 +198,34 @@ public sealed class SvgSuppliedFontLabelTests
         }
     }
 
+    [Theory]
+    [InlineData("middle", "0 0 0", "-10.78125")]
+    [InlineData("middle", "2 3 4", "-14.28125")]
+    [InlineData("middle", "-2 -3 -4", "-7.28125")]
+    public async Task Relative_text_anchors_preserve_native_fragment_and_chunk_quantization(string anchor, string dx, string translation)
+    {
+        // Supplied Noto Sans at 12px: AVA has a 21.578125-unit native chunk.
+        // Retain the independently calibrated chunk translation as a control;
+        // it is deliberately not recomputed from the renderer's measured width.
+        foreach (bool spans in new[] { false, true })
+        {
+            byte[] input = Input(anchor, "0"), control = Input("start", translation);
+            using SvgFontSnapshot snapshot = await Prepare(input);
+            SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+            byte[] expected = SvgConverter.ConvertToPng(control, options, CancellationToken.None).ToArray();
+            Assert.Equal(expected, SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
+            using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, Catalog(), Provider(), SvgRenderOptions.Default, CancellationToken.None);
+            Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
+
+            byte[] Input(string anchoring, string offset)
+            {
+                string[] offsets = dx.Split(' ');
+                string text = spans ? "<tspan dx='" + offsets[0] + "'>A</tspan><tspan dx='" + offsets[1] + "'>V</tspan><tspan dx='" + offsets[2] + "'>A</tspan>" : "AVA";
+                return System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g transform='translate(" + offset + " 0)'><text font-family='Example' font-size='12' x='16' y='22' text-anchor='" + anchoring + "'" + (spans ? "" : " dx='" + dx + "'") + ">" + text + "</text></g></svg>");
+            }
+        }
+    }
+
     private static ValueTask<SvgFontSnapshot> Prepare(byte[] input)
         => SvgFontSnapshot.CreateAsync(input, Catalog(), Provider(), CancellationToken.None);
 
