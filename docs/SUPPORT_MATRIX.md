@@ -225,6 +225,8 @@ Alpha/luminance masks support ordered vector/text content, clipping, local uses,
 both region/content unit systems and transformed finite regions.
 Object-box mask regions require bare-number fractions; user-space regions also
 accept viewport percentages.
+For axis-aligned shape targets, spatial mask content must cover an explicit
+object-box region. A smaller content box reports `UnsupportedFeature`.
 
 Hidden clip children do not contribute to the silhouette; visibility inherits
 from the resource's own ancestors and can be overridden by a child. Display on
@@ -253,6 +255,11 @@ clip remains inside an ancestor's effect. Group opacity isolates the composed
 children rather than multiplying each child's opacity independently.
 Masks on use children inside symbols retain instance placement. Masks on retained
 group containers inside symbols remain unsupported.
+Masked rectangle/path sources require axis-aligned instance placement, including
+inside symbols; a mask on the live rectangle/path `use` supports affine placement.
+A mask on a direct text `use` is unsupported; direct masked text and references
+to text that already carries its mask are admitted. See the
+[mask boundary tests](../tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskBoundaries.cs).
 Explicit `clip-path="none"` and `mask="none"` omit that element's binding; ancestor
 clips and masks still apply.
 
