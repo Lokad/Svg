@@ -114,7 +114,17 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
 
     internal void AddUse(XmlReader reader, SvgInheritedContainer context)
     {
-        if (context.Presentation.IsDisplayed && Target(reader) is {} target) _pending.Add(new(target, context));
+        if (context.Presentation.IsDisplayed && Target(reader) is {} target && !HasEmptyViewport(reader, target)) _pending.Add(new(target, context));
+    }
+
+    private bool HasEmptyViewport(XmlReader reader, string target)
+    {
+        if (!_ids.TryGetValue(target, out int index) || !_nodes[index].Symbol) return false;
+        _work.Consume(_token);
+        // A 100-unit base preserves the authored percentage number; only an
+        // exact zero is classified without needing the consumer's viewport size.
+        SvgViewportLengthBases dimensions = SvgLocalReferenceSyntax.ParseDimensions(reader, 100, 100);
+        return dimensions.Width == 0 || dimensions.Height == 0;
     }
 
     /// <summary>Retains an admitted mask's own inherited context, independently of its rendered consumers.</summary>
@@ -134,10 +144,11 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
             _maskContexts.TryAdd(index, resolved);
     }
 
-    /// <summary>Queues a displayed target's local mask; definitions and font programs remain borrowed.</summary>
-    internal void AddMask(XmlReader reader, bool displayed)
+    /// <summary>Queues a displayed target's mask, including filter output from an empty use source; font programs remain borrowed.</summary>
+    internal void AddMask(XmlReader reader, bool displayed, string? ownFilter)
     {
         if (!displayed || SvgLocalUrl.ReadReference(reader, "mask") is not {} value) return;
+        if (SvgLocalUrl.GetReference(ownFilter) is null && reader.LocalName == "use" && Target(reader) is {} target && HasEmptyViewport(reader, target)) return;
         _work.Consume(_token);
         if (SvgLocalUrl.TryParseId(value, out string id) && _ids.TryGetValue(id, out int index) && _nodes[index].Kind == Kind.Mask)
             _pendingMasks.Add(index);
@@ -214,16 +225,21 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                     visit.Context.Presentation, visit.Context.FillRule, visit.Context.TextStyle, visit.Context.Stroke,
                     SvgRootParser.CssNamedColors, _work, _token);
                 if (!resolved.Presentation.IsDisplayed) continue;
+                if (node.Kind == Kind.Use && node.Target is {} emptyTarget && HasEmptyViewport(reader, emptyTarget))
+                {
+                    AddMask(reader, true, computed.Filter);
+                    continue;
+                }
                 if (node.Kind == Kind.Geometry)
                 {
                     if (resolved.Presentation.IsVisible && (reader.LocalName != "path" || !string.IsNullOrWhiteSpace(reader.GetAttribute("d"))))
                     {
-                        AddMask(reader, true);
+                        AddMask(reader, true, computed.Filter);
                         if (reader.LocalName is "line" or "path" or "polygon" or "polyline") addMarkers(resolved.Presentation.Markers);
                     }
                     continue;
                 }
-                AddMask(reader, true);
+                AddMask(reader, true, computed.Filter);
                 if (node.Kind == Kind.Use)
                 {
                     if (node.Target is {} target && _ids.TryGetValue(target, out int index)) stack.Add(new(index, resolved, VisitKind.Enter, 0, true));
@@ -263,7 +279,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                     foreach (SvgTextPaintSpan span in run.PaintSpans.Items) { _work.Consume(_token); painted |= span.Paint.IsPainted; ObservePaint(span.Paint); }
                 }
                 if (!painted) return;
-                AddMask(reader, true);
+                AddMask(reader, true, authoredStyle.Filter);
                 if (authoredStyle.Filter is {} filter) addFilter(filter);
                 ObservePaint(paint.GlyphPaint);
                 SvgFontFaceRequest request = SvgFontFaceRequest.FromCss(style.Font.Family, style.Font.Weight, style.Font.Italic, style.SourceContext, _work, _token);

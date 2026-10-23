@@ -89,6 +89,7 @@ internal static class SvgReferenceResolver
         }
         if (definition.Marker is not null && !reference.IsMarker)
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Marker definitions cannot be ordinary use targets.");
+        if (definition.HasEmptyViewport(reference)) return [];
         if (definition.StrokeContent is {} strokeContent && (reference.InheritedMarkers.HasMarkers || strokeContent.Content.Nodes[0].Style.Markers.HasMarkers || reference.InheritedStroke != default || strokeContent.Content.Nodes[0].Style.Stroke != default || strokeContent.Content.Nodes[0].Style.PaintOrder is not null || reference.InheritedPaintOrder != SvgPaintOrder.FillStrokeMarkers || reference.PaintServerId is not null || !reference.Transform.IsAxisAligned))
             return SvgSymbolContentRenderer.Apply(definition with { SymbolContent = strokeContent }, reference, frame, state, workCounter, cancellationToken);
         if (definition.SymbolContent is not null) return SvgSymbolContentRenderer.Apply(definition, reference, frame, state, workCounter, cancellationToken);
@@ -1760,6 +1761,12 @@ internal static class SvgReferenceResolver
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only supported local geometry use references are implemented.");
             }
             SvgGeometry[] applied = ResolveUseGeometries(definition, pendingUse, state, workCounter, cancellationToken);
+            if (applied.Length == 0)
+            {
+                scene.AssignRecordedGeometry(pendingUse.Slot.GeometryIndex,
+                    SvgPaintRecording.CreateEffectAnchor(scene, state, pendingUse.Reference.RecordingScope));
+                continue;
+            }
             int firstExtra = scene.AdoptReferenceGeometries(pendingUse.Slot, applied);
             if (applied.Length > 1) expansions.Add(new(pendingUse.Slot.CommandIndex, firstExtra, applied.Length - 1));
         }

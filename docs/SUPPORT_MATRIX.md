@@ -120,6 +120,11 @@ clip commands still reject. ASCII SVG whitespace and contextual commas do not
 erase missing coordinates.
 Polygon/polyline lists reject leading, repeated and trailing commas.
 
+Zero-sized symbol and nested SVG viewports have no source pixels and need no child
+font programs. Ordinary `use` targets retain their geometry when use dimensions
+are zero. Filters on a use instance or ancestor may generate paint from empty
+sources; masks on that output still need their fonts. See the
+[empty-viewport regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.EmptyViewports.cs).
 Root and nested viewports preserve their own percentage bases, aspect maps and
 physical clips. Instance presentation follows authored/inherited precedence;
 referencing an alias excludes the source's ancestors. Missing/cyclic references

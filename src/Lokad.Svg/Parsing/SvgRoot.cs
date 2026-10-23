@@ -1008,6 +1008,10 @@ internal readonly record struct SvgDefinition(SvgGeometry[] Geometries, bool All
     /// <summary>Distinguishes symbol/marker viewports from reusable groups without a viewBox.</summary>
     internal bool EstablishesViewport { get; init; }
 
+    /// <summary>Reports an empty symbol/marker viewport; ordinary use target dimensions do not suppress their source.</summary>
+    internal bool HasEmptyViewport(SvgUseReference reference)
+        => (EstablishesViewport || SymbolViewBox is not null) && (reference.Width == 0 || reference.Height == 0);
+
     internal SvgViewportLengthBases InstanceLengthBases(SvgUseReference reference)
         => SymbolViewBox is {} box ? new(box.Width, box.Height)
             : EstablishesViewport ? new(reference.Width, reference.Height) : reference.LengthBases;
@@ -1406,18 +1410,12 @@ internal sealed class SvgSceneBuilder : IDisposable
         return slot;
     }
 
-    /// <summary>Adopts resolved reference geometries into stable slots, returning the first extra geometry index.</summary>
+    /// <summary>Adopts a nonempty resolved reference batch into stable slots, returning the first extra geometry index.</summary>
     /// <remarks>Adopts the input owners on entry. On failure the scene keeps adopted geometries and this method
     /// releases the remainder. Geometry growth charges work/storage and observes cancellation. The caller
-    /// batches extra commands separately; zero or one geometry needs no command expansion. Single-threaded.</remarks>
+    /// binds empty references separately and batches extra commands; one geometry needs no command expansion. Single-threaded.</remarks>
     internal int AdoptReferenceGeometries(SvgSceneSlot slot, ReadOnlySpan<SvgGeometry> applied)
     {
-        // Empty targets resolve to a typed non-painting geometry without shifting later commands.
-        if (applied.Length == 0)
-        {
-            _geometries[slot.GeometryIndex] = SvgGeometry.FromRectangle(new(0, 0, 0, 0, SvgColor.Transparent, false, null));
-            return -1;
-        }
         int adopted = 0;
         try
         {

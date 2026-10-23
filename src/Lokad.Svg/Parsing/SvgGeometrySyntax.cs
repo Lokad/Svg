@@ -189,6 +189,9 @@ internal static class SvgGeometrySyntax
         double height = (float)viewBox.Height;
         double physicalWidth = (float)viewportWidth;
         double physicalHeight = (float)viewportHeight;
+        // Empty viewport consumers have no painted content. Keep alignment finite
+        // before their existing clip/display handling discards the source.
+        if (physicalWidth == 0 || physicalHeight == 0) return (0, 0, 0, 0);
         if (viewBox.HorizontalAlignment == SvgViewBoxAlignment.None)
         {
             double scaleX = physicalWidth / width;

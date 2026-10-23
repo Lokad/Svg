@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Treat zero-sized symbol and nested SVG viewports as empty before lowering
+  children or acquiring their fonts; preserve ordinary use target dimensions
+  and parent filters that generate paint from empty references.
 - Discover fonts used only by displayed mask content through groups and local
   references, using the resource's inherited style during SVG-driven preparation.
 - Preserve inherited text style when replaying grouped mask content, keeping

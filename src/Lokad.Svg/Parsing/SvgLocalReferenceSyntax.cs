@@ -16,11 +16,14 @@ internal readonly record struct SvgLocalReferenceSyntax(string Id, double X, dou
         }
         double x = ParsePosition(reader.GetAttribute("x"), baseWidth, work, token);
         double y = ParsePosition(reader.GetAttribute("y"), baseHeight, work, token);
-        double? width = ParseDimension(reader.GetAttribute("width"), baseWidth);
-        double? height = ParseDimension(reader.GetAttribute("height"), baseHeight);
-        if (string.IsNullOrEmpty(href)) return new(string.Empty, x, y, width, height);
-        return new SvgLocalReferenceSyntax(SvgLocalUrl.CopyFragment(href.AsSpan(1), strings), x, y, width, height);
+        SvgViewportLengthBases dimensions = ParseDimensions(reader, baseWidth, baseHeight);
+        if (string.IsNullOrEmpty(href)) return new(string.Empty, x, y, dimensions.Width, dimensions.Height);
+        return new SvgLocalReferenceSyntax(SvgLocalUrl.CopyFragment(href.AsSpan(1), strings), x, y, dimensions.Width, dimensions.Height);
     }
+
+    /// <summary>Resolves validated nonnegative use dimensions for placement and font-source selection.</summary>
+    internal static SvgViewportLengthBases ParseDimensions(XmlReader reader, double? baseWidth, double? baseHeight)
+        => new(ParseDimension(reader.GetAttribute("width"), baseWidth), ParseDimension(reader.GetAttribute("height"), baseHeight));
 
     /// <summary>Preserves href precedence, including an empty href overriding xlink:href.</summary>
     internal static string? ReadHref(XmlReader reader)

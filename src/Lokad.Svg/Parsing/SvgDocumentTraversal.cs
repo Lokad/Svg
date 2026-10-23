@@ -144,6 +144,8 @@ internal static class SvgDocumentTraversal
                     SvgComputedStyle viewportStyle = SvgComputedStyle.Resolve(reader, viewportInline, viewportContext.StyleSheet);
                     SvgInheritedContainer inheritedViewport = SvgContainerInheritance.Resolve(reader, viewportInline, viewportStyle, viewportContext.StyleSheet, viewportContext.InheritedPresentation,
                         viewportContext.InheritedFillRule, viewportContext.InheritedTextStyle, viewportContext.InheritedStroke, namedColors, workCounter, cancellationToken);
+                    if (viewport.Width == 0 || viewport.Height == 0)
+                        inheritedViewport = inheritedViewport with { Presentation = inheritedViewport.Presentation with { IsDisplayed = false } };
                     SvgPaintOpacity sourceViewportOpacity = inheritedViewport.Presentation.ElementOpacity;
                     // The viewport's own transform precedes its x/y and viewBox,
                     // together with ancestor placement and the physical clip.
