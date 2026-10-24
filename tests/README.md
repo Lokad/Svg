@@ -92,6 +92,11 @@ The [mask clip cases](Lokad.Svg.Tests/SvgMaskClipIsolationTests.cs) compare own
 and inherited clips in both reference orders, retaining literal native edge
 colors and shader grids. Their [browser checks](Lokad.Svg.VisualTests/SvgMaskClipReferenceTests.cs)
 use [fresh native images](Research/mask-clip-isolation/capture.json).
+The [pattern recording cases](Lokad.Svg.Tests/SvgPatternRecordingTransformTests.cs)
+cover source-order pixels, deep-chain storage, cancellation/retry and independent
+draw matrices. Their [browser checks](Lokad.Svg.VisualTests/SvgPatternRecordingReferenceTests.cs)
+use [deduplicated fresh references](Research/pattern-recording/capture.json) for
+authored viewports and external scaling, including instances and supplied-font text.
 
 [Display inheritance tests](Lokad.Svg.Tests/SvgDisplayInheritanceTests.cs) cover
 logical parents, retained instances, viewports and resource children across

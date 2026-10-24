@@ -16,6 +16,7 @@ internal readonly record struct SvgPaintOperationIdentity(int Value);
 internal enum SvgRecordedPaintRole : byte { Fill = 0, Stroke = 1, MarkerContent = 2, EffectAnchor = 4 }
 internal readonly record struct SvgRecordedPaintValue(SvgPaintOperationIdentity Identity, float Alpha, bool Foldable, SvgRecordedPaintRole Role, SvgPaintOrder PaintOrder, SvgRecordingScope Scope, SvgPaintOpacity ElementOpacity, SvgRecordingScope OpacityScope)
 {
+    internal SvgRecordedTransform? RecordingTransform { get; init; }
     // Resource paint stays independent when its host instance binds fill and stroke.
     internal bool IsStroke { get => (Role & SvgRecordedPaintRole.Stroke) != 0; init => Role = value ? Role | SvgRecordedPaintRole.Stroke : Role & ~SvgRecordedPaintRole.Stroke; }
     internal bool IsMarkerContent { get => (Role & SvgRecordedPaintRole.MarkerContent) != 0; init => Role = value ? Role | SvgRecordedPaintRole.MarkerContent : Role & ~SvgRecordedPaintRole.MarkerContent; }
@@ -50,6 +51,7 @@ internal readonly record struct SvgPaintBounds(float Left, float Top, float Righ
 internal enum SvgPaintOrigin { Solid, PaintServer }
 internal readonly record struct SvgRecordedPaintStyle(SvgPaintOpacity ElementOpacity, float FillAlpha, float FillShaderAlpha, float StrokeAlpha, float StrokeShaderAlpha, SvgPaintOrigin FillOrigin, SvgPaintOrigin StrokeOrigin, bool HasFillOperation, SvgRecordingScope Scope, SvgRecordingScope OpacityScope)
 {
+    internal SvgRecordedTransform? RecordingTransform { get; init; }
     internal SvgPaintBounds? VisualBounds { get; init; }
     internal SvgPaintBounds? ObjectBounds { get; init; }
     internal SvgPaintBounds? SourceObjectBox { get; init; }
@@ -149,12 +151,18 @@ internal static class SvgPaintRecording
         catch { parsed.Discard(); throw; }
     }
 
-    /// <summary>Retains material glyph bounds for filtered source groups; glyph color/opacity remains baked once in its existing paint.</summary>
-    internal static SvgGeometry RecordGlyph(SvgGlyphGeometry glyph, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    /// <summary>Retains glyph recording transforms and filtered source bounds; glyph color/opacity remains baked once in its existing paint.</summary>
+    internal static SvgGeometry RecordGlyph(SvgGlyphGeometry glyph, SvgRecordedTransform? recording, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
         SvgGeometry geometry = SvgGeometry.FromGlyphContours(glyph);
         if (state.Viewports.Count != 0) geometry = geometry with { LeafMask = SvgViewportFrame.ResolveGlyphClip(state, work, token) };
-        if (state.FilterGroupDepth <= 0) return geometry;
+        if (state.FilterGroupDepth <= 0)
+        {
+            if (recording is null) return geometry;
+            SvgRecordedPaintValue recorded = new(state.NewPaintOperationIdentity(), glyph.Color.Alpha / 255f, false,
+                new SvgRecordingScope(1), SvgPaintOpacity.Opaque, new SvgRecordingScope(1)) { RecordingTransform = recording };
+            return geometry with { RecordedPaint = state.Scene.RegisterRecordedPaint(recorded) };
+        }
         float left = float.PositiveInfinity, top = float.PositiveInfinity;
         float right = float.NegativeInfinity, bottom = float.NegativeInfinity;
         foreach (SvgGlyphQuadraticContour contour in glyph.Contours)
@@ -167,6 +175,7 @@ internal static class SvgPaintRecording
         float inflation = (float)Math.Max(2, glyph.StrokeBoundsInflation);
         SvgRecordedPaintValue paint = new(state.NewPaintOperationIdentity(), glyph.Color.Alpha / 255f, false, new SvgRecordingScope(1), SvgPaintOpacity.Opaque, new SvgRecordingScope(1))
         {
+            RecordingTransform = recording,
             ObjectBounds = bounds,
             VisualBounds = new(bounds.Left - inflation, bounds.Top - inflation, bounds.Right + inflation, bounds.Bottom + inflation)
         };
@@ -206,7 +215,7 @@ internal static class SvgPaintRecording
             fill.FillOpacity.Alpha / 255f, (stroke.Alpha / 255f) * strokeOpacity.Value, strokeOpacity.Alpha / 255f,
             fillServer ? SvgPaintOrigin.PaintServer : SvgPaintOrigin.Solid,
             style.Stroke is not null && SvgLocalUrl.TryParseId(style.Stroke, out _) ? SvgPaintOrigin.PaintServer : SvgPaintOrigin.Solid,
-            fill.HasFill, drawScope, opacityScope) { IsSuppressedSource = suppressedSource || !context.InheritedPresentation.IsDisplayed || style.GetDisplay() == SvgDisplay.None, PaintOrder = style.PaintOrder ?? context.InheritedPresentation.PaintOrder, ObjectBounds = objectBounds, SourceObjectBox = sourceObjectBox, VisualBounds = strokeBoundsInflation > 0 ? PrimitiveBounds(reader, context, frame, strokeBoundsInflation, out _, out _) : null, StrokeBoundsInflation = strokeBoundsInflation };
+            fill.HasFill, drawScope, opacityScope) { RecordingTransform = context.InheritedPresentation.RecordingTransform, IsSuppressedSource = suppressedSource || !context.InheritedPresentation.IsDisplayed || style.GetDisplay() == SvgDisplay.None, PaintOrder = style.PaintOrder ?? context.InheritedPresentation.PaintOrder, ObjectBounds = objectBounds, SourceObjectBox = sourceObjectBox, VisualBounds = strokeBoundsInflation > 0 ? PrimitiveBounds(reader, context, frame, strokeBoundsInflation, out _, out _) : null, StrokeBoundsInflation = strokeBoundsInflation };
 
         static SvgPaintBounds? PrimitiveBounds(XmlReader input, SvgPaintableElementContext element, SvgViewportFrame? viewport, float inflation, out SvgPaintBounds? sourceObjectBox, out bool suppressedSource)
         {
@@ -364,7 +373,7 @@ internal static class SvgPaintRecording
 
             SvgRecordedPaint GetPaint(ref SvgRecordedPaint cached, SvgPaintOperationIdentity identity, float alpha, bool foldable)
             {
-                if (cached.Identity == 0) cached = state.Scene.RegisterRecordedPaint(new(identity, alpha, foldable, source.Scope, source.ElementOpacity, source.OpacityScope) { PaintOrder = source.PaintOrder, IsStroke = identity == strokeId, IsEffectAnchor = source.IsSuppressedSource, VisualBounds = source.IsSuppressedSource ? null : visualBounds, ObjectBounds = source.IsSuppressedSource ? null : objectBounds });
+                if (cached.Identity == 0) cached = state.Scene.RegisterRecordedPaint(new(identity, alpha, foldable, source.Scope, source.ElementOpacity, source.OpacityScope) { RecordingTransform = source.RecordingTransform, PaintOrder = source.PaintOrder, IsStroke = identity == strokeId, IsEffectAnchor = source.IsSuppressedSource, VisualBounds = source.IsSuppressedSource ? null : visualBounds, ObjectBounds = source.IsSuppressedSource ? null : objectBounds });
                 return cached;
             }
         }

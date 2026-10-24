@@ -240,6 +240,9 @@ Template content, including images, effects and supplied-font text, survives zer
 or omitted base tile dimensions when an alias supplies nonzero effective dimensions.
 Pattern fills/strokes share retained content through instances, fractional
 placement and output scaling, including single-rectangle tiles.
+Pattern sampling retains clip/mask/opacity recording boundaries. Authored
+viewBox transforms and external output scaling can produce distinct native
+pixels; see the [independent comparisons](../tests/Research/pattern-recording/capture.json).
 Patterns whose effective tile size stays zero remain inert.
 Empty gradients and inert patterns suppress only their own paint operation.
 The independent fill/stroke, markers and effects remain; validation and source

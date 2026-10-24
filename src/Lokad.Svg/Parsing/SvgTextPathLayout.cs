@@ -8,6 +8,7 @@ namespace Lokad.Svg.Parsing;
 /// fonts, viewport clips and the originating builder remain borrowed. Resolution and cleanup are parser-thread confined.</remarks>
 internal readonly record struct SvgPendingTextRun(SvgTextRun? Run, SvgTextPathReference? Reference, SvgAffineTransform Placement, SvgColor Color, int CommandIndex, RenderBudget.BudgetReservation Owner, SvgSceneBuilder Scene)
 {
+    internal SvgRecordedTransform? RecordingTransform { get; init; }
     internal SvgPendingTextLayout? Continuation { get; init; }
     /// <summary>Borrows the originating viewport clip chain until deferred glyph command emission.</summary>
     internal SvgLeafMaskBinding? ViewportClip { get; init; }
@@ -85,7 +86,7 @@ internal static class SvgTextPathLayout
             if (pending.Reference is not {} reference)
             {
                 run = pending.Run ?? throw new InvalidOperationException("A queued direct paint requires a shaped run.");
-                SvgTextGlyphPainter.EmitDirect(run, pending.Placement, pending.ViewportClip, pending.Color, state, limits.MaximumPathCommands, state.Budget, work, token);
+                SvgTextGlyphPainter.EmitDirect(run, pending.Placement, pending.ViewportClip, pending.Color, state, limits.MaximumPathCommands, state.Budget, work, pending.RecordingTransform, token);
             }
             else
             {
@@ -109,7 +110,7 @@ internal static class SvgTextPathLayout
                         raw.PaintSpans.Items, raw.FontSpans.Items, continuation.Paint, continuation.Metrics, continuation.Snapshot, state.Budget, work, token);
                     state.PendingTextRuns[index] = pending with { Run = run };
                     continuation.Dispose();
-                    SvgTextGlyphPainter.EmitDirect(run, pending.Placement, pending.ViewportClip, pending.Color, state, limits.MaximumPathCommands, state.Budget, work, token);
+                    SvgTextGlyphPainter.EmitDirect(run, pending.Placement, pending.ViewportClip, pending.Color, state, limits.MaximumPathCommands, state.Budget, work, pending.RecordingTransform, token);
                 }
                 else
                 {
@@ -189,7 +190,7 @@ internal static class SvgTextPathLayout
                         }
                         placements.Add(new(placed, glyphMap, true) { Decoration = decoration });
                     }
-                    SvgTextGlyphPainter.Emit(run, pending.Placement, placements.AsSpan(), pending.ViewportClip, pending.Color, state, limits.MaximumPathCommands, state.Budget, work, token);
+                    SvgTextGlyphPainter.Emit(run, pending.Placement, placements.AsSpan(), pending.ViewportClip, pending.Color, state, limits.MaximumPathCommands, state.Budget, work, pending.RecordingTransform, token);
                 }
             }
             run.Dispose();

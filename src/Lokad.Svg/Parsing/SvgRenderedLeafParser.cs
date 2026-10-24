@@ -417,7 +417,7 @@ internal static class SvgRenderedLeafParser
                                 continuation = new(extracted, runStyle, textPaint.GlyphPaint, deviceMetrics, fontSnapshot);
                                 textRuns[textIndex] = default;
                                 state.PendingTextRuns.Add(new(null, resume, textPlacement, textElement.Presentation.Color, state.Scene.AddPaintPlaceholder(), owner, state.Scene)
-                                    { ViewportClip = SvgViewportFrame.ResolveGlyphClip(state, workCounter, cancellationToken), Continuation = continuation });
+                                    { RecordingTransform = context.InheritedPresentation.RecordingTransform, ViewportClip = SvgViewportFrame.ResolveGlyphClip(state, workCounter, cancellationToken), Continuation = continuation });
                             }
                             catch { continuation?.Dispose(); owner.Dispose(); throw; }
                             continue;
@@ -436,13 +436,13 @@ internal static class SvgRenderedLeafParser
                         catch { pendingTextOwner?.Dispose(); throw; }
                         if (textPath is not null || hasServer)
                         {
-                            try { state.PendingTextRuns.Add(new(run, textPath, textPlacement, textElement.Presentation.Color, state.Scene.AddPaintPlaceholder(), pendingTextOwner ?? throw new InvalidOperationException("A retained text run requires its metadata owner."), state.Scene) { ViewportClip = SvgViewportFrame.ResolveGlyphClip(state, workCounter, cancellationToken) }); }
+                            try { state.PendingTextRuns.Add(new(run, textPath, textPlacement, textElement.Presentation.Color, state.Scene.AddPaintPlaceholder(), pendingTextOwner ?? throw new InvalidOperationException("A retained text run requires its metadata owner."), state.Scene) { RecordingTransform = context.InheritedPresentation.RecordingTransform, ViewportClip = SvgViewportFrame.ResolveGlyphClip(state, workCounter, cancellationToken) }); }
                             catch { pendingTextOwner?.Dispose(); run.Dispose(); throw; }
                             continue;
                         }
                         using (run)
                         {
-                            SvgTextGlyphPainter.EmitDirect(run, textPlacement, null, textElement.Presentation.Color, state, limits.MaximumPathCommands, budget, workCounter, cancellationToken);
+                            SvgTextGlyphPainter.EmitDirect(run, textPlacement, null, textElement.Presentation.Color, state, limits.MaximumPathCommands, budget, workCounter, context.InheritedPresentation.RecordingTransform, cancellationToken);
                         }
                     }
                     if (textClip is not null || textMask is not null)

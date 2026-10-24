@@ -56,6 +56,9 @@ internal sealed class SvgPaintResourceSelection : IDisposable
 
     internal bool RequiresPatternContent(string? id) => id is not null && _selection.TryGetValue(id, out Selection value) && value == Selection.NeededContent;
 
+    /// <summary>Reports conservatively selected pattern content that may need native recording transforms.</summary>
+    internal bool HasPatternContent { get; private set; }
+
     internal bool IsPatternDisplayed(string? id) => id is null || !_selection.TryGetValue(id, out Selection value) || value != Selection.DisabledResource;
 
     /// <summary>Checks omitted sources' displayed effect references without allocating bindings or constructing mask glyphs.</summary>
@@ -204,7 +207,10 @@ internal sealed class SvgPaintResourceSelection : IDisposable
             {
                 work.Consume(token);
                 if (item.State == Resolution.Ready && item.Width > 0 && item.Height > 0 && item.Source >= 0 && references.TryGetValue(item.Id, out _))
+                {
                     result._selection.TryAdd(patterns[item.Source].Id, Selection.NeededContent);
+                    result.HasPatternContent = true;
+                }
             }
             foreach (PatternEffect effect in effects.AsSpan())
             {

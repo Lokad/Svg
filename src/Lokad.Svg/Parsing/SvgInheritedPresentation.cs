@@ -4,6 +4,8 @@ using Lokad.Svg.Rendering;
 /// <summary>Represents the resolved container state inherited by a paintable child, including its accumulated transform.</summary>
 internal readonly record struct SvgInheritedPresentation(SvgPaint Paint, bool IsDisplayed, bool IsVisible, SvgAffineTransform Transform)
 {
+    /// <summary>Borrows scene-owned recording boundaries used by picture-backed pattern paints.</summary>
+    internal SvgRecordedTransform? RecordingTransform { get; init; }
     /// <summary>Retains the budget-owned local fill URL independently of numeric opacity and solid paint.</summary>
     internal string? PaintServerFill { get; init; }
     // Vector effect is initially none; children borrow this only for explicit inherit.

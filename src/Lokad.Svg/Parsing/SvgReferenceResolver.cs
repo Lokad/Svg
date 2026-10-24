@@ -5,6 +5,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Represents a parsed direct local use reference before its target is resolved.</summary>
 internal readonly record struct SvgUseReference(string Id, double X, double Y, double? Width, double? Height, SvgAffineTransform Transform, SvgAffineTransform InheritedTransform, byte Opacity, bool IsPainted, SvgPaint? FillOverride, string? PaintServerId, SvgUseStrokeOverride? StrokeOverride)
 {
+    internal SvgRecordedTransform? RecordingTransform { get; init; }
     internal SvgSourceContext? SourceContext { get; init; }
     internal SvgTextMetricScope TextMetrics { get; init; }
     /// <summary>Retains a source-less effect owner; Id is unused and must never enter resource lookup.</summary>
@@ -190,7 +191,7 @@ internal static class SvgReferenceResolver
             try
             {
                 using SvgRecordingMapper mapper = SvgRecordingMapper.Create(state, reference.RecordingScope, workCounter, cancellationToken);
-                return [TryApplyShaderOverride(lowered, definition.Geometries[0].RecordedPaint, mapper, state, workCounter, cancellationToken)];
+                return [TryApplyShaderOverride(lowered, definition.Geometries[0].RecordedPaint, reference.RecordingTransform, mapper, state, workCounter, cancellationToken)];
             }
             catch { lowered.Dispose(); throw; }
         }
@@ -1261,12 +1262,12 @@ internal static class SvgReferenceResolver
         if (cache.TryGetValue(source, out SvgRecordedPaint previous)) return previous;
         float alpha = value.IsEffectAnchor ? 0 : value.IsMarkerContent ? value.Alpha : shaderOpacity is SvgPaintOpacity shader ? shader.Alpha / 255f
             : !stroke && reference.FillOverride is SvgPaint fill ? SvgPaintResolver.ResolveSolidPaint(fill).Alpha : value.Alpha;
-        SvgRecordedPaint result = state.Scene.RegisterRecordedPaint(new(mapper.MapPaintIdentity(value.Identity), alpha, value.Foldable, mapper.Map(value.Scope), value.ElementOpacity, mapper.Map(value.OpacityScope)) { PaintOrder = value.PaintOrder, Role = value.Role, VisualBounds = value.VisualBounds?.Map(placement, work, token), ObjectBounds = value.ObjectBounds?.Map(placement, work, token) });
+        SvgRecordedPaint result = state.Scene.RegisterRecordedPaint(new(mapper.MapPaintIdentity(value.Identity), alpha, value.Foldable, mapper.Map(value.Scope), value.ElementOpacity, mapper.Map(value.OpacityScope)) { RecordingTransform = reference.RecordingTransform, PaintOrder = value.PaintOrder, Role = value.Role, VisualBounds = value.VisualBounds?.Map(placement, work, token), ObjectBounds = value.ObjectBounds?.Map(placement, work, token) });
         cache.TryAdd(source, result);
         return result;
     }
 
-    private static SvgGeometry TryApplyShaderOverride(SvgGeometry geometry, SvgRecordedPaint source, SvgRecordingMapper mapper, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    private static SvgGeometry TryApplyShaderOverride(SvgGeometry geometry, SvgRecordedPaint source, SvgRecordedTransform? recording, SvgRecordingMapper mapper, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
         if (source.Identity == 0) return geometry;
         work.Consume(token);
@@ -1279,7 +1280,7 @@ internal static class SvgReferenceResolver
             SvgGeometryKind.PatternFill => geometry.Pattern.Opacity / 255f,
             _ => throw new InvalidOperationException("Unexpected instance paint-server geometry."),
         };
-        SvgRecordedPaint paint = state.Scene.RegisterRecordedPaint(new(state.NewPaintOperationIdentity(), alpha, original.Foldable, mapper.Map(original.Scope), SvgPaintOpacity.Opaque, mapper.Map(original.OpacityScope)) { PaintOrder = original.PaintOrder });
+        SvgRecordedPaint paint = state.Scene.RegisterRecordedPaint(new(state.NewPaintOperationIdentity(), alpha, original.Foldable, mapper.Map(original.Scope), SvgPaintOpacity.Opaque, mapper.Map(original.OpacityScope)) { RecordingTransform = recording, PaintOrder = original.PaintOrder });
         return geometry with { RecordedPaint = paint };
     }
 
@@ -1636,7 +1637,7 @@ internal static class SvgReferenceResolver
         try
         {
             using SvgRecordingMapper mapper = SvgRecordingMapper.Create(state, state.NewRecordingScope(), workCounter, cancellationToken);
-            return [TryApplyShaderOverride(shader, definition.Geometries[0].RecordedPaint, mapper, state, workCounter, cancellationToken)];
+            return [TryApplyShaderOverride(shader, definition.Geometries[0].RecordedPaint, reference.RecordingTransform, mapper, state, workCounter, cancellationToken)];
         }
         catch { shader.Dispose(); throw; }
     }

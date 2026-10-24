@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Preserve pattern sampling across clip, mask and opacity recording boundaries,
+  including instances, supplied-font text and affine maps. Keep authored viewBox
+  transforms distinct from external output scaling.
 - Keep inherited and own rectangular clips outside mask-owned layers at full
   group opacity, preserving single-paint colors and gradient bitmap grids.
 - Keep a group's own rectangular clip outside its partial-opacity layer in both

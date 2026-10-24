@@ -1243,6 +1243,33 @@ internal sealed class SvgSceneBuilder : IDisposable
         return _recordedPaintValues[reference.Identity - 1];
     }
 
+    /// <summary>Reserves one immutable recording boundary before publishing it to source contexts.</summary>
+    /// <remarks>The built scene owns the reservation, including failure/disposal paths. Parent nodes
+    /// remain borrowed from the same document's scene owners. Construction is parser-thread confined;
+    /// native mapping charges shared work and cancellation before allocation.</remarks>
+    internal SvgRecordedTransform? RetainRecordedTransform(SvgRecordedTransform? parent, SvgAffineTransform map, SvgViewportFrame? viewport)
+    {
+        _workCounter.Consume(_cancellationToken);
+        // Recording metadata retains finite computed intermediates; geometry
+        // admission owns coordinate-range checks after child maps compose.
+        if (viewport is {} frame)
+            map = SvgAffineTransform.FromScaleOffset(frame.ScaleX, frame.ScaleY, frame.OffsetX, frame.OffsetY).Compose(map);
+        SvgAffineTransform previous = parent?.Map ?? SvgAffineTransform.Identity;
+        // The first identity boundary still separates an authored viewBox map
+        // from transforms accumulated inside its clip/opacity/mask scope.
+        if (parent is not null && map == previous) return parent;
+        if (!previous.TryInvert(out SvgAffineTransform inverse)) return parent;
+        SvgAffineTransform local = inverse.Compose(map);
+        RenderBudget.BudgetReservation reservation = _budget.Reserve(SvgRecordedTransform.RetainedStorageBytes, SvgMemoryCategory.Scene);
+        try
+        {
+            SvgRecordedTransform result = new(parent, map, local);
+            _paintReservations.Add(reservation);
+            return result;
+        }
+        catch { reservation.Dispose(); throw; }
+    }
+
     /// <summary>Reserves and retains one immutable linear source or referencing map under this scene.</summary>
     internal SvgLinearPaintMap RetainLinearPaintMap(SvgLinearPaintMapData data)
     {
