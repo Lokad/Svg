@@ -18,6 +18,13 @@ plus work/memory denial, cancellation and retry checks. Fractional filter region
 can differ from unfiltered rectangles; those references describe the filtered input.
 [Developer tools](../tools/README.md) documents capture and research procedures.
 
+[Text paint box tests](Lokad.Svg.Tests/SvgTextPaintBoundsTests.cs) compare anchors,
+positions, spacing, rotation and font fragments with [native numeric references](Research/text-paint-bounds/capture.json)
+on each platform, and check metric reuse, denial, cancellation and scratch cleanup.
+[Image controls](Lokad.Svg.VisualTests/SvgTextPaintBoundsReferenceTests.cs) retain
+[separate platform references](Research/text-paint-bounds/image-capture.json) for
+linear, radial and pattern fills/strokes in object-box and user-space units.
+
 [Marker paint tests](Lokad.Svg.Tests/SvgMarkerPaintBindingTests.cs) cover forward
 resources, inherited fills, aliases, tile paint ownership, limits and cancellation.
 [Browser checks](Lokad.Svg.VisualTests/SvgMarkerPaintBindingReferenceTests.cs) use

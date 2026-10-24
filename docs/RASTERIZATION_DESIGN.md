@@ -165,6 +165,12 @@ steps loses half-grid middle anchoring. Zero shifts avoid a redundant glyph pass
 Windows uses matched TrueType/LCD coverage and preblend; Linux uses matched Latin
 light fitting and grayscale coverage. Exact references are platform-specific.
 
+Text paint boxes use canonical fitted ink and source fragment rectangles before
+paint-origin truncation. Windows measures nonzero raw LCD coverage at the contour
+perimeter; Linux rounds light-path bounds outward. Local budget-owned metric reuse
+avoids refitting repeated glyphs, and all paints in a run share its measured box.
+Fragment transforms and inverse font scaling preserve native float operations.
+
 The bounded interpreter keeps projection/freedom vectors and physical/hint grids
 separate. Windows font-unit conversion retains floating-point scale precision
 before signed rounding; other targets retain their fixed-point scales. Font-selected

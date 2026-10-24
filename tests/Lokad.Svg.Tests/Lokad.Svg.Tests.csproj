@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/text-paint-bounds/*.json" Link="TestData/text-paint-bounds/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/supplied-font-labels/fonts/NotoSans-Regular.ttf" Link="TestData/text-paint-bounds/sans.ttf" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/supplied-font-documents/fonts/NotoSansMono-Bold.ttf" Link="TestData/text-paint-bounds/mono.ttf" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/kerning-precedence/fonts/PlainKern.ttf" Link="TestData/kerning-precedence/PlainKern.ttf" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>

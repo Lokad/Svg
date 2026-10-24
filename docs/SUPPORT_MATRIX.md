@@ -597,6 +597,9 @@ Ordinary shaped text preserves fractional offsets when scaled and rounds paint
 origins after absolute span resets. Text paths and fitted-spacing text use their
 own character-metric rules. Anchors include relative advances and backtracking;
 see the [positioned-anchor regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.TextAnchors.cs).
+Text paint object boxes join fitted glyph ink with source fragment line rectangles,
+preserving fractional coordinates before paint-origin truncation. See the
+[native box regressions](../tests/Lokad.Svg.Tests/SvgTextPaintBoundsTests.cs).
 Fitting/coverage matches platform-specific numerical
 rules; the exact embedded family `Courier New` enables its Windows one-cell span
 policy, which a catalog alias to another program cannot enable. See

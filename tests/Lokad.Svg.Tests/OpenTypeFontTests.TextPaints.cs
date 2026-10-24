@@ -44,7 +44,7 @@ public sealed partial class OpenTypeFontTests
         using (SvgTextRun run = SvgTextRunBuilder.Create(style, "AAA", [], [], [], paint, metrics, snapshot, budget, new(long.MaxValue), CancellationToken.None))
         {
             Assert.Single(run.PaintFragments.ToArray());
-            SvgRectangle box = SvgTextLayoutBounds.Measure(run, [], SvgAffineTransform.Identity, new(long.MaxValue), CancellationToken.None);
+            SvgRectangle box = SvgTextLayoutBounds.Measure(run, [], SvgAffineTransform.Identity, budget, new(long.MaxValue), CancellationToken.None);
             Assert.Equal(12, box.X); Assert.Equal(13, box.Y);
             // FreeType quantizes size to 26.6 before advancing; DirectWrite keeps scalar metrics.
             Assert.Equal(OperatingSystem.IsWindows() ? 43.875 : 43.859375, box.Width);

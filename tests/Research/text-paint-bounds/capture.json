@@ -1,0 +1,74 @@
+{
+  "purpose": "Source object boxes include native fitted glyph ink and float fragment rectangles before paint-origin truncation.",
+  "chromeVersion": "153.0.8010.52",
+  "platforms": [
+    "win64",
+    "linux64"
+  ],
+  "countPerPlatform": 290,
+  "vectorSha256": "923ce3c9b6b453b1d4c245d07d6441116b80c4c3d62383fc1675e95e76fc2aac",
+  "recipe": "Load the exact committed programs through FontFace under sans/mono. Create an SVG text node with each case's attributes and content (white-space:pre); map serif to sans and monospace to mono, including spans. Read text.getBBox() after document.fonts.ready. The transform scale affects the font strike, while getBBox remains in the text's local coordinates. Both ChromeProcess captures have healthy startup, cleaned profiles, zero sandbox-access failures and zero service crashes.",
+  "fonts": [
+    {
+      "path": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+      "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
+    },
+    {
+      "path": "../supplied-font-documents/fonts/NotoSansMono-Bold.ttf",
+      "sha256": "beb857bd799a114de7d5d90cc75cc69f4b6ee8d401f4ab20697e6f9719a66dfc"
+    }
+  ],
+  "sourcePins": {
+    "chromium": "153.0.8010.52",
+    "skia": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+    "freetype": "9e9d3b73f31367dbb4261f93c727a277f6632c77",
+    "harfbuzz": "dfdc088c4d7c5d31dd5b13070b919b51f6c21ea8"
+  },
+  "scope": "Exact numeric references, without tolerance. These boxes do not qualify separate radial-shader, partial-opacity, glyph-fitting, or general mark-positioning behavior.",
+  "chromePins": {
+    "windows": {
+      "version": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "platform": "win64",
+      "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/win64/chrome-win64.zip",
+      "archiveSha256": "df4854428c509fcf2f790ac448bca3f994151bcff22008236fa7c4587294fbe1",
+      "executableRelativePath": "chrome-win64/chrome.exe",
+      "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3"
+    },
+    "linux": {
+      "version": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "platform": "linux64",
+      "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/linux64/chrome-linux64.zip",
+      "archiveSha256": "e66f66d4802a46d4a022667e668aa950e277cadbfbed4b3777915b47413a0ef9",
+      "executableRelativePath": "chrome-linux64/chrome",
+      "executableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3"
+    }
+  },
+  "launches": {
+    "windows": {
+      "schemaVersion": 1,
+      "executableName": "chrome.exe",
+      "elapsedMilliseconds": 711,
+      "debuggerReadyMilliseconds": 163,
+      "sandboxAccessFailures": 0,
+      "networkServiceCrashes": 0,
+      "stderrTruncated": false,
+      "profileCleaned": true,
+      "startupHealth": "healthy"
+    },
+    "linux": {
+      "schemaVersion": 1,
+      "executableName": "chrome",
+      "elapsedMilliseconds": 4180,
+      "debuggerReadyMilliseconds": 2300,
+      "sandboxAccessFailures": 0,
+      "networkServiceCrashes": 0,
+      "stderrTruncated": false,
+      "profileCleaned": true,
+      "startupHealth": "healthy"
+    }
+  }
+}

@@ -1,0 +1,440 @@
+{
+  "purpose": "Text object boxes feed linear/radial/pattern fills and strokes independently of paint fringes; user-space controls remain exact.",
+  "chromeVersion": "153.0.8010.52",
+  "background": "transparent",
+  "fontEvidence": "capture.json",
+  "license": "MIT",
+  "recipe": "Embed the exact Noto Sans Regular program using @font-face, replacing serif with ReviewFont. Decode each source as an image/svg+xml Blob and draw it onto a transparent canvas at ceil(32 * outputScale) pixels. Decode the canvas data URL as the reference PNG. Two independent healthy ChromeProcess launches per host give identical PNG bytes for every actual.",
+  "launches": {
+    "windows": {
+      "schemaVersion": 1,
+      "executableName": "chrome.exe",
+      "elapsedMilliseconds": 1972,
+      "debuggerReadyMilliseconds": 202,
+      "sandboxAccessFailures": 0,
+      "networkServiceCrashes": 0,
+      "stderrTruncated": false,
+      "profileCleaned": true,
+      "startupHealth": "healthy"
+    },
+    "linux": {
+      "schemaVersion": 1,
+      "executableName": "chrome",
+      "elapsedMilliseconds": 5820,
+      "debuggerReadyMilliseconds": 2676,
+      "sandboxAccessFailures": 0,
+      "networkServiceCrashes": 0,
+      "stderrTruncated": false,
+      "profileCleaned": true,
+      "startupHealth": "healthy"
+    }
+  },
+  "cases": [
+    {
+      "id": "linear-objectBoundingBox-fill-A-1",
+      "input": "linear-objectBoundingBox-fill-A-1.svg",
+      "sourceSha256": "276c1a5abc542a4aa950deda20826c4af2ccf662cd26ad105ca187d2e1d792de",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/feca2bb705aaed6a.png",
+          "sha256": "feca2bb705aaed6ac7999a22eeb4ed4127b42352b87b304ade1782e7080589c3"
+        },
+        "linux": {
+          "path": "references/f628ca4801a15c86.png",
+          "sha256": "f628ca4801a15c86d5f8ce4efd1c15b14a37570be1181bbcff256a0d66da49cc"
+        }
+      }
+    },
+    {
+      "id": "linear-objectBoundingBox-fill-AV-1.5",
+      "input": "linear-objectBoundingBox-fill-AV-1.5.svg",
+      "sourceSha256": "c088a9557f4fd440e83a06dee030462ee25c0ca5742d0da59307c847fad803cf",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/21a0c6d76140361f.png",
+          "sha256": "21a0c6d76140361f3b2a467045c294caae38353bbc3f1ad5f5c5813a315a9377"
+        },
+        "linux": {
+          "path": "references/65e7ff6a229a9e39.png",
+          "sha256": "65e7ff6a229a9e39f0fbfa52e6cf39d7276c176c08349ff747ce400f11765e93"
+        }
+      }
+    },
+    {
+      "id": "linear-objectBoundingBox-stroke-A-1",
+      "input": "linear-objectBoundingBox-stroke-A-1.svg",
+      "sourceSha256": "7d6e8c7738baf125d77998ffaad697599e851993898102f53b8efb2ab5859ade",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/06368b2a399127d9.png",
+          "sha256": "06368b2a399127d98f23d2712f114e4e9ed65c4bdb1c0a7fb4128f7096c9342f"
+        },
+        "linux": {
+          "path": "references/e0cc8f73e89d5cb8.png",
+          "sha256": "e0cc8f73e89d5cb8d1b63fcd4c26f8ca3155284cb212acd8ae9d493032926b2a"
+        }
+      }
+    },
+    {
+      "id": "linear-objectBoundingBox-stroke-AV-1.5",
+      "input": "linear-objectBoundingBox-stroke-AV-1.5.svg",
+      "sourceSha256": "1d102dd240e12ca3d05034a4e09150e0d577b4f78d51e7c45d5bf7624b129f5e",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/6a2123f0c9d22d9e.png",
+          "sha256": "6a2123f0c9d22d9efb49be0f9c66fe8f41a49be11ece45503bc7a2205c80bf81"
+        },
+        "linux": {
+          "path": "references/5a3362f81916c399.png",
+          "sha256": "5a3362f81916c39917074b815beeb3ffcdd83e1a3ddffbf14c9b31eefa129480"
+        }
+      }
+    },
+    {
+      "id": "linear-userSpaceOnUse-fill-A-1",
+      "input": "linear-userSpaceOnUse-fill-A-1.svg",
+      "sourceSha256": "772de5bb919cd00ea75dc10bd091e34034f485181259e4060048b4f4954cd342",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/8c9eb0d3f0bd22d9.png",
+          "sha256": "8c9eb0d3f0bd22d92471edc1fad759831ca8114b09dfcf6b5404678e9e707b75"
+        },
+        "linux": {
+          "path": "references/f628ca4801a15c86.png",
+          "sha256": "f628ca4801a15c86d5f8ce4efd1c15b14a37570be1181bbcff256a0d66da49cc"
+        }
+      }
+    },
+    {
+      "id": "linear-userSpaceOnUse-fill-AV-1.5",
+      "input": "linear-userSpaceOnUse-fill-AV-1.5.svg",
+      "sourceSha256": "173088d9b0871b5b6dc8e15f637574e8fc676af19038a1cea872d6a087b6b3d0",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/116af0f74b9606d1.png",
+          "sha256": "116af0f74b9606d17c14620056045c6c2271ba6fe44aafe36b79cdd00417fd1d"
+        },
+        "linux": {
+          "path": "references/23badcc0aaf6572f.png",
+          "sha256": "23badcc0aaf6572f480018bb6f273772e90de8129681757cfc7b979a877da4a5"
+        }
+      }
+    },
+    {
+      "id": "linear-userSpaceOnUse-stroke-A-1",
+      "input": "linear-userSpaceOnUse-stroke-A-1.svg",
+      "sourceSha256": "f29a5841aba4d12649f6fbe27ee6170eb9e6080392de9d03a16156a349086a9c",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/41c3f6171311b237.png",
+          "sha256": "41c3f6171311b23737dc3395eb6b45565a53e4620826f4f34d0471ce1c3cdf56"
+        },
+        "linux": {
+          "path": "references/e0cc8f73e89d5cb8.png",
+          "sha256": "e0cc8f73e89d5cb8d1b63fcd4c26f8ca3155284cb212acd8ae9d493032926b2a"
+        }
+      }
+    },
+    {
+      "id": "linear-userSpaceOnUse-stroke-AV-1.5",
+      "input": "linear-userSpaceOnUse-stroke-AV-1.5.svg",
+      "sourceSha256": "ad505b9e399dd63336b9c72970464773c8d13da16f3c080476d217faba68e110",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/7373251a739934f6.png",
+          "sha256": "7373251a739934f6d87e3ba790a7479c83d1ec396868a454042d406550d0b66f"
+        },
+        "linux": {
+          "path": "references/d425f3953f61318b.png",
+          "sha256": "d425f3953f61318b5115fbf68d39b8c3014d5dd168a531f02dbe2625a67800b1"
+        }
+      }
+    },
+    {
+      "id": "radial-objectBoundingBox-fill-A-1",
+      "input": "radial-objectBoundingBox-fill-A-1.svg",
+      "sourceSha256": "cb12fd790ea34b8511d1d4dfd700743d954b1802cefb811f1629183d7777e90e",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/1e895d5b2889bfb2.png",
+          "sha256": "1e895d5b2889bfb22b8bbe5009e1b1a6b014ae894931acbcf6119af485e3c93f"
+        },
+        "linux": {
+          "path": "references/213434bff15160e4.png",
+          "sha256": "213434bff15160e4ead57ddd9e330f1a0a482c2d0fcf1cabe13cbc7c61ae90f4"
+        }
+      }
+    },
+    {
+      "id": "radial-objectBoundingBox-fill-AV-1.5",
+      "input": "radial-objectBoundingBox-fill-AV-1.5.svg",
+      "sourceSha256": "c802c9be96208c65f5996b0b69705ff080ed3b2ed8d17ba8ff89d4723f498a5b",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/28b6d6f717d7aefa.png",
+          "sha256": "28b6d6f717d7aefa830790368d1a511c2b916e86b0c6ed91060b10b1c280dcc8"
+        },
+        "linux": {
+          "path": "references/7275bb76dd431138.png",
+          "sha256": "7275bb76dd4311386030c214ea682cb322eb7bf7e3e2e35e961cf24947bc7d37"
+        }
+      }
+    },
+    {
+      "id": "radial-objectBoundingBox-stroke-A-1",
+      "input": "radial-objectBoundingBox-stroke-A-1.svg",
+      "sourceSha256": "8e5746609ce8383d404e87eb43d38b2f4c6f3be9dfc9102b7861b704f74e5d24",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/c5652e00e46029b9.png",
+          "sha256": "c5652e00e46029b952f7a9f4b1b93e8a0008004937946702bdad7a250544826e"
+        },
+        "linux": {
+          "path": "references/12dfe364e92d4bb1.png",
+          "sha256": "12dfe364e92d4bb12a54fe5308e40b1c5317387b6b6d21c9270268326ce028d0"
+        }
+      }
+    },
+    {
+      "id": "radial-objectBoundingBox-stroke-AV-1.5",
+      "input": "radial-objectBoundingBox-stroke-AV-1.5.svg",
+      "sourceSha256": "bd006b0ca38e62936809397799a858370fc59e493de2257373b2194b41d83b03",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/af939f3ee7c429b4.png",
+          "sha256": "af939f3ee7c429b4345774d1f07873fcf44bf865350fb5b2849c6d78d0d106bd"
+        },
+        "linux": {
+          "path": "references/b7c5e937ddf81267.png",
+          "sha256": "b7c5e937ddf8126769adf842d1c45e34406204fb7fb168eeb75842d3d37921c7"
+        }
+      }
+    },
+    {
+      "id": "radial-userSpaceOnUse-fill-A-1",
+      "input": "radial-userSpaceOnUse-fill-A-1.svg",
+      "sourceSha256": "1b91d68775a9cec42af85b37dcc43ab1112df1797927af86e8a001c998e30c5b",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/0a98eb9cd65a9a6a.png",
+          "sha256": "0a98eb9cd65a9a6ad310fc5e74e761ab6242c1b0f1ecdd0680e03a25c281e5c1"
+        },
+        "linux": {
+          "path": "references/cf0e886dd934d16f.png",
+          "sha256": "cf0e886dd934d16f442910ee6b516061ff24c2e8ef1c6f56ca01a26fbee8e504"
+        }
+      }
+    },
+    {
+      "id": "radial-userSpaceOnUse-fill-AV-1.5",
+      "input": "radial-userSpaceOnUse-fill-AV-1.5.svg",
+      "sourceSha256": "5b699e7df332623bd46ae3713e5f236625a7bf58218e08b809ce51aa579b9a77",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/22d2d860f811eae0.png",
+          "sha256": "22d2d860f811eae0582f2c1d24988dd7bd4986aec3b39b2892eac8389a4334b9"
+        },
+        "linux": {
+          "path": "references/d25d8822a19dbab1.png",
+          "sha256": "d25d8822a19dbab1282ee029101f87edb6ae8cccafd0c2785f5c54d206034544"
+        }
+      }
+    },
+    {
+      "id": "radial-userSpaceOnUse-stroke-A-1",
+      "input": "radial-userSpaceOnUse-stroke-A-1.svg",
+      "sourceSha256": "891b4fb13ed237054fb424c7d0235f31312a1da10966ff0f40dfe1553c5e05d1",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/913be7537f427f5f.png",
+          "sha256": "913be7537f427f5fe313222fe69596924c90c5872e7567d1f04d11231c60df2f"
+        },
+        "linux": {
+          "path": "references/648789420e28a781.png",
+          "sha256": "648789420e28a7812fb9ca9d4b9005c14745df5bb8bdfd5c2a6b623e0b3e8c14"
+        }
+      }
+    },
+    {
+      "id": "radial-userSpaceOnUse-stroke-AV-1.5",
+      "input": "radial-userSpaceOnUse-stroke-AV-1.5.svg",
+      "sourceSha256": "9fea035d4b194d40a22c6ac6a4f4233f42294cba9e2bd1e28f62d3c75fc0e992",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/ee1b13bd9ba6ad3b.png",
+          "sha256": "ee1b13bd9ba6ad3b9137fb03517cd48246145772aa2b453542007ec5e202f502"
+        },
+        "linux": {
+          "path": "references/c752c3921acc84fb.png",
+          "sha256": "c752c3921acc84fb61d5d54103a32cf46efa5bf7cdba58cf3d85f56dcb81e6c7"
+        }
+      }
+    },
+    {
+      "id": "pattern-objectBoundingBox-fill-A-1",
+      "input": "pattern-objectBoundingBox-fill-A-1.svg",
+      "sourceSha256": "007867fbbe138c1ffd47982c422d0dee7884e5ba2e5540041d92c4f9a367ba16",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/0cb1a5c43244497a.png",
+          "sha256": "0cb1a5c43244497a8f27a10673f5df68950dd3e4ba2d8500c307a988aec7b4ff"
+        },
+        "linux": {
+          "path": "references/c871c15dc5aea79d.png",
+          "sha256": "c871c15dc5aea79d9c759a84129b92bb1ad904ac1b693110873ee46f2405152a"
+        }
+      }
+    },
+    {
+      "id": "pattern-objectBoundingBox-fill-AV-1.5",
+      "input": "pattern-objectBoundingBox-fill-AV-1.5.svg",
+      "sourceSha256": "ac24ea43938abaa7216a2a708d18833db3208718e1eb06f65c5f764b70c44477",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/0a022e3219b88642.png",
+          "sha256": "0a022e3219b88642f12d5473294518fec867a89eebc625fd7b211ca5ea0d760f"
+        },
+        "linux": {
+          "path": "references/41051f8ffaca0e0a.png",
+          "sha256": "41051f8ffaca0e0aeaccbea310a9af317fde2d3c080e4399b7fd198051e427df"
+        }
+      }
+    },
+    {
+      "id": "pattern-objectBoundingBox-stroke-A-1",
+      "input": "pattern-objectBoundingBox-stroke-A-1.svg",
+      "sourceSha256": "31f9b396c7ba0bac14e4550dc08917cf875c52ebe23e0f7d645833089d5b5210",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/bbcd500fb27b049b.png",
+          "sha256": "bbcd500fb27b049bd95ad2bda94edc1168bc3b97341797e5a7c2aae9bbc69cd0"
+        },
+        "linux": {
+          "path": "references/13c9f8a7fe7ad6c9.png",
+          "sha256": "13c9f8a7fe7ad6c99408602f65f96bc8fe9eaddd37ff6b4fe99f5347889f6869"
+        }
+      }
+    },
+    {
+      "id": "pattern-objectBoundingBox-stroke-AV-1.5",
+      "input": "pattern-objectBoundingBox-stroke-AV-1.5.svg",
+      "sourceSha256": "81e556c833e5e0ff10f5afd0d0543e940a0e8ad6393645c0c4153415dae451ef",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/cd405df35d6435b8.png",
+          "sha256": "cd405df35d6435b843d9f1ceca14ac3f216fcdce4cac26b695022bc0bcf49caa"
+        },
+        "linux": {
+          "path": "references/88d1ce726f058029.png",
+          "sha256": "88d1ce726f058029f62effa568a3d98de1e4441b4bd096c5e8f1a8738beb38c3"
+        }
+      }
+    },
+    {
+      "id": "pattern-userSpaceOnUse-fill-A-1",
+      "input": "pattern-userSpaceOnUse-fill-A-1.svg",
+      "sourceSha256": "8dfc2b05cb5becf8ed0a3e45371795a428e5832fdb1eda5815f3cc6f2b9e84e1",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/0118be22bdb455c4.png",
+          "sha256": "0118be22bdb455c4fe795952ba03f171b62a54139fa75c470c0f568d7178c06f"
+        },
+        "linux": {
+          "path": "references/89e799e1ebb69f76.png",
+          "sha256": "89e799e1ebb69f76e3269be8d81240d0ba95f307727b86e462655e18effae971"
+        }
+      }
+    },
+    {
+      "id": "pattern-userSpaceOnUse-fill-AV-1.5",
+      "input": "pattern-userSpaceOnUse-fill-AV-1.5.svg",
+      "sourceSha256": "3ed76a109b83fe326d8a5b6a65997a67c274941e33c6fe65a19664b544d32589",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/213106b2ee24c1bb.png",
+          "sha256": "213106b2ee24c1bbb7d35fc84780d80a6db1524961ebf08544a5a7e453351a19"
+        },
+        "linux": {
+          "path": "references/348b69d5e9280060.png",
+          "sha256": "348b69d5e92800602f44965504bfbaabd73d41915c90e385f9bbf27a9a568dd7"
+        }
+      }
+    },
+    {
+      "id": "pattern-userSpaceOnUse-stroke-A-1",
+      "input": "pattern-userSpaceOnUse-stroke-A-1.svg",
+      "sourceSha256": "f5e4122302ace21ea33fc9223fa4f3e7e53a8a43e6282ed7ea71fea11fab0744",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/202d293f185a1ca8.png",
+          "sha256": "202d293f185a1ca895dbb95fca959ad74094e1b0a42454c322c0af66471d9dde"
+        },
+        "linux": {
+          "path": "references/704888a359c06bc9.png",
+          "sha256": "704888a359c06bc99a7c3de61488c613996c14a3550978dbfa6508534dc9b070"
+        }
+      }
+    },
+    {
+      "id": "pattern-userSpaceOnUse-stroke-AV-1.5",
+      "input": "pattern-userSpaceOnUse-stroke-AV-1.5.svg",
+      "sourceSha256": "7645a55fef26bde19fa9358810d400aeb008fb119d1e964b41bdee47ab782779",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/2a49455c729f10af.png",
+          "sha256": "2a49455c729f10af3343b728c8e119b2e1f73cd60eabd522b4a800aabc2fc044"
+        },
+        "linux": {
+          "path": "references/f4f7edf06bc65d6e.png",
+          "sha256": "f4f7edf06bc65d6efc48bdb44bfc1f6c8c552f7aa40b572c42786d3e9120ace3"
+        }
+      }
+    }
+  ],
+  "chromePins": {
+    "windows": {
+      "version": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "platform": "win64",
+      "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/win64/chrome-win64.zip",
+      "archiveSha256": "df4854428c509fcf2f790ac448bca3f994151bcff22008236fa7c4587294fbe1",
+      "executableRelativePath": "chrome-win64/chrome.exe",
+      "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3"
+    },
+    "linux": {
+      "version": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "platform": "linux64",
+      "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/linux64/chrome-linux64.zip",
+      "archiveSha256": "e66f66d4802a46d4a022667e668aa950e277cadbfbed4b3777915b47413a0ef9",
+      "executableRelativePath": "chrome-linux64/chrome",
+      "executableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3"
+    }
+  }
+}

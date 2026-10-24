@@ -39,9 +39,10 @@ internal static class SvgTextGlyphPainter
         SvgLeafMaskBinding? pathClip, SvgColor fallback, SvgDocumentState state, int maximumCommands, RenderBudget budget, ParserWorkCounter work, SvgRecordedTransform? recording, CancellationToken token)
     {
         if (!pathPlacements.IsEmpty && pathPlacements.Length != run.Glyphs.Length) throw new ArgumentException("Path placements must cover every source glyph.", nameof(pathPlacements));
+        SvgRectangle? sourceBox = null;
         if (run.PaintFragments.IsEmpty)
         {
-            Fill(run, placement, pathPlacements, pathClip, fallback, 0, run.Glyphs.Length, state, budget, work, recording, token);
+            Fill(run, placement, pathPlacements, pathClip, fallback, 0, run.Glyphs.Length, state, budget, work, recording, ref sourceBox, token);
             return;
         }
         foreach (SvgTextPaintFragment fragment in run.PaintFragments)
@@ -50,7 +51,7 @@ internal static class SvgTextGlyphPainter
             SvgTextShader? shader = null;
             SvgTextGlyphPaint fragmentPaint = run.GetGlyphPaint(fragment.Start, fallback);
             if (fragmentPaint.HasStroke && fragmentPaint.Stroke is {} fragmentStroke && fragmentStroke.Style.Stroke is {} strokeValue && SvgLocalUrl.TryParseId(strokeValue, out _))
-                shader = Bind(strokeValue, run, placement, pathPlacements, state, work, token);
+                shader = Bind(strokeValue, run, placement, pathPlacements, state, work, ref sourceBox, token);
             // A direct run shares each paint pass. Path text paints independently
             // placed glyphs, so an adjacent glyph's stroke follows the prior fill.
             int start = fragment.Start;
@@ -64,7 +65,7 @@ internal static class SvgTextGlyphPainter
                 if (!pathPlacements.IsEmpty)
                     SvgTextDecorationRenderer.Emit(run, decoration, placement, pathPlacements, pathClip, state, fallback, false, maximumCommands, budget, work, token);
                 if (strokeFirst && paint.HasStroke) Stroke(run, placement, pathPlacements, pathClip, shader, fallback, start, end, state, budget, work, recording, token);
-                if (paint.HasFill) Fill(run, placement, pathPlacements, pathClip, fallback, start, end, state, budget, work, recording, token);
+                if (paint.HasFill) Fill(run, placement, pathPlacements, pathClip, fallback, start, end, state, budget, work, recording, ref sourceBox, token);
                 if (!strokeFirst && paint.HasStroke) Stroke(run, placement, pathPlacements, pathClip, shader, fallback, start, end, state, budget, work, recording, token);
                 if (!pathPlacements.IsEmpty)
                     SvgTextDecorationRenderer.Emit(run, decoration, placement, pathPlacements, pathClip, state, fallback, true, maximumCommands, budget, work, token);
@@ -73,7 +74,7 @@ internal static class SvgTextGlyphPainter
         }
 
         static void Fill(SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> paths, SvgLeafMaskBinding? pathClip,
-            SvgColor fallback, int start, int end, SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, SvgRecordedTransform? recording, CancellationToken token)
+            SvgColor fallback, int start, int end, SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, SvgRecordedTransform? recording, ref SvgRectangle? sourceBox, CancellationToken token)
         {
             OpenTypeGlyphContourStorage? decoded = null;
             string? fillServer = null;
@@ -100,7 +101,7 @@ internal static class SvgTextGlyphPainter
                     if (paint.FillServer != fillServer)
                     {
                         fillServer = paint.FillServer;
-                        shader = fillServer is null ? null : Bind(fillServer, run, placement, paths, state, work, token);
+                        shader = fillServer is null ? null : Bind(fillServer, run, placement, paths, state, work, ref sourceBox, token);
                     }
                     SvgPositionedGlyph position = placed.Position;
                     SvgAffineTransform map = placed.Map;
@@ -160,24 +161,24 @@ internal static class SvgTextGlyphPainter
         }
 
         static SvgTextShader Bind(string value, SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> paths,
-            SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+            SvgDocumentState state, ParserWorkCounter work, ref SvgRectangle? sourceBox, CancellationToken token)
         {
             if (!SvgLocalUrl.TryParseId(value, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local text paints are implemented.");
             if (state.Gradients.TryGetValue(id, out SvgLinearGradient linear))
             {
-                SvgRectangle box = linear.IsUserSpace || linear.IsEmpty ? default : SvgTextLayoutBounds.Measure(run, paths, placement, work, token);
+                SvgRectangle box = linear.IsUserSpace || linear.IsEmpty ? default : sourceBox ??= SvgTextLayoutBounds.Measure(run, paths, placement, state.Budget, work, token);
                 return state.Scene.RetainTextShader(SvgGradientSyntax.BindLinearSourceMap(linear, box, placement, state, work, token));
             }
             if (state.RadialGradients.TryGetValue(id, out SvgRadialGradient radial))
             {
-                SvgRectangle box = radial.IsUserSpace || radial.IsEmpty ? default : SvgTextLayoutBounds.Measure(run, paths, placement, work, token);
+                SvgRectangle box = radial.IsUserSpace || radial.IsEmpty ? default : sourceBox ??= SvgTextLayoutBounds.Measure(run, paths, placement, state.Budget, work, token);
                 return state.Scene.RetainTextShader(SvgGradientSyntax.BindRadialSourceMap(radial, box, placement, work, token));
             }
             if (state.Patterns.TryGetValue(id, out SvgPatternTile tile))
             {
                 state.OutputMap.ComposeChecked(placement);
                 tile = SvgPatternReferenceResolver.ForReplay(id, tile, state, work, token);
-                SvgRectangle box = tile.Coordinates is null ? default : SvgTextLayoutBounds.Measure(run, paths, placement, work, token);
+                SvgRectangle box = tile.Coordinates is null ? default : sourceBox ??= SvgTextLayoutBounds.Measure(run, paths, placement, state.Budget, work, token);
                 SvgGeometry content = SvgPatternSyntax.LowerPatternFillGeometry(tile, box, true, 255, null, placement, null);
                 if (content.Kind != SvgGeometryKind.PatternFill)
                     return state.Scene.RetainTextShader(new SvgLinearGradient(default, default, 0, 0, 1, 0, 0, 1, true, true, SvgGradientSpread.Pad, [], 1, 1, false));

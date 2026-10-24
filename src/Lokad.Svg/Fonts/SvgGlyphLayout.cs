@@ -243,7 +243,7 @@ internal static class SvgGlyphLayout
                 glyphs[glyphPosition++] = new SvgPositionedGlyph(glyphIndex, 0, originY, scaledAdvance);
                 mappedSourceOffset += sourceLength;
                 scalarIndex++;
-                if (fragments is not null && mappedSourceOffset >= sourceEnd)
+                if (fragments is not null && (mappedSourceOffset >= sourceEnd || deviceMetrics is { UsesTextLengthSpacing: true }))
                 {
                     fragments.Add(new(fragmentStart, glyphPosition, 0));
                     fragmentStart = glyphPosition;
@@ -267,6 +267,7 @@ internal static class SvgGlyphLayout
             int fragmentIndex = 0;
             int kerningRunEnd = 0, kerningBoundaryIndex = 0;
             double decorationOrigin = originX;
+            float sourceCssPosition = 0;
             for (int index = 0; index < positionedGlyphCount; index++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -318,6 +319,13 @@ internal static class SvgGlyphLayout
                     else pairAdjustment = OpenTypeFont.GetPairAdjustment(font.Bytes, glyph.GlyphIndex, glyphs[index + 1].GlyphIndex, font.Metrics, workCounter, cancellationToken);
                 }
                 double kerning = pairAdjustment * scale;
+                if (pairAdjustment != 0 && deviceMetrics is { UsesCharacterAdvances: false } scalarMetrics)
+                {
+                    float deviceSize = SvgGlyphDeviceMetrics.GetEffectiveFontSize(fontSize * scalarMetrics.Scale);
+                    long fontScale = (long)Math.Clamp((double)(deviceSize * 65536f), 0, int.MaxValue);
+                    long multiplier = (fontScale << 16) / font.UnitsPerEm;
+                    kerning = (double)(((Int128)pairAdjustment * multiplier + 32768) >> 16) / (65536 * scalarMetrics.Scale);
+                }
                 if (pairAdjustment != 0 && deviceMetrics is { UsesCharacterAdvances: true } pathMetrics)
                 {
                     ushort advance = OpenTypeFont.GetAdvanceWidth(font.Bytes, glyph.GlyphIndex, font.Metrics, workCounter, cancellationToken);
@@ -327,7 +335,15 @@ internal static class SvgGlyphLayout
                 double nextX = chunkEnds ? x + glyph.Advance : x + glyph.Advance + kerning + currentLetterSpacing;
                 if (fragments is not null && index + 1 == fragments[fragmentIndex].End)
                 {
-                    fragments[fragmentIndex] = fragments[fragmentIndex] with { Width = nextX - decorationOrigin };
+                    float sourceScale = (float)(deviceMetrics?.Scale ?? 1);
+                    double sourceWidth = nextX - decorationOrigin + (chunkEnds ? currentLetterSpacing : 0);
+                    fragments[fragmentIndex] = fragments[fragmentIndex] with
+                    {
+                        Width = nextX - decorationOrigin,
+                        SourceWidth = MathF.Ceiling((float)(sourceWidth * sourceScale) * 64) / 64,
+                        SourceOrigin = new(sourceCssPosition, 0)
+                    };
+                    sourceCssPosition += fragments[fragmentIndex].SourceWidth ?? 0;
                     fragmentIndex++;
                 }
                 if (!chunkEnds && (!sameFont || !sameWordSpacing || !sameDecoration || !samePaint) && deviceMetrics is { } fragmentMetrics)
@@ -348,6 +364,10 @@ internal static class SvgGlyphLayout
             sourceOffset = 0;
             int chunkStart = 0;
             double chunkShift = 0;
+            int positionedFragment = 0;
+            float sourceScaleFactor = (float)(deviceMetrics?.Scale ?? 1);
+            float sourceDx = 0, sourceDy = 0;
+            float sourceShiftX = (float)originX * sourceScaleFactor, sourceShiftY = (float)originY * sourceScaleFactor;
             while (chunkStart < positionedGlyphCount)
             {
                 int chunkEndSourceOffset = text.Length;
@@ -374,6 +394,7 @@ internal static class SvgGlyphLayout
                     }
                 }
                 double nominalOrigin = glyphs[chunkStart].X;
+                int firstFragment = positionedFragment;
                 double anchorOrigin = 0, left = double.PositiveInfinity, right = double.NegativeInfinity;
                 for (int index = chunkStart; index < chunkEnd; index++)
                 {
@@ -382,6 +403,7 @@ internal static class SvgGlyphLayout
                     double localX = glyphs[index].X - nominalOrigin;
                     double positionedX = deviceMetrics is SvgGlyphDeviceMetrics positionMetrics
                         ? nominalOrigin + chunkShift + positionMetrics.RoundOffset(localX) : glyphs[index].X;
+                    int sourceAdjustment = positionAdjustmentIndex;
                     ApplyPositionAdjustment(ref relativeX, ref relativeY, positionedX, originY, sourceOffset, positionAdjustments, ref positionAdjustmentIndex);
                     sourceOffset += sourceLengths is null ? char.IsSurrogatePair(text, sourceOffset) ? 2 : 1 : sourceLengths[index];
                     double adjustedX = positionedX + relativeX;
@@ -394,6 +416,30 @@ internal static class SvgGlyphLayout
                         paintedX = RoundPaintOrigin(nominalOrigin + chunkShift + relativeX, originMetrics.Scale) + originMetrics.RoundOffset(localX);
                     double adjustedY = glyphs[index].Y + relativeY;
                     if (!double.IsFinite(paintedX) || !double.IsFinite(adjustedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text anchor exceeds the admitted numeric range.");
+                    if (fragments is not null && positionedFragment < fragments.Count && fragments[positionedFragment].Start == index)
+                    {
+                        SvgDevicePoint css = fragments[positionedFragment].SourceOrigin ?? default;
+                        if (sourceAdjustment != positionAdjustmentIndex)
+                        {
+                            SvgTextPositionAdjustment adjustment = positionAdjustments[sourceAdjustment];
+                            if (adjustment.X is double sourceX)
+                            {
+                                sourceDx = 0;
+                                sourceShiftX = (float)sourceX * sourceScaleFactor - (float)css.X;
+                            }
+                            if (adjustment.Y is double sourceY)
+                            {
+                                sourceDy = 0;
+                                sourceShiftY = (float)sourceY * sourceScaleFactor;
+                            }
+                            sourceDx += (float)adjustment.Dx;
+                            sourceDy += (float)adjustment.Dy;
+                        }
+                        fragments[positionedFragment] = fragments[positionedFragment] with
+                        { SourceOrigin = new((float)css.X + sourceDx * sourceScaleFactor + sourceShiftX,
+                            sourceDy * sourceScaleFactor + sourceShiftY) };
+                        positionedFragment++;
+                    }
                     glyphs[index] = glyphs[index] with { X = paintedX, Y = adjustedY };
                 }
                 double width = right - left;
@@ -405,6 +451,29 @@ internal static class SvgGlyphLayout
                     SvgTextAnchor.End => -chunkWidth,
                     _ => throw new ArgumentOutOfRangeException(nameof(anchor))
                 });
+                float sourceAnchorOffset = 0;
+                if (fragments is not null && firstFragment < positionedFragment)
+                {
+                    float sourceMinimum = float.PositiveInfinity, sourceMaximum = float.NegativeInfinity;
+                    float sourceScale = (float)(deviceMetrics?.Scale ?? 1);
+                    for (int index = firstFragment; index < positionedFragment; index++)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested(); workCounter?.Consume(cancellationToken);
+                        SvgTextPaintFragment fragment = fragments[index];
+                        if (fragment.SourceOrigin is not {} source) continue;
+                        float sourceWidth = fragment.SourceWidth ?? MathF.Ceiling((float)(fragment.Width * sourceScale) * 64) / 64;
+                        sourceMinimum = MathF.Min(sourceMinimum, (float)source.X);
+                        sourceMaximum = MathF.Max(sourceMaximum, (float)source.X + sourceWidth);
+                    }
+                    if (fragments[firstFragment].SourceOrigin is {} sourceOrigin)
+                        sourceAnchorOffset = (float)sourceOrigin.X - (anchor switch
+                        {
+                            SvgTextAnchor.Start => sourceMinimum,
+                            SvgTextAnchor.Middle => (sourceMinimum + sourceMaximum) / 2,
+                            SvgTextAnchor.End => sourceMaximum,
+                            _ => throw new ArgumentOutOfRangeException(nameof(anchor))
+                        });
+                }
                 if (deviceMetrics is { UsesCharacterAdvances: false } anchorMetrics) anchorOffset = RoundPaintOrigin(anchorOffset, anchorMetrics.Scale);
                 if (!double.IsFinite(anchorOffset)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text anchor exceeds the admitted numeric range.");
                 if (anchorOffset != 0)
@@ -414,6 +483,14 @@ internal static class SvgGlyphLayout
                         double anchoredX = glyphs[index].X + anchorOffset;
                         if (!double.IsFinite(anchoredX)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text anchor exceeds the admitted numeric range.");
                         glyphs[index] = glyphs[index] with { X = anchoredX };
+                    }
+                if (fragments is not null && sourceAnchorOffset != 0)
+                    for (int index = firstFragment; index < positionedFragment; index++)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested(); workCounter?.Consume(cancellationToken);
+                        SvgTextPaintFragment fragment = fragments[index];
+                        if (fragment.SourceOrigin is {} source)
+                            fragments[index] = fragment with { SourceOrigin = source with { X = (float)source.X + sourceAnchorOffset } };
                     }
                 chunkStart = chunkEnd;
                 chunkShift += chunkWidth - width;

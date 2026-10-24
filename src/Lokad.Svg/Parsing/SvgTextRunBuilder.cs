@@ -129,6 +129,17 @@ internal static class SvgTextRunBuilder
                     if (!double.IsFinite(y)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text baseline exceeds the numeric range.");
                     baselineGlyphs[index] = baselineGlyphs[index] with { Y = y };
                 }
+                Span<SvgTextPaintFragment> baselineFragments = storage.MutablePaintFragments;
+                for (int index = 0; index < baselineFragments.Length; index++)
+                {
+                    if (work is null) token.ThrowIfCancellationRequested(); else work.Consume(token);
+                    SvgTextPaintFragment fragment = baselineFragments[index];
+                    if (fragment.SourceOrigin is not {} origin) continue;
+                    SvgGlyphFontStyle face = storage.GlyphFonts.IsEmpty ? new(font, style.FontSize) : storage.GlyphFonts[fragment.Start];
+                    float baselineScale = (float)(metrics?.Scale ?? 1);
+                    baselineFragments[index] = fragment with { SourceOrigin = origin with
+                    { Y = (float)origin.Y + (float)GetBaselineShift(face, style.Baseline, metrics, work, token) * baselineScale } };
+                }
             }
             if (style.TextLength is not double desired || desired == 0 || storage.Glyphs.Length == 0
                 || style.LengthAdjust == SvgTextLengthAdjust.Spacing && storage.Glyphs.Length == 1) return 1;
@@ -140,11 +151,23 @@ internal static class SvgTextRunBuilder
             double spacing = style.LengthAdjust == SvgTextLengthAdjust.Spacing && glyphs.Length > 1 ? (desired - natural) / (glyphs.Length - 1) : 0;
             double anchorShift = style.Anchor switch { SvgTextAnchor.Middle => (natural - desired) / 2, SvgTextAnchor.End => natural - desired, _ => 0 };
             Span<SvgTextPaintFragment> fragments = storage.MutablePaintFragments;
+            float sourceScale = (float)(metrics?.Scale ?? 1);
+            float sourceSpacing = style.LengthAdjust == SvgTextLengthAdjust.Spacing && glyphs.Length > 1
+                ? ((float)desired * sourceScale - (float)natural * sourceScale) / (glyphs.Length - 1) : 0;
+            float sourceFirst = fragments.IsEmpty ? (float)first * sourceScale : (float)(fragments[0].SourceOrigin?.X ?? first * sourceScale);
             for (int index = 0; index < fragments.Length; index++)
             {
                 if (work is null) token.ThrowIfCancellationRequested(); else work.Consume(token);
                 SvgTextPaintFragment fragment = fragments[index];
-                fragments[index] = fragment with { Width = fragment.Width * scale + spacing * (fragment.End - fragment.Start - 1) };
+                fragments[index] = fragment with
+                {
+                    Width = fragment.Width * scale + spacing * (fragment.End - fragment.Start - 1),
+                    SourceWidth = fragment.SourceWidth is float sourceWidth
+                        ? sourceWidth * (float)scale + sourceSpacing * (fragment.End - fragment.Start - 1) : null,
+                    SourceOrigin = fragment.SourceOrigin is {} origin
+                        ? origin with { X = sourceFirst + ((float)origin.X - sourceFirst) * (float)scale
+                            + fragment.Start * sourceSpacing + (float)anchorShift * sourceScale } : null
+                };
             }
             for (int index = 0; index < glyphs.Length; index++)
             {
