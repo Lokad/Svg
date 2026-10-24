@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve mask paint clips through fractional instance placement and move
+  explicit regions with uniform masks, keeping native curved-edge coverage.
 - Paint markers on unstroked line instances and resource hosts, resolve forward
   marker definitions, and retain solid marker corners for later affine instance maps.
 - Resolve gradient and pattern paints declared after marker content and its host,

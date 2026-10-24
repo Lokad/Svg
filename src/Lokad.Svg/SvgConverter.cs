@@ -1902,14 +1902,19 @@ public static partial class SvgConverter
                             if (maskClipSetupWork > options.Limits.MaximumWorkUnits - workUnits)
                                 throw new SvgException(SvgErrorCode.LimitExceeded, "Mask paint-clip setup exceeds the configured limit.");
                             workUnits += maskClipSetupWork;
-                            // Native mask contents use an enclosing source rectangle as
-                            // their paint clip. An AA consumer forces additive runs even
-                            // when the shape is wholly contained; the mask paints separately.
+                            // Enclose in source space before placing the clip. Rounding a
+                            // fractional scene pose would change the source's AA consumer.
+                            bool retainedPaintRegion = command.MaskContentIndex >= 0 && root.SceneStorage is {} clipStorage
+                                && (uint)command.MaskContentIndex < (uint)clipStorage.MaskContents.Length
+                                && clipStorage.MaskContents[command.MaskContentIndex].SourcePaintRegion is not null;
+                            if (retainedPaintRegion && root.SceneStorage is {} paintStorage
+                                && paintStorage.MaskContents[command.MaskContentIndex].SourcePaintRegion is {} sourceRegion)
+                                paintRegion = sourcePlacement.IsAxisAligned ? sourcePlacement.Apply(sourceRegion) : sourceRegion;
                             SvgAffineTransform outputMap = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
                             SvgDevicePoint first = SvgAuthoredPath.MapPoint(outputMap,
-                                new(MathF.Floor((float)paintRegion.X), MathF.Floor((float)paintRegion.Y)), new(0, 0));
+                                new(retainedPaintRegion ? (float)paintRegion.X : MathF.Floor((float)paintRegion.X), retainedPaintRegion ? (float)paintRegion.Y : MathF.Floor((float)paintRegion.Y)), new(0, 0));
                             SvgDevicePoint last = SvgAuthoredPath.MapPoint(outputMap,
-                                new(MathF.Ceiling((float)(paintRegion.X + paintRegion.Width)), MathF.Ceiling((float)(paintRegion.Y + paintRegion.Height))), new(0, 0));
+                                new(retainedPaintRegion ? (float)paintRegion.Right : MathF.Ceiling((float)paintRegion.Right), retainedPaintRegion ? (float)paintRegion.Bottom : MathF.Ceiling((float)paintRegion.Bottom)), new(0, 0));
                             // An affine mask target keeps the native AA paint consumer even under a fully white mask.
                             maskClipAntialiased = affineMaskTarget || SvgAnalyticRectangleClip.Classify(first.X, first.Y, last.X, last.Y, previousLayer, SvgClipAntialiasing.All) == SvgAnalyticPaintClip.Antialiased;
                         }
@@ -1928,6 +1933,12 @@ public static partial class SvgConverter
                         bool maskIsAlpha = false;
                         bool variableLuminance = false;
                         bool hasMaskContent = command.MaskContentIndex >= 0;
+                        byte constantMask = 255;
+                        if (hasMaskContent && root.SceneStorage is {} constantStorage
+                            && (uint)command.MaskContentIndex < (uint)constantStorage.MaskContents.Length
+                            && constantStorage.MaskContents[command.MaskContentIndex].ConstantAlpha is byte constant)
+                        { constantMask = constant; hasMaskContent = false; }
+
                         RenderBudget.BudgetReservation? maskReservation = null;
                         if (hasMaskContent)
                         {
@@ -1951,12 +1962,13 @@ public static partial class SvgConverter
                             }
                         }
                         using RenderBudget.BudgetReservation? maskLease = maskReservation;
+                        byte groupMaskAlpha = MultiplyAlpha(command.MaskAlpha, constantMask);
                         for (int pixel = 0; pixel < pixelCount; pixel++)
                         {
                             cancellationToken.ThrowIfCancellationRequested();
                             int offset = pixel * 4;
                             byte extra = command.Opacity;
-                            byte maskAlpha = command.MaskAlpha;
+                            byte maskAlpha = groupMaskAlpha;
                             if (hasMaskContent)
                             {
                                 byte contentAlpha = maskSurface[offset + 3];

@@ -15,6 +15,10 @@ internal readonly record struct SvgMaskContent(SvgGeometry[] Geometries, byte Lu
 {
     /// <summary>Marks a resource whose own display removes the binding, independently of empty mask content.</summary>
     internal bool IsDisabled { get; init; }
+    /// <summary>Retains the source-space enclosure after placement, independently of the mask's allocation region.</summary>
+    internal SvgClipBox? SourcePaintRegion { get; init; }
+    /// <summary>Supplies uniform coverage without constructing a spatial mask surface.</summary>
+    internal byte? ConstantAlpha { get; init; }
 
     /// <summary>Borrows a parser source slot; materialized scene content never retains this staging reference.</summary>
     internal SvgUniformMaskSource? UniformSource { get; init; }

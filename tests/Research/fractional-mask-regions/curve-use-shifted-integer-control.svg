@@ -1,0 +1,1 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><path d='M4 26Q16 -4 28 26Z' fill='red' id='q'/></defs><use href='#q' mask='url(#m)' transform='translate(4 3)'/><defs><mask id='m' maskUnits='userSpaceOnUse' mask-type='alpha' x='8' y='8' width='16' height='16'><rect x='-64' y='-64' width='128' height='128' fill='white' fill-opacity='.25'/></mask></defs></svg>

@@ -29,6 +29,11 @@ forward markers, affine replay and owner cleanup. The
 preparation and suppression; [browser evidence](Research/line-marker-instances/capture.json)
 retains source orders, local fragment spellings and resource placements.
 
+[Fractional mask tests](Lokad.Svg.Tests/SvgFractionalMaskRegionTests.cs) check source
+paint clips, placed uniform regions and raster ownership against native RGBA hashes.
+[Captured cases](Research/fractional-mask-regions/capture.json) retain unequal
+masked controls as separate browser images.
+
 [Instance paint order tests](Lokad.Svg.Tests/OpenTypeFontTests.InstancePaintOrder.cs)
 cover source/use/resource ordering, inherited paints, replay, limits and ownership.
 The [browser reference tests](Lokad.Svg.VisualTests/SvgInstancePaintOrderReferenceTests.cs)

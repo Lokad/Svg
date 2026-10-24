@@ -1086,12 +1086,15 @@ internal static class SvgReferenceResolver
         SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
         operation.Value = mask.Value; operation.Resolved = true;
         operation.ContentIndex = contentIndex;
-        operation.Region = nativeTarget is null && contentIndex >= 0 && maskReference is not null && state.MaskRegions.TryGetValue(SvgMaskSyntax.ParseMaskId(maskReference), out _) ? placement.Apply(region) : region;
-        if (contentIndex >= 0 && maskId is not null)
+        operation.Region = nativeTarget is null && maskReference is not null && state.MaskRegions.TryGetValue(SvgMaskSyntax.ParseMaskId(maskReference), out _) ? placement.Apply(region) : region;
+        if (maskId is not null && operation.Region is {} regionBox
+            && SvgMaskTarget.SourcePaintRegion(maskId, placement, fallback, regionBox, state, workCounter, cancellationToken) is {} paintRegion)
+            operation.ContentIndex = state.Scene.BindMaskPaintRegion(operation.ContentIndex, paintRegion);
+        if (maskId is not null)
         {
             SvgRectangle localBounds = nativeTarget is {} retainedTarget ? retainedTarget.ObjectBounds
                 : placement.TryInvert(out SvgAffineTransform inverse) ? inverse.Apply(fallback) : default;
-            operation.NativeMask = new(maskId, placement, new(localBounds.X, localBounds.Y, localBounds.Width, localBounds.Height));
+            operation.NativeMask = new(maskId, placement, new(localBounds.X, localBounds.Y, localBounds.Width, localBounds.Height)) { ConstantAlpha = contentIndex < 0 ? mask : null };
         }
         using BudgetedParserDictionary<SvgLeafMaskBinding, SvgLeafMaskBindingReference> bindings = new(state.Budget, SvgMemoryCategory.Parser, 96);
         SvgLeafMaskBinding? noInner = null;

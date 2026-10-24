@@ -8,7 +8,11 @@ internal readonly record struct SvgLeafMaskBindingReference(SvgLeafMaskBinding B
 internal readonly record struct SvgFilterClipScope(int Depth, SvgLeafMaskBinding Binding);
 internal readonly record struct SvgNativeClipReference(string Id, SvgAffineTransform Map);
 /// <summary>Borrows a mask id and pre-placement target bounds until an instance registers content in its final scene.</summary>
-internal readonly record struct SvgRetainedMask(string Id, SvgAffineTransform Map, SvgClipBox ObjectBounds);
+internal readonly record struct SvgRetainedMask(string Id, SvgAffineTransform Map, SvgClipBox ObjectBounds)
+{
+    /// <summary>Retains scalar coverage while later instances recompute their own paint clip.</summary>
+    internal byte? ConstantAlpha { get; init; }
+}
 
 /// <summary>Stores one parser-owned mask value/region, or a lazily mapped instance of an earlier operation.</summary>
 /// <remarks>Shared within one conversion; mutation is single-threaded. Bindings borrow operations.
@@ -147,8 +151,8 @@ internal static class SvgLeafMaskComposition
     /// <summary>Reserves and registers an operation before returning a borrowed reference; registry teardown releases partial work.</summary>
     internal static SvgLeafMaskOperation NewOperation(SvgDocumentState state, SvgLeafMaskOperation? source, SvgAffineTransform map)
     {
-        // Aggregate allowance includes retained resource/target metadata.
-        RenderBudget.BudgetReservation reservation = state.Budget.Reserve(384, SvgMemoryCategory.Parser);
+        // Aggregate allowance includes retained resource/target metadata and its scalar coverage.
+        RenderBudget.BudgetReservation reservation = state.Budget.Reserve(392, SvgMemoryCategory.Parser);
         try
         {
             SvgLeafMaskOperation operation = new(reservation, source, map);
@@ -380,22 +384,37 @@ internal static class SvgLeafMaskComposition
                 }
                 if (operation.NativeMask is {} nativeMask && operation.ContentIndex < 0)
                 {
-                    if (!state.MaskContents.TryGetValue(nativeMask.Id, out SvgMaskContent content))
-                        throw new InvalidOperationException("Retained mask content is missing.");
-                    SvgClipBox box = nativeMask.ObjectBounds;
-                    SvgRectangle bounds = new(box.X, box.Y, box.Width, box.Height, default, false, null);
-                    SvgMaskTarget target = SvgMaskTarget.Create(nativeMask.Id, nativeMask.Map, bounds, state);
-                    SvgSceneBuilder? previous = state.DefinitionReplayScene;
-                    state.DefinitionReplayScene = scene;
-                    try
+                    if (nativeMask.ConstantAlpha is byte constant && nativeMask.Map.IsAxisAligned)
                     {
-                        SvgMaskContent placed = content.UniformSource is not null
-                            ? SvgMaskContentReplay.ResolveUniformSource(nativeMask.Id, nativeMask.Map, state, work, token)
-                            : SvgMaskContentReplay.PlaceForTarget(nativeMask.Id, content, nativeMask.Map, bounds, target, state, work, token);
-                        operation.ContentIndex = scene.AddMaskContent(placed);
-                        operation.Region = target.SceneBounds(work, token);
+                        SvgClipBox localBox = nativeMask.ObjectBounds;
+                        SvgRectangle local = new(localBox.X, localBox.Y, localBox.Width, localBox.Height, default, false, null);
+                        SvgMaskTarget scalarTarget = SvgMaskTarget.Create(nativeMask.Id, nativeMask.Map, local, state);
+                        SvgClipBox region = operation.Region ?? scalarTarget.SceneBounds(work, token);
+                        operation.Region = region;
+                        operation.Value = constant;
+                        if (SvgMaskTarget.SourcePaintRegion(nativeMask.Id, nativeMask.Map, nativeMask.Map.Apply(local), region, state, work, token) is {} paintRegion)
+                            operation.ContentIndex = scene.BindMaskPaintRegion(-1, paintRegion);
                     }
-                    finally { state.DefinitionReplayScene = previous; }
+                    else
+                    {
+                        operation.Value = 255;
+                        if (!state.MaskContents.TryGetValue(nativeMask.Id, out SvgMaskContent content))
+                            throw new InvalidOperationException("Retained mask content is missing.");
+                        SvgClipBox box = nativeMask.ObjectBounds;
+                        SvgRectangle bounds = new(box.X, box.Y, box.Width, box.Height, default, false, null);
+                        SvgMaskTarget target = SvgMaskTarget.Create(nativeMask.Id, nativeMask.Map, bounds, state);
+                        SvgSceneBuilder? previous = state.DefinitionReplayScene;
+                        state.DefinitionReplayScene = scene;
+                        try
+                        {
+                            SvgMaskContent placed = content.UniformSource is not null
+                                ? SvgMaskContentReplay.ResolveUniformSource(nativeMask.Id, nativeMask.Map, state, work, token)
+                                : SvgMaskContentReplay.PlaceForTarget(nativeMask.Id, content, nativeMask.Map, bounds, target, state, work, token);
+                            operation.ContentIndex = scene.AddMaskContent(placed);
+                            operation.Region = target.SceneBounds(work, token);
+                        }
+                        finally { state.DefinitionReplayScene = previous; }
+                    }
                 }
                 if (operation.PreservesIsolation || operation.Value != 255 || operation.Region is not null || operation.ContentIndex >= 0 || operation.SourceOpacity.Value != 1) desired.Add(new(operation));
             }

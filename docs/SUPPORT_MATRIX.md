@@ -274,6 +274,10 @@ geometry bounds to the masked ancestor. Strokes and visible descendants remain
 live; see the [group-source regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.EmptyGroupSources.cs).
 Object-box mask regions require bare-number fractions; user-space regions also
 accept viewport percentages.
+Explicit regions follow uniform masks through instance placement. Source paint
+clips retain fractional poses after enclosure; see the
+[mask-region tests](../tests/Lokad.Svg.Tests/SvgFractionalMaskRegionTests.cs) and
+[browser evidence](../tests/Research/fractional-mask-regions/capture.json).
 For axis-aligned shape targets, spatial mask content must cover an explicit
 object-box region. A smaller content box reports `UnsupportedFeature`.
 

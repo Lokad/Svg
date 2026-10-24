@@ -1,0 +1,212 @@
+{
+  "purpose": "Source-space mask paint clips and placed uniform-mask regions; native unequal masked controls are preserved. Each actual captured in three fresh processes.",
+  "platform": "win64",
+  "chromePin": {
+    "version": "153.0.8010.52",
+    "chromiumRevision": "1681091",
+    "platform": "win64",
+    "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/win64/chrome-win64.zip",
+    "archiveSha256": "df4854428c509fcf2f790ac448bca3f994151bcff22008236fa7c4587294fbe1",
+    "executableRelativePath": "chrome-win64/chrome.exe",
+    "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+    "captureRecipeRevision": "3"
+  },
+  "width": 32,
+  "height": 32,
+  "background": "transparent",
+  "license": "MIT",
+  "cases": [
+    {
+      "id": "circle-group-alpha-quarter-candidate",
+      "input": "circle-group-alpha-quarter-candidate.svg",
+      "reference": "references/c0ac17fa66934fd9.png",
+      "sourceSha256": "5b13ddfef5eda3f5da4420e8feb91b260f732f66ba8eacbd9bfba74b5c3ed20f",
+      "referenceSha256": "c0ac17fa66934fd9b8b1f7a76918fec59a7e434950c020b671ca1ae5d3eb5a9d",
+      "captureSha256": [
+        "c0ac17fa66934fd9b8b1f7a76918fec59a7e434950c020b671ca1ae5d3eb5a9d",
+        "c0ac17fa66934fd9b8b1f7a76918fec59a7e434950c020b671ca1ae5d3eb5a9d",
+        "c0ac17fa66934fd9b8b1f7a76918fec59a7e434950c020b671ca1ae5d3eb5a9d"
+      ]
+    },
+    {
+      "id": "circle-group-alpha-quarter-control",
+      "input": "circle-group-alpha-quarter-control.svg",
+      "reference": "references/27a3550021aecdd5.png",
+      "sourceSha256": "2f47f3300bb1b1c3a1ecc8095bef18bfb7a817892a21c55cf91a4855cc1ae1e7",
+      "referenceSha256": "27a3550021aecdd5e60cca823a87174f5e0828ae2d0e6282b7ec0eaf80fa4d58",
+      "captureSha256": [
+        "27a3550021aecdd5e60cca823a87174f5e0828ae2d0e6282b7ec0eaf80fa4d58",
+        "27a3550021aecdd5e60cca823a87174f5e0828ae2d0e6282b7ec0eaf80fa4d58",
+        "27a3550021aecdd5e60cca823a87174f5e0828ae2d0e6282b7ec0eaf80fa4d58"
+      ]
+    },
+    {
+      "id": "curve-use-alpha-quarter-candidate",
+      "input": "curve-use-alpha-quarter-candidate.svg",
+      "reference": "references/bbeb75d76e184411.png",
+      "sourceSha256": "c1b6b26167af492262e93fa7cb9dcf2bd9324a4d8aa180eb03bc75db35de24b5",
+      "referenceSha256": "bbeb75d76e18441173796690627f4b477ca88f7b40078e8f6e05bf5a97306562",
+      "captureSha256": [
+        "bbeb75d76e18441173796690627f4b477ca88f7b40078e8f6e05bf5a97306562",
+        "bbeb75d76e18441173796690627f4b477ca88f7b40078e8f6e05bf5a97306562",
+        "bbeb75d76e18441173796690627f4b477ca88f7b40078e8f6e05bf5a97306562"
+      ]
+    },
+    {
+      "id": "curve-use-alpha-quarter-control",
+      "input": "curve-use-alpha-quarter-control.svg",
+      "reference": "references/eaf9c290b067d3fc.png",
+      "sourceSha256": "694f9a74dee5fa3ddedb1458da55afcbe1f69f01e4c0fd4beb0484ac0535bdd8",
+      "referenceSha256": "eaf9c290b067d3fcf2b90bf65379006f37f4b247afb753c5f5b3cbfd8e997b81",
+      "captureSha256": [
+        "eaf9c290b067d3fcf2b90bf65379006f37f4b247afb753c5f5b3cbfd8e997b81",
+        "eaf9c290b067d3fcf2b90bf65379006f37f4b247afb753c5f5b3cbfd8e997b81",
+        "eaf9c290b067d3fcf2b90bf65379006f37f4b247afb753c5f5b3cbfd8e997b81"
+      ]
+    },
+    {
+      "id": "curve-group-luminance-half-candidate",
+      "input": "curve-group-luminance-half-candidate.svg",
+      "reference": "references/fa08829f4c42f213.png",
+      "sourceSha256": "d005643ceb859387fbfdcbe6a052a724e9ad1ec8dbe862b163b4a58276a50a0f",
+      "referenceSha256": "fa08829f4c42f2136ed5b97b34ccdc208c0b2326a841019a17c43a1931ed3b4d",
+      "captureSha256": [
+        "fa08829f4c42f2136ed5b97b34ccdc208c0b2326a841019a17c43a1931ed3b4d",
+        "fa08829f4c42f2136ed5b97b34ccdc208c0b2326a841019a17c43a1931ed3b4d",
+        "fa08829f4c42f2136ed5b97b34ccdc208c0b2326a841019a17c43a1931ed3b4d"
+      ]
+    },
+    {
+      "id": "curve-group-luminance-half-control",
+      "input": "curve-group-luminance-half-control.svg",
+      "reference": "references/5d087d8eb94628df.png",
+      "sourceSha256": "af61af83566bc7d8bccdd0fa9f9591aa82a1822829fe82ab02487692d1121d6c",
+      "referenceSha256": "5d087d8eb94628df308448a19966755156e0e930ebaa3408d0723901fa9cf9df",
+      "captureSha256": [
+        "5d087d8eb94628df308448a19966755156e0e930ebaa3408d0723901fa9cf9df",
+        "5d087d8eb94628df308448a19966755156e0e930ebaa3408d0723901fa9cf9df",
+        "5d087d8eb94628df308448a19966755156e0e930ebaa3408d0723901fa9cf9df"
+      ]
+    },
+    {
+      "id": "circle-group-alpha-full-candidate",
+      "input": "circle-group-alpha-full-candidate.svg",
+      "reference": "references/ca2b590e39dcea80.png",
+      "sourceSha256": "d84643b26ea43a27fa02fb5b8f1c18153195d044d3e58321b487e9b612297239",
+      "referenceSha256": "ca2b590e39dcea8027adce91b67366713e959a44aeda83b87d33473e2d603de9",
+      "captureSha256": [
+        "ca2b590e39dcea8027adce91b67366713e959a44aeda83b87d33473e2d603de9",
+        "ca2b590e39dcea8027adce91b67366713e959a44aeda83b87d33473e2d603de9",
+        "ca2b590e39dcea8027adce91b67366713e959a44aeda83b87d33473e2d603de9"
+      ]
+    },
+    {
+      "id": "circle-group-alpha-full-control",
+      "input": "circle-group-alpha-full-control.svg",
+      "reference": "references/245b442592b03bff.png",
+      "sourceSha256": "3ac99a414f5c3e3f2adf8c849e696cb7c01ddd760e38dcd85766b7ced7923997",
+      "referenceSha256": "245b442592b03bff31ac3a0341bf3ee2e772cdf6a459f5f8572d963a4bd59eec",
+      "captureSha256": [
+        "245b442592b03bff31ac3a0341bf3ee2e772cdf6a459f5f8572d963a4bd59eec",
+        "245b442592b03bff31ac3a0341bf3ee2e772cdf6a459f5f8572d963a4bd59eec",
+        "245b442592b03bff31ac3a0341bf3ee2e772cdf6a459f5f8572d963a4bd59eec"
+      ]
+    },
+    {
+      "id": "rect-use-tight-fractional-candidate",
+      "input": "rect-use-tight-fractional-candidate.svg",
+      "reference": "references/c92e4f2b1398f86f.png",
+      "sourceSha256": "2da7a999da2f1c310d010269fd35281d05c44d302b458d129cb5defaabca20d1",
+      "referenceSha256": "c92e4f2b1398f86f4db13ac9a3e63b0716cb3fb9172543d13a9a1d8c3f5821a7",
+      "captureSha256": [
+        "c92e4f2b1398f86f4db13ac9a3e63b0716cb3fb9172543d13a9a1d8c3f5821a7",
+        "c92e4f2b1398f86f4db13ac9a3e63b0716cb3fb9172543d13a9a1d8c3f5821a7",
+        "c92e4f2b1398f86f4db13ac9a3e63b0716cb3fb9172543d13a9a1d8c3f5821a7"
+      ]
+    },
+    {
+      "id": "rect-use-tight-fractional-control",
+      "input": "rect-use-tight-fractional-control.svg",
+      "reference": "references/c92e4f2b1398f86f.png",
+      "sourceSha256": "a00b750d1d15dbaeb15c372d5f33c0940a5f0a1a884daa1109f31b94dc3df7eb",
+      "referenceSha256": "c92e4f2b1398f86f4db13ac9a3e63b0716cb3fb9172543d13a9a1d8c3f5821a7",
+      "captureSha256": [
+        "c92e4f2b1398f86f4db13ac9a3e63b0716cb3fb9172543d13a9a1d8c3f5821a7",
+        "c92e4f2b1398f86f4db13ac9a3e63b0716cb3fb9172543d13a9a1d8c3f5821a7",
+        "c92e4f2b1398f86f4db13ac9a3e63b0716cb3fb9172543d13a9a1d8c3f5821a7"
+      ]
+    },
+    {
+      "id": "curve-use-shifted-integer-candidate",
+      "input": "curve-use-shifted-integer-candidate.svg",
+      "reference": "references/2a5d4adda441d413.png",
+      "sourceSha256": "4a5af932a4c3a3f847d7a2e2e9e2a22c1d829e09d45dec3f4ac3dbf375423923",
+      "referenceSha256": "2a5d4adda441d41333832a4ab50f30c955b77694faa42d737b0d24c643d7b59e",
+      "captureSha256": [
+        "2a5d4adda441d41333832a4ab50f30c955b77694faa42d737b0d24c643d7b59e",
+        "2a5d4adda441d41333832a4ab50f30c955b77694faa42d737b0d24c643d7b59e",
+        "2a5d4adda441d41333832a4ab50f30c955b77694faa42d737b0d24c643d7b59e"
+      ]
+    },
+    {
+      "id": "curve-use-shifted-integer-control",
+      "input": "curve-use-shifted-integer-control.svg",
+      "reference": "references/2a5d4adda441d413.png",
+      "sourceSha256": "fc34e5ea33807e28664470698e62f41723caf974ca07285d74060cc071c03d59",
+      "referenceSha256": "2a5d4adda441d41333832a4ab50f30c955b77694faa42d737b0d24c643d7b59e",
+      "captureSha256": [
+        "2a5d4adda441d41333832a4ab50f30c955b77694faa42d737b0d24c643d7b59e",
+        "2a5d4adda441d41333832a4ab50f30c955b77694faa42d737b0d24c643d7b59e",
+        "2a5d4adda441d41333832a4ab50f30c955b77694faa42d737b0d24c643d7b59e"
+      ]
+    },
+    {
+      "id": "circle-use-full-scaled-candidate",
+      "input": "circle-use-full-scaled-candidate.svg",
+      "reference": "references/79a0ede2a0ee4fd7.png",
+      "sourceSha256": "ce9a530b1465c8de4137e29235509ca1c3a6dc492ffce61f423fb4c050b20425",
+      "referenceSha256": "79a0ede2a0ee4fd733925a5580689ca6dc352f92789c780e2088f335d082b798",
+      "captureSha256": [
+        "79a0ede2a0ee4fd733925a5580689ca6dc352f92789c780e2088f335d082b798",
+        "79a0ede2a0ee4fd733925a5580689ca6dc352f92789c780e2088f335d082b798",
+        "79a0ede2a0ee4fd733925a5580689ca6dc352f92789c780e2088f335d082b798"
+      ]
+    },
+    {
+      "id": "circle-use-full-scaled-control",
+      "input": "circle-use-full-scaled-control.svg",
+      "reference": "references/79a0ede2a0ee4fd7.png",
+      "sourceSha256": "5c2bbe85109d38938a405a17705905cbc3755a4fcd0bfd8fa6b5407419fcbd4b",
+      "referenceSha256": "79a0ede2a0ee4fd733925a5580689ca6dc352f92789c780e2088f335d082b798",
+      "captureSha256": [
+        "79a0ede2a0ee4fd733925a5580689ca6dc352f92789c780e2088f335d082b798",
+        "79a0ede2a0ee4fd733925a5580689ca6dc352f92789c780e2088f335d082b798",
+        "79a0ede2a0ee4fd733925a5580689ca6dc352f92789c780e2088f335d082b798"
+      ]
+    },
+    {
+      "id": "rect-use-offset-tight-candidate",
+      "input": "rect-use-offset-tight-candidate.svg",
+      "reference": "references/03f818b3183fbc52.png",
+      "sourceSha256": "440592239410247fc56c0029238611190dae685b68ee49c42a55973dfde7c26f",
+      "referenceSha256": "03f818b3183fbc52d982115c1b41dc77e48bd4f80ac8321be8fbdcfe00f009a9",
+      "captureSha256": [
+        "03f818b3183fbc52d982115c1b41dc77e48bd4f80ac8321be8fbdcfe00f009a9",
+        "03f818b3183fbc52d982115c1b41dc77e48bd4f80ac8321be8fbdcfe00f009a9",
+        "03f818b3183fbc52d982115c1b41dc77e48bd4f80ac8321be8fbdcfe00f009a9"
+      ]
+    },
+    {
+      "id": "rect-use-offset-tight-control",
+      "input": "rect-use-offset-tight-control.svg",
+      "reference": "references/03f818b3183fbc52.png",
+      "sourceSha256": "3a0bb3074468acc0f202750d8c3aa2143078035162f2019660fc6c3790322a52",
+      "referenceSha256": "03f818b3183fbc52d982115c1b41dc77e48bd4f80ac8321be8fbdcfe00f009a9",
+      "captureSha256": [
+        "03f818b3183fbc52d982115c1b41dc77e48bd4f80ac8321be8fbdcfe00f009a9",
+        "03f818b3183fbc52d982115c1b41dc77e48bd4f80ac8321be8fbdcfe00f009a9",
+        "03f818b3183fbc52d982115c1b41dc77e48bd4f80ac8321be8fbdcfe00f009a9"
+      ]
+    }
+  ]
+}

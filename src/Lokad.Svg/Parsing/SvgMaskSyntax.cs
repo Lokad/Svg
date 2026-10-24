@@ -220,6 +220,14 @@ internal static class SvgMaskSyntax
                 if (pending.Operation.ContentIndex < 0 && !HasUniformSource(state, pending.MaskId) && state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox content) && !content.Contains(fallback.X, fallback.Y, fallback.X + fallback.Width, fallback.Y + fallback.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering the masked geometry is implemented.");
                 SvgClipBox region = nativeTarget is {} native ? native.SceneBounds(workCounter, cancellationToken) : ResolveDeferredRegion(state, pending, objectBox);
                 pending.Operation.Region = region;
+                SvgRectangle localBounds = nativeTarget is {} storedTarget ? storedTarget.ObjectBounds
+                    : spatialMap.TryInvert(out SvgAffineTransform inverse) ? inverse.Apply(objectBox) : default;
+                pending.Operation.NativeMask = new(pending.MaskId, spatialMap, new(localBounds.X, localBounds.Y, localBounds.Width, localBounds.Height))
+                    { ConstantAlpha = pending.Operation.ContentIndex < 0 ? pending.Operation.Value : null };
+
+                if (SvgMaskTarget.SourcePaintRegion(pending.MaskId, spatialMap, objectBox, region, state, workCounter, cancellationToken) is {} paintRegion)
+                    pending.Operation.ContentIndex = state.Scene.BindMaskPaintRegion(pending.Operation.ContentIndex, paintRegion);
+
                 for (int geometryIndex = pending.FirstGeometryIndex; geometryIndex < pending.FirstGeometryIndex + pending.GeometryCount; geometryIndex++)
                 {
                     workCounter.Consume(cancellationToken);
@@ -336,7 +344,7 @@ internal static class SvgMaskSyntax
             {
                 if (IsDisabled(pending.MaskId, state))
                 {
-                    RewriteGroupMaskScope(state, pending, 255, null, -1);
+                    RewriteGroupMaskScope(state, pending, workCounter, cancellationToken, 255, null, -1);
                     continue;
                 }
                 bool scalar = state.Masks.TryGetValue(pending.MaskId, out byte value);
@@ -344,7 +352,7 @@ internal static class SvgMaskSyntax
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
                 if (!pending.HasOwnFilter && !HasSource(state, pending, workCounter, cancellationToken))
                 {
-                    RewriteGroupMaskScope(state, pending, 0, null, -1);
+                    RewriteGroupMaskScope(state, pending, workCounter, cancellationToken, 0, null, -1);
                     continue;
                 }
                 SvgAffineTransform targetMap = pending.Transform;
@@ -373,7 +381,7 @@ internal static class SvgMaskSyntax
                     if (!state.MaskContents.TryGetValue(pending.MaskId, out SvgMaskContent content)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
                     SvgAffineTransform map = content.IsObjectBoundingBox || nativeTarget is not null ? targetMap : pending.Transform;
                     int contentIndex = state.Scene.AddMaskContent(SvgMaskContentReplay.PlaceForTarget(pending.MaskId, content, map, GroupChildrenUnion(state, pending, workCounter, cancellationToken), nativeTarget, state, workCounter, cancellationToken));
-                    RewriteGroupMaskScope(state, pending, 255, maskRegion, contentIndex);
+                    RewriteGroupMaskScope(state, pending, workCounter, cancellationToken, 255, maskRegion, contentIndex);
                     continue;
                 }
                 if (state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox contentBox))
@@ -383,14 +391,14 @@ internal static class SvgMaskSyntax
                     {
                         SvgMaskContent content = SvgMaskContentReplay.ResolveUniformSource(pending.MaskId, targetMap, state, workCounter, cancellationToken);
                         int contentIndex = state.Scene.AddMaskContent(content);
-                        RewriteGroupMaskScope(state, pending, 255, maskRegion, contentIndex);
+                        RewriteGroupMaskScope(state, pending, workCounter, cancellationToken, 255, maskRegion, contentIndex);
                         continue;
                     }
                     ValidateGroupMaskCoverage(state, pending, placedContent, workCounter, cancellationToken);
                 }
                 // Bind the authored group's own layer. Equal child/parent boundaries and
                 // adjacent empty/sibling ranges must never decide which mask owns a scope.
-                RewriteGroupMaskScope(state, pending, value, maskRegion, -1);
+                RewriteGroupMaskScope(state, pending, workCounter, cancellationToken, value, maskRegion, -1);
             }
             finally { state.DefinitionReplayScene = previous; }
         }
@@ -456,8 +464,15 @@ internal static class SvgMaskSyntax
             }
         }
 
-        static void RewriteGroupMaskScope(SvgDocumentState state, PendingGroupMask pending, byte maskAlpha, SvgClipBox? maskRegion, int maskContentIndex)
+        static void RewriteGroupMaskScope(SvgDocumentState state, PendingGroupMask pending, ParserWorkCounter work, CancellationToken token, byte maskAlpha, SvgClipBox? maskRegion, int maskContentIndex)
         {
+            if (maskRegion is {} region)
+            {
+                SvgAffineTransform map = pending.Transform;
+                if (pending.Parent is {} parent) map = SvgAffineTransform.FromScaleOffset(parent.ScaleX, parent.ScaleY, parent.OffsetX, parent.OffsetY).ComposeChecked(map);
+                if (SvgMaskTarget.SourcePaintRegion(pending.MaskId, map, GroupChildrenUnion(state, pending, work, token), region, state, work, token) is {} clip)
+                    maskContentIndex = state.Scene.BindMaskPaintRegion(maskContentIndex, clip);
+            }
             SvgDrawCommand scope = state.Scene.CommandAt(pending.FirstCommandIndex);
             if (scope.Kind != SvgDrawCommandKind.BeginGroup) throw new InvalidOperationException("Deferred group mask resolution requires its isolation scope.");
             state.Scene.ReplaceCommand(pending.FirstCommandIndex, new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, scope.GeometryIndex, scope.SourceOpacity, maskRegion, maskContentIndex, maskAlpha));

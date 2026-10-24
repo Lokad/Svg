@@ -1438,6 +1438,15 @@ internal sealed class SvgSceneBuilder : IDisposable
 
     internal void EndOpacityScope() => _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255));
 
+    /// <summary>Retains placed paint-clip metadata without materializing a scalar mask's pixels.</summary>
+    /// <remarks>The scene owns the new slot and any copied contours. Existing registration reserves
+    /// storage and charges work/cancellation; borrowed vector content keeps its original owner.</remarks>
+    internal int BindMaskPaintRegion(int index, SvgClipBox clip)
+    {
+        SvgMaskContent content = index < 0 ? new([], 255, true) { ConstantAlpha = 255 } : _maskContents[index];
+        return AddMaskContent(content with { SourcePaintRegion = clip });
+    }
+
     /// <summary>Copies one mask content evaluation under scene ownership, returning its command index.</summary>
     internal int AddMaskContent(SvgMaskContent content)
     {
