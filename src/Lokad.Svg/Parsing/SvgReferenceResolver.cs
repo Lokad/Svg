@@ -6,6 +6,7 @@ namespace Lokad.Svg.Parsing;
 internal readonly record struct SvgUseReference(string Id, double X, double Y, double? Width, double? Height, SvgAffineTransform Transform, SvgAffineTransform InheritedTransform, byte Opacity, bool IsPainted, SvgPaint? FillOverride, string? PaintServerId, SvgUseStrokeOverride? StrokeOverride)
 {
     internal SvgSourceContext? SourceContext { get; init; }
+    internal SvgTextMetricScope TextMetrics { get; init; }
     /// <summary>Retains a source-less effect owner; Id is unused and must never enter resource lookup.</summary>
     internal bool IsSourceAbsent { get; init; }
     /// <summary>Records the absence of an instance opacity layer, using the validated source value rather than its rounded alpha byte.</summary>
@@ -153,7 +154,7 @@ internal static class SvgReferenceResolver
                     if (geometry.LeafMask is not null && SvgLocalUrl.GetReference(source.GetAttribute("mask")) is not null)
                         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Instance stroke construction on masked definitions is not implemented.");
                 }
-                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers, reference.ElementParentOpacity, reference.ElementParentDisplay, reference.NonScalingStroke, strokePlacement, definition.InstanceLengthBases(reference), retainMappedContour, reference.IsDisplayed, state);
+                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers, reference.ElementParentOpacity, reference.ElementParentDisplay, reference.TextMetrics, reference.NonScalingStroke, strokePlacement, definition.InstanceLengthBases(reference), retainMappedContour, reference.IsDisplayed, state);
                 try { return Apply(constructed with { SymbolViewBox = definition.SymbolViewBox, EstablishesViewport = definition.EstablishesViewport }, reference with { StrokeOverride = null, PaintServerId = null, PaintServerFill = null }, frame, state, workCounter, cancellationToken); }
                 finally { foreach (SvgGeometry geometry in constructed.Geometries) geometry.Dispose(); }
             }

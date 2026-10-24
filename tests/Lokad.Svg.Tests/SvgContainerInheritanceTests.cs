@@ -19,7 +19,7 @@ public sealed class SvgContainerInheritanceTests
             computedStyle,
             default,
             new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), null, SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default,
-            new Dictionary<string, SvgColor>(), new ParserWorkCounter(1_000_000), CancellationToken.None);
+            new Dictionary<string, SvgColor>(), null, new ParserWorkCounter(1_000_000), CancellationToken.None);
 
         Assert.Equal(SvgPaint.Default, resolved.Presentation.Paint);
         Assert.True(resolved.Presentation.IsDisplayed);
@@ -47,7 +47,7 @@ public sealed class SvgContainerInheritanceTests
             computedStyle,
             styleSheet,
             new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), "evenodd", SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default,
-            new Dictionary<string, SvgColor>(), new ParserWorkCounter(1_000_000), CancellationToken.None);
+            new Dictionary<string, SvgColor>(), null, new ParserWorkCounter(1_000_000), CancellationToken.None);
 
         Assert.Equal("Important", resolved.TextStyle.Family);
         Assert.Equal("evenodd", resolved.FillRule);
@@ -66,7 +66,7 @@ public sealed class SvgContainerInheritanceTests
             nestedStyle,
             default,
             new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), null, SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default,
-            new Dictionary<string, SvgColor>(), new ParserWorkCounter(1_000_000), CancellationToken.None);
+            new Dictionary<string, SvgColor>(), null, new ParserWorkCounter(1_000_000), CancellationToken.None);
 
         Assert.Equal(0.5, resolved.Presentation.ElementOpacity.Value);
         Assert.Equal((byte)128, resolved.Opacity);

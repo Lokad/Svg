@@ -10,6 +10,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     internal SvgAffineTransform StrokeHostMap { get; init; } = SvgAffineTransform.Identity;
     internal SvgViewportLengthBases LengthBases { get; init; }
     internal bool DeferPaintOpacity { get; init; }
+    internal SvgTextMetricScope TextMetrics { get; init; }
     internal SvgRecordingScope RecordingScope { get; init; }
     internal bool RetainInstanceStrokePath { get; init; }
     internal bool CanPaintEmptyNativeBounds { get; init; }

@@ -347,14 +347,14 @@ internal static class SvgDefinitionParser
             SvgPaintableElementContext maskContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
             // A resource inherits presentation, while its content coordinates start
             // at the resource rather than at a rendered definition ancestor.
-            maskContext = maskContext with { InheritedPresentation = maskContext.InheritedPresentation with { Transform = SvgAffineTransform.Identity, IsDisplayed = true } };
+            maskContext = maskContext with { InheritedPresentation = maskContext.InheritedPresentation with { Transform = SvgAffineTransform.Identity, IsDisplayed = true, TextMetrics = default } };
             InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
             SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, maskContext.StyleSheet).ResolveOpacity(maskContext.InheritedPresentation.ElementOpacity).ResolveDisplay(maskContext.InheritedPresentation.ElementDisplay);
             // The resource container supplies inherited style; its children paint
             // the mask without an extra opacity layer around the resource itself.
             SvgInheritedContainer inherited = SvgContainerInheritance.Resolve(reader, inline, style, maskContext.StyleSheet,
                 maskContext.InheritedPresentation, maskContext.InheritedFillRule, maskContext.InheritedTextStyle,
-                maskContext.InheritedStroke, namedColors, workCounter, cancellationToken);
+                maskContext.InheritedStroke, namedColors, state.PaintResources, workCounter, cancellationToken);
             if (style.Fill is not null && inherited.Presentation.PaintServerFill is string fill)
             {
                 workCounter.ConsumeText(fill.Length, cancellationToken);
@@ -476,13 +476,14 @@ internal static class SvgDefinitionParser
             state.PatternTemplate = SvgPatternSyntax.ParsePatternElement(reader, state, workCounter, cancellationToken);
             state.PatternTile = state.PatternTemplate.Grid;
             SvgPaintableElementContext patternContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
+            patternContext = patternContext with { InheritedPresentation = patternContext.InheritedPresentation with { TextMetrics = default } };
             InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
             SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, patternContext.StyleSheet).ResolveOpacity(patternContext.InheritedPresentation.ElementOpacity).ResolveDisplay(patternContext.InheritedPresentation.ElementDisplay);
             if (style.GetOpacity().Value != 1)
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Opacity on pattern containers is not implemented.");
             SvgInheritedContainer inherited = SvgContainerInheritance.Resolve(reader, inline, style, patternContext.StyleSheet,
                 patternContext.InheritedPresentation, patternContext.InheritedFillRule, patternContext.InheritedTextStyle,
-                patternContext.InheritedStroke, namedColors, workCounter, cancellationToken);
+                patternContext.InheritedStroke, namedColors, state.PaintResources, workCounter, cancellationToken);
             if (style.Fill is not null && inherited.Presentation.PaintServerFill is string fill)
             {
                 workCounter.ConsumeText(fill.Length, cancellationToken);
@@ -491,9 +492,9 @@ internal static class SvgDefinitionParser
             state.PatternScopeStart = state.PatternScopes?.Count ?? 0;
             state.PatternCommandStart = state.PendingCommandEnd;
             // A defs node can make the resource unavailable; rendered ancestors do not suppress its content.
-            bool patternDisplayed = state.DefinitionResourcesDisplayed && style.GetDisplay() != SvgDisplay.None && state.PatternContents?.IsDisplayed(state.PatternId) != false;
+            bool patternDisplayed = state.DefinitionResourcesDisplayed && style.GetDisplay() != SvgDisplay.None && state.PaintResources?.IsPatternDisplayed(state.PatternId) != false;
             state.PatternTemplate = state.PatternTemplate with { IsDisplayed = patternDisplayed };
-            bool contentDisplayed = patternDisplayed && (state.PatternContents?.RequiresContent(state.PatternId) ?? true);
+            bool contentDisplayed = patternDisplayed && (state.PaintResources?.RequiresPatternContent(state.PatternId) ?? true);
             state.Groups.Add(new(reader.Depth, SvgGroupKind.Pattern, inherited.Presentation with { Transform = SvgAffineTransform.Identity, IsDisplayed = contentDisplayed }, inherited.TextStyle, false, false, inherited.Stroke, inherited.FillRule)
                 { RecordingScope = patternContext.RecordingScope, ClipRule = style.ClipRule ?? patternContext.InheritedClipRule });
             if (!reader.IsEmptyElement) state.PatternDepth = reader.Depth;
@@ -560,7 +561,7 @@ internal static class SvgDefinitionParser
                     RejectPatternContentPaint(style, state);
                     SvgPatternTemplate template = state.PatternTemplate;
                     if ((template.Width == 0 || template.Height == 0 || template.Href is null && (template.Width is null || template.Height is null))
-                        && state.PatternContents?.RequiresContent(state.PatternId) != true)
+                        && state.PaintResources?.RequiresPatternContent(state.PatternId) != true)
                         context = context with { InheritedPresentation = context.InheritedPresentation with { IsDisplayed = false } };
                     SvgSceneBuilder builder = GetPatternContentBuilder(state, workCounter, cancellationToken);
                     if (state.DefinitionReplayScene is not null) throw new InvalidOperationException("Definition leaf replay cannot nest.");
@@ -712,7 +713,7 @@ internal static class SvgDefinitionParser
             InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
             SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, definitionContext.StyleSheet);
             SvgInheritedContainer inherited = SvgContainerInheritance.Resolve(reader, inline, style, definitionContext.StyleSheet, definitionContext.InheritedPresentation,
-                definitionContext.InheritedFillRule, definitionContext.InheritedTextStyle, definitionContext.InheritedStroke, namedColors, workCounter, cancellationToken);
+                definitionContext.InheritedFillRule, definitionContext.InheritedTextStyle, definitionContext.InheritedStroke, namedColors, state.PaintResources, workCounter, cancellationToken);
             if (!reader.IsEmptyElement) state.DefinitionInheritance = inherited;
             if (!reader.IsEmptyElement) state.DefinitionsDepth = reader.Depth;
             return true;
@@ -1724,7 +1725,7 @@ internal static class SvgDefinitionParser
         {
             SvgDefinitionLeafSource first = state.PatternRectangleSource ?? throw new InvalidOperationException("Rectangle promotion requires retained source attributes.");
             SvgPaintableElementContext previous = state.PatternRectangleContext;
-            SvgPaintRecording.AdoptLeafScene(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, previous.InheritedPresentation.PaintOrder, previous.InheritedPresentation.Markers, previous.InheritedPresentation.ElementOpacity, previous.InheritedPresentation.ElementDisplay, previous.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, previous.LengthBases, false, previous.InheritedPresentation.IsDisplayed, state), builder, state);
+            SvgPaintRecording.AdoptLeafScene(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, previous.InheritedPresentation.PaintOrder, previous.InheritedPresentation.Markers, previous.InheritedPresentation.ElementOpacity, previous.InheritedPresentation.ElementDisplay, previous.InheritedPresentation.TextMetrics, previous.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, previous.LengthBases, false, previous.InheritedPresentation.IsDisplayed, state), builder, state);
             state.PatternTile = tile with { Content = null };
         }
         return builder;

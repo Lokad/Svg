@@ -3,11 +3,11 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Identifies pattern sources needed by nonzero resolved templates before content and font construction.</summary>
+/// <summary>Identifies unavailable paint/filter resources and required pattern sources before glyph construction.</summary>
 /// <remarks>One parsing/discovery operation owns this bounded metadata index. IDs borrow its string store;
 /// scene parsing only borrows the index. Header collection and iterative graph resolution charge shared work
 /// and observe cancellation. Disposal releases index storage; no geometry, font bytes or XML tree is retained.</remarks>
-internal sealed class SvgPatternContentSelection : IDisposable
+internal sealed class SvgPaintResourceSelection : IDisposable
 {
     private enum Resolution { New, Visiting, Ready, Invalid }
     private enum Selection { NeededContent, DisabledResource }
@@ -18,16 +18,45 @@ internal sealed class SvgPatternContentSelection : IDisposable
     private readonly record struct Scope(int Depth, bool Drawing, bool Definitions, bool Switch, bool Consumed, int Pattern, int PatternOwner, bool Displayed, bool Visible, bool Inert, SvgDisplay ElementDisplay);
     private readonly BudgetedParserDictionary<string, Selection> _selection;
     private readonly BudgetedParserList<EffectReference> _unusedEffects;
+    private readonly BudgetedParserDictionary<string, bool> _displayedPaints;
+    private readonly BudgetedParserDictionary<string, bool> _inactiveFilters;
+    private readonly ParserWorkCounter _work;
+    private readonly CancellationToken _token;
+    private readonly RenderBudget.BudgetReservation _owner;
 
-    private SvgPatternContentSelection(RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    /// <summary>Returns true only for a defined paint whose own resource display prevents painting.</summary>
+    internal bool IsInactivePaint(string? value)
     {
+        if (value is null || !SvgLocalUrl.TryParseId(value, out string id)) return false;
+        _work.Consume(_token);
+        return _displayedPaints.TryGetValue(id, out bool displayed) && !displayed || !IsPatternDisplayed(id);
+    }
+    internal bool IsInactiveFilter(string? value)
+    {
+        if (value is null || !SvgLocalUrl.TryParseId(value, out string id)) return false;
+        _work.Consume(_token);
+        return _inactiveFilters.TryGetValue(id, out _);
+    }
+    internal void ValidateTextPaint(string? value)
+    {
+        if (value is null || !SvgLocalUrl.TryParseId(value, out string id)) return;
+        _work.Consume(_token);
+        if (!_displayedPaints.TryGetValue(id, out _))
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text paint requires a defined local paint server.");
+    }
+
+    private SvgPaintResourceSelection(RenderBudget budget, ParserWorkCounter work, CancellationToken token, RenderBudget.BudgetReservation owner)
+    {
+        _owner = owner; _work = work; _token = token;
+        _displayedPaints = new(budget, SvgMemoryCategory.Parser, 96);
+        _inactiveFilters = new(budget, SvgMemoryCategory.Parser, 96);
         _selection = new(budget, SvgMemoryCategory.Parser, 96);
         _unusedEffects = new(budget, SvgMemoryCategory.Parser, work, token);
     }
 
-    internal bool RequiresContent(string? id) => id is not null && _selection.TryGetValue(id, out Selection value) && value == Selection.NeededContent;
+    internal bool RequiresPatternContent(string? id) => id is not null && _selection.TryGetValue(id, out Selection value) && value == Selection.NeededContent;
 
-    internal bool IsDisplayed(string? id) => id is null || !_selection.TryGetValue(id, out Selection value) || value != Selection.DisabledResource;
+    internal bool IsPatternDisplayed(string? id) => id is null || !_selection.TryGetValue(id, out Selection value) || value != Selection.DisabledResource;
 
     /// <summary>Checks omitted sources' displayed effect references without allocating bindings or constructing mask glyphs.</summary>
     /// <remarks>Called before scene sealing; IDs borrow preparation strings. Traversal charges shared work/token and owns no resources.</remarks>
@@ -42,14 +71,17 @@ internal sealed class SvgPatternContentSelection : IDisposable
         }
     }
 
-    internal static SvgPatternContentSelection? Create(ReadOnlyMemory<byte> svg, XmlReaderSettings settings,
+    internal static SvgPaintResourceSelection? Create(ReadOnlyMemory<byte> svg, XmlReaderSettings settings,
         SvgRenderLimits limits, BudgetedParserList<CssRule> rules, BudgetedParserStringStore strings, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         ReadOnlySpan<byte> bytes = svg.Span;
-        if (!bytes.Contains((byte)0) && bytes.IndexOf("pattern"u8) < 0) return null;
+        if (!bytes.Contains((byte)0) && bytes.IndexOf("pattern"u8) < 0 && bytes.IndexOf("Gradient"u8) < 0 && bytes.IndexOf("filter"u8) < 0) return null;
         work.ConsumeText(bytes.Length, token);
-        SvgPatternContentSelection result = new(budget, work, token);
+        RenderBudget.BudgetReservation owner = budget.Reserve(512, SvgMemoryCategory.Parser);
+        SvgPaintResourceSelection result;
+        try { result = new(budget, work, token, owner); }
+        catch { owner.Dispose(); throw; }
         try
         {
             using BudgetedParserList<Pattern> patterns = new(budget, SvgMemoryCategory.Parser, work, token);
@@ -92,7 +124,7 @@ internal sealed class SvgPatternContentSelection : IDisposable
                 bool inert = parent.Inert || !svgElement || SvgStructuralVocabulary.IsDescriptiveElement(reader.LocalName);
                 bool paintable = !inert && (root || SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName)
                     || SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName)
-                    || reader.LocalName is "svg" or "defs" or "pattern" or "symbol" or "mask" or "marker" or "text" or "tspan" or "use" or "image");
+                    || reader.LocalName is "svg" or "defs" or "pattern" or "symbol" or "mask" or "marker" or "text" or "tspan" or "use" or "image" or "linearGradient" or "radialGradient" or "filter");
                 if (paintable)
                 {
                     InlineStyle sheet = SvgStyleSheet.Resolve(reader, rules, ancestors, work, token);
@@ -101,6 +133,16 @@ internal sealed class SvgPatternContentSelection : IDisposable
                         : SvgComputedStyleResolver.Resolve(reader, sheet, work, token, true);
                 }
                 paint = paint.ResolveDisplay(parent.ElementDisplay);
+                if (svgElement && reader.LocalName is "linearGradient" or "radialGradient" or "pattern" or "filter" && reader.GetAttribute("id") is {} resourceId)
+                {
+                    resourceId = strings.Copy(resourceId);
+                    bool available = paint.GetDisplay() != SvgDisplay.None && (!parent.Definitions || parent.ElementDisplay != SvgDisplay.None);
+                    if (reader.LocalName == "filter")
+                    {
+                        if (!available) result._inactiveFilters.TryAdd(resourceId, true);
+                    }
+                    else result._displayedPaints.TryAdd(resourceId, available);
+                }
                 ObservePaint(paint.Fill); ObservePaint(paint.Stroke);
                 int pattern = -1;
                 if (selected && svgElement && reader.LocalName == "pattern" && (reader.Depth == rootDepth + 1 || parent.Definitions)
@@ -167,7 +209,7 @@ internal sealed class SvgPatternContentSelection : IDisposable
             foreach (PatternEffect effect in effects.AsSpan())
             {
                 work.Consume(token);
-                if (patterns[effect.Pattern].IsDisplayed && !result.RequiresContent(patterns[effect.Pattern].Id)) result._unusedEffects.Add(effect.Reference);
+                if (patterns[effect.Pattern].IsDisplayed && !result.RequiresPatternContent(patterns[effect.Pattern].Id)) result._unusedEffects.Add(effect.Reference);
             }
             return result;
 
@@ -185,5 +227,9 @@ internal sealed class SvgPatternContentSelection : IDisposable
         catch { result.Dispose(); throw; }
     }
 
-    public void Dispose() { _unusedEffects.Dispose(); _selection.Dispose(); }
+    public void Dispose()
+    {
+        _inactiveFilters.Dispose(); _displayedPaints.Dispose(); _unusedEffects.Dispose();
+        _selection.Dispose(); _owner.Dispose();
+    }
 }

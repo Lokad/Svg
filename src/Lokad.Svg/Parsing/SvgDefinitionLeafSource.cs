@@ -109,7 +109,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
             || resolved with { StrokeOpacity = null } != _constructedStroke with { StrokeOpacity = null };
     }
 
-    internal SvgDefinition Lower(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, string? paintServerFill, SvgPaintOrder paintOrder, SvgMarkerStyle markers, SvgPaintOpacity parentOpacity, SvgDisplay parentDisplay, bool parentNonScalingStroke, SvgAffineTransform instancePlacement, SvgViewportLengthBases lengthBases, bool retainMappedContour, bool isDisplayed, SvgDocumentState state)
+    internal SvgDefinition Lower(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, string? paintServerFill, SvgPaintOrder paintOrder, SvgMarkerStyle markers, SvgPaintOpacity parentOpacity, SvgDisplay parentDisplay, SvgTextMetricScope textMetrics, bool parentNonScalingStroke, SvgAffineTransform instancePlacement, SvgViewportLengthBases lengthBases, bool retainMappedContour, bool isDisplayed, SvgDocumentState state)
     {
         _attribute = -1;
         // A use supplies fill only where the source did not author one. The original
@@ -120,7 +120,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
         double instanceMagnification = Math.Max(Math.Sqrt(instancePlacement.A * instancePlacement.A + instancePlacement.B * instancePlacement.B),
             Math.Sqrt(instancePlacement.C * instancePlacement.C + instancePlacement.D * instancePlacement.D));
         if (instanceMagnification == 0) instanceMagnification = 1;
-        SvgPaintableElementContext context = new(new(paint, true, true, SvgAffineTransform.Identity) { NonScalingStroke = parentNonScalingStroke, OwnOpacity = parentOpacity, ElementDisplay = parentDisplay, PaintOrder = paintOrder, Markers = markers }, SvgInheritedTextStyle.Default,
+        SvgPaintableElementContext context = new(new(paint, true, true, SvgAffineTransform.Identity) { NonScalingStroke = parentNonScalingStroke, TextMetrics = textMetrics, OwnOpacity = parentOpacity, ElementDisplay = parentDisplay, PaintOrder = paintOrder, Markers = markers }, SvgInheritedTextStyle.Default,
             resolved, default, _colors, _work, _token, state.OutputMagnification * instanceMagnification, fillRule)
         {
             StrokeHostMap = state.OutputMap.ComposeChecked(instancePlacement),
@@ -141,7 +141,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
         _attribute = -1;
         SvgAffineTransform placement = SvgReferenceResolver.PlainInstancePlacement(reference, frame);
         SvgPaintableElementContext context = new(new(reference.InheritedFill, reference.IsDisplayed, reference.IsVisible, placement)
-            { OwnOpacity = reference.ElementParentOpacity, ElementDisplay = reference.ElementParentDisplay }, SvgInheritedTextStyle.Default, reference.InheritedStroke,
+            { TextMetrics = reference.TextMetrics, OwnOpacity = reference.ElementParentOpacity, ElementDisplay = reference.ElementParentDisplay }, SvgInheritedTextStyle.Default, reference.InheritedStroke,
             default, _colors, _work, _token, state.OutputMagnification, reference.InheritedFillRule)
         { AuthoredStyle = _authored, LengthBases = reference.LengthBases, RecordingScope = reference.RecordingScope };
         SvgDefinition result = SvgDefinitionParser.LowerInstanceSource(this, context, state);

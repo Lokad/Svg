@@ -151,7 +151,7 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal BudgetedParserList<CssRule> StyleRules { get; }
     /// <summary>Borrows the parser-owned pattern selection until traversal finishes.</summary>
-    internal SvgPatternContentSelection? PatternContents { get; set; }
+    internal SvgPaintResourceSelection? PaintResources { get; set; }
 
     internal SvgCssAncestorContext CssAncestors { get; }
 

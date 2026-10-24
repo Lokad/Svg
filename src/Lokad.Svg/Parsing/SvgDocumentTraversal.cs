@@ -7,7 +7,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Traverses one bounded SVG document after reader setup without materializing a DOM.</summary>
 internal static class SvgDocumentTraversal
 {
-    internal static SvgRoot Parse(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken, SvgAffineTransform outputMap, SvgViewport? explicitViewport, BudgetedParserList<CssRule> styleRules, BudgetedParserStringStore styleStrings, double rasterScale, SvgPatternContentSelection? patternContents)
+    internal static SvgRoot Parse(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken, SvgAffineTransform outputMap, SvgViewport? explicitViewport, BudgetedParserList<CssRule> styleRules, BudgetedParserStringStore styleStrings, double rasterScale, SvgPaintResourceSelection? paintResources)
     {
         ArgumentNullException.ThrowIfNull(workCounter);
         while (reader.Read())
@@ -17,14 +17,14 @@ internal static class SvgDocumentTraversal
             SvgStructuralAdmission.ValidateElementStructure(reader, limits);
             SvgStructuralAdmission.ThrowIfNotSvgRoot(reader);
             SvgRootAttributes root = SvgRootAttributes.Parse(reader, namedColors, styleRules, workCounter, cancellationToken);
-            return TraverseRoot(reader, limits, budget, namedColors, fontSnapshot, cancellationToken, workCounter, root, outputMap, explicitViewport, styleRules, styleStrings, rasterScale, patternContents);
+            return TraverseRoot(reader, limits, budget, namedColors, fontSnapshot, cancellationToken, workCounter, root, outputMap, explicitViewport, styleRules, styleStrings, rasterScale, paintResources);
         }
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
 
 
     }
 
-    private static SvgRoot TraverseRoot(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken, ParserWorkCounter workCounter, SvgRootAttributes root, SvgAffineTransform outputMap, SvgViewport? explicitViewport, BudgetedParserList<CssRule> styleRules, BudgetedParserStringStore styleStrings, double rasterScale, SvgPatternContentSelection? patternContents)
+    private static SvgRoot TraverseRoot(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken, ParserWorkCounter workCounter, SvgRootAttributes root, SvgAffineTransform outputMap, SvgViewport? explicitViewport, BudgetedParserList<CssRule> styleRules, BudgetedParserStringStore styleStrings, double rasterScale, SvgPaintResourceSelection? paintResources)
     {
         if (reader.IsEmptyElement)
         {
@@ -34,7 +34,7 @@ internal static class SvgDocumentTraversal
         int rootDepth = reader.Depth;
         root = root with { ContainingViewport = explicitViewport };
         using SvgDocumentState state = new(budget, workCounter, cancellationToken, styleRules, styleStrings, false);
-        state.PatternContents = patternContents;
+        state.PaintResources = paintResources;
         state.CssAncestors.Observe(reader, 0);
         // The root element consumes one node, matching font-request discovery's uniform per-element count.
         state.NodeCount = 1;
@@ -145,7 +145,7 @@ internal static class SvgDocumentTraversal
                     InlineStyle viewportInline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
                     SvgComputedStyle viewportStyle = SvgComputedStyle.Resolve(reader, viewportInline, viewportContext.StyleSheet);
                     SvgInheritedContainer inheritedViewport = SvgContainerInheritance.Resolve(reader, viewportInline, viewportStyle, viewportContext.StyleSheet, viewportContext.InheritedPresentation,
-                        viewportContext.InheritedFillRule, viewportContext.InheritedTextStyle, viewportContext.InheritedStroke, namedColors, workCounter, cancellationToken);
+                        viewportContext.InheritedFillRule, viewportContext.InheritedTextStyle, viewportContext.InheritedStroke, namedColors, state.PaintResources, workCounter, cancellationToken);
                     if (viewport.Width == 0 || viewport.Height == 0)
                         inheritedViewport = inheritedViewport with { Presentation = inheritedViewport.Presentation with { IsDisplayed = false } };
                     SvgPaintOpacity sourceViewportOpacity = inheritedViewport.Presentation.ElementOpacity;
@@ -506,7 +506,7 @@ internal static class SvgDocumentTraversal
                     if (state.DeferredTextFailure is {} textFailure) throw textFailure;
                     SvgTextPathLayout.Resolve(state, limits, workCounter, cancellationToken);
                     state.ValidateSymbolReferences(workCounter, cancellationToken);
-                    state.PatternContents?.ValidateUnusedEffects(state, workCounter, cancellationToken);
+                    state.PaintResources?.ValidateUnusedEffects(state, workCounter, cancellationToken);
                     SvgResourceUseReplay.ResolveClips(state, workCounter, cancellationToken);
                     SvgMaskContentReplay.Resolve(root, state, workCounter, cancellationToken);
                     SvgPatternUseReplay.Resolve(root, state, limits, workCounter, cancellationToken);

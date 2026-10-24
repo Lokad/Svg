@@ -83,8 +83,8 @@ internal static class SvgFontRequestDiscovery
         {
             XmlReaderSettings settings = SvgXmlReaderPolicy.Create(svg, limits, budget, workCounter, cancellationToken);
             SvgRootStyleSheetParser.Collect(svg, settings, limits, styleRules, styleStrings, budget, workCounter, cancellationToken);
-            using SvgPatternContentSelection? patternContents = SvgPatternContentSelection.Create(svg, settings, limits, styleRules, styleStrings, budget, workCounter, cancellationToken);
-            using SvgInstanceFontDiscovery? instanceFonts = SvgInstanceFontDiscovery.Collect(svg, settings, limits, styleRules, styleStrings, budget, workCounter, cancellationToken);
+            using SvgPaintResourceSelection? paintResources = SvgPaintResourceSelection.Create(svg, settings, limits, styleRules, styleStrings, budget, workCounter, cancellationToken);
+            using SvgInstanceFontDiscovery? instanceFonts = SvgInstanceFontDiscovery.Collect(svg, settings, limits, styleRules, styleStrings, paintResources, budget, workCounter, cancellationToken);
             using SvgCssAncestorContext ancestors = new(styleRules, budget, workCounter, cancellationToken);
             using ReadOnlyMemoryStream stream = new(svg);
             using XmlReader reader = XmlReader.Create(stream, settings);
@@ -151,7 +151,7 @@ internal static class SvgFontRequestDiscovery
                     InlineStyle tspanStyleSheet = insideDirectText && isSvgElement && reader.LocalName == "tspan" ? SvgStyleSheet.Resolve(reader, styleRules, ancestors, workCounter, cancellationToken) : default;
                     bool admittedTextSpan = false;
                     SvgTextSpanStyle? parsedTextSpan = null;
-                    if (insideDirectText && isSvgElement && reader.LocalName == "tspan" && SvgTextSyntax.TryParseTspanStyle(reader, new SvgTextSpanStyle(inheritedWhitespaceMode, 0) { Paint = inheritedLevels[^1].TextPaint, Font = inheritedLevels[^1].Text }, tspanStyleSheet, workCounter, cancellationToken, out SvgTextSpanStyle spanStyle))
+                    if (insideDirectText && isSvgElement && reader.LocalName == "tspan" && SvgTextSyntax.TryParseTspanStyle(reader, new SvgTextSpanStyle(inheritedWhitespaceMode, 0) { Paint = inheritedLevels[^1].TextPaint(paintResources), Font = inheritedLevels[^1].Text }, tspanStyleSheet, workCounter, cancellationToken, out SvgTextSpanStyle spanStyle))
                     {
                         childWhitespaceMode = spanStyle.WhitespaceMode;
                         admittedTextSpan = textPathDepth < 0 || spanStyle.PositionOffset is not SvgTextPositionOffset offset || offset.X is null && offset.Y is null;
@@ -244,7 +244,7 @@ internal static class SvgFontRequestDiscovery
                         double? patternHeight = reader.GetAttribute("height") is {} height ? SvgGeometrySyntax.ParseRectangleCoordinate(height) : null;
                         bool noTemplate = reader.GetAttribute("href") is null && reader.GetAttribute("href", "http://www.w3.org/1999/xlink") is null;
                         patternHasSize = patternWidth != 0 && patternHeight != 0 && (!noTemplate || patternWidth is not null && patternHeight is not null);
-                        patternHasSize |= patternContents?.RequiresContent(reader.GetAttribute("id")) == true;
+                        patternHasSize |= paintResources?.RequiresPatternContent(reader.GetAttribute("id")) == true;
                         if (!reader.IsEmptyElement)
                         {
                             patternDepth = reader.Depth;
@@ -302,9 +302,9 @@ internal static class SvgFontRequestDiscovery
                     SvgTextWhitespaceMode inheritedTextWhitespaceMode = style.Text.WhitespaceMode;
                     string? specifiedWhiteSpace = null;
                     // Reset definition-ancestor display before applying the resource's own declaration.
-                    if (patternDefinition) style = style with { IsDisplayed = patternHasSize && patternContents?.IsDisplayed(reader.GetAttribute("id")) != false
-                        && (patternContents?.RequiresContent(reader.GetAttribute("id")) ?? true) };
-                    if (!sterile && isSvgElement && !rootElement && !insideDirectText && parentAllowsText && reader.LocalName is ("svg" or "defs" or "g" or "a" or "switch" or "pattern" or "text" or "use")) style = ApplyAttributes(reader, style, styleSheet, workCounter, cancellationToken, out specifiedWhiteSpace);
+                    if (patternDefinition) style = style with { Metrics = default, IsDisplayed = patternHasSize && paintResources?.IsPatternDisplayed(reader.GetAttribute("id")) != false
+                        && (paintResources?.RequiresPatternContent(reader.GetAttribute("id")) ?? true) };
+                    if (!sterile && isSvgElement && !rootElement && !insideDirectText && parentAllowsText && reader.LocalName is ("svg" or "defs" or "g" or "a" or "switch" or "pattern" or "text" or "use")) style = ApplyAttributes(reader, style, styleSheet, paintResources, workCounter, cancellationToken, out specifiedWhiteSpace);
                     if (emptyViewport) style = style with { IsDisplayed = false };
                     if (!sterile && parsedTextSpan is SvgTextSpanStyle parsedSpan)
                     {
@@ -417,7 +417,7 @@ internal static class SvgFontRequestDiscovery
                     if (activeCandidateLevel >= 0)
                     {
                         SvgTextWhitespaceMode activeWhitespace = whitespaceLevels[whitespaceLevels.Count - 1];
-                        SvgTextPaintStyle paint = inheritedLevels[^1].TextPaint;
+                        SvgTextPaintStyle paint = inheritedLevels[^1].TextPaint(paintResources);
                         SvgInheritedTextStyle currentFont = inheritedLevels[^1].Text;
                         SvgFontCoverageDiscovery? visibleCoverage = paint.IsDisplayed ? coverage : null;
                         visibleCoverage?.SetFont(currentFont);
@@ -485,7 +485,7 @@ internal static class SvgFontRequestDiscovery
 
             static SvgInheritedContainer SourceContext(TextStyle style)
                 => new(new(style.Paint, style.IsDisplayed, style.IsVisible, SvgAffineTransform.Identity)
-                    { Markers = style.Markers, OwnOpacity = style.ElementOpacity, ElementDisplay = style.ElementDisplay, PaintServerFill = style.PaintServerFill, PaintOrder = style.PaintOrder },
+                    { Markers = style.Markers, TextMetrics = style.Metrics, OwnOpacity = style.ElementOpacity, ElementDisplay = style.ElementDisplay, PaintServerFill = style.PaintServerFill, PaintOrder = style.PaintOrder },
                     style.Text, style.FillRule, style.ElementOpacity.Alpha, style.StrokeStyle with { Stroke = style.Stroke });
 
             void ObserveMarkerDefinition(XmlReader marker, SvgInheritedTextStyle inherited, bool definitionResourcesDisplayed)
@@ -604,15 +604,15 @@ internal static class SvgFontRequestDiscovery
         return hasRenderableText;
     }
 
-    private static TextStyle ApplyAttributes(XmlReader reader, TextStyle inherited, InlineStyle styleSheet, ParserWorkCounter workCounter, CancellationToken cancellationToken, out string? specifiedWhiteSpace)
+    private static TextStyle ApplyAttributes(XmlReader reader, TextStyle inherited, InlineStyle styleSheet, SvgPaintResourceSelection? resources, ParserWorkCounter workCounter, CancellationToken cancellationToken, out string? specifiedWhiteSpace)
     {
         InlineStyle inlineStyle = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
         SvgComputedStyle computedStyle = SvgComputedStyle.Resolve(reader, inlineStyle, styleSheet).ResolveOpacity(inherited.ElementOpacity).ResolveDisplay(inherited.ElementDisplay);
         specifiedWhiteSpace = SvgInlineStyleParser.MergeWithImportance(inlineStyle.WhiteSpace, inlineStyle.Important, InlineImportantProperties.WhiteSpace, styleSheet.WhiteSpace, styleSheet.Important);
         if (reader.LocalName is "svg" or "defs" or "use" || SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName))
         {
-            SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inlineStyle, computedStyle, styleSheet, new SvgInheritedPresentation(inherited.Paint, inherited.IsDisplayed, inherited.IsVisible, inherited.Transform) { OwnOpacity = inherited.ElementOpacity, ElementDisplay = inherited.ElementDisplay, PaintServerFill = inherited.PaintServerFill }, inherited.FillRule, inherited.Text, SvgInheritedStrokeStyle.Default, SvgRootParser.CssNamedColors, workCounter, cancellationToken);
-            return new TextStyle(resolved.TextStyle, resolved.Presentation.Paint, resolved.Presentation.IsDisplayed, resolved.Presentation.IsVisible, resolved.Presentation.Transform, resolved.FillRule, computedStyle.Stroke ?? inherited.Stroke) { StrokeStyle = inherited.StrokeStyle.ResolveChild(computedStyle), OwnOpacity = resolved.Presentation.ElementOpacity, ElementDisplay = resolved.Presentation.ElementDisplay, PaintServerFill = resolved.Presentation.PaintServerFill, PaintOrder = computedStyle.PaintOrder ?? inherited.PaintOrder, Markers = SvgMarkerStyle.Resolve(computedStyle, inherited.Markers) };
+            SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inlineStyle, computedStyle, styleSheet, new SvgInheritedPresentation(inherited.Paint, inherited.IsDisplayed, inherited.IsVisible, inherited.Transform) { TextMetrics = inherited.Metrics, OwnOpacity = inherited.ElementOpacity, ElementDisplay = inherited.ElementDisplay, PaintServerFill = inherited.PaintServerFill }, inherited.FillRule, inherited.Text, SvgInheritedStrokeStyle.Default, SvgRootParser.CssNamedColors, resources, workCounter, cancellationToken);
+            return new TextStyle(resolved.TextStyle, resolved.Presentation.Paint, resolved.Presentation.IsDisplayed, resolved.Presentation.IsVisible, resolved.Presentation.Transform, resolved.FillRule, computedStyle.Stroke ?? inherited.Stroke) { Metrics = resolved.Presentation.TextMetrics, StrokeStyle = inherited.StrokeStyle.ResolveChild(computedStyle), OwnOpacity = resolved.Presentation.ElementOpacity, ElementDisplay = resolved.Presentation.ElementDisplay, PaintServerFill = resolved.Presentation.PaintServerFill, PaintOrder = computedStyle.PaintOrder ?? inherited.PaintOrder, Markers = SvgMarkerStyle.Resolve(computedStyle, inherited.Markers) };
         }
         SvgInheritedTextStyle text = SvgTextInheritance.Resolve(reader, inherited.Text, SvgInlineStyleParser.MergeFont(inlineStyle.TextFont, inlineStyle.Important, styleSheet.TextFont, styleSheet.Important), specifiedWhiteSpace, SvgInlineStyleParser.MergeWithImportance(inlineStyle.LetterSpacing, inlineStyle.Important, InlineImportantProperties.LetterSpacing, styleSheet.LetterSpacing, styleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inlineStyle.WordSpacing, inlineStyle.Important, InlineImportantProperties.WordSpacing, styleSheet.WordSpacing, styleSheet.Important));
         SvgAffineTransform transform = inherited.Transform.ComposeChecked(SvgGeometrySyntax.ParseElementTransform(reader, workCounter, cancellationToken));
@@ -624,7 +624,7 @@ internal static class SvgFontRequestDiscovery
         { StrokeStyle = inherited.StrokeStyle.ResolveChild(computedStyle), PaintOrder = computedStyle.PaintOrder ?? inherited.PaintOrder };
         SvgTextDecorationStyle? decoration = SvgTextDecorationSyntax.Resolve(reader, inlineStyle, styleSheet, inherited.Text.Decoration, decorationPaint.GlyphPaint);
         if (decoration != text.Decoration) text = text.WithDecoration(decoration);
-        return new TextStyle(text, textPresentation.Paint, isDisplayed, isVisible, transform, computedStyle.FillRule ?? inherited.FillRule, computedStyle.Stroke ?? inherited.Stroke) { Filter = computedStyle.Filter, PaintServerFill = SvgTextPaintStyle.IsLocalFill(computedStyle.Fill) ? computedStyle.Fill : null, StrokeStyle = inherited.StrokeStyle.ResolveChild(computedStyle), OwnOpacity = computedStyle.GetOpacity(), ElementDisplay = computedStyle.GetDisplay(), PaintOrder = computedStyle.PaintOrder ?? inherited.PaintOrder, Markers = SvgMarkerStyle.Resolve(computedStyle, inherited.Markers), NonScalingStroke = SvgStrokeStyleSyntax.ParseVectorEffect(computedStyle.VectorEffect) };
+        return new TextStyle(text, textPresentation.Paint, isDisplayed, isVisible, transform, computedStyle.FillRule ?? inherited.FillRule, computedStyle.Stroke ?? inherited.Stroke) { Metrics = inherited.Metrics.Enter(computedStyle.Filter, resources), Filter = computedStyle.Filter, PaintServerFill = SvgTextPaintStyle.IsLocalFill(computedStyle.Fill) ? computedStyle.Fill : null, StrokeStyle = inherited.StrokeStyle.ResolveChild(computedStyle), OwnOpacity = computedStyle.GetOpacity(), ElementDisplay = computedStyle.GetDisplay(), PaintOrder = computedStyle.PaintOrder ?? inherited.PaintOrder, Markers = SvgMarkerStyle.Resolve(computedStyle, inherited.Markers), NonScalingStroke = SvgStrokeStyleSyntax.ParseVectorEffect(computedStyle.VectorEffect) };
     }
 
     private readonly record struct TextStyle(SvgInheritedTextStyle Text, SvgPaint Paint, bool IsDisplayed, bool IsVisible, SvgAffineTransform Transform, string? FillRule, string? Stroke)
@@ -638,7 +638,8 @@ internal static class SvgFontRequestDiscovery
         internal SvgPaintOrder PaintOrder { get; init; }
         internal bool NonScalingStroke { get; init; }
         internal SvgMarkerStyle Markers { get; init; }
-        internal SvgTextPaintStyle TextPaint => new(Paint, IsDisplayed, IsVisible, Stroke, ElementOpacity.Alpha) { ElementDisplay = ElementDisplay, FillServer = PaintServerFill, StrokeStyle = StrokeStyle, PaintOrder = PaintOrder, NonScalingStroke = NonScalingStroke, Decoration = Text.Decoration };
+        internal SvgTextMetricScope Metrics { get; init; }
+        internal SvgTextPaintStyle TextPaint(SvgPaintResourceSelection? resources) => new SvgTextPaintStyle(Paint, IsDisplayed, IsVisible, Stroke, ElementOpacity.Alpha) { ElementDisplay = ElementDisplay, FillServer = PaintServerFill, StrokeStyle = StrokeStyle, PaintOrder = PaintOrder, NonScalingStroke = NonScalingStroke, Decoration = Text.Decoration }.ResolveResources(Metrics.NeedsBounds ? null : resources, Metrics.CanSuppress);
     }
 
     private readonly record struct TextRequestKey(string Family, int Weight, bool Italic)

@@ -17,7 +17,7 @@ internal static class SvgContainerInheritance
         SvgInheritedTextStyle inheritedTextStyle,
         SvgInheritedStrokeStyle inheritedStroke,
         IReadOnlyDictionary<string, SvgColor> namedColors,
-        ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        SvgPaintResourceSelection? resources, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(inheritedTextStyle);
@@ -32,7 +32,7 @@ internal static class SvgContainerInheritance
         SvgTextDecorationStyle? decoration = SvgTextDecorationSyntax.Resolve(reader, inlineStyle, styleSheet, inheritedTextStyle.Decoration, decorationPaint.GlyphPaint);
         if (decoration != textStyle.Decoration) textStyle = textStyle.WithDecoration(decoration);
         return new SvgInheritedContainer(
-            new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, transform) { OwnOpacity = computedStyle.GetOpacity(), ElementDisplay = computedStyle.GetDisplay(), PaintServerFill = presentation.PaintServerFill, Markers = SvgMarkerStyle.Resolve(computedStyle, inheritedPresentation.Markers), PaintOrder = computedStyle.PaintOrder ?? inheritedPresentation.PaintOrder },
+            new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, transform) { TextMetrics = inheritedPresentation.TextMetrics.Enter(computedStyle.Filter, resources), OwnOpacity = computedStyle.GetOpacity(), ElementDisplay = computedStyle.GetDisplay(), PaintServerFill = presentation.PaintServerFill, Markers = SvgMarkerStyle.Resolve(computedStyle, inheritedPresentation.Markers), PaintOrder = computedStyle.PaintOrder ?? inheritedPresentation.PaintOrder },
             textStyle,
             computedStyle.FillRule ?? inheritedFillRule,
             presentation.Opacity,

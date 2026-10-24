@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Skip fonts and glyph construction for text with unavailable paint resources,
+  preserving span advances, independent paints and enclosing filter bounds.
 - Honor display on definitions and paint resources, preserving local template
   replacements and ordinary use sources. Skip unavailable mask and marker fonts.
 - Resolve explicit display inheritance through containers, local instances and

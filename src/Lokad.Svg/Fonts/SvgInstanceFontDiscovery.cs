@@ -45,7 +45,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
     }
 
     internal static SvgInstanceFontDiscovery? Collect(ReadOnlyMemory<byte> svg, XmlReaderSettings settings, SvgRenderLimits limits,
-        BudgetedParserList<CssRule> rules, BudgetedParserStringStore strings, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        BudgetedParserList<CssRule> rules, BudgetedParserStringStore strings, SvgPaintResourceSelection? resources, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         ReadOnlySpan<byte> bytes = svg.Span;
         if (!bytes.Contains((byte)0) && (bytes.IndexOf("text"u8) < 0 || bytes.IndexOf("use"u8) < 0 && bytes.IndexOf("mask"u8) < 0)
@@ -53,6 +53,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
         SvgInstanceFontDiscovery result = new(limits, rules, strings, budget, work, token,
             bytes.Contains((byte)0) || bytes.IndexOf("marker"u8) >= 0,
             bytes.Contains((byte)0) || bytes.IndexOf("mask"u8) >= 0);
+        result._state.PaintResources = resources;
         try { Read(result, svg, settings); return result; }
         catch { result.Dispose(); throw; }
 
@@ -141,8 +142,8 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
         InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), _work, _token, true);
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, sheet);
         SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inline, style, sheet,
-            inherited.Presentation with { IsDisplayed = definitionResourcesDisplayed, Transform = SvgAffineTransform.Identity }, inherited.FillRule,
-            inherited.TextStyle, inherited.Stroke, SvgRootParser.CssNamedColors, _work, _token);
+            inherited.Presentation with { IsDisplayed = definitionResourcesDisplayed, Transform = SvgAffineTransform.Identity, TextMetrics = default }, inherited.FillRule,
+            inherited.TextStyle, inherited.Stroke, SvgRootParser.CssNamedColors, _state.PaintResources, _work, _token);
         SvgClipBox? fractions = SvgMaskSyntax.ParseMaskFractionRegion(reader);
         SvgClipBox? region = fractions ?? SvgMaskSyntax.ParseMaskRegion(reader, bases);
         if (resolved.Presentation.IsDisplayed && region is not { Width: 0 } and not { Height: 0 })
@@ -203,8 +204,8 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                 SvgComputedStyle computed = SvgComputedStyle.Resolve(reader, inline, reader.StyleSheet);
                 SvgInheritedContainer resolved = visit.Index == root ? visit.Context : SvgContainerInheritance.Resolve(reader, inline, computed, reader.StyleSheet,
                     visit.Context.Presentation, visit.Context.FillRule, visit.Context.TextStyle, visit.Context.Stroke,
-                    SvgRootParser.CssNamedColors, owner._work, owner._token);
-                if (!resolved.Presentation.IsDisplayed) continue;
+                    SvgRootParser.CssNamedColors, owner._state.PaintResources, owner._work, owner._token);
+                if (!resolved.Presentation.IsDisplayed || resolved.Presentation.TextMetrics.CanSuppress) continue;
                 bool filter = SvgLocalUrl.GetReference(computed.Filter) is not null;
                 if (node.Kind == Kind.Text)
                 {
@@ -300,8 +301,8 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                 SvgComputedStyle computed = SvgComputedStyle.Resolve(reader, inline, reader.StyleSheet);
                 SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inline, computed, reader.StyleSheet,
                     visit.Context.Presentation, visit.Context.FillRule, visit.Context.TextStyle, visit.Context.Stroke,
-                    SvgRootParser.CssNamedColors, _work, _token);
-                if (!resolved.Presentation.IsDisplayed) continue;
+                    SvgRootParser.CssNamedColors, _state.PaintResources, _work, _token);
+                if (!resolved.Presentation.IsDisplayed || resolved.Presentation.TextMetrics.CanSuppress) continue;
                 if (node.Kind == Kind.Use && node.Target is {} emptyTarget && HasEmptyViewport(reader, emptyTarget))
                 {
                     AddMask(reader, resolved, computed.Filter);
@@ -342,6 +343,8 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                 (paint with { IsDisplayed = true, IsVisible = true }).GlyphPaint) };
             SvgInheritedTextStyle font = new(style.Font.Family, style.Font.Weight, style.Font.Italic, style.FontSize, whitespace, style.LetterSpacing, style.Anchor)
                 { WordSpacing = style.WordSpacing, Decoration = paint.Decoration };
+            SvgTextMetricScope metrics = inherited.Presentation.TextMetrics.Enter(authoredStyle.Filter, _state.PaintResources);
+            paint = paint.ResolveResources(metrics.NeedsBounds ? null : _state.PaintResources, metrics.CanSuppress);
             using BudgetedParserList<SvgExtractedTextRun> runs = new(_state.Budget, SvgMemoryCategory.Parser, _work, _token);
             try
             {

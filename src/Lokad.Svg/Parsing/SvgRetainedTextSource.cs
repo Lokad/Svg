@@ -165,7 +165,7 @@ internal sealed class SvgRetainedTextSource
             SvgAffineTransform placement = SvgReferenceResolver.PlainInstancePlacement(reference, frame);
             using Reader reader = OpenReader(0, work, token); reader.MoveToContent();
             SvgPaintableElementContext context = new(new(reference.FillOverride ?? reference.InheritedFill, reference.IsDisplayed, reference.IsVisible, placement)
-                { OwnOpacity = reference.ElementParentOpacity, ElementDisplay = reference.ElementParentDisplay, PaintOrder = reference.InheritedPaintOrder, Markers = reference.InheritedMarkers, PaintServerFill = reference.PaintServerFill },
+                { TextMetrics = reference.TextMetrics, OwnOpacity = reference.ElementParentOpacity, ElementDisplay = reference.ElementParentDisplay, PaintOrder = reference.InheritedPaintOrder, Markers = reference.InheritedMarkers, PaintServerFill = reference.PaintServerFill },
                 reference.InheritedTextStyle, reference.InheritedStroke, reader.StyleSheet, SvgRootParser.CssNamedColors, work, token, state.OutputMagnification, reference.InheritedFillRule)
             { StrokeHostMap = state.OutputMap.ComposeChecked(placement), LengthBases = reference.LengthBases, RecordingScope = reference.RecordingScope };
             SvgRenderedLeafParser.ParseResolved(reader, context, environment.Root, state, environment.Limits, state.Budget, environment.Fonts, work, token);

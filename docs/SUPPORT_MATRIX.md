@@ -209,6 +209,10 @@ The independent fill/stroke, markers and effects remain; validation and source
 bounds still apply through admitted instances and resources. See the
 [paint-independence regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.InertPaintServers.cs)
 and [supplied-text checks](../tests/Lokad.Svg.VisualTests/SvgSuppliedFontLabelTests.cs).
+Unavailable paint resources also need no text fonts when no glyph advance or
+enclosing filter depends on their metrics. Solid span overrides, independent
+strokes/decorations and subsequent text keep their font dependencies. See the
+[inactive-text regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.InactiveTextPaint.cs).
 
 Current restrictions:
 

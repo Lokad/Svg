@@ -7,18 +7,46 @@ internal readonly record struct SvgTextPaintStyle(SvgPaint Paint, bool IsDisplay
 {
     internal static SvgTextPaintStyle Default => new(SvgPaint.Default, true, true, null, 255);
     internal SvgDisplay ElementDisplay { get; init; }
+    private SvgPaintResourceSelection? Resources { get; init; }
+    private bool InactiveFill { get; init; }
+    private bool InactiveStroke { get; init; }
+    private bool SuppressFilter { get; init; }
+
+    /// <summary>Borrows preparation metadata through extraction; emitted glyph paint retains no index or owner.</summary>
+    internal SvgTextPaintStyle ResolveResources(SvgPaintResourceSelection? resources, bool suppressFilter)
+        => this with
+        {
+            Resources = resources, SuppressFilter = suppressFilter,
+            InactiveFill = resources?.IsInactivePaint(FillServer) == true,
+            InactiveStroke = resources?.IsInactivePaint(Stroke) == true
+        };
     internal string? FillServer { get; init; }
     internal SvgInheritedStrokeStyle StrokeStyle { get; init; }
     internal SvgPaintOrder PaintOrder { get; init; }
     internal bool NonScalingStroke { get; init; }
     internal SvgTextDecorationStyle? Decoration { get; init; }
-    internal SvgTextGlyphPaint GlyphPaint => new(SvgPaintResolver.ResolveFillColor(Paint, TextOpacity), IsDisplayed && IsVisible && Paint.HasFill)
+    private SvgTextGlyphPaint AuthoredGlyphPaint => new(SvgPaintResolver.ResolveFillColor(Paint, TextOpacity), IsDisplayed && IsVisible && Paint.HasFill)
     {
         FillServer = IsDisplayed && IsVisible && Paint.HasFill ? FillServer : null,
         Decoration = IsDisplayed && IsVisible ? Decoration : null,
         Stroke = IsDisplayed && IsVisible && Stroke is not null && !Stroke.Equals("none", StringComparison.OrdinalIgnoreCase)
             ? new(StrokeStyle with { Stroke = Stroke }, Paint, TextOpacity) { PaintOrder = PaintOrder, NonScaling = NonScalingStroke } : null
     };
+
+    internal SvgTextGlyphPaint GlyphPaint
+    {
+        get
+        {
+            SvgTextGlyphPaint paint = AuthoredGlyphPaint;
+            return paint with
+            {
+                HasFill = paint.HasFill && !InactiveFill && !SuppressFilter,
+                FillServer = InactiveFill || SuppressFilter ? null : paint.FillServer,
+                Stroke = InactiveStroke || SuppressFilter ? null : paint.Stroke,
+                Decoration = SuppressFilter ? null : paint.Decoration
+            };
+        }
+    }
 
     internal static SvgTextPaintStyle ResolveElement(SvgComputedStyle style, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisible, string? inheritedStroke)
     {
@@ -33,16 +61,22 @@ internal readonly record struct SvgTextPaintStyle(SvgPaint Paint, bool IsDisplay
         style = style.ResolveDisplay(inherited.ElementDisplay);
         ValidateStyle(style);
         SvgResolvedPresentation resolved = SvgPresentationResolver.Resolve(ForColorResolution(style), inherited.Paint, inherited.IsDisplayed, inherited.IsVisible, SvgRootParser.CssNamedColors);
-        return new(resolved.Paint, resolved.IsDisplayed, resolved.IsVisible, style.Stroke ?? inherited.Stroke, inherited.TextOpacity)
+        SvgTextPaintStyle result = new(resolved.Paint, resolved.IsDisplayed, resolved.IsVisible, style.Stroke ?? inherited.Stroke, inherited.TextOpacity)
         { ElementDisplay = style.GetDisplay(), FillServer = style.Fill is null ? inherited.FillServer : IsLocalFill(style.Fill) ? style.Fill : null, StrokeStyle = inherited.StrokeStyle.ResolveChild(style), PaintOrder = style.PaintOrder ?? inherited.PaintOrder, NonScalingStroke = SvgStrokeStyleSyntax.ParseVectorEffect(style.VectorEffect) };
+        return result.ResolveResources(inherited.Resources, inherited.SuppressFilter);
     }
 
     internal void ValidateEmission()
     {
-        _ = GlyphPaint.Stroke?.Resolve();
-        if (Decoration?.Paint.FillServer is not null)
+        SvgStroke? validatedStroke = AuthoredGlyphPaint.Stroke?.Resolve();
+        if (SuppressFilter || InactiveFill || InactiveStroke)
+        {
+            Resources?.ValidateTextPaint(AuthoredGlyphPaint.FillServer);
+            if (validatedStroke is not null) Resources?.ValidateTextPaint(Stroke);
+        }
+        if (AuthoredGlyphPaint.Decoration?.Paint.FillServer is not null)
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid text decoration fills are implemented.");
-        if (Decoration?.Paint.Stroke is {} decoration && decoration.Resolve() is {})
+        if (AuthoredGlyphPaint.Decoration?.Paint.Stroke is {} decoration && decoration.Resolve() is {})
             SvgStrokeStyleSyntax.RejectPaintServerStroke(decoration.Style.Stroke, "text decorations");
     }
 
@@ -98,3 +132,18 @@ internal readonly record struct SvgTextStrokePaint(SvgInheritedStrokeStyle Style
 
 /// <summary>Identifies a normalized UTF-16 interval with one effective glyph paint.</summary>
 internal readonly record struct SvgTextPaintSpan(int Start, int End, SvgTextGlyphPaint Paint);
+
+/// <summary>Preserves text metrics for an enclosing active filter even when inner paint is unavailable.</summary>
+/// <remarks>Value-only traversal state, reset at resource boundaries. Enter borrows preparation metadata,
+/// charges its shared work/cancellation for resource lookup, and owns no storage. An outer unavailable
+/// filter suppresses inner filters too; an active outer filter still needs descendant source bounds.</remarks>
+internal readonly record struct SvgTextMetricScope(bool Suppressed, bool NeedsBounds)
+{
+    internal bool CanSuppress => Suppressed && !NeedsBounds;
+    internal SvgTextMetricScope Enter(string? filter, SvgPaintResourceSelection? resources)
+    {
+        if (SvgLocalUrl.GetReference(filter) is null) return this;
+        bool inactive = resources?.IsInactiveFilter(filter) == true;
+        return new(Suppressed || inactive, NeedsBounds || !Suppressed && !inactive);
+    }
+}

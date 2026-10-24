@@ -84,6 +84,7 @@ internal static class SvgRenderedLeafParser
     {
         context = context.PrepareStyle(reader);
         SvgComputedStyle style = context.ResolveStyle(reader, reader.LocalName == "text");
+        context = context with { TextMetrics = context.InheritedPresentation.TextMetrics.Enter(style.Filter, state.PaintResources) };
         if (style.Filter is not string filter || filter.Trim() == "none")
             return ParseContent(reader, context, root, state, limits, budget, fontSnapshot, workCounter, cancellationToken);
         if (!SvgLocalUrl.TryParseId(filter, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local filter url references are implemented.");
@@ -372,6 +373,7 @@ internal static class SvgRenderedLeafParser
                 SvgTextPaintStyle textPaint = SvgTextPaintStyle.ResolveElement(textElement.Style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, context.InheritedStroke.Stroke);
                 textPaint = textPaint with { StrokeStyle = context.InheritedStroke.ResolveChild(textElement.Style), PaintOrder = textElement.Style.PaintOrder ?? context.InheritedPresentation.PaintOrder };
                 textPaint = textPaint with { Decoration = SvgTextDecorationSyntax.Resolve(resolvedText.TextDecoration ?? reader.GetAttribute("text-decoration"), context.InheritedTextStyle.Decoration, (textPaint with { IsDisplayed = true, IsVisible = true }).GlyphPaint) };
+                textPaint = textPaint.ResolveResources(context.TextMetrics.NeedsBounds ? null : state.PaintResources, context.TextMetrics.CanSuppress);
                 using BudgetedParserList<SvgExtractedTextRun> textRuns = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
                 try
                 {
