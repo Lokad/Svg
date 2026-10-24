@@ -143,7 +143,7 @@ public sealed partial class OpenTypeFontTests
     [InlineData("linearGradient")]
     [InlineData("radialGradient")]
     [InlineData("pattern")]
-    public async Task Referenced_leaf_paint_servers_must_exist_by_the_live_use_not_by_the_leaf_declaration(string server)
+    public async Task Referenced_leaf_paint_servers_can_follow_the_live_use(string server)
     {
         string paint = server == "pattern" ? "<pattern id='p' width='1' height='1'><rect width='32' height='32' fill='red'/></pattern>"
             : "<" + server + " id='p'><stop stop-color='red'/></" + server + ">";
@@ -153,7 +153,7 @@ public sealed partial class OpenTypeFontTests
         foreach (bool late in new[] { false, true })
         {
             byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + source + (late ? use + definitions : definitions + use) + "</svg>");
-            await AssertSupportAdmission(input, !late);
+            await AssertSupportAdmission(input, true);
         }
     }
 

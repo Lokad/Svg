@@ -1,0 +1,164 @@
+{
+  "purpose": "Font-free local instance paint declaration-order regressions; each actual SVG was independently captured in three fresh processes.",
+  "platform": "win64",
+  "chromePin": {
+    "version": "153.0.8010.52",
+    "chromiumRevision": "1681091",
+    "platform": "win64",
+    "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/win64/chrome-win64.zip",
+    "archiveSha256": "df4854428c509fcf2f790ac448bca3f994151bcff22008236fa7c4587294fbe1",
+    "executableRelativePath": "chrome-win64/chrome.exe",
+    "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+    "captureRecipeRevision": "3"
+  },
+  "width": 32,
+  "height": 32,
+  "background": "transparent",
+  "license": "MIT",
+  "cases": [
+    {
+      "id": "pattern-fill-candidate",
+      "input": "pattern-fill-candidate.svg",
+      "reference": "references/fill.png",
+      "sourceSha256": "40d791ffb7f7190ae50b2a946ece5dd2916976e53b4e9166754aac8900663841",
+      "referenceSha256": "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85",
+      "captureSha256": [
+        "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85",
+        "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85",
+        "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85"
+      ]
+    },
+    {
+      "id": "pattern-fill-control",
+      "input": "pattern-fill-control.svg",
+      "reference": "references/fill.png",
+      "sourceSha256": "d13536d70a93a54fec822b1a4197875bc585b128354dccc6fe2f092570cc19ae",
+      "referenceSha256": "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85",
+      "captureSha256": [
+        "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85",
+        "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85",
+        "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85"
+      ]
+    },
+    {
+      "id": "pattern-stroke-candidate",
+      "input": "pattern-stroke-candidate.svg",
+      "reference": "references/stroke.png",
+      "sourceSha256": "5b27138f0d9840ba85a6946a930309d6f5f15a5a5ea275d1fc6efb82b931c5e2",
+      "referenceSha256": "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a",
+      "captureSha256": [
+        "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a",
+        "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a",
+        "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a"
+      ]
+    },
+    {
+      "id": "pattern-stroke-control",
+      "input": "pattern-stroke-control.svg",
+      "reference": "references/stroke.png",
+      "sourceSha256": "e5b7add4f5f303dc8bfabf21f9ec2f162b61f67eed3acfda7a0233c0d8b29897",
+      "referenceSha256": "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a",
+      "captureSha256": [
+        "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a",
+        "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a",
+        "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a"
+      ]
+    },
+    {
+      "id": "linear-fill-candidate",
+      "input": "linear-fill-candidate.svg",
+      "reference": "references/fill.png",
+      "sourceSha256": "95b93de6b826914b74cb49967abf7248ec5cf29ac29bbc5db83e73cddadec8c1",
+      "referenceSha256": "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85",
+      "captureSha256": [
+        "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85",
+        "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85",
+        "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85"
+      ]
+    },
+    {
+      "id": "linear-fill-control",
+      "input": "linear-fill-control.svg",
+      "reference": "references/fill.png",
+      "sourceSha256": "b712edccd8a767f0f091ac966ebaf6fd584c12fd6893ce52d22c1842b7c02677",
+      "referenceSha256": "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85",
+      "captureSha256": [
+        "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85",
+        "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85",
+        "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85"
+      ]
+    },
+    {
+      "id": "linear-stroke-candidate",
+      "input": "linear-stroke-candidate.svg",
+      "reference": "references/stroke.png",
+      "sourceSha256": "eb7527cfa9f709970ab16f5a0ebd89fdce4e9998b54fb18c272de90a9f20ce06",
+      "referenceSha256": "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a",
+      "captureSha256": [
+        "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a",
+        "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a",
+        "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a"
+      ]
+    },
+    {
+      "id": "linear-stroke-control",
+      "input": "linear-stroke-control.svg",
+      "reference": "references/stroke.png",
+      "sourceSha256": "40c83eeba6194b1d2adff1a9ebdffe2826f7f93e3d960d178a4f2ea94260797f",
+      "referenceSha256": "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a",
+      "captureSha256": [
+        "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a",
+        "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a",
+        "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a"
+      ]
+    },
+    {
+      "id": "radial-fill-candidate",
+      "input": "radial-fill-candidate.svg",
+      "reference": "references/fill.png",
+      "sourceSha256": "3ede336782303abdcd06167bd4c80a417f9ba9ac9731b5379834593b76d6c93e",
+      "referenceSha256": "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85",
+      "captureSha256": [
+        "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85",
+        "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85",
+        "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85"
+      ]
+    },
+    {
+      "id": "radial-fill-control",
+      "input": "radial-fill-control.svg",
+      "reference": "references/fill.png",
+      "sourceSha256": "b1cb5f1ff6792bb2503895223791adb3312f6f08486a0ee38dbf7324bf4a92f4",
+      "referenceSha256": "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85",
+      "captureSha256": [
+        "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85",
+        "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85",
+        "aa8b74f047cb2932807ccaa3c16711560ec1ea79b121f08fa202fc4bbc8dee85"
+      ]
+    },
+    {
+      "id": "radial-stroke-candidate",
+      "input": "radial-stroke-candidate.svg",
+      "reference": "references/stroke.png",
+      "sourceSha256": "204f3281c3daeffa0ef718fb5dfa5105564689b486d606f2f65eb0621ae29fdc",
+      "referenceSha256": "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a",
+      "captureSha256": [
+        "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a",
+        "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a",
+        "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a"
+      ]
+    },
+    {
+      "id": "radial-stroke-control",
+      "input": "radial-stroke-control.svg",
+      "reference": "references/stroke.png",
+      "sourceSha256": "0c3a3aa43f05015930c6ab8f6fe0cb87534bbe77dee1736505a2308b8037532e",
+      "referenceSha256": "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a",
+      "captureSha256": [
+        "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a",
+        "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a",
+        "a7b304cfbbf0732be3f8f1f6258ee45e68866c48d3677771711079b0ca19169a"
+      ]
+    }
+  ]
+}

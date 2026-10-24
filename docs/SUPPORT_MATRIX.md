@@ -213,6 +213,9 @@ Unavailable paint resources also need no text fonts when no glyph advance or
 enclosing filter depends on their metrics. Solid span overrides, independent
 strokes/decorations and subsequent text keep their font dependencies. See the
 [inactive-text regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.InactiveTextPaint.cs).
+Local instances resolve paint resources independently of source/use/resource
+declaration order, including paints inherited from the consuming container. See
+the [ordering regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.InstancePaintOrder.cs).
 
 Current restrictions:
 

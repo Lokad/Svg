@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Resolve local instance fills and strokes when their paint resource is declared
+  later, including paints authored on the source, use or enclosing container.
 - Skip fonts and glyph construction for text with unavailable paint resources,
   preserving span advances, independent paints and enclosing filter bounds.
 - Honor display on definitions and paint resources, preserving local template

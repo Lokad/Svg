@@ -61,8 +61,15 @@ internal static class SvgReferenceResolver
     internal static void ResolveOrDefer(SvgUseReference reference, BudgetedParserDictionary<string, SvgDefinition> definitions, BudgetedParserList<PendingUse> pendingUses, SvgSceneBuilder scene, SvgViewportFrame? frame, byte? mask, string? maskReference, SvgDeferredClip? deferredClip, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         workCounter.Consume(cancellationToken);
-        if (deferredClip is null && (maskReference is null || mask is not null) && TryGetDefinition(reference, definitions, out SvgDefinition definition) && definition.SymbolContent is null
-            && SvgLocalUrl.GetReference(definition.LeafSource?.GetAttribute("mask")) is null)
+        // Source availability does not imply paint availability. Preserve drawing
+        // order through the existing pending-use slot until all its paints exist.
+        if (deferredClip is null && (maskReference is null || mask is not null)
+            && TryGetDefinition(reference, definitions, out SvgDefinition definition) && definition.SymbolContent is null
+            && SvgLocalUrl.GetReference(definition.LeafSource?.GetAttribute("mask")) is null
+            && !MissingPaint(SvgLocalUrl.GetReference(definition.LeafSource?.AuthoredStyle.Fill), state, workCounter, cancellationToken)
+            && !MissingPaint(SvgLocalUrl.GetReference(definition.LeafSource?.AuthoredStyle.Stroke), state, workCounter, cancellationToken)
+            && !MissingPaint(reference.PaintServerId, state, workCounter, cancellationToken)
+            && !MissingPaint(SvgLocalUrl.GetReference(reference.InheritedStroke.Stroke), state, workCounter, cancellationToken))
         {
             SvgGeometry[] applied = ApplyInstanceMask(definition, reference, frame, mask, maskReference, null, state, workCounter, cancellationToken);
             scene.AddGeometries(applied);
@@ -71,6 +78,14 @@ internal static class SvgReferenceResolver
         {
             int scopeStart = SnapshotMaskScopes(state, workCounter, cancellationToken);
             pendingUses.Add(new PendingUse(scene.AddReferencePlaceholder(), reference, frame, mask, maskReference, scopeStart, state.MaskScopeSnapshots.Count - scopeStart, deferredClip));
+        }
+
+        static bool MissingPaint(string? id, SvgDocumentState document, ParserWorkCounter work, CancellationToken token)
+        {
+            if (id is null) return false;
+            work.Consume(token);
+            return !document.Gradients.TryGetValue(id, out _) && !document.RadialGradients.TryGetValue(id, out _)
+                && !document.Patterns.TryGetValue(id, out _);
         }
     }
 

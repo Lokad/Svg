@@ -18,6 +18,12 @@ plus work/memory denial, cancellation and retry checks. Fractional filter region
 can differ from unfiltered rectangles; those references describe the filtered input.
 [Developer tools](../tools/README.md) documents capture and research procedures.
 
+[Instance paint order tests](Lokad.Svg.Tests/OpenTypeFontTests.InstancePaintOrder.cs)
+cover source/use/resource ordering, inherited paints, replay, limits and ownership.
+The [browser reference tests](Lokad.Svg.VisualTests/SvgInstancePaintOrderReferenceTests.cs)
+check each order against its own committed image; capture hashes are retained
+with the [font-free inputs](Research/forward-instance-paints/capture.json).
+
 [Display inheritance tests](Lokad.Svg.Tests/SvgDisplayInheritanceTests.cs) cover
 logical parents, retained instances, viewports and resource children across
 attributes, inline styles and stylesheets. The
