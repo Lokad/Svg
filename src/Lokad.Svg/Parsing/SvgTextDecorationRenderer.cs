@@ -10,7 +10,8 @@ internal static class SvgTextDecorationRenderer
 {
     internal static void Emit(SvgTextRun run, ReadOnlySpan<SvgTextPaintFragment> fragments, SvgAffineTransform placement,
         ReadOnlySpan<SvgPlacedTextGlyph> pathPlacements, SvgLeafMaskBinding? pathClip, SvgDocumentState state, SvgColor fallbackColor,
-        bool lineThrough, int maximumCommands, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        bool lineThrough, int maximumCommands, RenderBudget budget, ParserWorkCounter work, SvgRecordedTransform? recording,
+        ref SvgTextPaintPreparation prepared, CancellationToken token)
     {
         if (fragments.IsEmpty) return;
         if (!pathPlacements.IsEmpty && (!pathPlacements[fragments[0].Start].Visible || run.GetGlyphPaint(fragments[0].Start, fallbackColor).Decoration is null)) return;
@@ -49,29 +50,35 @@ internal static class SvgTextDecorationRenderer
                 SvgTextGlyphPaint paint = decoration.Paint;
                 if (paint.Stroke is {} decorationStroke && glyphPaint.Stroke is {} glyphStroke)
                     paint = paint with { Stroke = decorationStroke with { PaintOrder = glyphStroke.PaintOrder } };
+                SvgRecordedPaint fillRecord = default, strokeRecord = default;
+                if (prepared.NativeDrawing && state.FilterGroupDepth <= 0)
+                {
+                    if (paint.HasFill) fillRecord = prepared.RecordDrawing(run, placement, pathPlacements, state, fallbackColor, paint.Color.Alpha / 255f, recording, work, token);
+                    if (paint.Stroke?.Resolve() is {} stroke) strokeRecord = prepared.RecordDrawing(run, placement, pathPlacements, state, fallbackColor, stroke.Color.Alpha / 255f, recording, work, token);
+                }
                 if ((lines & SvgTextDecorationLine.Underline) != 0)
                 for (int line = 0; line < decoration.UnderlineCount; line++)
-                    phaseClip = Line(ref lowering, run, fragment, first, x, (top + ascent + MathF.Max(1, MathF.Ceiling(thickness / 2))) / metrics.Scale, width, thickness / metrics.Scale, metrics.Scale, inkStretch, map, paint, phaseClip, state, budget, work, token);
+                    phaseClip = Line(ref lowering, run, fragment, first, x, (top + ascent + MathF.Max(1, MathF.Ceiling(thickness / 2))) / metrics.Scale, width, thickness / metrics.Scale, metrics.Scale, inkStretch, map, paint, fillRecord, strokeRecord, phaseClip, state, budget, work, token);
                 if ((lines & SvgTextDecorationLine.Overline) != 0)
                 for (int line = 0; line < decoration.OverlineCount; line++)
-                    phaseClip = Line(ref lowering, run, fragment, first, x, (top - MathF.Floor(thickness)) / metrics.Scale, width, thickness / metrics.Scale, metrics.Scale, inkStretch, map, paint, phaseClip, state, budget, work, token);
+                    phaseClip = Line(ref lowering, run, fragment, first, x, (top - MathF.Floor(thickness)) / metrics.Scale, width, thickness / metrics.Scale, metrics.Scale, inkStretch, map, paint, fillRecord, strokeRecord, phaseClip, state, budget, work, token);
                 if ((lines & SvgTextDecorationLine.LineThrough) != 0)
                 for (int line = 0; line < decoration.LineThroughCount; line++)
-                    Rectangle(ref lowering, x, (top + 2 * ascent / 3 - thickness / 2) / metrics.Scale, width, thickness / metrics.Scale, map, paint, baseClip, state, budget, work, token);
+                    Rectangle(ref lowering, x, (top + 2 * ascent / 3 - thickness / 2) / metrics.Scale, width, thickness / metrics.Scale, map, paint, fillRecord, strokeRecord, baseClip, state, budget, work, token);
             }
         }
         finally { lowering.Dispose(); }
 
         static SvgLeafMaskBinding? Line(ref SvgOrthogonalGeometryLowering lowering, SvgTextRun run, SvgTextPaintFragment fragment, SvgPositionedGlyph first,
             double x, double y, double width, double height, double scale, double inkStretch, SvgAffineTransform map, SvgTextGlyphPaint paint,
-            SvgLeafMaskBinding? baseClip, SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+            SvgRecordedPaint fillRecord, SvgRecordedPaint strokeRecord, SvgLeafMaskBinding? baseClip, SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
         {
             using BudgetedParserList<SvgTextInkGap> gaps = new(budget, SvgMemoryCategory.Geometry, work, token);
             double inset = Math.Min(height / 2, .5 / scale);
             SvgTextInkIntercepts.Collect(run, fragment, first, y + inset, y + height - inset, Math.Min(height, 13 / scale), inkStretch, gaps, budget, work, token);
             if (gaps.Count == 0)
             {
-                Rectangle(ref lowering, x, y, width, height, map, paint, baseClip, state, budget, work, token);
+                Rectangle(ref lowering, x, y, width, height, map, paint, fillRecord, strokeRecord, baseClip, state, budget, work, token);
                 return baseClip;
             }
             RenderBudget.BudgetReservation owner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgClipBox>(gaps.Count), SvgMemoryCategory.Geometry);
@@ -105,12 +112,12 @@ internal static class SvgTextDecorationRenderer
                 operation.RegionKind = SvgLayerRegionKind.AffineViewport;
                 clip = SvgLeafMaskComposition.NewBinding(state, operation, clip);
             }
-            Rectangle(ref lowering, x, y, width, height, map, paint, clip, state, budget, work, token);
+            Rectangle(ref lowering, x, y, width, height, map, paint, fillRecord, strokeRecord, clip, state, budget, work, token);
             return clip;
         }
 
         static void Rectangle(ref SvgOrthogonalGeometryLowering lowering, double x, double y, double width, double height,
-            SvgAffineTransform map, SvgTextGlyphPaint paint, SvgLeafMaskBinding? clip, SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+            SvgAffineTransform map, SvgTextGlyphPaint paint, SvgRecordedPaint fillRecord, SvgRecordedPaint strokeRecord, SvgLeafMaskBinding? clip, SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
         {
             work.Consume(token);
             SvgColor color = paint.Color;
@@ -120,7 +127,7 @@ internal static class SvgTextDecorationRenderer
             { StrokeHostMap = state.OutputMap.ComposeChecked(map) };
             bool strokeFirst = paint.Stroke?.PaintOrder.StrokeFirst() == true;
             if (strokeFirst && stroke is {} first && paint.Stroke is {} firstStyle)
-                Stroke(ref lowering, x, y, width, height, element, first, firstStyle, clip, state, budget, work, token);
+                Stroke(ref lowering, x, y, width, height, element, first, firstStyle, strokeRecord, clip, state, budget, work, token);
             if (paint.HasFill)
             {
                 if (map.IsAxisAligned)
@@ -128,7 +135,7 @@ internal static class SvgTextDecorationRenderer
                     float left = (float)x, top = (float)y, right = left + (float)width, bottom = top + (float)height;
                     SvgRectangle rectangle = map.Apply(new SvgRectangle(left, top, right - (double)left, bottom - (double)top, color, true, null));
                     SvgGeometry geometry = SvgGeometry.FromRectangle(rectangle) with { SolidPaint = SvgPaintResolver.ResolveSolidPaint(fill) };
-                    state.Scene.AddGeometry(Prepare(geometry, x, y, width, height, map, color, 0, clip, state, work, token));
+                    state.Scene.AddGeometry(Prepare(geometry, x, y, width, height, map, color, 0, fillRecord, clip, state, work, token));
                 }
                 else
                 {
@@ -136,17 +143,17 @@ internal static class SvgTextDecorationRenderer
                     try
                     {
                         for (int index = 0; index < parsed.Storage.Items.Length; index++)
-                            parsed.Storage.Items[index] = Prepare(parsed.Storage.Items[index], x, y, width, height, map, color, 0, clip, state, work, token);
+                            parsed.Storage.Items[index] = Prepare(parsed.Storage.Items[index], x, y, width, height, map, color, 0, fillRecord, clip, state, work, token);
                         state.Scene.AddGeometries(parsed.Geometries);
                     }
                     catch { parsed.Discard(); throw; }
                 }
             }
             if (!strokeFirst && stroke is {} last && paint.Stroke is {} lastStyle)
-                Stroke(ref lowering, x, y, width, height, element, last, lastStyle, clip, state, budget, work, token);
+                Stroke(ref lowering, x, y, width, height, element, last, lastStyle, strokeRecord, clip, state, budget, work, token);
 
             static void Stroke(ref SvgOrthogonalGeometryLowering lowering, double x, double y, double width, double height,
-                SvgResolvedPaintableElement element, SvgStroke stroke, SvgTextStrokePaint paint, SvgLeafMaskBinding? clip,
+                SvgResolvedPaintableElement element, SvgStroke stroke, SvgTextStrokePaint paint, SvgRecordedPaint recorded, SvgLeafMaskBinding? clip,
                 SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
             {
                 SvgInheritedStrokeStyle style = paint.Style;
@@ -158,7 +165,7 @@ internal static class SvgTextDecorationRenderer
                 try
                 {
                     for (int index = 0; index < parsed.Storage.Items.Length; index++)
-                        parsed.Storage.Items[index] = Prepare(parsed.Storage.Items[index], x, y, width, height, element.Transform, stroke.Color, stroke.Width / 2, clip, state, work, token);
+                        parsed.Storage.Items[index] = Prepare(parsed.Storage.Items[index], x, y, width, height, element.Transform, stroke.Color, stroke.Width / 2, recorded, clip, state, work, token);
                     state.Scene.AddGeometries(parsed.Geometries);
                 }
                 catch { parsed.Discard(); throw; }
@@ -166,9 +173,9 @@ internal static class SvgTextDecorationRenderer
         }
 
         static SvgGeometry Prepare(SvgGeometry geometry, double x, double y, double width, double height, SvgAffineTransform map,
-            SvgColor color, double strokeOutset, SvgLeafMaskBinding? clip, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+            SvgColor color, double strokeOutset, SvgRecordedPaint recorded, SvgLeafMaskBinding? clip, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
         {
-            geometry = geometry with { LeafMask = clip };
+            geometry = geometry with { LeafMask = clip, RecordedPaint = recorded };
             if (state.FilterGroupDepth > 0)
             {
                 SvgDevicePoint first = map.Apply(x, y), second = map.Apply(x + width, y), third = map.Apply(x, y + height), fourth = map.Apply(x + width, y + height);
@@ -176,11 +183,11 @@ internal static class SvgTextDecorationRenderer
                     (float)Math.Min(Math.Min(first.Y, second.Y), Math.Min(third.Y, fourth.Y)),
                     (float)Math.Max(Math.Max(first.X, second.X), Math.Max(third.X, fourth.X)),
                     (float)Math.Max(Math.Max(first.Y, second.Y), Math.Max(third.Y, fourth.Y)));
-                SvgRecordedPaintValue recorded = new(state.NewPaintOperationIdentity(), color.Alpha / 255f, false, new(1), SvgPaintOpacity.Opaque, new(1))
+                SvgRecordedPaintValue filterPaint = new(state.NewPaintOperationIdentity(), color.Alpha / 255f, false, new(1), SvgPaintOpacity.Opaque, new(1))
                 { ObjectBounds = bounds, VisualBounds = new(bounds.Left - (float)(strokeOutset * (Math.Abs(map.A) + Math.Abs(map.C))),
                     bounds.Top - (float)(strokeOutset * (Math.Abs(map.B) + Math.Abs(map.D))), bounds.Right + (float)(strokeOutset * (Math.Abs(map.A) + Math.Abs(map.C))),
                     bounds.Bottom + (float)(strokeOutset * (Math.Abs(map.B) + Math.Abs(map.D)))) };
-                geometry = geometry with { RecordedPaint = state.Scene.RegisterRecordedPaint(recorded) };
+                geometry = geometry with { RecordedPaint = state.Scene.RegisterRecordedPaint(filterPaint) };
             }
             return geometry;
         }

@@ -184,6 +184,9 @@ glyphs and decorations record source bounds before filter construction.
 Nonpainting effect anchors contribute object bounds without enlarging painted bounds.
 Path glyphs compose general parent poses; the translation shortcut requires unchanged axes.
 Zero-angle path glyphs retain the same fragment-origin truncation as rotated glyphs.
+Glyphs and decorations share enclosed source drawing bounds and recorded paint context.
+Straight paths retain scalar source queries separately from fitted glyph placement.
+Rectangle fast paints intersect their iteration bounds with the current isolated layer.
 Glyph caches retain the recorded font size and relax the remaining device matrix separately.
 
 The bounded interpreter keeps projection/freedom vectors and physical/hint grids

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Share native text drawing bounds with decorations and preserve scalar path source positions.
+- Honor isolated layer bounds when painting rectangles.
 - Preserve horizontal text-path paint origins before affine placement.
 - Preserve recorded font sizes when replaying mapped glyphs.
 - Render scaled and affine text paths with horizontal tangents.

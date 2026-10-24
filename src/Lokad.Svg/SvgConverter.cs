@@ -4234,7 +4234,9 @@ public static partial class SvgConverter
 
         void RasterizePreparedRectangle(SvgRectangleRaster raster, SvgAnalyticPaint rectanglePaint, byte[] destination)
         {
-            int startX = raster.Left, endX = raster.Right, startY = raster.Top, endY = raster.Bottom;
+            int startX = Math.Max(raster.Left, layerBounds.Left), endX = Math.Min(raster.Right, layerBounds.Right);
+            int startY = Math.Max(raster.Top, layerBounds.Top), endY = Math.Min(raster.Bottom, layerBounds.Bottom);
+            if (startX >= endX || startY >= endY) return;
             if (activeViewportClip.Length != 0 && activeViewportIsBinary)
             {
                 ParserWorkCounter clippingWork = new(options.Limits.MaximumWorkUnits - workUnits);

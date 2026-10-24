@@ -34,31 +34,6 @@ internal sealed class SvgMeasuredTextPath : IDisposable
         OwnedParserArray<SvgCurveMeasureStep> ownedSteps = new([], null);
         try
         {
-            SvgDevicePoint straightStart = default, straightEnd = default;
-            bool straightHasStart = false, straight = true;
-            foreach (SvgAuthoredPathCommand command in commands)
-            {
-                work.Consume(token);
-                if (command.Verb == SvgAuthoredPathVerb.End) continue;
-                if (command.Verb == SvgAuthoredPathVerb.Move && !straightHasStart)
-                {
-                    straightStart = straightEnd = map.Apply(command.First.X, command.First.Y);
-                    straightHasStart = true;
-                    continue;
-                }
-                if (command.Verb != SvgAuthoredPathVerb.Line) { straight = false; break; }
-                SvgDevicePoint next = map.Apply(command.First.X, command.First.Y);
-                if (next.Y != straightEnd.Y || next.X < straightEnd.X) { straight = false; break; }
-                straightEnd = next;
-            }
-            if (straight)
-            {
-                double straightLength = straightEnd.X - straightStart.X;
-                double calibration = pathLength is double declared ? straightLength / declared : 1;
-                if (!double.IsFinite(straightLength) || !double.IsFinite(calibration))
-                    throw new SvgException(SvgErrorCode.LimitExceeded, "The text-path length or calibration exceeds the supported range.");
-                return new(new(straightStart.X, straightStart.Y, straightLength) { OffsetScale = calibration }, true, ownedCurves, ownedSteps, owner) { EndPoint = straightEnd };
-            }
             using BudgetedParserList<Curve> curves = new(budget, SvgMemoryCategory.Geometry, work, token);
             using BudgetedParserList<SvgCurveMeasureStep> steps = new(budget, SvgMemoryCategory.Geometry, work, token);
             SvgDevicePoint current = default, first = default, start = default, horizontalEnd = default;
@@ -128,8 +103,8 @@ internal sealed class SvgMeasuredTextPath : IDisposable
             double offsetScale = pathLength is double calibrated ? length / calibrated : 1;
             if (!double.IsFinite(length) || !double.IsFinite(offsetScale))
                 throw new SvgException(SvgErrorCode.LimitExceeded, "The text-path length or calibration exceeds the supported range.");
-            // Straight positive baselines retain their established double-coordinate placement and strike route.
-            if (!horizontal) { ownedCurves = curves.Detach(); ownedSteps = steps.Detach(); }
+            // Source bounds retain the native scalar path query even on straight baselines.
+            ownedCurves = curves.Detach(); ownedSteps = steps.Detach();
             return new(new(start.X, start.Y, length) { OffsetScale = offsetScale }, horizontal, ownedCurves, ownedSteps, owner)
                 { EndPoint = SvgAuthoredPath.MapPoint(map, current, default), IsClosed = closed };
 
@@ -166,11 +141,6 @@ internal sealed class SvgMeasuredTextPath : IDisposable
         if (_owner is null) throw new InvalidOperationException("The measured text path is disposed.");
         if (!double.IsFinite(midpoint) || midpoint < 0 || midpoint > Baseline.Length)
             throw new ArgumentOutOfRangeException(nameof(midpoint));
-        if (IsHorizontal)
-            return rotation == 0 ? SvgAffineTransform.FromTranslation(Baseline.X + midpoint - halfAdvance, Baseline.Y + baselineShift)
-                : SvgAffineTransform.FromTranslation(Baseline.X + midpoint, Baseline.Y)
-                    .ComposeChecked(SvgAffineTransform.FromRotationDegrees(rotation))
-                    .ComposeChecked(SvgAffineTransform.FromTranslation(-halfAdvance, baselineShift));
         ReadOnlySpan<Curve> curves = _curves.Items;
         int low = 0, high = curves.Length - 1;
         float distance = (float)midpoint;

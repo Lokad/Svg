@@ -130,11 +130,9 @@ internal static class SvgTextPathLayout
                         SvgTextGlyphPaint paint = run.GetGlyphPaint(glyphIndex++, pending.Color);
                         if (!paint.IsPainted) { placements.Add(default); continue; }
                         double distance = offset + glyph.X;
-                        double midpoint = distance + glyph.Advance / 2;
-                        if (!measured.IsHorizontal || rotation != 0)
-                            // Native SVG adds the device character offset and inline
-                            // half-width before scalar division and the path offset.
-                            midpoint = ((float)(glyph.X * pathScale) + (float)(glyph.Advance * pathScale) / 2) / (float)pathScale + (float)offset;
+                        // Native SVG adds the device character offset and inline
+                        // half-width before scalar division and the path offset.
+                        double midpoint = ((float)(glyph.X * pathScale) + (float)(glyph.Advance * pathScale) / 2) / (float)pathScale + (float)offset;
                         if (!double.IsFinite(distance) || !double.IsFinite(midpoint)) throw new SvgException(SvgErrorCode.LimitExceeded, "Text-path placement exceeds the supported range.");
                         if (baseline.Length == 0 || midpoint < 0 || midpoint > baseline.Length) { placements.Add(default); continue; }
                         bool horizontalPlacement = measured.IsHorizontal && rotation == 0;
@@ -152,6 +150,16 @@ internal static class SvgTextPathLayout
                             paintHalfAdvance = 0;
                         }
                         SvgAffineTransform sourceMap = glyphMap.ComposeChecked(SvgAffineTransform.FromTranslation(placed.X, placed.Y));
+                        if (horizontalPlacement)
+                        {
+                            // Bounds retain the scalar point and physical inline subtraction
+                            // before inverse scaling; paint fitting keeps its separate origin.
+                            SvgAffineTransform sourcePoint = measured.GlyphMap(midpoint, 0, 0, work, token);
+                            float scale = (float)pathScale;
+                            float sourceX = (float)sourcePoint.E * scale - (float)(glyph.Advance * pathScale) / 2;
+                            float sourceY = (float)sourcePoint.F * scale + (float)(glyph.Y * pathScale);
+                            sourceMap = SvgAffineTransform.FromTranslation(sourceX / (double)scale, sourceY / (double)scale);
+                        }
                         SvgTextDecorationPlacement decoration = default;
                         if (paint.Decoration is not null)
                         {

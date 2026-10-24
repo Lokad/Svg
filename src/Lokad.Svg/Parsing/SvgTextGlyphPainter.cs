@@ -30,37 +30,28 @@ internal sealed record SvgTextPatternShader(SvgPatternGeometry Pattern) : SvgTex
 /// observe the shared budget/work/token and release on every exit. Direct and path font-placement distinctions remain explicit.</remarks>
 internal static class SvgTextGlyphPainter
 {
-    // Parser-local values share source measurement and scene paint metadata across
-    // a run. The scene arena owns retained records; this value owns no storage.
-    private struct Preparation
-    {
-        internal SvgRectangle? SourceBox;
-        internal SvgPaintBounds? DrawingBounds;
-        internal SvgRecordedPaint LastPaint;
-        internal bool NativeDrawing;
-    }
-
     /// <summary>Emits one direct run with the same ordered decorations, paints and borrowed clip as deferred replay.</summary>
     internal static void EmitDirect(SvgTextRun run, SvgAffineTransform placement, SvgLeafMaskBinding? clip, SvgColor fallback,
         SvgDocumentState state, int maximumCommands, RenderBudget budget, ParserWorkCounter work, SvgRecordedTransform? recording, CancellationToken token)
     {
-        SvgTextDecorationRenderer.Emit(run, run.PaintFragments, placement, [], clip, state, fallback, false, maximumCommands, budget, work, token);
-        Emit(run, placement, [], clip, fallback, state, maximumCommands, budget, work, recording, token);
-        SvgTextDecorationRenderer.Emit(run, run.PaintFragments, placement, [], clip, state, fallback, true, maximumCommands, budget, work, token);
+        SvgTextPaintPreparation prepared = SvgTextPaintPreparation.Create(run, work, token);
+        SvgTextDecorationRenderer.Emit(run, run.PaintFragments, placement, [], clip, state, fallback, false, maximumCommands, budget, work, recording, ref prepared, token);
+        Emit(run, placement, [], clip, fallback, state, maximumCommands, budget, work, recording, ref prepared, token);
+        SvgTextDecorationRenderer.Emit(run, run.PaintFragments, placement, [], clip, state, fallback, true, maximumCommands, budget, work, recording, ref prepared, token);
     }
 
     internal static void Emit(SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> pathPlacements,
         SvgLeafMaskBinding? pathClip, SvgColor fallback, SvgDocumentState state, int maximumCommands, RenderBudget budget, ParserWorkCounter work, SvgRecordedTransform? recording, CancellationToken token)
     {
+        SvgTextPaintPreparation prepared = SvgTextPaintPreparation.Create(run, work, token);
+        Emit(run, placement, pathPlacements, pathClip, fallback, state, maximumCommands, budget, work, recording, ref prepared, token);
+    }
+
+    private static void Emit(SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> pathPlacements,
+        SvgLeafMaskBinding? pathClip, SvgColor fallback, SvgDocumentState state, int maximumCommands, RenderBudget budget, ParserWorkCounter work,
+        SvgRecordedTransform? recording, ref SvgTextPaintPreparation prepared, CancellationToken token)
+    {
         if (!pathPlacements.IsEmpty && pathPlacements.Length != run.Glyphs.Length) throw new ArgumentException("Path placements must cover every source glyph.", nameof(pathPlacements));
-        Preparation prepared = new() { NativeDrawing = !run.Glyphs.IsEmpty };
-        for (int index = 0; prepared.NativeDrawing && index < run.Glyphs.Length; index++)
-        {
-            work.Consume(token);
-            SvgGlyphFontStyle face = run.GetGlyphFont(index);
-            prepared.NativeDrawing = SvgTextLayoutBounds.UsesFittedMetrics(face.Font,
-                SvgGlyphDeviceMetrics.GetEffectiveFontSize(face.FontSize * (run.DeviceMetrics?.Scale ?? 1)));
-        }
         if (run.PaintFragments.IsEmpty)
         {
             Fill(run, placement, pathPlacements, pathClip, fallback, 0, run.Glyphs.Length, state, budget, work, recording, ref prepared, token);
@@ -84,18 +75,18 @@ internal static class SvgTextGlyphPainter
                 double decorationWidth = run.GlyphStretch == 0 ? 0 : (float)run.Glyphs[start].Advance / (float)run.GlyphStretch;
                 ReadOnlySpan<SvgTextPaintFragment> decoration = [new(start, end, decorationWidth)];
                 if (!pathPlacements.IsEmpty)
-                    SvgTextDecorationRenderer.Emit(run, decoration, placement, pathPlacements, pathClip, state, fallback, false, maximumCommands, budget, work, token);
+                    SvgTextDecorationRenderer.Emit(run, decoration, placement, pathPlacements, pathClip, state, fallback, false, maximumCommands, budget, work, recording, ref prepared, token);
                 if (strokeFirst && paint.HasStroke) Stroke(run, placement, pathPlacements, pathClip, shader, fallback, start, end, state, budget, work, recording, ref prepared, token);
                 if (paint.HasFill) Fill(run, placement, pathPlacements, pathClip, fallback, start, end, state, budget, work, recording, ref prepared, token);
                 if (!strokeFirst && paint.HasStroke) Stroke(run, placement, pathPlacements, pathClip, shader, fallback, start, end, state, budget, work, recording, ref prepared, token);
                 if (!pathPlacements.IsEmpty)
-                    SvgTextDecorationRenderer.Emit(run, decoration, placement, pathPlacements, pathClip, state, fallback, true, maximumCommands, budget, work, token);
+                    SvgTextDecorationRenderer.Emit(run, decoration, placement, pathPlacements, pathClip, state, fallback, true, maximumCommands, budget, work, recording, ref prepared, token);
                 start = end;
             }
         }
 
         static void Fill(SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> paths, SvgLeafMaskBinding? pathClip,
-            SvgColor fallback, int start, int end, SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, SvgRecordedTransform? recording, ref Preparation prepared, CancellationToken token)
+            SvgColor fallback, int start, int end, SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, SvgRecordedTransform? recording, ref SvgTextPaintPreparation prepared, CancellationToken token)
         {
             OpenTypeGlyphContourStorage? decoded = null;
             string? fillServer = null;
@@ -153,7 +144,7 @@ internal static class SvgTextGlyphPainter
         }
 
         static void Stroke(SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> paths, SvgLeafMaskBinding? pathClip,
-            SvgTextShader? shader, SvgColor fallback, int start, int end, SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, SvgRecordedTransform? recording, ref Preparation prepared, CancellationToken token)
+            SvgTextShader? shader, SvgColor fallback, int start, int end, SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, SvgRecordedTransform? recording, ref SvgTextPaintPreparation prepared, CancellationToken token)
         {
             // Empty servers have no stroke outline. Retaining one would enlarge
             // native layer bounds and shift the surviving paint's bitmap origin.
@@ -182,7 +173,7 @@ internal static class SvgTextGlyphPainter
         }
 
         static SvgTextShader Bind(string value, SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> paths,
-            SvgDocumentState state, ParserWorkCounter work, ref Preparation prepared, CancellationToken token)
+            SvgDocumentState state, ParserWorkCounter work, ref SvgTextPaintPreparation prepared, CancellationToken token)
         {
             if (!SvgLocalUrl.TryParseId(value, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local text paints are implemented.");
             if (state.Gradients.TryGetValue(id, out SvgLinearGradient linear))
@@ -218,30 +209,14 @@ internal static class SvgTextGlyphPainter
         }
 
         static SvgGeometry Record(SvgGlyphGeometry glyph, SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> paths,
-            SvgRecordedTransform? recording, SvgDocumentState state, SvgColor fallback, ref Preparation prepared, ParserWorkCounter work, CancellationToken token)
+            SvgRecordedTransform? recording, SvgDocumentState state, SvgColor fallback, ref SvgTextPaintPreparation prepared, ParserWorkCounter work, CancellationToken token)
         {
             // Generic/oversized outlines and filter captures keep their established
             // bounds and bitmap-origin contracts, independent of native text drawings.
             if (!prepared.NativeDrawing || state.FilterGroupDepth > 0)
                 return paths.IsEmpty || recording is not null || state.FilterGroupDepth > 0 ? RecordFallback() : SvgGeometry.FromGlyphContours(glyph);
-            if (prepared.DrawingBounds is null)
-            {
-                SvgRectangle box = prepared.SourceBox ??= SvgTextLayoutBounds.Measure(run, paths, placement, state.TextBoundsMetrics, work, token);
-                float inflation = 0;
-                for (int index = 0; index < run.Glyphs.Length; index++)
-                {
-                    work.Consume(token);
-                    if (run.GetGlyphPaint(index, fallback).Stroke?.Resolve() is {} stroke) inflation = MathF.Max(inflation, (float)stroke.Width);
-                }
-                prepared.DrawingBounds = new SvgPaintBounds(MathF.Floor((float)box.X - inflation), MathF.Floor((float)box.Y - inflation),
-                    MathF.Ceiling((float)(box.X + box.Width) + inflation), MathF.Ceiling((float)(box.Y + box.Height) + inflation)).Map(placement, work, token);
-            }
-            float alpha = glyph.Color.Alpha / 255f;
-            SvgRecordedPaintValue previous = state.Scene.GetRecordedPaintValue(prepared.LastPaint);
-            if (prepared.LastPaint.Identity == 0 || previous.Alpha != alpha || !ReferenceEquals(previous.RecordingTransform, recording))
-                prepared.LastPaint = state.Scene.RegisterRecordedPaint(new(state.NewPaintOperationIdentity(), alpha, false, new SvgRecordingScope(1),
-                    SvgPaintOpacity.Opaque, new SvgRecordingScope(1)) { RecordingTransform = recording, VisualBounds = prepared.DrawingBounds });
-            SvgGeometry nativeGeometry = SvgGeometry.FromGlyphContours(glyph) with { RecordedPaint = prepared.LastPaint };
+            SvgRecordedPaint paint = prepared.RecordDrawing(run, placement, paths, state, fallback, glyph.Color.Alpha / 255f, recording, work, token);
+            SvgGeometry nativeGeometry = SvgGeometry.FromGlyphContours(glyph) with { RecordedPaint = paint };
             if ((paths.IsEmpty || recording is not null) && state.Viewports.Count != 0)
                 nativeGeometry = nativeGeometry with { LeafMask = SvgViewportFrame.ResolveGlyphClip(state, work, token) };
             return nativeGeometry;

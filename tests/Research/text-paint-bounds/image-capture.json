@@ -1,5 +1,5 @@
 {
-  "purpose": "Text object boxes, full character widths and locally enclosed drawing rectangles feed independent paints. Path spacing, transforms, signed advances and replay retain their own coordinate boundaries. Deferred text and instance replay retain enclosing filter source bounds. General parent poses compose independently of zero-tangent path glyph placement. Recorded font size and remaining device matrix retain independent rounding boundaries. Horizontal path fragments retain source-origin truncation before parent affine placement.",
+  "purpose": "Text object boxes, full character widths and locally enclosed drawing rectangles feed independent paints. Path spacing, transforms, signed advances and replay retain their own coordinate boundaries. Deferred text and instance replay retain enclosing filter source bounds. General parent poses compose independently of zero-tangent path glyph placement. Recorded font size and remaining device matrix retain independent rounding boundaries. Horizontal path fragments retain source-origin truncation before parent affine placement. Glyphs and decorations share native source drawing bounds; axis-aligned paints retain isolated layer clipping.",
   "chromeVersion": "153.0.8010.52",
   "background": "transparent",
   "fontEvidence": "capture.json",
@@ -2941,6 +2941,326 @@
           "sha256": "8d7e8e3f5f853a090bf0ac22a70e0f3189dd5370457e1aed155c30bf25c9f94f"
         }
       }
+    },
+    {
+      "id": "decoration-drawing-20-isolated",
+      "input": "decoration-drawing-20-isolated.svg",
+      "sourceSha256": "0a5ddd726aa6aa7fc2b95105433929837f435d643fcde993fe8a8ce9aef17e88",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/473ca0950b4e5e3a.png",
+          "sha256": "473ca0950b4e5e3af170d676639ba3ae56aa66deceba250936c10b92e8d4053f"
+        },
+        "linux": {
+          "path": "references/473ca0950b4e5e3a.png",
+          "sha256": "473ca0950b4e5e3af170d676639ba3ae56aa66deceba250936c10b92e8d4053f"
+        }
+      }
+    },
+    {
+      "id": "decoration-drawing-20-opaque",
+      "input": "decoration-drawing-20-opaque.svg",
+      "sourceSha256": "1ac73b58c24b3112a0ecb78189731db62422352f808360f9bc5dd94df3665d68",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/a720fef2350830e9.png",
+          "sha256": "a720fef2350830e91ff7723fc855c19d96a6d950b245aae5086cbb1b20cceea2"
+        },
+        "linux": {
+          "path": "references/a720fef2350830e9.png",
+          "sha256": "a720fef2350830e91ff7723fc855c19d96a6d950b245aae5086cbb1b20cceea2"
+        }
+      }
+    },
+    {
+      "id": "decoration-drawing-21-isolated",
+      "input": "decoration-drawing-21-isolated.svg",
+      "sourceSha256": "0a5ddd726aa6aa7fc2b95105433929837f435d643fcde993fe8a8ce9aef17e88",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/7b4978f469d5a4e8.png",
+          "sha256": "7b4978f469d5a4e8da21187e74c355de58f2406e05690e2ff60313d409b8658c"
+        },
+        "linux": {
+          "path": "references/7b4978f469d5a4e8.png",
+          "sha256": "7b4978f469d5a4e8da21187e74c355de58f2406e05690e2ff60313d409b8658c"
+        }
+      }
+    },
+    {
+      "id": "decoration-drawing-21-opaque",
+      "input": "decoration-drawing-21-opaque.svg",
+      "sourceSha256": "1ac73b58c24b3112a0ecb78189731db62422352f808360f9bc5dd94df3665d68",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/836256502c6f3dd6.png",
+          "sha256": "836256502c6f3dd69c9ce154b2da0856ee73ef4dae363a594705160e9af511d3"
+        },
+        "linux": {
+          "path": "references/836256502c6f3dd6.png",
+          "sha256": "836256502c6f3dd69c9ce154b2da0856ee73ef4dae363a594705160e9af511d3"
+        }
+      }
+    },
+    {
+      "id": "decoration-drawing-27-isolated",
+      "input": "decoration-drawing-27-isolated.svg",
+      "sourceSha256": "688993f6dc2519366bed7681f063c13381e6d772d8b2f8ddbb9077f575854870",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/8b7b4d63817d95d4.png",
+          "sha256": "8b7b4d63817d95d42b5824b14db66aa2b6043420a7f19495523446fc5bafb204"
+        },
+        "linux": {
+          "path": "references/6347fa75ccb8f688.png",
+          "sha256": "6347fa75ccb8f688fb387439dd6776799c43acfafe68735d9aeec87993c989fd"
+        }
+      }
+    },
+    {
+      "id": "decoration-drawing-27-opaque",
+      "input": "decoration-drawing-27-opaque.svg",
+      "sourceSha256": "4bce76f65f3070428ca76fa5cf72248957e1d102eae990acff9b722b1c0a9188",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/9861ee00eb117b41.png",
+          "sha256": "9861ee00eb117b4164fef9b7035d580432f9cfe3229cbbae98760960c1d3d532"
+        },
+        "linux": {
+          "path": "references/4a08519371ad483c.png",
+          "sha256": "4a08519371ad483c8fac271c05b4dfd6ca2978bd5048de4854eb0051dc961080"
+        }
+      }
+    },
+    {
+      "id": "decoration-drawing-39-isolated",
+      "input": "decoration-drawing-39-isolated.svg",
+      "sourceSha256": "a04c381190c473ff3f8beccc74ebfd4bb3426ce09f84659dd4e82b63340dd690",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/55d1cf56d6014987.png",
+          "sha256": "55d1cf56d6014987a501e1d1a929ecc055fdb1d1702cdecf6b5eb79ca3484b42"
+        },
+        "linux": {
+          "path": "references/27162020c4150e87.png",
+          "sha256": "27162020c4150e87f64bcf4787a2fad69e9ab4cd42f1ddce1c97011f20600815"
+        }
+      }
+    },
+    {
+      "id": "decoration-drawing-39-opaque",
+      "input": "decoration-drawing-39-opaque.svg",
+      "sourceSha256": "5cb15bfb90bf80b508560433e4597c5bdd6aced2a5f83e4b963ba460056fa02f",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/4e8845e949a62073.png",
+          "sha256": "4e8845e949a6207358874615b63c9857de4121628991e44e919f0337ac5e9d73"
+        },
+        "linux": {
+          "path": "references/91ea4a2b88a75116.png",
+          "sha256": "91ea4a2b88a75116890dcd8002b060fc01a1970d1b28df4886483161e347a40b"
+        }
+      }
+    },
+    {
+      "id": "decoration-drawing-50-isolated",
+      "input": "decoration-drawing-50-isolated.svg",
+      "sourceSha256": "48a02a95f45b110bbaf1873df6ebb09bffd88e12b16917874ca7fd0005645471",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/db52f83008cd351f.png",
+          "sha256": "db52f83008cd351f4352e5f80f7adb7b1fe0381b7d3557ff3aef1f609dbfb0ee"
+        },
+        "linux": {
+          "path": "references/db52f83008cd351f.png",
+          "sha256": "db52f83008cd351f4352e5f80f7adb7b1fe0381b7d3557ff3aef1f609dbfb0ee"
+        }
+      }
+    },
+    {
+      "id": "decoration-drawing-50-opaque",
+      "input": "decoration-drawing-50-opaque.svg",
+      "sourceSha256": "2b2bda4cde4c4cb4a3901f773bccd30f1657dd8eb38b1b8cc00af904db3a6764",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/70ab878b42dabc61.png",
+          "sha256": "70ab878b42dabc616b3187e38b347857b555ac11494edf0529e825252ed841b2"
+        },
+        "linux": {
+          "path": "references/70ab878b42dabc61.png",
+          "sha256": "70ab878b42dabc616b3187e38b347857b555ac11494edf0529e825252ed841b2"
+        }
+      }
+    },
+    {
+      "id": "decoration-drawing-51-isolated",
+      "input": "decoration-drawing-51-isolated.svg",
+      "sourceSha256": "48a02a95f45b110bbaf1873df6ebb09bffd88e12b16917874ca7fd0005645471",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/21e90d291ded66a5.png",
+          "sha256": "21e90d291ded66a5c85ea8e8a4b2a8768f70fb1dac7f2d10996bc2867d44448b"
+        },
+        "linux": {
+          "path": "references/21e90d291ded66a5.png",
+          "sha256": "21e90d291ded66a5c85ea8e8a4b2a8768f70fb1dac7f2d10996bc2867d44448b"
+        }
+      }
+    },
+    {
+      "id": "decoration-drawing-51-opaque",
+      "input": "decoration-drawing-51-opaque.svg",
+      "sourceSha256": "2b2bda4cde4c4cb4a3901f773bccd30f1657dd8eb38b1b8cc00af904db3a6764",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/6b9dd27995738128.png",
+          "sha256": "6b9dd279957381288493a1c75b0f3ae9a40c0d08db5b000c856afe94dd338777"
+        },
+        "linux": {
+          "path": "references/6b9dd27995738128.png",
+          "sha256": "6b9dd279957381288493a1c75b0f3ae9a40c0d08db5b000c856afe94dd338777"
+        }
+      }
+    },
+    {
+      "id": "decoration-drawing-80-isolated",
+      "input": "decoration-drawing-80-isolated.svg",
+      "sourceSha256": "0aa972e59626c01b4beab8a139da472686741f86edc6922dd2faafeddd37ee94",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/3db1b8c291ae94e3.png",
+          "sha256": "3db1b8c291ae94e3011257ea0cc114c10b842135acf476af021936c197d0506a"
+        },
+        "linux": {
+          "path": "references/77c5b6eee3641691.png",
+          "sha256": "77c5b6eee3641691acb0da5399b164b0089fa83b3265c317352b9e63b2d64261"
+        }
+      }
+    },
+    {
+      "id": "decoration-drawing-80-opaque",
+      "input": "decoration-drawing-80-opaque.svg",
+      "sourceSha256": "b00bf59d550ddb6956b91ffcdf7d24110b591c87ad6e35a196d395854a0314c4",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/b8ca130b62289b72.png",
+          "sha256": "b8ca130b62289b72181992204bc004fc127842bbaf82195d04f1a8315d26c4c4"
+        },
+        "linux": {
+          "path": "references/ab9ed3416294f414.png",
+          "sha256": "ab9ed3416294f414ef8d7c84f9df4a5bde36e2a406772b1c64ebecafa47f1f4e"
+        }
+      }
+    },
+    {
+      "id": "decoration-drawing-81-isolated",
+      "input": "decoration-drawing-81-isolated.svg",
+      "sourceSha256": "0aa972e59626c01b4beab8a139da472686741f86edc6922dd2faafeddd37ee94",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/f12c28c99b5d26f7.png",
+          "sha256": "f12c28c99b5d26f744c4e25b351dff3cbb0d1e14840d3d24f66feb4f0aee9632"
+        },
+        "linux": {
+          "path": "references/2e84b12a31a9e1c6.png",
+          "sha256": "2e84b12a31a9e1c6bf86ff4baf29b9f8db0d849c349fade3bae18b1688b0fe6c"
+        }
+      }
+    },
+    {
+      "id": "decoration-drawing-81-opaque",
+      "input": "decoration-drawing-81-opaque.svg",
+      "sourceSha256": "b00bf59d550ddb6956b91ffcdf7d24110b591c87ad6e35a196d395854a0314c4",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/7ecbc57c32a8bfda.png",
+          "sha256": "7ecbc57c32a8bfda9cc31823427e236a17fefde3aded80487ebf9b4c00342c41"
+        },
+        "linux": {
+          "path": "references/ebcdc6b849532deb.png",
+          "sha256": "ebcdc6b849532deb4b3288fc79242079405dd55a8ce8f780b9352cbd49b6b940"
+        }
+      }
+    },
+    {
+      "id": "decoration-drawing-0-isolated",
+      "input": "decoration-drawing-0-isolated.svg",
+      "sourceSha256": "a1444912819292f087d0fdb9f585dce2f7c1da2bbb681dde32be5900b2225500",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/46d4b67a7f177ebc.png",
+          "sha256": "46d4b67a7f177ebc803475b5020502ed79da2fc30eb59060c3bb4246f0cb6c37"
+        },
+        "linux": {
+          "path": "references/9c96e4e3948e378a.png",
+          "sha256": "9c96e4e3948e378a8c01578b2b6bb8db72ae72de64674b7e3e8d3338fd4f8095"
+        }
+      }
+    },
+    {
+      "id": "decoration-drawing-0-opaque",
+      "input": "decoration-drawing-0-opaque.svg",
+      "sourceSha256": "a91457f18d414e652df884e43ca8a13ac288193458ceb2c9574bb1095978c4ac",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/c218a4b7bf266dcf.png",
+          "sha256": "c218a4b7bf266dcf0dcf765dffbcb05c4d5fd75b52e383d013b08860718c3bbf"
+        },
+        "linux": {
+          "path": "references/6c161071d9293eb3.png",
+          "sha256": "6c161071d9293eb3612e8db7680a006c589fdcba56608a1d8ddb11da61826ad8"
+        }
+      }
+    },
+    {
+      "id": "decoration-drawing-4-isolated",
+      "input": "decoration-drawing-4-isolated.svg",
+      "sourceSha256": "ea3c6f9a7c027499c9e1a86b827aa3d96d79ca605388af3dda10f874cb9a4095",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/608a3886685afebb.png",
+          "sha256": "608a3886685afebb81e4608b5fff70e6c6874f672cf2e522cbf389bc71c62fd5"
+        },
+        "linux": {
+          "path": "references/9d35e27c88bd7745.png",
+          "sha256": "9d35e27c88bd7745e8dff3aac5af0eacb11ac63fef5e167e5948833dd8c8cb2b"
+        }
+      }
+    },
+    {
+      "id": "decoration-drawing-4-opaque",
+      "input": "decoration-drawing-4-opaque.svg",
+      "sourceSha256": "306d6b8af9a9d15d5951432f2c4e86fc7af1b583131b44df8d175cdd655b83a2",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/cb7de91b53552c81.png",
+          "sha256": "cb7de91b53552c81de01ac782daf00a4c1f50624c801d50a5ccd824464a0b36a"
+        },
+        "linux": {
+          "path": "references/06b2c96653290ae9.png",
+          "sha256": "06b2c96653290ae9417ddb3a023990f539bc35d153d49164b06655a968029324"
+        }
+      }
     }
   ],
   "chromePins": {
@@ -3591,6 +3911,78 @@
         "executableName": "chrome",
         "elapsedMilliseconds": 11631,
         "debuggerReadyMilliseconds": 2971,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  },
+  "decorationDrawingLaunches": {
+    "windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 3359,
+        "debuggerReadyMilliseconds": 138,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 3398,
+        "debuggerReadyMilliseconds": 197,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 3433,
+        "debuggerReadyMilliseconds": 162,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 8290,
+        "debuggerReadyMilliseconds": 3438,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 9248,
+        "debuggerReadyMilliseconds": 4306,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 7277,
+        "debuggerReadyMilliseconds": 2846,
         "sandboxAccessFailures": 0,
         "networkServiceCrashes": 0,
         "stderrTruncated": false,
