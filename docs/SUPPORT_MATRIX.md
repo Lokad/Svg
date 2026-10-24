@@ -442,7 +442,11 @@ placement; pattern tiles retain their separate source coordinates. At extreme
 transforms, these drawings can paint nothing when native visual bounds collapse.
 Their object bounds and eligibility for source-independent filters remain. See the
 [marker sizing regressions](../tests/Lokad.Svg.Tests/SvgNonScalingMarkerTests.cs).
-Forward marker resources on retained symbol paths remain unsupported.
+Unstroked lines still paint their start/end markers through instances and resource
+content. Marker definitions may follow retained symbol paths and local uses; fragment
+identifiers decode once. See the
+[line-marker regressions](../tests/Lokad.Svg.Tests/SvgLineMarkerTests.cs) and
+[captured inputs](../tests/Research/line-marker-instances/capture.json).
 
 Supported filter primitives are `feGaussianBlur`, `feOffset`, `feFlood`,
 `feComposite` over/in, `feMerge`, `feBlend` normal/multiply/screen and

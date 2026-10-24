@@ -129,19 +129,6 @@ public sealed partial class OpenTypeFontTests
         string definitions = "<defs>" + resources + "</defs>";
         byte[] input = Input(forward ? Wrap(node) + definitions : definitions + Wrap(node));
         (var catalog, var provider, _) = CreateExamplePack(CreateTriangleFont());
-        if (consumer == "marker" && context == "symbol" && forward)
-        {
-            // Forward marker resources on retained symbol paths already have an
-            // explicit admission boundary, independent of fragment spelling.
-            Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => Render(input)).ErrorCode);
-            SvgException error = await Assert.ThrowsAsync<SvgException>(async () =>
-            {
-                using SvgPreparedDocument rejected = await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
-                _ = rejected.ConvertToPng(CancellationToken.None);
-            });
-            Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
-            return;
-        }
         byte[] expected = Render(Input(control));
         Assert.Equal(expected, Render(input));
         using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);

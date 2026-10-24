@@ -1956,7 +1956,8 @@ internal static class SvgDefinitionParser
         _ = SvgLineSyntax.Parse(reader);
         SvgComputedStyle style = context.ResolveStyle(reader);
         string? stroke = style.Stroke ?? context.InheritedStroke.Stroke;
-        if ((stroke is null || stroke == "none" || SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width)) && state.FilterGroupDepth <= 0) return new([], false, null, null);
+        if ((stroke is null || stroke == "none" || SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width)) && state.FilterGroupDepth <= 0
+            && !SvgMarkerStyle.Resolve(style, context.InheritedPresentation.Markers).HasMarkers) return new([], false, null, null);
         return new(RetainParsedGeometries(SvgLeafParser.ParseLine(reader, context, null, state), state, context.WorkCounter, context.CancellationToken), false, null, null);
     }
 

@@ -23,6 +23,12 @@ resources, inherited fills, aliases, tile paint ownership, limits and cancellati
 [Browser checks](Lokad.Svg.VisualTests/SvgMarkerPaintBindingReferenceTests.cs) use
 [independently captured inputs and hashes](Research/marker-paint-binding/capture.json).
 
+[Line-marker tests](Lokad.Svg.Tests/SvgLineMarkerTests.cs) cover unstroked hosts,
+forward markers, affine replay and owner cleanup. The
+[font cases](Lokad.Svg.Tests/OpenTypeFontTests.LineMarkers.cs) check ex metric
+preparation and suppression; [browser evidence](Research/line-marker-instances/capture.json)
+retains source orders, local fragment spellings and resource placements.
+
 [Instance paint order tests](Lokad.Svg.Tests/OpenTypeFontTests.InstancePaintOrder.cs)
 cover source/use/resource ordering, inherited paints, replay, limits and ownership.
 The [browser reference tests](Lokad.Svg.VisualTests/SvgInstancePaintOrderReferenceTests.cs)

@@ -1,0 +1,260 @@
+{
+  "purpose": "Markers independent of line stroke, forward retained marker resources and affine marker contours; each actual input captured in three fresh processes.",
+  "platform": "win64",
+  "chromePin": {
+    "version": "153.0.8010.52",
+    "chromiumRevision": "1681091",
+    "platform": "win64",
+    "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/win64/chrome-win64.zip",
+    "archiveSha256": "df4854428c509fcf2f790ac448bca3f994151bcff22008236fa7c4587294fbe1",
+    "executableRelativePath": "chrome-win64/chrome.exe",
+    "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+    "captureRecipeRevision": "3"
+  },
+  "width": 32,
+  "height": 32,
+  "background": "transparent",
+  "license": "MIT",
+  "cases": [
+    {
+      "id": "r84-line-0-candidate",
+      "input": "r84-line-0-candidate.svg",
+      "reference": "references/da451aad7d52ccfd.png",
+      "sourceSha256": "7b0b501e57b5024775e80f7d5f0434929302cf8d6fb26b3864d0d622a2a57868",
+      "referenceSha256": "da451aad7d52ccfd1c88e77fdca1f0e5324cd3c071fcd1a7ad643bb03540234b",
+      "captureSha256": [
+        "da451aad7d52ccfd1c88e77fdca1f0e5324cd3c071fcd1a7ad643bb03540234b",
+        "da451aad7d52ccfd1c88e77fdca1f0e5324cd3c071fcd1a7ad643bb03540234b",
+        "da451aad7d52ccfd1c88e77fdca1f0e5324cd3c071fcd1a7ad643bb03540234b"
+      ]
+    },
+    {
+      "id": "r84-line-0-control",
+      "input": "r84-line-0-control.svg",
+      "reference": "references/da451aad7d52ccfd.png",
+      "sourceSha256": "6dade3dd6816c53c6f071482bf646129cabfb0809ad85adc38f047a49b3ea9d0",
+      "referenceSha256": "da451aad7d52ccfd1c88e77fdca1f0e5324cd3c071fcd1a7ad643bb03540234b",
+      "captureSha256": [
+        "da451aad7d52ccfd1c88e77fdca1f0e5324cd3c071fcd1a7ad643bb03540234b",
+        "da451aad7d52ccfd1c88e77fdca1f0e5324cd3c071fcd1a7ad643bb03540234b",
+        "da451aad7d52ccfd1c88e77fdca1f0e5324cd3c071fcd1a7ad643bb03540234b"
+      ]
+    },
+    {
+      "id": "r84-line-1-candidate",
+      "input": "r84-line-1-candidate.svg",
+      "reference": "references/da451aad7d52ccfd.png",
+      "sourceSha256": "5b710f82c2ea006fa1160b9ee9b73da2a36a46800522a0e549a30d993a60be04",
+      "referenceSha256": "da451aad7d52ccfd1c88e77fdca1f0e5324cd3c071fcd1a7ad643bb03540234b",
+      "captureSha256": [
+        "da451aad7d52ccfd1c88e77fdca1f0e5324cd3c071fcd1a7ad643bb03540234b",
+        "da451aad7d52ccfd1c88e77fdca1f0e5324cd3c071fcd1a7ad643bb03540234b",
+        "da451aad7d52ccfd1c88e77fdca1f0e5324cd3c071fcd1a7ad643bb03540234b"
+      ]
+    },
+    {
+      "id": "r84-line-1-control",
+      "input": "r84-line-1-control.svg",
+      "reference": "references/da451aad7d52ccfd.png",
+      "sourceSha256": "94216c8639e181e5c975035f367b3c14978d362ab20c6bb9cc28a3a1ea6d4381",
+      "referenceSha256": "da451aad7d52ccfd1c88e77fdca1f0e5324cd3c071fcd1a7ad643bb03540234b",
+      "captureSha256": [
+        "da451aad7d52ccfd1c88e77fdca1f0e5324cd3c071fcd1a7ad643bb03540234b",
+        "da451aad7d52ccfd1c88e77fdca1f0e5324cd3c071fcd1a7ad643bb03540234b",
+        "da451aad7d52ccfd1c88e77fdca1f0e5324cd3c071fcd1a7ad643bb03540234b"
+      ]
+    },
+    {
+      "id": "r84-expanded-2-candidate",
+      "input": "r84-expanded-2-candidate.svg",
+      "reference": "references/8223e283d9fa31b2.png",
+      "sourceSha256": "5c70d1f4f0cf9e6d5427f20cf5a0161407093a0e88d859632f3e023e59f62c4e",
+      "referenceSha256": "8223e283d9fa31b28e2476b76e80ecfc58d5919e13eb4f7cb3765781940eb2dc",
+      "captureSha256": [
+        "8223e283d9fa31b28e2476b76e80ecfc58d5919e13eb4f7cb3765781940eb2dc",
+        "8223e283d9fa31b28e2476b76e80ecfc58d5919e13eb4f7cb3765781940eb2dc",
+        "8223e283d9fa31b28e2476b76e80ecfc58d5919e13eb4f7cb3765781940eb2dc"
+      ]
+    },
+    {
+      "id": "r84-expanded-2-control",
+      "input": "r84-expanded-2-control.svg",
+      "reference": "references/8223e283d9fa31b2.png",
+      "sourceSha256": "7b5bfec0758f4afea100823da41121053cb430eac8c3a6e407864de02edb6471",
+      "referenceSha256": "8223e283d9fa31b28e2476b76e80ecfc58d5919e13eb4f7cb3765781940eb2dc",
+      "captureSha256": [
+        "8223e283d9fa31b28e2476b76e80ecfc58d5919e13eb4f7cb3765781940eb2dc",
+        "8223e283d9fa31b28e2476b76e80ecfc58d5919e13eb4f7cb3765781940eb2dc",
+        "8223e283d9fa31b28e2476b76e80ecfc58d5919e13eb4f7cb3765781940eb2dc"
+      ]
+    },
+    {
+      "id": "r84-expanded-3-candidate",
+      "input": "r84-expanded-3-candidate.svg",
+      "reference": "references/ca2192528e7923e6.png",
+      "sourceSha256": "348b75f7d8abd125b66b250f4158551b6103962ef70a9da09b604c432fb4201a",
+      "referenceSha256": "ca2192528e7923e68924d18451edea5d6922f2c068b655b05666a3c7453d4922",
+      "captureSha256": [
+        "ca2192528e7923e68924d18451edea5d6922f2c068b655b05666a3c7453d4922",
+        "ca2192528e7923e68924d18451edea5d6922f2c068b655b05666a3c7453d4922",
+        "ca2192528e7923e68924d18451edea5d6922f2c068b655b05666a3c7453d4922"
+      ]
+    },
+    {
+      "id": "r84-expanded-3-control",
+      "input": "r84-expanded-3-control.svg",
+      "reference": "references/ca2192528e7923e6.png",
+      "sourceSha256": "52dc93c000008095c5211613f1bbc0d92b58aa380792730abd2ffc42d78d1e14",
+      "referenceSha256": "ca2192528e7923e68924d18451edea5d6922f2c068b655b05666a3c7453d4922",
+      "captureSha256": [
+        "ca2192528e7923e68924d18451edea5d6922f2c068b655b05666a3c7453d4922",
+        "ca2192528e7923e68924d18451edea5d6922f2c068b655b05666a3c7453d4922",
+        "ca2192528e7923e68924d18451edea5d6922f2c068b655b05666a3c7453d4922"
+      ]
+    },
+    {
+      "id": "r84-effects-4-candidate",
+      "input": "r84-effects-4-candidate.svg",
+      "reference": "references/82a3df620dadece0.png",
+      "sourceSha256": "55c8781ce4c7a134691c82ffd1a14711f24e64c99c3fea07edc4348de320c65e",
+      "referenceSha256": "82a3df620dadece0c0b20dff3df25af8eb70ca14ec65d87d181b9cc0effde89c",
+      "captureSha256": [
+        "82a3df620dadece0c0b20dff3df25af8eb70ca14ec65d87d181b9cc0effde89c",
+        "82a3df620dadece0c0b20dff3df25af8eb70ca14ec65d87d181b9cc0effde89c",
+        "82a3df620dadece0c0b20dff3df25af8eb70ca14ec65d87d181b9cc0effde89c"
+      ]
+    },
+    {
+      "id": "r84-effects-4-control",
+      "input": "r84-effects-4-control.svg",
+      "reference": "references/82a3df620dadece0.png",
+      "sourceSha256": "d312ca6bb4bbdbf7866a4eb5adc718c6ad95f69d3d0b8b0435172c4c6485493c",
+      "referenceSha256": "82a3df620dadece0c0b20dff3df25af8eb70ca14ec65d87d181b9cc0effde89c",
+      "captureSha256": [
+        "82a3df620dadece0c0b20dff3df25af8eb70ca14ec65d87d181b9cc0effde89c",
+        "82a3df620dadece0c0b20dff3df25af8eb70ca14ec65d87d181b9cc0effde89c",
+        "82a3df620dadece0c0b20dff3df25af8eb70ca14ec65d87d181b9cc0effde89c"
+      ]
+    },
+    {
+      "id": "r84-effects-5-candidate",
+      "input": "r84-effects-5-candidate.svg",
+      "reference": "references/283b93b38a0732a0.png",
+      "sourceSha256": "3e8ca146044cbdf4a2e82c8a852c1fd94be60ee70425a7a031b35021f5b34d26",
+      "referenceSha256": "283b93b38a0732a0bae204b154128b44e93e687ee87af53d8455204c78c3e701",
+      "captureSha256": [
+        "283b93b38a0732a0bae204b154128b44e93e687ee87af53d8455204c78c3e701",
+        "283b93b38a0732a0bae204b154128b44e93e687ee87af53d8455204c78c3e701",
+        "283b93b38a0732a0bae204b154128b44e93e687ee87af53d8455204c78c3e701"
+      ]
+    },
+    {
+      "id": "r84-effects-5-control",
+      "input": "r84-effects-5-control.svg",
+      "reference": "references/283b93b38a0732a0.png",
+      "sourceSha256": "868d2b040e122f0f3959ac294a11a1d30bcfc56660b5a7f8b6fca39de0cc7259",
+      "referenceSha256": "283b93b38a0732a0bae204b154128b44e93e687ee87af53d8455204c78c3e701",
+      "captureSha256": [
+        "283b93b38a0732a0bae204b154128b44e93e687ee87af53d8455204c78c3e701",
+        "283b93b38a0732a0bae204b154128b44e93e687ee87af53d8455204c78c3e701",
+        "283b93b38a0732a0bae204b154128b44e93e687ee87af53d8455204c78c3e701"
+      ]
+    },
+    {
+      "id": "r84-effects-6-candidate",
+      "input": "r84-effects-6-candidate.svg",
+      "reference": "references/5e9cb146715a05f3.png",
+      "sourceSha256": "c462360fd66a3e53c6826c2307801ea1ce9284a11388c0bfbe6735b21aa4bd63",
+      "referenceSha256": "5e9cb146715a05f3c9461af0b6afb61064c84a39f6ade3788076fb723626f720",
+      "captureSha256": [
+        "5e9cb146715a05f3c9461af0b6afb61064c84a39f6ade3788076fb723626f720",
+        "5e9cb146715a05f3c9461af0b6afb61064c84a39f6ade3788076fb723626f720",
+        "5e9cb146715a05f3c9461af0b6afb61064c84a39f6ade3788076fb723626f720"
+      ]
+    },
+    {
+      "id": "r84-effects-6-control",
+      "input": "r84-effects-6-control.svg",
+      "reference": "references/5e9cb146715a05f3.png",
+      "sourceSha256": "475460b9b0d224e259e81200484659059da4b1086a71fa81170545e30914f45e",
+      "referenceSha256": "5e9cb146715a05f3c9461af0b6afb61064c84a39f6ade3788076fb723626f720",
+      "captureSha256": [
+        "5e9cb146715a05f3c9461af0b6afb61064c84a39f6ade3788076fb723626f720",
+        "5e9cb146715a05f3c9461af0b6afb61064c84a39f6ade3788076fb723626f720",
+        "5e9cb146715a05f3c9461af0b6afb61064c84a39f6ade3788076fb723626f720"
+      ]
+    },
+    {
+      "id": "r84-effects-7-candidate",
+      "input": "r84-effects-7-candidate.svg",
+      "reference": "references/c32820bfb78dbdcf.png",
+      "sourceSha256": "254f08e8caa2a11a98b50e7441027ba3f42dfca30b401a48e81c311d57cb58e5",
+      "referenceSha256": "c32820bfb78dbdcf892a0cb70f44ddae60b3839b8a0828fc4f8df41173e23ee2",
+      "captureSha256": [
+        "c32820bfb78dbdcf892a0cb70f44ddae60b3839b8a0828fc4f8df41173e23ee2",
+        "c32820bfb78dbdcf892a0cb70f44ddae60b3839b8a0828fc4f8df41173e23ee2",
+        "c32820bfb78dbdcf892a0cb70f44ddae60b3839b8a0828fc4f8df41173e23ee2"
+      ]
+    },
+    {
+      "id": "r84-effects-7-control",
+      "input": "r84-effects-7-control.svg",
+      "reference": "references/c32820bfb78dbdcf.png",
+      "sourceSha256": "115e21d161b14ade870b027e83537cd858b16f3e86201f35b95c6846a7a5914d",
+      "referenceSha256": "c32820bfb78dbdcf892a0cb70f44ddae60b3839b8a0828fc4f8df41173e23ee2",
+      "captureSha256": [
+        "c32820bfb78dbdcf892a0cb70f44ddae60b3839b8a0828fc4f8df41173e23ee2",
+        "c32820bfb78dbdcf892a0cb70f44ddae60b3839b8a0828fc4f8df41173e23ee2",
+        "c32820bfb78dbdcf892a0cb70f44ddae60b3839b8a0828fc4f8df41173e23ee2"
+      ]
+    },
+    {
+      "id": "r84-encoded-8-candidate",
+      "input": "r84-encoded-8-candidate.svg",
+      "reference": "references/604e281d9481bf25.png",
+      "sourceSha256": "2afe6bb41843c1e4b239164b8cb944786056d05408921218d63782c352cbaa8c",
+      "referenceSha256": "604e281d9481bf251a0a92de39a73a8e05f10133d75d2eec28373b57a79809a3",
+      "captureSha256": [
+        "604e281d9481bf251a0a92de39a73a8e05f10133d75d2eec28373b57a79809a3",
+        "604e281d9481bf251a0a92de39a73a8e05f10133d75d2eec28373b57a79809a3",
+        "604e281d9481bf251a0a92de39a73a8e05f10133d75d2eec28373b57a79809a3"
+      ]
+    },
+    {
+      "id": "r84-encoded-8-control",
+      "input": "r84-encoded-8-control.svg",
+      "reference": "references/604e281d9481bf25.png",
+      "sourceSha256": "5c1c253d758f12365c8d7c14c27794584a70c4a38f11026efdcaa0e1b6027f22",
+      "referenceSha256": "604e281d9481bf251a0a92de39a73a8e05f10133d75d2eec28373b57a79809a3",
+      "captureSha256": [
+        "604e281d9481bf251a0a92de39a73a8e05f10133d75d2eec28373b57a79809a3",
+        "604e281d9481bf251a0a92de39a73a8e05f10133d75d2eec28373b57a79809a3",
+        "604e281d9481bf251a0a92de39a73a8e05f10133d75d2eec28373b57a79809a3"
+      ]
+    },
+    {
+      "id": "r84-encoded-9-candidate",
+      "input": "r84-encoded-9-candidate.svg",
+      "reference": "references/babba4a9807d822e.png",
+      "sourceSha256": "ccb35956c49350b9be93549b3f307649a9110af5c2434074dab0a389d1c75a80",
+      "referenceSha256": "babba4a9807d822e2ad74eb03ccf242fc4f2e798559d548db8c4091a9a5048ad",
+      "captureSha256": [
+        "babba4a9807d822e2ad74eb03ccf242fc4f2e798559d548db8c4091a9a5048ad",
+        "babba4a9807d822e2ad74eb03ccf242fc4f2e798559d548db8c4091a9a5048ad",
+        "babba4a9807d822e2ad74eb03ccf242fc4f2e798559d548db8c4091a9a5048ad"
+      ]
+    },
+    {
+      "id": "r84-encoded-9-control",
+      "input": "r84-encoded-9-control.svg",
+      "reference": "references/babba4a9807d822e.png",
+      "sourceSha256": "c7aa0775edf20ca36de7d115ef6217b61f6a42d5b011e5449b1fec260a6e2f2b",
+      "referenceSha256": "babba4a9807d822e2ad74eb03ccf242fc4f2e798559d548db8c4091a9a5048ad",
+      "captureSha256": [
+        "babba4a9807d822e2ad74eb03ccf242fc4f2e798559d548db8c4091a9a5048ad",
+        "babba4a9807d822e2ad74eb03ccf242fc4f2e798559d548db8c4091a9a5048ad",
+        "babba4a9807d822e2ad74eb03ccf242fc4f2e798559d548db8c4091a9a5048ad"
+      ]
+    }
+  ]
+}

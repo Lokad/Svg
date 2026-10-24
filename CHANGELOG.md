@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Paint markers on unstroked line instances and resource hosts, resolve forward
+  marker definitions, and retain solid marker corners for later affine instance maps.
 - Resolve gradient and pattern paints declared after marker content and its host,
   preserving inherited fills on deferred shapes and paint ownership in pattern tiles.
 - Skip pattern tile fonts for declared empty primitives and paths. Preserve empty

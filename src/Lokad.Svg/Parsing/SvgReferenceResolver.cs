@@ -65,6 +65,8 @@ internal static class SvgReferenceResolver
         // order through the existing pending-use slot until all its paints exist.
         if (deferredClip is null && (maskReference is null || mask is not null)
             && TryGetDefinition(reference, definitions, out SvgDefinition definition) && definition.SymbolContent is null
+            && !reference.InheritedMarkers.HasMarkers
+            && !(definition.LeafSource is {} markerSource && SvgMarkerStyle.Resolve(markerSource.AuthoredStyle, default).HasMarkers)
             && SvgLocalUrl.GetReference(definition.LeafSource?.GetAttribute("mask")) is null
             && !MissingPaint(SvgLocalUrl.GetReference(definition.LeafSource?.AuthoredStyle.Fill), state, workCounter, cancellationToken)
             && !MissingPaint(SvgLocalUrl.GetReference(definition.LeafSource?.AuthoredStyle.Stroke), state, workCounter, cancellationToken)

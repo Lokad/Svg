@@ -203,6 +203,22 @@ internal static class SvgMarkerRenderer
         SvgMarkerStyle markers, XmlReader reader, SvgPaintableElementContext context,
         SvgRecordedPaintStyle paint, SvgViewportFrame? frame, SvgDocumentState state, int maximumCommands)
     {
+        // A later instance map must see the marker's native corners, rather than
+        // a rectangle flattened during the host's source construction.
+        static SvgGeometry RetainRectangle(SvgGeometry geometry, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+        {
+            SvgRectangle box = geometry.Rectangle;
+            SvgPaint paint = new(box.Color, box.HasFill, SvgPaintOpacity.Opaque, box.Color, false);
+            SvgResolvedPaintableElement element = new(default, SvgAffineTransform.Identity, new(paint, box.Color, null, 255, box.HasFill), 1);
+            using BudgetedParserList<SvgPoint> points = new(state.Budget, SvgMemoryCategory.Geometry, work, token);
+            using BudgetedParserList<int> ends = new(state.Budget, SvgMemoryCategory.Geometry, work, token);
+            using SvgOrthogonalGeometryLowering lowering = new(points, ends, "rect", false, false, int.MaxValue, state.Budget, work, token);
+            SvgViewportFrame? clipFrame = box.Clip is {} clip ? new(0, 0, 1, 1, null, null, clip, -1) : null;
+            using SvgParsedGeometry result = lowering.LowerRectangleSourceFill(box.X, box.Y, box.Width, box.Height, element, clipFrame, state.Budget);
+            if (result.Geometries.Length != 1) throw new InvalidOperationException("A retained marker rectangle requires one contour.");
+            return result.Geometries[0] with { RecordedPaint = geometry.RecordedPaint, RecordedStrokePaint = geometry.RecordedStrokePaint, LeafMask = geometry.LeafMask };
+        }
+
         ParserWorkCounter work = context.WorkCounter;
         CancellationToken token = context.CancellationToken;
         using BudgetedParserList<SvgGeometry> output = new(state.Budget, SvgMemoryCategory.Geometry, work, token);
@@ -364,6 +380,10 @@ internal static class SvgMarkerRenderer
                     {
                         work.Consume(token);
                         SvgGeometry geometry = mapped[transferred];
+                        if (context.RetainInstanceStrokePath && !context.StrokeHostMap.IsAxisAligned
+                            && geometry.Kind == SvgGeometryKind.Rectangle
+                            && geometry.Rectangle is { Width: > 0, Height: > 0, Stroke: null })
+                            mapped[transferred] = geometry = RetainRectangle(geometry, state, work, token);
                         if (geometry.RecordedPaint.Identity > 0)
                             state.Scene.ChangeRecordedPaint(geometry.RecordedPaint, state.Scene.GetRecordedPaintValue(geometry.RecordedPaint) with { IsMarkerContent = true });
                         if (geometry.RecordedStrokePaint.Identity > 0)
