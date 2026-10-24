@@ -94,7 +94,7 @@ internal static class SvgPatternSyntax
         tile = SvgPatternReferenceResolver.ForReplay(patternId, tile, state, context.WorkCounter, context.CancellationToken);
         if (tile.VectorContent is null && !transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned pattern transforms are implemented.");
         if (tile.VectorContent is null && (transform.A < 0 || transform.D < 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-reflected pattern fills are implemented.");
-        bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
+        bool painted = SvgPresentationResolver.IsPainted(style, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgReferenceResolver.MultiplyAlpha(style.GetOpacity().Alpha, SvgColorParser.ParseOpacity(style.FillOpacity));
         SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
         bool isEvenOdd = style.FillRule is not null && style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
@@ -194,7 +194,7 @@ internal static class SvgPatternSyntax
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         if (!transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned pattern transforms are implemented.");
         if (tile.VectorContent is null && (transform.A < 0 || transform.D < 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-reflected pattern fills are implemented.");
-        bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
+        bool painted = SvgPresentationResolver.IsPainted(style, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = style.GetOpacity().Alpha;
         byte fillOpacity = SvgReferenceResolver.MultiplyAlpha(opacity, SvgColorParser.ParseOpacity(style.FillOpacity));
         SvgLinearGradient strokeGradient = default;
@@ -333,7 +333,7 @@ internal static class SvgPatternSyntax
         bool hasFill;
         if (combined)
         {
-            painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
+            painted = SvgPresentationResolver.IsPainted(style, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
             opacity = style.GetOpacity().Alpha;
             hasFill = painted;
         }

@@ -21,10 +21,10 @@ internal static class SvgRenderedLeafParser
                 throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
             int sourceDepth = reader.Depth;
             SvgComputedStyle style = context.AuthoredStyle ?? throw new InvalidOperationException("A rendered leaf requires prepared declarations.");
-            bool displayed = SvgPresentationResolver.ParseDisplay(style.Display);
+            bool displayed = style.GetSourceDisplay() != SvgDisplay.None;
             bool? visible = style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true);
             SvgRetainedTextSource source = SvgRetainedTextSource.Capture(reader, context, state, limits);
-            SvgDefinition definition = new([], false, null, null) { TextSource = source, SourceDisplayed = displayed, SourceVisible = visible };
+            SvgDefinition definition = new([], false, null, null) { TextSource = source, SourceDisplayed = displayed, SourceDisplay = style.GetSourceDisplay(), SourceVisible = visible };
             state.RenderedGroupContent?.AddLeaf(definition, displayed, visible);
             if (textId is not null) state.Definitions.TryAdd(state.Strings.Copy(textId), definition);
             using SvgRetainedTextSource.Reader replay = source.OpenReader(sourceDepth, workCounter, cancellationToken);
@@ -87,7 +87,7 @@ internal static class SvgRenderedLeafParser
         if (style.Filter is not string filter || filter.Trim() == "none")
             return ParseContent(reader, context, root, state, limits, budget, fontSnapshot, workCounter, cancellationToken);
         if (!SvgLocalUrl.TryParseId(filter, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local filter url references are implemented.");
-        if (!context.InheritedPresentation.IsDisplayed || !SvgPresentationResolver.ParseDisplay(style.Display) || !SvgPaintRecording.IsFilterSource(reader, context))
+        if (!context.InheritedPresentation.IsDisplayed || style.GetDisplay() == SvgDisplay.None || !SvgPaintRecording.IsFilterSource(reader, context))
             return ParseContent(reader, context with { AuthoredStyle = style with { Filter = null } }, root,
                 state, limits, budget, fontSnapshot, workCounter, cancellationToken);
         int start = state.Scene.CommandCount, firstGeometry = state.Scene.GeometryCount;

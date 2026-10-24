@@ -15,7 +15,7 @@ internal sealed class SvgPatternContentSelection : IDisposable
     private readonly record struct EffectReference(string Id, EffectKind Kind);
     private readonly record struct PatternEffect(int Pattern, EffectReference Reference);
     private readonly record struct Pattern(string Id, string? Target, double? Width, double? Height, bool IsDisplayed, bool HasChildElements, Resolution State, int Source);
-    private readonly record struct Scope(int Depth, bool Drawing, bool Definitions, bool Switch, bool Consumed, int Pattern, int PatternOwner, bool Displayed, bool Visible, bool Inert);
+    private readonly record struct Scope(int Depth, bool Drawing, bool Definitions, bool Switch, bool Consumed, int Pattern, int PatternOwner, bool Displayed, bool Visible, bool Inert, SvgDisplay ElementDisplay);
     private readonly BudgetedParserDictionary<string, Selection> _selection;
     private readonly BudgetedParserList<EffectReference> _unusedEffects;
 
@@ -100,6 +100,7 @@ internal sealed class SvgPatternContentSelection : IDisposable
                         ? SvgComputedStyle.Resolve(reader, SvgInlineStyleParser.ParseUse(reader.GetAttribute("style"), work, token), sheet)
                         : SvgComputedStyleResolver.Resolve(reader, sheet, work, token, true);
                 }
+                paint = paint.ResolveDisplay(parent.ElementDisplay);
                 ObservePaint(paint.Fill); ObservePaint(paint.Stroke);
                 int pattern = -1;
                 if (selected && svgElement && reader.LocalName == "pattern" && (reader.Depth == rootDepth + 1 || parent.Definitions)
@@ -109,13 +110,13 @@ internal sealed class SvgPatternContentSelection : IDisposable
                     string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
                     string? target = href is { Length: > 1 } && href[0] == '#' ? SvgLocalUrl.CopyFragment(href.AsSpan(1), strings) : null;
                     pattern = patterns.Count;
-                    patterns.Add(new(id, target, Dimension("width"), Dimension("height"), SvgPresentationResolver.ParseDisplay(paint.Display), false, Resolution.New, -1));
+                    patterns.Add(new(id, target, Dimension("width"), Dimension("height"), (paint.GetDisplay() != SvgDisplay.None), false, Resolution.New, -1));
                     ids.TryAdd(id, pattern);
                 }
                 bool drawing = selected && !parent.Definitions && svgElement && (root || reader.LocalName is "svg" or "g" or "a" or "switch");
                 bool definitions = selected && !parent.Definitions && svgElement && reader.LocalName == "defs";
                 int patternOwner = pattern >= 0 ? pattern : root ? -1 : parent.PatternOwner;
-                bool displayed = (root || pattern >= 0 || parent.Displayed) && SvgPresentationResolver.ParseDisplay(paint.Display);
+                bool displayed = (root || pattern >= 0 || parent.Displayed) && (paint.GetDisplay() != SvgDisplay.None);
                 bool visible = SvgPresentationResolver.ParseVisibility(paint.Visibility, root || parent.Visible);
                 if (patternOwner >= 0 && displayed && paintable && (SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName)
                     || SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName) || reader.LocalName is "text" or "use" or "image"))
@@ -124,7 +125,7 @@ internal sealed class SvgPatternContentSelection : IDisposable
                         RetainEffect(SvgLocalUrl.ReadReference(reader, "mask"), EffectKind.Mask, patternOwner, effects, strings);
                     if (SvgMaskSyntax.HasPaintableTarget(reader, true, null)) RetainEffect(SvgLocalUrl.GetReference(paint.Filter), EffectKind.Filter, patternOwner, effects, strings);
                 }
-                if (!reader.IsEmptyElement) scopes.Add(new(reader.Depth, drawing, definitions, drawing && reader.LocalName == "switch", false, pattern, patternOwner, displayed, visible, inert));
+                if (!reader.IsEmptyElement) scopes.Add(new(reader.Depth, drawing, definitions, drawing && reader.LocalName == "switch", false, pattern, patternOwner, displayed, visible, inert, paint.GetDisplay()));
             }
             for (int index = 0; index < patterns.Count; index++)
             {

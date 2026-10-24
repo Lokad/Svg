@@ -388,6 +388,15 @@ HSL/HSLA function aliases accept an optional slash-separated alpha value.
 `color:currentColor` uses the inherited color. Fill/stroke `currentColor` resolves
 against each element's own color, including after inheritance and local instancing.
 
+`display` accepts inline, block, none and explicit inherit. Inherit copies the
+logical parent's own display, including during local source replay; an omitted
+display, initial or unset uses inline. Ancestor suppression remains cumulative.
+The root inherits inline. Marker definitions retain their own display for child
+inheritance even though their own display does not suppress marker painting.
+Existing element/attribute location restrictions still apply; see the
+[display regressions](../tests/Lokad.Svg.Tests/SvgDisplayInheritanceTests.cs) and
+[prepared text checks](../tests/Lokad.Svg.Tests/OpenTypeFontTests.DisplayInheritance.cs).
+
 Unsupported: imports, media/supports rules, pseudo-classes/elements, sibling
 selectors, layout, variables, animation and web fonts. The resource declaration
 exceptions above also apply. `vector-effect="non-scaling-stroke"` is an SVG

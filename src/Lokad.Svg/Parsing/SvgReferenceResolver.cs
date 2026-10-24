@@ -19,6 +19,9 @@ internal readonly record struct SvgUseReference(string Id, double X, double Y, d
     /// <summary>Supplies the logical parent opacity when a synthetic leaf reference lowers an authored inherit declaration.</summary>
     internal SvgPaintOpacity? ParentElementOpacity { get; init; }
     internal SvgPaintOpacity ElementParentOpacity => ParentElementOpacity ?? SourceOpacity;
+    /// <summary>Supplies the logical parent's own display when an authored source is replayed.</summary>
+    internal SvgDisplay ElementParentDisplay { get; init; }
+    internal SvgDisplay SourceDisplay { get; init; }
     internal SvgPaint InheritedFill { get; init; } = SvgPaint.Default;
     internal SvgInheritedTextStyle InheritedTextStyle { get; init; } = SvgInheritedTextStyle.Default;
     internal SvgPaintOpacity InheritedStrokeOpacity { get; init; } = SvgPaintOpacity.Opaque;
@@ -150,7 +153,7 @@ internal static class SvgReferenceResolver
                     if (geometry.LeafMask is not null && SvgLocalUrl.GetReference(source.GetAttribute("mask")) is not null)
                         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Instance stroke construction on masked definitions is not implemented.");
                 }
-                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers, reference.ElementParentOpacity, reference.NonScalingStroke, strokePlacement, definition.InstanceLengthBases(reference), retainMappedContour, reference.IsDisplayed, state);
+                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers, reference.ElementParentOpacity, reference.ElementParentDisplay, reference.NonScalingStroke, strokePlacement, definition.InstanceLengthBases(reference), retainMappedContour, reference.IsDisplayed, state);
                 try { return Apply(constructed with { SymbolViewBox = definition.SymbolViewBox, EstablishesViewport = definition.EstablishesViewport }, reference with { StrokeOverride = null, PaintServerId = null, PaintServerFill = null }, frame, state, workCounter, cancellationToken); }
                 finally { foreach (SvgGeometry geometry in constructed.Geometries) geometry.Dispose(); }
             }

@@ -7,6 +7,9 @@ internal enum SvgSymbolContentKind { Leaf, Group, EndGroup, Use, Unsupported }
 /// <summary>Retains independently authored container paint; absent properties inherit from the instance context.</summary>
 internal readonly record struct SvgSymbolContentStyle(SvgPaint Paint, bool HasAuthoredFill, SvgPaintOpacity? FillOpacity, SvgColor? Color, SvgPaintOpacity Opacity, bool IsDisplayed, bool? IsVisible)
 {
+    /// <summary>Keeps an authored display declaration independent of source availability and marker-root suppression.</summary>
+    internal SvgDisplay ElementDisplay { get; init; }
+    internal SvgDisplay ResolveDisplay(SvgDisplay parentDisplay) => ElementDisplay == SvgDisplay.Inherit ? parentDisplay : ElementDisplay;
     internal bool InheritsOpacity { get; init; }
     internal SvgPaintOpacity ResolveOpacity(SvgPaintOpacity parentOpacity) => InheritsOpacity ? parentOpacity : Opacity;
     internal string? PaintServerFill { get; init; }
@@ -63,7 +66,7 @@ internal sealed class SvgSymbolContent : IDisposable
             content = new(budget, work, token, presentation, owner);
             content._building.Add(new(SvgSymbolContentKind.Group, default, default,
                 new(presentation.Paint, presentation.HasAuthoredFill, presentation.FillOpacity, presentation.CurrentColor, presentation.SourceOpacity, !presentation.IsHidden, presentation.IsVisible)
-                { TextStyleSource = presentation.TextStyleSource, InheritsOpacity = presentation.InheritsOpacity, Markers = presentation.Markers, PaintOrder = presentation.PaintOrder, PaintServerFill = presentation.PaintServerFill, PaintServerId = presentation.PaintServerId, FillRule = presentation.FillRule, Stroke = presentation.Stroke, StrokeOpacity = presentation.Stroke.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(presentation.Stroke.StrokeOpacity) }, SvgAffineTransform.Identity, -1));
+                { TextStyleSource = presentation.TextStyleSource, InheritsOpacity = presentation.InheritsOpacity, ElementDisplay = presentation.ElementDisplay, Markers = presentation.Markers, PaintOrder = presentation.PaintOrder, PaintServerFill = presentation.PaintServerFill, PaintServerId = presentation.PaintServerId, FillRule = presentation.FillRule, Stroke = presentation.Stroke, StrokeOpacity = presentation.Stroke.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(presentation.Stroke.StrokeOpacity) }, SvgAffineTransform.Identity, -1));
             return content;
         }
         catch { if (content is null) owner.Dispose(); else content.Dispose(); throw; }
@@ -79,7 +82,7 @@ internal sealed class SvgSymbolContent : IDisposable
     /// <summary>Transfers one leaf on successful append; failure leaves ownership with the caller.</summary>
     internal void AddLeaf(SvgDefinition definition, bool displayed, bool? visible)
         => _building.Add(new(SvgSymbolContentKind.Leaf, definition with { SymbolFillBindings = definition.SourceFillBindings ?? definition.SymbolFillBindings }, default,
-            new(default, false, null, null, SvgPaintOpacity.Opaque, displayed, visible), SvgAffineTransform.Identity, -1));
+            new(default, false, null, null, SvgPaintOpacity.Opaque, displayed, visible) { ElementDisplay = definition.SourceDisplay }, SvgAffineTransform.Identity, -1));
 
     internal void BeginGroup(int depth, string? id, SvgSymbolPresentation presentation, SvgSymbolContentStyle style, SvgAffineTransform transform)
     {
@@ -95,7 +98,7 @@ internal sealed class SvgSymbolContent : IDisposable
         if (!hasAuthoredFill) reference = reference with { PaintServerId = null, PaintServerFill = null, FillOverride = null };
         _building.Add(new(SvgSymbolContentKind.Use, default, reference,
             new(reference.InheritedFill, hasAuthoredFill, fillOpacity, color, reference.SourceOpacity, displayed, visible)
-            { TextStyleSource = textStyleSource, ClipId = clipId, InheritsOpacity = reference.InheritsOpacity, Markers = markers, PaintOrder = paintOrder, Stroke = stroke, StrokeOpacity = strokeOpacity }, SvgAffineTransform.Identity, -1));
+            { TextStyleSource = textStyleSource, ClipId = clipId, InheritsOpacity = reference.InheritsOpacity, ElementDisplay = reference.SourceDisplay, Markers = markers, PaintOrder = paintOrder, Stroke = stroke, StrokeOpacity = strokeOpacity }, SvgAffineTransform.Identity, -1));
         return start;
     }
 

@@ -18,6 +18,12 @@ plus work/memory denial, cancellation and retry checks. Fractional filter region
 can differ from unfiltered rectangles; those references describe the filtered input.
 [Developer tools](../tools/README.md) documents capture and research procedures.
 
+[Display inheritance tests](Lokad.Svg.Tests/SvgDisplayInheritanceTests.cs) cover
+logical parents, retained instances, viewports and resource children across
+attributes, inline styles and stylesheets. The
+[prepared text cases](Lokad.Svg.Tests/OpenTypeFontTests.DisplayInheritance.cs)
+also check font discovery and suppression without font acquisition.
+
 ## Collections
 
 | Collection | Role and source of truth |

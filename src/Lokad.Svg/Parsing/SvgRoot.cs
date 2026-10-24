@@ -999,6 +999,7 @@ internal readonly record struct SvgDefinition(SvgGeometry[] Geometries, bool All
     internal SvgSymbolContentRange? SymbolContent { get; init; }
     internal SvgSymbolFillBinding[]? SourceFillBindings { get; init; }
     internal bool SourceDisplayed { get; init; } = true;
+    internal SvgDisplay SourceDisplay { get; init; }
     internal bool? SourceVisible { get; init; }
     internal SvgDefinitionLeafSource? LeafSource { get; init; }
     internal SvgRetainedTextSource? TextSource { get; init; }

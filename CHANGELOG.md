@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Resolve explicit display inheritance through containers, local instances and
+  resource children, keeping ancestor suppression and font discovery consistent.
 - Preserve antialiased region edges when restoring affine terminal flood filters,
   including empty symbol sources; enforce the restoration path's complete work charge.
 - Let authored pattern child elements override inherited content even when they

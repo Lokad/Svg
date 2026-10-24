@@ -13,13 +13,13 @@ internal static class SvgPresentationResolver
     internal static SvgResolvedPresentation Resolve(SvgComputedStyle style, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, IReadOnlyDictionary<string, SvgColor> namedColors)
     {
         SvgPaint paint = SvgPaintResolver.Resolve(style.Fill, style.FillOpacity, style.Color, inheritedPaint, namedColors);
-        bool isDisplayed = inheritedDisplayed && ParseDisplay(style.Display);
+        bool isDisplayed = inheritedDisplayed && style.GetDisplay() != SvgDisplay.None;
         bool isVisible = ParseVisibility(style.Visibility, inheritedVisibility);
         return new SvgResolvedPresentation(paint, isDisplayed, isVisible, style.GetOpacity().Alpha);
     }
 
-    internal static bool IsPainted(string? display, string? visibility, bool inheritedDisplayed, bool inheritedVisibility)
-        => inheritedDisplayed && ParseDisplay(display) && ParseVisibility(visibility, inheritedVisibility);
+    internal static bool IsPainted(SvgComputedStyle style, bool inheritedDisplayed, bool inheritedVisibility)
+        => inheritedDisplayed && style.GetDisplay() != SvgDisplay.None && ParseVisibility(style.Visibility, inheritedVisibility);
 
     internal static void ValidateStroke(string? value)
     {
@@ -27,13 +27,22 @@ internal static class SvgPresentationResolver
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-painting stroke='none' is implemented.");
     }
 
-    internal static bool ParseDisplay(string? value)
+    internal static SvgDisplay ParseResolvedDisplay(string? value)
     {
-        if (value is null) return true;
+        SvgDisplay display = ParseSourceDisplay(value);
+        if (display == SvgDisplay.Inherit) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Display inheritance requires the parent's computed display.");
+        return display;
+    }
+
+    internal static SvgDisplay ParseSourceDisplay(string? value)
+    {
+        if (value is null) return SvgDisplay.Inline;
         ReadOnlySpan<char> token = SvgCssWhitespace.Trim(value);
-        if (token.Equals("inline", StringComparison.OrdinalIgnoreCase) || token.Equals("block", StringComparison.OrdinalIgnoreCase)) return true;
-        if (token.Equals("none", StringComparison.OrdinalIgnoreCase)) return false;
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only inline, block and none display values are implemented.");
+        if (token.Equals("inline", StringComparison.OrdinalIgnoreCase)) return SvgDisplay.Inline;
+        if (token.Equals("block", StringComparison.OrdinalIgnoreCase)) return SvgDisplay.Block;
+        if (token.Equals("none", StringComparison.OrdinalIgnoreCase)) return SvgDisplay.None;
+        if (token.Equals("inherit", StringComparison.OrdinalIgnoreCase)) return SvgDisplay.Inherit;
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only inline, block, none and inherit display values are implemented.");
     }
 
     internal static bool ParseVisibility(string? value, bool inheritedVisibility)

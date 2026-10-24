@@ -22,7 +22,7 @@ internal static class SvgContainerInheritance
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(inheritedTextStyle);
         ArgumentNullException.ThrowIfNull(namedColors);
-        computedStyle = computedStyle.ResolveOpacity(inheritedPresentation.ElementOpacity);
+        computedStyle = computedStyle.ResolveOpacity(inheritedPresentation.ElementOpacity).ResolveDisplay(inheritedPresentation.ElementDisplay);
         SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(computedStyle, inheritedPresentation.Paint, inheritedPresentation.PaintServerFill, inheritedPresentation.IsDisplayed, inheritedPresentation.IsVisible, namedColors);
         SvgAffineTransform transform = inheritedPresentation.Transform.ComposeChecked(SvgGeometrySyntax.ParseElementTransform(reader, workCounter, cancellationToken));
         SvgInheritedTextStyle textStyle = SvgTextInheritance.Resolve(reader, inheritedTextStyle, SvgInlineStyleParser.MergeFont(inlineStyle.TextFont, inlineStyle.Important, styleSheet.TextFont, styleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inlineStyle.WhiteSpace, inlineStyle.Important, InlineImportantProperties.WhiteSpace, styleSheet.WhiteSpace, styleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inlineStyle.LetterSpacing, inlineStyle.Important, InlineImportantProperties.LetterSpacing, styleSheet.LetterSpacing, styleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inlineStyle.WordSpacing, inlineStyle.Important, InlineImportantProperties.WordSpacing, styleSheet.WordSpacing, styleSheet.Important));
@@ -32,7 +32,7 @@ internal static class SvgContainerInheritance
         SvgTextDecorationStyle? decoration = SvgTextDecorationSyntax.Resolve(reader, inlineStyle, styleSheet, inheritedTextStyle.Decoration, decorationPaint.GlyphPaint);
         if (decoration != textStyle.Decoration) textStyle = textStyle.WithDecoration(decoration);
         return new SvgInheritedContainer(
-            new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, transform) { OwnOpacity = computedStyle.GetOpacity(), PaintServerFill = presentation.PaintServerFill, Markers = SvgMarkerStyle.Resolve(computedStyle, inheritedPresentation.Markers), PaintOrder = computedStyle.PaintOrder ?? inheritedPresentation.PaintOrder },
+            new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, transform) { OwnOpacity = computedStyle.GetOpacity(), ElementDisplay = computedStyle.GetDisplay(), PaintServerFill = presentation.PaintServerFill, Markers = SvgMarkerStyle.Resolve(computedStyle, inheritedPresentation.Markers), PaintOrder = computedStyle.PaintOrder ?? inheritedPresentation.PaintOrder },
             textStyle,
             computedStyle.FillRule ?? inheritedFillRule,
             presentation.Opacity,

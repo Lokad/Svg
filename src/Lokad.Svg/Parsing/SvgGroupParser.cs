@@ -11,7 +11,7 @@ internal static class SvgGroupParser
         else SvgElementAttributePolicy.ValidateGroup(reader, workCounter, cancellationToken);
         SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
         InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
-        SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, context.StyleSheet).ResolveOpacity(context.InheritedPresentation.ElementOpacity);
+        SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, context.StyleSheet).ResolveOpacity(context.InheritedPresentation.ElementOpacity).ResolveDisplay(context.InheritedPresentation.ElementDisplay);
         SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inline, style, context.StyleSheet, context.InheritedPresentation, context.InheritedFillRule, context.InheritedTextStyle, context.InheritedStroke, namedColors, workCounter, cancellationToken);
         if (style.Fill is not null && resolved.Presentation.PaintServerFill is string fill)
         {

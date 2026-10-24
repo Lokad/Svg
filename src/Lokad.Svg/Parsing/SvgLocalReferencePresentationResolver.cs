@@ -19,7 +19,7 @@ internal static class SvgLocalReferencePresentationResolver
     internal static SvgResolvedLocalReferencePresentation Resolve(SvgComputedStyle style, SvgInheritedPresentation inheritedPresentation, IReadOnlyDictionary<string, SvgColor> namedColors, BudgetedParserStringStore strings)
     {
         SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
-        bool isPainted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, inheritedPresentation.IsDisplayed, inheritedPresentation.IsVisible);
+        bool isPainted = SvgPresentationResolver.IsPainted(style, inheritedPresentation.IsDisplayed, inheritedPresentation.IsVisible);
         byte opacity = style.GetOpacity().Alpha;
         bool paintServer = style.Fill is not null && SvgPatternSyntax.IsPatternFill(style.Fill);
         SvgPaint paint = SvgPaintResolver.Resolve(paintServer ? "#ffffff" : style.Fill, style.FillOpacity, style.Color, inheritedPresentation.Paint, namedColors);

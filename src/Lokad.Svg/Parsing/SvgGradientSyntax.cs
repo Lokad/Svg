@@ -406,7 +406,7 @@ internal static class SvgGradientSyntax
             gradient = MirrorBoundingBoxVector(transform, gradient);
         }
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
-        bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
+        bool painted = SvgPresentationResolver.IsPainted(style, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = style.GetOpacity().Alpha;
         byte fillOpacity = SvgReferenceResolver.MultiplyAlpha(opacity, SvgColorParser.ParseOpacity(style.FillOpacity));
         SvgStroke? stroke = ParseGradientStroke(reader, style, context, transform, placement, opacity, painted);
@@ -437,7 +437,7 @@ internal static class SvgGradientSyntax
         SvgAffineTransform transform = context.ResolveTransform(reader);
         gradient = MapUserSpaceRadial(transform, gradient, frame);
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
-        bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
+        bool painted = SvgPresentationResolver.IsPainted(style, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = style.GetOpacity().Alpha;
         byte fillOpacity = SvgReferenceResolver.MultiplyAlpha(opacity, SvgColorParser.ParseOpacity(style.FillOpacity));
         SvgStroke? stroke = ParseGradientStroke(reader, style, context, transform, placement, opacity, painted);
@@ -471,7 +471,7 @@ internal static class SvgGradientSyntax
         SvgAffineTransform transform = context.ResolveTransform(reader);
         bool bindSourceMap = !transform.IsAxisAligned;
         if (!bindSourceMap) gradient = MapUserSpaceRadial(transform, gradient, frame);
-        bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
+        bool painted = SvgPresentationResolver.IsPainted(style, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgReferenceResolver.MultiplyAlpha(style.GetOpacity().Alpha, SvgColorParser.ParseOpacity(style.FillOpacity));
         SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
         bool isEvenOdd = style.FillRule is not null && style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
@@ -591,7 +591,7 @@ internal static class SvgGradientSyntax
             outlineGradient = MirrorBoundingBoxVector(transform, outlineGradient);
         }
         if (paintRadialStroke) outlineCircle = MapUserSpaceRadial(transform, outlineCircle, frame);
-        bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
+        bool painted = SvgPresentationResolver.IsPainted(style, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgReferenceResolver.MultiplyAlpha(style.GetOpacity().Alpha, SvgColorParser.ParseOpacity(style.FillOpacity));
         SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
         bool isEvenOdd = style.FillRule is not null && style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
@@ -1084,7 +1084,7 @@ internal static class SvgGradientSyntax
         bool hasFill;
         if (combined)
         {
-            painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
+            painted = SvgPresentationResolver.IsPainted(style, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
             opacity = style.GetOpacity().Alpha;
             hasFill = painted;
         }
@@ -1180,7 +1180,7 @@ internal static class SvgGradientSyntax
         bool hasFill;
         if (combined)
         {
-            painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
+            painted = SvgPresentationResolver.IsPainted(style, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
             opacity = style.GetOpacity().Alpha;
             hasFill = painted;
         }

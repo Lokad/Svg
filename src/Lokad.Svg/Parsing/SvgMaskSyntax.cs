@@ -107,7 +107,7 @@ internal static class SvgMaskSyntax
         if (reference is null) return null;
         string id = ParseMaskId(reference);
         SvgComputedStyle style = context.ResolveStyle(reader, reader.LocalName == "text");
-        if (!context.InheritedPresentation.IsDisplayed || !SvgPresentationResolver.ParseDisplay(style.Display)
+        if (!context.InheritedPresentation.IsDisplayed || style.GetDisplay() == SvgDisplay.None
             || !HasPaintableTarget(reader, SvgPresentationResolver.ParseVisibility(style.Visibility, context.InheritedPresentation.IsVisible), style.Filter)) return null;
         return IsDisabled(id, state) ? null : state.Strings.Copy(id);
     }

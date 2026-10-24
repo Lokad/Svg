@@ -12,5 +12,7 @@ internal readonly record struct SvgInheritedPresentation(SvgPaint Paint, bool Is
     internal SvgMarkerStyle Markers { get; init; }
     /// <summary>Stores this element's opacity independently of accumulated opacity and masks; absence uses the initial value.</summary>
     internal SvgPaintOpacity? OwnOpacity { get; init; }
+    /// <summary>Keeps this element's own computed display separate from cumulative suppression.</summary>
+    internal SvgDisplay ElementDisplay { get; init; }
     internal SvgPaintOpacity ElementOpacity => OwnOpacity ?? SvgPaintOpacity.Opaque;
 }

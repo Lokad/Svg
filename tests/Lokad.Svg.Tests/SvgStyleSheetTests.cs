@@ -209,11 +209,11 @@ public sealed class SvgStyleSheetTests
 
     [Theory]
     [InlineData("display: inherit")]
-    public void Rejects_unplumbed_inherit_declarations(string declaration)
+    [InlineData("display: INHERIT!important")]
+    public void Retains_display_inheritance_for_parent_resolution(string declaration)
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgInlineStyleParser.Parse(declaration, new ParserWorkCounter(100), CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        InlineStyle style = SvgInlineStyleParser.Parse(declaration, new ParserWorkCounter(100), CancellationToken.None);
+        Assert.Equal(SvgInlineStyleParser.InheritedValue, style.Display);
     }
 
     [Theory]

@@ -69,7 +69,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     internal SvgComputedStyle ResolveStyle(XmlReader reader, bool allowsDirectTextFontProperties)
     {
         SvgComputedStyle style = InheritedStroke.ApplyTo(AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, StyleSheet, WorkCounter, CancellationToken, allowsDirectTextFontProperties));
-        style = style.ResolveVectorEffect(InheritedPresentation.NonScalingStroke).ResolveOpacity(InheritedPresentation.ElementOpacity) with { PaintOrder = style.PaintOrder ?? InheritedPresentation.PaintOrder };
+        style = style.ResolveVectorEffect(InheritedPresentation.NonScalingStroke).ResolveOpacity(InheritedPresentation.ElementOpacity).ResolveDisplay(InheritedPresentation.ElementDisplay) with { PaintOrder = style.PaintOrder ?? InheritedPresentation.PaintOrder };
         if (DeferPaintOpacity) style = style with { Opacity = null, ComputedOpacity = null };
         if (style.Fill is null && InheritedPresentation.PaintServerFill is string fill) style = style with { Fill = fill };
         return style.FillRule is null && InheritedFillRule is not null ? style with { FillRule = InheritedFillRule } : style;
@@ -99,7 +99,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     {
         InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), WorkCounter, CancellationToken, true);
         SvgComputedStyle style = InheritedStroke.ApplyTo(AuthoredStyle ?? SvgComputedStyle.Resolve(reader, inline, StyleSheet));
-        style = style.ResolveVectorEffect(InheritedPresentation.NonScalingStroke).ResolveOpacity(InheritedPresentation.ElementOpacity) with { PaintOrder = style.PaintOrder ?? InheritedPresentation.PaintOrder };
+        style = style.ResolveVectorEffect(InheritedPresentation.NonScalingStroke).ResolveOpacity(InheritedPresentation.ElementOpacity).ResolveDisplay(InheritedPresentation.ElementDisplay) with { PaintOrder = style.PaintOrder ?? InheritedPresentation.PaintOrder };
         SvgComputedStyle textStyle = style.FillRule is null && InheritedFillRule is not null ? style with { FillRule = InheritedFillRule } : style;
         if (textStyle.Fill is null && InheritedPresentation.PaintServerFill is string fill) textStyle = textStyle with { Fill = fill };
         // Stroke is validated on emitted content after a child span can replace it.

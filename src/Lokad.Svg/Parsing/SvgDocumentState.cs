@@ -342,6 +342,7 @@ internal sealed class SvgDocumentState : IDisposable
     internal bool ClipIsEvenOdd { get; set; }
     /// <summary>Retains the resource's own display independently of its definition ancestors.</summary>
     internal bool ClipIsDisplayed { get; set; } = true;
+    internal SvgDisplay ClipElementDisplay { get; set; }
     /// <summary>Retains resource-local visibility inherited by direct clip children.</summary>
     internal bool ClipIsVisible { get; set; } = true;
 

@@ -284,7 +284,7 @@ internal static class SvgMarkerRenderer
                 if (!state.Definitions.TryGetValue(id, out SvgDefinition source) || source.Marker is not {} marker)
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local marker references are implemented.");
                 if (marker.Width == 0 || marker.Height == 0 || marker.StrokeWidthUnits && width == 0
-                    || !context.InheritedPresentation.IsDisplayed || !SvgPresentationResolver.ParseDisplay(style.Display)
+                    || !context.InheritedPresentation.IsDisplayed || style.GetDisplay() == SvgDisplay.None
                     || !SvgPresentationResolver.ParseVisibility(style.Visibility, context.InheritedPresentation.IsVisible)) return;
                 if (marker.FontLengths is {} lengths)
                 {
@@ -346,8 +346,8 @@ internal static class SvgMarkerRenderer
                 SvgAffineTransform placement = context.ResolveTransform(reader).ComposeNative(new(
                     (float)local.A, (float)local.B, (float)local.C, (float)local.D, (float)offsetX, (float)offsetY));
                 SvgUseReference reference = new(id, 0, 0, marker.Width, marker.Height, placement, SvgAffineTransform.Identity,
-                    255, SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible), null, null, null)
-                { IsMarker = true, HasInverseStrokePose = nonScalingUnits, IsDisplayed = context.InheritedPresentation.IsDisplayed && SvgPresentationResolver.ParseDisplay(style.Display),
+                    255, SvgPresentationResolver.IsPainted(style, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible), null, null, null)
+                { IsMarker = true, HasInverseStrokePose = nonScalingUnits, IsDisplayed = context.InheritedPresentation.IsDisplayed && (style.GetDisplay() != SvgDisplay.None),
                     IsVisible = SvgPresentationResolver.ParseVisibility(style.Visibility, context.InheritedPresentation.IsVisible),
                     InheritedFill = SvgPaint.Default, RecordingScope = state.NewRecordingScope(), AllowsSolidPaintAnalysis = true };
                 bool previousPicture = state.IsResourcePicture;

@@ -132,7 +132,7 @@ internal static class SvgPatternReferenceResolver
         try
         {
             lowered = source.Lower(context.InheritedStroke, context.InheritedPresentation.Paint,
-                context.InheritedFillRule, context.InheritedPresentation.PaintServerFill, context.InheritedPresentation.PaintOrder, context.InheritedPresentation.Markers, context.InheritedPresentation.ElementOpacity, context.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, context.LengthBases, false, context.InheritedPresentation.IsDisplayed, state);
+                context.InheritedFillRule, context.InheritedPresentation.PaintServerFill, context.InheritedPresentation.PaintOrder, context.InheritedPresentation.Markers, context.InheritedPresentation.ElementOpacity, context.InheritedPresentation.ElementDisplay, context.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, context.LengthBases, false, context.InheritedPresentation.IsDisplayed, state);
         }
         finally { state.IsResourcePicture = previousPicture; }
         SvgPaintRecording.AdoptLeafScene(lowered, builder, state);

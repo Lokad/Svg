@@ -101,7 +101,7 @@ internal static class SvgPaintRecording
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
         if (parsed.Geometries.Length != 0 || state.FilterGroupDepth <= 0 || !context.InheritedPresentation.IsDisplayed
-            || !SvgPresentationResolver.ParseDisplay(style.Display))
+            || style.GetDisplay() == SvgDisplay.None)
         {
             SvgParsedGeometry recorded = Attach(parsed, source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
             return (style.NonScalingStroke || reader.LocalName is "polygon" or "polyline") && !SvgMarkerStyle.Resolve(style, context.InheritedPresentation.Markers).HasMarkers
@@ -206,7 +206,7 @@ internal static class SvgPaintRecording
             fill.FillOpacity.Alpha / 255f, (stroke.Alpha / 255f) * strokeOpacity.Value, strokeOpacity.Alpha / 255f,
             fillServer ? SvgPaintOrigin.PaintServer : SvgPaintOrigin.Solid,
             style.Stroke is not null && SvgLocalUrl.TryParseId(style.Stroke, out _) ? SvgPaintOrigin.PaintServer : SvgPaintOrigin.Solid,
-            fill.HasFill, drawScope, opacityScope) { IsSuppressedSource = suppressedSource || !context.InheritedPresentation.IsDisplayed || !SvgPresentationResolver.ParseDisplay(style.Display), PaintOrder = style.PaintOrder ?? context.InheritedPresentation.PaintOrder, ObjectBounds = objectBounds, SourceObjectBox = sourceObjectBox, VisualBounds = strokeBoundsInflation > 0 ? PrimitiveBounds(reader, context, frame, strokeBoundsInflation, out _, out _) : null, StrokeBoundsInflation = strokeBoundsInflation };
+            fill.HasFill, drawScope, opacityScope) { IsSuppressedSource = suppressedSource || !context.InheritedPresentation.IsDisplayed || style.GetDisplay() == SvgDisplay.None, PaintOrder = style.PaintOrder ?? context.InheritedPresentation.PaintOrder, ObjectBounds = objectBounds, SourceObjectBox = sourceObjectBox, VisualBounds = strokeBoundsInflation > 0 ? PrimitiveBounds(reader, context, frame, strokeBoundsInflation, out _, out _) : null, StrokeBoundsInflation = strokeBoundsInflation };
 
         static SvgPaintBounds? PrimitiveBounds(XmlReader input, SvgPaintableElementContext element, SvgViewportFrame? viewport, float inflation, out SvgPaintBounds? sourceObjectBox, out bool suppressedSource)
         {

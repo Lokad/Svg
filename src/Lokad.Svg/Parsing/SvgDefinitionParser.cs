@@ -44,7 +44,7 @@ internal static class SvgDefinitionParser
             state.NodeCount += source.ChildNodeCount; state.TextCharacterCount += source.CharacterCount;
             SvgDefinition definition = new([], false, null, null)
             {
-                TextSource = source, SourceDisplayed = SvgPresentationResolver.ParseDisplay(style.Display),
+                TextSource = source, SourceDisplayed = (style.GetSourceDisplay() != SvgDisplay.None), SourceDisplay = style.GetSourceDisplay(),
                 SourceVisible = style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true)
             };
             if (symbolLocation)
@@ -78,10 +78,10 @@ internal static class SvgDefinitionParser
             if (symbolChild)
             {
                 SvgSymbolPresentation symbol = (state.SymbolDefinition ?? throw new InvalidOperationException("Symbol children require a presentation context.")).Presentation;
-                context = context with { InheritedPresentation = new(symbol.Paint, true, true, SvgAffineTransform.Identity) { OwnOpacity = symbol.SourceOpacity, Markers = symbol.Markers, PaintOrder = symbol.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers, PaintServerFill = symbol.PaintServerFill }, InheritedStroke = symbol.Stroke, InheritedFillRule = symbol.FillRule, RecordingScope = new(1) };
+                context = context with { InheritedPresentation = new(symbol.Paint, true, true, SvgAffineTransform.Identity) { OwnOpacity = symbol.SourceOpacity, ElementDisplay = symbol.ElementDisplay == SvgDisplay.Inherit ? SvgDisplay.Inline : symbol.ElementDisplay, Markers = symbol.Markers, PaintOrder = symbol.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers, PaintServerFill = symbol.PaintServerFill }, InheritedStroke = symbol.Stroke, InheritedFillRule = symbol.FillRule, RecordingScope = new(1) };
             }
             SvgComputedStyle retainedStyle = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, workCounter, cancellationToken);
-            if (symbolChild && retainedStyle.InheritsOpacity)
+            if (symbolChild && (retainedStyle.InheritsOpacity || retainedStyle.InheritsDisplay))
             {
                 (state.SymbolDefinition ?? throw new InvalidOperationException("Symbol children require a presentation context.")).EnableContent();
                 state.HasRetainedSymbolContent = true;
@@ -127,7 +127,7 @@ internal static class SvgDefinitionParser
                 SvgPaintRecording.FinishDefinition(definition.Geometries, state, workCounter, cancellationToken);
                 SvgDefinition source = deferredSource ? definition : BindSymbolFill(definition, reader, context, state, workCounter, cancellationToken, false);
                 SvgComputedStyle sourceStyle = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, workCounter, cancellationToken);
-                definition = definition with { SourceFillBindings = source.SymbolFillBindings, SourceDisplayed = SvgPresentationResolver.ParseDisplay(sourceStyle.Display), SourceVisible = sourceStyle.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(sourceStyle.Visibility, true), LeafSource = reader.LocalName == "image"
+                definition = definition with { SourceFillBindings = source.SymbolFillBindings, SourceDisplayed = (sourceStyle.GetSourceDisplay() != SvgDisplay.None), SourceDisplay = sourceStyle.GetSourceDisplay(), SourceVisible = sourceStyle.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(sourceStyle.Visibility, true), LeafSource = reader.LocalName == "image"
                     ? SvgDefinitionLeafSource.CaptureImage(reader, context, state, limits) : deferredSource || relativeRectangle
                         ? SvgDefinitionLeafSource.CaptureUnconstructed(reader, context, state) : SvgDefinitionLeafSource.Capture(reader, context, state) };
                 if (symbolChild)
@@ -164,11 +164,11 @@ internal static class SvgDefinitionParser
             if (!marker) SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
             InlineStyle sheet = SvgDocumentStyleResolver.Resolve(reader, state, workCounter, cancellationToken);
             SvgPaintableElementContext markerContext = marker ? SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken) : default;
-            SvgComputedStyle style = marker ? markerContext.ResolveStyle(reader, true) : SvgComputedStyleResolver.Resolve(reader, sheet, workCounter, cancellationToken, true);
+            SvgComputedStyle style = marker ? markerContext.ResolveStyle(reader, true) : SvgComputedStyleResolver.Resolve(reader, sheet, workCounter, cancellationToken, true).ResolveDisplay(SvgDisplay.Inline);
             state.MarkerDefinition = marker ? SvgMarkerSyntax.Parse(reader, style, new(state.EffectiveFrame?.ViewportWidth ?? root.UserViewportWidth, state.EffectiveFrame?.ViewportHeight ?? root.UserViewportHeight), markerContext.InheritedTextStyle, markerContext.StyleSheet, workCounter, cancellationToken) : null;
             SvgPaint inheritedPaint = marker ? markerContext.InheritedPresentation.Paint : SvgPaint.Default;
             // Pinned Chrome honors display on symbol instances, but ignores it on marker definitions.
-            bool displayed = SvgPresentationResolver.ParseDisplay(style.Display);
+            bool displayed = (style.GetDisplay() != SvgDisplay.None);
             bool shader = SvgPatternSyntax.IsPatternFill(style.Fill);
             SvgPaint paint = SvgPaintResolver.Resolve(shader ? "#ffffff" : style.Fill, style.FillOpacity, style.Color, inheritedPaint, namedColors);
             string? shaderFill = null, shaderId = null;
@@ -180,7 +180,7 @@ internal static class SvgDefinitionParser
             }
             SvgInheritedStrokeStyle stroke = new(CopyStyleValue(style.Linecap, state), CopyStyleValue(style.Linejoin, state), CopyStyleValue(style.Dasharray, state), CopyStyleValue(style.Dashoffset, state), CopyStyleValue(style.Width, state), CopyStyleValue(style.Miterlimit, state), CopyStyleValue(style.StrokeOpacity, state), CopyStyleValue(style.Stroke, state));
             SvgSymbolPresentation presentation = new(paint, stroke, CopyStyleValue(style.FillRule, state), marker || style.Fill is not null,
-                marker ? paint.FillOpacity : style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity), marker ? paint.CurrentColor : style.Color is null ? null : SvgColorParser.Parse(style.Color, namedColors), marker ? style.GetOpacity() : style.ResolveOpacity(SvgPaintOpacity.Opaque).GetOpacity()) { IsHidden = !marker && !displayed, IsVisible = marker ? SvgPresentationResolver.ParseVisibility(style.Visibility, markerContext.InheritedPresentation.IsVisible) : style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true), InheritsOpacity = !marker && style.InheritsOpacity, Markers = new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, workCounter, cancellationToken), PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
+                marker ? paint.FillOpacity : style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity), marker ? paint.CurrentColor : style.Color is null ? null : SvgColorParser.Parse(style.Color, namedColors), marker ? style.GetOpacity() : style.ResolveOpacity(SvgPaintOpacity.Opaque).GetOpacity()) { ElementDisplay = marker ? style.GetDisplay() : style.GetSourceDisplay(), IsHidden = !marker && !displayed, IsVisible = marker ? SvgPresentationResolver.ParseVisibility(style.Visibility, markerContext.InheritedPresentation.IsVisible) : style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true), InheritsOpacity = !marker && style.InheritsOpacity, Markers = new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, workCounter, cancellationToken), PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
             if (!marker) presentation = presentation with
             {
                 TextStyleSource = SvgRetainedTextSource.CaptureElement(reader,
@@ -214,8 +214,9 @@ internal static class SvgDefinitionParser
             state.ClipPolygon = null;
             state.ClipIsObjectBoundingBox = SvgClipPathSyntax.ParseClipUnits(reader.GetAttribute("clipPathUnits"));
             SvgPaintableElementContext clipParent = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
-            SvgComputedStyle clipParentStyle = SvgComputedStyleResolver.Resolve(reader, clipParent.StyleSheet, workCounter, cancellationToken);
-            state.ClipIsDisplayed = SvgPresentationResolver.ParseDisplay(clipParentStyle.Display);
+            SvgComputedStyle clipParentStyle = SvgComputedStyleResolver.Resolve(reader, clipParent.StyleSheet, workCounter, cancellationToken).ResolveDisplay(clipParent.InheritedPresentation.ElementDisplay);
+            state.ClipElementDisplay = clipParentStyle.GetDisplay();
+            state.ClipIsDisplayed = state.ClipElementDisplay != SvgDisplay.None;
             state.ClipIsEvenOdd = SvgClipPathSyntax.ParseClipRule((clipParentStyle.ClipRule ?? clipParent.InheritedClipRule ?? "nonzero").AsSpan());
             state.ClipIsVisible = SvgPresentationResolver.ParseVisibility(clipParentStyle.Visibility, clipParent.InheritedPresentation.IsVisible);
             if (reader.IsEmptyElement)
@@ -243,7 +244,7 @@ internal static class SvgDefinitionParser
                 SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
                 InlineStyle clipInline = SvgInlineStyleParser.ParseGeometry(reader.GetAttribute("style"), workCounter, cancellationToken);
-                SvgComputedStyle clipStyle = SvgComputedStyle.Resolve(reader, clipInline, context.StyleSheet);
+                SvgComputedStyle clipStyle = SvgComputedStyle.Resolve(reader, clipInline, context.StyleSheet).ResolveDisplay(state.ClipElementDisplay);
                 RetainClipSource(reader, context, clipStyle, state);
                 SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, state.ClipIsObjectBoundingBox ? new(1, 1) : context.LengthBases);
                 // A resource uses its own child map; ancestors place the referencing element.
@@ -251,7 +252,7 @@ internal static class SvgDefinitionParser
                 SvgAffineViewportClip source = new(new(syntax.X, syntax.Y, syntax.Width, syntax.Height), clipTransform);
                 string? nestedClip = SvgClipPathSyntax.ResolveClipId(reader, state);
                 nestedClip = nestedClip is null ? null : state.Strings.Copy(nestedClip);
-                if (!SvgPresentationResolver.IsPainted(clipStyle.Display, clipStyle.Visibility, true, state.ClipIsVisible))
+                if (!SvgPresentationResolver.IsPainted(clipStyle, true, state.ClipIsVisible))
                 {
                     SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
                     return true;
@@ -288,7 +289,7 @@ internal static class SvgDefinitionParser
                 bool isEvenOdd = clipStyle.ClipRule is null ? state.ClipIsEvenOdd : SvgClipPathSyntax.ParseClipRule(clipStyle.ClipRule.AsSpan());
                 string? nestedClip = SvgClipPathSyntax.ResolveClipId(reader, state);
                 nestedClip = nestedClip is null ? null : state.Strings.Copy(nestedClip);
-                bool visible = SvgPresentationResolver.IsPainted(clipStyle.Display, clipStyle.Visibility, true, state.ClipIsVisible);
+                bool visible = SvgPresentationResolver.IsPainted(clipStyle, true, state.ClipIsVisible);
                 if (visible) PromoteClipRectangle(state, workCounter, cancellationToken);
                 SvgClipPolygon clipContent = ParseClipPathPolygon(reader.GetAttribute("d"), clipTransform, isEvenOdd, visible, limits.MaximumPathCommands, state, workCounter, cancellationToken)
                     with { IsObjectBoundingBox = state.ClipIsObjectBoundingBox };
@@ -309,7 +310,7 @@ internal static class SvgDefinitionParser
                 RetainClipSource(reader, context, clipStyle, state);
                 SvgEllipseSyntax oval = reader.LocalName == "circle" ? SvgEllipseSyntax.ParseCircle(reader, clipBases) : SvgEllipseSyntax.ParseEllipse(reader, clipBases);
                 SvgAffineTransform childMap = SvgGeometrySyntax.ParseElementTransform(reader, workCounter, cancellationToken);
-                if (!SvgPresentationResolver.IsPainted(clipStyle.Display, clipStyle.Visibility, true, state.ClipIsVisible))
+                if (!SvgPresentationResolver.IsPainted(clipStyle, true, state.ClipIsVisible))
                 {
                     SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
                     return true;
@@ -346,7 +347,7 @@ internal static class SvgDefinitionParser
             // at the resource rather than at a rendered definition ancestor.
             maskContext = maskContext with { InheritedPresentation = maskContext.InheritedPresentation with { Transform = SvgAffineTransform.Identity, IsDisplayed = true } };
             InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
-            SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, maskContext.StyleSheet).ResolveOpacity(maskContext.InheritedPresentation.ElementOpacity);
+            SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, maskContext.StyleSheet).ResolveOpacity(maskContext.InheritedPresentation.ElementOpacity).ResolveDisplay(maskContext.InheritedPresentation.ElementDisplay);
             // The resource container supplies inherited style; its children paint
             // the mask without an extra opacity layer around the resource itself.
             SvgInheritedContainer inherited = SvgContainerInheritance.Resolve(reader, inline, style, maskContext.StyleSheet,
@@ -364,7 +365,7 @@ internal static class SvgDefinitionParser
                 ClipRule = style.ClipRule ?? maskContext.InheritedClipRule
             };
             state.MaskId = reader.GetAttribute("id");
-            state.MaskIsDisplayed = SvgPresentationResolver.ParseDisplay(style.Display);
+            state.MaskIsDisplayed = (style.GetDisplay() != SvgDisplay.None);
             state.MaskIsAlpha = SvgMaskSyntax.ParseMaskType(reader.GetAttribute("mask-type"));
             state.MaskObjectBoundingBoxContent = reader.GetAttribute("maskContentUnits") switch
             {
@@ -474,7 +475,7 @@ internal static class SvgDefinitionParser
             state.PatternTile = state.PatternTemplate.Grid;
             SvgPaintableElementContext patternContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
             InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
-            SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, patternContext.StyleSheet).ResolveOpacity(patternContext.InheritedPresentation.ElementOpacity);
+            SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, patternContext.StyleSheet).ResolveOpacity(patternContext.InheritedPresentation.ElementOpacity).ResolveDisplay(patternContext.InheritedPresentation.ElementDisplay);
             if (style.GetOpacity().Value != 1)
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Opacity on pattern containers is not implemented.");
             SvgInheritedContainer inherited = SvgContainerInheritance.Resolve(reader, inline, style, patternContext.StyleSheet,
@@ -488,7 +489,7 @@ internal static class SvgDefinitionParser
             state.PatternScopeStart = state.PatternScopes?.Count ?? 0;
             state.PatternCommandStart = state.PendingCommandEnd;
             // Definition ancestors do not suppress a resource; its own display still controls its content and aliases.
-            bool patternDisplayed = SvgPresentationResolver.ParseDisplay(style.Display) && state.PatternContents?.IsDisplayed(state.PatternId) != false;
+            bool patternDisplayed = (style.GetDisplay() != SvgDisplay.None) && state.PatternContents?.IsDisplayed(state.PatternId) != false;
             state.PatternTemplate = state.PatternTemplate with { IsDisplayed = patternDisplayed };
             bool contentDisplayed = patternDisplayed && (state.PatternContents?.RequiresContent(state.PatternId) ?? true);
             state.Groups.Add(new(reader.Depth, SvgGroupKind.Pattern, inherited.Presentation with { Transform = SvgAffineTransform.Identity, IsDisplayed = contentDisplayed }, inherited.TextStyle, false, false, inherited.Stroke, inherited.FillRule)
@@ -1106,7 +1107,7 @@ internal static class SvgDefinitionParser
             state.Definitions.TryAdd(state.Strings.Copy(id), new([], false, null, null)
             {
                 LeafSource = SvgDefinitionLeafSource.CaptureUnconstructed(reader, context with { AuthoredStyle = style }, state),
-                SourceDisplayed = SvgPresentationResolver.ParseDisplay(style.Display),
+                SourceDisplayed = (style.GetSourceDisplay() != SvgDisplay.None), SourceDisplay = style.GetSourceDisplay(),
                 SourceVisible = style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true)
             });
         }
@@ -1715,7 +1716,7 @@ internal static class SvgDefinitionParser
         {
             SvgDefinitionLeafSource first = state.PatternRectangleSource ?? throw new InvalidOperationException("Rectangle promotion requires retained source attributes.");
             SvgPaintableElementContext previous = state.PatternRectangleContext;
-            SvgPaintRecording.AdoptLeafScene(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, previous.InheritedPresentation.PaintOrder, previous.InheritedPresentation.Markers, previous.InheritedPresentation.ElementOpacity, previous.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, previous.LengthBases, false, previous.InheritedPresentation.IsDisplayed, state), builder, state);
+            SvgPaintRecording.AdoptLeafScene(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, previous.InheritedPresentation.PaintOrder, previous.InheritedPresentation.Markers, previous.InheritedPresentation.ElementOpacity, previous.InheritedPresentation.ElementDisplay, previous.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, previous.LengthBases, false, previous.InheritedPresentation.IsDisplayed, state), builder, state);
             state.PatternTile = tile with { Content = null };
         }
         return builder;
@@ -1981,14 +1982,14 @@ internal static class SvgDefinitionParser
         finally { state.DeferringLeafClip = previousClipDeferral; state.FilterGroupDepth = previousFilterDepth; }
         try
         {
-            if (filtered && isDisplayed && SvgPresentationResolver.ParseDisplay(sourceStyle.Display) && SvgPaintRecording.IsFilterSource(reader, context))
+            if (filtered && isDisplayed && (sourceStyle.GetDisplay() != SvgDisplay.None) && SvgPaintRecording.IsFilterSource(reader, context))
                 SvgPaintRecording.WrapFilter(definition.Geometries, sourceStyle.Filter, context.ResolveTransform(reader), context.LengthBases, state, context.WorkCounter, context.CancellationToken);
             string? mask = SvgLocalUrl.ReadReference(reader, "mask");
             if (mask is not null)
             {
                 _ = SvgMaskSyntax.ParseMaskId(mask);
                 bool visible = SvgPresentationResolver.ParseVisibility(sourceStyle.Visibility, context.InheritedPresentation.IsVisible);
-                if (isDisplayed && SvgPresentationResolver.ParseDisplay(sourceStyle.Display)
+                if (isDisplayed && (sourceStyle.GetDisplay() != SvgDisplay.None)
                     && SvgMaskSyntax.HasPaintableTarget(reader, visible, filtered ? sourceStyle.Filter : null))
                     SvgReferenceResolver.ApplyMask(definition.Geometries, null, null, mask,
                         context.ResolveTransform(reader), state, context.WorkCounter, context.CancellationToken);
@@ -2022,7 +2023,7 @@ internal static class SvgDefinitionParser
         // Bind only authored fill properties: container URL injection belongs to lowering,
         // while source aliases must exclude their definition ancestors.
         SvgComputedStyle authored = context.AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, work, token);
-        SvgComputedStyle style = context.InheritedStroke.ApplyTo(authored);
+        SvgComputedStyle style = context.InheritedStroke.ApplyTo(authored).ResolveDisplay(SvgDisplay.Inline);
         _ = SvgPaintResolver.RemoveInertServers(ref style, state, reader.LocalName);
         SvgSymbolPresentation symbol = includesSymbolPresentation ? (state.SymbolDefinition ?? throw new InvalidOperationException("Symbol fills require a presentation context.")).Presentation : default;
         bool inherited = reader.LocalName != "line" && style.Fill is null && (!includesSymbolPresentation || !symbol.HasAuthoredFill);
@@ -2031,7 +2032,7 @@ internal static class SvgDefinitionParser
         SvgPaint? authoredFill = !inherited && reader.LocalName != "line" && !SvgPatternSyntax.IsPatternFill(style.Fill)
             ? SvgPaintResolver.Resolve(style.Fill, style.FillOpacity, style.Color, includesSymbolPresentation ? symbol.Paint : SvgPaint.Default, context.NamedColors)
             : null;
-        bool isPainted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, true, true);
+        bool isPainted = SvgPresentationResolver.IsPainted(style, true, true);
         string? stroke = style.Stroke ?? context.InheritedStroke.Stroke;
         SvgPaint? authoredStroke = stroke is not null && !SvgPatternSyntax.IsPatternFill(stroke)
             ? SvgPaintResolver.Resolve(stroke, null, null, SvgPaint.Default, context.NamedColors) : null;

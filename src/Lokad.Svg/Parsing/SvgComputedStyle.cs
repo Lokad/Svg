@@ -7,6 +7,15 @@ internal readonly record struct SvgComputedStyle(string? Color, string? Fill, st
 {
     /// <summary>Retains the parent's own opacity for an explicit inherit declaration, before any layer or mask composition.</summary>
     internal SvgPaintOpacity? ComputedOpacity { get; init; }
+    /// <summary>Retains explicit display inheritance without replacing the authored source declaration.</summary>
+    internal SvgDisplay? ComputedDisplay { get; init; }
+    internal bool InheritsDisplay => Display == SvgInlineStyleParser.InheritedValue;
+    internal SvgComputedStyle ResolveDisplay(SvgDisplay parentDisplay)
+        => this with { ComputedDisplay = InheritsDisplay ? parentDisplay : null };
+    internal SvgDisplay GetDisplay()
+        => ComputedDisplay ?? SvgPresentationResolver.ParseResolvedDisplay(Display);
+    internal SvgDisplay GetSourceDisplay()
+        => SvgPresentationResolver.ParseSourceDisplay(Display);
     internal bool InheritsOpacity => Opacity == SvgInlineStyleParser.InheritedValue;
     internal SvgComputedStyle ResolveOpacity(SvgPaintOpacity parentOpacity)
         => this with { ComputedOpacity = InheritsOpacity ? parentOpacity : null };

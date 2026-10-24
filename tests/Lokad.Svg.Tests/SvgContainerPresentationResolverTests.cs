@@ -7,9 +7,9 @@ public sealed class SvgContainerPresentationResolverTests
     [Fact]
     public void Shared_presentation_visibility_resolution_observes_both_inherited_states()
     {
-        Assert.False(SvgPresentationResolver.IsPainted("inline", "visible", false, true));
-        Assert.False(SvgPresentationResolver.IsPainted("inline", null, true, false));
-        Assert.True(SvgPresentationResolver.IsPainted("inline", "visible", true, false));
+        Assert.False(SvgPresentationResolver.IsPainted(new(null, null, null, null, "inline", "visible", null, null), false, true));
+        Assert.False(SvgPresentationResolver.IsPainted(new(null, null, null, null, "inline", null, null, null), true, false));
+        Assert.True(SvgPresentationResolver.IsPainted(new(null, null, null, null, "inline", "visible", null, null), true, false));
     }
 
     [Fact]

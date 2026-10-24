@@ -6,6 +6,7 @@ using Lokad.Svg.Rendering;
 internal readonly record struct SvgTextPaintStyle(SvgPaint Paint, bool IsDisplayed, bool IsVisible, string? Stroke, byte TextOpacity)
 {
     internal static SvgTextPaintStyle Default => new(SvgPaint.Default, true, true, null, 255);
+    internal SvgDisplay ElementDisplay { get; init; }
     internal string? FillServer { get; init; }
     internal SvgInheritedStrokeStyle StrokeStyle { get; init; }
     internal SvgPaintOrder PaintOrder { get; init; }
@@ -24,15 +25,16 @@ internal readonly record struct SvgTextPaintStyle(SvgPaint Paint, bool IsDisplay
         ValidateStyle(style);
         SvgResolvedPresentation resolved = SvgPresentationResolver.Resolve(ForColorResolution(style), inheritedPaint, inheritedDisplayed, inheritedVisible, SvgRootParser.CssNamedColors);
         return new(resolved.Paint, resolved.IsDisplayed, resolved.IsVisible, style.Stroke ?? inheritedStroke, resolved.Opacity)
-        { FillServer = IsLocalFill(style.Fill) ? style.Fill : null, StrokeStyle = SvgInheritedStrokeStyle.Default.ResolveChild(style), PaintOrder = style.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers, NonScalingStroke = SvgStrokeStyleSyntax.ParseVectorEffect(style.VectorEffect) };
+        { ElementDisplay = style.GetDisplay(), FillServer = IsLocalFill(style.Fill) ? style.Fill : null, StrokeStyle = SvgInheritedStrokeStyle.Default.ResolveChild(style), PaintOrder = style.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers, NonScalingStroke = SvgStrokeStyleSyntax.ParseVectorEffect(style.VectorEffect) };
     }
 
     internal static SvgTextPaintStyle ResolveSpan(SvgComputedStyle style, SvgTextPaintStyle inherited)
     {
+        style = style.ResolveDisplay(inherited.ElementDisplay);
         ValidateStyle(style);
         SvgResolvedPresentation resolved = SvgPresentationResolver.Resolve(ForColorResolution(style), inherited.Paint, inherited.IsDisplayed, inherited.IsVisible, SvgRootParser.CssNamedColors);
         return new(resolved.Paint, resolved.IsDisplayed, resolved.IsVisible, style.Stroke ?? inherited.Stroke, inherited.TextOpacity)
-        { FillServer = style.Fill is null ? inherited.FillServer : IsLocalFill(style.Fill) ? style.Fill : null, StrokeStyle = inherited.StrokeStyle.ResolveChild(style), PaintOrder = style.PaintOrder ?? inherited.PaintOrder, NonScalingStroke = SvgStrokeStyleSyntax.ParseVectorEffect(style.VectorEffect) };
+        { ElementDisplay = style.GetDisplay(), FillServer = style.Fill is null ? inherited.FillServer : IsLocalFill(style.Fill) ? style.Fill : null, StrokeStyle = inherited.StrokeStyle.ResolveChild(style), PaintOrder = style.PaintOrder ?? inherited.PaintOrder, NonScalingStroke = SvgStrokeStyleSyntax.ParseVectorEffect(style.VectorEffect) };
     }
 
     internal void ValidateEmission()
