@@ -102,6 +102,11 @@ fractional widths, instance placement and output scaling. Shared lowering keeps
 fill/stroke coordinates and clip/mask/filter composition; see the
 [instance](../tests/Lokad.Svg.Tests/SvgRectangleShaderInstanceTests.cs) and
 [context](../tests/Lokad.Svg.Tests/SvgRectangleShaderContextsTests.cs) regressions.
+Sharp rectangle fills keep native rectangle coverage beside shader strokes;
+retained rectangle drawing bounds round in source space before opacity-layer
+placement. [Overlap regressions](../tests/Lokad.Svg.Tests/SvgRectanglePaintOverlapTests.cs)
+and [native references](../tests/Research/rectangle-paint-overlap/capture.json)
+cover combined paints, instances, opacity and masks.
 Omitted circle radii and path data paint nothing. An ellipse with one omitted
 radius copies the other resolved radius; omitting both paints nothing.
 Omitted/empty point lists paint nothing. Repeated and closing vertices, and

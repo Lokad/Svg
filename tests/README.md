@@ -60,6 +60,10 @@ cover native frame coverage, empty/oversized strokes and clip-source ordering;
 and retained paint coordinates through effects. [Ownership tests](Lokad.Svg.Tests/SvgRectangleShaderOwnershipTests.cs)
 cover denial/cancellation/retry; [browser checks](Lokad.Svg.VisualTests/SvgRectangleShaderFrameReferenceTests.cs)
 use [independently captured inputs](Research/rectangle-shader-frames/capture.json).
+The [overlap cases](Lokad.Svg.Tests/SvgRectanglePaintOverlapTests.cs) compare
+combined fill/stroke paints with ordered draws, including opacity layers and
+masks. Their [browser checks](Lokad.Svg.VisualTests/SvgRectanglePaintOverlapReferenceTests.cs)
+retain each input's [native image](Research/rectangle-paint-overlap/capture.json).
 
 [Display inheritance tests](Lokad.Svg.Tests/SvgDisplayInheritanceTests.cs) cover
 logical parents, retained instances, viewports and resource children across

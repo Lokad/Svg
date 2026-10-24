@@ -8,6 +8,8 @@ internal ref struct SvgAnalyticContourPreparation
 {
     /// <summary>Retains direct rectangle-frame coverage separately from generated path outlines; owns no storage.</summary>
     internal SvgRectangleFrameCoverage? RectangleFrame;
+    /// <summary>Retains native rectangle fill coverage independently of filled-path rectangle recognition.</summary>
+    internal SvgRectangleCoverage? RectangleFill;
     internal readonly SvgPreparedPathContours? Source;
     internal readonly SvgAffineTransform SourceMap;
     internal readonly ReadOnlySpan<SvgDevicePoint> Points;

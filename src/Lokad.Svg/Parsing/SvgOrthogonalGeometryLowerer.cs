@@ -564,7 +564,8 @@ internal ref struct SvgOrthogonalGeometryLowering
                 using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
                 SvgRoundedRectPath.Append(commands, x, y, width, height, radiusX, radiusY);
                 owned = commands.Detach();
-                result.Storage.Items[0] = result.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.CreateConvexShape(owned, deviceMap, budget) };
+                result.Storage.Items[0] = result.Storage.Items[0] with { AuthoredPath = radiusX == 0 && radiusY == 0
+                    ? SvgAuthoredPath.CreateRectangle(owned, deviceMap, budget) : SvgAuthoredPath.CreateConvexShape(owned, deviceMap, budget) };
                 owned = new([], null);
             }
             return result;
@@ -945,7 +946,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 commands.Add(new(_elementName == "polyline" ? SvgAuthoredPathVerb.End : SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
                 owned = commands.Detach();
                 result.Storage.Items[0] = result.Storage.Items[0] with { AuthoredPath = _elementName == "rect"
-                    ? SvgAuthoredPath.CreateConvexShape(owned, deviceMap, budget) : SvgAuthoredPath.Create(owned, deviceMap, budget) };
+                    ? SvgAuthoredPath.CreateRectangle(owned, deviceMap, budget) : SvgAuthoredPath.Create(owned, deviceMap, budget) };
                 owned = new([], null);
             }
             return result;

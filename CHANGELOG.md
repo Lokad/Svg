@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve native rectangle fill coverage beside solid and shader strokes, and
+  round retained rectangle drawing bounds before mapping isolated opacity layers.
 - Share rectangle lowering across direct and retained sources, preserving native
   shader-stroke coverage through fractional placement, widths and output scaling.
   Remove obsolete definition helpers and retain clip lookup until replay.

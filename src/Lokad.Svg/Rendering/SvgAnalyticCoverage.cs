@@ -165,6 +165,7 @@ internal ref partial struct SvgAnalyticCoverage
     private readonly bool _convex;
     private readonly bool _rawBox;
     private readonly SvgFatRectangleCoverage? _fatRectangle;
+    private readonly SvgRectangleCoverage? _rectangleFill;
     private readonly SvgRectangleFrameCoverage? _rectangleFrame;
     private int _rectangleRow;
     private readonly int _leftClip;
@@ -234,24 +235,9 @@ internal ref partial struct SvgAnalyticCoverage
         _strips = 0;
     }
 
-    private SvgAnalyticCoverage(SvgFatRectangleCoverage rectangle, int xStart)
+    private SvgAnalyticCoverage(int xStart, int width)
     {
         this = default;
-        _fatRectangle = rectangle;
-        _xStart = xStart;
-        _edges = [];
-        _row = [];
-        _temp = [];
-        _alphas = [];
-        _directLinks = [];
-        _directOperations = [];
-        _directSpans = [];
-    }
-
-    private SvgAnalyticCoverage(SvgRectangleFrameCoverage rectangle, int xStart, int width)
-    {
-        this = default;
-        _rectangleFrame = rectangle;
         _xStart = xStart;
         _width = width;
         _edges = [];
@@ -261,6 +247,24 @@ internal ref partial struct SvgAnalyticCoverage
         _directLinks = [];
         _directOperations = [];
         _directSpans = [];
+    }
+
+    private SvgAnalyticCoverage(SvgFatRectangleCoverage rectangle, int xStart)
+        : this(xStart, 0)
+    {
+        _fatRectangle = rectangle;
+    }
+
+    private SvgAnalyticCoverage(SvgRectangleFrameCoverage rectangle, int xStart, int width)
+        : this(xStart, width)
+    {
+        _rectangleFrame = rectangle;
+    }
+
+    private SvgAnalyticCoverage(SvgRectangleCoverage rectangle, int xStart)
+        : this(xStart, 0)
+    {
+        _rectangleFill = rectangle;
     }
 
     public void Dispose()
@@ -276,6 +280,12 @@ internal ref partial struct SvgAnalyticCoverage
     internal void PaintPixel(int x, scoped Span<byte> destination, SvgAnalyticPaint paint, SvgAnalyticClipCoverage clipCoverage)
     {
         if (clipCoverage.IsEmpty) return;
+        if (_rectangleFill is {} fill)
+        {
+            _rowCancellationToken.ThrowIfCancellationRequested();
+            paint.Blend(destination, clipCoverage.Apply(fill.GetAlpha(x + _xStart, _rectangleRow)), SvgAnalyticPaintKind.Direct);
+            return;
+        }
         if (_rectangleFrame is {} frame)
         {
             _rowCancellationToken.ThrowIfCancellationRequested();
@@ -467,7 +477,7 @@ internal ref partial struct SvgAnalyticCoverage
     }
 
     /// <summary>Gets pending mask/run coverage, indexed from the preparation x start. Direct paint events must be replayed separately through PaintPixel.</summary>
-    internal ReadOnlySpan<byte> Row => _fatRectangle is not null || _rectangleFrame is not null ? ReadOnlySpan<byte>.Empty : new(_row, 1, _width);
+    internal ReadOnlySpan<byte> Row => _fatRectangle is not null || _rectangleFrame is not null || _rectangleFill is not null ? ReadOnlySpan<byte>.Empty : new(_row, 1, _width);
     /// <summary>Gets the retained edge count for resource and traversal diagnostics.</summary>
     internal int EdgeCount => _edges.Length;
     private static int FixedMul(int left, int right) => (int)(((long)left * right) >> 16);
@@ -1424,6 +1434,11 @@ internal ref partial struct SvgAnalyticCoverage
         {
             eligible = true;
             return new(frame, xStart, xEnd - xStart);
+        }
+        if (preparation.RectangleFill is {} fill)
+        {
+            eligible = true;
+            return new(fill, xStart);
         }
         if (ends.Length == 1 && mapping is (SvgPolygonMapping.NativeFillEdges or SvgPolygonMapping.NativeStrokeEdges) && !preparation.UsesRunBlitter && paintClip == SvgAnalyticPaintClip.Binary)
         {
@@ -2389,7 +2404,7 @@ internal ref partial struct SvgAnalyticCoverage
             _rectangleRow = y;
             return;
         }
-        if (_fatRectangle is not null)
+        if (_fatRectangle is not null || _rectangleFill is not null)
         {
             if (maximumRowWork < 1) throw new SvgException(SvgErrorCode.LimitExceeded, "Filled rectangle row exceeds the remaining work limit.");
             _rectangleRow = y;

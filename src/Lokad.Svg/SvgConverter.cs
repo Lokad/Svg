@@ -1561,6 +1561,7 @@ public static partial class SvgConverter
                 SvgGeometry geometry = root.Geometries[value.GeometryIndex];
                 SvgRecordedPaintValue paint = GetRecordedPaintValue(geometry.RecordedPaint);
                 if (paint.IsEffectAnchor) continue;
+                if (IncludeRectangleDrawingBounds(geometry.AuthoredPath)) continue;
                 SvgPaintBounds? visualBounds = paint.VisualBounds;
                 if (visualBounds is {} visual && (sourcePlacement == SvgAffineTransform.Identity || geometry.AuthoredPath is null))
                 {
@@ -1647,6 +1648,33 @@ public static partial class SvgConverter
                 (int)Math.Clamp(Math.Floor(top), parent.Top, parent.Bottom),
                 (int)Math.Clamp(Math.Ceiling(right), parent.Left, parent.Right),
                 (int)Math.Clamp(Math.Ceiling(bottom), parent.Top, parent.Bottom));
+
+            bool IncludeRectangleDrawingBounds(SvgAuthoredPath? source)
+            {
+                if (source is null) return false;
+                float inflation = 0;
+                if (source.StrokeStyle is {} stroke)
+                {
+                    if (stroke.Shape != SvgAuthoredStrokeShape.Rectangle || stroke.NonScalingMap is not null
+                        || stroke.WidthMap != source.SceneMap) return false;
+                    inflation = (float)stroke.Width / 2f;
+                }
+                else if (!source.IsRectangleFill) return false;
+                SvgRectanglePathRecognizer recognizer = new();
+                foreach (SvgAuthoredPathCommand command in source.Commands)
+                {
+                    boundsWork.Consume(cancellationToken);
+                    if (!recognizer.Add(command.Verb, command.First)) return false;
+                }
+                if (recognizer.Finish() is not SvgRecognizedRectangle { Closed: true } rectangle) return false;
+                // Drawing records enclose source-space rectangle bounds before mapping.
+                // Filter visual bounds retain their independent floating-point contract.
+                SvgAffineTransform map = outputMap.ComposeChecked(source.SceneMap);
+                IncludeBox(new(MathF.Floor(rectangle.Left - inflation), MathF.Floor(rectangle.Top - inflation),
+                    MathF.Ceiling(rectangle.Right + inflation) - MathF.Floor(rectangle.Left - inflation),
+                    MathF.Ceiling(rectangle.Bottom + inflation) - MathF.Floor(rectangle.Top - inflation), default, false, null), map, 0);
+                return true;
+            }
 
             void IncludeBox(SvgRectangle box, SvgAffineTransform map, double inflation)
             {
@@ -2831,6 +2859,7 @@ public static partial class SvgConverter
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
             SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, polygon.IsEvenOdd, raster.Signs, raster.Mapping, raster.QuadSpans, raster.CubicSpans, raster.CompleteBounds.RoundOutForDispatch(), outputWidth, outputHeight, raster.Authored, raster.AuthoredMap);
             preparation.RectangleFrame = PrepareRectangleFrame(authoredPath);
+            preparation.RectangleFill = PrepareRectangleFill(authoredPath);
             Span<byte> clipPixel = stackalloc byte[4];
             foreach (SvgCpuRasterContext cpuTile in rasterGrid.GetContexts(new(raster.StartX, raster.StartY, raster.EndX, raster.EndY)))
             {
@@ -2933,6 +2962,7 @@ public static partial class SvgConverter
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
             SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, raster.Mapping, raster.QuadSpans, raster.CubicSpans, raster.CompleteBounds.RoundOutForDispatch(), outputWidth, outputHeight, raster.Authored, raster.AuthoredMap);
             preparation.RectangleFrame = PrepareRectangleFrame(authoredPath);
+            preparation.RectangleFill = PrepareRectangleFill(authoredPath);
             foreach (SvgCpuRasterContext cpuTile in rasterGrid.GetContexts(new(raster.StartX, raster.StartY, raster.EndX, raster.EndY)))
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -3026,6 +3056,7 @@ public static partial class SvgConverter
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
             SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, raster.Mapping, raster.QuadSpans, raster.CubicSpans, raster.CompleteBounds.RoundOutForDispatch(), outputWidth, outputHeight, raster.Authored, raster.AuthoredMap);
             preparation.RectangleFrame = PrepareRectangleFrame(authoredPath);
+            preparation.RectangleFill = PrepareRectangleFill(authoredPath);
             foreach (SvgCpuRasterContext cpuTile in rasterGrid.GetContexts(new(raster.StartX, raster.StartY, raster.EndX, raster.EndY)))
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -3145,6 +3176,7 @@ public static partial class SvgConverter
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
             SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, raster.Mapping, raster.QuadSpans, raster.CubicSpans, raster.CompleteBounds.RoundOutForDispatch(), outputWidth, outputHeight, raster.Authored, raster.AuthoredMap);
             preparation.RectangleFrame = PrepareRectangleFrame(authoredPath);
+            preparation.RectangleFill = PrepareRectangleFill(authoredPath);
             foreach (SvgCpuRasterContext cpuTile in rasterGrid.GetContexts(new(raster.StartX, raster.StartY, raster.EndX, raster.EndY)))
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -4124,6 +4156,29 @@ public static partial class SvgConverter
                 }
                 finally { activePaint = previous; }
             }
+        }
+
+        SvgRectangleCoverage? PrepareRectangleFill(SvgAuthoredPath? source)
+        {
+            if (source is not { IsRectangleFill: true }) return null;
+            SvgAffineTransform outputMap = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
+            SvgAffineTransform map = outputMap.ComposeChecked(source.SceneMap);
+            if (!map.PreservesAxisAlignedRectangles) return null;
+            SvgRectanglePathRecognizer recognizer = new();
+            foreach (SvgAuthoredPathCommand command in source.Commands)
+            {
+                if (workUnits >= options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle fill preparation exceeds the remaining work limit.");
+                workUnits++;
+                cancellationToken.ThrowIfCancellationRequested();
+                if (!recognizer.Add(command.Verb, command.First)) return null;
+            }
+            if (recognizer.Finish() is not SvgRecognizedRectangle { Closed: true } rectangle) return null;
+            bool exchangeAxes = !map.IsAxisAligned;
+            double x1 = MapRectangleEdge(exchangeAxes ? rectangle.Top : rectangle.Left, exchangeAxes ? map.C : map.A, map.E);
+            double x2 = MapRectangleEdge(exchangeAxes ? rectangle.Bottom : rectangle.Right, exchangeAxes ? map.C : map.A, map.E);
+            double y1 = MapRectangleEdge(exchangeAxes ? rectangle.Left : rectangle.Top, exchangeAxes ? map.B : map.D, map.F);
+            double y2 = MapRectangleEdge(exchangeAxes ? rectangle.Right : rectangle.Bottom, exchangeAxes ? map.B : map.D, map.F);
+            return SvgRectangleCoverage.Create(Math.Min(x1, x2), Math.Min(y1, y2), Math.Max(x1, x2), Math.Max(y1, y2), outputWidth, outputHeight);
         }
 
         SvgRectangleFrameCoverage? PrepareRectangleFrame(SvgAuthoredPath? source)

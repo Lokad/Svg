@@ -7,6 +7,9 @@ internal enum SvgAuthoredPathVerb { Move, Line, Quadratic, Cubic, Arc, Conic, En
 /// <summary>Identifies the native draw operation whose coverage must survive source replay.</summary>
 internal enum SvgAuthoredStrokeShape { Path, Rectangle }
 
+/// <summary>Preserves the native fill operation independently of generated outline or clip geometry.</summary>
+internal enum SvgAuthoredFillShape : byte { Path, Convex, Rectangle }
+
 /// <summary>Keeps native paint placement separate from the transform already applied to non-scaling source commands.</summary>
 internal readonly record struct SvgNonScalingStrokeMap(SvgAffineTransform SourceMap, SvgAffineTransform StrokeTransform);
 
@@ -38,20 +41,24 @@ internal sealed class SvgAuthoredPath : IDisposable
     private SvgAuthoredPath? _strokeOutline;
     private RenderBudget.BudgetReservation? _ownerReservation;
 
-    private SvgAuthoredPath(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, SvgAuthoredStrokeStyle? strokeStyle, SvgAuthoredPath? strokeOutline, bool isKnownConvex, RenderBudget.BudgetReservation ownerReservation)
+    private readonly SvgAuthoredFillShape _fillShape;
+
+    private SvgAuthoredPath(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, SvgAuthoredStrokeStyle? strokeStyle, SvgAuthoredPath? strokeOutline, SvgAuthoredFillShape fillShape, RenderBudget.BudgetReservation ownerReservation)
     {
         _commands = commands;
         SceneMap = sceneMap;
         StrokeStyle = strokeStyle;
         _strokeOutline = strokeOutline;
         _ownerReservation = ownerReservation;
-        IsKnownConvex = isKnownConvex;
+        _fillShape = fillShape;
     }
 
     internal ReadOnlySpan<SvgAuthoredPathCommand> Commands => _commands.Items;
     internal SvgAffineTransform SceneMap { get; }
     /// <summary>Identifies one native convex source shape; bitmap placement may require fresh classification.</summary>
-    internal bool IsKnownConvex { get; }
+    internal bool IsKnownConvex => _fillShape != SvgAuthoredFillShape.Path;
+    /// <summary>Identifies a native rectangle fill; rectangular clips and path outlines remain path draws.</summary>
+    internal bool IsRectangleFill => _fillShape == SvgAuthoredFillShape.Rectangle;
     internal SvgAuthoredStrokeStyle? StrokeStyle { get; }
     /// <summary>Borrows the generated source outline until this centerline owner is disposed or transferred.</summary>
     internal SvgAuthoredPath? StrokeOutline => _strokeOutline;
@@ -60,7 +67,7 @@ internal sealed class SvgAuthoredPath : IDisposable
     internal SvgAuthoredPath Transfer()
     {
         RenderBudget.BudgetReservation owner = _ownerReservation ?? throw new InvalidOperationException("Authored path ownership has already transferred.");
-        SvgAuthoredPath result = new(_commands, SceneMap, StrokeStyle, _strokeOutline, IsKnownConvex, owner);
+        SvgAuthoredPath result = new(_commands, SceneMap, StrokeStyle, _strokeOutline, _fillShape, owner);
         _commands = new([], null);
         _strokeOutline = null;
         _ownerReservation = null;
@@ -198,13 +205,19 @@ internal sealed class SvgAuthoredPath : IDisposable
 
     /// <summary>Adopts command-array ownership only on success; the caller releases the array on failure.</summary>
     internal static SvgAuthoredPath Create(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, RenderBudget budget)
-        => Create(commands, sceneMap, null, null, false, budget);
+        => Create(commands, sceneMap, null, null, SvgAuthoredFillShape.Path, budget);
 
     /// <summary>Adopts one validated convex source shape, preserving its native classification without changing its verbs.</summary>
     /// <remarks>The caller supplies one rectangle, rounded rectangle or oval generated in source float coordinates.
     /// Command ownership transfers only on success; copies retain source identity while consumers resolve placed convexity.</remarks>
     internal static SvgAuthoredPath CreateConvexShape(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, RenderBudget budget)
-        => Create(commands, sceneMap, null, null, true, budget);
+        => Create(commands, sceneMap, null, null, SvgAuthoredFillShape.Convex, budget);
+
+    /// <summary>Adopts a native rectangle's four source corners and close verb, preserving its fill coverage.</summary>
+    /// <remarks>Ownership transfers only on success. Copy and transfer retain the operation kind;
+    /// output placement decides whether the rectangle remains axis aligned.</remarks>
+    internal static SvgAuthoredPath CreateRectangle(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, RenderBudget budget)
+        => Create(commands, sceneMap, null, null, SvgAuthoredFillShape.Rectangle, budget);
 
     /// <summary>Adopts the source centerline and its generated outline only on success.</summary>
     /// <remarks>The caller retains both owners on failure. The outline is a filled child with its
@@ -214,13 +227,13 @@ internal sealed class SvgAuthoredPath : IDisposable
     {
         ArgumentNullException.ThrowIfNull(strokeOutline);
         if (strokeOutline.StrokeStyle is not null) throw new ArgumentException("A stroke outline must be filled source commands.", nameof(strokeOutline));
-        return Create(commands, sceneMap, strokeStyle, strokeOutline, false, budget);
+        return Create(commands, sceneMap, strokeStyle, strokeOutline, SvgAuthoredFillShape.Path, budget);
     }
 
-    private static SvgAuthoredPath Create(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, SvgAuthoredStrokeStyle? strokeStyle, SvgAuthoredPath? strokeOutline, bool isKnownConvex, RenderBudget budget)
+    private static SvgAuthoredPath Create(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, SvgAuthoredStrokeStyle? strokeStyle, SvgAuthoredPath? strokeOutline, SvgAuthoredFillShape fillShape, RenderBudget budget)
     {
         RenderBudget.BudgetReservation owner = budget.Reserve(OwnerBytes, SvgMemoryCategory.Scene);
-        try { return new SvgAuthoredPath(commands, sceneMap, strokeStyle, strokeOutline, isKnownConvex, owner); }
+        try { return new SvgAuthoredPath(commands, sceneMap, strokeStyle, strokeOutline, fillShape, owner); }
         catch { owner.Dispose(); throw; }
     }
 
@@ -248,7 +261,7 @@ internal sealed class SvgAuthoredPath : IDisposable
                 };
             }
             copiedOutline = _strokeOutline?.Copy(placement, budget, workCounter, cancellationToken);
-            return Create(owned, placement.ComposeChecked(SceneMap), copiedStyle, copiedOutline, IsKnownConvex, budget);
+            return Create(owned, placement.ComposeChecked(SceneMap), copiedStyle, copiedOutline, _fillShape, budget);
         }
         catch { owned.Dispose(); copiedOutline?.Dispose(); throw; }
     }
