@@ -183,6 +183,7 @@ Deferred text and instances retain their enclosing filter recording context;
 glyphs and decorations record source bounds before filter construction.
 Nonpainting effect anchors contribute object bounds without enlarging painted bounds.
 Path glyphs compose general parent poses; the translation shortcut requires unchanged axes.
+Glyph caches retain the recorded font size and relax the remaining device matrix separately.
 
 The bounded interpreter keeps projection/freedom vectors and physical/hint grids
 separate. Windows font-unit conversion retains floating-point scale precision

@@ -79,7 +79,7 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
     {
         SvgPreparedFont font = _font ?? throw new InvalidOperationException("The glyph source is disposed.");
         SvgGlyphStrikeTransform strike = HasGlyphMap
-            ? SvgGlyphStrikeTransform.Create(_fontSize * scaleY, new(_glyphMap.A * scaleX / scaleY, _glyphMap.B, _glyphMap.C * scaleX / scaleY, _glyphMap.D, 0, 0))
+            ? CreateMappedStrike(scaleX, scaleY)
             : default;
         OpenTypeWindowsGlyphProfile profile = OpenTypeFont.GetWindowsGlyphProfile(font.Bytes, font.Metrics, HasGlyphMap ? strike.DeviceSize : DeviceFontSize(scaleY), work, token);
         SvgGlyphLcdMode mode = profile.LcdMode;
@@ -178,6 +178,16 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
         return recordedSize * SvgGlyphStrikeTransform.RelaxCoefficient(scale / host);
     }
 
+    /// <summary>Preserves a recorded font size while relaxing only its remaining device matrix.</summary>
+    private SvgGlyphStrikeTransform CreateMappedStrike(double scaleX, double scaleY)
+    {
+        if (_pictureFontScale is not {} host)
+            return SvgGlyphStrikeTransform.Create(_fontSize * scaleY, new(_glyphMap.A * scaleX / scaleY, _glyphMap.B, _glyphMap.C * scaleX / scaleY, _glyphMap.D, 0, 0));
+        float recordedSize = SvgGlyphDeviceMetrics.GetEffectiveFontSize(_fontSize * host);
+        return SvgGlyphStrikeTransform.Create(recordedSize, new(_glyphMap.A * scaleX / host, _glyphMap.B * scaleY / host,
+            _glyphMap.C * scaleX / host, _glyphMap.D * scaleY / host, 0, 0));
+    }
+
     /// <summary>Replays a mapped outline at the native two-axis subpixel strike origin, preserving its tangent transform.</summary>
     /// <remarks>The returned path owns its commands. The font is borrowed; all decoded scratch is released
     /// before return. Curve and point traversal charges work and checks cancellation.</remarks>
@@ -185,8 +195,7 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
         RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         SvgPreparedFont font = _font ?? throw new InvalidOperationException("The glyph source is disposed.");
-        SvgAffineTransform normalized = new(_glyphMap.A * scaleX / scaleY, _glyphMap.B, _glyphMap.C * scaleX / scaleY, _glyphMap.D, 0, 0);
-        SvgGlyphStrikeTransform strike = SvgGlyphStrikeTransform.Create(_fontSize * scaleY, normalized);
+        SvgGlyphStrikeTransform strike = CreateMappedStrike(scaleX, scaleY);
         // Skia keeps FreeType light fitting for axis-aligned maps, including
         // quarter turns; other rotations and skew use unhinted contours.
         bool axisAligned = strike.RelaxedMap.B == 0 && strike.RelaxedMap.C == 0 || strike.RelaxedMap.A == 0 && strike.RelaxedMap.D == 0;

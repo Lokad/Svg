@@ -1,5 +1,5 @@
 {
-  "purpose": "Text object boxes, full character widths and locally enclosed drawing rectangles feed independent paints. Path spacing, transforms, signed advances and replay retain their own coordinate boundaries. Deferred text and instance replay retain enclosing filter source bounds. General parent poses compose independently of zero-tangent path glyph placement.",
+  "purpose": "Text object boxes, full character widths and locally enclosed drawing rectangles feed independent paints. Path spacing, transforms, signed advances and replay retain their own coordinate boundaries. Deferred text and instance replay retain enclosing filter source bounds. General parent poses compose independently of zero-tangent path glyph placement. Recorded font size and remaining device matrix retain independent rounding boundaries.",
   "chromeVersion": "153.0.8010.52",
   "background": "transparent",
   "fontEvidence": "capture.json",
@@ -2109,6 +2109,518 @@
           "sha256": "ef70ee64ed00a44cb19d01169ea0d7526446097a08c6285007b48210b3ede6e3"
         }
       }
+    },
+    {
+      "id": "recorded-strike-quadratic-plain-glyphs-.1-1.5-group-opacity",
+      "input": "recorded-strike-quadratic-plain-glyphs-.1-1.5-group-opacity.svg",
+      "sourceSha256": "8c6281e82b7512077a050a6dc6e124b1361e4577423a004f56b316133d5a6413",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/85bd3b968f29d8a2.png",
+          "sha256": "85bd3b968f29d8a2fa5d852a67073d70bce7bdd740fa9a16f079d4ca71b41c61"
+        },
+        "linux": {
+          "path": "references/4e46ef2841a73c1e.png",
+          "sha256": "4e46ef2841a73c1ee8041d69ed72da3ada7a775c042d2394d8b626301f1b6ee7"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-quadratic-plain-glyphs-.1-1.5-opaque",
+      "input": "recorded-strike-quadratic-plain-glyphs-.1-1.5-opaque.svg",
+      "sourceSha256": "85596a9493f9fd67e78f65b76ebff1f828a41b74026d276346acc475a8cfa94d",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/efc1b6b4c210c621.png",
+          "sha256": "efc1b6b4c210c621324155d62e679fb75611000433c4714342630f3632c7913b"
+        },
+        "linux": {
+          "path": "references/f45bc5f4d48913fa.png",
+          "sha256": "f45bc5f4d48913fa6e23ffe850fb69508a00d07a163af2129e44c051625d99d6"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-quadratic-scaled-glyphs-.1-1-group-opacity",
+      "input": "recorded-strike-quadratic-scaled-glyphs-.1-1-group-opacity.svg",
+      "sourceSha256": "3aec78563f15eef06b3c65eb6b0bd7acc9cc538c8c321d70e0e5dc4adb42d444",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/f79ecf75ce219e7d.png",
+          "sha256": "f79ecf75ce219e7d41f0aa62fd586676c4fee44a480a4c1acc6007fe6d0dfc34"
+        },
+        "linux": {
+          "path": "references/1494cb246d29ece8.png",
+          "sha256": "1494cb246d29ece8a81420127681496f6ac42bcb9f8191e658db4fea393e053e"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-quadratic-scaled-glyphs-.1-1-opaque",
+      "input": "recorded-strike-quadratic-scaled-glyphs-.1-1-opaque.svg",
+      "sourceSha256": "09cecb941207b23752f6bde30acdaf3fd31cddaa50cb82df8dc994fc00b51087",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/4665b6fabd80da80.png",
+          "sha256": "4665b6fabd80da80205e70cf74f3d6f30277bcf784bd1519f5a45d3075f6e8e3"
+        },
+        "linux": {
+          "path": "references/57c69d942ce8a6a7.png",
+          "sha256": "57c69d942ce8a6a75479f527223de598d97a4bda5896cfe3e8497980d47ff169"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-quadratic-larger-glyphs--.1-1.5-group-opacity",
+      "input": "recorded-strike-quadratic-larger-glyphs--.1-1.5-group-opacity.svg",
+      "sourceSha256": "7b83fc6282931da14f691572988712d698cd5dad6a1f515618fd97eb1531933b",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/21e316ae4b96e871.png",
+          "sha256": "21e316ae4b96e8715ac4221854d51e4622e82cb11f2be95970166b464614c005"
+        },
+        "linux": {
+          "path": "references/c8c79378d72b469e.png",
+          "sha256": "c8c79378d72b469ef4f8ca0f0776974b09e55fe81fbac0dab8c190dcf2e11c87"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-quadratic-larger-glyphs--.1-1.5-opaque",
+      "input": "recorded-strike-quadratic-larger-glyphs--.1-1.5-opaque.svg",
+      "sourceSha256": "f9be17f3d1e57aed84f6c8ac3e9b0827a92b59c92be3582d9534c02b41b9c3da",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/8905634aa7af0a3c.png",
+          "sha256": "8905634aa7af0a3c73ccd4d13f6b1de621bd46fcc382d55d651f007f81fff013"
+        },
+        "linux": {
+          "path": "references/9508d7e962ad978c.png",
+          "sha256": "9508d7e962ad978cdd3256136b344e7e9797a3ff69913210e9273113b722d674"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-quadratic-matrix-glyphs-.1-1-group-opacity",
+      "input": "recorded-strike-quadratic-matrix-glyphs-.1-1-group-opacity.svg",
+      "sourceSha256": "d50766f936cd85b5c56b150239b262e243c44a59ce89e1975527abdd183e0cc6",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/243151a508474c58.png",
+          "sha256": "243151a508474c58bf9323896cfd6d7b4753f56d0e5b1bcc5efe1b698e5dff7c"
+        },
+        "linux": {
+          "path": "references/2d194b6b16bacb4e.png",
+          "sha256": "2d194b6b16bacb4e302bcaa7428820bf945f032887408a0cb1ab9c7242feb383"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-quadratic-matrix-glyphs-.1-1-opaque",
+      "input": "recorded-strike-quadratic-matrix-glyphs-.1-1-opaque.svg",
+      "sourceSha256": "38c7fd14e1f23e5e3090f1a5dbe13c78a16362591e2e90aa2b0a6cbd3d517aa5",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/7eab9aedc91fc346.png",
+          "sha256": "7eab9aedc91fc34656ed97218ddaaaf991430206364c909a72bd554456502d83"
+        },
+        "linux": {
+          "path": "references/74d6c30e30fec544.png",
+          "sha256": "74d6c30e30fec544cccd70ec5906cb98962fec139690355f2e525847f1732044"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-cubic-plain-glyphs--.1-1.5-group-opacity",
+      "input": "recorded-strike-cubic-plain-glyphs--.1-1.5-group-opacity.svg",
+      "sourceSha256": "ccdc4a0e9664e258b08b767fb82136d672fa92c01738d03aa7a5821a0207dbd7",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/53baa7f8035eb3a0.png",
+          "sha256": "53baa7f8035eb3a0152579547825d494dac9fab1ef1e714e04713287d7395a5a"
+        },
+        "linux": {
+          "path": "references/b4027fdcd0398eb5.png",
+          "sha256": "b4027fdcd0398eb5ee1e1a32abbfd4ee5a7df25e62b5560c90ddd91f5cf6564d"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-cubic-plain-glyphs--.1-1.5-opaque",
+      "input": "recorded-strike-cubic-plain-glyphs--.1-1.5-opaque.svg",
+      "sourceSha256": "38bae63dad7b7fd1ff694feb4fc9dd5be30e2dca2cfa30aac1377306aa62ee29",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/afc198bbefbdd47f.png",
+          "sha256": "afc198bbefbdd47ff27b99dbc3e51a07d8983c740fc15bf8dbd4e2eda02a8708"
+        },
+        "linux": {
+          "path": "references/81c3e480fbf319c3.png",
+          "sha256": "81c3e480fbf319c369f4c36d879335c55c6cacfd5174c603261e45d76879c87f"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-cubic-scaled-glyphs--.1-1-group-opacity",
+      "input": "recorded-strike-cubic-scaled-glyphs--.1-1-group-opacity.svg",
+      "sourceSha256": "45539f85de22a5f415a6fea5079dd5b174d5fece57c90d768ffb320a77c632a2",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/6d30dc795081efa7.png",
+          "sha256": "6d30dc795081efa7ffb3d2d8ccc96e90b920e15926d091a24261731a854f957f"
+        },
+        "linux": {
+          "path": "references/7d4416a80705cb7c.png",
+          "sha256": "7d4416a80705cb7c4fef7fa4e2364a9f363e2f0f4d5024c2d48c3e5950bc2a29"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-cubic-scaled-glyphs--.1-1-opaque",
+      "input": "recorded-strike-cubic-scaled-glyphs--.1-1-opaque.svg",
+      "sourceSha256": "f5b425248ba08919079f781c3fe4292091d742f80e1614c03e4533020a2878ae",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/2d4ad8fc8dd8bec0.png",
+          "sha256": "2d4ad8fc8dd8bec00171852019c260f4cf36d5632134035bf70b3751765f0a2a"
+        },
+        "linux": {
+          "path": "references/65114763339fa068.png",
+          "sha256": "65114763339fa0688d4e2b380265b845d1b74b3c10c0691eab50d2f9fd5e69d9"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-cubic-larger-glyphs-.1-1-group-opacity",
+      "input": "recorded-strike-cubic-larger-glyphs-.1-1-group-opacity.svg",
+      "sourceSha256": "3cdcf927768b627558c680bc22bbbf0336e3e624603a641aefd4b53786db3314",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/d23621143444f9dd.png",
+          "sha256": "d23621143444f9dd3ac26f98272ddde5b8b13571c6c8db827b033c4c4137c94f"
+        },
+        "linux": {
+          "path": "references/f15e99bb232ab2c2.png",
+          "sha256": "f15e99bb232ab2c2ac7ce2d363a633fba598d146ba74a88a5dfc9f57dd6c044b"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-cubic-larger-glyphs-.1-1-opaque",
+      "input": "recorded-strike-cubic-larger-glyphs-.1-1-opaque.svg",
+      "sourceSha256": "d2c884ceb3b41075c7a461f61a6c7b1b851870333ad570ab696ab7be33f3a6b8",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/9c6a068e99078360.png",
+          "sha256": "9c6a068e990783604cabb61dbc62d742013c28e9b050966efed7fc5dfc4797c1"
+        },
+        "linux": {
+          "path": "references/eb2a1afe95cb8342.png",
+          "sha256": "eb2a1afe95cb8342752e8976d32dec8322f3754dda528ff3e8f7fac066560f67"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-cubic-matrix-glyphs--.1-1.5-group-opacity",
+      "input": "recorded-strike-cubic-matrix-glyphs--.1-1.5-group-opacity.svg",
+      "sourceSha256": "f19abe21be0825ada6cc728960231d0713a133f025e241d968fb1f1179aadc0a",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/66e87282941be543.png",
+          "sha256": "66e87282941be5437a573c66ad6a2ee769695c1ad20897870048beebcf84aef3"
+        },
+        "linux": {
+          "path": "references/9a6062fb293e2c8f.png",
+          "sha256": "9a6062fb293e2c8fdf08aab2f17362f638329b574455ff0b60261268dea29440"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-cubic-matrix-glyphs--.1-1.5-opaque",
+      "input": "recorded-strike-cubic-matrix-glyphs--.1-1.5-opaque.svg",
+      "sourceSha256": "3e5b46a914679d60c5502ff216d264d580ef57e33f673e787b82c5cffcb6ad08",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/0c89431f5fde0eba.png",
+          "sha256": "0c89431f5fde0eba3f4f0a63d0ad64531edcc4d34da9b71216dd6a5adf43c0bc"
+        },
+        "linux": {
+          "path": "references/fd22642629e494ad.png",
+          "sha256": "fd22642629e494ad6070a1babb98655a270c6f3b820341bc72be8bd061af5b1a"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-polyline-plain-glyphs-.1-1.5-group-opacity",
+      "input": "recorded-strike-polyline-plain-glyphs-.1-1.5-group-opacity.svg",
+      "sourceSha256": "1c7a9116b17b50087e84fc6cc039aba9b3b5536c24c8861b4f5a28a3e6ed0821",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/c27f38cb05e7b35d.png",
+          "sha256": "c27f38cb05e7b35d33328df8690f7f310e7cb2b7e1d0ae624e8397194c226e1d"
+        },
+        "linux": {
+          "path": "references/457f51a5aee89432.png",
+          "sha256": "457f51a5aee89432d4773e11eff65acc3c7439ab48ae6dd8c2eecbf62330f25b"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-polyline-plain-glyphs-.1-1.5-opaque",
+      "input": "recorded-strike-polyline-plain-glyphs-.1-1.5-opaque.svg",
+      "sourceSha256": "159625ea27a024901494b02b8899986d8c3cd5a3ed5bece28e7a1b566d48958c",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/19f2de1037f164e4.png",
+          "sha256": "19f2de1037f164e4d165592d3649d91df0ca6266991de03b9942b57d6f5c8e27"
+        },
+        "linux": {
+          "path": "references/68be114a77abeef6.png",
+          "sha256": "68be114a77abeef63d288b6d32c8e36b9af7c662f44690f185fa532bb9d9a300"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-polyline-scaled-glyphs-.1-1-group-opacity",
+      "input": "recorded-strike-polyline-scaled-glyphs-.1-1-group-opacity.svg",
+      "sourceSha256": "0f3a13f126b05eb3c9a3433bb6e5b59f819f28d8b083dc7dce3558ebed0373a1",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/228af754a95a0b0a.png",
+          "sha256": "228af754a95a0b0a219b298faa897d8d634ea7dcb144c185080f413bd7996099"
+        },
+        "linux": {
+          "path": "references/1bc886c6766b8994.png",
+          "sha256": "1bc886c6766b899477e4298279f6a45d03b96b1a9e11909a3795abedc43fd09f"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-polyline-scaled-glyphs-.1-1-opaque",
+      "input": "recorded-strike-polyline-scaled-glyphs-.1-1-opaque.svg",
+      "sourceSha256": "9d1f6e680b01e6273e83139591896cd5d9e4cf19d342f26b150622070b6c401c",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/d0412239f2fae16e.png",
+          "sha256": "d0412239f2fae16ec46b5529c9ec45a114223d126a36d613b94a2f0739fe80b9"
+        },
+        "linux": {
+          "path": "references/f355f6a8c72727a0.png",
+          "sha256": "f355f6a8c72727a0c2b134278ebc742e15cccde299165d7ae47535bd2f510b04"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-polyline-larger-glyphs--.1-1.5-group-opacity",
+      "input": "recorded-strike-polyline-larger-glyphs--.1-1.5-group-opacity.svg",
+      "sourceSha256": "af6ac49115b1ef27f659fa3cb97f31790759d6a5e50dc2db61f11d48ed1fe4be",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/c21ab4290b80048b.png",
+          "sha256": "c21ab4290b80048b28ab7ad0ac12973d4c172af6c89332cdfc3c0cb2bfc44b3d"
+        },
+        "linux": {
+          "path": "references/606b4fdafb040d02.png",
+          "sha256": "606b4fdafb040d028b72d58b60d37541f5d9de104fe272478404994d7b7e9e1c"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-polyline-larger-glyphs--.1-1.5-opaque",
+      "input": "recorded-strike-polyline-larger-glyphs--.1-1.5-opaque.svg",
+      "sourceSha256": "f206035424df2fe114b3d15e11edc4ae289238ba5e6135b3dedf826c24b15688",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/7b9e2e0de4162ba9.png",
+          "sha256": "7b9e2e0de4162ba9ab631b76db20ede33656d6fbd4a1b116a36f4a7b1846d999"
+        },
+        "linux": {
+          "path": "references/e967aca345520929.png",
+          "sha256": "e967aca345520929f680dbea576890abf3cfe2538bd22142d2955514c2af17a9"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-polyline-matrix-glyphs-.1-1-group-opacity",
+      "input": "recorded-strike-polyline-matrix-glyphs-.1-1-group-opacity.svg",
+      "sourceSha256": "eaf0cd2cd5e5a80012b8a535eaac58fe3e83ff6118b8b1c4255eb731ac513f21",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/14f4f3cffcb26aab.png",
+          "sha256": "14f4f3cffcb26aab3423f542ea2f9731cd560ba9ba4a7d6b0d3ce20787c7f821"
+        },
+        "linux": {
+          "path": "references/5c5337c46bed4206.png",
+          "sha256": "5c5337c46bed42069db0e0b8f28deb8648fe9ec4ac20a817d9b6c77e4a93cef1"
+        }
+      }
+    },
+    {
+      "id": "recorded-strike-polyline-matrix-glyphs-.1-1-opaque",
+      "input": "recorded-strike-polyline-matrix-glyphs-.1-1-opaque.svg",
+      "sourceSha256": "9b1197abafbeb8b68d1c8ad9906b0ccdcfb649daccfb09e36f724a3b0bf85467",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/01d9afe2356ec543.png",
+          "sha256": "01d9afe2356ec543862e0c30b1236f4c4452b77218f2be97ed03a231f04d986a"
+        },
+        "linux": {
+          "path": "references/0fb0718ac6af95d9.png",
+          "sha256": "0fb0718ac6af95d9035bf9600713c82a18002b70d94ca19c42677b3a4d6c6410"
+        }
+      }
+    },
+    {
+      "id": "recorded-viewport-0-nested",
+      "input": "recorded-viewport-0-nested.svg",
+      "sourceSha256": "cc7883edc968e85250c7be8cc8697547aa58aa2ee24cfebf33b44a5defd78219",
+      "outputScale": 1.125,
+      "references": {
+        "windows": {
+          "path": "references/2363da976445b1d0.png",
+          "sha256": "2363da976445b1d0f4c656199bef5a8612d84037f7f9852e21fc02e6f9dea072"
+        },
+        "linux": {
+          "path": "references/7d6c2a5e150ac0fd.png",
+          "sha256": "7d6c2a5e150ac0fd6a3f4fb2c12e9e883741bbb2ebc3c80ba410a81b14ed9cd4"
+        }
+      }
+    },
+    {
+      "id": "recorded-viewport-0-symbol",
+      "input": "recorded-viewport-0-symbol.svg",
+      "sourceSha256": "ef6df6c3af3ec11ac69fb18e19afc98b69ec376218a6b0d85d8db51bf5c2e6e0",
+      "outputScale": 1.125,
+      "references": {
+        "windows": {
+          "path": "references/2363da976445b1d0.png",
+          "sha256": "2363da976445b1d0f4c656199bef5a8612d84037f7f9852e21fc02e6f9dea072"
+        },
+        "linux": {
+          "path": "references/7d6c2a5e150ac0fd.png",
+          "sha256": "7d6c2a5e150ac0fd6a3f4fb2c12e9e883741bbb2ebc3c80ba410a81b14ed9cd4"
+        }
+      }
+    },
+    {
+      "id": "recorded-viewport-7-nested",
+      "input": "recorded-viewport-7-nested.svg",
+      "sourceSha256": "15129cf7f06efecf53a1dcf282dc6b6d39e6e79f5d14c7e6b24bf73b1824e949",
+      "outputScale": 1.125,
+      "references": {
+        "windows": {
+          "path": "references/770f90ef1c795bea.png",
+          "sha256": "770f90ef1c795bea9b981b2d44eaba7c3744fd7a44ec2d80421da25f73436128"
+        },
+        "linux": {
+          "path": "references/190abb7953b30808.png",
+          "sha256": "190abb7953b30808af4bfec0d38010bff1dd1b2ebe0228aa1cd92b8908371de7"
+        }
+      }
+    },
+    {
+      "id": "recorded-viewport-7-symbol",
+      "input": "recorded-viewport-7-symbol.svg",
+      "sourceSha256": "c761878e6f4643fc963030d1206ff0a92797dff9acfed3f59e38c8598b5b96ca",
+      "outputScale": 1.125,
+      "references": {
+        "windows": {
+          "path": "references/770f90ef1c795bea.png",
+          "sha256": "770f90ef1c795bea9b981b2d44eaba7c3744fd7a44ec2d80421da25f73436128"
+        },
+        "linux": {
+          "path": "references/190abb7953b30808.png",
+          "sha256": "190abb7953b30808af4bfec0d38010bff1dd1b2ebe0228aa1cd92b8908371de7"
+        }
+      }
+    },
+    {
+      "id": "recorded-viewport-10-nested",
+      "input": "recorded-viewport-10-nested.svg",
+      "sourceSha256": "88c767b3e451db2f630e853bffd913f9a28449820dcac34a2a54503f9ec15f9d",
+      "outputScale": 1.125,
+      "references": {
+        "windows": {
+          "path": "references/ddb86d27f1bfb808.png",
+          "sha256": "ddb86d27f1bfb8082cd83b7475193174e5dc8a79ed512acb497d78c652d37ccb"
+        },
+        "linux": {
+          "path": "references/dc0d0fa64d3d99e4.png",
+          "sha256": "dc0d0fa64d3d99e484534b256e11103edd98d1104a73e53d68ccd88a3aa7e858"
+        }
+      }
+    },
+    {
+      "id": "recorded-viewport-10-symbol",
+      "input": "recorded-viewport-10-symbol.svg",
+      "sourceSha256": "5a6fac9025f2e3a8b0f1651e3023d0971d98cbbcdd4754f1e2c20c93cbe32347",
+      "outputScale": 1.125,
+      "references": {
+        "windows": {
+          "path": "references/ddb86d27f1bfb808.png",
+          "sha256": "ddb86d27f1bfb8082cd83b7475193174e5dc8a79ed512acb497d78c652d37ccb"
+        },
+        "linux": {
+          "path": "references/dc0d0fa64d3d99e4.png",
+          "sha256": "dc0d0fa64d3d99e484534b256e11103edd98d1104a73e53d68ccd88a3aa7e858"
+        }
+      }
+    },
+    {
+      "id": "recorded-viewport-16-nested",
+      "input": "recorded-viewport-16-nested.svg",
+      "sourceSha256": "b58d881964c18b8122394e42a3c7cabb96a73b6e1df7b935d4da901babbb453c",
+      "outputScale": 1.125,
+      "references": {
+        "windows": {
+          "path": "references/86dacf72e27802ac.png",
+          "sha256": "86dacf72e27802ac8d91a9c1c197f7deb2f330e5e7c648731b4c6b00b8221cb5"
+        },
+        "linux": {
+          "path": "references/a78eca751254ed5b.png",
+          "sha256": "a78eca751254ed5b1df79af5d742cf91eca2e2bcc9b015cfe816a43bd546ce59"
+        }
+      }
+    },
+    {
+      "id": "recorded-viewport-16-symbol",
+      "input": "recorded-viewport-16-symbol.svg",
+      "sourceSha256": "10ff2bf8e577b77c7e10f8fddefd63cb7f77b56feacc4391baab9dc73eaf1e31",
+      "outputScale": 1.125,
+      "references": {
+        "windows": {
+          "path": "references/86dacf72e27802ac.png",
+          "sha256": "86dacf72e27802ac8d91a9c1c197f7deb2f330e5e7c648731b4c6b00b8221cb5"
+        },
+        "linux": {
+          "path": "references/a78eca751254ed5b.png",
+          "sha256": "a78eca751254ed5b1df79af5d742cf91eca2e2bcc9b015cfe816a43bd546ce59"
+        }
+      }
     }
   ],
   "chromePins": {
@@ -2543,6 +3055,150 @@
         "executableName": "chrome",
         "elapsedMilliseconds": 10775,
         "debuggerReadyMilliseconds": 2996,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  },
+  "recordedStrikeLaunches": {
+    "windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 6538,
+        "debuggerReadyMilliseconds": 154,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 6589,
+        "debuggerReadyMilliseconds": 179,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 6461,
+        "debuggerReadyMilliseconds": 143,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 11442,
+        "debuggerReadyMilliseconds": 3708,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 10753,
+        "debuggerReadyMilliseconds": 3431,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 10775,
+        "debuggerReadyMilliseconds": 2996,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  },
+  "recordedViewportLaunches": {
+    "windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 3409,
+        "debuggerReadyMilliseconds": 168,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 3362,
+        "debuggerReadyMilliseconds": 135,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 3369,
+        "debuggerReadyMilliseconds": 149,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 14517,
+        "debuggerReadyMilliseconds": 7725,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 27429,
+        "debuggerReadyMilliseconds": 19607,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 28556,
+        "debuggerReadyMilliseconds": 20197,
         "sandboxAccessFailures": 0,
         "networkServiceCrashes": 0,
         "stderrTruncated": false,
