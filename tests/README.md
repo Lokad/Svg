@@ -18,6 +18,11 @@ plus work/memory denial, cancellation and retry checks. Fractional filter region
 can differ from unfiltered rectangles; those references describe the filtered input.
 [Developer tools](../tools/README.md) documents capture and research procedures.
 
+[Marker paint tests](Lokad.Svg.Tests/SvgMarkerPaintBindingTests.cs) cover forward
+resources, inherited fills, aliases, tile paint ownership, limits and cancellation.
+[Browser checks](Lokad.Svg.VisualTests/SvgMarkerPaintBindingReferenceTests.cs) use
+[independently captured inputs and hashes](Research/marker-paint-binding/capture.json).
+
 [Instance paint order tests](Lokad.Svg.Tests/OpenTypeFontTests.InstancePaintOrder.cs)
 cover source/use/resource ordering, inherited paints, replay, limits and ownership.
 The [browser reference tests](Lokad.Svg.VisualTests/SvgInstancePaintOrderReferenceTests.cs)

@@ -41,7 +41,9 @@ internal static class SvgDeferredPaintLeaves
             if (!SvgMarkerStyle.Active(value)) return false;
             context.WorkCounter.Consume(context.CancellationToken);
             string id = SvgGradientSyntax.ParsePaintId(value);
-            return !state.Definitions.TryGetValue(id, out SvgDefinition definition) || definition.Marker is null;
+            // Retained marker content can depend on definitions declared after its host.
+            return !state.Definitions.TryGetValue(id, out SvgDefinition definition) || definition.Marker is null
+                || definition.SymbolContent is not null;
         }
     }
 
@@ -85,11 +87,15 @@ internal static class SvgDeferredPaintLeaves
         SvgDeferredPaintLeaf pending = state.DeferredPaintLeaves[index];
         bool tile = !ReferenceEquals(pending.Scene, state.Scene);
         SvgSceneBuilder? previous = state.DefinitionReplayScene;
+        bool previousPicture = state.IsResourcePicture;
         int oldMaskCount = state.MaskScopes.Count;
         int oldViewportCount = state.Viewports.Count;
         try
         {
-            if (tile) state.DefinitionReplayScene = pending.Scene;
+            state.IsResourcePicture |= tile;
+            // Definition lowering reads document-owned paints before adoption
+            // rebinds them into the tile arena. Rendered replay emits there directly.
+            if (tile && pending.Kind == SvgDeferredPaintKind.Rendered) state.DefinitionReplayScene = pending.Scene;
             if (pending.Frame is {} frame) state.Viewports.Add(frame);
             if (tile) SvgDefinitionParser.RejectPatternContentPaint(pending.Context.ResolveStyle(pending.Source), state);
             for (int scope = 0; scope < pending.MaskScopeCount; scope++)
@@ -105,6 +111,7 @@ internal static class SvgDeferredPaintLeaves
             while (state.MaskScopes.Count > oldMaskCount) state.MaskScopes.RemoveLast();
             while (state.Viewports.Count > oldViewportCount) state.Viewports.RemoveLast();
             state.DefinitionReplayScene = previous;
+            state.IsResourcePicture = previousPicture;
         }
     }
 }

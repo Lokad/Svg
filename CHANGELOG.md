@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Resolve gradient and pattern paints declared after marker content and its host,
+  preserving inherited fills on deferred shapes and paint ownership in pattern tiles.
 - Skip pattern tile fonts for declared empty primitives and paths. Preserve empty
   symbol contours and whitespace-only paths through replay, accounting for mapped
   point and curve scratch storage before allocation.

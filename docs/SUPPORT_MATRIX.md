@@ -428,7 +428,12 @@ Markers support userSpaceOnUse/strokeWidth units, refX/refY, finite dimensions,
 viewBox/aspect maps, fixed/auto/auto-start-reverse orientation and hidden/visible
 overflow. Lengths include absolute units, known-axis percentages and em/ex from
 supplied font metrics. Paint/visibility and stroke presentation inherit through
-marker content. A marker's display property does not suppress its content;
+marker content. Local gradient and pattern paints may follow the marker and its
+rendered host; deferred children retain inherited fills. See the
+[binding regressions](../tests/Lokad.Svg.Tests/SvgMarkerPaintBindingTests.cs) and
+[browser evidence](../tests/Research/marker-paint-binding/capture.json).
+Affine rectangle marker content with shader fills remains unsupported.
+A marker's display property does not suppress its content;
 a symbol's `display:none` does suppress its instances. CSS `display:none` on a
 marker's defining `defs` prevents its activation, including ex metric requests.
 Ordinary local use targets remain available inside hidden `defs`.

@@ -126,7 +126,9 @@ internal static class SvgReferenceResolver
             if (source.LocalName == "image") return source.LowerImage(reference, frame, state).Geometries;
             if (reference.PaintServerId is not null && (definition.SourceFillBindings ?? definition.SymbolFillBindings) is {} authoredBindings)
             {
-                bool inheritsFill = false;
+                // Unconstructed leaves have no geometry bindings yet; their authored
+                // style still decides whether the parent's paint must reach lowering.
+                bool inheritsFill = authoredBindings.Length == 0 && source.LocalName != "line" && source.AuthoredStyle.Fill is null;
                 foreach (SvgSymbolFillBinding binding in authoredBindings) { workCounter.Consume(cancellationToken); inheritsFill |= binding.IsInherited; }
                 if (!inheritsFill) reference = reference with { PaintServerId = null, PaintServerFill = null };
             }
