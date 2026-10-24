@@ -97,6 +97,11 @@ strokes whose centerline lies just beyond an edge.
 Rectangles support dashed solid/gradient/pattern strokes; zero-size rectangles
 paint nothing. Line endpoints accept finite fractional bare-number/px values;
 percentage endpoints and other endpoint units are unsupported.
+Retained rectangle shader strokes preserve the direct frame coverage through
+fractional widths, instance placement and output scaling. Shared lowering keeps
+fill/stroke coordinates and clip/mask/filter composition; see the
+[instance](../tests/Lokad.Svg.Tests/SvgRectangleShaderInstanceTests.cs) and
+[context](../tests/Lokad.Svg.Tests/SvgRectangleShaderContextsTests.cs) regressions.
 Omitted circle radii and path data paint nothing. An ellipse with one omitted
 radius copies the other resolved radius; omitting both paints nothing.
 Omitted/empty point lists paint nothing. Repeated and closing vertices, and

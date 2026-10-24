@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Share rectangle lowering across direct and retained sources, preserving native
+  shader-stroke coverage through fractional placement, widths and output scaling.
+  Remove obsolete definition helpers and retain clip lookup until replay.
 - Skip pattern fonts for intrinsically hidden primitives and fill-only lines or
   two-vertex contours; preserve stroke, filter and mask dependencies and bounded parsing.
 - Reconstruct named shader sources hidden by an ancestor when a visible instance

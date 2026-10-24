@@ -60,7 +60,7 @@ internal static class SvgLeafParser
                 crossesViewport = !strokeViewport.Clip.Contains(shifted.X - halfWidth, shifted.Y - halfWidth,
                     shifted.X + shifted.Width + halfWidth, shifted.Y + shifted.Height + halfWidth);
             }
-            if (fractionalStrokeEdges && SvgGradientSyntax.IsGradientStrokeUrl(patternStyle.Stroke)
+            if ((fractionalStrokeEdges || context.StrokeHostMap != SvgAffineTransform.Identity) && SvgGradientSyntax.IsGradientStrokeUrl(patternStyle.Stroke)
                 || crossesViewport || context.RetainInstanceStrokePath || effectiveFrame is { IsScaled: true } || !earlyTransform.IsTranslation || nativeWidth > syntax.Width || nativeWidth > syntax.Height
                 || SvgStrokeStyleSyntax.ParseLinejoin(patternStyle.Linejoin, true) != SvgStrokeJoin.Miter
                 || SvgStrokeStyleSyntax.ParseDasharray(patternStyle.Dasharray) is not null || patternStyle.NonScalingStroke
@@ -399,37 +399,6 @@ internal static class SvgLeafParser
             using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, "rect", false, element.Style.FillRule is not null && element.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase), int.MaxValue, state.Budget, context.WorkCounter, context.CancellationToken);
             return strokeLowering.LowerRoundedRectStroke(syntax.X, syntax.Y, syntax.Width, syntax.Height, cornerX, cornerY, element, stroke, frame, state.Budget);
         }
-    }
-
-    /// <summary>Lowers one rounded-rectangle definition through the shared fill-plus-outline path with no viewport frame; use instances map the retained geometries.</summary>
-    internal static SvgParsedGeometry ParseRoundedRectangleDefinition(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state)
-    {
-        SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, null);
-        context = context with { DeferPaintOpacity = true };
-        SvgParsedGeometry parsed = ParseRoundedRectangleDefinitionCore(reader, context, state);
-        return SvgPaintRecording.Attach(parsed, source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
-    }
-
-    internal static SvgParsedGeometry ParseRoundedRectangleDefinitionCore(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state)
-    {
-        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
-        double cornerX = syntax.CornerX ?? syntax.CornerY ?? 0;
-        double cornerY = syntax.CornerY ?? syntax.CornerX ?? 0;
-        return LowerRoundedRect(reader, context, syntax, cornerX, cornerY, null, state);
-    }
-
-    internal static SvgParsedRectangle ParseRectangleWithStyle(XmlReader reader, SvgPaintableElementContext context)
-    {
-        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
-        SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle", context.WorkCounter, context.CancellationToken);
-        if ((syntax.CornerX ?? syntax.CornerY ?? 0) != 0 || (syntax.CornerY ?? syntax.CornerX ?? 0) != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rounded rectangles in definitions stay unsupported.");
-        SvgResolvedPaintableElement element = context.ResolveShape(reader, true);
-        SvgAffineTransform localTransform = SvgGeometrySyntax.ParseElementTransform(reader, context.WorkCounter, context.CancellationToken);
-        SvgRectangle rectangle = localTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, element.Presentation.Color, element.Presentation.HasFill, null));
-        SvgStroke? stroke = ParseRectangleStroke(element.Presentation.StrokeColor, element.Style.Width ?? syntax.StrokeWidth, localTransform, rectangle.Width, rectangle.Height, element.Presentation.Opacity, rectangle.HasFill);
-        if (stroke is not null && SvgStrokeStyleSyntax.ParseDasharray(element.Style.Dasharray) is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid (none) stroke dash arrays are implemented.");
-        SvgSolidPaint? solidPaint = element.Style.GetOpacity().Value == 1 ? SvgPaintResolver.ResolveSolidPaint(element.Presentation.Paint) : null;
-        return new SvgParsedRectangle(SvgGeometry.FromRectangle(rectangle with { Stroke = element.Presentation.IsPainted ? stroke : null }) with { SolidPaint = solidPaint }, element.Style);
     }
 
     internal static SvgParsedGeometry ParseCircle(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
@@ -983,6 +952,3 @@ internal static class SvgLeafParser
         return new SvgStroke(SvgPaintResolver.ApplyOpacity(color.Value, opacity), strokeWidth);
     }
 }
-
-/// <summary>Pairs a lowered rectangle with the specified style that determines whether a use instance may supply fill.</summary>
-internal readonly record struct SvgParsedRectangle(SvgGeometry Geometry, SvgComputedStyle Style);

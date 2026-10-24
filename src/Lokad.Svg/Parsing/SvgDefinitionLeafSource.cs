@@ -127,7 +127,8 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
             RecordingScope = new(1),
             AuthoredStyle = authored,
             LengthBases = lengthBases,
-            RetainInstanceStrokePath = retainMappedContour
+            RetainInstanceStrokePath = retainMappedContour || _element == "rect" && SvgGradientSyntax.IsGradientStrokeUrl(resolved.Stroke)
+                && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(resolved.Width)
         };
         // Raw construction stays independent of display; only live instances activate source effects.
         return SvgDefinitionParser.LowerInstanceSource(this, context, state, isDisplayed);

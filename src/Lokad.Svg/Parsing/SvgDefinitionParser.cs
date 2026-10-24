@@ -1234,6 +1234,25 @@ internal static class SvgDefinitionParser
             box = new SvgClipBox(minX, minY, maxX - minX, maxY - minY);
             return true;
         }
+
+        static SvgDefinition ParseRectangleDefinition(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgViewBox? symbolViewBox)
+        {
+            context = context with { InheritedPresentation = context.InheritedPresentation with { Transform = SvgAffineTransform.Identity }, RecordingScope = new(1) };
+            SvgComputedStyle style = context.ResolveStyle(reader);
+            // Later instances can move integer shader edges onto fractional pixels.
+            // Keep the common lowerer's native stroke source beside the cached paint.
+            context = context with { RetainInstanceStrokePath = context.RetainInstanceStrokePath
+                || SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke) && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width) };
+            // The retained adapter binds source clips after the complete registry exists.
+            bool previousClipDeferral = state.DeferringLeafClip;
+            state.DeferringLeafClip = true;
+            SvgParsedGeometry parsed;
+            try { parsed = SvgLeafParser.ParseRectangle(reader, context, null, state); }
+            finally { state.DeferringLeafClip = previousClipDeferral; }
+            bool allowsOverride = style == default && parsed.Geometries.Length == 1
+                && parsed.Geometries[0].Kind == SvgGeometryKind.Rectangle && parsed.Geometries[0].Rectangle.HasFill;
+            return new SvgDefinition(RetainParsedGeometries(parsed, state, context.WorkCounter, context.CancellationToken), allowsOverride, null, symbolViewBox);
+        }
     }
 
     private static string ClaimGradientId(SvgDocumentState state, string id, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -2105,7 +2124,6 @@ internal static class SvgDefinitionParser
             "path" => RetainDefinitionGeometries(SvgOrthogonalShapeParser.ParsePath(reader, localContext, int.MaxValue, state.Budget, null, state), state),
             "circle" => RetainDefinitionGeometries(SvgLeafParser.ParseCircle(reader, localContext, null, state), state),
             "ellipse" => RetainDefinitionGeometries(SvgLeafParser.ParseEllipse(reader, localContext, null, state), state),
-            "rect" => RetainDefinitionGeometries(SvgLeafParser.ParseRoundedRectangleDefinition(reader, localContext, state), state),
             _ => throw new InvalidOperationException("Unsupported definition leaf reached shape lowering."),
         };
         try
@@ -2209,44 +2227,4 @@ internal static class SvgDefinitionParser
         finally { parsed.Dispose(); }
     }
 
-    private static SvgDefinition ParseRectangleDefinition(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgViewBox? symbolViewBox)
-    {
-        SvgRectangleSyntax roundedSyntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
-        if ((roundedSyntax.CornerX ?? roundedSyntax.CornerY ?? 0) != 0 || (roundedSyntax.CornerY ?? roundedSyntax.CornerX ?? 0) != 0) return ParseShapeDefinition(reader, context, state, symbolViewBox, true);
-        SvgComputedStyle style = context.ResolveStyle(reader);
-        if (SvgPaintResolver.RemoveInertServers(ref style, state, reader.LocalName)) context = context with { AuthoredStyle = style };
-        // Named live leaves also register a dormant source. Its authored map
-        // needs the ordinary retained shape route before any use is encountered.
-        bool nativeRectangle = context.RetainInstanceStrokePath
-            || !SvgGeometrySyntax.ParseElementTransform(reader, context.WorkCounter, context.CancellationToken).IsAxisAligned
-            || SvgStrokeStyleSyntax.ParseLinejoin(style.Linejoin, true) != SvgStrokeJoin.Miter
-            || SvgStrokeStyleSyntax.ParseDasharray(style.Dasharray) is not null || style.NonScalingStroke;
-        if (!nativeRectangle && style.Stroke is string nativeStroke && !nativeStroke.AsSpan().Trim().Equals("none", StringComparison.OrdinalIgnoreCase))
-        {
-            double width = SvgStrokeStyleSyntax.ParseStrokeWidth(style.Width ?? roundedSyntax.StrokeWidth, "rectangle");
-            nativeRectangle = width > roundedSyntax.Width || width > roundedSyntax.Height
-                || style.Miterlimit is not null && SvgStrokeStyleSyntax.ParseMiterLimit(style.Miterlimit) < 1.4142135623730951;
-        }
-        if (nativeRectangle)
-            return ParseShapeDefinition(reader, context, state, symbolViewBox, true);
-        SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle", context.WorkCounter, context.CancellationToken);
-        context = context with { InheritedPresentation = context.InheritedPresentation with { Transform = SvgAffineTransform.Identity }, RecordingScope = new(1) };
-        SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, null);
-        context = context with { DeferPaintOpacity = true };
-        SvgParsedGeometry geometry;
-        bool allowsOverride = false;
-        if (SvgPatternSyntax.IsPatternFill(style.Fill)) geometry = SvgLeafParser.ParseRectangleCore(reader, context, null, state);
-        else if (SvgPatternSyntax.IsPatternStroke(style.Stroke, state)) geometry = SvgPatternSyntax.LowerPatternStrokeRect(reader, context, style, state, null);
-        else if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) geometry = SvgGradientSyntax.LowerGradientStrokeRect(reader, context, style, state, null);
-        else
-        {
-            SvgParsedRectangle parsed = SvgLeafParser.ParseRectangleWithStyle(reader, context);
-            allowsOverride = parsed.Geometry.Rectangle.HasFill && parsed.Style == default;
-            using BudgetedGeometryBuilder retained = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-            retained.Add(parsed.Geometry);
-            geometry = new(retained.Detach(), 0);
-        }
-        SvgParsedGeometry attached = SvgPaintRecording.Attach(geometry, source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
-        return new SvgDefinition(RetainParsedGeometries(attached, state, context.WorkCounter, context.CancellationToken), allowsOverride, null, symbolViewBox);
-    }
 }

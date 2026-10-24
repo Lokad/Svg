@@ -54,6 +54,12 @@ also cover intrinsic visibility, fill-area eligibility, inherited activity and
 scratch ownership. [Source visibility tests](Lokad.Svg.Tests/SvgSourceVisibilityTests.cs)
 cover cached shader replay; [browser checks](Lokad.Svg.VisualTests/SvgSourceVisibilityReferenceTests.cs)
 use each input's own [captured image](Research/source-visibility/capture.json).
+The [rectangle shader cases](Lokad.Svg.Tests/SvgRectangleShaderInstanceTests.cs)
+cover native frame coverage, empty/oversized strokes and clip-source ordering;
+[context cases](Lokad.Svg.Tests/SvgRectangleShaderContextsTests.cs) compare direct
+and retained paint coordinates through effects. [Ownership tests](Lokad.Svg.Tests/SvgRectangleShaderOwnershipTests.cs)
+cover denial/cancellation/retry; [browser checks](Lokad.Svg.VisualTests/SvgRectangleShaderFrameReferenceTests.cs)
+use [independently captured inputs](Research/rectangle-shader-frames/capture.json).
 
 [Display inheritance tests](Lokad.Svg.Tests/SvgDisplayInheritanceTests.cs) cover
 logical parents, retained instances, viewports and resource children across

@@ -2606,27 +2606,19 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Lowers_symbol_gradient_stroke_instances_through_viewBox_mapping()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='4' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><symbol id='s' viewBox='0 0 4 4'><rect x='0' y='0' width='4' height='4' fill='#ff0000' stroke='url(#g)' stroke-width='2'/></symbol></defs><use href='#s' width='8' height='8' opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-
-        SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Equal(SvgGeometryKind.GradientStroke, geometry.Kind);
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null) { Clip = new(0, 0, 8, 8) }, geometry.GradientStroke.Fill);
-        Assert.Equal(new SvgRectangle(-2, -2, 12, 4, default, true, null) { Clip = new(0, 0, 8, 8) }, geometry.GradientStroke.Top);
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null), geometry.GradientStroke.Box);
-        Assert.Equal(255, geometry.GradientStroke.Opacity);
-        SvgRecordedPaintAssertions.ElementOpacity(root, new(128, 0.5f));
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='4' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><symbol id='s' viewBox='0 0 4 4'><rect x='0' y='0' width='4' height='4' fill='#ff0000' stroke='url(#g)' stroke-width='2'/></symbol></defs><use href='#s' width='8' height='8' opacity='0.5'/></svg>"u8.ToArray();
+        byte[] expected = "<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='4' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><g opacity='0.5'><svg width='8' height='8' viewBox='0 0 4 4'><rect width='4' height='4' fill='#ff0000' stroke='url(#g)' stroke-width='2'/></svg></g></svg>"u8.ToArray();
+        Assert.Equal(SvgConverter.ConvertToPng(expected, SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+        using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
+        SvgDrawCommand opacityScope = Assert.Single(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value != 1);
+        SvgRecordedPaintAssertions.OpacityScope(opacityScope, new(128, 0.5f));
     }
     [Fact]
     public void Lowers_gradient_stroke_rect_instances_through_placement()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><rect id='r' x='0' y='0' width='8' height='8' fill='#ff0000' stroke='url(#g)' stroke-width='2'/></defs><use href='#r' x='8'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-
-        SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Equal(SvgGeometryKind.GradientStroke, geometry.Kind);
-        Assert.Equal(new SvgRectangle(8, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), geometry.GradientStroke.Fill);
-        Assert.Equal(new SvgRectangle(7, -1, 10, 2, default, true, null), geometry.GradientStroke.Top);
-        Assert.Equal(new SvgRectangle(8, 0, 8, 8, default, true, null), geometry.GradientStroke.Box);
-        Assert.Equal(255, geometry.GradientStroke.Opacity);
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><rect id='r' width='8' height='8' fill='#ff0000' stroke='url(#g)' stroke-width='2'/></defs><use href='#r' x='8'/></svg>"u8.ToArray();
+        byte[] expected = "<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><g transform='translate(8)'><rect width='8' height='8' fill='#ff0000' stroke='url(#g)' stroke-width='2'/></g></svg>"u8.ToArray();
+        Assert.Equal(SvgConverter.ConvertToPng(expected, SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Fact]
@@ -5808,11 +5800,9 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Instances_gradient_fill_with_pattern_stroke_definitions()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern><rect id='r' width='8' height='8' fill='url(#g)' stroke='url(#p)' stroke-width='2'/></defs><use href='#r'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-
-        Assert.Equal(5, root.Geometries.Length);
-        Assert.Equal(SvgGeometryKind.GradientFill, root.Geometries[0].Kind);
-        Assert.All(root.Geometries.Skip(1), band => Assert.Equal(SvgGeometryKind.PatternFill, band.Kind));
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern><rect id='r' width='8' height='8' fill='url(#g)' stroke='url(#p)' stroke-width='2'/></defs><use href='#r'/></svg>"u8.ToArray();
+        byte[] expected = "<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#g)' stroke='url(#p)' stroke-width='2'/></svg>"u8.ToArray();
+        Assert.Equal(SvgConverter.ConvertToPng(expected, SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Fact]
