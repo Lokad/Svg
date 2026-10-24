@@ -1836,6 +1836,20 @@ public static partial class SvgConverter
                             placedRegion = retained with { X = placed.Left, Y = placed.Top, Width = Math.Max(0, placed.Right - placed.Left), Height = Math.Max(0, placed.Bottom - placed.Top) };
                         }
                         (double regionLeft, double regionTop, double regionRight, double regionBottom) = placedRegion is SvgClipBox maskRegion ? MapClipBounds(maskRegion, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : (0, 0, outputWidth, outputHeight);
+                        if (viewportClip && command.SourceOpacity.Value == 1 && command.MaskAlpha == 255 && command.MaskContentIndex < 0
+                            && sourcePlacement.PreservesAxisAlignedRectangles && regionLeft <= previousLayer.Left && regionTop <= previousLayer.Top
+                            && regionRight >= previousLayer.Right && regionBottom >= previousLayer.Bottom)
+                        {
+                            // A clip containing the complete destination is already
+                            // enforced by its bitmap. An extra isolated layer changes
+                            // shader origins inside child masks despite clipping no ink.
+                            const long containedClipWork = 8;
+                            if (containedClipWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Viewport clip setup exceeds the configured limit.");
+                            workUnits += containedClipWork;
+                            cancellationToken.ThrowIfCancellationRequested();
+                            index = RenderCommands(index, destination, true);
+                            continue;
+                        }
                         bool affineMaskTarget = command.MaskContentIndex >= 0 && root.SceneStorage is {} maskStorage
                             && (uint)command.MaskContentIndex < (uint)maskStorage.MaskContents.Length && maskStorage.MaskContents[command.MaskContentIndex].UsesAffineTarget;
                         SvgAnalyticClipBounds layer = affineViewportClip ? previousLayer : LayerPaintBounds(index, previousLayer, viewportClip ? null : command.MaskRegion);

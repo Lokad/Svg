@@ -1,0 +1,186 @@
+{
+  "purpose": "Clips containing the complete destination preserve masked shader origins. Linear, radial and pattern hairlines, direct/use placement and alpha/luminance masks; each actual captured in three fresh processes.",
+  "platform": "win64",
+  "chromePin": {
+    "version": "153.0.8010.52",
+    "chromiumRevision": "1681091",
+    "platform": "win64",
+    "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/win64/chrome-win64.zip",
+    "archiveSha256": "df4854428c509fcf2f790ac448bca3f994151bcff22008236fa7c4587294fbe1",
+    "executableRelativePath": "chrome-win64/chrome.exe",
+    "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+    "captureRecipeRevision": "3"
+  },
+  "background": "transparent",
+  "license": "MIT",
+  "cases": [
+    {
+      "id": "linear-direct-candidate",
+      "input": "linear-direct-candidate.svg",
+      "reference": "references/878b220a346593f4.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "a43913f4badba289e088180887f8bc95abbbe9acbaf0bb8b696d2317c7b4547d",
+      "referenceSha256": "878b220a346593f4929553a54bc994a4844816908ba6e8150609c9875dadc897",
+      "captureSha256": [
+        "878b220a346593f4929553a54bc994a4844816908ba6e8150609c9875dadc897",
+        "878b220a346593f4929553a54bc994a4844816908ba6e8150609c9875dadc897",
+        "878b220a346593f4929553a54bc994a4844816908ba6e8150609c9875dadc897"
+      ]
+    },
+    {
+      "id": "linear-direct-control",
+      "input": "linear-direct-control.svg",
+      "reference": "references/878b220a346593f4.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "cfa71bdc2a713573999efd39ddf0cb392d2890d7b578555e226df8c165951036",
+      "referenceSha256": "878b220a346593f4929553a54bc994a4844816908ba6e8150609c9875dadc897",
+      "captureSha256": [
+        "878b220a346593f4929553a54bc994a4844816908ba6e8150609c9875dadc897",
+        "878b220a346593f4929553a54bc994a4844816908ba6e8150609c9875dadc897",
+        "878b220a346593f4929553a54bc994a4844816908ba6e8150609c9875dadc897"
+      ]
+    },
+    {
+      "id": "linear-use-candidate",
+      "input": "linear-use-candidate.svg",
+      "reference": "references/9827b4441b8d832f.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "edd7b1f6f8b12144100c5b15a1bbbf9ac37397cca223239b73e6c4431e9e2fbc",
+      "referenceSha256": "9827b4441b8d832f8a6aa85b91f7ad3915b20772f82022c35571d89b660c9f36",
+      "captureSha256": [
+        "9827b4441b8d832f8a6aa85b91f7ad3915b20772f82022c35571d89b660c9f36",
+        "9827b4441b8d832f8a6aa85b91f7ad3915b20772f82022c35571d89b660c9f36",
+        "9827b4441b8d832f8a6aa85b91f7ad3915b20772f82022c35571d89b660c9f36"
+      ]
+    },
+    {
+      "id": "linear-use-control",
+      "input": "linear-use-control.svg",
+      "reference": "references/9827b4441b8d832f.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "307717721299f87eb1b6c2bbf4d484b59e907d8d3bf74a903e704eeed4a4cd53",
+      "referenceSha256": "9827b4441b8d832f8a6aa85b91f7ad3915b20772f82022c35571d89b660c9f36",
+      "captureSha256": [
+        "9827b4441b8d832f8a6aa85b91f7ad3915b20772f82022c35571d89b660c9f36",
+        "9827b4441b8d832f8a6aa85b91f7ad3915b20772f82022c35571d89b660c9f36",
+        "9827b4441b8d832f8a6aa85b91f7ad3915b20772f82022c35571d89b660c9f36"
+      ]
+    },
+    {
+      "id": "radial-direct-candidate",
+      "input": "radial-direct-candidate.svg",
+      "reference": "references/f664d4432e38b0a3.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "b3ae58f6d10d9598bd061080b9e93e702a88e0cd88eb108ca920d2ddf7ae1bec",
+      "referenceSha256": "f664d4432e38b0a3dd4d17a53d777d57e33c910c71a9a728d310e1e3dc54202d",
+      "captureSha256": [
+        "f664d4432e38b0a3dd4d17a53d777d57e33c910c71a9a728d310e1e3dc54202d",
+        "f664d4432e38b0a3dd4d17a53d777d57e33c910c71a9a728d310e1e3dc54202d",
+        "f664d4432e38b0a3dd4d17a53d777d57e33c910c71a9a728d310e1e3dc54202d"
+      ]
+    },
+    {
+      "id": "radial-direct-control",
+      "input": "radial-direct-control.svg",
+      "reference": "references/f664d4432e38b0a3.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "3790cdf564adbfb906eed13931da747d58a7fa7155ee7292d72f83dda217e01b",
+      "referenceSha256": "f664d4432e38b0a3dd4d17a53d777d57e33c910c71a9a728d310e1e3dc54202d",
+      "captureSha256": [
+        "f664d4432e38b0a3dd4d17a53d777d57e33c910c71a9a728d310e1e3dc54202d",
+        "f664d4432e38b0a3dd4d17a53d777d57e33c910c71a9a728d310e1e3dc54202d",
+        "f664d4432e38b0a3dd4d17a53d777d57e33c910c71a9a728d310e1e3dc54202d"
+      ]
+    },
+    {
+      "id": "radial-use-candidate",
+      "input": "radial-use-candidate.svg",
+      "reference": "references/3cfd60104774d7e5.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "568e2c69575193e4fc1eb2bd0d2e8dfafa121e34b4719f823048842454a72e7c",
+      "referenceSha256": "3cfd60104774d7e55093b8da4fca807665cdbcb91555741312646442f71f8bf8",
+      "captureSha256": [
+        "3cfd60104774d7e55093b8da4fca807665cdbcb91555741312646442f71f8bf8",
+        "3cfd60104774d7e55093b8da4fca807665cdbcb91555741312646442f71f8bf8",
+        "3cfd60104774d7e55093b8da4fca807665cdbcb91555741312646442f71f8bf8"
+      ]
+    },
+    {
+      "id": "radial-use-control",
+      "input": "radial-use-control.svg",
+      "reference": "references/3cfd60104774d7e5.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "8d20b2b738872852aecd7512f892ec9484293c4be89514175257434866f60081",
+      "referenceSha256": "3cfd60104774d7e55093b8da4fca807665cdbcb91555741312646442f71f8bf8",
+      "captureSha256": [
+        "3cfd60104774d7e55093b8da4fca807665cdbcb91555741312646442f71f8bf8",
+        "3cfd60104774d7e55093b8da4fca807665cdbcb91555741312646442f71f8bf8",
+        "3cfd60104774d7e55093b8da4fca807665cdbcb91555741312646442f71f8bf8"
+      ]
+    },
+    {
+      "id": "pattern-direct-candidate",
+      "input": "pattern-direct-candidate.svg",
+      "reference": "references/26e538e0b0fccd00.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "b0471e68a59c1c6e54cb431b138336d3d4d9b51935aeed45027dec26ae666d4e",
+      "referenceSha256": "26e538e0b0fccd00a87ca11ddb8ff25793a745753837e5f82e66781070776250",
+      "captureSha256": [
+        "26e538e0b0fccd00a87ca11ddb8ff25793a745753837e5f82e66781070776250",
+        "26e538e0b0fccd00a87ca11ddb8ff25793a745753837e5f82e66781070776250",
+        "26e538e0b0fccd00a87ca11ddb8ff25793a745753837e5f82e66781070776250"
+      ]
+    },
+    {
+      "id": "pattern-direct-control",
+      "input": "pattern-direct-control.svg",
+      "reference": "references/26e538e0b0fccd00.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "d5914d83eb07bafad2e90b933905cb954d455c2f19c1949f1d79a941c913236c",
+      "referenceSha256": "26e538e0b0fccd00a87ca11ddb8ff25793a745753837e5f82e66781070776250",
+      "captureSha256": [
+        "26e538e0b0fccd00a87ca11ddb8ff25793a745753837e5f82e66781070776250",
+        "26e538e0b0fccd00a87ca11ddb8ff25793a745753837e5f82e66781070776250",
+        "26e538e0b0fccd00a87ca11ddb8ff25793a745753837e5f82e66781070776250"
+      ]
+    },
+    {
+      "id": "pattern-use-candidate",
+      "input": "pattern-use-candidate.svg",
+      "reference": "references/3b3f5243ee1ed818.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "5b80baddd727af9610d16829653dc3b4a357fbc068159e07df6aee158f4bb559",
+      "referenceSha256": "3b3f5243ee1ed818d602a881870f368480e06655240fd2c511d7165ebb82ec8b",
+      "captureSha256": [
+        "3b3f5243ee1ed818d602a881870f368480e06655240fd2c511d7165ebb82ec8b",
+        "3b3f5243ee1ed818d602a881870f368480e06655240fd2c511d7165ebb82ec8b",
+        "3b3f5243ee1ed818d602a881870f368480e06655240fd2c511d7165ebb82ec8b"
+      ]
+    },
+    {
+      "id": "pattern-use-control",
+      "input": "pattern-use-control.svg",
+      "reference": "references/3b3f5243ee1ed818.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "33415d6b9866c5400f1eaa96b051a244d3bf1ed17b9b21f01358b7bd093739c4",
+      "referenceSha256": "3b3f5243ee1ed818d602a881870f368480e06655240fd2c511d7165ebb82ec8b",
+      "captureSha256": [
+        "3b3f5243ee1ed818d602a881870f368480e06655240fd2c511d7165ebb82ec8b",
+        "3b3f5243ee1ed818d602a881870f368480e06655240fd2c511d7165ebb82ec8b",
+        "3b3f5243ee1ed818d602a881870f368480e06655240fd2c511d7165ebb82ec8b"
+      ]
+    }
+  ]
+}

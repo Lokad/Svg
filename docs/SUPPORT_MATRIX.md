@@ -122,6 +122,9 @@ partial-opacity layers through a bounded command rebuild. The
 [composition regressions](../tests/Lokad.Svg.Tests/SvgInheritedClipIsolationTests.cs)
 and [native images](../tests/Research/inherited-clip-isolation/capture.json)
 cover overlapping fills/strokes, own clips, instances and masks.
+Clips containing the complete destination preserve the existing bitmap and
+child-mask shader origins; see the [regressions](../tests/Lokad.Svg.Tests/SvgContainedClipIsolationTests.cs)
+and [native images](../tests/Research/contained-mask-clips/capture.json).
 Omitted circle radii and path data paint nothing. An ellipse with one omitted
 radius copies the other resolved radius; omitting both paints nothing.
 Omitted/empty point lists paint nothing. Repeated and closing vertices, and

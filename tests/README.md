@@ -81,6 +81,9 @@ ownership under denial/cancellation/retry. Their
 [browser checks](Lokad.Svg.VisualTests/SvgInheritedClipReferenceTests.cs) retain
 [independent images](Research/inherited-clip-isolation/capture.json) for outer
 and inner clip placements, including naturally different outputs.
+The [containment cases](Lokad.Svg.Tests/SvgContainedClipIsolationTests.cs)
+retain native mask/shader grids through direct and referenced paints, placement
+and output scaling, with [independent references](Research/contained-mask-clips/capture.json).
 
 [Display inheritance tests](Lokad.Svg.Tests/SvgDisplayInheritanceTests.cs) cover
 logical parents, retained instances, viewports and resource children across
