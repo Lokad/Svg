@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Apply inherited viewport clips when restoring isolated opacity groups, keeping
+  local child clips and scalar maps. Preserve forward rectangular clip ordering
+  and rebuild sibling command scopes once per scene.
 - Replay thin gradient and pattern strokes through native hairline coverage,
   preserving material alpha and ordered corner/curve paints. Share polygon
   shader sampling without per-pixel callbacks or closure allocations.

@@ -19,6 +19,9 @@ internal readonly record struct PendingGroupClip(string ClipId, SvgViewportFrame
 /// <summary>Parses the bounded clip-path reference syntax shared by clipped containers and leaves.</summary>
 internal static class SvgClipPathSyntax
 {
+    private readonly record struct CommandScope(int First, int End, SvgDrawCommand Begin, int Next);
+    private readonly record struct SceneScopeHead(SvgSceneBuilder Scene, int First);
+
     internal static bool IsDisabled(string id, SvgDocumentState state)
         => state.ClipPolygons.TryGetValue(id, out SvgClipPolygon clip) && clip.IsDisabled;
 
@@ -692,6 +695,9 @@ internal static class SvgClipPathSyntax
     {
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(workCounter);
+        if (first == state.PendingGroupClips.Count) return;
+        using BudgetedParserList<CommandScope> scopes = new(state.Budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        using BudgetedParserDictionary<SvgSceneBuilder, SceneScopeHead> heads = new(state.Budget, SvgMemoryCategory.Parser, 48);
         // References were recorded at group entry. Prepend inner scopes first
         // so the emitted native clip stack follows outer-to-inner document order.
         for (int pendingIndex = state.PendingGroupClips.Count - 1; pendingIndex >= first; pendingIndex--)
@@ -707,6 +713,20 @@ internal static class SvgClipPathSyntax
                 SvgClipBox clip;
                 if (state.Clips.TryGetValue(pending.ClipId, out SvgClipBox box))
                 {
+                    if (ContainsOpacityLayer(pending))
+                    {
+                        SvgAffineTransform map = parent is {} viewport
+                            ? SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(pending.Transform)
+                            : pending.Transform;
+                        (SvgClipBox bounds, int contentIndex) = new SvgAffineViewportClip(box, map).Register(state, state.Scene, workCounter, cancellationToken);
+                        SvgDrawCommand begin = new(SvgDrawCommandKind.BeginGroup, -1, 255, bounds, contentIndex, 255) { RegionKind = SvgLayerRegionKind.AffineViewport };
+                        bool exists = heads.TryGetValue(pending.Scene, out SceneScopeHead head);
+                        scopes.Add(new(pending.FirstCommandIndex, pending.EndCommandIndex, begin, head.First));
+                        SceneScopeHead replacement = new(pending.Scene, scopes.Count);
+                        if (exists) heads.Replace(pending.Scene, replacement);
+                        else heads.TryAdd(pending.Scene, replacement);
+                        continue;
+                    }
                     if (!pending.Transform.IsAxisAligned || pending.UsesNativeClip || ContainsGlyph(pending))
                     {
                         SvgAffineTransform map = parent is {} frame
@@ -803,6 +823,7 @@ internal static class SvgClipPathSyntax
             }
             finally { state.DefinitionReplayScene = previous; }
         }
+        foreach (SceneScopeHead head in heads.Values) WrapCommands(head);
 
         bool ContainsGlyph(PendingGroupClip pending)
         {
@@ -813,6 +834,57 @@ internal static class SvgClipPathSyntax
                 if (command.Kind == SvgDrawCommandKind.Geometry && state.Scene.GeometryAt(command.GeometryIndex).Kind == SvgGeometryKind.GlyphContours) return true;
             }
             return false;
+        }
+
+        bool ContainsOpacityLayer(PendingGroupClip pending)
+        {
+            for (int index = pending.FirstCommandIndex; index < pending.EndCommandIndex; index++)
+            {
+                workCounter.Consume(cancellationToken);
+                if (pending.Scene.CommandAt(index) is { Kind: SvgDrawCommandKind.BeginGroup } command && command.SourceOpacity.Value != 1) return true;
+            }
+            return false;
+        }
+
+        // Descending source resolution prepends scope links, leaving each scene's
+        // chain in document order. Insert all wrappers in one bounded traversal;
+        // rebuilding the complete scene for each clip would make siblings quadratic.
+        void WrapCommands(SceneScopeHead head)
+        {
+            SvgSceneBuilder scene = head.Scene;
+            int count = scene.CommandCount;
+            using RenderBudget.BudgetReservation mapOwner = state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<int>(count + 1), SvgMemoryCategory.Parser);
+            int[] positions = new int[count + 1];
+            BudgetedSceneList<SvgDrawCommand> commands = new(state.Budget, workCounter, cancellationToken);
+            using BudgetedParserList<int> ends = new(state.Budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+            bool transferred = false;
+            try
+            {
+                int next = head.First;
+                for (int index = 0; index <= count; index++)
+                {
+                    workCounter.Consume(cancellationToken);
+                    while (ends.Count != 0 && ends[^1] == index)
+                    {
+                        ends.RemoveLast();
+                        commands.Add(new(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255));
+                    }
+                    while (next != 0 && scopes[next - 1].First == index)
+                    {
+                        CommandScope scope = scopes[next - 1];
+                        commands.Add(scope.Begin);
+                        ends.Add(scope.End);
+                        next = scope.Next;
+                    }
+                    positions[index] = commands.Count;
+                    if (index < count) commands.Add(scene.CommandAt(index));
+                }
+                if (next != 0 || ends.Count != 0) throw new InvalidOperationException("Forward clip scopes require balanced command ranges.");
+                SvgReferenceResolver.RemapPendingCommandRanges(state, scene, positions, new(0, 0, 0, 0), state.PendingCommandEnd, workCounter, cancellationToken);
+                scene.AdoptCommands(commands);
+                transferred = true;
+            }
+            finally { if (!transferred) commands.Dispose(); }
         }
 
     }

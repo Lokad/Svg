@@ -1,0 +1,578 @@
+{
+  "purpose": "Independent native images for inherited versus inner clip placement around partial-opacity groups, overlapping fills/strokes, forward clips, own clips, instances and masks. Each actual retains its own reference, including naturally unequal pairs.",
+  "platform": "win64",
+  "chromePin": {
+    "version": "153.0.8010.52",
+    "chromiumRevision": "1681091",
+    "platform": "win64",
+    "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/win64/chrome-win64.zip",
+    "archiveSha256": "df4854428c509fcf2f790ac448bca3f994151bcff22008236fa7c4587294fbe1",
+    "executableRelativePath": "chrome-win64/chrome.exe",
+    "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+    "captureRecipeRevision": "3"
+  },
+  "background": "transparent",
+  "license": "MIT",
+  "cases": [
+    {
+      "id": "rectangles-fractional-p5-0-candidate",
+      "input": "rectangles-fractional-p5-0-candidate.svg",
+      "reference": "references/838222504201a1b8.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "ce8b128f5f3badc5d656bd84531f056524b57ac3eaa2959fa3380094d63e0bf8",
+      "referenceSha256": "838222504201a1b88edc8a33e8206d420b22cc045d33a79afb4274837ad2766f",
+      "captureSha256": [
+        "838222504201a1b88edc8a33e8206d420b22cc045d33a79afb4274837ad2766f",
+        "838222504201a1b88edc8a33e8206d420b22cc045d33a79afb4274837ad2766f",
+        "838222504201a1b88edc8a33e8206d420b22cc045d33a79afb4274837ad2766f"
+      ]
+    },
+    {
+      "id": "rectangles-fractional-p5-0-control",
+      "input": "rectangles-fractional-p5-0-control.svg",
+      "reference": "references/bb26f47400dfe92e.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "e5eb418d10923b16693f0701ce112da3776679f33b825e3cb9b460bb5f5bf2ab",
+      "referenceSha256": "bb26f47400dfe92e1134a7346772b33ef2cc03126cbe83b979c8ed45a9e9b163",
+      "captureSha256": [
+        "bb26f47400dfe92e1134a7346772b33ef2cc03126cbe83b979c8ed45a9e9b163",
+        "bb26f47400dfe92e1134a7346772b33ef2cc03126cbe83b979c8ed45a9e9b163",
+        "bb26f47400dfe92e1134a7346772b33ef2cc03126cbe83b979c8ed45a9e9b163"
+      ]
+    },
+    {
+      "id": "solid-stroke-fractional-p5-1-candidate",
+      "input": "solid-stroke-fractional-p5-1-candidate.svg",
+      "reference": "references/9e8625a5a8f80f54.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "fb5832af2b96d76242ecef44c91ca65fd5dae35a24d32ebdfdbbfe789c620478",
+      "referenceSha256": "9e8625a5a8f80f54a3c7d86b42a0fa8969d4e394a6f39760c879d12d3bcfe77d",
+      "captureSha256": [
+        "9e8625a5a8f80f54a3c7d86b42a0fa8969d4e394a6f39760c879d12d3bcfe77d",
+        "9e8625a5a8f80f54a3c7d86b42a0fa8969d4e394a6f39760c879d12d3bcfe77d",
+        "9e8625a5a8f80f54a3c7d86b42a0fa8969d4e394a6f39760c879d12d3bcfe77d"
+      ]
+    },
+    {
+      "id": "solid-stroke-fractional-p5-1-control",
+      "input": "solid-stroke-fractional-p5-1-control.svg",
+      "reference": "references/8cf65d4455cae735.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "29b9f6a914eb8d9ff404457fdbafd15a7fdd8414907d3545b82547516bad595f",
+      "referenceSha256": "8cf65d4455cae735d50b81be123984b58bfdc843b5d0909529128382cd1c6d4f",
+      "captureSha256": [
+        "8cf65d4455cae735d50b81be123984b58bfdc843b5d0909529128382cd1c6d4f",
+        "8cf65d4455cae735d50b81be123984b58bfdc843b5d0909529128382cd1c6d4f",
+        "8cf65d4455cae735d50b81be123984b58bfdc843b5d0909529128382cd1c6d4f"
+      ]
+    },
+    {
+      "id": "shader-stroke-fractional-p5-2-candidate",
+      "input": "shader-stroke-fractional-p5-2-candidate.svg",
+      "reference": "references/fd2fc5aa0c26698b.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "6a98a0dc4e130b74d97f5dd464a3bd36e92840c3fd7b3b60dbd1cded7c1a0d45",
+      "referenceSha256": "fd2fc5aa0c26698b258bbf7553be72bb0a222aeb0c9170cef47cecc937b5afec",
+      "captureSha256": [
+        "fd2fc5aa0c26698b258bbf7553be72bb0a222aeb0c9170cef47cecc937b5afec",
+        "fd2fc5aa0c26698b258bbf7553be72bb0a222aeb0c9170cef47cecc937b5afec",
+        "fd2fc5aa0c26698b258bbf7553be72bb0a222aeb0c9170cef47cecc937b5afec"
+      ]
+    },
+    {
+      "id": "shader-stroke-fractional-p5-2-control",
+      "input": "shader-stroke-fractional-p5-2-control.svg",
+      "reference": "references/060feb8b6c2ec5db.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "6c5ac3492ce9f5629e3f36419cf8c87096cb377f3a5a051ee3c9f8abeb1cb112",
+      "referenceSha256": "060feb8b6c2ec5db0ac52adbea38366972519bbd73045ed0434f7ed29f2f807c",
+      "captureSha256": [
+        "060feb8b6c2ec5db0ac52adbea38366972519bbd73045ed0434f7ed29f2f807c",
+        "060feb8b6c2ec5db0ac52adbea38366972519bbd73045ed0434f7ed29f2f807c",
+        "060feb8b6c2ec5db0ac52adbea38366972519bbd73045ed0434f7ed29f2f807c"
+      ]
+    },
+    {
+      "id": "paths-fractional-p5-3-candidate",
+      "input": "paths-fractional-p5-3-candidate.svg",
+      "reference": "references/838222504201a1b8.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "7037ed8dc9086186e5220d8359007dd495adf4c2f4c2225825f388585e4b1986",
+      "referenceSha256": "838222504201a1b88edc8a33e8206d420b22cc045d33a79afb4274837ad2766f",
+      "captureSha256": [
+        "838222504201a1b88edc8a33e8206d420b22cc045d33a79afb4274837ad2766f",
+        "838222504201a1b88edc8a33e8206d420b22cc045d33a79afb4274837ad2766f",
+        "838222504201a1b88edc8a33e8206d420b22cc045d33a79afb4274837ad2766f"
+      ]
+    },
+    {
+      "id": "paths-fractional-p5-3-control",
+      "input": "paths-fractional-p5-3-control.svg",
+      "reference": "references/bb26f47400dfe92e.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "b20db1987ce7e3d5ecd1643509d47d19c3a0ab223795597466ad3f5fad1f069b",
+      "referenceSha256": "bb26f47400dfe92e1134a7346772b33ef2cc03126cbe83b979c8ed45a9e9b163",
+      "captureSha256": [
+        "bb26f47400dfe92e1134a7346772b33ef2cc03126cbe83b979c8ed45a9e9b163",
+        "bb26f47400dfe92e1134a7346772b33ef2cc03126cbe83b979c8ed45a9e9b163",
+        "bb26f47400dfe92e1134a7346772b33ef2cc03126cbe83b979c8ed45a9e9b163"
+      ]
+    },
+    {
+      "id": "rectangles-fractional-p75-4-candidate",
+      "input": "rectangles-fractional-p75-4-candidate.svg",
+      "reference": "references/9b0af814a12b67a1.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "6c4809cf95bb3039404859db1f68fd13a893ed5ba9a2fe77ed5fe5be8ec68d25",
+      "referenceSha256": "9b0af814a12b67a12b6847d1f952b5b447d0d4f73d94ebebc6a5367d7d96e56d",
+      "captureSha256": [
+        "9b0af814a12b67a12b6847d1f952b5b447d0d4f73d94ebebc6a5367d7d96e56d",
+        "9b0af814a12b67a12b6847d1f952b5b447d0d4f73d94ebebc6a5367d7d96e56d",
+        "9b0af814a12b67a12b6847d1f952b5b447d0d4f73d94ebebc6a5367d7d96e56d"
+      ]
+    },
+    {
+      "id": "rectangles-fractional-p75-4-control",
+      "input": "rectangles-fractional-p75-4-control.svg",
+      "reference": "references/6c265ba09461cf4d.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "4ea8f40d1f3e8c385d0e0d69759540624314196782652d0166d29d614758603e",
+      "referenceSha256": "6c265ba09461cf4da69e5846f40b86a1064a1ba3cace6d33734cbe3f54f65cc1",
+      "captureSha256": [
+        "6c265ba09461cf4da69e5846f40b86a1064a1ba3cace6d33734cbe3f54f65cc1",
+        "6c265ba09461cf4da69e5846f40b86a1064a1ba3cace6d33734cbe3f54f65cc1",
+        "6c265ba09461cf4da69e5846f40b86a1064a1ba3cace6d33734cbe3f54f65cc1"
+      ]
+    },
+    {
+      "id": "shader-stroke-integer-p5-5-candidate",
+      "input": "shader-stroke-integer-p5-5-candidate.svg",
+      "reference": "references/37d2c3fd03539a54.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "2b3aaf1aabd5699e77aff50344562448d6aa1d36cec2ddb4af73c7d06d604845",
+      "referenceSha256": "37d2c3fd03539a543009f77f9898c11ec3a734091f7fc1c893adc123a2e7f47a",
+      "captureSha256": [
+        "37d2c3fd03539a543009f77f9898c11ec3a734091f7fc1c893adc123a2e7f47a",
+        "37d2c3fd03539a543009f77f9898c11ec3a734091f7fc1c893adc123a2e7f47a",
+        "37d2c3fd03539a543009f77f9898c11ec3a734091f7fc1c893adc123a2e7f47a"
+      ]
+    },
+    {
+      "id": "shader-stroke-integer-p5-5-control",
+      "input": "shader-stroke-integer-p5-5-control.svg",
+      "reference": "references/1f4ac65665d75b68.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "777f835e065de6a8a9a70f4f8ed361727f8a59b8b1c51e6def363ca1060042f5",
+      "referenceSha256": "1f4ac65665d75b6850a862975711f7ccfa07a079767363e97ff51e6a2adcb241",
+      "captureSha256": [
+        "1f4ac65665d75b6850a862975711f7ccfa07a079767363e97ff51e6a2adcb241",
+        "1f4ac65665d75b6850a862975711f7ccfa07a079767363e97ff51e6a2adcb241",
+        "1f4ac65665d75b6850a862975711f7ccfa07a079767363e97ff51e6a2adcb241"
+      ]
+    },
+    {
+      "id": "paths-half-p5-6-candidate",
+      "input": "paths-half-p5-6-candidate.svg",
+      "reference": "references/bebf97701cacd33b.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "9a5620dab2221671a0d29088f1dca143d0a5b24d9622973dad3789af9762998c",
+      "referenceSha256": "bebf97701cacd33beeebcc1ac1c3ea1c234d7ff5cfbe984f5445dfe3728b7d2b",
+      "captureSha256": [
+        "bebf97701cacd33beeebcc1ac1c3ea1c234d7ff5cfbe984f5445dfe3728b7d2b",
+        "bebf97701cacd33beeebcc1ac1c3ea1c234d7ff5cfbe984f5445dfe3728b7d2b",
+        "bebf97701cacd33beeebcc1ac1c3ea1c234d7ff5cfbe984f5445dfe3728b7d2b"
+      ]
+    },
+    {
+      "id": "paths-half-p5-6-control",
+      "input": "paths-half-p5-6-control.svg",
+      "reference": "references/a59e6b371e11091d.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "2f4ea6a9ed3e927fa0756012c766603c9291339724f9ced0e083720e8fb7892b",
+      "referenceSha256": "a59e6b371e11091dc0c59cd0f40a591b0cef7be4c842118ae245abd17596ca87",
+      "captureSha256": [
+        "a59e6b371e11091dc0c59cd0f40a591b0cef7be4c842118ae245abd17596ca87",
+        "a59e6b371e11091dc0c59cd0f40a591b0cef7be4c842118ae245abd17596ca87",
+        "a59e6b371e11091dc0c59cd0f40a591b0cef7be4c842118ae245abd17596ca87"
+      ]
+    },
+    {
+      "id": "rectangles-contained-p5-7-candidate",
+      "input": "rectangles-contained-p5-7-candidate.svg",
+      "reference": "references/cb42671b54b80e30.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "4bf3b3ed2646c2491c16955f4ff55d65eccd669871561e2625b2bcfa2acb891f",
+      "referenceSha256": "cb42671b54b80e3023192fdac143badbf8460879122e3f02ac818aee7ab49eac",
+      "captureSha256": [
+        "cb42671b54b80e3023192fdac143badbf8460879122e3f02ac818aee7ab49eac",
+        "cb42671b54b80e3023192fdac143badbf8460879122e3f02ac818aee7ab49eac",
+        "cb42671b54b80e3023192fdac143badbf8460879122e3f02ac818aee7ab49eac"
+      ]
+    },
+    {
+      "id": "rectangles-contained-p5-7-control",
+      "input": "rectangles-contained-p5-7-control.svg",
+      "reference": "references/cb42671b54b80e30.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "62a007ed093091ac4c70c20dec9a019771322ec29f06cb61f1595c63ad6e647e",
+      "referenceSha256": "cb42671b54b80e3023192fdac143badbf8460879122e3f02ac818aee7ab49eac",
+      "captureSha256": [
+        "cb42671b54b80e3023192fdac143badbf8460879122e3f02ac818aee7ab49eac",
+        "cb42671b54b80e3023192fdac143badbf8460879122e3f02ac818aee7ab49eac",
+        "cb42671b54b80e3023192fdac143badbf8460879122e3f02ac818aee7ab49eac"
+      ]
+    },
+    {
+      "id": "rectangles-plain-direct-8-candidate",
+      "input": "rectangles-plain-direct-8-candidate.svg",
+      "reference": "references/838222504201a1b8.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "56636f1e57802e2d12ecf58e9a57107c060be68e77541e7e100b86b6819cd34f",
+      "referenceSha256": "838222504201a1b88edc8a33e8206d420b22cc045d33a79afb4274837ad2766f",
+      "captureSha256": [
+        "838222504201a1b88edc8a33e8206d420b22cc045d33a79afb4274837ad2766f",
+        "838222504201a1b88edc8a33e8206d420b22cc045d33a79afb4274837ad2766f",
+        "838222504201a1b88edc8a33e8206d420b22cc045d33a79afb4274837ad2766f"
+      ]
+    },
+    {
+      "id": "rectangles-plain-direct-8-control",
+      "input": "rectangles-plain-direct-8-control.svg",
+      "reference": "references/bb26f47400dfe92e.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "837d1d5b0226b20738397b92a513f114479b5d5e2fab23dd748a4575385bb0e1",
+      "referenceSha256": "bb26f47400dfe92e1134a7346772b33ef2cc03126cbe83b979c8ed45a9e9b163",
+      "captureSha256": [
+        "bb26f47400dfe92e1134a7346772b33ef2cc03126cbe83b979c8ed45a9e9b163",
+        "bb26f47400dfe92e1134a7346772b33ef2cc03126cbe83b979c8ed45a9e9b163",
+        "bb26f47400dfe92e1134a7346772b33ef2cc03126cbe83b979c8ed45a9e9b163"
+      ]
+    },
+    {
+      "id": "rectangles-mask-direct-9-candidate",
+      "input": "rectangles-mask-direct-9-candidate.svg",
+      "reference": "references/7967589d9aeeb4ea.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "0f94c2e9df0eb080963ad5eaf2bea9faf7fa5990ab5bb003f468c697688771ef",
+      "referenceSha256": "7967589d9aeeb4ea26817160d46d482cab4d1c5816d838262ffb499cb3c63d27",
+      "captureSha256": [
+        "7967589d9aeeb4ea26817160d46d482cab4d1c5816d838262ffb499cb3c63d27",
+        "7967589d9aeeb4ea26817160d46d482cab4d1c5816d838262ffb499cb3c63d27",
+        "7967589d9aeeb4ea26817160d46d482cab4d1c5816d838262ffb499cb3c63d27"
+      ]
+    },
+    {
+      "id": "rectangles-mask-direct-9-control",
+      "input": "rectangles-mask-direct-9-control.svg",
+      "reference": "references/f8b88fdeca0fd64e.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "f1c11a7f0519f15879be743ef22e3e6844d7fd40ed554be11ff8d42e40f8718c",
+      "referenceSha256": "f8b88fdeca0fd64e05f95f04fd12b30248a6c83791b03647189e8330ec041122",
+      "captureSha256": [
+        "f8b88fdeca0fd64e05f95f04fd12b30248a6c83791b03647189e8330ec041122",
+        "f8b88fdeca0fd64e05f95f04fd12b30248a6c83791b03647189e8330ec041122",
+        "f8b88fdeca0fd64e05f95f04fd12b30248a6c83791b03647189e8330ec041122"
+      ]
+    },
+    {
+      "id": "rectangles-nested-opacity-use-10-candidate",
+      "input": "rectangles-nested-opacity-use-10-candidate.svg",
+      "reference": "references/7967589d9aeeb4ea.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "1c5e3e0a06dbc747fe6011855f3522483537821649ef2162f577fe5a1e432b68",
+      "referenceSha256": "7967589d9aeeb4ea26817160d46d482cab4d1c5816d838262ffb499cb3c63d27",
+      "captureSha256": [
+        "7967589d9aeeb4ea26817160d46d482cab4d1c5816d838262ffb499cb3c63d27",
+        "7967589d9aeeb4ea26817160d46d482cab4d1c5816d838262ffb499cb3c63d27",
+        "7967589d9aeeb4ea26817160d46d482cab4d1c5816d838262ffb499cb3c63d27"
+      ]
+    },
+    {
+      "id": "rectangles-nested-opacity-use-10-control",
+      "input": "rectangles-nested-opacity-use-10-control.svg",
+      "reference": "references/51cb01b08ddbd6dc.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "65e7ae2fe6b05463b28546387e9ccba74b4a8be8248220a562afca615114a3fc",
+      "referenceSha256": "51cb01b08ddbd6dcc723ca9d0ed58a50d64daf80689c259bb0f263e85c195339",
+      "captureSha256": [
+        "51cb01b08ddbd6dcc723ca9d0ed58a50d64daf80689c259bb0f263e85c195339",
+        "51cb01b08ddbd6dcc723ca9d0ed58a50d64daf80689c259bb0f263e85c195339",
+        "51cb01b08ddbd6dcc723ca9d0ed58a50d64daf80689c259bb0f263e85c195339"
+      ]
+    },
+    {
+      "id": "paths-own-clip-direct-11-candidate",
+      "input": "paths-own-clip-direct-11-candidate.svg",
+      "reference": "references/ef5a45b2176fda12.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "77a95fa37a3b4cef8e0a5154e2c4e366ed2027622e95c337da3055357747556c",
+      "referenceSha256": "ef5a45b2176fda12e8f97bb4821a0ed1b450c5d3f324b7c130af64300f7b24a8",
+      "captureSha256": [
+        "ef5a45b2176fda12e8f97bb4821a0ed1b450c5d3f324b7c130af64300f7b24a8",
+        "ef5a45b2176fda12e8f97bb4821a0ed1b450c5d3f324b7c130af64300f7b24a8",
+        "ef5a45b2176fda12e8f97bb4821a0ed1b450c5d3f324b7c130af64300f7b24a8"
+      ]
+    },
+    {
+      "id": "paths-own-clip-direct-11-control",
+      "input": "paths-own-clip-direct-11-control.svg",
+      "reference": "references/a74835a097a6ea09.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "bccf7530a8615234eefd28a939cf4e58d890f6c6826b6d17296974524f21aac9",
+      "referenceSha256": "a74835a097a6ea09f37144c0013942ede5106ae3395337881d271bdfc478b6c9",
+      "captureSha256": [
+        "a74835a097a6ea09f37144c0013942ede5106ae3395337881d271bdfc478b6c9",
+        "a74835a097a6ea09f37144c0013942ede5106ae3395337881d271bdfc478b6c9",
+        "a74835a097a6ea09f37144c0013942ede5106ae3395337881d271bdfc478b6c9"
+      ]
+    },
+    {
+      "id": "paths-plain-nested-svg-12-candidate",
+      "input": "paths-plain-nested-svg-12-candidate.svg",
+      "reference": "references/feccb5f9867d5985.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "0bc6837ad5d53d025cb23985a02fc0278a539a237d2f131b2a71e3c7e165b191",
+      "referenceSha256": "feccb5f9867d5985b81572e67ae9659eb2532b9a728a38486b71ada6e27e9978",
+      "captureSha256": [
+        "feccb5f9867d5985b81572e67ae9659eb2532b9a728a38486b71ada6e27e9978",
+        "feccb5f9867d5985b81572e67ae9659eb2532b9a728a38486b71ada6e27e9978",
+        "feccb5f9867d5985b81572e67ae9659eb2532b9a728a38486b71ada6e27e9978"
+      ]
+    },
+    {
+      "id": "paths-plain-nested-svg-12-control",
+      "input": "paths-plain-nested-svg-12-control.svg",
+      "reference": "references/86ef55964781aed3.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "7204a3215b212276f8e2b7465d3841fbce070b9193ed3e060abccf5670142e0a",
+      "referenceSha256": "86ef55964781aed364eb8bb61964522092db72ff99018ff13e11f598f94f257a",
+      "captureSha256": [
+        "86ef55964781aed364eb8bb61964522092db72ff99018ff13e11f598f94f257a",
+        "86ef55964781aed364eb8bb61964522092db72ff99018ff13e11f598f94f257a",
+        "86ef55964781aed364eb8bb61964522092db72ff99018ff13e11f598f94f257a"
+      ]
+    },
+    {
+      "id": "solid-stroke-own-clip-use-13-candidate",
+      "input": "solid-stroke-own-clip-use-13-candidate.svg",
+      "reference": "references/bfe0a1fbf52cee6d.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "70cee29d132a0b8f54621d7b00ad643c01a7ad3f467280215846b1f902c32134",
+      "referenceSha256": "bfe0a1fbf52cee6df8ceb7cd95d8b4ac345ef6db1df9cd40a30add37d04525db",
+      "captureSha256": [
+        "bfe0a1fbf52cee6df8ceb7cd95d8b4ac345ef6db1df9cd40a30add37d04525db",
+        "bfe0a1fbf52cee6df8ceb7cd95d8b4ac345ef6db1df9cd40a30add37d04525db",
+        "bfe0a1fbf52cee6df8ceb7cd95d8b4ac345ef6db1df9cd40a30add37d04525db"
+      ]
+    },
+    {
+      "id": "solid-stroke-own-clip-use-13-control",
+      "input": "solid-stroke-own-clip-use-13-control.svg",
+      "reference": "references/826cda6ce8501a15.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "2b57ea0a14721586f8f8e7fb806e7015f2b49314eccb9d2a5ea8258a21350986",
+      "referenceSha256": "826cda6ce8501a15a126992bb78ceefd8769d8d28fd8795a67de4765cfa7da3d",
+      "captureSha256": [
+        "826cda6ce8501a15a126992bb78ceefd8769d8d28fd8795a67de4765cfa7da3d",
+        "826cda6ce8501a15a126992bb78ceefd8769d8d28fd8795a67de4765cfa7da3d",
+        "826cda6ce8501a15a126992bb78ceefd8769d8d28fd8795a67de4765cfa7da3d"
+      ]
+    },
+    {
+      "id": "shader-stroke-own-clip-symbol-14-candidate",
+      "input": "shader-stroke-own-clip-symbol-14-candidate.svg",
+      "reference": "references/13c516c21172f58f.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "217f3e19e42a31f66e5f3f467f91ba1087b5c243b1e284a0826c069b4385e28b",
+      "referenceSha256": "13c516c21172f58ff234ddc976092a8389de8b596bc765c67e06dedbcc57f32f",
+      "captureSha256": [
+        "13c516c21172f58ff234ddc976092a8389de8b596bc765c67e06dedbcc57f32f",
+        "13c516c21172f58ff234ddc976092a8389de8b596bc765c67e06dedbcc57f32f",
+        "13c516c21172f58ff234ddc976092a8389de8b596bc765c67e06dedbcc57f32f"
+      ]
+    },
+    {
+      "id": "shader-stroke-own-clip-symbol-14-control",
+      "input": "shader-stroke-own-clip-symbol-14-control.svg",
+      "reference": "references/f8c9947f935fc714.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "2fb1866a4c84b32a71333c952d343a9f9aa7c6c466b0d402bceb51b099b34509",
+      "referenceSha256": "f8c9947f935fc714de809ac150dd0a606dc86c3d14b62148057d13e732bad673",
+      "captureSha256": [
+        "f8c9947f935fc714de809ac150dd0a606dc86c3d14b62148057d13e732bad673",
+        "f8c9947f935fc714de809ac150dd0a606dc86c3d14b62148057d13e732bad673",
+        "f8c9947f935fc714de809ac150dd0a606dc86c3d14b62148057d13e732bad673"
+      ]
+    },
+    {
+      "id": "shader-stroke-plain-direct-15-candidate",
+      "input": "shader-stroke-plain-direct-15-candidate.svg",
+      "reference": "references/fd2fc5aa0c26698b.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "9622ed11d982d63ed9eb2a674735921226f0214e973a85b3e270118c0d6aeb30",
+      "referenceSha256": "fd2fc5aa0c26698b258bbf7553be72bb0a222aeb0c9170cef47cecc937b5afec",
+      "captureSha256": [
+        "fd2fc5aa0c26698b258bbf7553be72bb0a222aeb0c9170cef47cecc937b5afec",
+        "fd2fc5aa0c26698b258bbf7553be72bb0a222aeb0c9170cef47cecc937b5afec",
+        "fd2fc5aa0c26698b258bbf7553be72bb0a222aeb0c9170cef47cecc937b5afec"
+      ]
+    },
+    {
+      "id": "shader-stroke-plain-direct-15-control",
+      "input": "shader-stroke-plain-direct-15-control.svg",
+      "reference": "references/060feb8b6c2ec5db.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "9458507606ffa71513f3652dc0da9c3898c1566ca4afd70889a246cc0a7f8568",
+      "referenceSha256": "060feb8b6c2ec5db0ac52adbea38366972519bbd73045ed0434f7ed29f2f807c",
+      "captureSha256": [
+        "060feb8b6c2ec5db0ac52adbea38366972519bbd73045ed0434f7ed29f2f807c",
+        "060feb8b6c2ec5db0ac52adbea38366972519bbd73045ed0434f7ed29f2f807c",
+        "060feb8b6c2ec5db0ac52adbea38366972519bbd73045ed0434f7ed29f2f807c"
+      ]
+    },
+    {
+      "id": "rectangles-mask-symbol-16-candidate",
+      "input": "rectangles-mask-symbol-16-candidate.svg",
+      "reference": "references/7967589d9aeeb4ea.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "3bff2000069e995a74b088d8aadfc1b0a4e6614fd389a94c0ac1385f87a97409",
+      "referenceSha256": "7967589d9aeeb4ea26817160d46d482cab4d1c5816d838262ffb499cb3c63d27",
+      "captureSha256": [
+        "7967589d9aeeb4ea26817160d46d482cab4d1c5816d838262ffb499cb3c63d27",
+        "7967589d9aeeb4ea26817160d46d482cab4d1c5816d838262ffb499cb3c63d27",
+        "7967589d9aeeb4ea26817160d46d482cab4d1c5816d838262ffb499cb3c63d27"
+      ]
+    },
+    {
+      "id": "rectangles-mask-symbol-16-control",
+      "input": "rectangles-mask-symbol-16-control.svg",
+      "reference": "references/f8b88fdeca0fd64e.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "18975a9d4668c6c8c935c09b20dcb30cbaccffde85f68f1ef89af0cc34c42cd6",
+      "referenceSha256": "f8b88fdeca0fd64e05f95f04fd12b30248a6c83791b03647189e8330ec041122",
+      "captureSha256": [
+        "f8b88fdeca0fd64e05f95f04fd12b30248a6c83791b03647189e8330ec041122",
+        "f8b88fdeca0fd64e05f95f04fd12b30248a6c83791b03647189e8330ec041122",
+        "f8b88fdeca0fd64e05f95f04fd12b30248a6c83791b03647189e8330ec041122"
+      ]
+    },
+    {
+      "id": "paths-nested-opacity-symbol-17-candidate",
+      "input": "paths-nested-opacity-symbol-17-candidate.svg",
+      "reference": "references/7967589d9aeeb4ea.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "be84fdb0504aedbd38862469a142cd50aa239ecdd7144632f46dc3cd6921409e",
+      "referenceSha256": "7967589d9aeeb4ea26817160d46d482cab4d1c5816d838262ffb499cb3c63d27",
+      "captureSha256": [
+        "7967589d9aeeb4ea26817160d46d482cab4d1c5816d838262ffb499cb3c63d27",
+        "7967589d9aeeb4ea26817160d46d482cab4d1c5816d838262ffb499cb3c63d27",
+        "7967589d9aeeb4ea26817160d46d482cab4d1c5816d838262ffb499cb3c63d27"
+      ]
+    },
+    {
+      "id": "paths-nested-opacity-symbol-17-control",
+      "input": "paths-nested-opacity-symbol-17-control.svg",
+      "reference": "references/51cb01b08ddbd6dc.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "8bcbf6e4f74808cceb6061422cee932a7c382d9de9e89b2026fefac90e22518d",
+      "referenceSha256": "51cb01b08ddbd6dcc723ca9d0ed58a50d64daf80689c259bb0f263e85c195339",
+      "captureSha256": [
+        "51cb01b08ddbd6dcc723ca9d0ed58a50d64daf80689c259bb0f263e85c195339",
+        "51cb01b08ddbd6dcc723ca9d0ed58a50d64daf80689c259bb0f263e85c195339",
+        "51cb01b08ddbd6dcc723ca9d0ed58a50d64daf80689c259bb0f263e85c195339"
+      ]
+    },
+    {
+      "id": "solid-stroke-mask-direct-18-candidate",
+      "input": "solid-stroke-mask-direct-18-candidate.svg",
+      "reference": "references/d6c1e3a7efdfc1fd.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "8de6c33bb9d1b338a37ee23754ca5fe55187bffb14f313e028ce25f9921f63a6",
+      "referenceSha256": "d6c1e3a7efdfc1fd392eca78ba887f5e4bcb66f3c9fe1a12d09b206f82030f48",
+      "captureSha256": [
+        "d6c1e3a7efdfc1fd392eca78ba887f5e4bcb66f3c9fe1a12d09b206f82030f48",
+        "d6c1e3a7efdfc1fd392eca78ba887f5e4bcb66f3c9fe1a12d09b206f82030f48",
+        "d6c1e3a7efdfc1fd392eca78ba887f5e4bcb66f3c9fe1a12d09b206f82030f48"
+      ]
+    },
+    {
+      "id": "solid-stroke-mask-direct-18-control",
+      "input": "solid-stroke-mask-direct-18-control.svg",
+      "reference": "references/1ba809efcb6dbea0.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "82536aab30c6ff57ee3b9271f9aa625557cf49ca90f3543ec8ad5857b63a4919",
+      "referenceSha256": "1ba809efcb6dbea092a8c37c945d96f3bf98fa87cd2edce8a73761b8c0916a65",
+      "captureSha256": [
+        "1ba809efcb6dbea092a8c37c945d96f3bf98fa87cd2edce8a73761b8c0916a65",
+        "1ba809efcb6dbea092a8c37c945d96f3bf98fa87cd2edce8a73761b8c0916a65",
+        "1ba809efcb6dbea092a8c37c945d96f3bf98fa87cd2edce8a73761b8c0916a65"
+      ]
+    },
+    {
+      "id": "shader-stroke-nested-opacity-direct-19-candidate",
+      "input": "shader-stroke-nested-opacity-direct-19-candidate.svg",
+      "reference": "references/0ed969143c003d3b.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "3268bb07df51400cc5b4dfe7715061a9985a592daaeae2a6e416659b767f72c2",
+      "referenceSha256": "0ed969143c003d3b78ab94a55093385c7368ea3a3a31fede9a2e1e024a821f7a",
+      "captureSha256": [
+        "0ed969143c003d3b78ab94a55093385c7368ea3a3a31fede9a2e1e024a821f7a",
+        "0ed969143c003d3b78ab94a55093385c7368ea3a3a31fede9a2e1e024a821f7a",
+        "0ed969143c003d3b78ab94a55093385c7368ea3a3a31fede9a2e1e024a821f7a"
+      ]
+    },
+    {
+      "id": "shader-stroke-nested-opacity-direct-19-control",
+      "input": "shader-stroke-nested-opacity-direct-19-control.svg",
+      "reference": "references/a33a5ff6fb3e66d5.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "534f7dc2109f517d23c26858edfd23a102ff8e1e32c7d4d4e07792eb3bbf232a",
+      "referenceSha256": "a33a5ff6fb3e66d54c01fa5a556b11841b11e98c0d4f038313c151b39dcefc6a",
+      "captureSha256": [
+        "a33a5ff6fb3e66d54c01fa5a556b11841b11e98c0d4f038313c151b39dcefc6a",
+        "a33a5ff6fb3e66d54c01fa5a556b11841b11e98c0d4f038313c151b39dcefc6a",
+        "a33a5ff6fb3e66d54c01fa5a556b11841b11e98c0d4f038313c151b39dcefc6a"
+      ]
+    }
+  ]
+}

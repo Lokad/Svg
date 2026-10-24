@@ -100,11 +100,11 @@ internal static class SvgRenderedLeafParser
         SvgClipBox? viewportClip = parent is { HasAffineClipScope: false } viewport && viewport.Clip != SvgClipBox.Unbounded ? viewport.Clip : null;
         bool previousFilterClip = state.DeferringFilterClip;
         bool previousFilterMask = state.DeferringFilterMask;
-        int previousViewportDepth = state.FilterViewportDepth;
+        int previousViewportDepth = state.IsolatedViewportDepth;
         bool parsed;
         state.DeferringFilterClip = clip is not null;
         state.DeferringFilterMask = mask is not null;
-        state.FilterViewportDepth = reader.Depth;
+        state.IsolatedViewportDepth = reader.Depth;
         state.FilterGroupDepth++;
         try
         {
@@ -114,7 +114,7 @@ internal static class SvgRenderedLeafParser
         finally
         {
             state.DeferringFilterClip = previousFilterClip; state.DeferringFilterMask = previousFilterMask;
-            state.FilterViewportDepth = previousViewportDepth; state.FilterGroupDepth--;
+            state.IsolatedViewportDepth = previousViewportDepth; state.FilterGroupDepth--;
         }
         if (state.Scene.GeometryCount == firstGeometry) return parsed;
         SvgPaintBounds? sourceObjects = null, sourceVisuals = null;

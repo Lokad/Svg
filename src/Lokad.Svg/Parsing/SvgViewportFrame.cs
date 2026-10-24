@@ -37,7 +37,7 @@ internal readonly record struct SvgViewportFrame(double OffsetX, double OffsetY,
         {
             work.Consume(token);
             SvgViewportFrame frame = state.Viewports[index];
-            if (frame.Depth < state.FilterViewportDepth) continue;
+            if (frame.Depth < state.IsolatedViewportDepth) continue;
             // A forward group clip contributes a map-only passthrough frame until
             // its real clip binds; the unbounded sentinel is not a native contour.
             if (frame.HasAffineClipScope || frame.Clip == SvgClipBox.Unbounded && frame.TextContext is null) continue;

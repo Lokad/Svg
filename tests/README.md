@@ -75,6 +75,12 @@ material lifetime and denial/cancellation/retry. Their
 [browser checks](Lokad.Svg.VisualTests/SvgShaderHairlineReferenceTests.cs) use
 [fresh-process references](Research/shader-hairlines/capture.json), including
 wide surfaces whose offscreen SVG-image rasterization differs from browser capture.
+The [inherited clip cases](Lokad.Svg.Tests/SvgInheritedClipIsolationTests.cs)
+check native edge bytes, forward references, linear command-rebuild work and
+ownership under denial/cancellation/retry. Their
+[browser checks](Lokad.Svg.VisualTests/SvgInheritedClipReferenceTests.cs) retain
+[independent images](Research/inherited-clip-isolation/capture.json) for outer
+and inner clip placements, including naturally different outputs.
 
 [Display inheritance tests](Lokad.Svg.Tests/SvgDisplayInheritanceTests.cs) cover
 logical parents, retained instances, viewports and resource children across

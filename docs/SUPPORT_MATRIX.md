@@ -116,6 +116,12 @@ solid strokes while retaining shader sampling and blend arithmetic. The
 [material regressions](../tests/Lokad.Svg.Tests/SvgShaderHairlineTests.cs) and
 [browser references](../tests/Research/shader-hairlines/capture.json) cover
 alpha conversion, curves, instances, masks and CPU bitmap seams.
+Inherited rectangular clips surround isolated opacity groups; inner clips
+retain their separate child-paint ordering. Forward rectangular clips preserve
+partial-opacity layers through a bounded command rebuild. The
+[composition regressions](../tests/Lokad.Svg.Tests/SvgInheritedClipIsolationTests.cs)
+and [native images](../tests/Research/inherited-clip-isolation/capture.json)
+cover overlapping fills/strokes, own clips, instances and masks.
 Omitted circle radii and path data paint nothing. An ellipse with one omitted
 radius copies the other resolved radius; omitting both paints nothing.
 Omitted/empty point lists paint nothing. Repeated and closing vertices, and

@@ -144,10 +144,10 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal BudgetedParserList<SvgViewportFrame> Viewports { get; }
 
-    /// <summary>Outer viewport clips apply after filter evaluation; inner source viewports retain their own clips.</summary>
-    internal int FilterViewportDepth { get; set; } = -1;
+    /// <summary>Outer viewport clips apply when restoring an isolated group; inner source viewports retain their own clips.</summary>
+    internal int IsolatedViewportDepth { get; set; } = -1;
     internal SvgViewportFrame? EffectiveFrame => DefinitionReplayScene is not null || Viewports.Count == 0 ? null
-        : Viewports[^1].Depth < FilterViewportDepth ? Viewports[^1] with { Clip = SvgClipBox.Unbounded } : Viewports[^1];
+        : Viewports[^1].Depth < IsolatedViewportDepth ? Viewports[^1] with { Clip = SvgClipBox.Unbounded } : Viewports[^1];
 
     internal BudgetedParserList<CssRule> StyleRules { get; }
     /// <summary>Borrows the parser-owned pattern selection until traversal finishes.</summary>
@@ -503,8 +503,8 @@ internal readonly record struct SvgGroupScope(int Depth, SvgGroupKind Kind, SvgI
     /// <summary>Retains an authored mask group's layer boundary before its deferred resource resolves; opacity inheritance stays independent.</summary>
     internal bool HasDeferredMask { get; init; }
     internal bool HasFilter { get; init; }
-    internal bool HasFilterViewportScope { get; init; }
-    internal int PreviousFilterViewportDepth { get; init; }
+    internal bool HasIsolatedViewportScope { get; init; }
+    internal int PreviousIsolatedViewportDepth { get; init; }
     internal SvgRecordingScope RecordingScope { get; init; }
     internal string? ClipRule { get; init; }
     /// <summary>Retains this container's computed local clip reference for explicitly inherited child declarations.</summary>

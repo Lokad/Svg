@@ -202,9 +202,14 @@ internal static class SvgDocumentTraversal
                     SvgRenderedGroupSourceParser.BeginGroup(reader, root, state, limits, namedColors, workCounter, cancellationToken);
                     if (!reader.IsEmptyElement || parsedGroup.Scope.HasFilter)
                     {
-                        SvgViewportFrame? filterParent = parsedGroup.Scope.HasFilter ? state.EffectiveFrame : null;
-                        bool filterViewport = filterParent is { HasAffineClipScope: false } viewportParent && viewportParent.Clip != SvgClipBox.Unbounded;
-                        state.Groups.Add(parsedGroup.Scope with { HasFilterViewportScope = filterViewport, PreviousFilterViewportDepth = state.FilterViewportDepth, FilterGeometryStart = state.Scene.GeometryCount });
+                        bool isolates = parsedGroup.Scope.IsolatesOpacity || parsedGroup.Scope.HasDeferredMask || parsedGroup.Scope.HasFilter;
+                        SvgViewportFrame? isolationParent = isolates ? state.EffectiveFrame : null;
+                        bool isolatedViewport = isolationParent is { HasAffineClipScope: false } viewportParent && viewportParent.Clip != SvgClipBox.Unbounded;
+                        state.Groups.Add(parsedGroup.Scope with { HasIsolatedViewportScope = isolatedViewport, PreviousIsolatedViewportDepth = state.IsolatedViewportDepth, FilterGeometryStart = state.Scene.GeometryCount });
+                        // The inherited clip surrounds the isolated surface. Clear it
+                        // before binding an own clip so that children keep only their
+                        // local clipping, without losing the scalar viewport map.
+                        if (isolates) state.IsolatedViewportDepth = reader.Depth;
                         string? groupId = reader.GetAttribute("id");
                         SvgGroupSnapshotStart snapshot = new(groupId is null ? null : state.Strings.Copy(groupId), SvgLocalUrl.ReadReference(reader, "clip-path") is not null, SvgLocalUrl.ReadReference(reader, "mask") is not null);
                         if (parsedGroup.Scope.Kind == SvgGroupKind.Switch) state.Switches.Add(new SwitchScope(reader.Depth, false));
@@ -230,9 +235,16 @@ internal static class SvgDocumentTraversal
                         }
                         if (parsedGroup.Scope.Kind == SvgGroupKind.Group) state.GroupDepth++;
                         if (parsedGroup.Scope.HasFilter) state.FilterGroupDepth++;
-                        if (filterViewport && filterParent is {} clippedParent)
+                        if (isolatedViewport && isolationParent is {} clippedParent)
+                        {
                             state.Scene.InsertCommands(state.Scene.CommandCount,
                                 [new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, clippedParent.Clip, -1, 255) { RegionKind = SvgLayerRegionKind.Viewport }]);
+                            if (snapshot.PendingClip is {} clipIndex)
+                            {
+                                PendingGroupClip pending = state.PendingGroupClips[clipIndex];
+                                state.PendingGroupClips[clipIndex] = pending with { FirstCommandIndex = pending.FirstCommandIndex + 1 };
+                            }
+                        }
                         if (parsedGroup.DeferredMask is not null)
                         {
                             snapshot = snapshot with { PendingMask = state.PendingGroupMasks.Count };
@@ -245,7 +257,7 @@ internal static class SvgDocumentTraversal
                             {
                                 if (parsedGroup.Scope.HasDeferredMask)
                                     state.Scene.BeginSourceOpacityScope(SvgPaintOpacity.Opaque, parsedGroup.Scope.RecordingScope);
-                                SvgAffineTransform filterMap = SvgViewportFrame.MapGeometry(parsedGroup.Scope.InheritedPresentation.Transform, filterParent);
+                                SvgAffineTransform filterMap = SvgViewportFrame.MapGeometry(parsedGroup.Scope.InheritedPresentation.Transform, isolationParent);
                                 int binding = state.Scene.Filters.AddBinding(filterId, default, default,
                                     filterMap, parsedGroup.LengthBases, true, groupClipId);
                                 int position = state.Scene.CommandCount - 1;
@@ -255,7 +267,6 @@ internal static class SvgDocumentTraversal
                                         ? parsedGroup.RecordingScope.Value : state.Scene.CommandAt(position).GeometryIndex });
                             }
                         }
-                        if (parsedGroup.Scope.HasFilter) state.FilterViewportDepth = reader.Depth;
                         state.GroupSnapshotStarts.Add(snapshot);
                     }
                 }
@@ -477,15 +488,10 @@ internal static class SvgDocumentTraversal
                         if (state.Scene.GeometryCount == group.FilterGeometryStart)
                             state.Scene.AddGeometry(SvgPaintRecording.CreateEffectAnchor(state.Scene, state, group.RecordingScope));
                         state.FilterGroupDepth--;
-                        state.FilterViewportDepth = group.PreviousFilterViewportDepth;
                     }
+                    if (group.IsolatesOpacity || group.HasDeferredMask || group.HasFilter)
+                        state.IsolatedViewportDepth = group.PreviousIsolatedViewportDepth;
                     if (group.HasFilter && group.HasDeferredMask) state.Scene.EndOpacityScope();
-                    if (snapshotStart.PendingClip is {} pendingGroupIndex)
-                    {
-                        workCounter.Consume(cancellationToken);
-                        PendingGroupClip pendingGroup = state.PendingGroupClips[pendingGroupIndex];
-                        state.PendingGroupClips[pendingGroupIndex] = pendingGroup with { EndCommandIndex = state.Scene.CommandCount };
-                    }
                     if (snapshotStart.PendingMask is {} pendingMaskIndex)
                     {
                         workCounter.Consume(cancellationToken);
@@ -496,7 +502,13 @@ internal static class SvgDocumentTraversal
                     {
                         state.Scene.EndOpacityScope();
                     }
-                    if (group.HasFilterViewportScope) state.Scene.EndOpacityScope();
+                    if (snapshotStart.PendingClip is {} pendingGroupIndex)
+                    {
+                        workCounter.Consume(cancellationToken);
+                        PendingGroupClip pendingGroup = state.PendingGroupClips[pendingGroupIndex];
+                        state.PendingGroupClips[pendingGroupIndex] = pendingGroup with { EndCommandIndex = state.Scene.CommandCount };
+                    }
+                    if (group.HasIsolatedViewportScope) state.Scene.EndOpacityScope();
                 }
                 if (reader.Depth == rootDepth)
                 {
