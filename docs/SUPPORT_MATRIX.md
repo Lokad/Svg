@@ -216,6 +216,12 @@ strokes/decorations and subsequent text keep their font dependencies. See the
 Local instances resolve paint resources independently of source/use/resource
 declaration order, including paints inherited from the consuming container. See
 the [ordering regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.InstancePaintOrder.cs).
+Pattern fills/strokes authored on zero-sized rectangles, circles or ellipses and
+empty paths do not activate tile fonts; live consumers of the same paint still do.
+See the [empty-target tests](../tests/Lokad.Svg.Tests/OpenTypeFontTests.EmptyPatternTargets.cs).
+Whitespace-only path data draws nothing, retaining authored input/work limits.
+Empty contours remain empty through instance placement; see the
+[mapping regressions](../tests/Lokad.Svg.Tests/SvgEmptyContourMappingTests.cs).
 
 Current restrictions:
 

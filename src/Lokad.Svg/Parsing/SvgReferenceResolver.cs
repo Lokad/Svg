@@ -490,13 +490,23 @@ internal static class SvgReferenceResolver
         return reference.HasInverseStrokePose ? parent.Compose(placement) : parent.ComposeChecked(placement);
     }
 
+    /// <summary>Reserves mapped point/curve scratch before allocation; an empty contour owns no scratch.</summary>
+    private static RenderBudget.BudgetReservation? ReserveMappedContour(RenderBudget budget,
+        ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<SvgQuadSpan> quadratics, ReadOnlySpan<SvgCubicSpan> cubics)
+    {
+        long bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length)
+            + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(quadratics.Length)
+            + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(cubics.Length));
+        return bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Geometry);
+    }
+
     private static SvgGeometry ApplyPolygon(SvgGeometry source, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         SvgPolygonFill polygon = source.Polygon;
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = reference.Transform;
-        using RenderBudget.BudgetReservation? mappedReservation = polygon.Points.Length == 0 ? null : state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(polygon.Points.Length) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(polygon.QuadSpans.Length) + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(polygon.CubicSpans.Length), SvgMemoryCategory.Geometry);
-        SvgDevicePoint[] mapped = new SvgDevicePoint[polygon.Points.Length];
+        using RenderBudget.BudgetReservation? mappedReservation = ReserveMappedContour(state.Budget, polygon.Points, polygon.QuadSpans, polygon.CubicSpans);
+        SvgDevicePoint[] mapped = polygon.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[polygon.Points.Length];
         for (int index = 0; index < mapped.Length; index++)
         {
             workCounter.Consume(cancellationToken);
@@ -546,7 +556,7 @@ internal static class SvgReferenceResolver
     {
         ArgumentNullException.ThrowIfNull(spans);
         ArgumentNullException.ThrowIfNull(workCounter);
-        SvgQuadSpan[] mapped = new SvgQuadSpan[spans.Length];
+        SvgQuadSpan[] mapped = spans.Length == 0 ? Array.Empty<SvgQuadSpan>() : new SvgQuadSpan[spans.Length];
         for (int index = 0; index < mapped.Length; index++)
         {
             workCounter.Consume(cancellationToken);
@@ -570,7 +580,7 @@ internal static class SvgReferenceResolver
     {
         ArgumentNullException.ThrowIfNull(spans);
         ArgumentNullException.ThrowIfNull(workCounter);
-        SvgCubicSpan[] mapped = new SvgCubicSpan[spans.Length];
+        SvgCubicSpan[] mapped = spans.Length == 0 ? Array.Empty<SvgCubicSpan>() : new SvgCubicSpan[spans.Length];
         for (int index = 0; index < mapped.Length; index++)
         {
             workCounter.Consume(cancellationToken);
@@ -599,8 +609,8 @@ internal static class SvgReferenceResolver
         SvgGradientPolygon outline = source.GradientPolygon;
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = reference.Transform;
-        using RenderBudget.BudgetReservation? mappedReservation = outline.Points.Length == 0 ? null : state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(outline.QuadSpans.Length) + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(outline.CubicSpans.Length), SvgMemoryCategory.Geometry);
-        SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
+        using RenderBudget.BudgetReservation? mappedReservation = ReserveMappedContour(state.Budget, outline.Points, outline.QuadSpans, outline.CubicSpans);
+        SvgDevicePoint[] mapped = outline.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[outline.Points.Length];
         for (int index = 0; index < mapped.Length; index++)
         {
             workCounter.Consume(cancellationToken);
@@ -652,8 +662,8 @@ internal static class SvgReferenceResolver
         SvgRadialPolygon outline = source.RadialPolygon;
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = reference.Transform;
-        using RenderBudget.BudgetReservation? mappedReservation = outline.Points.Length == 0 ? null : state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(outline.QuadSpans.Length) + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(outline.CubicSpans.Length), SvgMemoryCategory.Geometry);
-        SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
+        using RenderBudget.BudgetReservation? mappedReservation = ReserveMappedContour(state.Budget, outline.Points, outline.QuadSpans, outline.CubicSpans);
+        SvgDevicePoint[] mapped = outline.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[outline.Points.Length];
         for (int index = 0; index < mapped.Length; index++)
         {
             workCounter.Consume(cancellationToken);
@@ -710,8 +720,8 @@ internal static class SvgReferenceResolver
         SvgPatternPolygon outline = source.PatternPolygon;
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = reference.Transform;
-        using RenderBudget.BudgetReservation? mappedReservation = outline.Points.Length == 0 ? null : state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(outline.QuadSpans.Length) + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(outline.CubicSpans.Length), SvgMemoryCategory.Geometry);
-        SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
+        using RenderBudget.BudgetReservation? mappedReservation = ReserveMappedContour(state.Budget, outline.Points, outline.QuadSpans, outline.CubicSpans);
+        SvgDevicePoint[] mapped = outline.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[outline.Points.Length];
         for (int index = 0; index < mapped.Length; index++)
         {
             workCounter.Consume(cancellationToken);
@@ -853,8 +863,8 @@ internal static class SvgReferenceResolver
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
             RequireAdmittedSymbolPolygonScale(geometry, scaleX, scaleY, workCounter, cancellationToken);
             RequireAdmittedSymbolMagnification(geometry, source.Mapping, scaleX, instance);
-            using RenderBudget.BudgetReservation mappedReservation = document.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Points.Length), SvgMemoryCategory.Geometry);
-            SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];
+            using RenderBudget.BudgetReservation? mappedReservation = ReserveMappedContour(document.Budget, source.Points, source.QuadSpans, source.CubicSpans);
+            SvgDevicePoint[] mapped = source.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[source.Points.Length];
             for (int index = 0; index < mapped.Length; index++)
             {
                 workCounter.Consume(cancellationToken);
@@ -897,7 +907,7 @@ internal static class SvgReferenceResolver
 
         static SvgQuadSpan[] MapSymbolQuadSpans(SvgQuadSpan[] spans, double scaleX, double scaleY, double offsetX, double offsetY, SvgUseReference instance, SvgViewportFrame? viewportFrame, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
-            SvgQuadSpan[] mapped = new SvgQuadSpan[spans.Length];
+            SvgQuadSpan[] mapped = spans.Length == 0 ? Array.Empty<SvgQuadSpan>() : new SvgQuadSpan[spans.Length];
             for (int index = 0; index < mapped.Length; index++)
             {
                 workCounter.Consume(cancellationToken);
@@ -910,7 +920,7 @@ internal static class SvgReferenceResolver
 
         static SvgCubicSpan[] MapSymbolCubicSpans(SvgCubicSpan[] spans, double scaleX, double scaleY, double offsetX, double offsetY, SvgUseReference instance, SvgViewportFrame? viewportFrame, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
-            SvgCubicSpan[] mapped = new SvgCubicSpan[spans.Length];
+            SvgCubicSpan[] mapped = spans.Length == 0 ? Array.Empty<SvgCubicSpan>() : new SvgCubicSpan[spans.Length];
             for (int index = 0; index < mapped.Length; index++)
             {
                 workCounter.Consume(cancellationToken);
@@ -1370,8 +1380,8 @@ internal static class SvgReferenceResolver
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
             RequireAdmittedSymbolPolygonScale(geometry, scaleX, scaleY, workCounter, cancellationToken);
             RequireAdmittedSymbolMagnification(geometry, source.Mapping, scaleX, instance);
-            using RenderBudget.BudgetReservation mappedReservation = document.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Points.Length), SvgMemoryCategory.Geometry);
-            SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];
+            using RenderBudget.BudgetReservation? mappedReservation = ReserveMappedContour(document.Budget, source.Points, source.QuadSpans, source.CubicSpans);
+            SvgDevicePoint[] mapped = source.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[source.Points.Length];
             for (int index = 0; index < mapped.Length; index++)
             {
                 workCounter.Consume(cancellationToken);
@@ -1474,8 +1484,8 @@ internal static class SvgReferenceResolver
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
             RequireAdmittedSymbolPolygonScale(geometry, scaleX, scaleY, workCounter, cancellationToken);
             RequireAdmittedSymbolMagnification(geometry, source.Mapping, scaleX, instance);
-            using RenderBudget.BudgetReservation mappedReservation = document.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Points.Length), SvgMemoryCategory.Geometry);
-            SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];
+            using RenderBudget.BudgetReservation? mappedReservation = ReserveMappedContour(document.Budget, source.Points, source.QuadSpans, source.CubicSpans);
+            SvgDevicePoint[] mapped = source.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[source.Points.Length];
             for (int index = 0; index < mapped.Length; index++)
             {
                 workCounter.Consume(cancellationToken);
@@ -1529,8 +1539,8 @@ internal static class SvgReferenceResolver
             RequireAdmittedSymbolPolygonScale(geometry, scaleX, scaleY, workCounter, cancellationToken);
             RequireAdmittedSymbolMagnification(geometry, source.Mapping, scaleX, instance);
             if (viewportFrame is not null && viewportFrame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
-            using RenderBudget.BudgetReservation mappedReservation = document.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Points.Length), SvgMemoryCategory.Geometry);
-            SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];
+            using RenderBudget.BudgetReservation? mappedReservation = ReserveMappedContour(document.Budget, source.Points, source.QuadSpans, source.CubicSpans);
+            SvgDevicePoint[] mapped = source.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[source.Points.Length];
             for (int index = 0; index < mapped.Length; index++)
             {
                 workCounter.Consume(cancellationToken);

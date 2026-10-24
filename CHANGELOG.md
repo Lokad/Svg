@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Skip pattern tile fonts for declared empty primitives and paths. Preserve empty
+  symbol contours and whitespace-only paths through replay, accounting for mapped
+  point and curve scratch storage before allocation.
 - Resolve local instance fills and strokes when their paint resource is declared
   later, including paints authored on the source, use or enclosing container.
 - Skip fonts and glyph construction for text with unavailable paint resources,

@@ -220,7 +220,9 @@ internal sealed class SvgPaintResourceSelection : IDisposable
             }
             void ObservePaint(string? value)
             {
-                if (value is not null && SvgLocalUrl.TryParseId(value, out string id) && !references.TryGetValue(id, out _))
+                // Declared empty geometry cannot sample its own paint, including through an instance.
+                if (value is not null && SvgLocalUrl.TryParseId(value, out string id) && !references.TryGetValue(id, out _)
+                    && (!SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName) || SvgMaskSyntax.HasPaintableTarget(reader, true, null)))
                     references.TryAdd(strings.Copy(id), true);
             }
         }

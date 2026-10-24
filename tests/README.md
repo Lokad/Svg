@@ -24,6 +24,13 @@ The [browser reference tests](Lokad.Svg.VisualTests/SvgInstancePaintOrderReferen
 check each order against its own committed image; capture hashes are retained
 with the [font-free inputs](Research/forward-instance-paints/capture.json).
 
+[Empty contour tests](Lokad.Svg.Tests/SvgEmptyContourMappingTests.cs) exercise
+solid/gradient/pattern instances and curve scratch ownership. The
+[empty-target cases](Lokad.Svg.Tests/OpenTypeFontTests.EmptyPatternTargets.cs) cover
+tile-font selection; [browser checks](Lokad.Svg.VisualTests/SvgEmptyContourReferenceTests.cs)
+retain independently captured inputs and hashes in
+[their evidence record](Research/empty-contour-sources/capture.json).
+
 [Display inheritance tests](Lokad.Svg.Tests/SvgDisplayInheritanceTests.cs) cover
 logical parents, retained instances, viewports and resource children across
 attributes, inline styles and stylesheets. The
