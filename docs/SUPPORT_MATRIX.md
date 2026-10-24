@@ -170,8 +170,6 @@ Root and direct nested viewports support omitted/hidden overflow. Nested SVGs
 reject inline `style` attributes; stylesheets can supply supported declarations.
 Symbols reject the XML `overflow` attribute but accept CSS `overflow:hidden`.
 Nested SVGs inside retained symbol/pattern content are unsupported.
-For a referenced leaf's authored paint server, define the server before the live
-`use`; the leaf declaration itself may precede the server.
 Named shader sources copied outside hidden ancestors inherit visibility from
 their instance; their own visibility declarations still apply. See the
 [source replay tests](../tests/Lokad.Svg.Tests/SvgSourceVisibilityTests.cs).
