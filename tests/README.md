@@ -84,6 +84,10 @@ and inner clip placements, including naturally different outputs.
 The [containment cases](Lokad.Svg.Tests/SvgContainedClipIsolationTests.cs)
 retain native mask/shader grids through direct and referenced paints, placement
 and output scaling, with [independent references](Research/contained-mask-clips/capture.json).
+The [own-clip cases](Lokad.Svg.Tests/SvgOwnClipIsolationTests.cs) cover the owner's
+opacity boundary, both reference orders, native pixels for large axis extents and
+linear sibling work. Their [browser checks](Lokad.Svg.VisualTests/SvgOwnClipReferenceTests.cs)
+use [separate images](Research/own-clip-isolation/capture.json), including masks and instances.
 
 [Display inheritance tests](Lokad.Svg.Tests/SvgDisplayInheritanceTests.cs) cover
 logical parents, retained instances, viewports and resource children across

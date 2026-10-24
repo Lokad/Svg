@@ -58,6 +58,8 @@ public sealed class SvgInheritedClipIsolationTests
     [InlineData(true, "opacity")]
     [InlineData(false, "own-clip")]
     [InlineData(true, "own-clip")]
+    [InlineData(false, "own-clip-mask")]
+    [InlineData(true, "own-clip-mask")]
     [InlineData(false, "mask")]
     [InlineData(true, "mask")]
     [InlineData(false, "filter")]
@@ -68,6 +70,7 @@ public sealed class SvgInheritedClipIsolationTests
         string attributes = effect switch
         {
             "own-clip" => " clip-path='url(#inner)'",
+            "own-clip-mask" => " clip-path='url(#inner)' mask='url(#m)'",
             "mask" => " mask='url(#m)'",
             "filter" => " filter='url(#f)'",
             _ => ""

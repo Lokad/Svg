@@ -216,7 +216,9 @@ internal static class SvgDocumentTraversal
                         string? groupClipId = parsedGroup.Scope.ClipPathId;
                         if (groupClipId is not null && !parsedGroup.Scope.HasFilter)
                         {
-                            if (state.Clips.TryGetValue(groupClipId, out SvgClipBox clipBox) && parsedGroup.Scope.InheritedPresentation.Transform.IsAxisAligned)
+                            // A partial-opacity owner's clip surrounds its isolated
+                            // surface. Bind that boundary with the pending scope.
+                            if (parsedGroup.SourceOpacity.Value is 0 or 1 && state.Clips.TryGetValue(groupClipId, out SvgClipBox clipBox) && parsedGroup.Scope.InheritedPresentation.Transform.IsAxisAligned)
                             {
                                 SvgViewportFrame? clipParent = state.EffectiveFrame;
                                 SvgClipBox clip = SvgClipPathSyntax.MapGroupClip(clipBox, parsedGroup.Scope.InheritedPresentation.Transform, clipParent, workCounter, cancellationToken);

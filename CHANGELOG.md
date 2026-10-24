@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Keep a group's own rectangular clip outside its partial-opacity layer in both
+  reference orders. Preserve bounded output work for large transformed axis clips.
 - Apply inherited viewport clips when restoring isolated opacity groups, keeping
   local child clips and scalar maps. Preserve forward rectangular clip ordering
   and rebuild sibling command scopes once per scene.

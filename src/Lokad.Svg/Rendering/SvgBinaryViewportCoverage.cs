@@ -9,6 +9,9 @@ namespace Lokad.Svg.Rendering;
 /// compound contours reserve bounded scratch arrays. Bitmap and edge traversal charge work and cancellation.</remarks>
 internal static class SvgBinaryViewportCoverage
 {
+    /// <summary>Largest absolute bitmap coordinate accepted by native 26.6 edge conversion.</summary>
+    internal const double MaximumCoordinate = int.MaxValue / 64d;
+
     private readonly record struct Edge(long X, long Step, int First, int Last, int Winding);
 
     internal static long Rasterize(SvgAuthoredPath source, SvgAffineTransform outputMap, SvgCpuRasterGrid grid,
@@ -111,7 +114,7 @@ internal static class SvgBinaryViewportCoverage
         }
         static long Dot6(double value)
         {
-            if (Math.Abs(value) > int.MaxValue / 64d) throw new SvgException(SvgErrorCode.LimitExceeded, "Binary viewport coordinates exceed the native fixed range.");
+            if (Math.Abs(value) > MaximumCoordinate) throw new SvgException(SvgErrorCode.LimitExceeded, "Binary viewport coordinates exceed the native fixed range.");
             return (long)((float)value * 64f);
         }
     }

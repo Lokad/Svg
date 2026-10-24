@@ -116,12 +116,15 @@ solid strokes while retaining shader sampling and blend arithmetic. The
 [material regressions](../tests/Lokad.Svg.Tests/SvgShaderHairlineTests.cs) and
 [browser references](../tests/Research/shader-hairlines/capture.json) cover
 alpha conversion, curves, instances, masks and CPU bitmap seams.
-Inherited rectangular clips surround isolated opacity groups; inner clips
-retain their separate child-paint ordering. Forward rectangular clips preserve
+Inherited and own rectangular clips surround isolated opacity groups; inner
+clips retain their separate child-paint ordering. Forward rectangular clips preserve
 partial-opacity layers through a bounded command rebuild. The
 [composition regressions](../tests/Lokad.Svg.Tests/SvgInheritedClipIsolationTests.cs)
 and [native images](../tests/Research/inherited-clip-isolation/capture.json)
 cover overlapping fills/strokes, own clips, instances and masks.
+The [own-clip cases](../tests/Lokad.Svg.Tests/SvgOwnClipIsolationTests.cs) and
+[native images](../tests/Research/own-clip-isolation/capture.json) cover definition
+order, partial opacity and large finite axis bounds without increasing output limits.
 Clips containing the complete destination preserve the existing bitmap and
 child-mask shader origins; see the [regressions](../tests/Lokad.Svg.Tests/SvgContainedClipIsolationTests.cs)
 and [native images](../tests/Research/contained-mask-clips/capture.json).
