@@ -138,6 +138,9 @@ Symbols reject the XML `overflow` attribute but accept CSS `overflow:hidden`.
 Nested SVGs inside retained symbol/pattern content are unsupported.
 For a referenced leaf's authored paint server, define the server before the live
 `use`; the leaf declaration itself may precede the server.
+Named shader sources copied outside hidden ancestors inherit visibility from
+their instance; their own visibility declarations still apply. See the
+[source replay tests](../tests/Lokad.Svg.Tests/SvgSourceVisibilityTests.cs).
 An omitted or empty href leaves a use element without source geometry; an empty
 href takes precedence over xlink:href. Its own filter can still generate output
 over transparent input. Placement lengths and actual child content retain the
@@ -222,6 +225,10 @@ See the [empty-target tests](../tests/Lokad.Svg.Tests/OpenTypeFontTests.EmptyPat
 A primitive's explicitly zero fill/stroke opacity or stroke width also leaves
 that pattern channel inactive. Live sibling channels and inherited overrides
 retain their fonts; see the [channel tests](../tests/Lokad.Svg.Tests/OpenTypeFontTests.InactivePatternChannels.cs).
+A primitive's own zero opacity, hidden display or hidden visibility also leaves
+its pattern paints inactive. Fill-only lines and linear contours with at most
+two vertices need no tile fonts; strokes and potentially filled contours remain
+independent. See the [primitive tests](../tests/Lokad.Svg.Tests/OpenTypeFontTests.InactivePatternPrimitives.cs).
 Whitespace-only path data draws nothing, retaining authored input/work limits.
 Empty contours remain empty through instance placement; see the
 [mapping regressions](../tests/Lokad.Svg.Tests/SvgEmptyContourMappingTests.cs).

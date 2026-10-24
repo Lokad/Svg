@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Skip pattern fonts for intrinsically hidden primitives and fill-only lines or
+  two-vertex contours; preserve stroke, filter and mask dependencies and bounded parsing.
+- Reconstruct named shader sources hidden by an ancestor when a visible instance
+  uses them, preserving the source's own visibility declarations.
 - Skip pattern tile fonts for primitive channels with explicitly zero fill/stroke
   opacity or stroke width, preserving live paints and instance inheritance.
 - Preserve mask paint clips through fractional instance placement and move

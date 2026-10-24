@@ -108,8 +108,10 @@ internal static class SvgDefinitionParser
             bool IsPercentage(string attribute)
                 => reader.GetAttribute(attribute) is {} value && value.AsSpan().Trim().EndsWith("%", StringComparison.Ordinal);
             // Dormant geometry does not paint. Keep its source when an inherited or
-            // authored server is not available yet; live consumers construct it later.
-            bool deferredSource = !context.InheritedPresentation.IsDisplayed || deferredOval || MissingPaint(retainedStyle.Fill ?? context.InheritedPresentation.PaintServerFill)
+            // authored server is unavailable, or ancestor visibility suppressed its paint.
+            // Live consumers construct it with their own inherited visibility.
+            bool deferredSource = !context.InheritedPresentation.IsDisplayed || !context.InheritedPresentation.IsVisible
+                || deferredOval || MissingPaint(retainedStyle.Fill ?? context.InheritedPresentation.PaintServerFill)
                 || MissingPaint(retainedStyle.Stroke ?? context.InheritedStroke.Stroke);
             bool MissingPaint(string? value)
             {

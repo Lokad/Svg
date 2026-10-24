@@ -49,6 +49,11 @@ retain independently captured inputs and hashes in
 The [inactive-channel cases](Lokad.Svg.Tests/OpenTypeFontTests.InactivePatternChannels.cs)
 cover zero fill/stroke opacity and stroke width, CSS precedence, instances,
 masks/filters and independent live channels.
+The [primitive cases](Lokad.Svg.Tests/OpenTypeFontTests.InactivePatternPrimitives.cs)
+also cover intrinsic visibility, fill-area eligibility, inherited activity and
+scratch ownership. [Source visibility tests](Lokad.Svg.Tests/SvgSourceVisibilityTests.cs)
+cover cached shader replay; [browser checks](Lokad.Svg.VisualTests/SvgSourceVisibilityReferenceTests.cs)
+use each input's own [captured image](Research/source-visibility/capture.json).
 
 [Display inheritance tests](Lokad.Svg.Tests/SvgDisplayInheritanceTests.cs) cover
 logical parents, retained instances, viewports and resource children across

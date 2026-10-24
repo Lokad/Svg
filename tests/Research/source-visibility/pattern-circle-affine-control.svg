@@ -1,0 +1,1 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs><defs><circle cx='14' cy='14' r='12' id='source' fill='url(#p)' visibility='inherit'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>

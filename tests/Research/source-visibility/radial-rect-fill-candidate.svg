@@ -1,0 +1,1 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='inherit'/></g><use href='#source'/></svg>

@@ -227,11 +227,47 @@ internal sealed class SvgPaintResourceSelection : IDisposable
                 {
                     // A primitive's own channel declarations survive instance inheritance.
                     // Container paint stays conservative because children can override opacity or width.
-                    if (SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName)
-                        && (SvgColorParser.ParsePaintOpacity(stroke ? paint.StrokeOpacity : paint.FillOpacity).Value == 0
-                            || stroke && SvgStrokeStyleSyntax.IsZeroStrokeWidth(paint.Width))) return;
+                    if (SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName))
+                    {
+                        if (paint.GetSourceDisplay() == SvgDisplay.None
+                            || !paint.InheritsOpacity && paint.GetOpacity().Value == 0
+                            || !SvgPresentationResolver.ParseVisibility(paint.Visibility, true)
+                            || SvgColorParser.ParsePaintOpacity(stroke ? paint.StrokeOpacity : paint.FillOpacity).Value == 0
+                            || stroke && SvgStrokeStyleSyntax.IsZeroStrokeWidth(paint.Width)
+                            || !stroke && !HasFillArea()) return;
+                    }
                     references.TryAdd(strings.Copy(id), true);
                 }
+            }
+            bool HasFillArea()
+            {
+                if (reader.LocalName == "line") return false;
+                if (reader.LocalName is "polygon" or "polyline")
+                {
+                    using BudgetedParserList<SvgFractionalPoint> points = SvgOrthogonalGeometryTokenizer.ParseFractionalPointList(
+                        reader.GetAttribute("points") ?? string.Empty, reader.LocalName, limits.MaximumPathCommands, budget, work, token, 0);
+                    return points.Count >= 3;
+                }
+                if (reader.LocalName != "path") return true;
+                using SvgRenderablePathData data = SvgRenderablePathData.Read(reader.GetAttribute("d"), limits.MaximumPathCommands, budget, work, token);
+                using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Parser, work, token);
+                SvgPathDataParser.ParseCommands(data.Value, limits.MaximumPathCommands, work, token, commands);
+                int vertices = 0;
+                foreach (SvgAuthoredPathCommand command in commands.AsSpan())
+                {
+                    work.Consume(token);
+                    switch (command.Verb)
+                    {
+                        case SvgAuthoredPathVerb.Move: vertices = 1; break;
+                        case SvgAuthoredPathVerb.Line: if (++vertices >= 3) return true; break;
+                        case SvgAuthoredPathVerb.End: vertices = 0; break;
+                        case SvgAuthoredPathVerb.Close: vertices = 1; break;
+                        default: return true;
+                    }
+                }
+                // A contour with at most two vertices has no fill under any affine map.
+                // More complex contours stay conservative; strokes use their own geometry.
+                return false;
             }
         }
         catch { result.Dispose(); throw; }
