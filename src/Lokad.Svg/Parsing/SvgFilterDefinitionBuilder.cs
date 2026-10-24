@@ -9,6 +9,8 @@ namespace Lokad.Svg.Parsing;
 /// definitions are retained as admission failures, raised only when a live binding references them.</remarks>
 internal sealed class SvgFilterDefinitionBuilder : IDisposable
 {
+    /// <summary>Captures definition availability before the resource's child graph is collected.</summary>
+    internal bool IsAvailable { get; set; } = true;
     private readonly record struct ResultName(string? Value);
     private readonly RenderBudget.BudgetReservation _owner;
     private readonly BudgetedSceneList<SvgFilterPrimitive> _primitives;

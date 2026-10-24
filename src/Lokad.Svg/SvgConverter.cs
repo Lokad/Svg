@@ -389,6 +389,7 @@ public static partial class SvgConverter
 
         SvgPaintBounds FilterRegion(SvgFilterBinding binding, SvgFilterResource resource, ParserWorkCounter counter, SvgAffineTransform output)
         {
+            if (!resource.IsAvailable) return default;
             SvgFilterRegion region = resource.Region;
             SvgPaintBounds box = binding.ObjectBounds;
             bool objectUnits = region.Units == SvgFilterUnits.ObjectBoundingBox;
@@ -518,6 +519,7 @@ public static partial class SvgConverter
                 }
             }
             if (end == root.Commands.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Filter source scope is unbalanced.");
+            if (!resource.IsAvailable) return end + 1;
             if (frame?.FilterBinding is not {} placed || placed.Index != command.MaskContentIndex)
             {
                 ParserWorkCounter placementWork = new(options.Limits.MaximumWorkUnits - workUnits);

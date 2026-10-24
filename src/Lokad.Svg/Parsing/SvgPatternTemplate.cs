@@ -14,10 +14,11 @@ internal readonly record struct SvgPatternTemplate(double? X, double? Y, double?
     internal bool HasChildElements { get; init; }
 
     internal SvgPatternTemplate Inherit(SvgPatternTemplate parent)
-        => new(X ?? parent.X, Y ?? parent.Y, Width ?? parent.Width, Height ?? parent.Height,
+        // Hidden templates supply no inherited attributes; aliases can supply their own dimensions and content.
+        => !parent.IsDisplayed ? this with { Href = null } : new(X ?? parent.X, Y ?? parent.Y, Width ?? parent.Width, Height ?? parent.Height,
             Transform ?? parent.Transform, UserSpaceUnits ?? parent.UserSpaceUnits,
             UserSpaceContentUnits ?? parent.UserSpaceContentUnits, null, ViewBox ?? parent.ViewBox, AspectRatio ?? parent.AspectRatio)
-        { IsDisplayed = IsDisplayed && parent.IsDisplayed, HasChildElements = HasChildElements };
+        { IsDisplayed = IsDisplayed, HasChildElements = HasChildElements };
 
     internal SvgPatternTile Grid
     {

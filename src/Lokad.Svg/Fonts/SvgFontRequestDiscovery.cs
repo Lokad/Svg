@@ -223,11 +223,12 @@ internal static class SvgFontRequestDiscovery
                         continue;
                     }
                     if (!sterile && isSvgElement && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName) && (directChild || hasGroupAncestor || viewportSizes.Count > 0) && definitionsDepth < 0 && !reader.IsEmptyElement) definitionsDepth = reader.Depth;
+                    bool definitionResourcesDisplayed = definitionsDepth < 0 || reader.Depth != definitionsDepth + 1 || style.ElementDisplay != SvgDisplay.None;
                     bool symbolDefinition = !sterile && isSvgElement && reader.LocalName is ("symbol" or "marker")
                         && SvgStructuralVocabulary.IsSymbolDefinitionLocation(directChild, parentAllowsText && hasGroupAncestor, definitionsDepth, symbolDepth, reader.Depth);
                     if (symbolDefinition)
                     {
-                        if (reader.LocalName == "marker") ObserveMarkerDefinition(reader, style.Text);
+                        if (reader.LocalName == "marker") ObserveMarkerDefinition(reader, style.Text, definitionResourcesDisplayed);
                         else SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
                         if (!reader.IsEmptyElement) symbolDepth = reader.Depth;
                     }
@@ -291,12 +292,12 @@ internal static class SvgFontRequestDiscovery
                         if (reader.LocalName == "rect") SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
                         else if (reader.LocalName == "line") SvgElementAttributePolicy.ValidateLine(reader, workCounter, cancellationToken);
                         else if (reader.LocalName == "symbol") SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
-                        else if (reader.LocalName == "marker") ObserveMarkerDefinition(reader, style.Text);
+                        else if (reader.LocalName == "marker") ObserveMarkerDefinition(reader, style.Text, definitionResourcesDisplayed);
                     }
                     InlineStyle styleSheet = isSvgElement && reader.LocalName is ("svg" or "defs" or "g" or "a" or "switch" or "pattern" or "text" or "use" or "mask") ? SvgStyleSheet.Resolve(reader, styleRules, ancestors, workCounter, cancellationToken) : default;
                     if (!sterile && !insideDirectText && isSvgElement && reader.LocalName == "mask"
                         && (directChild || parentAllowsText && hasGroupAncestor || definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1))
-                        instanceFonts?.RegisterMask(reader, SourceContext(style), styleSheet,
+                        instanceFonts?.RegisterMask(reader, SourceContext(style), styleSheet, definitionResourcesDisplayed,
                             new(viewportSizes.Count == 0 ? rootWidth : viewportSizes[^1].Width, viewportSizes.Count == 0 ? rootHeight : viewportSizes[^1].Height));
                     SvgTextWhitespaceMode inheritedTextWhitespaceMode = style.Text.WhitespaceMode;
                     string? specifiedWhiteSpace = null;
@@ -487,14 +488,14 @@ internal static class SvgFontRequestDiscovery
                     { Markers = style.Markers, OwnOpacity = style.ElementOpacity, ElementDisplay = style.ElementDisplay, PaintServerFill = style.PaintServerFill, PaintOrder = style.PaintOrder },
                     style.Text, style.FillRule, style.ElementOpacity.Alpha, style.StrokeStyle with { Stroke = style.Stroke });
 
-            void ObserveMarkerDefinition(XmlReader marker, SvgInheritedTextStyle inherited)
+            void ObserveMarkerDefinition(XmlReader marker, SvgInheritedTextStyle inherited, bool definitionResourcesDisplayed)
             {
                 InlineStyle sheet = SvgStyleSheet.Resolve(marker, styleRules, ancestors, workCounter, cancellationToken);
                 SvgMarkerDefinition definition = SvgMarkerSyntax.Parse(marker,
                     SvgComputedStyleResolver.Resolve(marker, sheet, workCounter, cancellationToken, true),
                     new(viewportSizes.Count == 0 ? rootWidth : viewportSizes[^1].Width, viewportSizes.Count == 0 ? rootHeight : viewportSizes[^1].Height),
                     inherited, sheet, workCounter, cancellationToken);
-                if (definition.FontLengths is {} lengths && definition.Width != 0 && definition.Height != 0 && marker.GetAttribute("id") is {} id)
+                if (definitionResourcesDisplayed && definition.FontLengths is {} lengths && definition.Width != 0 && definition.Height != 0 && marker.GetAttribute("id") is {} id)
                     markerFonts.TryAdd(styleStrings.Copy(id), new(lengths));
             }
 

@@ -12,6 +12,8 @@ internal readonly record struct SvgMarkerDefinition(double Width, double Height,
     bool StrokeWidthUnits, SvgMarkerOrientation Orientation, double Angle)
 {
     internal bool ClipsViewport { get; init; } = true;
+    /// <summary>Retains definition availability before resource placement and font-relative coordinate resolution.</summary>
+    internal bool IsAvailable { get; init; } = true;
     internal SvgMarkerFontLengths? FontLengths { get; init; }
 }
 
@@ -283,7 +285,7 @@ internal static class SvgMarkerRenderer
                 string id = SvgGradientSyntax.ParsePaintId(value);
                 if (!state.Definitions.TryGetValue(id, out SvgDefinition source) || source.Marker is not {} marker)
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local marker references are implemented.");
-                if (marker.Width == 0 || marker.Height == 0 || marker.StrokeWidthUnits && width == 0
+                if (!marker.IsAvailable || marker.Width == 0 || marker.Height == 0 || marker.StrokeWidthUnits && width == 0
                     || !context.InheritedPresentation.IsDisplayed || style.GetDisplay() == SvgDisplay.None
                     || !SvgPresentationResolver.ParseVisibility(style.Visibility, context.InheritedPresentation.IsVisible)) return;
                 if (marker.FontLengths is {} lengths)

@@ -58,6 +58,8 @@ internal static class SvgDefinitionParser
         if ((inDefinitions || rootDefinition || groupNestedDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "filter")
         {
             state.FilterDefinition = SvgFilterDefinitionBuilder.Create(reader, state.Budget, workCounter, cancellationToken);
+            SvgComputedStyle filterStyle = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken).ResolveStyle(reader, true);
+            state.FilterDefinition.IsAvailable = state.DefinitionResourcesDisplayed && filterStyle.GetDisplay() != SvgDisplay.None;
             if (reader.IsEmptyElement) RegisterFilter(state);
             else state.FilterDepth = reader.Depth;
             return true;
@@ -107,7 +109,7 @@ internal static class SvgDefinitionParser
                 => reader.GetAttribute(attribute) is {} value && value.AsSpan().Trim().EndsWith("%", StringComparison.Ordinal);
             // Dormant geometry does not paint. Keep its source when an inherited or
             // authored server is not available yet; live consumers construct it later.
-            bool deferredSource = deferredOval || MissingPaint(retainedStyle.Fill ?? context.InheritedPresentation.PaintServerFill)
+            bool deferredSource = !context.InheritedPresentation.IsDisplayed || deferredOval || MissingPaint(retainedStyle.Fill ?? context.InheritedPresentation.PaintServerFill)
                 || MissingPaint(retainedStyle.Stroke ?? context.InheritedStroke.Stroke);
             bool MissingPaint(string? value)
             {
@@ -165,7 +167,7 @@ internal static class SvgDefinitionParser
             InlineStyle sheet = SvgDocumentStyleResolver.Resolve(reader, state, workCounter, cancellationToken);
             SvgPaintableElementContext markerContext = marker ? SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken) : default;
             SvgComputedStyle style = marker ? markerContext.ResolveStyle(reader, true) : SvgComputedStyleResolver.Resolve(reader, sheet, workCounter, cancellationToken, true).ResolveDisplay(SvgDisplay.Inline);
-            state.MarkerDefinition = marker ? SvgMarkerSyntax.Parse(reader, style, new(state.EffectiveFrame?.ViewportWidth ?? root.UserViewportWidth, state.EffectiveFrame?.ViewportHeight ?? root.UserViewportHeight), markerContext.InheritedTextStyle, markerContext.StyleSheet, workCounter, cancellationToken) : null;
+            state.MarkerDefinition = marker ? SvgMarkerSyntax.Parse(reader, style, new(state.EffectiveFrame?.ViewportWidth ?? root.UserViewportWidth, state.EffectiveFrame?.ViewportHeight ?? root.UserViewportHeight), markerContext.InheritedTextStyle, markerContext.StyleSheet, workCounter, cancellationToken) with { IsAvailable = state.DefinitionResourcesDisplayed } : null;
             SvgPaint inheritedPaint = marker ? markerContext.InheritedPresentation.Paint : SvgPaint.Default;
             // Pinned Chrome honors display on symbol instances, but ignores it on marker definitions.
             bool displayed = (style.GetDisplay() != SvgDisplay.None);
@@ -180,7 +182,7 @@ internal static class SvgDefinitionParser
             }
             SvgInheritedStrokeStyle stroke = new(CopyStyleValue(style.Linecap, state), CopyStyleValue(style.Linejoin, state), CopyStyleValue(style.Dasharray, state), CopyStyleValue(style.Dashoffset, state), CopyStyleValue(style.Width, state), CopyStyleValue(style.Miterlimit, state), CopyStyleValue(style.StrokeOpacity, state), CopyStyleValue(style.Stroke, state));
             SvgSymbolPresentation presentation = new(paint, stroke, CopyStyleValue(style.FillRule, state), marker || style.Fill is not null,
-                marker ? paint.FillOpacity : style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity), marker ? paint.CurrentColor : style.Color is null ? null : SvgColorParser.Parse(style.Color, namedColors), marker ? style.GetOpacity() : style.ResolveOpacity(SvgPaintOpacity.Opaque).GetOpacity()) { ElementDisplay = marker ? style.GetDisplay() : style.GetSourceDisplay(), IsHidden = !marker && !displayed, IsVisible = marker ? SvgPresentationResolver.ParseVisibility(style.Visibility, markerContext.InheritedPresentation.IsVisible) : style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true), InheritsOpacity = !marker && style.InheritsOpacity, Markers = new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, workCounter, cancellationToken), PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
+                marker ? paint.FillOpacity : style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity), marker ? paint.CurrentColor : style.Color is null ? null : SvgColorParser.Parse(style.Color, namedColors), marker ? style.GetOpacity() : style.ResolveOpacity(SvgPaintOpacity.Opaque).GetOpacity()) { ElementDisplay = marker ? style.GetDisplay() : style.GetSourceDisplay(), IsHidden = marker ? !state.DefinitionResourcesDisplayed : !displayed, IsVisible = marker ? SvgPresentationResolver.ParseVisibility(style.Visibility, markerContext.InheritedPresentation.IsVisible) : style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true), InheritsOpacity = !marker && style.InheritsOpacity, Markers = new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, workCounter, cancellationToken), PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
             if (!marker) presentation = presentation with
             {
                 TextStyleSource = SvgRetainedTextSource.CaptureElement(reader,
@@ -216,7 +218,7 @@ internal static class SvgDefinitionParser
             SvgPaintableElementContext clipParent = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
             SvgComputedStyle clipParentStyle = SvgComputedStyleResolver.Resolve(reader, clipParent.StyleSheet, workCounter, cancellationToken).ResolveDisplay(clipParent.InheritedPresentation.ElementDisplay);
             state.ClipElementDisplay = clipParentStyle.GetDisplay();
-            state.ClipIsDisplayed = state.ClipElementDisplay != SvgDisplay.None;
+            state.ClipIsDisplayed = state.DefinitionResourcesDisplayed && state.ClipElementDisplay != SvgDisplay.None;
             state.ClipIsEvenOdd = SvgClipPathSyntax.ParseClipRule((clipParentStyle.ClipRule ?? clipParent.InheritedClipRule ?? "nonzero").AsSpan());
             state.ClipIsVisible = SvgPresentationResolver.ParseVisibility(clipParentStyle.Visibility, clipParent.InheritedPresentation.IsVisible);
             if (reader.IsEmptyElement)
@@ -365,7 +367,7 @@ internal static class SvgDefinitionParser
                 ClipRule = style.ClipRule ?? maskContext.InheritedClipRule
             };
             state.MaskId = reader.GetAttribute("id");
-            state.MaskIsDisplayed = (style.GetDisplay() != SvgDisplay.None);
+            state.MaskIsDisplayed = state.DefinitionResourcesDisplayed && style.GetDisplay() != SvgDisplay.None;
             state.MaskIsAlpha = SvgMaskSyntax.ParseMaskType(reader.GetAttribute("mask-type"));
             state.MaskObjectBoundingBoxContent = reader.GetAttribute("maskContentUnits") switch
             {
@@ -488,8 +490,8 @@ internal static class SvgDefinitionParser
             }
             state.PatternScopeStart = state.PatternScopes?.Count ?? 0;
             state.PatternCommandStart = state.PendingCommandEnd;
-            // Definition ancestors do not suppress a resource; its own display still controls its content and aliases.
-            bool patternDisplayed = (style.GetDisplay() != SvgDisplay.None) && state.PatternContents?.IsDisplayed(state.PatternId) != false;
+            // A defs node can make the resource unavailable; rendered ancestors do not suppress its content.
+            bool patternDisplayed = state.DefinitionResourcesDisplayed && style.GetDisplay() != SvgDisplay.None && state.PatternContents?.IsDisplayed(state.PatternId) != false;
             state.PatternTemplate = state.PatternTemplate with { IsDisplayed = patternDisplayed };
             bool contentDisplayed = patternDisplayed && (state.PatternContents?.RequiresContent(state.PatternId) ?? true);
             state.Groups.Add(new(reader.Depth, SvgGroupKind.Pattern, inherited.Presentation with { Transform = SvgAffineTransform.Identity, IsDisplayed = contentDisplayed }, inherited.TextStyle, false, false, inherited.Stroke, inherited.FillRule)
@@ -667,7 +669,9 @@ internal static class SvgDefinitionParser
             SvgElementAttributePolicy.ValidateRadialGradient(reader, workCounter, cancellationToken);
             state.RadialGradientId = reader.GetAttribute("id");
             if (state.RadialGradientId is {} radialId) state.RadialGradientId = ClaimGradientId(state, radialId, workCounter, cancellationToken);
-            SvgRadialTemplate template = SvgGradientSyntax.ParseRadialVector(reader, workCounter, cancellationToken);
+            SvgComputedStyle gradientStyle = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken).ResolveStyle(reader, true);
+            SvgRadialTemplate template = SvgGradientSyntax.ParseRadialVector(reader, workCounter, cancellationToken)
+                with { IsAvailable = state.DefinitionResourcesDisplayed && gradientStyle.GetDisplay() != SvgDisplay.None };
             state.RadialGradient = template;
             if (!reader.IsEmptyElement) state.RadialGradientDepth = reader.Depth;
             else if (state.RadialGradientId is not null) RegisterRadialGradient(state, workCounter, cancellationToken);
@@ -679,7 +683,9 @@ internal static class SvgDefinitionParser
             SvgElementAttributePolicy.ValidateLinearGradient(reader, workCounter, cancellationToken);
             state.GradientId = reader.GetAttribute("id");
             if (state.GradientId is {} linearId) state.GradientId = ClaimGradientId(state, linearId, workCounter, cancellationToken);
-            SvgGradientTemplate template = SvgGradientSyntax.ParseLinearVector(reader, workCounter, cancellationToken);
+            SvgComputedStyle gradientStyle = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken).ResolveStyle(reader, true);
+            SvgGradientTemplate template = SvgGradientSyntax.ParseLinearVector(reader, workCounter, cancellationToken)
+                with { IsAvailable = state.DefinitionResourcesDisplayed && gradientStyle.GetDisplay() != SvgDisplay.None };
             state.Gradient = template;
             if (!reader.IsEmptyElement) state.GradientDepth = reader.Depth;
             else if (state.GradientId is not null) RegisterGradient(state, workCounter, cancellationToken);
@@ -1294,6 +1300,7 @@ internal static class SvgDefinitionParser
             };
         }
         (double x1, double y1, double x2, double y2, bool isUserSpace, SvgGradientSpread spread, double referenceScaleX, double referenceScaleY, bool hasLinearRotation) = ResolveGradientVector(template);
+        if (!template.IsAvailable) { isEmpty = true; start = default; end = default; stops = []; }
         SvgLinearGradient gradient = new(start, end, x1, y1, x2, y2, offset1, offset2, isEmpty, isUserSpace, spread, stops, referenceScaleX, referenceScaleY, hasLinearRotation)
         { SourcePaint = RetainSourcePaint(template, state, workCounter, cancellationToken) };
         string retainedId = state.GradientId ?? throw new InvalidOperationException("Gradient registration requires an identifier.");
@@ -1547,6 +1554,7 @@ internal static class SvgDefinitionParser
         }
         (double centerX, double centerY, double radius, double focalX, double focalY, double focalRadius, bool isUserSpace, SvgGradientSpread spread, double referenceScaleX, double referenceScaleY, bool hasRadialRotation, SvgGradientTransform inverse, bool hasGeneralTransform) = ResolveRadialVector(template);
         if (!isUserSpace) ValidateRadialFocalCircle(centerX, centerY, radius, focalX, focalY, focalRadius);
+        if (!template.IsAvailable) { isEmpty = true; start = default; end = default; stops = []; }
         SvgRadialGradient gradient = new(start, end, centerX, centerY, radius, focalX, focalY, focalRadius, offset1, offset2, isEmpty, isUserSpace, spread, stops, referenceScaleX, referenceScaleY, hasRadialRotation, inverse, hasGeneralTransform)
         {
             SourceDefinition = inheritedSource ?? state.Scene.RetainRadialSource(template),
@@ -1890,7 +1898,7 @@ internal static class SvgDefinitionParser
     internal static void RegisterFilter(SvgDocumentState state)
     {
         SvgFilterDefinitionBuilder builder = state.FilterDefinition ?? throw new InvalidOperationException("No filter definition is open.");
-        SvgFilterResource resource = builder.Finish();
+        SvgFilterResource resource = builder.Finish() with { IsAvailable = builder.IsAvailable };
         bool adopted = false;
         try
         {

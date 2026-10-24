@@ -178,6 +178,10 @@ vector. Declared radial focal fields survive replacement of the center/radius;
 focal coordinates absent throughout the chain follow the effective center. These
 rules apply to shape/text fills and strokes and admitted resource/instance replay; see the
 [template regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.GradientTemplateMaps.cs).
+CSS `display:none` on a gradient or its defining `defs` makes its local stops
+unavailable. An alias with local stops can still paint; an alias borrowing those
+unavailable stops stays empty. Gradient coordinates remain available for attribute
+inheritance. Empty fills retain independent strokes and effects.
 Patterns support both tile/content unit
 systems, viewBox/aspect maps, fractional origins and sizes, affine placement and
 bounded repetition. Tile content may include
@@ -187,9 +191,11 @@ Pattern x/y/width/height accept bare numbers and px, with percentages unsupporte
 in either unit system. Opacity applies to tile children; the pattern container
 accepts only opacity 1. XML overflow accepts hidden/visible;
 CSS overflow supports hidden only.
-Definition ancestors with `display:none` do not disable patterns. A pattern's own
-`display:none` suppresses its paint and aliases, including aliases with their own
-children. An alias's own hidden display suppresses borrowed visible content too.
+CSS `display:none` on a pattern or its defining `defs` makes the template
+unavailable. A hidden outer group does not disable it. Hidden templates supply no
+inherited dimensions or content; an alias can still paint local children when it
+supplies the required dimensions itself. An alias's own hidden display suppresses
+borrowed visible content too.
 Visible aliases with their own children replace the template content. Inherited paint and visibility
 still apply to tile content; `display:none` on rendered children suppresses them.
 Font preparation uses the same resource display rules for supplied-font tile text.
@@ -260,8 +266,8 @@ object-box region. A smaller content box reports `UnsupportedFeature`.
 
 Hidden clip children do not contribute to the silhouette; visibility inherits
 from the resource's own ancestors and can be overridden by a child. Display on
-definition ancestors does not disable the resource. A clipPath's own CSS
-`display:none` makes its references contribute no clipping; an empty or hidden
+outer groups does not disable the resource. CSS `display:none` on the clipPath or
+its defining `defs` makes its references contribute no clipping; an empty or hidden
 child instead contributes an empty silhouette. Fill/stroke paint and
 opacity do not suppress raw clip geometry.
 Contained unrounded rectangles retain the containing rectangle's coverage through
@@ -270,7 +276,8 @@ admitted instances/resources and either resource-unit system; see the
 Retained group instances bind object-box clips after replay supplies their geometry
 bounds, including when both the group and clip were defined before the instance.
 Likewise, a mask's own CSS `display:none` removes its binding and region; a hidden
-definition ancestor leaves it available. An empty or hidden mask child remains
+outer group leaves it available. CSS `display:none` on its defining `defs` also
+removes the binding. An empty or hidden mask child remains
 an empty mask, suppressing its target rather than removing the binding.
 
 IDs on clip rectangles, rounded rectangles, paths, circles and ellipses remain
@@ -409,7 +416,9 @@ viewBox/aspect maps, fixed/auto/auto-start-reverse orientation and hidden/visibl
 overflow. Lengths include absolute units, known-axis percentages and em/ex from
 supplied font metrics. Paint/visibility and stroke presentation inherit through
 marker content. A marker's display property does not suppress its content;
-a symbol's `display:none` does suppress its instances.
+a symbol's `display:none` does suppress its instances. CSS `display:none` on a
+marker's defining `defs` prevents its activation, including ex metric requests.
+Ordinary local use targets remain available inside hidden `defs`.
 strokeWidth markers honor non-scaling strokes through instance and viewport
 placement; pattern tiles retain their separate source coordinates. At extreme
 transforms, these drawings can paint nothing when native visual bounds collapse.
@@ -422,6 +431,10 @@ Supported filter primitives are `feGaussianBlur`, `feOffset`, `feFlood`,
 `feDropShadow`. Filters support SourceGraphic, SourceAlpha, earlier local results,
 filter/primitive regions, both unit systems, sRGB/linearRGB operating spaces and
 local CSS filter references. Intermediate surfaces and primitive work are bounded.
+CSS `display:none` on the filter or its defining `defs` suppresses the filtered
+output, including its source. It does not restore the unfiltered drawing.
+See the [definition display tests](../tests/Lokad.Svg.Tests/SvgDefinitionDisplayTests.cs)
+and [font acquisition checks](../tests/Lokad.Svg.Tests/OpenTypeFontTests.DefinitionDisplay.cs).
 An element suppressed by its own or an ancestor's `display:none` does not activate
 filters. Visible elements with no fill or transparent paint can still produce
 filter output, such as a flood.

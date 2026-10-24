@@ -110,7 +110,7 @@ internal sealed class SvgPatternContentSelection : IDisposable
                     string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
                     string? target = href is { Length: > 1 } && href[0] == '#' ? SvgLocalUrl.CopyFragment(href.AsSpan(1), strings) : null;
                     pattern = patterns.Count;
-                    patterns.Add(new(id, target, Dimension("width"), Dimension("height"), (paint.GetDisplay() != SvgDisplay.None), false, Resolution.New, -1));
+                    patterns.Add(new(id, target, Dimension("width"), Dimension("height"), (paint.GetDisplay() != SvgDisplay.None) && (!parent.Definitions || parent.ElementDisplay != SvgDisplay.None), false, Resolution.New, -1));
                     ids.TryAdd(id, pattern);
                 }
                 bool drawing = selected && !parent.Definitions && svgElement && (root || reader.LocalName is "svg" or "g" or "a" or "switch");
@@ -146,7 +146,8 @@ internal sealed class SvgPatternContentSelection : IDisposable
                     Pattern item = patterns[position];
                     Pattern? parent = item.Target is {} target && ids.TryGetValue(target, out int parentIndex) ? patterns[parentIndex] : null;
                     bool valid = item.Target is null || parent is { State: Resolution.Ready };
-                    bool displayed = item.IsDisplayed && parent?.IsDisplayed != false;
+                    bool displayed = item.IsDisplayed;
+                    if (parent?.IsDisplayed == false) parent = null;
                     item = item with { State = valid ? Resolution.Ready : Resolution.Invalid, IsDisplayed = displayed,
                         Width = item.Width ?? parent?.Width, Height = item.Height ?? parent?.Height,
                         Source = !displayed ? -1 : item.HasChildElements ? position : parent?.Source ?? -1 };

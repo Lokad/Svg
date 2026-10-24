@@ -133,7 +133,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
     }
 
     /// <summary>Retains an admitted mask's own inherited context, independently of its rendered consumers.</summary>
-    internal void RegisterMask(XmlReader reader, SvgInheritedContainer inherited, InlineStyle sheet, SvgViewportLengthBases bases)
+    internal void RegisterMask(XmlReader reader, SvgInheritedContainer inherited, InlineStyle sheet, bool definitionResourcesDisplayed, SvgViewportLengthBases bases)
     {
         SvgElementAttributePolicy.ValidateMask(reader, _work, _token);
         if (reader.GetAttribute("id") is not {} id || !_ids.TryGetValue(id, out int index) || _nodes[index].Kind != Kind.Mask) return;
@@ -141,7 +141,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
         InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), _work, _token, true);
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, sheet);
         SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inline, style, sheet,
-            inherited.Presentation with { IsDisplayed = true, Transform = SvgAffineTransform.Identity }, inherited.FillRule,
+            inherited.Presentation with { IsDisplayed = definitionResourcesDisplayed, Transform = SvgAffineTransform.Identity }, inherited.FillRule,
             inherited.TextStyle, inherited.Stroke, SvgRootParser.CssNamedColors, _work, _token);
         SvgClipBox? fractions = SvgMaskSyntax.ParseMaskFractionRegion(reader);
         SvgClipBox? region = fractions ?? SvgMaskSyntax.ParseMaskRegion(reader, bases);

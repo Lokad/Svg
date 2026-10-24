@@ -28,6 +28,8 @@ internal readonly record struct SvgFilterAdmission(SvgErrorCode Code, string Mes
 internal readonly record struct SvgFilterResource(SvgFilterRegion Region, SvgFilterUnits PrimitiveUnits, SvgFilterColorSpace ColorSpace,
     OwnedSceneArray<SvgFilterPrimitive> Primitives, SvgFilterAdmission? Rejection) : IDisposable
 {
+    /// <summary>Disables playback when the filter or its defs container has display:none.</summary>
+    internal bool IsAvailable { get; init; } = true;
     internal OwnedSceneArray<SvgFilterInput> MergeInputs { get; init; } = new([], null);
     public void Dispose() { MergeInputs.Dispose(); Primitives.Dispose(); }
 }

@@ -25,6 +25,8 @@ internal readonly record struct SvgGradientStop(double Offset, SvgColor Color)
 /// <summary>Retains one parsed linear-gradient definition with attribute explicitness for href inheritance.</summary>
 internal readonly record struct SvgGradientTemplate(double X1, double Y1, double X2, double Y2, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, int VectorCount, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, bool HasX1, bool HasY1, bool HasX2, bool HasY2)
 {
+    /// <summary>Retains resource display while forward stop and vector references are unresolved.</summary>
+    internal bool IsAvailable { get; init; } = true;
     internal bool HasPercentageCoordinates { get; init; }
 }
 
@@ -46,6 +48,8 @@ internal readonly record struct SvgRadialGradient(SvgColor Start, SvgColor End, 
 /// <summary>Retains one parsed radial-gradient definition with attribute explicitness for href inheritance.</summary>
 internal readonly record struct SvgRadialTemplate(double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, int VectorCount, bool HasFocalX, bool HasFocalY, bool HasFocalRadius)
 {
+    /// <summary>Retains resource display while forward stop and vector references are unresolved.</summary>
+    internal bool IsAvailable { get; init; } = true;
     internal bool HasPercentageCoordinates { get; init; }
     internal SvgRadialFocalFields PercentageFocalFields { get; init; }
 }

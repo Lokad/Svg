@@ -51,7 +51,6 @@ public sealed partial class OpenTypeFontTests
     [InlineData("own")]
     [InlineData("base")]
     [InlineData("alias")]
-    [InlineData("replacement")]
     public async Task Disabled_patterns_do_not_require_unavailable_tile_fonts(string scenario)
     {
         (var catalog, var provider, _) = CreateExamplePack(CreateTriangleFont());

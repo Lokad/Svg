@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Honor display on definitions and paint resources, preserving local template
+  replacements and ordinary use sources. Skip unavailable mask and marker fonts.
 - Resolve explicit display inheritance through containers, local instances and
   resource children, keeping ancestor suppression and font discovery consistent.
 - Preserve antialiased region edges when restoring affine terminal flood filters,

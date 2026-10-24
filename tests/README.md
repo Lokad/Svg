@@ -24,6 +24,13 @@ attributes, inline styles and stylesheets. The
 [prepared text cases](Lokad.Svg.Tests/OpenTypeFontTests.DisplayInheritance.cs)
 also check font discovery and suppression without font acquisition.
 
+[Definition display tests](Lokad.Svg.Tests/SvgDefinitionDisplayTests.cs) distinguish
+hidden resources from hidden outer groups and ordinary use sources. They cover
+template replacements, single-stop gradients, filter suppression and resource
+cleanup after limits or cancellation. The
+[font cases](Lokad.Svg.Tests/OpenTypeFontTests.DefinitionDisplay.cs) verify disabled
+resource acquisition and visible local replacements.
+
 ## Collections
 
 | Collection | Role and source of truth |
