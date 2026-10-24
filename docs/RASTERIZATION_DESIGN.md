@@ -182,6 +182,7 @@ Source boxes retain fractional character widths after `textLength` scaling.
 Deferred text and instances retain their enclosing filter recording context;
 glyphs and decorations record source bounds before filter construction.
 Nonpainting effect anchors contribute object bounds without enlarging painted bounds.
+Path glyphs compose general parent poses; the translation shortcut requires unchanged axes.
 
 The bounded interpreter keeps projection/freedom vectors and physical/hint grids
 separate. Windows font-unit conversion retains floating-point scale precision

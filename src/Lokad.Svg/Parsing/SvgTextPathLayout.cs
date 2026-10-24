@@ -199,7 +199,7 @@ internal static class SvgTextPathLayout
                         }
                         if (pending.Placement != SvgAffineTransform.Identity)
                         {
-                            if (glyphMap == SvgAffineTransform.Identity) placed = placed.Translate(pending.Placement);
+                            if (glyphMap == SvgAffineTransform.Identity && pending.Placement.IsTranslation) placed = placed.Translate(pending.Placement);
                             else glyphMap = pending.Placement.ComposeChecked(glyphMap);
                         }
                         placements.Add(new(placed, glyphMap, true) { SourceMap = sourceMap, Decoration = decoration });
