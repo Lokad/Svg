@@ -216,9 +216,11 @@ internal static class SvgDocumentTraversal
                         string? groupClipId = parsedGroup.Scope.ClipPathId;
                         if (groupClipId is not null && !parsedGroup.Scope.HasFilter)
                         {
-                            // A partial-opacity owner's clip surrounds its isolated
-                            // surface. Bind that boundary with the pending scope.
-                            if (parsedGroup.SourceOpacity.Value is 0 or 1 && state.Clips.TryGetValue(groupClipId, out SvgClipBox clipBox) && parsedGroup.Scope.InheritedPresentation.Transform.IsAxisAligned)
+                            // Opacity and mask owners retain their clip outside the
+                            // isolated surface. Zero-opacity owners still paint nothing.
+                            bool clipsChildren = parsedGroup.SourceOpacity.Value == 0
+                                || parsedGroup.SourceOpacity.Value == 1 && !parsedGroup.Scope.HasDeferredMask;
+                            if (clipsChildren && state.Clips.TryGetValue(groupClipId, out SvgClipBox clipBox) && parsedGroup.Scope.InheritedPresentation.Transform.IsAxisAligned)
                             {
                                 SvgViewportFrame? clipParent = state.EffectiveFrame;
                                 SvgClipBox clip = SvgClipPathSyntax.MapGroupClip(clipBox, parsedGroup.Scope.InheritedPresentation.Transform, clipParent, workCounter, cancellationToken);
@@ -239,8 +241,10 @@ internal static class SvgDocumentTraversal
                         if (parsedGroup.Scope.HasFilter) state.FilterGroupDepth++;
                         if (isolatedViewport && isolationParent is {} clippedParent)
                         {
-                            state.Scene.InsertCommands(state.Scene.CommandCount,
-                                [new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, clippedParent.Clip, -1, 255) { RegionKind = SvgLayerRegionKind.Viewport }]);
+                            SvgDrawCommand clip = parsedGroup.Scope.HasDeferredMask && clippedParent.Clip.Antialiasing == SvgClipAntialiasing.All
+                                ? SvgClipPathSyntax.CreateRectangleScope(clippedParent.Clip, SvgAffineTransform.Identity, state, state.Scene, workCounter, cancellationToken)
+                                : new(SvgDrawCommandKind.BeginGroup, -1, 255, clippedParent.Clip, -1, 255) { RegionKind = SvgLayerRegionKind.Viewport };
+                            state.Scene.InsertCommands(state.Scene.CommandCount, [clip]);
                             if (snapshot.PendingClip is {} clipIndex)
                             {
                                 PendingGroupClip pending = state.PendingGroupClips[clipIndex];

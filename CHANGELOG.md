@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Keep inherited and own rectangular clips outside mask-owned layers at full
+  group opacity, preserving single-paint colors and gradient bitmap grids.
 - Keep a group's own rectangular clip outside its partial-opacity layer in both
   reference orders. Preserve bounded output work for large transformed axis clips.
 - Apply inherited viewport clips when restoring isolated opacity groups, keeping

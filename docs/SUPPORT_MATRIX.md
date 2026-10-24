@@ -125,6 +125,9 @@ cover overlapping fills/strokes, own clips, instances and masks.
 The [own-clip cases](../tests/Lokad.Svg.Tests/SvgOwnClipIsolationTests.cs) and
 [native images](../tests/Research/own-clip-isolation/capture.json) cover definition
 order, partial opacity and large finite axis bounds without increasing output limits.
+Mask-owned layers retain this clip boundary at full group opacity, including
+single paints and gradient grids. See the [mask cases](../tests/Lokad.Svg.Tests/SvgMaskClipIsolationTests.cs)
+and [native images](../tests/Research/mask-clip-isolation/capture.json).
 Clips containing the complete destination preserve the existing bitmap and
 child-mask shader origins; see the [regressions](../tests/Lokad.Svg.Tests/SvgContainedClipIsolationTests.cs)
 and [native images](../tests/Research/contained-mask-clips/capture.json).

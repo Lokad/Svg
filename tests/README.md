@@ -88,6 +88,10 @@ The [own-clip cases](Lokad.Svg.Tests/SvgOwnClipIsolationTests.cs) cover the owne
 opacity boundary, both reference orders, native pixels for large axis extents and
 linear sibling work. Their [browser checks](Lokad.Svg.VisualTests/SvgOwnClipReferenceTests.cs)
 use [separate images](Research/own-clip-isolation/capture.json), including masks and instances.
+The [mask clip cases](Lokad.Svg.Tests/SvgMaskClipIsolationTests.cs) compare own
+and inherited clips in both reference orders, retaining literal native edge
+colors and shader grids. Their [browser checks](Lokad.Svg.VisualTests/SvgMaskClipReferenceTests.cs)
+use [fresh native images](Research/mask-clip-isolation/capture.json).
 
 [Display inheritance tests](Lokad.Svg.Tests/SvgDisplayInheritanceTests.cs) cover
 logical parents, retained instances, viewports and resource children across

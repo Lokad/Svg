@@ -62,6 +62,8 @@ public sealed class SvgInheritedClipIsolationTests
     [InlineData(true, "own-clip-mask")]
     [InlineData(false, "mask")]
     [InlineData(true, "mask")]
+    [InlineData(false, "opaque-mask")]
+    [InlineData(true, "opaque-mask")]
     [InlineData(false, "filter")]
     [InlineData(true, "filter")]
     public void Isolated_clip_scopes_release_storage_after_denial_and_cancellation(bool forward, string effect)
@@ -72,10 +74,12 @@ public sealed class SvgInheritedClipIsolationTests
             "own-clip" => " clip-path='url(#inner)'",
             "own-clip-mask" => " clip-path='url(#inner)' mask='url(#m)'",
             "mask" => " mask='url(#m)'",
+            "opaque-mask" => " mask='url(#m)'",
             "filter" => " filter='url(#f)'",
             _ => ""
         };
-        string body = "<g clip-path='url(#c)'><g opacity='.5'" + attributes + "><path d='M4 4H24V24H4Z' fill='red'/><path d='M3 3Q25 3 25 25H3Z' clip-path='url(#inner)' fill='blue' fill-opacity='.25'/></g></g>";
+        string ownerOpacity = effect == "opaque-mask" ? "1" : ".5";
+        string body = "<g clip-path='url(#c)'><g opacity='" + ownerOpacity + "'" + attributes + "><path d='M4 4H24V24H4Z' fill='red'/><path d='M3 3Q25 3 25 25H3Z' clip-path='url(#inner)' fill='blue' fill-opacity='.25'/></g></g>";
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + (forward ? body + definitions : definitions + body) + "</svg>"), unchanged = input.ToArray();
         RenderBudget parser = new(8_000_000);
         using (RenderBudget.BudgetReservation borrowed = parser.Reserve(73, SvgMemoryCategory.Scene))

@@ -32,6 +32,37 @@ internal static class SvgClipPathSyntax
         return id;
     }
 
+    /// <summary>Creates a rectangular clip boundary without introducing an opacity or mask owner.</summary>
+    /// <remarks>The conversion-thread caller borrows box/map and parser state. Native content transfers
+    /// to scene; an analytic region owns no content. Every mapping/construction step consumes caller
+    /// work and cancellation. Failed construction leaves adopted content with scene teardown.</remarks>
+    internal static SvgDrawCommand CreateRectangleScope(SvgClipBox box, SvgAffineTransform map, SvgDocumentState state,
+        SvgSceneBuilder scene, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        if (map.IsAxisAligned)
+        {
+            for (int boundary = 0; boundary < 8; boundary++) workCounter.Consume(cancellationToken);
+            SvgClipBox mapped = map.Apply(box);
+            if (RequiresAnalyticClip(mapped))
+                return new(SvgDrawCommandKind.BeginGroup, -1, 255, mapped, -1, 255) { RegionKind = SvgLayerRegionKind.Viewport };
+        }
+        (SvgClipBox bounds, int contentIndex) = new SvgAffineViewportClip(box, map).Register(state, scene, workCounter, cancellationToken);
+        return new(SvgDrawCommandKind.BeginGroup, -1, 255, bounds, contentIndex, 255) { RegionKind = SvgLayerRegionKind.AffineViewport };
+
+        // Ordinary scopes retain native coverage and bitmap hints. Large finite
+        // axis regions can clip a small output without overflowing native edges.
+        bool RequiresAnalyticClip(SvgClipBox bounds)
+        {
+            if (!double.IsFinite(bounds.X) || !double.IsFinite(bounds.Y) || !double.IsFinite(bounds.Right) || !double.IsFinite(bounds.Bottom)) return false;
+            if (Math.Abs(bounds.X) > int.MaxValue || Math.Abs(bounds.Y) > int.MaxValue || Math.Abs(bounds.Right) > int.MaxValue || Math.Abs(bounds.Bottom) > int.MaxValue) return true;
+            if (!state.OutputMap.IsAxisAligned) return false;
+            SvgClipBox device = state.OutputMap.Apply(bounds);
+            const double maximum = SvgBinaryViewportCoverage.MaximumCoordinate;
+            return double.IsFinite(device.X) && double.IsFinite(device.Y) && double.IsFinite(device.Right) && double.IsFinite(device.Bottom)
+                && (Math.Abs(device.X) > maximum || Math.Abs(device.Y) > maximum || Math.Abs(device.Right) > maximum || Math.Abs(device.Bottom) > maximum);
+        }
+    }
+
     /// <summary>Resolves an explicit inherited declaration against the immediate container's computed clip.</summary>
     /// <remarks>Clip paths are otherwise non-inherited. The returned id borrows the group owner or parsed attribute;
     /// callers retain it only when needed. Root inheritance has the initial empty reference.</remarks>
@@ -713,26 +744,12 @@ internal static class SvgClipPathSyntax
                 SvgClipBox clip;
                 if (state.Clips.TryGetValue(pending.ClipId, out SvgClipBox box))
                 {
-                    if (ContainsOpacityLayer(pending))
+                    if (ContainsIsolatedLayer(pending))
                     {
                         SvgAffineTransform map = parent is {} viewport
                             ? SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(pending.Transform)
                             : pending.Transform;
-                        SvgDrawCommand begin;
-                        SvgClipBox? analytic = null;
-                        if (map.IsAxisAligned)
-                        {
-                            for (int boundary = 0; boundary < 8; boundary++) workCounter.Consume(cancellationToken);
-                            SvgClipBox mapped = map.Apply(box);
-                            if (RequiresAnalyticClip(mapped)) analytic = mapped;
-                        }
-                        if (analytic is {} rectangle)
-                            begin = new(SvgDrawCommandKind.BeginGroup, -1, 255, rectangle, -1, 255) { RegionKind = SvgLayerRegionKind.Viewport };
-                        else
-                        {
-                            (SvgClipBox bounds, int contentIndex) = new SvgAffineViewportClip(box, map).Register(state, state.Scene, workCounter, cancellationToken);
-                            begin = new(SvgDrawCommandKind.BeginGroup, -1, 255, bounds, contentIndex, 255) { RegionKind = SvgLayerRegionKind.AffineViewport };
-                        }
+                        SvgDrawCommand begin = CreateRectangleScope(box, map, state, state.Scene, workCounter, cancellationToken);
                         bool exists = heads.TryGetValue(pending.Scene, out SceneScopeHead head);
                         scopes.Add(new(pending.FirstCommandIndex, pending.EndCommandIndex, begin, head.First));
                         SceneScopeHead replacement = new(pending.Scene, scopes.Count);
@@ -849,28 +866,17 @@ internal static class SvgClipPathSyntax
             return false;
         }
 
-        bool ContainsOpacityLayer(PendingGroupClip pending)
+        bool ContainsIsolatedLayer(PendingGroupClip pending)
         {
+            // A mask owns an isolated source even at unit opacity; pure viewport
+            // scopes retain their separate clip-stack behavior.
             for (int index = pending.FirstCommandIndex; index < pending.EndCommandIndex; index++)
             {
                 workCounter.Consume(cancellationToken);
-                if (pending.Scene.CommandAt(index) is { Kind: SvgDrawCommandKind.BeginGroup } command && command.SourceOpacity.Value != 1) return true;
+                if (pending.Scene.CommandAt(index) is { Kind: SvgDrawCommandKind.BeginGroup } command
+                    && (command.SourceOpacity.Value != 1 || command.RegionKind == SvgLayerRegionKind.Mask)) return true;
             }
             return false;
-        }
-
-        // Ordinary scopes retain the native contour's coverage and bitmap hints.
-        // Large axis-aligned rectangles can still clip a small destination through
-        // the existing analytic region, without overflowing native edge coordinates.
-        bool RequiresAnalyticClip(SvgClipBox bounds)
-        {
-            if (!double.IsFinite(bounds.X) || !double.IsFinite(bounds.Y) || !double.IsFinite(bounds.Right) || !double.IsFinite(bounds.Bottom)) return false;
-            if (Math.Abs(bounds.X) > int.MaxValue || Math.Abs(bounds.Y) > int.MaxValue || Math.Abs(bounds.Right) > int.MaxValue || Math.Abs(bounds.Bottom) > int.MaxValue) return true;
-            if (!state.OutputMap.IsAxisAligned) return false;
-            SvgClipBox device = state.OutputMap.Apply(bounds);
-            const double maximum = SvgBinaryViewportCoverage.MaximumCoordinate;
-            return double.IsFinite(device.X) && double.IsFinite(device.Y) && double.IsFinite(device.Right) && double.IsFinite(device.Bottom)
-                && (Math.Abs(device.X) > maximum || Math.Abs(device.Y) > maximum || Math.Abs(device.Right) > maximum || Math.Abs(device.Bottom) > maximum);
         }
 
         // Descending source resolution prepends scope links, leaving each scene's
