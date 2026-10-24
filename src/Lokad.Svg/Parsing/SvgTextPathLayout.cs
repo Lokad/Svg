@@ -191,6 +191,13 @@ internal static class SvgTextPathLayout
                             SvgGlyphDeviceMetrics metrics = new(pathScale, OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, true);
                             glyphMap = metrics.PlaceTextPathPaint(glyphMap, paintHalfAdvance, glyph.Y, glyphFont.FontSize, glyphFont.Font.Metrics);
                         }
+                        if (glyphMap == SvgAffineTransform.Identity && (OperatingSystem.IsWindows() || OperatingSystem.IsLinux()))
+                        {
+                            // Zero-angle fragments truncate their whole scaled paint origin too.
+                            SvgGlyphDeviceMetrics metrics = new(pathScale, OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, true);
+                            SvgAffineTransform origin = metrics.PlaceTextPathPaint(SvgAffineTransform.FromTranslation(placed.X, placed.Y), 0, 0, glyphFont.FontSize, glyphFont.Font.Metrics);
+                            placed = placed with { X = origin.E, Y = origin.F };
+                        }
                         if (run.GlyphStretch != 1)
                         {
                             SvgAffineTransform stretch = SvgAffineTransform.FromScale(run.GlyphStretch, 1);

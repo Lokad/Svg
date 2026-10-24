@@ -36,6 +36,7 @@ these widths with anchors, font changes, `textLength` and negative advances.
 [General path-pose tests](Lokad.Svg.Tests/OpenTypeFontTests.TextPathPlacement.cs)
 cover horizontal tangents under scaled/affine placement and cleanup on denial.
 Recorded-strike image controls vary local/output scales and mapped viewport replay before matrix rounding.
+Horizontal fragment image controls cover fractional/negative origins, zero-angle segments and both font programs before scaled/affine placement.
 [Deferred filter tests](Lokad.Svg.Tests/OpenTypeFontTests.FilteredDeferredText.cs)
 cover text continuations and replay; [source bounds tests](Lokad.Svg.Tests/SvgDeferredFilterSourceTests.cs)
 keep nonpainting layout bounds separate from painted filter bounds.

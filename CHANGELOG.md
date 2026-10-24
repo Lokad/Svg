@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Preserve horizontal text-path paint origins before affine placement.
 - Preserve recorded font sizes when replaying mapped glyphs.
 - Render scaled and affine text paths with horizontal tangents.
 - Retain enclosing filter source bounds through deferred text and instance replay.
