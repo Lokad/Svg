@@ -138,6 +138,7 @@ internal static class SvgTextPathLayout
                             : glyph with { X = 0, Y = 0 };
                         SvgAffineTransform glyphMap = horizontalPlacement ? SvgAffineTransform.Identity
                             : measured.GlyphMap(midpoint, glyph.Advance / 2, glyph.Y, rotation, work, token);
+                        SvgAffineTransform sourceMap = glyphMap.ComposeChecked(SvgAffineTransform.FromTranslation(placed.X, placed.Y));
                         SvgTextDecorationPlacement decoration = default;
                         if (paint.Decoration is not null)
                         {
@@ -188,7 +189,7 @@ internal static class SvgTextPathLayout
                             if (glyphMap == SvgAffineTransform.Identity) placed = placed.Translate(pending.Placement);
                             else glyphMap = pending.Placement.ComposeChecked(glyphMap);
                         }
-                        placements.Add(new(placed, glyphMap, true) { Decoration = decoration });
+                        placements.Add(new(placed, glyphMap, true) { SourceMap = sourceMap, Decoration = decoration });
                     }
                     SvgTextGlyphPainter.Emit(run, pending.Placement, placements.AsSpan(), pending.ViewportClip, pending.Color, state, limits.MaximumPathCommands, state.Budget, work, pending.RecordingTransform, token);
                 }

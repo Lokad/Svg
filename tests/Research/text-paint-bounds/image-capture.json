@@ -4,7 +4,7 @@
   "background": "transparent",
   "fontEvidence": "capture.json",
   "license": "MIT",
-  "recipe": "Embed the exact Noto Sans Regular program using @font-face, replacing serif with ReviewFont. Decode each source as an image/svg+xml Blob and draw it onto a transparent canvas at ceil(32 * outputScale) pixels. Decode the canvas data URL as the reference PNG. Two independent healthy ChromeProcess launches per host give identical PNG bytes for every actual.",
+  "recipe": "Embed the exact supplied Noto Sans Regular and Noto Sans Mono Bold programs using @font-face and explicit family/weight aliases. Decode each source as an image/svg+xml Blob and draw it onto a transparent canvas at ceil(authored width * outputScale) by ceil(authored height * outputScale) pixels. Decode the canvas data URL as the reference PNG. Two independent healthy ChromeProcess launches per host give identical PNG bytes for every actual.",
   "launches": {
     "windows": {
       "schemaVersion": 1,
@@ -669,6 +669,86 @@
           "sha256": "c1a900e67fee5024d467602b710c1ad69bf60f67ec62a45e0e6e21fba2b211d6"
         }
       }
+    },
+    {
+      "id": "path-linear-objectBoundingBox-1-opaque",
+      "input": "path-linear-objectBoundingBox-1-opaque.svg",
+      "sourceSha256": "5207bdb81eb60bff0ee3c5a513f4c998cf8a354f2b9abffaff24a2cab7736f2c",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/b4e6ced61fe041c5.png",
+          "sha256": "b4e6ced61fe041c51918c4b03f0255888b4f75c1ec56cd2a5156c86c98b7bbd5"
+        },
+        "linux": {
+          "path": "references/ca6561010f0dcb29.png",
+          "sha256": "ca6561010f0dcb2948c319a844bfc57dc7b1d4ded87ab210fe6a4a83b306f03e"
+        }
+      }
+    },
+    {
+      "id": "path-radial-objectBoundingBox-1-group-opacity",
+      "input": "path-radial-objectBoundingBox-1-group-opacity.svg",
+      "sourceSha256": "b2c99062fb334fe96a675791c3d640f37fc886050b6066ed16e647050ece5420",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/dba5bdb8aa8006d1.png",
+          "sha256": "dba5bdb8aa8006d1504742fef5554b63fcf2757a5256deb8884889d9b13948bf"
+        },
+        "linux": {
+          "path": "references/67010bf34b1812c8.png",
+          "sha256": "67010bf34b1812c8c86eb823688e0243d6f9c332f2adba6a769ff1eee5c55374"
+        }
+      }
+    },
+    {
+      "id": "path-radial-objectBoundingBox-1-opaque",
+      "input": "path-radial-objectBoundingBox-1-opaque.svg",
+      "sourceSha256": "646b18def3136c349ee4ca1f13570ceb38956dd838b74ed256ce420d6634f5dc",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/2b8321cc67ccc2c8.png",
+          "sha256": "2b8321cc67ccc2c864f945241498c1c936bf4bafa75cbe0beeb8ed15542867c4"
+        },
+        "linux": {
+          "path": "references/63726cd8eda80a9a.png",
+          "sha256": "63726cd8eda80a9ac576e237e728efeece68af8724b4f73e55f3bb715a57e2d5"
+        }
+      }
+    },
+    {
+      "id": "path-pattern-objectBoundingBox-1-group-opacity",
+      "input": "path-pattern-objectBoundingBox-1-group-opacity.svg",
+      "sourceSha256": "8b68b158dce705cbd81b86057beb5f4fdd5976084bb75da5808f9531dc5cc964",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/1ae59343d73f5a11.png",
+          "sha256": "1ae59343d73f5a114ce256ae727c48617faf625aaa1ed3628626ad3e196f1955"
+        },
+        "linux": {
+          "path": "references/dd1c9c5018c3cb1e.png",
+          "sha256": "dd1c9c5018c3cb1ef2829129804edbf0f7d41d5e8b43fa5c0a1729a880ad9fb8"
+        }
+      }
+    },
+    {
+      "id": "path-pattern-objectBoundingBox-1-opaque",
+      "input": "path-pattern-objectBoundingBox-1-opaque.svg",
+      "sourceSha256": "14593f3b6f4a9dfaee6950bbde913661678961b55ffcbd74ef60e04b705b9911",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/7116ea55a7a1b431.png",
+          "sha256": "7116ea55a7a1b431ee270a4a2a5c4b18d2c43c486fe10773bbd5e699a6ed4cba"
+        },
+        "linux": {
+          "path": "references/f4f3136c6f1ae818.png",
+          "sha256": "f4f3136c6f1ae81807a64e65021321eab3976d87e33e28e1d9a1c2f545a6f1f3"
+        }
+      }
     }
   ],
   "chromePins": {
@@ -735,6 +815,56 @@
         "executableName": "chrome",
         "elapsedMilliseconds": 13375,
         "debuggerReadyMilliseconds": 4941,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  },
+  "pathLaunches": {
+    "windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 703,
+        "debuggerReadyMilliseconds": 139,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 672,
+        "debuggerReadyMilliseconds": 144,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 4418,
+        "debuggerReadyMilliseconds": 2621,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 4306,
+        "debuggerReadyMilliseconds": 2680,
         "sandboxAccessFailures": 0,
         "networkServiceCrashes": 0,
         "stderrTruncated": false,

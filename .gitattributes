@@ -6,7 +6,7 @@ tests/Research/native-path-replay/*.svg -text whitespace=cr-at-eol
 # Compiled-native vector hashes also require stable bytes across platforms.
 *.csv text eol=lf
 # Hashed native text-box vectors must retain the same bytes on both hosts.
-tests/Research/text-paint-bounds/native-vectors.json text eol=lf
+tests/Research/text-paint-bounds/*-vectors.json text eol=lf
 # This downloaded original and its root-sized copy retain the upstream CRLF bytes.
 tests/Fixtures/candidates/inv-110.svg -text whitespace=cr-at-eol
 tests/Research/remaining-scope-documents/inv-110-capture-616x540.svg -text whitespace=cr-at-eol

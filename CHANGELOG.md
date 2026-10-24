@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Measure text-path paint boxes from original coordinates before glyph paint truncation.
 - Enclose text drawing bounds before output mapping to preserve gradient colors
   under group opacity; reuse fitted metrics across parser runs and share paint records.
 - Include fitted glyph ink in text paint object boxes, preserving source fragment

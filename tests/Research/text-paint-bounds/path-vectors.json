@@ -1,0 +1,194 @@
+[
+  {
+    "id": "curve",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='96' height='72'><defs><path id='baseline' d='M4 24Q30 12 60 24' /><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='24' fill='url(#p)' ><textPath href='#baseline' >AVj</textPath></text></svg>",
+    "windows": [
+      -5.303425312042236,
+      -8.332655906677246,
+      44.96482849121094,
+      38.89088821411133
+    ],
+    "linux": [
+      -4.3555684089660645,
+      -8.332655906677246,
+      44.016971588134766,
+      38.57219314575195
+    ]
+  },
+  {
+    "id": "middle",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='96' height='72'><defs><path id='baseline' d='M4 24Q30 12 60 24' /><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='24' fill='url(#p)' text-anchor='middle'><textPath href='#baseline' startOffset='50%'>AVj</textPath></text></svg>",
+    "windows": [
+      9.737105369567871,
+      -8.35189437866211,
+      45.10569381713867,
+      35.56268310546875
+    ],
+    "linux": [
+      10.726284980773926,
+      -8.326090812683105,
+      44.11651611328125,
+      35.53688049316406
+    ]
+  },
+  {
+    "id": "horizontal",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='96' height='72'><defs><path id='baseline' d='M4 24H60' /><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='24' fill='url(#p)' ><textPath href='#baseline' >AVj</textPath></text></svg>",
+    "windows": [
+      3,
+      -2,
+      36,
+      33
+    ],
+    "linux": [
+      4,
+      -2,
+      35,
+      33
+    ]
+  },
+  {
+    "id": "vertical",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='96' height='72'><defs><path id='baseline' d='M28 4V60' /><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='24' fill='url(#p)' ><textPath href='#baseline' >AVj</textPath></text></svg>",
+    "windows": [
+      21,
+      3,
+      33,
+      36
+    ],
+    "linux": [
+      21,
+      4,
+      33,
+      35
+    ]
+  },
+  {
+    "id": "rotate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='96' height='72'><defs><path id='baseline' d='M4 24Q30 12 60 24' /><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='24' fill='url(#p)' rotate='20'><textPath href='#baseline' >AVj</textPath></text></svg>",
+    "windows": [
+      2.384880781173706,
+      -8.91867733001709,
+      45.80796432495117,
+      37.445518493652344
+    ],
+    "linux": [
+      3.384575366973877,
+      -8.670047760009766,
+      44.80826950073242,
+      37.19689178466797
+    ]
+  },
+  {
+    "id": "spacing",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='96' height='72'><defs><path id='baseline' d='M4 24Q30 12 60 24' /><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='24' fill='url(#p)' textLength='48'><textPath href='#baseline' >AVj</textPath></text></svg>",
+    "windows": [
+      -5.303425312042236,
+      -8.03222370147705,
+      62.27769088745117,
+      38.5904541015625
+    ],
+    "linux": [
+      -4.3555684089660645,
+      -8.028205871582031,
+      61.329833984375,
+      38.26774215698242
+    ]
+  },
+  {
+    "id": "mixed-size",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='96' height='72'><defs><path id='baseline' d='M4 24Q30 12 60 24' /><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='24' fill='url(#p)' ><textPath href='#baseline' >A<tspan font-size='16'>V</tspan>j</textPath></text></svg>",
+    "windows": [
+      -5.142740726470947,
+      -8.016983985900879,
+      39.55819320678711,
+      38.53293228149414
+    ],
+    "linux": [
+      -4.192575931549072,
+      -8.016983985900879,
+      38.608028411865234,
+      38.22118377685547
+    ]
+  },
+  {
+    "id": "mixed-face",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='96' height='72'><defs><path id='baseline' d='M4 24Q30 12 60 24' /><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='24' fill='url(#p)' ><textPath href='#baseline' >A<tspan font-family='monospace' font-weight='700'>V</tspan>j</textPath></text></svg>",
+    "windows": [
+      -5.142740726470947,
+      -8.336845397949219,
+      46.10295486450195,
+      38.8527946472168
+    ],
+    "linux": [
+      -4.192575931549072,
+      -8.336845397949219,
+      45.15279006958008,
+      38.541046142578125
+    ]
+  },
+  {
+    "id": "offset",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='96' height='72'><defs><path id='baseline' d='M4 24Q30 12 60 24' /><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='24' fill='url(#p)' dy='3'><textPath href='#baseline' startOffset='5'>AVj</textPath></text></svg>",
+    "windows": [
+      1.9528504610061646,
+      -5.1330671310424805,
+      44.11284255981445,
+      36.74262619018555
+    ],
+    "linux": [
+      2.9225404262542725,
+      -5.1330671310424805,
+      43.14315414428711,
+      36.498287200927734
+    ]
+  },
+  {
+    "id": "text-translation",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='96' height='72'><defs><path id='baseline' d='M4 24Q30 12 60 24' /><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='24' fill='url(#p)' transform='translate(3.25 -.75)'><textPath href='#baseline' >AVj</textPath></text></svg>",
+    "windows": [
+      -5.303425312042236,
+      -8.332655906677246,
+      44.96482849121094,
+      38.89088821411133
+    ],
+    "linux": [
+      -4.3555684089660645,
+      -8.332655906677246,
+      44.016971588134766,
+      38.57219314575195
+    ]
+  },
+  {
+    "id": "path-map",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='96' height='72'><defs><path id='baseline' d='M4 24Q30 12 60 24' transform='translate(1.25 -.75) scale(1.2)'/><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='24' fill='url(#p)' ><textPath href='#baseline' >AVj</textPath></text></svg>",
+    "windows": [
+      -3.6658730506896973,
+      -5.190517425537109,
+      43.84489822387695,
+      39.83265686035156
+    ],
+    "linux": [
+      -2.7240207195281982,
+      -5.190517425537109,
+      42.903045654296875,
+      39.49663162231445
+    ]
+  },
+  {
+    "id": "fractional",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='96' height='72'><defs><path id='baseline' d='M4.125 24.375Q30.125 12.25 60.375 24.125' /><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='24' fill='url(#p)' ><textPath href='#baseline' >AVj</textPath></text></svg>",
+    "windows": [
+      -5.282290458679199,
+      -8.074445724487305,
+      44.881526947021484,
+      39.004154205322266
+    ],
+    "linux": [
+      -4.33575963973999,
+      -8.074445724487305,
+      43.934993743896484,
+      38.68154525756836
+    ]
+  }
+]

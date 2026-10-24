@@ -44,6 +44,38 @@ public sealed class SvgTextPaintBoundsTests
         }
     }
 
+    [Theory]
+    [InlineData(1)]
+    [InlineData(1.5)]
+    public async Task Path_paint_boxes_use_original_source_maps_before_paint_truncation_and_output_placement(double outputScale)
+    {
+        using SvgFontSnapshot snapshot = await CreateSnapshotAsync();
+        byte[] bytes = File.ReadAllBytes(DataPath("path-vectors.json"));
+        using JsonDocument capture = JsonDocument.Parse(File.ReadAllBytes(DataPath("path-capture.json")));
+        Assert.Equal(capture.RootElement.GetProperty("vectorSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(bytes)));
+        using JsonDocument vectors = JsonDocument.Parse(bytes);
+        string platform = OperatingSystem.IsWindows() ? "windows" : "linux";
+        foreach (JsonElement row in vectors.RootElement.EnumerateArray())
+        {
+            byte[] input = TextEncoding.UTF8.GetBytes(row.GetProperty("source").GetString() ?? throw new InvalidDataException("Missing source path document."));
+            RenderBudget budget = new(8_000_000);
+            using (SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(input, SvgRenderLimits.Default, budget, new(10_000_000), CancellationToken.None))
+            {
+                SvgRenderOptions options = preparation.ResolveRasterOptions(new(null, outputScale, SvgColor.Transparent, SvgRenderLimits.Default, snapshot));
+                using SvgRoot root = SvgRootParser.ParsePrepared(input, SvgRenderLimits.Default, budget, snapshot, new(10_000_000), CancellationToken.None,
+                    preparation.GetOutputMap(options), options.Viewport, options.OutputScale, preparation);
+                SvgTextLinearShader shader = Assert.IsType<SvgTextLinearShader>(root.Geometries.ToArray()
+                    .First(geometry => geometry.Kind == SvgGeometryKind.GlyphContours).Glyph.Shader);
+                SvgGradientTransform box = (shader.Gradient.SourcePaint ?? throw new InvalidDataException("Missing source path box.")).Data.Local;
+                double[] actual = [box.E, box.F, box.A, box.D];
+                double[] expected = row.GetProperty(platform).EnumerateArray().Select(value => value.GetDouble()).ToArray();
+                Assert.True(expected.SequenceEqual(actual), row.GetProperty("id").GetString() + ": expected "
+                    + JsonSerializer.Serialize(expected) + ", actual " + JsonSerializer.Serialize(actual));
+            }
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        }
+    }
+
     [Fact]
     public async Task Metric_scratch_releases_after_denial_work_exhaustion_cancellation_and_retry()
     {

@@ -1,0 +1,58 @@
+{
+  "purpose": "Original local text-path source rectangles remain distinct from paint truncation and output placement. These controls cover anchors, straight/curved/vertical baselines, rotation, spacing, offsets, mixed fonts/sizes and path transforms.",
+  "chromeVersion": "153.0.8010.52",
+  "fontEvidence": "capture.json",
+  "vectorSha256": "5afc210baa263b9c5a7c2a374f679dfdb44ac0637adf8cfc0959f28cbed52ac7",
+  "license": "MIT",
+  "recipe": "Load the exact Noto Sans Regular and Noto Sans Mono Bold programs using FontFace, replacing serif/monospace with their explicit families and weights. Append each source SVG to the DOM at its authored intrinsic size, await document.fonts.ready, and read text.getBBox(). Both independent healthy launches per host returned exactly the same vectors.",
+  "launches": {
+    "windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 658,
+        "debuggerReadyMilliseconds": 180,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 645,
+        "debuggerReadyMilliseconds": 152,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 7443,
+        "debuggerReadyMilliseconds": 5108,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5884,
+        "debuggerReadyMilliseconds": 3936,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  }
+}

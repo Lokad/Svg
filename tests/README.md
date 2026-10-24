@@ -26,6 +26,9 @@ on each platform, and check metric reuse, denial, cancellation and scratch clean
 linear, radial and pattern fills/strokes in object-box and user-space units.
 Partial-opacity gradient references also check drawing-rectangle rounding before
 output scaling; cache/record tests guard repeated-run work and scene storage.
+[Path source-box vectors](Research/text-paint-bounds/path-capture.json) cover
+anchors, rotation, offsets, mixed faces/sizes and baseline transforms independently
+of the glyph paint origin and output scale.
 
 [Marker paint tests](Lokad.Svg.Tests/SvgMarkerPaintBindingTests.cs) cover forward
 resources, inherited fills, aliases, tile paint ownership, limits and cancellation.

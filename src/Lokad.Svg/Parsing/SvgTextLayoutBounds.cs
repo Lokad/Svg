@@ -61,8 +61,7 @@ internal static class SvgTextLayoutBounds
             RenderBudget budget = _budget;
             BudgetedParserDictionary<MetricKey, SourceBox> metrics = _items;
             float scale = (float)(run.DeviceMetrics?.Scale ?? 1), inverseScale = 1 / scale;
-            SvgAffineTransform inverse = SvgAffineTransform.Identity;
-            if (!paths.IsEmpty && !placement.TryInvert(out inverse))
+            if (!paths.IsEmpty && !placement.TryInvert(out _))
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Singular text paint placement is not implemented.");
             SourceBox result = default;
             if (!paths.IsEmpty)
@@ -72,7 +71,7 @@ internal static class SvgTextLayoutBounds
                     work.Consume(token);
                     SvgPlacedTextGlyph path = paths[index];
                     if (!path.Visible) continue;
-                    SvgAffineTransform map = inverse.ComposeChecked(path.Map).ComposeChecked(SvgAffineTransform.FromTranslation(path.Position.X, path.Position.Y));
+                    SvgAffineTransform map = path.SourceMap;
                     map = map with { E = map.E * scale, F = map.F * scale };
                     float inlineWidth = MathF.Ceiling((float)(run.Glyphs[index].Advance * scale) * 64) / 64;
                     result = result.Union(Fragment(index, index + 1, inlineWidth, default).Map(map, work, token).Scale(inverseScale, inverseScale));

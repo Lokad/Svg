@@ -8,6 +8,8 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Borrows one resolved path placement; invisible entries preserve source/glyph indexing without painting out-of-range characters.</summary>
 internal readonly record struct SvgPlacedTextGlyph(SvgPositionedGlyph Position, SvgAffineTransform Map, bool Visible)
 {
+    /// <summary>Retains the local source map before paint truncation, glyph stretch and output placement.</summary>
+    internal SvgAffineTransform SourceMap { get; init; }
     internal SvgTextDecorationPlacement Decoration { get; init; }
 }
 
