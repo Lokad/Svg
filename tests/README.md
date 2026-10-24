@@ -101,6 +101,9 @@ The [viewport recording cases](Lokad.Svg.Tests/SvgViewportRecordingScopeTests.cs
 check native shader colors for outer, own and inner opacity, plus denial and retry
 ownership. Their [browser checks](Lokad.Svg.VisualTests/SvgViewportRecordingReferenceTests.cs)
 use [fresh viewport references](Research/viewport-recording/capture.json).
+The [viewport storage checks](Lokad.Svg.Tests/SvgViewportContextStorageTests.cs)
+compare the charged allowance with actual context allocations and verify failed
+registration, cancellation and disposal.
 
 [Display inheritance tests](Lokad.Svg.Tests/SvgDisplayInheritanceTests.cs) cover
 logical parents, retained instances, viewports and resource children across

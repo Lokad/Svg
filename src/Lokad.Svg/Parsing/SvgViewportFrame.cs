@@ -1,6 +1,7 @@
 namespace Lokad.Svg.Parsing;
 
 using Lokad.Svg.Rendering;
+using System.Runtime.CompilerServices;
 
 /// <summary>Carries one nested viewport map, user-space percentage bases, absolute clip box and XML depth.</summary>
 internal readonly record struct SvgViewportFrame(double OffsetX, double OffsetY, double ScaleX, double ScaleY, double? ViewportWidth, double? ViewportHeight, SvgClipBox Clip, int Depth)
@@ -104,7 +105,12 @@ internal sealed class SvgViewportTextContext : IDisposable
 
     internal static SvgViewportTextContext Create(SvgDocumentState state, SvgInheritedContainer? inheritance, SvgAffineTransform placement, SvgAffineViewportClip viewport)
     {
-        RenderBudget.BudgetReservation owner = state.Budget.Reserve(320, SvgMemoryCategory.Parser);
+        // The nullable value fields occupy their full storage even when absent.
+        // Include the object header/references and reservation token; owner-list
+        // backing storage is accounted separately by its budgeted collection.
+        long storageBytes = 72L + Unsafe.SizeOf<SvgInheritedContainer?>()
+            + Unsafe.SizeOf<SvgAffineTransform>() + Unsafe.SizeOf<SvgAffineViewportClip?>();
+        RenderBudget.BudgetReservation owner = state.Budget.Reserve(storageBytes, SvgMemoryCategory.Parser);
         try
         {
             SvgViewportTextContext context = new(inheritance, placement, viewport, owner);

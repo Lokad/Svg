@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Account for retained viewport context fields and their reservation token
+  before allocating parser storage.
 - Preserve nested viewport boundaries when applying outer opacity to shader
   paints, while retaining single-paint opacity inside the viewport.
 - Preserve pattern sampling across clip, mask and opacity recording boundaries,
