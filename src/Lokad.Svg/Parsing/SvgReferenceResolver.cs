@@ -1406,12 +1406,23 @@ internal static class SvgReferenceResolver
                 mapped[index] = new SvgDevicePoint(placedX, placedY);
             }
             SvgLinearGradient vector = source.Gradient;
-            if (vector.IsUserSpace) vector = vector with { X1 = vector.X1 * scaleX + offsetX + instance.X, Y1 = vector.Y1 * scaleY + offsetY + instance.Y, X2 = vector.X2 * scaleX + offsetX + instance.X, Y2 = vector.Y2 * scaleY + offsetY + instance.Y, ReferenceScaleX = vector.ReferenceScaleX * scaleX, ReferenceScaleY = vector.ReferenceScaleY * scaleY };
-            SvgRectangle contentBox = source.Box;
-            SvgRectangle box = instance.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + instance.X, contentBox.Y * scaleY + offsetY + instance.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));
-            if (viewportFrame is not null) box = viewportFrame.Value.Shift(box);
-            vector = SvgGradientSyntax.MapUserSpaceVector(instance.Transform, vector, viewportFrame);
-            vector = SvgGradientSyntax.MirrorBoundingBoxVector(instance.Transform, vector);
+            SvgAffineTransform placement = PlainInstancePlacement(instance, viewportFrame).ComposeChecked(SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX, offsetY));
+            SvgRectangle box;
+            if (vector.SourcePaint?.Data is { IsMapped: true } data)
+            {
+                if (placement != SvgAffineTransform.Identity)
+                    vector = vector with { SourcePaint = document.Scene.RetainLinearPaintMap(data with { Referencing = placement.ComposeChecked(data.Referencing) }) };
+                box = default;
+            }
+            else
+            {
+                if (vector.IsUserSpace) vector = vector with { X1 = vector.X1 * scaleX + offsetX + instance.X, Y1 = vector.Y1 * scaleY + offsetY + instance.Y, X2 = vector.X2 * scaleX + offsetX + instance.X, Y2 = vector.Y2 * scaleY + offsetY + instance.Y, ReferenceScaleX = vector.ReferenceScaleX * scaleX, ReferenceScaleY = vector.ReferenceScaleY * scaleY };
+                SvgRectangle contentBox = source.Box;
+                box = instance.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + instance.X, contentBox.Y * scaleY + offsetY + instance.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));
+                if (viewportFrame is not null) box = viewportFrame.Value.Shift(box);
+                vector = SvgGradientSyntax.MapUserSpaceVector(instance.Transform, vector, viewportFrame);
+                vector = SvgGradientSyntax.MirrorBoundingBoxVector(instance.Transform, vector);
+            }
             SvgClipBox viewport = instance.Transform.Apply(new SvgClipBox(instance.X, instance.Y, instance.Width.Value, instance.Height.Value));
             if (viewportFrame is not null)
             {
@@ -1430,7 +1441,6 @@ internal static class SvgReferenceResolver
             }
             byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);
             SvgGeometry result = SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(mapped, source.ContourEnds, source.Signs, vector, box, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, null, document.Budget));
-            SvgAffineTransform placement = PlainInstancePlacement(instance, viewportFrame).ComposeChecked(SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX, offsetY));
             return geometry.CopyAuthoredPathTo(result, placement, document.Budget, workCounter, cancellationToken);
         }
         static SvgGeometry ApplySymbolGradientFill(SvgGradientGeometry band, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, ParserWorkCounter workCounter, CancellationToken cancellationToken)

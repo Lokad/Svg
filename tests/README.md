@@ -64,6 +64,10 @@ The [overlap cases](Lokad.Svg.Tests/SvgRectanglePaintOverlapTests.cs) compare
 combined fill/stroke paints with ordered draws, including opacity layers and
 masks. Their [browser checks](Lokad.Svg.VisualTests/SvgRectanglePaintOverlapReferenceTests.cs)
 retain each input's [native image](Research/rectangle-paint-overlap/capture.json).
+The [zero-radius cases](Lokad.Svg.Tests/SvgZeroRadiusPaintTests.cs) cover contour
+order and symbol linear-paint maps; [ownership cases](Lokad.Svg.Tests/SvgZeroRadiusSymbolOwnershipTests.cs)
+exercise denial, cancellation and retry. Their [browser checks](Lokad.Svg.VisualTests/SvgZeroRadiusPaintReferenceTests.cs)
+retain [separate references](Research/zero-radius-paints/capture.json) for naturally unequal inputs.
 
 [Display inheritance tests](Lokad.Svg.Tests/SvgDisplayInheritanceTests.cs) cover
 logical parents, retained instances, viewports and resource children across

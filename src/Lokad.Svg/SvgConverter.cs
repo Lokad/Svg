@@ -1655,11 +1655,11 @@ public static partial class SvgConverter
                 float inflation = 0;
                 if (source.StrokeStyle is {} stroke)
                 {
-                    if (stroke.Shape != SvgAuthoredStrokeShape.Rectangle || stroke.NonScalingMap is not null
+                    if (stroke.Shape is not (SvgAuthoredStrokeShape.Rectangle or SvgAuthoredStrokeShape.RectanglePath) || stroke.NonScalingMap is not null
                         || stroke.WidthMap != source.SceneMap) return false;
                     inflation = (float)stroke.Width / 2f;
                 }
-                else if (!source.IsRectangleFill) return false;
+                else if (!source.HasRectangleDrawingBounds) return false;
                 SvgRectanglePathRecognizer recognizer = new();
                 foreach (SvgAuthoredPathCommand command in source.Commands)
                 {
@@ -2304,7 +2304,7 @@ public static partial class SvgConverter
         {
             if (geometry.Kind == SvgGeometryKind.PolygonFill && geometry.AuthoredPath is SvgAuthoredPath centerline
                 && centerline.StrokeStyle is SvgAuthoredStrokeStyle strokeStyle
-                && (strokeStyle.Shape == SvgAuthoredStrokeShape.Path || !centerline.SceneMap.PreservesAxisAlignedRectangles))
+                && (strokeStyle.Shape != SvgAuthoredStrokeShape.Rectangle || !centerline.SceneMap.PreservesAxisAlignedRectangles))
             {
                 ParserWorkCounter hairlineWork = new(options.Limits.MaximumWorkUnits - workUnits);
                 SvgPolygonFill stroke = geometry.Polygon;

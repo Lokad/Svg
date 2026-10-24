@@ -516,7 +516,8 @@ internal ref struct SvgOrthogonalGeometryLowering
                 if (element.Presentation.HasFill && nativeResult.Geometries.Length == 1)
                 {
                     nativeSource = source.Detach();
-                    nativeResult.Storage.Items[0] = nativeResult.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.CreateConvexShape(nativeSource, nativeMap, budget) };
+                    nativeResult.Storage.Items[0] = nativeResult.Storage.Items[0] with { AuthoredPath = radiusX == 0 || radiusY == 0
+                        ? SvgAuthoredPath.CreateRectanglePath(nativeSource, nativeMap, budget) : SvgAuthoredPath.CreateConvexShape(nativeSource, nativeMap, budget) };
                     nativeSource = new([], null);
                 }
                 return nativeResult;
@@ -565,7 +566,8 @@ internal ref struct SvgOrthogonalGeometryLowering
                 SvgRoundedRectPath.Append(commands, x, y, width, height, radiusX, radiusY);
                 owned = commands.Detach();
                 result.Storage.Items[0] = result.Storage.Items[0] with { AuthoredPath = radiusX == 0 && radiusY == 0
-                    ? SvgAuthoredPath.CreateRectangle(owned, deviceMap, budget) : SvgAuthoredPath.CreateConvexShape(owned, deviceMap, budget) };
+                    ? SvgAuthoredPath.CreateRectangle(owned, deviceMap, budget) : radiusX == 0 || radiusY == 0
+                        ? SvgAuthoredPath.CreateRectanglePath(owned, deviceMap, budget) : SvgAuthoredPath.CreateConvexShape(owned, deviceMap, budget) };
                 owned = new([], null);
             }
             return result;
@@ -602,7 +604,8 @@ internal ref struct SvgOrthogonalGeometryLowering
             stroke.NonScalingStroke, stroke.Color, element.Presentation.IsPainted, element.OutputMagnification,
             element.StrokeHostMap, frame, budget, radiusX == 0 && radiusY == 0 && stroke.Join == SvgStrokeJoin.Miter
                 && stroke.MiterLimit >= 1.4142135623730951 && stroke.DashPattern is null
-                ? SvgAuthoredStrokeShape.Rectangle : SvgAuthoredStrokeShape.Path, SvgNativeStrokeResolution.MappedPath) with { ElementCount = count };
+                ? SvgAuthoredStrokeShape.Rectangle : radiusX == 0 || radiusY == 0
+                    ? SvgAuthoredStrokeShape.RectanglePath : SvgAuthoredStrokeShape.Path, SvgNativeStrokeResolution.MappedPath) with { ElementCount = count };
     }
 
     /// <summary>Retains mapped path bounds and authored fill commands with the caller mapping discipline.</summary>

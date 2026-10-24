@@ -1,0 +1,212 @@
+{
+  "purpose": "Single-zero-radius path order, primitive drawing bounds and source-mapped symbol linear paints; each actual captured in three fresh processes, with independently measured controls.",
+  "platform": "win64",
+  "chromePin": {
+    "version": "153.0.8010.52",
+    "chromiumRevision": "1681091",
+    "platform": "win64",
+    "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/win64/chrome-win64.zip",
+    "archiveSha256": "df4854428c509fcf2f790ac448bca3f994151bcff22008236fa7c4587294fbe1",
+    "executableRelativePath": "chrome-win64/chrome.exe",
+    "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+    "captureRecipeRevision": "3"
+  },
+  "width": 32,
+  "height": 32,
+  "background": "transparent",
+  "license": "MIT",
+  "cases": [
+    {
+      "id": "solid-half-direct-candidate",
+      "input": "solid-half-direct-candidate.svg",
+      "reference": "references/f2b379a657a25f43.png",
+      "sourceSha256": "7c151dcba6298d47b3d40a67eb1ce2779e21a4992e05816166d5c389200dd190",
+      "referenceSha256": "f2b379a657a25f43ccbfdc6e046c340d65b228781762a2a1ada92260b5fa60e3",
+      "captureSha256": [
+        "f2b379a657a25f43ccbfdc6e046c340d65b228781762a2a1ada92260b5fa60e3",
+        "f2b379a657a25f43ccbfdc6e046c340d65b228781762a2a1ada92260b5fa60e3",
+        "f2b379a657a25f43ccbfdc6e046c340d65b228781762a2a1ada92260b5fa60e3"
+      ]
+    },
+    {
+      "id": "solid-half-direct-control",
+      "input": "solid-half-direct-control.svg",
+      "reference": "references/8b5f7cbf52e40cba.png",
+      "sourceSha256": "b26d9d4b969e63d3a92ae5472132ce6bdf4026f2707cb4ee21c9cde59dc39b49",
+      "referenceSha256": "8b5f7cbf52e40cba147393677139e5ce886975d84738d581150ee47544086177",
+      "captureSha256": [
+        "8b5f7cbf52e40cba147393677139e5ce886975d84738d581150ee47544086177",
+        "8b5f7cbf52e40cba147393677139e5ce886975d84738d581150ee47544086177",
+        "8b5f7cbf52e40cba147393677139e5ce886975d84738d581150ee47544086177"
+      ]
+    },
+    {
+      "id": "solid-half-use-candidate",
+      "input": "solid-half-use-candidate.svg",
+      "reference": "references/4736e9e64ef0c2c3.png",
+      "sourceSha256": "ce363de2d52a32947ffc37c13ccee58e93436d79e083d583eff4e9175ce65ec2",
+      "referenceSha256": "4736e9e64ef0c2c386c8fcb8847320fdec1a2877e3417fd5c5d17fe19e9fc283",
+      "captureSha256": [
+        "4736e9e64ef0c2c386c8fcb8847320fdec1a2877e3417fd5c5d17fe19e9fc283",
+        "4736e9e64ef0c2c386c8fcb8847320fdec1a2877e3417fd5c5d17fe19e9fc283",
+        "4736e9e64ef0c2c386c8fcb8847320fdec1a2877e3417fd5c5d17fe19e9fc283"
+      ]
+    },
+    {
+      "id": "solid-half-use-control",
+      "input": "solid-half-use-control.svg",
+      "reference": "references/f0b98a9600782e0a.png",
+      "sourceSha256": "36d2c5046a1e3edab40f1bbeb5345176c72f45957e77b57dd111a1b71f1773f8",
+      "referenceSha256": "f0b98a9600782e0aaec6e7b6234971ab562391a89cffb061799402a0e44fbcad",
+      "captureSha256": [
+        "f0b98a9600782e0aaec6e7b6234971ab562391a89cffb061799402a0e44fbcad",
+        "f0b98a9600782e0aaec6e7b6234971ab562391a89cffb061799402a0e44fbcad",
+        "f0b98a9600782e0aaec6e7b6234971ab562391a89cffb061799402a0e44fbcad"
+      ]
+    },
+    {
+      "id": "linear-two-symbol-candidate",
+      "input": "linear-two-symbol-candidate.svg",
+      "reference": "references/24782f72e4f9f7dc.png",
+      "sourceSha256": "01bb6cce50b3b8dba4add7e61525a92a56debe9af7fec526637a08046306e479",
+      "referenceSha256": "24782f72e4f9f7dc09a88cdbdb7480f73617bd33610f95831c69aae16e5c164a",
+      "captureSha256": [
+        "24782f72e4f9f7dc09a88cdbdb7480f73617bd33610f95831c69aae16e5c164a",
+        "24782f72e4f9f7dc09a88cdbdb7480f73617bd33610f95831c69aae16e5c164a",
+        "24782f72e4f9f7dc09a88cdbdb7480f73617bd33610f95831c69aae16e5c164a"
+      ]
+    },
+    {
+      "id": "linear-two-symbol-control",
+      "input": "linear-two-symbol-control.svg",
+      "reference": "references/5c7973baf2fde57e.png",
+      "sourceSha256": "009ff66fc1397ba341df5debc12e2ebf594101ef806f61875883531a2e647bfb",
+      "referenceSha256": "5c7973baf2fde57ebbcc59c15b9334973e3000b87f647043bc815abc8f791bff",
+      "captureSha256": [
+        "5c7973baf2fde57ebbcc59c15b9334973e3000b87f647043bc815abc8f791bff",
+        "5c7973baf2fde57ebbcc59c15b9334973e3000b87f647043bc815abc8f791bff",
+        "5c7973baf2fde57ebbcc59c15b9334973e3000b87f647043bc815abc8f791bff"
+      ]
+    },
+    {
+      "id": "rounded-symbol-map-candidate",
+      "input": "rounded-symbol-map-candidate.svg",
+      "reference": "references/d0b132c19f06faa0.png",
+      "sourceSha256": "a56c83eaadc618059b9630800dbb3d688e685741f84256b6c57edb6ef341d997",
+      "referenceSha256": "d0b132c19f06faa08089cabf6d97f0645fb95844d9017d8252a2479e264a00fc",
+      "captureSha256": [
+        "d0b132c19f06faa08089cabf6d97f0645fb95844d9017d8252a2479e264a00fc",
+        "d0b132c19f06faa08089cabf6d97f0645fb95844d9017d8252a2479e264a00fc",
+        "d0b132c19f06faa08089cabf6d97f0645fb95844d9017d8252a2479e264a00fc"
+      ]
+    },
+    {
+      "id": "rounded-symbol-map-control",
+      "input": "rounded-symbol-map-control.svg",
+      "reference": "references/d0b132c19f06faa0.png",
+      "sourceSha256": "d315eedba401ee2273b0529b2bfe5372707620ecdcea00e6a85b3912ee424a40",
+      "referenceSha256": "d0b132c19f06faa08089cabf6d97f0645fb95844d9017d8252a2479e264a00fc",
+      "captureSha256": [
+        "d0b132c19f06faa08089cabf6d97f0645fb95844d9017d8252a2479e264a00fc",
+        "d0b132c19f06faa08089cabf6d97f0645fb95844d9017d8252a2479e264a00fc",
+        "d0b132c19f06faa08089cabf6d97f0645fb95844d9017d8252a2479e264a00fc"
+      ]
+    },
+    {
+      "id": "ellipse-symbol-map-candidate",
+      "input": "ellipse-symbol-map-candidate.svg",
+      "reference": "references/3c2f5cc81c6d4928.png",
+      "sourceSha256": "7bffa72f656814d0de5262187daba050971fae617220e833633d856235e7a8d2",
+      "referenceSha256": "3c2f5cc81c6d49280936d7fb3b7afa06a9365a961249f63c3c30c6589da5289a",
+      "captureSha256": [
+        "3c2f5cc81c6d49280936d7fb3b7afa06a9365a961249f63c3c30c6589da5289a",
+        "3c2f5cc81c6d49280936d7fb3b7afa06a9365a961249f63c3c30c6589da5289a",
+        "3c2f5cc81c6d49280936d7fb3b7afa06a9365a961249f63c3c30c6589da5289a"
+      ]
+    },
+    {
+      "id": "ellipse-symbol-map-control",
+      "input": "ellipse-symbol-map-control.svg",
+      "reference": "references/3c2f5cc81c6d4928.png",
+      "sourceSha256": "277c4e61e1c69b85c9fa0349d008c94a5c4242c16b4c8e65fe60fc91198cdfcd",
+      "referenceSha256": "3c2f5cc81c6d49280936d7fb3b7afa06a9365a961249f63c3c30c6589da5289a",
+      "captureSha256": [
+        "3c2f5cc81c6d49280936d7fb3b7afa06a9365a961249f63c3c30c6589da5289a",
+        "3c2f5cc81c6d49280936d7fb3b7afa06a9365a961249f63c3c30c6589da5289a",
+        "3c2f5cc81c6d49280936d7fb3b7afa06a9365a961249f63c3c30c6589da5289a"
+      ]
+    },
+    {
+      "id": "linear-layer-bounds-candidate",
+      "input": "linear-layer-bounds-candidate.svg",
+      "reference": "references/9ff004e930d6b72d.png",
+      "sourceSha256": "7f93307cb248b08d8b0499d918accd5bc0cb3d0b3c3d1b5d718297f82723fa5a",
+      "referenceSha256": "9ff004e930d6b72d2bab7ff893d693475c044fc0b8d00d7b45cbd4e675a65bc9",
+      "captureSha256": [
+        "9ff004e930d6b72d2bab7ff893d693475c044fc0b8d00d7b45cbd4e675a65bc9",
+        "9ff004e930d6b72d2bab7ff893d693475c044fc0b8d00d7b45cbd4e675a65bc9",
+        "9ff004e930d6b72d2bab7ff893d693475c044fc0b8d00d7b45cbd4e675a65bc9"
+      ]
+    },
+    {
+      "id": "linear-layer-bounds-control",
+      "input": "linear-layer-bounds-control.svg",
+      "reference": "references/90550a2a24261007.png",
+      "sourceSha256": "6e1473fbd486e5b904ad130f448d6727e916d3970754bda97fd5d2a7bc32f1ee",
+      "referenceSha256": "90550a2a24261007583b3c739674229086a04c10a6f68f5d3d625307aa9fdb5e",
+      "captureSha256": [
+        "90550a2a24261007583b3c739674229086a04c10a6f68f5d3d625307aa9fdb5e",
+        "90550a2a24261007583b3c739674229086a04c10a6f68f5d3d625307aa9fdb5e",
+        "90550a2a24261007583b3c739674229086a04c10a6f68f5d3d625307aa9fdb5e"
+      ]
+    },
+    {
+      "id": "masked-source-bounds-candidate",
+      "input": "masked-source-bounds-candidate.svg",
+      "reference": "references/75b570f6dab55231.png",
+      "sourceSha256": "e433dbbdf3d4087196ede4b179b5c9954c628acc35deaba3e023a3e70a66271e",
+      "referenceSha256": "75b570f6dab55231b9d306573fbdd37fee286c4635944d383fc83220788d8de6",
+      "captureSha256": [
+        "75b570f6dab55231b9d306573fbdd37fee286c4635944d383fc83220788d8de6",
+        "75b570f6dab55231b9d306573fbdd37fee286c4635944d383fc83220788d8de6",
+        "75b570f6dab55231b9d306573fbdd37fee286c4635944d383fc83220788d8de6"
+      ]
+    },
+    {
+      "id": "masked-source-bounds-control",
+      "input": "masked-source-bounds-control.svg",
+      "reference": "references/75b570f6dab55231.png",
+      "sourceSha256": "7e1c38ccc7b1825bd4c00b5456e0276686268c1f549a80a95fcd5b75b3c67b81",
+      "referenceSha256": "75b570f6dab55231b9d306573fbdd37fee286c4635944d383fc83220788d8de6",
+      "captureSha256": [
+        "75b570f6dab55231b9d306573fbdd37fee286c4635944d383fc83220788d8de6",
+        "75b570f6dab55231b9d306573fbdd37fee286c4635944d383fc83220788d8de6",
+        "75b570f6dab55231b9d306573fbdd37fee286c4635944d383fc83220788d8de6"
+      ]
+    },
+    {
+      "id": "clipped-source-bounds-candidate",
+      "input": "clipped-source-bounds-candidate.svg",
+      "reference": "references/0d3c1b733eb215a9.png",
+      "sourceSha256": "4850293463c1e141ef11f896d54aa38f11459bcbf6f74585a2e8843abca19d03",
+      "referenceSha256": "0d3c1b733eb215a9a76d98b54144db017b8aeee7c795d2e49d42a355c67d68c0",
+      "captureSha256": [
+        "0d3c1b733eb215a9a76d98b54144db017b8aeee7c795d2e49d42a355c67d68c0",
+        "0d3c1b733eb215a9a76d98b54144db017b8aeee7c795d2e49d42a355c67d68c0",
+        "0d3c1b733eb215a9a76d98b54144db017b8aeee7c795d2e49d42a355c67d68c0"
+      ]
+    },
+    {
+      "id": "clipped-source-bounds-control",
+      "input": "clipped-source-bounds-control.svg",
+      "reference": "references/0d3c1b733eb215a9.png",
+      "sourceSha256": "242f707bdb9a144adcdbc70ebcc0315ce7b9e5d3d24e0fa9021a1dad17d79ca1",
+      "referenceSha256": "0d3c1b733eb215a9a76d98b54144db017b8aeee7c795d2e49d42a355c67d68c0",
+      "captureSha256": [
+        "0d3c1b733eb215a9a76d98b54144db017b8aeee7c795d2e49d42a355c67d68c0",
+        "0d3c1b733eb215a9a76d98b54144db017b8aeee7c795d2e49d42a355c67d68c0",
+        "0d3c1b733eb215a9a76d98b54144db017b8aeee7c795d2e49d42a355c67d68c0"
+      ]
+    }
+  ]
+}

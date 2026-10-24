@@ -5,10 +5,10 @@ namespace Lokad.Svg.Parsing;
 internal enum SvgAuthoredPathVerb { Move, Line, Quadratic, Cubic, Arc, Conic, End, Close }
 
 /// <summary>Identifies the native draw operation whose coverage must survive source replay.</summary>
-internal enum SvgAuthoredStrokeShape { Path, Rectangle }
+internal enum SvgAuthoredStrokeShape { Path, Rectangle, RectanglePath }
 
 /// <summary>Preserves the native fill operation independently of generated outline or clip geometry.</summary>
-internal enum SvgAuthoredFillShape : byte { Path, Convex, Rectangle }
+internal enum SvgAuthoredFillShape : byte { Path, Convex, Rectangle, RectanglePath }
 
 /// <summary>Keeps native paint placement separate from the transform already applied to non-scaling source commands.</summary>
 internal readonly record struct SvgNonScalingStrokeMap(SvgAffineTransform SourceMap, SvgAffineTransform StrokeTransform);
@@ -59,6 +59,8 @@ internal sealed class SvgAuthoredPath : IDisposable
     internal bool IsKnownConvex => _fillShape != SvgAuthoredFillShape.Path;
     /// <summary>Identifies a native rectangle fill; rectangular clips and path outlines remain path draws.</summary>
     internal bool IsRectangleFill => _fillShape == SvgAuthoredFillShape.Rectangle;
+    /// <summary>Identifies a rectangle primitive's drawing bounds, including its degenerate rounded path form.</summary>
+    internal bool HasRectangleDrawingBounds => _fillShape is SvgAuthoredFillShape.Rectangle or SvgAuthoredFillShape.RectanglePath;
     internal SvgAuthoredStrokeStyle? StrokeStyle { get; }
     /// <summary>Borrows the generated source outline until this centerline owner is disposed or transferred.</summary>
     internal SvgAuthoredPath? StrokeOutline => _strokeOutline;
@@ -218,6 +220,12 @@ internal sealed class SvgAuthoredPath : IDisposable
     /// output placement decides whether the rectangle remains axis aligned.</remarks>
     internal static SvgAuthoredPath CreateRectangle(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, RenderBudget budget)
         => Create(commands, sceneMap, null, null, SvgAuthoredFillShape.Rectangle, budget);
+
+    /// <summary>Adopts a degenerate rounded rectangle's line verbs with path coverage and primitive drawing bounds.</summary>
+    /// <remarks>Ownership transfers only on success. Copy and transfer preserve both native contracts;
+    /// the caller charges command construction and the scene owns the bounded source storage.</remarks>
+    internal static SvgAuthoredPath CreateRectanglePath(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, RenderBudget budget)
+        => Create(commands, sceneMap, null, null, SvgAuthoredFillShape.RectanglePath, budget);
 
     /// <summary>Adopts the source centerline and its generated outline only on success.</summary>
     /// <remarks>The caller retains both owners on failure. The outline is a filled child with its

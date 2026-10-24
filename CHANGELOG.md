@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve the path start and drawing bounds of rectangles with one zero corner
+  radius, and compose retained linear-gradient maps through symbol placement.
 - Preserve native rectangle fill coverage beside solid and shader strokes, and
   round retained rectangle drawing bounds before mapping isolated opacity layers.
 - Share rectangle lowering across direct and retained sources, preserving native

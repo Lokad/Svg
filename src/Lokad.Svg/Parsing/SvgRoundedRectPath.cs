@@ -28,10 +28,22 @@ internal static class SvgRoundedRectPath
         // and hairline paints, where segment overlap can change stored color.
         if (rx <= 0 || ry <= 0)
         {
-            commands.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(left, bottom), default, default));
-            commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(left, top), default, default));
-            commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(right, top), default, default));
-            commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(right, bottom), default, default));
+            if (rx > 0 || ry > 0)
+            {
+                // A single zero SVG radius selects AddRect's top-left path start.
+                // Ordinary drawRect sources retain their independent bottom-left start.
+                commands.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(left, top), default, default));
+                commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(right, top), default, default));
+                commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(right, bottom), default, default));
+                commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(left, bottom), default, default));
+            }
+            else
+            {
+                commands.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(left, bottom), default, default));
+                commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(left, top), default, default));
+                commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(right, top), default, default));
+                commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(right, bottom), default, default));
+            }
         }
         else if (rx >= nativeWidth * .5f && ry >= nativeHeight * .5f)
         {

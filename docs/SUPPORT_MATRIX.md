@@ -107,6 +107,10 @@ retained rectangle drawing bounds round in source space before opacity-layer
 placement. [Overlap regressions](../tests/Lokad.Svg.Tests/SvgRectanglePaintOverlapTests.cs)
 and [native references](../tests/Research/rectangle-paint-overlap/capture.json)
 cover combined paints, instances, opacity and masks.
+Single-zero-radius rectangles retain their path start and primitive drawing
+bounds. Symbol linear paints compose retained source and instance maps; see
+the [paint cases](../tests/Lokad.Svg.Tests/SvgZeroRadiusPaintTests.cs) and
+[native references](../tests/Research/zero-radius-paints/capture.json).
 Omitted circle radii and path data paint nothing. An ellipse with one omitted
 radius copies the other resolved radius; omitting both paints nothing.
 Omitted/empty point lists paint nothing. Repeated and closing vertices, and
