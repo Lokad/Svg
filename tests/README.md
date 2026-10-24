@@ -46,6 +46,9 @@ solid/gradient/pattern instances and curve scratch ownership. The
 tile-font selection; [browser checks](Lokad.Svg.VisualTests/SvgEmptyContourReferenceTests.cs)
 retain independently captured inputs and hashes in
 [their evidence record](Research/empty-contour-sources/capture.json).
+The [inactive-channel cases](Lokad.Svg.Tests/OpenTypeFontTests.InactivePatternChannels.cs)
+cover zero fill/stroke opacity and stroke width, CSS precedence, instances,
+masks/filters and independent live channels.
 
 [Display inheritance tests](Lokad.Svg.Tests/SvgDisplayInheritanceTests.cs) cover
 logical parents, retained instances, viewports and resource children across

@@ -143,7 +143,7 @@ internal sealed class SvgPaintResourceSelection : IDisposable
                     }
                     else result._displayedPaints.TryAdd(resourceId, available);
                 }
-                ObservePaint(paint.Fill); ObservePaint(paint.Stroke);
+                ObservePaint(paint, false); ObservePaint(paint, true);
                 int pattern = -1;
                 if (selected && svgElement && reader.LocalName == "pattern" && (reader.Depth == rootDepth + 1 || parent.Definitions)
                     && reader.GetAttribute("id") is {} id)
@@ -218,12 +218,20 @@ internal sealed class SvgPaintResourceSelection : IDisposable
             {
                 if (value is not null && SvgLocalUrl.TryParseId(value, out string id)) effects.Add(new(patternOwner, new(strings.Copy(id), kind)));
             }
-            void ObservePaint(string? value)
+            void ObservePaint(SvgComputedStyle paint, bool stroke)
             {
+                string? value = stroke ? paint.Stroke : paint.Fill;
                 // Declared empty geometry cannot sample its own paint, including through an instance.
                 if (value is not null && SvgLocalUrl.TryParseId(value, out string id) && !references.TryGetValue(id, out _)
                     && (!SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName) || SvgMaskSyntax.HasPaintableTarget(reader, true, null)))
+                {
+                    // A primitive's own channel declarations survive instance inheritance.
+                    // Container paint stays conservative because children can override opacity or width.
+                    if (SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName)
+                        && (SvgColorParser.ParsePaintOpacity(stroke ? paint.StrokeOpacity : paint.FillOpacity).Value == 0
+                            || stroke && SvgStrokeStyleSyntax.IsZeroStrokeWidth(paint.Width))) return;
                     references.TryAdd(strings.Copy(id), true);
+                }
             }
         }
         catch { result.Dispose(); throw; }

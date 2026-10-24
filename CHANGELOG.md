@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Skip pattern tile fonts for primitive channels with explicitly zero fill/stroke
+  opacity or stroke width, preserving live paints and instance inheritance.
 - Preserve mask paint clips through fractional instance placement and move
   explicit regions with uniform masks, keeping native curved-edge coverage.
 - Paint markers on unstroked line instances and resource hosts, resolve forward
