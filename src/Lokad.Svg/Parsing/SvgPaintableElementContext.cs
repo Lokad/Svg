@@ -32,6 +32,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
         SvgInheritedTextStyle inheritedTextStyle = state.Groups.Count == 0 ? root.InheritedTextStyle : state.Groups[^1].InheritedTextStyle;
         SvgInheritedStrokeStyle inheritedStroke = state.Groups.Count == 0 ? root.InheritedStroke : state.Groups[^1].InheritedStroke;
         string? inheritedFillRule = state.Groups.Count == 0 ? root.FillRule : state.Groups[^1].FillRule;
+        SvgRecordingScope recordingScope = state.Groups.Count == 0 ? new(1) : state.Groups[^1].RecordingScope;
         int styleParentDepth = state.Groups.Count == 0 ? -1 : state.Groups[^1].Depth;
         if (state.EffectiveFrame is SvgViewportFrame viewport && viewport.Depth > styleParentDepth && viewport.TextContext?.Inheritance is {} viewportStyle)
         {
@@ -39,6 +40,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
             inheritedTextStyle = viewportStyle.TextStyle;
             inheritedStroke = viewportStyle.Stroke;
             inheritedFillRule = viewportStyle.FillRule;
+            if (viewport.RecordingScope.Value != 0) recordingScope = viewport.RecordingScope;
             styleParentDepth = viewport.Depth;
         }
         if (state.DefinitionsDepth > styleParentDepth && state.DefinitionInheritance is {} definitionStyle)
@@ -51,7 +53,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
         SvgViewportLengthBases lengthBases = new(state.EffectiveFrame?.ViewportWidth ?? state.SymbolViewBox?.Width ?? root.UserViewportWidth,
             state.EffectiveFrame?.ViewportHeight ?? state.SymbolViewBox?.Height ?? root.UserViewportHeight);
         if (state.MaskObjectBoundingBoxContent && reader.Depth > state.MaskDepth) lengthBases = new(1, 1);
-        return new SvgPaintableElementContext(inheritedPresentation, inheritedTextStyle, inheritedStroke, SvgDocumentStyleResolver.Resolve(reader, state, workCounter, cancellationToken), namedColors, workCounter, cancellationToken, state.OutputMagnification, inheritedFillRule) { StrokeHostMap = state.OutputMap, InheritedClipRule = state.Groups.Count == 0 ? root.ClipRule : state.Groups[^1].ClipRule, RecordingScope = state.Groups.Count == 0 ? new(1) : state.Groups[^1].RecordingScope, LengthBases = lengthBases };
+        return new SvgPaintableElementContext(inheritedPresentation, inheritedTextStyle, inheritedStroke, SvgDocumentStyleResolver.Resolve(reader, state, workCounter, cancellationToken), namedColors, workCounter, cancellationToken, state.OutputMagnification, inheritedFillRule) { StrokeHostMap = state.OutputMap, InheritedClipRule = state.Groups.Count == 0 ? root.ClipRule : state.Groups[^1].ClipRule, RecordingScope = recordingScope, LengthBases = lengthBases };
     }
 
     /// <summary>Retains this leaf's cascaded declarations before applying instance inheritance or deferred opacity.</summary>

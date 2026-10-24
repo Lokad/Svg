@@ -1,0 +1,227 @@
+{
+  "purpose": "Preserve source viewport boundaries around outer opacity while allowing opacity inside the viewport to shade its single paint.",
+  "platform": "win64",
+  "chromePin": {
+    "version": "153.0.8010.52",
+    "chromiumRevision": "1681091",
+    "platform": "win64",
+    "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/win64/chrome-win64.zip",
+    "archiveSha256": "df4854428c509fcf2f790ac448bca3f994151bcff22008236fa7c4587294fbe1",
+    "executableRelativePath": "chrome-win64/chrome.exe",
+    "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+    "captureRecipeRevision": "3"
+  },
+  "background": "transparent",
+  "license": "MIT",
+  "recipe": "Decode the exact SVG bytes as an image/svg+xml Blob, then drawImage to a transparent canvas of ceil(32 * outputScale) square pixels. Three independent healthy ChromeProcess launches per actual; each profile is cleaned.",
+  "cases": [
+    {
+      "id": "linear-outer-candidate",
+      "input": "linear-outer-candidate.svg",
+      "sourceSha256": "f588651232ce790dbe21a802f35af42041ef3e7c17a9af934455cb9afab877c1",
+      "outputScale": 1,
+      "reference": "references/0c2a7c60b9dd51f5.png",
+      "referenceSha256": "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b",
+      "captureSha256": [
+        "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b",
+        "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b",
+        "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b"
+      ]
+    },
+    {
+      "id": "linear-outer-control",
+      "input": "linear-outer-control.svg",
+      "sourceSha256": "e2b95679cbd0401ad292f77a8dd24fd87d9fed68e3156b576cae3d72cd451ef3",
+      "outputScale": 1,
+      "reference": "references/0c2a7c60b9dd51f5.png",
+      "referenceSha256": "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b",
+      "captureSha256": [
+        "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b",
+        "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b",
+        "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b"
+      ]
+    },
+    {
+      "id": "linear-inner-candidate",
+      "input": "linear-inner-candidate.svg",
+      "sourceSha256": "1df86a28adc2fb638fe771828e34ffd2b6948a7f6256ddba5e29aea50a7fb7a5",
+      "outputScale": 1,
+      "reference": "references/e135abb327f8b674.png",
+      "referenceSha256": "6520578eb9627b143ce46b633d06b5679529ae92adcace2621a2862cf3cc484d",
+      "captureSha256": [
+        "6520578eb9627b143ce46b633d06b5679529ae92adcace2621a2862cf3cc484d",
+        "6520578eb9627b143ce46b633d06b5679529ae92adcace2621a2862cf3cc484d",
+        "6520578eb9627b143ce46b633d06b5679529ae92adcace2621a2862cf3cc484d"
+      ]
+    },
+    {
+      "id": "linear-inner-control",
+      "input": "linear-inner-control.svg",
+      "sourceSha256": "b6bd2ed43760630f4fa00ebb44d85d6f9635612ec3622a689390e3722cab4255",
+      "outputScale": 1,
+      "reference": "references/e135abb327f8b674.png",
+      "referenceSha256": "6520578eb9627b143ce46b633d06b5679529ae92adcace2621a2862cf3cc484d",
+      "captureSha256": [
+        "6520578eb9627b143ce46b633d06b5679529ae92adcace2621a2862cf3cc484d",
+        "6520578eb9627b143ce46b633d06b5679529ae92adcace2621a2862cf3cc484d",
+        "6520578eb9627b143ce46b633d06b5679529ae92adcace2621a2862cf3cc484d"
+      ]
+    },
+    {
+      "id": "linear-own-candidate",
+      "input": "linear-own-candidate.svg",
+      "sourceSha256": "1559c1bba1227a72fa64a69ae16aeef85052716ebb5c6769fcf9c19cc04af07b",
+      "outputScale": 1,
+      "reference": "references/0c2a7c60b9dd51f5.png",
+      "referenceSha256": "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b",
+      "captureSha256": [
+        "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b",
+        "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b",
+        "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b"
+      ]
+    },
+    {
+      "id": "linear-own-control",
+      "input": "linear-own-control.svg",
+      "sourceSha256": "f90cb8765cc546c5187aa93ad17468a6cba990a7123ad63396a853366caad918",
+      "outputScale": 1,
+      "reference": "references/0c2a7c60b9dd51f5.png",
+      "referenceSha256": "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b",
+      "captureSha256": [
+        "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b",
+        "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b",
+        "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b"
+      ]
+    },
+    {
+      "id": "radial-outer-candidate",
+      "input": "radial-outer-candidate.svg",
+      "sourceSha256": "758af641b886d64b639b6648419870abc7cc099a847a29defd6608a99dd1e53c",
+      "outputScale": 1,
+      "reference": "references/40e9ed2f2dcc6cdd.png",
+      "referenceSha256": "fdb04ad202488e088f175ff718dc34723347a26a9e58045afc9da9dfff516294",
+      "captureSha256": [
+        "fdb04ad202488e088f175ff718dc34723347a26a9e58045afc9da9dfff516294",
+        "fdb04ad202488e088f175ff718dc34723347a26a9e58045afc9da9dfff516294",
+        "fdb04ad202488e088f175ff718dc34723347a26a9e58045afc9da9dfff516294"
+      ]
+    },
+    {
+      "id": "radial-outer-control",
+      "input": "radial-outer-control.svg",
+      "sourceSha256": "e1e9d08ff8220d2b74b996f69c790e331cdee4bbf9671162b66a223b0f6b6d39",
+      "outputScale": 1,
+      "reference": "references/40e9ed2f2dcc6cdd.png",
+      "referenceSha256": "fdb04ad202488e088f175ff718dc34723347a26a9e58045afc9da9dfff516294",
+      "captureSha256": [
+        "fdb04ad202488e088f175ff718dc34723347a26a9e58045afc9da9dfff516294",
+        "fdb04ad202488e088f175ff718dc34723347a26a9e58045afc9da9dfff516294",
+        "fdb04ad202488e088f175ff718dc34723347a26a9e58045afc9da9dfff516294"
+      ]
+    },
+    {
+      "id": "pattern-scaled-candidate",
+      "input": "pattern-scaled-candidate.svg",
+      "sourceSha256": "6aa8bd5ba734990ac11e200850479712009081e2ec5a107531c1af81f386ecba",
+      "outputScale": 1.5,
+      "reference": "references/f1456c1040e8177b.png",
+      "referenceSha256": "cdf4c7702d3afded63cac2122a419f5271068b30bb38ea28f870656b837e8307",
+      "captureSha256": [
+        "cdf4c7702d3afded63cac2122a419f5271068b30bb38ea28f870656b837e8307",
+        "cdf4c7702d3afded63cac2122a419f5271068b30bb38ea28f870656b837e8307",
+        "cdf4c7702d3afded63cac2122a419f5271068b30bb38ea28f870656b837e8307"
+      ]
+    },
+    {
+      "id": "pattern-scaled-control",
+      "input": "pattern-scaled-control.svg",
+      "sourceSha256": "d07757e2bf1ef0b98c84bb0a0747780440381c5c5939e0564e0b4e5d9710f0a8",
+      "outputScale": 1.5,
+      "reference": "references/f1456c1040e8177b.png",
+      "referenceSha256": "cdf4c7702d3afded63cac2122a419f5271068b30bb38ea28f870656b837e8307",
+      "captureSha256": [
+        "cdf4c7702d3afded63cac2122a419f5271068b30bb38ea28f870656b837e8307",
+        "cdf4c7702d3afded63cac2122a419f5271068b30bb38ea28f870656b837e8307",
+        "cdf4c7702d3afded63cac2122a419f5271068b30bb38ea28f870656b837e8307"
+      ]
+    },
+    {
+      "id": "leaf-linear-candidate",
+      "input": "leaf-linear-candidate.svg",
+      "sourceSha256": "a26c32295f396291fc3d7d97939e7238ecacfc21e0a7f2bbace94f099b9be0a4",
+      "outputScale": 1,
+      "reference": "references/0c2a7c60b9dd51f5.png",
+      "referenceSha256": "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b",
+      "captureSha256": [
+        "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b",
+        "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b",
+        "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b"
+      ]
+    },
+    {
+      "id": "leaf-linear-control",
+      "input": "leaf-linear-control.svg",
+      "sourceSha256": "2cc12777956be1a515fa5958673268fce0ccf08d41bbedaa482f17591b233351",
+      "outputScale": 1,
+      "reference": "references/0c2a7c60b9dd51f5.png",
+      "referenceSha256": "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b",
+      "captureSha256": [
+        "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b",
+        "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b",
+        "10d84466dd57aa7c33af01840417747e973d703f962d35cb719b287840e9430b"
+      ]
+    },
+    {
+      "id": "nested-linear-candidate",
+      "input": "nested-linear-candidate.svg",
+      "sourceSha256": "c5f11222990e7f64bb641fbf9e99e886df3b6f4826fe9849f8eb5558304f362f",
+      "outputScale": 1,
+      "reference": "references/3c27062f24abe1c5.png",
+      "referenceSha256": "93b9203cad327b26ce507e2261c7a063239bd0b73815274a4fadf35291e66fe3",
+      "captureSha256": [
+        "93b9203cad327b26ce507e2261c7a063239bd0b73815274a4fadf35291e66fe3",
+        "93b9203cad327b26ce507e2261c7a063239bd0b73815274a4fadf35291e66fe3",
+        "93b9203cad327b26ce507e2261c7a063239bd0b73815274a4fadf35291e66fe3"
+      ]
+    },
+    {
+      "id": "nested-linear-control",
+      "input": "nested-linear-control.svg",
+      "sourceSha256": "1947a83dec080ef8dad8d1d63d2c4bbd8a6d5b2b51091efbe30a8b28b3a20aa9",
+      "outputScale": 1,
+      "reference": "references/3c27062f24abe1c5.png",
+      "referenceSha256": "93b9203cad327b26ce507e2261c7a063239bd0b73815274a4fadf35291e66fe3",
+      "captureSha256": [
+        "93b9203cad327b26ce507e2261c7a063239bd0b73815274a4fadf35291e66fe3",
+        "93b9203cad327b26ce507e2261c7a063239bd0b73815274a4fadf35291e66fe3",
+        "93b9203cad327b26ce507e2261c7a063239bd0b73815274a4fadf35291e66fe3"
+      ]
+    },
+    {
+      "id": "affine-pattern-candidate",
+      "input": "affine-pattern-candidate.svg",
+      "sourceSha256": "1eafb38eb544c2085dd924252d138d6ece02595182f6e70630cc8af085eb8c6f",
+      "outputScale": 1.5,
+      "reference": "references/16bb7320cc64081d.png",
+      "referenceSha256": "1c4c513bbcaac1aa8b28badfa61cb6c823a3710b82effc6254de65a2a5adff73",
+      "captureSha256": [
+        "1c4c513bbcaac1aa8b28badfa61cb6c823a3710b82effc6254de65a2a5adff73",
+        "1c4c513bbcaac1aa8b28badfa61cb6c823a3710b82effc6254de65a2a5adff73",
+        "1c4c513bbcaac1aa8b28badfa61cb6c823a3710b82effc6254de65a2a5adff73"
+      ]
+    },
+    {
+      "id": "affine-pattern-control",
+      "input": "affine-pattern-control.svg",
+      "sourceSha256": "9ad955524df4c8b34b460e200ef2af26d952bbb068ed33d083f65823f19e6443",
+      "outputScale": 1.5,
+      "reference": "references/16bb7320cc64081d.png",
+      "referenceSha256": "1c4c513bbcaac1aa8b28badfa61cb6c823a3710b82effc6254de65a2a5adff73",
+      "captureSha256": [
+        "1c4c513bbcaac1aa8b28badfa61cb6c823a3710b82effc6254de65a2a5adff73",
+        "1c4c513bbcaac1aa8b28badfa61cb6c823a3710b82effc6254de65a2a5adff73",
+        "1c4c513bbcaac1aa8b28badfa61cb6c823a3710b82effc6254de65a2a5adff73"
+      ]
+    }
+  ]
+}

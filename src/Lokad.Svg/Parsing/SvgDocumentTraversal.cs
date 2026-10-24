@@ -169,7 +169,7 @@ internal static class SvgDocumentTraversal
                         if (parentClip is {} enclosingClip) box = box.Intersect(enclosingClip);
                     }
                     bool affineClipScope = !reader.IsEmptyElement && !textParent.IsAxisAligned;
-                    if (!reader.IsEmptyElement) state.Viewports.Add(new SvgViewportFrame(composedOffsetX, composedOffsetY, composedScaleX, composedScaleY, nestedViewBox?.Width ?? viewport.Width, nestedViewBox?.Height ?? viewport.Height, box, reader.Depth) { OwnOpacity = sourceViewportOpacity, HasAffineClipScope = affineClipScope, TextContext = SvgViewportTextContext.Create(state, inheritedViewport, textPlacement, textClip) });
+                    if (!reader.IsEmptyElement) state.Viewports.Add(new SvgViewportFrame(composedOffsetX, composedOffsetY, composedScaleX, composedScaleY, nestedViewBox?.Width ?? viewport.Width, nestedViewBox?.Height ?? viewport.Height, box, reader.Depth) { RecordingScope = state.NewRecordingScope(), OwnOpacity = sourceViewportOpacity, HasAffineClipScope = affineClipScope, TextContext = SvgViewportTextContext.Create(state, inheritedViewport, textPlacement, textClip) });
                     if (affineClipScope)
                     {
                         (SvgClipBox bounds, int contentIndex) = textClip.Register(state, state.Scene, workCounter, cancellationToken);

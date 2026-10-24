@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve nested viewport boundaries when applying outer opacity to shader
+  paints, while retaining single-paint opacity inside the viewport.
 - Preserve pattern sampling across clip, mask and opacity recording boundaries,
   including instances, supplied-font text and affine maps. Keep authored viewBox
   transforms distinct from external output scaling.

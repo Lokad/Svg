@@ -6,6 +6,8 @@ using Lokad.Svg.Rendering;
 internal readonly record struct SvgViewportFrame(double OffsetX, double OffsetY, double ScaleX, double ScaleY, double? ViewportWidth, double? ViewportHeight, SvgClipBox Clip, int Depth)
 {
     internal SvgPaintOpacity? OwnOpacity { get; init; }
+    /// <summary>Separates a real viewport's source paints from its enclosing opacity scope; zero denotes a map-only frame.</summary>
+    internal SvgRecordingScope RecordingScope { get; init; }
     /// <summary>Reports a physical affine clip emitted around this viewport's original scene commands.</summary>
     internal bool HasAffineClipScope { get; init; }
     /// <summary>Borrows bounded presentation/text state without copying it into every deferred instance frame.</summary>

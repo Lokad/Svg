@@ -243,6 +243,8 @@ placement and output scaling, including single-rectangle tiles.
 Pattern sampling retains clip/mask/opacity recording boundaries. Authored
 viewBox transforms and external output scaling can produce distinct native
 pixels; see the [independent comparisons](../tests/Research/pattern-recording/capture.json).
+Nested viewports keep outer opacity separate from their source paints; opacity
+inside the viewport retains its own [native shader behavior](../tests/Research/viewport-recording/capture.json).
 Patterns whose effective tile size stays zero remain inert.
 Empty gradients and inert patterns suppress only their own paint operation.
 The independent fill/stroke, markers and effects remain; validation and source

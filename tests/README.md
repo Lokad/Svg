@@ -97,6 +97,10 @@ cover source-order pixels, deep-chain storage, cancellation/retry and independen
 draw matrices. Their [browser checks](Lokad.Svg.VisualTests/SvgPatternRecordingReferenceTests.cs)
 use [deduplicated fresh references](Research/pattern-recording/capture.json) for
 authored viewports and external scaling, including instances and supplied-font text.
+The [viewport recording cases](Lokad.Svg.Tests/SvgViewportRecordingScopeTests.cs)
+check native shader colors for outer, own and inner opacity, plus denial and retry
+ownership. Their [browser checks](Lokad.Svg.VisualTests/SvgViewportRecordingReferenceTests.cs)
+use [fresh viewport references](Research/viewport-recording/capture.json).
 
 [Display inheritance tests](Lokad.Svg.Tests/SvgDisplayInheritanceTests.cs) cover
 logical parents, retained instances, viewports and resource children across
