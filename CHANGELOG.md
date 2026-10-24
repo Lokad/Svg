@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Enclose text drawing bounds before output mapping to preserve gradient colors
+  under group opacity; reuse fitted metrics across parser runs and share paint records.
 - Include fitted glyph ink in text paint object boxes, preserving source fragment
   coordinates, anchors and fitted spacing before paint-origin truncation.
 - Account for retained viewport context fields and their reservation token

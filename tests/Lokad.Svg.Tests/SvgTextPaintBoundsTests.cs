@@ -95,6 +95,49 @@ public sealed class SvgTextPaintBoundsTests
     }
 
     [Fact]
+    public async Task Parser_metric_cache_reuses_distinct_runs_and_retains_only_owned_values_after_cancellation()
+    {
+        using SvgFontSnapshot snapshot = await CreateSnapshotAsync();
+        RenderBudget runBudget = new(1_000_000), scratch = new(1_000_000);
+        using (SvgTextRun first = CreateRun("A", snapshot, runBudget))
+        using (SvgTextRun second = CreateRun("A", snapshot, runBudget))
+        using (SvgTextLayoutBounds.MetricCache cache = SvgTextLayoutBounds.MetricCache.Create(scratch))
+        {
+            ParserWorkCounter initial = new(long.MaxValue), repeated = new(100);
+            SvgRectangle expected = SvgTextLayoutBounds.Measure(first, [], SvgAffineTransform.Identity, cache, initial, CancellationToken.None);
+            Assert.Equal(expected, SvgTextLayoutBounds.Measure(second, [], SvgAffineTransform.Identity, cache, repeated, CancellationToken.None));
+            Assert.True(repeated.Used < initial.Used / 4);
+            long held = scratch.Snapshot().CurrentBytes;
+            using CancellationTokenSource cancellation = new();
+            cancellation.Cancel();
+            Assert.Throws<OperationCanceledException>(() => SvgTextLayoutBounds.Measure(second, [], SvgAffineTransform.Identity, cache, new(long.MaxValue), cancellation.Token));
+            Assert.Equal(held, scratch.Snapshot().CurrentBytes);
+            Assert.Equal(expected, SvgTextLayoutBounds.Measure(second, [], SvgAffineTransform.Identity, cache, new(100), CancellationToken.None));
+        }
+        Assert.Equal(0, runBudget.Snapshot().CurrentBytes);
+        Assert.Equal(0, scratch.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public async Task One_text_run_shares_its_scene_drawing_record_across_repeated_glyphs()
+    {
+        using SvgFontSnapshot snapshot = await CreateSnapshotAsync();
+        byte[] input = TextEncoding.UTF8.GetBytes(Document("<text x='4' y='24' font-family='serif' font-size='24'>" + new string('A', 1_000) + "</text>"));
+        RenderBudget budget = new(8_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, new(1_000_000), CancellationToken.None))
+        {
+            Assert.Equal(1_000, root.Geometries.Length);
+            SvgRecordedPaint first = root.Geometries[0].RecordedPaint;
+            Assert.True(first.Identity > 0);
+            foreach (SvgGeometry glyph in root.Geometries) Assert.Equal(first, glyph.RecordedPaint);
+            SvgSceneStorage storage = root.SceneStorage ?? throw new InvalidDataException("Missing drawing records.");
+            SvgRecordedPaintValue drawing = Assert.Single(storage.RecordedPaintValues);
+            Assert.NotNull(drawing.VisualBounds);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public async Task Fitted_spacing_shares_one_source_box_across_fill_and_stroke_fragments()
     {
         using SvgFontSnapshot snapshot = await CreateSnapshotAsync();

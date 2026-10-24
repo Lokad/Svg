@@ -24,6 +24,8 @@ on each platform, and check metric reuse, denial, cancellation and scratch clean
 [Image controls](Lokad.Svg.VisualTests/SvgTextPaintBoundsReferenceTests.cs) retain
 [separate platform references](Research/text-paint-bounds/image-capture.json) for
 linear, radial and pattern fills/strokes in object-box and user-space units.
+Partial-opacity gradient references also check drawing-rectangle rounding before
+output scaling; cache/record tests guard repeated-run work and scene storage.
 
 [Marker paint tests](Lokad.Svg.Tests/SvgMarkerPaintBindingTests.cs) cover forward
 resources, inherited fills, aliases, tile paint ownership, limits and cancellation.

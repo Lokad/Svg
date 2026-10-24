@@ -33,6 +33,8 @@ internal sealed class SvgDocumentState : IDisposable
     private static readonly int RadialGradientStorageBytes = checked(64 + (int)System.Runtime.CompilerServices.Unsafe.SizeOf<SvgRadialGradient>());
 
     private readonly bool _ownsStyleStorage;
+    private SvgTextLayoutBounds.MetricCache? _textBoundsMetrics;
+    internal SvgTextLayoutBounds.MetricCache TextBoundsMetrics => _textBoundsMetrics ??= SvgTextLayoutBounds.MetricCache.Create(Budget);
 
     internal SvgDocumentState(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         : this(budget, workCounter, cancellationToken, new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken), new(budget), true)
@@ -490,6 +492,7 @@ internal sealed class SvgDocumentState : IDisposable
             Strings.Dispose();
         }
         Switches.Dispose();
+        _textBoundsMetrics?.Dispose();
         Groups.Dispose();
         Viewports.Dispose();
         Scene.Dispose();

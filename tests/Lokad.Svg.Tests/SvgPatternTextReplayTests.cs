@@ -145,19 +145,32 @@ public sealed class SvgPatternTextReplayTests
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }
         long peak = measured.Snapshot().PeakBytes;
-        for (long limit = 1; limit < peak; limit += 4096) DenyMemory(limit);
-        DenyMemory(peak - 1);
+        for (long limit = 1; limit < peak; limit += 4096) CheckMemoryLimit(limit);
+        CheckMemoryLimit(peak - 1);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
         RenderBudget cancelled = new(2_000_000);
         Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, fonts, new(100_000), cancellation.Token)).CancellationToken);
         Assert.Equal(0, cancelled.Snapshot().CurrentBytes);
 
-        void DenyMemory(long limit)
+        void CheckMemoryLimit(long limit)
         {
-            RenderBudget denied = new(limit);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, fonts, new(100_000), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
+            RenderBudget bounded = new(limit);
+            SvgRoot parsed;
+            try { parsed = SvgRootParser.Parse(input, SvgRenderLimits.Default, bounded, fonts, new(100_000), CancellationToken.None); }
+            catch (SvgException failure)
+            {
+                Assert.Equal(SvgErrorCode.LimitExceeded, failure.ErrorCode);
+                Assert.Equal(0, bounded.Snapshot().CurrentBytes);
+                return;
+            }
+            // Optional scan preparation may yield below the ample-budget peak.
+            // A successful parse must retain the same pixels and release owners.
+            RenderBudget raster = new(2_000_000);
+            using (parsed)
+                Assert.Equal(Render(input, fonts), SvgConverter.ConvertToPng(parsed, new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts), raster, CancellationToken.None).ToArray());
+            Assert.Equal(0, raster.Snapshot().CurrentBytes);
+            Assert.Equal(0, bounded.Snapshot().CurrentBytes);
         }
     }
 
@@ -232,10 +245,11 @@ public sealed class SvgPatternTextReplayTests
             + Pattern("p", "<use href='#t'/>") + Resources + "</defs><rect width='16' height='8' fill='url(#p)'/>");
         RenderBudget measured = new(2_000_000);
         ParserWorkCounter work = new(100_000);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
+        SvgException rejection = Assert.Throws<SvgException>(() =>
         {
             using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, fonts, work, CancellationToken.None);
-        }).ErrorCode);
+        });
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejection.ErrorCode);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         for (long limit = 0; limit < work.Used; limit++)
         {
@@ -244,18 +258,25 @@ public sealed class SvgPatternTextReplayTests
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }
         long peak = measured.Snapshot().PeakBytes;
-        for (long limit = 1; limit < peak; limit += 4096) DenyMemory(limit);
-        DenyMemory(peak - 1);
+        for (long limit = 1; limit < peak; limit += 4096) CheckMemoryLimit(limit);
+        CheckMemoryLimit(peak - 1);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
         RenderBudget cancelled = new(2_000_000);
         Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, fonts, new(100_000), cancellation.Token)).CancellationToken);
         Assert.Equal(0, cancelled.Snapshot().CurrentBytes);
 
-        void DenyMemory(long limit)
+        void CheckMemoryLimit(long limit)
         {
             RenderBudget denied = new(limit);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, fonts, new(100_000), CancellationToken.None)).ErrorCode);
+            SvgException failure = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, fonts, new(100_000), CancellationToken.None));
+            // Optional metric scans may yield to the unprepared route, allowing
+            // the same source rejection before the memory allowance is exhausted.
+            if (failure.ErrorCode != SvgErrorCode.LimitExceeded)
+            {
+                Assert.Equal(rejection.ErrorCode, failure.ErrorCode);
+                Assert.Equal(rejection.Message, failure.Message);
+            }
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }
     }

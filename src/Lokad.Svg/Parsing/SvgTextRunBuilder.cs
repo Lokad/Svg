@@ -63,7 +63,18 @@ internal static class SvgTextRunBuilder
             : workCounter is null ? snapshot.GetFont(style.Font, style.SourceElementId) : snapshot.GetFont(style.Font, style.SourceElementId, workCounter, cancellationToken);
         if (fontSpans.IsEmpty && snapshot.HasCoverageAlternatives(style.Font, workCounter, cancellationToken))
             AddCoverageSpans(style.Font, font, style.FontSize, 0, text.Length);
-        bool needsFragments = defaultPaint?.Decoration is not null || defaultPaint?.HasStroke == true || defaultPaint?.FillServer is not null;
+        // Source rectangles also define a solid text drawing's bounds when an
+        // enclosing opacity, mask, filter or instance uses the run later.
+        double metricScale = deviceMetrics?.Scale ?? 1;
+        bool nativeDrawing = resolvedFonts.Count != 0
+            || SvgTextLayoutBounds.UsesFittedMetrics(font, SvgGlyphDeviceMetrics.GetEffectiveFontSize(style.FontSize * metricScale));
+        foreach (SvgTextResolvedFontSpan span in resolvedFonts.AsSpan())
+        {
+            if (workCounter is null) cancellationToken.ThrowIfCancellationRequested(); else workCounter.Consume(cancellationToken);
+            nativeDrawing &= SvgTextLayoutBounds.UsesFittedMetrics(span.Style.Font, SvgGlyphDeviceMetrics.GetEffectiveFontSize(span.Style.FontSize * metricScale));
+        }
+        bool needsFragments = nativeDrawing && (defaultPaint is not null || !paintSpans.IsEmpty)
+            || defaultPaint?.Decoration is not null || defaultPaint?.HasStroke == true || defaultPaint?.FillServer is not null;
         foreach (SvgTextPaintSpan span in paintSpans) needsFragments |= span.Paint.Decoration is not null || span.Paint.HasStroke || span.Paint.FillServer is not null;
         double originX = style.X + style.Dx;
         double originY = style.Y + style.Dy;

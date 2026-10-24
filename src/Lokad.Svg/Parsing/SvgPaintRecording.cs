@@ -151,42 +151,6 @@ internal static class SvgPaintRecording
         catch { parsed.Discard(); throw; }
     }
 
-    /// <summary>Retains glyph recording transforms and filtered source bounds; glyph color/opacity remains baked once in its existing paint.</summary>
-    internal static SvgGeometry RecordGlyph(SvgGlyphGeometry glyph, SvgRecordedTransform? recording, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
-    {
-        SvgGeometry geometry = SvgGeometry.FromGlyphContours(glyph);
-        if (state.Viewports.Count != 0) geometry = geometry with { LeafMask = SvgViewportFrame.ResolveGlyphClip(state, work, token) };
-        if (state.FilterGroupDepth <= 0)
-        {
-            if (recording is null) return geometry;
-            SvgRecordedPaintValue recorded = new(state.NewPaintOperationIdentity(), glyph.Color.Alpha / 255f, false,
-                new SvgRecordingScope(1), SvgPaintOpacity.Opaque, new SvgRecordingScope(1)) { RecordingTransform = recording };
-            return geometry with { RecordedPaint = state.Scene.RegisterRecordedPaint(recorded) };
-        }
-        float left = float.PositiveInfinity, top = float.PositiveInfinity;
-        float right = float.NegativeInfinity, bottom = float.NegativeInfinity;
-        foreach (SvgGlyphQuadraticContour contour in glyph.Contours)
-        foreach (SvgGlyphQuadraticSegment segment in contour.Segments)
-        {
-            work.Consume(token);
-            Include(segment.Start); Include(segment.Control); Include(segment.End);
-        }
-        SvgPaintBounds bounds = float.IsPositiveInfinity(left) ? default : new(left, top, right, bottom);
-        float inflation = (float)Math.Max(2, glyph.StrokeBoundsInflation);
-        SvgRecordedPaintValue paint = new(state.NewPaintOperationIdentity(), glyph.Color.Alpha / 255f, false, new SvgRecordingScope(1), SvgPaintOpacity.Opaque, new SvgRecordingScope(1))
-        {
-            RecordingTransform = recording,
-            ObjectBounds = bounds,
-            VisualBounds = new(bounds.Left - inflation, bounds.Top - inflation, bounds.Right + inflation, bounds.Bottom + inflation)
-        };
-        return geometry with { RecordedPaint = state.Scene.RegisterRecordedPaint(paint) };
-
-        void Include(SvgGlyphOutlinePoint point)
-        {
-            left = MathF.Min(left, (float)point.X); top = MathF.Min(top, (float)point.Y);
-            right = MathF.Max(right, (float)point.X); bottom = MathF.Max(bottom, (float)point.Y);
-        }
-    }
     internal static SvgRecordedPaintStyle Resolve(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgViewportFrame? frame)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
