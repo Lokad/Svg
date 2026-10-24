@@ -16,6 +16,7 @@ internal ref struct SvgHairlineCoverage
     private readonly SvgAnalyticClipBounds _interior;
     private readonly bool _regionClipping, _binaryViewport;
     private readonly SvgAnalyticPaint _paint;
+    private readonly Span<SvgShaderSampler> _shaders;
     private SvgAnalyticClipBounds? _binaryBounds;
     private readonly (double Left, double Top, double Right, double Bottom)? _clip;
     private readonly SvgClipAntialiasing _antialiasing;
@@ -53,7 +54,20 @@ internal ref struct SvgHairlineCoverage
         if (!viewportMask.IsEmpty && viewportMask.Length != checked(width * height * 4)) throw new ArgumentException("Viewport mask must match the destination canvas.", nameof(viewportMask));
         _viewportMask = viewportMask; _binaryViewport = binaryViewport;
         _destination = destination; _width = width; _height = height; _paint = paint;
+        _shaders = Span<SvgShaderSampler>.Empty;
         _clip = clip; _antialiasing = antialiasing; _work = workCounter; _token = cancellationToken;
+    }
+
+    /// <summary>Borrows one draw-local shader for the lifetime of this coverage walker.</summary>
+    /// <remarks>The caller retains its ramp/texture owners and sampler storage until replay finishes.
+    /// Geometry/pixel visits and optional sampling work use the same cancellable work counter.</remarks>
+    internal SvgHairlineCoverage(Span<byte> destination, int width, int height, Span<SvgShaderSampler> shaders,
+        (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing, ReadOnlySpan<byte> viewportMask, bool binaryViewport,
+        SvgCpuRasterContext context, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        : this(destination, width, height, default(SvgAnalyticPaint), clip, antialiasing, viewportMask, binaryViewport, context, workCounter, cancellationToken)
+    {
+        if (shaders.Length != 1) throw new ArgumentException("Hairline replay requires one draw-local shader.", nameof(shaders));
+        _shaders = shaders;
     }
 
     internal void DrawLine(SvgDevicePoint start, SvgDevicePoint end)
@@ -177,7 +191,9 @@ internal ref struct SvgHairlineCoverage
             alpha = (byte)((alpha * _viewportMask[(y * _width + x) * 4 + 3] + 127) / 255);
             if (!_binaryViewport) kind = SvgAnalyticPaintKind.Direct;
         }
-        _paint.Blend(_destination.Slice((y * _width + x) * 4, 4), alpha, kind);
+        if (alpha == 0) return;
+        SvgAnalyticPaint paint = _shaders.IsEmpty ? _paint : _shaders[0].Sample(x, y, _work, _token);
+        paint.Blend(_destination.Slice((y * _width + x) * 4, 4), alpha, kind);
     }
 
     private static bool ClipLine(ref float x0, ref float y0, ref float x1, ref float y1, float left, float top, float right, float bottom)

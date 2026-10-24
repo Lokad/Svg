@@ -1,0 +1,578 @@
+{
+  "purpose": "Native shader hairline events, material alpha, source/instance/effect maps and bordered CPU seams. Each actual captured in three fresh processes; shader and solid controls retain independently measured images.",
+  "platform": "win64",
+  "chromePin": {
+    "version": "153.0.8010.52",
+    "chromiumRevision": "1681091",
+    "platform": "win64",
+    "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/win64/chrome-win64.zip",
+    "archiveSha256": "df4854428c509fcf2f790ac448bca3f994151bcff22008236fa7c4587294fbe1",
+    "executableRelativePath": "chrome-win64/chrome.exe",
+    "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+    "captureRecipeRevision": "3"
+  },
+  "background": "transparent",
+  "license": "MIT",
+  "cases": [
+    {
+      "id": "linear-flat-rect-path-candidate",
+      "input": "linear-flat-rect-path-candidate.svg",
+      "reference": "references/e9f5375cb6b46c49.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "40e520b22abf6c9312a3032ccfc5f6b7bf1ac223701eca0de62a3d04a6b0d85e",
+      "referenceSha256": "e9f5375cb6b46c49f51d8b74c90eced19c278a94392a04af95d31b5ee8354307",
+      "captureSha256": [
+        "e9f5375cb6b46c49f51d8b74c90eced19c278a94392a04af95d31b5ee8354307",
+        "e9f5375cb6b46c49f51d8b74c90eced19c278a94392a04af95d31b5ee8354307",
+        "e9f5375cb6b46c49f51d8b74c90eced19c278a94392a04af95d31b5ee8354307"
+      ]
+    },
+    {
+      "id": "linear-flat-rect-path-control",
+      "input": "linear-flat-rect-path-control.svg",
+      "reference": "references/f2b379a657a25f43.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "8e35e2044ac643160e2b887a757de92333b0b0f98e13eb92a4c2178ac8e07b0f",
+      "referenceSha256": "f2b379a657a25f43ccbfdc6e046c340d65b228781762a2a1ada92260b5fa60e3",
+      "captureSha256": [
+        "f2b379a657a25f43ccbfdc6e046c340d65b228781762a2a1ada92260b5fa60e3",
+        "f2b379a657a25f43ccbfdc6e046c340d65b228781762a2a1ada92260b5fa60e3",
+        "f2b379a657a25f43ccbfdc6e046c340d65b228781762a2a1ada92260b5fa60e3"
+      ]
+    },
+    {
+      "id": "linear-cubic-candidate",
+      "input": "linear-cubic-candidate.svg",
+      "reference": "references/face36dbe0aa0966.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "66c89413a1fce797966d96edca16b6df92a20dca0fc1c537d5cefa369ab307b6",
+      "referenceSha256": "face36dbe0aa0966e8802d0feb22cf38f34e90fcefe2ba4fd70e0ff061de4332",
+      "captureSha256": [
+        "face36dbe0aa0966e8802d0feb22cf38f34e90fcefe2ba4fd70e0ff061de4332",
+        "face36dbe0aa0966e8802d0feb22cf38f34e90fcefe2ba4fd70e0ff061de4332",
+        "face36dbe0aa0966e8802d0feb22cf38f34e90fcefe2ba4fd70e0ff061de4332"
+      ]
+    },
+    {
+      "id": "linear-cubic-control",
+      "input": "linear-cubic-control.svg",
+      "reference": "references/57cee81af1548e73.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "1af2d9882afc30415d975ac959d437cd0e169a57ad2ee619dd4ddbbad3d63ffa",
+      "referenceSha256": "57cee81af1548e73012a026b4836a04cd11ffa92e0589c36a050c79b6ec27729",
+      "captureSha256": [
+        "57cee81af1548e73012a026b4836a04cd11ffa92e0589c36a050c79b6ec27729",
+        "57cee81af1548e73012a026b4836a04cd11ffa92e0589c36a050c79b6ec27729",
+        "57cee81af1548e73012a026b4836a04cd11ffa92e0589c36a050c79b6ec27729"
+      ]
+    },
+    {
+      "id": "radial-quadratic-candidate",
+      "input": "radial-quadratic-candidate.svg",
+      "reference": "references/b6b4eba800a4ae79.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "a1ca4cdf61bafddca4ada5f949aced8ee5a22d8d62606f063cabc0e859fb59b5",
+      "referenceSha256": "b6b4eba800a4ae7962bb2bf090ee175dc06047abfee322d5132a4bf6ac5d1193",
+      "captureSha256": [
+        "b6b4eba800a4ae7962bb2bf090ee175dc06047abfee322d5132a4bf6ac5d1193",
+        "b6b4eba800a4ae7962bb2bf090ee175dc06047abfee322d5132a4bf6ac5d1193",
+        "b6b4eba800a4ae7962bb2bf090ee175dc06047abfee322d5132a4bf6ac5d1193"
+      ]
+    },
+    {
+      "id": "radial-quadratic-control",
+      "input": "radial-quadratic-control.svg",
+      "reference": "references/2b4b45418f78a474.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "94050d1bf4c90218c0f7076d19a6415634c4a390264a1ee41ccf9d773e7d28c9",
+      "referenceSha256": "2b4b45418f78a474d6b8fb4b32ba946e313856b7f0bd86260b8b2374033f4a78",
+      "captureSha256": [
+        "2b4b45418f78a474d6b8fb4b32ba946e313856b7f0bd86260b8b2374033f4a78",
+        "2b4b45418f78a474d6b8fb4b32ba946e313856b7f0bd86260b8b2374033f4a78",
+        "2b4b45418f78a474d6b8fb4b32ba946e313856b7f0bd86260b8b2374033f4a78"
+      ]
+    },
+    {
+      "id": "pattern-flat-polyline-candidate",
+      "input": "pattern-flat-polyline-candidate.svg",
+      "reference": "references/9edcea505b6214c9.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "dc3974c5e26c7c9de9876f46baaef4a09acc5517adbc0aedcdc62b5e8895969d",
+      "referenceSha256": "9edcea505b6214c9d0e381c1d619993acd5e38e1ef710ed5c62a80ccdfd8b987",
+      "captureSha256": [
+        "9edcea505b6214c9d0e381c1d619993acd5e38e1ef710ed5c62a80ccdfd8b987",
+        "9edcea505b6214c9d0e381c1d619993acd5e38e1ef710ed5c62a80ccdfd8b987",
+        "9edcea505b6214c9d0e381c1d619993acd5e38e1ef710ed5c62a80ccdfd8b987"
+      ]
+    },
+    {
+      "id": "pattern-flat-polyline-control",
+      "input": "pattern-flat-polyline-control.svg",
+      "reference": "references/843f40ffcba207d1.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "1e1dbb4f5b6594ceea9b467fd86453b5aca6457a697ba687a7097a7fc6f5c2a7",
+      "referenceSha256": "843f40ffcba207d1f1f01a9144ac471aab9f6f1bcafcc3bcad9c4e735b66d8eb",
+      "captureSha256": [
+        "843f40ffcba207d1f1f01a9144ac471aab9f6f1bcafcc3bcad9c4e735b66d8eb",
+        "843f40ffcba207d1f1f01a9144ac471aab9f6f1bcafcc3bcad9c4e735b66d8eb",
+        "843f40ffcba207d1f1f01a9144ac471aab9f6f1bcafcc3bcad9c4e735b66d8eb"
+      ]
+    },
+    {
+      "id": "pattern-rect-path-candidate",
+      "input": "pattern-rect-path-candidate.svg",
+      "reference": "references/9373828b83a0b04a.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "0aa6a8b828837cf2ec3fe3c909085a0eee57eb43117d3d9b5b102c506e1abc0a",
+      "referenceSha256": "9373828b83a0b04afc646cc3cf0498b720363ce18ed4b6f75168cb251fe05284",
+      "captureSha256": [
+        "9373828b83a0b04afc646cc3cf0498b720363ce18ed4b6f75168cb251fe05284",
+        "9373828b83a0b04afc646cc3cf0498b720363ce18ed4b6f75168cb251fe05284",
+        "9373828b83a0b04afc646cc3cf0498b720363ce18ed4b6f75168cb251fe05284"
+      ]
+    },
+    {
+      "id": "pattern-rect-path-control",
+      "input": "pattern-rect-path-control.svg",
+      "reference": "references/f2b379a657a25f43.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "5751d25f3ba0df6535e6b8c9e51f0424e7b1678b3e15e18651514ed3f3a3e5d8",
+      "referenceSha256": "f2b379a657a25f43ccbfdc6e046c340d65b228781762a2a1ada92260b5fa60e3",
+      "captureSha256": [
+        "f2b379a657a25f43ccbfdc6e046c340d65b228781762a2a1ada92260b5fa60e3",
+        "f2b379a657a25f43ccbfdc6e046c340d65b228781762a2a1ada92260b5fa60e3",
+        "f2b379a657a25f43ccbfdc6e046c340d65b228781762a2a1ada92260b5fa60e3"
+      ]
+    },
+    {
+      "id": "context-symbol-candidate",
+      "input": "context-symbol-candidate.svg",
+      "reference": "references/054a77da5b9aedca.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "f75246151678fd55d7aa7ed2b6ff636556892f38b4070a65d10358b1c1d42ca8",
+      "referenceSha256": "054a77da5b9aedca62266b734f33df8b4ac0f6e364211a210ad8a58196a53688",
+      "captureSha256": [
+        "054a77da5b9aedca62266b734f33df8b4ac0f6e364211a210ad8a58196a53688",
+        "054a77da5b9aedca62266b734f33df8b4ac0f6e364211a210ad8a58196a53688",
+        "054a77da5b9aedca62266b734f33df8b4ac0f6e364211a210ad8a58196a53688"
+      ]
+    },
+    {
+      "id": "context-symbol-control",
+      "input": "context-symbol-control.svg",
+      "reference": "references/054a77da5b9aedca.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "30618286a8a9fce41c82c7e1aec86d197ee5d8ecf70aa137e74e077c62b8ed74",
+      "referenceSha256": "054a77da5b9aedca62266b734f33df8b4ac0f6e364211a210ad8a58196a53688",
+      "captureSha256": [
+        "054a77da5b9aedca62266b734f33df8b4ac0f6e364211a210ad8a58196a53688",
+        "054a77da5b9aedca62266b734f33df8b4ac0f6e364211a210ad8a58196a53688",
+        "054a77da5b9aedca62266b734f33df8b4ac0f6e364211a210ad8a58196a53688"
+      ]
+    },
+    {
+      "id": "context-mask-candidate",
+      "input": "context-mask-candidate.svg",
+      "reference": "references/80729e62f1b6a4b5.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "a86bce6800e9c8635216549f554fd185d66e0a584781186a08000cca1fd1fdbc",
+      "referenceSha256": "80729e62f1b6a4b54240b56834468abfc1303843a18cf2a3dcc26d05c5995b9b",
+      "captureSha256": [
+        "80729e62f1b6a4b54240b56834468abfc1303843a18cf2a3dcc26d05c5995b9b",
+        "80729e62f1b6a4b54240b56834468abfc1303843a18cf2a3dcc26d05c5995b9b",
+        "80729e62f1b6a4b54240b56834468abfc1303843a18cf2a3dcc26d05c5995b9b"
+      ]
+    },
+    {
+      "id": "context-mask-control",
+      "input": "context-mask-control.svg",
+      "reference": "references/80729e62f1b6a4b5.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "a8c4e551c5ac01e645ae2ce4ee455b04280d21cd1d7f5d41d2423b9aa2f91154",
+      "referenceSha256": "80729e62f1b6a4b54240b56834468abfc1303843a18cf2a3dcc26d05c5995b9b",
+      "captureSha256": [
+        "80729e62f1b6a4b54240b56834468abfc1303843a18cf2a3dcc26d05c5995b9b",
+        "80729e62f1b6a4b54240b56834468abfc1303843a18cf2a3dcc26d05c5995b9b",
+        "80729e62f1b6a4b54240b56834468abfc1303843a18cf2a3dcc26d05c5995b9b"
+      ]
+    },
+    {
+      "id": "arbitrary-stops-candidate",
+      "input": "arbitrary-stops-candidate.svg",
+      "reference": "references/de42f251a24cdf4a.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "b8af5559d6a1df88eec27051615abade72edc016b436b26da189c69dedfa84dd",
+      "referenceSha256": "de42f251a24cdf4a59c8420ba99cd6ed5d480f4e2579b113e7a3a05eddc9b317",
+      "captureSha256": [
+        "de42f251a24cdf4a59c8420ba99cd6ed5d480f4e2579b113e7a3a05eddc9b317",
+        "de42f251a24cdf4a59c8420ba99cd6ed5d480f4e2579b113e7a3a05eddc9b317",
+        "de42f251a24cdf4a59c8420ba99cd6ed5d480f4e2579b113e7a3a05eddc9b317"
+      ]
+    },
+    {
+      "id": "arbitrary-stops-control",
+      "input": "arbitrary-stops-control.svg",
+      "reference": "references/de42f251a24cdf4a.png",
+      "width": 32,
+      "height": 32,
+      "sourceSha256": "0dcc2231e568720f19f6bdeb419ef7d8698fe1b1abef81ecb60453cf5c440c17",
+      "referenceSha256": "de42f251a24cdf4a59c8420ba99cd6ed5d480f4e2579b113e7a3a05eddc9b317",
+      "captureSha256": [
+        "de42f251a24cdf4a59c8420ba99cd6ed5d480f4e2579b113e7a3a05eddc9b317",
+        "de42f251a24cdf4a59c8420ba99cd6ed5d480f4e2579b113e7a3a05eddc9b317",
+        "de42f251a24cdf4a59c8420ba99cd6ed5d480f4e2579b113e7a3a05eddc9b317"
+      ]
+    },
+    {
+      "id": "seam-0-candidate",
+      "input": "seam-0-candidate.svg",
+      "reference": "references/c8e272422c3c18e8.png",
+      "width": 520,
+      "height": 64,
+      "sourceSha256": "454f91fed5a9ef7051b657bf8ad7cee46de33d255a253e90d66bdd2800eea515",
+      "referenceSha256": "c8e272422c3c18e81142f37759ba988c54aa8a0cd21c38cac531ac46c87b9650",
+      "captureSha256": [
+        "c8e272422c3c18e81142f37759ba988c54aa8a0cd21c38cac531ac46c87b9650",
+        "c8e272422c3c18e81142f37759ba988c54aa8a0cd21c38cac531ac46c87b9650",
+        "c8e272422c3c18e81142f37759ba988c54aa8a0cd21c38cac531ac46c87b9650"
+      ]
+    },
+    {
+      "id": "seam-0-control",
+      "input": "seam-0-control.svg",
+      "reference": "references/c8e272422c3c18e8.png",
+      "width": 520,
+      "height": 64,
+      "sourceSha256": "04d7f3e0145530d8eb6c0d94a37f94d9a89c09ba985776e6329326f446610423",
+      "referenceSha256": "c8e272422c3c18e81142f37759ba988c54aa8a0cd21c38cac531ac46c87b9650",
+      "captureSha256": [
+        "c8e272422c3c18e81142f37759ba988c54aa8a0cd21c38cac531ac46c87b9650",
+        "c8e272422c3c18e81142f37759ba988c54aa8a0cd21c38cac531ac46c87b9650",
+        "c8e272422c3c18e81142f37759ba988c54aa8a0cd21c38cac531ac46c87b9650"
+      ]
+    },
+    {
+      "id": "seam-1-candidate",
+      "input": "seam-1-candidate.svg",
+      "reference": "references/def4648a1b6d7596.png",
+      "width": 780,
+      "height": 96,
+      "sourceSha256": "90564f2d9f6d474e144520542bb2820b479b54018a41522e514c822b17584736",
+      "referenceSha256": "def4648a1b6d7596bf62a6c0b1a83a9d43dbfca8f0138684de05607863410bbd",
+      "captureSha256": [
+        "def4648a1b6d7596bf62a6c0b1a83a9d43dbfca8f0138684de05607863410bbd",
+        "def4648a1b6d7596bf62a6c0b1a83a9d43dbfca8f0138684de05607863410bbd",
+        "def4648a1b6d7596bf62a6c0b1a83a9d43dbfca8f0138684de05607863410bbd"
+      ]
+    },
+    {
+      "id": "seam-1-control",
+      "input": "seam-1-control.svg",
+      "reference": "references/def4648a1b6d7596.png",
+      "width": 780,
+      "height": 96,
+      "sourceSha256": "d3e62fb9359158e6a4080f6265692d921e21eb37bcb4a28f5e369ca6aad5acb1",
+      "referenceSha256": "def4648a1b6d7596bf62a6c0b1a83a9d43dbfca8f0138684de05607863410bbd",
+      "captureSha256": [
+        "def4648a1b6d7596bf62a6c0b1a83a9d43dbfca8f0138684de05607863410bbd",
+        "def4648a1b6d7596bf62a6c0b1a83a9d43dbfca8f0138684de05607863410bbd",
+        "def4648a1b6d7596bf62a6c0b1a83a9d43dbfca8f0138684de05607863410bbd"
+      ]
+    },
+    {
+      "id": "seam-2-candidate",
+      "input": "seam-2-candidate.svg",
+      "reference": "references/b18476028d55e2a5.png",
+      "width": 520,
+      "height": 64,
+      "sourceSha256": "59944317510d3eec872619c5b295f9df75ebb5b283441b7439124379d84df12e",
+      "referenceSha256": "b18476028d55e2a545882965a5eb0a46cdafea740daa85fb321e88d9e88a6732",
+      "captureSha256": [
+        "b18476028d55e2a545882965a5eb0a46cdafea740daa85fb321e88d9e88a6732",
+        "b18476028d55e2a545882965a5eb0a46cdafea740daa85fb321e88d9e88a6732",
+        "b18476028d55e2a545882965a5eb0a46cdafea740daa85fb321e88d9e88a6732"
+      ]
+    },
+    {
+      "id": "seam-2-control",
+      "input": "seam-2-control.svg",
+      "reference": "references/b18476028d55e2a5.png",
+      "width": 520,
+      "height": 64,
+      "sourceSha256": "eedcf76e9d847c3025856717a6e4e75ffc786cc71f586eac52152402ba27f066",
+      "referenceSha256": "b18476028d55e2a545882965a5eb0a46cdafea740daa85fb321e88d9e88a6732",
+      "captureSha256": [
+        "b18476028d55e2a545882965a5eb0a46cdafea740daa85fb321e88d9e88a6732",
+        "b18476028d55e2a545882965a5eb0a46cdafea740daa85fb321e88d9e88a6732",
+        "b18476028d55e2a545882965a5eb0a46cdafea740daa85fb321e88d9e88a6732"
+      ]
+    },
+    {
+      "id": "seam-3-candidate",
+      "input": "seam-3-candidate.svg",
+      "reference": "references/dd3407ef33cbef2f.png",
+      "width": 780,
+      "height": 96,
+      "sourceSha256": "bb9304dc3448374af67c5677e6380c17222a0a48d95ab74350d82187e2e92d08",
+      "referenceSha256": "dd3407ef33cbef2fdc7b101d74f8dc46d0ad497bf06f1a123ba713d571b9e94f",
+      "captureSha256": [
+        "dd3407ef33cbef2fdc7b101d74f8dc46d0ad497bf06f1a123ba713d571b9e94f",
+        "dd3407ef33cbef2fdc7b101d74f8dc46d0ad497bf06f1a123ba713d571b9e94f",
+        "dd3407ef33cbef2fdc7b101d74f8dc46d0ad497bf06f1a123ba713d571b9e94f"
+      ]
+    },
+    {
+      "id": "seam-3-control",
+      "input": "seam-3-control.svg",
+      "reference": "references/dd3407ef33cbef2f.png",
+      "width": 780,
+      "height": 96,
+      "sourceSha256": "dc41d77ac5259a33ab9d82fe6594b7a1c32b7e51f5a513a819c81973cea7ebbc",
+      "referenceSha256": "dd3407ef33cbef2fdc7b101d74f8dc46d0ad497bf06f1a123ba713d571b9e94f",
+      "captureSha256": [
+        "dd3407ef33cbef2fdc7b101d74f8dc46d0ad497bf06f1a123ba713d571b9e94f",
+        "dd3407ef33cbef2fdc7b101d74f8dc46d0ad497bf06f1a123ba713d571b9e94f",
+        "dd3407ef33cbef2fdc7b101d74f8dc46d0ad497bf06f1a123ba713d571b9e94f"
+      ]
+    },
+    {
+      "id": "seam-4-candidate",
+      "input": "seam-4-candidate.svg",
+      "reference": "references/69b4b0e4eac0ef67.png",
+      "width": 520,
+      "height": 64,
+      "sourceSha256": "3e5ed3dd43c7a575f3412545a282eaae7199d38be66e34f910946152b0551e3f",
+      "referenceSha256": "69b4b0e4eac0ef670fecfb2cc6e9ab48ae2234c222d09c7d8c18be6a6a510dce",
+      "captureSha256": [
+        "69b4b0e4eac0ef670fecfb2cc6e9ab48ae2234c222d09c7d8c18be6a6a510dce",
+        "69b4b0e4eac0ef670fecfb2cc6e9ab48ae2234c222d09c7d8c18be6a6a510dce",
+        "69b4b0e4eac0ef670fecfb2cc6e9ab48ae2234c222d09c7d8c18be6a6a510dce"
+      ]
+    },
+    {
+      "id": "seam-4-control",
+      "input": "seam-4-control.svg",
+      "reference": "references/69b4b0e4eac0ef67.png",
+      "width": 520,
+      "height": 64,
+      "sourceSha256": "a7f2c24a389477023a0c794ab43d9f6f922d82be4fdfc565350a1dcf42b4d28b",
+      "referenceSha256": "69b4b0e4eac0ef670fecfb2cc6e9ab48ae2234c222d09c7d8c18be6a6a510dce",
+      "captureSha256": [
+        "69b4b0e4eac0ef670fecfb2cc6e9ab48ae2234c222d09c7d8c18be6a6a510dce",
+        "69b4b0e4eac0ef670fecfb2cc6e9ab48ae2234c222d09c7d8c18be6a6a510dce",
+        "69b4b0e4eac0ef670fecfb2cc6e9ab48ae2234c222d09c7d8c18be6a6a510dce"
+      ]
+    },
+    {
+      "id": "seam-5-candidate",
+      "input": "seam-5-candidate.svg",
+      "reference": "references/8d1f6de1737baae6.png",
+      "width": 780,
+      "height": 96,
+      "sourceSha256": "5a8b7c6a122c762748c7d3934ac47c198f309d03d58533a4df4a61af2d9019dc",
+      "referenceSha256": "8d1f6de1737baae6583a761fd35b05a08391b0ddaf29a07733694dfbda82f723",
+      "captureSha256": [
+        "8d1f6de1737baae6583a761fd35b05a08391b0ddaf29a07733694dfbda82f723",
+        "8d1f6de1737baae6583a761fd35b05a08391b0ddaf29a07733694dfbda82f723",
+        "8d1f6de1737baae6583a761fd35b05a08391b0ddaf29a07733694dfbda82f723"
+      ]
+    },
+    {
+      "id": "seam-5-control",
+      "input": "seam-5-control.svg",
+      "reference": "references/8d1f6de1737baae6.png",
+      "width": 780,
+      "height": 96,
+      "sourceSha256": "1544d0049da726164c7cb91635ce6ff1e7184af9dd65fde0d7917e36ace1a35e",
+      "referenceSha256": "8d1f6de1737baae6583a761fd35b05a08391b0ddaf29a07733694dfbda82f723",
+      "captureSha256": [
+        "8d1f6de1737baae6583a761fd35b05a08391b0ddaf29a07733694dfbda82f723",
+        "8d1f6de1737baae6583a761fd35b05a08391b0ddaf29a07733694dfbda82f723",
+        "8d1f6de1737baae6583a761fd35b05a08391b0ddaf29a07733694dfbda82f723"
+      ]
+    },
+    {
+      "id": "seam-6-candidate",
+      "input": "seam-6-candidate.svg",
+      "reference": "references/058b7917e0915187.png",
+      "width": 520,
+      "height": 64,
+      "sourceSha256": "9a585a06030a92ff22bd9391d7c36de22f98d561c72f4052952a1f41277ebb8d",
+      "referenceSha256": "058b7917e09151875a1cde6e4ea6fb229eaada7b479a77ffe0a15c12eb6b0d5c",
+      "captureSha256": [
+        "058b7917e09151875a1cde6e4ea6fb229eaada7b479a77ffe0a15c12eb6b0d5c",
+        "058b7917e09151875a1cde6e4ea6fb229eaada7b479a77ffe0a15c12eb6b0d5c",
+        "058b7917e09151875a1cde6e4ea6fb229eaada7b479a77ffe0a15c12eb6b0d5c"
+      ]
+    },
+    {
+      "id": "seam-6-control",
+      "input": "seam-6-control.svg",
+      "reference": "references/058b7917e0915187.png",
+      "width": 520,
+      "height": 64,
+      "sourceSha256": "5ca62dea98527623f279667f985f0f8a3b3912417080fe4e6197e15d6c062f6f",
+      "referenceSha256": "058b7917e09151875a1cde6e4ea6fb229eaada7b479a77ffe0a15c12eb6b0d5c",
+      "captureSha256": [
+        "058b7917e09151875a1cde6e4ea6fb229eaada7b479a77ffe0a15c12eb6b0d5c",
+        "058b7917e09151875a1cde6e4ea6fb229eaada7b479a77ffe0a15c12eb6b0d5c",
+        "058b7917e09151875a1cde6e4ea6fb229eaada7b479a77ffe0a15c12eb6b0d5c"
+      ]
+    },
+    {
+      "id": "seam-7-candidate",
+      "input": "seam-7-candidate.svg",
+      "reference": "references/3120cf65dd4599b3.png",
+      "width": 780,
+      "height": 96,
+      "sourceSha256": "185fa972040991320e96b2e810d888f3d7fb815cbc446d494b705e62e3f5c91c",
+      "referenceSha256": "3120cf65dd4599b3d8eebb5715730dd40d87da0fb60c823ce429d4fd222ba278",
+      "captureSha256": [
+        "3120cf65dd4599b3d8eebb5715730dd40d87da0fb60c823ce429d4fd222ba278",
+        "3120cf65dd4599b3d8eebb5715730dd40d87da0fb60c823ce429d4fd222ba278",
+        "3120cf65dd4599b3d8eebb5715730dd40d87da0fb60c823ce429d4fd222ba278"
+      ]
+    },
+    {
+      "id": "seam-7-control",
+      "input": "seam-7-control.svg",
+      "reference": "references/3120cf65dd4599b3.png",
+      "width": 780,
+      "height": 96,
+      "sourceSha256": "f71c9f567822e23546e0e974b053b15d092978a8dd681e020868f26073b8aa7c",
+      "referenceSha256": "3120cf65dd4599b3d8eebb5715730dd40d87da0fb60c823ce429d4fd222ba278",
+      "captureSha256": [
+        "3120cf65dd4599b3d8eebb5715730dd40d87da0fb60c823ce429d4fd222ba278",
+        "3120cf65dd4599b3d8eebb5715730dd40d87da0fb60c823ce429d4fd222ba278",
+        "3120cf65dd4599b3d8eebb5715730dd40d87da0fb60c823ce429d4fd222ba278"
+      ]
+    },
+    {
+      "id": "seam-8-candidate",
+      "input": "seam-8-candidate.svg",
+      "reference": "references/8ab6c4455dfcca36.png",
+      "width": 520,
+      "height": 64,
+      "sourceSha256": "3afebf28b306f052ebad831d6aea03a7d3085e8254bc8bfd797fcdeaf747cf10",
+      "referenceSha256": "8ab6c4455dfcca367341001b4026fb2683210f5f1794252fc3e8c5a5b4955aff",
+      "captureSha256": [
+        "8ab6c4455dfcca367341001b4026fb2683210f5f1794252fc3e8c5a5b4955aff",
+        "8ab6c4455dfcca367341001b4026fb2683210f5f1794252fc3e8c5a5b4955aff",
+        "8ab6c4455dfcca367341001b4026fb2683210f5f1794252fc3e8c5a5b4955aff"
+      ]
+    },
+    {
+      "id": "seam-8-control",
+      "input": "seam-8-control.svg",
+      "reference": "references/8ab6c4455dfcca36.png",
+      "width": 520,
+      "height": 64,
+      "sourceSha256": "3d8c14f1b550c40508e45219ab8ee7d32f715df77f11b194b986bd05bc9afccf",
+      "referenceSha256": "8ab6c4455dfcca367341001b4026fb2683210f5f1794252fc3e8c5a5b4955aff",
+      "captureSha256": [
+        "8ab6c4455dfcca367341001b4026fb2683210f5f1794252fc3e8c5a5b4955aff",
+        "8ab6c4455dfcca367341001b4026fb2683210f5f1794252fc3e8c5a5b4955aff",
+        "8ab6c4455dfcca367341001b4026fb2683210f5f1794252fc3e8c5a5b4955aff"
+      ]
+    },
+    {
+      "id": "seam-9-candidate",
+      "input": "seam-9-candidate.svg",
+      "reference": "references/36024c962b50b15e.png",
+      "width": 780,
+      "height": 96,
+      "sourceSha256": "24c33935ab5a112c3341112d38b01c10d9a0f07de13ae34d8ffc07a5245f55fb",
+      "referenceSha256": "36024c962b50b15e1624f8aed5a23dbbb608281ef6a47bd21acf4e4cf41eccba",
+      "captureSha256": [
+        "36024c962b50b15e1624f8aed5a23dbbb608281ef6a47bd21acf4e4cf41eccba",
+        "36024c962b50b15e1624f8aed5a23dbbb608281ef6a47bd21acf4e4cf41eccba",
+        "36024c962b50b15e1624f8aed5a23dbbb608281ef6a47bd21acf4e4cf41eccba"
+      ]
+    },
+    {
+      "id": "seam-9-control",
+      "input": "seam-9-control.svg",
+      "reference": "references/36024c962b50b15e.png",
+      "width": 780,
+      "height": 96,
+      "sourceSha256": "1b77459bfb82f69389d6251f1484665de66b96da977312109b01eb155430d730",
+      "referenceSha256": "36024c962b50b15e1624f8aed5a23dbbb608281ef6a47bd21acf4e4cf41eccba",
+      "captureSha256": [
+        "36024c962b50b15e1624f8aed5a23dbbb608281ef6a47bd21acf4e4cf41eccba",
+        "36024c962b50b15e1624f8aed5a23dbbb608281ef6a47bd21acf4e4cf41eccba",
+        "36024c962b50b15e1624f8aed5a23dbbb608281ef6a47bd21acf4e4cf41eccba"
+      ]
+    },
+    {
+      "id": "seam-10-candidate",
+      "input": "seam-10-candidate.svg",
+      "reference": "references/03b1af3c578e5855.png",
+      "width": 520,
+      "height": 64,
+      "sourceSha256": "8f882da92d73c03316a6613ae47f0351ac817fdbc484639a65180eb39f000c9f",
+      "referenceSha256": "03b1af3c578e58555a2a7a861fbff545524d6bfee2319cc31d7ee63b8231c400",
+      "captureSha256": [
+        "03b1af3c578e58555a2a7a861fbff545524d6bfee2319cc31d7ee63b8231c400",
+        "03b1af3c578e58555a2a7a861fbff545524d6bfee2319cc31d7ee63b8231c400",
+        "03b1af3c578e58555a2a7a861fbff545524d6bfee2319cc31d7ee63b8231c400"
+      ]
+    },
+    {
+      "id": "seam-10-control",
+      "input": "seam-10-control.svg",
+      "reference": "references/03b1af3c578e5855.png",
+      "width": 520,
+      "height": 64,
+      "sourceSha256": "f915e727f8e42398967295393b2f6a14e170473800ae2feb458e20f19a833b46",
+      "referenceSha256": "03b1af3c578e58555a2a7a861fbff545524d6bfee2319cc31d7ee63b8231c400",
+      "captureSha256": [
+        "03b1af3c578e58555a2a7a861fbff545524d6bfee2319cc31d7ee63b8231c400",
+        "03b1af3c578e58555a2a7a861fbff545524d6bfee2319cc31d7ee63b8231c400",
+        "03b1af3c578e58555a2a7a861fbff545524d6bfee2319cc31d7ee63b8231c400"
+      ]
+    },
+    {
+      "id": "seam-11-candidate",
+      "input": "seam-11-candidate.svg",
+      "reference": "references/08868901f5ae4407.png",
+      "width": 780,
+      "height": 96,
+      "sourceSha256": "b933f998812a1c718beba6f75bdfc5d503a1a556d51f9fd1eea59dbbc83afc01",
+      "referenceSha256": "08868901f5ae44078693d25e97c2fa5d7a50d8ea870553198030da282e1dcbaa",
+      "captureSha256": [
+        "08868901f5ae44078693d25e97c2fa5d7a50d8ea870553198030da282e1dcbaa",
+        "08868901f5ae44078693d25e97c2fa5d7a50d8ea870553198030da282e1dcbaa",
+        "08868901f5ae44078693d25e97c2fa5d7a50d8ea870553198030da282e1dcbaa"
+      ]
+    },
+    {
+      "id": "seam-11-control",
+      "input": "seam-11-control.svg",
+      "reference": "references/08868901f5ae4407.png",
+      "width": 780,
+      "height": 96,
+      "sourceSha256": "74734b4f09e08738cd21450693d062c5da3b5fd990bd3e3d6f8f56fb704a1810",
+      "referenceSha256": "08868901f5ae44078693d25e97c2fa5d7a50d8ea870553198030da282e1dcbaa",
+      "captureSha256": [
+        "08868901f5ae44078693d25e97c2fa5d7a50d8ea870553198030da282e1dcbaa",
+        "08868901f5ae44078693d25e97c2fa5d7a50d8ea870553198030da282e1dcbaa",
+        "08868901f5ae44078693d25e97c2fa5d7a50d8ea870553198030da282e1dcbaa"
+      ]
+    }
+  ]
+}

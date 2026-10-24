@@ -1,6 +1,7 @@
 // Adapts SkDraw.cpp thin-stroke dispatch and SkScan_Hairline.cpp cap extension at the pinned revision.
 // Copyright 2006, 2011 The Android Open Source Project; 2011 Google Inc.
 using Lokad.Svg.Parsing;
+using System.Runtime.InteropServices;
 
 namespace Lokad.Svg.Rendering;
 
@@ -15,6 +16,22 @@ internal static class SvgHairlineStroke
 {
     internal static bool TryRasterize(SvgAuthoredPath path, SvgAffineTransform outputMap, SvgColor color, SvgConstantShaderPaint? constantPaint,
         (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing,
+        ReadOnlySpan<byte> viewportMask, bool binaryViewport, Span<byte> destination, int width, int height, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => TryRasterizeCore(path, outputMap, color, constantPaint, Span<SvgShaderSampler>.Empty,
+            clip, antialiasing, viewportMask, binaryViewport, destination, width, height, workCounter, cancellationToken);
+
+    /// <summary>Replays the same native hairline geometry with a borrowed per-pixel shader material.</summary>
+    /// <remarks>Sampler/ramp/texture ownership remains with the caller. Eligible replay updates the
+    /// draw-local paint alpha before sampling; ineligible wider strokes leave the sampler unchanged.
+    /// This synchronous call retains no sampler reference and shares geometry work/cancellation.</remarks>
+    internal static bool TryRasterize(SvgAuthoredPath path, SvgAffineTransform outputMap, ref SvgShaderSampler shader,
+        (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing,
+        ReadOnlySpan<byte> viewportMask, bool binaryViewport, Span<byte> destination, int width, int height, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => TryRasterizeCore(path, outputMap, default, null, MemoryMarshal.CreateSpan(ref shader, 1),
+            clip, antialiasing, viewportMask, binaryViewport, destination, width, height, workCounter, cancellationToken);
+
+    private static bool TryRasterizeCore(SvgAuthoredPath path, SvgAffineTransform outputMap, SvgColor color, SvgConstantShaderPaint? constantPaint,
+        Span<SvgShaderSampler> shaders, (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing,
         ReadOnlySpan<byte> viewportMask, bool binaryViewport, Span<byte> destination, int width, int height, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (path.StrokeStyle is not SvgAuthoredStrokeStyle style) return false;
@@ -40,6 +57,7 @@ internal static class SvgHairlineStroke
             commands = rectangleCommands;
         }
         float coverage = (lengthX + lengthY) * .5f;
+        if (!shaders.IsEmpty) shaders[0].ApplyHairlineCoverage(coverage);
         byte alpha = coverage == 1 ? color.Alpha : (byte)((color.Alpha * (int)(coverage * 256)) >> 8);
         SvgAnalyticPaint paint = constantPaint is {} constant
             ? SvgAnalyticPaint.Constant(coverage == 1 ? constant : SvgShaderPaint.ConstantGradient(new SvgGradientStop(0, color) { Alpha = alpha / 255f }, 1))
@@ -67,7 +85,9 @@ internal static class SvgHairlineStroke
         {
             workCounter.Consume(cancellationToken);
             SvgCpuBitmapOrigin origin = new(context.BitmapClip.Left, context.BitmapClip.Top);
-            SvgHairlineCoverage raster = new(destination, width, height, paint, clip, antialiasing, viewportMask, binaryViewport, context, workCounter, cancellationToken);
+            SvgHairlineCoverage raster = shaders.IsEmpty
+                ? new(destination, width, height, paint, clip, antialiasing, viewportMask, binaryViewport, context, workCounter, cancellationToken)
+                : new(destination, width, height, shaders, clip, antialiasing, viewportMask, binaryViewport, context, workCounter, cancellationToken);
             SvgDevicePoint current = default, contourStart = default, first = default, last = default;
             bool firstSegment = false, closed = false;
             for (int index = 0; index < commands.Length; index++)

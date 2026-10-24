@@ -1482,6 +1482,29 @@ public static partial class SvgConverter
 
         float ShaderAlpha(byte opacity) => (activePaint.Identity.Value == 0 ? opacity / 255f : activePaint.Alpha) * foldedOpacity;
 
+        SvgShaderSamplingContext ShaderSamplingContext()
+        {
+            SvgCpuBitmapOrigin? dither = surfaceMode == RasterSurfaceMode.PremultipliedFilter
+                && frame is { NativeSourceBounds: null, ImageShaderOrigin: {} sourceOrigin } sourceFrame
+                ? new(sourceOrigin.X - sourceFrame.CaptureOrigin.X, sourceOrigin.Y - sourceFrame.CaptureOrigin.Y) : null;
+            return new(rasterGrid, layerBounds, layerClipCoverage, frame?.NativeSourceBounds, dither,
+                sourceInverse, horizontalScale, verticalScale, horizontalOffset, verticalOffset);
+        }
+
+        bool RasterizeShaderHairline(SvgAuthoredPath? source, SvgClipBox? clip, ref SvgShaderSampler shader, byte[] destination)
+        {
+            if (source?.StrokeStyle is not {} style
+                || style.Shape == SvgAuthoredStrokeShape.Rectangle && source.SceneMap.PreservesAxisAlignedRectangles) return false;
+            ParserWorkCounter hairlineWork = new(options.Limits.MaximumWorkUnits - workUnits);
+            bool painted = SvgHairlineStroke.TryRasterize(source,
+                SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset).ComposeChecked(sourcePlacement),
+                ref shader, clip is {} bounds ? MapClipBounds(bounds, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : null,
+                clip?.Antialiasing ?? SvgClipAntialiasing.None, activeViewportClip, activeViewportIsBinary,
+                destination, outputWidth, outputHeight, hairlineWork, cancellationToken);
+            workUnits += hairlineWork.Used;
+            return painted;
+        }
+
         SvgCpuRasterContext LayerRasterContext(SvgCpuRasterContext tile)
         {
             SvgAnalyticClipBounds bitmap = new(Math.Max(tile.BitmapClip.Left, layerBounds.Left), Math.Max(tile.BitmapClip.Top, layerBounds.Top),
@@ -2957,6 +2980,8 @@ public static partial class SvgConverter
             if (offsetSpan <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop increasing-offset linear gradients are implemented.");
             using SvgGradientRamp ramp = denominator != 0 || definition.Stops.Length == 1
                 ? PrepareGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2) : default;
+            SvgShaderSampler shader = SvgShaderSampler.Linear(definition, box, ramp, nativeCoordinates, ShaderSamplingContext(), ShaderAlpha(outline.Opacity));
+            if ((denominator != 0 || definition.Stops.Length == 1) && RasterizeShaderHairline(authoredPath, outline.Clip, ref shader, destination)) return;
 
             ReadOnlySpan<int> contourEnds = raster.ContourEnds;
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
@@ -2985,54 +3010,16 @@ public static partial class SvgConverter
                 for (int y = startY; y < endY; y++)
                 {
                 traversal.PrepareRow(y, ref workUnits, options.Limits.MaximumWorkUnits, cancellationToken);
-                double deviceY = (y + 0.5 - verticalOffset) / verticalScale;
                 SvgAnalyticScanWindow paintWindow = traversal.GetPaintWindow(ref workUnits, options.Limits.MaximumWorkUnits);
                 int rowStartX = paintWindow.Left, rowEndX = paintWindow.Right;
                 for (int x = rowStartX; x < rowEndX; x++)
                 {
                     if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
                     double pixelCoverage = !useAnalytic && traversal.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
-                    double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
-                    SvgDevicePoint sourcePoint = SceneShaderPoint(deviceX, deviceY);
-                    deviceX = sourcePoint.X;
-                    double sourceY = sourcePoint.Y;
-                    double position;
-                    if (!nativeCoordinates.TryLinear(x, y, ShaderBitmapOrigin(x, y), out position))
-                    {
-                        if (definition.SourcePaint is { Data.IsMapped: true } sourcePaint) position = sourcePaint.Position(deviceX, sourceY);
-                        else if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
-                        {
-                            double relativeX = (deviceX - definition.X1) / definition.ReferenceScaleX;
-                            double relativeY = (sourceY - definition.Y1) / definition.ReferenceScaleY;
-                            double axisX = directionX / definition.ReferenceScaleX;
-                            double axisY = directionY / definition.ReferenceScaleY;
-                            position = (relativeX * axisX + relativeY * axisY) / (axisX * axisX + axisY * axisY);
-                        }
-                        else if (definition.IsUserSpace) position = ((deviceX - definition.X1) * directionX + (sourceY - definition.Y1) * directionY) / denominator;
-                        else
-                        {
-                            double normalizedX = (deviceX - box.X) / box.Width;
-                            double normalizedY = (sourceY - box.Y) / box.Height;
-                            position = ((normalizedX - definition.X1) * directionX + (normalizedY - definition.Y1) * directionY) / denominator;
-                        }
-                    }
-                    double local = definition.Stops.Length == 1 ? 0 : (position - definition.Offset1) / offsetSpan;
-                    if (definition.Spread == SvgGradientSpread.Repeat) local -= Math.Floor(local);
-                    else if (definition.Spread == SvgGradientSpread.Reflect)
-                    {
-                        double cycle = local - 2 * Math.Floor(local / 2);
-                        local = cycle > 1 ? 2 - cycle : cycle;
-                    }
-                    else
-                    {
-                        if (local < 0) local = 0;
-                        if (local > 1) local = 1;
-                    }
-                    position = local;
                     int offset = (y * outputWidth + x) * 4;
-                    SvgShaderPaint sample = ramp.SampleLinear(position, ShaderAlpha(outline.Opacity), GradientDither(x, y));
-                    if (useAnalytic) traversal.PaintPixel(x, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(sample), PolygonClipCoverage(raster, x, y));
-                    else sample.Blend(destination.AsSpan(offset, 4), ViewportAlpha(CoverageAlpha(255, pixelCoverage), x, y));
+                    SvgAnalyticPaint sample = shader.Sample(x, y, ref workUnits, options.Limits.MaximumWorkUnits, cancellationToken);
+                    if (useAnalytic) traversal.PaintPixel(x, destination.AsSpan(offset, 4), sample, PolygonClipCoverage(raster, x, y));
+                    else sample.Blend(destination.AsSpan(offset, 4), ViewportAlpha(CoverageAlpha(255, pixelCoverage), x, y), SvgAnalyticPaintKind.Direct);
                 }
                 }
                 // Structural fallback belongs to the original fill and runs once.
@@ -3051,6 +3038,9 @@ public static partial class SvgConverter
             SvgShaderCoordinates nativeCoordinates = SvgShaderCoordinates.CreateRadial(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, sourcePlacement);
             if (definition.Radius <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive-radius radial gradients are implemented.");
             using SvgGradientRamp ramp = PrepareGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2);
+
+            SvgShaderSampler shader = SvgShaderSampler.Radial(definition, box, ramp, nativeCoordinates, ShaderSamplingContext(), ShaderAlpha(outline.Opacity));
+            if (RasterizeShaderHairline(authoredPath, outline.Clip, ref shader, destination)) return;
 
             ReadOnlySpan<int> contourEnds = raster.ContourEnds;
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
@@ -3078,80 +3068,16 @@ public static partial class SvgConverter
                 for (int y = startY; y < endY; y++)
                 {
                 traversal.PrepareRow(y, ref workUnits, options.Limits.MaximumWorkUnits, cancellationToken);
-                double deviceY = (y + 0.5 - verticalOffset) / verticalScale;
                 SvgAnalyticScanWindow paintWindow = traversal.GetPaintWindow(ref workUnits, options.Limits.MaximumWorkUnits);
                 int rowStartX = paintWindow.Left, rowEndX = paintWindow.Right;
                 for (int x = rowStartX; x < rowEndX; x++)
                 {
                     if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
                     double pixelCoverage = !useAnalytic && traversal.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
-                    double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
-                    SvgDevicePoint sourcePoint = SceneShaderPoint(deviceX, deviceY);
-                    deviceX = sourcePoint.X;
-                    double sourceY = sourcePoint.Y;
-                    double sampleX;
-                    double sampleY;
-                    double focalX;
-                    double focalY;
-                    double circleX;
-                    double circleY;
-                    if (definition.IsUserSpace)
-                    {
-                        sampleX = deviceX;
-                        sampleY = sourceY;
-                        if (definition.HasGeneralTransform) { (sampleX, sampleY) = definition.Inverse.Apply(sampleX, sampleY); }
-                        focalX = definition.FocalX;
-                        focalY = definition.FocalY;
-                        circleX = definition.CenterX;
-                        circleY = definition.CenterY;
-                    }
-                    else
-                    {
-                        sampleX = (deviceX - box.X) / box.Width;
-                        sampleY = (sourceY - box.Y) / box.Height;
-                        if (definition.HasGeneralTransform) { (sampleX, sampleY) = definition.Inverse.Apply(sampleX, sampleY); }
-                        focalX = definition.FocalX;
-                        focalY = definition.FocalY;
-                        circleX = definition.CenterX;
-                        circleY = definition.CenterY;
-                    }
-                    double radius = definition.Radius;
-                    double focalRadius = definition.FocalRadius;
-                    if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
-                    {
-                        sampleX = (sampleX - circleX) / definition.ReferenceScaleX;
-                        sampleY = (sampleY - circleY) / definition.ReferenceScaleY;
-                        focalX = (focalX - circleX) / definition.ReferenceScaleX;
-                        focalY = (focalY - circleY) / definition.ReferenceScaleY;
-                        circleX = 0;
-                        circleY = 0;
-                        radius = definition.Radius / Math.Abs(definition.ReferenceScaleX);
-                        focalRadius = definition.FocalRadius / Math.Abs(definition.ReferenceScaleX);
-                    }
-                    double offsetX = circleX - focalX;
-                    double offsetY = circleY - focalY;
-                    double rayX = sampleX - focalX;
-                    double rayY = sampleY - focalY;
-                    double position;
-                    if (definition.Stops.Length == 1) position = 0;
-                    else
-                    if (nativeCoordinates.TryRadial(x, y, ShaderBitmapOrigin(x, y), out position)) { }
-                    else position = SvgShaderCoordinates.EvaluateRadial(new(rayX, rayY), new(offsetX, offsetY), radius, focalRadius);
-                    if (definition.Spread == SvgGradientSpread.Repeat) position -= Math.Floor(position);
-                    else if (definition.Spread == SvgGradientSpread.Reflect)
-                    {
-                        double cycle = position - 2 * Math.Floor(position / 2);
-                        position = cycle > 1 ? 2 - cycle : cycle;
-                    }
-                    else
-                    {
-                        if (position < 0) position = 0;
-                        if (position > 1) position = 1;
-                    }
                     int offset = (y * outputWidth + x) * 4;
-                    SvgShaderPaint sample = ramp.SampleRadial(position, ShaderAlpha(outline.Opacity), GradientDither(x, y));
-                    if (useAnalytic) traversal.PaintPixel(x, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(sample), PolygonClipCoverage(raster, x, y));
-                    else sample.Blend(destination.AsSpan(offset, 4), ViewportAlpha(CoverageAlpha(255, pixelCoverage), x, y));
+                    SvgAnalyticPaint sample = shader.Sample(x, y, ref workUnits, options.Limits.MaximumWorkUnits, cancellationToken);
+                    if (useAnalytic) traversal.PaintPixel(x, destination.AsSpan(offset, 4), sample, PolygonClipCoverage(raster, x, y));
+                    else sample.Blend(destination.AsSpan(offset, 4), ViewportAlpha(CoverageAlpha(255, pixelCoverage), x, y), SvgAnalyticPaintKind.Direct);
                 }
                 }
                 // Structural fallback belongs to the original fill and runs once.
@@ -3172,6 +3098,8 @@ public static partial class SvgConverter
             using SvgPatternTileLease texture = BorrowPatternTile(source, tile, false);
             byte[] blitted = texture.Surface.Pixels;
             SvgShaderCoordinates imageCoordinates = tile.NativeImageMap is {} imageMap ? SvgShaderCoordinates.CreateImage(imageMap, tile.NativeImageLocal ?? throw new InvalidOperationException("Image sampling requires its local matrix.")) : default;
+            SvgShaderSampler shader = SvgShaderSampler.Pattern(tile, blitted, imageCoordinates, ShaderSamplingContext(), ShaderAlpha(tile.Opacity));
+            if (RasterizeShaderHairline(authoredPath, outline.Clip, ref shader, destination)) return;
             ReadOnlySpan<int> contourEnds = raster.ContourEnds;
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
             SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, raster.Mapping, raster.QuadSpans, raster.CubicSpans, raster.CompleteBounds.RoundOutForDispatch(), outputWidth, outputHeight, raster.Authored, raster.AuthoredMap);
@@ -3205,9 +3133,9 @@ public static partial class SvgConverter
                     if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
                     double pixelCoverage = !useAnalytic && traversal.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
                     int offset = (y * outputWidth + x) * 4;
-                    SvgShaderPaint sample = SamplePattern(tile, blitted, x, y, ref imageCoordinates);
-                    if (useAnalytic) traversal.PaintPixel(x, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(sample), PolygonClipCoverage(raster, x, y));
-                    else sample.Blend(destination.AsSpan(offset, 4), ViewportAlpha(CoverageAlpha(255, pixelCoverage), x, y));
+                    SvgAnalyticPaint sample = shader.Sample(x, y, ref workUnits, options.Limits.MaximumWorkUnits, cancellationToken);
+                    if (useAnalytic) traversal.PaintPixel(x, destination.AsSpan(offset, 4), sample, PolygonClipCoverage(raster, x, y));
+                    else sample.Blend(destination.AsSpan(offset, 4), ViewportAlpha(CoverageAlpha(255, pixelCoverage), x, y), SvgAnalyticPaintKind.Direct);
                 }
                 }
                 // Structural fallback belongs to the original fill and runs once.
@@ -3455,41 +3383,14 @@ public static partial class SvgConverter
 
         SvgShaderPaint SamplePatternWithOpacity(SvgPatternGeometry pattern, byte[] tile, int x, int y, ref SvgShaderCoordinates imageCoordinates, byte opacity)
         {
-            float sampleX = x - (float)(pattern.OriginX + pattern.ShaderPlacement.E);
-            float sampleY = y - (float)(pattern.OriginY + pattern.ShaderPlacement.F);
-            float nativeFractionX = 0, nativeFractionY = 0;
-            if (pattern.NativeImageMap is not null)
+            SvgPatternSample sample = SvgPatternSample.Prepare(pattern, x, y,
+                pattern.NativeImageMap is null ? default : ShaderBitmapOrigin(x, y), ref imageCoordinates);
+            if (sample.RequiresFiltering)
             {
-                if (!imageCoordinates.TryMap(x, y, ShaderBitmapOrigin(x, y), out (float X, float Y) point))
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern image coordinates are not finite and invertible.");
-                (sampleX, sampleY) = point;
-                float weightX = sampleX + .5f, weightY = sampleY + .5f;
-                nativeFractionX = weightX - MathF.Floor(weightX);
-                nativeFractionY = weightY - MathF.Floor(weightY);
-                sampleX -= .5f;
-                sampleY -= .5f;
+                if (4 > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern filter work exceeds the configured limit.");
+                workUnits += 4;
             }
-            float floorX = MathF.Floor(sampleX), floorY = MathF.Floor(sampleY);
-            int tileX = (int)((floorX % pattern.TextureWidth + pattern.TextureWidth) % pattern.TextureWidth);
-            int tileY = (int)((floorY % pattern.TextureHeight + pattern.TextureHeight) % pattern.TextureHeight);
-            float fx = pattern.NativeImageMap is null ? sampleX - floorX : nativeFractionX, fy = pattern.NativeImageMap is null ? sampleY - floorY : nativeFractionY;
-            float alpha = ShaderAlpha(MultiplyAlpha(pattern.Opacity, opacity));
-            if (fx == 0 && fy == 0)
-            {
-                int offset = (tileY * pattern.TextureWidth + tileX) * 4;
-                return SvgShaderPaint.Pattern(tile[offset], tile[offset + 1], tile[offset + 2], tile[offset + 3], alpha);
-            }
-            if (4 > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern filter work exceeds the configured limit.");
-            workUnits += 4;
-            int nextX = tileX + 1 == pattern.TextureWidth ? 0 : tileX + 1;
-            int nextY = tileY + 1 == pattern.TextureHeight ? 0 : tileY + 1;
-            int a = (tileY * pattern.TextureWidth + tileX) * 4, b = (tileY * pattern.TextureWidth + nextX) * 4;
-            int c = (nextY * pattern.TextureWidth + tileX) * 4, d = (nextY * pattern.TextureWidth + nextX) * 4;
-            return SvgShaderPaint.InterpolatePremultiplied(
-                new(tile[a], tile[a + 1], tile[a + 2], tile[a + 3]),
-                new(tile[b], tile[b + 1], tile[b + 2], tile[b + 3]),
-                new(tile[c], tile[c + 1], tile[c + 2], tile[c + 3]),
-                new(tile[d], tile[d + 1], tile[d + 2], tile[d + 3]), fx, fy, alpha);
+            return sample.Sample(tile, ShaderAlpha(MultiplyAlpha(pattern.Opacity, opacity)));
         }
 
         void RasterizePatternStroke(SvgPatternGeometry pattern, SvgStroke stroke, byte[] destination)

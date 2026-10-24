@@ -111,6 +111,11 @@ Single-zero-radius rectangles retain their path start and primitive drawing
 bounds. Symbol linear paints compose retained source and instance maps; see
 the [paint cases](../tests/Lokad.Svg.Tests/SvgZeroRadiusPaintTests.cs) and
 [native references](../tests/Research/zero-radius-paints/capture.json).
+Thin gradient and pattern path strokes share the native hairline traversal with
+solid strokes while retaining shader sampling and blend arithmetic. The
+[material regressions](../tests/Lokad.Svg.Tests/SvgShaderHairlineTests.cs) and
+[browser references](../tests/Research/shader-hairlines/capture.json) cover
+alpha conversion, curves, instances, masks and CPU bitmap seams.
 Omitted circle radii and path data paint nothing. An ellipse with one omitted
 radius copies the other resolved radius; omitting both paints nothing.
 Omitted/empty point lists paint nothing. Repeated and closing vertices, and

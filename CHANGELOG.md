@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Replay thin gradient and pattern strokes through native hairline coverage,
+  preserving material alpha and ordered corner/curve paints. Share polygon
+  shader sampling without per-pixel callbacks or closure allocations.
 - Preserve the path start and drawing bounds of rectangles with one zero corner
   radius, and compose retained linear-gradient maps through symbol placement.
 - Preserve native rectangle fill coverage beside solid and shader strokes, and

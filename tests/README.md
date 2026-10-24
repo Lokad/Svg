@@ -68,6 +68,13 @@ The [zero-radius cases](Lokad.Svg.Tests/SvgZeroRadiusPaintTests.cs) cover contou
 order and symbol linear-paint maps; [ownership cases](Lokad.Svg.Tests/SvgZeroRadiusSymbolOwnershipTests.cs)
 exercise denial, cancellation and retry. Their [browser checks](Lokad.Svg.VisualTests/SvgZeroRadiusPaintReferenceTests.cs)
 retain [separate references](Research/zero-radius-paints/capture.json) for naturally unequal inputs.
+The [shader hairline cases](Lokad.Svg.Tests/SvgShaderHairlineTests.cs) retain
+independently measured width/alpha equivalences;
+[ownership checks](Lokad.Svg.Tests/SvgShaderHairlineOwnershipTests.cs) cover
+material lifetime and denial/cancellation/retry. Their
+[browser checks](Lokad.Svg.VisualTests/SvgShaderHairlineReferenceTests.cs) use
+[fresh-process references](Research/shader-hairlines/capture.json), including
+wide surfaces whose offscreen SVG-image rasterization differs from browser capture.
 
 [Display inheritance tests](Lokad.Svg.Tests/SvgDisplayInheritanceTests.cs) cover
 logical parents, retained instances, viewports and resource children across
