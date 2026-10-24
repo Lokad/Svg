@@ -1,5 +1,5 @@
-// Adapts Blink SVG fragment paint placement and alphabetic metric rounding.
-// Copyright 2017 The Chromium Authors. Effective font precision: Copyright 2007 Nicholas Shanks,
+// Adapts Blink SVG fragment placement, character widths and alphabetic metric rounding.
+// Copyright 2016, 2017, 2024 The Chromium Authors. Effective font precision: Copyright 2007 Nicholas Shanks,
 // 2008 Apple Inc., 2013 Google Inc. See THIRD_PARTY_NOTICES.txt.
 namespace Lokad.Svg.Fonts;
 
@@ -29,9 +29,14 @@ internal readonly record struct SvgGlyphDeviceMetrics(double Scale, SvgGlyphMetr
         => GetAdvance(advance, 0, unitsPerEm, fontSize);
 
     internal double GetAdvance(ushort advance, int pairAdjustment, ushort unitsPerEm, double fontSize)
+        => GetAdvance(advance, pairAdjustment, unitsPerEm, fontSize, 0, 0);
+
+    /// <summary>Adds physical 16.16 spacing before the SVG character fragment's 26.6 ceiling.</summary>
+    internal double GetAdvance(ushort advance, int pairAdjustment, ushort unitsPerEm, double fontSize, double letterSpacing, double wordSpacing)
     {
         float size = GetEffectiveFontSize(fontSize * Scale);
-        if (!double.IsFinite(fontSize) || fontSize <= 0 || !float.IsFinite(size) || size < 0 || unitsPerEm == 0 || !double.IsFinite(Scale) || Scale <= 0)
+        if (!double.IsFinite(fontSize) || fontSize <= 0 || !float.IsFinite(size) || size < 0 || unitsPerEm == 0 || !double.IsFinite(Scale) || Scale <= 0
+            || !double.IsFinite(letterSpacing) || !double.IsFinite(wordSpacing))
             throw new SvgException(SvgErrorCode.LimitExceeded, "The text metrics exceed the device range.");
         double deviceAdvance;
         long adjustedAdvance = (long)advance + pairAdjustment;
@@ -53,6 +58,13 @@ internal readonly record struct SvgGlyphDeviceMetrics(double Scale, SvgGlyphMetr
         else throw new ArgumentOutOfRangeException(nameof(Target));
         if (!double.IsFinite(deviceAdvance) || deviceAdvance * 65536 > int.MaxValue || deviceAdvance * 65536 < int.MinValue)
             throw new SvgException(SvgErrorCode.LimitExceeded, "The text advance exceeds the device range.");
+        if (letterSpacing != 0 || wordSpacing != 0)
+        {
+            double letter = Math.Clamp(Math.Truncate((float)(letterSpacing * Scale) * 65536f), int.MinValue, int.MaxValue);
+            double word = Math.Clamp(Math.Truncate((float)(wordSpacing * Scale) * 65536f), int.MinValue, int.MaxValue);
+            double spacing = Math.Clamp(letter + word, int.MinValue, int.MaxValue);
+            deviceAdvance = Math.Clamp(deviceAdvance * 65536 + spacing, int.MinValue, int.MaxValue) / 65536;
+        }
         return (UsesCharacterAdvances ? Math.Ceiling(deviceAdvance * 64) / 64 : deviceAdvance) / Scale;
     }
 

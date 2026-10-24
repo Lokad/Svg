@@ -1,0 +1,58 @@
+{
+  "purpose": "Text-path source-box controls combine spacing, anchors, fonts, textLength and signed advances with the independently retained original source map.",
+  "chromeVersion": "153.0.8010.52",
+  "fontEvidence": "capture.json",
+  "vectorSha256": "2a1db2099fb094dc693b3c479523351ff9eceffdeb6453580a201204e372b8b6",
+  "license": "MIT",
+  "recipe": "Load the exact Noto Sans Regular and Noto Sans Mono Bold programs using FontFace, replacing serif/monospace with explicit families and weights. Append each source SVG to the DOM at its authored intrinsic size, await document.fonts.ready, and read text.getBBox(). Two independent healthy launches per host give identical results.",
+  "launches": {
+    "windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 622,
+        "debuggerReadyMilliseconds": 143,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 583,
+        "debuggerReadyMilliseconds": 157,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5587,
+        "debuggerReadyMilliseconds": 3755,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 4310,
+        "debuggerReadyMilliseconds": 3073,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  }
+}

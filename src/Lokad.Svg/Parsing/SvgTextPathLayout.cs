@@ -115,6 +115,7 @@ internal static class SvgTextPathLayout
                 else
                 {
                     run = pending.Run ?? throw new InvalidOperationException("A queued path requires a shaped run or continuation layout.");
+                    double pathScale = run.DeviceMetrics?.Scale ?? state.OutputTextScale;
                     using BudgetedParserList<SvgPlacedTextGlyph> placements = new(state.Budget, SvgMemoryCategory.Geometry, work, token);
                     int glyphIndex = 0;
                     foreach (SvgPositionedGlyph glyph in run.Glyphs)
@@ -129,7 +130,7 @@ internal static class SvgTextPathLayout
                         if (!measured.IsHorizontal || rotation != 0)
                             // Native SVG adds the device character offset and inline
                             // half-width before scalar division and the path offset.
-                            midpoint = ((float)(glyph.X * state.OutputTextScale) + (float)(glyph.Advance * state.OutputTextScale) / 2) / (float)state.OutputTextScale + (float)offset;
+                            midpoint = ((float)(glyph.X * pathScale) + (float)(glyph.Advance * pathScale) / 2) / (float)pathScale + (float)offset;
                         if (!double.IsFinite(distance) || !double.IsFinite(midpoint)) throw new SvgException(SvgErrorCode.LimitExceeded, "Text-path placement exceeds the supported range.");
                         if (baseline.Length == 0 || midpoint < 0 || midpoint > baseline.Length) { placements.Add(default); continue; }
                         bool horizontalPlacement = measured.IsHorizontal && rotation == 0;
@@ -138,6 +139,14 @@ internal static class SvgTextPathLayout
                             : glyph with { X = 0, Y = 0 };
                         SvgAffineTransform glyphMap = horizontalPlacement ? SvgAffineTransform.Identity
                             : measured.GlyphMap(midpoint, glyph.Advance / 2, glyph.Y, rotation, work, token);
+                        // SVG layout keeps signed inline advances, but the rotated
+                        // fragment rectangle clamps its painted width to zero.
+                        double paintHalfAdvance = glyph.Advance / 2;
+                        if (!horizontalPlacement && !glyphMap.IsTranslation && paintHalfAdvance < 0)
+                        {
+                            glyphMap = glyphMap.ComposeChecked(SvgAffineTransform.FromTranslation(paintHalfAdvance, 0));
+                            paintHalfAdvance = 0;
+                        }
                         SvgAffineTransform sourceMap = glyphMap.ComposeChecked(SvgAffineTransform.FromTranslation(placed.X, placed.Y));
                         SvgTextDecorationPlacement decoration = default;
                         if (paint.Decoration is not null)
@@ -150,8 +159,8 @@ internal static class SvgTextPathLayout
                             }
                             else
                             {
-                                double scale = state.OutputTextScale;
-                                SvgDevicePoint center = glyphMap.Apply(glyph.Advance / 2, -glyph.Y);
+                                double scale = pathScale;
+                                SvgDevicePoint center = glyphMap.Apply(paintHalfAdvance, -glyph.Y);
                                 float cx = (float)center.X * (float)scale, cy = (float)center.Y * (float)scale;
                                 float size = SvgGlyphDeviceMetrics.GetEffectiveFontSize(glyphFont.FontSize * scale);
                                 float ascent = OperatingSystem.IsWindows()
@@ -175,8 +184,8 @@ internal static class SvgTextPathLayout
                         }
                         else if (!horizontalPlacement && (OperatingSystem.IsWindows() || OperatingSystem.IsLinux()))
                         {
-                            SvgGlyphDeviceMetrics metrics = new(state.OutputTextScale, OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, true);
-                            glyphMap = metrics.PlaceTextPathPaint(glyphMap, glyph.Advance / 2, glyph.Y, glyphFont.FontSize, glyphFont.Font.Metrics);
+                            SvgGlyphDeviceMetrics metrics = new(pathScale, OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, true);
+                            glyphMap = metrics.PlaceTextPathPaint(glyphMap, paintHalfAdvance, glyph.Y, glyphFont.FontSize, glyphFont.Font.Metrics);
                         }
                         if (run.GlyphStretch != 1)
                         {

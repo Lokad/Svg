@@ -29,6 +29,10 @@ output scaling; cache/record tests guard repeated-run work and scene storage.
 [Path source-box vectors](Research/text-paint-bounds/path-capture.json) cover
 anchors, rotation, offsets, mixed faces/sizes and baseline transforms independently
 of the glyph paint origin and output scale.
+[Character-width captures](Research/text-paint-bounds/inline-capture.json) check
+fractional letter/word spacing and preserved edge spaces;
+[spaced-path controls](Research/text-paint-bounds/spaced-path-capture.json) combine
+these widths with anchors, font changes, `textLength` and negative advances.
 
 [Marker paint tests](Lokad.Svg.Tests/SvgMarkerPaintBindingTests.cs) cover forward
 resources, inherited fills, aliases, tile paint ownership, limits and cancellation.

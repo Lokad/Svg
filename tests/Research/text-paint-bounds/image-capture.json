@@ -1,5 +1,5 @@
 {
-  "purpose": "Text object boxes feed paints independently of stroke fringes; locally enclosed drawing rectangles preserve gradient colors under group opacity. User-space/channel-opacity controls retain their own behavior.",
+  "purpose": "Text object boxes, full character widths and locally enclosed drawing rectangles feed independent paints. Path spacing, transforms, signed advances and replay retain their own coordinate boundaries.",
   "chromeVersion": "153.0.8010.52",
   "background": "transparent",
   "fontEvidence": "capture.json",
@@ -749,6 +749,406 @@
           "sha256": "f4f3136c6f1ae81807a64e65021321eab3976d87e33e28e1d9a1c2f545a6f1f3"
         }
       }
+    },
+    {
+      "id": "spacing-path-fraction-linear-objectBoundingBox-fill-1-group-opacity",
+      "input": "spacing-path-fraction-linear-objectBoundingBox-fill-1-group-opacity.svg",
+      "sourceSha256": "39737c37f1e2db8c7f7e0a51840018c48553530863e760fa6dbdbd3f3f0de0b2",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/2d87806e71421681.png",
+          "sha256": "2d87806e714216818b7bc573fa0da243529ed02158af5058aa1a869835842d99"
+        },
+        "linux": {
+          "path": "references/144b26bc1a2d43f1.png",
+          "sha256": "144b26bc1a2d43f18fdb734e5efac7459721c9779973b0c8aea331fc9c6b0234"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-grid-radial-userSpaceOnUse-fill-1-group-opacity",
+      "input": "spacing-path-grid-radial-userSpaceOnUse-fill-1-group-opacity.svg",
+      "sourceSha256": "bc36f30856de4562e5d2c3c2796ff73a3c47ab4598174cfaa78c03ba4b7276bc",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/f6abdf8c8ef428a5.png",
+          "sha256": "f6abdf8c8ef428a5f94df66bbc18bb1727c4c6aa24a5274302c3f02c47f623b6"
+        },
+        "linux": {
+          "path": "references/c8ab1f1124fccd75.png",
+          "sha256": "c8ab1f1124fccd7599020b8fd4674ef80f14e141feebb42ee70d5458e56128d0"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-negative-fraction-pattern-objectBoundingBox-stroke-1-group-opacity",
+      "input": "spacing-path-negative-fraction-pattern-objectBoundingBox-stroke-1-group-opacity.svg",
+      "sourceSha256": "3e0299e56ece4eae20ac6c5ed3288fcdc0b573394698418a6702949f59ef8e5a",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/4a3fd8077f1eb160.png",
+          "sha256": "4a3fd8077f1eb1609a6c0986e5367ed439892b84e4890b1650661a13a842120f"
+        },
+        "linux": {
+          "path": "references/062a87406f46f599.png",
+          "sha256": "062a87406f46f599b3dbf14292ff8ae05af0aabb30caae55021221e95a35a957"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-negative-spacing-linear-userSpaceOnUse-stroke-1.5-group-opacity",
+      "input": "spacing-path-negative-spacing-linear-userSpaceOnUse-stroke-1.5-group-opacity.svg",
+      "sourceSha256": "71545a893769a9513c0abc5f17d62e1dc0919057d95e3a75df770937359161fc",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/f9625f697d529657.png",
+          "sha256": "f9625f697d529657a949e0259ed038a92e22b60ecd1e06679f111973e4fbf94c"
+        },
+        "linux": {
+          "path": "references/77d9406487bb2513.png",
+          "sha256": "77d9406487bb2513f7377de27012d938dbe1d775130181df4b3033ee8cf140d5"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-word-radial-objectBoundingBox-fill-1-opaque",
+      "input": "spacing-path-word-radial-objectBoundingBox-fill-1-opaque.svg",
+      "sourceSha256": "9822429166d653da3882ae97ec031a6befed266d8ecf748e68d64ddeff24f0aa",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/044fcd82acea95c7.png",
+          "sha256": "044fcd82acea95c757eab9d8cc3cf54ce0e2ae38e1de55be0ce71fcfc4205db3"
+        },
+        "linux": {
+          "path": "references/4de9b32bab645c6e.png",
+          "sha256": "4de9b32bab645c6e16efd274f29f806097b0d7c1f6fe2bbc18e631da811a8e1a"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-leading-pattern-userSpaceOnUse-fill-1-opaque",
+      "input": "spacing-path-leading-pattern-userSpaceOnUse-fill-1-opaque.svg",
+      "sourceSha256": "d1aeb0a0cc9e5e98e8f6abd5ea05608357b84f0cdaf1d53fba0eaee3c2f5a68c",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/bdcd9081c78957e0.png",
+          "sha256": "bdcd9081c78957e0a87feff4ae0fe27aedc5e4ee1766486e92ccd321223ce960"
+        },
+        "linux": {
+          "path": "references/0b1c8c0c35718743.png",
+          "sha256": "0b1c8c0c35718743110bcf6e3e745987f4082aedbf6dbc8f0e30d30ddf331e5e"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-trailing-linear-objectBoundingBox-stroke-1-opaque",
+      "input": "spacing-path-trailing-linear-objectBoundingBox-stroke-1-opaque.svg",
+      "sourceSha256": "b230c5978944cc59b6afa4a05cb7522e33a7cf02bdd65944d9f9f92a10bd5b28",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/6c8c988471f8152c.png",
+          "sha256": "6c8c988471f8152ca2e7f4ee394378089bb3226ce5581d96b46a6221a118cdfa"
+        },
+        "linux": {
+          "path": "references/b7e5223808230676.png",
+          "sha256": "b7e522380823067625d4d5d4c64271ff32f150e5521e709c27d2ce779912d0ab"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-nbsp-radial-userSpaceOnUse-stroke-1-opaque",
+      "input": "spacing-path-nbsp-radial-userSpaceOnUse-stroke-1-opaque.svg",
+      "sourceSha256": "66d98306344e71ac611730c26ebdb2dadbe9993746f3e62af323e29be2e78b70",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/b7e48f93dc7222eb.png",
+          "sha256": "b7e48f93dc7222eb683f55228a06d302060ac1e532600e74d6a4dd2926126827"
+        },
+        "linux": {
+          "path": "references/c711c4b65f5377f7.png",
+          "sha256": "c711c4b65f5377f705ee7b330f34eb4f8ec5f2d511da2b3e2f37c25123ce8330"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-middle-pattern-objectBoundingBox-fill-1-group-opacity",
+      "input": "spacing-path-middle-pattern-objectBoundingBox-fill-1-group-opacity.svg",
+      "sourceSha256": "b0fc034af4d0e72f178a25f6d0af7dcded4607e02724046053b27db111fd2e0e",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/75f39cac84ea85d1.png",
+          "sha256": "75f39cac84ea85d18f752c4bf237130f8a431229f6bd661e01ca65811ff94ff2"
+        },
+        "linux": {
+          "path": "references/411b5c2184f6e8b3.png",
+          "sha256": "411b5c2184f6e8b3fd7478683ceaf7ad3a38bfc208fc6ba2b521577d9008c595"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-end-linear-userSpaceOnUse-fill-1-group-opacity",
+      "input": "spacing-path-end-linear-userSpaceOnUse-fill-1-group-opacity.svg",
+      "sourceSha256": "d01dc61cdefd6fe4916aeb81f62f51c0574aff0960fc28e354cec75250b8a894",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/50a914fcd00ea492.png",
+          "sha256": "50a914fcd00ea492b1943c9c96667f20dea057f505437fb3964887b3c8ecbfab"
+        },
+        "linux": {
+          "path": "references/3e19e54a27a756f1.png",
+          "sha256": "3e19e54a27a756f11ca9c7588889b9555f90a06e4075d04f890cff2b20e153ad"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-stretch-radial-userSpaceOnUse-stroke-1.5-group-opacity",
+      "input": "spacing-path-stretch-radial-userSpaceOnUse-stroke-1.5-group-opacity.svg",
+      "sourceSha256": "fe6a93d620af3c389dc22e069e1debc5a7743878fa6564c7483e60d370e58181",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/68e8072aae573421.png",
+          "sha256": "68e8072aae57342128e2e33193e9ae4af76e0cf71434139829db4ae13fdbe6e6"
+        },
+        "linux": {
+          "path": "references/7aa6473e8d84fdef.png",
+          "sha256": "7aa6473e8d84fdef0bb69597828a656433b2377e0ddce535b424691c97cf3d18"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-spacing-pattern-objectBoundingBox-stroke-1.5-group-opacity",
+      "input": "spacing-path-spacing-pattern-objectBoundingBox-stroke-1.5-group-opacity.svg",
+      "sourceSha256": "2a42c4790f575e98e8d5c97f2369d2af748192ddfb563505c890e5f8355f5d57",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/237675c0df23eecb.png",
+          "sha256": "237675c0df23eecbc3f43b9affd1c0f38097bea9fe1f4019a40defe7577b47fb"
+        },
+        "linux": {
+          "path": "references/81c20cb114f8f219.png",
+          "sha256": "81c20cb114f8f2198fd538c9d3b6d85dc2fe8e288f482d38044e6e78d1fc5696"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-single-spacing-linear-objectBoundingBox-fill-1-opaque",
+      "input": "spacing-path-single-spacing-linear-objectBoundingBox-fill-1-opaque.svg",
+      "sourceSha256": "30adb3114e6207007181a7328095464094f2ac74879bdf8a9249bece59f3b8ee",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/e009f757096a0090.png",
+          "sha256": "e009f757096a0090068bba9e5d3a0a84aeb3fc51ba75cddea6b6e6057264019c"
+        },
+        "linux": {
+          "path": "references/bb91be2a7808318a.png",
+          "sha256": "bb91be2a7808318a11b6470508c52aa504ad7ee4b5499e4ee7fc0bad83ef29e0"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-varying-spacing-radial-userSpaceOnUse-fill-1-opaque",
+      "input": "spacing-path-varying-spacing-radial-userSpaceOnUse-fill-1-opaque.svg",
+      "sourceSha256": "6ea6cffeca14325d0221bba88651773bb71bdb20814e75f3b0a09bdecf6a587d",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/684020bede29c331.png",
+          "sha256": "684020bede29c331b6d9bff74a73412e81789fd0f38db3e72ddbcb7b4ed0aace"
+        },
+        "linux": {
+          "path": "references/a8c0e5bff1bcfa54.png",
+          "sha256": "a8c0e5bff1bcfa547592db7b07673d3426eac212a546f11057ce2e8653e3bf22"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-mixed-fonts-pattern-objectBoundingBox-stroke-1-opaque",
+      "input": "spacing-path-mixed-fonts-pattern-objectBoundingBox-stroke-1-opaque.svg",
+      "sourceSha256": "82c95bdb8a94113122ad4c1e86c7948535de39c3cd2758d7c35e923f6ee335e9",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/91c61eabdf5bf05b.png",
+          "sha256": "91c61eabdf5bf05bed6f581571c0bf65ab1deeab9b57d556d41d2ae105d399e3"
+        },
+        "linux": {
+          "path": "references/e723f330ba153031.png",
+          "sha256": "e723f330ba153031c2ea495a3bd0461472cf44dc9fe89d2eb0f9ae381eb2f6b8"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-rotation-linear-userSpaceOnUse-stroke-1.5-opaque",
+      "input": "spacing-path-rotation-linear-userSpaceOnUse-stroke-1.5-opaque.svg",
+      "sourceSha256": "af6499c7b9e9a426d951800d0e1880d2c64ea8b14746b2c4a0e1f7f357737740",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/5e2c0b8327a8695e.png",
+          "sha256": "5e2c0b8327a8695e60a6f15a90015019ef31afe4ee340683a2a9a7f73d767a60"
+        },
+        "linux": {
+          "path": "references/fe0a06739dd5cfdb.png",
+          "sha256": "fe0a06739dd5cfdb5761d1381fd7a01128d462a07e0eacc126d38d4149df8c73"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-scale-radial-objectBoundingBox-fill-1.5-group-opacity",
+      "input": "spacing-path-scale-radial-objectBoundingBox-fill-1.5-group-opacity.svg",
+      "sourceSha256": "e33a07e56a052adb16848ae2ef63de4cd1bba6a0301643c5a71be6f8fe26fe08",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/e3e772feaffa0bc1.png",
+          "sha256": "e3e772feaffa0bc107748283835f5264973a86d841ac6551c1edb1016739beff"
+        },
+        "linux": {
+          "path": "references/170ccac352d3b39f.png",
+          "sha256": "170ccac352d3b39fc046acbfad759f437f7abddab847b3ff38886eaa1867f9e8"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-matrix-pattern-objectBoundingBox-stroke-1.5-group-opacity",
+      "input": "spacing-path-matrix-pattern-objectBoundingBox-stroke-1.5-group-opacity.svg",
+      "sourceSha256": "d0d77999802dcb5763fe842282acb461be796048687f5c3830c0d2b2eb570356",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/7b172b52d282b3a3.png",
+          "sha256": "7b172b52d282b3a3a77609bb7c77f70367ae02813b4642b609d070445b36d4ba"
+        },
+        "linux": {
+          "path": "references/17cec6cdd4cdd7ca.png",
+          "sha256": "17cec6cdd4cdd7ca2af6b465ff4b797e021627eff08b7e6fe2509ed8fb66803c"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-negative-word-linear-objectBoundingBox-stroke-1-opaque",
+      "input": "spacing-path-negative-word-linear-objectBoundingBox-stroke-1-opaque.svg",
+      "sourceSha256": "91d94e1d7c9360aa92e53d7f62f74bbe5bfc6781de7e6a82a664560cde7b1082",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/7118e8aa8e2cb370.png",
+          "sha256": "7118e8aa8e2cb370ecd14349d507e7313736a616bde3cced7105a000de32acf4"
+        },
+        "linux": {
+          "path": "references/1b057502b35992c1.png",
+          "sha256": "1b057502b35992c146e1a38d2c5dd164400f836eba959a3ec45269456895785c"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-negative-width-radial-userSpaceOnUse-stroke-1-group-opacity",
+      "input": "spacing-path-negative-width-radial-userSpaceOnUse-stroke-1-group-opacity.svg",
+      "sourceSha256": "f6dfef2fbf391e22dde76fbf621f2719fe6c88e762e7d09ad3dd4c11016a7a19",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/9b0dd35c813e7593.png",
+          "sha256": "9b0dd35c813e75937185a688ab5124f555d14fa1a595cab9d5de3df14ab066ee"
+        },
+        "linux": {
+          "path": "references/fba8981d82009da7.png",
+          "sha256": "fba8981d82009da77610f9a89a240ed4e4454649b63a7b98728add7c59b38a4f"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-scaled-underline-1.5-group-opacity",
+      "input": "spacing-path-scaled-underline-1.5-group-opacity.svg",
+      "sourceSha256": "2aeb0629b5bdbc10df93fd9bd4b0c286136bb252e9b47db677b4787a787ef2cc",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/2ae15b8d7546d9df.png",
+          "sha256": "2ae15b8d7546d9dfd94bec9417af11c318c46cdcdecbf4382d9cc39b352d2500"
+        },
+        "linux": {
+          "path": "references/df4ce7343e98dac0.png",
+          "sha256": "df4ce7343e98dac0d95a21ebedbebd1d7cda3e1b28f3a165a3ab52bbc5a44e67"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-negative-underline-1-opaque",
+      "input": "spacing-path-negative-underline-1-opaque.svg",
+      "sourceSha256": "0bf04ac4bfda501e9394e0935c255f2f0345313aabc5b2b356de633cbbfc4267",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/27e0363bf2e371ca.png",
+          "sha256": "27e0363bf2e371ca531a305b1c458354878096764c7875632f8f40c97e847ae3"
+        },
+        "linux": {
+          "path": "references/ecc062305039e056.png",
+          "sha256": "ecc062305039e05695a35773ab7ee27aaf97c83313d3625172f94f87a7d0cd31"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-mixed-underline-1.5-group-opacity",
+      "input": "spacing-path-mixed-underline-1.5-group-opacity.svg",
+      "sourceSha256": "24da84106688629e2f5abf212787f0976a807784d833d3652fc36d79bc1636b5",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/e84bc09cc0dcd488.png",
+          "sha256": "e84bc09cc0dcd48855fb71b1878538e04106d7af44c7f2d19178f6864c19c61a"
+        },
+        "linux": {
+          "path": "references/5b7abce41e9a9a26.png",
+          "sha256": "5b7abce41e9a9a2657fc6a7d2518918586703fddab1b6c156afc5cb002e45adb"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-instance-1.5-opaque",
+      "input": "spacing-path-instance-1.5-opaque.svg",
+      "sourceSha256": "81054fdac5dd255ee044e53db058748afee6f8df2b2ce2a6c4347aed4fb67a61",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/f357ae1a6e21126a.png",
+          "sha256": "f357ae1a6e21126a1a1b10555185670aa61314f46f730b4ba5543bfca02d3cf9"
+        },
+        "linux": {
+          "path": "references/df3a6c7c9108599f.png",
+          "sha256": "df3a6c7c9108599ffd0d6e1dcbf265131eb159f27610375a8be3a0780483816f"
+        }
+      }
+    },
+    {
+      "id": "spacing-path-mask-1.5-group-opacity",
+      "input": "spacing-path-mask-1.5-group-opacity.svg",
+      "sourceSha256": "4eeaafaf825a83dcaa30fc837b9fa179d49722c00e8863c457ef4953d709f399",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/ee272811777dad2e.png",
+          "sha256": "ee272811777dad2e41a889997b1fc05db71e2874bbae086dfa342da8a4572dc8"
+        },
+        "linux": {
+          "path": "references/fc0d66dc41746fc0.png",
+          "sha256": "fc0d66dc41746fc0084cb7b887e699d832364d229bc71218008debffd6f8de40"
+        }
+      }
     }
   ],
   "chromePins": {
@@ -872,5 +1272,107 @@
         "startupHealth": "healthy"
       }
     ]
+  },
+  "spacingLaunches": {
+    "paints": {
+      "windows": [
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 28524,
+          "debuggerReadyMilliseconds": 128,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 28588,
+          "debuggerReadyMilliseconds": 144,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      ],
+      "linux": [
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 33049,
+          "debuggerReadyMilliseconds": 2788,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 31639,
+          "debuggerReadyMilliseconds": 3337,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      ]
+    },
+    "replay": {
+      "windows": [
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 1580,
+          "debuggerReadyMilliseconds": 172,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 1515,
+          "debuggerReadyMilliseconds": 142,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      ],
+      "linux": [
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 5677,
+          "debuggerReadyMilliseconds": 3167,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 5339,
+          "debuggerReadyMilliseconds": 2166,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      ]
+    }
   }
 }

@@ -1,0 +1,58 @@
+{
+  "purpose": "Text-path character widths include letter/word spacing before fragment rounding, including preserved edge spaces. Native numeric queries are independent of glyph raster placement.",
+  "chromeVersion": "153.0.8010.52",
+  "fontEvidence": "capture.json",
+  "vectorSha256": "dbdcd0bc2caf9c4d061d1a5ebc53c92a6e19c96fa5fa75e859dd30fc6a932743",
+  "license": "MIT",
+  "recipe": "Load the exact Noto Sans Regular program using FontFace. For each row create a 384x128 SVG with xml:space=preserve, a path M0 48H240, the row's text/font-size/letter-spacing/word-spacing, transform=scale(row.scale), and textPath startOffset=80. Append to the DOM, await document.fonts.ready, and read getComputedTextLength() and getSubStringLength(i,1) for every character. Two independent healthy launches per host give identical results for all 640 configurations.",
+  "launches": {
+    "windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 10391,
+        "debuggerReadyMilliseconds": 157,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 595,
+        "debuggerReadyMilliseconds": 135,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 4681,
+        "debuggerReadyMilliseconds": 2931,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 3860,
+        "debuggerReadyMilliseconds": 2290,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  }
+}

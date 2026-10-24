@@ -175,6 +175,9 @@ mapping, preserving isolated-layer shader origins. Equal run paints share one
 scene record; generic font routes and filter capture bounds remain independent.
 Path source maps retain original coordinates before paint truncation, glyph stretch
 and output placement.
+Path character widths include fixed-point spacing before fragment rounding;
+kerning stops at spacing changes. Signed advances position characters while
+rotated fragment rectangles clamp their painted width to zero.
 
 The bounded interpreter keeps projection/freedom vectors and physical/hint grids
 separate. Windows font-unit conversion retains floating-point scale precision

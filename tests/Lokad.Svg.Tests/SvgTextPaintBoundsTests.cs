@@ -45,13 +45,15 @@ public sealed class SvgTextPaintBoundsTests
     }
 
     [Theory]
-    [InlineData(1)]
-    [InlineData(1.5)]
-    public async Task Path_paint_boxes_use_original_source_maps_before_paint_truncation_and_output_placement(double outputScale)
+    [InlineData("path-vectors.json", "path-capture.json", 1)]
+    [InlineData("path-vectors.json", "path-capture.json", 1.5)]
+    [InlineData("spaced-path-vectors.json", "spaced-path-capture.json", 1)]
+    [InlineData("spaced-path-vectors.json", "spaced-path-capture.json", 1.5)]
+    public async Task Path_paint_boxes_use_original_source_maps_before_paint_truncation_and_output_placement(string vectorsFile, string captureFile, double outputScale)
     {
         using SvgFontSnapshot snapshot = await CreateSnapshotAsync();
-        byte[] bytes = File.ReadAllBytes(DataPath("path-vectors.json"));
-        using JsonDocument capture = JsonDocument.Parse(File.ReadAllBytes(DataPath("path-capture.json")));
+        byte[] bytes = File.ReadAllBytes(DataPath(vectorsFile));
+        using JsonDocument capture = JsonDocument.Parse(File.ReadAllBytes(DataPath(captureFile)));
         Assert.Equal(capture.RootElement.GetProperty("vectorSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(bytes)));
         using JsonDocument vectors = JsonDocument.Parse(bytes);
         string platform = OperatingSystem.IsWindows() ? "windows" : "linux";
@@ -71,6 +73,38 @@ public sealed class SvgTextPaintBoundsTests
                 double[] expected = row.GetProperty(platform).EnumerateArray().Select(value => value.GetDouble()).ToArray();
                 Assert.True(expected.SequenceEqual(actual), row.GetProperty("id").GetString() + ": expected "
                     + JsonSerializer.Serialize(expected) + ", actual " + JsonSerializer.Serialize(actual));
+            }
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        }
+    }
+
+    [Fact]
+    public async Task Path_character_widths_include_native_letter_and_word_spacing_before_fragment_rounding()
+    {
+        using SvgFontSnapshot snapshot = await CreateSnapshotAsync();
+        byte[] bytes = File.ReadAllBytes(DataPath("inline-vectors.json"));
+        using JsonDocument capture = JsonDocument.Parse(File.ReadAllBytes(DataPath("inline-capture.json")));
+        Assert.Equal(capture.RootElement.GetProperty("vectorSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(bytes)));
+        using JsonDocument vectors = JsonDocument.Parse(bytes);
+        string platform = OperatingSystem.IsWindows() ? "windows" : "linux";
+        foreach (JsonElement row in vectors.RootElement.EnumerateArray())
+        {
+            double scale = row.GetProperty("scale").GetDouble();
+            SvgTextStyle style = new(new("serif", 400, false), row.GetProperty("fontSize").GetDouble(), 0, 0, 0, 0,
+                row.GetProperty("letterSpacing").GetDouble(), SvgTextAnchor.Start, "") { WordSpacing = row.GetProperty("wordSpacing").GetDouble() };
+            SvgGlyphDeviceMetrics metrics = new(scale, OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, true);
+            RenderBudget budget = new(1_000_000);
+            using (SvgTextRun run = SvgTextRunBuilder.Create(style, row.GetProperty("text").GetString() ?? throw new InvalidDataException("Missing spacing text."),
+                [], [], [], new(new(0, 0, 0, 255), true), metrics, snapshot, budget, new(1_000_000), CancellationToken.None))
+            {
+                JsonElement native = row.GetProperty(platform);
+                double[] expected = native.GetProperty("widths").EnumerateArray().Select(value => value.GetDouble()).ToArray();
+                double[] actual = run.Glyphs.ToArray().Select(glyph => (double)(float)glyph.Advance).ToArray();
+                Assert.True(expected.SequenceEqual(actual), row.GetProperty("id").GetString() + ": expected "
+                    + JsonSerializer.Serialize(expected) + ", actual " + JsonSerializer.Serialize(actual));
+                float width = 0;
+                foreach (SvgPositionedGlyph glyph in run.Glyphs) width += (float)glyph.Advance;
+                Assert.Equal(native.GetProperty("length").GetDouble(), (double)width);
             }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }

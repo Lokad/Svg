@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Include letter/word spacing in text-path character widths before rounding,
+  preserving signed advances and spacing boundaries.
 - Measure text-path paint boxes from original coordinates before glyph paint truncation.
 - Enclose text drawing bounds before output mapping to preserve gradient colors
   under group opacity; reuse fitted metrics across parser runs and share paint records.

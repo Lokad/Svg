@@ -1,0 +1,210 @@
+[
+  {
+    "id": "fraction",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='80'><defs><path id='baseline' d='M4 36Q70 8 140 36'/><linearGradient id='p' gradientUnits='objectBoundingBox'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text xml:space='preserve' font-family='serif' font-size='24' letter-spacing='.1' fill='url(#p)'><textPath href='#baseline' >AVj</textPath></text></svg>",
+    "windows": [
+      -6.154739856719971,
+      0.031833961606025696,
+      45.32400894165039,
+      42.71378707885742
+    ],
+    "linux": [
+      -5.219821453094482,
+      0.03183400630950928,
+      44.38909149169922,
+      42.35892105102539
+    ]
+  },
+  {
+    "id": "grid",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='80'><defs><path id='baseline' d='M4 36Q70 8 140 36'/><linearGradient id='p' gradientUnits='objectBoundingBox'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text xml:space='preserve' font-family='serif' font-size='24' letter-spacing='.75' fill='url(#p)'><textPath href='#baseline' >AVj</textPath></text></svg>",
+    "windows": [
+      -6.116385459899902,
+      -0.4135841727256775,
+      47.138694763183594,
+      43.14944076538086
+    ],
+    "linux": [
+      -5.18084192276001,
+      -0.4135841727256775,
+      46.20315170288086,
+      42.79623031616211
+    ]
+  },
+  {
+    "id": "negative-fraction",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='80'><defs><path id='baseline' d='M4 36Q70 8 140 36'/><linearGradient id='p' gradientUnits='objectBoundingBox'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text xml:space='preserve' font-family='serif' font-size='24' letter-spacing='-.1' fill='url(#p)'><textPath href='#baseline' >AVj</textPath></text></svg>",
+    "windows": [
+      -6.166666507720947,
+      0.17090299725532532,
+      44.77735900878906,
+      42.577632904052734
+    ],
+    "linux": [
+      -5.2319416999816895,
+      0.17090299725532532,
+      43.84263229370117,
+      42.222259521484375
+    ]
+  },
+  {
+    "id": "word",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='80'><defs><path id='baseline' d='M4 36Q70 8 140 36'/><linearGradient id='p' gradientUnits='objectBoundingBox'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text xml:space='preserve' font-family='serif' font-size='24' letter-spacing='.1' word-spacing='1.25' fill='url(#p)'><textPath href='#baseline' >A V</textPath></text></svg>",
+    "windows": [
+      -6.099124431610107,
+      -0.584977924823761,
+      48.01679229736328,
+      43.31624221801758
+    ],
+    "linux": [
+      -5.163299560546875,
+      -0.584977924823761,
+      47.08096694946289,
+      42.963775634765625
+    ]
+  },
+  {
+    "id": "trailing",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='80'><defs><path id='baseline' d='M4 36Q70 8 140 36'/><linearGradient id='p' gradientUnits='objectBoundingBox'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text xml:space='preserve' font-family='serif' font-size='24' letter-spacing='-.1' word-spacing='-.75' fill='url(#p)'><textPath href='#baseline' >AV </textPath></text></svg>",
+    "windows": [
+      -6.166666507720947,
+      0.33445000648498535,
+      44.10663604736328,
+      42.414085388183594
+    ],
+    "linux": [
+      -5.2319416999816895,
+      0.33445000648498535,
+      43.17190933227539,
+      42.058712005615234
+    ]
+  },
+  {
+    "id": "nbsp",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='80'><defs><path id='baseline' d='M4 36Q70 8 140 36'/><linearGradient id='p' gradientUnits='objectBoundingBox'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text xml:space='preserve' font-family='serif' font-size='24' letter-spacing='1.1' word-spacing='.1' fill='url(#p)'><textPath href='#baseline' >A\u00a0V</textPath></text></svg>",
+    "windows": [
+      -6.041390419006348,
+      -0.8792878985404968,
+      49.23645782470703,
+      43.59431457519531
+    ],
+    "linux": [
+      -5.104619026184082,
+      -0.8792878985404968,
+      48.299686431884766,
+      43.24436950683594
+    ]
+  },
+  {
+    "id": "middle",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='80'><defs><path id='baseline' d='M4 36Q70 8 140 36'/><linearGradient id='p' gradientUnits='objectBoundingBox'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text xml:space='preserve' font-family='serif' font-size='24' letter-spacing='.1' text-anchor='middle' fill='url(#p)'><textPath href='#baseline' startOffset='50%'>AVj</textPath></text></svg>",
+    "windows": [
+      51.839237213134766,
+      -4.1890716552734375,
+      40.11904525756836,
+      34.16524124145508
+    ],
+    "linux": [
+      52.83758544921875,
+      -4.1890716552734375,
+      39.120697021484375,
+      34.16524124145508
+    ]
+  },
+  {
+    "id": "spacing",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='80'><defs><path id='baseline' d='M4 36Q70 8 140 36'/><linearGradient id='p' gradientUnits='objectBoundingBox'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text xml:space='preserve' font-family='serif' font-size='24' letter-spacing='.1' textLength='48' fill='url(#p)'><textPath href='#baseline' >AVj</textPath></text></svg>",
+    "windows": [
+      -6.154739856719971,
+      -2.4274141788482666,
+      57.34663772583008,
+      45.17303466796875
+    ],
+    "linux": [
+      -5.219821453094482,
+      -2.4274141788482666,
+      56.411720275878906,
+      44.81816864013672
+    ]
+  },
+  {
+    "id": "single-spacing",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='80'><defs><path id='baseline' d='M4 36Q70 8 140 36'/><linearGradient id='p' gradientUnits='objectBoundingBox'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text xml:space='preserve' font-family='serif' font-size='24' letter-spacing='.1' textLength='48' fill='url(#p)'><textPath href='#baseline' >A</textPath></text></svg>",
+    "windows": [
+      -6.099124431610107,
+      5.857136249542236,
+      27.540369033813477,
+      36.87413024902344
+    ],
+    "linux": [
+      -5.163299560546875,
+      5.857136249542236,
+      26.604543685913086,
+      36.521663665771484
+    ]
+  },
+  {
+    "id": "varying-spacing",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='80'><defs><path id='baseline' d='M4 36Q70 8 140 36'/><linearGradient id='p' gradientUnits='objectBoundingBox'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text xml:space='preserve' font-family='serif' font-size='24' letter-spacing='.1' fill='url(#p)'><textPath href='#baseline' >A<tspan letter-spacing='.75'>V</tspan>j</textPath></text></svg>",
+    "windows": [
+      -6.099124431610107,
+      -0.33733028173446655,
+      46.771507263183594,
+      43.068599700927734
+    ],
+    "linux": [
+      -5.163299560546875,
+      -0.33733034133911133,
+      45.8356819152832,
+      42.716129302978516
+    ]
+  },
+  {
+    "id": "mixed-fonts",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='80'><defs><path id='baseline' d='M4 36Q70 8 140 36'/><linearGradient id='p' gradientUnits='objectBoundingBox'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text xml:space='preserve' font-family='serif' font-size='24' letter-spacing='.1' fill='url(#p)'><textPath href='#baseline' >A<tspan font-family='monospace' font-weight='700' font-size='16'>V</tspan>j</textPath></text></svg>",
+    "windows": [
+      -6.099124431610107,
+      0.9841861724853516,
+      41.68049621582031,
+      41.7470817565918
+    ],
+    "linux": [
+      -5.163299560546875,
+      0.9841861724853516,
+      40.74467086791992,
+      41.394615173339844
+    ]
+  },
+  {
+    "id": "negative-word",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='80'><defs><path id='baseline' d='M4 36Q70 8 140 36'/><linearGradient id='p' gradientUnits='objectBoundingBox'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text xml:space='preserve' font-family='serif' font-size='24' letter-spacing='-.1' word-spacing='-12' fill='url(#p)'><textPath href='#baseline' >A V</textPath></text></svg>",
+    "windows": [
+      -6.110020637512207,
+      3.05655574798584,
+      35.23991394042969,
+      39.67761993408203
+    ],
+    "linux": [
+      -5.174373149871826,
+      3.05655574798584,
+      34.304264068603516,
+      39.32468032836914
+    ]
+  },
+  {
+    "id": "negative-width",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='80'><defs><path id='baseline' d='M4 36Q70 8 140 36'/><linearGradient id='p' gradientUnits='objectBoundingBox'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text xml:space='preserve' font-family='serif' font-size='24' letter-spacing='-24' fill='url(#p)'><textPath href='#baseline' startOffset='80'>AVj</textPath></text></svg>",
+    "windows": [
+      71.1252670288086,
+      3.989642858505249,
+      43.613494873046875,
+      24.0911922454834
+    ],
+    "linux": [
+      71.1252670288086,
+      3.989642858505249,
+      43.613494873046875,
+      24.0911922454834
+    ]
+  }
+]
