@@ -45,7 +45,11 @@ internal readonly record struct SvgUseReference(string Id, double X, double Y, d
 internal readonly record struct SvgDeferredClip(string ClipId);
 
 /// <summary>Records the placeholders that must be replaced when a forward local use reference resolves.</summary>
-internal readonly record struct PendingUse(SvgSceneSlot Slot, SvgUseReference Reference, SvgViewportFrame? Frame, byte? Mask, string? MaskReference, int MaskScopeStart, int MaskScopeCount, SvgDeferredClip? DeferredClip);
+internal readonly record struct PendingUse(SvgSceneSlot Slot, SvgUseReference Reference, SvgViewportFrame? Frame, byte? Mask, string? MaskReference, int MaskScopeStart, int MaskScopeCount, SvgDeferredClip? DeferredClip)
+{
+    /// <summary>Retains the enclosing filter-source recording context for forward references and symbols.</summary>
+    internal int FilterGroupDepth { get; init; }
+}
 
 /// <summary>Applies typed local references through their geometry-specific supported transforms.</summary>
 internal static class SvgReferenceResolver
@@ -80,7 +84,7 @@ internal static class SvgReferenceResolver
         else
         {
             int scopeStart = SnapshotMaskScopes(state, workCounter, cancellationToken);
-            pendingUses.Add(new PendingUse(scene.AddReferencePlaceholder(), reference, frame, mask, maskReference, scopeStart, state.MaskScopeSnapshots.Count - scopeStart, deferredClip));
+            pendingUses.Add(new PendingUse(scene.AddReferencePlaceholder(), reference, frame, mask, maskReference, scopeStart, state.MaskScopeSnapshots.Count - scopeStart, deferredClip) { FilterGroupDepth = state.FilterGroupDepth });
         }
 
         static bool MissingPaint(string? id, SvgDocumentState document, ParserWorkCounter work, CancellationToken token)
@@ -221,6 +225,11 @@ internal static class SvgReferenceResolver
                 SvgGeometry authoredSource = sources[index] with { AuthoredPath = definition.Geometries[index].AuthoredPath };
                 switch (sources[index].Kind)
                 {
+                    case SvgGeometryKind.Rectangle when state.Scene.GetRecordedPaintValue(sources[index].RecordedPaint).IsEffectAnchor:
+                        // Anchors carry no drawable rectangle. Their retained source
+                        // bounds receive the instance map with the paint record below.
+                        AddInstanceGeometry(applied, SvgGeometry.FromRectangle(default));
+                        break;
                     case SvgGeometryKind.Rectangle:
                         AddInstanceGeometry(applied, ClipStrokedInstance(ApplyRectangle(sources[index].Rectangle, reference), frame) with { SolidPaint = reference.AllowsSolidPaintAnalysis ? sources[index].SolidPaint : null });
                         break;
@@ -1853,6 +1862,7 @@ internal static class SvgReferenceResolver
     }
 
     /// <summary>Maps one pending use through its frame, clip, mask and scope checks without touching the scene.</summary>
+    /// <remarks>Filter-source recording combines retained and active context, restoring the active depth on every exit.</remarks>
     private static SvgGeometry[] ResolveUseGeometries(SvgDefinition definition, PendingUse pendingUse, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(state);
@@ -1862,14 +1872,20 @@ internal static class SvgReferenceResolver
         SvgViewportFrame? frame = pendingUse.Frame;
         byte? mask = pendingUse.Mask;
         if (pendingUse.MaskReference is not null && mask is null && !state.MaskContents.TryGetValue(SvgMaskSyntax.ParseMaskId(pendingUse.MaskReference), out _)) mask = ResolveDeferredMaskValue(pendingUse.MaskReference, state);
-        SvgGeometry[] applied = ApplyInstanceMask(definition, pendingUse.Reference, frame, mask, pendingUse.MaskReference,
-            pendingUse.DeferredClip?.ClipId, state, workCounter, cancellationToken);
+        int previousFilterDepth = state.FilterGroupDepth;
+        state.FilterGroupDepth = Math.Max(previousFilterDepth, pendingUse.FilterGroupDepth);
         try
         {
-            if (pendingUse.MaskScopeCount > 0) foreach (SvgGeometry geometry in applied) SvgMaskSyntax.ValidateMaskScopeSnapshot(state, pendingUse.MaskScopeStart, pendingUse.MaskScopeCount, SvgMaskSyntax.BoundingBox(geometry));
-            return applied;
+            SvgGeometry[] applied = ApplyInstanceMask(definition, pendingUse.Reference, frame, mask, pendingUse.MaskReference,
+                pendingUse.DeferredClip?.ClipId, state, workCounter, cancellationToken);
+            try
+            {
+                if (pendingUse.MaskScopeCount > 0) foreach (SvgGeometry geometry in applied) SvgMaskSyntax.ValidateMaskScopeSnapshot(state, pendingUse.MaskScopeStart, pendingUse.MaskScopeCount, SvgMaskSyntax.BoundingBox(geometry));
+                return applied;
+            }
+            catch { foreach (SvgGeometry geometry in applied) geometry.Dispose(); throw; }
         }
-        catch { foreach (SvgGeometry geometry in applied) geometry.Dispose(); throw; }
+        finally { state.FilterGroupDepth = previousFilterDepth; }
     }
 
     private static byte ResolveDeferredMaskValue(string maskReference, SvgDocumentState document)

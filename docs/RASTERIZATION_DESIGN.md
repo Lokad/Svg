@@ -179,6 +179,9 @@ Path character widths include fixed-point spacing before fragment rounding;
 kerning stops at spacing changes. Signed advances position characters while
 rotated fragment rectangles clamp their painted width to zero.
 Source boxes retain fractional character widths after `textLength` scaling.
+Deferred text and instances retain their enclosing filter recording context;
+glyphs and decorations record source bounds before filter construction.
+Nonpainting effect anchors contribute object bounds without enlarging painted bounds.
 
 The bounded interpreter keeps projection/freedom vectors and physical/hint grids
 separate. Windows font-unit conversion retains floating-point scale precision

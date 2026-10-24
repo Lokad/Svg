@@ -223,7 +223,7 @@ internal static class SvgTextGlyphPainter
             // Generic/oversized outlines and filter captures keep their established
             // bounds and bitmap-origin contracts, independent of native text drawings.
             if (!prepared.NativeDrawing || state.FilterGroupDepth > 0)
-                return paths.IsEmpty || recording is not null ? RecordFallback() : SvgGeometry.FromGlyphContours(glyph);
+                return paths.IsEmpty || recording is not null || state.FilterGroupDepth > 0 ? RecordFallback() : SvgGeometry.FromGlyphContours(glyph);
             if (prepared.DrawingBounds is null)
             {
                 SvgRectangle box = prepared.SourceBox ??= SvgTextLayoutBounds.Measure(run, paths, placement, state.TextBoundsMetrics, work, token);

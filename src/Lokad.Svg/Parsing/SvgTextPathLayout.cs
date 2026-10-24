@@ -10,6 +10,8 @@ internal readonly record struct SvgPendingTextRun(SvgTextRun? Run, SvgTextPathRe
 {
     internal SvgRecordedTransform? RecordingTransform { get; init; }
     internal SvgPendingTextLayout? Continuation { get; init; }
+    /// <summary>Retains the enclosing filter-source recording context until deferred emission.</summary>
+    internal int FilterGroupDepth { get; init; }
     /// <summary>Borrows the originating viewport clip chain until deferred glyph command emission.</summary>
     internal SvgLeafMaskBinding? ViewportClip { get; init; }
 }
@@ -74,12 +76,14 @@ internal static class SvgTextPathLayout
 
     /// <summary>Emits one queued run into its recorded scene; the caller replaces its paint slot in source order.</summary>
     /// <remarks>The document retains ownership on failure. Success releases the run and metadata allowance;
-    /// teardown is idempotent. The temporary scene binding is restored even on work denial or cancellation.</remarks>
+    /// teardown is idempotent. Temporary scene and filter bindings are restored even on work denial or cancellation.</remarks>
     internal static void Emit(SvgDocumentState state, int index, SvgRenderLimits limits, ParserWorkCounter work, CancellationToken token)
     {
         SvgPendingTextRun pending = state.PendingTextRuns[index];
         SvgSceneBuilder? previous = state.DefinitionReplayScene;
+        int previousFilterDepth = state.FilterGroupDepth;
         if (!ReferenceEquals(pending.Scene, state.Scene)) state.DefinitionReplayScene = pending.Scene;
+        state.FilterGroupDepth = Math.Max(previousFilterDepth, pending.FilterGroupDepth);
         try
         {
             SvgTextRun run;
@@ -206,6 +210,10 @@ internal static class SvgTextPathLayout
             run.Dispose();
             pending.Owner.Dispose();
         }
-        finally { state.DefinitionReplayScene = previous; }
+        finally
+        {
+            state.DefinitionReplayScene = previous;
+            state.FilterGroupDepth = previousFilterDepth;
+        }
     }
 }

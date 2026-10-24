@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Retain enclosing filter source bounds through deferred text and instance replay.
 - Preserve fractional `textLength` widths when measuring text-path paint boxes.
 - Include letter/word spacing in text-path character widths before rounding,
   preserving signed advances and spacing boundaries.

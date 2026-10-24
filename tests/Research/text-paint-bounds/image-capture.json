@@ -1,5 +1,5 @@
 {
-  "purpose": "Text object boxes, full character widths and locally enclosed drawing rectangles feed independent paints. Path spacing, transforms, signed advances and replay retain their own coordinate boundaries.",
+  "purpose": "Text object boxes, full character widths and locally enclosed drawing rectangles feed independent paints. Path spacing, transforms, signed advances and replay retain their own coordinate boundaries. Deferred text and instance replay retain enclosing filter source bounds.",
   "chromeVersion": "153.0.8010.52",
   "background": "transparent",
   "fontEvidence": "capture.json",
@@ -1341,6 +1341,390 @@
           "sha256": "da8ca914b0342abcd2b6de9beab50813f08030f7322370e8cb32d3b703a85c8a"
         }
       }
+    },
+    {
+      "id": "filter-direct-pattern-group-1",
+      "input": "filter-direct-pattern-group-1.svg",
+      "sourceSha256": "ea6d8ec128dd7dcb69a3b272ea0c87dfd0ce9c7d2add1949ec2ee1b614476fa1",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/5c6560952d2997fa.png",
+          "sha256": "5c6560952d2997fa54a144c70b9689051aaa28fe013eac61ac37ed55f3c9e21e"
+        },
+        "linux": {
+          "path": "references/b7ae069bdd487f5e.png",
+          "sha256": "b7ae069bdd487f5eee110908a64ac8af7cd695804f221c4237411e73a4375082"
+        }
+      }
+    },
+    {
+      "id": "filter-direct-pattern-group-1.5",
+      "input": "filter-direct-pattern-group-1.5.svg",
+      "sourceSha256": "07508553d9b05328f39b449e4c3d75ba91e5c7c32a692a06e05fe46071e1dcdd",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/885d850a027777c5.png",
+          "sha256": "885d850a027777c5c681155dd317c079989679e0555a0a3bfb0324a43f709589"
+        },
+        "linux": {
+          "path": "references/7671985a3e5997a0.png",
+          "sha256": "7671985a3e5997a0745ea4f5c61a212c59375c4074255ff925df88ec6b274b3c"
+        }
+      }
+    },
+    {
+      "id": "filter-direct-solid-use-1.5",
+      "input": "filter-direct-solid-use-1.5.svg",
+      "sourceSha256": "8ca358f1b2d99c38daddb123ad62e3f8411bd5a1307220bc268759a6f4482864",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/521a483f448604be.png",
+          "sha256": "521a483f448604bef7f78330a15fae49e2207918fe0e49833292b82bec62ee26"
+        },
+        "linux": {
+          "path": "references/10cf4a6f01516b94.png",
+          "sha256": "10cf4a6f01516b9497922af0685642402614e598ee8c032018f29fe3f0281085"
+        }
+      }
+    },
+    {
+      "id": "filter-direct-solid-symbol-1.5",
+      "input": "filter-direct-solid-symbol-1.5.svg",
+      "sourceSha256": "1e41fa18046213a6d4992737d510ae77a86c1e9d8c55ceb709f8f46c8d1a51d4",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/521a483f448604be.png",
+          "sha256": "521a483f448604bef7f78330a15fae49e2207918fe0e49833292b82bec62ee26"
+        },
+        "linux": {
+          "path": "references/10cf4a6f01516b94.png",
+          "sha256": "10cf4a6f01516b9497922af0685642402614e598ee8c032018f29fe3f0281085"
+        }
+      }
+    },
+    {
+      "id": "filter-path-solid-group-1",
+      "input": "filter-path-solid-group-1.svg",
+      "sourceSha256": "0c6df1d749cc59f1f6199148c89f8efc918546dd372b131e9a7103e9b6da9f6f",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/7fb5aed4931d06f3.png",
+          "sha256": "7fb5aed4931d06f35fbfc399eb24c8a5fca96d4c759f5e5ded0756fb97ad7e6d"
+        },
+        "linux": {
+          "path": "references/e88151d265cbc18d.png",
+          "sha256": "e88151d265cbc18dfb0bc7c70d6f8d20f099af4c8e1379ccf721a4d49e4580f2"
+        }
+      }
+    },
+    {
+      "id": "filter-path-solid-group-1.5",
+      "input": "filter-path-solid-group-1.5.svg",
+      "sourceSha256": "a65f681476e286cd76ae393ac14841de883e106db7473c6469884f2f637d5499",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/521a483f448604be.png",
+          "sha256": "521a483f448604bef7f78330a15fae49e2207918fe0e49833292b82bec62ee26"
+        },
+        "linux": {
+          "path": "references/10cf4a6f01516b94.png",
+          "sha256": "10cf4a6f01516b9497922af0685642402614e598ee8c032018f29fe3f0281085"
+        }
+      }
+    },
+    {
+      "id": "filter-path-solid-symbol-1.5",
+      "input": "filter-path-solid-symbol-1.5.svg",
+      "sourceSha256": "19dcaaf60c07fc9edabf3e6738c254de3ad378a3beb70feb378dc4c985452d3f",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/521a483f448604be.png",
+          "sha256": "521a483f448604bef7f78330a15fae49e2207918fe0e49833292b82bec62ee26"
+        },
+        "linux": {
+          "path": "references/10cf4a6f01516b94.png",
+          "sha256": "10cf4a6f01516b9497922af0685642402614e598ee8c032018f29fe3f0281085"
+        }
+      }
+    },
+    {
+      "id": "filter-path-solid-mask-1.5",
+      "input": "filter-path-solid-mask-1.5.svg",
+      "sourceSha256": "1dea64bd85c0f066ba45e9f4165b438394473d577091c7caadb0f38b9da76809",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/521a483f448604be.png",
+          "sha256": "521a483f448604bef7f78330a15fae49e2207918fe0e49833292b82bec62ee26"
+        },
+        "linux": {
+          "path": "references/10cf4a6f01516b94.png",
+          "sha256": "10cf4a6f01516b9497922af0685642402614e598ee8c032018f29fe3f0281085"
+        }
+      }
+    },
+    {
+      "id": "filter-path-linear-mask-1",
+      "input": "filter-path-linear-mask-1.svg",
+      "sourceSha256": "d8edda91664df599478280e43d48254f2a151db48bcbe1132924e708840b9b64",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/7fb5aed4931d06f3.png",
+          "sha256": "7fb5aed4931d06f35fbfc399eb24c8a5fca96d4c759f5e5ded0756fb97ad7e6d"
+        },
+        "linux": {
+          "path": "references/e88151d265cbc18d.png",
+          "sha256": "e88151d265cbc18dfb0bc7c70d6f8d20f099af4c8e1379ccf721a4d49e4580f2"
+        }
+      }
+    },
+    {
+      "id": "filter-path-linear-mask-1.5",
+      "input": "filter-path-linear-mask-1.5.svg",
+      "sourceSha256": "d28aac0b7f5e335ae3a462797893882bc38de8aa3333546ae689ebc7fd188e79",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/521a483f448604be.png",
+          "sha256": "521a483f448604bef7f78330a15fae49e2207918fe0e49833292b82bec62ee26"
+        },
+        "linux": {
+          "path": "references/10cf4a6f01516b94.png",
+          "sha256": "10cf4a6f01516b9497922af0685642402614e598ee8c032018f29fe3f0281085"
+        }
+      }
+    },
+    {
+      "id": "filter-path-radial-mask-1",
+      "input": "filter-path-radial-mask-1.svg",
+      "sourceSha256": "b9f7d86a95ee3e25279380a4d4a9e1b83a94426ed58df953135515ba9d4f9632",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/3ac6f71e25593332.png",
+          "sha256": "3ac6f71e25593332d4707f8b058eb852dc934ec8518bc80e531b38c24b9579a4"
+        },
+        "linux": {
+          "path": "references/d762c3bf7cecc845.png",
+          "sha256": "d762c3bf7cecc84518347180789719c425c11cc88b433a5ab447545279d2c9d7"
+        }
+      }
+    },
+    {
+      "id": "filter-path-pattern-group-1",
+      "input": "filter-path-pattern-group-1.svg",
+      "sourceSha256": "44f4052a29cf442994e040624bdc122c458f979050291f184c315204171dd9d2",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/17e123e866cd6147.png",
+          "sha256": "17e123e866cd61473b01d6e99109eef8e118aa8e6d7456f5e15e3298ea108809"
+        },
+        "linux": {
+          "path": "references/7470e9702038fd28.png",
+          "sha256": "7470e9702038fd28e47c39b0009d957e764df5262b8314d6115694e99b5621f0"
+        }
+      }
+    },
+    {
+      "id": "filter-path-pattern-symbol-1",
+      "input": "filter-path-pattern-symbol-1.svg",
+      "sourceSha256": "c3743d987d3e9628af06166a1f9c09dcee825a42b3944a8233e64c3710e17890",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/17e123e866cd6147.png",
+          "sha256": "17e123e866cd61473b01d6e99109eef8e118aa8e6d7456f5e15e3298ea108809"
+        },
+        "linux": {
+          "path": "references/7470e9702038fd28.png",
+          "sha256": "7470e9702038fd28e47c39b0009d957e764df5262b8314d6115694e99b5621f0"
+        }
+      }
+    },
+    {
+      "id": "filter-path-decorated-group-1",
+      "input": "filter-path-decorated-group-1.svg",
+      "sourceSha256": "489823e399167961ea8b5bad6486463e4fe81414ebd6313e547a39b3891c7cec",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/7ae07ad51d69397d.png",
+          "sha256": "7ae07ad51d69397d0ccad4f884b96c2ebc0fc7dedfd5ca4bad4843e63b3d5706"
+        },
+        "linux": {
+          "path": "references/ebbba30dcb561056.png",
+          "sha256": "ebbba30dcb5610566cc9994606d7f8b7188f0519646b49eaccedd669ca825ebb"
+        }
+      }
+    },
+    {
+      "id": "filter-path-decorated-symbol-1",
+      "input": "filter-path-decorated-symbol-1.svg",
+      "sourceSha256": "e463543d1cdcdfc958d2fe99c3f99960191f0a0434afcfe0b4ae577e7a49db94",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/7ae07ad51d69397d.png",
+          "sha256": "7ae07ad51d69397d0ccad4f884b96c2ebc0fc7dedfd5ca4bad4843e63b3d5706"
+        },
+        "linux": {
+          "path": "references/ebbba30dcb561056.png",
+          "sha256": "ebbba30dcb5610566cc9994606d7f8b7188f0519646b49eaccedd669ca825ebb"
+        }
+      }
+    },
+    {
+      "id": "filter-path-stroke-mask-1",
+      "input": "filter-path-stroke-mask-1.svg",
+      "sourceSha256": "28a526094a87c9c1b4a492cccb8bff86adb925897763dd8715b67c8c72439663",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/03f3b031ff0efc91.png",
+          "sha256": "03f3b031ff0efc91625634a69a29f44b233f2770343b54d2a8d9118e0acb32b4"
+        },
+        "linux": {
+          "path": "references/bf1bb4dabc4711b4.png",
+          "sha256": "bf1bb4dabc4711b479b078b14323080063d9cb09d1a064766a0b1dbfc7aea454"
+        }
+      }
+    },
+    {
+      "id": "filter-path-stroke-mask-1.5",
+      "input": "filter-path-stroke-mask-1.5.svg",
+      "sourceSha256": "e4220fe7bbb3db6bae9a5fd3e317851f3162e894650e8e5c3e1e644a86ba2515",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/5fc025a4e7c58855.png",
+          "sha256": "5fc025a4e7c5885586fd25c103149ec4850fd2c7170985f21f77ecdeb737b0f2"
+        },
+        "linux": {
+          "path": "references/7a97cf5bd9189a79.png",
+          "sha256": "7a97cf5bd9189a794d69e38fc14de45b1b0413df8ead5e20f09bbef45c29ecdd"
+        }
+      }
+    },
+    {
+      "id": "filter-continuation-solid-group-1",
+      "input": "filter-continuation-solid-group-1.svg",
+      "sourceSha256": "df8c79ece040daa54101ad117804f70ab587af4737149e21f509a7109be1bfb1",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/801f006481071524.png",
+          "sha256": "801f0064810715241d0211bf22ef38499c778edd476b4667468fc0ad38a7f029"
+        },
+        "linux": {
+          "path": "references/e40a19a8de1d7f00.png",
+          "sha256": "e40a19a8de1d7f00c57caaa1047d34d3dde21f84a26f6157fc55bc4eb64114cc"
+        }
+      }
+    },
+    {
+      "id": "filter-continuation-solid-group-1.5",
+      "input": "filter-continuation-solid-group-1.5.svg",
+      "sourceSha256": "39ff3d67bf67d5e3f4a1b1257127c98aca55ca56c9a733aad43eaea7b1ce969f",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/b45d49d3bb740326.png",
+          "sha256": "b45d49d3bb7403269050e9b9943bad3146d18daf78ed1bb58b5b5cb764c616dc"
+        },
+        "linux": {
+          "path": "references/88129622439dee33.png",
+          "sha256": "88129622439dee336fa72315918bc6c78b0aff1fe0f35cd79bc3646b24bd3e43"
+        }
+      }
+    },
+    {
+      "id": "filter-continuation-solid-use-1.5",
+      "input": "filter-continuation-solid-use-1.5.svg",
+      "sourceSha256": "f019a8ecfe1f69416520d7873c38557bd5cc324dba6b5622741e80e0eac10fcb",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/b45d49d3bb740326.png",
+          "sha256": "b45d49d3bb7403269050e9b9943bad3146d18daf78ed1bb58b5b5cb764c616dc"
+        },
+        "linux": {
+          "path": "references/88129622439dee33.png",
+          "sha256": "88129622439dee336fa72315918bc6c78b0aff1fe0f35cd79bc3646b24bd3e43"
+        }
+      }
+    },
+    {
+      "id": "filter-continuation-solid-symbol-1.5",
+      "input": "filter-continuation-solid-symbol-1.5.svg",
+      "sourceSha256": "a3f23111f1c61415d87b2e25e39e2df3e34d3ec96ce6110b707751f78b033a5b",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/b45d49d3bb740326.png",
+          "sha256": "b45d49d3bb7403269050e9b9943bad3146d18daf78ed1bb58b5b5cb764c616dc"
+        },
+        "linux": {
+          "path": "references/88129622439dee33.png",
+          "sha256": "88129622439dee336fa72315918bc6c78b0aff1fe0f35cd79bc3646b24bd3e43"
+        }
+      }
+    },
+    {
+      "id": "filter-continuation-solid-pattern-1.5",
+      "input": "filter-continuation-solid-pattern-1.5.svg",
+      "sourceSha256": "27476f383d8496f25c89fa933336033ba3d3450b5b88f334eeeefd596564ada0",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/b45d49d3bb740326.png",
+          "sha256": "b45d49d3bb7403269050e9b9943bad3146d18daf78ed1bb58b5b5cb764c616dc"
+        },
+        "linux": {
+          "path": "references/88129622439dee33.png",
+          "sha256": "88129622439dee336fa72315918bc6c78b0aff1fe0f35cd79bc3646b24bd3e43"
+        }
+      }
+    },
+    {
+      "id": "filter-continuation-linear-mask-1",
+      "input": "filter-continuation-linear-mask-1.svg",
+      "sourceSha256": "9964b04741d519449c9f026b5c76dd1bc35600084b61eb03bb28eaaa941617cc",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/801f006481071524.png",
+          "sha256": "801f0064810715241d0211bf22ef38499c778edd476b4667468fc0ad38a7f029"
+        },
+        "linux": {
+          "path": "references/e40a19a8de1d7f00.png",
+          "sha256": "e40a19a8de1d7f00c57caaa1047d34d3dde21f84a26f6157fc55bc4eb64114cc"
+        }
+      }
+    },
+    {
+      "id": "filter-continuation-linear-mask-1.5",
+      "input": "filter-continuation-linear-mask-1.5.svg",
+      "sourceSha256": "55aa7683b77b14466e17f015468fd7bb0e971dd7457519cf9a1a822b90d732fd",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/b45d49d3bb740326.png",
+          "sha256": "b45d49d3bb7403269050e9b9943bad3146d18daf78ed1bb58b5b5cb764c616dc"
+        },
+        "linux": {
+          "path": "references/88129622439dee33.png",
+          "sha256": "88129622439dee336fa72315918bc6c78b0aff1fe0f35cd79bc3646b24bd3e43"
+        }
+      }
     }
   ],
   "chromePins": {
@@ -1631,6 +2015,78 @@
         "executableName": "chrome",
         "elapsedMilliseconds": 6105,
         "debuggerReadyMilliseconds": 4206,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  },
+  "filterLaunches": {
+    "windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 6560,
+        "debuggerReadyMilliseconds": 142,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 6631,
+        "debuggerReadyMilliseconds": 144,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 6625,
+        "debuggerReadyMilliseconds": 145,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 11582,
+        "debuggerReadyMilliseconds": 3611,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 11086,
+        "debuggerReadyMilliseconds": 3573,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 9891,
+        "debuggerReadyMilliseconds": 2628,
         "sandboxAccessFailures": 0,
         "networkServiceCrashes": 0,
         "stderrTruncated": false,

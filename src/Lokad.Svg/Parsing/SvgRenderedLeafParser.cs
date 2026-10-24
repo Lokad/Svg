@@ -124,7 +124,7 @@ internal static class SvgRenderedLeafParser
             SvgRecordedPaintValue paint = state.Scene.GetRecordedPaintValue(state.Scene.GeometryAt(index).RecordedPaint);
             if (paint.ObjectBounds is not {} box) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filter source requires retained object bounds.");
             if (!paint.IsMarkerContent) sourceObjects = Union(sourceObjects, box);
-            sourceVisuals = Union(sourceVisuals, paint.VisualBounds ?? box);
+            if (!paint.IsEffectAnchor) sourceVisuals = Union(sourceVisuals, paint.VisualBounds ?? box);
         }
         SvgFilterArena filters = state.Scene.Filters;
         if (!ReferenceEquals(filters, state.DocumentFilters)) filters.BorrowResourcesFrom(state.DocumentFilters);
@@ -417,7 +417,7 @@ internal static class SvgRenderedLeafParser
                                 continuation = new(extracted, runStyle, textPaint.GlyphPaint, deviceMetrics, fontSnapshot);
                                 textRuns[textIndex] = default;
                                 state.PendingTextRuns.Add(new(null, resume, textPlacement, textElement.Presentation.Color, state.Scene.AddPaintPlaceholder(), owner, state.Scene)
-                                    { RecordingTransform = context.InheritedPresentation.RecordingTransform, ViewportClip = SvgViewportFrame.ResolveGlyphClip(state, workCounter, cancellationToken), Continuation = continuation });
+                                    { RecordingTransform = context.InheritedPresentation.RecordingTransform, ViewportClip = SvgViewportFrame.ResolveGlyphClip(state, workCounter, cancellationToken), Continuation = continuation, FilterGroupDepth = state.FilterGroupDepth });
                             }
                             catch { continuation?.Dispose(); owner.Dispose(); throw; }
                             continue;
@@ -436,7 +436,7 @@ internal static class SvgRenderedLeafParser
                         catch { pendingTextOwner?.Dispose(); throw; }
                         if (textPath is not null || hasServer)
                         {
-                            try { state.PendingTextRuns.Add(new(run, textPath, textPlacement, textElement.Presentation.Color, state.Scene.AddPaintPlaceholder(), pendingTextOwner ?? throw new InvalidOperationException("A retained text run requires its metadata owner."), state.Scene) { RecordingTransform = context.InheritedPresentation.RecordingTransform, ViewportClip = SvgViewportFrame.ResolveGlyphClip(state, workCounter, cancellationToken) }); }
+                            try { state.PendingTextRuns.Add(new(run, textPath, textPlacement, textElement.Presentation.Color, state.Scene.AddPaintPlaceholder(), pendingTextOwner ?? throw new InvalidOperationException("A retained text run requires its metadata owner."), state.Scene) { RecordingTransform = context.InheritedPresentation.RecordingTransform, ViewportClip = SvgViewportFrame.ResolveGlyphClip(state, workCounter, cancellationToken), FilterGroupDepth = state.FilterGroupDepth }); }
                             catch { pendingTextOwner?.Dispose(); run.Dispose(); throw; }
                             continue;
                         }

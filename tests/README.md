@@ -33,6 +33,9 @@ of the glyph paint origin and output scale.
 fractional letter/word spacing and preserved edge spaces;
 [spaced-path controls](Research/text-paint-bounds/spaced-path-capture.json) combine
 these widths with anchors, font changes, `textLength` and negative advances.
+[Deferred filter tests](Lokad.Svg.Tests/OpenTypeFontTests.FilteredDeferredText.cs)
+cover text continuations and replay; [source bounds tests](Lokad.Svg.Tests/SvgDeferredFilterSourceTests.cs)
+keep nonpainting layout bounds separate from painted filter bounds.
 
 [Marker paint tests](Lokad.Svg.Tests/SvgMarkerPaintBindingTests.cs) cover forward
 resources, inherited fills, aliases, tile paint ownership, limits and cancellation.

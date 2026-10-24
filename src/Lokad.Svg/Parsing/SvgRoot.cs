@@ -1598,16 +1598,20 @@ internal sealed class SvgSceneBuilder : IDisposable
                     SvgRecordedPaintValue paint = GetRecordedPaintValue(geometry.RecordedPaint);
                     if (paint.IsEffectAnchor && paint.ObjectBounds is null) continue;
                     if (paint.ObjectBounds is not {} box) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group filter descendants require retained source bounds.");
-                    Include(paint.IsMarkerContent ? null : box, paint.VisualBounds ?? box);
+                    Include(paint.IsMarkerContent ? null : box, paint.IsEffectAnchor ? null : paint.VisualBounds ?? box);
                 }
             }
             if (sources.Count > 0 || depth != 0) throw new SvgException(SvgErrorCode.MalformedInput, "Filter group source is unbalanced.");
 
-            void Include(SvgPaintBounds? box, SvgPaintBounds visual)
+            void Include(SvgPaintBounds? box, SvgPaintBounds? visual)
             {
                 if (sources.Count == 0) return;
                 SvgFilterSourceScope parent = sources[^1];
-                sources[^1] = parent with { ObjectBounds = box is {} objects ? Union(parent.ObjectBounds, objects) : parent.ObjectBounds, VisualBounds = Union(parent.VisualBounds, visual) };
+                sources[^1] = parent with
+                {
+                    ObjectBounds = box is {} objects ? Union(parent.ObjectBounds, objects) : parent.ObjectBounds,
+                    VisualBounds = visual is {} painted ? Union(parent.VisualBounds, painted) : parent.VisualBounds
+                };
             }
 
             static SvgPaintBounds Union(SvgPaintBounds? previous, SvgPaintBounds next) => previous is {} box

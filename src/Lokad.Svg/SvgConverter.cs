@@ -433,7 +433,12 @@ public static partial class SvgConverter
                 {
                     SvgGeometry geometry = root.Geometries[command.GeometryIndex];
                     SvgRecordedPaintValue paint = GetRecordedPaintValue(geometry.RecordedPaint);
-                    if (paint.IsEffectAnchor && paint.ObjectBounds is null) continue;
+                    if (paint.IsEffectAnchor)
+                    {
+                        if (!paint.IsMarkerContent && paint.ObjectBounds is {} anchor)
+                            objects = Union(objects, anchor.Map(sourcePlacement, work, cancellationToken));
+                        continue;
+                    }
                     SvgPaintBounds box, visual;
                     if (geometry.AuthoredPath is {} path)
                     {
@@ -812,7 +817,6 @@ public static partial class SvgConverter
                                 if (paint.ObjectBounds is {} anchorBounds)
                                 {
                                     if (!paint.IsMarkerContent) objectBounds = Union(objectBounds, anchorBounds.Map(placement, preparation, cancellationToken));
-                                    visualBounds = Union(visualBounds, (paint.VisualBounds ?? anchorBounds).Map(placement, preparation, cancellationToken));
                                 }
                                 geometries[geometryCount] = geometry;
                                 commands[index - first + 1] = item with { GeometryIndex = geometryCount++ };
