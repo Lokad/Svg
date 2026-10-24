@@ -73,7 +73,7 @@ internal static class SvgTextLayoutBounds
                     if (!path.Visible) continue;
                     SvgAffineTransform map = path.SourceMap;
                     map = map with { E = map.E * scale, F = map.F * scale };
-                    float inlineWidth = MathF.Ceiling((float)(run.Glyphs[index].Advance * scale) * 64) / 64;
+                    float inlineWidth = (float)(run.Glyphs[index].Advance * scale);
                     result = result.Union(Fragment(index, index + 1, inlineWidth, default).Map(map, work, token).Scale(inverseScale, inverseScale));
                 }
             }

@@ -1149,6 +1149,198 @@
           "sha256": "fc0d66dc41746fc0084cb7b887e699d832364d229bc71218008debffd6f8de40"
         }
       }
+    },
+    {
+      "id": "textlength-path-stretch-linear-objectBoundingBox-fill-1-group-opacity",
+      "input": "textlength-path-stretch-linear-objectBoundingBox-fill-1-group-opacity.svg",
+      "sourceSha256": "90303e03c2c66f8c2f127afb59634c62dcd8f38d971ae0708f7166bc2885ea8d",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/9e53475b174cd92f.png",
+          "sha256": "9e53475b174cd92f18385bdc1431b153dfa7d1defb7ec77d86c6805ac2b53353"
+        },
+        "linux": {
+          "path": "references/7ebc9f69abf545ab.png",
+          "sha256": "7ebc9f69abf545ab8a69bd211e1cf433e841b5651d50b351c0e73b4c50f7b41f"
+        }
+      }
+    },
+    {
+      "id": "textlength-path-stretch-linear-objectBoundingBox-fill-1-opaque",
+      "input": "textlength-path-stretch-linear-objectBoundingBox-fill-1-opaque.svg",
+      "sourceSha256": "ba50887eb8a51e2d0c85b5a679ee6f2d70b4365c0a9d71ce0871e4ec906ea3b4",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/f5221bf0c3cabb49.png",
+          "sha256": "f5221bf0c3cabb49ddffc5df10b6b4625a49e23273fd324709abe287fd1c7b27"
+        },
+        "linux": {
+          "path": "references/fbed24d985770dc3.png",
+          "sha256": "fbed24d985770dc3790bce8e83bb696c255bb37625be1c6fc20d81038278104e"
+        }
+      }
+    },
+    {
+      "id": "textlength-path-stretch-linear-objectBoundingBox-stroke-1.5-group-opacity",
+      "input": "textlength-path-stretch-linear-objectBoundingBox-stroke-1.5-group-opacity.svg",
+      "sourceSha256": "d0c5e369a23aa7ceecf4b7236f7f14e089149b29edaa9d925a5e01c8adf21f54",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/8b2496701fb56744.png",
+          "sha256": "8b2496701fb56744e187e246309cce9ce8aeb3eeee4fdc3776e775923cbb1606"
+        },
+        "linux": {
+          "path": "references/64bbfc7632bfcaec.png",
+          "sha256": "64bbfc7632bfcaec24ff4fe3e2aa77f0dfc04fe547c77460973c9934c8c6ebd7"
+        }
+      }
+    },
+    {
+      "id": "textlength-path-stretch-linear-objectBoundingBox-stroke-1.5-opaque",
+      "input": "textlength-path-stretch-linear-objectBoundingBox-stroke-1.5-opaque.svg",
+      "sourceSha256": "b9443a0cf664678232a0cf2ed4205c2932140ccd83cb295a6f6232cc1c8cd738",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/379908ce1e504ca1.png",
+          "sha256": "379908ce1e504ca149c2f4bdf93320c58cabd22688e4665af0c26723edab1b88"
+        },
+        "linux": {
+          "path": "references/551b2a0ebe66fd22.png",
+          "sha256": "551b2a0ebe66fd2246edf11893cac01b235f6273de05df143109fd96336898b2"
+        }
+      }
+    },
+    {
+      "id": "textlength-path-stretch-radial-objectBoundingBox-fill-1-group-opacity",
+      "input": "textlength-path-stretch-radial-objectBoundingBox-fill-1-group-opacity.svg",
+      "sourceSha256": "619b956c10d81ad7483b18faa15a0094dbda3c35cae8ae3d7b525d5eae536866",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/ce2743ec2e3893ad.png",
+          "sha256": "ce2743ec2e3893adb6ee6b7fdc6f224344779b10579e46898b67bb181c38b06e"
+        },
+        "linux": {
+          "path": "references/1226fc789f1f9f2c.png",
+          "sha256": "1226fc789f1f9f2c079badd8daa9209bb556fa2666fd6f1c3937b703e2fa39ac"
+        }
+      }
+    },
+    {
+      "id": "textlength-path-stretch-radial-objectBoundingBox-fill-1-opaque",
+      "input": "textlength-path-stretch-radial-objectBoundingBox-fill-1-opaque.svg",
+      "sourceSha256": "a60863af8969622bf875843386af3982d4863bf0f253dcc0cad91affe59d7abb",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/19e10b161433fb7a.png",
+          "sha256": "19e10b161433fb7a950b2968d9d1616cf2c007eca762387bb78782a703b0dc33"
+        },
+        "linux": {
+          "path": "references/bd0426b7f1aedcf9.png",
+          "sha256": "bd0426b7f1aedcf9f707a47e2939d8264775dd12313970031d86fef7d6c3a9d6"
+        }
+      }
+    },
+    {
+      "id": "textlength-path-stretch-radial-objectBoundingBox-stroke-1.5-group-opacity",
+      "input": "textlength-path-stretch-radial-objectBoundingBox-stroke-1.5-group-opacity.svg",
+      "sourceSha256": "09bbb933147d1808b0ede289e7d62a7e2eadb1faa1d989ee5bd1486bdb420b64",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/8dd11265cb0c74ea.png",
+          "sha256": "8dd11265cb0c74ea7b64512b2b3a97dac7c8e2cf86321cd7b742faa476acd5d3"
+        },
+        "linux": {
+          "path": "references/d6b20daeec4f2fab.png",
+          "sha256": "d6b20daeec4f2fab1f2da8ee7c359591755a30c0ce3f4278b8fb9f68e377ff60"
+        }
+      }
+    },
+    {
+      "id": "textlength-path-stretch-radial-objectBoundingBox-stroke-1.5-opaque",
+      "input": "textlength-path-stretch-radial-objectBoundingBox-stroke-1.5-opaque.svg",
+      "sourceSha256": "e8a8884a4a3eaad3f9b7cc9d5b2e8e2bb08e00bf8ceaf9068580e89df4ef2ca7",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/7d3941a06b8d3797.png",
+          "sha256": "7d3941a06b8d37979213f9fefc880aa1d3699dc1761e79f4f978146179c1a746"
+        },
+        "linux": {
+          "path": "references/c01e694522082032.png",
+          "sha256": "c01e694522082032e6b0e23dd065df4e00d652811fc5bef4b9a47a65862ba5eb"
+        }
+      }
+    },
+    {
+      "id": "textlength-path-stretch-pattern-objectBoundingBox-fill-1-group-opacity",
+      "input": "textlength-path-stretch-pattern-objectBoundingBox-fill-1-group-opacity.svg",
+      "sourceSha256": "72eb763be9d520035ac3774c7bd66f97373d48342f86ff7d7b8d0654c6545d12",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/8d24ac2d4661e8b9.png",
+          "sha256": "8d24ac2d4661e8b9f8351638ed817521da739a04b2fd29d2155d6ad245636807"
+        },
+        "linux": {
+          "path": "references/6477181c01c0626f.png",
+          "sha256": "6477181c01c0626fcd40c173e4c13002a3762cd9d3c0179d85a0cec9952cf16c"
+        }
+      }
+    },
+    {
+      "id": "textlength-path-stretch-pattern-objectBoundingBox-fill-1-opaque",
+      "input": "textlength-path-stretch-pattern-objectBoundingBox-fill-1-opaque.svg",
+      "sourceSha256": "9840a819c13c1571e466b0a77edcfc6e49e65c743f84689cc46f6f9b1497ac21",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/ba620d791be0d279.png",
+          "sha256": "ba620d791be0d27980872e777a3d21448de318e08617ac16e0ebdefe62e68395"
+        },
+        "linux": {
+          "path": "references/3b339fd6482790c6.png",
+          "sha256": "3b339fd6482790c622a3f7ca12502633c7984b80d7694d7334dcd15327adad45"
+        }
+      }
+    },
+    {
+      "id": "textlength-path-stretch-pattern-objectBoundingBox-stroke-1.5-group-opacity",
+      "input": "textlength-path-stretch-pattern-objectBoundingBox-stroke-1.5-group-opacity.svg",
+      "sourceSha256": "88ba7bcad65485362a59472f98638b9846bfdedc9c4713a7851447ad2ae05650",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/dd08aba027d33b2c.png",
+          "sha256": "dd08aba027d33b2c07b9f194e1ba4f45d4e684becf86283717be958fa234a75b"
+        },
+        "linux": {
+          "path": "references/7ea3838f500f563e.png",
+          "sha256": "7ea3838f500f563e3439374daf31938614dbf4b52865987a45bbae26cd1e5307"
+        }
+      }
+    },
+    {
+      "id": "textlength-path-stretch-pattern-objectBoundingBox-stroke-1.5-opaque",
+      "input": "textlength-path-stretch-pattern-objectBoundingBox-stroke-1.5-opaque.svg",
+      "sourceSha256": "219a6761236c2fb12fc684fa3e86bb7b568a8e03891499653ac7ef0be53a6603",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/eec92a02f0e0bb19.png",
+          "sha256": "eec92a02f0e0bb194d0b59de47bfb793e5bd06f27bb2090139b84317f09b050c"
+        },
+        "linux": {
+          "path": "references/da8ca914b0342abc.png",
+          "sha256": "da8ca914b0342abcd2b6de9beab50813f08030f7322370e8cb32d3b703a85c8a"
+        }
+      }
     }
   ],
   "chromePins": {
@@ -1374,5 +1566,77 @@
         }
       ]
     }
+  },
+  "textLengthLaunches": {
+    "windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 28524,
+        "debuggerReadyMilliseconds": 128,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 28588,
+        "debuggerReadyMilliseconds": 144,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1125,
+        "debuggerReadyMilliseconds": 365,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 33049,
+        "debuggerReadyMilliseconds": 2788,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 31639,
+        "debuggerReadyMilliseconds": 3337,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 6105,
+        "debuggerReadyMilliseconds": 4206,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
   }
 }

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Preserve fractional `textLength` widths when measuring text-path paint boxes.
 - Include letter/word spacing in text-path character widths before rounding,
   preserving signed advances and spacing boundaries.
 - Measure text-path paint boxes from original coordinates before glyph paint truncation.
