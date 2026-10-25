@@ -1,5 +1,5 @@
 {
-  "purpose": "Stored same-space image inputs retain packed source-over rounding; color transfers and SourceAlpha retain their shader consumer. Each SVG has its own native output, including unequal composite and merge graphs. General merges retain logical source inputs across integer/fractional offsets and unused primitives with explicit graph connections.",
+  "purpose": "Stored same-space image inputs retain packed source-over rounding; color transfers and SourceAlpha retain their shader consumer. Each SVG has its own native output, including unequal composite and merge graphs. General merges retain logical source inputs across integer/fractional offsets and unused primitives with explicit graph connections. Source input aliases retain their image or color-filter consumer across offsets and authored-zero blur.",
   "chromeVersion": "153.0.8010.52",
   "background": "transparent",
   "license": "MIT",
@@ -1235,6 +1235,286 @@
       "rgbaSha256": "e1876b6048eeeb739c69e4a4e23e2ec6919f89665eddc0a4eaf58ca7652888f6",
       "purpose": "general-source-alpha-regression",
       "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "input-alias-153-control",
+      "input": "input-alias-153-control.svg",
+      "sourceSha256": "f8d7d07d7f872a2c96d9eac355a3373e5dcf3bd48e36997ff6af2396cf65af07",
+      "reference": "references/extra-over-25-control.png",
+      "referenceSha256": "da935790f6ec76003aa6f00746cad9f1e7694d0de9cb68e5148b49894800cf9a",
+      "rgbaSha256": "716e3cd96088cfb736e2fe11456dc25053e84af0e08b35b856af56104b7e13cd",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-154-control",
+      "input": "input-alias-154-control.svg",
+      "sourceSha256": "2e3da72bf3bd00aa063923db72006305f07b0e58fe643eb43587e2a6223c5d8a",
+      "reference": "references/extra-over-25-control.png",
+      "referenceSha256": "da935790f6ec76003aa6f00746cad9f1e7694d0de9cb68e5148b49894800cf9a",
+      "rgbaSha256": "716e3cd96088cfb736e2fe11456dc25053e84af0e08b35b856af56104b7e13cd",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-155-control",
+      "input": "input-alias-155-control.svg",
+      "sourceSha256": "86e8171a24025ee9f4f8a9bacab18779f8bd65aa0692dc17049f8e467df845d2",
+      "reference": "references/extra-over-25-control.png",
+      "referenceSha256": "da935790f6ec76003aa6f00746cad9f1e7694d0de9cb68e5148b49894800cf9a",
+      "rgbaSha256": "716e3cd96088cfb736e2fe11456dc25053e84af0e08b35b856af56104b7e13cd",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-171-control",
+      "input": "input-alias-171-control.svg",
+      "sourceSha256": "2fe636d1fe541e9af7e7021bc60806a0029e5ce84377aa572f9037344f02885f",
+      "reference": "references/general-input-114-candidate.png",
+      "referenceSha256": "698308bb447f3e3f36fdb8f404e62a27dbcb4d5ee8417edaa16f1a1edd83f65f",
+      "rgbaSha256": "57669a692938e45ff31f359ee010b07284315f7c3683ef8b3d101f35694fa1c1",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-172-control",
+      "input": "input-alias-172-control.svg",
+      "sourceSha256": "6dba6fb41dfb72336c7a0bfa02d5f2c0896873b0aef9c1c3c0f45dbbe24fb0ae",
+      "reference": "references/general-input-114-candidate.png",
+      "referenceSha256": "698308bb447f3e3f36fdb8f404e62a27dbcb4d5ee8417edaa16f1a1edd83f65f",
+      "rgbaSha256": "57669a692938e45ff31f359ee010b07284315f7c3683ef8b3d101f35694fa1c1",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-173-control",
+      "input": "input-alias-173-control.svg",
+      "sourceSha256": "3f614686f08a6d94bf0060dcbdebbc4a2519b2491973b5dc3e0f382061b3e824",
+      "reference": "references/general-input-114-candidate.png",
+      "referenceSha256": "698308bb447f3e3f36fdb8f404e62a27dbcb4d5ee8417edaa16f1a1edd83f65f",
+      "rgbaSha256": "57669a692938e45ff31f359ee010b07284315f7c3683ef8b3d101f35694fa1c1",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-189-control",
+      "input": "input-alias-189-control.svg",
+      "sourceSha256": "29c22a88cfd2998529dd973428a6d86ae327b50443317fe45a5d6c0157da50e0",
+      "reference": "references/extra-over-31-control.png",
+      "referenceSha256": "52e5bc8cfb044ff96dcc8d60fada1d08ee9210cd3d0521e2d16196f2678a1b35",
+      "rgbaSha256": "fde7c15278bbe01705d2e1565ec9285fb9853856c3eaf3a21213a6cf52d3705f",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-190-control",
+      "input": "input-alias-190-control.svg",
+      "sourceSha256": "809db72073924b96546866befe3ac8d7b16c6cd78ccc68065f2102ffb76356b5",
+      "reference": "references/extra-over-31-control.png",
+      "referenceSha256": "52e5bc8cfb044ff96dcc8d60fada1d08ee9210cd3d0521e2d16196f2678a1b35",
+      "rgbaSha256": "fde7c15278bbe01705d2e1565ec9285fb9853856c3eaf3a21213a6cf52d3705f",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-191-control",
+      "input": "input-alias-191-control.svg",
+      "sourceSha256": "54330e2bd1ea762bb33850459406c88fec43a3bed85b15de52bf9d981dd29b46",
+      "reference": "references/extra-over-31-control.png",
+      "referenceSha256": "52e5bc8cfb044ff96dcc8d60fada1d08ee9210cd3d0521e2d16196f2678a1b35",
+      "rgbaSha256": "fde7c15278bbe01705d2e1565ec9285fb9853856c3eaf3a21213a6cf52d3705f",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-207-control",
+      "input": "input-alias-207-control.svg",
+      "sourceSha256": "7bef6aea53d8401cce30a2d792a6376a9365259ee1e2e831462e51bbe63a0d99",
+      "reference": "references/general-input-138-candidate.png",
+      "referenceSha256": "45be40656083ebb81ddb9f3554fb569570fe141cce4f2167571ab06d4ceb26bf",
+      "rgbaSha256": "3d4b476eab1967b24b72561259962b9e3bd475eb43f1b361b424ff30ebaa07c4",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-208-control",
+      "input": "input-alias-208-control.svg",
+      "sourceSha256": "ae7ad33344d9c28a3c7769c57e0009bea5851c39027d04949a0a92c71c494984",
+      "reference": "references/general-input-138-candidate.png",
+      "referenceSha256": "45be40656083ebb81ddb9f3554fb569570fe141cce4f2167571ab06d4ceb26bf",
+      "rgbaSha256": "3d4b476eab1967b24b72561259962b9e3bd475eb43f1b361b424ff30ebaa07c4",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-209-control",
+      "input": "input-alias-209-control.svg",
+      "sourceSha256": "30c6cd2003bf87b768b3dcab2cc583981406bf0f8122018c710a1190e94d09aa",
+      "reference": "references/general-input-138-candidate.png",
+      "referenceSha256": "45be40656083ebb81ddb9f3554fb569570fe141cce4f2167571ab06d4ceb26bf",
+      "rgbaSha256": "3d4b476eab1967b24b72561259962b9e3bd475eb43f1b361b424ff30ebaa07c4",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-225-control",
+      "input": "input-alias-225-control.svg",
+      "sourceSha256": "a11191b83bd1bf7018c638dcc1b88ca19e717a02a8a5f1b37198a5c3c078e85f",
+      "reference": "references/extra-over-37-control.png",
+      "referenceSha256": "32994ec625d95f1d258a31380567e0a8aa1c90fdacd339deaa16f5cad8e0ee83",
+      "rgbaSha256": "4cb3b060a52753ad3598ee017f04b0f818b517d220e8504aecfcc0d714ba1dbd",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-226-control",
+      "input": "input-alias-226-control.svg",
+      "sourceSha256": "7fc0e42d87596659868b1b0c094c7a49827da5d6abe16ad6a99bd385295f2f55",
+      "reference": "references/extra-over-37-control.png",
+      "referenceSha256": "32994ec625d95f1d258a31380567e0a8aa1c90fdacd339deaa16f5cad8e0ee83",
+      "rgbaSha256": "4cb3b060a52753ad3598ee017f04b0f818b517d220e8504aecfcc0d714ba1dbd",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-227-control",
+      "input": "input-alias-227-control.svg",
+      "sourceSha256": "eb063abf4ce775e07aaa189fa40d9cfe7909a319b2cbb40a0cbd6e27a1c606d6",
+      "reference": "references/extra-over-37-control.png",
+      "referenceSha256": "32994ec625d95f1d258a31380567e0a8aa1c90fdacd339deaa16f5cad8e0ee83",
+      "rgbaSha256": "4cb3b060a52753ad3598ee017f04b0f818b517d220e8504aecfcc0d714ba1dbd",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-243-control",
+      "input": "input-alias-243-control.svg",
+      "sourceSha256": "c88cd7ec5bce1857536efe4fc44eed7afff89810b111c7fa7ccba792b1e80927",
+      "reference": "references/general-input-162-candidate.png",
+      "referenceSha256": "84048426ec2c5d1255fd5daf3f726eb7e5ce0b94e44b44b4c76c3ad709741889",
+      "rgbaSha256": "37b82e8cb5a8883b9039b1c06c852c165cc80198825f0130ab71a09550bb8796",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-244-control",
+      "input": "input-alias-244-control.svg",
+      "sourceSha256": "a3f05fda2538d4863170398ff363a5ca62233e22a78cc46d8ad7d7c19b325201",
+      "reference": "references/general-input-162-candidate.png",
+      "referenceSha256": "84048426ec2c5d1255fd5daf3f726eb7e5ce0b94e44b44b4c76c3ad709741889",
+      "rgbaSha256": "37b82e8cb5a8883b9039b1c06c852c165cc80198825f0130ab71a09550bb8796",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-245-control",
+      "input": "input-alias-245-control.svg",
+      "sourceSha256": "6f2cff40beece9f01e4f6b54a595427ff949446e218e74f0ca4040a8de0c8aaa",
+      "reference": "references/general-input-162-candidate.png",
+      "referenceSha256": "84048426ec2c5d1255fd5daf3f726eb7e5ce0b94e44b44b4c76c3ad709741889",
+      "rgbaSha256": "37b82e8cb5a8883b9039b1c06c852c165cc80198825f0130ab71a09550bb8796",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-261-control",
+      "input": "input-alias-261-control.svg",
+      "sourceSha256": "fe5956c4641f7933a8b733038eace150e968f0becaf63bf5f8bec0da48a3109c",
+      "reference": "references/extra-over-43-control.png",
+      "referenceSha256": "7387865a6f688c0cd8935e7584be7c40f139cb7cc4a4be8b109e3f78f45e178f",
+      "rgbaSha256": "214e52d58ba68910928091433e6a76064415543b40b14eef787da3ea49de461c",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-262-control",
+      "input": "input-alias-262-control.svg",
+      "sourceSha256": "13319e5914d833f24fbcbe1becb2cfc806858e3e7e26dfca1c99749550782ea2",
+      "reference": "references/extra-over-43-control.png",
+      "referenceSha256": "7387865a6f688c0cd8935e7584be7c40f139cb7cc4a4be8b109e3f78f45e178f",
+      "rgbaSha256": "214e52d58ba68910928091433e6a76064415543b40b14eef787da3ea49de461c",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-263-control",
+      "input": "input-alias-263-control.svg",
+      "sourceSha256": "bd141f0b3856710bd8d5c1ac9cfbd25389a1fc2f7f7ba567fc1e4b34679aa68a",
+      "reference": "references/extra-over-43-control.png",
+      "referenceSha256": "7387865a6f688c0cd8935e7584be7c40f139cb7cc4a4be8b109e3f78f45e178f",
+      "rgbaSha256": "214e52d58ba68910928091433e6a76064415543b40b14eef787da3ea49de461c",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-279-control",
+      "input": "input-alias-279-control.svg",
+      "sourceSha256": "54cb4ec826352b4a08218b34e0355a60e10e88a801caa4d4b1e275e89075015a",
+      "reference": "references/general-input-186-candidate.png",
+      "referenceSha256": "546fda65f952b02c884217e3bd85cce60accd02eddd333b9f3459615219c29af",
+      "rgbaSha256": "e1876b6048eeeb739c69e4a4e23e2ec6919f89665eddc0a4eaf58ca7652888f6",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-280-control",
+      "input": "input-alias-280-control.svg",
+      "sourceSha256": "7a53d42c47e99d5897ce60b68722d1ee7e1f362c33255188d86af700954a4ad7",
+      "reference": "references/general-input-186-candidate.png",
+      "referenceSha256": "546fda65f952b02c884217e3bd85cce60accd02eddd333b9f3459615219c29af",
+      "rgbaSha256": "e1876b6048eeeb739c69e4a4e23e2ec6919f89665eddc0a4eaf58ca7652888f6",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "input-alias-281-control",
+      "input": "input-alias-281-control.svg",
+      "sourceSha256": "e4e96ccfaac5bc575c21495072597785be28fd94fb2a921e5a32f2ca95ee2804",
+      "reference": "references/general-input-186-candidate.png",
+      "referenceSha256": "546fda65f952b02c884217e3bd85cce60accd02eddd333b9f3459615219c29af",
+      "rgbaSha256": "e1876b6048eeeb739c69e4a4e23e2ec6919f89665eddc0a4eaf58ca7652888f6",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "shift-alias-102-control",
+      "input": "shift-alias-102-control.svg",
+      "sourceSha256": "47b6c3a662294b5c09918dba51893d35fd3f6f6945efe4a6a60c14725e969367",
+      "reference": "references/shift-alias-102-control.png",
+      "referenceSha256": "08e80b607918c0dff6433e4e6a51fc3ad9159a4c478020b0b524655c87a0139a",
+      "rgbaSha256": "fdcda17f024bbec138023fb8d0a394fa8f4983bae4922bcb9bc43aedd54c3be4",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "shift-alias-126-control",
+      "input": "shift-alias-126-control.svg",
+      "sourceSha256": "e23da4159534258ecb3c82eea1649cd3f784fe4ebd7a13fa3bcd1f3bbab0dbf5",
+      "reference": "references/shift-alias-126-control.png",
+      "referenceSha256": "e4975c19a4ce965a3770c3d7e19f754970e88c888df1d8bd393ab219da43a3c9",
+      "rgbaSha256": "aac6874bf30a68bb1d96b331a271688a41e60e94b981845fa0caec2a3caa786e",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "shift-alias-150-control",
+      "input": "shift-alias-150-control.svg",
+      "sourceSha256": "baad6e5b2a4d59646da73be99e1e896e9e7d37b8730b5e904bf820b37ac8ca33",
+      "reference": "references/shift-alias-150-control.png",
+      "referenceSha256": "a1d88ef495222d74aa1770013b1bbd19538209fe60e25061b9834a6f58bd9912",
+      "rgbaSha256": "6dd94a25510ab4b9a1fb1ed086107c64fc70a5e75515855a887449ba45fc2348",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
+    },
+    {
+      "id": "shift-alias-174-control",
+      "input": "shift-alias-174-control.svg",
+      "sourceSha256": "06d90b18a50671ca4405fcc9994d0b01aa1cae89d2572f9ea4d750449adeaf59",
+      "reference": "references/shift-alias-174-control.png",
+      "referenceSha256": "092d93d430184406c5bf3938677192fe43ecef48d55f618d8c81c572afbe0783",
+      "rgbaSha256": "ce8e6318a458c81639c5c480fae383a7e51b30e480c71ac438ab58f5e201dad7",
+      "purpose": "source-input-alias-regression",
+      "baselineCommit": "6b82f64d"
     }
   ],
   "generalInputLaunches": {
@@ -1308,5 +1588,151 @@
         "startupHealth": "healthy"
       }
     ]
+  },
+  "sourceAliasLaunches": {
+    "identity": {
+      "windows": [
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 3194,
+          "debuggerReadyMilliseconds": 177,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 1611,
+          "debuggerReadyMilliseconds": 140,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 1588,
+          "debuggerReadyMilliseconds": 136,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      ],
+      "linux": [
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 6042,
+          "debuggerReadyMilliseconds": 2920,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 5290,
+          "debuggerReadyMilliseconds": 2441,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 5370,
+          "debuggerReadyMilliseconds": 2688,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      ]
+    },
+    "shift": {
+      "windows": [
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 2194,
+          "debuggerReadyMilliseconds": 147,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 1116,
+          "debuggerReadyMilliseconds": 172,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 1116,
+          "debuggerReadyMilliseconds": 139,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      ],
+      "linux": [
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 6497,
+          "debuggerReadyMilliseconds": 3244,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 5564,
+          "debuggerReadyMilliseconds": 3240,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 6238,
+          "debuggerReadyMilliseconds": 3834,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      ]
+    }
   }
 }

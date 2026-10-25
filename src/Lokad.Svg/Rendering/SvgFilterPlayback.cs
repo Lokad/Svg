@@ -610,6 +610,18 @@ internal static class SvgFilterPlayback
 
         void Composite(ReadOnlySpan<byte> input, Span<byte> output, SvgFilterInput reference, bool inputLinear, SvgFilterColorSpace colorSpace)
         {
+            // Offsets and a zero blur retain the source's image/color-filter consumer.
+            while (reference.Index >= 0)
+            {
+                token.ThrowIfCancellationRequested();
+                Charge(1);
+                SvgFilterPrimitive source = resource.Primitives.Items[reference.Index];
+                if (source.Kind != SvgFilterPrimitiveKind.Offset
+                    && (source.Kind != SvgFilterPrimitiveKind.GaussianBlur || source.SigmaX != 0 || source.SigmaY != 0)) break;
+                if (source.Input.Index >= reference.Index)
+                    throw new SvgException(SvgErrorCode.MalformedInput, "Filter graph input is outside its earlier results.");
+                reference = source.Input;
+            }
             Charge(pixels * (inputLinear == (colorSpace == SvgFilterColorSpace.LinearRgb) ? 1 : 2));
             for (int offset = 0; offset < bytes; offset += 4)
             {

@@ -16,6 +16,7 @@ browser/resource/font-host smoke checks and package/installed-consumer checks.
 use [native controls](Research/offset-merge-inputs/README.md) for stored image
 rounding, `SourceAlpha`, merge order, color spaces and single-input passthrough.
 General-path controls also cover fractional offsets and unused graph primitives.
+Alias controls cover offsets, offset chains and zero blur without collapsing moved inputs.
 
 [Affine flood tests](Lokad.Svg.Tests/SvgAffineFloodTests.cs) retain input-specific
 Chrome RGBA hashes for mapped filter regions, colors, alpha and source forms,

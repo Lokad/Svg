@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Preserve filter input consumers through offset and zero-blur aliases.
 - Keep `SourceAlpha` rounding consistent across merge execution paths.
 - Preserve packed image rounding in offset/merge graphs while retaining shader inputs.
 - Include decoration ink beyond text drawing bounds when sizing viewport clip surfaces.
