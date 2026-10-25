@@ -75,13 +75,13 @@ internal readonly struct SvgGradientRamp : IDisposable
     internal static double SpreadRadial(double position, SvgGradientSpread spread)
     {
         if (double.IsPositiveInfinity(position)) return spread == SvgGradientSpread.Pad ? position : 1;
-        if (spread == SvgGradientSpread.Repeat) return position - Math.Floor(position);
+        float coordinate = (float)position;
+        if (spread == SvgGradientSpread.Repeat) return Clamp(coordinate - MathF.Floor(coordinate));
         if (spread == SvgGradientSpread.Reflect)
-        {
-            double cycle = position - 2 * Math.Floor(position / 2);
-            return cycle > 1 ? 2 - cycle : cycle;
-        }
+            return Clamp(MathF.Abs((coordinate - 1f) - 2f * MathF.Floor((coordinate - 1f) * .5f) - 1f));
         return Math.Clamp(position, 0, 1);
+
+        static float Clamp(float value) => float.IsNaN(value) ? 1 : Math.Clamp(value, 0, 1);
     }
 
     /// <summary>Preserves absolute radial padding before selecting an arbitrary segment or normalizing a two-stop pair.</summary>
