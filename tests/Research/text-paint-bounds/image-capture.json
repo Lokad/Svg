@@ -1,5 +1,5 @@
 {
-  "purpose": "Text object boxes, full character widths and locally enclosed drawing rectangles feed independent paints. Path spacing, transforms, signed advances and replay retain their own coordinate boundaries. Deferred text and instance replay retain enclosing filter source bounds. General parent poses compose independently of zero-tangent path glyph placement. Recorded font size and remaining device matrix retain independent rounding boundaries. Horizontal path fragments retain source-origin truncation before parent affine placement. Glyphs and decorations share native source drawing bounds; axis-aligned paints retain isolated layer clipping. Constant mask content retains its spatial region in enclosing drawing bounds.",
+  "purpose": "Text object boxes, full character widths and locally enclosed drawing rectangles feed independent paints. Path spacing, transforms, signed advances and replay retain their own coordinate boundaries. Deferred text and instance replay retain enclosing filter source bounds. General parent poses compose independently of zero-tangent path glyph placement. Recorded font size and remaining device matrix retain independent rounding boundaries. Horizontal path fragments retain source-origin truncation before parent affine placement. Glyphs and decorations share native source drawing bounds; axis-aligned paints retain isolated layer clipping. Constant mask content retains its spatial region in enclosing drawing bounds. Viewport clip surfaces include primitive ink beyond text drawing hints.",
   "chromeVersion": "153.0.8010.52",
   "background": "transparent",
   "fontEvidence": "capture.json",
@@ -3789,6 +3789,358 @@
           "rgbaSha256": "b1dee801fb34ac308f598c60924aeab0ab0805c3d48ac6672ee13ae3d29858e5"
         }
       }
+    },
+    {
+      "id": "frame-16-control",
+      "input": "frame-16-control.svg",
+      "sourceSha256": "eb1596b331eb0a0fdac5294cc37288e1372afba39b77d9c62327e6124619c9b5",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-16-control.png",
+          "sha256": "4bbc078cbbef36ae336727d7281c9e26980f4086372bbae5120c5f699328c31d",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "2a80070c08d658194ccc4298f3f38eda55087d90304b047b6e681e3f604f1cbf"
+        },
+        "linux": {
+          "path": "references/linux/frame-16-control.png",
+          "sha256": "4bbc078cbbef36ae336727d7281c9e26980f4086372bbae5120c5f699328c31d",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "2a80070c08d658194ccc4298f3f38eda55087d90304b047b6e681e3f604f1cbf"
+        }
+      }
+    },
+    {
+      "id": "frame-17-control",
+      "input": "frame-17-control.svg",
+      "sourceSha256": "eb1596b331eb0a0fdac5294cc37288e1372afba39b77d9c62327e6124619c9b5",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-17-control.png",
+          "sha256": "535282a581a947ed6fafcd3619569f6aa01c8d5ad21da4f570ab70471458d49b",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "4d07af0b105aa119e9a36bd0058fdfbba5db2aabfca7a4f1d2893e6f75943314"
+        },
+        "linux": {
+          "path": "references/linux/frame-17-control.png",
+          "sha256": "535282a581a947ed6fafcd3619569f6aa01c8d5ad21da4f570ab70471458d49b",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "4d07af0b105aa119e9a36bd0058fdfbba5db2aabfca7a4f1d2893e6f75943314"
+        }
+      }
+    },
+    {
+      "id": "frame-18-control",
+      "input": "frame-18-control.svg",
+      "sourceSha256": "11c7b23c3aa4708e284e199f15f2194d76f7ecdb6e2872fd9be138d74c251352",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-18-control.png",
+          "sha256": "6df96746fb973ef14ed604b2058555d4246464218003dbb00d62a12a78ca1803",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "f223586a22a33b06f2170f5d3afdfdea97a3b36784bbee9d967d5d4c493bb7d9"
+        },
+        "linux": {
+          "path": "references/linux/frame-18-control.png",
+          "sha256": "6df96746fb973ef14ed604b2058555d4246464218003dbb00d62a12a78ca1803",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "f223586a22a33b06f2170f5d3afdfdea97a3b36784bbee9d967d5d4c493bb7d9"
+        }
+      }
+    },
+    {
+      "id": "frame-19-control",
+      "input": "frame-19-control.svg",
+      "sourceSha256": "11c7b23c3aa4708e284e199f15f2194d76f7ecdb6e2872fd9be138d74c251352",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-19-control.png",
+          "sha256": "70f53446b147903104be00564454dec278b94437445ef1a9e0fe87a4442e394c",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "102ebfd877a7de956d1dde2fd669b312f8fb538ca7052c1c4a7e199f016833cc"
+        },
+        "linux": {
+          "path": "references/linux/frame-19-control.png",
+          "sha256": "70f53446b147903104be00564454dec278b94437445ef1a9e0fe87a4442e394c",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "102ebfd877a7de956d1dde2fd669b312f8fb538ca7052c1c4a7e199f016833cc"
+        }
+      }
+    },
+    {
+      "id": "frame-20-control",
+      "input": "frame-20-control.svg",
+      "sourceSha256": "c33958cc7221bfa4797fbe4b2d6d4d7b9b20e11b57240344328628da7bde7fa2",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-20-control.png",
+          "sha256": "fbbb2dd57f3eca81f89b1b7f8d2229a0bab13c0c5f09a2055443a888dc59ba1b",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "b9ee291db8867f2ffdf3be40868fdfa3e5d5af57f0b5629c1f9f52c86c256c37"
+        },
+        "linux": {
+          "path": "references/linux/frame-20-control.png",
+          "sha256": "fbbb2dd57f3eca81f89b1b7f8d2229a0bab13c0c5f09a2055443a888dc59ba1b",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "b9ee291db8867f2ffdf3be40868fdfa3e5d5af57f0b5629c1f9f52c86c256c37"
+        }
+      }
+    },
+    {
+      "id": "frame-21-control",
+      "input": "frame-21-control.svg",
+      "sourceSha256": "c33958cc7221bfa4797fbe4b2d6d4d7b9b20e11b57240344328628da7bde7fa2",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-21-control.png",
+          "sha256": "e92bfbea6be2180c998f6d8fed1697236932f204b8f1e6f681539f12914415d9",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "b0b3442403c5d5f9568ae9ddb080392157fbbc986521493358e072e8223f6a3e"
+        },
+        "linux": {
+          "path": "references/linux/frame-21-control.png",
+          "sha256": "e92bfbea6be2180c998f6d8fed1697236932f204b8f1e6f681539f12914415d9",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "b0b3442403c5d5f9568ae9ddb080392157fbbc986521493358e072e8223f6a3e"
+        }
+      }
+    },
+    {
+      "id": "frame-22-control",
+      "input": "frame-22-control.svg",
+      "sourceSha256": "ba5f13a7e9a3ee88c058793ceedef23a4dfdc0362a2fc945865bf6b21b5b1552",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-22-control.png",
+          "sha256": "e0bfff24a17d6c140b70abdebc821c854383abab5def127c61fb2a6dfd5dc084",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "879560e8c8a81026ac355f2bb040c414080e77068e749a100548a5df6968afac"
+        },
+        "linux": {
+          "path": "references/linux/frame-22-control.png",
+          "sha256": "e0bfff24a17d6c140b70abdebc821c854383abab5def127c61fb2a6dfd5dc084",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "879560e8c8a81026ac355f2bb040c414080e77068e749a100548a5df6968afac"
+        }
+      }
+    },
+    {
+      "id": "frame-23-control",
+      "input": "frame-23-control.svg",
+      "sourceSha256": "ba5f13a7e9a3ee88c058793ceedef23a4dfdc0362a2fc945865bf6b21b5b1552",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-23-control.png",
+          "sha256": "5f2c3c9edc74ff3d1a2ae4cfadb803b7c3a7069955a610e995d767b1fd09eb45",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "189b5b9756275d4c9c61132ec407a61a03cc0faf62b50f79ca098ef4ae33555f"
+        },
+        "linux": {
+          "path": "references/linux/frame-23-control.png",
+          "sha256": "5f2c3c9edc74ff3d1a2ae4cfadb803b7c3a7069955a610e995d767b1fd09eb45",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "189b5b9756275d4c9c61132ec407a61a03cc0faf62b50f79ca098ef4ae33555f"
+        }
+      }
+    },
+    {
+      "id": "frame-32-control",
+      "input": "frame-32-control.svg",
+      "sourceSha256": "9541cff6459d12fd8b031895623610d60a4fd338a8018a7ee7137c40d812de77",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-32-control.png",
+          "sha256": "4bbc078cbbef36ae336727d7281c9e26980f4086372bbae5120c5f699328c31d",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "2a80070c08d658194ccc4298f3f38eda55087d90304b047b6e681e3f604f1cbf"
+        },
+        "linux": {
+          "path": "references/linux/frame-32-control.png",
+          "sha256": "4bbc078cbbef36ae336727d7281c9e26980f4086372bbae5120c5f699328c31d",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "2a80070c08d658194ccc4298f3f38eda55087d90304b047b6e681e3f604f1cbf"
+        }
+      }
+    },
+    {
+      "id": "frame-33-control",
+      "input": "frame-33-control.svg",
+      "sourceSha256": "9541cff6459d12fd8b031895623610d60a4fd338a8018a7ee7137c40d812de77",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-33-control.png",
+          "sha256": "535282a581a947ed6fafcd3619569f6aa01c8d5ad21da4f570ab70471458d49b",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "4d07af0b105aa119e9a36bd0058fdfbba5db2aabfca7a4f1d2893e6f75943314"
+        },
+        "linux": {
+          "path": "references/linux/frame-33-control.png",
+          "sha256": "535282a581a947ed6fafcd3619569f6aa01c8d5ad21da4f570ab70471458d49b",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "4d07af0b105aa119e9a36bd0058fdfbba5db2aabfca7a4f1d2893e6f75943314"
+        }
+      }
+    },
+    {
+      "id": "frame-34-control",
+      "input": "frame-34-control.svg",
+      "sourceSha256": "0c0e2ce2752b1127367baf2a12fcde0064c905d80c14a73c65c8a6e3521df3a2",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-34-control.png",
+          "sha256": "6df96746fb973ef14ed604b2058555d4246464218003dbb00d62a12a78ca1803",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "f223586a22a33b06f2170f5d3afdfdea97a3b36784bbee9d967d5d4c493bb7d9"
+        },
+        "linux": {
+          "path": "references/linux/frame-34-control.png",
+          "sha256": "6df96746fb973ef14ed604b2058555d4246464218003dbb00d62a12a78ca1803",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "f223586a22a33b06f2170f5d3afdfdea97a3b36784bbee9d967d5d4c493bb7d9"
+        }
+      }
+    },
+    {
+      "id": "frame-35-control",
+      "input": "frame-35-control.svg",
+      "sourceSha256": "0c0e2ce2752b1127367baf2a12fcde0064c905d80c14a73c65c8a6e3521df3a2",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-35-control.png",
+          "sha256": "70f53446b147903104be00564454dec278b94437445ef1a9e0fe87a4442e394c",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "102ebfd877a7de956d1dde2fd669b312f8fb538ca7052c1c4a7e199f016833cc"
+        },
+        "linux": {
+          "path": "references/linux/frame-35-control.png",
+          "sha256": "70f53446b147903104be00564454dec278b94437445ef1a9e0fe87a4442e394c",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "102ebfd877a7de956d1dde2fd669b312f8fb538ca7052c1c4a7e199f016833cc"
+        }
+      }
+    },
+    {
+      "id": "frame-36-control",
+      "input": "frame-36-control.svg",
+      "sourceSha256": "0c439c7390ba7300a7638290a94ecf7673605c1b4a959086062c3bb3c18c2bdb",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-36-control.png",
+          "sha256": "fbbb2dd57f3eca81f89b1b7f8d2229a0bab13c0c5f09a2055443a888dc59ba1b",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "b9ee291db8867f2ffdf3be40868fdfa3e5d5af57f0b5629c1f9f52c86c256c37"
+        },
+        "linux": {
+          "path": "references/linux/frame-36-control.png",
+          "sha256": "fbbb2dd57f3eca81f89b1b7f8d2229a0bab13c0c5f09a2055443a888dc59ba1b",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "b9ee291db8867f2ffdf3be40868fdfa3e5d5af57f0b5629c1f9f52c86c256c37"
+        }
+      }
+    },
+    {
+      "id": "frame-37-control",
+      "input": "frame-37-control.svg",
+      "sourceSha256": "0c439c7390ba7300a7638290a94ecf7673605c1b4a959086062c3bb3c18c2bdb",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-37-control.png",
+          "sha256": "e92bfbea6be2180c998f6d8fed1697236932f204b8f1e6f681539f12914415d9",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "b0b3442403c5d5f9568ae9ddb080392157fbbc986521493358e072e8223f6a3e"
+        },
+        "linux": {
+          "path": "references/linux/frame-37-control.png",
+          "sha256": "e92bfbea6be2180c998f6d8fed1697236932f204b8f1e6f681539f12914415d9",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "b0b3442403c5d5f9568ae9ddb080392157fbbc986521493358e072e8223f6a3e"
+        }
+      }
+    },
+    {
+      "id": "frame-38-control",
+      "input": "frame-38-control.svg",
+      "sourceSha256": "c874ae63a14ce62d2fc68d2bf6dde3bbf9361465fd8748212947bde3045f4159",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-38-control.png",
+          "sha256": "e0bfff24a17d6c140b70abdebc821c854383abab5def127c61fb2a6dfd5dc084",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "879560e8c8a81026ac355f2bb040c414080e77068e749a100548a5df6968afac"
+        },
+        "linux": {
+          "path": "references/linux/frame-38-control.png",
+          "sha256": "e0bfff24a17d6c140b70abdebc821c854383abab5def127c61fb2a6dfd5dc084",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "879560e8c8a81026ac355f2bb040c414080e77068e749a100548a5df6968afac"
+        }
+      }
+    },
+    {
+      "id": "frame-39-control",
+      "input": "frame-39-control.svg",
+      "sourceSha256": "c874ae63a14ce62d2fc68d2bf6dde3bbf9361465fd8748212947bde3045f4159",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-39-control.png",
+          "sha256": "5f2c3c9edc74ff3d1a2ae4cfadb803b7c3a7069955a610e995d767b1fd09eb45",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "189b5b9756275d4c9c61132ec407a61a03cc0faf62b50f79ca098ef4ae33555f"
+        },
+        "linux": {
+          "path": "references/linux/frame-39-control.png",
+          "sha256": "5f2c3c9edc74ff3d1a2ae4cfadb803b7c3a7069955a610e995d767b1fd09eb45",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "189b5b9756275d4c9c61132ec407a61a03cc0faf62b50f79ca098ef4ae33555f"
+        }
+      }
     }
   ],
   "chromePins": {
@@ -4591,5 +4943,5 @@
       }
     ]
   },
-  "frameBoundaryRecipe": "Embed the committed Noto Sans Regular program as ReviewFont and alias each authored serif family to it. Decode each exact input as an SVG image, then draw it at its authored dimensions times outputScale onto a transparent canvas. Three independent healthy ChromeProcess launches per host give identical PNG bytes for the 24 masked inputs. Each input has its own image; opacity controls are not normalized."
+  "frameBoundaryRecipe": "Embed the committed Noto Sans Regular program as ReviewFont and alias each authored serif family to it. Decode each exact input as an SVG image, then draw it at its authored dimensions times outputScale onto a transparent canvas. Three independent healthy ChromeProcess launches per host give identical PNG bytes for the 40 masked and clipped inputs. Each input has its own image; opacity controls are not normalized."
 }

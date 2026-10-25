@@ -1554,7 +1554,7 @@ public static partial class SvgConverter
                 | ((mixedY & 4) >> 1) | ((localX & 4) >> 2);
         }
 
-        SvgAnalyticClipBounds LayerPaintBounds(int first, SvgAnalyticClipBounds parent, SvgClipBox? retainedRegion)
+        SvgAnalyticClipBounds LayerPaintBounds(int first, SvgAnalyticClipBounds parent, SvgClipBox? retainedRegion, SvgLayerRegionKind regionKind)
         {
             ParserWorkCounter boundsWork = new(options.Limits.MaximumWorkUnits - workUnits);
             double left = double.PositiveInfinity, top = double.PositiveInfinity;
@@ -1598,7 +1598,8 @@ public static partial class SvgConverter
                 if (visualBounds is {} visual && (sourcePlacement == SvgAffineTransform.Identity || geometry.AuthoredPath is null))
                 {
                     IncludeBox(new(visual.Left, visual.Top, visual.Right - visual.Left, visual.Bottom - visual.Top, default, false, null), outputMap, 0);
-                    continue;
+                    // A coverage surface must also contain the primitive's ink.
+                    if (regionKind != SvgLayerRegionKind.Viewport) continue;
                 }
                 SvgAuthoredPath? source = geometry.AuthoredPath?.StrokeOutline ?? geometry.AuthoredPath;
                 if (source is not null)
@@ -1861,7 +1862,7 @@ public static partial class SvgConverter
                         }
                         bool affineMaskTarget = command.MaskContentIndex >= 0 && root.SceneStorage is {} maskStorage
                             && (uint)command.MaskContentIndex < (uint)maskStorage.MaskContents.Length && maskStorage.MaskContents[command.MaskContentIndex].UsesAffineTarget;
-                        SvgAnalyticClipBounds layer = affineViewportClip ? previousLayer : LayerPaintBounds(index, previousLayer, viewportClip ? null : command.MaskRegion);
+                        SvgAnalyticClipBounds layer = affineViewportClip ? previousLayer : LayerPaintBounds(index, previousLayer, viewportClip ? null : command.MaskRegion, command.RegionKind);
                         if (activeViewportBounds is {} inheritedBounds)
                         {
                             int left = Math.Max(layer.Left, inheritedBounds.Left), top = Math.Max(layer.Top, inheritedBounds.Top);

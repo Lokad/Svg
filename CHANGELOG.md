@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Include decoration ink beyond text drawing bounds when sizing viewport clip surfaces.
 - Retain constant-mask regions when computing enclosing paint bounds.
 - Share native text drawing bounds with decorations and preserve scalar path source positions.
 - Honor isolated layer bounds when painting rectangles.

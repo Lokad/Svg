@@ -40,6 +40,7 @@ Horizontal fragment image controls cover fractional/negative origins, zero-angle
 Decoration drawing image controls separate native opacity isolation from opaque text for all three line types.
 Uniform-mask frame controls cover overlines through direct text, instances and
 symbols with separate native images for opaque and partial-opacity paints.
+Clip frame controls retain decoration ink outside the recorded text drawing box.
 [Deferred filter tests](Lokad.Svg.Tests/OpenTypeFontTests.FilteredDeferredText.cs)
 cover text continuations and replay; [source bounds tests](Lokad.Svg.Tests/SvgDeferredFilterSourceTests.cs)
 keep nonpainting layout bounds separate from painted filter bounds.
