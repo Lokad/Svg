@@ -23,8 +23,11 @@ public sealed class SvgOffsetMergeInputReferenceTests
         byte[] reference = File.ReadAllBytes(Path.Combine(Folder(), row.GetProperty("reference").GetString() ?? throw new InvalidDataException("Missing reference path.")));
         Assert.Equal(row.GetProperty("sourceSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(input)));
         Assert.Equal(row.GetProperty("referenceSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(reference)));
-        byte[] actual = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
-        Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 1024), PngRgbaDecoder.Decode(actual, 1024)).IsExact, id);
+        SvgRenderOptions options = row.TryGetProperty("scale", out JsonElement scale)
+            ? new(null, scale.GetDouble(), SvgColor.Transparent, SvgRenderLimits.Default, null)
+            : SvgRenderOptions.Default;
+        byte[] actual = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
+        Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 4096), PngRgbaDecoder.Decode(actual, 4096)).IsExact, id);
     }
 
     private static string Folder() => Path.Combine(AppContext.BaseDirectory, "Research", "offset-merge-inputs");
