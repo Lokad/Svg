@@ -141,6 +141,11 @@ use fixed gap counts; arbitrary coefficients preserve constant terminal padding.
 Flat ranges retain their first/last boundary colors. The
 [stop controls](../tests/Research/gradient-stop-preparation/README.md) include
 native glyph and 256-stop references. Factory means retain original source stops.
+Stop paints retain source alpha separately from byte colors. Native numeric
+fast parsing and full functional-color parsing preserve different precision;
+RGB/hex byte division and HSL fast-path normalization also remain distinct.
+The [color-alpha controls](../tests/Research/gradient-color-alpha/README.md)
+cover spellings, byte midpoints, glyphs and resource replay.
 Nonconstant cone padding retains terminal arithmetic; normalized shader lanes
 clamp before coverage and source-over, including unordered native float values.
 One-stop paints retain their shader identity and dithering. Native constant

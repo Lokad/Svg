@@ -42,6 +42,9 @@ around filter output. Lifecycle checks cover integration and clip ownership.
 spreading before endpoint padding through shapes, glyphs and affine instances.
 [Stop-preparation controls](Research/gradient-stop-preparation/README.md) cover
 duplicate/flat stops, float collapse, uniform coefficients and glyph preblending.
+[Color-alpha controls](Research/gradient-color-alpha/README.md) retain independent
+percentage/numeric/encoded references, parser spellings, byte rounding boundaries
+and gradient consumers; their deferred list preserves remaining paint/filter cases.
 
 [Affine flood tests](Lokad.Svg.Tests/SvgAffineFloodTests.cs) retain input-specific
 Chrome RGBA hashes for mapped filter regions, colors, alpha and source forms,

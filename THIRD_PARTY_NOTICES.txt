@@ -111,7 +111,7 @@ bordered tile geometry, legacy sRGB color normalization and SVG text-fragment
 paint positioning, ordered text strokes, solid SVG text-decoration
 metrics/rectangle placement, source text paint boxes and drawing-rectangle enclosure,
 character fragment spacing, non-scaling-stroke drawing bounds and CSS gradient-coordinate
-decimal parsing.
+decimal parsing and functional-color alpha precision.
 It has no Chromium runtime dependency.
 
 Source release tag: 153.0.8010.52
@@ -131,8 +131,9 @@ third_party/blink/renderer/platform/fonts/shaping/shape_result_spacing.cc,
 third_party/blink/renderer/core/layout/text_decoration_offset.cc,
 third_party/blink/renderer/core/paint/text_decoration_info.cc and
 third_party/blink/renderer/core/paint/decoration_line_painter.cc,
-third_party/blink/renderer/core/css/parser/css_parser_fast_paths.cc.
-Copyright 2010, 2011, 2012, 2014, 2016, 2017, 2018, 2019, 2020, 2021, 2024 The Chromium Authors.
+third_party/blink/renderer/core/css/parser/css_parser_fast_paths.cc and
+third_party/blink/renderer/core/css/properties/css_color_function_parser.cc.
+Copyright 2010, 2011, 2012, 2014, 2016, 2017, 2018, 2019, 2020, 2021, 2023, 2024 The Chromium Authors.
 Copyright 2012 Google Inc. All rights reserved.
 
 Chromium license:

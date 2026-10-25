@@ -211,6 +211,9 @@ mean colors, including flat stop offsets; see the
 Normal gradients also support coincident and flat stop ranges, preserving hard
 color boundaries and native float stop preparation; see the
 [stop controls](../tests/Research/gradient-stop-preparation/README.md).
+Gradient stop colors retain syntax-dependent native alpha precision alongside
+their byte colors; see the [alpha controls](../tests/Research/gradient-color-alpha/README.md)
+for exact cases and remaining ordinary-paint/filter differences.
 Radial paints include contained focal circles and zero-radius
 foci on the outer circle; outside foci and tangential nonzero focal circles remain
 unsupported. Gradient

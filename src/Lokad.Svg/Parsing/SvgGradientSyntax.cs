@@ -361,10 +361,11 @@ internal static class SvgGradientSyntax
         string? styleValue = reader.GetAttribute("style");
         if (styleValue is not null) ParseStopStyle(styleValue, out styleColor, out styleOpacity, workCounter, cancellationToken);
         string? colorValue = styleColor ?? reader.GetAttribute("stop-color");
-        SvgColor color = colorValue is null ? new(0, 0, 0, 255) : SvgColorParser.Parse(colorValue, namedColors);
+        SvgSolidPaint paint = colorValue is null ? new(new(0, 0, 0, 255), 1) : SvgColorParser.ParsePaint(colorValue, namedColors);
+        SvgColor color = paint.Color;
         SvgPaintOpacity stopOpacity = SvgColorParser.ParsePaintOpacity(styleOpacity ?? reader.GetAttribute("stop-opacity"));
         workCounter.Consume(cancellationToken);
-        return new SvgGradientStop(offset, new SvgColor(color.Red, color.Green, color.Blue, SvgReferenceResolver.MultiplyAlpha(color.Alpha, stopOpacity.Alpha))) { Alpha = color.Alpha * (1f / 255f) * stopOpacity.Value };
+        return new SvgGradientStop(offset, new SvgColor(color.Red, color.Green, color.Blue, SvgReferenceResolver.MultiplyAlpha(color.Alpha, stopOpacity.Alpha))) { Alpha = paint.Alpha * stopOpacity.Value };
 
         // Stop styles outrank attributes and resolve each property by importance,
         // then source order. Unrecognized exporter declarations remain ignored.

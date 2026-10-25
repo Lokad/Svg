@@ -7,5 +7,5 @@ internal readonly record struct SvgPaintOpacity(byte Alpha, float Value)
     internal static SvgPaintOpacity Opaque { get; } = new(255, 1);
 }
 
-/// <summary>Retains one native rectangle's solid color and resolved floating-point fill alpha before layer opacity.</summary>
+/// <summary>Retains a solid color and native floating-point alpha before layer opacity.</summary>
 internal readonly record struct SvgSolidPaint(SvgColor Color, float Alpha);

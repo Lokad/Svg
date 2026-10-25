@@ -73,19 +73,23 @@ public sealed class SvgGradientStopPrecisionTests
     }
 
     [Theory]
-    [InlineData("rgba(0,0,255,.27)")]
-    [InlineData("rgba(0,0,255,27%)")]
-    [InlineData("rgb(0 0 255 / .27)")]
-    [InlineData("rgba(0 0 255 / 27%)")]
-    [InlineData("hsla(240,100%,50%,.27)")]
-    [InlineData("hsla(240,100%,50%,27%)")]
-    [InlineData("hsl(240 100% 50% / .27)")]
-    [InlineData("hsla(240 100% 50% / 27%)")]
-    public void Functional_color_alpha_is_encoded_before_authored_stop_opacity(string color)
+    [InlineData("rgba(0,0,255,.27)", .27058825f)]
+    [InlineData("rgba(0,0,255,27%)", .27058825f)]
+    [InlineData("rgb(0 0 255 / .27)", .27058825f)]
+    [InlineData("rgba(0 0 255 / 27%)", .27f)]
+    [InlineData("hsla(240,100%,50%,.27)", .27058825f)]
+    [InlineData("hsla(240,100%,50%,27%)", .27f)]
+    [InlineData("hsl(240 100% 50% / .27)", .27058825f)]
+    [InlineData("hsla(240 100% 50% / 27%)", .27f)]
+    [InlineData("RGB(0 0 255 / .27)", .27f)]
+    [InlineData("rgb(0 0 255 / .27 )", .27f)]
+    [InlineData("rgb(0 0 255 / 2.7e-1)", .27f)]
+    [InlineData("hsl(+240 100% 50% / .27)", .27f)]
+    public void Functional_color_alpha_preserves_native_precision_before_stop_opacity(string color, float sourceAlpha)
     {
         using SvgRoot root = Parse("<linearGradient id='p'><stop offset='0' stop-color='" + color + "' stop-opacity='.414'/><stop offset='1'/></linearGradient>");
         SvgGradientStop stop = Assert.Single(root.Geometries).Gradient.Gradient.Stops[0];
-        Assert.Equal(69 * (1f / 255f) * .414f, stop.Alpha);
+        Assert.Equal(sourceAlpha * .414f, stop.Alpha);
         Assert.Equal(new SvgColor(0, 0, 255, 29), stop.Color);
     }
 
