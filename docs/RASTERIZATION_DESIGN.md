@@ -129,11 +129,13 @@ antialiased and luminance coverage are distinct inputs.
 
 Gradients retain float stop/ramp evaluation and ordered dithering in the logical
 source bitmap's coordinates. Conical visibility masks precede ramp spreading and
-survive single-color lowering. Uniform ramps need no segment array; their color
+survive single-color replay. Uniform ramps need no segment array; their color
 also survives nonfinite tile coordinates at the cone boundary.
 Radial periodic spreading retains native float operation order before sampling.
 Nonconstant cone padding retains terminal arithmetic; normalized shader lanes
 clamp before coverage and source-over, including unordered native float values.
+One-stop paints retain their shader identity and dithering; true zero-size
+gradients use constant-paint replay across rectangles, paths and glyphs.
 Images retain their own sampling matrix, clipping
 and alpha rules. [Pattern tiles](../src/Lokad.Svg/Rendering/SvgPatternTileCache.cs)
 reuse bounded scene rendering and repeat sampling. Optional tile retention needs

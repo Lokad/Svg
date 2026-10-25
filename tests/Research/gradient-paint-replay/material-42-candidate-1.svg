@@ -1,0 +1,1 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='16' cy='16' r='10'><stop stop-color='#c04080' stop-opacity='.65'/></radialGradient><g id='source'><path d='M4 6H28V26H4Z' fill='url(#g)' fill-opacity='.7'/></g></defs><use href='#source' opacity='.65'/></svg>

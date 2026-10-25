@@ -6,6 +6,38 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgStaticCssImageTests
 {
     [Theory]
+    [InlineData("linear", "x1='16' y1='16' x2='16' y2='16'")]
+    [InlineData("radial", "cx='16' cy='16' r='0'")]
+    public void Constant_factory_paints_release_polygon_owners_after_denial_cancellation_and_retry(string kind, string coordinates)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96'><defs><" + kind
+            + "Gradient id='g' gradientUnits='userSpaceOnUse' " + coordinates
+            + "><stop stop-color='#17a9cd' stop-opacity='.37'/><stop offset='.6' stop-color='#43805b'/><stop offset='1' stop-color='#244a77'/></" + kind
+            + "Gradient></defs><circle cx='44' cy='44' r='40' fill='url(#g)' fill-opacity='.7'/></svg>");
+        AssertResourceLifecycle(input);
+        AssertActiveRasterLifecycle(input);
+    }
+
+    [Fact]
+    public void Radial_stroke_bands_keep_stroke_opacity_separate_from_pattern_fill()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs>"
+            + "<pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='#507e92'/></pattern>"
+            + "<radialGradient id='g'><stop stop-color='#17a9cd'/><stop offset='1' stop-color='#244a77'/></radialGradient></defs>"
+            + "<rect x='6' y='6' width='20' height='20' fill='url(#p)' fill-opacity='.4' stroke='url(#g)' stroke-width='4' stroke-opacity='.7'/></svg>");
+        using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
+        SvgSceneStorage storage = root.SceneStorage ?? throw new InvalidOperationException();
+        SvgGeometry[] strokes = root.Geometries.Where(geometry => geometry.Kind == SvgGeometryKind.RadialGradient).ToArray();
+        Assert.NotEmpty(strokes);
+        foreach (SvgGeometry geometry in strokes)
+        {
+            SvgRecordedPaintValue paint = storage.RecordedPaintValues[geometry.RecordedPaint.Identity - 1];
+            Assert.True(paint.IsStroke);
+            Assert.Equal(179 / 255f, paint.Alpha);
+        }
+    }
+
+    [Theory]
     [InlineData("<circle cx='16' cy='16' r='10' fill='url(#g)'/>", "matrix(-2 0 0 2 96 0)", "cx='.4' cy='.55' r='.4' fx='.25' fy='.35'")]
     [InlineData("<ellipse cx='16' cy='16' rx='12' ry='10' fill='url(#g)'/>", "matrix(2 0 0 -2 0 96)", "cx='.4' cy='.55' r='.4' fx='.25' fy='.35'")]
     [InlineData("<rect x='4' y='6' width='24' height='20' rx='4' ry='3' fill='url(#g)'/>", "matrix(-2 0 0 -2 96 96)", "cx='.4' cy='.55' r='.4' fx='.25' fy='.35'")]

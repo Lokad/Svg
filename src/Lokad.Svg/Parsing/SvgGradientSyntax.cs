@@ -523,10 +523,8 @@ internal static class SvgGradientSyntax
         using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, elementName, isPath, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
         if (SvgOrthogonalShapeParser.HasDiagonalContour(points, contourEnds))
         {
-            if (gradient.Stops.Length == 1 && !SvgShaderCoordinates.NeedsRadialMask(gradient) || (gradient.Radius == 0 && !gradient.IsEmpty)) return AppendPaintFillStroke(lowering.LowerPolygonFill(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame, budget), reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
             return AppendPaintFillStroke(lowering.LowerRadialPolygonFill(gradient, box, painted && !gradient.IsEmpty, opacity, transform, frame, budget), reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
         }
-        if (gradient.Stops.Length == 1 && !SvgShaderCoordinates.NeedsRadialMask(gradient) || (gradient.Radius == 0 && !gradient.IsEmpty)) return AppendPaintFillStroke(lowering.Lower(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame), reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
         SvgParsedGeometry solid = lowering.Lower(default, painted && !gradient.IsEmpty, transform, frame);
         SvgGeometry[] bands = solid.Storage.Items;
         try
@@ -649,17 +647,9 @@ internal static class SvgGradientSyntax
         using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, elementName, isPath, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
         if (SvgOrthogonalShapeParser.HasDiagonalContour(points, contourEnds))
         {
-            if (gradient.Stops.Length == 1 && !paintStroke && !paintRadialStroke && !paintPatternStroke) return AppendPaintFillStroke(lowering.LowerPolygonFill(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame, budget), reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
-            if (paintPatternStroke) if (gradient.Stops.Length == 1) return AppendPaintOutlineStroke(lowering.LowerPolygonFill(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame, budget), reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineTile);
-            if (paintRadialStroke) if (gradient.Stops.Length == 1) return AppendPaintOutlineStroke(lowering.LowerPolygonFill(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame, budget), reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineCircle, box);
-            if (gradient.Stops.Length == 1) return AppendPaintOutlineStroke(lowering.LowerPolygonFill(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame, budget), reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineGradient, box);
             if (gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty)
             {
                 if (gradient.Stops.Length > 1 && gradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
-                if (!paintStroke && !paintRadialStroke && !paintPatternStroke) return AppendPaintFillStroke(lowering.LowerPolygonFill(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame, budget), reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
-                if (paintPatternStroke) return AppendPaintOutlineStroke(lowering.LowerPolygonFill(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame, budget), reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineTile);
-                if (paintRadialStroke) return AppendPaintOutlineStroke(lowering.LowerPolygonFill(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame, budget), reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineCircle, box);
-                return AppendPaintOutlineStroke(lowering.LowerPolygonFill(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame, budget), reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineGradient, box);
             }
             if (!paintStroke && !paintRadialStroke && !paintPatternStroke) return AppendPaintFillStroke(lowering.LowerGradientPolygonFill(gradient, box, painted && !gradient.IsEmpty, opacity, transform, frame, budget), reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
             if (paintPatternStroke) return AppendPaintOutlineStroke(lowering.LowerGradientPolygonFill(gradient, box, painted && !gradient.IsEmpty, opacity, transform, frame, budget), reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineTile);
@@ -669,10 +659,6 @@ internal static class SvgGradientSyntax
         if (gradient.Stops.Length > 1 && gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty)
         {
             if (gradient.Stops.Length > 1 && gradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
-            if (!paintStroke && !paintRadialStroke && !paintPatternStroke) return AppendPaintFillStroke(lowering.Lower(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame), reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
-            if (paintPatternStroke) return AppendPaintOutlineStroke(lowering.Lower(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame), reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineTile);
-            if (paintRadialStroke) return AppendPaintOutlineStroke(lowering.Lower(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame), reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineCircle, box);
-            return AppendPaintOutlineStroke(lowering.Lower(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame), reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineGradient, box);
         }
         SvgParsedGeometry solid = lowering.Lower(default, painted && !gradient.IsEmpty, transform, frame);
         try
@@ -1264,11 +1250,9 @@ internal static class SvgGradientSyntax
     /// <summary>Lowers one linear gradient fill rectangle shared by combined fill-and-stroke lowerings, mirroring the fill-only lowering.</summary>
     internal static SvgGeometry LowerLinearFillGeometry(SvgLinearGradient fillGradient, SvgRectangle box, SvgRectangle fill, bool fillHasFill, byte fillOpacity)
     {
-        if (fillGradient.Stops.Length == 1) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(fillGradient.End, fillOpacity), HasFill = fillHasFill });
         if (fillGradient.X1 == fillGradient.X2 && fillGradient.Y1 == fillGradient.Y2 && !fillGradient.IsEmpty)
         {
             if (fillGradient.Stops.Length > 1 && fillGradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
-            return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(fillGradient.End, fillOpacity), HasFill = fillHasFill });
         }
         return SvgGeometry.FromGradientFill(new SvgGradientGeometry(fillGradient, box, fill with { HasFill = fillHasFill }, fillOpacity, null));
     }
@@ -1276,8 +1260,6 @@ internal static class SvgGradientSyntax
     /// <summary>Lowers one radial gradient fill rectangle shared by combined fill-and-stroke lowerings, mirroring the fill-only lowering.</summary>
     internal static SvgGeometry LowerRadialFillGeometry(SvgRadialGradient fillCircle, SvgRectangle box, SvgRectangle fill, bool fillHasFill, byte fillOpacity, RenderBudget budget)
     {
-        if (fillCircle.Stops.Length == 1 && !SvgShaderCoordinates.NeedsRadialMask(fillCircle)) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(fillCircle.End, fillOpacity), HasFill = fillHasFill });
-        if (fillCircle.Radius == 0 && !fillCircle.IsEmpty) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(fillCircle.End, fillOpacity), HasFill = fillHasFill });
         return SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(fillCircle, box, fill with { HasFill = fillHasFill }, fillOpacity, null, budget));
     }
 

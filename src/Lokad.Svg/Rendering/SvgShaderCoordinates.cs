@@ -36,12 +36,6 @@ internal struct SvgShaderCoordinates
 
     internal readonly bool MasksRadialSamples => _focalOnCircle;
 
-    /// <summary>Preserves native cone visibility before a single-color paint is lowered to a solid.</summary>
-    /// <remarks>The unit box supplies an invertible reference without changing circle classification.
-    /// This bounded, allocation-free setup retains no storage; callers own work and cancellation.</remarks>
-    internal static bool NeedsRadialMask(SvgRadialGradient gradient)
-        => !gradient.IsEmpty && CreateRadial(gradient, new(0, 0, 1, 1, default, false, null), 1, 1, 0, 0).MasksRadialSamples;
-
     private SvgShaderCoordinates(SvgShaderMatrix unit, SvgShaderMatrix paintMap, SvgShaderMatrix? localMatrix)
         : this(unit, paintMap, localMatrix, 0) { }
 

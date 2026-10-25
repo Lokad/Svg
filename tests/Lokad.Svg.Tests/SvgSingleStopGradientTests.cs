@@ -14,17 +14,18 @@ public sealed class SvgSingleStopGradientTests
     [InlineData(false, true, true)]
     [InlineData(true, false, true)]
     [InlineData(true, true, true)]
-    public void A_single_stop_keeps_browser_alpha_and_bitmap_local_dither(bool radial, bool instance, bool degenerate)
+    public void A_single_stop_keeps_browser_alpha_and_gradient_factory_dither(bool radial, bool instance, bool degenerate)
     {
         RenderBudget budget = new(1_000_000);
         using (SvgRoot root = SvgRootParser.Parse(Input(radial, instance, degenerate), SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
         {
-            // Pixels from the independently captured single-stop browser controls.
+            // Zero-size factories use a constant shader; positive-size gradients dither.
+            // Both paths were captured independently in gradient-paint-replay.
             Assert.Equal(new byte[] { 87, 138, 193, 94 }, Pixel(4, 5));
-            Assert.Equal(new byte[] { 87, 136, 193, 94 }, Pixel(5, 5));
-            Assert.Equal(new byte[] { 87, 138, 195, 94 }, Pixel(5, 6));
-            Assert.Equal(new byte[] { 84, 136, 193, 94 }, Pixel(10, 10));
+            Assert.Equal(new byte[] { 87, degenerate ? (byte)138 : (byte)136, 193, 94 }, Pixel(5, 5));
+            Assert.Equal(new byte[] { 87, 138, degenerate ? (byte)193 : (byte)195, 94 }, Pixel(5, 6));
+            Assert.Equal(new byte[] { degenerate ? (byte)87 : (byte)84, degenerate ? (byte)138 : (byte)136, 193, 94 }, Pixel(10, 10));
             Assert.Equal(new byte[] { 0, 0, 0, 0 }, Pixel(2, 2));
 
             byte[] Pixel(int x, int y) => surface.Pixels.AsSpan((y * surface.Width + x) * 4, 4).ToArray();

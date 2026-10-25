@@ -75,6 +75,8 @@ internal struct SvgShaderSampler
         if (_kind == Kind.Linear)
         {
             SvgLinearGradient definition = _linear;
+            if (definition.Stops.Length > 0 && definition.X1 == definition.X2 && definition.Y1 == definition.Y2)
+                return SvgAnalyticPaint.Constant(SvgShaderPaint.ConstantGradient(definition.Stops[^1], _alpha));
             double position;
             if (!_coordinates.TryLinear(x, y, _context.Origin(x, y), out position))
             {
@@ -94,6 +96,8 @@ internal struct SvgShaderSampler
             return SvgAnalyticPaint.Shader(_ramp.SampleLinear(Spread(local, definition.Spread), _alpha, _context.Dither(x, y)));
         }
         SvgRadialGradient circle = _radial;
+        if (circle.Stops.Length > 0 && circle.Radius == 0)
+            return SvgAnalyticPaint.Constant(SvgShaderPaint.ConstantGradient(circle.Stops[^1], _alpha));
         double radialPosition;
         if (circle.Stops.Length == 1 && !_coordinates.MasksRadialSamples) radialPosition = 0;
         else if (!_coordinates.TryRadial(x, y, _context.Origin(x, y), out SvgRadialShaderSample sample))

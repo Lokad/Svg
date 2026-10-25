@@ -3090,16 +3090,12 @@ public static partial class SvgConverter
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             SvgLinearGradient definition = outline.Gradient;
             SvgRectangle box = outline.Box;
-            double directionX = definition.X2 - definition.X1;
-            double directionY = definition.Y2 - definition.Y1;
-            double denominator = directionX * directionX + directionY * directionY;
             double offsetSpan = definition.Offset2 - definition.Offset1;
             SvgShaderCoordinates nativeCoordinates = SvgShaderCoordinates.CreateLinear(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, null, sourcePlacement);
             if (offsetSpan <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop increasing-offset linear gradients are implemented.");
-            using SvgGradientRamp ramp = denominator != 0 || definition.Stops.Length == 1
-                ? PrepareGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2) : default;
+            using SvgGradientRamp ramp = PrepareGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2);
             SvgShaderSampler shader = SvgShaderSampler.Linear(definition, box, ramp, nativeCoordinates, ShaderSamplingContext(), ShaderAlpha(outline.Opacity));
-            if ((denominator != 0 || definition.Stops.Length == 1) && RasterizeShaderHairline(authoredPath, outline.Clip, ref shader, destination)) return;
+            if (RasterizeShaderHairline(authoredPath, outline.Clip, ref shader, destination)) return;
 
             ReadOnlySpan<int> contourEnds = raster.ContourEnds;
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
@@ -3124,7 +3120,6 @@ public static partial class SvgConverter
                     ref workUnits, options.Limits.MaximumWorkUnits, cancellationToken);
                 bool useAnalytic = traversal.IsAnalytic;
                 int startY = traversal.StartY, endY = traversal.EndY;
-                if (denominator != 0 || definition.Stops.Length == 1)
                 for (int y = startY; y < endY; y++)
                 {
                 traversal.PrepareRow(y, ref workUnits, options.Limits.MaximumWorkUnits, cancellationToken);
@@ -3154,7 +3149,7 @@ public static partial class SvgConverter
             SvgRadialGradient definition = outline.Gradient;
             SvgRectangle box = outline.Box;
             SvgShaderCoordinates nativeCoordinates = SvgShaderCoordinates.CreateRadial(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, sourcePlacement);
-            if (definition.Radius <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive-radius radial gradients are implemented.");
+            if (definition.Radius < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Radial gradient radii must not be negative.");
             using SvgGradientRamp ramp = PrepareGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2);
 
             SvgShaderSampler shader = SvgShaderSampler.Radial(definition, box, ramp, nativeCoordinates, ShaderSamplingContext(), ShaderAlpha(outline.Opacity));
@@ -3558,7 +3553,7 @@ public static partial class SvgConverter
 
         void RasterizeGradientArea(SvgLinearGradient definition, SvgRectangle box, SvgRectangle area, byte opacity, bool paint, byte[] destination)
         {
-            if (definition.Stops.Length > 1 && definition.X1 == definition.X2 && definition.Y1 == definition.Y2)
+            if (definition.Stops.Length > 0 && definition.X1 == definition.X2 && definition.Y1 == definition.Y2)
             {
                 RasterizeConstantGradient(definition.Stops[^1], area, opacity, paint, destination);
                 return;
@@ -3636,7 +3631,7 @@ public static partial class SvgConverter
 
         void RasterizeRadialArea(SvgRadialGradient definition, SvgRectangle box, SvgRectangle area, byte opacity, bool paint, byte[] destination)
         {
-            if (definition.Stops.Length > 1 && definition.Radius == 0)
+            if (definition.Stops.Length > 0 && definition.Radius == 0)
             {
                 RasterizeConstantGradient(definition.Stops[^1], area, opacity, paint, destination);
                 return;
@@ -4080,7 +4075,7 @@ public static partial class SvgConverter
             {
                 if (glyphLinear is {} ink)
                 {
-                    if (ink.Stops.Length > 1 && ink.X1 == ink.X2 && ink.Y1 == ink.Y2)
+                    if (ink.Stops.Length > 0 && ink.X1 == ink.X2 && ink.Y1 == ink.Y2)
                         return SvgAnalyticPaint.Constant(SvgShaderPaint.ConstantGradient(ink.Stops[^1], ShaderAlpha(glyph.Color.Alpha)));
                     double position;
                     if (ink.X1 == ink.X2 && ink.Y1 == ink.Y2) position = 1;
@@ -4092,6 +4087,8 @@ public static partial class SvgConverter
                 }
                 if (glyphRadial is {} radial)
                 {
+                    if (radial.Stops.Length > 0 && radial.Radius == 0)
+                        return SvgAnalyticPaint.Constant(SvgShaderPaint.ConstantGradient(radial.Stops[^1], ShaderAlpha(glyph.Color.Alpha)));
                     double position;
                     if (radial.Stops.Length == 1 && !glyphCoordinates.MasksRadialSamples) position = 0;
                     else if (radial.Radius == 0) position = 1;

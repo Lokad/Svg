@@ -33,6 +33,8 @@ Native conical masks also cover single-color paints and supplied glyphs; font
 references retain Windows/Linux coverage profiles and verify the embedded bytes.
 [Spread-stage controls](Research/gradient-spread-stages/README.md) cover native
 periodic rounding, negative coordinates and period boundaries.
+[Paint-replay controls](Research/gradient-paint-replay/README.md) cover single-stop
+and zero-size paints, instance scopes and independent pattern-fill/stroke opacity.
 
 [Affine flood tests](Lokad.Svg.Tests/SvgAffineFloodTests.cs) retain input-specific
 Chrome RGBA hashes for mapped filter regions, colors, alpha and source forms,

@@ -40,7 +40,7 @@ public sealed partial class OpenTypeFontTests
                 "mask" => "<mask id='p' mask-type='alpha'><rect width='4' height='8' fill='white'/></mask>",
                 "filter" => "<filter id='p'><feFlood flood-color='red'/></filter>",
                 "marker-end" => "<marker id='p' markerUnits='userSpaceOnUse' markerWidth='2' markerHeight='2'><rect width='2' height='2' fill='red'/></marker>",
-                _ => "<linearGradient id='p'><stop stop-color='red'/></linearGradient>"
+                _ => "<linearGradient id='p' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop stop-color='red'/></linearGradient>"
             };
             string value = url.Replace("'", "&quot;", StringComparison.Ordinal);
             string declaration = location == "rule" ? "<style>.target{" + property + ":" + value + "}</style>" : "";

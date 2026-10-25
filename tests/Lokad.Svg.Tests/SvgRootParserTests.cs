@@ -2658,13 +2658,13 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Retains_single_stop_gradient_paths_as_solid_contours()
+    public void Retains_single_stop_gradient_paths_with_their_shader()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' spreadMethod='repeat'><stop offset='0.3' stop-color='#ff0000'/></linearGradient></defs><path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' spreadMethod='repeat'><stop offset='0.3' stop-color='#ff0000'/></linearGradient></defs><path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
-        Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.Polygon.Color);
+        Assert.Equal(SvgGeometryKind.GradientPolygon, geometry.Kind);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Assert.Single(geometry.GradientPolygon.Gradient.Stops).Color);
         Assert.NotNull(geometry.AuthoredPath);
     }
 
@@ -2747,9 +2747,9 @@ public sealed class SvgRootParserTests
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0.3' stop-color='#ff0000'/></linearGradient></defs><line x1='0' y1='4' x2='8' y2='4' stroke='url(#g)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+        Assert.Equal(SvgGeometryKind.GradientPolygon, geometry.Kind);
         AssertStrokeContourBounds(geometry, [new(0, 3, 8, 2, default, true, null)]);
-        Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.Polygon.Color);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Assert.Single(geometry.GradientPolygon.Gradient.Stops).Color);
     }
 
     [Fact]

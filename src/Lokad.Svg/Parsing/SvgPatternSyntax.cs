@@ -252,23 +252,16 @@ internal static class SvgPatternSyntax
         if (combined && !zeroPaintStrokeWidth)
         {
             SvgRectangle area = placement with { HasFill = false };
-            bool solidRing = (hasLinearStroke && (strokeGradient.Stops.Length == 1 || (strokeGradient.X1 == strokeGradient.X2 && strokeGradient.Y1 == strokeGradient.Y2 && !strokeGradient.IsEmpty))) || (hasRadialStroke && (strokeCircle.Stops.Length == 1 && !SvgShaderCoordinates.NeedsRadialMask(strokeCircle) || (strokeCircle.Radius == 0 && !strokeCircle.IsEmpty)));
             if (hasLinearStroke && strokeGradient.Stops.Length > 1 && strokeGradient.X1 == strokeGradient.X2 && strokeGradient.Y1 == strokeGradient.Y2 && strokeGradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient strokes are implemented.");
             if (hasRadialStroke && strokeCircle.Stops.Length > 1 && strokeCircle.Radius == 0 && strokeCircle.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate radial gradient strokes are implemented.");
-            if (solidRing)
-            {
-                SvgColor ringColor = hasLinearStroke ? strokeGradient.End : strokeCircle.End;
-                SvgStroke solidStroke = new(SvgPaintResolver.ApplyOpacity(ringColor, SvgReferenceResolver.MultiplyAlpha(opacity, SvgColorParser.ParseOpacity(style.StrokeOpacity))), strokeWidth);
-                lowered.Add(SvgGeometry.FromRectangle(area with { Stroke = painted ? solidStroke : null }));
-            }
-            else if (hasLinearStroke) lowered.Add(SvgGeometry.FromGradientStroke(new SvgGradientStrokeGeometry(area, top, bottom, left, right, strokeGradient, box, opacity, painted)));
+            if (hasLinearStroke) lowered.Add(SvgGeometry.FromGradientStroke(new SvgGradientStrokeGeometry(area, top, bottom, left, right, strokeGradient, box, opacity, painted)));
             else
             {
                 bool paintBands = painted && !strokeCircle.IsEmpty;
-                lowered.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(strokeCircle, box, top with { HasFill = paintBands }, opacity, null, state.Budget)));
-                lowered.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(strokeCircle, box, bottom with { HasFill = paintBands }, opacity, null, state.Budget)));
-                lowered.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(strokeCircle, box, left with { HasFill = paintBands }, opacity, null, state.Budget)));
-                lowered.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(strokeCircle, box, right with { HasFill = paintBands }, opacity, null, state.Budget)));
+                lowered.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(strokeCircle, box, top with { HasFill = paintBands }, opacity, null, state.Budget)) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
+                lowered.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(strokeCircle, box, bottom with { HasFill = paintBands }, opacity, null, state.Budget)) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
+                lowered.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(strokeCircle, box, left with { HasFill = paintBands }, opacity, null, state.Budget)) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
+                lowered.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(strokeCircle, box, right with { HasFill = paintBands }, opacity, null, state.Budget)) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
             }
         }
         return new SvgParsedGeometry(lowered.Detach(), 0);

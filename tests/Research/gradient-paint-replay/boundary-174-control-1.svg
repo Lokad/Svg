@@ -1,0 +1,1 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='.5' cy='.5' r='0'><stop stop-color='#5689c1' stop-opacity='.37'/><stop offset='1' stop-color='#5689c1' stop-opacity='.37'/></radialGradient><g id='s'><path d='M16 4V28' fill='none' stroke='url(#g)' stroke-width='2'/></g></defs><use href='#s'/></svg>

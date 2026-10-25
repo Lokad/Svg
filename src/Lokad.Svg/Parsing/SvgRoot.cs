@@ -395,13 +395,12 @@ internal sealed class SvgGradientPolygon : ISvgGeometryContent
         return new SvgGradientPolygon(points, contourEnds, signs, quadSpans, cubicSpans, gradient, box, hasFill, isEvenOdd, opacity, mapping, clip, reservation);
     }
 
-    /// <summary>Repaints one solid outline as a linear-gradient outline, rendering single-stop and degenerate paints as solid end-stop fills. Callers admit the paint once for identical errors.</summary>
+    /// <summary>Repaints one solid outline as a linear-gradient outline, preserving shader alpha and native constant-paint replay. Callers admit the paint once for identical errors.</summary>
     internal static SvgGeometry RepaintOutline(SvgPolygonFill solid, SvgLinearGradient paint, SvgRectangle box, byte opacity, RenderBudget budget)
     {
-        if (paint.Stops.Length == 1 || (paint.X1 == paint.X2 && paint.Y1 == paint.Y2 && !paint.IsEmpty))
+        if (paint.X1 == paint.X2 && paint.Y1 == paint.Y2 && !paint.IsEmpty)
         {
             if (paint.Stops.Length > 1 && paint.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient strokes are not implemented.");
-            return Adopt(SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, SvgPaintResolver.ApplyOpacity(paint.End, opacity), solid.HasFill, solid.IsEvenOdd, solid.Mapping, solid.Clip, null, budget)));
         }
         return Adopt(SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, paint, box, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, null, budget)));
 
@@ -515,10 +514,9 @@ internal sealed class SvgRadialPolygon : ISvgGeometryContent
         }
     }
 
-    /// <summary>Repaints one solid outline as a radial-gradient outline, rendering single-stop and degenerate paints as solid end-stop fills. Callers admit the paint once for identical errors.</summary>
+    /// <summary>Repaints one solid outline as a radial-gradient outline, preserving shader alpha and native constant-paint replay. Callers admit the paint once for identical errors.</summary>
     internal static SvgGeometry RepaintOutline(SvgPolygonFill solid, SvgRadialGradient paint, SvgRectangle box, byte opacity, RenderBudget budget)
     {
-        if (paint.Stops.Length == 1 && !SvgShaderCoordinates.NeedsRadialMask(paint) || (paint.Radius == 0 && !paint.IsEmpty)) return Adopt(SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, SvgPaintResolver.ApplyOpacity(paint.End, opacity), solid.HasFill, solid.IsEvenOdd, solid.Mapping, solid.Clip, null, budget)));
         return Adopt(SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, paint, box, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, null, budget)));
 
         SvgGeometry Adopt(SvgGeometry repaint)
