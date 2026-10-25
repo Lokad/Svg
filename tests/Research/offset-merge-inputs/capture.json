@@ -1,5 +1,5 @@
 {
-  "purpose": "Stored same-space image inputs retain packed source-over rounding; color transfers and SourceAlpha retain their shader consumer. Each SVG has its own native output, including unequal composite and merge graphs.",
+  "purpose": "Stored same-space image inputs retain packed source-over rounding; color transfers and SourceAlpha retain their shader consumer. Each SVG has its own native output, including unequal composite and merge graphs. General merges retain logical source inputs across integer/fractional offsets and unused primitives with explicit graph connections.",
   "chromeVersion": "153.0.8010.52",
   "background": "transparent",
   "license": "MIT",
@@ -915,6 +915,398 @@
       "referenceSha256": "c6e971cea78860eade27b0f76113c5d0a7400a7b3f367f033faddadb18aa4197",
       "rgbaSha256": "f558f444adf0245a1b580af97afe9acc3e584805acfb13c0acb4a5e11177719b",
       "purpose": "distinct-composite-companion"
+    },
+    {
+      "id": "general-input-102-control",
+      "input": "general-input-102-control.svg",
+      "sourceSha256": "1237ab5444fae6681c16960dd18a041032265fecdffa00b5c62fa4308fb36fe7",
+      "reference": "references/extra-over-25-control.png",
+      "referenceSha256": "da935790f6ec76003aa6f00746cad9f1e7694d0de9cb68e5148b49894800cf9a",
+      "rgbaSha256": "716e3cd96088cfb736e2fe11456dc25053e84af0e08b35b856af56104b7e13cd",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-103-candidate",
+      "input": "general-input-103-candidate.svg",
+      "sourceSha256": "92f763841cb881654b7636cf1f3b4f6d5f697c0037b8f82ca64a879f76437b01",
+      "reference": "references/general-input-103-candidate.png",
+      "referenceSha256": "7ec3441887d49a86daf53e5df44a932b57e83eaeb2311ee8a2358a855b4f35b7",
+      "rgbaSha256": "b13592416e0846ddddfb79e61868a26b1250a4012513b1885ae3a975d4f20fdd",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-103-control",
+      "input": "general-input-103-control.svg",
+      "sourceSha256": "d1c29ea61b482fd04eeb50bd6adc86a54e7ad3dc48da9b683d2755a45dc02851",
+      "reference": "references/general-input-103-candidate.png",
+      "referenceSha256": "7ec3441887d49a86daf53e5df44a932b57e83eaeb2311ee8a2358a855b4f35b7",
+      "rgbaSha256": "b13592416e0846ddddfb79e61868a26b1250a4012513b1885ae3a975d4f20fdd",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-114-candidate",
+      "input": "general-input-114-candidate.svg",
+      "sourceSha256": "1952563deb18ed84292ee7f3fe9cea462d1b1f19fb777396947ed1fb45bc56c1",
+      "reference": "references/general-input-114-candidate.png",
+      "referenceSha256": "698308bb447f3e3f36fdb8f404e62a27dbcb4d5ee8417edaa16f1a1edd83f65f",
+      "rgbaSha256": "57669a692938e45ff31f359ee010b07284315f7c3683ef8b3d101f35694fa1c1",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-114-control",
+      "input": "general-input-114-control.svg",
+      "sourceSha256": "1b52cdae15c1769e8db0643984962502a8824b2e809fc0fb5d8fdce3e88d651d",
+      "reference": "references/general-input-114-candidate.png",
+      "referenceSha256": "698308bb447f3e3f36fdb8f404e62a27dbcb4d5ee8417edaa16f1a1edd83f65f",
+      "rgbaSha256": "57669a692938e45ff31f359ee010b07284315f7c3683ef8b3d101f35694fa1c1",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-115-candidate",
+      "input": "general-input-115-candidate.svg",
+      "sourceSha256": "5f268c33cb7bbffde8a9094bf4351a69d75eba8b356c18e48a907a71f9152fe1",
+      "reference": "references/general-input-115-candidate.png",
+      "referenceSha256": "0963387ffae4fac7ed0f24527948ce3598a72bc8d3a0773156521768f8232d4b",
+      "rgbaSha256": "f0423c0b4b5a86835c96f356ffebd041cf0aaaef417e94364531677671a37868",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-115-control",
+      "input": "general-input-115-control.svg",
+      "sourceSha256": "0bac1039f691e1a75b9139f374f6985183992c23fda4580d3de555d60222c6e3",
+      "reference": "references/general-input-115-candidate.png",
+      "referenceSha256": "0963387ffae4fac7ed0f24527948ce3598a72bc8d3a0773156521768f8232d4b",
+      "rgbaSha256": "f0423c0b4b5a86835c96f356ffebd041cf0aaaef417e94364531677671a37868",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-126-control",
+      "input": "general-input-126-control.svg",
+      "sourceSha256": "cb675f0dcf7a96abef828c01d26494e6b90669bed9d85e685b187f61456dc102",
+      "reference": "references/extra-over-31-control.png",
+      "referenceSha256": "52e5bc8cfb044ff96dcc8d60fada1d08ee9210cd3d0521e2d16196f2678a1b35",
+      "rgbaSha256": "fde7c15278bbe01705d2e1565ec9285fb9853856c3eaf3a21213a6cf52d3705f",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-127-candidate",
+      "input": "general-input-127-candidate.svg",
+      "sourceSha256": "7a04f45481ae63a2a6238219f9cb41c1421e06b7f2b78b3bcac1a9036c8ba3cd",
+      "reference": "references/general-input-127-candidate.png",
+      "referenceSha256": "70a0ef790fa80ea21620549291d467ce941f04f9e81c771ceb893880e43ffe11",
+      "rgbaSha256": "b6fdad671bb1a72a155a7aae746d66180a4af2a1f6196b30a0316055c73cacb6",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-127-control",
+      "input": "general-input-127-control.svg",
+      "sourceSha256": "7c070c6b224d8eaf0efd49813dd547fc0a5c11d3211ea0bf2597a012b7e92bed",
+      "reference": "references/general-input-127-candidate.png",
+      "referenceSha256": "70a0ef790fa80ea21620549291d467ce941f04f9e81c771ceb893880e43ffe11",
+      "rgbaSha256": "b6fdad671bb1a72a155a7aae746d66180a4af2a1f6196b30a0316055c73cacb6",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-138-candidate",
+      "input": "general-input-138-candidate.svg",
+      "sourceSha256": "25148c964d4fe8c15eece1ea80ba593acb5fde2091bdcd9abccfffdbbe0d1477",
+      "reference": "references/general-input-138-candidate.png",
+      "referenceSha256": "45be40656083ebb81ddb9f3554fb569570fe141cce4f2167571ab06d4ceb26bf",
+      "rgbaSha256": "3d4b476eab1967b24b72561259962b9e3bd475eb43f1b361b424ff30ebaa07c4",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-138-control",
+      "input": "general-input-138-control.svg",
+      "sourceSha256": "8de56c859c2f779f526738431878b955fd38e61e12aa2f7eacb6b71bbc5862ea",
+      "reference": "references/general-input-138-candidate.png",
+      "referenceSha256": "45be40656083ebb81ddb9f3554fb569570fe141cce4f2167571ab06d4ceb26bf",
+      "rgbaSha256": "3d4b476eab1967b24b72561259962b9e3bd475eb43f1b361b424ff30ebaa07c4",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-139-candidate",
+      "input": "general-input-139-candidate.svg",
+      "sourceSha256": "71f26673dc167e9edb81c327e96770cbd76773488ec1760e5b207575541169d0",
+      "reference": "references/general-input-139-candidate.png",
+      "referenceSha256": "43b42a4c09702ebb5a20d4ba47748ff9536c032575ea56c15abe821c21685f6d",
+      "rgbaSha256": "e9588d03328b1e1bc66956ff4a7b8a56df2a082113d3892c3066f5925ecc2633",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-139-control",
+      "input": "general-input-139-control.svg",
+      "sourceSha256": "79d7d26574b7fa0ee124181d0788ad3796e54fd9c401f58bd2bf23c70ab0941b",
+      "reference": "references/general-input-139-candidate.png",
+      "referenceSha256": "43b42a4c09702ebb5a20d4ba47748ff9536c032575ea56c15abe821c21685f6d",
+      "rgbaSha256": "e9588d03328b1e1bc66956ff4a7b8a56df2a082113d3892c3066f5925ecc2633",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-150-control",
+      "input": "general-input-150-control.svg",
+      "sourceSha256": "982f08b062c5dc6e7fb7939672866aa43e3243de69b87a76f5441a79d4b73621",
+      "reference": "references/extra-over-37-control.png",
+      "referenceSha256": "32994ec625d95f1d258a31380567e0a8aa1c90fdacd339deaa16f5cad8e0ee83",
+      "rgbaSha256": "4cb3b060a52753ad3598ee017f04b0f818b517d220e8504aecfcc0d714ba1dbd",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-151-candidate",
+      "input": "general-input-151-candidate.svg",
+      "sourceSha256": "c6873e83b4b1a048954acfa98b6b698b1ca12b32bd8879a8a88e6b8edfd0cbc3",
+      "reference": "references/general-input-151-candidate.png",
+      "referenceSha256": "92e5b9cebbe74f3a9fd41d4d78cb5b431d3c3442c1f23a4c05044a0c613b7e70",
+      "rgbaSha256": "5555d247b2c56e5755b52fefc4af542aa279006dc61d74bff0412aa923bec8aa",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-151-control",
+      "input": "general-input-151-control.svg",
+      "sourceSha256": "c3448e547f0465d24ad68f4ceb046fc60e82f11f7368e6dfa85ad7de5e3093fc",
+      "reference": "references/general-input-151-candidate.png",
+      "referenceSha256": "92e5b9cebbe74f3a9fd41d4d78cb5b431d3c3442c1f23a4c05044a0c613b7e70",
+      "rgbaSha256": "5555d247b2c56e5755b52fefc4af542aa279006dc61d74bff0412aa923bec8aa",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-162-candidate",
+      "input": "general-input-162-candidate.svg",
+      "sourceSha256": "9f6ab41796c7b41dcfe0839fbb26a18be3da7442073526a4485e685eb26ee33b",
+      "reference": "references/general-input-162-candidate.png",
+      "referenceSha256": "84048426ec2c5d1255fd5daf3f726eb7e5ce0b94e44b44b4c76c3ad709741889",
+      "rgbaSha256": "37b82e8cb5a8883b9039b1c06c852c165cc80198825f0130ab71a09550bb8796",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-162-control",
+      "input": "general-input-162-control.svg",
+      "sourceSha256": "501b09ebf0c469a9b46f302b30833846da1bb578c64eba64fe228ea55930da07",
+      "reference": "references/general-input-162-candidate.png",
+      "referenceSha256": "84048426ec2c5d1255fd5daf3f726eb7e5ce0b94e44b44b4c76c3ad709741889",
+      "rgbaSha256": "37b82e8cb5a8883b9039b1c06c852c165cc80198825f0130ab71a09550bb8796",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-163-candidate",
+      "input": "general-input-163-candidate.svg",
+      "sourceSha256": "2034f9697d57e4ec15c24c91a91083f379e14fb18e46915392c82e0414f99b24",
+      "reference": "references/general-input-163-candidate.png",
+      "referenceSha256": "de9bbff0d4422d7b840068ae8fa4ebcb51860a7cbeb1fcd6898360726016de2a",
+      "rgbaSha256": "4312ccd60de0d40d60c9966d4b9dc61cec9c097b87d4e0fa217d687987ca56b0",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-163-control",
+      "input": "general-input-163-control.svg",
+      "sourceSha256": "591d35ba1edb6d2945499bcb6bc771ef09385e1669ee475a9b134c422220374d",
+      "reference": "references/general-input-163-candidate.png",
+      "referenceSha256": "de9bbff0d4422d7b840068ae8fa4ebcb51860a7cbeb1fcd6898360726016de2a",
+      "rgbaSha256": "4312ccd60de0d40d60c9966d4b9dc61cec9c097b87d4e0fa217d687987ca56b0",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-174-control",
+      "input": "general-input-174-control.svg",
+      "sourceSha256": "28db868df99913785f582609f9153fb00859bc1f35bd232a76fcd46546aa927b",
+      "reference": "references/extra-over-43-control.png",
+      "referenceSha256": "7387865a6f688c0cd8935e7584be7c40f139cb7cc4a4be8b109e3f78f45e178f",
+      "rgbaSha256": "214e52d58ba68910928091433e6a76064415543b40b14eef787da3ea49de461c",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-175-candidate",
+      "input": "general-input-175-candidate.svg",
+      "sourceSha256": "bf408d82720cea05d0f4cffa51fc876cd9c330962107c987812fb612ac5eb78d",
+      "reference": "references/general-input-175-candidate.png",
+      "referenceSha256": "c423bc585fb73b29c51bcc5858062e927a0aac55746e7a4ea0532772664f653e",
+      "rgbaSha256": "ea32dfcd96db1225fc030db6dfe3f0f483562bb2b8f0eb43f91d3fd327c9615b",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-175-control",
+      "input": "general-input-175-control.svg",
+      "sourceSha256": "6f197fd3ece78f97945b94932aed961c5430c81a6dea4ba2066c356915d80cd0",
+      "reference": "references/general-input-175-candidate.png",
+      "referenceSha256": "c423bc585fb73b29c51bcc5858062e927a0aac55746e7a4ea0532772664f653e",
+      "rgbaSha256": "ea32dfcd96db1225fc030db6dfe3f0f483562bb2b8f0eb43f91d3fd327c9615b",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-186-candidate",
+      "input": "general-input-186-candidate.svg",
+      "sourceSha256": "b287fe7bde92f9b6cd73c2f7137016e419a8b39d6cfa93f32a1f342e7d5022fa",
+      "reference": "references/general-input-186-candidate.png",
+      "referenceSha256": "546fda65f952b02c884217e3bd85cce60accd02eddd333b9f3459615219c29af",
+      "rgbaSha256": "e1876b6048eeeb739c69e4a4e23e2ec6919f89665eddc0a4eaf58ca7652888f6",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-186-control",
+      "input": "general-input-186-control.svg",
+      "sourceSha256": "aeb6a88ab2a9f186c08c4ce44a92e756ae42aa971b70bc95be0587a1c7987dea",
+      "reference": "references/general-input-186-candidate.png",
+      "referenceSha256": "546fda65f952b02c884217e3bd85cce60accd02eddd333b9f3459615219c29af",
+      "rgbaSha256": "e1876b6048eeeb739c69e4a4e23e2ec6919f89665eddc0a4eaf58ca7652888f6",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-187-candidate",
+      "input": "general-input-187-candidate.svg",
+      "sourceSha256": "ed09648fafe1690e1908fe09415f53d08f643c1572a5ca25fe5b69ca4bf84a08",
+      "reference": "references/general-input-187-candidate.png",
+      "referenceSha256": "62cbca9dd06224df9f82aa1f6f0e52d8ef97f983a60a34594c0fc650219abc16",
+      "rgbaSha256": "74a265cabfbe68e2aa2ae79c6309385e03ea80854592d9a3726e3ebb3cf814e2",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "general-input-187-control",
+      "input": "general-input-187-control.svg",
+      "sourceSha256": "b5faba6de74089c3f12af8e8bd4c7fe5833e9971073eab3bf2770a948fb36198",
+      "reference": "references/general-input-187-candidate.png",
+      "referenceSha256": "62cbca9dd06224df9f82aa1f6f0e52d8ef97f983a60a34594c0fc650219abc16",
+      "rgbaSha256": "74a265cabfbe68e2aa2ae79c6309385e03ea80854592d9a3726e3ebb3cf814e2",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "extra-over-28-control",
+      "input": "extra-over-28-control.svg",
+      "sourceSha256": "84f0667659c0e67dbec734dc8af94ff1a38929213babe38895bd3fcbc5f518ae",
+      "reference": "references/general-input-114-candidate.png",
+      "referenceSha256": "698308bb447f3e3f36fdb8f404e62a27dbcb4d5ee8417edaa16f1a1edd83f65f",
+      "rgbaSha256": "57669a692938e45ff31f359ee010b07284315f7c3683ef8b3d101f35694fa1c1",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "extra-over-34-control",
+      "input": "extra-over-34-control.svg",
+      "sourceSha256": "ae38279680f129407a14578deb06223dc2735bdea24571e6c0bb4187e885824a",
+      "reference": "references/general-input-138-candidate.png",
+      "referenceSha256": "45be40656083ebb81ddb9f3554fb569570fe141cce4f2167571ab06d4ceb26bf",
+      "rgbaSha256": "3d4b476eab1967b24b72561259962b9e3bd475eb43f1b361b424ff30ebaa07c4",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "extra-over-40-control",
+      "input": "extra-over-40-control.svg",
+      "sourceSha256": "67a5ce051f527b6c9932d4eaac35f498b41c6af7e608023fa82b312f445bfcca",
+      "reference": "references/general-input-162-candidate.png",
+      "referenceSha256": "84048426ec2c5d1255fd5daf3f726eb7e5ce0b94e44b44b4c76c3ad709741889",
+      "rgbaSha256": "37b82e8cb5a8883b9039b1c06c852c165cc80198825f0130ab71a09550bb8796",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
+    },
+    {
+      "id": "extra-over-46-control",
+      "input": "extra-over-46-control.svg",
+      "sourceSha256": "03260d628156e2f443ff061104f479dd5297aa5539f2f413fdaa8ecd9f096c5a",
+      "reference": "references/general-input-186-candidate.png",
+      "referenceSha256": "546fda65f952b02c884217e3bd85cce60accd02eddd333b9f3459615219c29af",
+      "rgbaSha256": "e1876b6048eeeb739c69e4a4e23e2ec6919f89665eddc0a4eaf58ca7652888f6",
+      "purpose": "general-source-alpha-regression",
+      "baselineCommit": "65da5c03"
     }
-  ]
+  ],
+  "generalInputLaunches": {
+    "windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 4439,
+        "debuggerReadyMilliseconds": 177,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 2432,
+        "debuggerReadyMilliseconds": 164,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 2334,
+        "debuggerReadyMilliseconds": 135,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 7741,
+        "debuggerReadyMilliseconds": 3818,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 6541,
+        "debuggerReadyMilliseconds": 3258,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 6284,
+        "debuggerReadyMilliseconds": 2369,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  }
 }

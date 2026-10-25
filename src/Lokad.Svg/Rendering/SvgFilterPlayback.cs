@@ -491,7 +491,7 @@ internal static class SvgFilterPlayback
                     {
                         ReadOnlySpan<byte> layer = ReadInput(merged, index, graphic);
                         bool layerLinear = merged.Index >= 0 && linear[merged.Index];
-                        Composite(layer, output, layerLinear, colorSpace);
+                        Composite(layer, output, merged, layerLinear, colorSpace);
                     }
                     linear[index] = destinationLinear;
                 }
@@ -608,7 +608,7 @@ internal static class SvgFilterPlayback
             throw new SvgException(SvgErrorCode.MalformedInput, "Filter graph input is outside its earlier results.");
         }
 
-        void Composite(ReadOnlySpan<byte> input, Span<byte> output, bool inputLinear, SvgFilterColorSpace colorSpace)
+        void Composite(ReadOnlySpan<byte> input, Span<byte> output, SvgFilterInput reference, bool inputLinear, SvgFilterColorSpace colorSpace)
         {
             Charge(pixels * (inputLinear == (colorSpace == SvgFilterColorSpace.LinearRgb) ? 1 : 2));
             for (int offset = 0; offset < bytes; offset += 4)
@@ -616,8 +616,8 @@ internal static class SvgFilterPlayback
                 token.ThrowIfCancellationRequested();
                 // A merge draws stored inputs into a bitmap. Without a transfer,
                 // native direct image draws retain packed source-over rounding.
-                // Color-filter inputs still use their unquantized shader route.
-                if (inputLinear == (colorSpace == SvgFilterColorSpace.LinearRgb))
+                // Color-filter inputs, including SourceAlpha, retain their shader route.
+                if (reference != SvgFilterInput.SourceAlpha && inputLinear == (colorSpace == SvgFilterColorSpace.LinearRgb))
                     SvgConverter.BlendPremultipliedOver(output.Slice(offset, 4), input[offset], input[offset + 1], input[offset + 2], input[offset + 3]);
                 else ReadPaint(input, offset, inputLinear, colorSpace).Blend(output.Slice(offset, 4), 255);
             }
