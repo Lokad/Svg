@@ -379,8 +379,6 @@ internal static class SvgOrthogonalShapeParser
                     gradient = SvgGradientSyntax.BindLinearSourceMap(gradient, sourceBox, path.SceneMap, state, context.WorkCounter, context.CancellationToken);
                 }
                 else gradient = SvgGradientSyntax.MirrorBoundingBoxVector(transform, SvgGradientSyntax.MapUserSpaceVector(transform, gradient, frame));
-                if (gradient.Stops.Length > 1 && gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && gradient.Spread != SvgGradientSpread.Pad)
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
             }
             if (radial)
             {

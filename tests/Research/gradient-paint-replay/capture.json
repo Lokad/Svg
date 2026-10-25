@@ -22899,9 +22899,7 @@
       "captureBank": "boundary",
       "captureCase": "flat-stroke-199",
       "captureKind": "control"
-    }
-  ],
-  "knownDifferences": [
+    },
     {
       "id": "material-8-candidate-1",
       "input": "material-8-candidate-1.svg",
@@ -22913,19 +22911,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-8",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "material-8-control-1",
@@ -22938,19 +22924,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-8",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "material-9-candidate-1p5",
@@ -22963,19 +22937,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-9",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "material-9-control-1p5",
@@ -22988,19 +22950,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-9",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "material-10-candidate-1",
@@ -23013,19 +22963,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-10",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "material-10-control-1",
@@ -23038,19 +22976,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-10",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "material-11-candidate-1p5",
@@ -23063,19 +22989,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-11",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "material-11-control-1p5",
@@ -23088,19 +23002,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-11",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "material-40-candidate-1",
@@ -23113,19 +23015,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-40",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "material-40-control-1",
@@ -23138,19 +23028,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-40",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "material-41-candidate-1p5",
@@ -23163,19 +23041,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-41",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "material-41-control-1p5",
@@ -23188,19 +23054,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-41",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "material-42-candidate-1",
@@ -23213,19 +23067,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-42",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "material-42-control-1",
@@ -23238,19 +23080,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-42",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "material-43-candidate-1p5",
@@ -23263,19 +23093,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-43",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "material-43-control-1p5",
@@ -23288,19 +23106,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-43",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "material-72-candidate-1",
@@ -23313,19 +23119,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-72",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "material-72-control-1",
@@ -23338,19 +23132,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-72",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "material-73-candidate-1p5",
@@ -23363,19 +23145,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-73",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "material-73-control-1p5",
@@ -23388,19 +23158,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-73",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "material-74-candidate-1",
@@ -23413,19 +23171,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-74",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "material-74-control-1",
@@ -23438,19 +23184,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-74",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "material-75-candidate-1p5",
@@ -23463,19 +23197,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-75",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "material-75-control-1p5",
@@ -23488,19 +23210,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-75",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "material-104-candidate-1",
@@ -23513,19 +23223,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-104",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "material-104-control-1",
@@ -23538,19 +23236,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-104",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "material-105-candidate-1p5",
@@ -23563,19 +23249,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-105",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "material-105-control-1p5",
@@ -23588,19 +23262,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-105",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "material-106-candidate-1",
@@ -23613,19 +23275,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-106",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "material-106-control-1",
@@ -23638,19 +23288,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-106",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "material-107-candidate-1p5",
@@ -23663,19 +23301,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-107",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "material-107-control-1p5",
@@ -23688,19 +23314,7 @@
       "font": false,
       "captureBank": "material",
       "captureCase": "single-material-107",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "scopes-6-candidate-1",
@@ -23713,19 +23327,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-6",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-7-candidate-1p5",
@@ -23738,19 +23340,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-7",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-8-candidate-1",
@@ -23763,19 +23353,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-8",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 4416
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 4416
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-9-candidate-1p5",
@@ -23788,19 +23366,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-9",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 9419
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 9419
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-12-candidate-1",
@@ -23813,19 +23379,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-12",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-13-candidate-1p5",
@@ -23838,19 +23392,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-13",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-14-candidate-1",
@@ -23863,19 +23405,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-14",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 4416
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 4416
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-15-candidate-1p5",
@@ -23888,19 +23418,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-15",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 9419
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 9419
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-18-candidate-1",
@@ -23913,19 +23431,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-18",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-19-candidate-1p5",
@@ -23938,19 +23444,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-19",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-20-candidate-1",
@@ -23963,19 +23457,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-20",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 4416
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 4416
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-21-candidate-1p5",
@@ -23988,19 +23470,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-21",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 9419
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 9419
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-36-candidate-1",
@@ -24013,19 +23483,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-36",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-37-candidate-1p5",
@@ -24038,19 +23496,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-37",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-38-candidate-1",
@@ -24063,19 +23509,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-38",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 4621
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 4621
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-39-candidate-1p5",
@@ -24088,19 +23522,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-39",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 9505
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 9505
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-40-candidate-1",
@@ -24113,19 +23535,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-40",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 6631
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 6631
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-41-candidate-1p5",
@@ -24138,19 +23548,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-41",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 11663
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 11663
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-42-candidate-1",
@@ -24163,19 +23561,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-42",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-43-candidate-1p5",
@@ -24188,19 +23574,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-43",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-44-candidate-1",
@@ -24213,19 +23587,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-44",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 4621
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 4621
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-45-candidate-1p5",
@@ -24238,19 +23600,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-45",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 9505
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 9505
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-46-candidate-1",
@@ -24263,19 +23613,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-46",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 6631
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 6631
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-47-candidate-1p5",
@@ -24288,19 +23626,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-47",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 11663
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 11663
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-48-candidate-1",
@@ -24313,19 +23639,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-48",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-49-candidate-1p5",
@@ -24338,19 +23652,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-49",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-50-candidate-1",
@@ -24363,19 +23665,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-50",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 4621
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 4621
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-51-candidate-1p5",
@@ -24388,19 +23678,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-51",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 9505
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 9505
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-52-candidate-1",
@@ -24413,19 +23691,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-52",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 6631
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 6631
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-53-candidate-1p5",
@@ -24438,19 +23704,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-53",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 11663
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 11663
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-126-candidate-1",
@@ -24463,19 +23717,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-126",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-127-candidate-1p5",
@@ -24488,19 +23730,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-127",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-128-candidate-1",
@@ -24513,19 +23743,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-128",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 4416
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 4416
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-129-candidate-1p5",
@@ -24538,19 +23756,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-129",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 9419
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 9419
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-132-candidate-1",
@@ -24563,19 +23769,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-132",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-133-candidate-1p5",
@@ -24588,19 +23782,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-133",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-134-candidate-1",
@@ -24613,19 +23795,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-134",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 4416
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 4416
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-135-candidate-1p5",
@@ -24638,19 +23808,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-135",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 9419
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 9419
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-138-candidate-1",
@@ -24663,19 +23821,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-138",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-139-candidate-1p5",
@@ -24688,19 +23834,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-139",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-140-candidate-1",
@@ -24713,19 +23847,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-140",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 4416
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 4416
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-141-candidate-1p5",
@@ -24738,19 +23860,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-141",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 9419
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 9419
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-156-candidate-1",
@@ -24763,19 +23873,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-156",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-157-candidate-1p5",
@@ -24788,19 +23886,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-157",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-158-candidate-1",
@@ -24813,19 +23899,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-158",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 4621
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 4621
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-159-candidate-1p5",
@@ -24838,19 +23912,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-159",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 9505
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 9505
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-160-candidate-1",
@@ -24863,19 +23925,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-160",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 6631
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 6631
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-161-candidate-1p5",
@@ -24888,19 +23938,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-161",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 11663
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 11663
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-162-candidate-1",
@@ -24913,19 +23951,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-162",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-163-candidate-1p5",
@@ -24938,19 +23964,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-163",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-164-candidate-1",
@@ -24963,19 +23977,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-164",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 4621
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 4621
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-165-candidate-1p5",
@@ -24988,19 +23990,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-165",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 9505
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 9505
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-166-candidate-1",
@@ -25013,19 +24003,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-166",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 6631
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 6631
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-167-candidate-1p5",
@@ -25038,19 +24016,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-167",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 11663
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 11663
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-168-candidate-1",
@@ -25063,19 +24029,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-168",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3561
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-169-candidate-1p5",
@@ -25088,19 +24042,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-169",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8289
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-170-candidate-1",
@@ -25113,19 +24055,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-170",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 4621
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 4621
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-171-candidate-1p5",
@@ -25138,19 +24068,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-171",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 9505
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 9505
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-172-candidate-1",
@@ -25163,19 +24081,7 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-172",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 6631
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 6631
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "scopes-173-candidate-1p5",
@@ -25188,20 +24094,10 @@
       "font": false,
       "captureBank": "scopes",
       "captureCase": "scope-expansion-173",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 11663
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 11663
-        }
-      }
-    },
+      "captureKind": "candidate"
+    }
+  ],
+  "knownDifferences": [
     {
       "id": "material-28-candidate-1",
       "input": "material-28-candidate-1.svg",

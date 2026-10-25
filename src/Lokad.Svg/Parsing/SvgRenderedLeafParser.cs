@@ -146,7 +146,7 @@ internal static class SvgRenderedLeafParser
         }
         if (viewportClip is {} outputClip)
         {
-            state.Scene.InsertCommands(start, [new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, outputClip, -1, 255) { RegionKind = SvgLayerRegionKind.Viewport }]);
+            state.Scene.InsertCommands(start, [new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, outputClip, -1, 255) { RegionKind = parent is { RecordingScope.Value: 0 } ? SvgLayerRegionKind.FilterOutputClip : SvgLayerRegionKind.Viewport }]);
             state.Scene.InsertCommands(state.Scene.CommandCount, [new(SvgDrawCommandKind.EndGroup, 0, 255, null, -1, 255)]);
             maskFirst++; maskEnd++;
         }

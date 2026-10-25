@@ -57,6 +57,40 @@ internal struct SvgShaderCoordinates
         _enabled = float.IsFinite(radialPositionScale) && float.IsFinite(radialPositionBias) && unit.IsFinite && paintMap.IsFinite && paintMap.TryInvert(out _) && (localMatrix is null || localMatrix.Value.IsFinite);
     }
 
+    /// <summary>Classifies the native factory from borrowed definition coordinates before local or instance placement.</summary>
+    /// <remarks>Allocation-free bounded float arithmetic; callers own work and cancellation at draw/record traversal.</remarks>
+    internal static bool IsConstantFactory(SvgLinearGradient gradient)
+    {
+        double x1 = gradient.X1, y1 = gradient.Y1, x2 = gradient.X2, y2 = gradient.Y2;
+        if (gradient.SourcePaint is {} paint)
+        {
+            SvgLinearPaintMapData source = paint.Data;
+            x1 = source.X1; y1 = source.Y1; x2 = source.X2; y2 = source.Y2;
+        }
+        float dx = (float)x2 - (float)x1, dy = (float)y2 - (float)y1;
+        return MathF.Sqrt(dx * dx + dy * dy) <= 1f / 32768;
+    }
+
+    /// <summary>Classifies a native constant conical factory independently of spatial mapping and cone sampling.</summary>
+    /// <remarks>Borrowed definition metadata is immutable. The caller owns bounded traversal work and cancellation.</remarks>
+    internal static bool IsConstantFactory(SvgRadialGradient gradient)
+    {
+        double x = gradient.CenterX, y = gradient.CenterY, radius = gradient.Radius;
+        double fx = gradient.FocalX, fy = gradient.FocalY, focalRadius = gradient.FocalRadius;
+        if (gradient.SourceDefinition is {} source)
+        {
+            x = source.CenterX; y = source.CenterY; radius = source.Radius;
+            fx = source.HasFocalX ? source.FocalX : x;
+            fy = source.HasFocalY ? source.FocalY : y;
+            focalRadius = source.HasFocalRadius ? source.FocalRadius : 0;
+        }
+        float dx = (float)x - (float)fx, dy = (float)y - (float)fy;
+        float outer = (float)radius, inner = (float)focalRadius;
+        const float threshold = 1f / 32768;
+        return outer >= 0 && inner >= 0 && MathF.Sqrt(dx * dx + dy * dy) <= threshold
+            && MathF.Abs(outer - inner) <= threshold && (gradient.Spread != SvgGradientSpread.Pad || outer <= threshold);
+    }
+
     internal static SvgShaderCoordinates CreateImage(SvgShaderMatrix paintMap, SvgShaderMatrix imageLocal)
         => new(new(1, 0, 0, 0, 1, 0), paintMap, imageLocal);
 

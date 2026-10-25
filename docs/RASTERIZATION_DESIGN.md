@@ -134,14 +134,22 @@ also survives nonfinite tile coordinates at the cone boundary.
 Radial periodic spreading retains native float operation order before sampling.
 Nonconstant cone padding retains terminal arithmetic; normalized shader lanes
 clamp before coverage and source-over, including unordered native float values.
-One-stop paints retain their shader identity and dithering; true zero-size
-gradients use constant-paint replay across rectangles, paths and glyphs.
+One-stop paints retain their shader identity and dithering. Native constant
+factories are classified from definition coordinates before placement, using
+the inclusive float threshold `1/32768`. Pad takes the terminal stop;
+repeat/reflect integrate straight RGBA over stop intervals, then premultiply.
+Their constant-paint replay is shared by rectangles, paths and glyphs, including
+glyph luminance. See the [factory controls](../tests/Research/gradient-factory-colors/README.md).
 Images retain their own sampling matrix, clipping
 and alpha rules. [Pattern tiles](../src/Lokad.Svg/Rendering/SvgPatternTileCache.cs)
 reuse bounded scene rendering and repeat sampling. Optional tile retention needs
 matching source, maps, sampling and paint; declining it preserves rendering.
 
 ## Resources and effects
+
+Viewport clips draw into the parent bitmap through owned clip frames, preserving
+its shader origin. Inherited clipping around filter output keeps a separate
+recorded region kind so it does not change the filter input context.
 
 Clips retain child winding, mapped source curves and resource units. Curve unions
 use bounded intersections and boundary linking; larger clip content can replay

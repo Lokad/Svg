@@ -9,7 +9,7 @@ namespace Lokad.Svg.Rendering;
 /// is charged here before texture reads and interpolation. Copies borrow the same owners.</remarks>
 internal struct SvgShaderSampler
 {
-    private enum Kind : byte { Linear, Radial, Pattern }
+    private enum Kind : byte { Linear, Radial, Pattern, Constant }
     private Kind _kind;
     private SvgLinearGradient _linear;
     private SvgRadialGradient _radial;
@@ -21,6 +21,10 @@ internal struct SvgShaderSampler
     private SvgShaderSamplingContext _context;
     private double _directionX, _directionY, _denominator, _offsetSpan;
     private float _alpha;
+    private SvgShaderPaint _constant;
+
+    internal static SvgShaderSampler Constant(SvgShaderPaint color, float alpha)
+        => new() { _kind = Kind.Constant, _constant = color, _alpha = alpha };
 
     internal static SvgShaderSampler Linear(SvgLinearGradient definition, SvgRectangle box, SvgGradientRamp ramp,
         SvgShaderCoordinates coordinates, SvgShaderSamplingContext context, float alpha)
@@ -72,11 +76,10 @@ internal struct SvgShaderSampler
 
     private SvgAnalyticPaint SampleGradient(int x, int y)
     {
+        if (_kind == Kind.Constant) return SvgAnalyticPaint.Constant(_constant.AsConstant(_alpha));
         if (_kind == Kind.Linear)
         {
             SvgLinearGradient definition = _linear;
-            if (definition.Stops.Length > 0 && definition.X1 == definition.X2 && definition.Y1 == definition.Y2)
-                return SvgAnalyticPaint.Constant(SvgShaderPaint.ConstantGradient(definition.Stops[^1], _alpha));
             double position;
             if (!_coordinates.TryLinear(x, y, _context.Origin(x, y), out position))
             {
@@ -96,8 +99,6 @@ internal struct SvgShaderSampler
             return SvgAnalyticPaint.Shader(_ramp.SampleLinear(Spread(local, definition.Spread), _alpha, _context.Dither(x, y)));
         }
         SvgRadialGradient circle = _radial;
-        if (circle.Stops.Length > 0 && circle.Radius == 0)
-            return SvgAnalyticPaint.Constant(SvgShaderPaint.ConstantGradient(circle.Stops[^1], _alpha));
         double radialPosition;
         if (circle.Stops.Length == 1 && !_coordinates.MasksRadialSamples) radialPosition = 0;
         else if (!_coordinates.TryRadial(x, y, _context.Origin(x, y), out SvgRadialShaderSample sample))

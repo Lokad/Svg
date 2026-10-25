@@ -357,7 +357,7 @@ internal static class SvgLeafMaskComposition
                         mapped.NativeMask = mask with { Map = mapped.Map.ComposeChecked(mask.Map) };
                     if (source.AffineViewport is {} affine)
                         mapped.AffineViewport = affine with { Map = mapped.Map.ComposeChecked(affine.Map) };
-                    else if (source.RegionKind == SvgLayerRegionKind.Viewport && !mapped.Map.IsAxisAligned && source.Region is SvgClipBox viewport)
+                    else if (source.RegionKind is (SvgLayerRegionKind.Viewport or SvgLayerRegionKind.FilterOutputClip) && !mapped.Map.IsAxisAligned && source.Region is SvgClipBox viewport)
                     {
                         mapped.AffineViewport = new(viewport, mapped.Map);
                         mapped.RegionKind = SvgLayerRegionKind.AffineViewport;

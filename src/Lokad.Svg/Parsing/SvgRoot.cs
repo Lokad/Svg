@@ -398,10 +398,6 @@ internal sealed class SvgGradientPolygon : ISvgGeometryContent
     /// <summary>Repaints one solid outline as a linear-gradient outline, preserving shader alpha and native constant-paint replay. Callers admit the paint once for identical errors.</summary>
     internal static SvgGeometry RepaintOutline(SvgPolygonFill solid, SvgLinearGradient paint, SvgRectangle box, byte opacity, RenderBudget budget)
     {
-        if (paint.X1 == paint.X2 && paint.Y1 == paint.Y2 && !paint.IsEmpty)
-        {
-            if (paint.Stops.Length > 1 && paint.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient strokes are not implemented.");
-        }
         return Adopt(SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, paint, box, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, null, budget)));
 
         SvgGeometry Adopt(SvgGeometry repaint)
@@ -1045,8 +1041,8 @@ internal readonly record struct SvgSymbolFillBinding(bool IsInherited, SvgPaintO
 
 internal enum SvgDrawCommandKind { Geometry, BeginGroup, EndGroup }
 
-/// <summary>Separates a mask allocation region from a geometric viewport clip at layer restore.</summary>
-internal enum SvgLayerRegionKind : byte { Mask, Viewport, AffineViewport, Bounds, Filter }
+/// <summary>Separates filter-output clipping, mask allocation regions and geometric viewport clips at layer restore.</summary>
+internal enum SvgLayerRegionKind : byte { Mask, Viewport, AffineViewport, Bounds, Filter, FilterOutputClip }
 
 /// <summary>References retained geometry or marks an isolated layer; mask alpha applies before the separate outer opacity.</summary>
 internal readonly record struct SvgDrawCommand(SvgDrawCommandKind Kind, int GeometryIndex, SvgPaintOpacity SourceOpacity, SvgClipBox? MaskRegion, int MaskContentIndex, byte MaskAlpha)

@@ -205,7 +205,10 @@ through an overridden template need no font programs; see the
 
 Linear and radial gradients support objectBoundingBox/userSpaceOnUse units,
 affine gradient transforms, local templates, pad/repeat/reflect spread and sRGB
-color interpolation. Radial paints include contained focal circles and zero-radius
+color interpolation. Degenerate factories use terminal pad colors and periodic
+mean colors, including flat stop offsets; see the
+[factory controls](../tests/Research/gradient-factory-colors/README.md).
+Radial paints include contained focal circles and zero-radius
 foci on the outer circle; outside foci and tangential nonzero focal circles remain
 unsupported. Gradient
 templates inherit coordinates independently of units, spread and the local map;

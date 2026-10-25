@@ -175,6 +175,14 @@ internal readonly record struct SvgShaderPaint(float Red, float Green, float Blu
         }
     }
 
+    /// <summary>Packs prepared premultiplied shader lanes for native constant-paint replay.</summary>
+    internal SvgConstantShaderPaint AsConstant(float opacity)
+    {
+        return new(Quantize(Red * opacity), Quantize(Green * opacity), Quantize(Blue * opacity), Quantize(Alpha * opacity));
+
+        static byte Quantize(float value) => (byte)Math.Clamp((int)(value * 255f + 0.5f), 0, 255);
+    }
+
     internal static SvgConstantShaderPaint ConstantGradient(SvgGradientStop stop, float opacity)
     {
         float alpha = stop.Alpha * opacity;

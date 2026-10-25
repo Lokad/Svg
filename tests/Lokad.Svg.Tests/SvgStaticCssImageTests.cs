@@ -6,6 +6,39 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgStaticCssImageTests
 {
     [Theory]
+    [InlineData("linear", "x1='0' y1='0' x2='.000001' y2='0'", "repeat")]
+    [InlineData("linear", "x1='0' y1='0' x2='.000001' y2='0'", "reflect")]
+    [InlineData("radial", "cx='0' cy='0' r='.000001'", "repeat")]
+    [InlineData("radial", "cx='0' cy='0' r='.000001'", "reflect")]
+    public void Periodic_factory_integration_releases_owners_after_denial_cancellation_and_retry(string kind, string coordinates, string spread)
+    {
+        System.Text.StringBuilder stops = new();
+        for (int index = 0; index < 256; index++)
+            stops.Append("<stop offset='.5' stop-color='").Append(index % 2 == 0 ? "#17a9cd" : "#43805b").Append("' stop-opacity='.37'/>");
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96'><defs><" + kind
+            + "Gradient id='g' gradientUnits='userSpaceOnUse' " + coordinates + " spreadMethod='" + spread + "'>" + stops + "</" + kind
+            + "Gradient></defs><g opacity='.65'><circle cx='44' cy='44' r='40' fill='url(#g)' fill-opacity='.7'/></g></svg>");
+        AssertResourceLifecycle(input);
+        AssertActiveRasterLifecycle(input);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Nested_viewport_clip_releases_owners_around_opacity_and_filter_output(bool filtered)
+    {
+        string effect = filtered ? " filter='url(#f)'" : "";
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96'><defs>"
+            + "<linearGradient id='g'><stop stop-color='#17a9cd'/><stop offset='1' stop-color='#43805b'/></linearGradient>"
+            + "<clipPath id='c'><rect x='5.25' y='3.75' width='70.5' height='80.25'/></clipPath>"
+            + "<filter id='f' filterUnits='userSpaceOnUse' width='96' height='96'><feOffset dx='1' dy='1'/></filter></defs>"
+            + "<svg x='1' y='2' width='90' height='90' viewBox='0 0 96 96'><g clip-path='url(#c)'><g opacity='.65'" + effect
+            + "><circle cx='44' cy='44' r='40' fill='url(#g)'/></g></g></svg></svg>");
+        AssertResourceLifecycle(input);
+        AssertActiveRasterLifecycle(input);
+    }
+
+    [Theory]
     [InlineData("linear", "x1='16' y1='16' x2='16' y2='16'")]
     [InlineData("radial", "cx='16' cy='16' r='0'")]
     public void Constant_factory_paints_release_polygon_owners_after_denial_cancellation_and_retry(string kind, string coordinates)

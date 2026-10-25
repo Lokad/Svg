@@ -243,7 +243,7 @@ internal static class SvgDocumentTraversal
                         {
                             SvgDrawCommand clip = parsedGroup.Scope.HasDeferredMask && clippedParent.Clip.Antialiasing == SvgClipAntialiasing.All
                                 ? SvgClipPathSyntax.CreateRectangleScope(clippedParent.Clip, SvgAffineTransform.Identity, state, state.Scene, workCounter, cancellationToken)
-                                : new(SvgDrawCommandKind.BeginGroup, -1, 255, clippedParent.Clip, -1, 255) { RegionKind = SvgLayerRegionKind.Viewport };
+                                : new(SvgDrawCommandKind.BeginGroup, -1, 255, clippedParent.Clip, -1, 255) { RegionKind = parsedGroup.Scope.HasFilter && clippedParent.RecordingScope.Value == 0 ? SvgLayerRegionKind.FilterOutputClip : SvgLayerRegionKind.Viewport };
                             state.Scene.InsertCommands(state.Scene.CommandCount, [clip]);
                             if (snapshot.PendingClip is {} clipIndex)
                             {

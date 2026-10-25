@@ -5902,11 +5902,13 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_non_pad_degenerate_gradient_fills()
+    public void Retains_non_pad_degenerate_gradient_fills_for_factory_replay()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='1' y1='1' x2='1' y2='1' spreadMethod='repeat'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='1' y1='1' x2='1' y2='1' spreadMethod='repeat'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
+        Assert.Equal(SvgGradientSpread.Repeat, geometry.Gradient.Gradient.Spread);
+        Assert.Equal(2, geometry.Gradient.Gradient.Stops.Length);
     }
 
     [Fact]

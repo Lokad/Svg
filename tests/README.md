@@ -35,6 +35,9 @@ references retain Windows/Linux coverage profiles and verify the embedded bytes.
 periodic rounding, negative coordinates and period boundaries.
 [Paint-replay controls](Research/gradient-paint-replay/README.md) cover single-stop
 and zero-size paints, instance scopes and independent pattern-fill/stroke opacity.
+[Factory-color controls](Research/gradient-factory-colors/README.md) cover float
+thresholds, periodic mean colors, flat stops, opacity replay and viewport clipping
+around filter output. Lifecycle checks cover integration and clip ownership.
 
 [Affine flood tests](Lokad.Svg.Tests/SvgAffineFloodTests.cs) retain input-specific
 Chrome RGBA hashes for mapped filter regions, colors, alpha and source forms,

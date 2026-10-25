@@ -2297,11 +2297,11 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(solid, painted);
     }
     [Fact]
-    public void Degenerate_nonpad_fractional_gradient_stays_unsupported()
+    public void Degenerate_reflected_gradient_uses_mean_color_on_fractional_path()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"0\" spreadMethod=\"reflect\"><stop offset=\"0\" stop-color=\"red\"/><stop offset=\"1\" stop-color=\"blue\"/></linearGradient></defs><path d=\"M0,0H4.5H8V8H0Z\" fill=\"url(#g)\"/></svg>"), SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        byte[] painted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"0\" spreadMethod=\"reflect\"><stop offset=\"0\" stop-color=\"red\"/><stop offset=\"1\" stop-color=\"blue\"/></linearGradient></defs><path d=\"M0,0H4.5H8V8H0Z\" fill=\"url(#g)\"/></svg>", out _, out _);
+        byte[] solid = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0H4.5H8V8H0Z' fill='#800080'/></svg>", out _, out _);
+        Assert.Equal(solid, painted);
     }
     [Fact]
     public void Sign_abutted_coordinates_match_spaced_twin()

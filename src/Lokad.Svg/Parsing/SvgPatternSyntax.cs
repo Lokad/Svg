@@ -252,8 +252,6 @@ internal static class SvgPatternSyntax
         if (combined && !zeroPaintStrokeWidth)
         {
             SvgRectangle area = placement with { HasFill = false };
-            if (hasLinearStroke && strokeGradient.Stops.Length > 1 && strokeGradient.X1 == strokeGradient.X2 && strokeGradient.Y1 == strokeGradient.Y2 && strokeGradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient strokes are implemented.");
-            if (hasRadialStroke && strokeCircle.Stops.Length > 1 && strokeCircle.Radius == 0 && strokeCircle.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate radial gradient strokes are implemented.");
             if (hasLinearStroke) lowered.Add(SvgGeometry.FromGradientStroke(new SvgGradientStrokeGeometry(area, top, bottom, left, right, strokeGradient, box, opacity, painted)));
             else
             {
