@@ -12,6 +12,14 @@ public sealed class SvgStaticCssImageTests
     [InlineData("<circle cx='16' cy='16' r='10' fill='url(#g)'/>", "matrix(-2 0 0 2 96 0)", "gradientUnits='userSpaceOnUse' cx='16' cy='16' r='10' fx='25.996' fy='16'")]
     [InlineData("<ellipse cx='16' cy='16' rx='12' ry='10' fill='url(#g)'/>", "matrix(2 0 0 -2 0 96)", "gradientUnits='userSpaceOnUse' cx='16' cy='16' r='10' fx='25.996' fy='16'")]
     [InlineData("<rect x='4' y='6' width='24' height='20' rx='4' ry='3' fill='url(#g)'/>", "matrix(-2 0 0 -2 96 96)", "gradientUnits='userSpaceOnUse' cx='16' cy='16' r='10' fx='25.996' fy='16'")]
+    [InlineData("<circle cx='16' cy='16' r='10' fill='url(#g)'/>", "matrix(-2 0 0 2 96 0)", "cx='.4' cy='.55' r='.4' fx='.25' fy='.35' fr='.1'")]
+    [InlineData("<ellipse cx='16' cy='16' rx='12' ry='10' fill='url(#g)'/>", "matrix(2 0 0 -2 0 96)", "cx='.4' cy='.55' r='.4' fx='.25' fy='.35' fr='.1'")]
+    [InlineData("<rect x='4' y='6' width='24' height='20' rx='4' ry='3' fill='url(#g)'/>", "matrix(-2 0 0 -2 96 96)", "cx='.4' cy='.55' r='.4' fx='.25' fy='.35' fr='.1'")]
+    [InlineData("<circle cx='16' cy='16' r='10' fill='url(#g)'/>", "matrix(-2 0 0 2 96 0)", "gradientUnits='userSpaceOnUse' cx='16' cy='16' r='10' fx='14' fy='15' fr='1'")]
+    [InlineData("<ellipse cx='16' cy='16' rx='12' ry='10' fill='url(#g)'/>", "matrix(2 0 0 -2 0 96)", "gradientUnits='userSpaceOnUse' cx='16' cy='16' r='10' fx='14' fy='15' fr='1'")]
+    [InlineData("<rect x='4' y='6' width='24' height='20' rx='4' ry='3' fill='url(#g)'/>", "matrix(-2 0 0 -2 96 96)", "gradientUnits='userSpaceOnUse' cx='16' cy='16' r='10' fx='14' fy='15' fr='1'")]
+    [InlineData("<circle cx='16' cy='16' r='10' fill='url(#g)'/>", "matrix(2 0 0 2 0 0)", "cx='.5' cy='.5' r='.5' fx='.5' fy='.5' fr='.1'")]
+    [InlineData("<circle cx='16' cy='16' r='10' fill='url(#g)'/>", "matrix(2 0 0 2 0 0)", "gradientUnits='userSpaceOnUse' cx='16' cy='16' r='10' fx='16' fy='16' fr='2'")]
     public void Reflected_radial_sources_release_owners_after_denial_cancellation_and_retry(string shape, string placement, string coordinates)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96'>"

@@ -25,6 +25,8 @@ and instance placement, independent strokes and empty dimensions.
 [Radial axis controls](Research/radial-axis-source-maps/README.md) retain source
 reflection through local and retained paint maps, with separate native images
 for mirrored-coordinate spellings and focal-coordinate precision cases.
+Inner-circle controls cover centered and offset conical coordinates, symbol
+reference maps and empty viewports; ownership checks share the same replay path.
 
 [Affine flood tests](Lokad.Svg.Tests/SvgAffineFloodTests.cs) retain input-specific
 Chrome RGBA hashes for mapped filter regions, colors, alpha and source forms,

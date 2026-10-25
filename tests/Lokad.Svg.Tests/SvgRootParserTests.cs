@@ -6297,14 +6297,19 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Maps_userspace_focal_radius_through_uniform_transform()
+    public void Retains_userspace_focal_radii_and_uniform_reference_map()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4' fr='1'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)' transform='scale(2)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4' fr='1'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)' transform='scale(2)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
-        Assert.Equal(8, geometry.Radial.Gradient.Radius);
-        Assert.Equal(2, geometry.Radial.Gradient.FocalRadius);
+        SvgRadialGradient gradient = geometry.Radial.Gradient;
+        Assert.Equal(4, gradient.Radius);
+        Assert.Equal(1, gradient.FocalRadius);
+        Assert.True(gradient.HasGeneralTransform);
+        Assert.Equal((5d, 4d), gradient.Inverse.Apply(10, 8));
+        Assert.Equal(16, geometry.Radial.Fill.Width);
+        Assert.Equal(16, geometry.Radial.Fill.Height);
     }
 
     [Fact]

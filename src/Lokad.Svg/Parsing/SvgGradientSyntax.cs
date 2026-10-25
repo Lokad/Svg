@@ -1024,7 +1024,10 @@ internal static class SvgGradientSyntax
             return ScaleGeneralRadial(gradient, mirrorX ? -1 : 1, mirrorY ? -1 : 1, mirrorX ? 1 : 0, mirrorY ? 1 : 0);
         }
         if (!transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned gradient transforms are implemented.");
-        if (!gradient.HasGeneralTransform && (transform.A < 0 || transform.D < 0))
+        bool canMapFocalReference = gradient.FocalRadius != 0
+            && TryInvertAxisMap(transform.A, transform.D, transform.E, transform.F, out _)
+            && (frame is null || TryInvertAxisMap(frame.Value.ScaleX, frame.Value.ScaleY, frame.Value.OffsetX, frame.Value.OffsetY, out _));
+        if (!gradient.HasGeneralTransform && (transform.A < 0 || transform.D < 0 || canMapFocalReference))
             gradient = gradient with { HasGeneralTransform = true, Inverse = SvgGradientTransform.Identity,
                 NativePaintMatrices = new(new(1, 0, 0, 0, 1, 0), SvgAffineTransform.Identity) };
         if (gradient.HasGeneralTransform) return ScaleGeneralRadial(ScaleGeneralRadial(gradient, transform.A, transform.D, transform.E, transform.F), frame?.ScaleX ?? 1, frame?.ScaleY ?? 1, frame?.OffsetX ?? 0, frame?.OffsetY ?? 0);
