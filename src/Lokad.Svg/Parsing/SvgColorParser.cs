@@ -8,10 +8,7 @@ namespace Lokad.Svg.Parsing;
 internal static class SvgColorParser
 {
     private const NumberStyles CssNumberStyles = NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent;
-    internal static byte ParseOpacity(string? value) => value is null ? (byte)255 : ParseOpacity(value.AsSpan());
-
-    internal static byte ParseOpacity(ReadOnlySpan<char> value)
-        => ParsePaintOpacity(value).Alpha;
+    internal static byte ParseOpacity(string? value) => ParsePaintOpacity(value).Alpha;
 
     internal static SvgPaintOpacity ParsePaintOpacity(string? value)
         => value is null ? SvgPaintOpacity.Opaque : ParsePaintOpacity(value.AsSpan());
