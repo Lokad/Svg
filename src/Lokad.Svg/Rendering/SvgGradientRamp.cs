@@ -68,11 +68,8 @@ internal readonly struct SvgGradientRamp : IDisposable
                 && first.Color.Blue == second.Color.Blue && first.Alpha == second.Alpha;
     }
 
-    internal SvgShaderPaint SampleLinear(double position, float opacity, int matrix)
-        => Sample(_multiple ? (float)(_offset1 + position * (_offset2 - _offset1)) : (float)position, opacity, matrix);
-
-    /// <summary>Spreads one radial position, retaining native cone-boundary infinities until ramp evaluation.</summary>
-    internal static double SpreadRadial(double position, SvgGradientSpread spread)
+    /// <summary>Spreads one gradient position, retaining native cone-boundary infinities until ramp evaluation.</summary>
+    internal static double Spread(double position, SvgGradientSpread spread)
     {
         if (double.IsPositiveInfinity(position)) return spread == SvgGradientSpread.Pad ? position : 1;
         float coordinate = (float)position;
@@ -84,8 +81,8 @@ internal readonly struct SvgGradientRamp : IDisposable
         static float Clamp(float value) => float.IsNaN(value) ? 1 : Math.Clamp(value, 0, 1);
     }
 
-    /// <summary>Preserves absolute radial padding before selecting an arbitrary segment or normalizing a two-stop pair.</summary>
-    internal SvgShaderPaint SampleRadial(double position, float opacity, int matrix)
+    /// <summary>Preserves absolute stop padding before selecting an arbitrary segment or normalizing a two-stop pair.</summary>
+    internal SvgShaderPaint SampleAbsolute(double position, float opacity, int matrix)
     {
         if (_multiple && double.IsPositiveInfinity(position))
         {
@@ -95,21 +92,17 @@ internal readonly struct SvgGradientRamp : IDisposable
         }
         double absolute = Math.Clamp(position, _offset1, _offset2);
         double coordinate = _multiple ? 0d + absolute * 1d : _offset2 > _offset1 ? (absolute - _offset1) / (_offset2 - _offset1) : 0;
-        return Sample((float)coordinate, opacity, matrix);
-    }
-
-    private SvgShaderPaint Sample(float position, float opacity, int matrix)
-    {
-        if (!_multiple) return _pair.Sample(position, opacity, matrix);
+        float samplePosition = (float)coordinate;
+        if (!_multiple) return _pair.Sample(samplePosition, opacity, matrix);
         SvgGradientRampSegment[] segments = _segments.Items;
         int segment = 0, last = segments.Length - 1;
         while (segment < last)
         {
             int middle = (segment + last + 1) / 2;
-            if (position >= segments[middle].Position) segment = middle;
+            if (samplePosition >= segments[middle].Position) segment = middle;
             else last = middle - 1;
         }
-        return segments[segment].Sample(position, opacity, matrix);
+        return segments[segment].Sample(samplePosition, opacity, matrix);
     }
 
     public void Dispose() => _segments.Dispose();

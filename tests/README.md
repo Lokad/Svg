@@ -38,6 +38,8 @@ and zero-size paints, instance scopes and independent pattern-fill/stroke opacit
 [Factory-color controls](Research/gradient-factory-colors/README.md) cover float
 thresholds, periodic mean colors, flat stops, opacity replay and viewport clipping
 around filter output. Lifecycle checks cover integration and clip ownership.
+[Periodic stop-range controls](Research/linear-periodic-stops/README.md) check
+spreading before endpoint padding through shapes, glyphs and affine instances.
 
 [Affine flood tests](Lokad.Svg.Tests/SvgAffineFloodTests.cs) retain input-specific
 Chrome RGBA hashes for mapped filter regions, colors, alpha and source forms,

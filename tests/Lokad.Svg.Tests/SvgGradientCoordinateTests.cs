@@ -142,7 +142,7 @@ public sealed class SvgGradientCoordinateTests
                 cached = radial.Position;
             }
             Assert.Equal(position, cached);
-            SvgShaderPaint sample = ramp.SampleLinear(Math.Clamp(position, 0, 1), 201 / 255f, grid.GetGradientDither(x, y));
+            SvgShaderPaint sample = ramp.SampleAbsolute(Math.Clamp(position, 0, 1), 201 / 255f, grid.GetGradientDither(x, y));
             uint[] expectedLanes = v.Skip(16).Take(4).Select(value => uint.Parse(value, CultureInfo.InvariantCulture)).ToArray();
             uint[] actualLanes = [BitConverter.SingleToUInt32Bits(sample.Red), BitConverter.SingleToUInt32Bits(sample.Green), BitConverter.SingleToUInt32Bits(sample.Blue), BitConverter.SingleToUInt32Bits(sample.Alpha)];
             Assert.True(expectedLanes.SequenceEqual(actualLanes), row + "; actual lanes " + string.Join(",", actualLanes));
@@ -179,7 +179,7 @@ public sealed class SvgGradientCoordinateTests
             Assert.True(radial.IsVisible, row);
             double position = radial.Position;
             Assert.Equal(uint.Parse(cells[19], CultureInfo.InvariantCulture), BitConverter.SingleToUInt32Bits((float)position));
-            SvgShaderPaint sample = ramp.SampleLinear(Math.Clamp(position, 0, 1), 201 / 255f, grid.GetGradientDither(x, y));
+            SvgShaderPaint sample = ramp.SampleAbsolute(Math.Clamp(position, 0, 1), 201 / 255f, grid.GetGradientDither(x, y));
             uint[] lanes = [BitConverter.SingleToUInt32Bits(sample.Red), BitConverter.SingleToUInt32Bits(sample.Green), BitConverter.SingleToUInt32Bits(sample.Blue), BitConverter.SingleToUInt32Bits(sample.Alpha)];
             Assert.Equal(cells.Skip(20).Take(4).Select(x => uint.Parse(x, CultureInfo.InvariantCulture)), lanes);
             byte[] destination = [11, 23, 37, 97];

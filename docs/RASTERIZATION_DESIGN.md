@@ -131,7 +131,9 @@ Gradients retain float stop/ramp evaluation and ordered dithering in the logical
 source bitmap's coordinates. Conical visibility masks precede ramp spreading and
 survive single-color replay. Uniform ramps need no segment array; their color
 also survives nonfinite tile coordinates at the cone boundary.
-Radial periodic spreading retains native float operation order before sampling.
+Linear and radial spreading share native float operation order, followed by
+absolute stop padding and ramp normalization. Partial stop ranges preserve the
+full repeat period; see the [periodic controls](../tests/Research/linear-periodic-stops/README.md).
 Nonconstant cone padding retains terminal arithmetic; normalized shader lanes
 clamp before coverage and source-over, including unordered native float values.
 One-stop paints retain their shader identity and dithering. Native constant

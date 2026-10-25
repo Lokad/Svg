@@ -19,7 +19,7 @@ internal struct SvgShaderSampler
     private SvgGradientRamp _ramp;
     private SvgShaderCoordinates _coordinates;
     private SvgShaderSamplingContext _context;
-    private double _directionX, _directionY, _denominator, _offsetSpan;
+    private double _directionX, _directionY, _denominator;
     private float _alpha;
     private SvgShaderPaint _constant;
 
@@ -31,8 +31,7 @@ internal struct SvgShaderSampler
     {
         double dx = definition.X2 - definition.X1, dy = definition.Y2 - definition.Y1;
         return new() { _kind = Kind.Linear, _linear = definition, _box = box, _ramp = ramp, _coordinates = coordinates,
-            _context = context, _alpha = alpha, _directionX = dx, _directionY = dy, _denominator = dx * dx + dy * dy,
-            _offsetSpan = definition.Offset2 - definition.Offset1 };
+            _context = context, _alpha = alpha, _directionX = dx, _directionY = dy, _denominator = dx * dx + dy * dy };
     }
 
     internal static SvgShaderSampler Radial(SvgRadialGradient definition, SvgRectangle box, SvgGradientRamp ramp,
@@ -95,8 +94,7 @@ internal struct SvgShaderSampler
                 else position = (((point.X - _box.X) / _box.Width - definition.X1) * _directionX
                     + ((point.Y - _box.Y) / _box.Height - definition.Y1) * _directionY) / _denominator;
             }
-            double local = definition.Stops.Length == 1 ? 0 : (position - definition.Offset1) / _offsetSpan;
-            return SvgAnalyticPaint.Shader(_ramp.SampleLinear(Spread(local, definition.Spread), _alpha, _context.Dither(x, y)));
+            return SvgAnalyticPaint.Shader(_ramp.SampleAbsolute(SvgGradientRamp.Spread(position, definition.Spread), _alpha, _context.Dither(x, y)));
         }
         SvgRadialGradient circle = _radial;
         double radialPosition;
@@ -123,17 +121,7 @@ internal struct SvgShaderSampler
             if (!sample.IsVisible) return SvgAnalyticPaint.Shader(default);
             radialPosition = sample.Position;
         }
-        return SvgAnalyticPaint.Shader(_ramp.SampleRadial(SvgGradientRamp.SpreadRadial(radialPosition, circle.Spread), _alpha, _context.Dither(x, y)));
+        return SvgAnalyticPaint.Shader(_ramp.SampleAbsolute(SvgGradientRamp.Spread(radialPosition, circle.Spread), _alpha, _context.Dither(x, y)));
     }
 
-    private static double Spread(double position, SvgGradientSpread spread)
-    {
-        if (spread == SvgGradientSpread.Repeat) return position - Math.Floor(position);
-        if (spread == SvgGradientSpread.Reflect)
-        {
-            double cycle = position - 2 * Math.Floor(position / 2);
-            return cycle > 1 ? 2 - cycle : cycle;
-        }
-        return Math.Clamp(position, 0, 1);
-    }
 }

@@ -1,6 +1,6 @@
 # Gradient factory colors and viewport clips
 
-The [capture](capture.json) retains 5,009 exact cases and 1,123 deferred cases,
+The [capture](capture.json) retains 5,201 exact cases and 931 deferred cases,
 sharing 3,256 SVGs and 1,395 native PNGs by content hash. It covers linear and
 radial factory boundaries, pad/repeat/reflect, straight-color interval means,
 partial alpha, flat offsets, 256 stops, rectangle/path/glyph replay, instances,

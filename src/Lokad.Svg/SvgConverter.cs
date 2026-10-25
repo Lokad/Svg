@@ -3678,21 +3678,9 @@ public static partial class SvgConverter
                         position = ((normalizedX - definition.X1) * directionX + (normalizedY - definition.Y1) * directionY) / denominator;
                     }
                 }
-                double local = definition.Stops.Length == 1 ? 0 : (position - definition.Offset1) / offsetSpan;
-                if (definition.Spread == SvgGradientSpread.Repeat) local -= Math.Floor(local);
-                else if (definition.Spread == SvgGradientSpread.Reflect)
-                {
-                    double cycle = local - 2 * Math.Floor(local / 2);
-                    local = cycle > 1 ? 2 - cycle : cycle;
-                }
-                else
-                {
-                    if (local < 0) local = 0;
-                    if (local > 1) local = 1;
-                }
-                position = local;
+                position = SvgGradientRamp.Spread(position, definition.Spread);
                 int offset = (y * outputWidth + x) * 4;
-                ramp.SampleLinear(position, ShaderAlpha(opacity), GradientDither(x, y)).Blend(destination.AsSpan(offset, 4), ViewportAlpha(raster.GetAlpha(x, y), x, y));
+                ramp.SampleAbsolute(position, ShaderAlpha(opacity), GradientDither(x, y)).Blend(destination.AsSpan(offset, 4), ViewportAlpha(raster.GetAlpha(x, y), x, y));
             }
             }
 
@@ -3786,9 +3774,9 @@ public static partial class SvgConverter
                     if (!sample.IsVisible) continue;
                     position = sample.Position;
                 }
-                position = SvgGradientRamp.SpreadRadial(position, definition.Spread);
+                position = SvgGradientRamp.Spread(position, definition.Spread);
                 int offset = (y * outputWidth + x) * 4;
-                ramp.SampleRadial(position, ShaderAlpha(opacity), GradientDither(x, y)).Blend(destination.AsSpan(offset, 4), ViewportAlpha(raster.GetAlpha(x, y), x, y));
+                ramp.SampleAbsolute(position, ShaderAlpha(opacity), GradientDither(x, y)).Blend(destination.AsSpan(offset, 4), ViewportAlpha(raster.GetAlpha(x, y), x, y));
             }
             }
         }
@@ -4168,9 +4156,7 @@ public static partial class SvgConverter
                     if (ink.X1 == ink.X2 && ink.Y1 == ink.Y2) position = 1;
                     else if (!glyphCoordinates.TryLinear(x, y, ShaderBitmapOrigin(x, y), out position))
                         position = ink.SourcePaint?.Position((x + .5 - horizontalOffset) / horizontalScale, (y + .5 - verticalOffset) / verticalScale) ?? 1;
-                    double span = ink.Offset2 - ink.Offset1;
-                    double local = span == 0 ? 1 : (position - ink.Offset1) / span;
-                    return SvgAnalyticPaint.Shader(glyphRamp.SampleLinear(Spread(local, ink.Spread), ShaderAlpha(glyph.Color.Alpha), GradientDither(x, y)));
+                    return SvgAnalyticPaint.Shader(glyphRamp.SampleAbsolute(SvgGradientRamp.Spread(position, ink.Spread), ShaderAlpha(glyph.Color.Alpha), GradientDither(x, y)));
                 }
                 if (glyphRadial is {} radial)
                 {
@@ -4198,21 +4184,11 @@ public static partial class SvgConverter
                         if (!sample.IsVisible) return SvgAnalyticPaint.Shader(default);
                         position = sample.Position;
                     }
-                    return SvgAnalyticPaint.Shader(glyphRamp.SampleRadial(SvgGradientRamp.SpreadRadial(position, radial.Spread), ShaderAlpha(glyph.Color.Alpha), GradientDither(x, y)));
+                    return SvgAnalyticPaint.Shader(glyphRamp.SampleAbsolute(SvgGradientRamp.Spread(position, radial.Spread), ShaderAlpha(glyph.Color.Alpha), GradientDither(x, y)));
                 }
                 return glyphPattern is null ? ResolveSolidPaint(glyph.Color)
                     : SvgAnalyticPaint.Shader(SamplePatternWithOpacity(glyphPattern, glyphTile.Surface.Pixels, x, y, ref glyphCoordinates, glyph.Color.Alpha));
 
-                static double Spread(double value, SvgGradientSpread spread)
-                {
-                    if (spread == SvgGradientSpread.Repeat) return value - Math.Floor(value);
-                    if (spread == SvgGradientSpread.Reflect)
-                    {
-                        double cycle = value - 2 * Math.Floor(value / 2);
-                        return cycle > 1 ? 2 - cycle : cycle;
-                    }
-                    return Math.Clamp(value, 0, 1);
-                }
             }
 
             SvgColor GlyphLuminance(ParserWorkCounter work)

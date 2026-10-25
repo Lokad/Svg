@@ -6,13 +6,10 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgGradientRampTests
 {
     [Theory]
-    [InlineData(0, false)]
-    [InlineData(1, false)]
-    [InlineData(2, false)]
-    [InlineData(0, true)]
-    [InlineData(1, true)]
-    [InlineData(2, true)]
-    public void Inline_coefficients_preserve_previous_float_lanes_without_owned_storage(int count, bool radial)
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    public void Inline_coefficients_preserve_absolute_float_lanes_without_owned_storage(int count)
     {
         SvgColor start = new(23, 169, 205, 175), end = new(195, 213, 55, 200);
         SvgGradientStop[] stops = count switch
@@ -28,11 +25,11 @@ public sealed class SvgGradientRampTests
         foreach (int matrix in new[] { 0, 63 })
         {
             SvgShaderPaint expected = default;
-            Exception? previous = Record.Exception(() => expected = radial ? SvgGradientReference.RadialRamp(stops, start, end, .1, .8, position, opacity, matrix) : SvgGradientReference.Ramp(stops, start, end, .1, .8, position, opacity, matrix));
-            if (previous is null) EqualBits(expected, radial ? ramp.SampleRadial(position, opacity, matrix) : ramp.SampleLinear(position, opacity, matrix));
+            Exception? previous = Record.Exception(() => expected = SvgGradientReference.SampleAbsolute(stops, start, end, .1, .8, position, opacity, matrix));
+            if (previous is null) EqualBits(expected, ramp.SampleAbsolute(position, opacity, matrix));
             else
             {
-                Exception current = Record.Exception(() => { if (radial) ramp.SampleRadial(position, opacity, matrix); else ramp.SampleLinear(position, opacity, matrix); })
+                Exception current = Record.Exception(() => ramp.SampleAbsolute(position, opacity, matrix))
                     ?? throw new InvalidOperationException("The prepared ramp must preserve the previous rejection.");
                 Assert.Equal(previous.GetType(), current.GetType());
                 Assert.Equal(previous.Message, current.Message);
@@ -41,10 +38,8 @@ public sealed class SvgGradientRampTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
-    [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public void Arbitrary_coefficients_preserve_repeated_and_float_collapsed_stop_boundaries(bool radial)
+    [Fact]
+    public void Arbitrary_coefficients_preserve_repeated_and_float_collapsed_stop_boundaries()
     {
         SvgColor first = new(23, 169, 205, 255), second = new(195, 213, 55, 255), third = new(149, 17, 233, 255);
         foreach (SvgGradientStop[] stops in new SvgGradientStop[][]
@@ -58,8 +53,8 @@ public sealed class SvgGradientRampTests
             {
                 foreach (double position in new[] { -.25, 0d, .125, double.BitDecrement(.375), .375, double.BitIncrement(.375), .5, .875, 1d, 1.25 })
                 foreach (float opacity in new[] { .37f, 1f })
-                    EqualBits(radial ? SvgGradientReference.RadialRamp(stops, first, stops[^1].Color, stops[0].Offset, stops[^1].Offset, position, opacity, 32) : SvgGradientReference.Ramp(stops, first, stops[^1].Color, stops[0].Offset, stops[^1].Offset, position, opacity, 32),
-                        radial ? ramp.SampleRadial(position, opacity, 32) : ramp.SampleLinear(position, opacity, 32));
+                    EqualBits(SvgGradientReference.SampleAbsolute(stops, first, stops[^1].Color, stops[0].Offset, stops[^1].Offset, position, opacity, 32),
+                        ramp.SampleAbsolute(position, opacity, 32));
             }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }
@@ -91,9 +86,9 @@ public sealed class SvgGradientRampTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         using (SvgGradientRamp ramp = SvgGradientRamp.Create(stops, stops[0].Color, stops[^1].Color, 0, 1, budget, new(3), CancellationToken.None))
         {
-            SvgShaderPaint expected = ramp.SampleLinear(.25, 1, 32);
+            SvgShaderPaint expected = ramp.SampleAbsolute(.25, 1, 32);
             stops[1] = new(.5, new(0, 0, 255, 255));
-            EqualBits(expected, ramp.SampleLinear(.25, 1, 32));
+            EqualBits(expected, ramp.SampleAbsolute(.25, 1, 32));
             Assert.True(budget.Snapshot().CurrentBytes > 0);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -108,11 +103,10 @@ public sealed class SvgGradientRampTests
         ParserWorkCounter work = new(256);
         using (SvgGradientRamp ramp = SvgGradientRamp.Create(stops, color, color, 0, 1, budget, work, CancellationToken.None))
         {
-            SvgShaderPaint expected = ramp.SampleLinear(.5, .7f, 32);
+            SvgShaderPaint expected = ramp.SampleAbsolute(.5, .7f, 32);
             foreach (double position in new[] { double.NaN, double.PositiveInfinity, double.NegativeInfinity })
             {
-                EqualBits(expected, ramp.SampleLinear(position, .7f, 32));
-                EqualBits(expected, ramp.SampleRadial(position, .7f, 32));
+                EqualBits(expected, ramp.SampleAbsolute(position, .7f, 32));
             }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
             Assert.Equal(256, work.Used);

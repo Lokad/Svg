@@ -72104,9 +72104,7 @@
       "captureBank": "range",
       "captureCase": "near-range-15",
       "captureKind": "control"
-    }
-  ],
-  "knownDifferences": [
+    },
     {
       "id": "factory-16-control-1",
       "input": "factory-16-control-1.svg",
@@ -72118,19 +72116,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-16",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 65922
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 65922
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-17-control-1p5",
@@ -72143,19 +72129,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-17",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 140456
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 140456
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-18-control-1",
@@ -72168,19 +72142,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-18",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 60974
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 60974
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-19-control-1p5",
@@ -72193,19 +72155,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-19",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 130522
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 130522
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-20-control-1",
@@ -72218,19 +72168,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-20",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 65877
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 65877
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-21-control-1p5",
@@ -72243,19 +72181,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-21",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 140407
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 140407
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-22-control-1",
@@ -72268,19 +72194,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-22",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 60918
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 60918
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-23-control-1p5",
@@ -72293,19 +72207,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-23",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 130499
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 130499
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-24-control-1",
@@ -72318,19 +72220,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-24",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 64800
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 64800
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-25-control-1p5",
@@ -72343,19 +72233,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-25",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 205295
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 205295
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-26-control-1",
@@ -72368,19 +72246,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-26",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 60474
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 60474
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-27-control-1p5",
@@ -72393,19 +72259,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-27",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 190780
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 190780
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-28-control-1",
@@ -72418,19 +72272,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-28",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 75006
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 75006
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-29-control-1p5",
@@ -72443,19 +72285,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-29",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 218043
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 218043
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-30-control-1",
@@ -72468,19 +72298,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-30",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 70033
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 70033
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-31-control-1p5",
@@ -72493,19 +72311,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-31",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 202631
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 202631
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-32-control-1",
@@ -72518,19 +72324,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-32",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 6798
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 6798
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-33-control-1p5",
@@ -72543,19 +72337,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-33",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 15131
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 15131
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-34-control-1",
@@ -72568,19 +72350,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-34",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 6313
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 6313
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-35-control-1p5",
@@ -72593,19 +72363,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-35",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 13909
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 13909
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-36-control-1",
@@ -72618,19 +72376,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-36",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 8136
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 8136
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-37-control-1p5",
@@ -72643,19 +72389,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-37",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 18302
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 18302
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-38-control-1",
@@ -72668,19 +72402,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-38",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 7494
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 7494
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-39-control-1p5",
@@ -72693,19 +72415,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-39",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 16729
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 16729
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-40-control-1",
@@ -72718,19 +72428,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-40",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 64776
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 64776
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-41-control-1p5",
@@ -72743,19 +72441,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-41",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 190887
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 190887
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-42-control-1",
@@ -72768,19 +72454,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-42",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 60494
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 60494
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-43-control-1p5",
@@ -72793,19 +72467,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-43",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 177235
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 177235
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-44-control-1",
@@ -72818,19 +72480,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-44",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 75762
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 75762
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-45-control-1p5",
@@ -72843,19 +72493,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-45",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 203053
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 203053
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-46-control-1",
@@ -72868,19 +72506,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-46",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 70857
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 70857
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-47-control-1p5",
@@ -72893,19 +72519,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-47",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 188579
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 188579
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "factory-112-candidate-1",
@@ -72918,19 +72532,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-112",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 89589
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 89589
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-113-candidate-1p5",
@@ -72943,19 +72545,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-113",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 210581
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 210581
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-114-candidate-1",
@@ -72968,19 +72558,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-114",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 83735
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 83735
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-115-candidate-1p5",
@@ -72993,19 +72571,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-115",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 195127
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 195127
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-116-candidate-1",
@@ -73018,19 +72584,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-116",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 94182
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 94182
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-117-candidate-1p5",
@@ -73043,19 +72597,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-117",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 224506
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 224506
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-118-candidate-1",
@@ -73068,19 +72610,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-118",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 87968
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 87968
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-119-candidate-1p5",
@@ -73093,19 +72623,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-119",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 208281
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 208281
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-120-candidate-1",
@@ -73118,19 +72636,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-120",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 77931
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 77931
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-121-candidate-1p5",
@@ -73143,19 +72649,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-121",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 201267
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 201267
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-122-candidate-1",
@@ -73168,19 +72662,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-122",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 73324
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 73324
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-123-candidate-1p5",
@@ -73193,19 +72675,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-123",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 187101
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 187101
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-124-candidate-1",
@@ -73218,19 +72688,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-124",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 83208
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 83208
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-125-candidate-1p5",
@@ -73243,19 +72701,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-125",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 210791
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 210791
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-126-candidate-1",
@@ -73268,19 +72714,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-126",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 78230
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 78230
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-127-candidate-1p5",
@@ -73293,19 +72727,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-127",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 195800
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 195800
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-128-candidate-1",
@@ -73318,19 +72740,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-128",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 100047
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 100047
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-129-candidate-1p5",
@@ -73343,19 +72753,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-129",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 224540
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 224540
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-130-candidate-1",
@@ -73368,19 +72766,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-130",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 93524
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 93524
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-131-candidate-1p5",
@@ -73393,19 +72779,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-131",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 207801
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 207801
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-132-candidate-1",
@@ -73418,19 +72792,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-132",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 105105
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 105105
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-133-candidate-1p5",
@@ -73443,19 +72805,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-133",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 238878
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 238878
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-134-candidate-1",
@@ -73468,19 +72818,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-134",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 98272
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 98272
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-135-candidate-1p5",
@@ -73493,19 +72831,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-135",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 221499
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 221499
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-136-candidate-1",
@@ -73518,19 +72844,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-136",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 93939
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 93939
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-137-candidate-1p5",
@@ -73543,19 +72857,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-137",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 202356
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 202356
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-138-candidate-1",
@@ -73568,19 +72870,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-138",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 87507
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 87507
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-139-candidate-1p5",
@@ -73593,19 +72883,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-139",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 188800
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 188800
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-140-candidate-1",
@@ -73618,19 +72896,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-140",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 98955
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 98955
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-141-candidate-1p5",
@@ -73643,19 +72909,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-141",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 217670
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 217670
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-142-candidate-1",
@@ -73668,19 +72922,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-142",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 92185
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 92185
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-143-candidate-1p5",
@@ -73693,19 +72935,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-143",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 202924
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 202924
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-160-candidate-1",
@@ -73718,19 +72948,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-160",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 89589
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 89589
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-161-candidate-1p5",
@@ -73743,19 +72961,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-161",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 210581
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 210581
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-162-candidate-1",
@@ -73768,19 +72974,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-162",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 83735
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 83735
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-163-candidate-1p5",
@@ -73793,19 +72987,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-163",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 195127
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 195127
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-164-candidate-1",
@@ -73818,19 +73000,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-164",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 94182
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 94182
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-165-candidate-1p5",
@@ -73843,19 +73013,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-165",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 224506
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 224506
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-166-candidate-1",
@@ -73868,19 +73026,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-166",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 87968
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 87968
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-167-candidate-1p5",
@@ -73893,19 +73039,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-167",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 208281
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 208281
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-168-candidate-1",
@@ -73918,19 +73052,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-168",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 77931
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 77931
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-169-candidate-1p5",
@@ -73943,19 +73065,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-169",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 201267
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 201267
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-170-candidate-1",
@@ -73968,19 +73078,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-170",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 73324
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 73324
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-171-candidate-1p5",
@@ -73993,19 +73091,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-171",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 187101
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 187101
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-172-candidate-1",
@@ -74018,19 +73104,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-172",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 83208
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 83208
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-173-candidate-1p5",
@@ -74043,19 +73117,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-173",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 210791
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 210791
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-174-candidate-1",
@@ -74068,19 +73130,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-174",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 78230
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 78230
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-175-candidate-1p5",
@@ -74093,19 +73143,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-175",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 195800
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 195800
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-176-candidate-1",
@@ -74118,19 +73156,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-176",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 100047
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 100047
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-177-candidate-1p5",
@@ -74143,19 +73169,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-177",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 224540
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 224540
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-178-candidate-1",
@@ -74168,19 +73182,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-178",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 93524
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 93524
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-179-candidate-1p5",
@@ -74193,19 +73195,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-179",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 207801
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 207801
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-180-candidate-1",
@@ -74218,19 +73208,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-180",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 105105
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 105105
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-181-candidate-1p5",
@@ -74243,19 +73221,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-181",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 238878
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 238878
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-182-candidate-1",
@@ -74268,19 +73234,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-182",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 98272
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 98272
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-183-candidate-1p5",
@@ -74293,19 +73247,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-183",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 221499
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 221499
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-184-candidate-1",
@@ -74318,19 +73260,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-184",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 93939
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 93939
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-185-candidate-1p5",
@@ -74343,19 +73273,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-185",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 202356
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 202356
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-186-candidate-1",
@@ -74368,19 +73286,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-186",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 87507
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 87507
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-187-candidate-1p5",
@@ -74393,19 +73299,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-187",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 188800
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 188800
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-188-candidate-1",
@@ -74418,19 +73312,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-188",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 98955
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 98955
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-189-candidate-1p5",
@@ -74443,19 +73325,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-189",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 217670
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 217670
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-190-candidate-1",
@@ -74468,19 +73338,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-190",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 92185
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 92185
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-191-candidate-1p5",
@@ -74493,19 +73351,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-191",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 202924
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 202924
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-208-candidate-1",
@@ -74518,19 +73364,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-208",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 89589
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 89589
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-209-candidate-1p5",
@@ -74543,19 +73377,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-209",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 210581
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 210581
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-210-candidate-1",
@@ -74568,19 +73390,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-210",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 83735
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 83735
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-211-candidate-1p5",
@@ -74593,19 +73403,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-211",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 195127
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 195127
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-212-candidate-1",
@@ -74618,19 +73416,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-212",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 94182
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 94182
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-213-candidate-1p5",
@@ -74643,19 +73429,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-213",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 224506
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 224506
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-214-candidate-1",
@@ -74668,19 +73442,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-214",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 87968
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 87968
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-215-candidate-1p5",
@@ -74693,19 +73455,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-215",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 208281
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 208281
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-216-candidate-1",
@@ -74718,19 +73468,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-216",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 77931
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 77931
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-217-candidate-1p5",
@@ -74743,19 +73481,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-217",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 201267
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 201267
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-218-candidate-1",
@@ -74768,19 +73494,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-218",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 73324
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 73324
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-219-candidate-1p5",
@@ -74793,19 +73507,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-219",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 187101
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 187101
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-220-candidate-1",
@@ -74818,19 +73520,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-220",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 83208
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 83208
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-221-candidate-1p5",
@@ -74843,19 +73533,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-221",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 210791
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 210791
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-222-candidate-1",
@@ -74868,19 +73546,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-222",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 78230
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 78230
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-223-candidate-1p5",
@@ -74893,19 +73559,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-223",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 195800
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 195800
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-224-candidate-1",
@@ -74918,19 +73572,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-224",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 100047
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 100047
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-225-candidate-1p5",
@@ -74943,19 +73585,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-225",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 224540
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 224540
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-226-candidate-1",
@@ -74968,19 +73598,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-226",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 93524
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 93524
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-227-candidate-1p5",
@@ -74993,19 +73611,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-227",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 207801
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 207801
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-228-candidate-1",
@@ -75018,19 +73624,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-228",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 105105
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 105105
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-229-candidate-1p5",
@@ -75043,19 +73637,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-229",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 238878
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 238878
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-230-candidate-1",
@@ -75068,19 +73650,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-230",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 98272
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 98272
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-231-candidate-1p5",
@@ -75093,19 +73663,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-231",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 221499
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 221499
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-232-candidate-1",
@@ -75118,19 +73676,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-232",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 93939
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 93939
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-233-candidate-1p5",
@@ -75143,19 +73689,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-233",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 202356
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 202356
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-234-candidate-1",
@@ -75168,19 +73702,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-234",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 87507
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 87507
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-235-candidate-1p5",
@@ -75193,19 +73715,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-235",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 188800
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 188800
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-236-candidate-1",
@@ -75218,19 +73728,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-236",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 98955
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 98955
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-237-candidate-1p5",
@@ -75243,19 +73741,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-237",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 217670
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 217670
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-238-candidate-1",
@@ -75268,19 +73754,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-238",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 92185
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 92185
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "factory-239-candidate-1p5",
@@ -75293,19 +73767,7 @@
       "font": false,
       "captureBank": "factory",
       "captureCase": "factory-239",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 202924
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 202924
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-64-candidate-1",
@@ -75318,19 +73780,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-64",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 97113
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 97113
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-65-candidate-1p5",
@@ -75343,19 +73793,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-65",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 230959
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 230959
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-66-candidate-1",
@@ -75368,19 +73806,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-66",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 90863
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 90863
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-67-candidate-1p5",
@@ -75393,19 +73819,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-67",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 210944
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 210944
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-68-candidate-1",
@@ -75418,19 +73832,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-68",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 102576
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 102576
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-69-candidate-1p5",
@@ -75443,19 +73845,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-69",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 241804
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 241804
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-70-candidate-1",
@@ -75468,19 +73858,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-70",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 95841
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 95841
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-71-candidate-1p5",
@@ -75493,19 +73871,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-71",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 221094
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 221094
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-72-candidate-1",
@@ -75518,19 +73884,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-72",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 106524
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 106524
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-73-candidate-1p5",
@@ -75543,19 +73897,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-73",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 222412
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 222412
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-74-candidate-1",
@@ -75568,19 +73910,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-74",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 99802
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 99802
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-75-candidate-1p5",
@@ -75593,19 +73923,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-75",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 207310
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 207310
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-76-candidate-1",
@@ -75618,19 +73936,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-76",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 111609
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 111609
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-77-candidate-1p5",
@@ -75643,19 +73949,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-77",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 237161
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 237161
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-78-candidate-1",
@@ -75668,19 +73962,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-78",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 104724
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 104724
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-79-candidate-1p5",
@@ -75693,19 +73975,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-79",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 220736
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 220736
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-80-candidate-1",
@@ -75718,19 +73988,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-80",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 88203
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 88203
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-81-candidate-1p5",
@@ -75743,19 +74001,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-81",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 213069
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 213069
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-82-candidate-1",
@@ -75768,19 +74014,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-82",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 82142
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 82142
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-83-candidate-1p5",
@@ -75793,19 +74027,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-83",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 196959
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 196959
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-84-candidate-1",
@@ -75818,19 +74040,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-84",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 92436
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 92436
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-85-candidate-1p5",
@@ -75843,19 +74053,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-85",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 225607
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 225607
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-86-candidate-1",
@@ -75868,19 +74066,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-86",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 86040
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 86040
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-87-candidate-1p5",
@@ -75893,19 +74079,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-87",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 208301
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 208301
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-88-candidate-1",
@@ -75918,19 +74092,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-88",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 100806
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 100806
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-89-candidate-1p5",
@@ -75943,19 +74105,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-89",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 222050
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 222050
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-90-candidate-1",
@@ -75968,19 +74118,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-90",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 94229
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 94229
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-91-candidate-1p5",
@@ -75993,19 +74131,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-91",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 207430
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 207430
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-92-candidate-1",
@@ -76018,19 +74144,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-92",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 106974
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 106974
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-93-candidate-1p5",
@@ -76043,19 +74157,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-93",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 239619
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 239619
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-94-candidate-1",
@@ -76068,19 +74170,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-94",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 100085
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 100085
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-95-candidate-1p5",
@@ -76093,19 +74183,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-95",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 223691
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 223691
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-208-candidate-1",
@@ -76118,19 +74196,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-208",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 91296
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 91296
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-209-candidate-1p5",
@@ -76143,19 +74209,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-209",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 245668
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 245668
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-210-candidate-1",
@@ -76168,19 +74222,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-210",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 85854
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 85854
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-211-candidate-1p5",
@@ -76193,19 +74235,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-211",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 225526
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 225526
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-212-candidate-1",
@@ -76218,19 +74248,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-212",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 94917
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 94917
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-213-candidate-1p5",
@@ -76243,19 +74261,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-213",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 256610
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 256610
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-214-candidate-1",
@@ -76268,19 +74274,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-214",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 89278
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 89278
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-215-candidate-1p5",
@@ -76293,19 +74287,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-215",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 235801
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 235801
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-216-candidate-1",
@@ -76318,19 +74300,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-216",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 117783
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 117783
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-217-candidate-1p5",
@@ -76343,19 +74313,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-217",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 195896
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 195896
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-218-candidate-1",
@@ -76368,19 +74326,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-218",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 110223
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 110223
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-219-candidate-1p5",
@@ -76393,19 +74339,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-219",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 182232
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 182232
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-220-candidate-1",
@@ -76418,19 +74352,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-220",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 121590
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 121590
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-221-candidate-1p5",
@@ -76443,19 +74365,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-221",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 204958
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 204958
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-222-candidate-1",
@@ -76468,19 +74378,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-222",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 113795
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 113795
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-223-candidate-1p5",
@@ -76493,19 +74391,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-223",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 190770
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 190770
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-224-candidate-1",
@@ -76518,19 +74404,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-224",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 89202
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 89202
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-225-candidate-1p5",
@@ -76543,19 +74417,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-225",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 173492
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 173492
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-226-candidate-1",
@@ -76568,19 +74430,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-226",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 83190
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 83190
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-227-candidate-1p5",
@@ -76593,19 +74443,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-227",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 156507
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 156507
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-228-candidate-1",
@@ -76618,19 +74456,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-228",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 92910
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 92910
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-229-candidate-1p5",
@@ -76643,19 +74469,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-229",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 187074
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 187074
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-230-candidate-1",
@@ -76668,19 +74482,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-230",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 86864
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 86864
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-231-candidate-1p5",
@@ -76693,19 +74495,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-231",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 168975
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 168975
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-232-candidate-1",
@@ -76718,19 +74508,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-232",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 125115
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 125115
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-233-candidate-1p5",
@@ -76743,19 +74521,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-233",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 206425
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 206425
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-234-candidate-1",
@@ -76768,19 +74534,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-234",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 117099
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 117099
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-235-candidate-1p5",
@@ -76793,19 +74547,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-235",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 193375
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 193375
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-236-candidate-1",
@@ -76818,19 +74560,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-236",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 134574
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 134574
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-237-candidate-1p5",
@@ -76843,19 +74573,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-237",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 217243
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 217243
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-238-candidate-1",
@@ -76868,19 +74586,7 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-238",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 126078
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 126078
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "boundary-239-candidate-1p5",
@@ -76893,20 +74599,10 @@
       "font": false,
       "captureBank": "boundary",
       "captureCase": "boundary-239",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 203242
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 203242
-        }
-      }
-    },
+      "captureKind": "candidate"
+    }
+  ],
+  "knownDifferences": [
     {
       "id": "glyph-3-candidate-1",
       "input": "glyph-3-candidate-1.svg",

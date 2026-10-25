@@ -6,6 +6,26 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgStaticCssImageTests
 {
     [Theory]
+    [InlineData("linear", "x1='4' y1='5' x2='84' y2='80'", "repeat")]
+    [InlineData("linear", "x1='4' y1='5' x2='84' y2='80'", "reflect")]
+    [InlineData("radial", "cx='44' cy='44' r='40'", "repeat")]
+    [InlineData("radial", "cx='44' cy='44' r='40'", "reflect")]
+    public void Periodic_stop_padding_releases_ramp_owners_after_denial_cancellation_and_retry(string kind, string coordinates, string spread)
+    {
+        System.Text.StringBuilder stops = new();
+        for (int index = 0; index < 256; index++)
+        {
+            string offset = (.15 + .72 * index / 255).ToString("R", System.Globalization.CultureInfo.InvariantCulture);
+            stops.Append("<stop offset='").Append(offset).Append("' stop-color='").Append(index % 2 == 0 ? "#17a9cd" : "#43805b").Append("' stop-opacity='.65'/>");
+        }
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96'><defs><" + kind
+            + "Gradient id='g' gradientUnits='userSpaceOnUse' " + coordinates + " spreadMethod='" + spread + "'>" + stops + "</" + kind
+            + "Gradient></defs><g opacity='.65'><circle cx='44' cy='44' r='40' fill='url(#g)' fill-opacity='.7'/></g></svg>");
+        AssertResourceLifecycle(input);
+        AssertActiveRasterLifecycle(input);
+    }
+
+    [Theory]
     [InlineData("linear", "x1='0' y1='0' x2='.000001' y2='0'", "repeat")]
     [InlineData("linear", "x1='0' y1='0' x2='.000001' y2='0'", "reflect")]
     [InlineData("radial", "cx='0' cy='0' r='.000001'", "repeat")]
