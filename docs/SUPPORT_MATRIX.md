@@ -213,6 +213,9 @@ vector. Declared radial focal fields survive replacement of the center/radius;
 focal coordinates absent throughout the chain follow the effective center. These
 rules apply to shape/text fills and strokes and admitted resource/instance replay; see the
 [template regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.GradientTemplateMaps.cs).
+Circle, ellipse and rounded-rectangle fills retain their linear paint's source
+coordinates through affine shape and gradient maps, including resource and local
+instance placement; see the [shape source-map controls](../tests/Research/linear-shape-source-maps/README.md).
 CSS `display:none` on a gradient or its defining `defs` makes its local stops
 unavailable. An alias with local stops can still paint; an alias borrowing those
 unavailable stops stays empty. Gradient coordinates remain available for attribute

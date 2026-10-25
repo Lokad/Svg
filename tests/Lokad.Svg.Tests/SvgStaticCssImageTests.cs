@@ -6,6 +6,19 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgStaticCssImageTests
 {
     [Theory]
+    [InlineData("<circle cx='16' cy='16' r='9' fill='url(#g)'/>")]
+    [InlineData("<ellipse cx='16' cy='16' rx='11' ry='9' fill='url(#g)'/>")]
+    [InlineData("<rect x='4' y='6' width='24' height='20' rx='4' ry='3' fill='url(#g)'/>")]
+    public void Source_bound_linear_fills_release_owners_after_denial_cancellation_and_retry(string shape)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96'>"
+            + "<defs><linearGradient id='g' gradientTransform='matrix(1 .2 .3 1 0 0)'><stop stop-color='#c04080'/><stop offset='1' stop-color='#244a77'/></linearGradient></defs>"
+            + "<g transform='matrix(2 .4 .6 2 0 0)'>" + shape + "</g></svg>");
+        AssertResourceLifecycle(input);
+        AssertActiveRasterLifecycle(input);
+    }
+
+    [Theory]
     [InlineData("object-box-tile")]
     [InlineData("object-box-content")]
     [InlineData("object-box-affine-map")]

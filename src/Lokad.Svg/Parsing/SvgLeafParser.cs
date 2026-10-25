@@ -307,12 +307,12 @@ internal static class SvgLeafParser
             string paintId = SvgGradientSyntax.ParsePaintId(style.Fill);
             if (state.Gradients.TryGetValue(paintId, out SvgLinearGradient foundLinear))
             {
-                linear = transform.IsAxisAligned
+                linear = transform.IsAxisAligned && !foundLinear.RequiresSourceMap
                     ? SvgGradientSyntax.MirrorBoundingBoxVector(transform, SvgGradientSyntax.MapUserSpaceVector(transform, foundLinear, frame)) : foundLinear;
                 isLinear = true;
             }
             else if (!state.RadialGradients.TryGetValue(paintId, out radial)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
-            if (!transform.IsAxisAligned)
+            if (!transform.IsAxisAligned || isLinear && linear.RequiresSourceMap)
             {
                 box = new(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null);
                 SvgAffineTransform sceneMap = SvgViewportFrame.MapGeometry(transform, frame);
@@ -463,18 +463,20 @@ internal static class SvgLeafParser
             string paintId = SvgGradientSyntax.ParsePaintId(style.Fill);
             if (state.Gradients.TryGetValue(paintId, out SvgLinearGradient foundLinear))
             {
-                linear = SvgGradientSyntax.MirrorBoundingBoxVector(transform, SvgGradientSyntax.MapUserSpaceVector(transform, foundLinear, frame));
+                linear = transform.IsAxisAligned && !foundLinear.RequiresSourceMap
+                    ? SvgGradientSyntax.MirrorBoundingBoxVector(transform, SvgGradientSyntax.MapUserSpaceVector(transform, foundLinear, frame)) : foundLinear;
                 isLinear = true;
             }
             else if (!state.RadialGradients.TryGetValue(paintId, out radial)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
             opacity = SvgReferenceResolver.MultiplyAlpha(style.GetOpacity().Alpha, SvgColorParser.ParseOpacity(style.FillOpacity));
-            if (!isLinear && !transform.IsAxisAligned)
+            if (!transform.IsAxisAligned || isLinear && linear.RequiresSourceMap)
             {
                 float left = (float)syntax.CenterX - (float)syntax.RadiusX, top = (float)syntax.CenterY - (float)syntax.RadiusY;
                 float right = (float)syntax.CenterX + (float)syntax.RadiusX, bottom = (float)syntax.CenterY + (float)syntax.RadiusY;
                 box = new(left, top, right - left, bottom - top, default, true, null);
                 SvgAffineTransform sceneMap = frame is {} parent ? SvgAffineTransform.FromScaleOffset(parent.ScaleX, parent.ScaleY, parent.OffsetX, parent.OffsetY).ComposeChecked(transform) : transform;
-                radial = SvgGradientSyntax.BindRadialSourceMap(radial, box, sceneMap, context.WorkCounter, context.CancellationToken);
+                if (isLinear) linear = SvgGradientSyntax.BindLinearSourceMap(linear, box, sceneMap, state, context.WorkCounter, context.CancellationToken);
+                else radial = SvgGradientSyntax.BindRadialSourceMap(radial, box, sceneMap, context.WorkCounter, context.CancellationToken);
             }
             else
             {
