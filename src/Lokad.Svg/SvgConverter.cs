@@ -1324,8 +1324,13 @@ public static partial class SvgConverter
                                 SvgShaderPaint paint = placement.AlphaOnly ? new(0, 0, 0, captured.Pixels[sourceIndex + 3] * byteScale)
                                     : new(captured.Pixels[sourceIndex] * byteScale, captured.Pixels[sourceIndex + 1] * byteScale,
                                         captured.Pixels[sourceIndex + 2] * byteScale, captured.Pixels[sourceIndex + 3] * byteScale);
-                                if (linear) paint = SvgFilterColorTransfer.Convert(paint, SvgFilterColorSpace.LinearRgb);
-                                paint.Blend(pixels.AsSpan(((y - tile.BitmapClip.Top) * tw + x - tile.BitmapClip.Left) * 4, 4), 255);
+                                Span<byte> target = pixels.AsSpan(((y - tile.BitmapClip.Top) * tw + x - tile.BitmapClip.Left) * 4, 4);
+                                // Transfers and SourceAlpha retain a color-filter shader;
+                                // stored same-space image inputs use packed source-over.
+                                if (linear) SvgFilterColorTransfer.Convert(paint, SvgFilterColorSpace.LinearRgb).Blend(target, 255);
+                                else if (placement.AlphaOnly) paint.Blend(target, 255);
+                                else BlendPremultipliedOver(target, captured.Pixels[sourceIndex], captured.Pixels[sourceIndex + 1],
+                                    captured.Pixels[sourceIndex + 2], captured.Pixels[sourceIndex + 3]);
                             }
                         }
                     }

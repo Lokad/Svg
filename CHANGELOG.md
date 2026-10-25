@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Preserve packed image rounding in offset/merge graphs while retaining shader inputs.
 - Include decoration ink beyond text drawing bounds when sizing viewport clip surfaces.
 - Retain constant-mask regions when computing enclosing paint bounds.
 - Share native text drawing bounds with decorations and preserve scalar path source positions.

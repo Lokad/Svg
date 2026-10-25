@@ -1,0 +1,920 @@
+{
+  "purpose": "Stored same-space image inputs retain packed source-over rounding; color transfers and SourceAlpha retain their shader consumer. Each SVG has its own native output, including unequal composite and merge graphs.",
+  "chromeVersion": "153.0.8010.52",
+  "background": "transparent",
+  "license": "MIT",
+  "recipe": "Decode each exact SVG as an image/svg+xml Blob and draw it onto a transparent 32x32 canvas. Three independent healthy launches per host give identical PNG bytes for all selected actuals. Windows and Linux PNG bytes also match, so references are shared by exact bytes only.",
+  "launches": {
+    "original": {
+      "windows": [
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 1440,
+          "debuggerReadyMilliseconds": 209,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 1389,
+          "debuggerReadyMilliseconds": 142,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 1402,
+          "debuggerReadyMilliseconds": 147,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      ],
+      "linux": [
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 5900,
+          "debuggerReadyMilliseconds": 3368,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 5497,
+          "debuggerReadyMilliseconds": 3015,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 6225,
+          "debuggerReadyMilliseconds": 3528,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      ]
+    },
+    "extra": {
+      "windows": [
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 1738,
+          "debuggerReadyMilliseconds": 209,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 1209,
+          "debuggerReadyMilliseconds": 184,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 1543,
+          "debuggerReadyMilliseconds": 198,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      ],
+      "linux": [
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 9301,
+          "debuggerReadyMilliseconds": 6961,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 13215,
+          "debuggerReadyMilliseconds": 9526,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 8393,
+          "debuggerReadyMilliseconds": 5665,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      ]
+    }
+  },
+  "cases": [
+    {
+      "id": "filter-graph-identity-0389-candidate",
+      "input": "filter-graph-identity-0389-candidate.svg",
+      "sourceSha256": "635eb63ce3e9e1bee1dd14eee61ae29138c72ad1eecad2a4c3b26096d1820181",
+      "reference": "references/filter-graph-identity-0389-candidate.png",
+      "referenceSha256": "a657d8b20c0598ebee98cfad559761c88e8b7c9c11ef5970c3399007a1491561",
+      "rgbaSha256": "0d361b868f4f017b3b9b4e5b8649d3fdd1d1a46c83a9b6471d49fce5596c0134",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-graph-identity-0392-candidate",
+      "input": "filter-graph-identity-0392-candidate.svg",
+      "sourceSha256": "dafb73b462ad8738aa7e1e3563d982660fe51f60cebe0badf81a5793bd54a1bf",
+      "reference": "references/filter-graph-identity-0392-candidate.png",
+      "referenceSha256": "e4ce79b84a77b9d1c28e3c164269a0397f66ba6137bb87b59b3d996e8a3b1ad1",
+      "rgbaSha256": "951434042945afce38c8ca837c4e897c5a634d4fa50d2a64cf735d49764288fc",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-graph-identity-0393-candidate",
+      "input": "filter-graph-identity-0393-candidate.svg",
+      "sourceSha256": "c74dee06149f28cbd239e7855807f5cb930547fda6fbab019694d49e6c578b8d",
+      "reference": "references/filter-graph-identity-0393-candidate.png",
+      "referenceSha256": "1bd3cefaec001fefbd4302029d2fab02624b7e1ce254ce9cc0976224d22b3cb5",
+      "rgbaSha256": "be88cd459715e065b7e12cc0d0d5571b26bc05c8acd305ff5f6580d60de61219",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-graph-identity-0405-control",
+      "input": "filter-graph-identity-0405-control.svg",
+      "sourceSha256": "0dcd312d1bad3e930fd0ef68be4343fad13d2fd0ee90f5dff8808191a208f72b",
+      "reference": "references/filter-graph-identity-0405-control.png",
+      "referenceSha256": "338034d6eb3dcdb4869873af5891af26db9307173edb2c4a70e94a3e60421041",
+      "rgbaSha256": "831dbefadb14978af0d2794dc29f7fbaafe4d87af17f1a8e25ce555f98514979",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-graph-identity-0408-control",
+      "input": "filter-graph-identity-0408-control.svg",
+      "sourceSha256": "882b2f42edfa8c08d30fc0dd59712334de9032c063e5ad36d9336355ead26a81",
+      "reference": "references/filter-graph-identity-0408-control.png",
+      "referenceSha256": "c61768648079ce2c47241975bc00940ccca7a3c5da7fccd8a84c2272d5b26912",
+      "rgbaSha256": "3641dbe97d9aec1e73b7e68e1984772aa547f694e695b0d535f9be68605b2eb9",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-graph-identity-0409-control",
+      "input": "filter-graph-identity-0409-control.svg",
+      "sourceSha256": "40cdfaa9eda5dc8e25d5760d6adb825268b95d706852c2267b191331c699d18b",
+      "reference": "references/filter-graph-identity-0409-control.png",
+      "referenceSha256": "7d72177a8eaa8929e752d678c6f9218af8bfb11117a9668745f158c29e8c912c",
+      "rgbaSha256": "1e43b36bdaf4edfb9997c5cf42929bfc476b45384e11ddaa01924acb72da673d",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0289-control",
+      "input": "filter-over-consumers-0289-control.svg",
+      "sourceSha256": "52f3f5b859f72bb5ddaac92b9fb9d19c4e3dde726bcc41785f83f6e0cd61dd3b",
+      "reference": "references/filter-over-consumers-0289-control.png",
+      "referenceSha256": "afdc1400720632fd63d2a7434537cf2079598737188d316291479477cea6fab4",
+      "rgbaSha256": "a6f138a3ea92114cd719e758a4380bf186979c235a9956c9ec96742dfdc90ea3",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0300-control",
+      "input": "filter-over-consumers-0300-control.svg",
+      "sourceSha256": "5c95d7e7f5da475474338f9edd86bae39719d6b0544c7ac738f7d830f9d98e2f",
+      "reference": "references/filter-over-consumers-0300-control.png",
+      "referenceSha256": "399ed72a7d8d5ea6edb6748e4b8443db5a35b1eeadbda981f7c704f0b270c911",
+      "rgbaSha256": "2902b344e86f6754f0ad1f21db5f3a371fd2f3c95fe8456faaddcd201006e87c",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0301-control",
+      "input": "filter-over-consumers-0301-control.svg",
+      "sourceSha256": "bafe0a2bdfc7f3a4fdf4e20ad3fbbaeabbabb721a5701a39d353d9f78682fcb0",
+      "reference": "references/filter-over-consumers-0301-control.png",
+      "referenceSha256": "84c59d2d9277f9798baed684923f0d539bf89c803fbe5b7549b8ec947f8f0fd6",
+      "rgbaSha256": "48188329fbe7f223dfb91635f17575cd0a1926c27f9040ec17b958d730084701",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0304-control",
+      "input": "filter-over-consumers-0304-control.svg",
+      "sourceSha256": "ebe8ee205d0bf0691881275a5c721c5ffd1829cebbfd8798a77d1baa2b4d91ab",
+      "reference": "references/filter-over-consumers-0304-control.png",
+      "referenceSha256": "6e5d69fda5333f6f1fe0e651ff42a0ecc34445f9176ac951ae8989f565c02fd7",
+      "rgbaSha256": "700e63701c3615648268c8a77c7045d97aa64ad34e524759e02cdc608eb57574",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0305-control",
+      "input": "filter-over-consumers-0305-control.svg",
+      "sourceSha256": "22601933e2906e10eea060c85efcf59773ad7f7be082eb9c5b3c66d0a521b473",
+      "reference": "references/filter-over-consumers-0305-control.png",
+      "referenceSha256": "4f36d978213cc164cb14730f9a849ee153a8f1fc65ac7175aa6616a3a7009cbb",
+      "rgbaSha256": "582e448a744944b522856a743d529228b329152b759043cd3996b6e9e477e644",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0313-control",
+      "input": "filter-over-consumers-0313-control.svg",
+      "sourceSha256": "2d3a96e7963c285c698928baced5ac85595fb4682276ee8a9e34a5084a081a45",
+      "reference": "references/filter-over-consumers-0313-control.png",
+      "referenceSha256": "765a91680bc3d086b8ae6ce83241f4e3b641c72d6dec3cd6d821f7c8f0fa8f3b",
+      "rgbaSha256": "cdb796919f4ffe7e4edf633ed737560b12297e3a56765fe94961c8eea93c702f",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0324-control",
+      "input": "filter-over-consumers-0324-control.svg",
+      "sourceSha256": "5dc4c14972e5276c74c74aae689d42949aed85b9af0360be56fda6b838a9f5de",
+      "reference": "references/filter-over-consumers-0324-control.png",
+      "referenceSha256": "2c6744efcd89080c0a894fb96662abe9b900f34eb2cb5680db506e6d63b9d25d",
+      "rgbaSha256": "2f99e28390f484bf9fd2310fe107551d93105dc85dba2c0f1fa52520379b9db0",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0325-control",
+      "input": "filter-over-consumers-0325-control.svg",
+      "sourceSha256": "71692b21b236c794cc5795dc4b23705283b7a92aa0c0ff82ddfcc895f99a041b",
+      "reference": "references/filter-over-consumers-0325-control.png",
+      "referenceSha256": "859e99683229be9f00eaece68c675460d0352f604aadf7c5f3876cad35a413de",
+      "rgbaSha256": "1d4a5747fe52a4a0df51e07edc023db3bc299f4c1ad79c9b377d4ad0e1d169b6",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0328-control",
+      "input": "filter-over-consumers-0328-control.svg",
+      "sourceSha256": "3f74df8e539c91856d53884eda8101496d53904758a8e898dfbd814b61ec9993",
+      "reference": "references/filter-over-consumers-0328-control.png",
+      "referenceSha256": "a4e5c604c1ea006c2cfd81447a77944d534d16c1b6e53ea2a6aa5b737ceb4ea0",
+      "rgbaSha256": "6d9dcc02178d5ee29553477fc00e9e10efdff805cd9888edb338f8404114d394",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0329-control",
+      "input": "filter-over-consumers-0329-control.svg",
+      "sourceSha256": "b19450eb3cf9532854c68c3eb2e815efb8a7dd9196226f2f573462e32c8bc4b9",
+      "reference": "references/filter-over-consumers-0329-control.png",
+      "referenceSha256": "8fb584f740394d0b4116b579291f32f90486fab9baffeee916941b771d97c3cc",
+      "rgbaSha256": "eed6702fd21e2b517a3e782cadf82407f3a40e39178fd876e6a43a57dead605d",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0348-control",
+      "input": "filter-over-consumers-0348-control.svg",
+      "sourceSha256": "0697c347b4e4d22576b05f06493f87ddc557f49f5952bfb5447846b784a35224",
+      "reference": "references/filter-over-consumers-0348-control.png",
+      "referenceSha256": "114d74497b5f4fc1b7a09f7efac3295019deb92334345f74095ddd3f83969508",
+      "rgbaSha256": "49f88b25d9a7c10b58fd79a924bef65c3c84661cfd1d32760774f8868bb1fa4b",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0349-control",
+      "input": "filter-over-consumers-0349-control.svg",
+      "sourceSha256": "af70384b092ca82a1f380fffe18de4bc42fe477c125b1e6d62ca3b369353cc37",
+      "reference": "references/filter-over-consumers-0349-control.png",
+      "referenceSha256": "28ad13c748573d43379fe2e7448edced84ac1bd718950201fff561ba8d59df98",
+      "rgbaSha256": "a1c130be97d509d85aa8f6dd76cf893194e5ac6bdc9126d00aa62759ae61dc3a",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0352-control",
+      "input": "filter-over-consumers-0352-control.svg",
+      "sourceSha256": "ab10daac77eb34fd053f8cdc92adc96d08f56a4b087d66ef1a055dd27d0b2289",
+      "reference": "references/filter-over-consumers-0352-control.png",
+      "referenceSha256": "d8d13f4887801d948209dfd4eea5e2ce88ead2bf56c82059ed53085672826b08",
+      "rgbaSha256": "67201405c43335566c1ec4d813ee718e0a6c0bf70ecfaf0ca0eb2ee32a60d1fe",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0353-control",
+      "input": "filter-over-consumers-0353-control.svg",
+      "sourceSha256": "1014dee989a79d38fc8a777a040a360f601e628463c7b953dd35ff0755e315fd",
+      "reference": "references/filter-over-consumers-0353-control.png",
+      "referenceSha256": "0e50f63fa154088a9242a34aa4e6121b651bb2f64cffbfdd6c1cfa3cf09b45e0",
+      "rgbaSha256": "f90fda49185baebb98590e315ead12bccf2a649508e48d86516d931f0a08ae46",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0361-control",
+      "input": "filter-over-consumers-0361-control.svg",
+      "sourceSha256": "20bf58c633362a2fb039a081e3c14f523ccb6b9e4d5740b54c0da2021693e4c4",
+      "reference": "references/filter-over-consumers-0361-control.png",
+      "referenceSha256": "c044c435927da8aa7e494a253c2982d9189a5c5bccafab1370f03427748c0b41",
+      "rgbaSha256": "e91f031d2d3eed6eb36df905cdd4e7f81ec8e71672b6f2118e8d42fe81f987b5",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0372-control",
+      "input": "filter-over-consumers-0372-control.svg",
+      "sourceSha256": "7b41e145432ec56912bf06b697656a68d41f313df714dde7dff12b3d6274b38f",
+      "reference": "references/filter-over-consumers-0372-control.png",
+      "referenceSha256": "8a4a79706773576d9d9aa23fb52be99628e8550795ecfb6d9e7a5e58ed328f7f",
+      "rgbaSha256": "c0f0a49a82fb6b26a5511124e789eda1695fd0df44bac9b94fd699054fe64f83",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0373-control",
+      "input": "filter-over-consumers-0373-control.svg",
+      "sourceSha256": "7e326e29543f11fcc6deaa1ca691d8e7b61765a78cc97f5b2dfd0ec9b1d88043",
+      "reference": "references/filter-over-consumers-0373-control.png",
+      "referenceSha256": "6395cdfa2b849b2ceb6d3b7a3f12c48cec55211d1afcd08394360bab4349deb3",
+      "rgbaSha256": "acf7ed8791bb0d15852a6a30e6ffe8d96837ad611cb88f47c852cc295d04826c",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0376-control",
+      "input": "filter-over-consumers-0376-control.svg",
+      "sourceSha256": "265c479b04a020b50b831bf7fb27b1549a91785efe03570dd2be1d1fa9385ead",
+      "reference": "references/filter-over-consumers-0376-control.png",
+      "referenceSha256": "b89d0bed20c9729a84e32450d7be5c84b801bf311f79b5b33047cb7785783509",
+      "rgbaSha256": "d4c72bfc2d2599ca1f174a20f2ada269c39ebc44268915b444cc69213a7a9591",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0377-control",
+      "input": "filter-over-consumers-0377-control.svg",
+      "sourceSha256": "93824721bbd26e0b481fb6722b53fa09b5ed9b342430e94b927c444d9d30a2e7",
+      "reference": "references/filter-over-consumers-0377-control.png",
+      "referenceSha256": "90d8d5dd31ed51ab0fcd56b770ab8829d73fb3d0340c3ea6b0f6385ad2221d6a",
+      "rgbaSha256": "c09899ebd3965c60cd516174310497aeb61ed7d8a78749ac8bace059e93cb6a4",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0385-control",
+      "input": "filter-over-consumers-0385-control.svg",
+      "sourceSha256": "52cd4fca2fe8142acf5c15b06ef5b7f51aca3db1d6d2e62fff28b9cd6980c43a",
+      "reference": "references/filter-over-consumers-0385-control.png",
+      "referenceSha256": "7ac94f793d4cdfe6dabc177049a798e473eabd547f788c499f3111de1b76b23d",
+      "rgbaSha256": "b32d416ffd3b9b87e34679395cc7b98b62eb8ee25ae5dd6a66510f7c94dd7f3d",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0389-control",
+      "input": "filter-over-consumers-0389-control.svg",
+      "sourceSha256": "583bd78a561a685e96a8c2497f8d18cb0326e5020d8940ac87052af422f681c4",
+      "reference": "references/filter-over-consumers-0389-control.png",
+      "referenceSha256": "08f9ddb8b050547e4748969e9099f77817adc3837e8a2152370c2fb765c94597",
+      "rgbaSha256": "8e44a22c6f9c2113f2e0b0355f4ec6901ba96589d93e668bfcc9ee91d45b5a57",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0396-control",
+      "input": "filter-over-consumers-0396-control.svg",
+      "sourceSha256": "a32c1d5ae470e01d5653ecdf219a837bd8cc6d26cdae51da64d1349a67240f10",
+      "reference": "references/filter-over-consumers-0396-control.png",
+      "referenceSha256": "7a9e57128ca4714b59892702e9cc6c3c15326c48062c5b2bbd64fc257e81178b",
+      "rgbaSha256": "7bc15f3a6f42453518956117a4613e0b8979e2405a0b730725a53a502512d770",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0397-control",
+      "input": "filter-over-consumers-0397-control.svg",
+      "sourceSha256": "3985a15a68fbb6289afd6ae4171a442ad66cfe25f1942275c48b6f6dfb75a4c0",
+      "reference": "references/filter-over-consumers-0397-control.png",
+      "referenceSha256": "ab62d7a0dc25b626b157e966dce1622ae13edaafaa9c62b8837ca4bd87e0f80f",
+      "rgbaSha256": "056d7a5d44af8136739439948d061d7fb9a40d10bae53a7e63a8c7e9e973164b",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0400-control",
+      "input": "filter-over-consumers-0400-control.svg",
+      "sourceSha256": "60990f3fe997c7d791edc2778d3a6928b2998b06abf3bf8fefa86c47296a976e",
+      "reference": "references/filter-over-consumers-0400-control.png",
+      "referenceSha256": "497fd7e910155cec34a85b1d49476851e7bb375a630e236feb6b7cef5cbce2f1",
+      "rgbaSha256": "6949e8323435d95214a1b3604b10514b1ae3ea39b6564fb83d1b12520ffe6da5",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0401-control",
+      "input": "filter-over-consumers-0401-control.svg",
+      "sourceSha256": "cded972beb8df2f6af5832f9c03f8fe9cf9080ab07ba1a85afbfd565b432e00a",
+      "reference": "references/filter-over-consumers-0401-control.png",
+      "referenceSha256": "00f002547c93f4e81d85ba0dc257aac679575981ebee45e4112d2e3edcdd1b44",
+      "rgbaSha256": "b320511739225602fc71a7bb5302304f0cce261afb5ce0e581f24c9cbd48dd71",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0409-control",
+      "input": "filter-over-consumers-0409-control.svg",
+      "sourceSha256": "6e2e01a616c7ea6f8ccb1288346f212da28d7d6f653a8e7ce874145d34375944",
+      "reference": "references/filter-graph-identity-0389-candidate.png",
+      "referenceSha256": "a657d8b20c0598ebee98cfad559761c88e8b7c9c11ef5970c3399007a1491561",
+      "rgbaSha256": "0d361b868f4f017b3b9b4e5b8649d3fdd1d1a46c83a9b6471d49fce5596c0134",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0413-control",
+      "input": "filter-over-consumers-0413-control.svg",
+      "sourceSha256": "a947ee9154d494d4e569e618a150427d4e6c80c5db512d176dee53c5154f7a5a",
+      "reference": "references/filter-graph-identity-0405-control.png",
+      "referenceSha256": "338034d6eb3dcdb4869873af5891af26db9307173edb2c4a70e94a3e60421041",
+      "rgbaSha256": "831dbefadb14978af0d2794dc29f7fbaafe4d87af17f1a8e25ce555f98514979",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0420-control",
+      "input": "filter-over-consumers-0420-control.svg",
+      "sourceSha256": "e0b7a3ee1a1196a2dc64a84719c20d781214fbf5bee4e6a0d933f7a73418d29c",
+      "reference": "references/filter-graph-identity-0392-candidate.png",
+      "referenceSha256": "e4ce79b84a77b9d1c28e3c164269a0397f66ba6137bb87b59b3d996e8a3b1ad1",
+      "rgbaSha256": "951434042945afce38c8ca837c4e897c5a634d4fa50d2a64cf735d49764288fc",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0421-control",
+      "input": "filter-over-consumers-0421-control.svg",
+      "sourceSha256": "974c68870779a01380614671ff05766f2f11d658d882857f80d3f5a7f3aeb77f",
+      "reference": "references/filter-graph-identity-0393-candidate.png",
+      "referenceSha256": "1bd3cefaec001fefbd4302029d2fab02624b7e1ce254ce9cc0976224d22b3cb5",
+      "rgbaSha256": "be88cd459715e065b7e12cc0d0d5571b26bc05c8acd305ff5f6580d60de61219",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0424-control",
+      "input": "filter-over-consumers-0424-control.svg",
+      "sourceSha256": "91c15a25a14fd5fc861f6e202e87bb7cdaa6b8bb39a24d13bbb5a6a4e4a60be7",
+      "reference": "references/filter-graph-identity-0408-control.png",
+      "referenceSha256": "c61768648079ce2c47241975bc00940ccca7a3c5da7fccd8a84c2272d5b26912",
+      "rgbaSha256": "3641dbe97d9aec1e73b7e68e1984772aa547f694e695b0d535f9be68605b2eb9",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0425-control",
+      "input": "filter-over-consumers-0425-control.svg",
+      "sourceSha256": "ed4f1722ae1be6237f9bc627ea2ec13a9d023a583d18d8116cc2d858d4321723",
+      "reference": "references/filter-graph-identity-0409-control.png",
+      "referenceSha256": "7d72177a8eaa8929e752d678c6f9218af8bfb11117a9668745f158c29e8c912c",
+      "rgbaSha256": "1e43b36bdaf4edfb9997c5cf42929bfc476b45384e11ddaa01924acb72da673d",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0433-control",
+      "input": "filter-over-consumers-0433-control.svg",
+      "sourceSha256": "4b25d88d44b438dc68a963a9f2e97163d2ee687b0b8032c9c6a4491a70800140",
+      "reference": "references/filter-over-consumers-0433-control.png",
+      "referenceSha256": "29b405b4c1b93d7b64ffc116bf15f90f1d2a0ea2bbc5c839226bbf393d31607f",
+      "rgbaSha256": "6143ae36c15d7828ed29779264bb1705aec79f9f4094825f2aac3622142713d8",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0444-control",
+      "input": "filter-over-consumers-0444-control.svg",
+      "sourceSha256": "820c2afdd7a6c92e5b87a85eaa6994d253c738b5fec7f1e8593455e76ca483b6",
+      "reference": "references/filter-over-consumers-0444-control.png",
+      "referenceSha256": "44740e589c1c0aea9a5bd809d4ef1337fc209bc6930f3f00dd0d2c0cb6f87d09",
+      "rgbaSha256": "9d90ce1b1b1b0035be92056cb8d42d7ed7ce42f0ab80fabed8442c921180e1e7",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0445-control",
+      "input": "filter-over-consumers-0445-control.svg",
+      "sourceSha256": "8dbb06666f4e7560f4cc312717cbe7267ae969fe5d8b405dc8f1798e33861a64",
+      "reference": "references/filter-over-consumers-0445-control.png",
+      "referenceSha256": "d6707a22b5dc9ce2313055a25cf47494e0dbb18e83f22cbfbaab38291bef726a",
+      "rgbaSha256": "f6d54a2dad2bd1c5606d043fa60028859d09cf985c92caf1b40fdd28b76d0c5a",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0448-control",
+      "input": "filter-over-consumers-0448-control.svg",
+      "sourceSha256": "407c6cf4852597c336b8e8addb6136b8e5d9f17b7fe007aff91cabe037da9104",
+      "reference": "references/filter-over-consumers-0448-control.png",
+      "referenceSha256": "cae4e203e98bec9431f8458ebefa05336aeef267ba8f6693310ee61a589d4d62",
+      "rgbaSha256": "01067250f42ba8dbcdcdb9396d42ee6b047a74f72aa5052078d87d922fec06fe",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0449-control",
+      "input": "filter-over-consumers-0449-control.svg",
+      "sourceSha256": "3e185942a29220ea6a0124ada44787c753b1d16c89be0c44acd973ff3e348fee",
+      "reference": "references/filter-over-consumers-0449-control.png",
+      "referenceSha256": "2de553fbfd708661b67478fcb226ee06d410cdb81d258aabe60ab91b66e13687",
+      "rgbaSha256": "2d9da29535edc1e9b3ab78f7c623818813d3dd57bc1275400748473e46efe37f",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0457-control",
+      "input": "filter-over-consumers-0457-control.svg",
+      "sourceSha256": "5e0e58427f0a08d75fc11ee08b9f095f55cb4380f76fc8a1c66764e2b059198d",
+      "reference": "references/filter-over-consumers-0457-control.png",
+      "referenceSha256": "d0b6075d716fe758a2375adcf483d39d7f97de7dd8a97a9438a1b8ac0bb1ae1b",
+      "rgbaSha256": "edcf73ed1412d89632eecdaac4f77e9da4922913ee67797b6dcb7aa53b34f269",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0461-control",
+      "input": "filter-over-consumers-0461-control.svg",
+      "sourceSha256": "bda85c0244589adc4cc3cbb1501a5743eb141f05b1f24b5f7e103f732772e8e2",
+      "reference": "references/filter-over-consumers-0461-control.png",
+      "referenceSha256": "10cd1b9fa1f0cd5896d3a675d945ea31349a81b9fc49fe2adeac2ebcb6d080a1",
+      "rgbaSha256": "58060ccada17c520cbb82996bf8b77cb3d7429bc893e63e3354312418e0457ce",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0468-control",
+      "input": "filter-over-consumers-0468-control.svg",
+      "sourceSha256": "fec141286eda7a8fc9eeb7a81a386adddf962faf04252909ac17abfeea54fc2c",
+      "reference": "references/filter-over-consumers-0468-control.png",
+      "referenceSha256": "1674bfa75cf40df19162738e470c729f664e5ebf492b9251034908e9d8a39ca8",
+      "rgbaSha256": "a0944578a454b71a220a28d6ae0aac6ad9f58e91df951808a81e7f125fcef293",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0469-control",
+      "input": "filter-over-consumers-0469-control.svg",
+      "sourceSha256": "6918fb158270980cbeddcf4dd5dc73848a3872a588eb982b4dd11a702feed6c3",
+      "reference": "references/filter-over-consumers-0469-control.png",
+      "referenceSha256": "aab08bb2363cba706bb8af425681d6fe7ae41d6ede6bf960e79f79f6dc73bc03",
+      "rgbaSha256": "7b4290b6e3e67932bcc783acc91bfc5b3fdfdf0e51a8db3e89c5149000b6a2ac",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0472-control",
+      "input": "filter-over-consumers-0472-control.svg",
+      "sourceSha256": "72b6792c2d4a96a171b87a4641f1e92c45728e176ab9094467c56c4f5e429702",
+      "reference": "references/filter-over-consumers-0472-control.png",
+      "referenceSha256": "9ee511d72fcdf6e3a8ca17b1b0329d0687b3a6fe9c2570672574cd1f44e379fe",
+      "rgbaSha256": "2bd63345da71d6d302e8c30d740e79cbe281a60a854b8541284d88ca9ed7f826",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "filter-over-consumers-0473-control",
+      "input": "filter-over-consumers-0473-control.svg",
+      "sourceSha256": "30dd692bcba17bbc4671e12c9acfa2574987927a93992be88f13dd14e5b28d5b",
+      "reference": "references/filter-over-consumers-0473-control.png",
+      "referenceSha256": "6d087cc1c2b497fbbeeede5ef058f070bbd011936887d33e483b3a1bbb125325",
+      "rgbaSha256": "b86d59752504ead8e9fc8dfd7a66a4493ffc8e6d116f87fb67f3b72fc2bd40ab",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "extra-over-1-candidate",
+      "input": "extra-over-1-candidate.svg",
+      "sourceSha256": "837a7714ff2227a6156a7ecbf74c8fc959d0ba3c5de06564cba3c671f5116139",
+      "reference": "references/filter-over-consumers-0376-control.png",
+      "referenceSha256": "b89d0bed20c9729a84e32450d7be5c84b801bf311f79b5b33047cb7785783509",
+      "rgbaSha256": "d4c72bfc2d2599ca1f174a20f2ada269c39ebc44268915b444cc69213a7a9591",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "extra-over-1-control",
+      "input": "extra-over-1-control.svg",
+      "sourceSha256": "ccdcea7845041f524b23fc1d20b1f049196fb74d2ea2a431b5ce791cd2223134",
+      "reference": "references/extra-over-1-control.png",
+      "referenceSha256": "c61906a7b8823c5ff83b17ef947d0c9ffb51b7e9bda85d93d4ff9fb4a83f293c",
+      "rgbaSha256": "764c9d07f57e41bd23bafd139091b5a5b7e5c80b206b61548432463040cbba8e",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "extra-over-7-candidate",
+      "input": "extra-over-7-candidate.svg",
+      "sourceSha256": "325fba4918bf15fe3176f598a1f4d08e6444a42b3dd30b10840a24d799940d38",
+      "reference": "references/filter-graph-identity-0408-control.png",
+      "referenceSha256": "c61768648079ce2c47241975bc00940ccca7a3c5da7fccd8a84c2272d5b26912",
+      "rgbaSha256": "3641dbe97d9aec1e73b7e68e1984772aa547f694e695b0d535f9be68605b2eb9",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "extra-over-7-control",
+      "input": "extra-over-7-control.svg",
+      "sourceSha256": "b1966cca4b6576a67ac3afdc3450643c22b16415c79d17e99c296f8f41deb5eb",
+      "reference": "references/extra-over-7-control.png",
+      "referenceSha256": "7cd6681a1184a698778057d074a1bfbc64fa200ad75f0fa052dfca21c7994e8a",
+      "rgbaSha256": "dde472eaf57183cff90bd1ec8316976715a55c0b83fc9e49e63f6ccb3d751682",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "extra-over-13-candidate",
+      "input": "extra-over-13-candidate.svg",
+      "sourceSha256": "07158bc25967d9c8c392c171398320c363e8065435620b655cec6c536c73a70d",
+      "reference": "references/extra-over-13-candidate.png",
+      "referenceSha256": "d39505e7bd40bb636331e5a3f8d0ddcfea641c5af857e3bdff4419abb6d2ea3e",
+      "rgbaSha256": "a18eadf3c9ff55161c830681994135a741b5bd0b8f80d99a38fb26bf7d47c1a0",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "extra-over-13-control",
+      "input": "extra-over-13-control.svg",
+      "sourceSha256": "d203115a7b1813f76eca657504e661ed3e0e3559f85a5715d26ce07bd28de428",
+      "reference": "references/extra-over-13-control.png",
+      "referenceSha256": "d694541aa62733d5011ee4bdf5d0fc6c4812a0ee727d007cbdc85f7c43e99945",
+      "rgbaSha256": "2677dd5811c005deee8c5ed565daeb2f619f2278d9cb3e3c444e8676017752ee",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "extra-over-19-candidate",
+      "input": "extra-over-19-candidate.svg",
+      "sourceSha256": "e9b5e03945fa3f3c0cbcd03d625af3146105a6de9b8d310df2967eec21388b5f",
+      "reference": "references/extra-over-19-candidate.png",
+      "referenceSha256": "0b57c67108af565904a3daf850a975d1e18a223100a48251f12bc8b5c148b730",
+      "rgbaSha256": "5884a60d083f05a20996ed6190f974e686d8c4b49b79ae600477f57147b444ef",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "extra-over-19-control",
+      "input": "extra-over-19-control.svg",
+      "sourceSha256": "f5342d65b2428da889cecde38d7b2343d3e5158c433fcd6854e3412abbc3e977",
+      "reference": "references/extra-over-19-control.png",
+      "referenceSha256": "8f68ace3fbfced0e631c7c74587ac2256a546e14b0d30674a87caafda614daa5",
+      "rgbaSha256": "d41e5d97b39d2a750afd14faa9112b7a432553662fd8bb4d869fd796d5f19f85",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "extra-over-25-candidate",
+      "input": "extra-over-25-candidate.svg",
+      "sourceSha256": "a6a387f9a6f94b845aa3b0f40b343a35cb7297baf7f3ab73d8dbfda44ab8617e",
+      "reference": "references/extra-over-25-candidate.png",
+      "referenceSha256": "2c80e25d30dbb85490c4ee32e487b26feb5d27965da84d430802776ce0bf96a6",
+      "rgbaSha256": "ff3aa381d531aa6793bfbb46c9de5a1a5d54bc596cee7343a8e5b3bf44f78d62",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "extra-over-31-candidate",
+      "input": "extra-over-31-candidate.svg",
+      "sourceSha256": "a73da9819d1e6b88875f55375747920e748673790e717d339acad8a0d13466c0",
+      "reference": "references/extra-over-31-candidate.png",
+      "referenceSha256": "419d03e1733c2939c6bc39e301e2e288ff735e3bfb8a11798947d868943a863f",
+      "rgbaSha256": "14a0e0a910da47dbe3b1f40fa5debd5e253f83397a739174624a16979f9be5fb",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "extra-over-37-candidate",
+      "input": "extra-over-37-candidate.svg",
+      "sourceSha256": "a39e098e7886fdbef9c8edc1cde8f05c66385bd28fd4087c47c3d2b502b7d946",
+      "reference": "references/extra-over-37-candidate.png",
+      "referenceSha256": "04c8aa98b3d13d44356f8e9879f52f00c58f9e34717de84955a4a4f61193b699",
+      "rgbaSha256": "187344c8972d64bddd3b06a06f14e7ee3ba73ac2859b11d12d6291d007e96a28",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "extra-over-43-candidate",
+      "input": "extra-over-43-candidate.svg",
+      "sourceSha256": "becfb8940df4702f2481b6debb5e9e8033ab44c5e7facd620b6663c98da03882",
+      "reference": "references/extra-over-43-candidate.png",
+      "referenceSha256": "7832d6c8c3f4d928c60c20d828c58f142988e0245be293780da1f54ebc77c8fe",
+      "rgbaSha256": "22dc60947afc1e63124812443b04bff5786b16d97eb18670ee7820ae0dc27219",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "extra-over-49-candidate",
+      "input": "extra-over-49-candidate.svg",
+      "sourceSha256": "2fcb94099927a3e6fd30602c3424b3b92ecf7c8d80572f71f26f4c9eba2086d6",
+      "reference": "references/extra-over-49-candidate.png",
+      "referenceSha256": "53f5f89b20f69296a76c9caba86e216c38817c83df44168738eb9fb37d42c7a7",
+      "rgbaSha256": "58ce145e2ce02db1a106cbbd9ceaee84d0302ffda268ee5dd5affb6072597342",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "extra-over-49-control",
+      "input": "extra-over-49-control.svg",
+      "sourceSha256": "1ef0a4f8dbe6e6f30953af8f553cf7555a4f13b28f66d13cbea00287203563c9",
+      "reference": "references/extra-over-49-control.png",
+      "referenceSha256": "be725050489bbdcd4942a3a49519de36103de07cc1d5d5154ac6bdf5032660cb",
+      "rgbaSha256": "ae5abc910097fac7e0b9ea25ad2123c617b5d28d88c8f715fd1baf43fb1ee229",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "extra-over-55-candidate",
+      "input": "extra-over-55-candidate.svg",
+      "sourceSha256": "6fdabe74e9ea078bc40a28fdd41bdabd0c6a3f2b1f512a86d35c27c47d1d3e07",
+      "reference": "references/extra-over-55-candidate.png",
+      "referenceSha256": "ffd989159550e31de53a9d3930e3f4058327be331fc1f08efc1be90e0b193ac6",
+      "rgbaSha256": "9481c9b5e7b7d089f403b95457d72a98dd710d8cd2ab072004d9f65b0f27d6b0",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "extra-over-55-control",
+      "input": "extra-over-55-control.svg",
+      "sourceSha256": "f0c7ad477f69558014174ec56734617ab19c124c5c67c703f31fa5ea9868d719",
+      "reference": "references/extra-over-55-control.png",
+      "referenceSha256": "12fdf8d635105bd699504211e9ca95d9f7c1680163deb52b68a51a95700e2cbf",
+      "rgbaSha256": "095f8fad190bbeaa853cde05ae140750cdcd834a613f34dc0fadfe5965261c01",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "extra-over-61-candidate",
+      "input": "extra-over-61-candidate.svg",
+      "sourceSha256": "6f139400817e95eb87f69f784716216a5e4c0c2855d69d0324aaa1c6fbb2dca3",
+      "reference": "references/extra-over-61-candidate.png",
+      "referenceSha256": "7451321a44c8cf46cf6fa7ff3523ff04edc8797f28bef85c9c2ced3b26e88292",
+      "rgbaSha256": "82c6dd200aae5e3508d334023ba333251f51dd0a5e740e2623a7e7aaf2372aab",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "extra-over-61-control",
+      "input": "extra-over-61-control.svg",
+      "sourceSha256": "7ea6d6948422af013cf5f096030c182b3c406c8bafad7cdcb83f0c9dc77d3252",
+      "reference": "references/extra-over-61-control.png",
+      "referenceSha256": "2dd11a776dae12feecb657b1874c60674644d727f3964b0e5885c066607ded96",
+      "rgbaSha256": "d4dfdf95c78de582c5e81d895b167c3d3fa93ae1b6e43e7ade3e4ff1db7bb06f",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "extra-over-67-candidate",
+      "input": "extra-over-67-candidate.svg",
+      "sourceSha256": "faaed4ec06ac811b6562bca8556b1785d2b46dcd51b06e4fe106da0db7693c7a",
+      "reference": "references/extra-over-67-candidate.png",
+      "referenceSha256": "1fe10563e6d6d809715e48044720865b7c93fe1c8869b4ec87b272cce6c79d14",
+      "rgbaSha256": "56fc7794a4482de4d2ad9358b0eeb20997384b4da840e0c53d3b41f1a6512f33",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "extra-over-67-control",
+      "input": "extra-over-67-control.svg",
+      "sourceSha256": "24633a45ba5e02b314e5ce9d4484f20754e3102b6e5f34eef662fc50d90f1a6b",
+      "reference": "references/extra-over-67-control.png",
+      "referenceSha256": "3e2bd08fd67c7e7709b78a08605259f1a9eb77b2e1236f2dbe9bbb5b93610b6f",
+      "rgbaSha256": "ab2080577430f5d498bbb7756770af02206409b9c65e5b10972e5c32b3403fd6",
+      "purpose": "rounding-regression"
+    },
+    {
+      "id": "extra-over-25-control",
+      "input": "extra-over-25-control.svg",
+      "sourceSha256": "e29d9108a9dd20661a57bec064d8c112d49ee5c558ea5f7b148ffec1d1b1c689",
+      "reference": "references/extra-over-25-control.png",
+      "referenceSha256": "da935790f6ec76003aa6f00746cad9f1e7694d0de9cb68e5148b49894800cf9a",
+      "rgbaSha256": "716e3cd96088cfb736e2fe11456dc25053e84af0e08b35b856af56104b7e13cd",
+      "purpose": "source-alpha-shader"
+    },
+    {
+      "id": "extra-over-31-control",
+      "input": "extra-over-31-control.svg",
+      "sourceSha256": "ec89ea4db954ea6e779721e635f8524d33c9b8cc4896d500ec5cea82c4f4b521",
+      "reference": "references/extra-over-31-control.png",
+      "referenceSha256": "52e5bc8cfb044ff96dcc8d60fada1d08ee9210cd3d0521e2d16196f2678a1b35",
+      "rgbaSha256": "fde7c15278bbe01705d2e1565ec9285fb9853856c3eaf3a21213a6cf52d3705f",
+      "purpose": "source-alpha-shader"
+    },
+    {
+      "id": "extra-over-37-control",
+      "input": "extra-over-37-control.svg",
+      "sourceSha256": "7b3cbb467bfbef5ddf16d577b7d6e50d9e4c30e7cdd65cd1b0aa8ec78ca9e893",
+      "reference": "references/extra-over-37-control.png",
+      "referenceSha256": "32994ec625d95f1d258a31380567e0a8aa1c90fdacd339deaa16f5cad8e0ee83",
+      "rgbaSha256": "4cb3b060a52753ad3598ee017f04b0f818b517d220e8504aecfcc0d714ba1dbd",
+      "purpose": "source-alpha-shader"
+    },
+    {
+      "id": "extra-over-43-control",
+      "input": "extra-over-43-control.svg",
+      "sourceSha256": "c9954d4e9cac8d4153e3325eb101c96364706756dafe7a1c3afa06e357c78f3f",
+      "reference": "references/extra-over-43-control.png",
+      "referenceSha256": "7387865a6f688c0cd8935e7584be7c40f139cb7cc4a4be8b109e3f78f45e178f",
+      "rgbaSha256": "214e52d58ba68910928091433e6a76064415543b40b14eef787da3ea49de461c",
+      "purpose": "source-alpha-shader"
+    },
+    {
+      "id": "extra-over-72-candidate",
+      "input": "extra-over-72-candidate.svg",
+      "sourceSha256": "0bb7a7e2f7e1382191fad27c233e0b2bea93f8030e101548af5b3998a7bdb8c0",
+      "reference": "references/extra-over-72-candidate.png",
+      "referenceSha256": "938d4f6e0054294c8dc1c7ef3325a96d3af78540501d42431836623dac8ce8d0",
+      "rgbaSha256": "46037a8247226db8ee537f8b3d983c8196c26077c4741b68332aa7d2b3b3672a",
+      "purpose": "single-input-passthrough"
+    },
+    {
+      "id": "extra-over-72-control",
+      "input": "extra-over-72-control.svg",
+      "sourceSha256": "f1f1db25db35244f2b7e8b9f8b0626d66efecc8c6663d2c70b97b9c3f086a8c0",
+      "reference": "references/extra-over-72-control.png",
+      "referenceSha256": "6d29d29e17cd2f16ab70c804f0e901eb6af2cd19c6e76501b64e9363be8a8804",
+      "rgbaSha256": "c565b67a856365f9148279ea08bd4c4fd1e9e7b1a0fe8154b9fb6ce9e0c8d1ad",
+      "purpose": "single-input-passthrough"
+    },
+    {
+      "id": "extra-over-73-candidate",
+      "input": "extra-over-73-candidate.svg",
+      "sourceSha256": "35b77e21963810200db1b96911b062e57c997e0d18ac6c76ef46e936a2d16148",
+      "reference": "references/extra-over-72-candidate.png",
+      "referenceSha256": "938d4f6e0054294c8dc1c7ef3325a96d3af78540501d42431836623dac8ce8d0",
+      "rgbaSha256": "46037a8247226db8ee537f8b3d983c8196c26077c4741b68332aa7d2b3b3672a",
+      "purpose": "single-input-passthrough"
+    },
+    {
+      "id": "extra-over-73-control",
+      "input": "extra-over-73-control.svg",
+      "sourceSha256": "805c3f96b1197cd25650cd486632a14a36c9d1cbb9d2e8e0e1d7afda14b0973a",
+      "reference": "references/extra-over-72-control.png",
+      "referenceSha256": "6d29d29e17cd2f16ab70c804f0e901eb6af2cd19c6e76501b64e9363be8a8804",
+      "rgbaSha256": "c565b67a856365f9148279ea08bd4c4fd1e9e7b1a0fe8154b9fb6ce9e0c8d1ad",
+      "purpose": "single-input-passthrough"
+    },
+    {
+      "id": "extra-over-74-candidate",
+      "input": "extra-over-74-candidate.svg",
+      "sourceSha256": "d15d90e539d80ef7616f468ab7142bfff7403225ca7d0e39de6a37078a36a017",
+      "reference": "references/extra-over-72-candidate.png",
+      "referenceSha256": "938d4f6e0054294c8dc1c7ef3325a96d3af78540501d42431836623dac8ce8d0",
+      "rgbaSha256": "46037a8247226db8ee537f8b3d983c8196c26077c4741b68332aa7d2b3b3672a",
+      "purpose": "single-input-passthrough"
+    },
+    {
+      "id": "extra-over-74-control",
+      "input": "extra-over-74-control.svg",
+      "sourceSha256": "e5ab6fca99973eaae9e46539a8698652c6bc29e5e323d9dad34579cf615cf23e",
+      "reference": "references/extra-over-72-control.png",
+      "referenceSha256": "6d29d29e17cd2f16ab70c804f0e901eb6af2cd19c6e76501b64e9363be8a8804",
+      "rgbaSha256": "c565b67a856365f9148279ea08bd4c4fd1e9e7b1a0fe8154b9fb6ce9e0c8d1ad",
+      "purpose": "single-input-passthrough"
+    },
+    {
+      "id": "extra-over-84-candidate",
+      "input": "extra-over-84-candidate.svg",
+      "sourceSha256": "87e468067bc271fad683920d3e59c81791972721fb4c62380e68a5d90d10dd55",
+      "reference": "references/extra-over-84-candidate.png",
+      "referenceSha256": "6d0d926fd23a458ea90b88d6058df7743b246efabd0e22743df1f85cf0fff729",
+      "rgbaSha256": "3e5d887d807793471330429a78c51c146e232a26d89baa8d40c56dd9747033df",
+      "purpose": "single-input-passthrough"
+    },
+    {
+      "id": "extra-over-84-control",
+      "input": "extra-over-84-control.svg",
+      "sourceSha256": "0f2e743717f71d2a76c27d0604b8ecb0df59379904ca36ab99ab8feaaff95cc8",
+      "reference": "references/extra-over-84-control.png",
+      "referenceSha256": "63d7425a27d80262eaa2b1a014a5056777093e923099e3efecb238ac9f9bfe03",
+      "rgbaSha256": "893ed5a996412cf93dcdc4d74f1a7d823638afc94ee0b08da1140bee947cfbac",
+      "purpose": "single-input-passthrough"
+    },
+    {
+      "id": "extra-over-85-candidate",
+      "input": "extra-over-85-candidate.svg",
+      "sourceSha256": "7f1251133eb23caeecba29231549b44bd6db34dd955b769e168637ae34a7d45d",
+      "reference": "references/extra-over-84-candidate.png",
+      "referenceSha256": "6d0d926fd23a458ea90b88d6058df7743b246efabd0e22743df1f85cf0fff729",
+      "rgbaSha256": "3e5d887d807793471330429a78c51c146e232a26d89baa8d40c56dd9747033df",
+      "purpose": "single-input-passthrough"
+    },
+    {
+      "id": "extra-over-85-control",
+      "input": "extra-over-85-control.svg",
+      "sourceSha256": "44386cd9194e7eb1397d2be78b9d3f3294dfd6420136bd3b9d36886131a2469c",
+      "reference": "references/extra-over-84-control.png",
+      "referenceSha256": "63d7425a27d80262eaa2b1a014a5056777093e923099e3efecb238ac9f9bfe03",
+      "rgbaSha256": "893ed5a996412cf93dcdc4d74f1a7d823638afc94ee0b08da1140bee947cfbac",
+      "purpose": "single-input-passthrough"
+    },
+    {
+      "id": "extra-over-86-candidate",
+      "input": "extra-over-86-candidate.svg",
+      "sourceSha256": "8d19a2fc976967f1dc04f5b0ec83a09b3a92de1a51e59ceef3ba289c36112793",
+      "reference": "references/extra-over-84-candidate.png",
+      "referenceSha256": "6d0d926fd23a458ea90b88d6058df7743b246efabd0e22743df1f85cf0fff729",
+      "rgbaSha256": "3e5d887d807793471330429a78c51c146e232a26d89baa8d40c56dd9747033df",
+      "purpose": "single-input-passthrough"
+    },
+    {
+      "id": "extra-over-86-control",
+      "input": "extra-over-86-control.svg",
+      "sourceSha256": "91bd393460136372c7e86b14f5bf7c54c2a71d97dbe700953aaa40a8d5659772",
+      "reference": "references/extra-over-84-control.png",
+      "referenceSha256": "63d7425a27d80262eaa2b1a014a5056777093e923099e3efecb238ac9f9bfe03",
+      "rgbaSha256": "893ed5a996412cf93dcdc4d74f1a7d823638afc94ee0b08da1140bee947cfbac",
+      "purpose": "single-input-passthrough"
+    },
+    {
+      "id": "filter-graph-identity-0408-candidate",
+      "input": "filter-graph-identity-0408-candidate.svg",
+      "sourceSha256": "72f9243f5e15013734626caa564670345e4ae16a00b70fed7e79edf02b380ce6",
+      "reference": "references/filter-graph-identity-0408-candidate.png",
+      "referenceSha256": "c6e971cea78860eade27b0f76113c5d0a7400a7b3f367f033faddadb18aa4197",
+      "rgbaSha256": "f558f444adf0245a1b580af97afe9acc3e584805acfb13c0acb4a5e11177719b",
+      "purpose": "distinct-composite-companion"
+    }
+  ]
+}

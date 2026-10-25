@@ -12,6 +12,10 @@ Use `--filter FullyQualifiedName~TestClassName` on a test project for focused
 checks. The [CI workflow](../.github/workflows/ci.yml) runs Windows/Linux tests,
 browser/resource/font-host smoke checks and package/installed-consumer checks.
 
+[Offset/merge input tests](Lokad.Svg.VisualTests/SvgOffsetMergeInputReferenceTests.cs)
+use [native controls](Research/offset-merge-inputs/README.md) for stored image
+rounding, `SourceAlpha`, merge order, color spaces and single-input passthrough.
+
 [Affine flood tests](Lokad.Svg.Tests/SvgAffineFloodTests.cs) retain input-specific
 Chrome RGBA hashes for mapped filter regions, colors, alpha and source forms,
 plus work/memory denial, cancellation and retry checks. Fractional filter regions
