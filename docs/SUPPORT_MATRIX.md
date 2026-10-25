@@ -382,14 +382,17 @@ to text that already carries its mask are admitted. See the
 [mask boundary tests](../tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskBoundaries.cs).
 Explicit `clip-path="none"` and `mask="none"` omit that element's binding; ancestor
 clips and masks still apply.
+At admitted attribute locations, `initial` and `unset` report `UnsupportedFeature`
+for both properties; `mask="inherit"` also rejects. `clip-path="inherit"` uses
+the immediate container's clip or the initial value. Neither property is admitted
+in inline styles or stylesheets. See the
+[subset contracts](../tests/Lokad.Svg.Tests/OpenTypeFontTests.SubsetContracts.cs).
 
 Resource attribute/declaration locations have distinct boundaries:
 
 - `clip-path` presentation attributes work on admitted rendered/resource children,
   including path/rectangle children of a clip resource. `clip-path` on the
   `clipPath` container itself is unsupported.
-- `clip-path` in inline styles or stylesheets is unsupported. CSS `clip-rule`
-  support does not enable that declaration.
 - A `use` child inside `clipPath` supports one referenced contour. Plain rectangle
   instances and empty/compound sources are unsupported; direct rectangles and
   compound clip paths work.
@@ -597,6 +600,14 @@ SVG scalar attributes and inline property values retain their 256-character boun
 SVG font-weight values accept integers from 1 through 1000, normal and bold;
 other numeric/relative forms reject. Explicit public font request objects keep
 their documented positive-weight catalog selection contract.
+
+At admitted text-style locations, font sizes must be positive; zero sizes,
+including signed, decimal, exponent and px spellings, report `UnsupportedFeature`
+before font acquisition. Omitted properties inherit. Explicit `inherit`, `initial`
+and `unset` work for `font-family`, but reject for `font-weight`, `font-style`,
+`font-size`, `letter-spacing`, `word-spacing` and CSS `white-space`. Geometry
+typography remains inert. The [subset contracts](../tests/Lokad.Svg.Tests/OpenTypeFontTests.SubsetContracts.cs)
+check conversion, discovery, preparation and neighboring admitted values.
 
 | Area | Supported boundary |
 | --- | --- |

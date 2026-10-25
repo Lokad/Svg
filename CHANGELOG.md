@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Document text keyword, positive font-size and clip/mask declaration boundaries,
+  with direct and prepared admission checks.
 - Preserve filter input consumers through offset and zero-blur aliases.
 - Keep `SourceAlpha` rounding consistent across merge execution paths.
 - Preserve packed image rounding in offset/merge graphs while retaining shader inputs.
