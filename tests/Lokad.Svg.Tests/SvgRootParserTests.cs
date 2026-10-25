@@ -6242,11 +6242,18 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_on_circle_radial_foci()
+    public void Admits_point_foci_on_circle_and_masks_samples_outside_the_cone()
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5' fx='0.0' fy='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5' fx='0.0' fy='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        SvgRadialGeometry radial = Assert.Single(root.Geometries).Radial;
+        Assert.Equal(0, radial.Gradient.FocalX);
+        Assert.True(radial.Gradient.HasGeneralTransform);
+        SvgShaderCoordinates coordinates = SvgShaderCoordinates.CreateRadial(radial.Gradient, radial.Box, 1, 1, 0, 0);
+        Assert.True(coordinates.TryRadial(0, 4, new(0, 0), out SvgRadialShaderSample inside));
+        Assert.True(inside.IsVisible);
+        Assert.True(coordinates.TryRadial(-1, 4, new(0, 0), out SvgRadialShaderSample outside));
+        Assert.False(outside.IsVisible);
     }
 
     [Fact]
@@ -6421,19 +6428,22 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Validates_offset_focal_before_radial_transform_application()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' gradientTransform='scale(1,2)' cx='4' cy='4' r='4' fx='4' fy='7.9'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' gradientTransform='scale(1,2)' cx='4' cy='4' r='4' fx='4' fy='7.9'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
         Assert.Equal(4, geometry.Radial.Gradient.CenterX);
-        Assert.Equal(8, geometry.Radial.Gradient.CenterY);
+        Assert.Equal(4, geometry.Radial.Gradient.CenterY);
         Assert.Equal(4, geometry.Radial.Gradient.Radius);
+        Assert.Equal(7.9, geometry.Radial.Gradient.FocalY);
+        Assert.True(geometry.Radial.Gradient.HasGeneralTransform);
+        Assert.Equal((4d, 4d), geometry.Radial.Gradient.Inverse.Apply(4, 8));
     }
 
     [Fact]
-    public void Rejects_on_circle_focal_with_nonuniform_radial_transform()
+    public void Rejects_outside_focal_before_nonuniform_radial_transform()
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' gradientTransform='scale(2,1)' cx='4' cy='4' r='4' fx='4' fy='8'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' gradientTransform='scale(2,1)' cx='4' cy='4' r='4' fx='4' fy='8.1'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
     }
@@ -6465,15 +6475,18 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Admits_mirrored_radial_circles()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='44' cy='32' r='22' fx='52' fy='32' gradientTransform='translate(64 0) scale(-1 1)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='44' cy='32' r='22' fx='52' fy='32' gradientTransform='translate(64 0) scale(-1 1)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
-        Assert.Equal(20, geometry.Radial.Gradient.CenterX);
+        Assert.Equal(44, geometry.Radial.Gradient.CenterX);
         Assert.Equal(32, geometry.Radial.Gradient.CenterY);
         Assert.Equal(22, geometry.Radial.Gradient.Radius);
-        Assert.Equal(12, geometry.Radial.Gradient.FocalX);
+        Assert.Equal(52, geometry.Radial.Gradient.FocalX);
         Assert.Equal(32, geometry.Radial.Gradient.FocalY);
+        Assert.True(geometry.Radial.Gradient.HasGeneralTransform);
+        Assert.Equal((44d, 32d), geometry.Radial.Gradient.Inverse.Apply(20, 32));
+        Assert.Equal((52d, 32d), geometry.Radial.Gradient.Inverse.Apply(12, 32));
     }
 
     [Fact]

@@ -128,7 +128,12 @@ coverage scaling, source-over order and rounding boundaries. Alpha-only, binary,
 antialiased and luminance coverage are distinct inputs.
 
 Gradients retain float stop/ramp evaluation and ordered dithering in the logical
-source bitmap's coordinates. Images retain their own sampling matrix, clipping
+source bitmap's coordinates. Conical visibility masks precede ramp spreading and
+survive single-color lowering. Uniform ramps need no segment array; their color
+also survives nonfinite tile coordinates at the cone boundary.
+Nonconstant cone padding retains terminal arithmetic; normalized shader lanes
+clamp before coverage and source-over, including unordered native float values.
+Images retain their own sampling matrix, clipping
 and alpha rules. [Pattern tiles](../src/Lokad.Svg/Rendering/SvgPatternTileCache.cs)
 reuse bounded scene rendering and repeat sampling. Optional tile retention needs
 matching source, maps, sampling and paint; declining it preserves rendering.

@@ -1608,10 +1608,15 @@ internal static class SvgDefinitionParser
             double focalY = template.HasFocalY ? template.FocalY : centerY;
             SvgGradientSyntax.ValidateCoordinateUnits(isUserSpace, template.HasPercentageCoordinates || usesInitialVector);
             if (isUserSpace) ValidateRadialFocalCircle(centerX, centerY, radius, focalX, focalY, focalRadius);
-            if (template.HasTransform)
+            float circleDeltaX = (float)centerX - (float)focalX, circleDeltaY = (float)centerY - (float)focalY;
+            float circleDistance = MathF.Sqrt(circleDeltaX * circleDeltaX + circleDeltaY * circleDeltaY);
+            bool preserveCircleCoordinates = focalRadius != 0 || (focalX != centerX || focalY != centerY)
+                && (template.Transform != SvgGradientTransform.Identity || circleDistance <= 1f / 4096
+                    || MathF.Abs((float)radius / circleDistance - 1) <= 1f / 4096);
+            if (template.HasTransform || preserveCircleCoordinates)
             {
                 // Keep focal-circle coordinates separate from local maps for native float rounding.
-                bool simpleTransform = focalRadius == 0 && (template.Transform.B != 0 || template.Transform.C != 0
+                bool simpleTransform = !preserveCircleCoordinates && (template.Transform.B != 0 || template.Transform.C != 0
                     ? template.Transform.IsSimilarity() : isUserSpace || template.Transform.A == template.Transform.D);
                 if (!simpleTransform)
                 {
@@ -1692,7 +1697,8 @@ internal static class SvgDefinitionParser
         else
         {
             double inner = radius - focalRadius;
-            if (inner <= 0 || focalDeltaX * focalDeltaX + focalDeltaY * focalDeltaY >= inner * inner) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Offset radial foci outside the gradient circle are not implemented.");
+            double distanceSquared = focalDeltaX * focalDeltaX + focalDeltaY * focalDeltaY;
+            if (inner <= 0 || distanceSquared > inner * inner || focalRadius != 0 && distanceSquared == inner * inner) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Offset radial foci outside the gradient circle are not implemented.");
         }
     }
 

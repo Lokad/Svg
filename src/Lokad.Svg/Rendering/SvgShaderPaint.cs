@@ -208,13 +208,15 @@ internal readonly record struct SvgShaderPaint(float Red, float Green, float Blu
         if (coverage == 0 || Alpha == 0) return;
         const float byteScale = 1f / 255f;
         float scale = coverage * byteScale;
-        float alpha = Alpha * scale;
+        // Native normalized blitters clamp shader lanes before coverage and source-over.
+        float alpha = Clamp(Alpha) * scale;
         float inverse = 1 - alpha;
-        destination[0] = Quantize(MathF.FusedMultiplyAdd(destination[0] * byteScale, inverse, Red * scale));
-        destination[1] = Quantize(MathF.FusedMultiplyAdd(destination[1] * byteScale, inverse, Green * scale));
-        destination[2] = Quantize(MathF.FusedMultiplyAdd(destination[2] * byteScale, inverse, Blue * scale));
+        destination[0] = Quantize(MathF.FusedMultiplyAdd(destination[0] * byteScale, inverse, Clamp(Red) * scale));
+        destination[1] = Quantize(MathF.FusedMultiplyAdd(destination[1] * byteScale, inverse, Clamp(Green) * scale));
+        destination[2] = Quantize(MathF.FusedMultiplyAdd(destination[2] * byteScale, inverse, Clamp(Blue) * scale));
         destination[3] = Quantize(MathF.FusedMultiplyAdd(destination[3] * byteScale, inverse, alpha));
 
+        static float Clamp(float value) => float.IsNaN(value) ? 1 : Math.Clamp(value, 0, 1);
         // The x64 SIMD native store uses nearest-even conversion after scaling.
         static byte Quantize(float value) => (byte)Math.Clamp(MathF.Round(value * 255f, MidpointRounding.ToEven), 0, 255);
     }

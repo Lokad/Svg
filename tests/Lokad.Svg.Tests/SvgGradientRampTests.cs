@@ -99,6 +99,27 @@ public sealed class SvgGradientRampTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
+    [Fact]
+    public void Uniform_large_ramp_needs_no_segment_storage_and_keeps_nonfinite_positions_constant()
+    {
+        SvgColor color = new(192, 64, 128, 255);
+        SvgGradientStop[] stops = Enumerable.Range(0, 256).Select(index => new SvgGradientStop(index / 255d, color) { Alpha = .65f }).ToArray();
+        RenderBudget budget = new(1);
+        ParserWorkCounter work = new(256);
+        using (SvgGradientRamp ramp = SvgGradientRamp.Create(stops, color, color, 0, 1, budget, work, CancellationToken.None))
+        {
+            SvgShaderPaint expected = ramp.SampleLinear(.5, .7f, 32);
+            foreach (double position in new[] { double.NaN, double.PositiveInfinity, double.NegativeInfinity })
+            {
+                EqualBits(expected, ramp.SampleLinear(position, .7f, 32));
+                EqualBits(expected, ramp.SampleRadial(position, .7f, 32));
+            }
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+            Assert.Equal(256, work.Used);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     private static void EqualBits(SvgShaderPaint expected, SvgShaderPaint actual)
     {
         Assert.Equal(BitConverter.SingleToUInt32Bits(expected.Red), BitConverter.SingleToUInt32Bits(actual.Red));

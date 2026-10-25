@@ -95,8 +95,8 @@ internal struct SvgShaderSampler
         }
         SvgRadialGradient circle = _radial;
         double radialPosition;
-        if (circle.Stops.Length == 1) radialPosition = 0;
-        else if (!_coordinates.TryRadial(x, y, _context.Origin(x, y), out radialPosition))
+        if (circle.Stops.Length == 1 && !_coordinates.MasksRadialSamples) radialPosition = 0;
+        else if (!_coordinates.TryRadial(x, y, _context.Origin(x, y), out SvgRadialShaderSample sample))
         {
             SvgDevicePoint point = _context.SourcePoint(x, y);
             double px = circle.IsUserSpace ? point.X : (point.X - _box.X) / _box.Width;
@@ -113,7 +113,12 @@ internal struct SvgShaderSampler
             }
             radialPosition = SvgShaderCoordinates.EvaluateRadial(new(px - fx, py - fy), new(cx - fx, cy - fy), radius, focalRadius);
         }
-        return SvgAnalyticPaint.Shader(_ramp.SampleRadial(Spread(radialPosition, circle.Spread), _alpha, _context.Dither(x, y)));
+        else
+        {
+            if (!sample.IsVisible) return SvgAnalyticPaint.Shader(default);
+            radialPosition = sample.Position;
+        }
+        return SvgAnalyticPaint.Shader(_ramp.SampleRadial(SvgGradientRamp.SpreadRadial(radialPosition, circle.Spread), _alpha, _context.Dither(x, y)));
     }
 
     private static double Spread(double position, SvgGradientSpread spread)

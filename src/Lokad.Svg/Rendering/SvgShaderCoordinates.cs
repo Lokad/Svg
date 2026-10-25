@@ -8,10 +8,15 @@ namespace Lokad.Svg.Rendering;
 /// <summary>Retains the shader-local matrix and the drawing-reference matrix without concatenating their translations.</summary>
 internal readonly record struct SvgGradientPaintMatrices(SvgShaderMatrix Local, SvgAffineTransform Referencing);
 
+/// <summary>Carries a radial coordinate and the native cone's visibility mask before spreading.</summary>
+/// <remarks>Visible positions may include positive infinity at a cone boundary. Callers apply
+/// the mask before sampling the ramp and retain coverage, work, cancellation and owner lifetimes.</remarks>
+internal readonly record struct SvgRadialShaderSample(double Position, bool IsVisible);
+
 /// <summary>Prepares native float gradient or image coordinates for one raster draw.</summary>
 /// <remarks>Draw-local mutable state caches the owning bitmap's matrix without
 /// allocating storage. Callers retain raster work accounting and cancellation.
-/// Native centered radial and strictly contained focal circles use float unit matrices.
+/// Native centered radial, contained focal circles and foci on the circle use float unit matrices.
 /// Other conical maps and non-finite float maps keep the existing evaluator.
 /// Instances must not be shared between concurrent raster draws.</remarks>
 internal struct SvgShaderCoordinates
@@ -23,10 +28,19 @@ internal struct SvgShaderCoordinates
     private readonly float _focalRadiusRatioInverse;
     private readonly float _radialPositionScale;
     private readonly float _radialPositionBias;
+    private readonly bool _focalOnCircle;
     private SvgCpuBitmapOrigin _origin;
     private SvgShaderMatrix _prepared;
     private bool _hasPrepared;
     private bool _canSample;
+
+    internal readonly bool MasksRadialSamples => _focalOnCircle;
+
+    /// <summary>Preserves native cone visibility before a single-color paint is lowered to a solid.</summary>
+    /// <remarks>The unit box supplies an invertible reference without changing circle classification.
+    /// This bounded, allocation-free setup retains no storage; callers own work and cancellation.</remarks>
+    internal static bool NeedsRadialMask(SvgRadialGradient gradient)
+        => !gradient.IsEmpty && CreateRadial(gradient, new(0, 0, 1, 1, default, false, null), 1, 1, 0, 0).MasksRadialSamples;
 
     private SvgShaderCoordinates(SvgShaderMatrix unit, SvgShaderMatrix paintMap, SvgShaderMatrix? localMatrix)
         : this(unit, paintMap, localMatrix, 0) { }
@@ -35,6 +49,9 @@ internal struct SvgShaderCoordinates
         : this(unit, paintMap, localMatrix, focalRadiusRatioInverse, 1, 0) { }
 
     private SvgShaderCoordinates(SvgShaderMatrix unit, SvgShaderMatrix paintMap, SvgShaderMatrix? localMatrix, float focalRadiusRatioInverse, float radialPositionScale, float radialPositionBias)
+        : this(unit, paintMap, localMatrix, focalRadiusRatioInverse, radialPositionScale, radialPositionBias, false) { }
+
+    private SvgShaderCoordinates(SvgShaderMatrix unit, SvgShaderMatrix paintMap, SvgShaderMatrix? localMatrix, float focalRadiusRatioInverse, float radialPositionScale, float radialPositionBias, bool focalOnCircle)
     {
         _unit = unit;
         _paintMap = paintMap;
@@ -42,6 +59,7 @@ internal struct SvgShaderCoordinates
         _focalRadiusRatioInverse = focalRadiusRatioInverse;
         _radialPositionScale = radialPositionScale;
         _radialPositionBias = radialPositionBias;
+        _focalOnCircle = focalOnCircle;
         _enabled = float.IsFinite(radialPositionScale) && float.IsFinite(radialPositionBias) && unit.IsFinite && paintMap.IsFinite && paintMap.TryInvert(out _) && (localMatrix is null || localMatrix.Value.IsFinite);
     }
 
@@ -135,10 +153,16 @@ internal struct SvgShaderCoordinates
         {
             const float nearZero = 1f / 4096;
             if (radius <= 0 || !float.IsFinite(radius) || focalRadius < 0 || focalRadius >= radius) return default;
+            float dx = x - fx, dy = y - fy;
+            float distance = MathF.Sqrt(dx * dx + dy * dy);
+            if (focalRadius == 0 && distance <= nearZero)
+            {
+                // The factory reduction uses the focus; the later concentric reduction uses the outer center.
+                if (distance <= 1f / 32768) { x = fx; y = fy; }
+                fx = x; fy = y;
+            }
             if (focalRadius != 0)
             {
-                float dx = x - fx, dy = y - fy;
-                float distance = MathF.Sqrt(dx * dx + dy * dy);
                 if (distance <= nearZero)
                 {
                     float span = radius - focalRadius;
@@ -150,8 +174,6 @@ internal struct SvgShaderCoordinates
             }
             if (fx != x || fy != y)
             {
-                float dx = x - fx, dy = y - fy;
-                float distance = MathF.Sqrt(dx * dx + dy * dy);
                 float ratio = radius / distance;
                 float focal = 0, focalSpan = 1;
                 if (focalRadius != 0)
@@ -161,7 +183,8 @@ internal struct SvgShaderCoordinates
                     focalSpan = MathF.Abs(1 - focal);
                     ratio /= focalSpan;
                 }
-                if (!float.IsFinite(ratio) || ratio <= 1 + nearZero) return default;
+                bool focalOnCircle = MathF.Abs(ratio - 1) <= nearZero;
+                if (!float.IsFinite(ratio) || ratio < 1 && !focalOnCircle) return default;
                 SvgShaderMatrix centers = new(dy, dx, fx, -dx, dy, fy);
                 if (!centers.TryInvert(out SvgShaderMatrix inverseCenters)) return default;
                 SvgShaderMatrix unitX = SvgShaderMatrix.Concat(new(0, 1, 0, -1, 0, 0), inverseCenters);
@@ -174,13 +197,14 @@ internal struct SvgShaderCoordinates
                     unitX = SvgShaderMatrix.Concat(focalMap, unitX);
                 }
                 float squareMinusOne = ratio * ratio - 1;
-                float xScale = ratio / squareMinusOne, yScale = 1f / MathF.Sqrt(squareMinusOne);
+                float xScale = focalOnCircle ? .5f : ratio / squareMinusOne;
+                float yScale = focalOnCircle ? .5f : 1f / MathF.Sqrt(squareMinusOne);
                 SvgShaderMatrix unit = new(unitX.ScaleX * xScale, unitX.SkewX * xScale, unitX.TranslateX * xScale,
                     unitX.SkewY * yScale, unitX.ScaleY * yScale, unitX.TranslateY * yScale);
                 if (focalRadius != 0)
                     unit = new(unit.ScaleX * focalSpan, unit.SkewX * focalSpan, unit.TranslateX * focalSpan,
                         unit.SkewY * focalSpan, unit.ScaleY * focalSpan, unit.TranslateY * focalSpan);
-                return new(unit, paint, local, 1f / ratio, 1, MathF.Abs(focal) <= nearZero ? 0 : focal);
+                return new(unit, paint, local, 1f / ratio, 1, MathF.Abs(focal) <= nearZero ? 0 : focal, focalOnCircle);
             }
             float inverse = 1f / radius;
             return new(new(inverse, 0, -x * inverse, 0, inverse, -y * inverse), paint, local);
@@ -220,15 +244,18 @@ internal struct SvgShaderCoordinates
         return double.IsFinite(position);
     }
 
-    internal bool TryRadial(int x, int y, SvgCpuBitmapOrigin origin, out double position)
+    internal bool TryRadial(int x, int y, SvgCpuBitmapOrigin origin, out SvgRadialShaderSample sample)
     {
-        position = 0;
+        sample = default;
         if (!TryMap(x, y, origin, out var point)) return false;
         // Keep separate float squares before the native radius stage.
-        float radial = MathF.Sqrt(point.X * point.X + point.Y * point.Y) - point.X * _focalRadiusRatioInverse;
-        position = _radialPositionScale == 1 && _radialPositionBias == 0 ? radial
+        float radial = _focalOnCircle ? point.X + point.Y * point.Y / point.X
+            : MathF.Sqrt(point.X * point.X + point.Y * point.Y) - point.X * _focalRadiusRatioInverse;
+        if (_focalOnCircle && (radial <= 0 || float.IsNaN(radial))) return true;
+        double position = _radialPositionScale == 1 && _radialPositionBias == 0 ? radial
             : MathF.FusedMultiplyAdd(radial, _radialPositionScale, _radialPositionBias);
-        return double.IsFinite(position);
+        sample = new(position, true);
+        return _focalOnCircle || double.IsFinite(position);
     }
 
     internal bool TryMap(int x, int y, SvgCpuBitmapOrigin origin, out (float X, float Y) point)

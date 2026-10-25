@@ -3703,21 +3703,16 @@ public static partial class SvgConverter
                 double rayX = sampleX - focalX;
                 double rayY = sampleY - focalY;
                 double position;
-                if (definition.Stops.Length == 1) position = 0;
+                if (definition.Stops.Length == 1 && !nativeCoordinates.MasksRadialSamples) position = 0;
                 else
-                if (!nativeCoordinates.TryRadial(x, y, ShaderBitmapOrigin(x, y), out position))
+                if (!nativeCoordinates.TryRadial(x, y, ShaderBitmapOrigin(x, y), out SvgRadialShaderSample sample))
                     position = SvgShaderCoordinates.EvaluateRadial(new(rayX, rayY), new(offsetX, offsetY), radius, focalRadius);
-                if (definition.Spread == SvgGradientSpread.Repeat) position -= Math.Floor(position);
-                else if (definition.Spread == SvgGradientSpread.Reflect)
-                {
-                    double cycle = position - 2 * Math.Floor(position / 2);
-                    position = cycle > 1 ? 2 - cycle : cycle;
-                }
                 else
                 {
-                    if (position < 0) position = 0;
-                    if (position > 1) position = 1;
+                    if (!sample.IsVisible) continue;
+                    position = sample.Position;
                 }
+                position = SvgGradientRamp.SpreadRadial(position, definition.Spread);
                 int offset = (y * outputWidth + x) * 4;
                 ramp.SampleRadial(position, ShaderAlpha(opacity), GradientDither(x, y)).Blend(destination.AsSpan(offset, 4), ViewportAlpha(raster.GetAlpha(x, y), x, y));
             }
@@ -4098,9 +4093,9 @@ public static partial class SvgConverter
                 if (glyphRadial is {} radial)
                 {
                     double position;
-                    if (radial.Stops.Length == 1) position = 0;
+                    if (radial.Stops.Length == 1 && !glyphCoordinates.MasksRadialSamples) position = 0;
                     else if (radial.Radius == 0) position = 1;
-                    else if (!glyphCoordinates.TryRadial(x, y, ShaderBitmapOrigin(x, y), out position))
+                    else if (!glyphCoordinates.TryRadial(x, y, ShaderBitmapOrigin(x, y), out SvgRadialShaderSample sample))
                     {
                         double sampleX = (x + .5 - horizontalOffset) / horizontalScale;
                         double sampleY = (y + .5 - verticalOffset) / verticalScale;
@@ -4116,7 +4111,12 @@ public static partial class SvgConverter
                         }
                         position = SvgShaderCoordinates.EvaluateRadial(new(rayX, rayY), new(offsetX, offsetY), radius, focalRadius);
                     }
-                    return SvgAnalyticPaint.Shader(glyphRamp.SampleRadial(Spread(position, radial.Spread), ShaderAlpha(glyph.Color.Alpha), GradientDither(x, y)));
+                    else
+                    {
+                        if (!sample.IsVisible) return SvgAnalyticPaint.Shader(default);
+                        position = sample.Position;
+                    }
+                    return SvgAnalyticPaint.Shader(glyphRamp.SampleRadial(SvgGradientRamp.SpreadRadial(position, radial.Spread), ShaderAlpha(glyph.Color.Alpha), GradientDither(x, y)));
                 }
                 return glyphPattern is null ? ResolveSolidPaint(glyph.Color)
                     : SvgAnalyticPaint.Shader(SamplePatternWithOpacity(glyphPattern, glyphTile.Surface.Pixels, x, y, ref glyphCoordinates, glyph.Color.Alpha));

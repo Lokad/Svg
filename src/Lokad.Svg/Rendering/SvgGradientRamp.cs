@@ -31,6 +31,18 @@ internal readonly struct SvgGradientRamp : IDisposable
     {
         work.Consume(token);
         if (stops.Length > 256) throw new SvgException(SvgErrorCode.LimitExceeded, "Gradient ramp preparation exceeds the supported stop limit.");
+        if (stops.Length > 2 && SamePaint(stops[0], stops[^1]))
+        {
+            SvgGradientStop first = stops[0];
+            bool uniform = true;
+            for (int index = 1; index < stops.Length; index++)
+            {
+                work.Consume(token);
+                SvgGradientStop next = stops[index];
+                if (!SamePaint(next, first)) { uniform = false; break; }
+            }
+            if (uniform) return new(SvgGradientRampSegment.Pair(first.Color, first.Color, first.Alpha, first.Alpha), new([], null), offset1, offset2, false);
+        }
         if (stops.Length <= 2)
         {
             float firstAlpha = stops.Length == 0 ? start.Alpha * (1f / 255f) : stops[0].Alpha;
@@ -50,14 +62,37 @@ internal readonly struct SvgGradientRamp : IDisposable
             return new(default, new(segments, owner), offset1, offset2, true);
         }
         catch { owner.Dispose(); throw; }
+
+        static bool SamePaint(SvgGradientStop first, SvgGradientStop second)
+            => first.Color.Red == second.Color.Red && first.Color.Green == second.Color.Green
+                && first.Color.Blue == second.Color.Blue && first.Alpha == second.Alpha;
     }
 
     internal SvgShaderPaint SampleLinear(double position, float opacity, int matrix)
         => Sample(_multiple ? (float)(_offset1 + position * (_offset2 - _offset1)) : (float)position, opacity, matrix);
 
+    /// <summary>Spreads one radial position, retaining native cone-boundary infinities until ramp evaluation.</summary>
+    internal static double SpreadRadial(double position, SvgGradientSpread spread)
+    {
+        if (double.IsPositiveInfinity(position)) return spread == SvgGradientSpread.Pad ? position : 1;
+        if (spread == SvgGradientSpread.Repeat) return position - Math.Floor(position);
+        if (spread == SvgGradientSpread.Reflect)
+        {
+            double cycle = position - 2 * Math.Floor(position / 2);
+            return cycle > 1 ? 2 - cycle : cycle;
+        }
+        return Math.Clamp(position, 0, 1);
+    }
+
     /// <summary>Preserves absolute radial padding before selecting an arbitrary segment or normalizing a two-stop pair.</summary>
     internal SvgShaderPaint SampleRadial(double position, float opacity, int matrix)
     {
+        if (_multiple && double.IsPositiveInfinity(position))
+        {
+            // Native terminal padding has zero factors; retain 0*infinity through coverage and store.
+            float terminal = 0f * (float)position;
+            return new(terminal, terminal, terminal, terminal);
+        }
         double absolute = Math.Clamp(position, _offset1, _offset2);
         double coordinate = _multiple ? 0d + absolute * 1d : _offset2 > _offset1 ? (absolute - _offset1) / (_offset2 - _offset1) : 0;
         return Sample((float)coordinate, opacity, matrix);
@@ -86,7 +121,7 @@ internal readonly record struct SvgGradientRampSegment(float Position, SvgShader
     internal static SvgGradientRampSegment Pair(SvgColor start, SvgColor end, float firstAlpha, float secondAlpha)
     {
         SvgShaderPaint first = Normalize(start, firstAlpha), second = Normalize(end, secondAlpha);
-        return new(0, new(second.Red - first.Red, second.Green - first.Green, second.Blue - first.Blue, second.Alpha - first.Alpha), first, false);
+        return new(0, new(second.Red - first.Red, second.Green - first.Green, second.Blue - first.Blue, second.Alpha - first.Alpha), first, first == second);
     }
 
     internal static SvgGradientRampSegment Arbitrary(SvgGradientStop left, SvgGradientStop right)

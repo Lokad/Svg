@@ -1,3 +1,5 @@
+// Native CSS coordinate conversion adapts Chromium 153.0.8010.52.
+// Copyright 2014 The Chromium Authors. See THIRD_PARTY_NOTICES.txt.
 using System.Globalization;
 using System.Xml;
 using Lokad.Svg.Rendering;
@@ -521,10 +523,10 @@ internal static class SvgGradientSyntax
         using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, elementName, isPath, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
         if (SvgOrthogonalShapeParser.HasDiagonalContour(points, contourEnds))
         {
-            if (gradient.Stops.Length == 1 || (gradient.Radius == 0 && !gradient.IsEmpty)) return AppendPaintFillStroke(lowering.LowerPolygonFill(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame, budget), reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
+            if (gradient.Stops.Length == 1 && !SvgShaderCoordinates.NeedsRadialMask(gradient) || (gradient.Radius == 0 && !gradient.IsEmpty)) return AppendPaintFillStroke(lowering.LowerPolygonFill(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame, budget), reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
             return AppendPaintFillStroke(lowering.LowerRadialPolygonFill(gradient, box, painted && !gradient.IsEmpty, opacity, transform, frame, budget), reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
         }
-        if (gradient.Stops.Length == 1 || (gradient.Radius == 0 && !gradient.IsEmpty)) return AppendPaintFillStroke(lowering.Lower(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame), reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
+        if (gradient.Stops.Length == 1 && !SvgShaderCoordinates.NeedsRadialMask(gradient) || (gradient.Radius == 0 && !gradient.IsEmpty)) return AppendPaintFillStroke(lowering.Lower(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame), reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
         SvgParsedGeometry solid = lowering.Lower(default, painted && !gradient.IsEmpty, transform, frame);
         SvgGeometry[] bands = solid.Storage.Items;
         try
@@ -1274,7 +1276,7 @@ internal static class SvgGradientSyntax
     /// <summary>Lowers one radial gradient fill rectangle shared by combined fill-and-stroke lowerings, mirroring the fill-only lowering.</summary>
     internal static SvgGeometry LowerRadialFillGeometry(SvgRadialGradient fillCircle, SvgRectangle box, SvgRectangle fill, bool fillHasFill, byte fillOpacity, RenderBudget budget)
     {
-        if (fillCircle.Stops.Length == 1) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(fillCircle.End, fillOpacity), HasFill = fillHasFill });
+        if (fillCircle.Stops.Length == 1 && !SvgShaderCoordinates.NeedsRadialMask(fillCircle)) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(fillCircle.End, fillOpacity), HasFill = fillHasFill });
         if (fillCircle.Radius == 0 && !fillCircle.IsEmpty) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(fillCircle.End, fillOpacity), HasFill = fillHasFill });
         return SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(fillCircle, box, fill with { HasFill = fillHasFill }, fillOpacity, null, budget));
     }
@@ -1296,6 +1298,16 @@ internal static class SvgGradientSyntax
         bool percentage = token.EndsWith("%");
         if (percentage) token = token[..^1];
         if (!double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient coordinates must be finite bounded numbers.");
+        // The native CSS length fast path retains at most seven fractional digits.
+        int decimalAt = token.IndexOf('.');
+        if (token[0] != '+' && token.IndexOfAny('e', 'E') < 0 && decimalAt >= 0 && token.Length - decimalAt - 1 >= 7)
+        {
+            double whole = decimalAt == 0 || decimalAt == 1 && token[0] == '-' ? 0 : Math.Abs(double.Parse(token[..decimalAt], SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture));
+            int fraction = 0;
+            for (int digit = decimalAt + 1; digit <= decimalAt + 7; digit++) fraction = fraction * 10 + token[digit] - '0';
+            result = whole + fraction * Math.BitIncrement(1e-7);
+            if (token[0] == '-') result = -result;
+        }
         return percentage ? (float)result / 100f : result;
     }
 }

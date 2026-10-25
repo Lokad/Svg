@@ -24,11 +24,23 @@ public sealed class SvgStaticCssImageTests
     [InlineData("<ellipse cx='16' cy='16' rx='12' ry='10' fill='url(#g)'/>", "matrix(2 0 0 -2 0 96)", "gradientUnits='userSpaceOnUse' cx='16' cy='16' r='10' fx='14' fy='15' fr='1' gradientTransform='translate(4 0)'")]
     [InlineData("<rect x='4' y='6' width='24' height='20' rx='4' ry='3' fill='url(#g)'/>", "matrix(-2 0 0 -2 96 96)", "gradientUnits='userSpaceOnUse' cx='16' cy='16' r='10' fx='14' fy='15' fr='1' gradientTransform='scale(2)'")]
     [InlineData("<circle cx='16' cy='16' r='10' fill='url(#g)'/>", "matrix(2 0 0 2 0 0)", "cx='.4' cy='.55' r='.4' fx='.25' fy='.35' fr='.1' gradientTransform='rotate(90)'")]
+    [InlineData("<circle cx='16' cy='16' r='10' fill='url(#g)'/>", "matrix(-2 0 0 2 96 0)", "gradientUnits='userSpaceOnUse' cx='16' cy='16' r='10' fx='26' fy='16' fr='0'")]
+    [InlineData("<ellipse cx='16' cy='16' rx='12' ry='10' fill='url(#g)'/>", "matrix(2 0 0 -2 0 96)", "gradientUnits='userSpaceOnUse' cx='16' cy='16' r='10' fx='25.999' fy='16' fr='0'")]
     public void Reflected_radial_sources_release_owners_after_denial_cancellation_and_retry(string shape, string placement, string coordinates)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96'>"
             + "<defs><radialGradient id='g' " + coordinates + "><stop stop-color='#c04080'/><stop offset='1' stop-color='#244a77'/></radialGradient></defs>"
             + "<g transform='" + placement + "'>" + shape + "</g></svg>");
+        AssertResourceLifecycle(input);
+        AssertActiveRasterLifecycle(input);
+    }
+
+    [Theory]
+    [InlineData("<stop stop-color='#c04080' stop-opacity='.65'/>")]
+    [InlineData("<stop stop-color='#c04080' stop-opacity='.65'/><stop offset='.5' stop-color='#c04080' stop-opacity='.65'/><stop offset='1' stop-color='#c04080' stop-opacity='.65'/>")]
+    public void Constant_radial_cone_masks_release_owners_after_denial_cancellation_and_retry(string stops)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='32' cy='32' r='20' fx='52' fy='32' spreadMethod='repeat'>" + stops + "</radialGradient></defs><circle cx='44' cy='44' r='40' fill='url(#g)'/></svg>");
         AssertResourceLifecycle(input);
         AssertActiveRasterLifecycle(input);
     }

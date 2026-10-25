@@ -124,11 +124,23 @@ public sealed class SvgGradientCoordinateTests
             SvgCpuBitmapOrigin expectedOrigin = new(int.Parse(v[13], CultureInfo.InvariantCulture), int.Parse(v[14], CultureInfo.InvariantCulture));
             Assert.Equal(expectedOrigin, grid.GetBitmapOrigin(x, y));
             double position;
-            bool sampled = v[0] == "linear" ? coordinates.TryLinear(x, y, grid.GetBitmapOrigin(x, y), out position) : coordinates.TryRadial(x, y, grid.GetBitmapOrigin(x, y), out position);
-            Assert.True(sampled, row);
+            if (v[0] == "linear") Assert.True(coordinates.TryLinear(x, y, grid.GetBitmapOrigin(x, y), out position), row);
+            else
+            {
+                Assert.True(coordinates.TryRadial(x, y, grid.GetBitmapOrigin(x, y), out SvgRadialShaderSample radial), row);
+                Assert.True(radial.IsVisible, row);
+                position = radial.Position;
+            }
             Assert.Equal(uint.Parse(v[15], CultureInfo.InvariantCulture), BitConverter.SingleToUInt32Bits((float)position));
             // Repeating a sample exercises the cached bitmap matrix.
-            Assert.True(v[0] == "linear" ? coordinates.TryLinear(x, y, grid.GetBitmapOrigin(x, y), out double cached) : coordinates.TryRadial(x, y, grid.GetBitmapOrigin(x, y), out cached));
+            double cached;
+            if (v[0] == "linear") Assert.True(coordinates.TryLinear(x, y, grid.GetBitmapOrigin(x, y), out cached));
+            else
+            {
+                Assert.True(coordinates.TryRadial(x, y, grid.GetBitmapOrigin(x, y), out SvgRadialShaderSample radial));
+                Assert.True(radial.IsVisible);
+                cached = radial.Position;
+            }
             Assert.Equal(position, cached);
             SvgShaderPaint sample = ramp.SampleLinear(Math.Clamp(position, 0, 1), 201 / 255f, grid.GetGradientDither(x, y));
             uint[] expectedLanes = v.Skip(16).Take(4).Select(value => uint.Parse(value, CultureInfo.InvariantCulture)).ToArray();
@@ -163,7 +175,9 @@ public sealed class SvgGradientCoordinateTests
             int x = int.Parse(cells[15], CultureInfo.InvariantCulture), y = int.Parse(cells[16], CultureInfo.InvariantCulture);
             SvgCpuBitmapOrigin expectedOrigin = new(int.Parse(cells[17], CultureInfo.InvariantCulture), int.Parse(cells[18], CultureInfo.InvariantCulture));
             Assert.Equal(expectedOrigin, grid.GetBitmapOrigin(x, y));
-            Assert.True(coordinates.TryRadial(x, y, grid.GetBitmapOrigin(x, y), out double position), row);
+            Assert.True(coordinates.TryRadial(x, y, grid.GetBitmapOrigin(x, y), out SvgRadialShaderSample radial), row);
+            Assert.True(radial.IsVisible, row);
+            double position = radial.Position;
             Assert.Equal(uint.Parse(cells[19], CultureInfo.InvariantCulture), BitConverter.SingleToUInt32Bits((float)position));
             SvgShaderPaint sample = ramp.SampleLinear(Math.Clamp(position, 0, 1), 201 / 255f, grid.GetGradientDither(x, y));
             uint[] lanes = [BitConverter.SingleToUInt32Bits(sample.Red), BitConverter.SingleToUInt32Bits(sample.Green), BitConverter.SingleToUInt32Bits(sample.Blue), BitConverter.SingleToUInt32Bits(sample.Alpha)];

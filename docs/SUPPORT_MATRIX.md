@@ -205,7 +205,9 @@ through an overridden template need no font programs; see the
 
 Linear and radial gradients support objectBoundingBox/userSpaceOnUse units,
 affine gradient transforms, local templates, pad/repeat/reflect spread and sRGB
-color interpolation. Radial paints include focal-circle parameters. Gradient
+color interpolation. Radial paints include contained focal circles and zero-radius
+foci on the outer circle; outside foci and tangential nonzero focal circles remain
+unsupported. Gradient
 templates inherit coordinates independently of units, spread and the local map;
 a child's transform replaces the parent's map before placement. Cross-kind
 templates share stops and common attributes; the child's kind supplies its default

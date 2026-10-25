@@ -29,6 +29,8 @@ Inner-circle controls cover centered and offset conical coordinates, symbol
 reference maps and empty viewports; ownership checks share the same replay path.
 Local focal-circle maps stay separate from definition coordinates; collapsed
 viewport controls include direct and inherited general paint maps.
+Native conical masks also cover single-color paints and supplied glyphs; font
+references retain Windows/Linux coverage profiles and verify the embedded bytes.
 
 [Affine flood tests](Lokad.Svg.Tests/SvgAffineFloodTests.cs) retain input-specific
 Chrome RGBA hashes for mapped filter regions, colors, alpha and source forms,
