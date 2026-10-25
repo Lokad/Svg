@@ -1580,7 +1580,8 @@ public static partial class SvgConverter
                         left = Math.Min(left, filtered.Left); top = Math.Min(top, filtered.Top);
                         right = Math.Max(right, filtered.Right); bottom = Math.Max(bottom, filtered.Bottom);
                     }
-                    if (value.RegionKind == SvgLayerRegionKind.Mask && value.MaskContentIndex >= 0 && value.MaskRegion is {} spatialRegion)
+                    // Eliding constant mask content must preserve its spatial contribution.
+                    if (value.RegionKind == SvgLayerRegionKind.Mask && value.MaskRegion is {} spatialRegion)
                         IncludeBox(new(spatialRegion.X, spatialRegion.Y, spatialRegion.Width, spatialRegion.Height, default, false, null), outputMap, 0);
                     depth++; continue;
                 }

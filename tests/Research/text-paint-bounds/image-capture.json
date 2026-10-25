@@ -1,5 +1,5 @@
 {
-  "purpose": "Text object boxes, full character widths and locally enclosed drawing rectangles feed independent paints. Path spacing, transforms, signed advances and replay retain their own coordinate boundaries. Deferred text and instance replay retain enclosing filter source bounds. General parent poses compose independently of zero-tangent path glyph placement. Recorded font size and remaining device matrix retain independent rounding boundaries. Horizontal path fragments retain source-origin truncation before parent affine placement. Glyphs and decorations share native source drawing bounds; axis-aligned paints retain isolated layer clipping.",
+  "purpose": "Text object boxes, full character widths and locally enclosed drawing rectangles feed independent paints. Path spacing, transforms, signed advances and replay retain their own coordinate boundaries. Deferred text and instance replay retain enclosing filter source bounds. General parent poses compose independently of zero-tangent path glyph placement. Recorded font size and remaining device matrix retain independent rounding boundaries. Horizontal path fragments retain source-origin truncation before parent affine placement. Glyphs and decorations share native source drawing bounds; axis-aligned paints retain isolated layer clipping. Constant mask content retains its spatial region in enclosing drawing bounds.",
   "chromeVersion": "153.0.8010.52",
   "background": "transparent",
   "fontEvidence": "capture.json",
@@ -3261,6 +3261,534 @@
           "sha256": "06b2c96653290ae9417ddb3a023990f539bc35d153d49164b06655a968029324"
         }
       }
+    },
+    {
+      "id": "frame-8-candidate",
+      "input": "frame-8-candidate.svg",
+      "sourceSha256": "96de8654261d90a84947e07d5bab318b3a5cb6b36ad609638f5950b0a734df47",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-8-candidate.png",
+          "sha256": "2f870369872d8459a283e9a14ddde2c0c20332babd20b8abbebb7e26c2e0050f",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "6e3ca8da886e102fc2715d5b438e3ad03f020a2f73c2580efef37685f4b0984c"
+        },
+        "linux": {
+          "path": "references/linux/frame-8-candidate.png",
+          "sha256": "2f870369872d8459a283e9a14ddde2c0c20332babd20b8abbebb7e26c2e0050f",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "6e3ca8da886e102fc2715d5b438e3ad03f020a2f73c2580efef37685f4b0984c"
+        }
+      }
+    },
+    {
+      "id": "frame-9-candidate",
+      "input": "frame-9-candidate.svg",
+      "sourceSha256": "96de8654261d90a84947e07d5bab318b3a5cb6b36ad609638f5950b0a734df47",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-9-candidate.png",
+          "sha256": "3e02e635f33b87bbb688c322e32e07c121f601139e84a9ebb3f0632f4e02f56a",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "656650cb75a63570a5a57a88ef7dfa14ae159f026ff3631b20ec67a1ba2acf30"
+        },
+        "linux": {
+          "path": "references/linux/frame-9-candidate.png",
+          "sha256": "3e02e635f33b87bbb688c322e32e07c121f601139e84a9ebb3f0632f4e02f56a",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "656650cb75a63570a5a57a88ef7dfa14ae159f026ff3631b20ec67a1ba2acf30"
+        }
+      }
+    },
+    {
+      "id": "frame-10-candidate",
+      "input": "frame-10-candidate.svg",
+      "sourceSha256": "e995807e9c47801a02c5b6fea458a0405984ce5c92f4c7ee7099833399c802be",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-10-candidate.png",
+          "sha256": "5a5270f4ec835dde3e0808081585e001e9b22afa4df7cef1ebec2f758cf6c6b3",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "b250867b5a483179e1b07d7b81edc49c60818fed7228df1f9c75172d85f4e4bd"
+        },
+        "linux": {
+          "path": "references/linux/frame-10-candidate.png",
+          "sha256": "5a5270f4ec835dde3e0808081585e001e9b22afa4df7cef1ebec2f758cf6c6b3",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "b250867b5a483179e1b07d7b81edc49c60818fed7228df1f9c75172d85f4e4bd"
+        }
+      }
+    },
+    {
+      "id": "frame-11-candidate",
+      "input": "frame-11-candidate.svg",
+      "sourceSha256": "e995807e9c47801a02c5b6fea458a0405984ce5c92f4c7ee7099833399c802be",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-11-candidate.png",
+          "sha256": "96539a25384f41ba2c31fce0b196decad6e5b23efb8600fd224b70d634435871",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "5c981d5fc7a8ae0c620f620ba073d2428bca57fd2a80bb623406e371c86edefd"
+        },
+        "linux": {
+          "path": "references/linux/frame-11-candidate.png",
+          "sha256": "96539a25384f41ba2c31fce0b196decad6e5b23efb8600fd224b70d634435871",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "5c981d5fc7a8ae0c620f620ba073d2428bca57fd2a80bb623406e371c86edefd"
+        }
+      }
+    },
+    {
+      "id": "frame-12-candidate",
+      "input": "frame-12-candidate.svg",
+      "sourceSha256": "2f893cd732609ffe3661d0546e2726647130a900cd4f526e2fc3003d56781251",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-12-candidate.png",
+          "sha256": "562c4607cecae0962710a5be515609cb0cb5d280cff825798fbd966d52ba27f3",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "78b948c3875da5971a6cade5795373bd7bd93a692b23278084942eb9213dee87"
+        },
+        "linux": {
+          "path": "references/linux/frame-12-candidate.png",
+          "sha256": "562c4607cecae0962710a5be515609cb0cb5d280cff825798fbd966d52ba27f3",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "78b948c3875da5971a6cade5795373bd7bd93a692b23278084942eb9213dee87"
+        }
+      }
+    },
+    {
+      "id": "frame-13-candidate",
+      "input": "frame-13-candidate.svg",
+      "sourceSha256": "2f893cd732609ffe3661d0546e2726647130a900cd4f526e2fc3003d56781251",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-13-candidate.png",
+          "sha256": "95cf5aee488d262b57b617efb852befa23c3eae8eecb31b41f5cdde7ed96900f",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "16aad5b2d80b39c8290eb53d96006b2d55876b42ceaa753b6140ce42eacb517e"
+        },
+        "linux": {
+          "path": "references/linux/frame-13-candidate.png",
+          "sha256": "95cf5aee488d262b57b617efb852befa23c3eae8eecb31b41f5cdde7ed96900f",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "16aad5b2d80b39c8290eb53d96006b2d55876b42ceaa753b6140ce42eacb517e"
+        }
+      }
+    },
+    {
+      "id": "frame-14-candidate",
+      "input": "frame-14-candidate.svg",
+      "sourceSha256": "5747a0ceb5460c12f545e249a4ba714522688e78a5184ac0957ec904086103ae",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-14-candidate.png",
+          "sha256": "56b56798759adba784f6b5c1083b52dc82c6fbd53228f54802c8252a4f52ddfd",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "add4b446bb0623e43e5fb30ab27b10e5ac5109d6f5dd5267d4205d02d2b4d9d4"
+        },
+        "linux": {
+          "path": "references/linux/frame-14-candidate.png",
+          "sha256": "56b56798759adba784f6b5c1083b52dc82c6fbd53228f54802c8252a4f52ddfd",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "add4b446bb0623e43e5fb30ab27b10e5ac5109d6f5dd5267d4205d02d2b4d9d4"
+        }
+      }
+    },
+    {
+      "id": "frame-15-candidate",
+      "input": "frame-15-candidate.svg",
+      "sourceSha256": "5747a0ceb5460c12f545e249a4ba714522688e78a5184ac0957ec904086103ae",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-15-candidate.png",
+          "sha256": "cad1c17d5875b0bf9028baf8ad5b4dced2d7b5aac6d1cc6306310d16c9640550",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "b870743b3b8882980dedf511bb7ac6bb7e381da7ab7421680d2f115e407bbf71"
+        },
+        "linux": {
+          "path": "references/linux/frame-15-candidate.png",
+          "sha256": "cad1c17d5875b0bf9028baf8ad5b4dced2d7b5aac6d1cc6306310d16c9640550",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "b870743b3b8882980dedf511bb7ac6bb7e381da7ab7421680d2f115e407bbf71"
+        }
+      }
+    },
+    {
+      "id": "frame-24-candidate",
+      "input": "frame-24-candidate.svg",
+      "sourceSha256": "928ca26e14abf6d256c315b5130ebd370ef2c9abffadfe934fda05467fbc5742",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-24-candidate.png",
+          "sha256": "2af2a2b4cc74e0e67bc420a1b0856e9fe2a2b44583d3b59d69cfb6069d29dbd1",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "0b87730d46cb814ff60b9f10532c0dce5fa82b6d187ece2a1d5f1d6b4ed55cdb"
+        },
+        "linux": {
+          "path": "references/linux/frame-24-candidate.png",
+          "sha256": "2af2a2b4cc74e0e67bc420a1b0856e9fe2a2b44583d3b59d69cfb6069d29dbd1",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "0b87730d46cb814ff60b9f10532c0dce5fa82b6d187ece2a1d5f1d6b4ed55cdb"
+        }
+      }
+    },
+    {
+      "id": "frame-25-candidate",
+      "input": "frame-25-candidate.svg",
+      "sourceSha256": "928ca26e14abf6d256c315b5130ebd370ef2c9abffadfe934fda05467fbc5742",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-25-candidate.png",
+          "sha256": "c77095fb9ef284bc29d88bb5c5670d817a2584833d4a31a6585c7f67b2a45c60",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "91b350eb11d268f06266ccab5e935ef63844b8ac907aaeed5bfb727a13d92e86"
+        },
+        "linux": {
+          "path": "references/linux/frame-25-candidate.png",
+          "sha256": "c77095fb9ef284bc29d88bb5c5670d817a2584833d4a31a6585c7f67b2a45c60",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "91b350eb11d268f06266ccab5e935ef63844b8ac907aaeed5bfb727a13d92e86"
+        }
+      }
+    },
+    {
+      "id": "frame-26-candidate",
+      "input": "frame-26-candidate.svg",
+      "sourceSha256": "72ea5b2c9a6e83fe3f2410079a23d052aaa6aa497b1484d54274a666d4dd0f5c",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-26-candidate.png",
+          "sha256": "05ed741430e0ec6e29525fda7eacd4a9e80d9658cf250fd164ba813369433e6f",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "2ec543d0566203874d482f199875518a4fc9fcf28239ffcfb0dece0495f1a5b5"
+        },
+        "linux": {
+          "path": "references/linux/frame-26-candidate.png",
+          "sha256": "05ed741430e0ec6e29525fda7eacd4a9e80d9658cf250fd164ba813369433e6f",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "2ec543d0566203874d482f199875518a4fc9fcf28239ffcfb0dece0495f1a5b5"
+        }
+      }
+    },
+    {
+      "id": "frame-27-candidate",
+      "input": "frame-27-candidate.svg",
+      "sourceSha256": "72ea5b2c9a6e83fe3f2410079a23d052aaa6aa497b1484d54274a666d4dd0f5c",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-27-candidate.png",
+          "sha256": "a86f29353aa6a7da455469827a0ba5fee5890e23e49af6f814bd8923bea8e3c8",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "4fa981ba7b6b526eedf8df1215bb81af257be81c5eef5c60dd2e40ab6703d2a0"
+        },
+        "linux": {
+          "path": "references/linux/frame-27-candidate.png",
+          "sha256": "a86f29353aa6a7da455469827a0ba5fee5890e23e49af6f814bd8923bea8e3c8",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "4fa981ba7b6b526eedf8df1215bb81af257be81c5eef5c60dd2e40ab6703d2a0"
+        }
+      }
+    },
+    {
+      "id": "frame-28-candidate",
+      "input": "frame-28-candidate.svg",
+      "sourceSha256": "274ab82f815251d98dae8ab0c7513790f39cf631a2dfd5974107276d87ba954b",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-28-candidate.png",
+          "sha256": "ebb50f11beb74dd2e80a133ce5fc2bf92fefd4d27d7fda9312e3471dd0d69c41",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "9867bd122191c747a1db85c84838953f719cb3925a18c68de00625f5bc4ce56b"
+        },
+        "linux": {
+          "path": "references/linux/frame-28-candidate.png",
+          "sha256": "ebb50f11beb74dd2e80a133ce5fc2bf92fefd4d27d7fda9312e3471dd0d69c41",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "9867bd122191c747a1db85c84838953f719cb3925a18c68de00625f5bc4ce56b"
+        }
+      }
+    },
+    {
+      "id": "frame-29-candidate",
+      "input": "frame-29-candidate.svg",
+      "sourceSha256": "274ab82f815251d98dae8ab0c7513790f39cf631a2dfd5974107276d87ba954b",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-29-candidate.png",
+          "sha256": "f524c3311c32acff9993270e8c3c8db41e4bffb82e587f7332f3b10e28211a8c",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "91c96e3e88614862e8825e1490cae12484221915e2ade9785c974d9bc23d7592"
+        },
+        "linux": {
+          "path": "references/linux/frame-29-candidate.png",
+          "sha256": "f524c3311c32acff9993270e8c3c8db41e4bffb82e587f7332f3b10e28211a8c",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "91c96e3e88614862e8825e1490cae12484221915e2ade9785c974d9bc23d7592"
+        }
+      }
+    },
+    {
+      "id": "frame-30-candidate",
+      "input": "frame-30-candidate.svg",
+      "sourceSha256": "c184cc88efc0e8218234508499b8a3f795677207ea281bcf827c8a26e8e9a620",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-30-candidate.png",
+          "sha256": "387340d03dfc062aa8186c08d054e67f10cad44baab248065e59c6aa44c1293b",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "79889145918aab01102285d24b329e048e5ba0545a0039f4b2e62766ca06b954"
+        },
+        "linux": {
+          "path": "references/linux/frame-30-candidate.png",
+          "sha256": "387340d03dfc062aa8186c08d054e67f10cad44baab248065e59c6aa44c1293b",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "79889145918aab01102285d24b329e048e5ba0545a0039f4b2e62766ca06b954"
+        }
+      }
+    },
+    {
+      "id": "frame-31-candidate",
+      "input": "frame-31-candidate.svg",
+      "sourceSha256": "c184cc88efc0e8218234508499b8a3f795677207ea281bcf827c8a26e8e9a620",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-31-candidate.png",
+          "sha256": "1e857d424a7adbd846347a37d772b817c57b5371262a588e7b2bca1233ed54d1",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "b1dee801fb34ac308f598c60924aeab0ab0805c3d48ac6672ee13ae3d29858e5"
+        },
+        "linux": {
+          "path": "references/linux/frame-31-candidate.png",
+          "sha256": "1e857d424a7adbd846347a37d772b817c57b5371262a588e7b2bca1233ed54d1",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "b1dee801fb34ac308f598c60924aeab0ab0805c3d48ac6672ee13ae3d29858e5"
+        }
+      }
+    },
+    {
+      "id": "frame-40-candidate",
+      "input": "frame-40-candidate.svg",
+      "sourceSha256": "bc1ecb644d70898ec4462cc545447b89c30f0df8e2a854c05456997046e4ba79",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-40-candidate.png",
+          "sha256": "2af2a2b4cc74e0e67bc420a1b0856e9fe2a2b44583d3b59d69cfb6069d29dbd1",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "0b87730d46cb814ff60b9f10532c0dce5fa82b6d187ece2a1d5f1d6b4ed55cdb"
+        },
+        "linux": {
+          "path": "references/linux/frame-40-candidate.png",
+          "sha256": "2af2a2b4cc74e0e67bc420a1b0856e9fe2a2b44583d3b59d69cfb6069d29dbd1",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "0b87730d46cb814ff60b9f10532c0dce5fa82b6d187ece2a1d5f1d6b4ed55cdb"
+        }
+      }
+    },
+    {
+      "id": "frame-41-candidate",
+      "input": "frame-41-candidate.svg",
+      "sourceSha256": "bc1ecb644d70898ec4462cc545447b89c30f0df8e2a854c05456997046e4ba79",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-41-candidate.png",
+          "sha256": "c77095fb9ef284bc29d88bb5c5670d817a2584833d4a31a6585c7f67b2a45c60",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "91b350eb11d268f06266ccab5e935ef63844b8ac907aaeed5bfb727a13d92e86"
+        },
+        "linux": {
+          "path": "references/linux/frame-41-candidate.png",
+          "sha256": "c77095fb9ef284bc29d88bb5c5670d817a2584833d4a31a6585c7f67b2a45c60",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "91b350eb11d268f06266ccab5e935ef63844b8ac907aaeed5bfb727a13d92e86"
+        }
+      }
+    },
+    {
+      "id": "frame-42-candidate",
+      "input": "frame-42-candidate.svg",
+      "sourceSha256": "41019372fbe77fff7e76babdadfa16453f7960707fd9eb29c010f1977b1894a2",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-42-candidate.png",
+          "sha256": "05ed741430e0ec6e29525fda7eacd4a9e80d9658cf250fd164ba813369433e6f",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "2ec543d0566203874d482f199875518a4fc9fcf28239ffcfb0dece0495f1a5b5"
+        },
+        "linux": {
+          "path": "references/linux/frame-42-candidate.png",
+          "sha256": "05ed741430e0ec6e29525fda7eacd4a9e80d9658cf250fd164ba813369433e6f",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "2ec543d0566203874d482f199875518a4fc9fcf28239ffcfb0dece0495f1a5b5"
+        }
+      }
+    },
+    {
+      "id": "frame-43-candidate",
+      "input": "frame-43-candidate.svg",
+      "sourceSha256": "41019372fbe77fff7e76babdadfa16453f7960707fd9eb29c010f1977b1894a2",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-43-candidate.png",
+          "sha256": "a86f29353aa6a7da455469827a0ba5fee5890e23e49af6f814bd8923bea8e3c8",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "4fa981ba7b6b526eedf8df1215bb81af257be81c5eef5c60dd2e40ab6703d2a0"
+        },
+        "linux": {
+          "path": "references/linux/frame-43-candidate.png",
+          "sha256": "a86f29353aa6a7da455469827a0ba5fee5890e23e49af6f814bd8923bea8e3c8",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "4fa981ba7b6b526eedf8df1215bb81af257be81c5eef5c60dd2e40ab6703d2a0"
+        }
+      }
+    },
+    {
+      "id": "frame-44-candidate",
+      "input": "frame-44-candidate.svg",
+      "sourceSha256": "1523f3bfa7797c1df82281acb8047f03e87be25a3dbc6543913a0a4f8628feee",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-44-candidate.png",
+          "sha256": "ebb50f11beb74dd2e80a133ce5fc2bf92fefd4d27d7fda9312e3471dd0d69c41",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "9867bd122191c747a1db85c84838953f719cb3925a18c68de00625f5bc4ce56b"
+        },
+        "linux": {
+          "path": "references/linux/frame-44-candidate.png",
+          "sha256": "ebb50f11beb74dd2e80a133ce5fc2bf92fefd4d27d7fda9312e3471dd0d69c41",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "9867bd122191c747a1db85c84838953f719cb3925a18c68de00625f5bc4ce56b"
+        }
+      }
+    },
+    {
+      "id": "frame-45-candidate",
+      "input": "frame-45-candidate.svg",
+      "sourceSha256": "1523f3bfa7797c1df82281acb8047f03e87be25a3dbc6543913a0a4f8628feee",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-45-candidate.png",
+          "sha256": "f524c3311c32acff9993270e8c3c8db41e4bffb82e587f7332f3b10e28211a8c",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "91c96e3e88614862e8825e1490cae12484221915e2ade9785c974d9bc23d7592"
+        },
+        "linux": {
+          "path": "references/linux/frame-45-candidate.png",
+          "sha256": "f524c3311c32acff9993270e8c3c8db41e4bffb82e587f7332f3b10e28211a8c",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "91c96e3e88614862e8825e1490cae12484221915e2ade9785c974d9bc23d7592"
+        }
+      }
+    },
+    {
+      "id": "frame-46-candidate",
+      "input": "frame-46-candidate.svg",
+      "sourceSha256": "f762c786532605da100403758e862db22eea2f7f31f147f6de91219eb05b29a4",
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-46-candidate.png",
+          "sha256": "387340d03dfc062aa8186c08d054e67f10cad44baab248065e59c6aa44c1293b",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "79889145918aab01102285d24b329e048e5ba0545a0039f4b2e62766ca06b954"
+        },
+        "linux": {
+          "path": "references/linux/frame-46-candidate.png",
+          "sha256": "387340d03dfc062aa8186c08d054e67f10cad44baab248065e59c6aa44c1293b",
+          "width": 240,
+          "height": 160,
+          "rgbaSha256": "79889145918aab01102285d24b329e048e5ba0545a0039f4b2e62766ca06b954"
+        }
+      }
+    },
+    {
+      "id": "frame-47-candidate",
+      "input": "frame-47-candidate.svg",
+      "sourceSha256": "f762c786532605da100403758e862db22eea2f7f31f147f6de91219eb05b29a4",
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "references/windows/frame-47-candidate.png",
+          "sha256": "1e857d424a7adbd846347a37d772b817c57b5371262a588e7b2bca1233ed54d1",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "b1dee801fb34ac308f598c60924aeab0ab0805c3d48ac6672ee13ae3d29858e5"
+        },
+        "linux": {
+          "path": "references/linux/frame-47-candidate.png",
+          "sha256": "1e857d424a7adbd846347a37d772b817c57b5371262a588e7b2bca1233ed54d1",
+          "width": 360,
+          "height": 240,
+          "rgbaSha256": "b1dee801fb34ac308f598c60924aeab0ab0805c3d48ac6672ee13ae3d29858e5"
+        }
+      }
     }
   ],
   "chromePins": {
@@ -3990,5 +4518,78 @@
         "startupHealth": "healthy"
       }
     ]
-  }
+  },
+  "frameBoundaryLaunches": {
+    "windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1687,
+        "debuggerReadyMilliseconds": 187,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1689,
+        "debuggerReadyMilliseconds": 188,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1445,
+        "debuggerReadyMilliseconds": 177,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 10826,
+        "debuggerReadyMilliseconds": 7363,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 9216,
+        "debuggerReadyMilliseconds": 6037,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 8001,
+        "debuggerReadyMilliseconds": 4259,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  },
+  "frameBoundaryRecipe": "Embed the committed Noto Sans Regular program as ReviewFont and alias each authored serif family to it. Decode each exact input as an SVG image, then draw it at its authored dimensions times outputScale onto a transparent canvas. Three independent healthy ChromeProcess launches per host give identical PNG bytes for the 24 masked inputs. Each input has its own image; opacity controls are not normalized."
 }

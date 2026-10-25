@@ -38,6 +38,8 @@ cover horizontal tangents under scaled/affine placement and cleanup on denial.
 Recorded-strike image controls vary local/output scales and mapped viewport replay before matrix rounding.
 Horizontal fragment image controls cover fractional/negative origins, zero-angle segments and both font programs before scaled/affine placement.
 Decoration drawing image controls separate native opacity isolation from opaque text for all three line types.
+Uniform-mask frame controls cover overlines through direct text, instances and
+symbols with separate native images for opaque and partial-opacity paints.
 [Deferred filter tests](Lokad.Svg.Tests/OpenTypeFontTests.FilteredDeferredText.cs)
 cover text continuations and replay; [source bounds tests](Lokad.Svg.Tests/SvgDeferredFilterSourceTests.cs)
 keep nonpainting layout bounds separate from painted filter bounds.

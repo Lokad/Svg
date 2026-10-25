@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Retain constant-mask regions when computing enclosing paint bounds.
 - Share native text drawing bounds with decorations and preserve scalar path source positions.
 - Honor isolated layer bounds when painting rectangles.
 - Preserve horizontal text-path paint origins before affine placement.
