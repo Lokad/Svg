@@ -7,22 +7,35 @@ namespace Lokad.Svg.VisualTests;
 
 public sealed class SvgPaintInputReferenceTests
 {
-    public static IEnumerable<object[]> Cases()
+    private static readonly IReadOnlyDictionary<(string Folder, string Id), JsonElement> CaseIndex;
+
+    static SvgPaintInputReferenceTests()
     {
+        Dictionary<(string Folder, string Id), JsonElement> cases = new();
         foreach (string folder in new[] { "offset-merge-inputs", "linear-shape-source-maps", "radial-axis-source-maps", "gradient-spread-stages", "gradient-paint-replay", "gradient-factory-colors", "linear-periodic-stops", "gradient-stop-preparation" })
         {
             using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(folder), "capture.json")));
             foreach (JsonElement row in data.RootElement.GetProperty("cases").EnumerateArray())
-                yield return [folder, row.GetProperty("id").GetString() ?? throw new InvalidDataException("Missing case id.")];
+            {
+                string id = row.GetProperty("id").GetString() ?? throw new InvalidDataException("Missing case id.");
+                // Independent clones retain managed metadata after the source document is disposed.
+                cases.Add((folder, id), row.Clone());
+            }
         }
+        CaseIndex = cases;
+    }
+
+    public static IEnumerable<object[]> Cases()
+    {
+        foreach ((string folder, string id) in CaseIndex.Keys)
+            yield return [folder, id];
     }
 
     [Theory]
     [MemberData(nameof(Cases))]
     public async Task Paint_inputs_match_each_native_image(string folder, string id)
     {
-        using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(folder), "capture.json")));
-        JsonElement row = data.RootElement.GetProperty("cases").EnumerateArray().Single(item => item.GetProperty("id").GetString() == id);
+        JsonElement row = CaseIndex[(folder, id)];
         bool hasPlatformReferences = row.TryGetProperty("platforms", out JsonElement platforms);
         JsonElement expected = hasPlatformReferences && (OperatingSystem.IsWindows() || OperatingSystem.IsLinux())
             ? platforms.GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux") : row;
