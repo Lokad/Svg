@@ -15,6 +15,7 @@ documents are unsupported. Rendering does not discover filesystem/network resour
 | Area | Supported behavior |
 | --- | --- |
 | Documents and instances | Root/nested `svg`, `g`, `a`, `defs`, `symbol` and local `use`; forward definitions, aliases, inherited presentation, viewBox/aspect maps and viewport clipping. |
+| Conditional groups | `switch` selects its first child without `systemLanguage` under an empty locale set; selection ends with that switch. `requiredFeatures` and `requiredExtensions` are unsupported. |
 | Geometry | Rectangles and rounded rectangles, circles/ellipses, lines, polygons/polylines, and line/quadratic/cubic/arc paths; nonzero/even-odd compound fills. |
 | Transforms | Composed translation, rotation, skew, reflection and nonuniform affine scaling through groups, viewports and local instances. |
 | Strokes | Solid, linear/radial-gradient and pattern strokes; fractional widths, ordinary/non-scaling strokes, caps/joins, miter limits, finite dashes/offsets and pathLength normalization. |
