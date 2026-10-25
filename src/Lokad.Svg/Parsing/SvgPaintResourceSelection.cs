@@ -75,7 +75,7 @@ internal sealed class SvgPaintResourceSelection : IDisposable
     }
 
     internal static SvgPaintResourceSelection? Create(ReadOnlyMemory<byte> svg, XmlReaderSettings settings,
-        SvgRenderLimits limits, BudgetedParserList<CssRule> rules, BudgetedParserStringStore strings, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        SvgRenderLimits limits, BudgetedParserList<CssRule> rules, BudgetedParserStringStore strings, RenderBudget budget, ParserWorkCounter work, CancellationToken token, Lokad.Svg.Fonts.SvgInstanceFontDiscovery? consumers)
     {
         token.ThrowIfCancellationRequested();
         ReadOnlySpan<byte> bytes = svg.Span;
@@ -85,6 +85,7 @@ internal sealed class SvgPaintResourceSelection : IDisposable
         SvgPaintResourceSelection result;
         try { result = new(budget, work, token, owner); }
         catch { owner.Dispose(); throw; }
+        if (consumers is not null) consumers.Resources = result;
         try
         {
             using BudgetedParserList<Pattern> patterns = new(budget, SvgMemoryCategory.Parser, work, token);
@@ -200,13 +201,18 @@ internal sealed class SvgPaintResourceSelection : IDisposable
                     if (valid && !displayed) result._selection.TryAdd(item.Id, Selection.DisabledResource);
                 }
             }
-            // Declared paint references are conservative consumers: sources in
-            // unused definitions may still be selected, but a template href alone
-            // never requires an overridden parent's glyphs or geometry.
+            using BudgetedParserDictionary<string, bool> actualReferences = new(budget, SvgMemoryCategory.Parser, 96);
+            if (consumers is not null && patterns.Count != 0)
+                consumers.SelectPaints(result, id => actualReferences.TryAdd(strings.Copy(id), true), id =>
+                    ids.TryGetValue(id, out int index) && patterns[index] is { State: Resolution.Ready, Width: > 0, Height: > 0, Source: >= 0 } item
+                        ? patterns[item.Source].Id : null);
+            // Font-free inputs retain the conservative header-only path. Font-bearing
+            // sources use actual consumers; a template href alone never selects
+            // an overridden parent's glyphs or geometry.
             foreach (Pattern item in patterns.AsSpan())
             {
                 work.Consume(token);
-                if (item.State == Resolution.Ready && item.Width > 0 && item.Height > 0 && item.Source >= 0 && references.TryGetValue(item.Id, out _))
+                if (item.State == Resolution.Ready && item.Width > 0 && item.Height > 0 && item.Source >= 0 && (consumers is not null ? actualReferences : references).TryGetValue(item.Id, out _))
                 {
                     result._selection.TryAdd(patterns[item.Source].Id, Selection.NeededContent);
                     result.HasPatternContent = true;
@@ -240,41 +246,12 @@ internal sealed class SvgPaintResourceSelection : IDisposable
                             || !SvgPresentationResolver.ParseVisibility(paint.Visibility, true)
                             || SvgColorParser.ParsePaintOpacity(stroke ? paint.StrokeOpacity : paint.FillOpacity).Value == 0
                             || stroke && SvgStrokeStyleSyntax.IsZeroStrokeWidth(paint.Width)
-                            || !stroke && !HasFillArea()) return;
+                            || (SvgGeometrySyntax.GetPaintChannels(reader, limits.MaximumPathCommands, budget, work, token) & (stroke ? SvgGeometryPaintChannels.Stroke : SvgGeometryPaintChannels.Fill)) == 0) return;
                     }
                     references.TryAdd(strings.Copy(id), true);
                 }
             }
-            bool HasFillArea()
-            {
-                if (reader.LocalName == "line") return false;
-                if (reader.LocalName is "polygon" or "polyline")
-                {
-                    using BudgetedParserList<SvgFractionalPoint> points = SvgOrthogonalGeometryTokenizer.ParseFractionalPointList(
-                        reader.GetAttribute("points") ?? string.Empty, reader.LocalName, limits.MaximumPathCommands, budget, work, token, 0);
-                    return points.Count >= 3;
-                }
-                if (reader.LocalName != "path") return true;
-                using SvgRenderablePathData data = SvgRenderablePathData.Read(reader.GetAttribute("d"), limits.MaximumPathCommands, budget, work, token);
-                using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Parser, work, token);
-                SvgPathDataParser.ParseCommands(data.Value, limits.MaximumPathCommands, work, token, commands);
-                int vertices = 0;
-                foreach (SvgAuthoredPathCommand command in commands.AsSpan())
-                {
-                    work.Consume(token);
-                    switch (command.Verb)
-                    {
-                        case SvgAuthoredPathVerb.Move: vertices = 1; break;
-                        case SvgAuthoredPathVerb.Line: if (++vertices >= 3) return true; break;
-                        case SvgAuthoredPathVerb.End: vertices = 0; break;
-                        case SvgAuthoredPathVerb.Close: vertices = 1; break;
-                        default: return true;
-                    }
-                }
-                // A contour with at most two vertices has no fill under any affine map.
-                // More complex contours stay conservative; strokes use their own geometry.
-                return false;
-            }
+
         }
         catch { result.Dispose(); throw; }
     }

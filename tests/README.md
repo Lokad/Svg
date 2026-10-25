@@ -50,6 +50,8 @@ source alpha, packed and floating graph arithmetic, sampled image bounds,
 color transfer, crops and opacity through affine placement.
 [Solid-paint controls](Research/solid-paint-alpha/README.md) cover inherited alpha,
 mask and glyph paints, and text opacity across strokes, decorations and deferred runs.
+[Pattern selection controls](Research/pattern-source-selection/README.md) cover
+consumer dependencies, font requests, marker roles and empty fill/stroke sources.
 
 [Affine flood tests](Lokad.Svg.Tests/SvgAffineFloodTests.cs) retain input-specific
 Chrome RGBA hashes for mapped filter regions, colors, alpha and source forms,

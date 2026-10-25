@@ -567,6 +567,14 @@ machine fonts or synthesize styles. Required unavailable/corrupt programs and
 missing glyphs fail explicitly. [FontProbe](../tools/Lokad.Svg.FontProbe/README.md)
 shows local/HTTP usage.
 
+SVG-based font preparation follows pattern consumers through instances, masks
+and markers. Dormant definitions and overridden inherited paints do not activate
+a tile's fonts. Inherited image paints, empty point lists and move-only paths do
+not sample pattern paint; closed zero-length paths can still paint caps. Selected
+text may need advances or effect bounds. Masks and markers retain declaration
+context; local uses inherit instance context. [Selection controls](../tests/Research/pattern-source-selection/README.md)
+cover both source orders and live copies outside suppressed ancestors.
+
 `SvgFontFaceRequest.FromCss` preserves ordered named/generic families, quoting,
 escapes and inheritance; punctuation inside quotes remains literal, including
 quoted "serif". `SvgFontSelectionPolicy` supplies host generic mappings and ordered

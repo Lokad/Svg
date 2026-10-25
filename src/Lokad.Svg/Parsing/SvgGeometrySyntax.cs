@@ -6,6 +6,8 @@ namespace Lokad.Svg.Parsing;
 
 internal enum SvgViewportCoordinateKind { Oval, Rectangle }
 internal enum SvgNumberListSyntax { Svg, Css }
+[Flags]
+internal enum SvgGeometryPaintChannels { None = 0, Fill = 1, Stroke = 2 }
 
 /// <summary>Parses the bounded numeric, transform, viewport, and viewBox syntax shared by supported geometry.</summary>
 internal static class SvgGeometrySyntax
@@ -410,5 +412,49 @@ internal static class SvgGeometrySyntax
         if (!float.IsFinite(resolved) || resolved < (double)int.MinValue || resolved > (double)int.MaxValue)
             throw new SvgException(SvgErrorCode.LimitExceeded, $"Percentage {noun} coordinates exceed the admitted numeric range.");
         return resolved;
+    }
+
+    /// <summary>Conservatively identifies geometric fill/stroke sources without constructing render geometry.</summary>
+    /// <remarks>Borrows the parser-thread reader without advancing it. Temporary point/path storage
+    /// is charged to the caller and disposed on all exits; parsing shares work and cancellation.
+    /// Markers, masks, filters and object bounds have independent source contracts.</remarks>
+    internal static SvgGeometryPaintChannels GetPaintChannels(XmlReader reader, int maximumPathCommands,
+        RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    {
+        if (reader.LocalName == "image") return SvgGeometryPaintChannels.None;
+        if (reader.LocalName == "line") return SvgGeometryPaintChannels.Stroke;
+        if (reader.LocalName is "polygon" or "polyline")
+        {
+            using BudgetedParserList<SvgFractionalPoint> points = SvgOrthogonalGeometryTokenizer.ParseFractionalPointList(
+                reader.GetAttribute("points") ?? string.Empty, reader.LocalName, maximumPathCommands, budget, work, token, 0);
+            SvgGeometryPaintChannels channels = points.Count >= 3 ? SvgGeometryPaintChannels.Fill : SvgGeometryPaintChannels.None;
+            if (points.Count >= 2 || points.Count == 1 && reader.LocalName == "polygon") channels |= SvgGeometryPaintChannels.Stroke;
+            return channels;
+        }
+        if (reader.LocalName != "path") return SvgGeometryPaintChannels.Fill | SvgGeometryPaintChannels.Stroke;
+        using SvgRenderablePathData data = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumPathCommands, budget, work, token);
+        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Parser, work, token);
+        SvgPathDataParser.ParseCommands(data.Value, maximumPathCommands, work, token, commands);
+        SvgGeometryPaintChannels result = SvgGeometryPaintChannels.None;
+        int vertices = 0;
+        foreach (SvgAuthoredPathCommand command in commands.AsSpan())
+        {
+            work.Consume(token);
+            switch (command.Verb)
+            {
+                case SvgAuthoredPathVerb.Move: vertices = 1; break;
+                case SvgAuthoredPathVerb.Line:
+                    result |= SvgGeometryPaintChannels.Stroke;
+                    if (++vertices >= 3) result |= SvgGeometryPaintChannels.Fill;
+                    break;
+                case SvgAuthoredPathVerb.End: vertices = 0; break;
+                case SvgAuthoredPathVerb.Close:
+                    // Native closed zero-length contours can paint round caps; a move alone cannot.
+                    result |= SvgGeometryPaintChannels.Stroke; vertices = 1; break;
+                default: return SvgGeometryPaintChannels.Fill | SvgGeometryPaintChannels.Stroke;
+            }
+            if (result == (SvgGeometryPaintChannels.Fill | SvgGeometryPaintChannels.Stroke)) return result;
+        }
+        return result;
     }
 }

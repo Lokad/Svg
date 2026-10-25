@@ -39,6 +39,11 @@ Expanded tile paints, including glyph shaders, are validated before scene sealin
 reader workspace and collected styles across sizing, output mapping and scene
 lowering. Metadata traversal consumes the same work allowance as conversion;
 font acquisition retains its separate discovery lifetime.
+Font-bearing pattern selection shares the existing bounded source index with
+font discovery and scene lowering. Consumers determine which tile sources are
+needed; masks and markers retain declaration context while local uses inherit
+their instance context. Alias headers remain in the pattern index. Font-free
+patterns keep the header-only path; source visits share work and cancellation.
 Rendered leaves prepare their cascaded declarations once and reuse that value
 through deferred paints, filters, markers, recording and geometry lowering.
 Local uses share one inline parse and authored style across reference, resource
