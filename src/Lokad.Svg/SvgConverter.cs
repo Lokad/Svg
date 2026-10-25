@@ -3144,10 +3144,10 @@ public static partial class SvgConverter
             static byte Quantize(float value) => (byte)Math.Clamp((int)(value * 255f + .5f), 0, 255);
         }
 
-        SvgGradientRamp PrepareGradientRamp(ReadOnlySpan<SvgGradientStop> stops, SvgColor start, SvgColor end, double offset1, double offset2)
+        SvgGradientRamp PrepareGradientRamp(ReadOnlySpan<SvgGradientStop> stops, SvgGradientSpread spread)
         {
             ParserWorkCounter preparation = new(options.Limits.MaximumWorkUnits - workUnits);
-            SvgGradientRamp ramp = SvgGradientRamp.Create(stops, start, end, offset1, offset2, budget, preparation, cancellationToken);
+            SvgGradientRamp ramp = SvgGradientRamp.Create(stops, spread, budget, preparation, cancellationToken);
             workUnits += preparation.Used;
             return ramp;
         }
@@ -3163,9 +3163,7 @@ public static partial class SvgConverter
             SvgRectangle box = outline.Box;
             bool constantFactory = SvgShaderCoordinates.IsConstantFactory(definition);
             SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateLinear(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, null, sourcePlacement);
-            double offsetSpan = definition.Offset2 - definition.Offset1;
-            if (!constantFactory && offsetSpan <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop increasing-offset linear gradients are implemented.");
-            using SvgGradientRamp ramp = constantFactory ? default : PrepareGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2);
+            using SvgGradientRamp ramp = constantFactory ? default : PrepareGradientRamp(definition.Stops, definition.Spread);
             SvgShaderSampler shader = constantFactory
                 ? SvgShaderSampler.Constant(PrepareGradientFactory(definition.Stops, definition.Spread, out _), ShaderAlpha(outline.Opacity))
                 : SvgShaderSampler.Linear(definition, box, ramp, nativeCoordinates, ShaderSamplingContext(), ShaderAlpha(outline.Opacity));
@@ -3225,7 +3223,7 @@ public static partial class SvgConverter
             bool constantFactory = SvgShaderCoordinates.IsConstantFactory(definition);
             SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateRadial(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, sourcePlacement);
             if (definition.Radius < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Radial gradient radii must not be negative.");
-            using SvgGradientRamp ramp = constantFactory ? default : PrepareGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2);
+            using SvgGradientRamp ramp = constantFactory ? default : PrepareGradientRamp(definition.Stops, definition.Spread);
 
             SvgShaderSampler shader = constantFactory
                 ? SvgShaderSampler.Constant(PrepareGradientFactory(definition.Stops, definition.Spread, out _), ShaderAlpha(outline.Opacity))
@@ -3642,10 +3640,8 @@ public static partial class SvgConverter
             double directionX = definition.X2 - definition.X1;
             double directionY = definition.Y2 - definition.Y1;
             double denominator = directionX * directionX + directionY * directionY;
-            double offsetSpan = definition.Offset2 - definition.Offset1;
-            if (paint && offsetSpan <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop increasing-offset linear gradients are implemented.");
             if (!paint || endX <= startX || endY <= startY || (denominator == 0 && definition.Stops.Length != 1)) return;
-            using SvgGradientRamp ramp = constantFactory ? default : PrepareGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2);
+            using SvgGradientRamp ramp = constantFactory ? default : PrepareGradientRamp(definition.Stops, definition.Spread);
 
             if (paint && (denominator != 0 || definition.Stops.Length == 1))
             for (int y = startY; y < endY; y++)
@@ -3708,7 +3704,7 @@ public static partial class SvgConverter
             int startX = raster.Left, endX = raster.Right, startY = raster.Top, endY = raster.Bottom;
             if (paint && (definition.Radius <= 0 && definition.Stops.Length != 1)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive-radius radial gradients are implemented.");
             if (!paint || endX <= startX || endY <= startY) return;
-            using SvgGradientRamp ramp = constantFactory ? default : PrepareGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2);
+            using SvgGradientRamp ramp = constantFactory ? default : PrepareGradientRamp(definition.Stops, definition.Spread);
 
             if (paint)
             for (int y = startY; y < endY; y++)
@@ -3854,8 +3850,8 @@ public static partial class SvgConverter
                 else if (glyphRadial is {} constantRadial) glyphFactoryColor = PrepareGradientFactory(constantRadial.Stops, constantRadial.Spread, out glyphFactoryLuminance);
             }
             using SvgGradientRamp glyphRamp = constantGlyphFactory ? default : glyphLinear is {} linearRamp
-                ? PrepareGradientRamp(linearRamp.Stops, linearRamp.Start, linearRamp.End, linearRamp.Offset1, linearRamp.Offset2)
-                : glyphRadial is {} radialRamp ? PrepareGradientRamp(radialRamp.Stops, radialRamp.Start, radialRamp.End, radialRamp.Offset1, radialRamp.Offset2) : default;
+                ? PrepareGradientRamp(linearRamp.Stops, linearRamp.Spread)
+                : glyphRadial is {} radialRamp ? PrepareGradientRamp(radialRamp.Stops, radialRamp.Spread) : default;
             if (glyphSource is SvgGlyphRasterSource source && (OperatingSystem.IsLinux() || OperatingSystem.IsWindows()))
             {
                 ParserWorkCounter preparationWork = new(options.Limits.MaximumWorkUnits - workUnits);
@@ -4198,13 +4194,13 @@ public static partial class SvgConverter
                 {
                     if (linear.X1 == linear.X2 && linear.Y1 == linear.Y2) return linear.End;
                     if (linear.Stops.Length == 1) return linear.Stops[0].Color;
-                    return GradientLuminance(linear.Stops, linear.Start, linear.End, work);
+                    return GradientLuminance(linear.Stops, linear.Spread, work);
                 }
                 if (glyphRadial is {} radial)
                 {
                     if (radial.Stops.Length == 1) return radial.Stops[0].Color;
                     if (radial.Radius == 0) return radial.End;
-                    return GradientLuminance(radial.Stops, radial.Start, radial.End, work);
+                    return GradientLuminance(radial.Stops, radial.Spread, work);
                 }
                 // SkPaintPriv uses neutral mid-gray when an image/picture shader
                 // supplies no representative luminance color. See existing notices.
@@ -4213,28 +4209,22 @@ public static partial class SvgConverter
 
             // SkGradientBaseShader uses an unweighted source-color mean to select
             // font-mask preblend, independently of stop alpha and pixel position.
-            SvgColor GradientLuminance(ReadOnlySpan<SvgGradientStop> stops, SvgColor start, SvgColor end, ParserWorkCounter work)
+            SvgColor GradientLuminance(ReadOnlySpan<SvgGradientStop> stops, SvgGradientSpread spread, ParserWorkCounter work)
             {
+                if (stops.Length == 0) return default;
+                if (stops.Length == 1) return stops[0].Color;
+                SvgGradientStops canonical = SvgGradientStops.Create(stops, spread, work, cancellationToken);
+                SvgGradientStops.Enumerator iterator = canonical.GetEnumerator(work, cancellationToken);
                 float red = 0, green = 0, blue = 0;
-                int count = 0;
-                if (stops.Length != 0 && stops[0].Offset > 0) Include(stops[0].Color);
-                foreach (SvgGradientStop stop in stops)
+                while (iterator.MoveNext())
                 {
-                    work.Consume(cancellationToken);
-                    Include(stop.Color);
+                    SvgColor color = iterator.Current.Color;
+                    red += color.Red / 255f; green += color.Green / 255f; blue += color.Blue / 255f;
                 }
-                if (count == 0) { Include(start); Include(end); }
-                else
-                {
-                    if (stops[^1].Offset < 1) Include(stops[^1].Color);
-                }
-                float scale = 255f / count;
-                return new((byte)MathF.Floor(red * scale + .5f), (byte)MathF.Floor(green * scale + .5f), (byte)MathF.Floor(blue * scale + .5f), 255);
+                float scale = 1f / canonical.Count;
+                return new(Quantize(red * scale), Quantize(green * scale), Quantize(blue * scale), 255);
 
-                void Include(SvgColor color)
-                {
-                    red += color.Red * (1f / 255f); green += color.Green * (1f / 255f); blue += color.Blue * (1f / 255f); count++;
-                }
+                static byte Quantize(float value) => (byte)Math.Clamp((int)(value * 255f + .5f), 0, 255);
             }
         }
 

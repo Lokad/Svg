@@ -1325,7 +1325,6 @@ internal static class SvgDefinitionParser
         if (!template.IsAvailable) { isEmpty = true; start = default; end = default; stops = []; }
         SvgLinearGradient gradient = new(start, end, x1, y1, x2, y2, offset1, offset2, isEmpty, isUserSpace, spread, stops, referenceScaleX, referenceScaleY, hasLinearRotation)
         { SourcePaint = RetainSourcePaint(template, state, workCounter, cancellationToken) };
-        if (stops.Length > 1 && !(offset1 < offset2) && !SvgShaderCoordinates.IsConstantFactory(gradient)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only gradient stops spanning a nonzero clamped offset range are implemented.");
         string retainedId = state.GradientId ?? throw new InvalidOperationException("Gradient registration requires an identifier.");
         if (!state.Gradients.TryAdd(retainedId, gradient)) throw new InvalidOperationException("Resolved gradients register once.");
         ResolveGradientDependents(state, retainedId, workCounter, cancellationToken);
@@ -1587,7 +1586,6 @@ internal static class SvgDefinitionParser
             SvgGradientTransform map = gradient.TemplateTransform;
             gradient = gradient with { NativePaintMatrices = new(new((float)map.A, (float)map.C, (float)map.E, (float)map.B, (float)map.D, (float)map.F), SvgAffineTransform.Identity) };
         }
-        if (stops.Length > 1 && !(offset1 < offset2) && !SvgShaderCoordinates.IsConstantFactory(gradient)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only gradient stops spanning a nonzero clamped offset range are implemented.");
         string retainedId = state.RadialGradientId ?? throw new InvalidOperationException("Radial gradient registration requires an identifier.");
         if (!state.RadialGradients.TryAdd(retainedId, gradient)) throw new InvalidOperationException("Resolved gradients register once.");
         ResolveGradientDependents(state, retainedId, workCounter, cancellationToken);

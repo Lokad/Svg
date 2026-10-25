@@ -40,7 +40,7 @@ public sealed class SvgGradientStopRangeTests
         SvgGradientStop[] stops = new SvgGradientStop[256];
         for (int i = 0; i < stops.Length; i++) stops[i] = new(i / 255d, red);
         for (int i = 126; i <= 129; i++) stops[i] = new(.5, i == 129 ? cyan : red);
-        using SvgGradientRamp ramp = SvgGradientRamp.Create(stops, red, red, 0, 1, new(100_000), new(stops.Length * 2), CancellationToken.None);
+        using SvgGradientRamp ramp = SvgGradientRamp.Create(stops, SvgGradientSpread.Pad, new(100_000), new(stops.Length * 4), CancellationToken.None);
         SvgShaderPaint sample = ramp.SampleAbsolute(.5, 1f, 32);
         Assert.InRange(sample.Red, 0f, .01f);
         Assert.InRange(sample.Green, .99f, 1f);
@@ -61,12 +61,25 @@ public sealed class SvgGradientStopRangeTests
 
     [Theory]
     [InlineData("<stop offset='invalid'/>", SvgErrorCode.MalformedInput)]
-    [InlineData("<stop offset='.5'/><stop offset='.5'/>", SvgErrorCode.UnsupportedFeature)]
     public void Invalid_stop_ranges_preserve_categorized_rejection_and_cleanup(string stops, SvgErrorCode expected)
     {
         byte[] input = Input("<defs><linearGradient id='g'>" + stops + "</linearGradient></defs><rect width='64' height='48' fill='url(#g)'/>");
         RenderBudget budget = new(1_000_000);
         Assert.Equal(expected, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Coincident_stops_keep_the_first_color_before_the_boundary_and_last_color_after_it()
+    {
+        byte[] input = Input("<defs><linearGradient id='g'><stop offset='.5' stop-color='red'/><stop offset='.5' stop-color='blue'/></linearGradient></defs><rect width='64' height='48' fill='url(#g)'/>");
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
+        {
+            Assert.Equal(new byte[] { 255, 0, 0, 255 }, surface.Pixels.AsSpan((24 * 64 + 8) * 4, 4).ToArray());
+            Assert.Equal(new byte[] { 0, 0, 255, 255 }, surface.Pixels.AsSpan((24 * 64 + 56) * 4, 4).ToArray());
+        }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 

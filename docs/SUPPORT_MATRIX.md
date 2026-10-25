@@ -208,6 +208,9 @@ affine gradient transforms, local templates, pad/repeat/reflect spread and sRGB
 color interpolation. Degenerate factories use terminal pad colors and periodic
 mean colors, including flat stop offsets; see the
 [factory controls](../tests/Research/gradient-factory-colors/README.md).
+Normal gradients also support coincident and flat stop ranges, preserving hard
+color boundaries and native float stop preparation; see the
+[stop controls](../tests/Research/gradient-stop-preparation/README.md).
 Radial paints include contained focal circles and zero-radius
 foci on the outer circle; outside foci and tangential nonzero focal circles remain
 unsupported. Gradient

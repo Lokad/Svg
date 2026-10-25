@@ -134,6 +134,13 @@ also survives nonfinite tile coordinates at the cone boundary.
 Linear and radial spreading share native float operation order, followed by
 absolute stop padding and ramp normalization. Partial stop ranges preserve the
 full repeat period; see the [periodic controls](../tests/Research/linear-periodic-stops/README.md).
+Normal ramp preparation and glyph representative colors share a borrowed,
+bounded canonical stop sequence. It inserts implicit endpoints, detects nearly
+uniform float positions and canonicalizes duplicate groups. Uniform coefficients
+use fixed gap counts; arbitrary coefficients preserve constant terminal padding.
+Flat ranges retain their first/last boundary colors. The
+[stop controls](../tests/Research/gradient-stop-preparation/README.md) include
+native glyph and 256-stop references. Factory means retain original source stops.
 Nonconstant cone padding retains terminal arithmetic; normalized shader lanes
 clamp before coverage and source-over, including unordered native float values.
 One-stop paints retain their shader identity and dithering. Native constant

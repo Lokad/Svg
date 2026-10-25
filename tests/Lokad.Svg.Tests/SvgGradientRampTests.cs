@@ -16,16 +16,16 @@ public sealed class SvgGradientRampTests
         {
             0 => [],
             1 => [new(.1, start) { Alpha = .27f }],
-            _ => [new(.1, start) { Alpha = .27f }, new(.8, end) { Alpha = .81f }]
+            _ => [new(0, start) { Alpha = .27f }, new(1, end) { Alpha = .81f }]
         };
         RenderBudget budget = new(1);
-        using SvgGradientRamp ramp = SvgGradientRamp.Create(stops, start, end, .1, .8, budget, new(1), CancellationToken.None);
+        using SvgGradientRamp ramp = SvgGradientRamp.Create(stops, SvgGradientSpread.Pad, budget, new(1), CancellationToken.None);
         foreach (double position in new[] { -1d, -0d, 0d, .1, .5, .8, 1d, 2d })
         foreach (float opacity in new[] { 0f, .37f, 1f })
         foreach (int matrix in new[] { 0, 63 })
         {
             SvgShaderPaint expected = default;
-            Exception? previous = Record.Exception(() => expected = SvgGradientReference.SampleAbsolute(stops, start, end, .1, .8, position, opacity, matrix));
+            Exception? previous = Record.Exception(() => expected = SvgGradientReference.SampleAbsolute(stops, position, opacity, matrix));
             if (previous is null) EqualBits(expected, ramp.SampleAbsolute(position, opacity, matrix));
             else
             {
@@ -49,11 +49,11 @@ public sealed class SvgGradientRampTests
         })
         {
             RenderBudget budget = new(10_000);
-            using (SvgGradientRamp ramp = SvgGradientRamp.Create(stops, first, stops[^1].Color, stops[0].Offset, stops[^1].Offset, budget, new(256), CancellationToken.None))
+            using (SvgGradientRamp ramp = SvgGradientRamp.Create(stops, SvgGradientSpread.Pad, budget, new(256), CancellationToken.None))
             {
                 foreach (double position in new[] { -.25, 0d, .125, double.BitDecrement(.375), .375, double.BitIncrement(.375), .5, .875, 1d, 1.25 })
                 foreach (float opacity in new[] { .37f, 1f })
-                    EqualBits(SvgGradientReference.SampleAbsolute(stops, first, stops[^1].Color, stops[0].Offset, stops[^1].Offset, position, opacity, 32),
+                    EqualBits(SvgGradientReference.SampleAbsolute(stops, position, opacity, 32),
                         ramp.SampleAbsolute(position, opacity, 32));
             }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -76,21 +76,22 @@ public sealed class SvgGradientRampTests
     {
         SvgGradientStop[] stops = [new(0, new(0, 0, 0, 255)), new(.5, new(255, 0, 0, 255)), new(1, new(255, 255, 255, 255))];
         RenderBudget budget = new(10_000), tight = new(1);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgGradientRamp.Create(stops, stops[0].Color, stops[^1].Color, 0, 1, tight, new(3), CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgGradientRamp.Create(stops, SvgGradientSpread.Pad, tight, new(1_000), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgGradientRamp.Create(stops, stops[0].Color, stops[^1].Color, 0, 1, budget, new(2), CancellationToken.None)).ErrorCode);
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgGradientRamp.Create(stops, stops[0].Color, stops[^1].Color, 0, 1, budget, new(3), cancellation.Token)).CancellationToken);
+        Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgGradientRamp.Create(stops, SvgGradientSpread.Pad, budget, new(1_000), cancellation.Token)).CancellationToken);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        using (SvgGradientRamp ramp = SvgGradientRamp.Create(stops, stops[0].Color, stops[^1].Color, 0, 1, budget, new(3), CancellationToken.None))
+        ParserWorkCounter measured = new(1_000);
+        using (SvgGradientRamp ramp = SvgGradientRamp.Create(stops, SvgGradientSpread.Pad, budget, measured, CancellationToken.None))
         {
             SvgShaderPaint expected = ramp.SampleAbsolute(.25, 1, 32);
             stops[1] = new(.5, new(0, 0, 255, 255));
             EqualBits(expected, ramp.SampleAbsolute(.25, 1, 32));
             Assert.True(budget.Snapshot().CurrentBytes > 0);
         }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgGradientRamp.Create(stops, SvgGradientSpread.Pad, budget, new(measured.Used - 1), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
@@ -101,7 +102,7 @@ public sealed class SvgGradientRampTests
         SvgGradientStop[] stops = Enumerable.Range(0, 256).Select(index => new SvgGradientStop(index / 255d, color) { Alpha = .65f }).ToArray();
         RenderBudget budget = new(1);
         ParserWorkCounter work = new(256);
-        using (SvgGradientRamp ramp = SvgGradientRamp.Create(stops, color, color, 0, 1, budget, work, CancellationToken.None))
+        using (SvgGradientRamp ramp = SvgGradientRamp.Create(stops, SvgGradientSpread.Pad, budget, work, CancellationToken.None))
         {
             SvgShaderPaint expected = ramp.SampleAbsolute(.5, .7f, 32);
             foreach (double position in new[] { double.NaN, double.PositiveInfinity, double.NegativeInfinity })

@@ -5205,21 +5205,26 @@ public sealed class SvgRootParserTests
         AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 0, 0.25, 0.75, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0.25, new SvgColor(255, 0, 0, 255)), new(0.75, new SvgColor(0, 0, 255, 255)) }, 1, 1, false), geometry.Gradient.Gradient);
     }
 
-    [Fact]
-    public void Rejects_equal_offset_linear_gradient_stops()
+    [Theory]
+    [InlineData("0.5", "0.5", 0.5)]
+    [InlineData("0.75", "0.25", 0.75)]
+    [InlineData("0.8", "0.2", 0.8)]
+    [InlineData("2", "3", 1)]
+    [InlineData("-2", "-1", 0)]
+    public void Coincident_clamped_stops_preserve_both_boundary_colors(string first, string second, double expectedOffset)
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0.5' stop-color='#ff0000'/><stop offset='0.5' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='" + first
+            + "' stop-color='#ff0000'/><stop offset='" + second + "' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>");
+        using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
+        SvgGradientStop[] stops = geometry.Gradient.Gradient.Stops;
+        Assert.Equal(2, stops.Length);
+        Assert.All(stops, stop => Assert.Equal((double)(float)expectedOffset, stop.Offset));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), stops[0].Color);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), stops[1].Color);
     }
 
-    [Fact]
-    public void Rejects_reversed_offset_linear_gradient_stops()
-    {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0.75' stop-color='#ff0000'/><stop offset='0.25' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
-    }
 
     [Fact]
     public void Clamps_outside_offset_linear_gradient_stops_into_range()
@@ -5231,15 +5236,6 @@ public sealed class SvgRootParserTests
         AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 0, 0, 1, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }, 1, 1, false), geometry.Gradient.Gradient);
     }
 
-    [Fact]
-    public void Rejects_clamped_equal_offset_linear_gradient_stops()
-    {
-        SvgException above = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='2' stop-color='#ff0000'/><stop offset='3' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-        SvgException below = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='-2' stop-color='#ff0000'/><stop offset='-1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, above.ErrorCode);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, below.ErrorCode);
-    }
 
 
     [Fact]
@@ -5960,16 +5956,6 @@ public sealed class SvgRootParserTests
         AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 0, 0, 1, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new((double)0.8f, new SvgColor(255, 0, 0, 255)), new((double)0.8f, new SvgColor(0, 0, 255, 255)), new(1, new SvgColor(0, 0, 255, 255)) }, 1, 1, false), geometry.Gradient.Gradient);
     }
 
-    [Fact]
-    public void Rejects_gradient_stops_with_zero_clamped_offset_range()
-    {
-        SvgException duplicate = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0.5' stop-color='#ff0000'/><stop offset='0.5' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, duplicate.ErrorCode);
-        SvgException fallen = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0.8' stop-color='#ff0000'/><stop offset='0.2' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, fallen.ErrorCode);
-    }
 
     [Fact]
     public void Lowers_concentric_radial_gradient_with_clamped_stops()
