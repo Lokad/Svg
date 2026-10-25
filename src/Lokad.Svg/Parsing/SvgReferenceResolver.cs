@@ -718,7 +718,7 @@ internal static class SvgReferenceResolver
         {
             if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ShiftGeneralRadial(circle, reference.X, reference.Y) : circle with { CenterX = circle.CenterX + reference.X, CenterY = circle.CenterY + reference.Y, FocalX = circle.FocalX + reference.X, FocalY = circle.FocalY + reference.Y };
             box = InstanceBox(outline.Box, reference, frame);
-            circle = SvgGradientSyntax.MapUserSpaceRadial(reference.Transform, circle, frame);
+            circle = SvgGradientSyntax.MapRadialReference(reference.Transform, circle, frame);
         }
         SvgClipBox? clip = outline.Clip;
         if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
@@ -1534,7 +1534,7 @@ internal static class SvgReferenceResolver
             SvgRectangle contentBox = source.Box;
             SvgRectangle box = instance.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + instance.X, contentBox.Y * scaleY + offsetY + instance.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));
             if (viewportFrame is not null) box = viewportFrame.Value.Shift(box);
-            circle = SvgGradientSyntax.MapUserSpaceRadial(instance.Transform, circle, viewportFrame);
+            circle = SvgGradientSyntax.MapRadialReference(instance.Transform, circle, viewportFrame);
             SvgClipBox viewport = instance.Transform.Apply(new SvgClipBox(instance.X, instance.Y, instance.Width.Value, instance.Height.Value));
             if (viewportFrame is not null)
             {
@@ -1721,7 +1721,7 @@ internal static class SvgReferenceResolver
 
     private static SvgGeometry LowerPlacedRadialFill(SvgRadialGradient circle, SvgRectangle placement, SvgRectangle box, byte opacity, bool painted, SvgAffineTransform circleTransform, SvgViewportFrame? frame, RenderBudget budget, SvgStroke? stroke)
     {
-        circle = SvgGradientSyntax.MapUserSpaceRadial(circleTransform, circle, frame);
+        circle = SvgGradientSyntax.MapRadialReference(circleTransform, circle, frame);
         if (frame is not null) placement = frame.Value.Clip.ClipRectangle(frame.Value.Shift(placement));
         return FinishInstanceRadialFill(circle, box, placement, opacity, painted, budget, stroke);
     }
@@ -1770,7 +1770,7 @@ internal static class SvgReferenceResolver
         if (state.RadialGradients.TryGetValue(paintId, out SvgRadialGradient circle))
         {
             if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ScaleGeneralRadial(circle, scaleX, scaleY, offsetX + reference.X, offsetY + reference.Y) : circle with { CenterX = (circle.CenterX * scaleX + offsetX) + reference.X, CenterY = (circle.CenterY * scaleY + offsetY) + reference.Y, FocalX = (circle.FocalX * scaleX + offsetX) + reference.X, FocalY = (circle.FocalY * scaleY + offsetY) + reference.Y, Radius = circle.Radius * Math.Abs(scaleX), FocalRadius = circle.FocalRadius * Math.Abs(scaleX), ReferenceScaleX = circle.ReferenceScaleX * scaleX, ReferenceScaleY = circle.ReferenceScaleY * scaleY };
-            circle = SvgGradientSyntax.MapUserSpaceRadial(reference.Transform, circle, frame);
+            circle = SvgGradientSyntax.MapRadialReference(reference.Transform, circle, frame);
             return FinishInstanceRadialFill(circle, box, fillBox, reference.Opacity, reference.IsPainted, state.Budget, null);
         }
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern or gradient references are implemented.");

@@ -3705,7 +3705,7 @@ public static partial class SvgConverter
                 double position;
                 if (definition.Stops.Length == 1) position = 0;
                 else
-                if (offsetX != 0 || offsetY != 0 || !nativeCoordinates.TryRadial(x, y, ShaderBitmapOrigin(x, y), out position))
+                if (!nativeCoordinates.TryRadial(x, y, ShaderBitmapOrigin(x, y), out position))
                     position = SvgShaderCoordinates.EvaluateRadial(new(rayX, rayY), new(offsetX, offsetY), radius, focalRadius);
                 if (definition.Spread == SvgGradientSpread.Repeat) position -= Math.Floor(position);
                 else if (definition.Spread == SvgGradientSpread.Reflect)

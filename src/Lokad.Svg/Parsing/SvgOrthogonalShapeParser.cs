@@ -142,7 +142,7 @@ internal static class SvgOrthogonalShapeParser
                     pathGradient = SvgGradientSyntax.MapUserSpaceVector(shape.Transform, outlineCandidate, frame);
                     pathGradient = SvgGradientSyntax.MirrorBoundingBoxVector(shape.Transform, pathGradient);
                 }
-                else if (paintPathRadial && !mappedOutline) pathCircle = SvgGradientSyntax.MapUserSpaceRadial(shape.Transform, outlineRadialCandidate, frame);
+                else if (paintPathRadial && !mappedOutline) pathCircle = SvgGradientSyntax.MapRadialReference(shape.Transform, outlineRadialCandidate, frame);
                 // Lower the outline exactly as a solid stroke so caps, joins, dashes and transforms behave identically, then repaint it below. The solid color never reaches the scene.
                 pathStrokeStyle = style with { Stroke = "#ffffff" };
                 pathStrokeShape = context.ResolveShape(pathStrokeStyle, reader, true);
@@ -315,7 +315,7 @@ internal static class SvgOrthogonalShapeParser
                     strokeGradient = SvgGradientSyntax.MapUserSpaceVector(shape.Transform, outlineCandidate, frame);
                     strokeGradient = SvgGradientSyntax.MirrorBoundingBoxVector(shape.Transform, strokeGradient);
                 }
-                else if (paintRadialOutline && !mappedOutline) strokeCircle = SvgGradientSyntax.MapUserSpaceRadial(shape.Transform, outlineRadialCandidate, frame);
+                else if (paintRadialOutline && !mappedOutline) strokeCircle = SvgGradientSyntax.MapRadialReference(shape.Transform, outlineRadialCandidate, frame);
                 // Lower the outline exactly as a solid stroke so caps, joins, dashes and transforms behave identically, then repaint it below. The solid color never reaches the scene.
                 strokeStyle = strokeStyle with { Stroke = "#ffffff" };
                 strokeShape = context.ResolveShape(strokeStyle, reader, true);
@@ -390,7 +390,7 @@ internal static class SvgOrthogonalShapeParser
                     SvgRectangle sourceBox = circle.IsUserSpace ? default : SvgPathBounds.Compute(path.Commands, context.WorkCounter, context.CancellationToken);
                     circle = SvgGradientSyntax.BindRadialSourceMap(circle, sourceBox, path.SceneMap, context.WorkCounter, context.CancellationToken);
                 }
-                else circle = SvgGradientSyntax.MapUserSpaceRadial(transform, circle, frame);
+                else circle = SvgGradientSyntax.MapRadialReference(transform, circle, frame);
             }
             SvgAffineTransform patternMap = SvgViewportFrame.MapGeometry(transform, frame);
             if (pattern)

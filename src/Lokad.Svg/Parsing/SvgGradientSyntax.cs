@@ -439,7 +439,7 @@ internal static class SvgGradientSyntax
     {
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
         SvgAffineTransform transform = context.ResolveTransform(reader);
-        gradient = MapUserSpaceRadial(transform, gradient, frame);
+        gradient = MapRadialReference(transform, gradient, frame);
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         bool painted = SvgPresentationResolver.IsPainted(style, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = style.GetOpacity().Alpha;
@@ -474,7 +474,7 @@ internal static class SvgGradientSyntax
         }
         SvgAffineTransform transform = context.ResolveTransform(reader);
         bool bindSourceMap = !transform.IsAxisAligned;
-        if (!bindSourceMap) gradient = MapUserSpaceRadial(transform, gradient, frame);
+        if (!bindSourceMap) gradient = MapRadialReference(transform, gradient, frame);
         bool painted = SvgPresentationResolver.IsPainted(style, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgReferenceResolver.MultiplyAlpha(style.GetOpacity().Alpha, SvgColorParser.ParseOpacity(style.FillOpacity));
         SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
@@ -594,7 +594,7 @@ internal static class SvgGradientSyntax
             outlineGradient = MapUserSpaceVector(transform, outlineGradient, frame);
             outlineGradient = MirrorBoundingBoxVector(transform, outlineGradient);
         }
-        if (paintRadialStroke) outlineCircle = MapUserSpaceRadial(transform, outlineCircle, frame);
+        if (paintRadialStroke) outlineCircle = MapRadialReference(transform, outlineCircle, frame);
         bool painted = SvgPresentationResolver.IsPainted(style, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgReferenceResolver.MultiplyAlpha(style.GetOpacity().Alpha, SvgColorParser.ParseOpacity(style.FillOpacity));
         SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
@@ -1009,10 +1009,20 @@ internal static class SvgGradientSyntax
             NativePaintMatrices = new(SvgShaderMatrix.Concat(nativeObject, local), nativeReference) };
     }
 
-    /// <summary>Maps one userSpaceOnUse radial circle and its focal point through the referencing transform, recording scales for inverse evaluation.</summary>
-    internal static SvgRadialGradient MapUserSpaceRadial(SvgAffineTransform transform, SvgRadialGradient gradient, SvgViewportFrame? frame)
+    /// <summary>Maps a radial paint through an axis reference, preserving object-box reflection and user-space scale records.</summary>
+    /// <remarks>Object-box reflections remain reference matrices so native float preparation keeps
+    /// definition coordinates separate from the local paint map. Callers bind general source maps.</remarks>
+    internal static SvgRadialGradient MapRadialReference(SvgAffineTransform transform, SvgRadialGradient gradient, SvgViewportFrame? frame)
     {
-        if (!gradient.IsUserSpace) return gradient;
+        if (!gradient.IsUserSpace)
+        {
+            bool mirrorX = transform.A < 0, mirrorY = transform.D < 0;
+            if (!transform.IsAxisAligned || !mirrorX && !mirrorY) return gradient;
+            if (!gradient.HasGeneralTransform)
+                gradient = gradient with { HasGeneralTransform = true, Inverse = SvgGradientTransform.Identity,
+                    NativePaintMatrices = new(new(1, 0, 0, 0, 1, 0), SvgAffineTransform.Identity) };
+            return ScaleGeneralRadial(gradient, mirrorX ? -1 : 1, mirrorY ? -1 : 1, mirrorX ? 1 : 0, mirrorY ? 1 : 0);
+        }
         if (!transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned gradient transforms are implemented.");
         if (gradient.HasGeneralTransform) return ScaleGeneralRadial(ScaleGeneralRadial(gradient, transform.A, transform.D, transform.E, transform.F), frame?.ScaleX ?? 1, frame?.ScaleY ?? 1, frame?.OffsetX ?? 0, frame?.OffsetY ?? 0);
         (double mappedX, double mappedY) = transform.ApplyToUserPoint(gradient.CenterX, gradient.CenterY);
@@ -1073,7 +1083,7 @@ internal static class SvgGradientSyntax
             }
             else if (state.RadialGradients.TryGetValue(fillId, out SvgRadialGradient resolvedCircle))
             {
-                fillCircle = MapUserSpaceRadial(transform, resolvedCircle, frame);
+                fillCircle = MapRadialReference(transform, resolvedCircle, frame);
                 hasRadialFill = true;
             }
             else if (state.Patterns.TryGetValue(fillId, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills with gradient strokes are not implemented.");
@@ -1153,7 +1163,7 @@ internal static class SvgGradientSyntax
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
         SvgAffineTransform transform = context.ResolveTransform(reader);
-        circle = MapUserSpaceRadial(transform, circle, frame);
+        circle = MapRadialReference(transform, circle, frame);
         SvgLinearGradient fillGradient = default;
         SvgRadialGradient fillCircle = default;
         bool hasLinearFill = false;
@@ -1169,7 +1179,7 @@ internal static class SvgGradientSyntax
             }
             else if (state.RadialGradients.TryGetValue(fillId, out SvgRadialGradient resolvedCircle))
             {
-                fillCircle = MapUserSpaceRadial(transform, resolvedCircle, frame);
+                fillCircle = MapRadialReference(transform, resolvedCircle, frame);
                 hasRadialFill = true;
             }
             else if (state.Patterns.TryGetValue(fillId, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills with gradient strokes are not implemented.");

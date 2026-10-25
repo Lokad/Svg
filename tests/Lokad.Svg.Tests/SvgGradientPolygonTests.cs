@@ -144,7 +144,7 @@ public sealed class SvgGradientPolygonTests
         SvgAffineTransform element = SvgAffineTransform.FromTranslation(8, -3);
         SvgViewportFrame frame = new(4, -2, 2, 0.5, null, null, new SvgClipBox(0, 0, 64, 64), 0);
 
-        SvgRadialGradient mapped = SvgGradientSyntax.MapUserSpaceRadial(element, circle, frame);
+        SvgRadialGradient mapped = SvgGradientSyntax.MapRadialReference(element, circle, frame);
 
         Assert.Equal(4, mapped.CenterX);
         (double x, double y) = mapped.Inverse.Apply(36, 8.5);

@@ -321,7 +321,7 @@ internal static class SvgLeafParser
             }
             else
             {
-                if (!isLinear) radial = SvgGradientSyntax.MapUserSpaceRadial(transform, radial, frame);
+                if (!isLinear) radial = SvgGradientSyntax.MapRadialReference(transform, radial, frame);
                 SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
                 box = frame is null ? placement : frame.Value.Shift(placement);
             }
@@ -480,7 +480,7 @@ internal static class SvgLeafParser
             }
             else
             {
-                if (!isLinear) radial = SvgGradientSyntax.MapUserSpaceRadial(transform, radial, frame);
+                if (!isLinear) radial = SvgGradientSyntax.MapRadialReference(transform, radial, frame);
                 SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.CenterX - syntax.RadiusX, syntax.CenterY - syntax.RadiusY, 2 * syntax.RadiusX, 2 * syntax.RadiusY, default, true, null));
                 box = frame is null ? placement : frame.Value.Shift(placement);
             }

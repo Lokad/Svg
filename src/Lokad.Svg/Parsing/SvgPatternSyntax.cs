@@ -214,7 +214,7 @@ internal static class SvgPatternSyntax
         {
             if (state.RadialGradients.TryGetValue(SvgGradientSyntax.ParseGradientId(style.Stroke), out SvgRadialGradient resolvedCircle))
             {
-                strokeCircle = SvgGradientSyntax.MapUserSpaceRadial(transform, resolvedCircle, frame);
+                strokeCircle = SvgGradientSyntax.MapRadialReference(transform, resolvedCircle, frame);
                 hasRadialStroke = true;
             }
             else if (state.Gradients.TryGetValue(SvgGradientSyntax.ParseGradientId(style.Stroke), out SvgLinearGradient resolvedGradient))
@@ -315,7 +315,7 @@ internal static class SvgPatternSyntax
             }
             else if (state.RadialGradients.TryGetValue(fillId, out SvgRadialGradient resolvedCircle))
             {
-                fillCircle = SvgGradientSyntax.MapUserSpaceRadial(transform, resolvedCircle, frame);
+                fillCircle = SvgGradientSyntax.MapRadialReference(transform, resolvedCircle, frame);
                 hasRadialFill = true;
             }
             else if (state.Patterns.TryGetValue(fillId, out SvgPatternTile fillTile))
