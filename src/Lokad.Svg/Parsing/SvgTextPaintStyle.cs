@@ -3,9 +3,9 @@ namespace Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
 
 /// <summary>Retains effective text paint and local fill binding until normalized content identifies the span that paints it.</summary>
-internal readonly record struct SvgTextPaintStyle(SvgPaint Paint, bool IsDisplayed, bool IsVisible, string? Stroke, byte TextOpacity)
+internal readonly record struct SvgTextPaintStyle(SvgPaint Paint, bool IsDisplayed, bool IsVisible, string? Stroke, SvgPaintOpacity TextOpacity)
 {
-    internal static SvgTextPaintStyle Default => new(SvgPaint.Default, true, true, null, 255);
+    internal static SvgTextPaintStyle Default => new(SvgPaint.Default, true, true, null, SvgPaintOpacity.Opaque);
     internal SvgDisplay ElementDisplay { get; init; }
     private SvgPaintResourceSelection? Resources { get; init; }
     private bool InactiveFill { get; init; }
@@ -25,7 +25,7 @@ internal readonly record struct SvgTextPaintStyle(SvgPaint Paint, bool IsDisplay
     internal SvgPaintOrder PaintOrder { get; init; }
     internal bool NonScalingStroke { get; init; }
     internal SvgTextDecorationStyle? Decoration { get; init; }
-    private SvgTextGlyphPaint AuthoredGlyphPaint => new(SvgPaintResolver.ResolveFillColor(Paint, TextOpacity), IsDisplayed && IsVisible && Paint.HasFill)
+    private SvgTextGlyphPaint AuthoredGlyphPaint => new(new(SvgPaintResolver.ResolveFillColor(Paint, TextOpacity.Alpha), SvgPaintResolver.ResolveSolidPaint(Paint).Alpha * TextOpacity.Value), IsDisplayed && IsVisible && Paint.HasFill)
     {
         FillServer = IsDisplayed && IsVisible && Paint.HasFill ? FillServer : null,
         Decoration = IsDisplayed && IsVisible ? Decoration : null,
@@ -52,7 +52,7 @@ internal readonly record struct SvgTextPaintStyle(SvgPaint Paint, bool IsDisplay
     {
         ValidateStyle(style);
         SvgResolvedPresentation resolved = SvgPresentationResolver.Resolve(ForColorResolution(style), inheritedPaint, inheritedDisplayed, inheritedVisible, SvgRootParser.CssNamedColors);
-        return new(resolved.Paint, resolved.IsDisplayed, resolved.IsVisible, style.Stroke ?? inheritedStroke, resolved.Opacity)
+        return new(resolved.Paint, resolved.IsDisplayed, resolved.IsVisible, style.Stroke ?? inheritedStroke, style.GetOpacity())
         { ElementDisplay = style.GetDisplay(), FillServer = IsLocalFill(style.Fill) ? style.Fill : null, StrokeStyle = SvgInheritedStrokeStyle.Default.ResolveChild(style), PaintOrder = style.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers, NonScalingStroke = SvgStrokeStyleSyntax.ParseVectorEffect(style.VectorEffect) };
     }
 
@@ -95,8 +95,9 @@ internal readonly record struct SvgTextPaintStyle(SvgPaint Paint, bool IsDisplay
 }
 
 /// <summary>Pairs a glyph's resolved fill color with whether its span paints a fill.</summary>
-internal readonly record struct SvgTextGlyphPaint(SvgColor Color, bool HasFill)
+internal readonly record struct SvgTextGlyphPaint(SvgSolidPaint FillPaint, bool HasFill)
 {
+    internal SvgColor Color => FillPaint.Color;
     internal string? FillServer { get; init; }
     internal SvgTextDecorationStyle? Decoration { get; init; }
     internal SvgTextStrokePaint? Stroke { get; init; }
@@ -105,12 +106,20 @@ internal readonly record struct SvgTextGlyphPaint(SvgColor Color, bool HasFill)
 }
 
 /// <summary>Borrows immutable inherited stroke strings until actual emitted text selects them; no storage or host font access is owned.</summary>
-internal readonly record struct SvgTextStrokePaint(SvgInheritedStrokeStyle Style, SvgPaint Paint, byte Opacity)
+internal readonly record struct SvgTextStrokePaint(SvgInheritedStrokeStyle Style, SvgPaint Paint, SvgPaintOpacity Opacity)
 {
     internal SvgPaintOrder PaintOrder { get; init; }
     internal bool NonScaling { get; init; }
     /// <summary>Borrows the element's native screen-font scale, excluding character rotations and textLength stretching.</summary>
     internal double FontScale { get; init; } = 1;
+    internal SvgSolidPaint ResolvePaint()
+    {
+        SvgSolidPaint source = Style.Stroke is {} value && SvgLocalUrl.TryParseId(value, out _)
+            ? new(new(255, 255, 255, 255), 1)
+            : SvgPaintResolver.ResolveStrokePaint(Style.Stroke ?? "none", null, Paint, SvgRootParser.CssNamedColors);
+        return source with { Alpha = source.Alpha * SvgColorParser.ParsePaintOpacity(Style.StrokeOpacity).Value * Opacity.Value };
+    }
+
     internal SvgStroke? Resolve()
     {
         double width = SvgStrokeStyleSyntax.ParseStrokeWidth(Style.Width, "text");
@@ -126,7 +135,7 @@ internal readonly record struct SvgTextStrokePaint(SvgInheritedStrokeStyle Style
             ? new SvgColor(255, 255, 255, 255)
             : SvgPaintResolver.ResolveStrokeColor(Style.Stroke ?? "none", null, Paint, SvgRootParser.CssNamedColors);
         color = SvgPaintResolver.ApplyOpacity(color, Style.StrokeOpacity is null ? (byte)255 : SvgColorParser.ParseOpacity(Style.StrokeOpacity));
-        return new(SvgPaintResolver.ApplyOpacity(color, Opacity), width);
+        return new(SvgPaintResolver.ApplyOpacity(color, Opacity.Alpha), width);
     }
 }
 

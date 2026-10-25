@@ -620,7 +620,7 @@ internal static class SvgFontRequestDiscovery
         SvgResolvedShapePresentation textPresentation = SvgShapePresentationResolver.Resolve(SvgTextPaintStyle.ForColorResolution(computedStyle) with { Filter = null, Stroke = "none", Linecap = null, Linejoin = null, Dasharray = null, Dashoffset = null, Width = null, Miterlimit = null, StrokeOpacity = null }, inherited.Paint, inherited.IsDisplayed, inherited.IsVisible, false, SvgRootParser.CssNamedColors);
         bool isDisplayed = inherited.IsDisplayed && (computedStyle.GetDisplay() != SvgDisplay.None);
         bool isVisible = SvgPresentationResolver.ParseVisibility(computedStyle.Visibility, inherited.IsVisible);
-        SvgTextPaintStyle decorationPaint = new(textPresentation.Paint, true, true, computedStyle.Stroke ?? inherited.Stroke, computedStyle.GetOpacity().Alpha)
+        SvgTextPaintStyle decorationPaint = new(textPresentation.Paint, true, true, computedStyle.Stroke ?? inherited.Stroke, computedStyle.GetOpacity())
         { StrokeStyle = inherited.StrokeStyle.ResolveChild(computedStyle), PaintOrder = computedStyle.PaintOrder ?? inherited.PaintOrder };
         SvgTextDecorationStyle? decoration = SvgTextDecorationSyntax.Resolve(reader, inlineStyle, styleSheet, inherited.Text.Decoration, decorationPaint.GlyphPaint);
         if (decoration != text.Decoration) text = text.WithDecoration(decoration);
@@ -639,7 +639,7 @@ internal static class SvgFontRequestDiscovery
         internal bool NonScalingStroke { get; init; }
         internal SvgMarkerStyle Markers { get; init; }
         internal SvgTextMetricScope Metrics { get; init; }
-        internal SvgTextPaintStyle TextPaint(SvgPaintResourceSelection? resources) => new SvgTextPaintStyle(Paint, IsDisplayed, IsVisible, Stroke, ElementOpacity.Alpha) { ElementDisplay = ElementDisplay, FillServer = PaintServerFill, StrokeStyle = StrokeStyle, PaintOrder = PaintOrder, NonScalingStroke = NonScalingStroke, Decoration = Text.Decoration }.ResolveResources(Metrics.NeedsBounds ? null : resources, Metrics.CanSuppress);
+        internal SvgTextPaintStyle TextPaint(SvgPaintResourceSelection? resources) => new SvgTextPaintStyle(Paint, IsDisplayed, IsVisible, Stroke, ElementOpacity) { ElementDisplay = ElementDisplay, FillServer = PaintServerFill, StrokeStyle = StrokeStyle, PaintOrder = PaintOrder, NonScalingStroke = NonScalingStroke, Decoration = Text.Decoration }.ResolveResources(Metrics.NeedsBounds ? null : resources, Metrics.CanSuppress);
     }
 
     private readonly record struct TextRequestKey(string Family, int Weight, bool Italic)

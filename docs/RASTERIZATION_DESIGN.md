@@ -183,6 +183,10 @@ Filter sources preserve native rectangle coverage and layer-bound rounding.
 Object-box output clips index balanced source ranges once before measuring targets.
 sRGB and linear-RGB image sampling retain their distinct precision. Resource
 clips enclose group isolation, applying coverage once when opacity restores.
+Solid paint and inherited currentColor retain validated source alpha through
+shape, instance, mask and glyph construction. Text element opacity encloses the
+ordered fill, stroke and decoration commands, including deferred paint slots.
+
 Uniform filter paint retains source alpha and pipeline precision until sampled.
 Deferred uniform images retain their finite coverage and known texel independently
 of compact storage. Affine frames identify their stored color space so final

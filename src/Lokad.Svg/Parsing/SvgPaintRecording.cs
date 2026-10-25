@@ -157,8 +157,8 @@ internal static class SvgPaintRecording
         _ = SvgPaintResolver.RemoveInertServers(ref style, state, reader.LocalName);
         bool fillServer = style.Fill is not null && SvgLocalUrl.TryParseId(style.Fill, out _);
         SvgPaint fill = SvgPaintResolver.Resolve(fillServer ? "white" : style.Fill, style.FillOpacity, style.Color, context.InheritedPresentation.Paint, context.NamedColors);
-        SvgColor stroke = style.Stroke is null || style.Stroke == "none" || SvgLocalUrl.TryParseId(style.Stroke, out _) ? new(255, 255, 255, 255)
-            : SvgPaintResolver.ResolveStrokeColor(style.Stroke, style.Color, context.InheritedPresentation.Paint, context.NamedColors);
+        SvgSolidPaint stroke = style.Stroke is null || style.Stroke == "none" || SvgLocalUrl.TryParseId(style.Stroke, out _) ? new(new(255, 255, 255, 255), 1)
+            : SvgPaintResolver.ResolveStrokePaint(style.Stroke, style.Color, context.InheritedPresentation.Paint, context.NamedColors);
         SvgPaintOpacity strokeOpacity = SvgColorParser.ParsePaintOpacity(style.StrokeOpacity);
         SvgRecordingScope opacityScope = context.RecordingScope.Value == 0 ? new(1) : context.RecordingScope;
         if (SvgLocalUrl.ReadReference(reader, "clip-path") is not null || context.ResolveTransform(reader) != context.InheritedPresentation.Transform)
@@ -176,7 +176,7 @@ internal static class SvgPaintRecording
         }
         SvgPaintBounds? objectBounds = PrimitiveBounds(reader, context, frame, 0, out SvgPaintBounds? sourceObjectBox, out bool suppressedSource);
         return new(style.GetOpacity(), SvgPaintResolver.ResolveSolidPaint(fill).Alpha,
-            fill.FillOpacity.Alpha / 255f, (stroke.Alpha / 255f) * strokeOpacity.Value, strokeOpacity.Alpha / 255f,
+            fill.FillOpacity.Alpha / 255f, stroke.Alpha * strokeOpacity.Value, strokeOpacity.Alpha / 255f,
             fillServer ? SvgPaintOrigin.PaintServer : SvgPaintOrigin.Solid,
             style.Stroke is not null && SvgLocalUrl.TryParseId(style.Stroke, out _) ? SvgPaintOrigin.PaintServer : SvgPaintOrigin.Solid,
             fill.HasFill, drawScope, opacityScope) { RecordingTransform = context.InheritedPresentation.RecordingTransform, IsSuppressedSource = suppressedSource || !context.InheritedPresentation.IsDisplayed || style.GetDisplay() == SvgDisplay.None, PaintOrder = style.PaintOrder ?? context.InheritedPresentation.PaintOrder, ObjectBounds = objectBounds, SourceObjectBox = sourceObjectBox, VisualBounds = strokeBoundsInflation > 0 ? PrimitiveBounds(reader, context, frame, strokeBoundsInflation, out _, out _) : null, StrokeBoundsInflation = strokeBoundsInflation };

@@ -2,7 +2,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-internal readonly record struct SvgSymbolPresentation(SvgPaint Paint, SvgInheritedStrokeStyle Stroke, string? FillRule, bool HasAuthoredFill, SvgPaintOpacity? FillOpacity, SvgColor? CurrentColor, SvgPaintOpacity SourceOpacity)
+internal readonly record struct SvgSymbolPresentation(SvgPaint Paint, SvgInheritedStrokeStyle Stroke, string? FillRule, bool HasAuthoredFill, SvgPaintOpacity? FillOpacity, SvgSolidPaint? CurrentColor, SvgPaintOpacity SourceOpacity)
 {
     internal SvgDisplay ElementDisplay { get; init; }
     internal bool IsHidden { get; init; }

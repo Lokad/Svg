@@ -208,7 +208,7 @@ internal static class SvgMarkerRenderer
         static SvgGeometry RetainRectangle(SvgGeometry geometry, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
         {
             SvgRectangle box = geometry.Rectangle;
-            SvgPaint paint = new(box.Color, box.HasFill, SvgPaintOpacity.Opaque, box.Color, false);
+            SvgPaint paint = new(new(box.Color, box.Color.Alpha / 255f), box.HasFill, SvgPaintOpacity.Opaque, new(box.Color, box.Color.Alpha / 255f), false);
             SvgResolvedPaintableElement element = new(default, SvgAffineTransform.Identity, new(paint, box.Color, null, 255, box.HasFill), 1);
             using BudgetedParserList<SvgPoint> points = new(state.Budget, SvgMemoryCategory.Geometry, work, token);
             using BudgetedParserList<int> ends = new(state.Budget, SvgMemoryCategory.Geometry, work, token);

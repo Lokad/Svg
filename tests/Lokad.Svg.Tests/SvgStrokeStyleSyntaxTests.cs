@@ -42,7 +42,7 @@ public sealed class SvgStrokeStyleSyntaxTests
     public void Stroke_validation_and_presence_checks_do_not_allocate_dash_arrays(string dasharray)
     {
         SvgInheritedStrokeStyle style = SvgInheritedStrokeStyle.Default with { Stroke = "red", Width = "2", Dasharray = dasharray };
-        SvgTextGlyphPaint paint = new(SvgColor.Transparent, false) { Stroke = new(style, SvgPaint.Default, 255) };
+        SvgTextGlyphPaint paint = new(new(SvgColor.Transparent, 0), false) { Stroke = new(style, SvgPaint.Default, SvgPaintOpacity.Opaque) };
         for (int index = 0; index < 256; index++)
         {
             _ = paint.HasStroke;

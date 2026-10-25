@@ -17,7 +17,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
     private readonly SvgPaintOrder _constructedPaintOrder;
     private readonly string? _constructedFillRule;
     private readonly bool _unconstructed;
-    private readonly SvgColor _constructedCurrentColor;
+    private readonly SvgSolidPaint _constructedCurrentColor;
     private readonly string? _constructedPaintServerFill;
     private readonly IReadOnlyDictionary<string, SvgColor> _colors;
     private readonly XmlNameTable _names = new NameTable();
@@ -29,7 +29,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
 
     private SvgDefinitionLeafSource(string element, Attribute[] attributes, SvgComputedStyle authored,
         SvgInheritedStrokeStyle constructedStroke, IReadOnlyDictionary<string, SvgColor> colors,
-        ParserWorkCounter work, CancellationToken token, string? constructedFillRule, bool unconstructed, SvgColor constructedCurrentColor, string? constructedPaintServerFill, SvgPaintOrder constructedPaintOrder)
+        ParserWorkCounter work, CancellationToken token, string? constructedFillRule, bool unconstructed, SvgSolidPaint constructedCurrentColor, string? constructedPaintServerFill, SvgPaintOrder constructedPaintOrder)
     {
         _element = element; _attributes = attributes; _authored = authored;
         _constructedStroke = constructedStroke; _constructedPaintOrder = constructedPaintOrder; _colors = colors; _work = work; _token = token;
@@ -76,7 +76,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
             }
             reader.MoveToElement();
             SvgInheritedStrokeStyle constructed = context.InheritedStroke.ResolveChild(authored);
-            SvgDefinitionLeafSource source = new(element, attributes, authored, constructed, context.NamedColors, context.WorkCounter, context.CancellationToken, Copy(context.InheritedFillRule), unconstructed, context.InheritedPresentation.Paint.CurrentColor, context.InheritedPresentation.PaintServerFill, context.InheritedPresentation.PaintOrder);
+            SvgDefinitionLeafSource source = new(element, attributes, authored, constructed, context.NamedColors, context.WorkCounter, context.CancellationToken, Copy(context.InheritedFillRule), unconstructed, context.InheritedPresentation.Paint.CurrentPaint, context.InheritedPresentation.PaintServerFill, context.InheritedPresentation.PaintOrder);
             state.DefinitionReservations.Add(reservation);
             return source;
         }
@@ -104,7 +104,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
         // stroke colors require source lowering when their inherited values change.
         bool inheritedShader = _element != "line" && _authored.Fill is null && paintServerFill is not null;
         bool strokeColorChanged = _authored.Color is null && resolved.Stroke is not null
-            && resolved.Stroke.Equals("currentColor", StringComparison.OrdinalIgnoreCase) && paint.CurrentColor != _constructedCurrentColor;
+            && resolved.Stroke.Equals("currentColor", StringComparison.OrdinalIgnoreCase) && paint.CurrentPaint != _constructedCurrentColor;
         return SvgMarkerStyle.Resolve(_authored, markers).HasMarkers || (_authored.PaintOrder ?? paintOrder) != (_authored.PaintOrder ?? _constructedPaintOrder) || _unconstructed || inheritedShader || (_element != "line" && _authored.Fill is null && _constructedPaintServerFill is not null && paintServerFill is null) || strokeColorChanged || (_authored.FillRule ?? fillRule) != (_authored.FillRule ?? _constructedFillRule)
             || resolved with { StrokeOpacity = null } != _constructedStroke with { StrokeOpacity = null };
     }

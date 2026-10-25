@@ -40,7 +40,7 @@ internal static class SvgSymbolContentParser
             SvgPaint paint = SvgPaintResolver.Resolve(shader ? "#ffffff" : style.Fill, style.FillOpacity, style.Color, inherited.Paint, colors);
             SvgInheritedStrokeStyle stroke = new(Copy(style.Linecap), Copy(style.Linejoin), Copy(style.Dasharray), Copy(style.Dashoffset), Copy(style.Width), Copy(style.Miterlimit), Copy(style.StrokeOpacity), Copy(style.Stroke));
             SvgPaintOpacity? opacity = style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity);
-            SvgColor? color = style.Color is null ? null : SvgColorParser.Parse(style.Color, colors);
+            SvgSolidPaint? color = style.Color is null ? null : SvgColorParser.ParsePaint(style.Color, colors);
             SvgPaintOpacity sourceOpacity = style.ResolveOpacity(inherited.SourceOpacity).GetOpacity();
             SvgSymbolPresentation presentation = new(paint, inherited.Stroke.ResolveChild(style with { Linecap = stroke.Linecap, Linejoin = stroke.Linejoin, Dasharray = stroke.Dasharray, Dashoffset = stroke.Dashoffset, Width = stroke.Width, Miterlimit = stroke.Miterlimit, StrokeOpacity = stroke.StrokeOpacity, Stroke = stroke.Stroke }),
                 Copy(style.FillRule) ?? inherited.FillRule, style.Fill is not null || inherited.HasAuthoredFill, opacity ?? inherited.FillOpacity, color ?? inherited.CurrentColor, sourceOpacity) { InheritsOpacity = style.InheritsOpacity, ElementDisplay = style.GetSourceDisplay(), Markers = markers.InheritFrom(inherited.Markers), PaintOrder = style.PaintOrder ?? inherited.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
@@ -64,7 +64,7 @@ internal static class SvgSymbolContentParser
                 return true;
             }
             SvgPaintOpacity? fillOpacity = style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity);
-            SvgColor? color = style.Color is null ? null : SvgColorParser.Parse(style.Color, colors);
+            SvgSolidPaint? color = style.Color is null ? null : SvgColorParser.ParsePaint(style.Color, colors);
             SvgInheritedStrokeStyle stroke = new(Copy(style.Linecap), Copy(style.Linejoin), Copy(style.Dasharray), Copy(style.Dashoffset), Copy(style.Width), Copy(style.Miterlimit), Copy(style.StrokeOpacity), Copy(style.Stroke));
             int start = content.AddUse(reference, fillOpacity, color, strokeOpacity, stroke, style.PaintOrder, markers,
                 SvgRetainedTextSource.CaptureElement(reader, context, state, state.TextReplay?.Limits ?? throw new InvalidOperationException("Use capture requires document limits.")), clipId, style.Fill is not null, displayed, visible);

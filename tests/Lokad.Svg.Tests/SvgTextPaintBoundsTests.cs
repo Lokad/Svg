@@ -95,7 +95,7 @@ public sealed class SvgTextPaintBoundsTests
             SvgGlyphDeviceMetrics metrics = new(scale, OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, true);
             RenderBudget budget = new(1_000_000);
             using (SvgTextRun run = SvgTextRunBuilder.Create(style, row.GetProperty("text").GetString() ?? throw new InvalidDataException("Missing spacing text."),
-                [], [], [], new(new(0, 0, 0, 255), true), metrics, snapshot, budget, new(1_000_000), CancellationToken.None))
+                [], [], [], new(new(new(0, 0, 0, 255), 1), true), metrics, snapshot, budget, new(1_000_000), CancellationToken.None))
             {
                 JsonElement native = row.GetProperty(platform);
                 double[] expected = native.GetProperty("widths").EnumerateArray().Select(value => value.GetDouble()).ToArray();
@@ -217,7 +217,7 @@ public sealed class SvgTextPaintBoundsTests
     private static SvgTextRun CreateRun(string text, SvgFontSnapshot snapshot, RenderBudget budget)
     {
         SvgTextStyle style = new(new("serif", 400, false), 24, 0, 0, 0, 0, 0, SvgTextAnchor.Start, "");
-        SvgTextGlyphPaint paint = new(new(0, 0, 0, 255), true) { FillServer = "url(#g)" };
+        SvgTextGlyphPaint paint = new(new(new(0, 0, 0, 255), 1), true) { FillServer = "url(#g)" };
         SvgGlyphDeviceMetrics metrics = new(1, OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, false);
         return SvgTextRunBuilder.Create(style, text, [], [], [], paint, metrics, snapshot, budget, new(long.MaxValue), CancellationToken.None);
     }

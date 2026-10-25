@@ -271,7 +271,7 @@ internal sealed class SvgTextRun : IDisposable
     internal ReadOnlySpan<SvgTextPaintFragment> PaintFragments => _glyphs.PaintFragments;
     internal SvgGlyphDeviceMetrics? DeviceMetrics => _deviceMetrics;
     internal SvgGlyphFontStyle GetGlyphFont(int index) => _glyphs.GlyphFonts.IsEmpty ? new(Font, Style.FontSize) : _glyphs.GlyphFonts[index];
-    internal SvgTextGlyphPaint GetGlyphPaint(int index, SvgColor fallbackColor) => _glyphs.GlyphPaints.IsEmpty ? _defaultPaint ?? new(fallbackColor, true) : _glyphs.GlyphPaints[index];
+    internal SvgTextGlyphPaint GetGlyphPaint(int index, SvgColor fallbackColor) => _glyphs.GlyphPaints.IsEmpty ? _defaultPaint ?? new(new(fallbackColor, fallbackColor.Alpha / 255f), true) : _glyphs.GlyphPaints[index];
     internal double GetGlyphRotation(int index) => _glyphs.GlyphRotations.IsEmpty ? 0 : _glyphs.GlyphRotations[index];
 
     /// <summary>Composes character-local rotation with the existing glyph and element placement.</summary>

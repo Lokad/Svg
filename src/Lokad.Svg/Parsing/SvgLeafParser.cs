@@ -766,7 +766,7 @@ internal static class SvgLeafParser
         {
             SvgAxisAlignedLine line = new(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, color, painted, strokeWidth);
             SvgGeometry band = frame is null ? SvgGeometry.FromAxisAlignedLine(line) : frame.Value.ClipShifted(line);
-            SvgPaint discPaint = new(color, true, SvgPaintOpacity.Opaque, color, false);
+            SvgPaint discPaint = new(new(color, color.Alpha / 255f), true, SvgPaintOpacity.Opaque, new(color, color.Alpha / 255f), false);
             SvgResolvedPaintableElement discElement = element with { Presentation = new SvgResolvedShapePresentation(discPaint, color, null, 255, painted) };
             double radius = strokeWidth / 2d;
             using BudgetedParserList<SvgPoint> noPoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);

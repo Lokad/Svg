@@ -62,8 +62,8 @@ public sealed partial class OpenTypeFontTests
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
         RenderBudget budget = new(1_000_000);
         SvgTextStyle style = new(new SvgFontFaceRequest("Example", 400, false), 100, 0, 3, 0, 0, 0, SvgTextAnchor.Middle, "");
-        SvgTextGlyphPaint red = new(new SvgColor(255, 0, 0, 255), true);
-        SvgTextGlyphPaint blue = new(new SvgColor(0, 0, 255, 255), true);
+        SvgTextGlyphPaint red = new(new(new SvgColor(255, 0, 0, 255), 1), true);
+        SvgTextGlyphPaint blue = new(new(new SvgColor(0, 0, 255, 255), 1), true);
         SvgTextPaintSpan[] paints = [new(0, 1, red), new(1, 2, blue), new(2, 3, red)];
         using (SvgTextRun expected = SvgTextRunBuilder.Create(style, "AAA", snapshot, budget, CancellationToken.None))
         using (SvgTextRun actual = SvgTextRunBuilder.Create(style, "AAA", [], [], paints, red, null, snapshot, budget, new(long.MaxValue), CancellationToken.None))
@@ -127,8 +127,8 @@ public sealed partial class OpenTypeFontTests
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
         SvgTextStyle style = new(new SvgFontFaceRequest("Example", 400, false), 100, 0, 3, 0, 0, 0, SvgTextAnchor.Start, "");
-        SvgTextGlyphPaint red = new(new SvgColor(255, 0, 0, 255), true);
-        SvgTextGlyphPaint blue = new(new SvgColor(0, 0, 255, 255), true);
+        SvgTextGlyphPaint red = new(new(new SvgColor(255, 0, 0, 255), 1), true);
+        SvgTextGlyphPaint blue = new(new(new SvgColor(0, 0, 255, 255), 1), true);
         SvgTextPaintSpan[] paints = Enumerable.Range(0, 128).Select(index => new SvgTextPaintSpan(index, index + 1, index % 2 == 0 ? red : blue)).ToArray();
         string text = new('A', 128);
         RenderBudget normal = new(100_000);
@@ -204,7 +204,7 @@ public sealed partial class OpenTypeFontTests
         using (SvgTextPaintOutput output = new(budget, 0, SvgTextPaintStyle.Default, work, cancellation.Token))
         {
             output.Append("A", 0, 0, 128, work, cancellation.Token);
-            SvgTextPaintStyle blue = SvgTextPaintStyle.Default with { Paint = SvgPaint.Default with { FillColor = new SvgColor(0, 0, 255, 255) } };
+            SvgTextPaintStyle blue = SvgTextPaintStyle.Default with { Paint = SvgPaint.Default with { FillPaint = new(new SvgColor(0, 0, 255, 255), 1) } };
             output.EnterStyleSpan(blue, new("Other", 400, false, 18, SvgTextWhitespaceMode.Default, 0, SvgTextAnchor.Start));
             output.Append("A", 0, 1, 128, work, cancellation.Token);
             cancellation.Cancel();

@@ -84,7 +84,7 @@ internal static class SvgResourceUseReplay
             }
             SvgUseReference reference = pending.Use.Reference with
             {
-                FillOverride = new(new(255, 255, 255, 255), true, SvgPaintOpacity.Opaque, new(255, 255, 255, 255), false),
+                FillOverride = new(new(new(255, 255, 255, 255), 1), true, SvgPaintOpacity.Opaque, new(new(255, 255, 255, 255), 1), false),
                 PaintServerId = null, PaintServerFill = null, Opacity = 255
             };
             SvgGeometry[] mapped = SvgReferenceResolver.Apply(source, reference, null, state, work, token);

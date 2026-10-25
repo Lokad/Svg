@@ -359,8 +359,10 @@ internal static class SvgRenderedLeafParser
                 string? textMask = SvgMaskSyntax.PendingMaskId(reader, state, context);
                 SvgViewportFrame? resourceParent = state.EffectiveFrame;
                 int resourceStart = state.Scene.CommandCount;
-                if (textClip is not null || textMask is not null)
-                    state.Scene.BeginSourceOpacityScope(SvgPaintOpacity.Opaque, state.NewRecordingScope());
+                SvgPaintOpacity textOpacity = textElement.Style.GetOpacity();
+                bool textScope = textClip is not null || textMask is not null || textOpacity.Value != 1;
+                if (textScope)
+                    state.Scene.BeginSourceOpacityScope(textOpacity, state.NewRecordingScope());
                 SvgAffineTransform textPlacement = textElement.Transform;
                 if (state.EffectiveFrame is {} textFrame)
                 {
@@ -371,7 +373,7 @@ internal static class SvgRenderedLeafParser
                 SvgTextStyle textStyle = SvgTextSyntax.Parse(reader, resolvedText.InlineFont, context.InheritedTextStyle, resolvedText.LetterSpacing, resolvedText.WordSpacing);
                 SvgTextWhitespaceMode whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, resolvedText.WhiteSpace, context.InheritedTextStyle.WhitespaceMode);
                 SvgTextPaintStyle textPaint = SvgTextPaintStyle.ResolveElement(textElement.Style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, context.InheritedStroke.Stroke);
-                textPaint = textPaint with { StrokeStyle = context.InheritedStroke.ResolveChild(textElement.Style), PaintOrder = textElement.Style.PaintOrder ?? context.InheritedPresentation.PaintOrder };
+                textPaint = textPaint with { TextOpacity = SvgPaintOpacity.Opaque, StrokeStyle = context.InheritedStroke.ResolveChild(textElement.Style), PaintOrder = textElement.Style.PaintOrder ?? context.InheritedPresentation.PaintOrder };
                 textPaint = textPaint with { Decoration = SvgTextDecorationSyntax.Resolve(resolvedText.TextDecoration ?? reader.GetAttribute("text-decoration"), context.InheritedTextStyle.Decoration, (textPaint with { IsDisplayed = true, IsVisible = true }).GlyphPaint) };
                 textPaint = textPaint.ResolveResources(context.TextMetrics.NeedsBounds ? null : state.PaintResources, context.TextMetrics.CanSuppress);
                 using BudgetedParserList<SvgExtractedTextRun> textRuns = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -445,7 +447,7 @@ internal static class SvgRenderedLeafParser
                             SvgTextGlyphPainter.EmitDirect(run, textPlacement, null, textElement.Presentation.Color, state, limits.MaximumPathCommands, budget, workCounter, context.InheritedPresentation.RecordingTransform, cancellationToken);
                         }
                     }
-                    if (textClip is not null || textMask is not null)
+                    if (textScope)
                     {
                         // Deferred paths occupy paint slots inside the same element scope. Their
                         // resolution shifts these shared ranges before clip/mask binding.

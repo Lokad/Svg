@@ -5,7 +5,7 @@ namespace Lokad.Svg.Parsing;
 internal enum SvgSymbolContentKind { Leaf, Group, EndGroup, Use, Unsupported }
 
 /// <summary>Retains independently authored container paint; absent properties inherit from the instance context.</summary>
-internal readonly record struct SvgSymbolContentStyle(SvgPaint Paint, bool HasAuthoredFill, SvgPaintOpacity? FillOpacity, SvgColor? Color, SvgPaintOpacity Opacity, bool IsDisplayed, bool? IsVisible)
+internal readonly record struct SvgSymbolContentStyle(SvgPaint Paint, bool HasAuthoredFill, SvgPaintOpacity? FillOpacity, SvgSolidPaint? Color, SvgPaintOpacity Opacity, bool IsDisplayed, bool? IsVisible)
 {
     /// <summary>Keeps an authored display declaration independent of source availability and marker-root suppression.</summary>
     internal SvgDisplay ElementDisplay { get; init; }
@@ -25,7 +25,7 @@ internal readonly record struct SvgSymbolContentStyle(SvgPaint Paint, bool HasAu
     internal SvgPaint Resolve(SvgPaint inherited)
     {
         SvgPaint paint = HasAuthoredFill ? Paint : inherited;
-        return paint with { FillOpacity = FillOpacity ?? inherited.FillOpacity, CurrentColor = Color ?? inherited.CurrentColor };
+        return paint with { FillOpacity = FillOpacity ?? inherited.FillOpacity, CurrentPaint = Color ?? inherited.CurrentPaint };
     }
 }
 
@@ -92,7 +92,7 @@ internal sealed class SvgSymbolContent : IDisposable
         catch { _groups.RemoveLast(); throw; }
     }
 
-    internal int AddUse(SvgUseReference reference, SvgPaintOpacity? fillOpacity, SvgColor? color, SvgPaintOpacity? strokeOpacity, SvgInheritedStrokeStyle stroke, SvgPaintOrder? paintOrder, SvgMarkerStyle markers, SvgRetainedTextSource? textStyleSource, string? clipId, bool hasAuthoredFill, bool displayed, bool? visible)
+    internal int AddUse(SvgUseReference reference, SvgPaintOpacity? fillOpacity, SvgSolidPaint? color, SvgPaintOpacity? strokeOpacity, SvgInheritedStrokeStyle stroke, SvgPaintOrder? paintOrder, SvgMarkerStyle markers, SvgRetainedTextSource? textStyleSource, string? clipId, bool hasAuthoredFill, bool displayed, bool? visible)
     {
         int start = _building.Count;
         if (!hasAuthoredFill) reference = reference with { PaintServerId = null, PaintServerFill = null, FillOverride = null };

@@ -1983,7 +1983,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    public async Task Text_opacity_scales_glyph_alpha_with_native_rounding()
+    public async Task Text_element_opacity_matches_a_group_around_its_glyph_drawing()
     {
         async Task<byte> RenderAlphaAsync(string svg)
         {
@@ -1996,12 +1996,11 @@ public sealed partial class OpenTypeFontTests
 
         byte full = await RenderAlphaAsync("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>");
         byte half = await RenderAlphaAsync("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' opacity='0.5'>A</text></svg>");
+        byte grouped = await RenderAlphaAsync("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><g opacity='0.5'><text font-family='Example' font-size='100' y='3'>A</text></g></svg>");
 
         Assert.True(full > 0);
-        // Linux uses native mask multiplication after font preblend; the
-        // existing Windows sampler remains pending its native font correction.
-        int expected = OperatingSystem.IsLinux() ? (full + 1) * 128 >> 8 : full / 2;
-        Assert.Equal(expected, (int)half);
+        Assert.InRange(half, 1, full - 1);
+        Assert.Equal(grouped, half);
     }
 
     [Fact]

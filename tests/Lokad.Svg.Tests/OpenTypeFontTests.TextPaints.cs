@@ -38,7 +38,7 @@ public sealed partial class OpenTypeFontTests
         WriteInt16(bytes, hhea + 4, 800); WriteInt16(bytes, hhea + 6, -200);
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
         SvgTextStyle style = new(new("Example", 400, false), 24.37, 12, 32, 0, 0, 0, SvgTextAnchor.Start, "");
-        SvgTextGlyphPaint paint = new(new(255, 255, 255, 255), true) { FillServer = "url(#g)" };
+        SvgTextGlyphPaint paint = new(new(new(255, 255, 255, 255), 1), true) { FillServer = "url(#g)" };
         SvgGlyphDeviceMetrics metrics = new(1, OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, false);
         RenderBudget budget = new(1_000_000);
         using (SvgTextRun run = SvgTextRunBuilder.Create(style, "AAA", [], [], [], paint, metrics, snapshot, budget, new(long.MaxValue), CancellationToken.None))

@@ -1,6 +1,6 @@
 # Gradient color alpha
 
-The [capture](capture.json) contains 9,695 exact and 509 deferred cases, sharing
+The [capture](capture.json) contains 10,060 exact and 144 deferred cases, sharing
 6,154 SVGs and 1,677 native PNGs by content hash. Percentage, numeric and encoded
 alpha spellings retain their own browser references. The cases cover RGB/HSL,
 function aliases, case, whitespace, exponent notation, every byte-alpha midpoint,
@@ -15,5 +15,6 @@ font and reconstructed browser-input hashes before comparing pixels.
 Gradient stops retain native functional-color precision. Numeric fast parsing
 and full parsing have different alpha quantization; RGB/hex byte normalization
 also differs from HSL fast parsing. Public byte colors retain their existing
-contract. The deferred cases record ordinary solid-paint precision and filter
-arithmetic differences in `knownDifferences`, with separate results per host.
+contract. The deferred cases record filter-consumer differences in
+`knownDifferences`, with separate results per host. Additional
+[solid-paint controls](../solid-paint-alpha/README.md) cover inheritance and text opacity.

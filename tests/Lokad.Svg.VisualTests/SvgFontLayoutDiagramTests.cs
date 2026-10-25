@@ -90,7 +90,7 @@ public sealed class SvgFontLayoutDiagramTests
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "font-pack.json")), "public-noto-layout");
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(catalog, [new("Example", 400, false)], new Provider(), CancellationToken.None);
         SvgTextStyle style = new(new("Example", 400, false), 18, 0, 24, 0, 0, 0, SvgTextAnchor.Start, string.Empty);
-        SvgTextGlyphPaint paint = new(new(20, 40, 80, 255), true);
+        SvgTextGlyphPaint paint = new(new(new(20, 40, 80, 255), 1), true);
         paint = paint with { Decoration = new(SvgTextDecorationLine.Underline, paint) };
         SvgTextPositionAdjustment[] positions = [new(2, 40, null, 0, 0), new(3, 70, null, 0, 0)];
         RenderBudget budget = new(100_000);

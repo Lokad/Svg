@@ -133,7 +133,7 @@ internal static class SvgTextGlyphPainter
                     try
                     {
                         SvgRecordedTransform? shaderRecording = shader is SvgTextPatternShader ? recording : null;
-                        SvgGeometry geometry = Record(glyph, run, placement, paths, shaderRecording, state, fallback, ref prepared, work, token);
+                        SvgGeometry geometry = Record(glyph, run, placement, paths, shaderRecording, state, fallback, paint.FillPaint, ref prepared, work, token);
                         if (pathClip is not null) geometry = geometry with { LeafMask = pathClip };
                         state.Scene.AddGeometry(geometry);
                     }
@@ -164,7 +164,7 @@ internal static class SvgTextGlyphPainter
                 try
                 {
                     SvgRecordedTransform? shaderRecording = shader is SvgTextPatternShader ? recording : null;
-                    SvgGeometry geometry = Record(glyph, run, placement, paths, shaderRecording, state, fallback, ref prepared, work, token);
+                    SvgGeometry geometry = Record(glyph, run, placement, paths, shaderRecording, state, fallback, stroke.ResolvePaint(), ref prepared, work, token);
                     if (pathClip is not null) geometry = geometry with { LeafMask = pathClip };
                     state.Scene.AddGeometry(geometry);
                 }
@@ -209,13 +209,14 @@ internal static class SvgTextGlyphPainter
         }
 
         static SvgGeometry Record(SvgGlyphGeometry glyph, SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> paths,
-            SvgRecordedTransform? recording, SvgDocumentState state, SvgColor fallback, ref SvgTextPaintPreparation prepared, ParserWorkCounter work, CancellationToken token)
+            SvgRecordedTransform? recording, SvgDocumentState state, SvgColor fallback, SvgSolidPaint sourcePaint, ref SvgTextPaintPreparation prepared, ParserWorkCounter work, CancellationToken token)
         {
+            float alpha = glyph.Shader is null ? sourcePaint.Alpha : glyph.Color.Alpha / 255f;
             // Generic/oversized outlines and filter captures keep their established
             // bounds and bitmap-origin contracts, independent of native text drawings.
             if (!prepared.NativeDrawing || state.FilterGroupDepth > 0)
-                return paths.IsEmpty || recording is not null || state.FilterGroupDepth > 0 ? RecordFallback() : SvgGeometry.FromGlyphContours(glyph);
-            SvgRecordedPaint paint = prepared.RecordDrawing(run, placement, paths, state, fallback, glyph.Color.Alpha / 255f, recording, work, token);
+                return paths.IsEmpty || recording is not null || state.FilterGroupDepth > 0 || alpha != glyph.Color.Alpha / 255f ? RecordFallback() : SvgGeometry.FromGlyphContours(glyph);
+            SvgRecordedPaint paint = prepared.RecordDrawing(run, placement, paths, state, fallback, alpha, recording, work, token);
             SvgGeometry nativeGeometry = SvgGeometry.FromGlyphContours(glyph) with { RecordedPaint = paint };
             if ((paths.IsEmpty || recording is not null) && state.Viewports.Count != 0)
                 nativeGeometry = nativeGeometry with { LeafMask = SvgViewportFrame.ResolveGlyphClip(state, work, token) };
@@ -227,8 +228,8 @@ internal static class SvgTextGlyphPainter
                 if (state.Viewports.Count != 0) geometry = geometry with { LeafMask = SvgViewportFrame.ResolveGlyphClip(state, work, token) };
                 if (state.FilterGroupDepth <= 0)
                 {
-                    if (recording is null) return geometry;
-                    SvgRecordedPaintValue recorded = new(state.NewPaintOperationIdentity(), glyph.Color.Alpha / 255f, false,
+                    if (recording is null && alpha == glyph.Color.Alpha / 255f) return geometry;
+                    SvgRecordedPaintValue recorded = new(state.NewPaintOperationIdentity(), alpha, false,
                         new SvgRecordingScope(1), SvgPaintOpacity.Opaque, new SvgRecordingScope(1)) { RecordingTransform = recording };
                     return geometry with { RecordedPaint = state.Scene.RegisterRecordedPaint(recorded) };
                 }
@@ -242,7 +243,7 @@ internal static class SvgTextGlyphPainter
                 }
                 SvgPaintBounds bounds = float.IsPositiveInfinity(left) ? default : new(left, top, right, bottom);
                 float inflation = (float)Math.Max(2, glyph.StrokeBoundsInflation);
-                SvgRecordedPaintValue paint = new(state.NewPaintOperationIdentity(), glyph.Color.Alpha / 255f, false, new SvgRecordingScope(1), SvgPaintOpacity.Opaque, new SvgRecordingScope(1))
+                SvgRecordedPaintValue paint = new(state.NewPaintOperationIdentity(), alpha, false, new SvgRecordingScope(1), SvgPaintOpacity.Opaque, new SvgRecordingScope(1))
                 {
                     RecordingTransform = recording,
                     ObjectBounds = bounds,

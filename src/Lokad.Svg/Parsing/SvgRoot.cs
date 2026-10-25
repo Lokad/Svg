@@ -1014,7 +1014,7 @@ internal readonly record struct SvgDefinition(SvgGeometry[] Geometries, bool All
 
 /// <summary>Retains a solid fill's independently inherited properties until a symbol or child alias is instanced.
 /// Solid strokes retain independently authored or inherited opacity; paint servers keep their separately lowered paint.</summary>
-internal readonly record struct SvgSymbolFillBinding(bool IsInherited, SvgPaintOpacity? FillOpacity, SvgColor? CurrentColor)
+internal readonly record struct SvgSymbolFillBinding(bool IsInherited, SvgPaintOpacity? FillOpacity, SvgSolidPaint? CurrentColor)
 {
     internal SvgPaint? AuthoredFill { get; init; }
     internal SvgPaint? AuthoredStroke { get; init; }
@@ -1029,13 +1029,13 @@ internal readonly record struct SvgSymbolFillBinding(bool IsInherited, SvgPaintO
     {
         if (IsStroke) return ResolveStroke(instancePaint, inheritedStrokeOpacity);
         SvgPaint fill = AuthoredFill ?? instancePaint;
-        return fill with { HasFill = fill.HasFill && IsPainted, FillOpacity = FillOpacity ?? instancePaint.FillOpacity, CurrentColor = CurrentColor ?? instancePaint.CurrentColor };
+        return fill with { HasFill = fill.HasFill && IsPainted, FillOpacity = FillOpacity ?? instancePaint.FillOpacity, CurrentPaint = CurrentColor ?? instancePaint.CurrentPaint };
     }
 
     internal SvgPaint ResolveStroke(SvgPaint instancePaint, SvgPaintOpacity inheritedStrokeOpacity)
     {
         SvgPaint stroke = AuthoredStroke ?? throw new InvalidOperationException("Solid stroke binding requires source paint.");
-        return stroke with { HasFill = stroke.HasFill && IsPainted, FillOpacity = StrokeOpacity ?? inheritedStrokeOpacity, CurrentColor = CurrentColor ?? instancePaint.CurrentColor };
+        return stroke with { HasFill = stroke.HasFill && IsPainted, FillOpacity = StrokeOpacity ?? inheritedStrokeOpacity, CurrentPaint = CurrentColor ?? instancePaint.CurrentPaint };
     }
 }
 

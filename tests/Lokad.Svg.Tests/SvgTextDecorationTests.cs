@@ -24,7 +24,7 @@ public sealed class SvgTextDecorationTests
     [Fact]
     public void Propagation_keeps_the_declaring_paint_until_a_new_line_declaration_wins_the_cascade()
     {
-        SvgTextGlyphPaint blue = new(new(20, 40, 80, 255), true), red = new(new(180, 50, 20, 255), true);
+        SvgTextGlyphPaint blue = new(new(new(20, 40, 80, 255), 1), true), red = new(new(new(180, 50, 20, 255), 1), true);
         SvgTextDecorationStyle inherited = new(SvgTextDecorationLine.Underline, blue);
         Assert.Same(inherited, SvgTextDecorationSyntax.Resolve(null, inherited, red));
         Assert.Same(inherited, SvgTextDecorationSyntax.Resolve("none", inherited, red));

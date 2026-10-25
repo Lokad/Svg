@@ -159494,9 +159494,7 @@
       "captureBank": "flood",
       "captureCase": "flood-427",
       "captureKind": "control"
-    }
-  ],
-  "knownDifferences": [
+    },
     {
       "id": "rect-16-candidate-1",
       "input": "rect-16-candidate-1.svg",
@@ -159508,19 +159506,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-16",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-17-candidate-1",
@@ -159533,19 +159519,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-17",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-18-candidate-1p5",
@@ -159558,19 +159532,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-18",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-19-candidate-1p5",
@@ -159583,19 +159545,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-19",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-28-candidate-1",
@@ -159608,19 +159558,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-28",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-29-candidate-1",
@@ -159633,19 +159571,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-29",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-30-candidate-1p5",
@@ -159658,19 +159584,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-30",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-31-candidate-1p5",
@@ -159683,19 +159597,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-31",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-52-candidate-1",
@@ -159708,19 +159610,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-52",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-53-candidate-1",
@@ -159733,19 +159623,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-53",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-54-candidate-1p5",
@@ -159758,19 +159636,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-54",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-55-candidate-1p5",
@@ -159783,19 +159649,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-55",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-160-candidate-1",
@@ -159808,19 +159662,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-160",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-161-candidate-1",
@@ -159833,19 +159675,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-161",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-162-candidate-1p5",
@@ -159858,19 +159688,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-162",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-163-candidate-1p5",
@@ -159883,19 +159701,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-163",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-172-candidate-1",
@@ -159908,19 +159714,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-172",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-173-candidate-1",
@@ -159933,19 +159727,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-173",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-174-candidate-1p5",
@@ -159958,19 +159740,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-174",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-175-candidate-1p5",
@@ -159983,19 +159753,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-175",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-196-candidate-1",
@@ -160008,19 +159766,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-196",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-197-candidate-1",
@@ -160033,19 +159779,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-197",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-198-candidate-1p5",
@@ -160058,19 +159792,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-198",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-199-candidate-1p5",
@@ -160083,19 +159805,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-199",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-232-candidate-1",
@@ -160108,19 +159818,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-232",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-233-candidate-1",
@@ -160133,19 +159831,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-233",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-234-candidate-1p5",
@@ -160158,19 +159844,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-234",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-235-candidate-1p5",
@@ -160183,19 +159857,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-235",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-244-candidate-1",
@@ -160208,19 +159870,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-244",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-245-candidate-1",
@@ -160233,19 +159883,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-245",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-246-candidate-1p5",
@@ -160258,19 +159896,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-246",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-247-candidate-1p5",
@@ -160283,19 +159909,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-247",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-268-candidate-1",
@@ -160308,19 +159922,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-268",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-269-candidate-1",
@@ -160333,19 +159935,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-269",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-270-candidate-1p5",
@@ -160358,19 +159948,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-270",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "rect-271-candidate-1p5",
@@ -160383,19 +159961,7 @@
       "font": false,
       "captureBank": "rect",
       "captureCase": "rect-271",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-16-candidate-1",
@@ -160408,19 +159974,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-16",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-17-candidate-1",
@@ -160433,19 +159987,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-17",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-18-candidate-1p5",
@@ -160458,19 +160000,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-18",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-19-candidate-1p5",
@@ -160483,19 +160013,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-19",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-28-candidate-1",
@@ -160508,19 +160026,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-28",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-29-candidate-1",
@@ -160533,19 +160039,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-29",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-30-candidate-1p5",
@@ -160558,19 +160052,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-30",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-31-candidate-1p5",
@@ -160583,19 +160065,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-31",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-52-candidate-1",
@@ -160608,19 +160078,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-52",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-53-candidate-1",
@@ -160633,19 +160091,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-53",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-54-candidate-1p5",
@@ -160658,19 +160104,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-54",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-55-candidate-1p5",
@@ -160683,19 +160117,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-55",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-160-candidate-1",
@@ -160708,19 +160130,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-160",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-161-candidate-1",
@@ -160733,19 +160143,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-161",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-162-candidate-1p5",
@@ -160758,19 +160156,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-162",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-163-candidate-1p5",
@@ -160783,19 +160169,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-163",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-172-candidate-1",
@@ -160808,19 +160182,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-172",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-173-candidate-1",
@@ -160833,19 +160195,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-173",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-174-candidate-1p5",
@@ -160858,19 +160208,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-174",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-175-candidate-1p5",
@@ -160883,19 +160221,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-175",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-196-candidate-1",
@@ -160908,19 +160234,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-196",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-197-candidate-1",
@@ -160933,19 +160247,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-197",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-198-candidate-1p5",
@@ -160958,19 +160260,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-198",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-199-candidate-1p5",
@@ -160983,19 +160273,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-199",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-232-candidate-1",
@@ -161008,19 +160286,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-232",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-233-candidate-1",
@@ -161033,19 +160299,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-233",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-234-candidate-1p5",
@@ -161058,19 +160312,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-234",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-235-candidate-1p5",
@@ -161083,19 +160325,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-235",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-244-candidate-1",
@@ -161108,19 +160338,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-244",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-245-candidate-1",
@@ -161133,19 +160351,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-245",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-246-candidate-1p5",
@@ -161158,19 +160364,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-246",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-247-candidate-1p5",
@@ -161183,19 +160377,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-247",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-268-candidate-1",
@@ -161208,19 +160390,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-268",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-269-candidate-1",
@@ -161233,19 +160403,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-269",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-270-candidate-1p5",
@@ -161258,19 +160416,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-270",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "path-271-candidate-1p5",
@@ -161283,19 +160429,7 @@
       "font": false,
       "captureBank": "path",
       "captureCase": "path-271",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-16-candidate-1",
@@ -161308,19 +160442,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-16",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 312
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 312
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-17-candidate-1",
@@ -161333,19 +160455,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-17",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 312
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 312
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-18-candidate-1p5",
@@ -161358,19 +160468,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-18",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 609
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 609
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-19-candidate-1p5",
@@ -161383,19 +160481,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-19",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 609
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 609
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-28-candidate-1",
@@ -161408,19 +160494,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-28",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 304
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 304
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-29-candidate-1",
@@ -161433,19 +160507,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-29",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 304
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 304
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-30-candidate-1p5",
@@ -161458,19 +160520,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-30",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 385
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 385
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-31-candidate-1p5",
@@ -161483,19 +160533,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-31",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 385
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 385
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-52-candidate-1",
@@ -161508,19 +160546,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-52",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 308
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 308
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-53-candidate-1",
@@ -161533,19 +160559,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-53",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 308
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 308
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-54-candidate-1p5",
@@ -161558,19 +160572,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-54",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 555
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 555
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-55-candidate-1p5",
@@ -161583,19 +160585,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-55",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 555
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 555
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-160-candidate-1",
@@ -161608,19 +160598,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-160",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 312
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 312
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-161-candidate-1",
@@ -161633,19 +160611,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-161",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 312
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 312
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-162-candidate-1p5",
@@ -161658,19 +160624,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-162",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 609
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 609
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-163-candidate-1p5",
@@ -161683,19 +160637,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-163",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 609
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 609
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-172-candidate-1",
@@ -161708,19 +160650,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-172",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 304
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 304
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-173-candidate-1",
@@ -161733,19 +160663,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-173",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 304
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 304
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-174-candidate-1p5",
@@ -161758,19 +160676,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-174",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 385
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 385
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-175-candidate-1p5",
@@ -161783,19 +160689,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-175",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 385
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 385
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-196-candidate-1",
@@ -161808,19 +160702,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-196",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 308
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 308
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-197-candidate-1",
@@ -161833,19 +160715,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-197",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 308
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 308
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-198-candidate-1p5",
@@ -161858,19 +160728,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-198",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 555
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 555
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-199-candidate-1p5",
@@ -161883,19 +160741,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-199",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 555
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 555
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-232-candidate-1",
@@ -161908,19 +160754,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-232",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 312
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 312
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-233-candidate-1",
@@ -161933,19 +160767,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-233",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 312
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 312
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-234-candidate-1p5",
@@ -161958,19 +160780,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-234",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 609
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 609
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-235-candidate-1p5",
@@ -161983,19 +160793,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-235",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 609
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 609
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-244-candidate-1",
@@ -162008,19 +160806,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-244",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 304
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 304
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-245-candidate-1",
@@ -162033,19 +160819,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-245",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 304
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 304
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-246-candidate-1p5",
@@ -162058,19 +160832,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-246",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 385
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 385
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-247-candidate-1p5",
@@ -162083,19 +160845,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-247",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 385
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 385
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-268-candidate-1",
@@ -162108,19 +160858,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-268",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 308
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 308
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-269-candidate-1",
@@ -162133,19 +160871,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-269",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 308
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 308
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-270-candidate-1p5",
@@ -162158,19 +160884,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-270",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 555
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 555
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "stroke-271-candidate-1p5",
@@ -162183,19 +160897,7 @@
       "font": false,
       "captureBank": "stroke",
       "captureCase": "stroke-271",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 555
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 555
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-16-candidate-1",
@@ -162208,19 +160910,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-16",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-17-candidate-1",
@@ -162233,19 +160923,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-17",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-18-candidate-1p5",
@@ -162258,19 +160936,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-18",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 5400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 5400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-19-candidate-1p5",
@@ -162283,19 +160949,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-19",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 5400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 5400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-28-candidate-1",
@@ -162308,19 +160962,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-28",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2000
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2000
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-29-candidate-1",
@@ -162333,19 +160975,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-29",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2000
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2000
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-30-candidate-1p5",
@@ -162358,19 +160988,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-30",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 4500
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 4500
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-31-candidate-1p5",
@@ -162383,19 +161001,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-31",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 4500
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 4500
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-40-candidate-1",
@@ -162408,19 +161014,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-40",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-40-control-1",
@@ -162433,19 +161027,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-40",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-41-candidate-1",
@@ -162458,19 +161040,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-41",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-41-control-1",
@@ -162483,19 +161053,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-41",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-42-candidate-1p5",
@@ -162508,19 +161066,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-42",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-42-control-1p5",
@@ -162533,19 +161079,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-42",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-43-candidate-1p5",
@@ -162558,19 +161092,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-43",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-43-control-1p5",
@@ -162583,19 +161105,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-43",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-52-control-1",
@@ -162608,19 +161118,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-52",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-53-control-1",
@@ -162633,19 +161131,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-53",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-54-control-1p5",
@@ -162658,19 +161144,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-54",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-55-control-1p5",
@@ -162683,19 +161157,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-55",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-112-candidate-1",
@@ -162708,19 +161170,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-112",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-112-control-1",
@@ -162733,19 +161183,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-112",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-113-candidate-1",
@@ -162758,19 +161196,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-113",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-113-control-1",
@@ -162783,19 +161209,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-113",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-114-candidate-1p5",
@@ -162808,19 +161222,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-114",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-114-control-1p5",
@@ -162833,19 +161235,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-114",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-115-candidate-1p5",
@@ -162858,19 +161248,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-115",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-115-control-1p5",
@@ -162883,19 +161261,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-115",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-124-candidate-1",
@@ -162908,19 +161274,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-124",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-124-control-1",
@@ -162933,19 +161287,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-124",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-125-candidate-1",
@@ -162958,19 +161300,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-125",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-125-control-1",
@@ -162983,19 +161313,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-125",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-126-candidate-1p5",
@@ -163008,19 +161326,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-126",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-126-control-1p5",
@@ -163033,19 +161339,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-126",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-127-candidate-1p5",
@@ -163058,19 +161352,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-127",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-127-control-1p5",
@@ -163083,19 +161365,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-127",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-160-candidate-1",
@@ -163108,19 +161378,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-160",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-161-candidate-1",
@@ -163133,19 +161391,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-161",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-162-candidate-1p5",
@@ -163158,19 +161404,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-162",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 5400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 5400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-163-candidate-1p5",
@@ -163183,19 +161417,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-163",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 5400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 5400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-172-candidate-1",
@@ -163208,19 +161430,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-172",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2000
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2000
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-173-candidate-1",
@@ -163233,19 +161443,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-173",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2000
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2000
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-174-candidate-1p5",
@@ -163258,19 +161456,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-174",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 4500
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 4500
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-175-candidate-1p5",
@@ -163283,19 +161469,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-175",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 4500
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 4500
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-184-candidate-1",
@@ -163308,19 +161482,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-184",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-184-control-1",
@@ -163333,19 +161495,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-184",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-185-candidate-1",
@@ -163358,19 +161508,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-185",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-185-control-1",
@@ -163383,19 +161521,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-185",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-186-candidate-1p5",
@@ -163408,19 +161534,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-186",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-186-control-1p5",
@@ -163433,19 +161547,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-186",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-187-candidate-1p5",
@@ -163458,19 +161560,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-187",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-187-control-1p5",
@@ -163483,19 +161573,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-187",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-196-control-1",
@@ -163508,19 +161586,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-196",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-197-control-1",
@@ -163533,19 +161599,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-197",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-198-control-1p5",
@@ -163558,19 +161612,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-198",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-199-control-1p5",
@@ -163583,19 +161625,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-199",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-232-candidate-1",
@@ -163608,19 +161638,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-232",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-233-candidate-1",
@@ -163633,19 +161651,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-233",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-234-candidate-1p5",
@@ -163658,19 +161664,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-234",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 5400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 5400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-235-candidate-1p5",
@@ -163683,19 +161677,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-235",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 5400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 5400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-244-candidate-1",
@@ -163708,19 +161690,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-244",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2000
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2000
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-245-candidate-1",
@@ -163733,19 +161703,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-245",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2000
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2000
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-246-candidate-1p5",
@@ -163758,19 +161716,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-246",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 4500
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 4500
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-247-candidate-1p5",
@@ -163783,19 +161729,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-247",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 4500
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 4500
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-256-candidate-1",
@@ -163808,19 +161742,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-256",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-256-control-1",
@@ -163833,19 +161755,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-256",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-257-candidate-1",
@@ -163858,19 +161768,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-257",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-257-control-1",
@@ -163883,19 +161781,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-257",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-258-candidate-1p5",
@@ -163908,19 +161794,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-258",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-258-control-1p5",
@@ -163933,19 +161807,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-258",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-259-candidate-1p5",
@@ -163958,19 +161820,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-259",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "mask-259-control-1p5",
@@ -163983,19 +161833,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-259",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-268-control-1",
@@ -164008,19 +161846,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-268",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-269-control-1",
@@ -164033,19 +161859,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-269",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-270-control-1p5",
@@ -164058,19 +161872,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-270",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-271-control-1p5",
@@ -164083,19 +161885,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-271",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-400-control-1",
@@ -164108,19 +161898,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-400",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-401-control-1",
@@ -164133,19 +161911,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-401",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1600
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-402-control-1p5",
@@ -164158,19 +161924,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-402",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-403-control-1p5",
@@ -164183,19 +161937,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-403",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 3600
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-412-control-1",
@@ -164208,19 +161950,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-412",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-413-control-1",
@@ -164233,19 +161963,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-413",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 1200
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-414-control-1p5",
@@ -164258,19 +161976,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-414",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "mask-415-control-1p5",
@@ -164283,19 +161989,7 @@
       "font": false,
       "captureBank": "mask",
       "captureCase": "mask-415",
-      "captureKind": "control",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 2700
-        }
-      }
+      "captureKind": "control"
     },
     {
       "id": "glyph-16-candidate-1",
@@ -164322,19 +162016,7 @@
         }
       },
       "nativeSourceSha256": "6b5c96f10b040af922fa0e2125fc6ce08656ac17171bedc3504310e36d826d75",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 86
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-17-candidate-1",
@@ -164361,19 +162043,7 @@
         }
       },
       "nativeSourceSha256": "b129cb4dc3e254a095a6672ba098d7469fa1107e311a8f925f8d059506d9f52e",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 86
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-18-candidate-1p5",
@@ -164400,19 +162070,7 @@
         }
       },
       "nativeSourceSha256": "6b5c96f10b040af922fa0e2125fc6ce08656ac17171bedc3504310e36d826d75",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 182
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 187
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-19-candidate-1p5",
@@ -164439,19 +162097,7 @@
         }
       },
       "nativeSourceSha256": "b129cb4dc3e254a095a6672ba098d7469fa1107e311a8f925f8d059506d9f52e",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 182
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 187
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-28-candidate-1",
@@ -164478,19 +162124,7 @@
         }
       },
       "nativeSourceSha256": "e8f0fa1a81ecc998dc0c5bda5a5d5ba72871011ba8e85500d4db950d6c9bc21f",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 85
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 87
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-29-candidate-1",
@@ -164517,19 +162151,7 @@
         }
       },
       "nativeSourceSha256": "18f6d055768ec0df0408f318e46369167c86e737993bc3ccaf65cb332b6429ed",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 85
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 87
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-30-candidate-1p5",
@@ -164556,19 +162178,7 @@
         }
       },
       "nativeSourceSha256": "e8f0fa1a81ecc998dc0c5bda5a5d5ba72871011ba8e85500d4db950d6c9bc21f",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 191
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 183
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-31-candidate-1p5",
@@ -164595,19 +162205,7 @@
         }
       },
       "nativeSourceSha256": "18f6d055768ec0df0408f318e46369167c86e737993bc3ccaf65cb332b6429ed",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 191
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 183
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-40-candidate-1",
@@ -164634,19 +162232,7 @@
         }
       },
       "nativeSourceSha256": "4fa4ad2a21a0923a1d9958a2134f65f5162c1fc39bd2606fa665741a24517793",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 61
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-40-control-1",
@@ -164673,19 +162259,7 @@
         }
       },
       "nativeSourceSha256": "16a36a2e7acddce2c49cb6c5be1ecc32a88ccf3354a2a7a2bab16b30c74eeb01",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 61
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-41-candidate-1",
@@ -164712,19 +162286,7 @@
         }
       },
       "nativeSourceSha256": "70bdba4f5f4d3ac29df39ca08201ffc6766793a4321c65657599c109caf949aa",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 61
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-41-control-1",
@@ -164751,19 +162313,7 @@
         }
       },
       "nativeSourceSha256": "81db020cfc9fd031123814cd7e58dbe2c7ae44d3618db41d42fe3f9ccbc59e17",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 61
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-42-candidate-1p5",
@@ -164790,19 +162340,7 @@
         }
       },
       "nativeSourceSha256": "4fa4ad2a21a0923a1d9958a2134f65f5162c1fc39bd2606fa665741a24517793",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 158
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 181
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-42-control-1p5",
@@ -164829,19 +162367,7 @@
         }
       },
       "nativeSourceSha256": "16a36a2e7acddce2c49cb6c5be1ecc32a88ccf3354a2a7a2bab16b30c74eeb01",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 158
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 181
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-43-candidate-1p5",
@@ -164868,19 +162394,7 @@
         }
       },
       "nativeSourceSha256": "70bdba4f5f4d3ac29df39ca08201ffc6766793a4321c65657599c109caf949aa",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 158
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 181
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-43-control-1p5",
@@ -164907,19 +162421,7 @@
         }
       },
       "nativeSourceSha256": "81db020cfc9fd031123814cd7e58dbe2c7ae44d3618db41d42fe3f9ccbc59e17",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 158
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 181
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-52-control-1",
@@ -164946,19 +162448,7 @@
         }
       },
       "nativeSourceSha256": "6420bf50217721dfb44696460c2e99b55e3d3b36f00ee2fca31ddf3b509d753c",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 83
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 82
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-53-control-1",
@@ -164985,19 +162475,7 @@
         }
       },
       "nativeSourceSha256": "dce179019fbf5c0d92a75a8e1088cf5ee36f5ebca28a99032d3ef51b724f0519",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 83
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 82
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-54-control-1p5",
@@ -165024,19 +162502,7 @@
         }
       },
       "nativeSourceSha256": "6420bf50217721dfb44696460c2e99b55e3d3b36f00ee2fca31ddf3b509d753c",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 176
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 185
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-55-control-1p5",
@@ -165063,19 +162529,7 @@
         }
       },
       "nativeSourceSha256": "dce179019fbf5c0d92a75a8e1088cf5ee36f5ebca28a99032d3ef51b724f0519",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 176
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 185
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-112-candidate-1",
@@ -165102,19 +162556,7 @@
         }
       },
       "nativeSourceSha256": "bb30332aadeac962e4ac8e3b6f2ea3fb9ef350218eae20ee4f36ea4cee746f2b",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 61
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-112-control-1",
@@ -165141,19 +162583,7 @@
         }
       },
       "nativeSourceSha256": "14879c2097491795fe9b592ca9baf27c8b9af5f7c3cd349e29d413cf46c8b064",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 61
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-113-candidate-1",
@@ -165180,19 +162610,7 @@
         }
       },
       "nativeSourceSha256": "a2749f40990c908d10da2609baf3f9f052e5cee66f061ddd0ebd77f2616e33cb",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 61
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-113-control-1",
@@ -165219,19 +162637,7 @@
         }
       },
       "nativeSourceSha256": "e27ff53689474b9db2d124c0ec585dbbd9cd262d2268392daf348ed103c84889",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 61
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-114-candidate-1p5",
@@ -165258,19 +162664,7 @@
         }
       },
       "nativeSourceSha256": "bb30332aadeac962e4ac8e3b6f2ea3fb9ef350218eae20ee4f36ea4cee746f2b",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 158
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 181
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-114-control-1p5",
@@ -165297,19 +162691,7 @@
         }
       },
       "nativeSourceSha256": "14879c2097491795fe9b592ca9baf27c8b9af5f7c3cd349e29d413cf46c8b064",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 158
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 181
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-115-candidate-1p5",
@@ -165336,19 +162718,7 @@
         }
       },
       "nativeSourceSha256": "a2749f40990c908d10da2609baf3f9f052e5cee66f061ddd0ebd77f2616e33cb",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 158
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 181
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-115-control-1p5",
@@ -165375,19 +162745,7 @@
         }
       },
       "nativeSourceSha256": "e27ff53689474b9db2d124c0ec585dbbd9cd262d2268392daf348ed103c84889",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 158
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 181
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-124-candidate-1",
@@ -165414,19 +162772,7 @@
         }
       },
       "nativeSourceSha256": "ee31ae29e6a2bec4bc42977201fd441255ce6b445b5d597790696e5004dd7ef4",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 83
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 82
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-124-control-1",
@@ -165453,19 +162799,7 @@
         }
       },
       "nativeSourceSha256": "0a01cee887c4a52cae196f7502b6c1eef3bb7a3c5e9cc98269074fce16c9cbe1",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 83
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 82
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-125-candidate-1",
@@ -165492,19 +162826,7 @@
         }
       },
       "nativeSourceSha256": "33652cb8f0cc57ff208c9edd4f9b090e6499cc7b394c527a0be482b35117de1b",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 83
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 82
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-125-control-1",
@@ -165531,19 +162853,7 @@
         }
       },
       "nativeSourceSha256": "bcd3ba0d6a7a2f3de3e7210a5ff7b36b7d616b7c40136a3ba374f1508e5b15d4",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 83
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 82
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-126-candidate-1p5",
@@ -165570,19 +162880,7 @@
         }
       },
       "nativeSourceSha256": "ee31ae29e6a2bec4bc42977201fd441255ce6b445b5d597790696e5004dd7ef4",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 176
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 185
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-126-control-1p5",
@@ -165609,19 +162907,7 @@
         }
       },
       "nativeSourceSha256": "0a01cee887c4a52cae196f7502b6c1eef3bb7a3c5e9cc98269074fce16c9cbe1",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 176
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 185
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-127-candidate-1p5",
@@ -165648,19 +162934,7 @@
         }
       },
       "nativeSourceSha256": "33652cb8f0cc57ff208c9edd4f9b090e6499cc7b394c527a0be482b35117de1b",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 176
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 185
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-127-control-1p5",
@@ -165687,19 +162961,7 @@
         }
       },
       "nativeSourceSha256": "bcd3ba0d6a7a2f3de3e7210a5ff7b36b7d616b7c40136a3ba374f1508e5b15d4",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 176
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 185
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-160-candidate-1",
@@ -165726,19 +162988,7 @@
         }
       },
       "nativeSourceSha256": "947faf9804cf8fbed10f8fbad027d148c13b1317e663c7186cef8a60546aa629",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 86
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-161-candidate-1",
@@ -165765,19 +163015,7 @@
         }
       },
       "nativeSourceSha256": "cbf499cd19908c452636deba7129a7f1e67f150b540ddf92c5f27406da43d5fa",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 86
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-162-candidate-1p5",
@@ -165804,19 +163042,7 @@
         }
       },
       "nativeSourceSha256": "947faf9804cf8fbed10f8fbad027d148c13b1317e663c7186cef8a60546aa629",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 182
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 187
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-163-candidate-1p5",
@@ -165843,19 +163069,7 @@
         }
       },
       "nativeSourceSha256": "cbf499cd19908c452636deba7129a7f1e67f150b540ddf92c5f27406da43d5fa",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 182
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 187
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-172-candidate-1",
@@ -165882,19 +163096,7 @@
         }
       },
       "nativeSourceSha256": "e6a55ae5ed9919fa9cc0829c77e76dfced08eef4a03fdc9b99108bf7ca51d743",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 85
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 87
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-173-candidate-1",
@@ -165921,19 +163123,7 @@
         }
       },
       "nativeSourceSha256": "9345ac8ddaafe96c3eaf13ff2086a15b71eefa37445ae62662db1b444e9cc25f",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 85
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 87
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-174-candidate-1p5",
@@ -165960,19 +163150,7 @@
         }
       },
       "nativeSourceSha256": "e6a55ae5ed9919fa9cc0829c77e76dfced08eef4a03fdc9b99108bf7ca51d743",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 191
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 183
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-175-candidate-1p5",
@@ -165999,19 +163177,7 @@
         }
       },
       "nativeSourceSha256": "9345ac8ddaafe96c3eaf13ff2086a15b71eefa37445ae62662db1b444e9cc25f",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 191
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 183
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-184-candidate-1",
@@ -166038,19 +163204,7 @@
         }
       },
       "nativeSourceSha256": "d82a0bb9ba69bd1ada2fff7a0083363118b8c2c46b655f214648e0d8ce538694",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 61
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-184-control-1",
@@ -166077,19 +163231,7 @@
         }
       },
       "nativeSourceSha256": "cc428fc481f8d9235178803f6d173dd021640f9d1ab08d1f02973c478607e6a9",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 61
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-185-candidate-1",
@@ -166116,19 +163258,7 @@
         }
       },
       "nativeSourceSha256": "57f6f16417456f8d5e344e6cc880b72d7fe72858bd82a438d59d83088a7155d1",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 61
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-185-control-1",
@@ -166155,19 +163285,7 @@
         }
       },
       "nativeSourceSha256": "9d1a16cfef23ee36562f9281c75631c03137796a4ebc801655fe3003cb0418e7",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 61
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-186-candidate-1p5",
@@ -166194,19 +163312,7 @@
         }
       },
       "nativeSourceSha256": "d82a0bb9ba69bd1ada2fff7a0083363118b8c2c46b655f214648e0d8ce538694",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 158
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 181
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-186-control-1p5",
@@ -166233,19 +163339,7 @@
         }
       },
       "nativeSourceSha256": "cc428fc481f8d9235178803f6d173dd021640f9d1ab08d1f02973c478607e6a9",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 158
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 181
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-187-candidate-1p5",
@@ -166272,19 +163366,7 @@
         }
       },
       "nativeSourceSha256": "57f6f16417456f8d5e344e6cc880b72d7fe72858bd82a438d59d83088a7155d1",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 158
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 181
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-187-control-1p5",
@@ -166311,19 +163393,7 @@
         }
       },
       "nativeSourceSha256": "9d1a16cfef23ee36562f9281c75631c03137796a4ebc801655fe3003cb0418e7",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 158
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 181
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-196-control-1",
@@ -166350,19 +163420,7 @@
         }
       },
       "nativeSourceSha256": "bf3b177e2b8771ec8fc21c09d7f706093771dae25e46812a6d2628503fdc2ba6",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 83
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 82
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-197-control-1",
@@ -166389,19 +163447,7 @@
         }
       },
       "nativeSourceSha256": "05ef16c16ec0f7de392b65830edd1ae5a894ef272bc65d1cc5dac6b131056f65",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 83
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 82
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-198-control-1p5",
@@ -166428,19 +163474,7 @@
         }
       },
       "nativeSourceSha256": "bf3b177e2b8771ec8fc21c09d7f706093771dae25e46812a6d2628503fdc2ba6",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 176
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 185
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-199-control-1p5",
@@ -166467,19 +163501,7 @@
         }
       },
       "nativeSourceSha256": "05ef16c16ec0f7de392b65830edd1ae5a894ef272bc65d1cc5dac6b131056f65",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 176
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 185
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-232-candidate-1",
@@ -166506,19 +163528,7 @@
         }
       },
       "nativeSourceSha256": "f5dfe3ab18d0f910d8b21a2b802fac9a25977ea6c47e0ac4911872d1c4b6773b",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 86
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-233-candidate-1",
@@ -166545,19 +163555,7 @@
         }
       },
       "nativeSourceSha256": "4927876fd3960974a8b3a54365fa719b983f412860bb5d4ae8c95d38dacde235",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 86
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-234-candidate-1p5",
@@ -166584,19 +163582,7 @@
         }
       },
       "nativeSourceSha256": "f5dfe3ab18d0f910d8b21a2b802fac9a25977ea6c47e0ac4911872d1c4b6773b",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 182
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 187
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-235-candidate-1p5",
@@ -166623,19 +163609,7 @@
         }
       },
       "nativeSourceSha256": "4927876fd3960974a8b3a54365fa719b983f412860bb5d4ae8c95d38dacde235",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 182
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 187
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-244-candidate-1",
@@ -166662,19 +163636,7 @@
         }
       },
       "nativeSourceSha256": "1655e00173cbe971d98d26a1944de3a653ffe858b7454e9611b506758a079310",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 85
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 87
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-245-candidate-1",
@@ -166701,19 +163663,7 @@
         }
       },
       "nativeSourceSha256": "d816ab18529549dffb18be44e69c33a5f9e901e327887e85fb8199601f08c67d",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 85
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 87
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-246-candidate-1p5",
@@ -166740,19 +163690,7 @@
         }
       },
       "nativeSourceSha256": "1655e00173cbe971d98d26a1944de3a653ffe858b7454e9611b506758a079310",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 191
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 183
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-247-candidate-1p5",
@@ -166779,19 +163717,7 @@
         }
       },
       "nativeSourceSha256": "d816ab18529549dffb18be44e69c33a5f9e901e327887e85fb8199601f08c67d",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 191
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 183
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-256-candidate-1",
@@ -166818,19 +163744,7 @@
         }
       },
       "nativeSourceSha256": "67a86b297ccbef19b739e9555e2cf90edef0120c17f40cf4d56b95cfa654fe88",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 61
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-256-control-1",
@@ -166857,19 +163771,7 @@
         }
       },
       "nativeSourceSha256": "041a5a930e60cce2e6c6df57d3067f1457e14ca4d503cabba1d70ae46b757991",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 61
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-257-candidate-1",
@@ -166896,19 +163798,7 @@
         }
       },
       "nativeSourceSha256": "de8946fc080d902ffe93286709ba8d0d2df41b48403de82afc83fc24f0c62a76",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 61
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-257-control-1",
@@ -166935,19 +163825,7 @@
         }
       },
       "nativeSourceSha256": "de07f06ffeab3305d0db01c940398ea8038bf804fd326bb2e912ba9c2cab05d8",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 61
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-258-candidate-1p5",
@@ -166974,19 +163852,7 @@
         }
       },
       "nativeSourceSha256": "67a86b297ccbef19b739e9555e2cf90edef0120c17f40cf4d56b95cfa654fe88",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 158
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 181
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-258-control-1p5",
@@ -167013,19 +163879,7 @@
         }
       },
       "nativeSourceSha256": "041a5a930e60cce2e6c6df57d3067f1457e14ca4d503cabba1d70ae46b757991",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 158
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 181
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-259-candidate-1p5",
@@ -167052,19 +163906,7 @@
         }
       },
       "nativeSourceSha256": "de8946fc080d902ffe93286709ba8d0d2df41b48403de82afc83fc24f0c62a76",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 158
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 181
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-259-control-1p5",
@@ -167091,19 +163933,7 @@
         }
       },
       "nativeSourceSha256": "de07f06ffeab3305d0db01c940398ea8038bf804fd326bb2e912ba9c2cab05d8",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 158
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 181
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-268-control-1",
@@ -167130,19 +163960,7 @@
         }
       },
       "nativeSourceSha256": "c5c182d26d2f8356d47d863357d4bb90a94169da2834150e47ce2ccf591e070f",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 83
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 82
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-269-control-1",
@@ -167169,19 +163987,7 @@
         }
       },
       "nativeSourceSha256": "bb1744da0facd19c7baf9b5e396b95a909a4640e131d8ce3ffcfc02937ad5eb7",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 83
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 82
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-270-control-1p5",
@@ -167208,19 +164014,7 @@
         }
       },
       "nativeSourceSha256": "c5c182d26d2f8356d47d863357d4bb90a94169da2834150e47ce2ccf591e070f",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 176
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 185
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-271-control-1p5",
@@ -167247,19 +164041,7 @@
         }
       },
       "nativeSourceSha256": "bb1744da0facd19c7baf9b5e396b95a909a4640e131d8ce3ffcfc02937ad5eb7",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 176
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 185
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-400-control-1",
@@ -167286,19 +164068,7 @@
         }
       },
       "nativeSourceSha256": "34521f15b5d29940bef9d6ea68bee15a74a6f2082bf62757bf1b157d6a4f3375",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 61
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-401-control-1",
@@ -167325,19 +164095,7 @@
         }
       },
       "nativeSourceSha256": "8ee86f69fab7590cd84e3deb32dae9ff91409da751f5615994a6d75f5cbd0d46",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 61
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 81
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-402-control-1p5",
@@ -167364,19 +164122,7 @@
         }
       },
       "nativeSourceSha256": "34521f15b5d29940bef9d6ea68bee15a74a6f2082bf62757bf1b157d6a4f3375",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 158
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 181
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-403-control-1p5",
@@ -167403,19 +164149,7 @@
         }
       },
       "nativeSourceSha256": "8ee86f69fab7590cd84e3deb32dae9ff91409da751f5615994a6d75f5cbd0d46",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 158
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 181
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-412-control-1",
@@ -167442,19 +164176,7 @@
         }
       },
       "nativeSourceSha256": "33271d4abfe3464f7851be5e63d469225cf68c197ecdbc6f787df43e9c4e311f",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 83
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 82
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-413-control-1",
@@ -167481,19 +164203,7 @@
         }
       },
       "nativeSourceSha256": "bac97beab81bcf78f9f7f90b5c53751fa6c658cea247180828faba3deb3dda59",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 83
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 82
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-414-control-1p5",
@@ -167520,19 +164230,7 @@
         }
       },
       "nativeSourceSha256": "33271d4abfe3464f7851be5e63d469225cf68c197ecdbc6f787df43e9c4e311f",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 176
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 185
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "glyph-415-control-1p5",
@@ -167559,19 +164257,7 @@
         }
       },
       "nativeSourceSha256": "bac97beab81bcf78f9f7f90b5c53751fa6c658cea247180828faba3deb3dda59",
-      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 176
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 185
-        }
-      }
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
     },
     {
       "id": "marker-16-candidate-1",
@@ -167584,19 +164270,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-16",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-17-candidate-1",
@@ -167609,19 +164283,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-17",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-18-candidate-1p5",
@@ -167634,19 +164296,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-18",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 960
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 960
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-19-candidate-1p5",
@@ -167659,19 +164309,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-19",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 960
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 960
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-28-candidate-1",
@@ -167684,19 +164322,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-28",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-29-candidate-1",
@@ -167709,19 +164335,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-29",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-30-candidate-1p5",
@@ -167734,19 +164348,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-30",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-31-candidate-1p5",
@@ -167759,19 +164361,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-31",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-52-candidate-1",
@@ -167784,19 +164374,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-52",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 480
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 480
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-53-candidate-1",
@@ -167809,19 +164387,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-53",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 480
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 480
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-54-candidate-1p5",
@@ -167834,19 +164400,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-54",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 990
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 990
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-55-candidate-1p5",
@@ -167859,19 +164413,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-55",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 990
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 990
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-160-candidate-1",
@@ -167884,19 +164426,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-160",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-161-candidate-1",
@@ -167909,19 +164439,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-161",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-162-candidate-1p5",
@@ -167934,19 +164452,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-162",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 960
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 960
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-163-candidate-1p5",
@@ -167959,19 +164465,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-163",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 960
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 960
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-172-candidate-1",
@@ -167984,19 +164478,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-172",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-173-candidate-1",
@@ -168009,19 +164491,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-173",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-174-candidate-1p5",
@@ -168034,19 +164504,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-174",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-175-candidate-1p5",
@@ -168059,19 +164517,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-175",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-196-candidate-1",
@@ -168084,19 +164530,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-196",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 480
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 480
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-197-candidate-1",
@@ -168109,19 +164543,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-197",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 480
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 480
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-198-candidate-1p5",
@@ -168134,19 +164556,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-198",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 990
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 990
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-199-candidate-1p5",
@@ -168159,19 +164569,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-199",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 990
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 990
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-232-candidate-1",
@@ -168184,19 +164582,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-232",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-233-candidate-1",
@@ -168209,19 +164595,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-233",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-234-candidate-1p5",
@@ -168234,19 +164608,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-234",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 960
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 960
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-235-candidate-1p5",
@@ -168259,19 +164621,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-235",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 960
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 960
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-244-candidate-1",
@@ -168284,19 +164634,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-244",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-245-candidate-1",
@@ -168309,19 +164647,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-245",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 440
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-246-candidate-1p5",
@@ -168334,19 +164660,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-246",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-247-candidate-1p5",
@@ -168359,19 +164673,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-247",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 900
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-268-candidate-1",
@@ -168384,19 +164686,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-268",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 480
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 480
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-269-candidate-1",
@@ -168409,19 +164699,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-269",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 480
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 480
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-270-candidate-1p5",
@@ -168434,19 +164712,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-270",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 990
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 990
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "marker-271-candidate-1p5",
@@ -168459,19 +164725,7 @@
       "font": false,
       "captureBank": "marker",
       "captureCase": "marker-271",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 990
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 990
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-4-candidate-1",
@@ -168484,19 +164738,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-4",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-6-candidate-1",
@@ -168509,19 +164751,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-6",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-12-candidate-1",
@@ -168534,19 +164764,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-12",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-14-candidate-1",
@@ -168559,19 +164777,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-14",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-16-candidate-1",
@@ -168584,19 +164790,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-16",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-28-candidate-1",
@@ -168609,19 +164803,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-28",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-30-candidate-1",
@@ -168634,19 +164816,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-30",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-34-candidate-1",
@@ -168659,19 +164829,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-34",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-36-candidate-1",
@@ -168684,19 +164842,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-36",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-38-candidate-1",
@@ -168709,19 +164855,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-38",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-40-candidate-1",
@@ -168734,19 +164868,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-40",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-46-candidate-1",
@@ -168759,19 +164881,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-46",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-72-candidate-1",
@@ -168784,19 +164894,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-72",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-74-candidate-1",
@@ -168809,19 +164907,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-74",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-76-candidate-1",
@@ -168834,19 +164920,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-76",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-78-candidate-1",
@@ -168859,19 +164933,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-78",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-80-candidate-1",
@@ -168884,19 +164946,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-80",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-82-candidate-1",
@@ -168909,19 +164959,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-82",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-84-candidate-1",
@@ -168934,19 +164972,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-84",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-86-candidate-1",
@@ -168959,19 +164985,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-86",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-88-candidate-1",
@@ -168984,19 +164998,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-88",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-90-candidate-1",
@@ -169009,19 +165011,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-90",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-92-candidate-1",
@@ -169034,19 +165024,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-92",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-94-candidate-1",
@@ -169059,19 +165037,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-94",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-100-candidate-1",
@@ -169084,19 +165050,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-100",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-102-candidate-1",
@@ -169109,19 +165063,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-102",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-106-candidate-1",
@@ -169134,19 +165076,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-106",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-108-candidate-1",
@@ -169159,19 +165089,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-108",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-110-candidate-1",
@@ -169184,19 +165102,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-110",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-112-candidate-1",
@@ -169209,19 +165115,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-112",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-118-candidate-1",
@@ -169234,19 +165128,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-118",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-124-candidate-1",
@@ -169259,19 +165141,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-124",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-126-candidate-1",
@@ -169284,19 +165154,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-126",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-132-candidate-1",
@@ -169309,19 +165167,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-132",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-134-candidate-1",
@@ -169334,19 +165180,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-134",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-136-candidate-1",
@@ -169359,19 +165193,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-136",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-148-candidate-1",
@@ -169384,19 +165206,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-148",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-150-candidate-1",
@@ -169409,19 +165219,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-150",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-156-candidate-1",
@@ -169434,19 +165232,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-156",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-158-candidate-1",
@@ -169459,19 +165245,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-158",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-160-candidate-1",
@@ -169484,19 +165258,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-160",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-168-candidate-1",
@@ -169509,19 +165271,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-168",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-170-candidate-1",
@@ -169534,19 +165284,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-170",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-172-candidate-1",
@@ -169559,19 +165297,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-172",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-174-candidate-1",
@@ -169584,19 +165310,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-174",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-176-candidate-1",
@@ -169609,19 +165323,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-176",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-178-candidate-1",
@@ -169634,19 +165336,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-178",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-180-candidate-1",
@@ -169659,19 +165349,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-180",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-182-candidate-1",
@@ -169684,19 +165362,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-182",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-184-candidate-1",
@@ -169709,19 +165375,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-184",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-186-candidate-1",
@@ -169734,19 +165388,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-186",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-188-candidate-1",
@@ -169759,19 +165401,7 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-188",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
+      "captureKind": "candidate"
     },
     {
       "id": "syntax-rect-190-candidate-1",
@@ -169784,20 +165414,10 @@
       "font": false,
       "captureBank": "syntax-rect",
       "captureCase": "rect-190",
-      "captureKind": "candidate",
-      "currentResults": {
-        "windows": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        },
-        "linux": {
-          "error": null,
-          "exact": false,
-          "sum": 400
-        }
-      }
-    },
+      "captureKind": "candidate"
+    }
+  ],
+  "knownDifferences": [
     {
       "id": "consumer-effects-2-candidate-1",
       "input": "consumer-effects-2-candidate-1.svg",

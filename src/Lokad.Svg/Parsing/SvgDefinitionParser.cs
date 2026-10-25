@@ -184,7 +184,7 @@ internal static class SvgDefinitionParser
             }
             SvgInheritedStrokeStyle stroke = new(CopyStyleValue(style.Linecap, state), CopyStyleValue(style.Linejoin, state), CopyStyleValue(style.Dasharray, state), CopyStyleValue(style.Dashoffset, state), CopyStyleValue(style.Width, state), CopyStyleValue(style.Miterlimit, state), CopyStyleValue(style.StrokeOpacity, state), CopyStyleValue(style.Stroke, state));
             SvgSymbolPresentation presentation = new(paint, stroke, CopyStyleValue(style.FillRule, state), marker || style.Fill is not null,
-                marker ? paint.FillOpacity : style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity), marker ? paint.CurrentColor : style.Color is null ? null : SvgColorParser.Parse(style.Color, namedColors), marker ? style.GetOpacity() : style.ResolveOpacity(SvgPaintOpacity.Opaque).GetOpacity()) { ElementDisplay = marker ? style.GetDisplay() : style.GetSourceDisplay(), IsHidden = marker ? !state.DefinitionResourcesDisplayed : !displayed, IsVisible = marker ? SvgPresentationResolver.ParseVisibility(style.Visibility, markerContext.InheritedPresentation.IsVisible) : style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true), InheritsOpacity = !marker && style.InheritsOpacity, Markers = new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, workCounter, cancellationToken), PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
+                marker ? paint.FillOpacity : style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity), marker ? paint.CurrentPaint : style.Color is null ? null : SvgColorParser.ParsePaint(style.Color, namedColors), marker ? style.GetOpacity() : style.ResolveOpacity(SvgPaintOpacity.Opaque).GetOpacity()) { ElementDisplay = marker ? style.GetDisplay() : style.GetSourceDisplay(), IsHidden = marker ? !state.DefinitionResourcesDisplayed : !displayed, IsVisible = marker ? SvgPresentationResolver.ParseVisibility(style.Visibility, markerContext.InheritedPresentation.IsVisible) : style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true), InheritsOpacity = !marker && style.InheritsOpacity, Markers = new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, workCounter, cancellationToken), PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
             if (!marker) presentation = presentation with
             {
                 TextStyleSource = SvgRetainedTextSource.CaptureElement(reader,
@@ -443,7 +443,9 @@ internal static class SvgDefinitionParser
                 SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
                 SvgResolvedPaintableElement element = context.ResolveShape(reader, false);
                 if (!element.Presentation.IsPainted) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Invisible mask content is not implemented.");
-                state.MaskValue = SvgMaskSyntax.InterpretValue(element.Presentation.Color, state.MaskIsAlpha);
+                SvgSolidPaint sourcePaint = SvgPaintResolver.ResolveSolidPaint(element.Presentation.Paint);
+                byte sourceAlpha = (byte)Math.Clamp((int)(sourcePaint.Alpha * element.Style.GetOpacity().Value * 255f + .5f), 0, 255);
+                state.MaskValue = SvgMaskSyntax.InterpretValue(element.Presentation.Color with { Alpha = sourceAlpha }, state.MaskIsAlpha);
                 state.MaskContentBox = element.Transform.Apply(new SvgClipBox(syntax.X, syntax.Y, syntax.Width, syntax.Height));
                 SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
                 return true;
@@ -2065,7 +2067,7 @@ internal static class SvgDefinitionParser
         SvgSymbolPresentation symbol = includesSymbolPresentation ? (state.SymbolDefinition ?? throw new InvalidOperationException("Symbol fills require a presentation context.")).Presentation : default;
         bool inherited = reader.LocalName != "line" && style.Fill is null && (!includesSymbolPresentation || !symbol.HasAuthoredFill);
         SvgPaintOpacity? opacity = style.FillOpacity is null ? (includesSymbolPresentation ? symbol.FillOpacity : null) : SvgColorParser.ParsePaintOpacity(style.FillOpacity);
-        SvgColor? color = style.Color is null ? (includesSymbolPresentation ? symbol.CurrentColor : null) : SvgColorParser.Parse(style.Color, context.NamedColors);
+        SvgSolidPaint? color = style.Color is null ? (includesSymbolPresentation ? symbol.CurrentColor : null) : SvgColorParser.ParsePaint(style.Color, context.NamedColors);
         SvgPaint? authoredFill = !inherited && reader.LocalName != "line" && !SvgPatternSyntax.IsPatternFill(style.Fill)
             ? SvgPaintResolver.Resolve(style.Fill, style.FillOpacity, style.Color, includesSymbolPresentation ? symbol.Paint : SvgPaint.Default, context.NamedColors)
             : null;

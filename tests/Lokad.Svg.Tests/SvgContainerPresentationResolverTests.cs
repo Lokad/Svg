@@ -15,7 +15,7 @@ public sealed class SvgContainerPresentationResolverTests
     [Fact]
     public void Common_presentation_resolution_retains_inherited_paint_and_visibility()
     {
-        SvgPaint inheritedPaint = new(new SvgColor(1, 2, 3, 255), true, new SvgPaintOpacity(128, 128 / 255f), new SvgColor(4, 5, 6, 255), true);
+        SvgPaint inheritedPaint = new(new(new SvgColor(1, 2, 3, 255), 1), true, new SvgPaintOpacity(128, 128 / 255f), new(new SvgColor(4, 5, 6, 255), 1), true);
         SvgComputedStyle style = new(null, null, null, null, "none", "visible", "0.5", null);
 
         SvgResolvedPresentation presentation = SvgPresentationResolver.Resolve(style, inheritedPaint, true, false, new Dictionary<string, SvgColor>());
@@ -38,7 +38,7 @@ public sealed class SvgContainerPresentationResolverTests
 
         SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, null, true, true, namedColors);
 
-        Assert.Equal(new SvgPaint(SvgColor.Transparent, true, new SvgPaintOpacity(128, 0.5f), new SvgColor(0, 0, 255, 255), true), presentation.Paint);
+        Assert.Equal(new SvgPaint(new(SvgColor.Transparent, 0), true, new SvgPaintOpacity(128, 0.5f), new(new SvgColor(0, 0, 255, 255), 1), true), presentation.Paint);
         Assert.False(presentation.IsDisplayed);
         Assert.False(presentation.IsVisible);
         Assert.Equal((byte)128, presentation.Opacity);

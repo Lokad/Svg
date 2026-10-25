@@ -39,7 +39,7 @@ internal static class SvgRenderedGroupSourceParser
         SvgInheritedStrokeStyle stroke = new(Copy(style.Linecap), Copy(style.Linejoin), Copy(style.Dasharray), Copy(style.Dashoffset),
             Copy(style.Width), Copy(style.Miterlimit), Copy(style.StrokeOpacity), Copy(style.Stroke));
         SvgPaintOpacity? fillOpacity = style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity);
-        SvgColor? color = style.Color is null ? null : SvgColorParser.Parse(style.Color, colors);
+        SvgSolidPaint? color = style.Color is null ? null : SvgColorParser.ParsePaint(style.Color, colors);
         SvgPaintOpacity opacity = style.GetOpacity();
         string? fillRule = Copy(style.FillRule);
         SvgSymbolPresentation presentation = new(paint, stroke, fillRule, style.Fill is not null, fillOpacity, color, opacity) { InheritsOpacity = style.InheritsOpacity, ElementDisplay = style.GetSourceDisplay(), Markers = new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, work, token), PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
@@ -92,7 +92,7 @@ internal static class SvgRenderedGroupSourceParser
         reference = reference with { Transform = SvgGeometrySyntax.ParseElementTransform(reader, context.WorkCounter, context.CancellationToken),
             InheritedTransform = SvgAffineTransform.Identity, InheritedFillRule = Copy(style.FillRule), SourceMaskReference = Copy(SvgLocalUrl.ReadReference(reader, "mask")) };
         content.AddUse(reference, style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity),
-            style.Color is null ? null : SvgColorParser.Parse(style.Color, context.NamedColors),
+            style.Color is null ? null : SvgColorParser.ParsePaint(style.Color, context.NamedColors),
             style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity), stroke, style.PaintOrder, new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, context.WorkCounter, context.CancellationToken),
             SvgRetainedTextSource.CaptureElement(reader, context, state, state.TextReplay?.Limits ?? throw new InvalidOperationException("Use capture requires document limits.")), null, style.Fill is not null,
             (style.GetSourceDisplay() != SvgDisplay.None), style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true));

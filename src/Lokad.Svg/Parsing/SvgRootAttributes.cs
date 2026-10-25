@@ -37,7 +37,7 @@ internal readonly record struct SvgRootAttributes(SvgInheritedPresentation Inher
             SvgInlineStyleParser.MergeWithImportance(inline.WhiteSpace, inline.Important, InlineImportantProperties.WhiteSpace, sheet.WhiteSpace, sheet.Important),
             SvgInlineStyleParser.MergeWithImportance(inline.LetterSpacing, inline.Important, InlineImportantProperties.LetterSpacing, sheet.LetterSpacing, sheet.Important),
             SvgInlineStyleParser.MergeWithImportance(inline.WordSpacing, inline.Important, InlineImportantProperties.WordSpacing, sheet.WordSpacing, sheet.Important));
-        SvgTextPaintStyle decorationPaint = new(presentation.Paint, true, true, style.Stroke, 255)
+        SvgTextPaintStyle decorationPaint = new(presentation.Paint, true, true, style.Stroke, SvgPaintOpacity.Opaque)
         { StrokeStyle = SvgInheritedStrokeStyle.Default.ResolveChild(style), PaintOrder = style.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers };
         SvgTextDecorationStyle? decoration = SvgTextDecorationSyntax.Resolve(reader, inline, sheet, null, decorationPaint.GlyphPaint);
         if (decoration is not null) text = text.WithDecoration(decoration);

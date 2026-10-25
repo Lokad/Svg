@@ -53,8 +53,8 @@ internal static class SvgTextDecorationRenderer
                 SvgRecordedPaint fillRecord = default, strokeRecord = default;
                 if (prepared.NativeDrawing && state.FilterGroupDepth <= 0)
                 {
-                    if (paint.HasFill) fillRecord = prepared.RecordDrawing(run, placement, pathPlacements, state, fallbackColor, paint.Color.Alpha / 255f, recording, work, token);
-                    if (paint.Stroke?.Resolve() is {} stroke) strokeRecord = prepared.RecordDrawing(run, placement, pathPlacements, state, fallbackColor, stroke.Color.Alpha / 255f, recording, work, token);
+                    if (paint.HasFill) fillRecord = prepared.RecordDrawing(run, placement, pathPlacements, state, fallbackColor, paint.FillPaint.Alpha, recording, work, token);
+                    if (paint.Stroke is {} strokePaint && strokePaint.Resolve() is {}) strokeRecord = prepared.RecordDrawing(run, placement, pathPlacements, state, fallbackColor, strokePaint.ResolvePaint().Alpha, recording, work, token);
                 }
                 if ((lines & SvgTextDecorationLine.Underline) != 0)
                 for (int line = 0; line < decoration.UnderlineCount; line++)
@@ -121,7 +121,7 @@ internal static class SvgTextDecorationRenderer
         {
             work.Consume(token);
             SvgColor color = paint.Color;
-            SvgPaint fill = new(color, paint.HasFill, SvgPaintOpacity.Opaque, color, false);
+            SvgPaint fill = new(paint.FillPaint, paint.HasFill, SvgPaintOpacity.Opaque, paint.FillPaint, false);
             SvgStroke? stroke = paint.Stroke?.Resolve();
             SvgResolvedPaintableElement element = new(default, map, new(fill, color, stroke?.Color, 255, true), state.OutputTextScale)
             { StrokeHostMap = state.OutputMap.ComposeChecked(map) };
