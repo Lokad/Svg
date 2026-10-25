@@ -122,14 +122,19 @@ public sealed class SvgGradientPolygonTests
         Assert.Equal(new SvgGradientTransform(0.25, 0, 0, 0.5, -2, 2), scaled.Inverse);
     }
 
-    [Fact]
-    public void Scale_general_radial_rejects_singular_referencing_map()
+    [Theory]
+    [InlineData(0, 1)]
+    [InlineData(1, 0)]
+    [InlineData(0, 0)]
+    public void Scale_general_radial_marks_collapsed_reference_axes_empty(double scaleX, double scaleY)
     {
         SvgRadialGradient circle = GeneralCircle(SvgGradientTransform.Identity);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgGradientSyntax.ScaleGeneralRadial(circle, 0, 1, 0, 0));
+        SvgRadialGradient collapsed = SvgGradientSyntax.ScaleGeneralRadial(circle, scaleX, scaleY, 0, 0);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.True(collapsed.IsEmpty);
+        Assert.False(circle.IsEmpty);
+        Assert.Same(circle.Stops, collapsed.Stops);
     }
 
     private static SvgRadialGradient GeneralCircle(SvgGradientTransform inverse)

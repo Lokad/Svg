@@ -1610,8 +1610,9 @@ internal static class SvgDefinitionParser
             if (isUserSpace) ValidateRadialFocalCircle(centerX, centerY, radius, focalX, focalY, focalRadius);
             if (template.HasTransform)
             {
-                bool simpleTransform = template.Transform.B != 0 || template.Transform.C != 0
-                    ? template.Transform.IsSimilarity() : isUserSpace || template.Transform.A == template.Transform.D;
+                // Keep focal-circle coordinates separate from local maps for native float rounding.
+                bool simpleTransform = focalRadius == 0 && (template.Transform.B != 0 || template.Transform.C != 0
+                    ? template.Transform.IsSimilarity() : isUserSpace || template.Transform.A == template.Transform.D);
                 if (!simpleTransform)
                 {
                     if (!template.Transform.TryInvert(out SvgGradientTransform generalInverse)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Singular radial gradient transforms are not implemented.");

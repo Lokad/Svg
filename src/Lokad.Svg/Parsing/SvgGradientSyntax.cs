@@ -931,9 +931,10 @@ internal static class SvgGradientSyntax
         return ScaleGeneralRadial(gradient, 1, 1, offsetX, offsetY);
     }
 
-    /// <summary>Shifts one general radial gradient through an axis-aligned scale plus offset, composing its inverse paint map.</summary>
+    /// <summary>Composes an axis reference with a general radial paint, treating collapsed axes as empty paint.</summary>
     internal static SvgRadialGradient ScaleGeneralRadial(SvgRadialGradient gradient, double scaleX, double scaleY, double offsetX, double offsetY)
     {
+        if (scaleX == 0 || scaleY == 0) return gradient with { IsEmpty = true };
         if (!TryInvertAxisMap(scaleX, scaleY, offsetX, offsetY, out SvgGradientTransform inverseMap)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Singular gradient referencing maps are not implemented.");
         SvgGradientPaintMatrices? native = gradient.NativePaintMatrices;
         if (native is {} matrices)
