@@ -15,7 +15,8 @@ internal readonly record struct SvgFilterLength(double Value, bool Percentage);
 internal readonly record struct SvgFilterRegion(SvgFilterLength X, SvgFilterLength Y, SvgFilterLength Width, SvgFilterLength Height, SvgFilterUnits Units);
 /// <summary>Retains authored subregion lengths; omitted components borrow the input's default subregion.</summary>
 internal readonly record struct SvgFilterPrimitiveRegion(SvgFilterLength? X, SvgFilterLength? Y, SvgFilterLength? Width, SvgFilterLength? Height);
-internal readonly record struct SvgFilterPrimitive(SvgFilterPrimitiveKind Kind, SvgFilterInput Input, double SigmaX, double SigmaY, double OffsetX, double OffsetY, SvgColor Flood, float FloodOpacity)
+/// <summary>Retains ordered primitive parameters; Flood.Alpha already includes authored flood-opacity.</summary>
+internal readonly record struct SvgFilterPrimitive(SvgFilterPrimitiveKind Kind, SvgFilterInput Input, double SigmaX, double SigmaY, double OffsetX, double OffsetY, SvgSolidPaint Flood)
 {
     internal SvgFilterColorSpace? ColorSpace { get; init; }
     internal SvgFilterPrimitiveRegion? Region { get; init; }

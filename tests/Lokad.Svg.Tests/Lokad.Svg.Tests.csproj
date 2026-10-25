@@ -1,5 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/filter-uniform-precision/capture.json" Link="TestData/filter-uniform-precision/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/filter-uniform-precision/aliases-aliases-linear-34-candidate-1.svg" Link="TestData/filter-uniform-precision/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/filter-uniform-precision/controls-graphs-linear-8-candidate-1.svg" Link="TestData/filter-uniform-precision/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/filter-uniform-precision/controls-graphs-srgb-0-candidate-1.svg" Link="TestData/filter-uniform-precision/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/filter-uniform-precision/placements-affine-linearrgb-1-candidate-1.svg" Link="TestData/filter-uniform-precision/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/filter-uniform-precision/placements-affine-srgb-1-candidate-1.svg" Link="TestData/filter-uniform-precision/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/filter-uniform-precision/placements-displaced-linearrgb-324-candidate-0p75.svg" Link="TestData/filter-uniform-precision/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="../Research/text-paint-bounds/*.json" Link="TestData/text-paint-bounds/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/supplied-font-labels/fonts/NotoSans-Regular.ttf" Link="TestData/text-paint-bounds/sans.ttf" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/supplied-font-documents/fonts/NotoSansMono-Bold.ttf" Link="TestData/text-paint-bounds/mono.ttf" CopyToOutputDirectory="PreserveNewest" />

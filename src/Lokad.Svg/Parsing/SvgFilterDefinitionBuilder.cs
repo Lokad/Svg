@@ -136,9 +136,9 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
             }
             double dx = reader.GetAttribute("dx") is string x ? Number(x.AsSpan()) : kind == SvgFilterPrimitiveKind.DropShadow ? 2 : 0;
             double dy = reader.GetAttribute("dy") is string y ? Number(y.AsSpan()) : kind == SvgFilterPrimitiveKind.DropShadow ? 2 : 0;
-            SvgColor flood = reader.GetAttribute("flood-color") is string color ? SvgColorParser.Parse(color, SvgRootParser.CssNamedColors) : new(0, 0, 0, 255);
-            float opacity = SvgColorParser.ParsePaintOpacity(reader.GetAttribute("flood-opacity")).Value;
-            primitive = new(kind, Input(reader.GetAttribute("in"), _primitives.Count), sigmaX, sigmaY, dx, dy, flood, opacity)
+            SvgSolidPaint paint = reader.GetAttribute("flood-color") is string color ? SvgColorParser.ParsePaint(color, SvgRootParser.CssNamedColors) : new(new(0, 0, 0, 255), 1);
+            float opacity = paint.Alpha * SvgColorParser.ParsePaintOpacity(reader.GetAttribute("flood-opacity")).Value;
+            primitive = new(kind, Input(reader.GetAttribute("in"), _primitives.Count), sigmaX, sigmaY, dx, dy, new(paint.Color, opacity))
             {
                 ColorSpace = colorSpace,
                 Region = ReadRegion(reader), MergeFirst = _mergeInputs.Count,

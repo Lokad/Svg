@@ -12,11 +12,15 @@ internal readonly record struct SvgFilterDeviceMap(double ScaleX, double ScaleY)
 
 /// <summary>Retains a borrowed bitmap's image transform and separate source/output bounds.</summary>
 /// <remarks>Immutable metadata owns no pixel storage. The enclosing filter/surface owns bytes, work and cancellation.</remarks>
-internal sealed record SvgFilterDeferredImage(SvgShaderMatrix ImageToSource, SvgPaintBounds SourceBounds, SvgPaintBounds Clip, SvgFilterImageSampling Sampling);
+internal sealed record SvgFilterDeferredImage(SvgShaderMatrix ImageToSource, SvgPaintBounds SourceBounds, SvgPaintBounds Clip, SvgFilterImageSampling Sampling)
+{
+    /// <summary>Retains a materialized uniform texel across compact-storage cropping; SourceBounds still limits its image coverage.</summary>
+    internal SvgConstantShaderPaint? Constant { get; init; }
+}
 
 internal enum SvgFilterImageSampling : byte { Nearest, Linear }
 
-internal enum SvgFilterBoundsKind : byte { Visual, StoredImage }
+internal enum SvgFilterBoundsKind : byte { Visual, StoredImage, Output }
 
 /// <summary>Retains one integer-offset source branch and its composed intermediate crop.</summary>
 internal readonly record struct SvgOffsetFilterPlacement(double X, double Y, bool AlphaOnly, SvgPaintBounds Clip);
@@ -36,6 +40,8 @@ internal readonly record struct SvgFilterRegionContext(SvgAffineTransform Coordi
     internal SvgFilterRasterPlacement? RasterPlacement { get; init; }
     /// <summary>Identifies restoration into another filter's source bitmap, where native source-in retains its input image subset.</summary>
     internal bool IntermediateOutput { get; init; }
+    /// <summary>Leaves the terminal sampled image in its operating space for an affine consumer to transfer after sampling.</summary>
+    internal bool DeferFinalColorTransfer { get; init; }
     /// <summary>Identifies picture-backed destinations, whose terminal dynamic source offsets use constant image paint.</summary>
     internal bool PictureOutput { get; init; }
     /// <summary>Retains native matrix arithmetic for image transforms after affine source capture.</summary>
@@ -44,11 +50,17 @@ internal readonly record struct SvgFilterRegionContext(SvgAffineTransform Coordi
     internal bool DeferFinalOffset { get; init; }
 }
 
+/// <summary>Retains a uniform sRGB filter result and its finite source-grid coverage without owning storage.</summary>
+internal readonly record struct SvgFilterUniformPaint(SvgShaderPaint Paint, SvgPaintBounds Bounds, bool HighPrecision);
+
 /// <summary>Owns the graph output and optional unquantized final shader samples until composition.</summary>
 internal readonly record struct SvgFilterResult(SvgConverter.RasterizedSurface Frame,
     SvgShaderPaint[]? Samples, RenderBudget.BudgetReservation? SampleReservation) : IDisposable
 {
     internal SvgFilterDeferredImage? DeferredImage { get; init; }
+    internal SvgFilterUniformPaint? UniformPaint { get; init; }
+    /// <summary>Identifies the stored pixel lanes; optional uniform paint metadata remains sRGB.</summary>
+    internal SvgFilterColorSpace ColorSpace { get; init; } = SvgFilterColorSpace.Srgb;
     internal byte[] Pixels => Frame.Pixels;
     internal long WorkUnits => Frame.WorkUnits;
     public void Dispose() { SampleReservation?.Dispose(); Frame.Dispose(); }
@@ -60,6 +72,7 @@ internal readonly record struct SvgFilterResult(SvgConverter.RasterizedSurface F
 /// the caller. Work includes every copy, conversion, blur pass and composition. Calls are independent.</remarks>
 internal static class SvgFilterPlayback
 {
+    private readonly record struct UniformColor(bool Known, SvgShaderPaint Paint, bool HighPrecision);
     /// <summary>Rounds native layer bounds after the filter coordinate system's small integer-boundary inset.</summary>
     /// <remarks>Matches skif::RoundOut; this is coordinate rounding, not a pixel-comparison tolerance.
     /// The finite inputs are caller-validated and the caller charges bounded setup work.</remarks>
@@ -77,7 +90,7 @@ internal static class SvgFilterPlayback
         SvgFilterRegionContext context, SvgPaintBounds source, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
         => SourceLayerBounds(resource, map, context, source, SvgFilterBoundsKind.Visual, budget, work, token);
 
-    /// <summary>Propagates visual hints or integer stored-image bounds through the same finite graph.</summary>
+    /// <summary>Propagates capture hints, stored-image bounds or painted output through the same finite graph.</summary>
     /// <remarks>Stored bounds retain native kernel outsets and materialization rounding independently
     /// of compact pixel storage. Resources are borrowed; temporary ownership, work and cancellation
     /// follow the visual-bounds overload.</remarks>
@@ -127,7 +140,7 @@ internal static class SvgFilterPlayback
             bounds[index] = kind == SvgFilterBoundsKind.StoredImage
                 ? Intersect(RoundLayerBounds(output), RoundLayerBounds(regions[index])) : Intersect(output, regions[index]);
         }
-        return kind == SvgFilterBoundsKind.StoredImage ? bounds[^1] : Union(source, bounds[^1]);
+        return kind == SvgFilterBoundsKind.Visual ? Union(source, bounds[^1]) : bounds[^1];
 
         static SvgPaintBounds Intersect(SvgPaintBounds first, SvgPaintBounds second)
             => new(MathF.Max(first.Left, second.Left), MathF.Max(first.Top, second.Top), MathF.Min(first.Right, second.Right), MathF.Min(first.Bottom, second.Bottom));
@@ -271,14 +284,16 @@ internal static class SvgFilterPlayback
         int bytes = source.Length;
         int count = resource.Primitives.Items.Length;
         using RenderBudget.BudgetReservation tableOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgConverter.RasterizedSurface>(count + 2)
-            + 2 * ParserCollectionMemory.GetArrayByteCount<SvgPaintBounds>(count) + ParserCollectionMemory.GetArrayByteCount<bool>(count), SvgMemoryCategory.Surface);
+            + 2 * ParserCollectionMemory.GetArrayByteCount<SvgPaintBounds>(count) + ParserCollectionMemory.GetArrayByteCount<bool>(count) + ParserCollectionMemory.GetArrayByteCount<UniformColor>(count), SvgMemoryCategory.Surface);
         SvgConverter.RasterizedSurface[] outputs = new SvgConverter.RasterizedSurface[count + 2];
         SvgPaintBounds[] regions = new SvgPaintBounds[count];
         SvgPaintBounds[] imageBounds = new SvgPaintBounds[count];
         bool[] linear = new bool[count];
+        UniformColor[] uniform = new UniformColor[count];
         long work = 0;
         bool returned = false;
         SvgShaderPaint[]? samples = null;
+        bool linearOffsetSamples = false;
         RenderBudget.BudgetReservation? sampleOwner = null;
         SvgFilterDeferredImage? deferredImage = null;
         int finalIndex = count == 0 ? 0 : count - 1;
@@ -356,7 +371,7 @@ internal static class SvgFilterPlayback
                         work += SvgGaussianBlur.ApplyRescaled(input, output, width, height, deviation, inputBounds, regions[index], placement,
                             inputLinear, colorSpace, index == finalIndex && colorSpace == SvgFilterColorSpace.LinearRgb ? AllocateSamples() : Span<SvgShaderPaint>.Empty,
                             budget, availableWork - work, token);
-                        if (map.Regions is not null && deferredImage is null) Clip(output, regions[index]);
+                        if (map.Regions is not null && deferredImage is null) { Clip(output, regions[index]); ClipOffsetSamples(regions[index]); }
                         continue;
                     }
                     // A CPU kernel consumes stored working-space pixels; shader
@@ -388,7 +403,7 @@ internal static class SvgFilterPlayback
                                 ConvertColor(input, converted.Pixels, SvgFilterColorSpace.LinearRgb);
                                 work += SvgGaussianBlur.Apply(converted.Pixels, output, width, height, deviation, budget, availableWork - work, token);
                                 linear[index] = true;
-                                if (map.Regions is not null && deferredImage is null) Clip(output, regions[index]);
+                                if (map.Regions is not null && deferredImage is null) { Clip(output, regions[index]); ClipOffsetSamples(regions[index]); }
                                 continue;
                             }
                             linear[index] = true;
@@ -399,10 +414,8 @@ internal static class SvgFilterPlayback
                 }
                 else if (primitive.Kind == SvgFilterPrimitiveKind.Flood)
                 {
-                    const float byteScale = 1f / 255f;
-                    float alpha = primitive.Flood.Alpha * byteScale * primitive.FloodOpacity;
-                    SvgShaderPaint flood = new(primitive.Flood.Red * byteScale * alpha,
-                        primitive.Flood.Green * byteScale * alpha, primitive.Flood.Blue * byteScale * alpha, alpha);
+                    uniform[index] = new(true, FloodPaint(primitive.Flood), false);
+                    SvgConstantShaderPaint flood = FloodPaint(primitive.Flood).AsConstant(1f);
                     Charge(pixels);
                     for (int offset = 0; offset < bytes; offset += 4)
                     {
@@ -416,7 +429,7 @@ internal static class SvgFilterPlayback
                     ReadOnlySpan<byte> second = ReadInput(primitive.SecondInput, index, graphic);
                     bool secondLinear = primitive.SecondInput.Index >= 0 && linear[primitive.SecondInput.Index];
                     bool destinationLinear = colorSpace == SvgFilterColorSpace.LinearRgb;
-                    ComposeInputs(input, second, output, inputLinear, secondLinear, primitive.Composition, colorSpace);
+                    ComposeInputs(input, second, output, primitive.Input, primitive.SecondInput, inputLinear, secondLinear, primitive.Composition, colorSpace);
                     linear[index] = destinationLinear;
                     if (primitive.Composition == SvgFilterComposition.In && map.Regions is { IntermediateOutput: true } intermediate)
                     {
@@ -471,9 +484,84 @@ internal static class SvgFilterPlayback
                         Charge(pixels);
                         input.CopyTo(output);
                     }
+                    else if (primitive.Input.Index >= 0 && uniform[primitive.Input.Index].Known)
+                    {
+                        float dx = placed.TranslateX, dy = placed.TranslateY;
+                        if (nativeTransform is null && dx == MathF.Truncate(dx) && dy == MathF.Truncate(dy))
+                        {
+                            Offset(input, output, dx, dy, inputBounds, null, null, false);
+                            uniform[index] = uniform[primitive.Input.Index] with { HighPrecision = uniform[primitive.Input.Index].HighPrecision || colorSpace == SvgFilterColorSpace.LinearRgb };
+                            SvgPaintBounds shifted = new(bounds.Left + dx, bounds.Top + dy, bounds.Right + dx, bounds.Bottom + dy);
+                            SvgPaintBounds clip = imageBounds[index];
+                            imageBounds[index] = new(Math.Max(shifted.Left, clip.Left), Math.Max(shifted.Top, clip.Top), Math.Min(shifted.Right, clip.Right), Math.Min(shifted.Bottom, clip.Bottom));
+                        }
+                        else
+                        {
+                            using SvgConverter.RasterizedSurface converted = Allocate();
+                            SvgShaderPaint paint = uniform[primitive.Input.Index].Paint;
+                            if (colorSpace == SvgFilterColorSpace.LinearRgb) paint = SvgFilterColorTransfer.Convert(paint, colorSpace);
+                            SvgConstantShaderPaint constant = paint.AsConstant(1f);
+                            Charge(pixels);
+                            for (int y = 0; y < height; y++)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                for (int x = 0; x < width; x++)
+                                    if (x >= MathF.Floor(bounds.Left) && x < MathF.Ceiling(bounds.Right) && y >= MathF.Floor(bounds.Top) && y < MathF.Ceiling(bounds.Bottom))
+                                        constant.Blend(converted.Pixels.AsSpan((y * width + x) * 4, 4), 255);
+                            }
+                            SvgPaintBounds bitmapBounds = colorSpace == SvgFilterColorSpace.LinearRgb ? RoundLayerBounds(bounds) : bounds;
+                            Offset(converted.Pixels, output, dx, dy, bitmapBounds, null, nativeTransform, false);
+                            int tail = finalIndex;
+                            while (tail > index)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                Charge(1);
+                                SvgFilterPrimitive alias = resource.Primitives.Items[tail];
+                                if (alias.Kind == SvgFilterPrimitiveKind.GaussianBlur && alias.SigmaX == 0 && alias.SigmaY == 0) tail = alias.Input.Index;
+                                else if (alias.Kind == SvgFilterPrimitiveKind.Merge && alias.MergeCount == 1) tail = resource.MergeInputs.Items[alias.MergeFirst].Index;
+                                else break;
+                            }
+                            if (tail == index && map.Regions?.DeferFinalOffset == true)
+                            {
+                                SvgPaintBounds storedBounds = RoundLayerBounds(bounds);
+                                SvgShaderMatrix imageToSource = SvgShaderMatrix.Concat(placed,
+                                    new(1, 0, storedBounds.Left - nativeOrigin.X, 0, 1, storedBounds.Top - nativeOrigin.Y));
+                                deferredImage = new(imageToSource, storedBounds, regions[finalIndex], SvgFilterImageSampling.Nearest) { Constant = constant };
+                                Charge(bytes);
+                                converted.Pixels.CopyTo(output);
+                            }
+                            else if (tail == index && nativeTransform is null && colorSpace == SvgFilterColorSpace.LinearRgb)
+                            {
+                                Span<SvgShaderPaint> values = AllocateSamples();
+                                SvgPaintBounds expanded = new(MathF.Min(bitmapBounds.Left, MathF.Floor(bitmapBounds.Left + dx)), MathF.Min(bitmapBounds.Top, MathF.Floor(bitmapBounds.Top + dy)),
+                                    MathF.Max(bitmapBounds.Right, MathF.Ceiling(bitmapBounds.Right + dx)), MathF.Max(bitmapBounds.Bottom, MathF.Ceiling(bitmapBounds.Bottom + dy)));
+                                SvgRectangleCoverage edge = SvgRectangleCoverage.Create(expanded.Left + dx, expanded.Top + dy, expanded.Right + dx, expanded.Bottom + dy, width, height);
+                                int left = (int)MathF.Floor(Math.Clamp(expanded.Left, 0, width)), top = (int)MathF.Floor(Math.Clamp(expanded.Top, 0, height));
+                                int right = (int)MathF.Ceiling(Math.Clamp(expanded.Right, 0, width)), bottom = (int)MathF.Ceiling(Math.Clamp(expanded.Bottom, 0, height));
+                                int moveX = (int)MathF.Floor(dx + .5f), moveY = (int)MathF.Floor(dy + .5f);
+                                Charge(pixels);
+                                for (int y = 0; y < height; y++)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    for (int x = 0; x < width; x++)
+                                    {
+                                        if (right <= left || bottom <= top) continue;
+                                        byte coverage = edge.GetAlpha(x, y);
+                                        int sx = Math.Clamp(x - moveX, left, right - 1), sy = Math.Clamp(y - moveY, top, bottom - 1);
+                                        int at = (sy * width + sx) * 4;
+                                        float alpha = coverage * (1f / 255f);
+                                        values[y * width + x] = new(converted.Pixels[at] * (1f / 255f) * alpha, converted.Pixels[at + 1] * (1f / 255f) * alpha,
+                                            converted.Pixels[at + 2] * (1f / 255f) * alpha, converted.Pixels[at + 3] * (1f / 255f) * alpha);
+                                    }
+                                }
+                                linearOffsetSamples = true;
+                            }
+                        }
+                    }
                     else Offset(input, output, primitive.OffsetX * map.ScaleX, primitive.OffsetY * map.ScaleY, inputBounds, null, nativeTransform,
                         index == finalIndex && primitive.Input.Index < 0 && map.Regions?.PictureOutput == true);
-                    linear[index] = inputLinear;
+                    linear[index] = primitive.Input.Index >= 0 && uniform[primitive.Input.Index].Known && !uniform[index].Known
+                        ? colorSpace == SvgFilterColorSpace.LinearRgb : inputLinear;
                 }
                 else if (primitive.Kind == SvgFilterPrimitiveKind.Merge)
                 {
@@ -483,7 +571,13 @@ internal static class SvgFilterPlayback
                         Charge(bytes);
                         ReadInput(merged, index, graphic).CopyTo(output);
                         linear[index] = merged.Index >= 0 && linear[merged.Index];
-                        if (map.Regions is not null && deferredImage is null) Clip(output, regions[index]);
+                        if (merged.Index >= 0 && uniform[merged.Index].Known)
+                        {
+                            uniform[index] = uniform[merged.Index] with { HighPrecision = uniform[merged.Index].HighPrecision || colorSpace == SvgFilterColorSpace.LinearRgb };
+                            SvgPaintBounds bounds = imageBounds[merged.Index], clip = imageBounds[index];
+                            imageBounds[index] = new(Math.Max(bounds.Left, clip.Left), Math.Max(bounds.Top, clip.Top), Math.Min(bounds.Right, clip.Right), Math.Min(bounds.Bottom, clip.Bottom));
+                        }
+                        if (map.Regions is not null && deferredImage is null) { Clip(output, regions[index]); ClipOffsetSamples(regions[index]); }
                         continue;
                     }
                     bool destinationLinear = colorSpace == SvgFilterColorSpace.LinearRgb;
@@ -520,10 +614,10 @@ internal static class SvgFilterPlayback
                                 blurred.Pixels[offset + 3] = Modulate(tint.Alpha, coverage);
                                 continue;
                             }
-                            int a = (int)MathF.Floor(blurred.Pixels[offset + 3] * primitive.FloodOpacity * (primitive.Flood.Alpha / 255f) + .5f);
-                            blurred.Pixels[offset] = (byte)((primitive.Flood.Red * a + 127) / 255);
-                            blurred.Pixels[offset + 1] = (byte)((primitive.Flood.Green * a + 127) / 255);
-                            blurred.Pixels[offset + 2] = (byte)((primitive.Flood.Blue * a + 127) / 255);
+                            int a = (int)MathF.Floor(blurred.Pixels[offset + 3] * primitive.Flood.Alpha + .5f);
+                            blurred.Pixels[offset] = (byte)((primitive.Flood.Color.Red * a + 127) / 255);
+                            blurred.Pixels[offset + 1] = (byte)((primitive.Flood.Color.Green * a + 127) / 255);
+                            blurred.Pixels[offset + 2] = (byte)((primitive.Flood.Color.Blue * a + 127) / 255);
                             blurred.Pixels[offset + 3] = (byte)a;
                         }
                     }
@@ -540,12 +634,31 @@ internal static class SvgFilterPlayback
                     linear[index] = destinationLinear;
                 }
                 else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filter primitive is not implemented.");
-                if (map.Regions is not null && deferredImage is null) Clip(output, regions[index]);
+                if (primitive.Kind == SvgFilterPrimitiveKind.GaussianBlur && primitive.SigmaX == 0 && primitive.SigmaY == 0
+                    && primitive.Input.Index >= 0 && uniform[primitive.Input.Index].Known)
+                {
+                    uniform[index] = uniform[primitive.Input.Index] with { HighPrecision = uniform[primitive.Input.Index].HighPrecision || colorSpace == SvgFilterColorSpace.LinearRgb };
+                    SvgPaintBounds sourceBounds = imageBounds[primitive.Input.Index], clip = imageBounds[index];
+                    imageBounds[index] = new(Math.Max(sourceBounds.Left, clip.Left), Math.Max(sourceBounds.Top, clip.Top), Math.Min(sourceBounds.Right, clip.Right), Math.Min(sourceBounds.Bottom, clip.Bottom));
+                }
+                if (map.Regions is not null && deferredImage is null) { Clip(output, regions[index]); ClipOffsetSamples(regions[index]); }
             }
-            if (count > 0 && linear[finalIndex])
+            if (count > 0 && linear[finalIndex] && map.Regions?.DeferFinalColorTransfer != true)
             {
                 AllocateSamples();
-                ConvertColor(outputs[finalIndex].Pixels, outputs[finalIndex].Pixels, SvgFilterColorSpace.Srgb);
+                if (linearOffsetSamples && samples is {} offsetValues)
+                {
+                    Charge(pixels);
+                    for (int offset = 0; offset < bytes; offset += 4)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        SvgShaderPaint color = SvgFilterColorTransfer.Convert(offsetValues[offset / 4], SvgFilterColorSpace.Srgb);
+                        offsetValues[offset / 4] = color;
+                        outputs[finalIndex].Pixels.AsSpan(offset, 4).Clear();
+                        color.Blend(outputs[finalIndex].Pixels.AsSpan(offset, 4), 255);
+                    }
+                }
+                else ConvertColor(outputs[finalIndex].Pixels, outputs[finalIndex].Pixels, SvgFilterColorSpace.Srgb);
             }
             if (samples is not null && map.Regions is not null)
             {
@@ -561,13 +674,31 @@ internal static class SvgFilterPlayback
             }
             token.ThrowIfCancellationRequested();
             returned = true;
-            return new(outputs[finalIndex] with { WorkUnits = work }, samples, sampleOwner) { DeferredImage = deferredImage };
+            return new(outputs[finalIndex] with { WorkUnits = work }, samples, sampleOwner) { ColorSpace = count > 0 && map.Regions?.DeferFinalColorTransfer == true && linear[finalIndex] ? SvgFilterColorSpace.LinearRgb : SvgFilterColorSpace.Srgb, DeferredImage = deferredImage, UniformPaint = count > 0 && uniform[finalIndex].Known ? new(uniform[finalIndex].Paint, imageBounds[finalIndex], uniform[finalIndex].HighPrecision) : null };
         }
         finally
         {
             if (!returned) sampleOwner?.Dispose();
             for (int index = 0; index < outputs.Length; index++)
                 if ((!returned || index != finalIndex) && outputs[index].Pixels is not null) outputs[index].Dispose();
+        }
+
+        // Prepare immutable premultiplied sRGB lanes without allocation or ownership.
+        // The enclosing operation charges work and observes pixel cancellation.
+        static SvgShaderPaint FloodPaint(SvgSolidPaint paint)
+            => new(paint.Color.Red / 255f * paint.Alpha, paint.Color.Green / 255f * paint.Alpha,
+                paint.Color.Blue / 255f * paint.Alpha, paint.Alpha);
+
+        void ClipOffsetSamples(SvgPaintBounds bounds)
+        {
+            if (!linearOffsetSamples || samples is not {} values) return;
+            Charge(pixels);
+            for (int y = 0; y < height; y++)
+            {
+                token.ThrowIfCancellationRequested();
+                for (int x = 0; x < width; x++)
+                    if (x < MathF.Floor(bounds.Left) || x >= MathF.Ceiling(bounds.Right) || y < MathF.Floor(bounds.Top) || y >= MathF.Ceiling(bounds.Bottom)) values[y * width + x] = default;
+            }
         }
 
         Span<SvgShaderPaint> AllocateSamples()
@@ -610,6 +741,7 @@ internal static class SvgFilterPlayback
 
         void Composite(ReadOnlySpan<byte> input, Span<byte> output, SvgFilterInput reference, bool inputLinear, SvgFilterColorSpace colorSpace)
         {
+            SvgFilterInput sampledReference = reference;
             // Offsets and a zero blur retain the source's image/color-filter consumer.
             while (reference.Index >= 0)
             {
@@ -629,37 +761,47 @@ internal static class SvgFilterPlayback
                 // A merge draws stored inputs into a bitmap. Without a transfer,
                 // native direct image draws retain packed source-over rounding.
                 // Color-filter inputs, including SourceAlpha, retain their shader route.
-                if (reference != SvgFilterInput.SourceAlpha && inputLinear == (colorSpace == SvgFilterColorSpace.LinearRgb))
+                if (ReadUniform(sampledReference, offset, colorSpace) is {} constant)
+                    constant.AsConstant(1f).Blend(output.Slice(offset, 4), 255);
+                else if (reference != SvgFilterInput.SourceAlpha && inputLinear == (colorSpace == SvgFilterColorSpace.LinearRgb))
                     SvgConverter.BlendPremultipliedOver(output.Slice(offset, 4), input[offset], input[offset + 1], input[offset + 2], input[offset + 3]);
                 else ReadPaint(input, offset, inputLinear, colorSpace).Blend(output.Slice(offset, 4), 255);
             }
         }
 
         void ComposeInputs(ReadOnlySpan<byte> first, ReadOnlySpan<byte> second, Span<byte> output,
-            bool firstLinear, bool secondLinear, SvgFilterComposition composition, SvgFilterColorSpace colorSpace)
+            SvgFilterInput firstReference, SvgFilterInput secondReference, bool firstLinear, bool secondLinear, SvgFilterComposition composition, SvgFilterColorSpace colorSpace)
         {
             bool destinationLinear = colorSpace == SvgFilterColorSpace.LinearRgb;
             Charge(pixels * (1 + (firstLinear == destinationLinear ? 0 : 1) + (secondLinear == destinationLinear ? 0 : 1)));
-            const float byteScale = 1f / 255f;
+            bool highPrecision = firstLinear != destinationLinear || secondLinear != destinationLinear
+                || IsAlpha(firstReference) || IsAlpha(secondReference);
             for (int offset = 0; offset < bytes; offset += 4)
             {
                 token.ThrowIfCancellationRequested();
-                byte sourceAlphaByte = first[offset + 3], destinationAlphaByte = second[offset + 3];
-                float sourceAlpha = sourceAlphaByte * byteScale, destinationAlpha = destinationAlphaByte * byteScale;
-                SvgShaderPaint firstPaint = ReadPaint(first, offset, firstLinear, colorSpace), secondPaint = ReadPaint(second, offset, secondLinear, colorSpace);
-                SvgShaderPaint sample = new(Channel(first[offset], second[offset], firstPaint.Red, secondPaint.Red),
-                    Channel(first[offset + 1], second[offset + 1], firstPaint.Green, secondPaint.Green),
-                    Channel(first[offset + 2], second[offset + 2], firstPaint.Blue, secondPaint.Blue),
-                    Channel(sourceAlphaByte, destinationAlphaByte, sourceAlpha, destinationAlpha));
+                if (!highPrecision)
+                {
+                    SvgConstantShaderPaint a = ReadUniform(firstReference, offset, colorSpace) is {} ca ? ca.AsConstant(1f)
+                        : new(first[offset], first[offset + 1], first[offset + 2], first[offset + 3]);
+                    SvgConstantShaderPaint b = ReadUniform(secondReference, offset, colorSpace) is {} cb ? cb.AsConstant(1f)
+                        : new(second[offset], second[offset + 1], second[offset + 2], second[offset + 3]);
+                    output[offset] = Packed(a.Red, b.Red, a.Alpha, b.Alpha, composition);
+                    output[offset + 1] = Packed(a.Green, b.Green, a.Alpha, b.Alpha, composition);
+                    output[offset + 2] = Packed(a.Blue, b.Blue, a.Alpha, b.Alpha, composition);
+                    output[offset + 3] = Packed(a.Alpha, b.Alpha, a.Alpha, b.Alpha, composition);
+                    continue;
+                }
+                SvgShaderPaint firstPaint = ReadUniform(firstReference, offset, colorSpace) ?? ReadPaint(first, offset, firstLinear, colorSpace);
+                SvgShaderPaint secondPaint = ReadUniform(secondReference, offset, colorSpace) ?? ReadPaint(second, offset, secondLinear, colorSpace);
+                float sourceAlpha = firstPaint.Alpha, destinationAlpha = secondPaint.Alpha;
+                SvgShaderPaint sample = new(Channel(firstPaint.Red, secondPaint.Red),
+                    Channel(firstPaint.Green, secondPaint.Green),
+                    Channel(firstPaint.Blue, secondPaint.Blue),
+                    Channel(sourceAlpha, destinationAlpha));
                 sample.Blend(output.Slice(offset, 4), 255);
 
-                float Channel(byte source, byte destination, float s, float d)
+                float Channel(float s, float d)
                 {
-                    // Native x64 low-precision multiply rounds the combined
-                    // numerator through its bounded /256 approximation.
-                    if (composition == SvgFilterComposition.Multiply && !destinationLinear && !firstLinear && !secondLinear)
-                        return ((source * (255 - destinationAlphaByte) + destination * (255 - sourceAlphaByte)
-                            + source * destination + 255) >> 8) * byteScale;
                     return composition switch
                     {
                         SvgFilterComposition.In => s * destinationAlpha,
@@ -670,6 +812,44 @@ internal static class SvgFilterPlayback
                     };
                 }
             }
+        }
+
+        bool IsAlpha(SvgFilterInput reference)
+        {
+            while (reference.Index >= 0)
+            {
+                token.ThrowIfCancellationRequested();
+                Charge(1);
+                SvgFilterPrimitive primitive = resource.Primitives.Items[reference.Index];
+                if (primitive.Kind != SvgFilterPrimitiveKind.Offset
+                    && (primitive.Kind != SvgFilterPrimitiveKind.GaussianBlur || primitive.SigmaX != 0 || primitive.SigmaY != 0)) return false;
+                reference = primitive.Input;
+            }
+            return reference == SvgFilterInput.SourceAlpha;
+        }
+
+        static byte Packed(int source, int destination, int sourceAlpha, int destinationAlpha, SvgFilterComposition composition)
+        {
+            int value = composition switch
+            {
+                SvgFilterComposition.In => Divide(source * destinationAlpha),
+                SvgFilterComposition.Screen => source + destination - Divide(source * destination),
+                SvgFilterComposition.Multiply => (source * (255 - destinationAlpha) + destination * (255 - sourceAlpha) + source * destination + 255) >> 8,
+                _ => source + Divide(destination * (255 - sourceAlpha))
+            };
+            return (byte)Math.Clamp(value, 0, 255);
+            static int Divide(int value) { value += 128; return (value + (value >> 8)) >> 8; }
+        }
+
+        SvgShaderPaint? ReadUniform(SvgFilterInput reference, int offset, SvgFilterColorSpace destination)
+        {
+            if (reference.Index < 0 || !uniform[reference.Index].Known) return null;
+            SvgShaderPaint color = uniform[reference.Index].Paint;
+            SvgPaintBounds bounds = imageBounds[reference.Index];
+            int x = offset / 4 % width, y = offset / 4 / width;
+            if (x < MathF.Floor(bounds.Left) || x >= MathF.Ceiling(bounds.Right)
+                || y < MathF.Floor(bounds.Top) || y >= MathF.Ceiling(bounds.Bottom)) return default(SvgShaderPaint);
+            return destination == SvgFilterColorSpace.Srgb ? color : SvgFilterColorTransfer.Convert(color, destination);
         }
 
         static SvgShaderPaint ReadPaint(ReadOnlySpan<byte> input, int offset, bool linear, SvgFilterColorSpace destination)
@@ -734,14 +914,14 @@ internal static class SvgFilterPlayback
 
         SvgConstantShaderPaint ShadowTint(SvgFilterPrimitive primitive, SvgFilterColorSpace colorSpace)
         {
-            float alpha = primitive.FloodOpacity * (primitive.Flood.Alpha * (1f / 255f));
+            float alpha = primitive.Flood.Alpha;
             if (colorSpace == SvgFilterColorSpace.Srgb)
-                return new(Quantize(primitive.Flood.Red * alpha), Quantize(primitive.Flood.Green * alpha), Quantize(primitive.Flood.Blue * alpha), Quantize(255 * alpha));
+                return new(Quantize(primitive.Flood.Color.Red * alpha), Quantize(primitive.Flood.Color.Green * alpha), Quantize(primitive.Flood.Color.Blue * alpha), Quantize(255 * alpha));
             // CSS tint and source pixels enter the same operating space before
             // native premultiplied constant lanes and image composition.
             Charge(16);
-            SvgShaderPaint tint = SvgFilterColorTransfer.Convert(new(primitive.Flood.Red * (1f / 255f),
-                primitive.Flood.Green * (1f / 255f), primitive.Flood.Blue * (1f / 255f), 1), colorSpace);
+            SvgShaderPaint tint = SvgFilterColorTransfer.Convert(new(primitive.Flood.Color.Red * (1f / 255f),
+                primitive.Flood.Color.Green * (1f / 255f), primitive.Flood.Color.Blue * (1f / 255f), 1), colorSpace);
             return new(Quantize(tint.Red * alpha * 255), Quantize(tint.Green * alpha * 255), Quantize(tint.Blue * alpha * 255), Quantize(255 * alpha));
 
             static byte Quantize(float value) => (byte)Math.Clamp((int)MathF.Floor(value + .5f), 0, 255);

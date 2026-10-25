@@ -1,6 +1,6 @@
 # Gradient color alpha
 
-The [capture](capture.json) contains 9,623 exact and 581 deferred cases, sharing
+The [capture](capture.json) contains 9,695 exact and 509 deferred cases, sharing
 6,154 SVGs and 1,677 native PNGs by content hash. Percentage, numeric and encoded
 alpha spellings retain their own browser references. The cases cover RGB/HSL,
 function aliases, case, whitespace, exponent notation, every byte-alpha midpoint,
