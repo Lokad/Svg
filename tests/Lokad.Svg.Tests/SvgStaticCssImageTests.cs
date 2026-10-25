@@ -6,13 +6,16 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgStaticCssImageTests
 {
     [Theory]
-    [InlineData("<circle cx='16' cy='16' r='10' fill='url(#g)'/>", "matrix(-2 0 0 2 96 0)")]
-    [InlineData("<ellipse cx='16' cy='16' rx='12' ry='10' fill='url(#g)'/>", "matrix(2 0 0 -2 0 96)")]
-    [InlineData("<rect x='4' y='6' width='24' height='20' rx='4' ry='3' fill='url(#g)'/>", "matrix(-2 0 0 -2 96 96)")]
-    public void Reflected_radial_sources_release_owners_after_denial_cancellation_and_retry(string shape, string placement)
+    [InlineData("<circle cx='16' cy='16' r='10' fill='url(#g)'/>", "matrix(-2 0 0 2 96 0)", "cx='.4' cy='.55' r='.4' fx='.25' fy='.35'")]
+    [InlineData("<ellipse cx='16' cy='16' rx='12' ry='10' fill='url(#g)'/>", "matrix(2 0 0 -2 0 96)", "cx='.4' cy='.55' r='.4' fx='.25' fy='.35'")]
+    [InlineData("<rect x='4' y='6' width='24' height='20' rx='4' ry='3' fill='url(#g)'/>", "matrix(-2 0 0 -2 96 96)", "cx='.4' cy='.55' r='.4' fx='.25' fy='.35'")]
+    [InlineData("<circle cx='16' cy='16' r='10' fill='url(#g)'/>", "matrix(-2 0 0 2 96 0)", "gradientUnits='userSpaceOnUse' cx='16' cy='16' r='10' fx='25.996' fy='16'")]
+    [InlineData("<ellipse cx='16' cy='16' rx='12' ry='10' fill='url(#g)'/>", "matrix(2 0 0 -2 0 96)", "gradientUnits='userSpaceOnUse' cx='16' cy='16' r='10' fx='25.996' fy='16'")]
+    [InlineData("<rect x='4' y='6' width='24' height='20' rx='4' ry='3' fill='url(#g)'/>", "matrix(-2 0 0 -2 96 96)", "gradientUnits='userSpaceOnUse' cx='16' cy='16' r='10' fx='25.996' fy='16'")]
+    public void Reflected_radial_sources_release_owners_after_denial_cancellation_and_retry(string shape, string placement, string coordinates)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96'>"
-            + "<defs><radialGradient id='g' cx='.4' cy='.55' r='.4' fx='.25' fy='.35'><stop stop-color='#c04080'/><stop offset='1' stop-color='#244a77'/></radialGradient></defs>"
+            + "<defs><radialGradient id='g' " + coordinates + "><stop stop-color='#c04080'/><stop offset='1' stop-color='#244a77'/></radialGradient></defs>"
             + "<g transform='" + placement + "'>" + shape + "</g></svg>");
         AssertResourceLifecycle(input);
         AssertActiveRasterLifecycle(input);

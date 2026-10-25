@@ -1010,7 +1010,7 @@ internal static class SvgGradientSyntax
     }
 
     /// <summary>Maps a radial paint through an axis reference, preserving object-box reflection and user-space scale records.</summary>
-    /// <remarks>Object-box reflections remain reference matrices so native float preparation keeps
+    /// <remarks>Reflected paints retain reference matrices so native float preparation keeps
     /// definition coordinates separate from the local paint map. Callers bind general source maps.</remarks>
     internal static SvgRadialGradient MapRadialReference(SvgAffineTransform transform, SvgRadialGradient gradient, SvgViewportFrame? frame)
     {
@@ -1024,6 +1024,9 @@ internal static class SvgGradientSyntax
             return ScaleGeneralRadial(gradient, mirrorX ? -1 : 1, mirrorY ? -1 : 1, mirrorX ? 1 : 0, mirrorY ? 1 : 0);
         }
         if (!transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned gradient transforms are implemented.");
+        if (!gradient.HasGeneralTransform && (transform.A < 0 || transform.D < 0))
+            gradient = gradient with { HasGeneralTransform = true, Inverse = SvgGradientTransform.Identity,
+                NativePaintMatrices = new(new(1, 0, 0, 0, 1, 0), SvgAffineTransform.Identity) };
         if (gradient.HasGeneralTransform) return ScaleGeneralRadial(ScaleGeneralRadial(gradient, transform.A, transform.D, transform.E, transform.F), frame?.ScaleX ?? 1, frame?.ScaleY ?? 1, frame?.OffsetX ?? 0, frame?.OffsetY ?? 0);
         (double mappedX, double mappedY) = transform.ApplyToUserPoint(gradient.CenterX, gradient.CenterY);
         (double mappedFocalX, double mappedFocalY) = transform.ApplyToUserPoint(gradient.FocalX, gradient.FocalY);

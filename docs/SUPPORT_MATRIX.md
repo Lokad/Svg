@@ -216,7 +216,7 @@ rules apply to shape/text fills and strokes and admitted resource/instance repla
 Circle, ellipse and rounded-rectangle fills retain their linear paint's source
 coordinates through affine shape and gradient maps, including resource and local
 instance placement; see the [shape source-map controls](../tests/Research/linear-shape-source-maps/README.md).
-Object-box radial paints retain reflected source axes through shape, instance
+Radial paints retain reflected source axes in both unit systems through shape, instance
 and resource placement; see the [radial axis controls](../tests/Research/radial-axis-source-maps/README.md).
 CSS `display:none` on a gradient or its defining `defs` makes its local stops
 unavailable. An alias with local stops can still paint; an alias borrowing those
