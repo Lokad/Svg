@@ -8,6 +8,10 @@ Text nodes retain fragment width rounding. Comments preserve shaping; spans
 follow native shaping boundaries when screen font scaling changes the compared
 fonts. Controls include unit scale, reflections, a quarter turn, relative
 positioning, fitted text paths and replay through uses, symbols, patterns and masks.
+Relative-position cases also cover offsets inside `fi`/`ffi` clusters, zero list
+entries, glyphless nodes and source prefixes before a following glyph. Fitting
+controls vary node form, anchor, positive/negative offsets and gradient paint;
+their images are checked through direct and prepared rendering, limits and retry.
 
 Two fitting inputs retain an existing three-pixel Windows difference separately
 from the exact cases. Their native images are preserved; both inputs are exact

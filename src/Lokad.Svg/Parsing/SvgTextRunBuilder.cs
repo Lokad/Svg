@@ -91,19 +91,19 @@ internal static class SvgTextRunBuilder
 
         if (style.PositionLists.IsEmpty)
         {
-            var (ordinary, resolvedMetrics) = SvgGlyphLayout.CreateStorageAndMetrics(font, text, style.FontSize, originX, originY, style.LetterSpacing, style.WordSpacing, needsFragments, letterSpacingSpans, positionAdjustments, paintSpans, resolvedFonts.AsSpan(), nodeBoundaries, style.Anchor, deviceMetrics, budget, style.SourceElementId, workCounter, cancellationToken);
+            var (ordinary, resolvedMetrics, fittingResult) = SvgGlyphLayout.CreateStorageAndMetrics(font, text, style.FontSize, originX, originY, style.LetterSpacing, style.WordSpacing, needsFragments, letterSpacingSpans, positionAdjustments, paintSpans, resolvedFonts.AsSpan(), nodeBoundaries, style.Anchor, deviceMetrics, style.TextLength is > 0 ? new SvgTextFitting(style.TextLength.Value, style.LengthAdjust) : null, budget, style.SourceElementId, workCounter, cancellationToken);
             try { return new SvgTextRun(style, font, ordinary, paintSpans.IsEmpty ? defaultPaint : paintSpans[0].Paint, resolvedMetrics)
-                { GlyphStretch = AdjustGlyphs(ordinary, font, style, resolvedMetrics, workCounter, cancellationToken) }; }
+                { GlyphStretch = AdjustGlyphs(ordinary, font, style, resolvedMetrics, fittingResult, workCounter, cancellationToken) }; }
             catch { ordinary.Dispose(); throw; }
         }
         using OwnedParserArray<SvgTextPositionAdjustment> positions = style.PositionLists.Build(text, positionAdjustments, budget, workCounter, cancellationToken);
         SvgPositionedGlyphStorage? glyphs = null;
         try
         {
-            var layout = SvgGlyphLayout.CreateStorageAndMetrics(font, text, style.FontSize, 0, 0, style.LetterSpacing, style.WordSpacing, needsFragments, letterSpacingSpans, positions.Items, paintSpans, resolvedFonts.AsSpan(), nodeBoundaries, style.Anchor, deviceMetrics, budget, style.SourceElementId, workCounter, cancellationToken);
+            var layout = SvgGlyphLayout.CreateStorageAndMetrics(font, text, style.FontSize, 0, 0, style.LetterSpacing, style.WordSpacing, needsFragments, letterSpacingSpans, positions.Items, paintSpans, resolvedFonts.AsSpan(), nodeBoundaries, style.Anchor, deviceMetrics, style.TextLength is > 0 ? new SvgTextFitting(style.TextLength.Value, style.LengthAdjust) : null, budget, style.SourceElementId, workCounter, cancellationToken);
             glyphs = layout.Storage;
             return new SvgTextRun(style, font, glyphs, paintSpans.IsEmpty ? defaultPaint : paintSpans[0].Paint, layout.Metrics)
-            { GlyphStretch = AdjustGlyphs(glyphs, font, style, layout.Metrics, workCounter, cancellationToken) };
+            { GlyphStretch = AdjustGlyphs(glyphs, font, style, layout.Metrics, layout.Fitting, workCounter, cancellationToken) };
         }
         catch { glyphs?.Dispose(); throw; }
 
@@ -125,7 +125,7 @@ internal static class SvgTextRunBuilder
             if (current is not null) resolvedFonts.Add(new(groupStart, end, new(current, fontSize)));
         }
 
-        static double AdjustGlyphs(SvgPositionedGlyphStorage storage, SvgPreparedFont font, SvgTextStyle style, SvgGlyphDeviceMetrics? metrics,
+        static double AdjustGlyphs(SvgPositionedGlyphStorage storage, SvgPreparedFont font, SvgTextStyle style, SvgGlyphDeviceMetrics? metrics, SvgTextFittingResult fittingResult,
             ParserWorkCounter? work, CancellationToken token)
         {
             if (style.Baseline != SvgTextBaseline.Alphabetic)
@@ -152,12 +152,13 @@ internal static class SvgTextRunBuilder
                     if (work is null) token.ThrowIfCancellationRequested(); else work.Consume(token);
                     SvgTextPaintFragment fragment = baselineFragments[index];
                     if (fragment.SourceOrigin is not {} origin) continue;
-                    SvgGlyphFontStyle face = storage.GlyphFonts.IsEmpty ? new(font, style.FontSize) : storage.GlyphFonts[fragment.Start];
+                    SvgGlyphFontStyle face = storage.GlyphFonts.IsEmpty ? new(font, style.FontSize) : storage.GlyphFonts[Math.Min(fragment.Start, storage.Glyphs.Length - 1)];
                     float baselineScale = (float)(metrics?.Scale ?? 1);
                     baselineFragments[index] = fragment with { SourceOrigin = origin with
                     { Y = (float)origin.Y + (float)GetBaselineShift(face, style.Baseline, metrics, work, token) * baselineScale } };
                 }
             }
+            if (fittingResult.IsResolved) return fittingResult.Scale;
             if (style.TextLength is not double desired || desired == 0 || storage.Glyphs.Length == 0
                 || style.LengthAdjust == SvgTextLengthAdjust.Spacing && storage.Glyphs.Length == 1) return 1;
             Span<SvgPositionedGlyph> glyphs = storage.MutableGlyphs;

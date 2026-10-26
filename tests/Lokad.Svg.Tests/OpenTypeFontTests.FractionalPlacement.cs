@@ -61,4 +61,27 @@ public sealed partial class OpenTypeFontTests
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
+    [Theory]
+    [InlineData("windows")]
+    [InlineData("linux")]
+    public async Task Path_items_invert_the_admitted_device_scale_without_scalar_drift(string target)
+    {
+        byte[] bytes = CreateFont(1000, 3, 2, 1);
+        WriteUInt16(bytes, FindTableOffset(bytes, 0x686D7478) + 4, 600);
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
+        const double scale = 512d / 600;
+        // A 600/1000 advance at this viewport scale occupies 9.21875 physical
+        // pixels on the path grid. Inverting a rounded scalar scale accumulates drift.
+        RenderBudget budget = new(long.MaxValue);
+        using (SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(snapshot.Fonts[0], new string('A', 27), 18, 0, 0, 0, 0, true,
+            [], [], [], [], SvgTextAnchor.Start, new(scale, target == "windows" ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, true),
+            budget, string.Empty, new(long.MaxValue), CancellationToken.None))
+        {
+            Assert.Equal(27, glyphs.PaintFragments.Length);
+            for (int index = 0; index < glyphs.Glyphs.Length; index++)
+                Assert.Equal(index * 9.21875, glyphs.Glyphs[index].X * scale, 10);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
 }

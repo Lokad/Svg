@@ -25,6 +25,7 @@ internal static class SvgTextDecorationRenderer
             foreach (SvgTextPaintFragment fragment in fragments)
             {
                 work.Consume(token);
+                if (fragment.Start == fragment.End) continue;
                 SvgTextGlyphPaint glyphPaint = run.GetGlyphPaint(fragment.Start, fallbackColor);
                 if (glyphPaint.Decoration is not {} decoration || !decoration.Paint.IsPainted) continue;
                 SvgTextDecorationLine lines = lineThrough ? decoration.Lines & SvgTextDecorationLine.LineThrough

@@ -61,8 +61,9 @@ internal readonly record struct SvgTextPositionLists(string? X, string? Y, strin
             if (work is null) token.ThrowIfCancellationRequested(); else work.Consume(token);
             double? x = xs.TryReadValue(out ReadOnlySpan<char> xv) ? ReadToken(xv) : null;
             double? y = ys.TryReadValue(out ReadOnlySpan<char> yv) ? ReadToken(yv) : null;
-            double dx = dxs.TryReadValue(out ReadOnlySpan<char> dxv) ? ReadToken(dxv) : 0;
-            double dy = dys.TryReadValue(out ReadOnlySpan<char> dyv) ? ReadToken(dyv) : 0;
+            bool hasDx = dxs.TryReadValue(out ReadOnlySpan<char> dxv), hasDy = dys.TryReadValue(out ReadOnlySpan<char> dyv);
+            double dx = hasDx ? ReadToken(dxv) : 0;
+            double dy = hasDy ? ReadToken(dyv) : 0;
             if (rotations.TryReadValue(out ReadOnlySpan<char> rotation)) lastRotation = ReadToken(rotation, false);
             double? angle = lastRotation;
             if (descendantIndex < descendants.Length && descendants[descendantIndex].Start == sourceOffset)
@@ -72,10 +73,10 @@ internal readonly record struct SvgTextPositionLists(string? X, string? Y, strin
                 dx = child.OverridesDx ? child.Dx : dx + child.Dx;
                 dy = child.OverridesDy ? child.Dy : dy + child.Dy;
                 angle = child.Rotation ?? angle;
+                hasDx |= child.OverridesDx; hasDy |= child.OverridesDy;
             }
-            // Retain a character boundary under rotation, including zero offsets,
-            // so optional ligatures cannot merge differently oriented characters.
-            if (x is not null || y is not null || dx != 0 || dy != 0 || angle is not null)
+            // Authored zero entries partition SVG inline items without breaking shaping.
+            if (x is not null || y is not null || hasDx || hasDy || dx != 0 || dy != 0 || angle is not null)
                 positions.Add(new(sourceOffset, x, y, dx, dy) { Rotation = angle });
             sourceOffset += scalar.Utf16SequenceLength;
         }

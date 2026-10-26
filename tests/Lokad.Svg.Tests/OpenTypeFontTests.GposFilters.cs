@@ -138,7 +138,9 @@ public sealed partial class OpenTypeFontTests
         RenderBudget budget = new(16_384);
         using (SvgPositionedGlyphStorage positions = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), "AAAAAAA", 20, 10, 40, 0, [], adjustments, SvgTextAnchor.Start, budget, string.Empty, null, CancellationToken.None))
         {
-            Assert.Equal(new ushort[] { 2, 1, 2 }, positions.Glyphs.ToArray().Select(glyph => glyph.GlyphIndex));
+            // The selected GSUB graph prefers triples. Only the absolute reset
+            // interrupts AAA; relative zero entries preserve both triples.
+            Assert.Equal(absolute ? new ushort[] { 2, 1, 2 } : [2, 2, 1], positions.Glyphs.ToArray().Select(glyph => glyph.GlyphIndex));
             Assert.Equal(absolute ? 22 : 20, positions.Glyphs[1].X);
             Assert.Equal(absolute ? 100 : 32, positions.Glyphs[2].X);
         }

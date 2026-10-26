@@ -82,7 +82,7 @@ internal static class SvgTextLayoutBounds
                 foreach (SvgTextPaintFragment fragment in run.PaintFragments)
                 {
                     work.Consume(token);
-                    SvgPositionedGlyph first = run.Glyphs[fragment.Start];
+                    SvgPositionedGlyph first = run.Glyphs[Math.Min(fragment.Start, run.Glyphs.Length - 1)];
                     SvgDevicePoint origin = fragment.SourceOrigin ?? new((float)first.X * scale, (float)first.Y * scale);
                     float inlineWidth = fragment.SourceWidth ?? MathF.Ceiling((float)(fragment.Width * scale) * 64) / 64;
                     SourceBox box = Fragment(fragment.Start, fragment.End, inlineWidth, origin);
@@ -111,7 +111,7 @@ internal static class SvgTextLayoutBounds
 
             SourceBox Fragment(int start, int end, float width, SvgDevicePoint origin)
             {
-                SvgGlyphFontStyle primary = run.GetGlyphFont(start);
+                SvgGlyphFontStyle primary = run.GetGlyphFont(Math.Min(start, run.Glyphs.Length - 1));
                 float size = SvgGlyphDeviceMetrics.GetEffectiveFontSize(primary.FontSize * scale);
                 OpenTypeFontMetrics font = primary.Font.Metrics;
                 float ascent = OperatingSystem.IsWindows() ? size * font.LineMetrics.WindowsAscender / font.UnitsPerEm : font.LineMetrics.Ascender * (size / font.UnitsPerEm);
@@ -119,7 +119,7 @@ internal static class SvgTextLayoutBounds
                 float above = MathF.Floor(ascent + .5f), below = MathF.Floor(descent + .5f);
                 float x = (float)origin.X, y = (float)origin.Y - above;
                 SourceBox layout = new(x, y, width, above + below), ink = default;
-                SvgPositionedGlyph first = run.Glyphs[start];
+                SvgPositionedGlyph first = run.Glyphs[Math.Min(start, run.Glyphs.Length - 1)];
                 for (int index = start; index < end; index++)
                 {
                     work.Consume(token);

@@ -1,5 +1,5 @@
 // SVG fragment widths and cross-element shaping adapt Blink's native operation order.
-// Copyright 2016, 2021 The Chromium Authors. See THIRD_PARTY_NOTICES.txt.
+// Copyright 2016, 2017, 2021 The Chromium Authors. See THIRD_PARTY_NOTICES.txt.
 namespace Lokad.Svg.Fonts;
 
 using System.Text;
@@ -68,6 +68,13 @@ internal static class SvgGlyphLayout
     /// The same budget/work/cancellation contract as ordinary layout applies, without a second shaping pass.</remarks>
     internal static (SvgPositionedGlyphStorage Storage, SvgGlyphDeviceMetrics? Metrics) CreateStorageAndMetrics(SvgPreparedFont font, string text, double fontSize, double originX, double originY, double letterSpacing, double wordSpacing, bool retainPaintFragments, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, ReadOnlySpan<SvgTextPaintSpan> paintSpans, ReadOnlySpan<SvgTextResolvedFontSpan> fontSpans, ReadOnlySpan<SvgTextNodeBoundary> nodeBoundaries, SvgTextAnchor anchor, SvgGlyphDeviceMetrics? deviceMetrics, RenderBudget budget, string sourceElementId, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
+        var result = CreateStorageAndMetrics(font, text, fontSize, originX, originY, letterSpacing, wordSpacing, retainPaintFragments,
+            letterSpacingSpans, positionAdjustments, paintSpans, fontSpans, nodeBoundaries, anchor, deviceMetrics, null, budget, sourceElementId, workCounter, cancellationToken);
+        return (result.Storage, result.Metrics);
+    }
+
+    internal static (SvgPositionedGlyphStorage Storage, SvgGlyphDeviceMetrics? Metrics, SvgTextFittingResult Fitting) CreateStorageAndMetrics(SvgPreparedFont font, string text, double fontSize, double originX, double originY, double letterSpacing, double wordSpacing, bool retainPaintFragments, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, ReadOnlySpan<SvgTextPaintSpan> paintSpans, ReadOnlySpan<SvgTextResolvedFontSpan> fontSpans, ReadOnlySpan<SvgTextNodeBoundary> nodeBoundaries, SvgTextAnchor anchor, SvgGlyphDeviceMetrics? deviceMetrics, SvgTextFitting? fitting, RenderBudget budget, string sourceElementId, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
         ArgumentNullException.ThrowIfNull(font);
         ArgumentNullException.ThrowIfNull(text);
         ArgumentNullException.ThrowIfNull(budget);
@@ -115,7 +122,7 @@ internal static class SvgGlyphLayout
             if (glyphCount == SvgTextLimits.MaximumCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "The text glyph count exceeds the admitted layout limit.");
             glyphCount++;
         }
-        if (glyphCount == 0) return (new SvgPositionedGlyphStorage([], 0, null), deviceMetrics);
+        if (glyphCount == 0) return (new SvgPositionedGlyphStorage([], 0, null), deviceMetrics, new(false, 1));
         RenderBudget.BudgetReservation reservation = budget.Reserve(checked(32L + glyphCount * 32L), SvgMemoryCategory.Geometry);
         RenderBudget.BudgetReservation? clusterReservation = null;
         RenderBudget.BudgetReservation? paintReservation = null;
@@ -124,7 +131,9 @@ internal static class SvgGlyphLayout
         RenderBudget.BudgetReservation? fragmentReservation = null;
         try
         {
-            using BudgetedParserList<SvgTextPaintFragment>? fragments = retainPaintFragments ? new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken) : null;
+            bool needsSourceItems = retainPaintFragments || deviceMetrics is not null
+                && (!positionAdjustments.IsEmpty || !nodeBoundaries.IsEmpty || fitting is not null);
+            using BudgetedParserList<SvgTextPaintFragment>? fragments = needsSourceItems ? new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken) : null;
             var glyphs = new SvgPositionedGlyph[glyphCount];
             SvgTextGlyphPaint[] glyphPaints = [];
             SvgGlyphFontStyle[] glyphFonts = [];
@@ -151,11 +160,11 @@ internal static class SvgGlyphLayout
             Span<GlyphLookup> cachedLookups = stackalloc GlyphLookup[GlyphLookupCacheCapacity];
             int cachedLookupCount = 0;
             int glyphPosition = 0;
-            int fragmentStart = 0;
+            int fragmentStart = 0, fragmentSourceStart = 0;
             int mappedNodeIndex = 0, shapingNodeIndex = 0;
             int mappedSourceOffset = 0;
             int mappedSpacingIndex = 0;
-            int mappedPositionIndex = 0;
+            int mappedPositionIndex = 0, ligaturePositionIndex = 0;
             int mappedPaintIndex = 0;
             int mappedFontIndex = 0;
             int scalarIndex = 0;
@@ -217,7 +226,14 @@ internal static class SvgGlyphLayout
                     sourceEnd = Math.Min(sourceEnd, paintSpans[mappedPaintIndex].End);
                     if (glyphPaints.Length != 0) glyphPaints[glyphPosition] = paintSpans[mappedPaintIndex].Paint;
                 }
-                if (mappedPositionIndex < positionAdjustments.Length) sourceEnd = Math.Min(sourceEnd, positionAdjustments[mappedPositionIndex].Start);
+                while (ligaturePositionIndex < positionAdjustments.Length
+                    && (positionAdjustments[ligaturePositionIndex].Start <= mappedSourceOffset || !positionAdjustments[ligaturePositionIndex].HasAbsolutePosition))
+                {
+                    cancellationToken.ThrowIfCancellationRequested(); workCounter?.Consume(cancellationToken);
+                    ligaturePositionIndex++;
+                }
+                if (ligaturePositionIndex < positionAdjustments.Length)
+                    sourceEnd = Math.Min(sourceEnd, positionAdjustments[ligaturePositionIndex].Start);
                 // Blink compares the first SVG item's scaled font with a
                 // following element's unscaled style font. Element changes
                 // therefore stop shaping when the screen font size differs.
@@ -268,17 +284,30 @@ internal static class SvgGlyphLayout
                 glyphs[glyphPosition++] = new SvgPositionedGlyph(glyphIndex, 0, originY, scaledAdvance);
                 mappedSourceOffset += sourceLength;
                 scalarIndex++;
-                bool sourceNodeEnds = false;
                 while (mappedNodeIndex < nodeBoundaries.Length && nodeBoundaries[mappedNodeIndex].Offset <= mappedSourceOffset)
-                { sourceNodeEnds = true; mappedNodeIndex++; }
-                if (fragments is not null && (sourceNodeEnds || mappedSourceOffset >= sourceEnd || deviceMetrics is { UsesTextLengthSpacing: true }))
                 {
-                    fragments.Add(new(fragmentStart, glyphPosition, 0));
-                    fragmentStart = glyphPosition;
+                    cancellationToken.ThrowIfCancellationRequested(); workCounter?.Consume(cancellationToken);
+                    int end = nodeBoundaries[mappedNodeIndex++].Offset;
+                    if (fragments is not null && end > fragmentSourceStart)
+                    {
+                        fragments.Add(new(fragmentStart, glyphPosition, 0) { SourceStart = fragmentSourceStart, SourceEnd = end });
+                        fragmentStart = glyphPosition; fragmentSourceStart = end;
+                    }
+                }
+                bool positionedFragmentEnds = mappedPositionIndex < positionAdjustments.Length
+                    && positionAdjustments[mappedPositionIndex].Start <= mappedSourceOffset;
+                if (fragments is not null && fragmentStart < glyphPosition
+                    && (positionedFragmentEnds || mappedSourceOffset >= sourceEnd || deviceMetrics is { UsesCharacterAdvances: true }))
+                {
+                    int end = mappedNodeIndex < nodeBoundaries.Length ? Math.Min(mappedSourceOffset, nodeBoundaries[mappedNodeIndex].Offset) : mappedSourceOffset;
+                    fragments.Add(new(fragmentStart, glyphPosition, 0) { SourceStart = fragmentSourceStart, SourceEnd = end });
+                    fragmentStart = glyphPosition; fragmentSourceStart = end;
                 }
             }
+            if (fragments is not null && fragmentSourceStart < text.Length)
+                fragments.Add(new(fragmentStart, glyphPosition, 0) { SourceStart = fragmentSourceStart, SourceEnd = text.Length });
             int positionedGlyphCount = glyphPosition;
-            if (positionedGlyphCount == 1 && deviceMetrics is { UsesTextLengthSpacing: true } spacingMetrics)
+            if (positionedGlyphCount == 1 && fragments is not { Count: > 1 } && deviceMetrics is { UsesTextLengthSpacing: true } spacingMetrics)
             {
                 SvgGlyphDeviceMetrics singleMetrics = spacingMetrics with { UsesTextLengthSpacing = false };
                 SvgGlyphFontStyle only = glyphFonts.Length == 0 ? new(font, fontSize) : glyphFonts[0];
@@ -311,7 +340,15 @@ internal static class SvgGlyphLayout
                 double currentLetterSpacing = GetLetterSpacing(sourceOffset, letterSpacing, letterSpacingSpans, ref spacingSpanIndex);
                 int glyphSourceOffset = sourceOffset;
                 sourceOffset += sourceLengths is null ? char.IsSurrogatePair(text, sourceOffset) ? 2 : 1 : sourceLengths[index];
-                while (positionBoundaryIndex < positionAdjustments.Length && positionAdjustments[positionBoundaryIndex].Start < sourceOffset) positionBoundaryIndex++;
+                bool positionedFragmentEnds = false;
+                while (positionBoundaryIndex < positionAdjustments.Length && positionAdjustments[positionBoundaryIndex].Start < sourceOffset)
+                {
+                    cancellationToken.ThrowIfCancellationRequested(); workCounter?.Consume(cancellationToken);
+                    positionedFragmentEnds |= positionAdjustments[positionBoundaryIndex].Start > glyphSourceOffset;
+                    positionBoundaryIndex++;
+                }
+                positionedFragmentEnds |= positionBoundaryIndex < positionAdjustments.Length
+                    && positionAdjustments[positionBoundaryIndex].Start == sourceOffset;
                 bool chunkEnds = index + 1 == positionedGlyphCount || positionBoundaryIndex < positionAdjustments.Length && positionAdjustments[positionBoundaryIndex].Start == sourceOffset && positionAdjustments[positionBoundaryIndex].HasAbsolutePosition;
                 bool nodeEnds = false, elementEnds = false;
                 while (nodeBoundaryIndex < nodeBoundaries.Length && nodeBoundaries[nodeBoundaryIndex].Offset <= sourceOffset)
@@ -398,20 +435,22 @@ internal static class SvgGlyphLayout
                     kerning = 0;
                 }
                 double nextX = chunkEnds || deviceMetrics is { IsTextPath: true } ? x + glyph.Advance : x + glyph.Advance + kerning + currentLetterSpacing;
-                if (fragments is not null && index + 1 == fragments[fragmentIndex].End)
+                while (fragments is not null && fragmentIndex < fragments.Count && index + 1 == fragments[fragmentIndex].End)
                 {
                     float sourceScale = (float)(deviceMetrics?.Scale ?? 1);
-                    double sourceWidth = nextX - decorationOrigin + (chunkEnds && deviceMetrics is not { IsTextPath: true } ? currentLetterSpacing : 0);
+                    bool empty = fragments[fragmentIndex].Start == fragments[fragmentIndex].End;
+                    double sourceWidth = empty ? 0 : nextX - decorationOrigin + (chunkEnds && deviceMetrics is not { IsTextPath: true } ? currentLetterSpacing : 0);
                     fragments[fragmentIndex] = fragments[fragmentIndex] with
                     {
-                        Width = nextX - decorationOrigin,
+                        Width = empty ? 0 : nextX - decorationOrigin,
                         SourceWidth = MathF.Ceiling((float)(sourceWidth * sourceScale) * 64) / 64,
                         SourceOrigin = new(sourceCssPosition, 0)
                     };
                     sourceCssPosition += fragments[fragmentIndex].SourceWidth ?? 0;
                     fragmentIndex++;
+                    decorationOrigin = nextX;
                 }
-                if (!chunkEnds && (nodeEnds || !sameFont || !sameSpacing || !sameDecoration || !samePaint) && deviceMetrics is { } fragmentMetrics)
+                if (!chunkEnds && (nodeEnds || positionedFragmentEnds || !sameFont || !sameSpacing || !sameDecoration || !samePaint) && deviceMetrics is { } fragmentMetrics)
                 {
                     // Native shaping fragments round their total inline width
                     // before the next face/size/spacing/decoration/paint fragment begins.
@@ -423,6 +462,11 @@ internal static class SvgGlyphLayout
                 glyphs[index] = glyph with { X = x };
                 x = nextX;
             }
+            bool positionedItems = fragments is not null && deviceMetrics is not null;
+            float fittedScale = positionedItems && fragments is not null && deviceMetrics is {} itemMetrics
+                ? PositionFragments(glyphs, fragments, text, positionAdjustments, glyphRotations, anchor, itemMetrics, fitting, originX, originY, workCounter, cancellationToken) : 1;
+            if (!positionedItems)
+            {
             double relativeX = 0;
             double relativeY = 0;
             int positionAdjustmentIndex = 0;
@@ -469,7 +513,7 @@ internal static class SvgGlyphLayout
                     double positionedX = deviceMetrics is SvgGlyphDeviceMetrics positionMetrics
                         ? nominalOrigin + chunkShift + positionMetrics.RoundOffset(localX) : glyphs[index].X;
                     int sourceAdjustment = positionAdjustmentIndex;
-                    ApplyPositionAdjustment(ref relativeX, ref relativeY, positionedX, originY, sourceOffset, positionAdjustments, ref positionAdjustmentIndex);
+                    ApplyPositionAdjustment(ref relativeX, ref relativeY, positionedX, originY, sourceOffset, positionAdjustments, ref positionAdjustmentIndex, workCounter, cancellationToken);
                     sourceOffset += sourceLengths is null ? char.IsSurrogatePair(text, sourceOffset) ? 2 : 1 : sourceLengths[index];
                     double adjustedX = positionedX + relativeX;
                     double advanceEdge = adjustedX + glyphs[index].Advance;
@@ -484,9 +528,10 @@ internal static class SvgGlyphLayout
                     if (fragments is not null && positionedFragment < fragments.Count && fragments[positionedFragment].Start == index)
                     {
                         SvgDevicePoint css = fragments[positionedFragment].SourceOrigin ?? default;
-                        if (sourceAdjustment != positionAdjustmentIndex)
+                        for (int sourceIndex = sourceAdjustment; sourceIndex < positionAdjustmentIndex; sourceIndex++)
                         {
-                            SvgTextPositionAdjustment adjustment = positionAdjustments[sourceAdjustment];
+                            cancellationToken.ThrowIfCancellationRequested(); workCounter?.Consume(cancellationToken);
+                            SvgTextPositionAdjustment adjustment = positionAdjustments[sourceIndex];
                             if (adjustment.X is double sourceX)
                             {
                                 sourceDx = 0;
@@ -560,7 +605,8 @@ internal static class SvgGlyphLayout
                 chunkStart = chunkEnd;
                 chunkShift += chunkWidth - width;
             }
-            OwnedParserArray<SvgTextPaintFragment> retainedFragments = fragments is null ? new([], null) : fragments.Detach();
+            }
+            OwnedParserArray<SvgTextPaintFragment> retainedFragments = !retainPaintFragments || fragments is null ? new([], null) : fragments.Detach();
             fragmentReservation = retainedFragments.Reservation;
             SvgPositionedGlyphStorage result = new(glyphs, positionedGlyphCount, reservation, glyphPaints, paintReservation, glyphFonts, fontReservation, glyphRotations, rotationReservation, retainedFragments.Items, fragmentReservation)
             { NaturalWidth = deviceMetrics is { } naturalMetrics ? naturalMetrics.RoundWidth(x - originX) : x - originX };
@@ -568,7 +614,7 @@ internal static class SvgGlyphLayout
             fontReservation = null;
             rotationReservation = null;
             fragmentReservation = null;
-            return (result, deviceMetrics);
+            return (result, deviceMetrics, new(positionedItems, fittedScale));
         }
         catch
         {
@@ -584,6 +630,163 @@ internal static class SvgGlyphLayout
         // Fragment origins and chunk-anchor shifts truncate independently;
         // combining them changes half-grid middle anchoring. Ordinary offsets
         // within a shaped fragment retain scalar precision.
+        // Resolve every addressable source character in native DX/DY, fitting,
+        // X/Y and anchor order. Glyphless node items share the existing fragment owner.
+        static float PositionFragments(SvgPositionedGlyph[] glyphs, BudgetedParserList<SvgTextPaintFragment> fragments,
+            string text, ReadOnlySpan<SvgTextPositionAdjustment> adjustments, double[] rotations,
+            SvgTextAnchor anchor, SvgGlyphDeviceMetrics metrics, SvgTextFitting? fitting, double originX, double originY,
+            ParserWorkCounter? work, CancellationToken token)
+        {
+            float screen = (float)metrics.Scale;
+            double baselineY = originY, relativeY = 0;
+            float minimum = float.PositiveInfinity, maximum = float.NegativeInfinity;
+            float dx = 0, dy = 0;
+            int adjustmentIndex = 0;
+            for (int fragmentIndex = 0; fragmentIndex < fragments.Count; fragmentIndex++)
+            {
+                SvgTextPaintFragment fragment = fragments[fragmentIndex];
+                SvgDevicePoint css = fragment.SourceOrigin ?? default;
+                for (int source = fragment.SourceStart; source < fragment.SourceEnd; source += Rune.GetRuneAt(text, source).Utf16SequenceLength)
+                {
+                    token.ThrowIfCancellationRequested(); work?.Consume(token);
+                    if (adjustmentIndex < adjustments.Length && adjustments[adjustmentIndex].Start == source)
+                    {
+                        SvgTextPositionAdjustment adjustment = adjustments[adjustmentIndex++];
+                        if (adjustment.X is not null) dx = 0;
+                        if (adjustment.Y is not null) dy = 0;
+                        dx += (float)adjustment.Dx; dy += (float)adjustment.Dy;
+                    }
+                    float position = (float)css.X + dx * screen;
+                    float width = source == fragment.SourceStart ? fragment.SourceWidth ?? 0 : 0;
+                    minimum = MathF.Min(minimum, position);
+                    maximum = MathF.Max(maximum, position + width);
+                }
+            }
+            float natural = maximum - minimum;
+            float stretch = fitting is { Mode: SvgTextLengthAdjust.SpacingAndGlyphs } fit && natural > 0
+                ? (float)fit.Length * screen / natural : 1;
+            float spacing = fitting is { Mode: SvgTextLengthAdjust.Spacing } spaced && fragments.Count > 1
+                ? ((float)spaced.Length * screen - natural) / (fragments.Count - 1) : 0;
+            if (!float.IsFinite(stretch) || !float.IsFinite(spacing))
+                throw new SvgException(SvgErrorCode.LimitExceeded, "Fitted text coordinates exceed the numeric range.");
+            dx = 0; dy = 0; adjustmentIndex = 0;
+            float shiftX = (float)originX * screen, shiftY = (float)originY * screen;
+            float spacingShift = 0, chunkMinimum = float.PositiveInfinity, chunkMaximum = float.NegativeInfinity, chunkOrigin = 0;
+            int chunkStart = 0;
+            float paintMinimum = float.PositiveInfinity, paintMaximum = float.NegativeInfinity, paintFirst = 0;
+            for (int fragmentIndex = 0; fragmentIndex < fragments.Count; fragmentIndex++)
+            {
+                SvgTextPaintFragment fragment = fragments[fragmentIndex];
+                SvgDevicePoint css = fragment.SourceOrigin ?? default;
+                bool startsChunk = adjustmentIndex < adjustments.Length && adjustments[adjustmentIndex].Start == fragment.SourceStart
+                    && adjustments[adjustmentIndex].HasAbsolutePosition;
+                if (fragmentIndex != chunkStart && startsChunk)
+                {
+                    ApplyChunk(glyphs, fragments, chunkStart, fragmentIndex, chunkMinimum, chunkMaximum, chunkOrigin,
+                        paintMinimum, paintMaximum, paintFirst, anchor, metrics, fitting, stretch, work, token);
+                    chunkStart = fragmentIndex; chunkMinimum = float.PositiveInfinity; chunkMaximum = float.NegativeInfinity;
+                    paintMinimum = float.PositiveInfinity; paintMaximum = float.NegativeInfinity;
+                }
+                for (int source = fragment.SourceStart; source < fragment.SourceEnd; source += Rune.GetRuneAt(text, source).Utf16SequenceLength)
+                {
+                    token.ThrowIfCancellationRequested(); work?.Consume(token);
+                    SvgTextPositionAdjustment adjustment = default;
+                    bool hasAdjustment = adjustmentIndex < adjustments.Length && adjustments[adjustmentIndex].Start == source;
+                    if (hasAdjustment)
+                    {
+                        adjustment = adjustments[adjustmentIndex++];
+                        if (adjustment.X is not null) dx = 0;
+                        if (adjustment.Y is double resetY) { dy = 0; baselineY = resetY; relativeY = 0; }
+                        relativeY += adjustment.Dy;
+                        dx += (float)adjustment.Dx; dy += (float)adjustment.Dy;
+                    }
+                    float originalX = (float)css.X + dx * screen;
+                    float positionX = fitting is { Mode: SvgTextLengthAdjust.SpacingAndGlyphs } && natural > 0
+                        ? minimum + (originalX - minimum) * stretch : originalX;
+                    positionX += spacingShift;
+                    float positionY = (float)css.Y + dy * screen;
+                    if (adjustment.X is double absoluteX) shiftX = (float)absoluteX * screen - (float)css.X - (positionX - originalX);
+                    else if (fragmentIndex == 0 && source == fragment.SourceStart)
+                        shiftX = (float)originX * screen - (float)css.X - (positionX - originalX);
+                    if (adjustment.Y is double absoluteY) shiftY = (float)absoluteY * screen - (float)css.Y;
+                    float beforeXY = positionX;
+                    positionX += shiftX; positionY += shiftY;
+                    float width = source == fragment.SourceStart ? (fragment.SourceWidth ?? 0) * stretch : 0;
+                    if (source == fragment.SourceStart)
+                    {
+                        fragments[fragmentIndex] = fragment with { SourceOrigin = new(positionX, positionY), SourceWidth = width, Width = fragment.Width * stretch };
+                        if (fragmentIndex == chunkStart) { chunkOrigin = positionX; paintFirst = beforeXY; }
+                        for (int glyph = fragment.Start; glyph < fragment.End; glyph++)
+                        {
+                            token.ThrowIfCancellationRequested(); work?.Consume(token);
+                            glyphs[glyph] = glyphs[glyph] with { Y = baselineY + relativeY };
+                            if (rotations.Length != 0) rotations[glyph] = adjustment.Rotation ?? 0;
+                        }
+                    }
+                    paintMinimum = MathF.Min(paintMinimum, beforeXY);
+                    paintMaximum = MathF.Max(paintMaximum, beforeXY + width);
+                    chunkMinimum = MathF.Min(chunkMinimum, positionX);
+                    chunkMaximum = MathF.Max(chunkMaximum, positionX + width);
+                    if (source == fragment.SourceStart) spacingShift += spacing;
+                }
+            }
+            ApplyChunk(glyphs, fragments, chunkStart, fragments.Count, chunkMinimum, chunkMaximum, chunkOrigin,
+                paintMinimum, paintMaximum, paintFirst, anchor, metrics, fitting, stretch, work, token);
+            return stretch;
+
+            static void ApplyChunk(SvgPositionedGlyph[] glyphs, BudgetedParserList<SvgTextPaintFragment> fragments, int start, int end,
+                float minimum, float maximum, float first, float paintMinimum, float paintMaximum, float paintFirst, SvgTextAnchor anchor, SvgGlyphDeviceMetrics metrics,
+                SvgTextFitting? fitting, float stretch, ParserWorkCounter? work, CancellationToken token)
+            {
+                float shift = first - (anchor switch
+                {
+                    SvgTextAnchor.Start => minimum,
+                    SvgTextAnchor.Middle => (minimum + maximum) / 2,
+                    SvgTextAnchor.End => maximum,
+                    _ => throw new ArgumentOutOfRangeException(nameof(anchor))
+                });
+                float paintWidth = MathF.Ceiling((paintMaximum - paintMinimum) * 64) / 64;
+                float paintShift = paintFirst - paintMinimum + (anchor switch
+                {
+                    SvgTextAnchor.Start => 0,
+                    SvgTextAnchor.Middle => -paintWidth / 2,
+                    SvgTextAnchor.End => -paintWidth,
+                    _ => throw new ArgumentOutOfRangeException(nameof(anchor))
+                });
+                float screen = (float)metrics.Scale;
+                for (int fragmentIndex = start; fragmentIndex < end; fragmentIndex++)
+                {
+                    token.ThrowIfCancellationRequested(); work?.Consume(token);
+                    SvgTextPaintFragment fragment = fragments[fragmentIndex];
+                    SvgDevicePoint origin = fragment.SourceOrigin ?? default;
+                    float sourceX = (float)origin.X + shift;
+                    fragments[fragmentIndex] = fragment with { SourceOrigin = new(sourceX, origin.Y) };
+                    if (fragment.Start == fragment.End) continue;
+                    double nominalStart = glyphs[fragment.Start].X;
+                    double painted;
+                    if (!metrics.IsTextPath && fitting is { Mode: SvgTextLengthAdjust.SpacingAndGlyphs })
+                    {
+                        float translation = sourceX - stretch * sourceX;
+                        painted = (MathF.Truncate(sourceX * 64) / 64 * stretch + translation) / screen;
+                    }
+                    else if (!metrics.UsesCharacterAdvances)
+                        painted = MathF.Truncate((float)origin.X * 64) / (metrics.Scale * 64)
+                            + MathF.Truncate(paintShift * 64) / (metrics.Scale * 64);
+                    else painted = (double)((float)origin.X + paintShift) / metrics.Scale;
+                    for (int glyph = fragment.Start; glyph < fragment.End; glyph++)
+                    {
+                        token.ThrowIfCancellationRequested(); work?.Consume(token);
+                        SvgPositionedGlyph old = glyphs[glyph];
+                        double local = metrics.RoundOffset(old.X - nominalStart);
+                        double x = painted + local * stretch, y = old.Y;
+                        if (!double.IsFinite(x) || !double.IsFinite(y))
+                            throw new SvgException(SvgErrorCode.LimitExceeded, "Text cursor coordinates exceed the numeric range.");
+                        glyphs[glyph] = old with { X = x, Y = y, Advance = old.Advance * stretch };
+                    }
+                }
+            }
+        }
+
         static double RoundPaintOrigin(double origin, double scale)
             => MathF.Truncate((float)(origin * scale) * 64) / (scale * 64);
 
@@ -598,14 +801,17 @@ internal static class SvgGlyphLayout
             => advance != 0 && scalar.Value is 0x20 or 0xa0 or 0x1361 or 0x10100 or 0x10101 or 0x1039f or 0x1091f
                 ? spans.IsEmpty ? wordSpacing : spans[spanIndex].WordSpacing : 0;
 
-        static void ApplyPositionAdjustment(ref double x, ref double y, double nominalX, double originY, int sourceOffset, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, ref int adjustmentIndex)
+        static void ApplyPositionAdjustment(ref double x, ref double y, double nominalX, double originY, int sourceOffset, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, ref int adjustmentIndex, ParserWorkCounter? work, CancellationToken token)
         {
-            if (adjustmentIndex == positionAdjustments.Length || positionAdjustments[adjustmentIndex].Start != sourceOffset) return;
-            SvgTextPositionAdjustment adjustment = positionAdjustments[adjustmentIndex++];
-            if (adjustment.X is double absoluteX) x = absoluteX - nominalX;
-            if (adjustment.Y is double absoluteY) y = absoluteY - originY;
-            x += adjustment.Dx;
-            y += adjustment.Dy;
+            while (adjustmentIndex < positionAdjustments.Length && positionAdjustments[adjustmentIndex].Start <= sourceOffset)
+            {
+                token.ThrowIfCancellationRequested(); work?.Consume(token);
+                SvgTextPositionAdjustment adjustment = positionAdjustments[adjustmentIndex++];
+                if (adjustment.X is double absoluteX) x = absoluteX - nominalX;
+                if (adjustment.Y is double absoluteY) y = absoluteY - originY;
+                x += adjustment.Dx;
+                y += adjustment.Dy;
+            }
         }
 
         static void ValidateLetterSpacingSpans(string text, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans)

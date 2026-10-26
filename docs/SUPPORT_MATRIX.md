@@ -616,7 +616,7 @@ check conversion, discovery, preparation and neighboring admitted values.
 | Layout | Text/CDATA/whitespace order, nested `tspan`, inherited/per-span family/size/weight/style/paint/visibility, scalar/list x/y/dx/dy/rotate, start/middle/end anchors, letter/word spacing, explicit lines, textLength spacing/spacingAndGlyphs and alphabetic/middle/hanging baselines. |
 | Paint | Affine glyph solid/gradient/pattern fills and strokes, dashes, non-scaling strokes and paint order; solid underline/overline/line-through decorations. |
 | Text paths | One local open/closed geometry path per run, transformed/curved paths, supplied advances/kerning, length/percentage startOffset, anchors/tangents, `method="align"`, `spacing="exact"` and mixed direct/path text. |
-| Ligatures | Default Latin/DFLT Basic Latin, one unfiltered type-4 lookup, format-1 subtables, coverage 1/2 and two to eight components in font order. Nonzero spacing or positioned-span boundaries prevent merging. |
+| Ligatures | Default Latin/DFLT Basic Latin, one unfiltered type-4 lookup, format-1 subtables, coverage 1/2 and two to eight components in font order. Nonzero spacing, face/paint changes and absolute positions prevent merging; relative offsets and rotation entries retain clusters. |
 
 Text, spans and text paths admit inert `title`, `desc` and `metadata` subtrees.
 Their content uses no rendered-text character allowance; XML node/depth/attribute,
@@ -624,7 +624,10 @@ input, memory and work limits still apply. See the
 [descriptive-text regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.DescriptiveText.cs).
 Text nodes retain native fragment width rounding through comments, descriptions,
 CDATA and span boundaries, while kerning and ligatures may continue across nodes.
-Scaled text follows native element boundaries when shaping spans.
+Scaled text follows native element boundaries when shaping spans. Relative list
+entries inside a ligature advance the source cursor without dividing the glyph.
+Text-node items retain source ranges even when their glyph belongs to a prior node;
+fitting and anchors include these cursor positions before painting.
 [Fragment controls](../tests/Research/text-node-boundaries/README.md) cover scaling,
 fitting and resource replay, retaining the recorded Windows fitting residual separately.
 
@@ -654,7 +657,7 @@ policy, which a catalog alias to another program cannot enable. See
 [font rasterization](RASTERIZATION_DESIGN.md#supplied-fonts) for internal invariants
 and [font qualification](../tests/README.md#qualification) for evidence.
 Zero textLength preserves natural layout. Spacing adjustment also preserves
-natural metrics and anchoring when shaping leaves only one glyph; positive
+natural metrics and anchoring when layout leaves only one inline item; positive
 spacingAndGlyphs still scales that glyph.
 
 Unsupported: wrapping, vertical text, language-specific/general GSUB/GPOS, other

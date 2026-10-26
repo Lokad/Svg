@@ -60,6 +60,7 @@ internal static class SvgTextGlyphPainter
         foreach (SvgTextPaintFragment fragment in run.PaintFragments)
         {
             work.Consume(token);
+            if (fragment.Start == fragment.End) continue;
             SvgTextShader? shader = null;
             SvgTextGlyphPaint fragmentPaint = run.GetGlyphPaint(fragment.Start, fallback);
             if (fragmentPaint.HasStroke && fragmentPaint.Stroke is {} fragmentStroke && fragmentStroke.Style.Stroke is {} strokeValue && SvgLocalUrl.TryParseId(strokeValue, out _))

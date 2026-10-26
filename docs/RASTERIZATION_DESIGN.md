@@ -220,6 +220,11 @@ identity for fragment metrics. Comments preserve shaping; element changes stop
 it when native screen font scaling makes the compared fonts differ. Reader
 chunks create no boundaries. Fitted glyphs compose truncated physical origins
 and stretching at float precision, including zero-angle text paths.
+The existing fragment owner also retains each item's UTF-16 source range,
+including nodes with no glyphs and prefixes consumed by a preceding ligature.
+Cursor layout applies relative offsets, fitting, absolute positions and anchors
+in that order. Source boxes retain physical float coordinates; baseline positions
+and independently rounded paint-origin/anchor terms preserve their metric precision.
 Ordinary text drawing rectangles enclose source bounds before placement/output
 mapping, preserving isolated-layer shader origins. Equal run paints share one
 scene record; generic font routes and filter capture bounds remain independent.

@@ -75,6 +75,10 @@ internal readonly record struct SvgExtractedTextRun(BudgetedTextLayout Layout, S
 
 /// <summary>Marks a normalized UTF-16 text-node boundary and whether the owning text element changed.</summary>
 internal readonly record struct SvgTextNodeBoundary(int Offset, bool ChangesElement);
+/// <summary>Retains the caller's admitted root fitting request without owning storage.</summary>
+internal readonly record struct SvgTextFitting(double Length, SvgTextLengthAdjust Mode);
+/// <summary>Returns the resolved glyph stretch by value; glyph storage owns no fitting state.</summary>
+internal readonly record struct SvgTextFittingResult(bool IsResolved, float Scale);
 
 /// <summary>Retains inherited font declarations over one normalized UTF-16 interval.</summary>
 internal readonly record struct SvgTextFontSpan(int Start, int End, SvgInheritedTextStyle Font);

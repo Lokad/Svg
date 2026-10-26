@@ -30,7 +30,7 @@ public sealed partial class OpenTypeFontTests
     [InlineData("spacing")]
     [InlineData("relative")]
     [InlineData("absolute")]
-    public async Task Ligatures_preserve_spacing_and_position_boundaries(string boundary)
+    public async Task Ligatures_keep_relative_clusters_and_respect_spacing_and_absolute_boundaries(string boundary)
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateLigatureFont(false))], CancellationToken.None);
         SvgTextLetterSpacingSpan[] spacing = boundary == "spacing" ? [new(0, 1, 0), new(1, 3, 1)] : [];
@@ -41,9 +41,33 @@ public sealed partial class OpenTypeFontTests
             _ => []
         };
         using SvgPositionedGlyphStorage positions = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), "AAA", 20, 10, 40, 0, spacing, adjustments, SvgTextAnchor.Start, new(1_024), string.Empty, null, CancellationToken.None);
-        Assert.Equal((ushort)1, positions.Glyphs[0].GlyphIndex);
-        Assert.Equal(boundary == "spacing" ? 3 : 2, positions.Glyphs.Length);
-        Assert.Equal(boundary == "absolute" ? 100 : boundary == "relative" ? 27 : 22, positions.Glyphs[1].X);
+        if (boundary == "relative")
+        {
+            // This fixture prefers AAA over AA. Relative offsets retain that cluster.
+            Assert.Equal((ushort)2, Assert.Single(positions.Glyphs.ToArray()).GlyphIndex);
+            Assert.Equal(10, positions.Glyphs[0].X);
+        }
+        else
+        {
+            Assert.Equal((ushort)1, positions.Glyphs[0].GlyphIndex);
+            Assert.Equal(boundary == "spacing" ? 3 : 2, positions.Glyphs.Length);
+            Assert.Equal(boundary == "absolute" ? 100 : 22, positions.Glyphs[1].X);
+        }
+    }
+
+    [Fact]
+    public async Task Native_cursor_items_do_not_require_retaining_paint_fragments()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateLigatureFont(false))], CancellationToken.None);
+        RenderBudget budget = new(16_384);
+        using (SvgPositionedGlyphStorage positions = SvgGlyphLayout.CreateStorageAndMetrics(Assert.Single(snapshot.Fonts), "AAA", 20, 32, 40, 0, 0, false,
+            [], [new(1, 5, 0)], [], [], [new(1, true)], SvgTextAnchor.Middle, new(1, SvgGlyphMetricTarget.Windows, false), budget, "label", null, CancellationToken.None).Storage)
+        {
+            Assert.Equal((ushort)2, Assert.Single(positions.Glyphs.ToArray()).GlyphIndex);
+            Assert.Equal(23.5, positions.Glyphs[0].X);
+            Assert.Empty(positions.PaintFragments.ToArray());
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]
