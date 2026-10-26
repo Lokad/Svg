@@ -1,0 +1,481 @@
+{
+  "schemaVersion": 1,
+  "chromeVersion": "153.0.8010.52",
+  "vectorSha256": "25dbe6d5d598cfc11aed11db43e0f6d1287e21afaea7e3ee9decf036b68208e7",
+  "provenance": "Native DOM object boxes, computed element strokes and placement maps; recorded rectangles enclose the directly owning element visual box before placement.",
+  "images": "filter-source-images.json",
+  "tripleNativeStable": true,
+  "cases": 17,
+  "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "mappingProvenance": "Independent SVG-group getBBox mapping in three healthy stable browser launches per platform confirmed every earlier derived mapped bound; implementation affine mapping was corrected, expected values unchanged.",
+  "independentSvgGroupMapping": {
+    "windows": {
+      "launches": [
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 10404,
+          "debuggerReadyMilliseconds": 138,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 10416,
+          "debuggerReadyMilliseconds": 144,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 483,
+          "debuggerReadyMilliseconds": 145,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      ],
+      "values": [
+        {
+          "id": "r145-extended-hint-0",
+          "recorded": [
+            19,
+            18,
+            50,
+            59
+          ],
+          "element": [
+            21,
+            20,
+            47.53125,
+            57
+          ]
+        },
+        {
+          "id": "r145-extended-hint-1",
+          "recorded": [
+            23,
+            22,
+            46,
+            55
+          ],
+          "element": [
+            21,
+            20,
+            47.53125,
+            57
+          ]
+        },
+        {
+          "id": "r145-extended-hint-2",
+          "recorded": [
+            19,
+            18,
+            50,
+            59
+          ],
+          "element": [
+            23,
+            22,
+            45.53125,
+            55
+          ]
+        },
+        {
+          "id": "r145-extended-hint-4",
+          "recorded": [
+            45.75,
+            32.875,
+            72.875,
+            68.75
+          ],
+          "element": [
+            45.78281784057617,
+            33.07674026489258,
+            72.40377044677734,
+            68.63788604736328
+          ]
+        },
+        {
+          "id": "r145-nested-owner-0",
+          "recorded": [
+            54,
+            18,
+            85,
+            59
+          ],
+          "element": [
+            58.453125,
+            22,
+            81,
+            55
+          ]
+        },
+        {
+          "id": "r145-nested-owner-1",
+          "recorded": [
+            54,
+            18,
+            85,
+            59
+          ],
+          "element": [
+            58.453125,
+            22,
+            81,
+            55
+          ]
+        },
+        {
+          "id": "r145-nested-owner-2",
+          "recorded": [
+            56,
+            20,
+            83,
+            57
+          ],
+          "element": [
+            58.46875,
+            22,
+            81,
+            55
+          ]
+        },
+        {
+          "id": "r145-nested-owner-3",
+          "recorded": [
+            54,
+            18,
+            85,
+            59
+          ],
+          "element": [
+            58.453125,
+            22,
+            81,
+            55
+          ]
+        },
+        {
+          "id": "r145-nested-owner-4",
+          "recorded": [
+            56,
+            18,
+            85,
+            59
+          ],
+          "element": [
+            58.453125,
+            22,
+            81,
+            55
+          ]
+        },
+        {
+          "id": "r145-nested-owner-5",
+          "recorded": [
+            56,
+            20,
+            83,
+            57
+          ],
+          "element": [
+            58.46875,
+            22,
+            81,
+            55
+          ]
+        },
+        {
+          "id": "r145-path-owner-0",
+          "recorded": [
+            30,
+            18,
+            61,
+            59
+          ],
+          "element": [
+            30.453125,
+            18,
+            61,
+            59
+          ]
+        },
+        {
+          "id": "r145-path-owner-1",
+          "recorded": [
+            53,
+            18,
+            85,
+            59
+          ],
+          "element": [
+            53.796875,
+            18,
+            85,
+            59
+          ]
+        },
+        {
+          "id": "r145-path-owner-2",
+          "recorded": [
+            53,
+            18,
+            85,
+            59
+          ],
+          "element": [
+            53.796875,
+            18,
+            85,
+            59
+          ]
+        }
+      ]
+    },
+    "linux": {
+      "launches": [
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 5877,
+          "debuggerReadyMilliseconds": 4011,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 4958,
+          "debuggerReadyMilliseconds": 3478,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 4528,
+          "debuggerReadyMilliseconds": 3001,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      ],
+      "values": [
+        {
+          "id": "r145-extended-hint-0",
+          "recorded": [
+            20,
+            18,
+            50,
+            59
+          ],
+          "element": [
+            22,
+            20,
+            47.53125,
+            57
+          ]
+        },
+        {
+          "id": "r145-extended-hint-1",
+          "recorded": [
+            24,
+            22,
+            46,
+            55
+          ],
+          "element": [
+            22,
+            20,
+            47.53125,
+            57
+          ]
+        },
+        {
+          "id": "r145-extended-hint-2",
+          "recorded": [
+            20,
+            18,
+            50,
+            59
+          ],
+          "element": [
+            24,
+            22,
+            45.53125,
+            55
+          ]
+        },
+        {
+          "id": "r145-extended-hint-4",
+          "recorded": [
+            46.75,
+            33,
+            72.875,
+            68.75
+          ],
+          "element": [
+            46.77509689331055,
+            33.200775146484375,
+            72.38826751708984,
+            68.63594818115234
+          ]
+        },
+        {
+          "id": "r145-nested-owner-0",
+          "recorded": [
+            54,
+            18,
+            84,
+            59
+          ],
+          "element": [
+            58.453125,
+            22,
+            80,
+            55
+          ]
+        },
+        {
+          "id": "r145-nested-owner-1",
+          "recorded": [
+            54,
+            18,
+            84,
+            59
+          ],
+          "element": [
+            58.453125,
+            22,
+            80,
+            55
+          ]
+        },
+        {
+          "id": "r145-nested-owner-2",
+          "recorded": [
+            56,
+            20,
+            82,
+            57
+          ],
+          "element": [
+            58.46875,
+            22,
+            80,
+            55
+          ]
+        },
+        {
+          "id": "r145-nested-owner-3",
+          "recorded": [
+            54,
+            18,
+            84,
+            59
+          ],
+          "element": [
+            58.453125,
+            22,
+            80,
+            55
+          ]
+        },
+        {
+          "id": "r145-nested-owner-4",
+          "recorded": [
+            56,
+            18,
+            84,
+            59
+          ],
+          "element": [
+            58.453125,
+            22,
+            80,
+            55
+          ]
+        },
+        {
+          "id": "r145-nested-owner-5",
+          "recorded": [
+            56,
+            20,
+            82,
+            57
+          ],
+          "element": [
+            58.46875,
+            22,
+            80,
+            55
+          ]
+        },
+        {
+          "id": "r145-path-owner-0",
+          "recorded": [
+            30,
+            18,
+            60,
+            59
+          ],
+          "element": [
+            30.453125,
+            18,
+            60,
+            59
+          ]
+        },
+        {
+          "id": "r145-path-owner-1",
+          "recorded": [
+            53,
+            18,
+            84,
+            59
+          ],
+          "element": [
+            53.796875,
+            18,
+            84,
+            59
+          ]
+        },
+        {
+          "id": "r145-path-owner-2",
+          "recorded": [
+            53,
+            18,
+            84,
+            59
+          ],
+          "element": [
+            53.796875,
+            18,
+            84,
+            59
+          ]
+        }
+      ]
+    }
+  }
+}

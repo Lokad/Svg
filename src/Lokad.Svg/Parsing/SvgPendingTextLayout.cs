@@ -30,6 +30,9 @@ internal sealed class SvgPendingTextLayout : IDisposable
         using BudgetedParserList<SvgTextPaintSpan> paints = new(budget, SvgMemoryCategory.Parser, work, token);
         using BudgetedParserList<SvgTextFontSpan> fonts = new(budget, SvgMemoryCategory.Parser, work, token);
         using BudgetedParserList<SvgTextNodeBoundary> nodes = new(budget, SvgMemoryCategory.Parser, work, token);
+        using BudgetedParserList<SvgTextRecordingScope> recordings = new(budget, SvgMemoryCategory.Parser, work, token);
+        int rootFirstText = -1;
+        double rootRecordingWidth = 0;
         using BudgetedParserList<MeasuredRange> measured = new(budget, SvgMemoryCategory.Parser, work, token);
         using BudgetedParserList<SvgTextPlacementRange> ranges = new(budget, SvgMemoryCategory.Parser, work, token);
         SvgInheritedTextStyle defaultFont = new(_style.Font.Family, _style.Font.Weight, _style.Font.Italic,
@@ -45,6 +48,16 @@ internal sealed class SvgPendingTextLayout : IDisposable
                 int start = offset;
                 textBuffer.Append(source.Layout.Value, SvgTextLimits.MaximumCharacters, work, token);
                 offset = textBuffer.Length;
+                foreach (SvgTextRecordingScope scope in source.RecordingScopes.Items)
+                {
+                    work.Consume(token);
+                    if (scope.IsRoot)
+                    {
+                        rootFirstText = rootFirstText < 0 ? checked(start + scope.FirstText) : Math.Min(rootFirstText, checked(start + scope.FirstText));
+                        rootRecordingWidth = scope.StrokeWidth;
+                    }
+                    else recordings.Add(scope with { Start = checked(start + scope.Start), End = checked(start + scope.End), FirstText = checked(start + scope.FirstText) });
+                }
                 if (start != 0) nodes.Add(new(start, true));
                 foreach (SvgTextNodeBoundary node in source.NodeBoundaries.Items)
                 { work.Consume(token); nodes.Add(node with { Offset = checked(start + node.Offset) }); }
@@ -78,6 +91,7 @@ internal sealed class SvgPendingTextLayout : IDisposable
                 else measured.Add(new(null, 0));
                 ranges.Add(new(start, offset, source.Path, source.Path is null && source.ResumeAfterPath is not null ? followingOrigin : null));
             }
+            if (rootFirstText >= 0) recordings.Add(new(0, offset, rootFirstText, rootRecordingWidth, true));
             using BudgetedText text = textBuffer.Detach();
             using BudgetedParserList<SvgTextPositionAdjustment> merged = new(budget, SvgMemoryCategory.Parser, work, token);
             if (_style.PositionLists.IsEmpty)
@@ -120,6 +134,7 @@ internal sealed class SvgPendingTextLayout : IDisposable
             using RenderBudget.BudgetReservation sharedOwner = budget.Reserve(512, SvgMemoryCategory.Parser);
             using SvgTextRun shared = SvgTextRunBuilder.CreateShared(sharedStyle, text.Value, spacing.AsSpan(), resolved.AsSpan(), paints.AsSpan(),
                 fontIntervals, nodes.AsSpan(), ranges.AsSpan(), _paint, _metrics, snapshot, budget, work, token);
+            shared.RetainRecordingScopes(recordings.AsSpan(), _sources.Items[0].ElementStroke, budget, work, token);
             ReadOnlySpan<SvgTextPaintFragment> sharedFragments = shared.PaintFragments;
             bool needsObjectBox = pending.FilterGroupDepth > 0;
             for (int index = 0; index < shared.Glyphs.Length && !needsObjectBox; index++)
@@ -152,7 +167,7 @@ internal sealed class SvgPendingTextLayout : IDisposable
                     OwnedParserArray<SvgTextPaintFragment> fragments = viewFragments.Detach();
                     SvgTextRun view;
                     try { view = new(shared, first, last - first, fragments, sharedStyle,
-                        shared.DeviceMetrics is {} metrics ? metrics with { IsTextPath = range.Path is not null } : null); }
+                        shared.DeviceMetrics is {} metrics ? metrics with { IsTextPath = range.Path is not null } : null, work, token); }
                     catch { fragments.Dispose(); throw; }
                     using (view)
                     {

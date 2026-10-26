@@ -51,6 +51,9 @@ resource refusal, cancellation and disposal paths. Rendering fixtures do not
 each need the whole matrix. The text-node corpus still has all 594 native image
 cases; 24 replay cases and 14 lifetime cases protect reader growth, shaping,
 rotation, fitting, gradients, scaling and use/symbol/pattern/mask owners.
+The [text filter source controls](Research/text-paint-bounds/README.md) add 135
+canonical image cases and 17 numeric owner-bound vectors. Their copied/borrowed
+storage, cleanup and prepared replay contracts run separately from the images.
 
 Color/filter numerical-context cross products remain available with
 `--filter Category=Research`. Their [gradient](Research/gradient-color-alpha/research-cases.json)

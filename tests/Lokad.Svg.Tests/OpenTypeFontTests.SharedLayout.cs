@@ -15,18 +15,19 @@ public sealed partial class OpenTypeFontTests
     {
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
         RenderBudget budget = new(1_000_000);
+        ParserWorkCounter work = new(100_000);
         SvgTextStyle style = new(new("Example", 400, false), 100, 0, 3, 0, 0, 0, SvgTextAnchor.Start, "");
         SvgTextGlyphPaint red = new(new(new(255, 0, 0, 255), 1), true);
         SvgTextGlyphPaint blue = new(new(new(0, 0, 255, 255), 1), true);
         using (SvgTextRun parent = SvgTextRunBuilder.Create(style, "AAA", [], [new(1, null, null, 0, 0) { Rotation = 20 }],
-            [new(0, 1, red), new(1, 3, blue)], red, null, fonts, budget, new(100_000), CancellationToken.None))
+            [new(0, 1, red), new(1, 3, blue)], red, null, fonts, budget, work, CancellationToken.None))
         {
             long retained = budget.Snapshot().CurrentBytes;
             using (budget.Reserve(512, SvgMemoryCategory.Parser))
             {
                 OwnedParserArray<SvgTextPaintFragment> fragments = new([new(0, 1, parent.Glyphs[1].Advance)],
                     budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgTextPaintFragment>(1), SvgMemoryCategory.Geometry));
-                using SvgTextRun view = new(parent, 1, 1, fragments, style, null);
+                using SvgTextRun view = new(parent, 1, 1, fragments, style, null, work, CancellationToken.None);
                 Assert.Equal(parent.Glyphs[1], Assert.Single(view.Glyphs.ToArray()));
                 Assert.Equal(parent.GetGlyphPaint(1, SvgColor.Transparent), view.GetGlyphPaint(0, SvgColor.Transparent));
                 Assert.Equal(20, view.GetGlyphRotation(0));

@@ -1271,7 +1271,7 @@ internal static class SvgReferenceResolver
         if (cache.TryGetValue(source, out SvgRecordedPaint previous)) return previous;
         float alpha = value.IsEffectAnchor ? 0 : value.IsMarkerContent ? value.Alpha : shaderOpacity is SvgPaintOpacity shader ? shader.Alpha / 255f
             : !stroke && reference.FillOverride is SvgPaint fill ? SvgPaintResolver.ResolveSolidPaint(fill).Alpha : value.Alpha;
-        SvgRecordedPaint result = state.Scene.RegisterRecordedPaint(new(mapper.MapPaintIdentity(value.Identity), alpha, value.Foldable, mapper.Map(value.Scope), value.ElementOpacity, mapper.Map(value.OpacityScope)) { RecordingTransform = reference.RecordingTransform, PaintOrder = value.PaintOrder, Role = value.Role, VisualBounds = value.VisualBounds?.Map(placement, work, token), ObjectBounds = value.ObjectBounds?.Map(placement, work, token) });
+        SvgRecordedPaint result = state.Scene.RegisterRecordedPaint(new(mapper.MapPaintIdentity(value.Identity), alpha, value.Foldable, mapper.Map(value.Scope), value.ElementOpacity, mapper.Map(value.OpacityScope)) { RecordingTransform = reference.RecordingTransform, PaintOrder = value.PaintOrder, Role = value.Role, SourceVisualBounds = value.SourceVisualBounds?.Map(placement, work, token), ElementVisualBounds = value.ElementVisualBounds?.MapLayout(placement, work, token), VisualBounds = value.VisualBounds?.Map(placement, work, token), ObjectBounds = value.ObjectBounds?.Map(placement, work, token) });
         cache.TryAdd(source, result);
         return result;
     }

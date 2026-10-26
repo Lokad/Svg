@@ -32,6 +32,19 @@ public sealed class SvgTextPaintBoundsReferenceTests
     public Task Shared_layout_matches_each_native_source_image(string id)
         => AssertNativeImage("shared-layout-images.json", id, false);
 
+    public static IEnumerable<object[]> FilterSourceCases()
+    {
+        using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(), "filter-source-images.json")));
+        foreach (JsonElement row in data.RootElement.GetProperty("cases").EnumerateArray())
+            yield return [row.GetProperty("id").GetString() ?? throw new InvalidDataException("Missing source image id.")];
+    }
+
+    [Theory]
+    [MemberData(nameof(FilterSourceCases))]
+    [Trait("Layer", "Rendering")]
+    public Task Filter_source_recording_matches_each_native_source_image(string id)
+        => AssertNativeImage("filter-source-images.json", id, false);
+
     private static async Task AssertNativeImage(string captureFile, string id, bool replayPrepared)
     {
         using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(), captureFile)));

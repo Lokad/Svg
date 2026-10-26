@@ -237,6 +237,8 @@ public static partial class SvgConverter
         SvgAnalyticClipBounds? PreviousBounds, SvgCpuClipCoverage? PreviousCoverage,
         RenderBudget.BudgetReservation? Reservation, SvgCpuClipCoverage? Coverage);
 
+    private enum SourceImageBoundsKind { Recorded, Element }
+
     private readonly record struct RasterFrame(int Width, int Height, double ScaleX, double OffsetX, double ScaleY, double OffsetY)
     {
         // Native filter sources use one padded device, with its content clip
@@ -493,7 +495,8 @@ public static partial class SvgConverter
             SvgFilterResource resource = arena.ResourceAt(binding.ResourceIndex);
             int end = first, depth = 0, nestedDepth = -1;
             bool hasSourceImages = false;
-            SvgPaintBounds? nestedSourceBounds = null;
+            SvgPaintBounds? nestedSourceBounds = null, imageSourceBounds = null, elementSourceBounds = null;
+            bool missingImageBounds = false, missingElementBounds = false;
             for (; end < root.Commands.Length; end++)
             {
                 if (workUnits == options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source traversal exceeds the work limit.");
@@ -502,6 +505,23 @@ public static partial class SvgConverter
                 SvgDrawCommand item = root.Commands[end];
                 if (nestedDepth < 0 && item.Kind == SvgDrawCommandKind.Geometry && root.Geometries[item.GeometryIndex].Kind == SvgGeometryKind.EmbeddedImage)
                     hasSourceImages = true;
+                if (nestedDepth < 0 && item.Kind == SvgDrawCommandKind.Geometry)
+                {
+                    SvgRecordedPaintValue sourcePaint = GetRecordedPaintValue(root.Geometries[item.GeometryIndex].RecordedPaint);
+                    if (!sourcePaint.IsEffectAnchor)
+                    {
+                        if ((sourcePaint.SourceVisualBounds ?? sourcePaint.VisualBounds ?? sourcePaint.ObjectBounds) is {} sourceBox)
+                            imageSourceBounds = imageSourceBounds is {} priorBox
+                                ? new(MathF.Min(priorBox.Left, sourceBox.Left), MathF.Min(priorBox.Top, sourceBox.Top), MathF.Max(priorBox.Right, sourceBox.Right), MathF.Max(priorBox.Bottom, sourceBox.Bottom))
+                                : sourceBox;
+                        else missingImageBounds = true;
+                        if ((sourcePaint.ElementVisualBounds ?? sourcePaint.VisualBounds ?? sourcePaint.ObjectBounds) is {} elementBox)
+                            elementSourceBounds = elementSourceBounds is {} priorElement
+                                ? new(MathF.Min(priorElement.Left, elementBox.Left), MathF.Min(priorElement.Top, elementBox.Top), MathF.Max(priorElement.Right, elementBox.Right), MathF.Max(priorElement.Bottom, elementBox.Bottom))
+                                : elementBox;
+                        else missingElementBounds = true;
+                    }
+                }
                 if (item.Kind == SvgDrawCommandKind.EndGroup)
                 {
                     if (depth-- == 0) break;
@@ -548,6 +568,8 @@ public static partial class SvgConverter
             double primitiveScaleY = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox ? binding.ObjectBounds.Bottom - binding.ObjectBounds.Top : binding.Transform.D;
             SvgFilterDeviceMap primitiveMap = new(primitiveScaleX * horizontalScale, primitiveScaleY * verticalScale);
             SvgPaintBounds visual = binding.VisualBounds;
+            SvgPaintBounds imageVisual = PlaceImageHintBounds(imageSourceBounds, missingImageBounds, SourceImageBoundsKind.Recorded);
+            SvgPaintBounds elementVisual = PlaceImageHintBounds(elementSourceBounds, missingElementBounds, SourceImageBoundsKind.Element);
             double sourceLeft = Math.Floor(visual.Left * horizontalScale + horizontalOffset), sourceTop = Math.Floor(visual.Top * verticalScale + verticalOffset);
             double sourceRight = Math.Ceiling(visual.Right * horizontalScale + horizontalOffset), sourceBottom = Math.Ceiling(visual.Bottom * verticalScale + verticalOffset);
             if (nestedSourceBounds is {} nested)
@@ -618,18 +640,18 @@ public static partial class SvgConverter
                 ParserWorkCounter sourceRequestWork = new(options.Limits.MaximumWorkUnits - workUnits);
                 SvgPaintBounds needed = SvgFilterPlayback.RequiredSourceBounds(resource, primitiveMap, sourceContext,
                     new((float)requestedLeft, (float)requestedTop, (float)requestedRight, (float)requestedBottom), budget, sourceRequestWork, cancellationToken);
-                SvgPaintBounds painted = new((float)(visual.Left * horizontalScale + horizontalOffset), (float)(visual.Top * verticalScale + verticalOffset),
-                    (float)(visual.Right * horizontalScale + horizontalOffset), (float)(visual.Bottom * verticalScale + verticalOffset));
-                SvgPaintBounds hint = SvgFilterPlayback.SourceLayerBounds(resource, primitiveMap, sourceContext, painted, budget, sourceRequestWork, cancellationToken);
+                SvgPaintBounds painted = new((float)(imageVisual.Left * horizontalScale + horizontalOffset), (float)(imageVisual.Top * verticalScale + verticalOffset),
+                    (float)(imageVisual.Right * horizontalScale + horizontalOffset), (float)(imageVisual.Bottom * verticalScale + verticalOffset));
+                SvgPaintBounds graphical = new((float)(elementVisual.Left * horizontalScale + horizontalOffset), (float)(elementVisual.Top * verticalScale + verticalOffset),
+                    (float)(elementVisual.Right * horizontalScale + horizontalOffset), (float)(elementVisual.Bottom * verticalScale + verticalOffset));
+                SvgPaintBounds outputHint = SvgFilterPlayback.SourceLayerBounds(resource, primitiveMap, sourceContext, graphical, SvgFilterBoundsKind.Output, budget, sourceRequestWork, cancellationToken);
+                SvgPaintBounds hint = ImageHint(painted, outputHint);
                 workUnits += sourceRequestWork.Used;
                 // Floods and later graph results can paint without source ink in the
                 // requested region. Cull only after propagating the filter bounds.
                 if (hint.Right + paddingX < requestedLeft || hint.Bottom + paddingY < requestedTop
                     || hint.Left - paddingX > requestedRight || hint.Top - paddingY > requestedBottom) return end + 1;
-                double nativeLeft = Math.Floor(MathF.Max(hint.Left, needed.Left)) - 1, nativeTop = Math.Floor(MathF.Max(hint.Top, needed.Top)) - 1;
-                if (!double.IsFinite(nativeLeft) || !double.IsFinite(nativeTop) || nativeLeft < int.MinValue || nativeLeft > int.MaxValue || nativeTop < int.MinValue || nativeTop > int.MaxValue)
-                    throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source origin exceeds the coordinate range.");
-                imageShaderOrigin = new((int)nativeLeft, (int)nativeTop);
+                imageShaderOrigin = SourceImageOrigin(hint, needed);
                 double captureLeft = Math.Max(left, needed.Left), captureTop = Math.Max(top, needed.Top);
                 double captureRight = Math.Min(right, needed.Right), captureBottom = Math.Min(bottom, needed.Bottom);
                 if (captureRight <= captureLeft || captureBottom <= captureTop)
@@ -1368,6 +1390,38 @@ public static partial class SvgConverter
                     => prior is {} box ? new(MathF.Min(box.Left, next.Left), MathF.Min(box.Top, next.Top), MathF.Max(box.Right, next.Right), MathF.Max(box.Bottom, next.Bottom)) : next;
             }
 
+            SvgPaintBounds PlaceImageHintBounds(SvgPaintBounds? bounds, bool missing, SourceImageBoundsKind kind)
+            {
+                if (bounds is not {} box) return visual;
+                if (sourcePlacement != SvgAffineTransform.Identity)
+                {
+                    ParserWorkCounter imageWork = new(options.Limits.MaximumWorkUnits - workUnits);
+                    box = kind == SourceImageBoundsKind.Element ? box.MapLayout(sourcePlacement, imageWork, cancellationToken)
+                        : box.Map(sourcePlacement, imageWork, cancellationToken);
+                    workUnits += imageWork.Used;
+                }
+                return missing ? ImageHint(visual, box) : box;
+            }
+
+            static SvgPaintBounds ImageHint(SvgPaintBounds recorded, SvgPaintBounds output)
+            {
+                if (recorded.Right <= recorded.Left || recorded.Bottom <= recorded.Top) return output;
+                if (output.Right <= output.Left || output.Bottom <= output.Top) return recorded;
+                return new(MathF.Min(recorded.Left, output.Left), MathF.Min(recorded.Top, output.Top),
+                    MathF.Max(recorded.Right, output.Right), MathF.Max(recorded.Bottom, output.Bottom));
+            }
+
+            // Shader origins belong to the requested native source image, while
+            // compact ink captures retain their independent allocation bounds.
+            static SvgCpuBitmapOrigin SourceImageOrigin(SvgPaintBounds hint, SvgPaintBounds needed)
+            {
+                double left = Math.Floor(MathF.Max(hint.Left, needed.Left)) - 1;
+                double top = Math.Floor(MathF.Max(hint.Top, needed.Top)) - 1;
+                if (!double.IsFinite(left) || !double.IsFinite(top) || left < int.MinValue || left > int.MaxValue || top < int.MinValue || top > int.MaxValue)
+                    throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source origin exceeds the coordinate range.");
+                return new((int)left, (int)top);
+            }
+
             bool TryRenderOffsetSources()
             {
                 ReadOnlySpan<SvgFilterPrimitive> primitives = resource.Primitives.Items;
@@ -1440,9 +1494,28 @@ public static partial class SvgConverter
                     SvgRenderLimits captureLimits = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels,
                         limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)remaining), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
                     SvgRenderOptions captureOptions = new(options.Viewport, options.OutputScale, SvgColor.Transparent, captureLimits, options.FontSnapshot);
+                    ParserWorkCounter imageWork = new(options.Limits.MaximumWorkUnits - workUnits);
+                    bool objectSourceUnits = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox;
+                    SvgAffineTransform coordinates = objectSourceUnits
+                        ? SvgAffineTransform.FromScaleOffset(primitiveMap.ScaleX, primitiveMap.ScaleY,
+                            binding.ObjectBounds.Left * horizontalScale + horizontalOffset, binding.ObjectBounds.Top * verticalScale + verticalOffset)
+                        : SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset).ComposeChecked(binding.Transform);
+                    SvgFilterRegionContext sourceContext = new(coordinates,
+                        objectSourceUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), region);
+                    SvgPaintBounds requestedSource = new(MathF.Max(requested.Left, tile.BitmapClip.Left), MathF.Max(requested.Top, tile.BitmapClip.Top),
+                        MathF.Min(requested.Right, tile.BitmapClip.Right), MathF.Min(requested.Bottom, tile.BitmapClip.Bottom));
+                    SvgPaintBounds needed = SvgFilterPlayback.RequiredSourceBounds(resource, primitiveMap, sourceContext, requestedSource, budget, imageWork, cancellationToken);
+                    SvgPaintBounds painted = new((float)(imageVisual.Left * horizontalScale + horizontalOffset), (float)(imageVisual.Top * verticalScale + verticalOffset),
+                        (float)(imageVisual.Right * horizontalScale + horizontalOffset), (float)(imageVisual.Bottom * verticalScale + verticalOffset));
+                    SvgPaintBounds graphical = new((float)(elementVisual.Left * horizontalScale + horizontalOffset), (float)(elementVisual.Top * verticalScale + verticalOffset),
+                        (float)(elementVisual.Right * horizontalScale + horizontalOffset), (float)(elementVisual.Bottom * verticalScale + verticalOffset));
+                    SvgPaintBounds outputHint = SvgFilterPlayback.SourceLayerBounds(resource, primitiveMap, sourceContext, graphical, SvgFilterBoundsKind.Output, budget, imageWork, cancellationToken);
+                    SvgPaintBounds hint = ImageHint(painted, outputHint);
+                    SvgCpuBitmapOrigin sourceImageOrigin = SourceImageOrigin(hint, needed);
+                    workUnits += imageWork.Used;
                     using RasterizedSurface captured = Rasterize(scene, captureOptions, budget, RasterSurfaceMode.PremultipliedFilter,
                         new RasterFrame((int)sourceWidth, (int)sourceHeight, horizontalScale, horizontalOffset - left, verticalScale, verticalOffset - top)
-                        { SingleBitmap = true, ContentClip = new(1, 1, (int)sourceWidth - 1, (int)sourceHeight - 1), ParentOrigin = tile.Origin, CaptureOrigin = new((int)left, (int)top), SourcePlacement = sourcePlacement, NativeSourceBounds = frame?.NativeSourceBounds, FilterSourceMap = frame?.FilterSourceMap, NativeCapturePlacement = PlaceNativeSource(new((int)left, (int)top)) }, cancellationToken);
+                        { SingleBitmap = true, ContentClip = new(1, 1, (int)sourceWidth - 1, (int)sourceHeight - 1), ParentOrigin = tile.Origin, CaptureOrigin = new((int)left, (int)top), ImageShaderOrigin = sourceImageOrigin, SourcePlacement = sourcePlacement, NativeSourceBounds = frame?.NativeSourceBounds, FilterSourceMap = frame?.FilterSourceMap, NativeCapturePlacement = PlaceNativeSource(new((int)left, (int)top)) }, cancellationToken);
                     Charge(captured.WorkUnits);
                     int tw = tile.BitmapClip.Right - tile.BitmapClip.Left, th = tile.BitmapClip.Bottom - tile.BitmapClip.Top;
                     using RenderBudget.BudgetReservation tileOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<byte>(checked(tw * th * 4)), SvgMemoryCategory.Surface);

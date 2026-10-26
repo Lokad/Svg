@@ -26,3 +26,20 @@ Run the affected box mechanisms, contracts and image cases while editing; use
 the full platform and package gates at a coherent milestone. Older captures in
 this folder cover direct/path boxes, spacing, strikes and drawing enclosures.
 Shared shader bounds do not replace each fragment's local drawing enclosure.
+
+[Filter-source images](filter-source-images.json) retain 135 independently captured
+inputs through one canonical conversion path. They cover direct/path text,
+stroke overrides, reflection, affine placement, clips, instances, nested filters,
+patterns, hidden and paintless text, unavailable stroke servers and alpha.
+[Seventeen numeric vectors](filter-source-vectors.json) separate each recorded
+owner's enclosing visual box from the SVG element box propagated through the
+filter. Native SVG-group mapping independently checks mapped numeric bounds;
+[capture provenance](filter-source-capture.json) retains the launch and font evidence.
+All references are exact, with separate Windows/Linux images where needed.
+
+Recording owners include their descendants, even when child paints differ.
+Hidden or paintless text can contribute to layout without recording a draw.
+These image origins remain separate from tight ink capture and shader coordinates.
+Dedicated contracts cover copied scope storage, borrowed range views, scratch
+refusal/work/cancellation cleanup and a prepared asynchronous stream retry.
+The image collection does not repeat the destination/ownership matrix.

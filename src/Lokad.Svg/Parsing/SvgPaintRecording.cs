@@ -27,11 +27,37 @@ internal readonly record struct SvgRecordedPaintValue(SvgPaintOperationIdentity 
         : this(identity, alpha, foldable, SvgRecordedPaintRole.Fill, SvgPaintOrder.FillStrokeMarkers, scope, elementOpacity, opacityScope) { }
     // Source visual bounds survive lowering; they do not describe a shader coordinate box or a clip.
     internal SvgPaintBounds? VisualBounds { get; init; }
+    /// <summary>Retains native SVG visual bounds for source-image construction; painted ink stays in VisualBounds.</summary>
+    internal SvgPaintBounds? SourceVisualBounds { get; init; }
+    /// <summary>Retains SVG element visual bounds for filter output hints independently of recorded draws and captured ink.</summary>
+    internal SvgPaintBounds? ElementVisualBounds { get; init; }
     internal SvgPaintBounds? ObjectBounds { get; init; }
 }
 
 internal readonly record struct SvgPaintBounds(float Left, float Top, float Right, float Bottom)
 {
+    /// <summary>Maps an SVG layout rectangle in double precision before retaining float bounds.</summary>
+    /// <remarks>Layout/filter hints follow SVG element mapping; recorded draw bounds use the software bitmap's float map.
+    /// Inputs remain borrowed, the operation allocates nothing and every corner charges work and observes cancellation.</remarks>
+    internal SvgPaintBounds MapLayout(SvgAffineTransform placement, ParserWorkCounter work, CancellationToken token)
+    {
+        work.Consume(token);
+        var first = placement.ApplyToUserPoint(Left, Top);
+        work.Consume(token);
+        var second = placement.ApplyToUserPoint(Right, Top);
+        work.Consume(token);
+        var third = placement.ApplyToUserPoint(Left, Bottom);
+        work.Consume(token);
+        var fourth = placement.ApplyToUserPoint(Right, Bottom);
+        SvgPaintBounds result = new((float)Math.Min(Math.Min(first.X, second.X), Math.Min(third.X, fourth.X)),
+            (float)Math.Min(Math.Min(first.Y, second.Y), Math.Min(third.Y, fourth.Y)),
+            (float)Math.Max(Math.Max(first.X, second.X), Math.Max(third.X, fourth.X)),
+            (float)Math.Max(Math.Max(first.Y, second.Y), Math.Max(third.Y, fourth.Y)));
+        if (!float.IsFinite(result.Left) || !float.IsFinite(result.Top) || !float.IsFinite(result.Right) || !float.IsFinite(result.Bottom))
+            throw new SvgException(SvgErrorCode.LimitExceeded, "SVG layout bounds exceed the admitted numeric range.");
+        return result;
+    }
+
     internal SvgPaintBounds Map(SvgAffineTransform placement, ParserWorkCounter work, CancellationToken token)
     {
         work.Consume(token);

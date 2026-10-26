@@ -29,6 +29,13 @@ internal static class SvgTextLayoutBounds
         MetricCache cache, ParserWorkCounter work, CancellationToken token)
         => cache.Measure(run, paths, placement, work, token);
 
+    /// <summary>Measures source visual boxes with element and fragment strokes, independently of painted capture bounds.</summary>
+    internal static SvgRectangle MeasureSourceVisual(SvgTextRun run, ReadOnlySpan<SvgPlacedTextGlyph> paths, SvgAffineTransform placement,
+        MetricCache cache, ParserWorkCounter work, CancellationToken token)
+        => cache.MeasureSourceVisual(run, paths, placement, work, token);
+
+    private enum BoundsKind { Object, SourceVisual }
+
     /// <summary>Owns fitted metric reuse during one parser state; fonts remain borrowed.</summary>
     /// <remarks>The parser thread owns access and disposal. Values retain no contour or bitmap;
     /// construction and entry growth reserve storage before allocation. Fitting charges the
@@ -56,6 +63,14 @@ internal static class SvgTextLayoutBounds
 
         internal SvgRectangle Measure(SvgTextRun run, ReadOnlySpan<SvgPlacedTextGlyph> paths, SvgAffineTransform placement,
             ParserWorkCounter work, CancellationToken token)
+            => MeasureCore(run, paths, placement, BoundsKind.Object, work, token);
+
+        internal SvgRectangle MeasureSourceVisual(SvgTextRun run, ReadOnlySpan<SvgPlacedTextGlyph> paths, SvgAffineTransform placement,
+            ParserWorkCounter work, CancellationToken token)
+            => MeasureCore(run, paths, placement, BoundsKind.SourceVisual, work, token);
+
+        private SvgRectangle MeasureCore(SvgTextRun run, ReadOnlySpan<SvgPlacedTextGlyph> paths, SvgAffineTransform placement,
+            BoundsKind kind, ParserWorkCounter work, CancellationToken token)
         {
             if (run.Glyphs.IsEmpty) return default;
             RenderBudget budget = _budget;
@@ -63,7 +78,13 @@ internal static class SvgTextLayoutBounds
             float scale = (float)(run.DeviceMetrics?.Scale ?? 1), inverseScale = 1 / scale;
             if (!paths.IsEmpty && !placement.TryInvert(out _))
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Singular text paint placement is not implemented.");
-            SourceBox result = default;
+            bool retainOwners = kind == BoundsKind.SourceVisual && !run.RecordingScopes.IsEmpty;
+            int fragmentCount = retainOwners ? run.PaintFragments.Length : 0;
+            using RenderBudget.BudgetReservation? ownerBoxes = fragmentCount == 0 ? null
+                : budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SourceBox>(fragmentCount), SvgMemoryCategory.Temporary);
+            SourceBox[] recordingBoxes = fragmentCount == 0 ? [] : new SourceBox[fragmentCount];
+            int sourceFragment = 0;
+            SourceBox result = default, sourceVisual = default;
             if (!paths.IsEmpty)
             {
                 for (int index = 0; index < run.Glyphs.Length; index++)
@@ -74,7 +95,8 @@ internal static class SvgTextLayoutBounds
                     SvgAffineTransform map = path.SourceMap;
                     map = map with { E = map.E * scale, F = map.F * scale };
                     float inlineWidth = (float)(run.Glyphs[index].Advance * scale);
-                    result = result.Union(Fragment(index, index + 1, inlineWidth, default).Map(map, work, token).Scale(inverseScale, inverseScale));
+                    while (sourceFragment + 1 < run.PaintFragments.Length && index >= run.PaintFragments[sourceFragment].End) sourceFragment++;
+                    Include(Fragment(index, index + 1, inlineWidth, default).Map(map, work, token).Scale(inverseScale, inverseScale), index, sourceFragment);
                 }
             }
             else if (!run.PaintFragments.IsEmpty)
@@ -94,7 +116,7 @@ internal static class SvgTextLayoutBounds
                             .ComposeChecked(SvgAffineTransform.FromTranslation(-origin.X, -origin.Y));
                         box = box.Map(map, work, token);
                     }
-                    result = result.Union(box.Scale(inverseScale, inverseScale));
+                    Include(box.Scale(inverseScale, inverseScale), Math.Min(fragment.Start, run.Glyphs.Length - 1), sourceFragment++);
                 }
             }
             else
@@ -104,10 +126,44 @@ internal static class SvgTextLayoutBounds
                     work.Consume(token);
                     SvgPositionedGlyph glyph = run.Glyphs[index];
                     float inlineWidth = MathF.Ceiling((float)(glyph.Advance * scale) * 64) / 64;
-                    result = result.Union(Fragment(index, index + 1, inlineWidth, new((float)glyph.X * scale, (float)glyph.Y * scale)).Scale(inverseScale, inverseScale));
+                    Include(Fragment(index, index + 1, inlineWidth, new((float)glyph.X * scale, (float)glyph.Y * scale)).Scale(inverseScale, inverseScale), index, -1);
                 }
             }
+            if (recordingBoxes.Length != 0)
+                foreach (SvgTextRecordingScope scope in run.RecordingScopes)
+                {
+                    work.Consume(token);
+                    int low = 0, high = run.PaintFragments.Length;
+                    while (low < high)
+                    {
+                        work.Consume(token);
+                        int middle = low + (high - low) / 2;
+                        if (run.PaintFragments[middle].SourceEnd <= scope.Start) low = middle + 1;
+                        else high = middle;
+                    }
+                    SourceBox ownerBox = default;
+                    for (int index = low; index < recordingBoxes.Length && run.PaintFragments[index].SourceStart < scope.End; index++)
+                    { work.Consume(token); ownerBox = ownerBox.Union(recordingBoxes[index]); }
+                    if (!ownerBox.IsEmpty) sourceVisual = sourceVisual.Union(ownerBox.Outset((float)scope.StrokeWidth));
+                }
+            if (kind == BoundsKind.SourceVisual)
+            {
+                if (run.HasRootRecording) sourceVisual = sourceVisual.Union(result.Outset((float)run.ElementStrokeWidth));
+                result = sourceVisual;
+            }
             return new(result.X, result.Y, result.Width, result.Height, default, false, null);
+
+            void Include(SourceBox box, int index, int fragment)
+            {
+                result = result.Union(box);
+                if (recordingBoxes.Length != 0 && fragment >= 0)
+                    recordingBoxes[fragment] = recordingBoxes[fragment].Union(box);
+                if (kind == BoundsKind.SourceVisual && !run.HasRootRecording && run.RecordingScopes.IsEmpty)
+                {
+                    float stroke = (float)(run.GetGlyphPaint(index, SvgColor.Transparent).Stroke?.Resolve()?.Width ?? 0);
+                    sourceVisual = sourceVisual.Union(box.Outset(stroke));
+                }
+            }
 
             SourceBox Fragment(int start, int end, float width, SvgDevicePoint origin)
             {
@@ -219,7 +275,7 @@ internal static class SvgTextLayoutBounds
     // Scale native rectangle components, rather than double endpoint differences.
     private readonly record struct SourceBox(float X, float Y, float Width, float Height)
     {
-        private bool IsEmpty => Width <= 0 || Height <= 0;
+        internal bool IsEmpty => Width <= 0 || Height <= 0;
         internal SourceBox Union(SourceBox other)
         {
             if (IsEmpty) return other;
@@ -233,6 +289,7 @@ internal static class SvgTextLayoutBounds
             if (y + height < bottom && height < float.MaxValue) height = MathF.BitIncrement(height);
             return new(x, y, width, height);
         }
+        internal SourceBox Outset(float width) => IsEmpty ? this : new(X - width, Y - width, Width + width * 2, Height + width * 2);
         internal SourceBox Offset(float x, float y) => IsEmpty ? this : new(X + x, Y + y, Width, Height);
         internal SourceBox Scale(float x, float y) => IsEmpty ? this : new(X * x, Y * y, Width * x, Height * y);
         internal SourceBox Map(SvgAffineTransform map, ParserWorkCounter work, CancellationToken token)

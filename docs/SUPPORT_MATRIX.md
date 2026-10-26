@@ -634,6 +634,11 @@ resumes at its authored endpoint; startOffset places path glyphs independently.
 Empty paths do not move the cursor. All ranges share one object paint box,
 including unpainted path characters; drawing enclosures remain local. See the
 [shared-layout controls](../tests/Research/text-paint-bounds/README.md).
+Text filter sources keep recorded owner bounds separate from the element visual
+box and tight ink capture. Stroke overrides, layout-only text and reflected
+placement retain native source-image origins; the
+[filter-source controls](../tests/Research/text-paint-bounds/filter-source-images.json)
+use independent exact references.
 [Fragment controls](../tests/Research/text-node-boundaries/README.md) cover scaling,
 fitting and resource replay, retaining the recorded Windows fitting residual separately.
 

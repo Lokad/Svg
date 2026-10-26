@@ -93,6 +93,8 @@ internal static class SvgTextRunBuilder
         bool needsFragments = !placementRanges.IsEmpty || nativeDrawing && (defaultPaint is not null || !paintSpans.IsEmpty)
             || defaultPaint?.Decoration is not null || defaultPaint?.HasStroke == true || defaultPaint?.FillServer is not null;
         foreach (SvgTextPaintSpan span in paintSpans) needsFragments |= span.Paint.Decoration is not null || span.Paint.HasStroke || span.Paint.FillServer is not null;
+        SvgTextRecordingStroke elementStroke = defaultPaint?.Stroke is {} elementPaint
+            ? new(true, elementPaint.Style.Width) : SvgTextRecordingStroke.None;
         double originX = style.X + style.Dx;
         double originY = style.Y + style.Dy;
         if (!double.IsFinite(originX) || !double.IsFinite(originY))
@@ -103,7 +105,7 @@ internal static class SvgTextRunBuilder
         if (style.PositionLists.IsEmpty)
         {
             var (ordinary, resolvedMetrics, fittingResult) = SvgGlyphLayout.CreateStorageAndMetrics(font, text, style.FontSize, originX, originY, style.LetterSpacing, style.WordSpacing, needsFragments, letterSpacingSpans, positionAdjustments, paintSpans, resolvedFonts.AsSpan(), nodeBoundaries, placementRanges, style.Anchor, deviceMetrics, style.TextLength is > 0 ? new SvgTextFitting(style.TextLength.Value, style.LengthAdjust) : null, budget, style.SourceElementId, workCounter, cancellationToken);
-            try { return new SvgTextRun(style, font, ordinary, paintSpans.IsEmpty ? defaultPaint : paintSpans[0].Paint, resolvedMetrics)
+            try { return new SvgTextRun(style, font, ordinary, paintSpans.IsEmpty ? defaultPaint : paintSpans[0].Paint, resolvedMetrics, elementStroke)
                 { GlyphStretch = AdjustGlyphs(ordinary, font, style, resolvedMetrics, fittingResult, workCounter, cancellationToken) }; }
             catch { ordinary.Dispose(); throw; }
         }
@@ -113,7 +115,7 @@ internal static class SvgTextRunBuilder
         {
             var layout = SvgGlyphLayout.CreateStorageAndMetrics(font, text, style.FontSize, 0, 0, style.LetterSpacing, style.WordSpacing, needsFragments, letterSpacingSpans, positions.Items, paintSpans, resolvedFonts.AsSpan(), nodeBoundaries, placementRanges, style.Anchor, deviceMetrics, style.TextLength is > 0 ? new SvgTextFitting(style.TextLength.Value, style.LengthAdjust) : null, budget, style.SourceElementId, workCounter, cancellationToken);
             glyphs = layout.Storage;
-            return new SvgTextRun(style, font, glyphs, paintSpans.IsEmpty ? defaultPaint : paintSpans[0].Paint, layout.Metrics)
+            return new SvgTextRun(style, font, glyphs, paintSpans.IsEmpty ? defaultPaint : paintSpans[0].Paint, layout.Metrics, elementStroke)
             { GlyphStretch = AdjustGlyphs(glyphs, font, style, layout.Metrics, layout.Fitting, workCounter, cancellationToken) };
         }
         catch { glyphs?.Dispose(); throw; }
@@ -293,10 +295,50 @@ internal sealed class SvgTextRun : IDisposable
     private readonly int _glyphCount;
     private readonly bool _ownsGlyphs;
     private readonly OwnedParserArray<SvgTextPaintFragment> _viewFragments;
+    private OwnedParserArray<SvgTextRecordingScope> _recordingScopes = new([], null);
+    private ReadOnlyMemory<SvgTextRecordingScope> _recordingScopeView;
+    private SvgTextRecordingStroke _elementStroke;
+    internal bool HasRootRecording { get; private set; }
+    internal ReadOnlySpan<SvgTextRecordingScope> RecordingScopes => _recordingScopeView.Span;
+
+    /// <summary>Copies normalized non-root recording ranges before publication; the run owns and charges the copied array.</summary>
+    /// <remarks>Parser-thread confined. The caller retains input storage; work and cancellation are shared.
+    /// Ranges follow subtree closing order, so End is monotonic. Root ownership is retained by value;
+    /// views borrow only their own placement range. Failure and disposal release all reservations.</remarks>
+    internal void RetainRecordingScopes(ReadOnlySpan<SvgTextRecordingScope> scopes, SvgTextRecordingStroke elementStroke, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    {
+        if (!_ownsGlyphs || HasRootRecording || _recordingScopes.Items.Length != 0)
+            throw new InvalidOperationException("Recording scopes must be retained once by an owning run.");
+        int count = 0, previousEnd = -1;
+        bool root = false;
+        foreach (SvgTextRecordingScope scope in scopes)
+        {
+            work.Consume(token);
+            if (scope.Start < 0 || scope.End <= scope.Start || scope.FirstText < scope.Start || scope.FirstText >= scope.End
+                || !double.IsFinite(scope.StrokeWidth) || scope.StrokeWidth < 0 || !scope.IsRoot && scope.End < previousEnd)
+                throw new ArgumentException("Recording scopes must contain directly painted text, a non-negative finite stroke width and ordered subtree ends.", nameof(scopes));
+            if (scope.IsRoot) root = true;
+            else { count++; previousEnd = scope.End; }
+        }
+        if (count == 0) { HasRootRecording = root; _elementStroke = elementStroke; return; }
+        RenderBudget.BudgetReservation owner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgTextRecordingScope>(count), SvgMemoryCategory.Parser);
+        try
+        {
+            SvgTextRecordingScope[] retained = new SvgTextRecordingScope[count];
+            int index = 0;
+            foreach (SvgTextRecordingScope scope in scopes)
+            { work.Consume(token); if (!scope.IsRoot) retained[index++] = scope; }
+            _recordingScopes = new(retained, owner);
+            _recordingScopeView = retained;
+            HasRootRecording = root; _elementStroke = elementStroke;
+        }
+        catch { owner.Dispose(); throw; }
+    }
 
     internal SvgTextRun(SvgTextStyle style, SvgPreparedFont font, SvgPositionedGlyphStorage glyphs, SvgTextGlyphPaint? defaultPaint,
-        SvgGlyphDeviceMetrics? deviceMetrics)
+        SvgGlyphDeviceMetrics? deviceMetrics, SvgTextRecordingStroke elementStroke)
     {
+        _elementStroke = elementStroke;
         Style = style;
         Font = font;
         _glyphs = glyphs;
@@ -308,9 +350,11 @@ internal sealed class SvgTextRun : IDisposable
     }
 
     /// <summary>Borrows one parent glyph interval and adopts only its rebased fragment array.</summary>
-    /// <remarks>The parser keeps the parent alive until every view is disposed. Views never dispose parent glyph/font storage; the caller reserves view metadata separately and retains the parent until painting ends.</remarks>
+    /// <remarks>The parser keeps the parent alive until every view is disposed. Views borrow glyph/font/recording storage
+    /// and release only their adopted fragments; the caller reserves view metadata separately. Selecting the source range
+    /// charges the caller's work/token. Construction and painting remain parser-thread confined.</remarks>
     internal SvgTextRun(SvgTextRun source, int first, int count, OwnedParserArray<SvgTextPaintFragment> fragments,
-        SvgTextStyle style, SvgGlyphDeviceMetrics? metrics)
+        SvgTextStyle style, SvgGlyphDeviceMetrics? metrics, ParserWorkCounter work, CancellationToken token)
     {
         _glyphs = source._glyphs;
         _glyphStart = checked(source._glyphStart + first);
@@ -322,8 +366,33 @@ internal sealed class SvgTextRun : IDisposable
         Style = style;
         Font = source.Font;
         GlyphStretch = source.GlyphStretch;
+        _elementStroke = source._elementStroke;
+        HasRootRecording = source.HasRootRecording;
+        // Non-root scopes cannot cross placement ranges: textPath is admitted
+        // only as a direct text child. Root records retain the shared element box.
+        if (fragments.Items.Length != 0 && !source._recordingScopeView.IsEmpty)
+        {
+            int firstScope = UpperBound(source.RecordingScopes, fragments.Items[0].SourceStart, work, token);
+            int lastScope = UpperBound(source.RecordingScopes, fragments.Items[^1].SourceEnd, work, token);
+            _recordingScopeView = source._recordingScopeView.Slice(firstScope, lastScope - firstScope);
+        }
+
+        static int UpperBound(ReadOnlySpan<SvgTextRecordingScope> scopes, int offset, ParserWorkCounter work, CancellationToken token)
+        {
+            int low = 0, high = scopes.Length;
+            while (low < high)
+            {
+                work.Consume(token);
+                int middle = low + (high - low) / 2;
+                if (scopes[middle].End <= offset) low = middle + 1;
+                else high = middle;
+            }
+            return low;
+        }
     }
 
+    /// <summary>Retains the element stroke width for SVG visual bounds independently of character paint overrides.</summary>
+    internal double ElementStrokeWidth => _elementStroke.Resolve();
     internal SvgTextStyle Style { get; }
 
     internal SvgPreparedFont Font { get; }
@@ -377,5 +446,5 @@ internal sealed class SvgTextRun : IDisposable
         return (glyph with { X = 0, Y = 0 }, placement.ComposeChecked(map));
     }
 
-    public void Dispose() { if (_ownsGlyphs) _glyphs.Dispose(); else _viewFragments.Dispose(); }
+    public void Dispose() { if (_ownsGlyphs) { _glyphs.Dispose(); _recordingScopes.Dispose(); } else _viewFragments.Dispose(); }
 }

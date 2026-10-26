@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Preserve native text filter image origins through stroke overrides, hidden text,
+  reflection and resource replay, with separate recording and element bounds.
+
 - Share shaping, source cursors and object paint bounds across mixed direct/path
   text; preserve authored closed endpoints and inert empty paths. Retain queued
   own-filter wrappers with bounded source-local command remapping.

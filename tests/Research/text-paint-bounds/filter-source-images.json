@@ -1,0 +1,3007 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Canonical independent native references for filter source-image recording bounds.",
+  "chromeVersion": "153.0.8010.52",
+  "fontPack": "font-pack.json",
+  "fontPackId": "r99-fonts",
+  "tripleNativeStable": true,
+  "launches": {
+    "historical-changes-windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1090,
+        "debuggerReadyMilliseconds": 191,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1086,
+        "debuggerReadyMilliseconds": 151,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1150,
+        "debuggerReadyMilliseconds": 182,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "historical-changes-linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 6884,
+        "debuggerReadyMilliseconds": 4650,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 6725,
+        "debuggerReadyMilliseconds": 4552,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5456,
+        "debuggerReadyMilliseconds": 3250,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "filter-transfer-isolation-windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 830,
+        "debuggerReadyMilliseconds": 244,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 700,
+        "debuggerReadyMilliseconds": 145,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 802,
+        "debuggerReadyMilliseconds": 148,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "filter-transfer-isolation-linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 4997,
+        "debuggerReadyMilliseconds": 3243,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5505,
+        "debuggerReadyMilliseconds": 3813,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 3668,
+        "debuggerReadyMilliseconds": 2196,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "source-hint-controls-windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 899,
+        "debuggerReadyMilliseconds": 174,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 10389,
+        "debuggerReadyMilliseconds": 138,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 794,
+        "debuggerReadyMilliseconds": 134,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "source-hint-controls-linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5141,
+        "debuggerReadyMilliseconds": 3392,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 4657,
+        "debuggerReadyMilliseconds": 2665,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5180,
+        "debuggerReadyMilliseconds": 3214,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "extended-hint-controls-windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1567,
+        "debuggerReadyMilliseconds": 356,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1023,
+        "debuggerReadyMilliseconds": 148,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1036,
+        "debuggerReadyMilliseconds": 155,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "extended-hint-controls-linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 6574,
+        "debuggerReadyMilliseconds": 4323,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 6829,
+        "debuggerReadyMilliseconds": 4240,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 6722,
+        "debuggerReadyMilliseconds": 4477,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "span-origin-controls-windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 916,
+        "debuggerReadyMilliseconds": 238,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 878,
+        "debuggerReadyMilliseconds": 154,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 811,
+        "debuggerReadyMilliseconds": 136,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "span-origin-controls-linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 4598,
+        "debuggerReadyMilliseconds": 2952,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 3779,
+        "debuggerReadyMilliseconds": 2213,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 3820,
+        "debuggerReadyMilliseconds": 2164,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "reflected-hint-controls-windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 702,
+        "debuggerReadyMilliseconds": 173,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 660,
+        "debuggerReadyMilliseconds": 140,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 650,
+        "debuggerReadyMilliseconds": 139,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "reflected-hint-controls-linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5270,
+        "debuggerReadyMilliseconds": 3852,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 3799,
+        "debuggerReadyMilliseconds": 2469,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 4025,
+        "debuggerReadyMilliseconds": 2166,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "nested-owner-controls-windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1045,
+        "debuggerReadyMilliseconds": 164,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1067,
+        "debuggerReadyMilliseconds": 140,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1094,
+        "debuggerReadyMilliseconds": 144,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "nested-owner-controls-linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 7009,
+        "debuggerReadyMilliseconds": 4973,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 4467,
+        "debuggerReadyMilliseconds": 2325,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 4145,
+        "debuggerReadyMilliseconds": 2276,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "path-owner-controls-windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 789,
+        "debuggerReadyMilliseconds": 164,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 944,
+        "debuggerReadyMilliseconds": 152,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 762,
+        "debuggerReadyMilliseconds": 177,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "path-owner-controls-linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 6439,
+        "debuggerReadyMilliseconds": 4581,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 4374,
+        "debuggerReadyMilliseconds": 2843,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 3703,
+        "debuggerReadyMilliseconds": 2180,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "inactive-role-controls-windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1099,
+        "debuggerReadyMilliseconds": 168,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1183,
+        "debuggerReadyMilliseconds": 147,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1068,
+        "debuggerReadyMilliseconds": 136,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "inactive-role-controls-linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5370,
+        "debuggerReadyMilliseconds": 3458,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5268,
+        "debuggerReadyMilliseconds": 3096,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 4507,
+        "debuggerReadyMilliseconds": 2608,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "layout-only-controls-windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 795,
+        "debuggerReadyMilliseconds": 144,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 767,
+        "debuggerReadyMilliseconds": 142,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 670,
+        "debuggerReadyMilliseconds": 158,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "layout-only-controls-linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 6594,
+        "debuggerReadyMilliseconds": 4860,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 4831,
+        "debuggerReadyMilliseconds": 3011,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 3917,
+        "debuggerReadyMilliseconds": 2357,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "r144-history-change-0-candidate",
+      "input": "filter-source-inputs/r144-history-change-0-candidate.svg",
+      "sourceSha256": "480c2f142e62142daea8bb1ed62de21922f29b41e10d9e85ada85d4cb8aca2c5",
+      "outputScale": 1,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/fcc5c840b9fea7195446.png",
+          "sha256": "fcc5c840b9fea7195446f86783b861265d674b1ff71c2a813a1045472e15b909"
+        },
+        "linux": {
+          "path": "references/filter-source/cdb361d4718077ac964e.png",
+          "sha256": "cdb361d4718077ac964ed272bb517c65f8135a4f9320e65a0774ba7a83e52f37"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-0-control",
+      "input": "filter-source-inputs/r144-history-change-0-control.svg",
+      "sourceSha256": "5ac10c7c639a58e584d604dc6cc162eb2b6fdf37ddb3221193a4dc914033f3c2",
+      "outputScale": 1,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/4bceacbbc8a460c3f64a.png",
+          "sha256": "4bceacbbc8a460c3f64ab109a6f13708429108713bcc6825ef640b4ebc203d8a"
+        },
+        "linux": {
+          "path": "references/filter-source/6f8bda2dba5901fc2e66.png",
+          "sha256": "6f8bda2dba5901fc2e66e7a5eecf23b42412e3dc4e57b762370c9374abb519b6"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-1-candidate",
+      "input": "filter-source-inputs/r144-history-change-1-candidate.svg",
+      "sourceSha256": "723ad7550841eae674c30308a6678992444a67f4e36c3ee54a666bdfedf3d84d",
+      "outputScale": 1.5,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/93f6450bf351771224a8.png",
+          "sha256": "93f6450bf351771224a86d98f741056cf970b62b5491d073d686d3df1e794f3b"
+        },
+        "linux": {
+          "path": "references/filter-source/73073715aa24a1aaa090.png",
+          "sha256": "73073715aa24a1aaa090b4adcc810dbc191d6e1308aa187b9bce7d3c5371832c"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-1-control",
+      "input": "filter-source-inputs/r144-history-change-1-control.svg",
+      "sourceSha256": "ff493a480088252d7259c3542645a23abb3a1d33210c7a1fc846559f14c1e5f4",
+      "outputScale": 1.5,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/74b2c275aa9b12d748d2.png",
+          "sha256": "74b2c275aa9b12d748d26be60305cfb3f5379ae7ce3165325dcc2fc2d7c9dd13"
+        },
+        "linux": {
+          "path": "references/filter-source/4e54a362505dbd9add80.png",
+          "sha256": "4e54a362505dbd9add800b5455043a9d3fdcfe93daf9c60996303ad9d17c7dbd"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-2-candidate",
+      "input": "filter-source-inputs/r144-history-change-2-candidate.svg",
+      "sourceSha256": "cc000a4abe21564bf01dab3fae25316a964804fea928ff39a3fb1e168aaae502",
+      "outputScale": 1,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/fcc5c840b9fea7195446.png",
+          "sha256": "fcc5c840b9fea7195446f86783b861265d674b1ff71c2a813a1045472e15b909"
+        },
+        "linux": {
+          "path": "references/filter-source/cdb361d4718077ac964e.png",
+          "sha256": "cdb361d4718077ac964ed272bb517c65f8135a4f9320e65a0774ba7a83e52f37"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-2-control",
+      "input": "filter-source-inputs/r144-history-change-2-control.svg",
+      "sourceSha256": "128caf2c0b3264b02e51a7614601dfc43dda03ca4dea088c10970eeee2f5547f",
+      "outputScale": 1,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/4bceacbbc8a460c3f64a.png",
+          "sha256": "4bceacbbc8a460c3f64ab109a6f13708429108713bcc6825ef640b4ebc203d8a"
+        },
+        "linux": {
+          "path": "references/filter-source/6f8bda2dba5901fc2e66.png",
+          "sha256": "6f8bda2dba5901fc2e66e7a5eecf23b42412e3dc4e57b762370c9374abb519b6"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-3-candidate",
+      "input": "filter-source-inputs/r144-history-change-3-candidate.svg",
+      "sourceSha256": "3347fd0f7e4f824e68221caf2f357899ca4e5e95208d1c4848bf71212d7ee1f5",
+      "outputScale": 1.5,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/93f6450bf351771224a8.png",
+          "sha256": "93f6450bf351771224a86d98f741056cf970b62b5491d073d686d3df1e794f3b"
+        },
+        "linux": {
+          "path": "references/filter-source/73073715aa24a1aaa090.png",
+          "sha256": "73073715aa24a1aaa090b4adcc810dbc191d6e1308aa187b9bce7d3c5371832c"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-3-control",
+      "input": "filter-source-inputs/r144-history-change-3-control.svg",
+      "sourceSha256": "d5af773310de8a3e90237057965f1e4a65d56efb1b9591e97077411de6df6b36",
+      "outputScale": 1.5,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/74b2c275aa9b12d748d2.png",
+          "sha256": "74b2c275aa9b12d748d26be60305cfb3f5379ae7ce3165325dcc2fc2d7c9dd13"
+        },
+        "linux": {
+          "path": "references/filter-source/4e54a362505dbd9add80.png",
+          "sha256": "4e54a362505dbd9add800b5455043a9d3fdcfe93daf9c60996303ad9d17c7dbd"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-4-candidate",
+      "input": "filter-source-inputs/r144-history-change-4-candidate.svg",
+      "sourceSha256": "a0ac1863f92bae18f87578198cd0703fe2f4777d2184290835bdb614e26edc57",
+      "outputScale": 1,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/643401ef0f26c5360b80.png",
+          "sha256": "643401ef0f26c5360b8026c3265f87a061c305f9b14060775b8be9deb60d3bda"
+        },
+        "linux": {
+          "path": "references/filter-source/ec28c7762d4419c39bd2.png",
+          "sha256": "ec28c7762d4419c39bd26852ba2e0df353af01073767730dc50e8c4cd8d3de8d"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-4-control",
+      "input": "filter-source-inputs/r144-history-change-4-control.svg",
+      "sourceSha256": "c30eedec21da3b12c72750b2e0b59f2c67f918ceff10fa18d7eddb3968d48008",
+      "outputScale": 1,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/643401ef0f26c5360b80.png",
+          "sha256": "643401ef0f26c5360b8026c3265f87a061c305f9b14060775b8be9deb60d3bda"
+        },
+        "linux": {
+          "path": "references/filter-source/ec28c7762d4419c39bd2.png",
+          "sha256": "ec28c7762d4419c39bd26852ba2e0df353af01073767730dc50e8c4cd8d3de8d"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-5-candidate",
+      "input": "filter-source-inputs/r144-history-change-5-candidate.svg",
+      "sourceSha256": "ad7210d01110792c236d19bf18290571b196c5f573890ac9eecb70157cadd5d8",
+      "outputScale": 1.5,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/6d7baa30044903e3370b.png",
+          "sha256": "6d7baa30044903e3370b4e4e3a113bf2295470b73b8445cbdae514191084b4cb"
+        },
+        "linux": {
+          "path": "references/filter-source/dfbbf36c392de80c6f21.png",
+          "sha256": "dfbbf36c392de80c6f21fcd3b59c7558817db25789ea2224ec20a89bd045dd28"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-5-control",
+      "input": "filter-source-inputs/r144-history-change-5-control.svg",
+      "sourceSha256": "7cebaba208753498e83f7f82f3dd39f8d480d46e734c885d93c7d248ec876d39",
+      "outputScale": 1.5,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/f982c7d60d6c572bea3c.png",
+          "sha256": "f982c7d60d6c572bea3c0824cd641e80e44c7e053b49cf4041805a0088ac1e36"
+        },
+        "linux": {
+          "path": "references/filter-source/8ee947fcfc69cd69aad4.png",
+          "sha256": "8ee947fcfc69cd69aad4a4694ccfffd7d53dab34ab2cea1982d7a9b134620e50"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-6-candidate",
+      "input": "filter-source-inputs/r144-history-change-6-candidate.svg",
+      "sourceSha256": "d194a4571ff5266794c53fda64cc85e90394b9df72af45aa41448fbf085ed849",
+      "outputScale": 1,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/fcc5c840b9fea7195446.png",
+          "sha256": "fcc5c840b9fea7195446f86783b861265d674b1ff71c2a813a1045472e15b909"
+        },
+        "linux": {
+          "path": "references/filter-source/cdb361d4718077ac964e.png",
+          "sha256": "cdb361d4718077ac964ed272bb517c65f8135a4f9320e65a0774ba7a83e52f37"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-6-control",
+      "input": "filter-source-inputs/r144-history-change-6-control.svg",
+      "sourceSha256": "51595841207010aaafde838ef62f3262365213a54b0744ebcc97b2b4d6f5f5a7",
+      "outputScale": 1,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/4bceacbbc8a460c3f64a.png",
+          "sha256": "4bceacbbc8a460c3f64ab109a6f13708429108713bcc6825ef640b4ebc203d8a"
+        },
+        "linux": {
+          "path": "references/filter-source/6f8bda2dba5901fc2e66.png",
+          "sha256": "6f8bda2dba5901fc2e66e7a5eecf23b42412e3dc4e57b762370c9374abb519b6"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-7-candidate",
+      "input": "filter-source-inputs/r144-history-change-7-candidate.svg",
+      "sourceSha256": "1a8e19b18fc3d78898ac5fb4b835b04e7fbeab96b74877d2e85a409efc32c24f",
+      "outputScale": 1.5,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/93f6450bf351771224a8.png",
+          "sha256": "93f6450bf351771224a86d98f741056cf970b62b5491d073d686d3df1e794f3b"
+        },
+        "linux": {
+          "path": "references/filter-source/73073715aa24a1aaa090.png",
+          "sha256": "73073715aa24a1aaa090b4adcc810dbc191d6e1308aa187b9bce7d3c5371832c"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-7-control",
+      "input": "filter-source-inputs/r144-history-change-7-control.svg",
+      "sourceSha256": "63d7b7a18825903ffabfa42d2cd295f39d6d3ddc4fccff271d3d93cd6435aa77",
+      "outputScale": 1.5,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/74b2c275aa9b12d748d2.png",
+          "sha256": "74b2c275aa9b12d748d26be60305cfb3f5379ae7ce3165325dcc2fc2d7c9dd13"
+        },
+        "linux": {
+          "path": "references/filter-source/4e54a362505dbd9add80.png",
+          "sha256": "4e54a362505dbd9add800b5455043a9d3fdcfe93daf9c60996303ad9d17c7dbd"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-8-candidate",
+      "input": "filter-source-inputs/r144-history-change-8-candidate.svg",
+      "sourceSha256": "bcf6118be2ad84148775e4526623ac3f1659a599f504c56a562e4ffb95aec835",
+      "outputScale": 1,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/fcc5c840b9fea7195446.png",
+          "sha256": "fcc5c840b9fea7195446f86783b861265d674b1ff71c2a813a1045472e15b909"
+        },
+        "linux": {
+          "path": "references/filter-source/cdb361d4718077ac964e.png",
+          "sha256": "cdb361d4718077ac964ed272bb517c65f8135a4f9320e65a0774ba7a83e52f37"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-8-control",
+      "input": "filter-source-inputs/r144-history-change-8-control.svg",
+      "sourceSha256": "ac15ca7cb3ed8638c42e57345aa151a2e1eeda0d102bf67963563a0edd96da0e",
+      "outputScale": 1,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/4bceacbbc8a460c3f64a.png",
+          "sha256": "4bceacbbc8a460c3f64ab109a6f13708429108713bcc6825ef640b4ebc203d8a"
+        },
+        "linux": {
+          "path": "references/filter-source/6f8bda2dba5901fc2e66.png",
+          "sha256": "6f8bda2dba5901fc2e66e7a5eecf23b42412e3dc4e57b762370c9374abb519b6"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-9-candidate",
+      "input": "filter-source-inputs/r144-history-change-9-candidate.svg",
+      "sourceSha256": "fad36f0e1147283f4c41369b70f2f00c5845728c7d8b76cc648ad3f8fc704282",
+      "outputScale": 1.5,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/93f6450bf351771224a8.png",
+          "sha256": "93f6450bf351771224a86d98f741056cf970b62b5491d073d686d3df1e794f3b"
+        },
+        "linux": {
+          "path": "references/filter-source/73073715aa24a1aaa090.png",
+          "sha256": "73073715aa24a1aaa090b4adcc810dbc191d6e1308aa187b9bce7d3c5371832c"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-9-control",
+      "input": "filter-source-inputs/r144-history-change-9-control.svg",
+      "sourceSha256": "1f4e176cb51881620e8122c6a998d8b9d53a014a01f58877310753035edd854d",
+      "outputScale": 1.5,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/74b2c275aa9b12d748d2.png",
+          "sha256": "74b2c275aa9b12d748d26be60305cfb3f5379ae7ce3165325dcc2fc2d7c9dd13"
+        },
+        "linux": {
+          "path": "references/filter-source/4e54a362505dbd9add80.png",
+          "sha256": "4e54a362505dbd9add800b5455043a9d3fdcfe93daf9c60996303ad9d17c7dbd"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-10-candidate",
+      "input": "filter-source-inputs/r144-history-change-10-candidate.svg",
+      "sourceSha256": "cd1ec3c418a944602f9eaa8a8a39c355501b4054883ce0fcb0f6a62460eeb9e6",
+      "outputScale": 1,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/fcc5c840b9fea7195446.png",
+          "sha256": "fcc5c840b9fea7195446f86783b861265d674b1ff71c2a813a1045472e15b909"
+        },
+        "linux": {
+          "path": "references/filter-source/cdb361d4718077ac964e.png",
+          "sha256": "cdb361d4718077ac964ed272bb517c65f8135a4f9320e65a0774ba7a83e52f37"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-10-control",
+      "input": "filter-source-inputs/r144-history-change-10-control.svg",
+      "sourceSha256": "f5820996c3b1fa77af23d76af234c52c1050e51b50cb7c64a11cfcee1d24ed7f",
+      "outputScale": 1,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/4bceacbbc8a460c3f64a.png",
+          "sha256": "4bceacbbc8a460c3f64ab109a6f13708429108713bcc6825ef640b4ebc203d8a"
+        },
+        "linux": {
+          "path": "references/filter-source/6f8bda2dba5901fc2e66.png",
+          "sha256": "6f8bda2dba5901fc2e66e7a5eecf23b42412e3dc4e57b762370c9374abb519b6"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-11-candidate",
+      "input": "filter-source-inputs/r144-history-change-11-candidate.svg",
+      "sourceSha256": "a7383177a017979ab640067721af214ffea8cb4724288783155562bed4bf86a1",
+      "outputScale": 1.5,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/93f6450bf351771224a8.png",
+          "sha256": "93f6450bf351771224a86d98f741056cf970b62b5491d073d686d3df1e794f3b"
+        },
+        "linux": {
+          "path": "references/filter-source/73073715aa24a1aaa090.png",
+          "sha256": "73073715aa24a1aaa090b4adcc810dbc191d6e1308aa187b9bce7d3c5371832c"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-11-control",
+      "input": "filter-source-inputs/r144-history-change-11-control.svg",
+      "sourceSha256": "c8956b74547cdee50d11f03ce0a4834b88a39b41f6b501c355e7e531b7bbf2be",
+      "outputScale": 1.5,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/74b2c275aa9b12d748d2.png",
+          "sha256": "74b2c275aa9b12d748d26be60305cfb3f5379ae7ce3165325dcc2fc2d7c9dd13"
+        },
+        "linux": {
+          "path": "references/filter-source/4e54a362505dbd9add80.png",
+          "sha256": "4e54a362505dbd9add800b5455043a9d3fdcfe93daf9c60996303ad9d17c7dbd"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-12-candidate",
+      "input": "filter-source-inputs/r144-history-change-12-candidate.svg",
+      "sourceSha256": "6b1fda9e41f95040cd3b305652dc09293cad7d826f9569eec95db2c40e933722",
+      "outputScale": 1,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/fcc5c840b9fea7195446.png",
+          "sha256": "fcc5c840b9fea7195446f86783b861265d674b1ff71c2a813a1045472e15b909"
+        },
+        "linux": {
+          "path": "references/filter-source/cdb361d4718077ac964e.png",
+          "sha256": "cdb361d4718077ac964ed272bb517c65f8135a4f9320e65a0774ba7a83e52f37"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-12-control",
+      "input": "filter-source-inputs/r144-history-change-12-control.svg",
+      "sourceSha256": "68b4eac4f6a9479c324f05412891e054d714a11c6476213fba004d84209446cf",
+      "outputScale": 1,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/4bceacbbc8a460c3f64a.png",
+          "sha256": "4bceacbbc8a460c3f64ab109a6f13708429108713bcc6825ef640b4ebc203d8a"
+        },
+        "linux": {
+          "path": "references/filter-source/6f8bda2dba5901fc2e66.png",
+          "sha256": "6f8bda2dba5901fc2e66e7a5eecf23b42412e3dc4e57b762370c9374abb519b6"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-13-candidate",
+      "input": "filter-source-inputs/r144-history-change-13-candidate.svg",
+      "sourceSha256": "b8a0e9ce1bf25f70bedbcaf568f704b88f61c0ea4962c2d087166c34151e93f5",
+      "outputScale": 1.5,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/93f6450bf351771224a8.png",
+          "sha256": "93f6450bf351771224a86d98f741056cf970b62b5491d073d686d3df1e794f3b"
+        },
+        "linux": {
+          "path": "references/filter-source/73073715aa24a1aaa090.png",
+          "sha256": "73073715aa24a1aaa090b4adcc810dbc191d6e1308aa187b9bce7d3c5371832c"
+        }
+      }
+    },
+    {
+      "id": "r144-history-change-13-control",
+      "input": "filter-source-inputs/r144-history-change-13-control.svg",
+      "sourceSha256": "9567a161abcf503fe9b3f988ce3e6cb9859adeaaa8f0f6c3739de7f4e7d8e175",
+      "outputScale": 1.5,
+      "selection": "Failing-before direct/path source images through own, group, nested, instance, symbol and pattern filters; integer and fractional output scales.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/74b2c275aa9b12d748d2.png",
+          "sha256": "74b2c275aa9b12d748d26be60305cfb3f5379ae7ce3165325dcc2fc2d7c9dd13"
+        },
+        "linux": {
+          "path": "references/filter-source/4e54a362505dbd9add80.png",
+          "sha256": "4e54a362505dbd9add800b5455043a9d3fdcfe93daf9c60996303ad9d17c7dbd"
+        }
+      }
+    },
+    {
+      "id": "r145-transfer-0-candidate",
+      "input": "filter-source-inputs/r145-transfer-0-candidate.svg",
+      "sourceSha256": "bd7358203668ac84e829363a8db1414058fdf1ffb9a76f3ef9750ebb2e59b739",
+      "outputScale": 1,
+      "selection": "Independent sRGB and linearRGB controls for elided single-offset filter graphs.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/fcc5c840b9fea7195446.png",
+          "sha256": "fcc5c840b9fea7195446f86783b861265d674b1ff71c2a813a1045472e15b909"
+        },
+        "linux": {
+          "path": "references/filter-source/cdb361d4718077ac964e.png",
+          "sha256": "cdb361d4718077ac964ed272bb517c65f8135a4f9320e65a0774ba7a83e52f37"
+        }
+      }
+    },
+    {
+      "id": "r145-transfer-0-control",
+      "input": "filter-source-inputs/r145-transfer-0-control.svg",
+      "sourceSha256": "5f2eef44d9c65696c64b6e35c5eb968654bb6274dbd3046082362304671f835c",
+      "outputScale": 1,
+      "selection": "Independent sRGB and linearRGB controls for elided single-offset filter graphs.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/4bceacbbc8a460c3f64a.png",
+          "sha256": "4bceacbbc8a460c3f64ab109a6f13708429108713bcc6825ef640b4ebc203d8a"
+        },
+        "linux": {
+          "path": "references/filter-source/6f8bda2dba5901fc2e66.png",
+          "sha256": "6f8bda2dba5901fc2e66e7a5eecf23b42412e3dc4e57b762370c9374abb519b6"
+        }
+      }
+    },
+    {
+      "id": "r145-transfer-1-candidate",
+      "input": "filter-source-inputs/r145-transfer-1-candidate.svg",
+      "sourceSha256": "300a7a30407c8c94fa075d525f1fe18a65b198354f2b85c1109edd6afd9ed248",
+      "outputScale": 1,
+      "selection": "Independent sRGB and linearRGB controls for elided single-offset filter graphs.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/fcc5c840b9fea7195446.png",
+          "sha256": "fcc5c840b9fea7195446f86783b861265d674b1ff71c2a813a1045472e15b909"
+        },
+        "linux": {
+          "path": "references/filter-source/cdb361d4718077ac964e.png",
+          "sha256": "cdb361d4718077ac964ed272bb517c65f8135a4f9320e65a0774ba7a83e52f37"
+        }
+      }
+    },
+    {
+      "id": "r145-transfer-1-control",
+      "input": "filter-source-inputs/r145-transfer-1-control.svg",
+      "sourceSha256": "12b8b442160e5084f880bd5001f7289970237f74066e3445e0c124d5d7fba161",
+      "outputScale": 1,
+      "selection": "Independent sRGB and linearRGB controls for elided single-offset filter graphs.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/4bceacbbc8a460c3f64a.png",
+          "sha256": "4bceacbbc8a460c3f64ab109a6f13708429108713bcc6825ef640b4ebc203d8a"
+        },
+        "linux": {
+          "path": "references/filter-source/6f8bda2dba5901fc2e66.png",
+          "sha256": "6f8bda2dba5901fc2e66e7a5eecf23b42412e3dc4e57b762370c9374abb519b6"
+        }
+      }
+    },
+    {
+      "id": "r145-transfer-2-candidate",
+      "input": "filter-source-inputs/r145-transfer-2-candidate.svg",
+      "sourceSha256": "e3786b5b39d3fb26e31c4305f0ed015dd00816eec7321e187dbea60ad71dfbab",
+      "outputScale": 1.5,
+      "selection": "Independent sRGB and linearRGB controls for elided single-offset filter graphs.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/6d7baa30044903e3370b.png",
+          "sha256": "6d7baa30044903e3370b4e4e3a113bf2295470b73b8445cbdae514191084b4cb"
+        },
+        "linux": {
+          "path": "references/filter-source/dfbbf36c392de80c6f21.png",
+          "sha256": "dfbbf36c392de80c6f21fcd3b59c7558817db25789ea2224ec20a89bd045dd28"
+        }
+      }
+    },
+    {
+      "id": "r145-transfer-2-control",
+      "input": "filter-source-inputs/r145-transfer-2-control.svg",
+      "sourceSha256": "2e582c2619ecac336111723a95b8fec8b26eefbd6a96d5ca50dc59a3bb91fe71",
+      "outputScale": 1.5,
+      "selection": "Independent sRGB and linearRGB controls for elided single-offset filter graphs.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/f982c7d60d6c572bea3c.png",
+          "sha256": "f982c7d60d6c572bea3c0824cd641e80e44c7e053b49cf4041805a0088ac1e36"
+        },
+        "linux": {
+          "path": "references/filter-source/8ee947fcfc69cd69aad4.png",
+          "sha256": "8ee947fcfc69cd69aad4a4694ccfffd7d53dab34ab2cea1982d7a9b134620e50"
+        }
+      }
+    },
+    {
+      "id": "r145-transfer-3-candidate",
+      "input": "filter-source-inputs/r145-transfer-3-candidate.svg",
+      "sourceSha256": "55e7cff383af7a5ba28c0df90cc14aaa08b5f68646d65bc05bc77730e2df90d4",
+      "outputScale": 1.5,
+      "selection": "Independent sRGB and linearRGB controls for elided single-offset filter graphs.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/6d7baa30044903e3370b.png",
+          "sha256": "6d7baa30044903e3370b4e4e3a113bf2295470b73b8445cbdae514191084b4cb"
+        },
+        "linux": {
+          "path": "references/filter-source/dfbbf36c392de80c6f21.png",
+          "sha256": "dfbbf36c392de80c6f21fcd3b59c7558817db25789ea2224ec20a89bd045dd28"
+        }
+      }
+    },
+    {
+      "id": "r145-transfer-3-control",
+      "input": "filter-source-inputs/r145-transfer-3-control.svg",
+      "sourceSha256": "a0adc290d4374e4753066564b61e79f9106bf3952510157f0ee6e5f3f5525e1e",
+      "outputScale": 1.5,
+      "selection": "Independent sRGB and linearRGB controls for elided single-offset filter graphs.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/f982c7d60d6c572bea3c.png",
+          "sha256": "f982c7d60d6c572bea3c0824cd641e80e44c7e053b49cf4041805a0088ac1e36"
+        },
+        "linux": {
+          "path": "references/filter-source/8ee947fcfc69cd69aad4.png",
+          "sha256": "8ee947fcfc69cd69aad4a4694ccfffd7d53dab34ab2cea1982d7a9b134620e50"
+        }
+      }
+    },
+    {
+      "id": "r145-source-hint-0-candidate",
+      "input": "filter-source-inputs/r145-source-hint-0-candidate.svg",
+      "sourceSha256": "5fd39b8b4a390678b91ac802b09e0d6b22238f86f3193368bc07317025b9bdab",
+      "outputScale": 1,
+      "selection": "Ordinary and fragment strokes, non-text sources and separate unfiltered controls.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/b162bd2ed333a0d2b336.png",
+          "sha256": "b162bd2ed333a0d2b336cdb3741610a912b16c40a53113d44066442a05e177c9"
+        },
+        "linux": {
+          "path": "references/filter-source/21ff9b876aeceec19597.png",
+          "sha256": "21ff9b876aeceec195978fd90efc88701da527ddae6279ae7f99ea4acd33f37c"
+        }
+      }
+    },
+    {
+      "id": "r145-source-hint-0-control",
+      "input": "filter-source-inputs/r145-source-hint-0-control.svg",
+      "sourceSha256": "d628f7c3f04e193c88026f3577fbaab7b7ea08ca2e13a2d14bca04cd91f26653",
+      "outputScale": 1,
+      "selection": "Ordinary and fragment strokes, non-text sources and separate unfiltered controls.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/b85de8816b768fca567b.png",
+          "sha256": "b85de8816b768fca567be45269f01d02252cb2c5ee7ac0d4a983375478580fcb"
+        },
+        "linux": {
+          "path": "references/filter-source/7de2f995b29386047917.png",
+          "sha256": "7de2f995b29386047917fac6934555d5f0d342dd356f05b6a6a3e6114102450e"
+        }
+      }
+    },
+    {
+      "id": "r145-source-hint-1-candidate",
+      "input": "filter-source-inputs/r145-source-hint-1-candidate.svg",
+      "sourceSha256": "5fd39b8b4a390678b91ac802b09e0d6b22238f86f3193368bc07317025b9bdab",
+      "outputScale": 1.5,
+      "selection": "Ordinary and fragment strokes, non-text sources and separate unfiltered controls.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/d6f47f105069f1e157b0.png",
+          "sha256": "d6f47f105069f1e157b01cd7da8cea4e7f9dd19b599ccc50d1a4040ac2b1f8b3"
+        },
+        "linux": {
+          "path": "references/filter-source/f82323f13ca3f73a843d.png",
+          "sha256": "f82323f13ca3f73a843df0571f4e7b548e42b8b5e82f586b7a04a16889804410"
+        }
+      }
+    },
+    {
+      "id": "r145-source-hint-1-control",
+      "input": "filter-source-inputs/r145-source-hint-1-control.svg",
+      "sourceSha256": "d628f7c3f04e193c88026f3577fbaab7b7ea08ca2e13a2d14bca04cd91f26653",
+      "outputScale": 1.5,
+      "selection": "Ordinary and fragment strokes, non-text sources and separate unfiltered controls.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/4f1ecc8141fd56725753.png",
+          "sha256": "4f1ecc8141fd567257537bf4bce2ef49317269dd5f004414265aa8fcd45a774a"
+        },
+        "linux": {
+          "path": "references/filter-source/a092977a5a7091ef7667.png",
+          "sha256": "a092977a5a7091ef766727034a8a7e915aabf78d7a593efefd36c4911e790f3b"
+        }
+      }
+    },
+    {
+      "id": "r145-source-hint-2-candidate",
+      "input": "filter-source-inputs/r145-source-hint-2-candidate.svg",
+      "sourceSha256": "2dea481bee755192422c565da18546605d691672055ccefb147a3a3ac7336ff7",
+      "outputScale": 1,
+      "selection": "Ordinary and fragment strokes, non-text sources and separate unfiltered controls.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/3a27963494357414d53b.png",
+          "sha256": "3a27963494357414d53b268f076facd1bebf5585d71f389a2ab792a09fd26db3"
+        },
+        "linux": {
+          "path": "references/filter-source/4b85f860b87ded8ba903.png",
+          "sha256": "4b85f860b87ded8ba903f2e51bb5b0573c32c469d8826c5026e7f679d215da4b"
+        }
+      }
+    },
+    {
+      "id": "r145-source-hint-2-control",
+      "input": "filter-source-inputs/r145-source-hint-2-control.svg",
+      "sourceSha256": "6eb1cb3a1d4faa5ddb785d863169d89e6c4261a67370704dfb8e7cf168f03b5d",
+      "outputScale": 1,
+      "selection": "Ordinary and fragment strokes, non-text sources and separate unfiltered controls.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/403459bdc4f4e89f7a76.png",
+          "sha256": "403459bdc4f4e89f7a76b4b275f85f7d240d59821cf3ead4d0e13e5c528e5747"
+        },
+        "linux": {
+          "path": "references/filter-source/43d9dc95db964da4ae3f.png",
+          "sha256": "43d9dc95db964da4ae3f9013e04b28f8ccaa51829c1dd0cead50aa91038c3a06"
+        }
+      }
+    },
+    {
+      "id": "r145-source-hint-3-candidate",
+      "input": "filter-source-inputs/r145-source-hint-3-candidate.svg",
+      "sourceSha256": "68aafcabba894632a7f462d3ce62c79ec9484ed18284a34140773148a7c954d6",
+      "outputScale": 1.5,
+      "selection": "Ordinary and fragment strokes, non-text sources and separate unfiltered controls.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/0fc0379aab4f130f30ef.png",
+          "sha256": "0fc0379aab4f130f30ef14171733ee8a463e72a5de48e962e10bf250b24ada9c"
+        },
+        "linux": {
+          "path": "references/filter-source/699f4bb0f433d19abd00.png",
+          "sha256": "699f4bb0f433d19abd00bdbded1205e80a3f283ac22c7b5d8e0bf3a224fd945b"
+        }
+      }
+    },
+    {
+      "id": "r145-source-hint-3-control",
+      "input": "filter-source-inputs/r145-source-hint-3-control.svg",
+      "sourceSha256": "9525c6e620ea5117917a1e96f7579d5058fea751ea858f555579d48b2cfb1bb6",
+      "outputScale": 1.5,
+      "selection": "Ordinary and fragment strokes, non-text sources and separate unfiltered controls.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/b574d7fc49db94e12ca2.png",
+          "sha256": "b574d7fc49db94e12ca26e3756becc04d4ab95e93c71167a6e3fc0381c970038"
+        },
+        "linux": {
+          "path": "references/filter-source/db03748e2d7828c1c2a0.png",
+          "sha256": "db03748e2d7828c1c2a0db18e303f99786d9eb184f816ecc33d8f254cc907198"
+        }
+      }
+    },
+    {
+      "id": "r145-source-hint-4-candidate",
+      "input": "filter-source-inputs/r145-source-hint-4-candidate.svg",
+      "sourceSha256": "d0d2c64d8e7b1dd4294c617e39e8112f97b6b7e2e885ae01a4c110bce0c97b20",
+      "outputScale": 1,
+      "selection": "Ordinary and fragment strokes, non-text sources and separate unfiltered controls.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/ebc1bfca4e753acf5a5f.png",
+          "sha256": "ebc1bfca4e753acf5a5f494b41963a13ba1a29033324654d0ec1ff2ded5d49b2"
+        },
+        "linux": {
+          "path": "references/filter-source/a05ef4d00e8559ccbc0d.png",
+          "sha256": "a05ef4d00e8559ccbc0d3974fe61888dc8161206468dcc9d43c35dd55e57380a"
+        }
+      }
+    },
+    {
+      "id": "r145-source-hint-4-control",
+      "input": "filter-source-inputs/r145-source-hint-4-control.svg",
+      "sourceSha256": "e5069e2545055adcd1c15f8ca931f798ba5b1dacafea044a12818dfec4955fc5",
+      "outputScale": 1,
+      "selection": "Ordinary and fragment strokes, non-text sources and separate unfiltered controls.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/ea7a6c03c226a60ee988.png",
+          "sha256": "ea7a6c03c226a60ee98813b2a55f021fbfa73fcf41221d8b585b5e47f8f7d18a"
+        },
+        "linux": {
+          "path": "references/filter-source/c807bb17434e296b5c1e.png",
+          "sha256": "c807bb17434e296b5c1ea2e97c5c90d64e3f34030d0e46cc13274e46e601fc7a"
+        }
+      }
+    },
+    {
+      "id": "r145-source-hint-5-candidate",
+      "input": "filter-source-inputs/r145-source-hint-5-candidate.svg",
+      "sourceSha256": "581ccd002ea2488671fba01db2f75d8eb7a14cea0a15d4ac8323ba3491c070ab",
+      "outputScale": 1,
+      "selection": "Ordinary and fragment strokes, non-text sources and separate unfiltered controls.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/61b4bc4a261cf4c10056.png",
+          "sha256": "61b4bc4a261cf4c100562cf88fe3145897287b6d898b3ffceb73137f39322e8a"
+        },
+        "linux": {
+          "path": "references/filter-source/ee536c721a3877193fd9.png",
+          "sha256": "ee536c721a3877193fd9c8fb516ce556fe62fddcfe30b145334661daf2091e78"
+        }
+      }
+    },
+    {
+      "id": "r145-source-hint-5-control",
+      "input": "filter-source-inputs/r145-source-hint-5-control.svg",
+      "sourceSha256": "06d50d8ced4ed8a609677c8ca14aa01055b119e59441f0d6681450e02f4caee0",
+      "outputScale": 1,
+      "selection": "Ordinary and fragment strokes, non-text sources and separate unfiltered controls.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/be7010f8347e588c27b0.png",
+          "sha256": "be7010f8347e588c27b0628f7b61bd79343e43d73d32cd812a7964f0c4524586"
+        },
+        "linux": {
+          "path": "references/filter-source/28569122fad6e95b5547.png",
+          "sha256": "28569122fad6e95b55477d513af5109e0f69a7822947e0d7b0cf954d326e8fdd"
+        }
+      }
+    },
+    {
+      "id": "r145-source-hint-6-candidate",
+      "input": "filter-source-inputs/r145-source-hint-6-candidate.svg",
+      "sourceSha256": "c16034ccc8ec3a9dd208138a479475fa118df4c7c9dd05faec8e26d8451bc9c3",
+      "outputScale": 1,
+      "selection": "Ordinary and fragment strokes, non-text sources and separate unfiltered controls.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/f0671b901e17c2eaf909.png",
+          "sha256": "f0671b901e17c2eaf90946816c4bc20be5f15cdd3f3591711ebc8f4d39e25dd5"
+        },
+        "linux": {
+          "path": "references/filter-source/f0671b901e17c2eaf909.png",
+          "sha256": "f0671b901e17c2eaf90946816c4bc20be5f15cdd3f3591711ebc8f4d39e25dd5"
+        }
+      }
+    },
+    {
+      "id": "r145-source-hint-6-control",
+      "input": "filter-source-inputs/r145-source-hint-6-control.svg",
+      "sourceSha256": "517f048b08fded9229fae15bf0372ddc3b3bf4cfc48619e7c5818649bf71034d",
+      "outputScale": 1,
+      "selection": "Ordinary and fragment strokes, non-text sources and separate unfiltered controls.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/e4323ccf04dc58c33ce8.png",
+          "sha256": "e4323ccf04dc58c33ce88e70267aedb9d97bb9e2134fc25564d8a48dcf948d72"
+        },
+        "linux": {
+          "path": "references/filter-source/e4323ccf04dc58c33ce8.png",
+          "sha256": "e4323ccf04dc58c33ce88e70267aedb9d97bb9e2134fc25564d8a48dcf948d72"
+        }
+      }
+    },
+    {
+      "id": "r145-source-hint-7-control",
+      "input": "filter-source-inputs/r145-source-hint-7-control.svg",
+      "sourceSha256": "517f048b08fded9229fae15bf0372ddc3b3bf4cfc48619e7c5818649bf71034d",
+      "outputScale": 1.5,
+      "selection": "Ordinary and fragment strokes, non-text sources and separate unfiltered controls.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/73a08f3e6cad2452023d.png",
+          "sha256": "73a08f3e6cad2452023de4613a50fdb85b6da0bbbc1cc68164796f063cc85f31"
+        },
+        "linux": {
+          "path": "references/filter-source/73a08f3e6cad2452023d.png",
+          "sha256": "73a08f3e6cad2452023de4613a50fdb85b6da0bbbc1cc68164796f063cc85f31"
+        }
+      }
+    },
+    {
+      "id": "r145-source-hint-8-candidate",
+      "input": "filter-source-inputs/r145-source-hint-8-candidate.svg",
+      "sourceSha256": "4f86e51ff5a67012411fd1a4714679dbb37b29ccc4c012b70fdf283422c75d96",
+      "outputScale": 1,
+      "selection": "Ordinary and fragment strokes, non-text sources and separate unfiltered controls.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/248283d0dc19e6bff412.png",
+          "sha256": "248283d0dc19e6bff4125eb02f6d44323f6a50f0c9b0565f7aeea23c026844d0"
+        },
+        "linux": {
+          "path": "references/filter-source/eeef2cade337c1a44479.png",
+          "sha256": "eeef2cade337c1a44479a244e5a611992b9ffb570309a85fac78142d580c6154"
+        }
+      }
+    },
+    {
+      "id": "r145-source-hint-8-control",
+      "input": "filter-source-inputs/r145-source-hint-8-control.svg",
+      "sourceSha256": "d56891c6dd782529d34fb1592804ec33ecd7ccb0c429cfe5567a8417124a9e63",
+      "outputScale": 1,
+      "selection": "Ordinary and fragment strokes, non-text sources and separate unfiltered controls.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/c4673ac58c105f6f14fc.png",
+          "sha256": "c4673ac58c105f6f14fcb59eff642a8eff6b32db03dfa2b3edb22716c2edf8b0"
+        },
+        "linux": {
+          "path": "references/filter-source/e094ba2da54ecd5a233c.png",
+          "sha256": "e094ba2da54ecd5a233cb3a1bde8202b6c2b7cd25c0834f4ccc636a03e9894d0"
+        }
+      }
+    },
+    {
+      "id": "r145-source-hint-9-candidate",
+      "input": "filter-source-inputs/r145-source-hint-9-candidate.svg",
+      "sourceSha256": "e5b479961fc5c59c2061e00406a6d1b92f83d41ce24402f1a7f3702232ae8fc2",
+      "outputScale": 1,
+      "selection": "Ordinary and fragment strokes, non-text sources and separate unfiltered controls.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/f0671b901e17c2eaf909.png",
+          "sha256": "f0671b901e17c2eaf90946816c4bc20be5f15cdd3f3591711ebc8f4d39e25dd5"
+        },
+        "linux": {
+          "path": "references/filter-source/f0671b901e17c2eaf909.png",
+          "sha256": "f0671b901e17c2eaf90946816c4bc20be5f15cdd3f3591711ebc8f4d39e25dd5"
+        }
+      }
+    },
+    {
+      "id": "r145-source-hint-9-control",
+      "input": "filter-source-inputs/r145-source-hint-9-control.svg",
+      "sourceSha256": "c16034ccc8ec3a9dd208138a479475fa118df4c7c9dd05faec8e26d8451bc9c3",
+      "outputScale": 1,
+      "selection": "Ordinary and fragment strokes, non-text sources and separate unfiltered controls.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/f0671b901e17c2eaf909.png",
+          "sha256": "f0671b901e17c2eaf90946816c4bc20be5f15cdd3f3591711ebc8f4d39e25dd5"
+        },
+        "linux": {
+          "path": "references/filter-source/f0671b901e17c2eaf909.png",
+          "sha256": "f0671b901e17c2eaf90946816c4bc20be5f15cdd3f3591711ebc8f4d39e25dd5"
+        }
+      }
+    },
+    {
+      "id": "r145-extended-hint-0-candidate",
+      "input": "filter-source-inputs/r145-extended-hint-0-candidate.svg",
+      "sourceSha256": "6c22239e8bdf6abd47035c2adfa76599c4baf6ae2598107584f28befaacfea0f",
+      "outputScale": 1,
+      "selection": "Stroke removal/addition, mapped use, affine placement and clipping retain distinct recording and element bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/1da37d4ce57db4cb070a.png",
+          "sha256": "1da37d4ce57db4cb070a0abe818d5707860d08eb0d0b74619b721c42550c6da8"
+        },
+        "linux": {
+          "path": "references/filter-source/e7ee26e41a731c02925d.png",
+          "sha256": "e7ee26e41a731c02925dd5e5187acd6a3974c571ab62ec286898180388aa1777"
+        }
+      }
+    },
+    {
+      "id": "r145-extended-hint-0-control",
+      "input": "filter-source-inputs/r145-extended-hint-0-control.svg",
+      "sourceSha256": "38d7cfee332ce50bf2e6964112e5486e3e15f942a937357756f289e6e853e9b1",
+      "outputScale": 1,
+      "selection": "Stroke removal/addition, mapped use, affine placement and clipping retain distinct recording and element bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/61e9938c6955ea31d8b3.png",
+          "sha256": "61e9938c6955ea31d8b36f8bc98e2a1bcbbbdd1ff32a3e5a1098d6e543b10c24"
+        },
+        "linux": {
+          "path": "references/filter-source/6d3396096d7a8b22fa27.png",
+          "sha256": "6d3396096d7a8b22fa277e6e4d296c37d3b69de8e1c39ff2d894c8ba7726df70"
+        }
+      }
+    },
+    {
+      "id": "r145-extended-hint-1-candidate",
+      "input": "filter-source-inputs/r145-extended-hint-1-candidate.svg",
+      "sourceSha256": "b0c220762a804e36ae9d5eda05f9ee9c38ca687fcb073452bd59bf4e4bebbc08",
+      "outputScale": 1,
+      "selection": "Stroke removal/addition, mapped use, affine placement and clipping retain distinct recording and element bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/b282ad83ec0baf850f93.png",
+          "sha256": "b282ad83ec0baf850f93eb5703a00d0c3735efdcb2bf050557927f73c342ece0"
+        },
+        "linux": {
+          "path": "references/filter-source/3aa8335207fe4951f648.png",
+          "sha256": "3aa8335207fe4951f6489bdf08bba349edc8e6e0e1650657efe0ff46a8d805d8"
+        }
+      }
+    },
+    {
+      "id": "r145-extended-hint-1-control",
+      "input": "filter-source-inputs/r145-extended-hint-1-control.svg",
+      "sourceSha256": "fa93b16a5fffc58c37e7e088c5f4e5ed2bc8a58e0d7c1144e9758dba31191e95",
+      "outputScale": 1,
+      "selection": "Stroke removal/addition, mapped use, affine placement and clipping retain distinct recording and element bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/b85de8816b768fca567b.png",
+          "sha256": "b85de8816b768fca567be45269f01d02252cb2c5ee7ac0d4a983375478580fcb"
+        },
+        "linux": {
+          "path": "references/filter-source/7de2f995b29386047917.png",
+          "sha256": "7de2f995b29386047917fac6934555d5f0d342dd356f05b6a6a3e6114102450e"
+        }
+      }
+    },
+    {
+      "id": "r145-extended-hint-2-candidate",
+      "input": "filter-source-inputs/r145-extended-hint-2-candidate.svg",
+      "sourceSha256": "828477f45edb81dfdcb3e0dede1f9a4356fe9043dcb4b4c5a5705911569d495f",
+      "outputScale": 1,
+      "selection": "Stroke removal/addition, mapped use, affine placement and clipping retain distinct recording and element bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/1da37d4ce57db4cb070a.png",
+          "sha256": "1da37d4ce57db4cb070a0abe818d5707860d08eb0d0b74619b721c42550c6da8"
+        },
+        "linux": {
+          "path": "references/filter-source/e7ee26e41a731c02925d.png",
+          "sha256": "e7ee26e41a731c02925dd5e5187acd6a3974c571ab62ec286898180388aa1777"
+        }
+      }
+    },
+    {
+      "id": "r145-extended-hint-2-control",
+      "input": "filter-source-inputs/r145-extended-hint-2-control.svg",
+      "sourceSha256": "15747f7f2b8513a0924bbf29a633bef7b7f651039d002a8bc7117975233e3854",
+      "outputScale": 1,
+      "selection": "Stroke removal/addition, mapped use, affine placement and clipping retain distinct recording and element bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/61e9938c6955ea31d8b3.png",
+          "sha256": "61e9938c6955ea31d8b36f8bc98e2a1bcbbbdd1ff32a3e5a1098d6e543b10c24"
+        },
+        "linux": {
+          "path": "references/filter-source/6d3396096d7a8b22fa27.png",
+          "sha256": "6d3396096d7a8b22fa277e6e4d296c37d3b69de8e1c39ff2d894c8ba7726df70"
+        }
+      }
+    },
+    {
+      "id": "r145-extended-hint-3-candidate",
+      "input": "filter-source-inputs/r145-extended-hint-3-candidate.svg",
+      "sourceSha256": "a7420f17396db1dba7c5362872c8c49f336308df768811cb018b448b9b75f31a",
+      "outputScale": 1,
+      "selection": "Stroke removal/addition, mapped use, affine placement and clipping retain distinct recording and element bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/74d6409eb43e47883139.png",
+          "sha256": "74d6409eb43e47883139b66df9e612cf8d6302a2422438381c963df892eb4073"
+        },
+        "linux": {
+          "path": "references/filter-source/a37e65721f65939a686d.png",
+          "sha256": "a37e65721f65939a686da16f450b02bed1b9c041c5bd3bfbf6d73b7d67b39d9c"
+        }
+      }
+    },
+    {
+      "id": "r145-extended-hint-3-control",
+      "input": "filter-source-inputs/r145-extended-hint-3-control.svg",
+      "sourceSha256": "ec41b654f0f8cebccd0aa06423f6d89e5a6eb9cf57067736e42cef28a1e23984",
+      "outputScale": 1,
+      "selection": "Stroke removal/addition, mapped use, affine placement and clipping retain distinct recording and element bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/17da6343e1092bef6a45.png",
+          "sha256": "17da6343e1092bef6a45ff6d46fefdfaa0efeba84b5001561ca23f0f5a19f246"
+        },
+        "linux": {
+          "path": "references/filter-source/7744f1393a7bc49e3ad2.png",
+          "sha256": "7744f1393a7bc49e3ad2a41d92ac4a42c5cd54db6556a55b96ac7ce98521353a"
+        }
+      }
+    },
+    {
+      "id": "r145-extended-hint-4-candidate",
+      "input": "filter-source-inputs/r145-extended-hint-4-candidate.svg",
+      "sourceSha256": "7c2a86bf2e29fd993483e31e3209bcf5efd5a6d5491537697b32e1603822c666",
+      "outputScale": 1,
+      "selection": "Stroke removal/addition, mapped use, affine placement and clipping retain distinct recording and element bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/90d8f2991f695dff588a.png",
+          "sha256": "90d8f2991f695dff588ab5b38b7da78a19bf18812996867f6424c0260e27142a"
+        },
+        "linux": {
+          "path": "references/filter-source/584948872c828e77d11c.png",
+          "sha256": "584948872c828e77d11cec5ba755dff4dc67388234274839cbce59af773ba6bf"
+        }
+      }
+    },
+    {
+      "id": "r145-extended-hint-4-control",
+      "input": "filter-source-inputs/r145-extended-hint-4-control.svg",
+      "sourceSha256": "8189dacc08de846a6f57312dfd2f222ac49d35a82ec17e9c7c448b46286384b4",
+      "outputScale": 1,
+      "selection": "Stroke removal/addition, mapped use, affine placement and clipping retain distinct recording and element bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/e2ddd96b7da4b41325fd.png",
+          "sha256": "e2ddd96b7da4b41325fdbdf7805ba98c63bb6c032feb35789246e842a8ce63a7"
+        },
+        "linux": {
+          "path": "references/filter-source/7b8b53ca55d1a6a29986.png",
+          "sha256": "7b8b53ca55d1a6a2998606a70761d9698c51439b7878ec9f7f73aa34cafad58a"
+        }
+      }
+    },
+    {
+      "id": "r145-extended-hint-6-candidate",
+      "input": "filter-source-inputs/r145-extended-hint-6-candidate.svg",
+      "sourceSha256": "894f14e115296b56138764c502cd38a24dd5e9a6847c5dca46960240b9911702",
+      "outputScale": 1,
+      "selection": "Stroke removal/addition, mapped use, affine placement and clipping retain distinct recording and element bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/5f0b825c26b122cc1655.png",
+          "sha256": "5f0b825c26b122cc1655ffca1650d18008a0bb6e53a37c4926f2b1c2e037f2e8"
+        },
+        "linux": {
+          "path": "references/filter-source/08a10a0c4a05f2bf243c.png",
+          "sha256": "08a10a0c4a05f2bf243c68e884a65ba9483cf0ec6e88b36bad9e9e9ce7b25c75"
+        }
+      }
+    },
+    {
+      "id": "r145-extended-hint-6-control",
+      "input": "filter-source-inputs/r145-extended-hint-6-control.svg",
+      "sourceSha256": "9bac242ab348a86792e7264fbaea153388fa12aab03b5e9ee8dfab79dc17638a",
+      "outputScale": 1,
+      "selection": "Stroke removal/addition, mapped use, affine placement and clipping retain distinct recording and element bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/4de09753259da8b8a303.png",
+          "sha256": "4de09753259da8b8a303c1661f23d391a252708af98210f5a556676fee20f66a"
+        },
+        "linux": {
+          "path": "references/filter-source/4929da4342264b1bd8be.png",
+          "sha256": "4929da4342264b1bd8be326b812eba72e6822dc72b20bbd6af04ac548414fede"
+        }
+      }
+    },
+    {
+      "id": "r145-span-origin-0-candidate",
+      "input": "filter-source-inputs/r145-span-origin-0-candidate.svg",
+      "sourceSha256": "72a031df7d758d72792b486921f8e52b150cb702488ec1864be4bbe5730141c5",
+      "outputScale": 1,
+      "selection": "Paint inheritance and stroke overrides retain their source-owner origins without changing character paint fallback.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/b162bd2ed333a0d2b336.png",
+          "sha256": "b162bd2ed333a0d2b336cdb3741610a912b16c40a53113d44066442a05e177c9"
+        },
+        "linux": {
+          "path": "references/filter-source/21ff9b876aeceec19597.png",
+          "sha256": "21ff9b876aeceec195978fd90efc88701da527ddae6279ae7f99ea4acd33f37c"
+        }
+      }
+    },
+    {
+      "id": "r145-span-origin-0-control",
+      "input": "filter-source-inputs/r145-span-origin-0-control.svg",
+      "sourceSha256": "0f4a31c0b8c8e8b1c878adadd4469e876a98ef3e8d80ae4d393ac8084e911a4b",
+      "outputScale": 1,
+      "selection": "Paint inheritance and stroke overrides retain their source-owner origins without changing character paint fallback.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/b85de8816b768fca567b.png",
+          "sha256": "b85de8816b768fca567be45269f01d02252cb2c5ee7ac0d4a983375478580fcb"
+        },
+        "linux": {
+          "path": "references/filter-source/7de2f995b29386047917.png",
+          "sha256": "7de2f995b29386047917fac6934555d5f0d342dd356f05b6a6a3e6114102450e"
+        }
+      }
+    },
+    {
+      "id": "r145-span-origin-1-candidate",
+      "input": "filter-source-inputs/r145-span-origin-1-candidate.svg",
+      "sourceSha256": "ddef21943e7a70af9eec302d8cddfabced4f9e4594fc24f6ba60bb471b9a0aed",
+      "outputScale": 1,
+      "selection": "Paint inheritance and stroke overrides retain their source-owner origins without changing character paint fallback.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/b162bd2ed333a0d2b336.png",
+          "sha256": "b162bd2ed333a0d2b336cdb3741610a912b16c40a53113d44066442a05e177c9"
+        },
+        "linux": {
+          "path": "references/filter-source/21ff9b876aeceec19597.png",
+          "sha256": "21ff9b876aeceec195978fd90efc88701da527ddae6279ae7f99ea4acd33f37c"
+        }
+      }
+    },
+    {
+      "id": "r145-span-origin-1-control",
+      "input": "filter-source-inputs/r145-span-origin-1-control.svg",
+      "sourceSha256": "aa1a7083e1c98a8edf744fff3879cab7f9173c73d6927a4d8353f057119f0d50",
+      "outputScale": 1,
+      "selection": "Paint inheritance and stroke overrides retain their source-owner origins without changing character paint fallback.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/b85de8816b768fca567b.png",
+          "sha256": "b85de8816b768fca567be45269f01d02252cb2c5ee7ac0d4a983375478580fcb"
+        },
+        "linux": {
+          "path": "references/filter-source/7de2f995b29386047917.png",
+          "sha256": "7de2f995b29386047917fac6934555d5f0d342dd356f05b6a6a3e6114102450e"
+        }
+      }
+    },
+    {
+      "id": "r145-span-origin-2-candidate",
+      "input": "filter-source-inputs/r145-span-origin-2-candidate.svg",
+      "sourceSha256": "8a8ef751feb6436d7031c1d1f48efb1e88d2d6be6c211fa6ff397a97c5df4be7",
+      "outputScale": 1,
+      "selection": "Paint inheritance and stroke overrides retain their source-owner origins without changing character paint fallback.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/b282ad83ec0baf850f93.png",
+          "sha256": "b282ad83ec0baf850f93eb5703a00d0c3735efdcb2bf050557927f73c342ece0"
+        },
+        "linux": {
+          "path": "references/filter-source/3aa8335207fe4951f648.png",
+          "sha256": "3aa8335207fe4951f6489bdf08bba349edc8e6e0e1650657efe0ff46a8d805d8"
+        }
+      }
+    },
+    {
+      "id": "r145-span-origin-2-control",
+      "input": "filter-source-inputs/r145-span-origin-2-control.svg",
+      "sourceSha256": "0eb5887d0150992934f83f93a7453c842ee1ee8dd52d31153fe4dfa0d6b85d7d",
+      "outputScale": 1,
+      "selection": "Paint inheritance and stroke overrides retain their source-owner origins without changing character paint fallback.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/b85de8816b768fca567b.png",
+          "sha256": "b85de8816b768fca567be45269f01d02252cb2c5ee7ac0d4a983375478580fcb"
+        },
+        "linux": {
+          "path": "references/filter-source/7de2f995b29386047917.png",
+          "sha256": "7de2f995b29386047917fac6934555d5f0d342dd356f05b6a6a3e6114102450e"
+        }
+      }
+    },
+    {
+      "id": "r145-span-origin-3-candidate",
+      "input": "filter-source-inputs/r145-span-origin-3-candidate.svg",
+      "sourceSha256": "217195c7b69dd24e7dce8f452177c6098ad0ece98096dd5c54d0c22b0eddb0ff",
+      "outputScale": 1,
+      "selection": "Paint inheritance and stroke overrides retain their source-owner origins without changing character paint fallback.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/b162bd2ed333a0d2b336.png",
+          "sha256": "b162bd2ed333a0d2b336cdb3741610a912b16c40a53113d44066442a05e177c9"
+        },
+        "linux": {
+          "path": "references/filter-source/21ff9b876aeceec19597.png",
+          "sha256": "21ff9b876aeceec195978fd90efc88701da527ddae6279ae7f99ea4acd33f37c"
+        }
+      }
+    },
+    {
+      "id": "r145-span-origin-3-control",
+      "input": "filter-source-inputs/r145-span-origin-3-control.svg",
+      "sourceSha256": "ccddf7ff0e230b10b2709c356f8c6402c8c7e3e58da40c3233be62703f875b1e",
+      "outputScale": 1,
+      "selection": "Paint inheritance and stroke overrides retain their source-owner origins without changing character paint fallback.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/b85de8816b768fca567b.png",
+          "sha256": "b85de8816b768fca567be45269f01d02252cb2c5ee7ac0d4a983375478580fcb"
+        },
+        "linux": {
+          "path": "references/filter-source/7de2f995b29386047917.png",
+          "sha256": "7de2f995b29386047917fac6934555d5f0d342dd356f05b6a6a3e6114102450e"
+        }
+      }
+    },
+    {
+      "id": "r145-span-origin-4-candidate",
+      "input": "filter-source-inputs/r145-span-origin-4-candidate.svg",
+      "sourceSha256": "a6be3929634863cf7418470032f5ceff0594fdc468450d4a764b558318dfc035",
+      "outputScale": 1,
+      "selection": "Paint inheritance and stroke overrides retain their source-owner origins without changing character paint fallback.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/b162bd2ed333a0d2b336.png",
+          "sha256": "b162bd2ed333a0d2b336cdb3741610a912b16c40a53113d44066442a05e177c9"
+        },
+        "linux": {
+          "path": "references/filter-source/21ff9b876aeceec19597.png",
+          "sha256": "21ff9b876aeceec195978fd90efc88701da527ddae6279ae7f99ea4acd33f37c"
+        }
+      }
+    },
+    {
+      "id": "r145-span-origin-4-control",
+      "input": "filter-source-inputs/r145-span-origin-4-control.svg",
+      "sourceSha256": "533f379311c46454f4f37c3ba4909dc029d02fa992246701396f0cc232259b7f",
+      "outputScale": 1,
+      "selection": "Paint inheritance and stroke overrides retain their source-owner origins without changing character paint fallback.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/b85de8816b768fca567b.png",
+          "sha256": "b85de8816b768fca567be45269f01d02252cb2c5ee7ac0d4a983375478580fcb"
+        },
+        "linux": {
+          "path": "references/filter-source/7de2f995b29386047917.png",
+          "sha256": "7de2f995b29386047917fac6934555d5f0d342dd356f05b6a6a3e6114102450e"
+        }
+      }
+    },
+    {
+      "id": "r145-span-origin-5-candidate",
+      "input": "filter-source-inputs/r145-span-origin-5-candidate.svg",
+      "sourceSha256": "aa08f124f4ad243932aa30a46948428b39c05dadc841c722b1e90cd371eb5e51",
+      "outputScale": 1,
+      "selection": "Paint inheritance and stroke overrides retain their source-owner origins without changing character paint fallback.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/b282ad83ec0baf850f93.png",
+          "sha256": "b282ad83ec0baf850f93eb5703a00d0c3735efdcb2bf050557927f73c342ece0"
+        },
+        "linux": {
+          "path": "references/filter-source/3aa8335207fe4951f648.png",
+          "sha256": "3aa8335207fe4951f6489bdf08bba349edc8e6e0e1650657efe0ff46a8d805d8"
+        }
+      }
+    },
+    {
+      "id": "r145-span-origin-5-control",
+      "input": "filter-source-inputs/r145-span-origin-5-control.svg",
+      "sourceSha256": "2019b03f4d8b298f4c567c6539490fed79dcf409441506b61b6ae274cef48aed",
+      "outputScale": 1,
+      "selection": "Paint inheritance and stroke overrides retain their source-owner origins without changing character paint fallback.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/b85de8816b768fca567b.png",
+          "sha256": "b85de8816b768fca567be45269f01d02252cb2c5ee7ac0d4a983375478580fcb"
+        },
+        "linux": {
+          "path": "references/filter-source/7de2f995b29386047917.png",
+          "sha256": "7de2f995b29386047917fac6934555d5f0d342dd356f05b6a6a3e6114102450e"
+        }
+      }
+    },
+    {
+      "id": "r145-span-origin-6-candidate",
+      "input": "filter-source-inputs/r145-span-origin-6-candidate.svg",
+      "sourceSha256": "86310ef49b7d59461c4d4de4991a92b7fab3decd9d43c18dfa91ff4f1c4ad68b",
+      "outputScale": 1,
+      "selection": "Paint inheritance and stroke overrides retain their source-owner origins without changing character paint fallback.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/b282ad83ec0baf850f93.png",
+          "sha256": "b282ad83ec0baf850f93eb5703a00d0c3735efdcb2bf050557927f73c342ece0"
+        },
+        "linux": {
+          "path": "references/filter-source/3aa8335207fe4951f648.png",
+          "sha256": "3aa8335207fe4951f6489bdf08bba349edc8e6e0e1650657efe0ff46a8d805d8"
+        }
+      }
+    },
+    {
+      "id": "r145-span-origin-6-control",
+      "input": "filter-source-inputs/r145-span-origin-6-control.svg",
+      "sourceSha256": "d7c52fe768f951ce5c31ff3419d47ba791f114d98de1df4a0acd0cee1c5922a3",
+      "outputScale": 1,
+      "selection": "Paint inheritance and stroke overrides retain their source-owner origins without changing character paint fallback.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/b85de8816b768fca567b.png",
+          "sha256": "b85de8816b768fca567be45269f01d02252cb2c5ee7ac0d4a983375478580fcb"
+        },
+        "linux": {
+          "path": "references/filter-source/7de2f995b29386047917.png",
+          "sha256": "7de2f995b29386047917fac6934555d5f0d342dd356f05b6a6a3e6114102450e"
+        }
+      }
+    },
+    {
+      "id": "r145-span-origin-7-candidate",
+      "input": "filter-source-inputs/r145-span-origin-7-candidate.svg",
+      "sourceSha256": "48a1bebc8fa17f8d23cc549a996fa04b75115ccdd1312705c4a5743722242d92",
+      "outputScale": 1,
+      "selection": "Paint inheritance and stroke overrides retain their source-owner origins without changing character paint fallback.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/b282ad83ec0baf850f93.png",
+          "sha256": "b282ad83ec0baf850f93eb5703a00d0c3735efdcb2bf050557927f73c342ece0"
+        },
+        "linux": {
+          "path": "references/filter-source/3aa8335207fe4951f648.png",
+          "sha256": "3aa8335207fe4951f6489bdf08bba349edc8e6e0e1650657efe0ff46a8d805d8"
+        }
+      }
+    },
+    {
+      "id": "r145-span-origin-7-control",
+      "input": "filter-source-inputs/r145-span-origin-7-control.svg",
+      "sourceSha256": "43f367b1eba9075e3840b545630eca8de0e1cfb0f0ea9d640a8e73c40ee3309e",
+      "outputScale": 1,
+      "selection": "Paint inheritance and stroke overrides retain their source-owner origins without changing character paint fallback.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/b85de8816b768fca567b.png",
+          "sha256": "b85de8816b768fca567be45269f01d02252cb2c5ee7ac0d4a983375478580fcb"
+        },
+        "linux": {
+          "path": "references/filter-source/7de2f995b29386047917.png",
+          "sha256": "7de2f995b29386047917fac6934555d5f0d342dd356f05b6a6a3e6114102450e"
+        }
+      }
+    },
+    {
+      "id": "r145-reflected-hint-0-candidate",
+      "input": "filter-source-inputs/r145-reflected-hint-0-candidate.svg",
+      "sourceSha256": "b9bb99c151a98479c3e5267fbe97540b7081582060f2092099fc2f025621f2c5",
+      "outputScale": 1,
+      "selection": "A reflected parent with narrower child strokes and positive/negative offsets exposes recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/88b95920de9e5ca22551.png",
+          "sha256": "88b95920de9e5ca225516faa25fe4c04b3ba4fb7bba56a964b0ee730b8ff32e7"
+        },
+        "linux": {
+          "path": "references/filter-source/971e4aa301ebb820fc45.png",
+          "sha256": "971e4aa301ebb820fc45206036848d4a6c3f5520312ddb7cb1549e7c0a41ba06"
+        }
+      }
+    },
+    {
+      "id": "r145-reflected-hint-0-control",
+      "input": "filter-source-inputs/r145-reflected-hint-0-control.svg",
+      "sourceSha256": "d41a6f086ff9e39d07fc753d54f09d90d23d05f361d3c7f65b27dea6b9a0da2e",
+      "outputScale": 1,
+      "selection": "A reflected parent with narrower child strokes and positive/negative offsets exposes recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/5a90a631b69861874146.png",
+          "sha256": "5a90a631b69861874146f1e817f675d0894b24f6f402e771f31c1060f0c31011"
+        },
+        "linux": {
+          "path": "references/filter-source/5b0bb5c476447506b6ce.png",
+          "sha256": "5b0bb5c476447506b6ce3ec79bf9b26fcb6307925661d8898944bdfbdb9a0e54"
+        }
+      }
+    },
+    {
+      "id": "r145-reflected-hint-1-candidate",
+      "input": "filter-source-inputs/r145-reflected-hint-1-candidate.svg",
+      "sourceSha256": "5998c62c305aca3941226cecc88d4776e56c55e624269c5606a9f9ead3774b07",
+      "outputScale": 1,
+      "selection": "A reflected parent with narrower child strokes and positive/negative offsets exposes recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/faa23709db60e7163b76.png",
+          "sha256": "faa23709db60e7163b7618352006edc642ac0b022f890a6bd8e249de1afefbbb"
+        },
+        "linux": {
+          "path": "references/filter-source/1289359cb27cb1acc6b3.png",
+          "sha256": "1289359cb27cb1acc6b30e39d25a5f9c6caf0b9200479fc01b0eb8098717fe11"
+        }
+      }
+    },
+    {
+      "id": "r145-reflected-hint-1-control",
+      "input": "filter-source-inputs/r145-reflected-hint-1-control.svg",
+      "sourceSha256": "fcc4a145615c4c06cafa1b21433a93d7af86116b07a299dee96ee13896e40dc7",
+      "outputScale": 1,
+      "selection": "A reflected parent with narrower child strokes and positive/negative offsets exposes recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/919212ce1e0a03f5797d.png",
+          "sha256": "919212ce1e0a03f5797dbda7ae9dffd4bdd962dc04d666d449f2598df24f8cf8"
+        },
+        "linux": {
+          "path": "references/filter-source/b016c2b7aba03c0b9fee.png",
+          "sha256": "b016c2b7aba03c0b9fee5db227b3ec229289c3fd315c6dc619f2736b8f181825"
+        }
+      }
+    },
+    {
+      "id": "r145-reflected-hint-2-candidate",
+      "input": "filter-source-inputs/r145-reflected-hint-2-candidate.svg",
+      "sourceSha256": "0183583297724ac4130b27426011bb1c98b20811251ebb43d6918b701de8ee6e",
+      "outputScale": 1,
+      "selection": "A reflected parent with narrower child strokes and positive/negative offsets exposes recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/7884d2c12ef6207387ec.png",
+          "sha256": "7884d2c12ef6207387ecd23dd2f1b84221fe1dcd9d512f6e36d60737b5456722"
+        },
+        "linux": {
+          "path": "references/filter-source/c04c1c4f57e1db768721.png",
+          "sha256": "c04c1c4f57e1db768721c74c407d9954f9d54ab5ce9da36528f507b6e439289a"
+        }
+      }
+    },
+    {
+      "id": "r145-reflected-hint-2-control",
+      "input": "filter-source-inputs/r145-reflected-hint-2-control.svg",
+      "sourceSha256": "26f16a65c19f7c9b6bacc698e48c18ee34bf703874c5c9b2ea85c9aa2dab7ffe",
+      "outputScale": 1,
+      "selection": "A reflected parent with narrower child strokes and positive/negative offsets exposes recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/c105e936ee155ba56de9.png",
+          "sha256": "c105e936ee155ba56de9df3454ea624166af9523b081305ba457740abc256149"
+        },
+        "linux": {
+          "path": "references/filter-source/89ff5e351ffbc675c1c0.png",
+          "sha256": "89ff5e351ffbc675c1c0804b9bd2b39179366d0b7983d95cafd4fb59f6a40294"
+        }
+      }
+    },
+    {
+      "id": "r145-reflected-hint-3-candidate",
+      "input": "filter-source-inputs/r145-reflected-hint-3-candidate.svg",
+      "sourceSha256": "d6d9b251a10d0b9d99ba6950ed90018c5b7b42941af54557251db4a460c18d2f",
+      "outputScale": 1,
+      "selection": "A reflected parent with narrower child strokes and positive/negative offsets exposes recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/9fe94d741ee63d1cd476.png",
+          "sha256": "9fe94d741ee63d1cd476ee0b69893b9bc0189a2dd15a4fdbca438ab54ea84443"
+        },
+        "linux": {
+          "path": "references/filter-source/54f56f85f7bb44f721b4.png",
+          "sha256": "54f56f85f7bb44f721b4b3ed5ffda23506e68471c9c314c55eb06c498e7b0a17"
+        }
+      }
+    },
+    {
+      "id": "r145-reflected-hint-3-control",
+      "input": "filter-source-inputs/r145-reflected-hint-3-control.svg",
+      "sourceSha256": "1549b798cc58c6e34267a6d83b77d9db846c848034fd37eba0a7c6aaf14159c4",
+      "outputScale": 1,
+      "selection": "A reflected parent with narrower child strokes and positive/negative offsets exposes recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/5d3164096a73277a4291.png",
+          "sha256": "5d3164096a73277a4291e6de7b73c7332f5babe24b8bdfaee4c54c26d9f920a6"
+        },
+        "linux": {
+          "path": "references/filter-source/518cced31da12aca6468.png",
+          "sha256": "518cced31da12aca646830516ba0e970bc828599137d669d63db46300c291a1e"
+        }
+      }
+    },
+    {
+      "id": "r145-nested-owner-0-candidate",
+      "input": "filter-source-inputs/r145-nested-owner-0-candidate.svg",
+      "sourceSha256": "ab8c6de9f25028cd397513ad21f36d7936c582cd25ee397992574f67b389c225",
+      "outputScale": 1,
+      "selection": "Nested and sibling ownership, equal paints, no directly painted parent text and trimmed whitespace preserve separate scopes.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/faa23709db60e7163b76.png",
+          "sha256": "faa23709db60e7163b7618352006edc642ac0b022f890a6bd8e249de1afefbbb"
+        },
+        "linux": {
+          "path": "references/filter-source/1289359cb27cb1acc6b3.png",
+          "sha256": "1289359cb27cb1acc6b30e39d25a5f9c6caf0b9200479fc01b0eb8098717fe11"
+        }
+      }
+    },
+    {
+      "id": "r145-nested-owner-0-control",
+      "input": "filter-source-inputs/r145-nested-owner-0-control.svg",
+      "sourceSha256": "0a5a71d5ffb3baac881f7a2cb3ef99f2a0f1c94334426287af40a88b1e811bc8",
+      "outputScale": 1,
+      "selection": "Nested and sibling ownership, equal paints, no directly painted parent text and trimmed whitespace preserve separate scopes.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/919212ce1e0a03f5797d.png",
+          "sha256": "919212ce1e0a03f5797dbda7ae9dffd4bdd962dc04d666d449f2598df24f8cf8"
+        },
+        "linux": {
+          "path": "references/filter-source/b016c2b7aba03c0b9fee.png",
+          "sha256": "b016c2b7aba03c0b9fee5db227b3ec229289c3fd315c6dc619f2736b8f181825"
+        }
+      }
+    },
+    {
+      "id": "r145-nested-owner-1-candidate",
+      "input": "filter-source-inputs/r145-nested-owner-1-candidate.svg",
+      "sourceSha256": "f7c03d66242f475e918d449fb3f10b8821e6fdce9cef409419282bd502e98090",
+      "outputScale": 1,
+      "selection": "Nested and sibling ownership, equal paints, no directly painted parent text and trimmed whitespace preserve separate scopes.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/969d51c26357ffca609f.png",
+          "sha256": "969d51c26357ffca609f8cec2ad5af7e365d28c814b2ae65371f4a79b2dec2e2"
+        },
+        "linux": {
+          "path": "references/filter-source/c50b131347deb4e09fca.png",
+          "sha256": "c50b131347deb4e09fca95751c1f22fce8288818878b02cd96595fc8667c1c7e"
+        }
+      }
+    },
+    {
+      "id": "r145-nested-owner-1-control",
+      "input": "filter-source-inputs/r145-nested-owner-1-control.svg",
+      "sourceSha256": "dd1f7f5b3105cc785fae43ea2644cf68d764dbacbcb2bfddeacf3526b62bd46e",
+      "outputScale": 1,
+      "selection": "Nested and sibling ownership, equal paints, no directly painted parent text and trimmed whitespace preserve separate scopes.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/01d7c08e7ccd3e9110be.png",
+          "sha256": "01d7c08e7ccd3e9110be42a114d365f149d8723fbe4f4387f0e28182e0f63147"
+        },
+        "linux": {
+          "path": "references/filter-source/95ca3a2f0554b146f3e0.png",
+          "sha256": "95ca3a2f0554b146f3e076bf3a5d652577cb0bd35dfa8b94ffbb078264eaa0d4"
+        }
+      }
+    },
+    {
+      "id": "r145-nested-owner-2-candidate",
+      "input": "filter-source-inputs/r145-nested-owner-2-candidate.svg",
+      "sourceSha256": "2eab735cef75b17054e98bff8711ed1e60a6b173981c9f8ea27cb1b9f9890053",
+      "outputScale": 1,
+      "selection": "Nested and sibling ownership, equal paints, no directly painted parent text and trimmed whitespace preserve separate scopes.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/6952f09c380cec42798a.png",
+          "sha256": "6952f09c380cec42798a4d5f52b7da4594f463221ca39a2386a2f5b8ec6d63af"
+        },
+        "linux": {
+          "path": "references/filter-source/68901d6dc6fdd7052ddf.png",
+          "sha256": "68901d6dc6fdd7052ddff5d393f5371fb7c610ebe4023f4d2521fb0205e5a2fc"
+        }
+      }
+    },
+    {
+      "id": "r145-nested-owner-2-control",
+      "input": "filter-source-inputs/r145-nested-owner-2-control.svg",
+      "sourceSha256": "da6d33dcfa270f1f4ced72630cc15e5b11691fe158e4db4d13235f4102760588",
+      "outputScale": 1,
+      "selection": "Nested and sibling ownership, equal paints, no directly painted parent text and trimmed whitespace preserve separate scopes.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/349b93ef23e9d1fbf884.png",
+          "sha256": "349b93ef23e9d1fbf884b86def214c7cb7d7aac6f3550ea001ca6a8e837349f7"
+        },
+        "linux": {
+          "path": "references/filter-source/764db30b2c49711c5acf.png",
+          "sha256": "764db30b2c49711c5acfcd553e404fa41d1956638198be3604082811904491c6"
+        }
+      }
+    },
+    {
+      "id": "r145-nested-owner-3-candidate",
+      "input": "filter-source-inputs/r145-nested-owner-3-candidate.svg",
+      "sourceSha256": "07e78a668e839c328897d6b95a8826dbddf2609ba39263c282afc032a2af83c6",
+      "outputScale": 1,
+      "selection": "Nested and sibling ownership, equal paints, no directly painted parent text and trimmed whitespace preserve separate scopes.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/a9aaf8f22c08198ca6ff.png",
+          "sha256": "a9aaf8f22c08198ca6ff069eae04fc922947980fd67b92cdd74e1d2104deeb3a"
+        },
+        "linux": {
+          "path": "references/filter-source/f734f2f86026c9d2ac2e.png",
+          "sha256": "f734f2f86026c9d2ac2e77949639c837dd49713f25c4e3f1d887f51ae639c67e"
+        }
+      }
+    },
+    {
+      "id": "r145-nested-owner-3-control",
+      "input": "filter-source-inputs/r145-nested-owner-3-control.svg",
+      "sourceSha256": "e4e6ee4cf1c019a77ae3d50a7db4b1eb7cebead434245c74c0bc35feda442478",
+      "outputScale": 1,
+      "selection": "Nested and sibling ownership, equal paints, no directly painted parent text and trimmed whitespace preserve separate scopes.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/6ca46d3e0c8f59c49c1d.png",
+          "sha256": "6ca46d3e0c8f59c49c1ddb9e27d2b67cabf2d2cb81d83cb3a6959f9cf5fb6f04"
+        },
+        "linux": {
+          "path": "references/filter-source/3e4b778ec3182a9ee0bb.png",
+          "sha256": "3e4b778ec3182a9ee0bb4d00d04af61e8f12470bfb1b91da7e3201b433b94057"
+        }
+      }
+    },
+    {
+      "id": "r145-nested-owner-4-candidate",
+      "input": "filter-source-inputs/r145-nested-owner-4-candidate.svg",
+      "sourceSha256": "e35bdf35a9655ee64baece37b6f73f5b454fea664130bdd035d24da39a9f8249",
+      "outputScale": 1,
+      "selection": "Nested and sibling ownership, equal paints, no directly painted parent text and trimmed whitespace preserve separate scopes.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/28a9245aee53032b0803.png",
+          "sha256": "28a9245aee53032b0803b7d69b8b3502b2c9226d288ab34debbc74816d0df2ab"
+        },
+        "linux": {
+          "path": "references/filter-source/e5ca1cf2481a14ef14f9.png",
+          "sha256": "e5ca1cf2481a14ef14f90e954e9ba2e79ac84c0d1922210fe5265488c57beb7a"
+        }
+      }
+    },
+    {
+      "id": "r145-nested-owner-4-control",
+      "input": "filter-source-inputs/r145-nested-owner-4-control.svg",
+      "sourceSha256": "687af35607dbfc7c5d4987373f4db00fd8f2e0653d050ad71b00bb93e526a2a5",
+      "outputScale": 1,
+      "selection": "Nested and sibling ownership, equal paints, no directly painted parent text and trimmed whitespace preserve separate scopes.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/919212ce1e0a03f5797d.png",
+          "sha256": "919212ce1e0a03f5797dbda7ae9dffd4bdd962dc04d666d449f2598df24f8cf8"
+        },
+        "linux": {
+          "path": "references/filter-source/b016c2b7aba03c0b9fee.png",
+          "sha256": "b016c2b7aba03c0b9fee5db227b3ec229289c3fd315c6dc619f2736b8f181825"
+        }
+      }
+    },
+    {
+      "id": "r145-nested-owner-5-candidate",
+      "input": "filter-source-inputs/r145-nested-owner-5-candidate.svg",
+      "sourceSha256": "9aec93d110fa598846e3a08382892b0884f559d41e13a8bec104d869307095df",
+      "outputScale": 1,
+      "selection": "Nested and sibling ownership, equal paints, no directly painted parent text and trimmed whitespace preserve separate scopes.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/6952f09c380cec42798a.png",
+          "sha256": "6952f09c380cec42798a4d5f52b7da4594f463221ca39a2386a2f5b8ec6d63af"
+        },
+        "linux": {
+          "path": "references/filter-source/68901d6dc6fdd7052ddf.png",
+          "sha256": "68901d6dc6fdd7052ddff5d393f5371fb7c610ebe4023f4d2521fb0205e5a2fc"
+        }
+      }
+    },
+    {
+      "id": "r145-nested-owner-5-control",
+      "input": "filter-source-inputs/r145-nested-owner-5-control.svg",
+      "sourceSha256": "a4958a8a4a92633d965be9dc112eaee9bbbfd1cc2857363ecf9e1c55e2f9a755",
+      "outputScale": 1,
+      "selection": "Nested and sibling ownership, equal paints, no directly painted parent text and trimmed whitespace preserve separate scopes.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/349b93ef23e9d1fbf884.png",
+          "sha256": "349b93ef23e9d1fbf884b86def214c7cb7d7aac6f3550ea001ca6a8e837349f7"
+        },
+        "linux": {
+          "path": "references/filter-source/764db30b2c49711c5acf.png",
+          "sha256": "764db30b2c49711c5acfcd553e404fa41d1956638198be3604082811904491c6"
+        }
+      }
+    },
+    {
+      "id": "r145-nested-owner-6-candidate",
+      "input": "filter-source-inputs/r145-nested-owner-6-candidate.svg",
+      "sourceSha256": "4f05e8ed7710860ec3cfed5695031df24e4855b4a2dee2971797deba1583af1b",
+      "outputScale": 1,
+      "selection": "Nested and sibling ownership, equal paints, no directly painted parent text and trimmed whitespace preserve separate scopes.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/252c7d2e7ed5e2ed146e.png",
+          "sha256": "252c7d2e7ed5e2ed146eabda4f6ef07c0bcc34fa532fdf5ecc26dec7a9f529b2"
+        },
+        "linux": {
+          "path": "references/filter-source/9c77fac41df082176e3b.png",
+          "sha256": "9c77fac41df082176e3bad90b3b85079e938411f49e431176df1b6e58baf179c"
+        }
+      }
+    },
+    {
+      "id": "r145-nested-owner-6-control",
+      "input": "filter-source-inputs/r145-nested-owner-6-control.svg",
+      "sourceSha256": "8a83ad9c5afd7eabd02a29c1dde97d78afb3b53ebd33f4493fd44bfc6e69fef8",
+      "outputScale": 1,
+      "selection": "Nested and sibling ownership, equal paints, no directly painted parent text and trimmed whitespace preserve separate scopes.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/c105e936ee155ba56de9.png",
+          "sha256": "c105e936ee155ba56de9df3454ea624166af9523b081305ba457740abc256149"
+        },
+        "linux": {
+          "path": "references/filter-source/89ff5e351ffbc675c1c0.png",
+          "sha256": "89ff5e351ffbc675c1c0804b9bd2b39179366d0b7983d95cafd4fb59f6a40294"
+        }
+      }
+    },
+    {
+      "id": "r145-path-owner-0-candidate",
+      "input": "filter-source-inputs/r145-path-owner-0-candidate.svg",
+      "sourceSha256": "702b08f259bce43f688f342d85360aa079b80ce19fbd6e4c6913f1d46d97f32d",
+      "outputScale": 1,
+      "selection": "Path and mixed direct/path owners retain shared element bounds and source-local recording scopes.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/0b655e6459c7bf88d78e.png",
+          "sha256": "0b655e6459c7bf88d78e210922564377dee016def31d9eb43ca61394b075fbc7"
+        },
+        "linux": {
+          "path": "references/filter-source/233130379aec4ab17fb5.png",
+          "sha256": "233130379aec4ab17fb536d2ac0d22a28e04686fcd8edc8e8b06ae72efbb5786"
+        }
+      }
+    },
+    {
+      "id": "r145-path-owner-0-control",
+      "input": "filter-source-inputs/r145-path-owner-0-control.svg",
+      "sourceSha256": "1eb2e3b1a5e1af2336b64e7d594068c2e8d4cc12c3b08c5abad9d93f10af4421",
+      "outputScale": 1,
+      "selection": "Path and mixed direct/path owners retain shared element bounds and source-local recording scopes.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/4945ae49d6fa19901bbc.png",
+          "sha256": "4945ae49d6fa19901bbc59e91698ecc35b95fd71e0ff3fd09c0a096037057c42"
+        },
+        "linux": {
+          "path": "references/filter-source/6e280a15f6b07dfde116.png",
+          "sha256": "6e280a15f6b07dfde11600c006cac88d5000a197c95aec1aa6489bf138e7a2b7"
+        }
+      }
+    },
+    {
+      "id": "r145-path-owner-1-candidate",
+      "input": "filter-source-inputs/r145-path-owner-1-candidate.svg",
+      "sourceSha256": "9c022f466d75c04307c60391551923f310df7d9f627de1ac5ec23fdffcae692d",
+      "outputScale": 1,
+      "selection": "Path and mixed direct/path owners retain shared element bounds and source-local recording scopes.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/4acfac5488d657b6fe37.png",
+          "sha256": "4acfac5488d657b6fe3704f1c11f72653ba31ad9f98430aadf97f37283d467ea"
+        },
+        "linux": {
+          "path": "references/filter-source/ddc7ac7d37ee43f328aa.png",
+          "sha256": "ddc7ac7d37ee43f328aad157379d102eefe6e7c5e51287a704d00846efea035b"
+        }
+      }
+    },
+    {
+      "id": "r145-path-owner-1-control",
+      "input": "filter-source-inputs/r145-path-owner-1-control.svg",
+      "sourceSha256": "df35e7c21fe39f49471068a1e94f9640fa3f74ad233a0b724deb804dac84e787",
+      "outputScale": 1,
+      "selection": "Path and mixed direct/path owners retain shared element bounds and source-local recording scopes.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/060b4910e01122b15a36.png",
+          "sha256": "060b4910e01122b15a36592858df0b937f69250ebcf4c752c76743bc680e4911"
+        },
+        "linux": {
+          "path": "references/filter-source/6f3ffdd8b8126dec675c.png",
+          "sha256": "6f3ffdd8b8126dec675ccb38f4eddcab76782ce45adf8736259ccaf9e8aa81d1"
+        }
+      }
+    },
+    {
+      "id": "r145-path-owner-2-candidate",
+      "input": "filter-source-inputs/r145-path-owner-2-candidate.svg",
+      "sourceSha256": "7068756bb752ffa9987cbffedc4eac37ea8a9fd7662d556ea5ec8967ca0dfd46",
+      "outputScale": 1,
+      "selection": "Path and mixed direct/path owners retain shared element bounds and source-local recording scopes.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/81406a2d867bc22d44ea.png",
+          "sha256": "81406a2d867bc22d44ea47e616d5562b7a6e64bdbe83fa8dd9d2f8292e3f9782"
+        },
+        "linux": {
+          "path": "references/filter-source/80282fe1bfa57d434297.png",
+          "sha256": "80282fe1bfa57d434297026cd1b410a53f74af63278717a0fef432afd206933e"
+        }
+      }
+    },
+    {
+      "id": "r145-path-owner-2-control",
+      "input": "filter-source-inputs/r145-path-owner-2-control.svg",
+      "sourceSha256": "a74799e59452b5a2bcc6b0e9924354410a613a6f2b2a43ac17692dbd72329c3d",
+      "outputScale": 1,
+      "selection": "Path and mixed direct/path owners retain shared element bounds and source-local recording scopes.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/c4d905ed2f32119e1550.png",
+          "sha256": "c4d905ed2f32119e15502c36c1b35e5c040d2a696c44ed49ed1aa05a0644e2de"
+        },
+        "linux": {
+          "path": "references/filter-source/c8dd8874cae2a0678d5b.png",
+          "sha256": "c8dd8874cae2a0678d5bc32338f43d57e003272b3146b4694e0d83a03f9376fd"
+        }
+      }
+    },
+    {
+      "id": "r145-inactive-role-0-candidate",
+      "input": "filter-source-inputs/r145-inactive-role-0-candidate.svg",
+      "sourceSha256": "7ce2d3688ac960923dbd119a2996ebe99aba391d3e38c467a21a5f86e7548891",
+      "outputScale": 1,
+      "selection": "Visibility, unavailable stroke servers and alpha retain distinct element and recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/72e1641ee6ee7e7d5154.png",
+          "sha256": "72e1641ee6ee7e7d5154b574c45da7cd022487c52a58351e98770b4c5b4e444d"
+        },
+        "linux": {
+          "path": "references/filter-source/4a0fda0d3c8ce5c2aa9c.png",
+          "sha256": "4a0fda0d3c8ce5c2aa9c05aaaaa599329bbc0fae085b7497d42a540b0921a310"
+        }
+      }
+    },
+    {
+      "id": "r145-inactive-role-0-control",
+      "input": "filter-source-inputs/r145-inactive-role-0-control.svg",
+      "sourceSha256": "09412abcf3ce772a7f5c1200f4fbd380046152a8cc52c6976cb8703b9bcdc590",
+      "outputScale": 1,
+      "selection": "Visibility, unavailable stroke servers and alpha retain distinct element and recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/b85de8816b768fca567b.png",
+          "sha256": "b85de8816b768fca567be45269f01d02252cb2c5ee7ac0d4a983375478580fcb"
+        },
+        "linux": {
+          "path": "references/filter-source/7de2f995b29386047917.png",
+          "sha256": "7de2f995b29386047917fac6934555d5f0d342dd356f05b6a6a3e6114102450e"
+        }
+      }
+    },
+    {
+      "id": "r145-inactive-role-1-candidate",
+      "input": "filter-source-inputs/r145-inactive-role-1-candidate.svg",
+      "sourceSha256": "5389a2cabf2d83472dc20852b2423ba0262429ae8528661f79b3c3a12879988f",
+      "outputScale": 1,
+      "selection": "Visibility, unavailable stroke servers and alpha retain distinct element and recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/80cff58028466f9c8243.png",
+          "sha256": "80cff58028466f9c8243d39ccd8af4f1e5712242adedd98f6077b318657a42a1"
+        },
+        "linux": {
+          "path": "references/filter-source/b0e8b5877ce91d962d45.png",
+          "sha256": "b0e8b5877ce91d962d45a2b0f314419b28b4c9905c6536a4f1f1540c0882909f"
+        }
+      }
+    },
+    {
+      "id": "r145-inactive-role-1-control",
+      "input": "filter-source-inputs/r145-inactive-role-1-control.svg",
+      "sourceSha256": "cbf11d7bdc91dceb215a0cc0fe265c3e908f47adc7b126908191142d3d218855",
+      "outputScale": 1,
+      "selection": "Visibility, unavailable stroke servers and alpha retain distinct element and recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/1c3d0fb6131022935f10.png",
+          "sha256": "1c3d0fb6131022935f109b21c36d6d64bc7d4f88e6eacfd7c3b9f11f53bcd6bb"
+        },
+        "linux": {
+          "path": "references/filter-source/a7b5a57f1dda059fdc41.png",
+          "sha256": "a7b5a57f1dda059fdc413ecb4d8651ae606e779947c12c261d7f6c49bc3c78a1"
+        }
+      }
+    },
+    {
+      "id": "r145-inactive-role-2-candidate",
+      "input": "filter-source-inputs/r145-inactive-role-2-candidate.svg",
+      "sourceSha256": "d7d8e7c877bb45a0c19517f7c9588e5a86ff43d403b6bc309b984832671ccf1b",
+      "outputScale": 1,
+      "selection": "Visibility, unavailable stroke servers and alpha retain distinct element and recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/98a4df249826ff6e8152.png",
+          "sha256": "98a4df249826ff6e81520ee13da8c9bd2b1ef52efdec557904afe2e48301ab4e"
+        },
+        "linux": {
+          "path": "references/filter-source/6d19b4fef88b1069c708.png",
+          "sha256": "6d19b4fef88b1069c708025941c8ee93ab735cce999aee044a2eef19d9ecb43b"
+        }
+      }
+    },
+    {
+      "id": "r145-inactive-role-2-control",
+      "input": "filter-source-inputs/r145-inactive-role-2-control.svg",
+      "sourceSha256": "d2ae85a883530ee5bb7ca637adfcb132d484371d46c6357f995e3f4c5c46e30a",
+      "outputScale": 1,
+      "selection": "Visibility, unavailable stroke servers and alpha retain distinct element and recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/fd6547355fb1904953e5.png",
+          "sha256": "fd6547355fb1904953e5af204a35b9e35d02224b48b15798a9a10e20df58b2f2"
+        },
+        "linux": {
+          "path": "references/filter-source/bd65acca8387a6501072.png",
+          "sha256": "bd65acca8387a6501072c855c626dc839319aaa96554b58fa06e79fd26f3e7aa"
+        }
+      }
+    },
+    {
+      "id": "r145-inactive-role-3-candidate",
+      "input": "filter-source-inputs/r145-inactive-role-3-candidate.svg",
+      "sourceSha256": "e08265cb38674b34992d18baf60096b9335c25578abf8127d7d2f766ae75b31e",
+      "outputScale": 1,
+      "selection": "Visibility, unavailable stroke servers and alpha retain distinct element and recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/5c6e54afa3d19b6202fa.png",
+          "sha256": "5c6e54afa3d19b6202fa4114833bb85e7415b9df35b219f64d24d06654e953af"
+        },
+        "linux": {
+          "path": "references/filter-source/33c096e1f818333df22b.png",
+          "sha256": "33c096e1f818333df22babbd3a9abdc2945f38ee2696b2d9b5a0f3a17ff369d1"
+        }
+      }
+    },
+    {
+      "id": "r145-inactive-role-3-control",
+      "input": "filter-source-inputs/r145-inactive-role-3-control.svg",
+      "sourceSha256": "45db78d3d67f578377de4535331e1c42204aa03db35636707c20427754472509",
+      "outputScale": 1,
+      "selection": "Visibility, unavailable stroke servers and alpha retain distinct element and recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/fd6547355fb1904953e5.png",
+          "sha256": "fd6547355fb1904953e5af204a35b9e35d02224b48b15798a9a10e20df58b2f2"
+        },
+        "linux": {
+          "path": "references/filter-source/bd65acca8387a6501072.png",
+          "sha256": "bd65acca8387a6501072c855c626dc839319aaa96554b58fa06e79fd26f3e7aa"
+        }
+      }
+    },
+    {
+      "id": "r145-inactive-role-4-candidate",
+      "input": "filter-source-inputs/r145-inactive-role-4-candidate.svg",
+      "sourceSha256": "5154ef3fa64cd0dacebfa7ce55fc8501f45656c61436519643877c815162aec6",
+      "outputScale": 1,
+      "selection": "Visibility, unavailable stroke servers and alpha retain distinct element and recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/0427d55ef879ce4ac6dc.png",
+          "sha256": "0427d55ef879ce4ac6dc0b6514b4cefb9c68b288379561343697377694701ae0"
+        },
+        "linux": {
+          "path": "references/filter-source/a7277dcb2c3715bd4e2d.png",
+          "sha256": "a7277dcb2c3715bd4e2de86eb47395d91ae42aedecefe08b048ac55c9fb8be05"
+        }
+      }
+    },
+    {
+      "id": "r145-inactive-role-4-control",
+      "input": "filter-source-inputs/r145-inactive-role-4-control.svg",
+      "sourceSha256": "219cac7ff9d7650101fee7a2d5612ea161b65f8881e1fa4cef610900615ef34c",
+      "outputScale": 1,
+      "selection": "Visibility, unavailable stroke servers and alpha retain distinct element and recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/d838b91473d5fa9f9654.png",
+          "sha256": "d838b91473d5fa9f9654a9d07beaeec8af52be09aad503c794d326edbd414f4a"
+        },
+        "linux": {
+          "path": "references/filter-source/937e968a220b8c27cea1.png",
+          "sha256": "937e968a220b8c27cea13af7a5e6749a55fa2544b65911b9e26c59940757081d"
+        }
+      }
+    },
+    {
+      "id": "r145-inactive-role-5-candidate",
+      "input": "filter-source-inputs/r145-inactive-role-5-candidate.svg",
+      "sourceSha256": "79067138adaca21b65df9bd350271b42e41d11bdbf8f75cbc56e8c7617a97072",
+      "outputScale": 1,
+      "selection": "Visibility, unavailable stroke servers and alpha retain distinct element and recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/5c6e54afa3d19b6202fa.png",
+          "sha256": "5c6e54afa3d19b6202fa4114833bb85e7415b9df35b219f64d24d06654e953af"
+        },
+        "linux": {
+          "path": "references/filter-source/33c096e1f818333df22b.png",
+          "sha256": "33c096e1f818333df22babbd3a9abdc2945f38ee2696b2d9b5a0f3a17ff369d1"
+        }
+      }
+    },
+    {
+      "id": "r145-inactive-role-5-control",
+      "input": "filter-source-inputs/r145-inactive-role-5-control.svg",
+      "sourceSha256": "5e210c46d90daf5075f1052978df06ce555ef3839fd3155b74efc8d3469a309f",
+      "outputScale": 1,
+      "selection": "Visibility, unavailable stroke servers and alpha retain distinct element and recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/fd6547355fb1904953e5.png",
+          "sha256": "fd6547355fb1904953e5af204a35b9e35d02224b48b15798a9a10e20df58b2f2"
+        },
+        "linux": {
+          "path": "references/filter-source/bd65acca8387a6501072.png",
+          "sha256": "bd65acca8387a6501072c855c626dc839319aaa96554b58fa06e79fd26f3e7aa"
+        }
+      }
+    },
+    {
+      "id": "r145-inactive-role-6-candidate",
+      "input": "filter-source-inputs/r145-inactive-role-6-candidate.svg",
+      "sourceSha256": "9443091e748c5a16288289e6a06af82eb7b09f9dd41930fa66ab205a57d0ce66",
+      "outputScale": 1,
+      "selection": "Visibility, unavailable stroke servers and alpha retain distinct element and recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/0427d55ef879ce4ac6dc.png",
+          "sha256": "0427d55ef879ce4ac6dc0b6514b4cefb9c68b288379561343697377694701ae0"
+        },
+        "linux": {
+          "path": "references/filter-source/a7277dcb2c3715bd4e2d.png",
+          "sha256": "a7277dcb2c3715bd4e2de86eb47395d91ae42aedecefe08b048ac55c9fb8be05"
+        }
+      }
+    },
+    {
+      "id": "r145-inactive-role-6-control",
+      "input": "filter-source-inputs/r145-inactive-role-6-control.svg",
+      "sourceSha256": "2e3f936e71decc1bf7dfb8f8ad14fab7c5e4b26401b039039ebfd83b569df733",
+      "outputScale": 1,
+      "selection": "Visibility, unavailable stroke servers and alpha retain distinct element and recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/d838b91473d5fa9f9654.png",
+          "sha256": "d838b91473d5fa9f9654a9d07beaeec8af52be09aad503c794d326edbd414f4a"
+        },
+        "linux": {
+          "path": "references/filter-source/937e968a220b8c27cea1.png",
+          "sha256": "937e968a220b8c27cea13af7a5e6749a55fa2544b65911b9e26c59940757081d"
+        }
+      }
+    },
+    {
+      "id": "r145-inactive-role-7-candidate",
+      "input": "filter-source-inputs/r145-inactive-role-7-candidate.svg",
+      "sourceSha256": "df555c4671e28cd82619852a0a2b5de864211398cf53b840428542b77af169f3",
+      "outputScale": 1,
+      "selection": "Visibility, unavailable stroke servers and alpha retain distinct element and recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/0427d55ef879ce4ac6dc.png",
+          "sha256": "0427d55ef879ce4ac6dc0b6514b4cefb9c68b288379561343697377694701ae0"
+        },
+        "linux": {
+          "path": "references/filter-source/a7277dcb2c3715bd4e2d.png",
+          "sha256": "a7277dcb2c3715bd4e2de86eb47395d91ae42aedecefe08b048ac55c9fb8be05"
+        }
+      }
+    },
+    {
+      "id": "r145-inactive-role-7-control",
+      "input": "filter-source-inputs/r145-inactive-role-7-control.svg",
+      "sourceSha256": "93ab0d9ff233e279144df6dc41128bcc5ff8fd142214ce4f7879d4fcdf8ea0a8",
+      "outputScale": 1,
+      "selection": "Visibility, unavailable stroke servers and alpha retain distinct element and recording-owner bounds.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/d838b91473d5fa9f9654.png",
+          "sha256": "d838b91473d5fa9f9654a9d07beaeec8af52be09aad503c794d326edbd414f4a"
+        },
+        "linux": {
+          "path": "references/filter-source/937e968a220b8c27cea1.png",
+          "sha256": "937e968a220b8c27cea13af7a5e6749a55fa2544b65911b9e26c59940757081d"
+        }
+      }
+    },
+    {
+      "id": "r145-layout-only-0-candidate",
+      "input": "filter-source-inputs/r145-layout-only-0-candidate.svg",
+      "sourceSha256": "1a1d2f8850016ed685c887e0172ff51b84ce70aa3063c478c0d56bb9f6b0ca04",
+      "outputScale": 1,
+      "selection": "Layout-only text, zero stroke, large offsets and zero-alpha directly owned text preserve distinct source roles.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/de5ef089bbcbdbc24537.png",
+          "sha256": "de5ef089bbcbdbc245370fba6842bd3f2bee1e412a52071df05554495e129a93"
+        },
+        "linux": {
+          "path": "references/filter-source/c3d1a564afdd5554eeda.png",
+          "sha256": "c3d1a564afdd5554eedabd66af692be0df694a2b586c0b5eb206086589780f77"
+        }
+      }
+    },
+    {
+      "id": "r145-layout-only-0-control",
+      "input": "filter-source-inputs/r145-layout-only-0-control.svg",
+      "sourceSha256": "65a5f0915176264f57c4605df261db171371ba2af9ac1cddde4406fbcb697a3a",
+      "outputScale": 1,
+      "selection": "Layout-only text, zero stroke, large offsets and zero-alpha directly owned text preserve distinct source roles.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/fd6547355fb1904953e5.png",
+          "sha256": "fd6547355fb1904953e5af204a35b9e35d02224b48b15798a9a10e20df58b2f2"
+        },
+        "linux": {
+          "path": "references/filter-source/bd65acca8387a6501072.png",
+          "sha256": "bd65acca8387a6501072c855c626dc839319aaa96554b58fa06e79fd26f3e7aa"
+        }
+      }
+    },
+    {
+      "id": "r145-layout-only-1-candidate",
+      "input": "filter-source-inputs/r145-layout-only-1-candidate.svg",
+      "sourceSha256": "968c5768c0f2d04d616793ffbfda27975e04968f2d4293472677704f76f0f8c0",
+      "outputScale": 1,
+      "selection": "Layout-only text, zero stroke, large offsets and zero-alpha directly owned text preserve distinct source roles.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/de5ef089bbcbdbc24537.png",
+          "sha256": "de5ef089bbcbdbc245370fba6842bd3f2bee1e412a52071df05554495e129a93"
+        },
+        "linux": {
+          "path": "references/filter-source/c3d1a564afdd5554eeda.png",
+          "sha256": "c3d1a564afdd5554eedabd66af692be0df694a2b586c0b5eb206086589780f77"
+        }
+      }
+    },
+    {
+      "id": "r145-layout-only-1-control",
+      "input": "filter-source-inputs/r145-layout-only-1-control.svg",
+      "sourceSha256": "3657a0f171a1c156e96845e332e9a106fa9be124f42aa3bc98f692250d6fa0ac",
+      "outputScale": 1,
+      "selection": "Layout-only text, zero stroke, large offsets and zero-alpha directly owned text preserve distinct source roles.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/fd6547355fb1904953e5.png",
+          "sha256": "fd6547355fb1904953e5af204a35b9e35d02224b48b15798a9a10e20df58b2f2"
+        },
+        "linux": {
+          "path": "references/filter-source/bd65acca8387a6501072.png",
+          "sha256": "bd65acca8387a6501072c855c626dc839319aaa96554b58fa06e79fd26f3e7aa"
+        }
+      }
+    },
+    {
+      "id": "r145-layout-only-2-candidate",
+      "input": "filter-source-inputs/r145-layout-only-2-candidate.svg",
+      "sourceSha256": "26855112bcadc46b2a8770f8b58ec993632d8ae1478b1f276e00e90a6ae87cdb",
+      "outputScale": 1,
+      "selection": "Layout-only text, zero stroke, large offsets and zero-alpha directly owned text preserve distinct source roles.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/fb5b401f556e71e63a12.png",
+          "sha256": "fb5b401f556e71e63a12f3453e5736dffe4626d24279235e7e79610a64acf7fe"
+        },
+        "linux": {
+          "path": "references/filter-source/3e15fbce07c1bee46ff2.png",
+          "sha256": "3e15fbce07c1bee46ff2754f440e22a19c62581ebc2dd3a27b703c0c96619342"
+        }
+      }
+    },
+    {
+      "id": "r145-layout-only-2-control",
+      "input": "filter-source-inputs/r145-layout-only-2-control.svg",
+      "sourceSha256": "f154bff82f88a695dab130f3787bc8928b41f54d7fc157bd0f3f4a1160ffebe2",
+      "outputScale": 1,
+      "selection": "Layout-only text, zero stroke, large offsets and zero-alpha directly owned text preserve distinct source roles.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/3776ecb6f9a96a2822f6.png",
+          "sha256": "3776ecb6f9a96a2822f6d4fdbee8278803c2d09aa76d1a0ae3f488fff9221dbb"
+        },
+        "linux": {
+          "path": "references/filter-source/723b536da89cbc75d1c7.png",
+          "sha256": "723b536da89cbc75d1c7ae9615e4d1c56914a782b900d877426d5984b853aadf"
+        }
+      }
+    },
+    {
+      "id": "r145-layout-only-3-candidate",
+      "input": "filter-source-inputs/r145-layout-only-3-candidate.svg",
+      "sourceSha256": "fed677a7e881f22019572380fc803787fac5c4e33ef924543caa1de11ab26e9a",
+      "outputScale": 1,
+      "selection": "Layout-only text, zero stroke, large offsets and zero-alpha directly owned text preserve distinct source roles.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/e69bb32e74af2536564b.png",
+          "sha256": "e69bb32e74af2536564b9786e5cc5dc86970ae19105abda6cb70db5f148756a9"
+        },
+        "linux": {
+          "path": "references/filter-source/33c096e1f818333df22b.png",
+          "sha256": "33c096e1f818333df22babbd3a9abdc2945f38ee2696b2d9b5a0f3a17ff369d1"
+        }
+      }
+    },
+    {
+      "id": "r145-layout-only-3-control",
+      "input": "filter-source-inputs/r145-layout-only-3-control.svg",
+      "sourceSha256": "ac71252c8acfabd8779253ecee34d8431e4f36cbfc46198f51a3222a48ff4a1b",
+      "outputScale": 1,
+      "selection": "Layout-only text, zero stroke, large offsets and zero-alpha directly owned text preserve distinct source roles.",
+      "references": {
+        "windows": {
+          "path": "references/filter-source/fd6547355fb1904953e5.png",
+          "sha256": "fd6547355fb1904953e5af204a35b9e35d02224b48b15798a9a10e20df58b2f2"
+        },
+        "linux": {
+          "path": "references/filter-source/bd65acca8387a6501072.png",
+          "sha256": "bd65acca8387a6501072c855c626dc839319aaa96554b58fa06e79fd26f3e7aa"
+        }
+      }
+    }
+  ]
+}

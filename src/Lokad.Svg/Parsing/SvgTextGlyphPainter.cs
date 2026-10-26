@@ -223,23 +223,47 @@ internal static class SvgTextGlyphPainter
             SvgRecordedTransform? recording, SvgDocumentState state, SvgColor fallback, SvgSolidPaint sourcePaint, ref SvgTextPaintPreparation prepared, ParserWorkCounter work, CancellationToken token)
         {
             float alpha = glyph.Shader is null ? sourcePaint.Alpha : glyph.Color.Alpha / 255f;
-            SvgPaintBounds? objects = null;
+            SvgPaintBounds? objects = null, sourceVisual = null, elementVisual = null;
             if (state.FilterGroupDepth > 0 && prepared.NativeDrawing)
             {
                 SvgRectangle box = prepared.ObjectBox ?? (prepared.SourceBox ??= SvgTextLayoutBounds.Measure(run, paths, placement, state.TextBoundsMetrics, work, token));
                 objects = new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height)).Map(placement, work, token);
+                if (prepared.FilterVisualBounds is null)
+                {
+                    SvgRectangle fragments = SvgTextLayoutBounds.MeasureSourceVisual(run, paths, placement, state.TextBoundsMetrics, work, token);
+                    SvgPaintBounds visual = new((float)fragments.X, (float)fragments.Y,
+                        (float)(fragments.X + fragments.Width), (float)(fragments.Y + fragments.Height));
+                    if (run.HasRootRecording)
+                    {
+                        float stroke = (float)run.ElementStrokeWidth;
+                        visual = new(MathF.Min(visual.Left, (float)box.X - stroke), MathF.Min(visual.Top, (float)box.Y - stroke),
+                            MathF.Max(visual.Right, (float)(box.X + box.Width) + stroke), MathF.Max(visual.Bottom, (float)(box.Y + box.Height) + stroke));
+                    }
+                    // Native text records enclose their source rectangle before
+                    // the element map, independently of compact ink capture.
+                    visual = new(MathF.Floor(visual.Left), MathF.Floor(visual.Top), MathF.Ceiling(visual.Right), MathF.Ceiling(visual.Bottom));
+                    prepared.FilterVisualBounds = visual.Map(placement, work, token);
+                }
+                sourceVisual = prepared.FilterVisualBounds;
+                if (prepared.ElementVisualBounds is null)
+                {
+                    float stroke = (float)run.ElementStrokeWidth;
+                    prepared.ElementVisualBounds = new SvgPaintBounds((float)box.X - stroke, (float)box.Y - stroke,
+                        (float)(box.X + box.Width) + stroke, (float)(box.Y + box.Height) + stroke).MapLayout(placement, work, token);
+                }
+                elementVisual = prepared.ElementVisualBounds;
             }
             // Generic/oversized outlines and filter captures retain their contour
             // drawing and bitmap-origin contracts, independent of native text drawings.
             if (!prepared.NativeDrawing || state.FilterGroupDepth > 0)
-                return paths.IsEmpty || recording is not null || state.FilterGroupDepth > 0 || alpha != glyph.Color.Alpha / 255f ? RecordFallback(objects) : SvgGeometry.FromGlyphContours(glyph);
+                return paths.IsEmpty || recording is not null || state.FilterGroupDepth > 0 || alpha != glyph.Color.Alpha / 255f ? RecordFallback(objects, sourceVisual, elementVisual) : SvgGeometry.FromGlyphContours(glyph);
             SvgRecordedPaint paint = prepared.RecordDrawing(run, placement, paths, state, fallback, alpha, recording, work, token);
             SvgGeometry nativeGeometry = SvgGeometry.FromGlyphContours(glyph) with { RecordedPaint = paint };
             if ((paths.IsEmpty || recording is not null) && state.Viewports.Count != 0)
                 nativeGeometry = nativeGeometry with { LeafMask = SvgViewportFrame.ResolveGlyphClip(state, work, token) };
             return nativeGeometry;
 
-            SvgGeometry RecordFallback(SvgPaintBounds? sourceObjects)
+            SvgGeometry RecordFallback(SvgPaintBounds? sourceObjects, SvgPaintBounds? sourceVisualBounds, SvgPaintBounds? elementVisualBounds)
             {
                 SvgGeometry geometry = SvgGeometry.FromGlyphContours(glyph);
                 if (state.Viewports.Count != 0) geometry = geometry with { LeafMask = SvgViewportFrame.ResolveGlyphClip(state, work, token) };
@@ -264,6 +288,8 @@ internal static class SvgTextGlyphPainter
                 {
                     RecordingTransform = recording,
                     ObjectBounds = sourceObjects ?? bounds,
+                    SourceVisualBounds = sourceVisualBounds,
+                    ElementVisualBounds = elementVisualBounds,
                     VisualBounds = new(bounds.Left - inflation, bounds.Top - inflation, bounds.Right + inflation, bounds.Bottom + inflation)
                 };
                 return geometry with { RecordedPaint = state.Scene.RegisterRecordedPaint(paint) };

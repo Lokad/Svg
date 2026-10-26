@@ -68,13 +68,33 @@ internal readonly record struct SvgTextLetterSpacingSpan(int Start, int End, dou
 /// <summary>Owns one extracted layout until its consumer disposes it; sibling path runs have independent whitespace and anchoring boundaries.</summary>
 internal readonly record struct SvgExtractedTextRun(BudgetedTextLayout Layout, SvgTextPathReference? Path, OwnedParserArray<SvgTextPaintSpan> PaintSpans, OwnedParserArray<SvgTextFontSpan> FontSpans, OwnedParserArray<SvgTextNodeBoundary> NodeBoundaries) : IDisposable
 {
+    /// <summary>Owns normalized recording scopes independently of shaping and effective character paint.</summary>
+    internal OwnedParserArray<SvgTextRecordingScope> RecordingScopes { get; init; } = new([], null);
+    internal SvgTextRecordingStroke ElementStroke { get; init; } = SvgTextRecordingStroke.None;
     internal SvgTextPathReference? ResumeAfterPath { get; init; }
     internal int CharacterOffset { get; init; }
-    public void Dispose() { Layout.Dispose(); PaintSpans.Dispose(); FontSpans.Dispose(); NodeBoundaries.Dispose(); }
+    public void Dispose() { Layout.Dispose(); PaintSpans.Dispose(); FontSpans.Dispose(); NodeBoundaries.Dispose(); RecordingScopes.Dispose(); }
 }
 
 /// <summary>Marks a normalized UTF-16 text-node boundary and whether the owning text element changed.</summary>
 internal readonly record struct SvgTextNodeBoundary(int Offset, bool ChangesElement);
+
+/// <summary>Retains the normalized subtree and first directly painted text of one recording owner.</summary>
+/// <remarks>Offsets borrow the extracted text coordinate space; the containing array owns storage.
+/// Nested descendants contribute to the owner's box even when they override its paint.
+/// Scopes follow subtree closing order with monotonic End offsets.</remarks>
+internal readonly record struct SvgTextRecordingScope(int Start, int End, int FirstText, double StrokeWidth, bool IsRoot);
+
+/// <summary>Retains declared SVG stroke width independently of visibility and paint-server availability.</summary>
+/// <remarks>Token strings remain immutable and borrowed. Only a consumer requiring visual bounds resolves the width;
+/// unrelated stroke declarations remain unconsumed for layout-only text.</remarks>
+internal readonly record struct SvgTextRecordingStroke(bool HasStroke, string? Width)
+{
+    internal static SvgTextRecordingStroke None => new(false, null);
+    internal static SvgTextRecordingStroke FromStyle(SvgTextPaintStyle style)
+        => new(style.Stroke is {} value && !value.Equals("none", StringComparison.OrdinalIgnoreCase), style.StrokeStyle.Width);
+    internal double Resolve() => HasStroke ? SvgStrokeStyleSyntax.ParseStrokeWidth(Width, "text") : 0;
+}
 /// <summary>Retains the caller's admitted root fitting request without owning storage.</summary>
 internal readonly record struct SvgTextFitting(double Length, SvgTextLengthAdjust Mode);
 /// <summary>Returns the resolved glyph stretch by value; glyph storage owns no fitting state.</summary>
