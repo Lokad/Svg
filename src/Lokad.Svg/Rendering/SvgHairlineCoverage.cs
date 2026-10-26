@@ -7,14 +7,15 @@ namespace Lokad.Svg.Rendering;
 /// <summary>Paints ordered native line hairline coverage directly into a borrowed premultiplied surface.</summary>
 /// <remarks>Owns no heap storage. The caller retains the surface and paint. Clipping bounds fixed-point coordinates;
 /// subdivision has at most eight stack levels within that range. Every subdivision and pixel visit consumes work
-/// before painting and checks cancellation. Instances belong to one conversion and share no mutable state.</remarks>
+/// before painting and checks cancellation. Binary rectangle classification scans borrowed clip bands once per walker.
+/// Instances belong to one conversion and share no mutable state.</remarks>
 internal ref struct SvgHairlineCoverage
 {
     private readonly Span<byte> _destination;
     private readonly int _width, _height, _bitmapWidth, _bitmapHeight;
     private readonly SvgCpuBitmapOrigin _origin;
     private readonly SvgAnalyticClipBounds _interior;
-    private readonly bool _regionClipping, _binaryViewport;
+    private readonly bool _regionClipping, _binaryViewport, _rectangularViewport;
     private readonly SvgAnalyticPaint _paint;
     private readonly Span<SvgShaderSampler> _shaders;
     private SvgAnalyticClipBounds? _binaryBounds;
@@ -53,6 +54,12 @@ internal ref struct SvgHairlineCoverage
         _bitmapHeight = context.BitmapClip.Bottom - context.BitmapClip.Top;
         if (!viewportMask.IsEmpty && viewportMask.Length != checked(width * height * 4)) throw new ArgumentException("Viewport mask must match the destination canvas.", nameof(viewportMask));
         _viewportMask = viewportMask; _binaryViewport = binaryViewport;
+        _rectangularViewport = true;
+        if (binaryViewport && !viewportMask.IsEmpty)
+        {
+            SvgBinaryClipRectangles regions = new(viewportMask, width, height, context.BitmapClip, context.BitmapClip, workCounter, cancellationToken);
+            _rectangularViewport = regions.MoveNext() && !regions.MoveNext();
+        }
         _destination = destination; _width = width; _height = height; _paint = paint;
         _shaders = Span<SvgShaderSampler>.Empty;
         _clip = clip; _antialiasing = antialiasing; _work = workCounter; _token = cancellationToken;
@@ -93,7 +100,11 @@ internal ref struct SvgHairlineCoverage
                 SvgAnalyticClipBounds region = regions.Current;
                 SvgAnalyticClipBounds local = new(region.Left - _origin.X, region.Top - _origin.Y, region.Right - _origin.X, region.Bottom - _origin.Y);
                 _binaryBounds = local;
-                DrawFixed(fixedX0, fixedY0, fixedX1, fixedY1, true, local);
+                // Only a single rectangle can bypass the native region wrapper.
+                // Area-limited enumeration must not introduce its own paint clip.
+                bool clipsLine = clipped || !_rectangularViewport || local.Left > bounds.Left || local.Top > bounds.Top
+                    || local.Right < bounds.Right || local.Bottom < bounds.Bottom;
+                DrawFixed(fixedX0, fixedY0, fixedX1, fixedY1, clipsLine, local);
                 _binaryBounds = null;
             }
             return;

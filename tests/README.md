@@ -39,6 +39,11 @@ checks. The [CI workflow](../.github/workflows/ci.yml) retains the full unfilter
 Windows/Linux suite,
 browser/resource/font-host smoke checks and package/installed-consumer checks.
 
+[Hairline clip controls](Research/hairline-clip-rounding/README.md) retain short
+rotated rectangle/path inputs through containing and intersecting clips. Direct
+coverage checks guard binary/AA mask dispatch; each rendering uses its own native
+image through the canonical conversion path.
+
 The API matrix uses seven inputs across twelve raw/prepared destination forms.
 Dedicated tests retain unusual stream failures, overlap, borrowed storage,
 resource refusal, cancellation and disposal paths. Rendering fixtures do not

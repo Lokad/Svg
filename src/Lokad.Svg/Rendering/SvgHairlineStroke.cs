@@ -11,7 +11,8 @@ namespace Lokad.Svg.Rendering;
 /// and paints only its owned interior. The caller keeps the clip tape alive throughout replay;
 /// pixel visits include its rounded clip-alpha product. Bounds, context visits, commands, closure
 /// lookahead and coverage consume cancellable work. Wider strokes keep their outline route.
-/// Numerical curve scratch is bounded stack storage shared across context visits.</remarks>
+/// Numerical curve scratch is bounded stack storage shared across context visits. AA clip containment
+/// scans mapped controls and complete borrowed bitmap rows, charging every visit before reading.</remarks>
 internal static class SvgHairlineStroke
 {
     internal static bool TryRasterize(SvgAuthoredPath path, SvgAffineTransform outputMap, SvgColor color, SvgConstantShaderPaint? constantPaint,
@@ -42,6 +43,8 @@ internal static class SvgHairlineStroke
         float lengthX = FastLength((float)widthMap.A * strokeWidth, (float)widthMap.B * strokeWidth);
         float lengthY = FastLength((float)widthMap.C * strokeWidth, (float)widthMap.D * strokeWidth);
         if (!(lengthX <= 1 && lengthY <= 1)) return false;
+        if (!viewportMask.IsEmpty && viewportMask.Length != checked(width * height * 4))
+            throw new ArgumentException("Viewport mask must match the destination canvas.", nameof(viewportMask));
         scoped ReadOnlySpan<SvgAuthoredPathCommand> commands = path.Commands;
         Span<SvgAuthoredPathCommand> rectangleCommands = stackalloc SvgAuthoredPathCommand[5];
         if (style.Shape == SvgAuthoredStrokeShape.Rectangle && commands.Length == 5)
@@ -85,9 +88,14 @@ internal static class SvgHairlineStroke
         {
             workCounter.Consume(cancellationToken);
             SvgCpuBitmapOrigin origin = new(context.BitmapClip.Left, context.BitmapClip.Top);
+            // Native AA clip wrappers preserve scalar dispatch unless the entire
+            // expanded path fits one opaque row band, including its full row shape.
+            ReadOnlySpan<byte> paintMask = !binaryViewport && !viewportMask.IsEmpty
+                && ContainsPath(viewportMask, width, commands, map, style.Cap, context.BitmapClip, workCounter, cancellationToken)
+                ? [] : viewportMask;
             SvgHairlineCoverage raster = shaders.IsEmpty
-                ? new(destination, width, height, paint, clip, antialiasing, viewportMask, binaryViewport, context, workCounter, cancellationToken)
-                : new(destination, width, height, shaders, clip, antialiasing, viewportMask, binaryViewport, context, workCounter, cancellationToken);
+                ? new(destination, width, height, paint, clip, antialiasing, paintMask, binaryViewport, context, workCounter, cancellationToken)
+                : new(destination, width, height, shaders, clip, antialiasing, paintMask, binaryViewport, context, workCounter, cancellationToken);
             SvgDevicePoint current = default, contourStart = default, first = default, last = default;
             bool firstSegment = false, closed = false;
             for (int index = 0; index < commands.Length; index++)
@@ -169,6 +177,66 @@ internal static class SvgHairlineStroke
             }
         }
         return true;
+
+        static bool ContainsPath(ReadOnlySpan<byte> mask, int width, ReadOnlySpan<SvgAuthoredPathCommand> commands,
+            SvgAffineTransform map, SvgStrokeCap cap, SvgAnalyticClipBounds bitmap, ParserWorkCounter work, CancellationToken token)
+        {
+            float left = float.PositiveInfinity, top = float.PositiveInfinity, right = float.NegativeInfinity, bottom = float.NegativeInfinity;
+            SvgDevicePoint current = default, first = default;
+            Span<SvgEndpointConic> arcs = stackalloc SvgEndpointConic[SvgEndpointArc.MaximumConicCount];
+            SvgCpuBitmapOrigin origin = new(bitmap.Left, bitmap.Top);
+            foreach (SvgAuthoredPathCommand command in commands)
+            {
+                work.Consume(token);
+                switch (command.Verb)
+                {
+                    case SvgAuthoredPathVerb.Move: current = first = command.First; Include(current); break;
+                    case SvgAuthoredPathVerb.Line: current = command.First; Include(current); break;
+                    case SvgAuthoredPathVerb.Quadratic:
+                    case SvgAuthoredPathVerb.Conic:
+                        Include(command.First); Include(command.Second); current = command.Second; break;
+                    case SvgAuthoredPathVerb.Cubic:
+                        Include(command.First); Include(command.Second); Include(command.Third); current = command.Third; break;
+                    case SvgAuthoredPathVerb.Arc:
+                        for (int phase = 0; phase <= SvgEndpointArc.MaximumConicCount; phase++) work.Consume(token);
+                        int count = SvgEndpointArc.Convert(current, command.First.X, command.First.Y, command.Second.X,
+                            (command.ArcFlags & SvgAuthoredArcFlags.Large) != 0, (command.ArcFlags & SvgAuthoredArcFlags.Sweep) != 0,
+                            command.Third, arcs, token);
+                        for (int index = 0; index < count; index++) { Include(arcs[index].Control); Include(arcs[index].End); }
+                        current = command.Third; Include(current); break;
+                    case SvgAuthoredPathVerb.Close:
+                    case SvgAuthoredPathVerb.End: current = first; break;
+                }
+            }
+            int outset = cap == SvgStrokeCap.Butt ? 1 : 2;
+            double l = MathF.Floor(left) - (double)outset, t = MathF.Floor(top) - (double)outset;
+            double r = MathF.Ceiling(right) + (double)outset, b = MathF.Ceiling(bottom) + (double)outset;
+            if (!(l >= 0 && t >= 0 && r <= bitmap.Right - bitmap.Left && b < bitmap.Bottom - bitmap.Top)) return false;
+            int xStart = bitmap.Left + (int)l, xEnd = bitmap.Left + (int)r;
+            int yStart = bitmap.Top + (int)t, yEnd = bitmap.Top + (int)b;
+            for (int x = xStart; x < xEnd; x++)
+            {
+                work.Consume(token);
+                if (mask[(yStart * width + x) * 4 + 3] != 255) return false;
+            }
+            // Native quickContains requires one complete compressed row band,
+            // whose last row also contains the exclusive bottom boundary.
+            for (int y = yStart + 1; y <= yEnd; y++)
+                for (int x = bitmap.Left; x < bitmap.Right; x++)
+                {
+                    work.Consume(token);
+                    if (mask[(yStart * width + x) * 4 + 3] != mask[(y * width + x) * 4 + 3]) return false;
+                }
+            return true;
+
+            void Include(SvgDevicePoint point)
+            {
+                work.Consume(token);
+                SvgDevicePoint mapped = SvgAuthoredPath.MapPoint(map, point, origin);
+                left = MathF.Min(left, (float)mapped.X); right = MathF.Max(right, (float)mapped.X);
+                top = MathF.Min(top, (float)mapped.Y); bottom = MathF.Max(bottom, (float)mapped.Y);
+            }
+        }
 
         static float FastLength(float x, float y) => MathF.Max(MathF.Abs(x), MathF.Abs(y)) + MathF.Min(MathF.Abs(x), MathF.Abs(y)) * .5f;
         static void Extend(Span<SvgDevicePoint> points, bool closed, SvgStrokeCap cap, bool first, bool last, ParserWorkCounter work, CancellationToken token)

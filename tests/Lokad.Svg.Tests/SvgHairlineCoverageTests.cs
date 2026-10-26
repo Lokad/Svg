@@ -10,6 +10,55 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgHairlineCoverageTests
 {
+    [Fact]
+    public void Containing_binary_viewport_preserves_unclipped_adjacent_pixel_rounding()
+    {
+        // The short rotated rectangle also has independent browser references in
+        // Research/hairline-clip-rounding. Neither clip cuts its fringe pixels.
+        byte[] mask = new byte[64 * 64 * 4];
+        for (int index = 3; index < mask.Length; index += 4) mask[index] = 255;
+        Assert.Equal(Draw([], false), Draw(mask, true));
+
+        static byte[] Draw(ReadOnlySpan<byte> mask, bool binary)
+        {
+            byte[] destination = new byte[64 * 64 * 4];
+            SvgHairlineCoverage walker = new(destination, 64, 64, SvgAnalyticPaint.Solid(new(255, 0, 0, 208)),
+                null, SvgClipAntialiasing.None, mask, binary, new(new(0, 0, 64, 64), new(0, 0, 64, 64)),
+                new(100_000), CancellationToken.None);
+            SvgDevicePoint[] corners = [new(13.410023945401651, 53.04681908123335), new(19.327956946071712, 48.14011700656239),
+                new(20.093880441919556, 49.06389103300366), new(14.175947441249495, 53.97059310767462)];
+            for (int index = 0; index < corners.Length; index++) walker.DrawLine(corners[index], corners[(index + 1) % corners.Length]);
+            return destination;
+        }
+    }
+
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public void Whole_path_clip_dispatch_preserves_opaque_bands_and_complex_region_boundaries(bool binary, bool changingBand)
+    {
+        const string source = "<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect x='10.28125' y='33.953125' width='5.125' height='0.800000011920929' fill='none' stroke='red' stroke-width='.5' transform='matrix(0.7698124228513895,-0.6382701885750841,0.6382701885750841,0.7698124228513895,-20.64588550530315,15.789224010817065)'/></svg>";
+        using SvgRoot root = SvgRootParser.Parse(TextEncoding.UTF8.GetBytes(source), SvgRenderLimits.Default, CancellationToken.None);
+        SvgAuthoredPath path = Assert.IsType<SvgAuthoredPath>(Assert.Single(root.Geometries.ToArray(), geometry => geometry.AuthoredPath?.StrokeStyle is not null).AuthoredPath);
+        byte[] mask = new byte[64 * 64 * 4];
+        for (int index = 3; index < mask.Length; index += 4) mask[index] = 255;
+        // This pixel is far from the stroke. It changes the native clip's row
+        // band/region shape, so opaque pixels under the stroke do not suffice.
+        if (changingBand) mask[(50 * 64) * 4 + 3] = binary ? (byte)0 : (byte)127;
+        byte[] unclipped = Draw(path, [], false), actual = Draw(path, mask, binary);
+        Assert.Equal(!changingBand, unclipped.AsSpan().SequenceEqual(actual));
+
+        static byte[] Draw(SvgAuthoredPath path, ReadOnlySpan<byte> mask, bool binary)
+        {
+            byte[] destination = new byte[64 * 64 * 4];
+            Assert.True(SvgHairlineStroke.TryRasterize(path, SvgAffineTransform.FromScale(1.5, 1.5), new(255, 0, 0, 255), null,
+                null, SvgClipAntialiasing.None, mask, binary, destination, 64, 64, new(100_000), CancellationToken.None));
+            return destination;
+        }
+    }
+
     [Theory]
     [InlineData(0, 0, 0, 255)]
     [InlineData(235, 28, 35, 255)]
