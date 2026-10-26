@@ -1,6 +1,32 @@
 # Tests and provenance
 
-Run the offline suite from the repository root:
+Run focused checks while editing, affected integration before promotion, and the
+full offline suite at a coherent milestone. These responsibilities complement
+each other:
+
+| Layer | Purpose | Examples |
+| --- | --- | --- |
+| Mechanisms | Exercise parsing, numerical boundaries, geometry, shaping and rounding directly. Keep useful exhaustive boundaries here. | [Alpha boundaries](Lokad.Svg.Tests/SvgAlphaBoundaryMechanismTests.cs), parser and OpenType tests. |
+| API and ownership | Cover distinct execution/allocation paths, destinations, prepared documents, cancellation, refusal, cleanup and retry with representative inputs. | [API forms](Lokad.Svg.Tests/SvgConversionApiContractTests.cs), [text replay/ownership](Lokad.Svg.Tests/SvgTextNodeMetricsTests.cs), public-contract and destination-overlap tests. |
+| Rendering | Compare each input with its own independent browser reference through canonical owned synchronous conversion. Keep platform differences and specific replay interactions. | [Native paint inputs](Lokad.Svg.VisualTests/SvgPaintInputReferenceTests.cs), fixture and research-reference tests. |
+
+For example, after a Release build, an alpha change can start with:
+
+```powershell
+dotnet test tests/Lokad.Svg.Tests -c Release --no-build --filter FullyQualifiedName~SvgAlphaBoundaryMechanismTests
+```
+
+Follow it with the affected rendering bank and contract classes. For a broader
+development check excluding the extended color/filter matrix:
+
+```powershell
+dotnet test -c Release --no-build --filter 'Category!=Research'
+```
+
+Only the explicitly selected extended matrix has this category; it does not
+exclude the other native research-reference tests. `Layer` traits identify the
+classes migrated to these responsibilities; they are not a complete suite index.
+The full milestone command includes every extended case:
 
 ```powershell
 dotnet restore --locked-mode
@@ -9,8 +35,42 @@ dotnet test -c Release --no-build
 ```
 
 Use `--filter FullyQualifiedName~TestClassName` on a test project for focused
-checks. The [CI workflow](../.github/workflows/ci.yml) runs Windows/Linux tests,
+checks. The [CI workflow](../.github/workflows/ci.yml) retains the full unfiltered
+Windows/Linux suite,
 browser/resource/font-host smoke checks and package/installed-consumer checks.
+
+The API matrix uses seven inputs across twelve raw/prepared destination forms.
+Dedicated tests retain unusual stream failures, overlap, borrowed storage,
+resource refusal, cancellation and disposal paths. Rendering fixtures do not
+each need the whole matrix. The text-node corpus still has all 594 native image
+cases; 24 replay cases and 14 lifetime cases protect reader growth, shaping,
+rotation, fitting, gradients, scaling and use/symbol/pattern/mask owners.
+
+Color/filter numerical-context cross products remain available with
+`--filter Category=Research`. Their [gradient](Research/gradient-color-alpha/research-cases.json)
+and [filter](Research/filter-uniform-precision/research-cases.json) selections
+move 3,812 repeated combinations out of the development loop, preserving all
+sources, native references and individual assertions. Selection factors alpha
+regime/grammar within the same XML structure, placement, output scale and bank;
+it never uses equal images as evidence of redundancy. Gradient midpoint,
+syntax and tiny-canvas banks remain routine. The direct alpha vectors retain
+1,278 token pairs and native source/reference hashes. New captures stay routine
+unless explicitly reviewed into the research lists; preserve a failing-before
+interaction in routine coverage. Reference regeneration is not part of this split.
+
+One sequential local Windows Release measurement (including test-host startup
+and TRX output, excluding build) gave:
+
+| Check | Before | After |
+| --- | ---: | ---: |
+| Text-node replay/lifetime | 19.2 s | 7.5 s |
+| Full native paint corpus | 273.7 s | 283.3 s |
+| Development native paint check | 273.7 s (formerly full) | 71.3 s (routine) |
+
+These are edit-loop measurements, not performance guarantees or a claim that
+full qualification became faster. The full comparison retains all 37,372 native
+cases plus a corpus-partition check. The API matrix and direct numerical checks
+add separate responsibilities; CI continues to run every research case.
 
 [Paint input tests](Lokad.Svg.VisualTests/SvgPaintInputReferenceTests.cs)
 use [native controls](Research/offset-merge-inputs/README.md) for stored image

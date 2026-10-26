@@ -6,6 +6,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
+[Trait("Layer", "Contracts")]
 public sealed class SvgTextNodeMetricsTests
 {
     private static readonly string Folder = Path.Combine(AppContext.BaseDirectory, "TestData", "text-node-boundaries");
@@ -21,13 +22,46 @@ public sealed class SvgTextNodeMetricsTests
             .ToDictionary(row => row.GetProperty("id").GetString() ?? throw new InvalidDataException("Missing case ID."), row => row.Clone());
     }
 
-    public static IEnumerable<object[]> Cases()
+    // Every capture remains a canonical rendering regression in
+    // SvgPaintInputReferenceTests. These inputs exercise distinct replay paths.
+    public static IEnumerable<object[]> ReplayCases()
     {
-        foreach (string id in Rows.Keys) yield return [id];
+        foreach (string id in new[]
+        {
+            "node-comment-x2_5", "node-cdata-x2_5", "node-empty-span-x2",
+            "shape-span-AV", "shape-span-fi", "shape-long-chunk-middle-middle",
+            "element-scale150-span-fi", "element-reflection-span-AVA", "element-quarter-turn-span-AVA",
+            "element-direct-fit-spacing-fi-span", "element-path-fit-scale-fi-span",
+            "replay-use-visibility-return", "replay-symbol-fill-return",
+            "replay-pattern-visibility-return", "replay-mask-fill-return",
+            "cluster-fiA-8-unit-start-rotate-candidate",
+            "source-items-span-ffi-16-start-gradient-candidate",
+            "source-prefixes-relative-span-fiA-neg16-start-fit-scale-candidate",
+            "anchored-rectangle-subgrid-70-control", "path-unpainted-original-0",
+            "path-unpainted-symbol-63", "path-position-y-only-1-candidate",
+            "path-position-activation-41-candidate", "path-position-activation-62-candidate"
+        }) yield return [id];
+    }
+
+    // Keep allocation paths: reader growth, shaping/rotation arrays, fitting,
+    // deferred glyphs, shaders, and each retained resource owner.
+    public static IEnumerable<object[]> OwnershipCases()
+    {
+        foreach (string id in new[]
+        {
+            "shape-long-chunk-middle-middle", "shape-span-fi",
+            "replay-use-visibility-return", "replay-symbol-fill-return",
+            "replay-pattern-visibility-return", "replay-mask-fill-return",
+            "element-path-fit-scale-fi-span", "cluster-fiA-8-unit-start-rotate-candidate",
+            "source-items-span-ffi-16-start-gradient-candidate",
+            "source-prefixes-relative-span-fiA-neg16-start-fit-scale-candidate",
+            "path-unpainted-original-0", "path-position-y-only-1-candidate",
+            "path-position-activation-41-candidate", "path-position-activation-62-candidate"
+        }) yield return [id];
     }
 
     [Theory]
-    [MemberData(nameof(Cases))]
+    [MemberData(nameof(ReplayCases))]
     public async Task Node_metrics_preserve_platform_pixels_and_prepared_replay(string id)
     {
         JsonElement row = Rows[id];
@@ -62,7 +96,7 @@ public sealed class SvgTextNodeMetricsTests
     }
 
     [Theory]
-    [MemberData(nameof(Cases))]
+    [MemberData(nameof(OwnershipCases))]
     public async Task Node_metadata_releases_owned_storage_after_limits_cancellation_and_retry(string id)
     {
         byte[] input = ReadInput(Rows[id]);

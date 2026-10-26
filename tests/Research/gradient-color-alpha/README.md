@@ -18,3 +18,14 @@ also differs from HSL fast parsing. Public byte colors retain their existing
 contract. The deferred cases record filter-consumer differences in
 `knownDifferences`, with separate results per host. Additional
 [solid-paint controls](../solid-paint-alpha/README.md) cover inheritance and text opacity.
+
+Routine rendering retains 8,760 cases, including every extended numerical,
+syntax and tiny-canvas boundary. The [research selection](research-cases.json)
+retains 1,300 repeated numerical/context combinations as individually discovered
+`Category=Research` tests, included in unfiltered CI. Selection keeps bank, XML
+structure, geometry, paint role, font, scale and alpha regime/grammar distinct;
+it does not infer redundancy from equal images. The regime rules are shared
+with the [filter bank](../filter-uniform-precision/README.md). New captures stay
+routine unless explicitly reviewed into the list. All original sources, native
+references, per-platform differences and exact comparisons remain unchanged.
+See the [validation commands](../../README.md).

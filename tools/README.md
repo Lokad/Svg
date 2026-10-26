@@ -5,6 +5,22 @@ and reports under ignored `artifacts/`. Browser tooling is development-only;
 conversion has no browser dependency. [Tests and provenance](../tests/README.md)
 defines collection membership and fixture admission.
 
+## Development and qualification
+
+Use the [three test responsibilities](../tests/README.md) to choose a short edit
+loop: direct mechanism checks first, then representative API/ownership contracts
+and affected native rendering. Most images use one canonical conversion call.
+Add another API path only for a specific interaction or allocation contract.
+Running thousands of fixtures through all twelve API forms is optional
+exploratory coverage; agreement between API forms cannot establish native
+correctness. Retain the exploratory results separately from regression evidence.
+
+The extended color/filter context matrices are selected by `Category=Research`;
+`Category!=Research` omits them for development. Both preserve individual case
+discovery. Full unfiltered Windows/Linux tests, resource/font-host probes and
+installed-package checks remain milestone/CI gates. Keep browser captures and
+references unchanged when reorganizing tests.
+
 ## Chrome setup
 
 The [Windows pin](chrome-for-testing.json) and [Linux pin](chrome-for-testing.linux64.json)
