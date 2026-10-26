@@ -152,13 +152,14 @@ internal static class SvgTextPathLayout
                         SvgAffineTransform sourceMap = glyphMap.ComposeChecked(SvgAffineTransform.FromTranslation(placed.X, placed.Y));
                         if (horizontalPlacement)
                         {
-                            // Bounds retain the scalar point and physical inline subtraction
-                            // before inverse scaling; paint fitting keeps its separate origin.
+                            // Retain the scalar path point and physical inline subtraction
+                            // before inverse scaling for both bounds and paint fitting.
                             SvgAffineTransform sourcePoint = measured.GlyphMap(midpoint, 0, 0, work, token);
                             float scale = (float)pathScale;
                             float sourceX = (float)sourcePoint.E * scale - (float)(glyph.Advance * pathScale) / 2;
                             float sourceY = (float)sourcePoint.F * scale + (float)(glyph.Y * pathScale);
                             sourceMap = SvgAffineTransform.FromTranslation(sourceX / (double)scale, sourceY / (double)scale);
+                            placed = placed with { X = sourceMap.E, Y = sourceMap.F };
                         }
                         SvgTextDecorationPlacement decoration = default;
                         if (paint.Decoration is not null)

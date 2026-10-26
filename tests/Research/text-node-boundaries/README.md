@@ -24,3 +24,9 @@ Unpainted text-path glyphs retain their source bounds for gradients. Cases cover
 hidden and unfilled characters at each path position, curved and sloped paths,
 and use, symbol and pattern replay, including scaled output. Middle characters
 that leave the enclosing bounds unchanged provide positive controls.
+
+Horizontal text paths ignore absolute Y coordinates while retaining their
+authored chunk and shaping boundaries. Cases vary scalar/list X and Y, negative
+Y values, anchors, ligatures, relative offsets and rotation through direct text
+and resource replay. Horizontal glyph paint uses the measured scalar path point
+before source-grid rounding, including fractional coordinates and scaled output.

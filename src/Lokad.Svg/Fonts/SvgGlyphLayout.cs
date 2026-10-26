@@ -537,7 +537,7 @@ internal static class SvgGlyphLayout
                                 sourceDx = 0;
                                 sourceShiftX = (float)sourceX * sourceScaleFactor - (float)css.X;
                             }
-                            if (adjustment.Y is double sourceY)
+                            if (adjustment.AppliedY is double sourceY)
                             {
                                 sourceDy = 0;
                                 sourceShiftY = (float)sourceY * sourceScaleFactor;
@@ -697,7 +697,7 @@ internal static class SvgGlyphLayout
                     {
                         adjustment = adjustments[adjustmentIndex++];
                         if (adjustment.X is not null) dx = 0;
-                        if (adjustment.Y is double resetY) { dy = 0; baselineY = resetY; relativeY = 0; }
+                        if (adjustment.AppliedY is double resetY) { dy = 0; baselineY = resetY; relativeY = 0; }
                         relativeY += adjustment.Dy;
                         dx += (float)adjustment.Dx; dy += (float)adjustment.Dy;
                     }
@@ -709,7 +709,7 @@ internal static class SvgGlyphLayout
                     if (adjustment.X is double absoluteX) shiftX = (float)absoluteX * screen - (float)css.X - (positionX - originalX);
                     else if (fragmentIndex == 0 && source == fragment.SourceStart)
                         shiftX = (float)originX * screen - (float)css.X - (positionX - originalX);
-                    if (adjustment.Y is double absoluteY) shiftY = (float)absoluteY * screen - (float)css.Y;
+                    if (adjustment.AppliedY is double absoluteY) shiftY = (float)absoluteY * screen - (float)css.Y;
                     positionX += shiftX; positionY += shiftY;
                     float width = source == fragment.SourceStart ? (fragment.SourceWidth ?? 0) * stretch : 0;
                     if (source == fragment.SourceStart)
@@ -803,7 +803,7 @@ internal static class SvgGlyphLayout
                 token.ThrowIfCancellationRequested(); work?.Consume(token);
                 SvgTextPositionAdjustment adjustment = positionAdjustments[adjustmentIndex++];
                 if (adjustment.X is double absoluteX) x = absoluteX - nominalX;
-                if (adjustment.Y is double absoluteY) y = absoluteY - originY;
+                if (adjustment.AppliedY is double absoluteY) y = absoluteY - originY;
                 x += adjustment.Dx;
                 y += adjustment.Dy;
             }

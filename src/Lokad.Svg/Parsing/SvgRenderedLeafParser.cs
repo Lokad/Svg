@@ -403,7 +403,7 @@ internal static class SvgRenderedLeafParser
                         }
                         if (!hasFill && !hasStroke && !hasDecoration) continue;
                         if (fontSnapshot is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG text requires a prepared font snapshot.");
-                        SvgTextStyle runStyle = textPath is {} anchoredPath ? textStyle with { Y = 0, Anchor = anchoredPath.Anchor ?? textStyle.Anchor } : textStyle;
+                        SvgTextStyle runStyle = textPath is {} anchoredPath ? textStyle with { Y = 0, PositionLists = textStyle.PositionLists with { IgnoreY = true }, Anchor = anchoredPath.Anchor ?? textStyle.Anchor } : textStyle;
                         if (extracted.CharacterOffset != 0 || extracted.ResumeAfterPath is not null)
                             runStyle = runStyle with { X = 0, Y = 0, Dx = 0, Dy = 0,
                                 PositionLists = runStyle.PositionLists with { CharacterOffset = extracted.CharacterOffset } };

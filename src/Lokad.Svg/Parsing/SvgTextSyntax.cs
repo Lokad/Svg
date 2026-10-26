@@ -120,7 +120,11 @@ internal readonly record struct SvgTextPositionAdjustment(int Start, double? X, 
 {
     internal SvgTextPositionAdjustment(int start, double dx, double dy) : this(start, null, null, dx, dy) { }
 
+    /// <summary>Retains authored reset boundaries for shaping and anchoring even when a path ignores Y positioning.</summary>
     internal bool HasAbsolutePosition => X is not null || Y is not null;
+    internal bool IgnoreY { get; init; }
+    /// <summary>Returns the coordinate used by the cursor; an ignored Y still retains its authored boundary.</summary>
+    internal double? AppliedY => IgnoreY ? null : Y;
     internal bool OverridesDx { get; init; }
     internal bool OverridesDy { get; init; }
     internal double? Rotation { get; init; }

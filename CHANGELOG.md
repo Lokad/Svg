@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Preserve authored text-path positioning boundaries while ignoring absolute Y
+  movement, and use measured scalar path points for horizontal glyph paint.
+
 - Retain unpainted text-path characters in shared gradient bounds, including
   hidden spans and resource replay.
 - Round final anchored text rectangles and skip fitting-range work when no

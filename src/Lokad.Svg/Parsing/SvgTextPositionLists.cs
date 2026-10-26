@@ -9,6 +9,8 @@ namespace Lokad.Svg.Parsing;
 internal readonly record struct SvgTextPositionLists(string? X, string? Y, string? Dx, string? Dy, string? Rotate)
 {
     internal int CharacterOffset { get; init; }
+    /// <summary>Preserves authored Y boundaries while suppressing their coordinate effect on a horizontal text path.</summary>
+    internal bool IgnoreY { get; init; }
     internal bool IsEmpty => X is null && Y is null && Dx is null && Dy is null && Rotate is null;
 
     internal static double ReadFirst(string? value, out bool multiple)
@@ -77,7 +79,7 @@ internal readonly record struct SvgTextPositionLists(string? X, string? Y, strin
             }
             // Authored zero entries partition SVG inline items without breaking shaping.
             if (x is not null || y is not null || hasDx || hasDy || dx != 0 || dy != 0 || angle is not null)
-                positions.Add(new(sourceOffset, x, y, dx, dy) { Rotation = angle });
+                positions.Add(new(sourceOffset, x, y, dx, dy) { Rotation = angle, IgnoreY = this.IgnoreY });
             sourceOffset += scalar.Utf16SequenceLength;
         }
         return positions.Detach();
