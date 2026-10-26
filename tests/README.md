@@ -44,7 +44,8 @@ rotated rectangle/path inputs through containing and intersecting clips. Direct
 coverage checks guard binary/AA mask dispatch; each rendering uses its own native
 image through the canonical conversion path.
 
-The API matrix uses seven inputs across twelve raw/prepared destination forms.
+The API matrix uses eight inputs across twelve raw/prepared destination forms.
+Its shared-layout fixture adds the common glyph-owner allocation path once.
 Dedicated tests retain unusual stream failures, overlap, borrowed storage,
 resource refusal, cancellation and disposal paths. Rendering fixtures do not
 each need the whole matrix. The text-node corpus still has all 594 native image
@@ -127,6 +128,10 @@ can differ from unfiltered rectangles; those references describe the filtered in
 [Text paint box tests](Lokad.Svg.Tests/SvgTextPaintBoundsTests.cs) compare anchors,
 positions, spacing, rotation and font fragments with [native numeric references](Research/text-paint-bounds/capture.json)
 on each platform, and check metric reuse, denial, cancellation and scratch cleanup.
+[Shared-layout controls](Research/text-paint-bounds/README.md) add exact whole-text
+box vectors and canonical mixed direct/path images. Their separate contracts
+cover borrowed views and source-local own-filter remapping, including cancellation
+during glyph transformation; rendering fixtures do not repeat the destination matrix.
 [Image controls](Lokad.Svg.VisualTests/SvgTextPaintBoundsReferenceTests.cs) retain
 [separate platform references](Research/text-paint-bounds/image-capture.json) for
 linear, radial and pattern fills/strokes in object-box and user-space units.

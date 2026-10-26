@@ -70,7 +70,7 @@ internal static class SvgTextLayoutBounds
                 {
                     work.Consume(token);
                     SvgPlacedTextGlyph path = paths[index];
-                    if (!path.Visible) continue;
+                    // Visibility controls ink, independently of the retained source box.
                     SvgAffineTransform map = path.SourceMap;
                     map = map with { E = map.E * scale, F = map.F * scale };
                     float inlineWidth = (float)(run.Glyphs[index].Advance * scale);

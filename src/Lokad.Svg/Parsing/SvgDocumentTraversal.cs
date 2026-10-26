@@ -343,7 +343,7 @@ internal static class SvgDocumentTraversal
                         {
                             workCounter.Consume(cancellationToken);
                             SvgPendingTextRun text = state.PendingTextRuns[^1];
-                            text.Run?.Dispose(); text.Continuation?.Dispose(); text.Owner.Dispose();
+                            text.Run?.Dispose(); text.SharedLayout?.Dispose(); text.Owner.Dispose();
                             state.PendingTextRuns.RemoveLast();
                         }
                         while (state.PendingGroupClips.Count > state.PatternCommandStart.Clip)

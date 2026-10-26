@@ -12,6 +12,8 @@ namespace Lokad.Svg.Parsing;
 internal struct SvgTextPaintPreparation
 {
     internal SvgRectangle? SourceBox;
+    // The text element shares shader coordinates; drawing enclosures remain fragment-local.
+    internal SvgRectangle? ObjectBox;
     private SvgPaintBounds? _drawingBounds;
     private SvgRecordedPaint _lastPaint;
     internal bool NativeDrawing { get; private set; }

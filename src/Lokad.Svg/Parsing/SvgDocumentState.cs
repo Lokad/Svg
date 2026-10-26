@@ -430,7 +430,7 @@ internal sealed class SvgDocumentState : IDisposable
         _anonymousSymbols?.Dispose();
         _anonymousSymbolOwner?.Dispose();
         PendingUses.Dispose();
-        foreach (SvgPendingTextRun pending in PendingTextRuns.AsSpan()) { pending.Run?.Dispose(); pending.Continuation?.Dispose(); pending.Owner.Dispose(); }
+        foreach (SvgPendingTextRun pending in PendingTextRuns.AsSpan()) { pending.Run?.Dispose(); pending.SharedLayout?.Dispose(); pending.Owner.Dispose(); }
         PendingTextRuns.Dispose();
         DeferredPaintLeaves.Dispose();
         DeferredClipUses.Dispose();

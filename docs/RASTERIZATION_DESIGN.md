@@ -231,6 +231,12 @@ mapping, preserving isolated-layer shader origins. Equal run paints share one
 scene record; generic font routes and filter capture bounds remain independent.
 Path source maps retain original coordinates before paint truncation, glyph stretch
 and output placement.
+Mixed direct/path text shapes once. Scoped glyph views borrow the parent storage
+and own only rebased fragment arrays; the parent outlives every view. Source ranges
+select direct/path metric and anchor rules without dividing shaping clusters.
+Object-box paints measure the whole element before emission, retaining invisible
+source boxes while preserving local drawing enclosures. Deferred own-filter
+wrappers move only their appended command slots and clip/mask ranges.
 Path character widths include fixed-point spacing before fragment rounding;
 kerning stops at spacing changes. Signed advances position characters while
 rotated fragment rectangles clamp their painted width to zero.

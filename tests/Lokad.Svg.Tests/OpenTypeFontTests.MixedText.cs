@@ -55,13 +55,19 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
-    [InlineData("M6 4", "", 6)]
-    [InlineData("M0 4H8V8H0Z", " startOffset='25%'", 6)]
-    public async Task Empty_path_runs_resume_from_degenerate_endpoints_and_closed_offsets(string data, string attributes, int x)
+    [InlineData("M6 4", "", false)]
+    [InlineData("M6 4", "", true)]
+    [InlineData("M0 4H8V8H0Z", " startOffset='25%'", false)]
+    [InlineData("M0 4H8V8H0Z", " startOffset='25%'", true)]
+    public async Task Empty_path_runs_leave_default_and_positioned_source_cursors_unchanged(string data, string attributes, bool positioned)
     {
+        // Independent native topology controls establish that an empty path is inert.
+        // Retain the original default-origin inputs and add visibly positioned glyphs.
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
-        string source = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><path id='p' d='" + data + "'/></defs><text font-family='Example' font-size='100'><textPath href='#p'" + attributes + "/>A</text></svg>";
-        string reference = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><text font-family='Example' font-size='100' x='" + x + "' y='4'>A</text></svg>";
+        string position = positioned ? " x='3' y='4'" : string.Empty;
+        string emptyPath = "<textPath href='#p'" + attributes + "/>";
+        string source = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><path id='p' d='" + data + "'/></defs><text font-family='Example' font-size='100'" + position + ">" + emptyPath + "A</text></svg>";
+        string reference = source.Replace(emptyPath, string.Empty, StringComparison.Ordinal);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
         Assert.Equal(SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(reference), options, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(source), options, CancellationToken.None).ToArray());
     }

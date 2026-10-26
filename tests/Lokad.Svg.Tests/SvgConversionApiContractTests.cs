@@ -11,7 +11,7 @@ public sealed class SvgConversionApiContractTests
     {
         // Each input reaches a distinct renderer/preparation path. Numerical
         // boundaries and native pixel references belong to their own tests.
-        foreach (string id in new[] { "solid", "curve", "image", "filter", "resources", "text", "positioned-path" })
+        foreach (string id in new[] { "solid", "curve", "image", "filter", "resources", "text", "positioned-path", "shared-path" })
         foreach (bool prepared in new[] { false, true })
         foreach (OutputForm form in Enum.GetValues<OutputForm>()) yield return [id, prepared, form];
     }
@@ -24,6 +24,7 @@ public sealed class SvgConversionApiContractTests
         {
             "text" => File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData/text-node-boundaries/source-items-span-ffi-16-start-gradient-candidate.svg")),
             "positioned-path" => File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData/text-node-boundaries/path-position-activation-41-candidate.svg")),
+            "shared-path" => File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData/text-node-boundaries/shared-layout.svg")),
             _ => System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'>" + (id switch
             {
                 "solid" => "<rect x='2' y='2' width='16' height='16' fill='red' fill-opacity='.37'/>",
@@ -35,7 +36,7 @@ public sealed class SvgConversionApiContractTests
             }) + "</svg>")
         };
         byte[] unchanged = input.ToArray();
-        bool needsFont = id is "text" or "positioned-path";
+        bool needsFont = id is "text" or "positioned-path" or "shared-path";
         double scale = id == "positioned-path" ? 1.5 : 1;
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,
             "TestData/text-node-boundaries/font-pack.json")), "public-noto-sans");

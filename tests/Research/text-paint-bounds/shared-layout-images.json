@@ -1,0 +1,3336 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Canonical independent native regressions for continuous mixed direct/path text layout.",
+  "chromeVersion": "153.0.8010.52",
+  "fontPack": "font-pack.json",
+  "fontPackId": "r99-fonts",
+  "tripleNativeStable": true,
+  "launches": {
+    "paint-bounds-diagnostics-windows-0": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 10562,
+        "debuggerReadyMilliseconds": 242,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 3252,
+        "debuggerReadyMilliseconds": 188,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 3185,
+        "debuggerReadyMilliseconds": 155,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "paint-bounds-diagnostics-linux-0": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 8549,
+        "debuggerReadyMilliseconds": 3898,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 9269,
+        "debuggerReadyMilliseconds": 3453,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 9221,
+        "debuggerReadyMilliseconds": 4485,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "clusters-windows-0": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 2201,
+        "debuggerReadyMilliseconds": 158,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 2186,
+        "debuggerReadyMilliseconds": 141,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 2206,
+        "debuggerReadyMilliseconds": 163,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "clusters-linux-0": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 8670,
+        "debuggerReadyMilliseconds": 4698,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 8074,
+        "debuggerReadyMilliseconds": 4722,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 7697,
+        "debuggerReadyMilliseconds": 3871,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "clusters-windows-2": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 2159,
+        "debuggerReadyMilliseconds": 139,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 2157,
+        "debuggerReadyMilliseconds": 141,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 10473,
+        "debuggerReadyMilliseconds": 141,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "clusters-linux-2": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 6902,
+        "debuggerReadyMilliseconds": 3565,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 6864,
+        "debuggerReadyMilliseconds": 3237,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 6435,
+        "debuggerReadyMilliseconds": 3210,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "continuations-windows-0": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 2086,
+        "debuggerReadyMilliseconds": 176,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 2649,
+        "debuggerReadyMilliseconds": 158,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 2303,
+        "debuggerReadyMilliseconds": 287,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "continuations-linux-0": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 11654,
+        "debuggerReadyMilliseconds": 6122,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 35485,
+        "debuggerReadyMilliseconds": 26226,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 16773,
+        "debuggerReadyMilliseconds": 11702,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "continuations-windows-1": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 2091,
+        "debuggerReadyMilliseconds": 146,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 2009,
+        "debuggerReadyMilliseconds": 132,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 2065,
+        "debuggerReadyMilliseconds": 147,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "continuations-linux-1": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 11248,
+        "debuggerReadyMilliseconds": 6611,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 10361,
+        "debuggerReadyMilliseconds": 5950,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 9486,
+        "debuggerReadyMilliseconds": 5531,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "continuations-windows-2": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 2060,
+        "debuggerReadyMilliseconds": 182,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 2013,
+        "debuggerReadyMilliseconds": 158,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1999,
+        "debuggerReadyMilliseconds": 132,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "continuations-linux-2": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 7643,
+        "debuggerReadyMilliseconds": 4073,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 8584,
+        "debuggerReadyMilliseconds": 4737,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 9009,
+        "debuggerReadyMilliseconds": 5159,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "closed-offset-boundaries-windows-0": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 2325,
+        "debuggerReadyMilliseconds": 389,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 2036,
+        "debuggerReadyMilliseconds": 146,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1985,
+        "debuggerReadyMilliseconds": 145,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "closed-offset-boundaries-linux-0": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 10624,
+        "debuggerReadyMilliseconds": 6619,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 6768,
+        "debuggerReadyMilliseconds": 3502,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 6296,
+        "debuggerReadyMilliseconds": 3340,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "topology-windows-0": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 2109,
+        "debuggerReadyMilliseconds": 215,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1929,
+        "debuggerReadyMilliseconds": 143,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1951,
+        "debuggerReadyMilliseconds": 169,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "topology-linux-0": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 6845,
+        "debuggerReadyMilliseconds": 3720,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5225,
+        "debuggerReadyMilliseconds": 2399,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5117,
+        "debuggerReadyMilliseconds": 2277,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "glyphless-paint-bounds-windows-0": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1032,
+        "debuggerReadyMilliseconds": 211,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1369,
+        "debuggerReadyMilliseconds": 249,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 1044,
+        "debuggerReadyMilliseconds": 164,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "glyphless-paint-bounds-linux-0": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 7959,
+        "debuggerReadyMilliseconds": 5435,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5220,
+        "debuggerReadyMilliseconds": 3208,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5464,
+        "debuggerReadyMilliseconds": 3333,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "consumers-windows-0": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 3622,
+        "debuggerReadyMilliseconds": 440,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 3491,
+        "debuggerReadyMilliseconds": 175,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 3555,
+        "debuggerReadyMilliseconds": 192,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "consumers-linux-0": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 12718,
+        "debuggerReadyMilliseconds": 7592,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 7647,
+        "debuggerReadyMilliseconds": 3286,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 8138,
+        "debuggerReadyMilliseconds": 3085,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "consumers-windows-1": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 3143,
+        "debuggerReadyMilliseconds": 152,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 3192,
+        "debuggerReadyMilliseconds": 149,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 3177,
+        "debuggerReadyMilliseconds": 138,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "consumers-linux-1": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 8435,
+        "debuggerReadyMilliseconds": 4043,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 8205,
+        "debuggerReadyMilliseconds": 3297,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 8411,
+        "debuggerReadyMilliseconds": 3444,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "own-filter-flood-windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 983,
+        "debuggerReadyMilliseconds": 175,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 951,
+        "debuggerReadyMilliseconds": 139,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 958,
+        "debuggerReadyMilliseconds": 146,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "own-filter-flood-linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 6162,
+        "debuggerReadyMilliseconds": 4065,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5568,
+        "debuggerReadyMilliseconds": 2933,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5353,
+        "debuggerReadyMilliseconds": 2969,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "filter-region-history-windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 5195,
+        "debuggerReadyMilliseconds": 256,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 5119,
+        "debuggerReadyMilliseconds": 160,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 10468,
+        "debuggerReadyMilliseconds": 156,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "filter-region-history-linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 16982,
+        "debuggerReadyMilliseconds": 9074,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 13000,
+        "debuggerReadyMilliseconds": 5954,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 12489,
+        "debuggerReadyMilliseconds": 5572,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "r144-consumer-6-candidate",
+      "input": "shared-layout-inputs/r144-consumer-6-candidate.svg",
+      "sourceSha256": "c86b77c71dacc0f2e6681974de7d78a2b325837a4b62e71162bbbd03255ec9a5",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/139a9a43bb3a0d535293.png",
+          "sha256": "139a9a43bb3a0d5352939c2f172fe71abb25be57d5b09a0f1c1758555b14e8de"
+        },
+        "linux": {
+          "path": "references/shared-layout/f7a8e2d914132a48e6a6.png",
+          "sha256": "f7a8e2d914132a48e6a63c29b463d8a35b0eff538f4d4ac00f48d71f8db244ba"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-6-control",
+      "input": "shared-layout-inputs/r144-consumer-6-control.svg",
+      "sourceSha256": "5d14be302e027eb19f5656070cd918e26578ca94eac6bf0e8de8e5594bdbd47f",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/5dba9b5c7ed63919d6cc.png",
+          "sha256": "5dba9b5c7ed63919d6cc26b4e9987e8d1a52c53db7b261c927032b905253a14f"
+        },
+        "linux": {
+          "path": "references/shared-layout/cd545779871dc6d200c7.png",
+          "sha256": "cd545779871dc6d200c76c0f1a72278b92c2ac4734af65baafbc6239825cb173"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-14-candidate",
+      "input": "shared-layout-inputs/r144-consumer-14-candidate.svg",
+      "sourceSha256": "1a128dd7baa909ecca92408323edc0e4575f9780a21464f166c16898f9ad10a1",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/ebd41af775a99d2b3b15.png",
+          "sha256": "ebd41af775a99d2b3b1559483d7de67114946d176f38647b7944b448c5eeec4b"
+        },
+        "linux": {
+          "path": "references/shared-layout/ef85cc950f6a0a4c0d6e.png",
+          "sha256": "ef85cc950f6a0a4c0d6e4db11631b6c0615e95b529fcdc9de60a069cdcdd44d3"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-14-control",
+      "input": "shared-layout-inputs/r144-consumer-14-control.svg",
+      "sourceSha256": "e328c44916c974e52656b6cdc0cccb29501137c6a9ff2654c5476fe0c1dcc3b1",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/bf25f9f93a15b9e46385.png",
+          "sha256": "bf25f9f93a15b9e46385d1bd37e3a0bea8d680a36d3a6bd2f2fd7c512085c06d"
+        },
+        "linux": {
+          "path": "references/shared-layout/a10f1f24ef8951025cb8.png",
+          "sha256": "a10f1f24ef8951025cb8ac9dbc96c83d53048ab23c8e615fbcaa59e251e32842"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-22-candidate",
+      "input": "shared-layout-inputs/r144-consumer-22-candidate.svg",
+      "sourceSha256": "a894d8e3b6967050593e5322fb33ef0e18ff980e1b3f82f0caf26ea2ea04bd27",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/394acb728871d450d151.png",
+          "sha256": "394acb728871d450d151ad04678a3c49de15b07a03b93340c856c591251d9907"
+        },
+        "linux": {
+          "path": "references/shared-layout/a776785f74daf3e86c80.png",
+          "sha256": "a776785f74daf3e86c809d12efee30716b49c9db2a687a3a8e466c3970d0c6cd"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-22-control",
+      "input": "shared-layout-inputs/r144-consumer-22-control.svg",
+      "sourceSha256": "a402c55bbae219d65d2236c60d9dad9e5a6335d7bff66ef0cdc5967e37da2d8f",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/0afda5f726f6a1de4410.png",
+          "sha256": "0afda5f726f6a1de441085a8109bffc56c7c8875d005159dbc73989e9745ef33"
+        },
+        "linux": {
+          "path": "references/shared-layout/cd812d3201c55a306da2.png",
+          "sha256": "cd812d3201c55a306da2ee4ccf30bfc1b5d5ed64aac483d1cdbf186f2e255bf8"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-30-candidate",
+      "input": "shared-layout-inputs/r144-consumer-30-candidate.svg",
+      "sourceSha256": "6fab1876ee0b6698b88e6b65f4cc91e0c03aa8fceff6f29511186cb2b53262d0",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/d9019021f9f08654f73f.png",
+          "sha256": "d9019021f9f08654f73f9854641e0d25c0d728a575a87749e2e68935a7b81618"
+        },
+        "linux": {
+          "path": "references/shared-layout/fa0ae348aad9407855dc.png",
+          "sha256": "fa0ae348aad9407855dc73c2a78199795f48e50fa3221153ae89adcbf010f3d5"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-30-control",
+      "input": "shared-layout-inputs/r144-consumer-30-control.svg",
+      "sourceSha256": "80e6d90d7ee3f7c3b7937817d8bdd0758e74fdbcc65dae9b8cd82838f2d6cc82",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/186fea298580919880db.png",
+          "sha256": "186fea298580919880db68e48e7501fec37003e02b67b2eaa21803dcc7dac7b0"
+        },
+        "linux": {
+          "path": "references/shared-layout/d2c76c5503c13a0d1aee.png",
+          "sha256": "d2c76c5503c13a0d1aee8610fd3415164e0e7250e91d08ffe539920c63471609"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-38-candidate",
+      "input": "shared-layout-inputs/r144-consumer-38-candidate.svg",
+      "sourceSha256": "dd8344c9214e53e396fc88b6ed6631ad86c86ac19c073239a0f65de88a3cc70a",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/4b3f3c7d666ed6aaec51.png",
+          "sha256": "4b3f3c7d666ed6aaec51d1a71afe1ad5d022ab1b6b88be5b139b0f6db2f95083"
+        },
+        "linux": {
+          "path": "references/shared-layout/0bf9ab4f648d9b1f2e9b.png",
+          "sha256": "0bf9ab4f648d9b1f2e9b43504b5110bbdf78ef4cf5af35396d5e01c61d5e83a1"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-38-control",
+      "input": "shared-layout-inputs/r144-consumer-38-control.svg",
+      "sourceSha256": "e504a489e6ee26c377976a3aff4ed6b9b4419803d39e6dcf49311fedeab72da7",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/bf4d2035a1125975e9a9.png",
+          "sha256": "bf4d2035a1125975e9a9ad0d1f7fd961305e671144e7aea37d44e055f1bdb97f"
+        },
+        "linux": {
+          "path": "references/shared-layout/fd9ee07106e20d20b870.png",
+          "sha256": "fd9ee07106e20d20b870f1b50d229900cfaad34333d186df5709d1be73aa7f73"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-46-candidate",
+      "input": "shared-layout-inputs/r144-consumer-46-candidate.svg",
+      "sourceSha256": "112e73f601ef4910a52b62288c71b51f010dda0b30b661ac1688dc267c24bf87",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/65f8e2824e71f990f498.png",
+          "sha256": "65f8e2824e71f990f498135a0dc8969ace553d5e0edcdbd24f2a786723066894"
+        },
+        "linux": {
+          "path": "references/shared-layout/8e3cfe92922d566f41e7.png",
+          "sha256": "8e3cfe92922d566f41e7a19fa9169cba13a681ea6de0a05b3ce89c77ac3b25b4"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-46-control",
+      "input": "shared-layout-inputs/r144-consumer-46-control.svg",
+      "sourceSha256": "2f2010ef9e6de3b89ca71052a2b67ee0f689e21c6cd0cf16f716a251e4c93375",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/139a9a43bb3a0d535293.png",
+          "sha256": "139a9a43bb3a0d5352939c2f172fe71abb25be57d5b09a0f1c1758555b14e8de"
+        },
+        "linux": {
+          "path": "references/shared-layout/f7a8e2d914132a48e6a6.png",
+          "sha256": "f7a8e2d914132a48e6a63c29b463d8a35b0eff538f4d4ac00f48d71f8db244ba"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-62-candidate",
+      "input": "shared-layout-inputs/r144-consumer-62-candidate.svg",
+      "sourceSha256": "0075f046503cece95c29c98a479d74bae4ff229adcaf547a21356c7ec1361c05",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/5775235eefd6d8c4022e.png",
+          "sha256": "5775235eefd6d8c4022e130b8cf841ad4d57d6acc54ab49d1aea7178bf4179b1"
+        },
+        "linux": {
+          "path": "references/shared-layout/273beb997d05f80b45b2.png",
+          "sha256": "273beb997d05f80b45b2378e79aa238736b33bf2ede5dfb098c3ae1487294f1d"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-62-control",
+      "input": "shared-layout-inputs/r144-consumer-62-control.svg",
+      "sourceSha256": "443c20ce2f3e76023a7ddda603996b0cb331f6087e0ed8db901b72e85ad91d0e",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/21392da2dc971545863f.png",
+          "sha256": "21392da2dc971545863f5120236768b621a6b0c4d3cc3fe31b3264f13d591bd1"
+        },
+        "linux": {
+          "path": "references/shared-layout/12a7c620bdad3a604da8.png",
+          "sha256": "12a7c620bdad3a604da866c14ffd867a361b946532ca985986b6bd48341cc7bc"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-70-candidate",
+      "input": "shared-layout-inputs/r144-consumer-70-candidate.svg",
+      "sourceSha256": "e69906df3842e9c51480c08e1e6b74ea9fb341807e981aee2c498f51cbb29bc2",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/c8165158b60cc421b540.png",
+          "sha256": "c8165158b60cc421b5405ce1ce674cc7e5f2a33b2bda25327e21550fdd58b488"
+        },
+        "linux": {
+          "path": "references/shared-layout/e0068fc24186bb7e8205.png",
+          "sha256": "e0068fc24186bb7e8205fdd28db9fa4436fc7df4c2f20a499f88ce65bb84a72a"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-70-control",
+      "input": "shared-layout-inputs/r144-consumer-70-control.svg",
+      "sourceSha256": "aa9d7eac83237afacf8c7071ae03348df59cc53dcf6a3d13a714f95053c5491d",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/806a158a03ecf2473be6.png",
+          "sha256": "806a158a03ecf2473be61b7c6e66bd8eebc79c89a4cd14ed1c5e515f749b50a8"
+        },
+        "linux": {
+          "path": "references/shared-layout/fc3ba75004f96e8dd3d2.png",
+          "sha256": "fc3ba75004f96e8dd3d286734273fc37948b53628ba21388660b762e252d5465"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-78-candidate",
+      "input": "shared-layout-inputs/r144-consumer-78-candidate.svg",
+      "sourceSha256": "da31730857a749cdcd0c6d4f52e2ffab90880e4251efcc2007a3650a892fa6f8",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/891be998e1097d9d144e.png",
+          "sha256": "891be998e1097d9d144e6e7f73f736e8ee2c4c3b88c4c213d371d562868dbf59"
+        },
+        "linux": {
+          "path": "references/shared-layout/6d5d39d3af47a9cef745.png",
+          "sha256": "6d5d39d3af47a9cef745936dffa3ed2f5ddb457ed706b5d144930685e2daac05"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-78-control",
+      "input": "shared-layout-inputs/r144-consumer-78-control.svg",
+      "sourceSha256": "396f765056d1746fc60613c7795fcbdb02a310e479b6bf6ac22060b545044da7",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/18f3d20c93af6d8f6ac5.png",
+          "sha256": "18f3d20c93af6d8f6ac5a6633e0bea02a313869ad8f3591309665e7902e7fdcb"
+        },
+        "linux": {
+          "path": "references/shared-layout/10610e33c8916d7c9b62.png",
+          "sha256": "10610e33c8916d7c9b620b2011b8548f9462a34b0e0b3e039ba41fbc00ef7aeb"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-110-candidate",
+      "input": "shared-layout-inputs/r144-consumer-110-candidate.svg",
+      "sourceSha256": "e4b5eda288a8b127b7f861befa55737bbfd6083802dcaaddd6884a78a26e8820",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/d86de8f91892249d7249.png",
+          "sha256": "d86de8f91892249d7249d0de7af3ffce2f5294ebc16c8a6d0a7f7ff1f1ab9bbf"
+        },
+        "linux": {
+          "path": "references/shared-layout/d1da01928f2ed3993042.png",
+          "sha256": "d1da01928f2ed399304252903633b0c851316439392bfe10f12a212bb283c4b7"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-110-control",
+      "input": "shared-layout-inputs/r144-consumer-110-control.svg",
+      "sourceSha256": "94222efa42d7f0153f037eee1e3a6ceac5e3602cf3f16e91e6484db1aa3b96d3",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/1ce66d462825bc2278c9.png",
+          "sha256": "1ce66d462825bc2278c9d90fbbd7b78f924749cba28dc8522e8bf1d267f8e63b"
+        },
+        "linux": {
+          "path": "references/shared-layout/ea76523b5171d51fd0e3.png",
+          "sha256": "ea76523b5171d51fd0e3cfa23ff834f93801dbce0f772a70bcb0b6a2185c7c82"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-118-candidate",
+      "input": "shared-layout-inputs/r144-consumer-118-candidate.svg",
+      "sourceSha256": "982484b16a49833d666c1a19cea3e8460fe6d05a205476a4dad36a36b6583645",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/420d1517c5170b5ff0ae.png",
+          "sha256": "420d1517c5170b5ff0ae31814ce3d506d996c1ad9ab9375bd45c9e7abfe38462"
+        },
+        "linux": {
+          "path": "references/shared-layout/abc55343c512ee76af01.png",
+          "sha256": "abc55343c512ee76af0149540f76e8995705939899618d1a53b14bdda391de36"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-118-control",
+      "input": "shared-layout-inputs/r144-consumer-118-control.svg",
+      "sourceSha256": "e6ffffc2520a95f1e189a493da26c2d3867d5f17926e1b27ec166280af58ff73",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/2bb593186e7a848b3662.png",
+          "sha256": "2bb593186e7a848b366205d397d573c96f9cad5b187e7c5cd13c624868df0c3b"
+        },
+        "linux": {
+          "path": "references/shared-layout/016ec35bae14b6324d07.png",
+          "sha256": "016ec35bae14b6324d076077be6c66bb17998d6aed82ec84fef03c1784580e88"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-150-candidate",
+      "input": "shared-layout-inputs/r144-consumer-150-candidate.svg",
+      "sourceSha256": "930ff6887601bcc9cd1a947507bc52c688f2589fc3cc29e907f84e2ebafa7a30",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/0e59fc93633da38f03da.png",
+          "sha256": "0e59fc93633da38f03da5a6b19dc59c0bacffaa5bc26d978681a6ca2a002c4b2"
+        },
+        "linux": {
+          "path": "references/shared-layout/f991ee4e3644aa0ea400.png",
+          "sha256": "f991ee4e3644aa0ea400f9b54a265e3cd32d209eb18ecf41f36c0ab46a696eec"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-150-control",
+      "input": "shared-layout-inputs/r144-consumer-150-control.svg",
+      "sourceSha256": "be25e59f83dec9e7b0c4ed3d7bcff0e8f60032d412f00f8618e062c12a8f3e92",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/5dba9b5c7ed63919d6cc.png",
+          "sha256": "5dba9b5c7ed63919d6cc26b4e9987e8d1a52c53db7b261c927032b905253a14f"
+        },
+        "linux": {
+          "path": "references/shared-layout/cd545779871dc6d200c7.png",
+          "sha256": "cd545779871dc6d200c76c0f1a72278b92c2ac4734af65baafbc6239825cb173"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-174-candidate",
+      "input": "shared-layout-inputs/r144-consumer-174-candidate.svg",
+      "sourceSha256": "2ec27576122e5f76f5da8f81f77425dcb77bc3f4286d4113806206e2bce7cec8",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/df7641e4e87750a6ff7c.png",
+          "sha256": "df7641e4e87750a6ff7c6b2df7c4988e0979e2fb0944f072da3421c146e83b5d"
+        },
+        "linux": {
+          "path": "references/shared-layout/87fcec5b9572a14aaf8a.png",
+          "sha256": "87fcec5b9572a14aaf8ab022de3b7f1df19a036a1646e58cee5a13e0962f6a6d"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-174-control",
+      "input": "shared-layout-inputs/r144-consumer-174-control.svg",
+      "sourceSha256": "cc59e7d4e666ed689a048aef60d5523111319d1df74b3dfcd364ce2167826ec5",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/186fea298580919880db.png",
+          "sha256": "186fea298580919880db68e48e7501fec37003e02b67b2eaa21803dcc7dac7b0"
+        },
+        "linux": {
+          "path": "references/shared-layout/d2c76c5503c13a0d1aee.png",
+          "sha256": "d2c76c5503c13a0d1aee8610fd3415164e0e7250e91d08ffe539920c63471609"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-182-candidate",
+      "input": "shared-layout-inputs/r144-consumer-182-candidate.svg",
+      "sourceSha256": "94169dbcf5e4babd5a02e979cdad676416f30a3a40daabf3c4a75035a3d86e09",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/2d9ead51dd4656c9e3f1.png",
+          "sha256": "2d9ead51dd4656c9e3f159227e3d2acbca3c45f50ff83dfcada2333d778bfbfe"
+        },
+        "linux": {
+          "path": "references/shared-layout/934a952bb37318f85f9d.png",
+          "sha256": "934a952bb37318f85f9d28cb098916d01b1c225eac3d3cf2ea7d8f60e345b26b"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-182-control",
+      "input": "shared-layout-inputs/r144-consumer-182-control.svg",
+      "sourceSha256": "ee9aa0fbac2c2e005465f279a3f756fce57c06ea51da0f9dd23043d3ab90ad0c",
+      "outputScale": 1,
+      "selection": "Shared object-box paints: invisible source characters, faces, fitting, resets and baseline topology.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/bf4d2035a1125975e9a9.png",
+          "sha256": "bf4d2035a1125975e9a9ad0d1f7fd961305e671144e7aea37d44e055f1bdb97f"
+        },
+        "linux": {
+          "path": "references/shared-layout/fd9ee07106e20d20b870.png",
+          "sha256": "fd9ee07106e20d20b870f1b50d229900cfaad34333d186df5709d1be73aa7f73"
+        }
+      }
+    },
+    {
+      "id": "r144-cluster-0-candidate",
+      "input": "shared-layout-inputs/r144-cluster-0-candidate.svg",
+      "sourceSha256": "1bc96c3be0d21b7dcb156c50b663f3d8416e466588a27057ab2e8fb0e5f368b0",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/9ea9be91f5709c2874fe.png",
+          "sha256": "9ea9be91f5709c2874fe131ba9ebbb1ca7378f180d3275c9a6a70c841214d7c1"
+        },
+        "linux": {
+          "path": "references/shared-layout/247deffb271744e86402.png",
+          "sha256": "247deffb271744e86402965284c89d5aca20cd91f0878e7063fb25011151e0ee"
+        }
+      }
+    },
+    {
+      "id": "r144-cluster-0-control",
+      "input": "shared-layout-inputs/r144-cluster-0-control.svg",
+      "sourceSha256": "6e9d3b2ec56ff4686dc7a0429cb621de8d9f97860e7614d68a01e8e1cb12a04c",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/c84caf0c607fbc4dddf6.png",
+          "sha256": "c84caf0c607fbc4dddf6eb798d1a7081855cc7c2cb7625a10ee590ee59d24a1c"
+        },
+        "linux": {
+          "path": "references/shared-layout/18e26c884cee0cbfe66e.png",
+          "sha256": "18e26c884cee0cbfe66e0fd94742e95a594d1a35966cd61f457f3aef26e573c8"
+        }
+      }
+    },
+    {
+      "id": "r144-cluster-6-candidate",
+      "input": "shared-layout-inputs/r144-cluster-6-candidate.svg",
+      "sourceSha256": "65969db5e99f76fd32d750a16d925d129f7d3bb7ea493c5e8056603c79af7cf8",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/b51531c150dcf9bd5ca8.png",
+          "sha256": "b51531c150dcf9bd5ca83c89d3395951df9589f02b00c890a0d74634471d8bd2"
+        },
+        "linux": {
+          "path": "references/shared-layout/f3a4cd0ed37319b23b06.png",
+          "sha256": "f3a4cd0ed37319b23b06c80f3d61c3993048c9648dd0925857a7ff30fce470b7"
+        }
+      }
+    },
+    {
+      "id": "r144-cluster-6-control",
+      "input": "shared-layout-inputs/r144-cluster-6-control.svg",
+      "sourceSha256": "e92068990266ebc54bb74879f344fcf826e319fdefedb4fa1b3ed5e3229b02c5",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/392f3e098018f46dec79.png",
+          "sha256": "392f3e098018f46dec79eca6fed71c18f143c2aba2b8f4f1f52925c0c4835fae"
+        },
+        "linux": {
+          "path": "references/shared-layout/769da6517bd0f8016ba1.png",
+          "sha256": "769da6517bd0f8016ba1b9b902b921b02e764961f3961cc90a97a8f5d9409cc8"
+        }
+      }
+    },
+    {
+      "id": "r144-cluster-12-candidate",
+      "input": "shared-layout-inputs/r144-cluster-12-candidate.svg",
+      "sourceSha256": "4ade2336e25cffdbf514533284f3bd95360681698f18675e002b24cf53145d44",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/b770557a0e22b8e65866.png",
+          "sha256": "b770557a0e22b8e658660fd46b338486793102ccec120c403bdeb80adbf06b94"
+        },
+        "linux": {
+          "path": "references/shared-layout/70fde175de7565a481e7.png",
+          "sha256": "70fde175de7565a481e7e83af6e4ccf2e031db2d8e6eca3627fa129d23ffa921"
+        }
+      }
+    },
+    {
+      "id": "r144-cluster-12-control",
+      "input": "shared-layout-inputs/r144-cluster-12-control.svg",
+      "sourceSha256": "264594463e4d2756cfc93b71e8db557906f685d752836117845390bb85ed32c2",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/6422152a186d134773f6.png",
+          "sha256": "6422152a186d134773f6fa529466298b52d63382d8ca3a2097b28b88c4808292"
+        },
+        "linux": {
+          "path": "references/shared-layout/0ed8702f16e6bc51fd0f.png",
+          "sha256": "0ed8702f16e6bc51fd0f2a0ca314c695fa7e87b8efacadec0c9a42b5fca77dde"
+        }
+      }
+    },
+    {
+      "id": "r144-cluster-18-candidate",
+      "input": "shared-layout-inputs/r144-cluster-18-candidate.svg",
+      "sourceSha256": "241e809e90c82644e05dfce26a2ffd8e5bd580157192b3294afd426c1ad578af",
+      "outputScale": 1.5,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/3ba0fea5d52331ff85da.png",
+          "sha256": "3ba0fea5d52331ff85da5fcb5eb479d99406a63b64d91ec36b4377fd90b7d14f"
+        },
+        "linux": {
+          "path": "references/shared-layout/ccfcd300503aec32a695.png",
+          "sha256": "ccfcd300503aec32a695cbfaabf00b4ae9433917b1b146edfa523e130092c051"
+        }
+      }
+    },
+    {
+      "id": "r144-cluster-18-control",
+      "input": "shared-layout-inputs/r144-cluster-18-control.svg",
+      "sourceSha256": "f06eca11794970d4a55515834ee1155ee93b3fc07e83a0560447b53efc4fc635",
+      "outputScale": 1.5,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/5d0d9b079d12055c772d.png",
+          "sha256": "5d0d9b079d12055c772d982aa9c283fed2056b8f8079ac015c2c04feae0748dc"
+        },
+        "linux": {
+          "path": "references/shared-layout/9cc22fc18fd27995be0c.png",
+          "sha256": "9cc22fc18fd27995be0ce2161945997dac911b2ac52c9b16d4950a458a220426"
+        }
+      }
+    },
+    {
+      "id": "r144-cluster-24-candidate",
+      "input": "shared-layout-inputs/r144-cluster-24-candidate.svg",
+      "sourceSha256": "6957a5cc122386dd1a8cb3bd040b0f2f820724aa046e69ddc6f61a4ccaf4947e",
+      "outputScale": 1.5,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/2c6b0d41ae6f3632a887.png",
+          "sha256": "2c6b0d41ae6f3632a8877ac5d212c7e13bd5f48c92abf145ce013048a3344911"
+        },
+        "linux": {
+          "path": "references/shared-layout/3cdebd120fb048a14457.png",
+          "sha256": "3cdebd120fb048a14457968d5f426ace3dc3c47c2ad8a7f35dcb2bade0508dfa"
+        }
+      }
+    },
+    {
+      "id": "r144-cluster-24-control",
+      "input": "shared-layout-inputs/r144-cluster-24-control.svg",
+      "sourceSha256": "bfdff45174c905ece35482299f2c99c78577e24f4daae0a02e0778c565b6e663",
+      "outputScale": 1.5,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/d9b1dab093fd073d7a2b.png",
+          "sha256": "d9b1dab093fd073d7a2b9a101767c7684bf1ae14bf7bb33343793f94465a928d"
+        },
+        "linux": {
+          "path": "references/shared-layout/cc8adb0a99e83c579e44.png",
+          "sha256": "cc8adb0a99e83c579e4438270dbbd222630dd8b3f441ac7b8a56ba9b80b843cb"
+        }
+      }
+    },
+    {
+      "id": "r144-cluster-85-candidate",
+      "input": "shared-layout-inputs/r144-cluster-85-candidate.svg",
+      "sourceSha256": "be82c463ab3ecf50baf9616976ca373e6e56233013eb00cffec03a0af684762b",
+      "outputScale": 1.5,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/f4d587f09bfd5c23266a.png",
+          "sha256": "f4d587f09bfd5c23266ae694b4fd6529b6951e62e2ca8d9ca4371bb5077def96"
+        },
+        "linux": {
+          "path": "references/shared-layout/98b3dbb5388cb8f0adbf.png",
+          "sha256": "98b3dbb5388cb8f0adbfda60f784cd46358102f2d8c4364a5f63c73d6a6bcf83"
+        }
+      }
+    },
+    {
+      "id": "r144-cluster-85-control",
+      "input": "shared-layout-inputs/r144-cluster-85-control.svg",
+      "sourceSha256": "021e69857c9253067477011687c6edfdad1edfafbc24b263a9dfae8ffd5b81a5",
+      "outputScale": 1.5,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/31f0cdfc150e4c65b148.png",
+          "sha256": "31f0cdfc150e4c65b148f91952433a0bd54a6b594d26266fcde4cecdc4d491a2"
+        },
+        "linux": {
+          "path": "references/shared-layout/bdf187c9510d4fb277ad.png",
+          "sha256": "bdf187c9510d4fb277ad9f8f137d6b0a6b09c4905239ce9edf296808a6fb458b"
+        }
+      }
+    },
+    {
+      "id": "r144-cluster-91-candidate",
+      "input": "shared-layout-inputs/r144-cluster-91-candidate.svg",
+      "sourceSha256": "365053335c5c253170e637f73cb3fa0a64c8a617fb684d36178e4861533ce7e6",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/bbf1094a4c3952e8ccd7.png",
+          "sha256": "bbf1094a4c3952e8ccd7eacbf6a8ca3d40624f5cd12929464a9d1d98a02d5ac8"
+        },
+        "linux": {
+          "path": "references/shared-layout/99454a37d0ecdf4f63f6.png",
+          "sha256": "99454a37d0ecdf4f63f6886d6d7530e2f115e213fc8455c0122c7b484953e3bf"
+        }
+      }
+    },
+    {
+      "id": "r144-cluster-91-control",
+      "input": "shared-layout-inputs/r144-cluster-91-control.svg",
+      "sourceSha256": "e77c227fc9ed1da2102b80ccc1e70edffc2877ad9844efff0783ef34abb456d1",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/2f53971f03a1fc063809.png",
+          "sha256": "2f53971f03a1fc063809e397fec2e2ddda53ebe2dfedde67e7933b41e8f453d9"
+        },
+        "linux": {
+          "path": "references/shared-layout/6b2e24f9c7ad2bf06ae4.png",
+          "sha256": "6b2e24f9c7ad2bf06ae42e4f4f7a5c04db5373e9c0a1beba80f976959401f128"
+        }
+      }
+    },
+    {
+      "id": "r144-cluster-97-candidate",
+      "input": "shared-layout-inputs/r144-cluster-97-candidate.svg",
+      "sourceSha256": "c44c5632f5461516d2149cab91e5ce5b2eb8dce141e26913440b25a60894c3b0",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/1636d836e8173ea44c10.png",
+          "sha256": "1636d836e8173ea44c10f23c0226410b508a41da5d0de0a612e372c5fa96a81d"
+        },
+        "linux": {
+          "path": "references/shared-layout/0118f98d1c685798475b.png",
+          "sha256": "0118f98d1c685798475b840cbbc24566c26004560f2b1512d45aed4deff0886f"
+        }
+      }
+    },
+    {
+      "id": "r144-cluster-97-control",
+      "input": "shared-layout-inputs/r144-cluster-97-control.svg",
+      "sourceSha256": "d536c9b7d7351f2ce4f06bbd4c0a5548e99d1254789d80cb31b472c307e3b31c",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/b4d019967d782c4f8fbf.png",
+          "sha256": "b4d019967d782c4f8fbf1bcada4fced76f96c69c77c3c2235ef9ccc011b82ccf"
+        },
+        "linux": {
+          "path": "references/shared-layout/d26ecb89a83f8674d9ef.png",
+          "sha256": "d26ecb89a83f8674d9efb2df9995d9dc180fc725cc399b483ebf98fe882803c4"
+        }
+      }
+    },
+    {
+      "id": "r144-cluster-103-candidate",
+      "input": "shared-layout-inputs/r144-cluster-103-candidate.svg",
+      "sourceSha256": "2ebd2f21a811533b9a4362fbbfa6e116d9462442b01e3599fa0225b0f7906193",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/df038984f857f3425766.png",
+          "sha256": "df038984f857f3425766382f47d93b235ba9faa9a02b41c938bfb6836edee3d2"
+        },
+        "linux": {
+          "path": "references/shared-layout/cd0d016ad2d7df82e89e.png",
+          "sha256": "cd0d016ad2d7df82e89e2b4815d2adce082d2cb4f7981d9b3aba07f9af1a8655"
+        }
+      }
+    },
+    {
+      "id": "r144-cluster-103-control",
+      "input": "shared-layout-inputs/r144-cluster-103-control.svg",
+      "sourceSha256": "efe5b9911b58c9819625d535932a03292c0aef1078794c46f6030342e41f2caa",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/01854b28d184ac7daa3c.png",
+          "sha256": "01854b28d184ac7daa3c05092d31980099ff5e000958fddb2c98198dbb8de252"
+        },
+        "linux": {
+          "path": "references/shared-layout/479651227f782c3a60b9.png",
+          "sha256": "479651227f782c3a60b963b8724b7f216bad60c72cc91651fa3dc13059879c92"
+        }
+      }
+    },
+    {
+      "id": "r144-cluster-109-candidate",
+      "input": "shared-layout-inputs/r144-cluster-109-candidate.svg",
+      "sourceSha256": "6d801eb6ddd04fcada6458a2c8decb828b3914e39d7ead9115ca75e3059a72ca",
+      "outputScale": 1.5,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/ce1b05fc18b8944eaaeb.png",
+          "sha256": "ce1b05fc18b8944eaaeb38737177dbfb6c7cd275bac887670920cd3e451326ed"
+        },
+        "linux": {
+          "path": "references/shared-layout/ae9c08b4a0f72f5e7d29.png",
+          "sha256": "ae9c08b4a0f72f5e7d2911ccbce9bbdb214e0666ad17d590c8674dd7ae5968fa"
+        }
+      }
+    },
+    {
+      "id": "r144-cluster-109-control",
+      "input": "shared-layout-inputs/r144-cluster-109-control.svg",
+      "sourceSha256": "a6e39e15bda118b4553df03d6ca7ca8d4ec9880fa2ff7a23703ea7107fcc96b3",
+      "outputScale": 1.5,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/dff5ca60e8c0d90444a7.png",
+          "sha256": "dff5ca60e8c0d90444a7581d9e7368e5e8a5c04e245a0948841a7d9a596c4026"
+        },
+        "linux": {
+          "path": "references/shared-layout/36ec0d44a8f3012c299c.png",
+          "sha256": "36ec0d44a8f3012c299c5eaef9368cc180784b6a650b797c29dfea230490351d"
+        }
+      }
+    },
+    {
+      "id": "r143-continuation-0-candidate",
+      "input": "shared-layout-inputs/r143-continuation-0-candidate.svg",
+      "sourceSha256": "b4b7a9e91ba38dc54545da68f9c3919245c9b2d31011229ca49f06f59dea8a81",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/5ba9af60276f744e5869.png",
+          "sha256": "5ba9af60276f744e586975b614f83169e80bd1562b5a8155d5db6572a3027379"
+        },
+        "linux": {
+          "path": "references/shared-layout/3f5601be3b645190304d.png",
+          "sha256": "3f5601be3b645190304dab9b52eb5b5a04325c322d166eca9c79d32136700eac"
+        }
+      }
+    },
+    {
+      "id": "r143-continuation-0-control",
+      "input": "shared-layout-inputs/r143-continuation-0-control.svg",
+      "sourceSha256": "8513db351da656c469a3f856f0f7f90a6528275d369247c3346885acc69202cc",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/5ba9af60276f744e5869.png",
+          "sha256": "5ba9af60276f744e586975b614f83169e80bd1562b5a8155d5db6572a3027379"
+        },
+        "linux": {
+          "path": "references/shared-layout/3f5601be3b645190304d.png",
+          "sha256": "3f5601be3b645190304dab9b52eb5b5a04325c322d166eca9c79d32136700eac"
+        }
+      }
+    },
+    {
+      "id": "r143-continuation-11-candidate",
+      "input": "shared-layout-inputs/r143-continuation-11-candidate.svg",
+      "sourceSha256": "098d74f0d6d53dfb97b2a0c25fd13e610371ea2ee042e8a3c2160d504106bdd8",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/8e6c687e858cb1134fa1.png",
+          "sha256": "8e6c687e858cb1134fa110d49824c71c737e50a42c8c9e4e2beb4bcc292d803f"
+        },
+        "linux": {
+          "path": "references/shared-layout/fd41886cac69d0f51fbb.png",
+          "sha256": "fd41886cac69d0f51fbba34b7a232d90ddbd2c0db1011766696d53f4ae3a1224"
+        }
+      }
+    },
+    {
+      "id": "r143-continuation-11-control",
+      "input": "shared-layout-inputs/r143-continuation-11-control.svg",
+      "sourceSha256": "25372799f2daf77202166a09cbd36c0c529ed5c4d80c38d4cb5f7325ba1fe8e8",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/b09d241953fc0a8491d2.png",
+          "sha256": "b09d241953fc0a8491d263fcdf47421b319ccc6881a76970f0a74ee70643350a"
+        },
+        "linux": {
+          "path": "references/shared-layout/0629345fcd817fcc5e85.png",
+          "sha256": "0629345fcd817fcc5e8541dd2a5657b2e5031a86d0278a2492077355b82ecf25"
+        }
+      }
+    },
+    {
+      "id": "r143-continuation-22-candidate",
+      "input": "shared-layout-inputs/r143-continuation-22-candidate.svg",
+      "sourceSha256": "a8e95f80e74a435ef8dd0754ffae757802142ca0f9db65630411a6e4bf3086a7",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/baec8da7febdf258616e.png",
+          "sha256": "baec8da7febdf258616e9b085b99e7a9c87961888d8337abcc361a409e3fab2c"
+        },
+        "linux": {
+          "path": "references/shared-layout/aeebf06bfb7c0d4edde0.png",
+          "sha256": "aeebf06bfb7c0d4edde0f0527fa605f88cdc79925bd716a659e95918b36ed7e8"
+        }
+      }
+    },
+    {
+      "id": "r143-continuation-22-control",
+      "input": "shared-layout-inputs/r143-continuation-22-control.svg",
+      "sourceSha256": "64f0a3657908ed8e4e1e8005dda390b48f81ea8b45dbc0988270e72767fa7065",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/baec8da7febdf258616e.png",
+          "sha256": "baec8da7febdf258616e9b085b99e7a9c87961888d8337abcc361a409e3fab2c"
+        },
+        "linux": {
+          "path": "references/shared-layout/aeebf06bfb7c0d4edde0.png",
+          "sha256": "aeebf06bfb7c0d4edde0f0527fa605f88cdc79925bd716a659e95918b36ed7e8"
+        }
+      }
+    },
+    {
+      "id": "r143-continuation-33-candidate",
+      "input": "shared-layout-inputs/r143-continuation-33-candidate.svg",
+      "sourceSha256": "fed31577d499e273b95fcfa0d958b68d89a0b58ddc4cfb5bd23ebdf4ae85b39c",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/7758a24cffa360075b7e.png",
+          "sha256": "7758a24cffa360075b7e842c29bf3c14fca970c311910f698e0964afc1b81c94"
+        },
+        "linux": {
+          "path": "references/shared-layout/b1e431e14146653941ca.png",
+          "sha256": "b1e431e14146653941cab1b5ba19354a985926720963e7a09d756712b6636be8"
+        }
+      }
+    },
+    {
+      "id": "r143-continuation-33-control",
+      "input": "shared-layout-inputs/r143-continuation-33-control.svg",
+      "sourceSha256": "4b203f331e6af3dabc6801f7575bec43295575d6a8e2c1cdd63d494a63a057de",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/63bd2a9e9e3131aae84b.png",
+          "sha256": "63bd2a9e9e3131aae84bf6607a6a778b141b57d94859017c51116a77219e0522"
+        },
+        "linux": {
+          "path": "references/shared-layout/8cf92b8652aa54d11c66.png",
+          "sha256": "8cf92b8652aa54d11c6666d085fd1d03b3a222167d9404afd07191f651c014bf"
+        }
+      }
+    },
+    {
+      "id": "r143-continuation-44-candidate",
+      "input": "shared-layout-inputs/r143-continuation-44-candidate.svg",
+      "sourceSha256": "d0e09a1bc5dc63b5d70bba61984234ba290f9b75639a668d451b3224d73fa9bb",
+      "outputScale": 1.5,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/ac9dfd711098668bfa01.png",
+          "sha256": "ac9dfd711098668bfa01460bbb99722d90b84d55d879b0f4292a6ccc3ee8651f"
+        },
+        "linux": {
+          "path": "references/shared-layout/579eb4be165a637dfbc0.png",
+          "sha256": "579eb4be165a637dfbc0835e53aab4bf241ef7e2e4a28280b97d47de683817bb"
+        }
+      }
+    },
+    {
+      "id": "r143-continuation-44-control",
+      "input": "shared-layout-inputs/r143-continuation-44-control.svg",
+      "sourceSha256": "e223b7b7e05eed34545aaaeba5f6f30bcb85201aa2974e7f144706da919b97e7",
+      "outputScale": 1.5,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/ac9dfd711098668bfa01.png",
+          "sha256": "ac9dfd711098668bfa01460bbb99722d90b84d55d879b0f4292a6ccc3ee8651f"
+        },
+        "linux": {
+          "path": "references/shared-layout/579eb4be165a637dfbc0.png",
+          "sha256": "579eb4be165a637dfbc0835e53aab4bf241ef7e2e4a28280b97d47de683817bb"
+        }
+      }
+    },
+    {
+      "id": "r143-continuation-55-candidate",
+      "input": "shared-layout-inputs/r143-continuation-55-candidate.svg",
+      "sourceSha256": "733b7daba2865dd017341c09bc87377316768b9e609c4e645c8fa4bbb4b11f79",
+      "outputScale": 1.5,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/3631c8de42ad21981479.png",
+          "sha256": "3631c8de42ad21981479a2af52213d0fc9faae4eb562ffa311a6ca47fb0bb5c3"
+        },
+        "linux": {
+          "path": "references/shared-layout/d39021f74f5dbbbe718f.png",
+          "sha256": "d39021f74f5dbbbe718fdf63475a8f86a45a8d21cace789b1a42038f04eb2e52"
+        }
+      }
+    },
+    {
+      "id": "r143-continuation-55-control",
+      "input": "shared-layout-inputs/r143-continuation-55-control.svg",
+      "sourceSha256": "17189e5fb8efb2611ee98334941c3125397fef018cc48f43d4069ae884c763d4",
+      "outputScale": 1.5,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/31c33417718db5c0f7dc.png",
+          "sha256": "31c33417718db5c0f7dc21e106c7de6b9c272d8eccf11f44459e3af8be60fb12"
+        },
+        "linux": {
+          "path": "references/shared-layout/75724815bb532452b075.png",
+          "sha256": "75724815bb532452b075a69dcc02df06e78b9f480f01af4840c2d94d7d478341"
+        }
+      }
+    },
+    {
+      "id": "r143-continuation-66-candidate",
+      "input": "shared-layout-inputs/r143-continuation-66-candidate.svg",
+      "sourceSha256": "2babd87b6e685284c088463af2d9aca3c85899a2a28944533ea9dcaf9ce6b374",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/83cb09a3b9e6a4722f6f.png",
+          "sha256": "83cb09a3b9e6a4722f6f59863d715dd32e46859f856208ac424087e3d18d311b"
+        },
+        "linux": {
+          "path": "references/shared-layout/ec28e4c0d0a25768ce63.png",
+          "sha256": "ec28e4c0d0a25768ce633752c76c657260d153e3ccf435801162f1b89b301646"
+        }
+      }
+    },
+    {
+      "id": "r143-continuation-66-control",
+      "input": "shared-layout-inputs/r143-continuation-66-control.svg",
+      "sourceSha256": "9b4175a7bf71121bb20d295a564e1f2dbaa3cf18b23c49c42b14f0c3e8257b3f",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/84856671a22170c4aabb.png",
+          "sha256": "84856671a22170c4aabb3f9865cf0964279e018430215a4ccd0e045f4a68c62c"
+        },
+        "linux": {
+          "path": "references/shared-layout/fd56cc3b3c994a370a38.png",
+          "sha256": "fd56cc3b3c994a370a38729a39e1b11d55eee4a5214fd146f5697cb8e69b9919"
+        }
+      }
+    },
+    {
+      "id": "r143-continuation-77-candidate",
+      "input": "shared-layout-inputs/r143-continuation-77-candidate.svg",
+      "sourceSha256": "6845ea589a3479f8fc1385168a83d704e309f2267380757977bc264423918a53",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/38be5a2eba78857a7a9a.png",
+          "sha256": "38be5a2eba78857a7a9a000ae33f7fca429d2a095ca70ca45c8fd657512ad3d1"
+        },
+        "linux": {
+          "path": "references/shared-layout/d797330756aedaf5e5a8.png",
+          "sha256": "d797330756aedaf5e5a8d553bb4112f86e3ccffab227fc95f9c91330f1a7a845"
+        }
+      }
+    },
+    {
+      "id": "r143-continuation-77-control",
+      "input": "shared-layout-inputs/r143-continuation-77-control.svg",
+      "sourceSha256": "c1d24961380914f2d04430efa8701dcc4fb468c23e45285ce2e5c3875ecce122",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/d61630abea100f5bb358.png",
+          "sha256": "d61630abea100f5bb3587b288736325c9e879d8f06244167a39f6d70c51bcbe5"
+        },
+        "linux": {
+          "path": "references/shared-layout/e6d91566ecfcd2cbbc82.png",
+          "sha256": "e6d91566ecfcd2cbbc824f5b2c1ee87984ee476435e84ae6c4511c4766a64569"
+        }
+      }
+    },
+    {
+      "id": "r143-continuation-88-candidate",
+      "input": "shared-layout-inputs/r143-continuation-88-candidate.svg",
+      "sourceSha256": "a597e8f2d916b733e027c91135b297ff9c2fbe034386b8f8ef93086248ae9849",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/e11e660091e2552dd007.png",
+          "sha256": "e11e660091e2552dd0070ac741cb8f5ff8da3826bc0be27af2d1491c7ba3215b"
+        },
+        "linux": {
+          "path": "references/shared-layout/525ad5c8f74178dc0849.png",
+          "sha256": "525ad5c8f74178dc084918da0142097314c27a25cc5461683ff1e12159fa77d3"
+        }
+      }
+    },
+    {
+      "id": "r143-continuation-88-control",
+      "input": "shared-layout-inputs/r143-continuation-88-control.svg",
+      "sourceSha256": "94111d381ca7ba14c6cd4ad82ccc851a4de625e8712f6a1be15ca96d5f0a1914",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/be996dd4b18c47a04464.png",
+          "sha256": "be996dd4b18c47a04464039536780f083b74705ce0d927ad9a7e869cbd713b15"
+        },
+        "linux": {
+          "path": "references/shared-layout/1b0b9b498fedda110aa9.png",
+          "sha256": "1b0b9b498fedda110aa9239b2b0c53ba254a5d6baa268dd28a4c340ef291695e"
+        }
+      }
+    },
+    {
+      "id": "r143-continuation-99-candidate",
+      "input": "shared-layout-inputs/r143-continuation-99-candidate.svg",
+      "sourceSha256": "5e8eb8aee1c21c7ae2cf1691cde9c201584224e7bb443e3f6fe9cf12a9715ada",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/837fff8b44f7b3b166fd.png",
+          "sha256": "837fff8b44f7b3b166fdb3dd95fcc25cfd1f9e142a4ee4919fe56c782fd9e676"
+        },
+        "linux": {
+          "path": "references/shared-layout/f88e034a1b464381f33d.png",
+          "sha256": "f88e034a1b464381f33d48aa1311328c272d51c06dc0e4150238c698220fad0e"
+        }
+      }
+    },
+    {
+      "id": "r143-continuation-99-control",
+      "input": "shared-layout-inputs/r143-continuation-99-control.svg",
+      "sourceSha256": "309569fe49a8b4c75501e028bf23221961643a48d5fd09d5cf77bbbf7e8e2907",
+      "outputScale": 1,
+      "selection": "Continuous shaping and source cursors: cross-boundary ligatures, absolute/relative resets, rotations and anchoring.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/359ba70d429b8760a307.png",
+          "sha256": "359ba70d429b8760a307fe65fad331731cf2ea99a692259184463bce141684f9"
+        },
+        "linux": {
+          "path": "references/shared-layout/3173d17f4e769e276ba9.png",
+          "sha256": "3173d17f4e769e276ba9a5adeae5d48f7f6d786c6fc4d89aae1928124b044e99"
+        }
+      }
+    },
+    {
+      "id": "r144-closed-offset-boundary-0-candidate",
+      "input": "shared-layout-inputs/r144-closed-offset-boundary-0-candidate.svg",
+      "sourceSha256": "efa124e4fd53e110b3f62dd17dcc001be4292d65debf409d557be7270d3f1252",
+      "outputScale": 1,
+      "selection": "Authored closed endpoints survive numeric/percentage start offsets; a curved closed baseline remains independent.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/17e6e22ae2d3f2deff36.png",
+          "sha256": "17e6e22ae2d3f2deff36144cafe2b1a2bfe224da9069622f33eaec88d14b70b0"
+        },
+        "linux": {
+          "path": "references/shared-layout/df243436c3daeb45bbe8.png",
+          "sha256": "df243436c3daeb45bbe87a1dfdad90e012507fa7f03b5e54b43e7c3f5e3088aa"
+        }
+      }
+    },
+    {
+      "id": "r144-closed-offset-boundary-0-control",
+      "input": "shared-layout-inputs/r144-closed-offset-boundary-0-control.svg",
+      "sourceSha256": "6b562cf53d52cade6a31b13d574802ff1332a25138ced5cc7128e7af0135e703",
+      "outputScale": 1,
+      "selection": "Authored closed endpoints survive numeric/percentage start offsets; a curved closed baseline remains independent.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/17e6e22ae2d3f2deff36.png",
+          "sha256": "17e6e22ae2d3f2deff36144cafe2b1a2bfe224da9069622f33eaec88d14b70b0"
+        },
+        "linux": {
+          "path": "references/shared-layout/df243436c3daeb45bbe8.png",
+          "sha256": "df243436c3daeb45bbe87a1dfdad90e012507fa7f03b5e54b43e7c3f5e3088aa"
+        }
+      }
+    },
+    {
+      "id": "r144-closed-offset-boundary-1-candidate",
+      "input": "shared-layout-inputs/r144-closed-offset-boundary-1-candidate.svg",
+      "sourceSha256": "afe0d0cccf60a6589860a60d9352d1ed523efc72d9d23718b7805f341c520e29",
+      "outputScale": 1,
+      "selection": "Authored closed endpoints survive numeric/percentage start offsets; a curved closed baseline remains independent.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/3d1cf5ec77c29e2574cf.png",
+          "sha256": "3d1cf5ec77c29e2574cf1e51a460582a584f4d2f14f53a0826543b6a87195a96"
+        },
+        "linux": {
+          "path": "references/shared-layout/ec65e7249ab2025d971e.png",
+          "sha256": "ec65e7249ab2025d971e6278937d0e0f59e048e7295f40544a0da7b43f2ff449"
+        }
+      }
+    },
+    {
+      "id": "r144-closed-offset-boundary-1-control",
+      "input": "shared-layout-inputs/r144-closed-offset-boundary-1-control.svg",
+      "sourceSha256": "c0455b1a3f4f485e47214c4f4db3588c124aaed1a26ae500ba2e0f68c2c48f0a",
+      "outputScale": 1,
+      "selection": "Authored closed endpoints survive numeric/percentage start offsets; a curved closed baseline remains independent.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/3d1cf5ec77c29e2574cf.png",
+          "sha256": "3d1cf5ec77c29e2574cf1e51a460582a584f4d2f14f53a0826543b6a87195a96"
+        },
+        "linux": {
+          "path": "references/shared-layout/ec65e7249ab2025d971e.png",
+          "sha256": "ec65e7249ab2025d971e6278937d0e0f59e048e7295f40544a0da7b43f2ff449"
+        }
+      }
+    },
+    {
+      "id": "r144-closed-offset-boundary-2-candidate",
+      "input": "shared-layout-inputs/r144-closed-offset-boundary-2-candidate.svg",
+      "sourceSha256": "d6ba55bdd40c886fce80dbc4de9c0bf8ea73128a56a1b87dcea8fd031106d210",
+      "outputScale": 1,
+      "selection": "Authored closed endpoints survive numeric/percentage start offsets; a curved closed baseline remains independent.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/893679a3d573028593b1.png",
+          "sha256": "893679a3d573028593b1b7f11bc1296b739bf170dcad96b1d476726da48908de"
+        },
+        "linux": {
+          "path": "references/shared-layout/e14568c06e32e88b75b4.png",
+          "sha256": "e14568c06e32e88b75b4ebf92fe121cc08f699ee6d216093ec8b3bc630fbe56a"
+        }
+      }
+    },
+    {
+      "id": "r144-closed-offset-boundary-2-control",
+      "input": "shared-layout-inputs/r144-closed-offset-boundary-2-control.svg",
+      "sourceSha256": "c31ee86369183dcaeaa014bf1b5fe5b95164e07222ad955231cc378bf02bde7c",
+      "outputScale": 1,
+      "selection": "Authored closed endpoints survive numeric/percentage start offsets; a curved closed baseline remains independent.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/893679a3d573028593b1.png",
+          "sha256": "893679a3d573028593b1b7f11bc1296b739bf170dcad96b1d476726da48908de"
+        },
+        "linux": {
+          "path": "references/shared-layout/e14568c06e32e88b75b4.png",
+          "sha256": "e14568c06e32e88b75b4ebf92fe121cc08f699ee6d216093ec8b3bc630fbe56a"
+        }
+      }
+    },
+    {
+      "id": "r144-closed-offset-boundary-3-candidate",
+      "input": "shared-layout-inputs/r144-closed-offset-boundary-3-candidate.svg",
+      "sourceSha256": "2c3aab778fd3538e6159a7400b0c09ac93dcc55257d81d521a2e0bed3c48dc9a",
+      "outputScale": 1,
+      "selection": "Authored closed endpoints survive numeric/percentage start offsets; a curved closed baseline remains independent.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/2b632301502c1b87d78c.png",
+          "sha256": "2b632301502c1b87d78c38766d71cac897870cd6b0e3bd910ae81e37863f2ef1"
+        },
+        "linux": {
+          "path": "references/shared-layout/b838932d3cfbeb0ea8ad.png",
+          "sha256": "b838932d3cfbeb0ea8ad2f88bfbeabb740ec86ab50980d94b0f962bd8800f1e7"
+        }
+      }
+    },
+    {
+      "id": "r144-closed-offset-boundary-3-control",
+      "input": "shared-layout-inputs/r144-closed-offset-boundary-3-control.svg",
+      "sourceSha256": "5a92e90415465a55199a4034edd6b62002a5068c9769428f4ac556401b2e5901",
+      "outputScale": 1,
+      "selection": "Authored closed endpoints survive numeric/percentage start offsets; a curved closed baseline remains independent.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/2b632301502c1b87d78c.png",
+          "sha256": "2b632301502c1b87d78c38766d71cac897870cd6b0e3bd910ae81e37863f2ef1"
+        },
+        "linux": {
+          "path": "references/shared-layout/b838932d3cfbeb0ea8ad.png",
+          "sha256": "b838932d3cfbeb0ea8ad2f88bfbeabb740ec86ab50980d94b0f962bd8800f1e7"
+        }
+      }
+    },
+    {
+      "id": "r144-closed-offset-boundary-4-candidate",
+      "input": "shared-layout-inputs/r144-closed-offset-boundary-4-candidate.svg",
+      "sourceSha256": "6fe8eab94e6b3e3f7fdc5ea2b650f9bf3849b3759ee368b9dd62148b15d888a1",
+      "outputScale": 1,
+      "selection": "Authored closed endpoints survive numeric/percentage start offsets; a curved closed baseline remains independent.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/17e6e22ae2d3f2deff36.png",
+          "sha256": "17e6e22ae2d3f2deff36144cafe2b1a2bfe224da9069622f33eaec88d14b70b0"
+        },
+        "linux": {
+          "path": "references/shared-layout/df243436c3daeb45bbe8.png",
+          "sha256": "df243436c3daeb45bbe87a1dfdad90e012507fa7f03b5e54b43e7c3f5e3088aa"
+        }
+      }
+    },
+    {
+      "id": "r144-closed-offset-boundary-4-control",
+      "input": "shared-layout-inputs/r144-closed-offset-boundary-4-control.svg",
+      "sourceSha256": "b4ccea492c5c413193735681f5d1269ca60e19e1678202904aed5b27e26f8766",
+      "outputScale": 1,
+      "selection": "Authored closed endpoints survive numeric/percentage start offsets; a curved closed baseline remains independent.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/17e6e22ae2d3f2deff36.png",
+          "sha256": "17e6e22ae2d3f2deff36144cafe2b1a2bfe224da9069622f33eaec88d14b70b0"
+        },
+        "linux": {
+          "path": "references/shared-layout/df243436c3daeb45bbe8.png",
+          "sha256": "df243436c3daeb45bbe87a1dfdad90e012507fa7f03b5e54b43e7c3f5e3088aa"
+        }
+      }
+    },
+    {
+      "id": "r144-closed-offset-boundary-5-candidate",
+      "input": "shared-layout-inputs/r144-closed-offset-boundary-5-candidate.svg",
+      "sourceSha256": "ecfa3b6d680a73260d732e3745dbdfb1c81b49b50d8f70316d6d7a1070921e53",
+      "outputScale": 1,
+      "selection": "Authored closed endpoints survive numeric/percentage start offsets; a curved closed baseline remains independent.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/901562d90f7ebb5733fb.png",
+          "sha256": "901562d90f7ebb5733fb92b3b77c5c22f58db6a25a0b8f37aa0118de737b7fe1"
+        },
+        "linux": {
+          "path": "references/shared-layout/0969f56d998ee0b181b4.png",
+          "sha256": "0969f56d998ee0b181b459f20189ae8afc9564f3d6331af6cc74bc2e6fef44b9"
+        }
+      }
+    },
+    {
+      "id": "r144-closed-offset-boundary-5-control",
+      "input": "shared-layout-inputs/r144-closed-offset-boundary-5-control.svg",
+      "sourceSha256": "b08ab0b9b39c3f998b724a5c025333149ba941d96ff092fc513c1e944fe434bf",
+      "outputScale": 1,
+      "selection": "Authored closed endpoints survive numeric/percentage start offsets; a curved closed baseline remains independent.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/901562d90f7ebb5733fb.png",
+          "sha256": "901562d90f7ebb5733fb92b3b77c5c22f58db6a25a0b8f37aa0118de737b7fe1"
+        },
+        "linux": {
+          "path": "references/shared-layout/0969f56d998ee0b181b4.png",
+          "sha256": "0969f56d998ee0b181b459f20189ae8afc9564f3d6331af6cc74bc2e6fef44b9"
+        }
+      }
+    },
+    {
+      "id": "r144-closed-offset-boundary-6-candidate",
+      "input": "shared-layout-inputs/r144-closed-offset-boundary-6-candidate.svg",
+      "sourceSha256": "7f96eca460b42cacf34e815084add32e8faeb9a3198e1442945131154ac8a60f",
+      "outputScale": 1,
+      "selection": "Authored closed endpoints survive numeric/percentage start offsets; a curved closed baseline remains independent.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/2b632301502c1b87d78c.png",
+          "sha256": "2b632301502c1b87d78c38766d71cac897870cd6b0e3bd910ae81e37863f2ef1"
+        },
+        "linux": {
+          "path": "references/shared-layout/b838932d3cfbeb0ea8ad.png",
+          "sha256": "b838932d3cfbeb0ea8ad2f88bfbeabb740ec86ab50980d94b0f962bd8800f1e7"
+        }
+      }
+    },
+    {
+      "id": "r144-closed-offset-boundary-6-control",
+      "input": "shared-layout-inputs/r144-closed-offset-boundary-6-control.svg",
+      "sourceSha256": "82ff08d7a160a8c53438540b52b2f0110ad85809da20c5c4dc51a96f6e3d2847",
+      "outputScale": 1,
+      "selection": "Authored closed endpoints survive numeric/percentage start offsets; a curved closed baseline remains independent.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/2b632301502c1b87d78c.png",
+          "sha256": "2b632301502c1b87d78c38766d71cac897870cd6b0e3bd910ae81e37863f2ef1"
+        },
+        "linux": {
+          "path": "references/shared-layout/b838932d3cfbeb0ea8ad.png",
+          "sha256": "b838932d3cfbeb0ea8ad2f88bfbeabb740ec86ab50980d94b0f962bd8800f1e7"
+        }
+      }
+    },
+    {
+      "id": "r144-closed-offset-boundary-7-candidate",
+      "input": "shared-layout-inputs/r144-closed-offset-boundary-7-candidate.svg",
+      "sourceSha256": "ae0df645d0ece6adbb27ade5fa16e05af56afe9ca11e0b4202b71f6e055b444f",
+      "outputScale": 1,
+      "selection": "Authored closed endpoints survive numeric/percentage start offsets; a curved closed baseline remains independent.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/2b632301502c1b87d78c.png",
+          "sha256": "2b632301502c1b87d78c38766d71cac897870cd6b0e3bd910ae81e37863f2ef1"
+        },
+        "linux": {
+          "path": "references/shared-layout/b838932d3cfbeb0ea8ad.png",
+          "sha256": "b838932d3cfbeb0ea8ad2f88bfbeabb740ec86ab50980d94b0f962bd8800f1e7"
+        }
+      }
+    },
+    {
+      "id": "r144-closed-offset-boundary-7-control",
+      "input": "shared-layout-inputs/r144-closed-offset-boundary-7-control.svg",
+      "sourceSha256": "29cc970ebfb208ac68d7fa264de2ee993305c9760bcc65dac754897ffac24262",
+      "outputScale": 1,
+      "selection": "Authored closed endpoints survive numeric/percentage start offsets; a curved closed baseline remains independent.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/2b632301502c1b87d78c.png",
+          "sha256": "2b632301502c1b87d78c38766d71cac897870cd6b0e3bd910ae81e37863f2ef1"
+        },
+        "linux": {
+          "path": "references/shared-layout/b838932d3cfbeb0ea8ad.png",
+          "sha256": "b838932d3cfbeb0ea8ad2f88bfbeabb740ec86ab50980d94b0f962bd8800f1e7"
+        }
+      }
+    },
+    {
+      "id": "r144-closed-offset-boundary-24-candidate",
+      "input": "shared-layout-inputs/r144-closed-offset-boundary-24-candidate.svg",
+      "sourceSha256": "68bf1c74d27e2366e0492519c59672e24df29244a4920f6e803471caf45654ab",
+      "outputScale": 1,
+      "selection": "Authored closed endpoints survive numeric/percentage start offsets; a curved closed baseline remains independent.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/f8741200364849b9be83.png",
+          "sha256": "f8741200364849b9be83897ab3a4550f1adf34bc56cc68652a96b0533c51a38a"
+        },
+        "linux": {
+          "path": "references/shared-layout/a173272cda4c125fbdfd.png",
+          "sha256": "a173272cda4c125fbdfd1031c189bcaba7e788262c511350e1d75e0e6d94959c"
+        }
+      }
+    },
+    {
+      "id": "r144-closed-offset-boundary-24-control",
+      "input": "shared-layout-inputs/r144-closed-offset-boundary-24-control.svg",
+      "sourceSha256": "9da3851d61d10eab86515e5a7028549eb23609a870ad48d7d17a38273c256e6e",
+      "outputScale": 1,
+      "selection": "Authored closed endpoints survive numeric/percentage start offsets; a curved closed baseline remains independent.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/4e11a404b8027c6a6b41.png",
+          "sha256": "4e11a404b8027c6a6b41d85e9697c1fcfc4deeb00ea915787bdb7e6b5582717b"
+        },
+        "linux": {
+          "path": "references/shared-layout/75acbb276e47b0704ab0.png",
+          "sha256": "75acbb276e47b0704ab0004eb120ee4795ded8ee7cfb12d1b2d2a341b190acb3"
+        }
+      }
+    },
+    {
+      "id": "r144-closed-offset-boundary-31-candidate",
+      "input": "shared-layout-inputs/r144-closed-offset-boundary-31-candidate.svg",
+      "sourceSha256": "42932821e8fda058485e078610ee0f2de44924d21a2c8f548aaf8fe7a1e6382d",
+      "outputScale": 1,
+      "selection": "Authored closed endpoints survive numeric/percentage start offsets; a curved closed baseline remains independent.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/fdd16e517440955ea7b9.png",
+          "sha256": "fdd16e517440955ea7b9cf13bd52ca849f8f133de0089e45b56227ec6df0e222"
+        },
+        "linux": {
+          "path": "references/shared-layout/fae3224c6600936a8975.png",
+          "sha256": "fae3224c6600936a8975c4e3985befd46ed2787917c45ec9edf50bbce0139b04"
+        }
+      }
+    },
+    {
+      "id": "r144-closed-offset-boundary-31-control",
+      "input": "shared-layout-inputs/r144-closed-offset-boundary-31-control.svg",
+      "sourceSha256": "544333c552bd2c2dbbfe4b5700819842c88f080b1ac0dbd69d154342613fb3c1",
+      "outputScale": 1,
+      "selection": "Authored closed endpoints survive numeric/percentage start offsets; a curved closed baseline remains independent.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/fdd16e517440955ea7b9.png",
+          "sha256": "fdd16e517440955ea7b9cf13bd52ca849f8f133de0089e45b56227ec6df0e222"
+        },
+        "linux": {
+          "path": "references/shared-layout/fae3224c6600936a8975.png",
+          "sha256": "fae3224c6600936a8975c4e3985befd46ed2787917c45ec9edf50bbce0139b04"
+        }
+      }
+    },
+    {
+      "id": "r144-topology-0-candidate",
+      "input": "shared-layout-inputs/r144-topology-0-candidate.svg",
+      "sourceSha256": "1c86735dba6f95c8d215e2bfe57b7b881d82ca52316e202f3f15f51d7b689d3b",
+      "outputScale": 1,
+      "selection": "Empty paths are inert; root coordinate lists span multiple paths with independent anchor states.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/fbbd27c89aded4f30e25.png",
+          "sha256": "fbbd27c89aded4f30e25bc52d304ded355404bd79495b32366ab187e4f359a71"
+        },
+        "linux": {
+          "path": "references/shared-layout/b9c616609998458c39fd.png",
+          "sha256": "b9c616609998458c39fd44099a96dc4969679c3b3cf38e33a0c1b48a5c863e58"
+        }
+      }
+    },
+    {
+      "id": "r144-topology-0-control",
+      "input": "shared-layout-inputs/r144-topology-0-control.svg",
+      "sourceSha256": "e9aed0c4304cb6deee04f0cd3c0dd5913ab2c3cb3ba5e917ae1a8d4283df2047",
+      "outputScale": 1,
+      "selection": "Empty paths are inert; root coordinate lists span multiple paths with independent anchor states.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/fbbd27c89aded4f30e25.png",
+          "sha256": "fbbd27c89aded4f30e25bc52d304ded355404bd79495b32366ab187e4f359a71"
+        },
+        "linux": {
+          "path": "references/shared-layout/b9c616609998458c39fd.png",
+          "sha256": "b9c616609998458c39fd44099a96dc4969679c3b3cf38e33a0c1b48a5c863e58"
+        }
+      }
+    },
+    {
+      "id": "r144-topology-3-candidate",
+      "input": "shared-layout-inputs/r144-topology-3-candidate.svg",
+      "sourceSha256": "20e6e192761723e6897976c2bdc0b38c2f34493f7caa42a843116a7c21ce8346",
+      "outputScale": 1,
+      "selection": "Empty paths are inert; root coordinate lists span multiple paths with independent anchor states.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/fbbd27c89aded4f30e25.png",
+          "sha256": "fbbd27c89aded4f30e25bc52d304ded355404bd79495b32366ab187e4f359a71"
+        },
+        "linux": {
+          "path": "references/shared-layout/b9c616609998458c39fd.png",
+          "sha256": "b9c616609998458c39fd44099a96dc4969679c3b3cf38e33a0c1b48a5c863e58"
+        }
+      }
+    },
+    {
+      "id": "r144-topology-3-control",
+      "input": "shared-layout-inputs/r144-topology-3-control.svg",
+      "sourceSha256": "0bf9f9fabc939f86f0a298bdafc35d000be14dd7a0021064213cae2a9d37a655",
+      "outputScale": 1,
+      "selection": "Empty paths are inert; root coordinate lists span multiple paths with independent anchor states.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/fbbd27c89aded4f30e25.png",
+          "sha256": "fbbd27c89aded4f30e25bc52d304ded355404bd79495b32366ab187e4f359a71"
+        },
+        "linux": {
+          "path": "references/shared-layout/b9c616609998458c39fd.png",
+          "sha256": "b9c616609998458c39fd44099a96dc4969679c3b3cf38e33a0c1b48a5c863e58"
+        }
+      }
+    },
+    {
+      "id": "r144-topology-5-candidate",
+      "input": "shared-layout-inputs/r144-topology-5-candidate.svg",
+      "sourceSha256": "311a7c5ade392bc372a6ccec116382ad0876a7332333732a250acc3f290c317b",
+      "outputScale": 1,
+      "selection": "Empty paths are inert; root coordinate lists span multiple paths with independent anchor states.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/fbbd27c89aded4f30e25.png",
+          "sha256": "fbbd27c89aded4f30e25bc52d304ded355404bd79495b32366ab187e4f359a71"
+        },
+        "linux": {
+          "path": "references/shared-layout/b9c616609998458c39fd.png",
+          "sha256": "b9c616609998458c39fd44099a96dc4969679c3b3cf38e33a0c1b48a5c863e58"
+        }
+      }
+    },
+    {
+      "id": "r144-topology-5-control",
+      "input": "shared-layout-inputs/r144-topology-5-control.svg",
+      "sourceSha256": "acf4d68065bfedcac163a7cfad085beec38a05081e5a5e22609ef4371bec0c15",
+      "outputScale": 1,
+      "selection": "Empty paths are inert; root coordinate lists span multiple paths with independent anchor states.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/fbbd27c89aded4f30e25.png",
+          "sha256": "fbbd27c89aded4f30e25bc52d304ded355404bd79495b32366ab187e4f359a71"
+        },
+        "linux": {
+          "path": "references/shared-layout/b9c616609998458c39fd.png",
+          "sha256": "b9c616609998458c39fd44099a96dc4969679c3b3cf38e33a0c1b48a5c863e58"
+        }
+      }
+    },
+    {
+      "id": "r144-topology-13-candidate",
+      "input": "shared-layout-inputs/r144-topology-13-candidate.svg",
+      "sourceSha256": "7cb41856f61b20c765dea4bb7e6542bcae7a6dbd1438e1ca02afb52ade6ed3f9",
+      "outputScale": 1,
+      "selection": "Empty paths are inert; root coordinate lists span multiple paths with independent anchor states.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/0c7dcf6eace596d29af3.png",
+          "sha256": "0c7dcf6eace596d29af32e0f0dc084d7814774e2019f25a1f2ca48e78d2bc1b2"
+        },
+        "linux": {
+          "path": "references/shared-layout/ca186d351fc5fd563f3b.png",
+          "sha256": "ca186d351fc5fd563f3b8c5f859c3316dd1eb63ab80aae858a3b0a80a40eb31b"
+        }
+      }
+    },
+    {
+      "id": "r144-topology-13-control",
+      "input": "shared-layout-inputs/r144-topology-13-control.svg",
+      "sourceSha256": "1c71138f3d54d4c2f6c5fa21d9608108cf6afa9404a37784083bc79306d6a707",
+      "outputScale": 1,
+      "selection": "Empty paths are inert; root coordinate lists span multiple paths with independent anchor states.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/0c7dcf6eace596d29af3.png",
+          "sha256": "0c7dcf6eace596d29af32e0f0dc084d7814774e2019f25a1f2ca48e78d2bc1b2"
+        },
+        "linux": {
+          "path": "references/shared-layout/ca186d351fc5fd563f3b.png",
+          "sha256": "ca186d351fc5fd563f3b8c5f859c3316dd1eb63ab80aae858a3b0a80a40eb31b"
+        }
+      }
+    },
+    {
+      "id": "r144-topology-16-candidate",
+      "input": "shared-layout-inputs/r144-topology-16-candidate.svg",
+      "sourceSha256": "294495f753717b411ce78fa24f84a0913d537a37a8a023fddee9a9467ab376df",
+      "outputScale": 1,
+      "selection": "Empty paths are inert; root coordinate lists span multiple paths with independent anchor states.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/0c7dcf6eace596d29af3.png",
+          "sha256": "0c7dcf6eace596d29af32e0f0dc084d7814774e2019f25a1f2ca48e78d2bc1b2"
+        },
+        "linux": {
+          "path": "references/shared-layout/ca186d351fc5fd563f3b.png",
+          "sha256": "ca186d351fc5fd563f3b8c5f859c3316dd1eb63ab80aae858a3b0a80a40eb31b"
+        }
+      }
+    },
+    {
+      "id": "r144-topology-16-control",
+      "input": "shared-layout-inputs/r144-topology-16-control.svg",
+      "sourceSha256": "6329e7882a43649d815f07d7226bfc35a7bde56255570c1e1a9f9897126ea967",
+      "outputScale": 1,
+      "selection": "Empty paths are inert; root coordinate lists span multiple paths with independent anchor states.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/0c7dcf6eace596d29af3.png",
+          "sha256": "0c7dcf6eace596d29af32e0f0dc084d7814774e2019f25a1f2ca48e78d2bc1b2"
+        },
+        "linux": {
+          "path": "references/shared-layout/ca186d351fc5fd563f3b.png",
+          "sha256": "ca186d351fc5fd563f3b8c5f859c3316dd1eb63ab80aae858a3b0a80a40eb31b"
+        }
+      }
+    },
+    {
+      "id": "r144-topology-22-candidate",
+      "input": "shared-layout-inputs/r144-topology-22-candidate.svg",
+      "sourceSha256": "16129ed996a7b74ec2e76d3043584b55cc24ba60be210dae9452e3228969b85a",
+      "outputScale": 1,
+      "selection": "Empty paths are inert; root coordinate lists span multiple paths with independent anchor states.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/884eaee05a7ccb6243ea.png",
+          "sha256": "884eaee05a7ccb6243eac1b73b0c40ac35e3684c516bad749549607dbc713fd4"
+        },
+        "linux": {
+          "path": "references/shared-layout/cf6e444bc0f27ac0b9bf.png",
+          "sha256": "cf6e444bc0f27ac0b9bff22469f38cde7cca99cae88894027cf786e4beda6c28"
+        }
+      }
+    },
+    {
+      "id": "r144-topology-22-control",
+      "input": "shared-layout-inputs/r144-topology-22-control.svg",
+      "sourceSha256": "bd3e1a432df9dc096ab989d93ee367dac4166eeaca3f4f96d81a4307a9a6414d",
+      "outputScale": 1,
+      "selection": "Empty paths are inert; root coordinate lists span multiple paths with independent anchor states.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/884eaee05a7ccb6243ea.png",
+          "sha256": "884eaee05a7ccb6243eac1b73b0c40ac35e3684c516bad749549607dbc713fd4"
+        },
+        "linux": {
+          "path": "references/shared-layout/cf6e444bc0f27ac0b9bf.png",
+          "sha256": "cf6e444bc0f27ac0b9bff22469f38cde7cca99cae88894027cf786e4beda6c28"
+        }
+      }
+    },
+    {
+      "id": "r144-topology-25-candidate",
+      "input": "shared-layout-inputs/r144-topology-25-candidate.svg",
+      "sourceSha256": "d0e990df1dff7007aa3af7950f69cfe33b24e88dddc47d0a0398f0b0292a4548",
+      "outputScale": 1,
+      "selection": "Empty paths are inert; root coordinate lists span multiple paths with independent anchor states.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/6bb51b513c9f11c91c82.png",
+          "sha256": "6bb51b513c9f11c91c82eacb7446b28a47e8673d8e3bb5f22e0f72085e46e445"
+        },
+        "linux": {
+          "path": "references/shared-layout/1ece7be610504c307ba3.png",
+          "sha256": "1ece7be610504c307ba31c9171767fafc7482343a6dba74ebfae2a849cc6eb22"
+        }
+      }
+    },
+    {
+      "id": "r144-topology-25-control",
+      "input": "shared-layout-inputs/r144-topology-25-control.svg",
+      "sourceSha256": "3f85fb0e0676213bc2216064371ac07ac3700c7b722da13222b385e83cc5e08b",
+      "outputScale": 1,
+      "selection": "Empty paths are inert; root coordinate lists span multiple paths with independent anchor states.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/6bb51b513c9f11c91c82.png",
+          "sha256": "6bb51b513c9f11c91c82eacb7446b28a47e8673d8e3bb5f22e0f72085e46e445"
+        },
+        "linux": {
+          "path": "references/shared-layout/1ece7be610504c307ba3.png",
+          "sha256": "1ece7be610504c307ba31c9171767fafc7482343a6dba74ebfae2a849cc6eb22"
+        }
+      }
+    },
+    {
+      "id": "r144-topology-28-candidate",
+      "input": "shared-layout-inputs/r144-topology-28-candidate.svg",
+      "sourceSha256": "333f005c9df17eb6e4594ec4ed06a25255817f625f43771d9f21b31e4a1ad27c",
+      "outputScale": 1,
+      "selection": "Empty paths are inert; root coordinate lists span multiple paths with independent anchor states.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/3b3478ffa5a40a16c727.png",
+          "sha256": "3b3478ffa5a40a16c727ff2d3c096ed72cfbe85b6bf123a4f34e4aadf364c337"
+        },
+        "linux": {
+          "path": "references/shared-layout/3b3478ffa5a40a16c727.png",
+          "sha256": "3b3478ffa5a40a16c727ff2d3c096ed72cfbe85b6bf123a4f34e4aadf364c337"
+        }
+      }
+    },
+    {
+      "id": "r144-topology-28-control",
+      "input": "shared-layout-inputs/r144-topology-28-control.svg",
+      "sourceSha256": "7db1373d3ce1784a573434537c902d2bcfe1590842251fe6fe9ca0741fc45a64",
+      "outputScale": 1,
+      "selection": "Empty paths are inert; root coordinate lists span multiple paths with independent anchor states.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/3b3478ffa5a40a16c727.png",
+          "sha256": "3b3478ffa5a40a16c727ff2d3c096ed72cfbe85b6bf123a4f34e4aadf364c337"
+        },
+        "linux": {
+          "path": "references/shared-layout/3b3478ffa5a40a16c727.png",
+          "sha256": "3b3478ffa5a40a16c727ff2d3c096ed72cfbe85b6bf123a4f34e4aadf364c337"
+        }
+      }
+    },
+    {
+      "id": "r144-topology-33-candidate",
+      "input": "shared-layout-inputs/r144-topology-33-candidate.svg",
+      "sourceSha256": "f3549c3df36e1b1aed610721c5ca69230bc53ca83afb41b60207aae41629c8c6",
+      "outputScale": 1,
+      "selection": "Empty paths are inert; root coordinate lists span multiple paths with independent anchor states.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/90bca50f06a88fa22496.png",
+          "sha256": "90bca50f06a88fa224968d94396f1e756c2ae9b1b8b6b5e97bd165607cb97fcb"
+        },
+        "linux": {
+          "path": "references/shared-layout/f5ee50552b747af2810a.png",
+          "sha256": "f5ee50552b747af2810add7205284037ed99faaa8dafb8fdb5c0d3875165bab2"
+        }
+      }
+    },
+    {
+      "id": "r144-topology-33-control",
+      "input": "shared-layout-inputs/r144-topology-33-control.svg",
+      "sourceSha256": "d1272fbf3260b72276ee8ed39b624bf8cea7fc011a16e0edf0405e3cf62fecfa",
+      "outputScale": 1,
+      "selection": "Empty paths are inert; root coordinate lists span multiple paths with independent anchor states.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/90bca50f06a88fa22496.png",
+          "sha256": "90bca50f06a88fa224968d94396f1e756c2ae9b1b8b6b5e97bd165607cb97fcb"
+        },
+        "linux": {
+          "path": "references/shared-layout/f5ee50552b747af2810a.png",
+          "sha256": "f5ee50552b747af2810add7205284037ed99faaa8dafb8fdb5c0d3875165bab2"
+        }
+      }
+    },
+    {
+      "id": "r144-glyphless-paint-0-candidate",
+      "input": "shared-layout-inputs/r144-glyphless-paint-0-candidate.svg",
+      "sourceSha256": "9389cba99d376e9dfbaea1b139e7eb579cfe03a5bd1388befc2705df167c7229",
+      "outputScale": 1,
+      "selection": "Ligature components without glyphs retain source positions and paint bounds across path boundaries.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/b77c7be1abaef6ae973f.png",
+          "sha256": "b77c7be1abaef6ae973fa9596ffd1b206c17a057cbdf2e81f45e7218593c86f4"
+        },
+        "linux": {
+          "path": "references/shared-layout/373540a1796f1c971408.png",
+          "sha256": "373540a1796f1c9714087d80eaa86c36dd2ac97b49972fe7c629abf0952ffe90"
+        }
+      }
+    },
+    {
+      "id": "r144-glyphless-paint-0-control",
+      "input": "shared-layout-inputs/r144-glyphless-paint-0-control.svg",
+      "sourceSha256": "b0579d7b01c7e56d84d4facec0f19c34cbfe60ce89c182fbfc60aeae7b790d0e",
+      "outputScale": 1,
+      "selection": "Ligature components without glyphs retain source positions and paint bounds across path boundaries.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/ddd129157701838c87b0.png",
+          "sha256": "ddd129157701838c87b0d46d1f70fc8d430949186242d239f3c0d5c77ca665f2"
+        },
+        "linux": {
+          "path": "references/shared-layout/9778ae19b22c253465eb.png",
+          "sha256": "9778ae19b22c253465eba903904e2e84477b65b894518a01bcdc070ed318d420"
+        }
+      }
+    },
+    {
+      "id": "r144-glyphless-paint-3-candidate",
+      "input": "shared-layout-inputs/r144-glyphless-paint-3-candidate.svg",
+      "sourceSha256": "a0a3684de7414a20bc40a3ea7cdc1f3a3c797d270eabd1a340007609f1317de4",
+      "outputScale": 1,
+      "selection": "Ligature components without glyphs retain source positions and paint bounds across path boundaries.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/99c0a30839e33814a437.png",
+          "sha256": "99c0a30839e33814a437934f1cb55ad5c99fd69b519148cae87014420f4c8144"
+        },
+        "linux": {
+          "path": "references/shared-layout/2dfffc543e85a174ea40.png",
+          "sha256": "2dfffc543e85a174ea4080c4bc1f4da7946444a72a0538e0a630f325f8170aa8"
+        }
+      }
+    },
+    {
+      "id": "r144-glyphless-paint-3-control",
+      "input": "shared-layout-inputs/r144-glyphless-paint-3-control.svg",
+      "sourceSha256": "570ffef01cbd983a471385aebc544c200931b18eefc373dcb08607d6e1c14a51",
+      "outputScale": 1,
+      "selection": "Ligature components without glyphs retain source positions and paint bounds across path boundaries.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/1342dde0d6c5efce0639.png",
+          "sha256": "1342dde0d6c5efce0639c314810d59be14a51aa54500a45d1fce13dcbdaa74fc"
+        },
+        "linux": {
+          "path": "references/shared-layout/62e91ff649ac47ab81f6.png",
+          "sha256": "62e91ff649ac47ab81f6fe9119a2425993ea0255c8c07112fe5c031672917656"
+        }
+      }
+    },
+    {
+      "id": "r144-glyphless-paint-5-candidate",
+      "input": "shared-layout-inputs/r144-glyphless-paint-5-candidate.svg",
+      "sourceSha256": "caafb083a7a6615fe265867171e9e224f70a8b4ffe04bd23ea3026e4bcd41468",
+      "outputScale": 1,
+      "selection": "Ligature components without glyphs retain source positions and paint bounds across path boundaries.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/ff3361a72eb8945a4d52.png",
+          "sha256": "ff3361a72eb8945a4d5276a868733f17a75574d3f522eb93dc4e4ed6e1673cd5"
+        },
+        "linux": {
+          "path": "references/shared-layout/6616065486ffc79ff2c1.png",
+          "sha256": "6616065486ffc79ff2c1d2a55005f9a8b397e6763c1293cfc6b3547c80b23e9a"
+        }
+      }
+    },
+    {
+      "id": "r144-glyphless-paint-5-control",
+      "input": "shared-layout-inputs/r144-glyphless-paint-5-control.svg",
+      "sourceSha256": "7ebb7f9795bfa852073a623253a9c11582b7eeb825c52a64d4e7ea3464a9285f",
+      "outputScale": 1,
+      "selection": "Ligature components without glyphs retain source positions and paint bounds across path boundaries.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/6e73eccda4f74d666dae.png",
+          "sha256": "6e73eccda4f74d666dae2ea3487f1b93ea8f574ddd058051454a228d37132169"
+        },
+        "linux": {
+          "path": "references/shared-layout/76fc7df23d385a77d885.png",
+          "sha256": "76fc7df23d385a77d8859dfd1715824941f983103369c293db677676c95a5525"
+        }
+      }
+    },
+    {
+      "id": "r144-glyphless-paint-6-candidate",
+      "input": "shared-layout-inputs/r144-glyphless-paint-6-candidate.svg",
+      "sourceSha256": "b030a65c113fa4655568cff6fe46323c4846ce77c658d8df84fa27009d23b663",
+      "outputScale": 1,
+      "selection": "Ligature components without glyphs retain source positions and paint bounds across path boundaries.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/bb63c6e1257f9d4fcf33.png",
+          "sha256": "bb63c6e1257f9d4fcf33d9827aac54daf6ccca9398ae5abe357f223d73187157"
+        },
+        "linux": {
+          "path": "references/shared-layout/ae62e624887998fb5f65.png",
+          "sha256": "ae62e624887998fb5f65b593fecfc487b53006f8fefe8e712f36114eb1b89cff"
+        }
+      }
+    },
+    {
+      "id": "r144-glyphless-paint-6-control",
+      "input": "shared-layout-inputs/r144-glyphless-paint-6-control.svg",
+      "sourceSha256": "dae631bebfb646c00696d4354b5a1932aa353479f44089b771fbfbefcd2daa02",
+      "outputScale": 1,
+      "selection": "Ligature components without glyphs retain source positions and paint bounds across path boundaries.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/44b6649e7e1aa9e8bfd8.png",
+          "sha256": "44b6649e7e1aa9e8bfd80573aa64265efde9a51ed8f3e963eb85b19ca5fc2e0f"
+        },
+        "linux": {
+          "path": "references/shared-layout/d639a6807090b38e9da3.png",
+          "sha256": "d639a6807090b38e9da30205473fed983cba7dec6b6a4a50bcae96180a2911a4"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-1-candidate",
+      "input": "shared-layout-inputs/r144-consumer-1-candidate.svg",
+      "sourceSha256": "dcb18ad408e4173da46e09a0f773ac7e5d9b53280d261a02c9e2ecd5bfe318d5",
+      "outputScale": 1,
+      "selection": "Specific shared-layout resource/paint interactions: instance, symbol, tile, isolation, mask and user-space shader.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/603406adc75513b56002.png",
+          "sha256": "603406adc75513b560021c00ff2293dcbbfdc060916b5bd94c12c1ce1955226f"
+        },
+        "linux": {
+          "path": "references/shared-layout/82b14ed5e5493f6b84aa.png",
+          "sha256": "82b14ed5e5493f6b84aadff0be573af0738bd4fcabd5baa69ecde921eff4df8f"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-1-control",
+      "input": "shared-layout-inputs/r144-consumer-1-control.svg",
+      "sourceSha256": "59601c90f2ab0ca8debe576efb948239be68cdb8dd8f10c08c362898c3392d56",
+      "outputScale": 1,
+      "selection": "Specific shared-layout resource/paint interactions: instance, symbol, tile, isolation, mask and user-space shader.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/603406adc75513b56002.png",
+          "sha256": "603406adc75513b560021c00ff2293dcbbfdc060916b5bd94c12c1ce1955226f"
+        },
+        "linux": {
+          "path": "references/shared-layout/82b14ed5e5493f6b84aa.png",
+          "sha256": "82b14ed5e5493f6b84aadff0be573af0738bd4fcabd5baa69ecde921eff4df8f"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-10-candidate",
+      "input": "shared-layout-inputs/r144-consumer-10-candidate.svg",
+      "sourceSha256": "db6f255a54c389b578a7535c0ad6a6bdd810d849e7fd6997713002da1746a213",
+      "outputScale": 1.5,
+      "selection": "Specific shared-layout resource/paint interactions: instance, symbol, tile, isolation, mask and user-space shader.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/36cbd9afbd054dfbe823.png",
+          "sha256": "36cbd9afbd054dfbe8234ce2ed663bc6430949a5dbc2a6334b9fd77508c9cd20"
+        },
+        "linux": {
+          "path": "references/shared-layout/04f58173284f4e82642f.png",
+          "sha256": "04f58173284f4e82642f46ff91716459e896c357eef19154c01fc64299ac6f87"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-10-control",
+      "input": "shared-layout-inputs/r144-consumer-10-control.svg",
+      "sourceSha256": "1d26676e0cc0340b5e575cd4f9cc6936370e0b62bff44f5ebd9ba80de9744f52",
+      "outputScale": 1.5,
+      "selection": "Specific shared-layout resource/paint interactions: instance, symbol, tile, isolation, mask and user-space shader.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/1943b08d690dc4590c7b.png",
+          "sha256": "1943b08d690dc4590c7bd76d9fe703763bcbafb8b03c3acfb8d70ffd0b58ad1e"
+        },
+        "linux": {
+          "path": "references/shared-layout/2aa27d02f1ba0db10fe6.png",
+          "sha256": "2aa27d02f1ba0db10fe672cae5751195a1d66b079e1ac935588d4f721f36a199"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-19-candidate",
+      "input": "shared-layout-inputs/r144-consumer-19-candidate.svg",
+      "sourceSha256": "c7a0fdc059f73826a158de414136f039c2f72954ac329ea5e036a98b474399b2",
+      "outputScale": 1,
+      "selection": "Specific shared-layout resource/paint interactions: instance, symbol, tile, isolation, mask and user-space shader.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/c0fd73c5d0ab5405e8a2.png",
+          "sha256": "c0fd73c5d0ab5405e8a2dde762ae2610812380279a851c42dff99811a38c2537"
+        },
+        "linux": {
+          "path": "references/shared-layout/33865fe686c58ab6fd19.png",
+          "sha256": "33865fe686c58ab6fd1901bd14c6c9bd5f07871e42b347d2637b39e056bfa5ca"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-19-control",
+      "input": "shared-layout-inputs/r144-consumer-19-control.svg",
+      "sourceSha256": "afda458424cc1375b69f31a966df9bfaa1b402fe48bf558acb2f8c0a6f42fe84",
+      "outputScale": 1,
+      "selection": "Specific shared-layout resource/paint interactions: instance, symbol, tile, isolation, mask and user-space shader.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/c4b0e63180b37386792d.png",
+          "sha256": "c4b0e63180b37386792dbac62d4bfaa35245333d916ef0d3f2fed6da3af38422"
+        },
+        "linux": {
+          "path": "references/shared-layout/23485a6c43a01a318a7d.png",
+          "sha256": "23485a6c43a01a318a7d3fdc5f7168e3b05f225667201d2219ac921de64e9d89"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-28-candidate",
+      "input": "shared-layout-inputs/r144-consumer-28-candidate.svg",
+      "sourceSha256": "efbba96c534d04c67c5dc1d4494c7167b272ff5d22d0906eee26bb11139bc5fc",
+      "outputScale": 1,
+      "selection": "Specific shared-layout resource/paint interactions: instance, symbol, tile, isolation, mask and user-space shader.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/9c1e3308f31ab4c1000a.png",
+          "sha256": "9c1e3308f31ab4c1000adf1dca63af1201b3fe83b1c3c55077718fd69e32e88b"
+        },
+        "linux": {
+          "path": "references/shared-layout/502833569b9748be96dc.png",
+          "sha256": "502833569b9748be96dc936ffa5168e9f9a29b1849984c81330c836675d71808"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-28-control",
+      "input": "shared-layout-inputs/r144-consumer-28-control.svg",
+      "sourceSha256": "9507001874e15a76010b710488f70470acb5f5b6051596c6d111d7eb1e609014",
+      "outputScale": 1,
+      "selection": "Specific shared-layout resource/paint interactions: instance, symbol, tile, isolation, mask and user-space shader.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/9c1e3308f31ab4c1000a.png",
+          "sha256": "9c1e3308f31ab4c1000adf1dca63af1201b3fe83b1c3c55077718fd69e32e88b"
+        },
+        "linux": {
+          "path": "references/shared-layout/502833569b9748be96dc.png",
+          "sha256": "502833569b9748be96dc936ffa5168e9f9a29b1849984c81330c836675d71808"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-37-candidate",
+      "input": "shared-layout-inputs/r144-consumer-37-candidate.svg",
+      "sourceSha256": "693b30446e98249750852d8d3f2b78a408023619b14f3efcaaf49b5d87d4181b",
+      "outputScale": 1,
+      "selection": "Specific shared-layout resource/paint interactions: instance, symbol, tile, isolation, mask and user-space shader.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/f04d7f22ed5b49e2557f.png",
+          "sha256": "f04d7f22ed5b49e2557f8752019de1fc74ae74396eb7310889c86c12b9dbbaf3"
+        },
+        "linux": {
+          "path": "references/shared-layout/b2e4deabb1cba76d5184.png",
+          "sha256": "b2e4deabb1cba76d518404b08dad2ebc614eb627fa2944a4e47797210c824124"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-37-control",
+      "input": "shared-layout-inputs/r144-consumer-37-control.svg",
+      "sourceSha256": "47767645eee2d16cd3c99ca0e139af3f0aed921e0bcb43893f87a1ffb622a2c0",
+      "outputScale": 1,
+      "selection": "Specific shared-layout resource/paint interactions: instance, symbol, tile, isolation, mask and user-space shader.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/7b34515cfe055de280b2.png",
+          "sha256": "7b34515cfe055de280b2e9012ff29215df6088f701df5e567a1885ad555c9b51"
+        },
+        "linux": {
+          "path": "references/shared-layout/d3f7bce06a7b42e0a8ca.png",
+          "sha256": "d3f7bce06a7b42e0a8ca82b1c5967ef52c38c98d170817d544c69095fa2a7d4c"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-63-candidate",
+      "input": "shared-layout-inputs/r144-consumer-63-candidate.svg",
+      "sourceSha256": "3aefa9e336f5a1df0e188240e91d5047a355825e55f04bd8abc820661f6da4cd",
+      "outputScale": 1,
+      "selection": "Specific shared-layout resource/paint interactions: instance, symbol, tile, isolation, mask and user-space shader.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/b46054077d765f5ff171.png",
+          "sha256": "b46054077d765f5ff17119069ffb3ff81b6b829e94d37682f6a640b43aaf4bca"
+        },
+        "linux": {
+          "path": "references/shared-layout/977ef091fd489e1d5905.png",
+          "sha256": "977ef091fd489e1d5905139222c4401f3a7e2e9b73ac1e3ff68889b384ebe691"
+        }
+      }
+    },
+    {
+      "id": "r144-consumer-63-control",
+      "input": "shared-layout-inputs/r144-consumer-63-control.svg",
+      "sourceSha256": "dfcddff41c43a6b51fd3a593ce22377ad3be9f22222be584de7b94685805572d",
+      "outputScale": 1,
+      "selection": "Specific shared-layout resource/paint interactions: instance, symbol, tile, isolation, mask and user-space shader.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/cfe13ea11bd0d9df6540.png",
+          "sha256": "cfe13ea11bd0d9df6540f1e2637f17d096209484933828542884af5dac097ae5"
+        },
+        "linux": {
+          "path": "references/shared-layout/f59439ea3f8b19e9fd54.png",
+          "sha256": "f59439ea3f8b19e9fd54a5f796502fb5bb28d83c1b571693090a6d0c8680d8a9"
+        }
+      }
+    },
+    {
+      "id": "r144-own-filter-flood-0-candidate",
+      "input": "shared-layout-inputs/r144-own-filter-flood-0-candidate.svg",
+      "sourceSha256": "edff5b19cc900d8a2e1979854e174e6b349f3f3eab4f23058203c2384909352b",
+      "outputScale": 1,
+      "selection": "Own-filter flood regions use the native text object box, independently of the painted ink capture; resource display and reference order remain orthogonal.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/9a6396109054f4813f83.png",
+          "sha256": "9a6396109054f4813f83b534d2cf641d7955128c07f7c57764e3a5eae1ab91a2"
+        },
+        "linux": {
+          "path": "references/shared-layout/cf8f2ae97885c939c905.png",
+          "sha256": "cf8f2ae97885c939c9051a5d09cb111eaee634c53249620a7fdb4b848ce03c62"
+        }
+      }
+    },
+    {
+      "id": "r144-own-filter-flood-0-control",
+      "input": "shared-layout-inputs/r144-own-filter-flood-0-control.svg",
+      "sourceSha256": "c91a988ea84c5af42595f63772dff4921fe49f45e1c7e15276afbfbc096e9447",
+      "outputScale": 1,
+      "selection": "Own-filter flood regions use the native text object box, independently of the painted ink capture; resource display and reference order remain orthogonal.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/9a6396109054f4813f83.png",
+          "sha256": "9a6396109054f4813f83b534d2cf641d7955128c07f7c57764e3a5eae1ab91a2"
+        },
+        "linux": {
+          "path": "references/shared-layout/cf8f2ae97885c939c905.png",
+          "sha256": "cf8f2ae97885c939c9051a5d09cb111eaee634c53249620a7fdb4b848ce03c62"
+        }
+      }
+    },
+    {
+      "id": "r144-own-filter-flood-1-candidate",
+      "input": "shared-layout-inputs/r144-own-filter-flood-1-candidate.svg",
+      "sourceSha256": "3a53d11969e8e52c0c3d27fb45a1c6c9bdf15dc74c4f75ded5dff5e16f1027fe",
+      "outputScale": 1,
+      "selection": "Own-filter flood regions use the native text object box, independently of the painted ink capture; resource display and reference order remain orthogonal.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/9a6396109054f4813f83.png",
+          "sha256": "9a6396109054f4813f83b534d2cf641d7955128c07f7c57764e3a5eae1ab91a2"
+        },
+        "linux": {
+          "path": "references/shared-layout/cf8f2ae97885c939c905.png",
+          "sha256": "cf8f2ae97885c939c9051a5d09cb111eaee634c53249620a7fdb4b848ce03c62"
+        }
+      }
+    },
+    {
+      "id": "r144-own-filter-flood-1-control",
+      "input": "shared-layout-inputs/r144-own-filter-flood-1-control.svg",
+      "sourceSha256": "f9bcd810fc789b763d2583382853763b2a3ca134f5b42d71cf086b68004716e2",
+      "outputScale": 1,
+      "selection": "Own-filter flood regions use the native text object box, independently of the painted ink capture; resource display and reference order remain orthogonal.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/9a6396109054f4813f83.png",
+          "sha256": "9a6396109054f4813f83b534d2cf641d7955128c07f7c57764e3a5eae1ab91a2"
+        },
+        "linux": {
+          "path": "references/shared-layout/cf8f2ae97885c939c905.png",
+          "sha256": "cf8f2ae97885c939c9051a5d09cb111eaee634c53249620a7fdb4b848ce03c62"
+        }
+      }
+    },
+    {
+      "id": "r144-own-filter-flood-2-candidate",
+      "input": "shared-layout-inputs/r144-own-filter-flood-2-candidate.svg",
+      "sourceSha256": "c308dfa5e7a24baa54fb386d88d655bfad2b72d66e283b0b08892d0fccd6683c",
+      "outputScale": 1,
+      "selection": "Own-filter flood regions use the native text object box, independently of the painted ink capture; resource display and reference order remain orthogonal.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/9a6396109054f4813f83.png",
+          "sha256": "9a6396109054f4813f83b534d2cf641d7955128c07f7c57764e3a5eae1ab91a2"
+        },
+        "linux": {
+          "path": "references/shared-layout/cf8f2ae97885c939c905.png",
+          "sha256": "cf8f2ae97885c939c9051a5d09cb111eaee634c53249620a7fdb4b848ce03c62"
+        }
+      }
+    },
+    {
+      "id": "r144-own-filter-flood-2-control",
+      "input": "shared-layout-inputs/r144-own-filter-flood-2-control.svg",
+      "sourceSha256": "4c10902606cdbf97cc42d5f26dfea56f8c14aa685a1a1de7ae8d8c88bc028736",
+      "outputScale": 1,
+      "selection": "Own-filter flood regions use the native text object box, independently of the painted ink capture; resource display and reference order remain orthogonal.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/9a6396109054f4813f83.png",
+          "sha256": "9a6396109054f4813f83b534d2cf641d7955128c07f7c57764e3a5eae1ab91a2"
+        },
+        "linux": {
+          "path": "references/shared-layout/cf8f2ae97885c939c905.png",
+          "sha256": "cf8f2ae97885c939c9051a5d09cb111eaee634c53249620a7fdb4b848ce03c62"
+        }
+      }
+    },
+    {
+      "id": "r144-own-filter-flood-3-candidate",
+      "input": "shared-layout-inputs/r144-own-filter-flood-3-candidate.svg",
+      "sourceSha256": "aa3ec91ed24bf54178497074737b5cfdb6882a9a5c4cce3f4fd9b6fa4640ac1b",
+      "outputScale": 1,
+      "selection": "Own-filter flood regions use the native text object box, independently of the painted ink capture; resource display and reference order remain orthogonal.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/9a6396109054f4813f83.png",
+          "sha256": "9a6396109054f4813f83b534d2cf641d7955128c07f7c57764e3a5eae1ab91a2"
+        },
+        "linux": {
+          "path": "references/shared-layout/cf8f2ae97885c939c905.png",
+          "sha256": "cf8f2ae97885c939c9051a5d09cb111eaee634c53249620a7fdb4b848ce03c62"
+        }
+      }
+    },
+    {
+      "id": "r144-own-filter-flood-3-control",
+      "input": "shared-layout-inputs/r144-own-filter-flood-3-control.svg",
+      "sourceSha256": "dca16d8ea6134eb31097b8f5584604bb5468f8fe31c9d44d771230e8463026f1",
+      "outputScale": 1,
+      "selection": "Own-filter flood regions use the native text object box, independently of the painted ink capture; resource display and reference order remain orthogonal.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/9a6396109054f4813f83.png",
+          "sha256": "9a6396109054f4813f83b534d2cf641d7955128c07f7c57764e3a5eae1ab91a2"
+        },
+        "linux": {
+          "path": "references/shared-layout/cf8f2ae97885c939c905.png",
+          "sha256": "cf8f2ae97885c939c9051a5d09cb111eaee634c53249620a7fdb4b848ce03c62"
+        }
+      }
+    },
+    {
+      "id": "r144-filter-region-history-0-candidate",
+      "input": "shared-layout-inputs/r144-filter-region-history-0-candidate.svg",
+      "sourceSha256": "fa08b4400b46bbff4a371a6f0057647c386f23683632a207139872a2f7b42f6d",
+      "outputScale": 1,
+      "selection": "Ordinary text uses the native font object box for an active flood filter; an inactive filter remains the independent positive control.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/0f4860d85f00a2384f4a.png",
+          "sha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3"
+        },
+        "linux": {
+          "path": "references/shared-layout/0f4860d85f00a2384f4a.png",
+          "sha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3"
+        }
+      }
+    },
+    {
+      "id": "r144-filter-region-history-0-control",
+      "input": "shared-layout-inputs/r144-filter-region-history-0-control.svg",
+      "sourceSha256": "6e2b60ffb13f92b649d2e435fb4fe7495973376d8de6f10b39b1cceb236ce60f",
+      "outputScale": 1,
+      "selection": "Ordinary text uses the native font object box for an active flood filter; an inactive filter remains the independent positive control.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/f3c8bc55af364d96c71b.png",
+          "sha256": "f3c8bc55af364d96c71b8f4dbf5ce92db70862cee9d1b5c07e51f88dec7ee0e2"
+        },
+        "linux": {
+          "path": "references/shared-layout/1085bbd08d82c8880a3d.png",
+          "sha256": "1085bbd08d82c8880a3ded65a6bbce1e994765bdabd98fa2040906bb78543582"
+        }
+      }
+    },
+    {
+      "id": "r144-filter-region-history-6-candidate",
+      "input": "shared-layout-inputs/r144-filter-region-history-6-candidate.svg",
+      "sourceSha256": "31727f1247cf9d3f3cd7fd82acf7417e0d1816b2aad432c015dd4b647e1abb24",
+      "outputScale": 1,
+      "selection": "A stroked text filter uses the font object box independently of painted stroke capture bounds.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/0f4860d85f00a2384f4a.png",
+          "sha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3"
+        },
+        "linux": {
+          "path": "references/shared-layout/0f4860d85f00a2384f4a.png",
+          "sha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3"
+        }
+      }
+    },
+    {
+      "id": "r144-filter-region-history-6-control",
+      "input": "shared-layout-inputs/r144-filter-region-history-6-control.svg",
+      "sourceSha256": "4aeedeaf594c925c90dc39ac111f20b02d8fbd790a74aa9b3a66c3d5e68e223d",
+      "outputScale": 1,
+      "selection": "A stroked text filter uses the font object box independently of painted stroke capture bounds.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/f3c8bc55af364d96c71b.png",
+          "sha256": "f3c8bc55af364d96c71b8f4dbf5ce92db70862cee9d1b5c07e51f88dec7ee0e2"
+        },
+        "linux": {
+          "path": "references/shared-layout/1085bbd08d82c8880a3d.png",
+          "sha256": "1085bbd08d82c8880a3ded65a6bbce1e994765bdabd98fa2040906bb78543582"
+        }
+      }
+    },
+    {
+      "id": "r144-filter-region-history-16-candidate",
+      "input": "shared-layout-inputs/r144-filter-region-history-16-candidate.svg",
+      "sourceSha256": "411c47d5efce4e311e485049f75a5329b5be1dffd7dbce2ac73406476a9b489d",
+      "outputScale": 1,
+      "selection": "Filtered text retained inside pattern content keeps its own object box through resource replay.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/0f4860d85f00a2384f4a.png",
+          "sha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3"
+        },
+        "linux": {
+          "path": "references/shared-layout/0f4860d85f00a2384f4a.png",
+          "sha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3"
+        }
+      }
+    },
+    {
+      "id": "r144-filter-region-history-16-control",
+      "input": "shared-layout-inputs/r144-filter-region-history-16-control.svg",
+      "sourceSha256": "5cde8e92a1783488ee00919bd3cbca1870e31d1d1d3a2179da2044cf3ceb2d8d",
+      "outputScale": 1,
+      "selection": "Filtered text retained inside pattern content keeps its own object box through resource replay.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/f3c8bc55af364d96c71b.png",
+          "sha256": "f3c8bc55af364d96c71b8f4dbf5ce92db70862cee9d1b5c07e51f88dec7ee0e2"
+        },
+        "linux": {
+          "path": "references/shared-layout/1085bbd08d82c8880a3d.png",
+          "sha256": "1085bbd08d82c8880a3ded65a6bbce1e994765bdabd98fa2040906bb78543582"
+        }
+      }
+    },
+    {
+      "id": "r144-filter-region-history-34-candidate",
+      "input": "shared-layout-inputs/r144-filter-region-history-34-candidate.svg",
+      "sourceSha256": "dc9543fdf4aaa2153d3d51ded6b72312ed0dd456eab069d351c8c7d35beb9bc5",
+      "outputScale": 1,
+      "selection": "An outer offset filter and use placement retain the source text filter object box without applying instance placement twice.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/0f4860d85f00a2384f4a.png",
+          "sha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3"
+        },
+        "linux": {
+          "path": "references/shared-layout/0f4860d85f00a2384f4a.png",
+          "sha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3"
+        }
+      }
+    },
+    {
+      "id": "r144-filter-region-history-34-control",
+      "input": "shared-layout-inputs/r144-filter-region-history-34-control.svg",
+      "sourceSha256": "2cd79b4d8a119a65b1cf0477ae8e05e1a27ad46a171c38bed908677e17ec0fd7",
+      "outputScale": 1,
+      "selection": "An outer offset filter and use placement retain the source text filter object box without applying instance placement twice.",
+      "references": {
+        "windows": {
+          "path": "references/shared-layout/f3c8bc55af364d96c71b.png",
+          "sha256": "f3c8bc55af364d96c71b8f4dbf5ce92db70862cee9d1b5c07e51f88dec7ee0e2"
+        },
+        "linux": {
+          "path": "references/shared-layout/1085bbd08d82c8880a3d.png",
+          "sha256": "1085bbd08d82c8880a3ded65a6bbce1e994765bdabd98fa2040906bb78543582"
+        }
+      }
+    }
+  ]
+}

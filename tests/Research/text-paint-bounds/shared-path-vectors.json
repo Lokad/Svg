@@ -1,0 +1,818 @@
+[
+  {
+    "id": "horizontal-plain-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan>V</tspan></text></svg>",
+    "sourceSha256": "c86b77c71dacc0f2e6681974de7d78a2b325837a4b62e71162bbbd03255ec9a5",
+    "windows": [
+      -3.2421875,
+      -9,
+      81.2421875,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      79.2421875,
+      55.5
+    ]
+  },
+  {
+    "id": "horizontal-plain-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan x='72' y='44.5'>V</tspan></text></svg>",
+    "sourceSha256": "5d14be302e027eb19f5656070cd918e26578ca94eac6bf0e8de8e5594bdbd47f",
+    "windows": [
+      -3.2421875,
+      -9,
+      78.8359375,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      76.8359375,
+      55.5
+    ]
+  },
+  {
+    "id": "horizontal-spacing-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)' textLength='36.25' lengthAdjust='spacing'>A<textPath href='#b'>VA</textPath><tspan>V</tspan></text></svg>",
+    "sourceSha256": "1a128dd7baa909ecca92408323edc0e4575f9780a21464f166c16898f9ad10a1",
+    "windows": [
+      -3.2421875,
+      -9,
+      81.2421875,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      79.2421875,
+      55.5
+    ]
+  },
+  {
+    "id": "horizontal-spacing-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)' textLength='36.25' lengthAdjust='spacing'>A<textPath href='#b'>VA</textPath><tspan x='72' y='44.5'>V</tspan></text></svg>",
+    "sourceSha256": "e328c44916c974e52656b6cdc0cccb29501137c6a9ff2654c5476fe0c1dcc3b1",
+    "windows": [
+      -3.2421875,
+      -9,
+      78.8359375,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      76.8359375,
+      55.5
+    ]
+  },
+  {
+    "id": "horizontal-stretch-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)' textLength='36.25' lengthAdjust='spacingAndGlyphs'>A<textPath href='#b'>VA</textPath><tspan>V</tspan></text></svg>",
+    "sourceSha256": "a894d8e3b6967050593e5322fb33ef0e18ff980e1b3f82f0caf26ea2ea04bd27",
+    "windows": [
+      -6.115345478057861,
+      -9,
+      89.43242645263672,
+      55.5
+    ],
+    "linux": [
+      -4.229166507720947,
+      -9,
+      85.6600570678711,
+      55.5
+    ]
+  },
+  {
+    "id": "horizontal-stretch-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)' textLength='36.25' lengthAdjust='spacingAndGlyphs'>A<textPath href='#b'>VA</textPath><tspan x='72' y='44.5'>V</tspan></text></svg>",
+    "sourceSha256": "a402c55bbae219d65d2236c60d9dad9e5a6335d7bff66ef0cdc5967e37da2d8f",
+    "windows": [
+      -6.01269006729126,
+      -9,
+      84.67735290527344,
+      55.5
+    ],
+    "linux": [
+      -4.158173561096191,
+      -9,
+      80.96832275390625,
+      55.5
+    ]
+  },
+  {
+    "id": "horizontal-offset-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b' startOffset='12.25'>VA</textPath><tspan>V</tspan></text></svg>",
+    "sourceSha256": "6fab1876ee0b6698b88e6b65f4cc91e0c03aa8fceff6f29511186cb2b53262d0",
+    "windows": [
+      -1.0625,
+      -9,
+      79.0625,
+      55.5
+    ],
+    "linux": [
+      -0.0625,
+      -9,
+      77.0625,
+      55.5
+    ]
+  },
+  {
+    "id": "horizontal-offset-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b' startOffset='12.25'>VA</textPath><tspan x='72' y='44.5'>V</tspan></text></svg>",
+    "sourceSha256": "80e6d90d7ee3f7c3b7937817d8bdd0758e74fdbcc65dae9b8cd82838f2d6cc82",
+    "windows": [
+      -1.0625,
+      -9,
+      76.65625,
+      55.5
+    ],
+    "linux": [
+      -0.0625,
+      -9,
+      74.65625,
+      55.5
+    ]
+  },
+  {
+    "id": "horizontal-font-span-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan font-family='monospace' font-weight='bold'>V</tspan></text></svg>",
+    "sourceSha256": "dd8344c9214e53e396fc88b6ed6631ad86c86ac19c073239a0f65de88a3cc70a",
+    "windows": [
+      -3.2421875,
+      -9,
+      80.2421875,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      79.2421875,
+      55.5
+    ]
+  },
+  {
+    "id": "horizontal-font-span-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan font-family='monospace' font-weight='bold' x='72' y='44.5'>V</tspan></text></svg>",
+    "sourceSha256": "e504a489e6ee26c377976a3aff4ed6b9b4419803d39e6dcf49311fedeab72da7",
+    "windows": [
+      -3.2421875,
+      -9,
+      77.8359375,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      76.8359375,
+      55.5
+    ]
+  },
+  {
+    "id": "horizontal-hidden-font-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan font-family='monospace' font-weight='bold' visibility='hidden'>i</tspan>V</text></svg>",
+    "sourceSha256": "112e73f601ef4910a52b62288c71b51f010dda0b30b661ac1688dc267c24bf87",
+    "windows": [
+      -3.2421875,
+      -9,
+      86.0546875,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      84.0546875,
+      55.5
+    ]
+  },
+  {
+    "id": "horizontal-hidden-font-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan font-family='monospace' font-weight='bold' visibility='hidden' x='72' y='44.5'>i</tspan>V</text></svg>",
+    "sourceSha256": "2f2010ef9e6de3b89ca71052a2b67ee0f689e21c6cd0cf16f716a251e4c93375",
+    "windows": [
+      -3.2421875,
+      -9,
+      81.2421875,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      79.2421875,
+      55.5
+    ]
+  },
+  {
+    "id": "horizontal-lists-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5 8 16 24' y='8 12 16 20' dx='0 .25 -.25 .5' dy='.25 0 -.25 .5' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan>V</tspan></text></svg>",
+    "sourceSha256": "0075f046503cece95c29c98a479d74bae4ff229adcaf547a21356c7ec1361c05",
+    "windows": [
+      -1.0625,
+      -0.75,
+      29.15625,
+      47.25
+    ],
+    "linux": [
+      -0.0625,
+      -0.75,
+      27.75,
+      47.25
+    ]
+  },
+  {
+    "id": "horizontal-lists-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5 8 16 24' y='8 12 16 20' dx='0 .25 -.25 .5' dy='.25 0 -.25 .5' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan x='72' y='44.5'>V</tspan></text></svg>",
+    "sourceSha256": "443c20ce2f3e76023a7ddda603996b0cb331f6087e0ed8db901b72e85ad91d0e",
+    "windows": [
+      -1.0625,
+      -0.75,
+      77.15625,
+      47.75
+    ],
+    "linux": [
+      -0.0625,
+      -0.75,
+      75.15625,
+      47.75
+    ]
+  },
+  {
+    "id": "horizontal-anchor-override-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b' text-anchor='end'>VA</textPath><tspan>V</tspan></text></svg>",
+    "sourceSha256": "e69906df3842e9c51480c08e1e6b74ea9fb341807e981aee2c498f51cbb29bc2",
+    "windows": [
+      -3.3984375,
+      -9,
+      81.3984375,
+      55.5
+    ],
+    "linux": [
+      -2.3984375,
+      -9,
+      79.3984375,
+      55.5
+    ]
+  },
+  {
+    "id": "horizontal-anchor-override-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b' text-anchor='end'>VA</textPath><tspan x='72' y='44.5'>V</tspan></text></svg>",
+    "sourceSha256": "aa9d7eac83237afacf8c7071ae03348df59cc53dcf6a3d13a714f95053c5491d",
+    "windows": [
+      -3.5625,
+      -9,
+      79.15625,
+      55.5
+    ],
+    "linux": [
+      -2.5625,
+      -9,
+      77.15625,
+      55.5
+    ]
+  },
+  {
+    "id": "curved-plain-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 34.5Q40 6.5 72 44.5'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan>V</tspan></text></svg>",
+    "sourceSha256": "da31730857a749cdcd0c6d4f52e2ffab90880e4251efcc2007a3650a892fa6f8",
+    "windows": [
+      -3.2421875,
+      -9,
+      81.2421875,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      79.2421875,
+      55.5
+    ]
+  },
+  {
+    "id": "curved-plain-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 34.5Q40 6.5 72 44.5'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan x='72' y='44.5'>V</tspan></text></svg>",
+    "sourceSha256": "396f765056d1746fc60613c7795fcbdb02a310e479b6bf6ac22060b545044da7",
+    "windows": [
+      -3.2421875,
+      -9,
+      78.8359375,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      76.8359375,
+      55.5
+    ]
+  },
+  {
+    "id": "curved-spacing-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 34.5Q40 6.5 72 44.5'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)' textLength='36.25' lengthAdjust='spacing'>A<textPath href='#b'>VA</textPath><tspan>V</tspan></text></svg>",
+    "sourceSha256": "e7122c27e648214778b1915a245ee60aead039e49be6485aae8c67fcbcf379e2",
+    "windows": [
+      -3.2421875,
+      -9,
+      81.2421875,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      79.2421875,
+      55.5
+    ]
+  },
+  {
+    "id": "curved-spacing-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 34.5Q40 6.5 72 44.5'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)' textLength='36.25' lengthAdjust='spacing'>A<textPath href='#b'>VA</textPath><tspan x='72' y='44.5'>V</tspan></text></svg>",
+    "sourceSha256": "e172cc52fc4699a650f17fa024a3c62b583bfc17a3c807752239bbe54823a4ba",
+    "windows": [
+      -3.2421875,
+      -9,
+      78.8359375,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      76.8359375,
+      55.5
+    ]
+  },
+  {
+    "id": "curved-stretch-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 34.5Q40 6.5 72 44.5'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)' textLength='36.25' lengthAdjust='spacingAndGlyphs'>A<textPath href='#b'>VA</textPath><tspan>V</tspan></text></svg>",
+    "sourceSha256": "f6d6c008f499d7b3f6afc23a41724a2ba04f9d7c9795e0760c28be31977354fb",
+    "windows": [
+      -6.115345478057861,
+      -9,
+      89.43242645263672,
+      55.5
+    ],
+    "linux": [
+      -4.229166507720947,
+      -9,
+      85.6600570678711,
+      55.5
+    ]
+  },
+  {
+    "id": "curved-stretch-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 34.5Q40 6.5 72 44.5'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)' textLength='36.25' lengthAdjust='spacingAndGlyphs'>A<textPath href='#b'>VA</textPath><tspan x='72' y='44.5'>V</tspan></text></svg>",
+    "sourceSha256": "3349106f976754423beeb8d3568d00d0f46c8d8853c10fc7f7dcb62ca0d054ad",
+    "windows": [
+      -6.01269006729126,
+      -9,
+      84.67735290527344,
+      55.5
+    ],
+    "linux": [
+      -4.158173561096191,
+      -9,
+      80.96832275390625,
+      55.5
+    ]
+  },
+  {
+    "id": "curved-offset-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 34.5Q40 6.5 72 44.5'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b' startOffset='12.25'>VA</textPath><tspan>V</tspan></text></svg>",
+    "sourceSha256": "e130861579aa0e4e4456cc509d7c6d50db58d65f0e7af9665549c861e2d7b339",
+    "windows": [
+      -1.0625,
+      -9,
+      79.0625,
+      55.5
+    ],
+    "linux": [
+      -0.0625,
+      -9,
+      77.0625,
+      55.5
+    ]
+  },
+  {
+    "id": "curved-offset-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 34.5Q40 6.5 72 44.5'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b' startOffset='12.25'>VA</textPath><tspan x='72' y='44.5'>V</tspan></text></svg>",
+    "sourceSha256": "db3ce07147155f8affc39d6b83ca521be6c2c34221c4a419baf35f11866218b4",
+    "windows": [
+      -1.0625,
+      -9,
+      76.65625,
+      55.5
+    ],
+    "linux": [
+      -0.0625,
+      -9,
+      74.65625,
+      55.5
+    ]
+  },
+  {
+    "id": "curved-font-span-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 34.5Q40 6.5 72 44.5'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan font-family='monospace' font-weight='bold'>V</tspan></text></svg>",
+    "sourceSha256": "e4b5eda288a8b127b7f861befa55737bbfd6083802dcaaddd6884a78a26e8820",
+    "windows": [
+      -3.2421875,
+      -9,
+      80.2421875,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      79.2421875,
+      55.5
+    ]
+  },
+  {
+    "id": "curved-font-span-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 34.5Q40 6.5 72 44.5'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan font-family='monospace' font-weight='bold' x='72' y='44.5'>V</tspan></text></svg>",
+    "sourceSha256": "94222efa42d7f0153f037eee1e3a6ceac5e3602cf3f16e91e6484db1aa3b96d3",
+    "windows": [
+      -3.2421875,
+      -9,
+      77.8359375,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      76.8359375,
+      55.5
+    ]
+  },
+  {
+    "id": "curved-hidden-font-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 34.5Q40 6.5 72 44.5'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan font-family='monospace' font-weight='bold' visibility='hidden'>i</tspan>V</text></svg>",
+    "sourceSha256": "982484b16a49833d666c1a19cea3e8460fe6d05a205476a4dad36a36b6583645",
+    "windows": [
+      -3.2421875,
+      -9,
+      86.0546875,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      84.0546875,
+      55.5
+    ]
+  },
+  {
+    "id": "curved-hidden-font-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 34.5Q40 6.5 72 44.5'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan font-family='monospace' font-weight='bold' visibility='hidden' x='72' y='44.5'>i</tspan>V</text></svg>",
+    "sourceSha256": "e6ffffc2520a95f1e189a493da26c2d3867d5f17926e1b27ec166280af58ff73",
+    "windows": [
+      -3.2421875,
+      -9,
+      81.2421875,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      79.2421875,
+      55.5
+    ]
+  },
+  {
+    "id": "curved-lists-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 34.5Q40 6.5 72 44.5'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5 8 16 24' y='8 12 16 20' dx='0 .25 -.25 .5' dy='.25 0 -.25 .5' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan>V</tspan></text></svg>",
+    "sourceSha256": "a8e6ecd6a7654ed8052044c668b4ff6eabeff6dc90bed4f22240ebddf710273f",
+    "windows": [
+      -1.0625,
+      -0.75,
+      29.15625,
+      33.68392562866211
+    ],
+    "linux": [
+      -0.0625,
+      -0.75,
+      27.15625,
+      33.12773513793945
+    ]
+  },
+  {
+    "id": "curved-lists-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 34.5Q40 6.5 72 44.5'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5 8 16 24' y='8 12 16 20' dx='0 .25 -.25 .5' dy='.25 0 -.25 .5' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan x='72' y='44.5'>V</tspan></text></svg>",
+    "sourceSha256": "d4dedf0d3707989228d5929269203564cdf6d2d907d7f120f3b78714b1c6cff4",
+    "windows": [
+      -1.0625,
+      -0.75,
+      77.15625,
+      47.75
+    ],
+    "linux": [
+      -0.0625,
+      -0.75,
+      75.15625,
+      47.75
+    ]
+  },
+  {
+    "id": "curved-anchor-override-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 34.5Q40 6.5 72 44.5'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b' text-anchor='end'>VA</textPath><tspan>V</tspan></text></svg>",
+    "sourceSha256": "4e1c1248f27e57520d37d4dae4e2d1345a6a221fbaf5ef0ebcdfad9716dfec96",
+    "windows": [
+      -3.3984375,
+      -9,
+      81.3984375,
+      55.5
+    ],
+    "linux": [
+      -2.3984375,
+      -9,
+      79.3984375,
+      55.5
+    ]
+  },
+  {
+    "id": "curved-anchor-override-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 34.5Q40 6.5 72 44.5'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b' text-anchor='end'>VA</textPath><tspan x='72' y='44.5'>V</tspan></text></svg>",
+    "sourceSha256": "1199e1a82ef79cebff72d81478fe2ec8e4af574a6648521a51269317a869758c",
+    "windows": [
+      -3.5625,
+      -9,
+      79.15625,
+      55.5
+    ],
+    "linux": [
+      -2.5625,
+      -9,
+      77.15625,
+      55.5
+    ]
+  },
+  {
+    "id": "closed-plain-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72V24.5H8.5Z'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan>V</tspan></text></svg>",
+    "sourceSha256": "930ff6887601bcc9cd1a947507bc52c688f2589fc3cc29e907f84e2ebafa7a30",
+    "windows": [
+      -3.2421875,
+      -9,
+      17.7421875,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      16.5859375,
+      55.5
+    ]
+  },
+  {
+    "id": "closed-plain-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72V24.5H8.5Z'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan x='72' y='44.5'>V</tspan></text></svg>",
+    "sourceSha256": "be25e59f83dec9e7b0c4ed3d7bcff0e8f60032d412f00f8618e062c12a8f3e92",
+    "windows": [
+      -3.2421875,
+      -9,
+      78.8359375,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      76.8359375,
+      55.5
+    ]
+  },
+  {
+    "id": "closed-spacing-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72V24.5H8.5Z'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)' textLength='36.25' lengthAdjust='spacing'>A<textPath href='#b'>VA</textPath><tspan>V</tspan></text></svg>",
+    "sourceSha256": "af4675ef494c606d757f0581f58d25e33255129022bb90b76deb93596ce4554d",
+    "windows": [
+      -3.2421875,
+      -9,
+      20.424480438232422,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      19.424480438232422,
+      55.5
+    ]
+  },
+  {
+    "id": "closed-spacing-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72V24.5H8.5Z'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)' textLength='36.25' lengthAdjust='spacing'>A<textPath href='#b'>VA</textPath><tspan x='72' y='44.5'>V</tspan></text></svg>",
+    "sourceSha256": "b434c88fd922b38802e2b339688899c5ab7070f59aa6d2eeb7b9dacabe483ac6",
+    "windows": [
+      -3.2421875,
+      -9,
+      78.8359375,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      76.8359375,
+      55.5
+    ]
+  },
+  {
+    "id": "closed-stretch-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72V24.5H8.5Z'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)' textLength='36.25' lengthAdjust='spacingAndGlyphs'>A<textPath href='#b'>VA</textPath><tspan>V</tspan></text></svg>",
+    "sourceSha256": "edc4646011e9af536a3c0a60c51b57750560d432b7566cc4bbbe376a751a7f63",
+    "windows": [
+      -6.115345478057861,
+      -9,
+      25.932418823242188,
+      55.5
+    ],
+    "linux": [
+      -4.229166507720947,
+      -9,
+      23.751523971557617,
+      55.5
+    ]
+  },
+  {
+    "id": "closed-stretch-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72V24.5H8.5Z'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)' textLength='36.25' lengthAdjust='spacingAndGlyphs'>A<textPath href='#b'>VA</textPath><tspan x='72' y='44.5'>V</tspan></text></svg>",
+    "sourceSha256": "94f892777c30bf52ec14f43c9e43af2ff13238727b1fc514f9278deb18f43394",
+    "windows": [
+      -6.01269006729126,
+      -9,
+      84.67735290527344,
+      55.5
+    ],
+    "linux": [
+      -4.158173561096191,
+      -9,
+      80.96832275390625,
+      55.5
+    ]
+  },
+  {
+    "id": "closed-offset-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72V24.5H8.5Z'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b' startOffset='12.25'>VA</textPath><tspan>V</tspan></text></svg>",
+    "sourceSha256": "2ec27576122e5f76f5da8f81f77425dcb77bc3f4286d4113806206e2bce7cec8",
+    "windows": [
+      -1.0625,
+      -9,
+      27.65625,
+      55.5
+    ],
+    "linux": [
+      -0.0625,
+      -9,
+      26.65625,
+      55.5
+    ]
+  },
+  {
+    "id": "closed-offset-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72V24.5H8.5Z'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b' startOffset='12.25'>VA</textPath><tspan x='72' y='44.5'>V</tspan></text></svg>",
+    "sourceSha256": "cc59e7d4e666ed689a048aef60d5523111319d1df74b3dfcd364ce2167826ec5",
+    "windows": [
+      -1.0625,
+      -9,
+      76.65625,
+      55.5
+    ],
+    "linux": [
+      -0.0625,
+      -9,
+      74.65625,
+      55.5
+    ]
+  },
+  {
+    "id": "closed-font-span-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72V24.5H8.5Z'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan font-family='monospace' font-weight='bold'>V</tspan></text></svg>",
+    "sourceSha256": "94169dbcf5e4babd5a02e979cdad676416f30a3a40daabf3c4a75035a3d86e09",
+    "windows": [
+      -3.2421875,
+      -9,
+      17.421875,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      16.421875,
+      55.5
+    ]
+  },
+  {
+    "id": "closed-font-span-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72V24.5H8.5Z'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan font-family='monospace' font-weight='bold' x='72' y='44.5'>V</tspan></text></svg>",
+    "sourceSha256": "ee9aa0fbac2c2e005465f279a3f756fce57c06ea51da0f9dd23043d3ab90ad0c",
+    "windows": [
+      -3.2421875,
+      -9,
+      77.8359375,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      76.8359375,
+      55.5
+    ]
+  },
+  {
+    "id": "closed-hidden-font-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72V24.5H8.5Z'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan font-family='monospace' font-weight='bold' visibility='hidden'>i</tspan>V</text></svg>",
+    "sourceSha256": "fb98ae48026d650a8305f0f402434a962ab16bd2344b10892d9cf3cdb251cab0",
+    "windows": [
+      -3.2421875,
+      -9,
+      22.5546875,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      20.5546875,
+      55.5
+    ]
+  },
+  {
+    "id": "closed-hidden-font-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72V24.5H8.5Z'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan font-family='monospace' font-weight='bold' visibility='hidden' x='72' y='44.5'>i</tspan>V</text></svg>",
+    "sourceSha256": "c58d5cabefbde31ae89c35160b038e8208f922d022b2360d1e5c3088d9e543d4",
+    "windows": [
+      -3.2421875,
+      -9,
+      81.2421875,
+      55.5
+    ],
+    "linux": [
+      -2.2421875,
+      -9,
+      79.2421875,
+      55.5
+    ]
+  },
+  {
+    "id": "closed-lists-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72V24.5H8.5Z'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5 8 16 24' y='8 12 16 20' dx='0 .25 -.25 .5' dy='.25 0 -.25 .5' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan>V</tspan></text></svg>",
+    "sourceSha256": "c28790d6f68c65f10147d60ed9be80f952ea569d2c01cb9b6e3d04d7733cdfcc",
+    "windows": [
+      -1.0625,
+      -0.75,
+      29.15625,
+      47.25
+    ],
+    "linux": [
+      -0.0625,
+      -0.75,
+      27.75,
+      47.25
+    ]
+  },
+  {
+    "id": "closed-lists-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72V24.5H8.5Z'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5 8 16 24' y='8 12 16 20' dx='0 .25 -.25 .5' dy='.25 0 -.25 .5' fill='url(#g)'>A<textPath href='#b'>VA</textPath><tspan x='72' y='44.5'>V</tspan></text></svg>",
+    "sourceSha256": "26b1fc1f42c69a26ef4baf0799a83b0415ec303fe1cd728a693fc2ac0839a740",
+    "windows": [
+      -1.0625,
+      -0.75,
+      77.15625,
+      47.75
+    ],
+    "linux": [
+      -0.0625,
+      -0.75,
+      75.15625,
+      47.75
+    ]
+  },
+  {
+    "id": "closed-anchor-override-candidate",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72V24.5H8.5Z'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b' text-anchor='end'>VA</textPath><tspan>V</tspan></text></svg>",
+    "sourceSha256": "05bcf173bbd12473958ecaf298080e5c73bd15c5961bd442ef49892923100aa4",
+    "windows": [
+      -3.3984375,
+      -9,
+      17.8984375,
+      55.5
+    ],
+    "linux": [
+      -2.3984375,
+      -9,
+      15.8984375,
+      55.5
+    ]
+  },
+  {
+    "id": "closed-anchor-override-control",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='112' height='64'><defs><path id='b' d='M8.5 44.5H72V24.5H8.5Z'/><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text font-family='serif' font-size='8' text-anchor='middle' x='2.5' y='0' fill='url(#g)'>A<textPath href='#b' text-anchor='end'>VA</textPath><tspan x='72' y='44.5'>V</tspan></text></svg>",
+    "sourceSha256": "2c46599b44eed13ad2e24070c76b8922a8dca04f3caa0ffc6df13792132018f2",
+    "windows": [
+      -3.5625,
+      -9,
+      79.15625,
+      55.5
+    ],
+    "linux": [
+      -2.5625,
+      -9,
+      77.15625,
+      55.5
+    ]
+  }
+]

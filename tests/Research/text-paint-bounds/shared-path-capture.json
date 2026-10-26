@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Whole text object boxes across direct/path ranges, including invisible characters, fonts, fitting and coordinate resets.",
+  "chromeVersion": "153.0.8010.52",
+  "vectorSha256": "50463e12124822998b49285a76ecf02accc37f2629d0335f4bf884c298ba72c1",
+  "cases": 48,
+  "scale": 1,
+  "tripleNativeStable": true,
+  "launches": {
+    "windows": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 10562,
+        "debuggerReadyMilliseconds": 242,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 3252,
+        "debuggerReadyMilliseconds": 188,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 3185,
+        "debuggerReadyMilliseconds": 155,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ],
+    "linux": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 8549,
+        "debuggerReadyMilliseconds": 3898,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 9269,
+        "debuggerReadyMilliseconds": 3453,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 9221,
+        "debuggerReadyMilliseconds": 4485,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  },
+  "sourceFontFamilies": {
+    "serif": "ReviewFont",
+    "monospace": "ReviewMono"
+  },
+  "fontProgramSha256": {
+    "ReviewFont": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+    "ReviewMono": "beb857bd799a114de7d5d90cc75cc69f4b6ee8d401f4ab20697e6f9719a66dfc"
+  },
+  "measurement": "SVGGraphicsElement.getBBox on each authored text element; coordinates remain in its local SVG space."
+}

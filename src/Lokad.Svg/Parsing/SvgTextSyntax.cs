@@ -564,4 +564,4 @@ internal enum SvgTextLengthAdjust { Spacing, SpacingAndGlyphs }
 internal enum SvgTextBaseline { Alphabetic, Middle, Hanging }
 
 /// <summary>Identifies the admitted horizontal anchor for one direct text run.</summary>
-internal enum SvgTextAnchor { Start, Middle, End }
+internal enum SvgTextAnchor { Start, Middle, End, Unanchored }

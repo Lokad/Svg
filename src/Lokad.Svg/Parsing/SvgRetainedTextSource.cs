@@ -184,7 +184,7 @@ internal sealed class SvgRetainedTextSource
             while (state.PendingTextRuns.Count > previousPaths)
             {
                 SvgPendingTextRun path = state.PendingTextRuns[^1];
-                path.Run?.Dispose(); path.Continuation?.Dispose(); path.Owner.Dispose();
+                path.Run?.Dispose(); path.SharedLayout?.Dispose(); path.Owner.Dispose();
                 state.PendingTextRuns.RemoveLast();
             }
             while (state.PendingGroupClips.Count > previousClips) state.PendingGroupClips.RemoveLast();

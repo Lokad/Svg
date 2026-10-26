@@ -8,7 +8,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
-public sealed class SvgTextPaintBoundsTests
+public sealed partial class SvgTextPaintBoundsTests
 {
     [Fact]
     public async Task Source_paint_boxes_match_native_ink_anchors_positions_spacing_and_font_fragments()

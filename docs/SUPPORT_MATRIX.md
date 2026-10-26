@@ -628,6 +628,12 @@ Scaled text follows native element boundaries when shaping spans. Relative list
 entries inside a ligature advance the source cursor without dividing the glyph.
 Text-node items retain source ranges even when their glyph belongs to a prior node;
 fitting and anchors include these cursor positions before painting.
+Mixed ordinary/path nodes share shaping and source positions under the same face,
+spacing and absolute-position rules. After a nonempty path, unpositioned text
+resumes at its authored endpoint; startOffset places path glyphs independently.
+Empty paths do not move the cursor. All ranges share one object paint box,
+including unpainted path characters; drawing enclosures remain local. See the
+[shared-layout controls](../tests/Research/text-paint-bounds/README.md).
 [Fragment controls](../tests/Research/text-node-boundaries/README.md) cover scaling,
 fitting and resource replay, retaining the recorded Windows fitting residual separately.
 

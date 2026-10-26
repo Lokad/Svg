@@ -7,6 +7,8 @@ tests/Research/native-path-replay/*.svg -text whitespace=cr-at-eol
 *.csv text eol=lf
 # Hashed native text-box vectors must retain the same bytes on both hosts.
 tests/Research/text-paint-bounds/*-vectors.json text eol=lf
+# Preserve the original shared-layout vector serialization and its recorded hash.
+tests/Research/text-paint-bounds/shared-path-vectors.json -text whitespace=cr-at-eol
 # This downloaded original and its root-sized copy retain the upstream CRLF bytes.
 tests/Fixtures/candidates/inv-110.svg -text whitespace=cr-at-eol
 tests/Research/remaining-scope-documents/inv-110-capture-616x540.svg -text whitespace=cr-at-eol

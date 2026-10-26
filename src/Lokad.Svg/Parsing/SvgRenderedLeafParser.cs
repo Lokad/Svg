@@ -92,6 +92,7 @@ internal static class SvgRenderedLeafParser
             return ParseContent(reader, context with { AuthoredStyle = style with { Filter = null } }, root,
                 state, limits, budget, fontSnapshot, workCounter, cancellationToken);
         int start = state.Scene.CommandCount, firstGeometry = state.Scene.GeometryCount;
+        SvgPendingCommandStart deferredStart = state.PendingCommandEnd;
         string? clip = SvgClipPathSyntax.ResolveClipId(reader, state);
         string? mask = SvgLocalUrl.ReadReference(reader, "mask") is {} maskReference ? state.Strings.Copy(SvgMaskSyntax.ParseMaskId(maskReference)) : null;
         SvgViewportFrame? parent = state.EffectiveFrame;
@@ -116,7 +117,9 @@ internal static class SvgRenderedLeafParser
             state.DeferringFilterClip = previousFilterClip; state.DeferringFilterMask = previousFilterMask;
             state.IsolatedViewportDepth = previousViewportDepth; state.FilterGroupDepth--;
         }
-        if (state.Scene.GeometryCount == firstGeometry) return parsed;
+        SvgPendingCommandStart deferredEnd = state.PendingCommandEnd;
+        bool deferredPaint = deferredEnd.Text != deferredStart.Text || deferredEnd.Paint != deferredStart.Paint;
+        if (state.Scene.GeometryCount == firstGeometry && !deferredPaint) return parsed;
         SvgPaintBounds? sourceObjects = null, sourceVisuals = null;
         for (int index = firstGeometry; index < state.Scene.GeometryCount; index++)
         {
@@ -132,7 +135,7 @@ internal static class SvgRenderedLeafParser
         // The same element owns both boundaries. Emission places its output
         // clip outside the mask rather than between mask and filter.
         int filterScope = mask is not null && clip is not null ? maskScope.Value : 0;
-        int binding = filters.AddBinding(id, sourceObjects ?? default, sourceVisuals ?? default, filterTransform, context.LengthBases, false, clip);
+        int binding = filters.AddBinding(id, sourceObjects ?? default, sourceVisuals ?? default, filterTransform, context.LengthBases, deferredPaint, clip);
         SvgDrawCommand begin = new(SvgDrawCommandKind.BeginGroup, filterScope, mask is null ? style.GetOpacity() : SvgPaintOpacity.Opaque, null, binding, 255) { RegionKind = SvgLayerRegionKind.Filter };
         state.Scene.InsertCommands(state.Scene.CommandCount, [new(SvgDrawCommandKind.EndGroup, 0, 255, null, -1, 255)]);
         state.Scene.InsertCommands(start, [begin]);
@@ -150,8 +153,51 @@ internal static class SvgRenderedLeafParser
             state.Scene.InsertCommands(state.Scene.CommandCount, [new(SvgDrawCommandKind.EndGroup, 0, 255, null, -1, 255)]);
             maskFirst++; maskEnd++;
         }
+        if (deferredStart != deferredEnd)
+        {
+            // Source slots and source-local mask/clip ranges move inside the
+            // new filter wrappers. Filter bounds resolve after queued emission.
+            int prefix = 1 + (mask is null ? 0 : 1) + (viewportClip is null ? 0 : 1);
+            MoveSourceSlots(deferredStart, deferredEnd, prefix);
+        }
         if (mask is not null) state.PendingGroupMasks.Add(new(mask, maskFirst, maskEnd, 0, parent, transform, state.Scene, true));
         return parsed;
+
+        // Rendered leaves cannot queue uses. Only the appended source-local
+        // placeholders and clip/mask ranges move inside the inserted wrappers.
+        void MoveSourceSlots(SvgPendingCommandStart first, SvgPendingCommandStart last, int prefix)
+        {
+            for (int index = first.Paint; index < last.Paint; index++)
+            {
+                workCounter.Consume(cancellationToken);
+                SvgDeferredPaintLeaf pending = state.DeferredPaintLeaves[index];
+                if (ReferenceEquals(pending.Scene, state.Scene))
+                    state.DeferredPaintLeaves[index] = pending with { CommandIndex = checked(pending.CommandIndex + prefix) };
+            }
+            for (int index = first.Text; index < last.Text; index++)
+            {
+                workCounter.Consume(cancellationToken);
+                SvgPendingTextRun pending = state.PendingTextRuns[index];
+                if (ReferenceEquals(pending.Scene, state.Scene))
+                    state.PendingTextRuns[index] = pending with { CommandIndex = checked(pending.CommandIndex + prefix) };
+            }
+            for (int index = first.Clip; index < last.Clip; index++)
+            {
+                workCounter.Consume(cancellationToken);
+                PendingGroupClip pending = state.PendingGroupClips[index];
+                if (ReferenceEquals(pending.Scene, state.Scene))
+                    state.PendingGroupClips[index] = pending with { FirstCommandIndex = checked(pending.FirstCommandIndex + prefix),
+                        EndCommandIndex = pending.EndCommandIndex < 0 ? pending.EndCommandIndex : checked(pending.EndCommandIndex + prefix) };
+            }
+            for (int index = first.Mask; index < last.Mask; index++)
+            {
+                workCounter.Consume(cancellationToken);
+                PendingGroupMask pending = state.PendingGroupMasks[index];
+                if (ReferenceEquals(pending.Scene, state.Scene))
+                    state.PendingGroupMasks[index] = pending with { FirstCommandIndex = checked(pending.FirstCommandIndex + prefix),
+                        EndCommandIndex = pending.EndCommandIndex < 0 ? pending.EndCommandIndex : checked(pending.EndCommandIndex + prefix) };
+            }
+        }
 
         static SvgPaintBounds Union(SvgPaintBounds? previous, SvgPaintBounds value)
             => previous is {} box ? new(MathF.Min(box.Left, value.Left), MathF.Min(box.Top, value.Top), MathF.Max(box.Right, value.Right), MathF.Max(box.Bottom, value.Bottom)) : value;
@@ -383,6 +429,39 @@ internal static class SvgRenderedLeafParser
                     ReadDirectTextContent(reader, state, whitespaceMode, textStyle.LetterSpacing, textPaint, rootTextFont, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, limits.MaximumNodes - state.NodeCount, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement, budget, workCounter, cancellationToken, textRuns, out int sourceCharacterCount, out int childNodeCount);
                     state.TextCharacterCount += sourceCharacterCount;
                     state.NodeCount += childNodeCount;
+                    bool sharedPathContext = false, hasOrdinaryContinuation = false, sharedPaint = false;
+                    foreach (SvgExtractedTextRun source in textRuns.AsSpan())
+                    {
+                        workCounter.Consume(cancellationToken);
+                        sharedPathContext |= source.Path is not null || source.ResumeAfterPath is not null;
+                        hasOrdinaryContinuation |= source.ResumeAfterPath is not null;
+                        if (source.PaintSpans.Items.Length == 0) sharedPaint |= textPaint.GlyphPaint.IsPainted;
+                        else foreach (SvgTextPaintSpan span in source.PaintSpans.Items) { workCounter.Consume(cancellationToken); sharedPaint |= span.Paint.IsPainted; }
+                    }
+                    if (sharedPathContext && (textRuns.Count > 1 || hasOrdinaryContinuation) && sharedPaint)
+                    {
+                        if (fontSnapshot is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG text requires a prepared font snapshot.");
+                        double sharedMetricScale = state.OutputTextScale * SvgGlyphDeviceMetrics.GetScreenScale(textPlacement);
+                        SvgGlyphDeviceMetrics? sharedMetrics = OperatingSystem.IsWindows() ? new(sharedMetricScale, SvgGlyphMetricTarget.Windows, false)
+                            : OperatingSystem.IsLinux() ? new(sharedMetricScale, SvgGlyphMetricTarget.Linux, false) : null;
+                        RenderBudget.BudgetReservation sharedOwner = budget.Reserve(512, SvgMemoryCategory.Parser);
+                        OwnedParserArray<SvgExtractedTextRun> sharedSources = new([], null);
+                        SvgPendingTextLayout? sharedLayout = null;
+                        try
+                        {
+                            sharedSources = textRuns.Detach();
+                            sharedLayout = new(sharedSources, textStyle, textPaint.GlyphPaint, sharedMetrics, fontSnapshot);
+                            state.PendingTextRuns.Add(new(null, null, textPlacement, textElement.Presentation.Color, state.Scene.AddPaintPlaceholder(), sharedOwner, state.Scene)
+                                { RecordingTransform = context.InheritedPresentation.RecordingTransform, ViewportClip = SvgViewportFrame.ResolveGlyphClip(state, workCounter, cancellationToken), SharedLayout = sharedLayout, FilterGroupDepth = state.FilterGroupDepth });
+                        }
+                        catch
+                        {
+                            if (sharedLayout is not null) sharedLayout.Dispose();
+                            else { foreach (SvgExtractedTextRun source in sharedSources.Items) source.Dispose(); sharedSources.Dispose(); }
+                            sharedOwner.Dispose();
+                            throw;
+                        }
+                    }
                     for (int textIndex = 0; textIndex < textRuns.Count; textIndex++)
                     {
                         SvgExtractedTextRun extracted = textRuns[textIndex];
@@ -410,20 +489,6 @@ internal static class SvgRenderedLeafParser
                         double textMetricScale = state.OutputTextScale * SvgGlyphDeviceMetrics.GetScreenScale(textPlacement);
                         SvgGlyphDeviceMetrics? deviceMetrics = OperatingSystem.IsWindows() ? new(textMetricScale, SvgGlyphMetricTarget.Windows, textPath is not null)
                             : OperatingSystem.IsLinux() ? new(textMetricScale, SvgGlyphMetricTarget.Linux, textPath is not null) : null;
-                        if (extracted.ResumeAfterPath is {} resume)
-                        {
-                            RenderBudget.BudgetReservation owner = budget.Reserve(512, SvgMemoryCategory.Parser);
-                            SvgPendingTextLayout? continuation = null;
-                            try
-                            {
-                                continuation = new(extracted, runStyle, textPaint.GlyphPaint, deviceMetrics, fontSnapshot);
-                                textRuns[textIndex] = default;
-                                state.PendingTextRuns.Add(new(null, resume, textPlacement, textElement.Presentation.Color, state.Scene.AddPaintPlaceholder(), owner, state.Scene)
-                                    { RecordingTransform = context.InheritedPresentation.RecordingTransform, ViewportClip = SvgViewportFrame.ResolveGlyphClip(state, workCounter, cancellationToken), Continuation = continuation, FilterGroupDepth = state.FilterGroupDepth });
-                            }
-                            catch { continuation?.Dispose(); owner.Dispose(); throw; }
-                            continue;
-                        }
                         RenderBudget.BudgetReservation? pendingTextOwner = textPath is null && !hasServer ? null : budget.Reserve(256, SvgMemoryCategory.Parser);
                         SvgTextRun run;
                         try { run = SvgTextRunBuilder.Create(runStyle, text.Value, text.LetterSpacingSpans, text.PositionAdjustments, extracted.PaintSpans.Items, extracted.FontSpans.Items, extracted.NodeBoundaries.Items, textPaint.GlyphPaint, deviceMetrics, fontSnapshot, budget, workCounter, cancellationToken); }

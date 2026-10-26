@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Share shaping, source cursors and object paint bounds across mixed direct/path
+  text; preserve authored closed endpoints and inert empty paths. Retain queued
+  own-filter wrappers with bounded source-local command remapping.
+
 - Preserve authored text-path positioning boundaries while ignoring absolute Y
   movement, and use measured scalar path points for horizontal glyph paint.
 
