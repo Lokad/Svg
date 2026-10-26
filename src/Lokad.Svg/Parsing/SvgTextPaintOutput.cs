@@ -16,6 +16,8 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
     private BudgetedParserList<SvgTextFontSpan>? _fontSpans;
     private readonly SvgInheritedTextStyle _defaultFont;
     private int _length;
+    private bool _startsTextNode;
+    private BudgetedParserList<SvgTextNodeBoundary>? _nodeBoundaries;
 
     internal SvgTextPaintOutput(RenderBudget budget, double letterSpacing, SvgTextPaintStyle paint, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         : this(budget, letterSpacing, paint, SvgInheritedTextStyle.Default, workCounter, cancellationToken) { }
@@ -38,6 +40,9 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
     internal void EnterStyleSpan(SvgTextPaintStyle paint, SvgInheritedTextStyle font) => _scopes.Add((paint, font));
     internal void ExitPaintSpan() => _scopes.RemoveLast();
 
+    /// <summary>Marks a source XML text/CDATA node once, independently of reader chunks and normalized appends.</summary>
+    internal void BeginTextNode() => _startsTextNode = true;
+
     public void Append(ReadOnlySpan<char> value, double letterSpacing, int scopeDepth, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (!ReferenceEquals(workCounter, _workCounter) || cancellationToken != _cancellationToken) throw new InvalidOperationException("Text paint output calls must retain their construction work context.");
@@ -50,6 +55,15 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
         _layout.Append(value, letterSpacing, font.WordSpacing, scopeDepth, maximumLength, workCounter, cancellationToken);
         SvgTextGlyphPaint paint = style.GlyphPaint;
         int start = _length;
+        if (_startsTextNode)
+        {
+            if (start != 0)
+            {
+                _nodeBoundaries ??= new(_budget, SvgMemoryCategory.Parser, _workCounter, _cancellationToken);
+                if (_nodeBoundaries.Count == 0 || _nodeBoundaries[^1].Offset != start) _nodeBoundaries.Add(new(start));
+            }
+            _startsTextNode = false;
+        }
         _length = checked(start + value.Length);
         if (_fontSpans is not null || !SameFont(font, _defaultFont))
         {
@@ -104,18 +118,24 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
             if (faces[^1].Start == layout.Value.Length) faces.RemoveLast();
             else faces[^1] = faces[^1] with { End = layout.Value.Length };
         }
+        if (_nodeBoundaries is {} nodes)
+            while (nodes.Count != 0 && nodes[^1].Offset >= layout.Value.Length) nodes.RemoveLast();
+        OwnedParserArray<SvgTextNodeBoundary> boundaries = new([], null);
         OwnedParserArray<SvgTextPaintSpan> spans = new([], null);
         OwnedParserArray<SvgTextFontSpan> fonts = new([], null);
         try
         {
             spans = _spans is null ? new([], null) : _spans.Detach();
             fonts = _fontSpans is null ? new([], null) : _fontSpans.Detach();
+            boundaries = _nodeBoundaries is null ? new([], null) : _nodeBoundaries.Detach();
             _spans = null;
             _fontSpans = null;
+            _nodeBoundaries = null;
+            _startsTextNode = false;
             _length = 0;
-            return new(layout, path, spans, fonts);
+            return new(layout, path, spans, fonts, boundaries);
         }
-        catch { fonts.Dispose(); spans.Dispose(); layout.Dispose(); throw; }
+        catch { boundaries.Dispose(); fonts.Dispose(); spans.Dispose(); layout.Dispose(); throw; }
 
     }
 
@@ -124,6 +144,7 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
         _spans?.Dispose();
         _spans = null;
         _fontSpans?.Dispose(); _fontSpans = null;
+        _nodeBoundaries?.Dispose(); _nodeBoundaries = null;
         _scopes.Dispose();
         _layout.Dispose();
     }

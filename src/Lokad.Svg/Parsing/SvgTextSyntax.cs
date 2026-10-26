@@ -66,12 +66,15 @@ internal readonly record struct SvgTextLetterSpacingSpan(int Start, int End, dou
 }
 
 /// <summary>Owns one extracted layout until its consumer disposes it; sibling path runs have independent whitespace and anchoring boundaries.</summary>
-internal readonly record struct SvgExtractedTextRun(BudgetedTextLayout Layout, SvgTextPathReference? Path, OwnedParserArray<SvgTextPaintSpan> PaintSpans, OwnedParserArray<SvgTextFontSpan> FontSpans) : IDisposable
+internal readonly record struct SvgExtractedTextRun(BudgetedTextLayout Layout, SvgTextPathReference? Path, OwnedParserArray<SvgTextPaintSpan> PaintSpans, OwnedParserArray<SvgTextFontSpan> FontSpans, OwnedParserArray<SvgTextNodeBoundary> NodeBoundaries) : IDisposable
 {
     internal SvgTextPathReference? ResumeAfterPath { get; init; }
     internal int CharacterOffset { get; init; }
-    public void Dispose() { Layout.Dispose(); PaintSpans.Dispose(); FontSpans.Dispose(); }
+    public void Dispose() { Layout.Dispose(); PaintSpans.Dispose(); FontSpans.Dispose(); NodeBoundaries.Dispose(); }
 }
+
+/// <summary>Marks a normalized UTF-16 text-node boundary for fragment metrics, without splitting shaping.</summary>
+internal readonly record struct SvgTextNodeBoundary(int Offset);
 
 /// <summary>Retains inherited font declarations over one normalized UTF-16 interval.</summary>
 internal readonly record struct SvgTextFontSpan(int Start, int End, SvgInheritedTextStyle Font);

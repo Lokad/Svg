@@ -215,6 +215,10 @@ paint-origin truncation. Windows measures nonzero raw LCD coverage at the contou
 perimeter; Linux rounds light-path bounds outward. Local budget-owned metric reuse
 avoids refitting repeated glyphs across parser runs, and all paints in a run share its measured box.
 Fragment transforms and inverse font scaling preserve native float operations.
+The existing extracted-run owner retains normalized text-node boundaries for
+fragment width rounding; shaping continues across nodes. Reader chunks create
+no boundaries. Fitted glyphs compose physical fragment origins before scaling
+about the unrounded source origin.
 Ordinary text drawing rectangles enclose source bounds before placement/output
 mapping, preserving isolated-layer shader origins. Equal run paints share one
 scene record; generic font routes and filter capture bounds remain independent.

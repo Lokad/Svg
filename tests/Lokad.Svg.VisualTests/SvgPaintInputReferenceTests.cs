@@ -12,7 +12,7 @@ public sealed class SvgPaintInputReferenceTests
     static SvgPaintInputReferenceTests()
     {
         Dictionary<(string Folder, string Id), JsonElement> cases = new();
-        foreach (string folder in new[] { "offset-merge-inputs", "linear-shape-source-maps", "radial-axis-source-maps", "gradient-spread-stages", "gradient-paint-replay", "gradient-factory-colors", "linear-periodic-stops", "gradient-stop-preparation", "gradient-color-alpha", "filter-uniform-precision", "solid-paint-alpha", "pattern-source-selection" })
+        foreach (string folder in new[] { "offset-merge-inputs", "linear-shape-source-maps", "radial-axis-source-maps", "gradient-spread-stages", "gradient-paint-replay", "gradient-factory-colors", "linear-periodic-stops", "gradient-stop-preparation", "gradient-color-alpha", "filter-uniform-precision", "solid-paint-alpha", "pattern-source-selection", "text-node-boundaries" })
         {
             using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(folder), "capture.json")));
             foreach (JsonElement row in data.RootElement.GetProperty("cases").EnumerateArray())

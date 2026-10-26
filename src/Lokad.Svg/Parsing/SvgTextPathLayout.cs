@@ -111,7 +111,7 @@ internal static class SvgTextPathLayout
                     SvgExtractedTextRun raw = continuation.Source;
                     SvgTextStyle style = continuation.Style with { X = origin.X, Y = origin.Y };
                     run = SvgTextRunBuilder.Create(style, raw.Layout.Value, raw.Layout.LetterSpacingSpans, raw.Layout.PositionAdjustments,
-                        raw.PaintSpans.Items, raw.FontSpans.Items, continuation.Paint, continuation.Metrics, continuation.Snapshot, state.Budget, work, token);
+                        raw.PaintSpans.Items, raw.FontSpans.Items, raw.NodeBoundaries.Items, continuation.Paint, continuation.Metrics, continuation.Snapshot, state.Budget, work, token);
                     state.PendingTextRuns[index] = pending with { Run = run };
                     continuation.Dispose();
                     SvgTextGlyphPainter.EmitDirect(run, pending.Placement, pending.ViewportClip, pending.Color, state, limits.MaximumPathCommands, state.Budget, work, pending.RecordingTransform, token);

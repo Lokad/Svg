@@ -243,6 +243,9 @@ selection, independent metrics and exact platform rendering. Standalone
 qualification is complete. Four private deployed-manifest requests remain pending
 before production adoption; public success makes no claim about that deployment.
 
+[Text-node fragment controls](Research/text-node-boundaries/README.md) retain
+native boundary, shaping, fitting and resource cases with ownership/retry checks.
+
 ## Retired collections
 
 The upstream selection replaced full logo/export/icon/authored-sheet membership.

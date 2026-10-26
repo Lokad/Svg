@@ -426,7 +426,7 @@ internal static class SvgRenderedLeafParser
                         }
                         RenderBudget.BudgetReservation? pendingTextOwner = textPath is null && !hasServer ? null : budget.Reserve(256, SvgMemoryCategory.Parser);
                         SvgTextRun run;
-                        try { run = SvgTextRunBuilder.Create(runStyle, text.Value, text.LetterSpacingSpans, text.PositionAdjustments, extracted.PaintSpans.Items, extracted.FontSpans.Items, textPaint.GlyphPaint, deviceMetrics, fontSnapshot, budget, workCounter, cancellationToken); }
+                        try { run = SvgTextRunBuilder.Create(runStyle, text.Value, text.LetterSpacingSpans, text.PositionAdjustments, extracted.PaintSpans.Items, extracted.FontSpans.Items, extracted.NodeBoundaries.Items, textPaint.GlyphPaint, deviceMetrics, fontSnapshot, budget, workCounter, cancellationToken); }
                         catch (SvgException exception) when (exception.ErrorCode == SvgErrorCode.UnresolvedResource && state.DeferredPaintLeaves.Count > 0)
                         {
                             pendingTextOwner?.Dispose();
@@ -627,6 +627,7 @@ internal static class SvgRenderedLeafParser
             }
             if (subtree.NodeType is XmlNodeType.Text or XmlNodeType.CDATA or XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace)
             {
+                text.BeginTextNode();
                 int read;
                 do
                 {

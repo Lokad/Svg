@@ -1,3 +1,5 @@
+// Fitted fragment paint origins adapt Blink's SVG text painter.
+// Copyright 2017, 2019 The Chromium Authors. See THIRD_PARTY_NOTICES.txt.
 namespace Lokad.Svg.Parsing;
 
 using Lokad.Svg.Fonts;
@@ -32,8 +34,12 @@ internal static class SvgTextRunBuilder
 
     /// <summary>Resolves normalized font intervals from the caller snapshot once, then shares their faces with continuous layout and glyph replay.</summary>
     internal static SvgTextRun Create(SvgTextStyle style, string text, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, ReadOnlySpan<SvgTextPaintSpan> paintSpans, ReadOnlySpan<SvgTextFontSpan> fontSpans, SvgTextGlyphPaint? defaultPaint, SvgGlyphDeviceMetrics? deviceMetrics, SvgFontSnapshot snapshot, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+        => Create(style, text, letterSpacingSpans, positionAdjustments, paintSpans, fontSpans, [], defaultPaint, deviceMetrics, snapshot, budget, workCounter, cancellationToken);
+
+    /// <summary>Borrows normalized node boundaries with font/paint intervals for native fragment metrics; caller retains all input ownership.</summary>
+    internal static SvgTextRun Create(SvgTextStyle style, string text, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, ReadOnlySpan<SvgTextPaintSpan> paintSpans, ReadOnlySpan<SvgTextFontSpan> fontSpans, ReadOnlySpan<SvgTextNodeBoundary> nodeBoundaries, SvgTextGlyphPaint? defaultPaint, SvgGlyphDeviceMetrics? deviceMetrics, SvgFontSnapshot snapshot, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
-        try { return CreateCore(style, text, letterSpacingSpans, positionAdjustments, paintSpans, fontSpans, defaultPaint, deviceMetrics, snapshot, budget, workCounter, cancellationToken); }
+        try { return CreateCore(style, text, letterSpacingSpans, positionAdjustments, paintSpans, fontSpans, nodeBoundaries, defaultPaint, deviceMetrics, snapshot, budget, workCounter, cancellationToken); }
         catch (SvgException exception)
         {
             if (style.SourceContext is {} source) exception.AttachSource(source.Describe(string.Empty, string.Empty));
@@ -41,7 +47,7 @@ internal static class SvgTextRunBuilder
         }
     }
 
-    private static SvgTextRun CreateCore(SvgTextStyle style, string text, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, ReadOnlySpan<SvgTextPaintSpan> paintSpans, ReadOnlySpan<SvgTextFontSpan> fontSpans, SvgTextGlyphPaint? defaultPaint, SvgGlyphDeviceMetrics? deviceMetrics, SvgFontSnapshot snapshot, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static SvgTextRun CreateCore(SvgTextStyle style, string text, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, ReadOnlySpan<SvgTextPaintSpan> paintSpans, ReadOnlySpan<SvgTextFontSpan> fontSpans, ReadOnlySpan<SvgTextNodeBoundary> nodeBoundaries, SvgTextGlyphPaint? defaultPaint, SvgGlyphDeviceMetrics? deviceMetrics, SvgFontSnapshot snapshot, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         if (style.TextLength is > 0 && style.LengthAdjust == SvgTextLengthAdjust.Spacing && deviceMetrics is {} metrics)
             deviceMetrics = metrics with { UsesTextLengthSpacing = true };
@@ -85,7 +91,7 @@ internal static class SvgTextRunBuilder
 
         if (style.PositionLists.IsEmpty)
         {
-            var (ordinary, resolvedMetrics) = SvgGlyphLayout.CreateStorageAndMetrics(font, text, style.FontSize, originX, originY, style.LetterSpacing, style.WordSpacing, needsFragments, letterSpacingSpans, positionAdjustments, paintSpans, resolvedFonts.AsSpan(), style.Anchor, deviceMetrics, budget, style.SourceElementId, workCounter, cancellationToken);
+            var (ordinary, resolvedMetrics) = SvgGlyphLayout.CreateStorageAndMetrics(font, text, style.FontSize, originX, originY, style.LetterSpacing, style.WordSpacing, needsFragments, letterSpacingSpans, positionAdjustments, paintSpans, resolvedFonts.AsSpan(), nodeBoundaries, style.Anchor, deviceMetrics, budget, style.SourceElementId, workCounter, cancellationToken);
             try { return new SvgTextRun(style, font, ordinary, paintSpans.IsEmpty ? defaultPaint : paintSpans[0].Paint, resolvedMetrics)
                 { GlyphStretch = AdjustGlyphs(ordinary, font, style, resolvedMetrics, workCounter, cancellationToken) }; }
             catch { ordinary.Dispose(); throw; }
@@ -94,7 +100,7 @@ internal static class SvgTextRunBuilder
         SvgPositionedGlyphStorage? glyphs = null;
         try
         {
-            var layout = SvgGlyphLayout.CreateStorageAndMetrics(font, text, style.FontSize, 0, 0, style.LetterSpacing, style.WordSpacing, needsFragments, letterSpacingSpans, positions.Items, paintSpans, resolvedFonts.AsSpan(), style.Anchor, deviceMetrics, budget, style.SourceElementId, workCounter, cancellationToken);
+            var layout = SvgGlyphLayout.CreateStorageAndMetrics(font, text, style.FontSize, 0, 0, style.LetterSpacing, style.WordSpacing, needsFragments, letterSpacingSpans, positions.Items, paintSpans, resolvedFonts.AsSpan(), nodeBoundaries, style.Anchor, deviceMetrics, budget, style.SourceElementId, workCounter, cancellationToken);
             glyphs = layout.Storage;
             return new SvgTextRun(style, font, glyphs, paintSpans.IsEmpty ? defaultPaint : paintSpans[0].Paint, layout.Metrics)
             { GlyphStretch = AdjustGlyphs(glyphs, font, style, layout.Metrics, workCounter, cancellationToken) };
@@ -180,11 +186,27 @@ internal static class SvgTextRunBuilder
                             + fragment.Start * sourceSpacing + (float)anchorShift * sourceScale } : null
                 };
             }
+            int fittedFragment = 0;
+            double fittedPaintShift = 0;
             for (int index = 0; index < glyphs.Length; index++)
             {
                 if (work is null) token.ThrowIfCancellationRequested(); else work.Consume(token);
                 SvgPositionedGlyph glyph = glyphs[index];
                 double x = first + (glyph.X - first) * scale + index * spacing + anchorShift;
+                if (style.LengthAdjust == SvgTextLengthAdjust.SpacingAndGlyphs && metrics is { IsTextPath: false }
+                    && fittedFragment < fragments.Length && fragments[fittedFragment].Start == index)
+                {
+                    if (fragments[fittedFragment].SourceOrigin is {} sourceOrigin)
+                    {
+                        // Fitted SVG paint uses a physical 26.6 origin before scaling about the unrounded source origin.
+                        float sourceX = (float)sourceOrigin.X;
+                        float translation = sourceX - (float)scale * sourceX;
+                        double painted = Math.Truncate(sourceX * 64f) / 64 * (float)scale + translation;
+                        fittedPaintShift = painted / sourceScale - x;
+                    }
+                    fittedFragment++;
+                }
+                x += fittedPaintShift;
                 if (!double.IsFinite(x) || !double.IsFinite(scale)) throw new SvgException(SvgErrorCode.LimitExceeded, "Adjusted text length exceeds the numeric range.");
                 glyphs[index] = glyph with { X = x, Advance = glyph.Advance * scale };
             }

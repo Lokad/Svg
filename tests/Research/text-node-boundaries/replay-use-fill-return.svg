@@ -1,0 +1,1 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='g'><stop stop-color='#c04080'/><stop offset='1' stop-color='#43805b'/></linearGradient><path id='tp' d='M2.5 20.5H31'/><text id='t' font-family='serif' font-size='8' x='2.5' y='20.5' fill='blue'><tspan fill='none'>A<tspan fill='blue'>A</tspan></tspan>V</text></defs><use href='#t'/></svg>

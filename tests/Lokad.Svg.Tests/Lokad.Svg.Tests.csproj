@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/text-node-boundaries/*.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/capture.json" Link="TestData/text-node-boundaries/capture.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/static-css-document/font-pack.json" Link="TestData/text-node-boundaries/font-pack.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/pattern-source-selection/*.svg" Link="TestData/pattern-source-selection/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/pattern-source-selection/capture.json" Link="TestData/pattern-source-selection/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/inert-typography/pattern-content.svg" Link="TestData/pattern-source-selection/inert-typography.svg" CopyToOutputDirectory="PreserveNewest" />

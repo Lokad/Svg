@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve text-node fragment widths through fitting and resource replay while
+  retaining kerning and ligatures across nodes.
 - Document text keyword, positive font-size and clip/mask declaration boundaries,
   with direct and prepared admission checks.
 - Preserve filter input consumers through offset and zero-blur aliases.
