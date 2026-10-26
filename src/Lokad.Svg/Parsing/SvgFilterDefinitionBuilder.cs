@@ -129,8 +129,8 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
             {
                 SvgGeometrySyntax.DelimitedTokenReader values = new(deviation.AsSpan(), SvgNumberListSyntax.Svg, 0);
                 if (!values.TryReadValue(out ReadOnlySpan<char> first)) throw new SvgException(SvgErrorCode.MalformedInput, "Blur deviations require one or two numbers.");
-                sigmaX = Number(first);
-                sigmaY = values.TryReadValue(out ReadOnlySpan<char> second) ? Number(second) : sigmaX;
+                sigmaX = Deviation(first);
+                sigmaY = values.TryReadValue(out ReadOnlySpan<char> second) ? Deviation(second) : sigmaX;
                 if (values.TryReadValue(out _)) throw new SvgException(SvgErrorCode.MalformedInput, "Blur deviations require one or two numbers.");
                 if (sigmaX < 0 || sigmaY < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Blur deviations must be nonnegative.");
             }
@@ -168,6 +168,16 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
         catch (SvgException error) when (error.ErrorCode != SvgErrorCode.LimitExceeded) { Reject(error); }
         _primitives.Add(primitive);
         _results.Add(new(reader.GetAttribute("result") is string result ? _strings.Copy(result) : null));
+
+        double Deviation(ReadOnlySpan<char> value)
+        {
+            double validated = Number(value);
+            if (validated < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Blur deviations must be nonnegative.");
+            float native = SvgFloatNumber.ReadValidated(value, _work, _token);
+            // Preserve finite legacy admission when intermediate float place
+            // values overflow; playback still clamps mapped Gaussian deviations.
+            return float.IsFinite(native) ? native : validated;
+        }
 
         SvgFilterPrimitiveRegion? ReadRegion(XmlReader input)
         {

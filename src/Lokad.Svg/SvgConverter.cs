@@ -645,7 +645,7 @@ public static partial class SvgConverter
                 SvgPaintBounds graphical = new((float)(elementVisual.Left * horizontalScale + horizontalOffset), (float)(elementVisual.Top * verticalScale + verticalOffset),
                     (float)(elementVisual.Right * horizontalScale + horizontalOffset), (float)(elementVisual.Bottom * verticalScale + verticalOffset));
                 SvgPaintBounds outputHint = SvgFilterPlayback.SourceLayerBounds(resource, primitiveMap, sourceContext, graphical, SvgFilterBoundsKind.Output, budget, sourceRequestWork, cancellationToken);
-                SvgPaintBounds hint = ImageHint(painted, outputHint);
+                SvgPaintBounds hint = ImageHint(painted, RoundOutputHint(outputHint));
                 workUnits += sourceRequestWork.Used;
                 // Floods and later graph results can paint without source ink in the
                 // requested region. Cull only after propagating the filter bounds.
@@ -1403,6 +1403,20 @@ public static partial class SvgConverter
                 return missing ? ImageHint(visual, box) : box;
             }
 
+            // Native saveLayer encloses the output hint in the source parameter
+            // grid before mapping it into device pixels. Ink capture stays separate.
+            SvgPaintBounds RoundOutputHint(SvgPaintBounds output)
+            {
+                float sx = (float)(binding.Transform.A * horizontalScale), sy = (float)(binding.Transform.D * verticalScale);
+                float tx = (float)(binding.Transform.E * horizontalScale + horizontalOffset), ty = (float)(binding.Transform.F * verticalScale + verticalOffset);
+                if (sx == 0 || sy == 0) return output;
+                float x1 = (output.Left - tx) / sx, x2 = (output.Right - tx) / sx;
+                float y1 = (output.Top - ty) / sy, y2 = (output.Bottom - ty) / sy;
+                float left = MathF.Floor(MathF.Min(x1, x2)) * sx + tx, right = MathF.Ceiling(MathF.Max(x1, x2)) * sx + tx;
+                float top = MathF.Floor(MathF.Min(y1, y2)) * sy + ty, bottom = MathF.Ceiling(MathF.Max(y1, y2)) * sy + ty;
+                return new(MathF.Min(left, right), MathF.Min(top, bottom), MathF.Max(left, right), MathF.Max(top, bottom));
+            }
+
             static SvgPaintBounds ImageHint(SvgPaintBounds recorded, SvgPaintBounds output)
             {
                 if (recorded.Right <= recorded.Left || recorded.Bottom <= recorded.Top) return output;
@@ -1510,7 +1524,7 @@ public static partial class SvgConverter
                     SvgPaintBounds graphical = new((float)(elementVisual.Left * horizontalScale + horizontalOffset), (float)(elementVisual.Top * verticalScale + verticalOffset),
                         (float)(elementVisual.Right * horizontalScale + horizontalOffset), (float)(elementVisual.Bottom * verticalScale + verticalOffset));
                     SvgPaintBounds outputHint = SvgFilterPlayback.SourceLayerBounds(resource, primitiveMap, sourceContext, graphical, SvgFilterBoundsKind.Output, budget, imageWork, cancellationToken);
-                    SvgPaintBounds hint = ImageHint(painted, outputHint);
+                    SvgPaintBounds hint = ImageHint(painted, RoundOutputHint(outputHint));
                     SvgCpuBitmapOrigin sourceImageOrigin = SourceImageOrigin(hint, needed);
                     workUnits += imageWork.Used;
                     using RasterizedSurface captured = Rasterize(scene, captureOptions, budget, RasterSurfaceMode.PremultipliedFilter,

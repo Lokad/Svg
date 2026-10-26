@@ -1,0 +1,1546 @@
+{
+  "browser": "Chromium 153.0.8010.52",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "decodedPixelStability": "identical",
+  "license": "MIT",
+  "licenseEvidence": "../../../LICENSE.txt",
+  "selection": "Identical authored input bytes and render options are included once; distinct graphs retain independent references regardless of equal pixels.",
+  "cases": [
+    {
+      "id": "source-provenance-controls-0-candidate",
+      "input": "inputs/source-provenance-controls-0-candidate.svg",
+      "sourceSha256": "ea5f41a82d21ecd904f8ad689f708aee490688a1e2848f563c93c3dd60c85af5",
+      "outputScale": 1.5,
+      "interaction": "gradient-sRGB-zero-blur-before",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 0,
+      "sourceRole": "candidate",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-0-candidate.png",
+          "sha256": "96a1b57ab91c3cc1d50717735a6223771c88071814746f5d091ecc1df0fb0417",
+          "rgbaSha256": "2c8d3f717e845908af98de484fc05773d1b09a62145e10f7e538f645c3d84b82",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-0-candidate.png",
+          "sha256": "96a1b57ab91c3cc1d50717735a6223771c88071814746f5d091ecc1df0fb0417",
+          "rgbaSha256": "2c8d3f717e845908af98de484fc05773d1b09a62145e10f7e538f645c3d84b82",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-0-control",
+      "input": "inputs/source-provenance-controls-0-control.svg",
+      "sourceSha256": "eafd5113f87dbaa93838eb364d5da8452d8cf7d3f5838006d9fe6efb0ad27dae",
+      "outputScale": 1.5,
+      "interaction": "gradient-sRGB-zero-blur-before",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 0,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-0-control.png",
+          "sha256": "96a1b57ab91c3cc1d50717735a6223771c88071814746f5d091ecc1df0fb0417",
+          "rgbaSha256": "2c8d3f717e845908af98de484fc05773d1b09a62145e10f7e538f645c3d84b82",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-0-control.png",
+          "sha256": "96a1b57ab91c3cc1d50717735a6223771c88071814746f5d091ecc1df0fb0417",
+          "rgbaSha256": "2c8d3f717e845908af98de484fc05773d1b09a62145e10f7e538f645c3d84b82",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-1-control",
+      "input": "inputs/source-provenance-controls-1-control.svg",
+      "sourceSha256": "888520243222ef3c0cc7d3097e10470bb48604c10c985b4b4cc7e21a689b5dd8",
+      "outputScale": 1.5,
+      "interaction": "gradient-sRGB-small-blur-before",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 1,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-1-control.png",
+          "sha256": "f7fd928fdc70b7d3d33824ad2839d390cf234921b1e0f9ca2916542cdf3317fa",
+          "rgbaSha256": "2c0494f8ad7b529d8e7f36fbd087723072c4f0672477e30afe6ecbe82b5509fc",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-1-control.png",
+          "sha256": "f7fd928fdc70b7d3d33824ad2839d390cf234921b1e0f9ca2916542cdf3317fa",
+          "rgbaSha256": "2c0494f8ad7b529d8e7f36fbd087723072c4f0672477e30afe6ecbe82b5509fc",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-2-control",
+      "input": "inputs/source-provenance-controls-2-control.svg",
+      "sourceSha256": "8710477866ccb742915ad23ef0d91d98115f5425ea375d6a65369647acdb578c",
+      "outputScale": 1.5,
+      "interaction": "gradient-sRGB-merge-before",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 2,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-2-control.png",
+          "sha256": "96a1b57ab91c3cc1d50717735a6223771c88071814746f5d091ecc1df0fb0417",
+          "rgbaSha256": "2c8d3f717e845908af98de484fc05773d1b09a62145e10f7e538f645c3d84b82",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-2-control.png",
+          "sha256": "96a1b57ab91c3cc1d50717735a6223771c88071814746f5d091ecc1df0fb0417",
+          "rgbaSha256": "2c8d3f717e845908af98de484fc05773d1b09a62145e10f7e538f645c3d84b82",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-3-control",
+      "input": "inputs/source-provenance-controls-3-control.svg",
+      "sourceSha256": "d0a53b19b6466afd775be1d247176a3ed49cbdf92b1e923e023a63b88345afd7",
+      "outputScale": 1.5,
+      "interaction": "gradient-sRGB-zero-offset-before",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 3,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-3-control.png",
+          "sha256": "96a1b57ab91c3cc1d50717735a6223771c88071814746f5d091ecc1df0fb0417",
+          "rgbaSha256": "2c8d3f717e845908af98de484fc05773d1b09a62145e10f7e538f645c3d84b82",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-3-control.png",
+          "sha256": "96a1b57ab91c3cc1d50717735a6223771c88071814746f5d091ecc1df0fb0417",
+          "rgbaSha256": "2c8d3f717e845908af98de484fc05773d1b09a62145e10f7e538f645c3d84b82",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-4-control",
+      "input": "inputs/source-provenance-controls-4-control.svg",
+      "sourceSha256": "cbdceb1ea9409518296bf746d5b238639e016c3d9f0310e642838fac40f9bc09",
+      "outputScale": 1.5,
+      "interaction": "gradient-sRGB-zero-blur-after",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 4,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-4-control.png",
+          "sha256": "96a1b57ab91c3cc1d50717735a6223771c88071814746f5d091ecc1df0fb0417",
+          "rgbaSha256": "2c8d3f717e845908af98de484fc05773d1b09a62145e10f7e538f645c3d84b82",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-4-control.png",
+          "sha256": "96a1b57ab91c3cc1d50717735a6223771c88071814746f5d091ecc1df0fb0417",
+          "rgbaSha256": "2c8d3f717e845908af98de484fc05773d1b09a62145e10f7e538f645c3d84b82",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-5-control",
+      "input": "inputs/source-provenance-controls-5-control.svg",
+      "sourceSha256": "cfc090135c65ac8a7d7ab70edc0bb943468c7fd55f3a876d296acf6467e20ddf",
+      "outputScale": 1.5,
+      "interaction": "gradient-sRGB-merge-after",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 5,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-5-control.png",
+          "sha256": "96a1b57ab91c3cc1d50717735a6223771c88071814746f5d091ecc1df0fb0417",
+          "rgbaSha256": "2c8d3f717e845908af98de484fc05773d1b09a62145e10f7e538f645c3d84b82",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-5-control.png",
+          "sha256": "96a1b57ab91c3cc1d50717735a6223771c88071814746f5d091ecc1df0fb0417",
+          "rgbaSha256": "2c8d3f717e845908af98de484fc05773d1b09a62145e10f7e538f645c3d84b82",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-6-candidate",
+      "input": "inputs/source-provenance-controls-6-candidate.svg",
+      "sourceSha256": "d5c3319ca4fd44cfe5af36ffc8d6b8fe0119ab2bb6d7aa37c55df7d1d9b8ebe7",
+      "outputScale": 1.5,
+      "interaction": "gradient-linearRGB-zero-blur-before",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 6,
+      "sourceRole": "candidate",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-6-candidate.png",
+          "sha256": "bd6da08060df0114dcc8ec43e16e16d3fc31ea2847f1db301b86cdaa892439e7",
+          "rgbaSha256": "aa5e037595f6752621b4b8f6ddb4a0137d3c5d83fd1bb2118b8187a9458b45c9",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-6-candidate.png",
+          "sha256": "bd6da08060df0114dcc8ec43e16e16d3fc31ea2847f1db301b86cdaa892439e7",
+          "rgbaSha256": "aa5e037595f6752621b4b8f6ddb4a0137d3c5d83fd1bb2118b8187a9458b45c9",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-6-control",
+      "input": "inputs/source-provenance-controls-6-control.svg",
+      "sourceSha256": "b81796fdc4ac35c1ac6548088c73bb1b1d069810dac17079bb67981555bf8201",
+      "outputScale": 1.5,
+      "interaction": "gradient-linearRGB-zero-blur-before",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 6,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-6-control.png",
+          "sha256": "bd6da08060df0114dcc8ec43e16e16d3fc31ea2847f1db301b86cdaa892439e7",
+          "rgbaSha256": "aa5e037595f6752621b4b8f6ddb4a0137d3c5d83fd1bb2118b8187a9458b45c9",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-6-control.png",
+          "sha256": "bd6da08060df0114dcc8ec43e16e16d3fc31ea2847f1db301b86cdaa892439e7",
+          "rgbaSha256": "aa5e037595f6752621b4b8f6ddb4a0137d3c5d83fd1bb2118b8187a9458b45c9",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-7-control",
+      "input": "inputs/source-provenance-controls-7-control.svg",
+      "sourceSha256": "9195f3231ebb2ef23bad32a9410fbb7ccf093f2402ccdfff04899c63d9d04a3b",
+      "outputScale": 1.5,
+      "interaction": "gradient-linearRGB-small-blur-before",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 7,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-7-control.png",
+          "sha256": "ad8ed58cdbc3654465e7e294400408f3fb97603be21a3420e2ac77f626775938",
+          "rgbaSha256": "e20a55edf586ff9504380658935b36ba5547190ab94f6645cd22d4b14c9672a8",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-7-control.png",
+          "sha256": "ad8ed58cdbc3654465e7e294400408f3fb97603be21a3420e2ac77f626775938",
+          "rgbaSha256": "e20a55edf586ff9504380658935b36ba5547190ab94f6645cd22d4b14c9672a8",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-8-control",
+      "input": "inputs/source-provenance-controls-8-control.svg",
+      "sourceSha256": "7458c27687494cc5876624cbccb7dd9a8f03ffaab9f2a14dfa17cc836bcbb735",
+      "outputScale": 1.5,
+      "interaction": "gradient-linearRGB-merge-before",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 8,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-8-control.png",
+          "sha256": "bd6da08060df0114dcc8ec43e16e16d3fc31ea2847f1db301b86cdaa892439e7",
+          "rgbaSha256": "aa5e037595f6752621b4b8f6ddb4a0137d3c5d83fd1bb2118b8187a9458b45c9",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-8-control.png",
+          "sha256": "bd6da08060df0114dcc8ec43e16e16d3fc31ea2847f1db301b86cdaa892439e7",
+          "rgbaSha256": "aa5e037595f6752621b4b8f6ddb4a0137d3c5d83fd1bb2118b8187a9458b45c9",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-9-control",
+      "input": "inputs/source-provenance-controls-9-control.svg",
+      "sourceSha256": "58914cbedf953115a61c424f823f3632d12a5966e6786fe7c1dfee96caeac689",
+      "outputScale": 1.5,
+      "interaction": "gradient-linearRGB-zero-offset-before",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 9,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-9-control.png",
+          "sha256": "bd6da08060df0114dcc8ec43e16e16d3fc31ea2847f1db301b86cdaa892439e7",
+          "rgbaSha256": "aa5e037595f6752621b4b8f6ddb4a0137d3c5d83fd1bb2118b8187a9458b45c9",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-9-control.png",
+          "sha256": "bd6da08060df0114dcc8ec43e16e16d3fc31ea2847f1db301b86cdaa892439e7",
+          "rgbaSha256": "aa5e037595f6752621b4b8f6ddb4a0137d3c5d83fd1bb2118b8187a9458b45c9",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-10-control",
+      "input": "inputs/source-provenance-controls-10-control.svg",
+      "sourceSha256": "70c62b75d642adcf06bc32befce60b09e385eff794a82b8e7cecca18df114e95",
+      "outputScale": 1.5,
+      "interaction": "gradient-linearRGB-zero-blur-after",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 10,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-10-control.png",
+          "sha256": "bd6da08060df0114dcc8ec43e16e16d3fc31ea2847f1db301b86cdaa892439e7",
+          "rgbaSha256": "aa5e037595f6752621b4b8f6ddb4a0137d3c5d83fd1bb2118b8187a9458b45c9",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-10-control.png",
+          "sha256": "bd6da08060df0114dcc8ec43e16e16d3fc31ea2847f1db301b86cdaa892439e7",
+          "rgbaSha256": "aa5e037595f6752621b4b8f6ddb4a0137d3c5d83fd1bb2118b8187a9458b45c9",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-11-control",
+      "input": "inputs/source-provenance-controls-11-control.svg",
+      "sourceSha256": "76a6c1cb1f3346fedd3d861b2959321b66774fc163dc4e21a8a55ff3a901736d",
+      "outputScale": 1.5,
+      "interaction": "gradient-linearRGB-merge-after",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 11,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-11-control.png",
+          "sha256": "bd6da08060df0114dcc8ec43e16e16d3fc31ea2847f1db301b86cdaa892439e7",
+          "rgbaSha256": "aa5e037595f6752621b4b8f6ddb4a0137d3c5d83fd1bb2118b8187a9458b45c9",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-11-control.png",
+          "sha256": "bd6da08060df0114dcc8ec43e16e16d3fc31ea2847f1db301b86cdaa892439e7",
+          "rgbaSha256": "aa5e037595f6752621b4b8f6ddb4a0137d3c5d83fd1bb2118b8187a9458b45c9",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-12-candidate",
+      "input": "inputs/source-provenance-controls-12-candidate.svg",
+      "sourceSha256": "6a3ceb0b3c7b6cb3787e6c6b1f71ca128865c814aac766af49bacf4f67ce6a67",
+      "outputScale": 1,
+      "interaction": "ellipse-sRGB-zero-blur-before",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 12,
+      "sourceRole": "candidate",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-12-candidate.png",
+          "sha256": "8744391637b47896ab4b504da5ba41a092730ac30b2c5038e36f58dea2edbaa2",
+          "rgbaSha256": "c138dbc4651609a0f0eaa8d21fa123d42ac155b821b27655801b3a8484cf535d",
+          "width": 48,
+          "height": 40
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-12-candidate.png",
+          "sha256": "8744391637b47896ab4b504da5ba41a092730ac30b2c5038e36f58dea2edbaa2",
+          "rgbaSha256": "c138dbc4651609a0f0eaa8d21fa123d42ac155b821b27655801b3a8484cf535d",
+          "width": 48,
+          "height": 40
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-12-control",
+      "input": "inputs/source-provenance-controls-12-control.svg",
+      "sourceSha256": "c2f46ca65a3c5f7094516b35232e4d40c5aa1489d8432e4549c2d117603c5d39",
+      "outputScale": 1,
+      "interaction": "ellipse-sRGB-zero-blur-before",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 12,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-12-control.png",
+          "sha256": "8744391637b47896ab4b504da5ba41a092730ac30b2c5038e36f58dea2edbaa2",
+          "rgbaSha256": "c138dbc4651609a0f0eaa8d21fa123d42ac155b821b27655801b3a8484cf535d",
+          "width": 48,
+          "height": 40
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-12-control.png",
+          "sha256": "8744391637b47896ab4b504da5ba41a092730ac30b2c5038e36f58dea2edbaa2",
+          "rgbaSha256": "c138dbc4651609a0f0eaa8d21fa123d42ac155b821b27655801b3a8484cf535d",
+          "width": 48,
+          "height": 40
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-13-control",
+      "input": "inputs/source-provenance-controls-13-control.svg",
+      "sourceSha256": "e14bfbef98d0364c9b9a49b9992814bce2f4bf80c207c1cfcf267ebc9732b7dc",
+      "outputScale": 1,
+      "interaction": "ellipse-sRGB-small-blur-before",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 13,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-13-control.png",
+          "sha256": "254dd49836d812d9f9292b0b80336551a97606ecba6beeea754689591f26ebc4",
+          "rgbaSha256": "7a4978eb34d206cf416ef4a051f4707cf7fcd1c7dc70ceb9615040410f7b50e7",
+          "width": 48,
+          "height": 40
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-13-control.png",
+          "sha256": "254dd49836d812d9f9292b0b80336551a97606ecba6beeea754689591f26ebc4",
+          "rgbaSha256": "7a4978eb34d206cf416ef4a051f4707cf7fcd1c7dc70ceb9615040410f7b50e7",
+          "width": 48,
+          "height": 40
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-14-control",
+      "input": "inputs/source-provenance-controls-14-control.svg",
+      "sourceSha256": "55921e7f32c8163ddc7b20359692be7e3ba389613f328911a5e295e97e491452",
+      "outputScale": 1,
+      "interaction": "ellipse-sRGB-merge-before",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 14,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-14-control.png",
+          "sha256": "8744391637b47896ab4b504da5ba41a092730ac30b2c5038e36f58dea2edbaa2",
+          "rgbaSha256": "c138dbc4651609a0f0eaa8d21fa123d42ac155b821b27655801b3a8484cf535d",
+          "width": 48,
+          "height": 40
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-14-control.png",
+          "sha256": "8744391637b47896ab4b504da5ba41a092730ac30b2c5038e36f58dea2edbaa2",
+          "rgbaSha256": "c138dbc4651609a0f0eaa8d21fa123d42ac155b821b27655801b3a8484cf535d",
+          "width": 48,
+          "height": 40
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-15-control",
+      "input": "inputs/source-provenance-controls-15-control.svg",
+      "sourceSha256": "a1eeaca8f87540f7f56019a80e256850df69377a0028ecac78c55bd34787f64d",
+      "outputScale": 1,
+      "interaction": "ellipse-sRGB-zero-offset-before",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 15,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-15-control.png",
+          "sha256": "8744391637b47896ab4b504da5ba41a092730ac30b2c5038e36f58dea2edbaa2",
+          "rgbaSha256": "c138dbc4651609a0f0eaa8d21fa123d42ac155b821b27655801b3a8484cf535d",
+          "width": 48,
+          "height": 40
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-15-control.png",
+          "sha256": "8744391637b47896ab4b504da5ba41a092730ac30b2c5038e36f58dea2edbaa2",
+          "rgbaSha256": "c138dbc4651609a0f0eaa8d21fa123d42ac155b821b27655801b3a8484cf535d",
+          "width": 48,
+          "height": 40
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-16-control",
+      "input": "inputs/source-provenance-controls-16-control.svg",
+      "sourceSha256": "2a25182218cf7f91062be416ab87c1ee5e2ba9f3e7d832398b381e6416b84442",
+      "outputScale": 1,
+      "interaction": "ellipse-sRGB-zero-blur-after",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 16,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-16-control.png",
+          "sha256": "8744391637b47896ab4b504da5ba41a092730ac30b2c5038e36f58dea2edbaa2",
+          "rgbaSha256": "c138dbc4651609a0f0eaa8d21fa123d42ac155b821b27655801b3a8484cf535d",
+          "width": 48,
+          "height": 40
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-16-control.png",
+          "sha256": "8744391637b47896ab4b504da5ba41a092730ac30b2c5038e36f58dea2edbaa2",
+          "rgbaSha256": "c138dbc4651609a0f0eaa8d21fa123d42ac155b821b27655801b3a8484cf535d",
+          "width": 48,
+          "height": 40
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-17-control",
+      "input": "inputs/source-provenance-controls-17-control.svg",
+      "sourceSha256": "88667ba0955d2faea709fe2b7c5cdbbaefc95739b0fefe80e8776c5e4e98be1c",
+      "outputScale": 1,
+      "interaction": "ellipse-sRGB-merge-after",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 17,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-17-control.png",
+          "sha256": "8744391637b47896ab4b504da5ba41a092730ac30b2c5038e36f58dea2edbaa2",
+          "rgbaSha256": "c138dbc4651609a0f0eaa8d21fa123d42ac155b821b27655801b3a8484cf535d",
+          "width": 48,
+          "height": 40
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-17-control.png",
+          "sha256": "8744391637b47896ab4b504da5ba41a092730ac30b2c5038e36f58dea2edbaa2",
+          "rgbaSha256": "c138dbc4651609a0f0eaa8d21fa123d42ac155b821b27655801b3a8484cf535d",
+          "width": 48,
+          "height": 40
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-18-candidate",
+      "input": "inputs/source-provenance-controls-18-candidate.svg",
+      "sourceSha256": "f172da3a3286486557651956d815e89d13d3289d6634c091bb2a512c419a4317",
+      "outputScale": 1,
+      "interaction": "ellipse-linearRGB-zero-blur-before",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 18,
+      "sourceRole": "candidate",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-18-candidate.png",
+          "sha256": "12c1fefb879c9f45d5064ef6eaa5c3eb79394ef5fbe589e23e68564e3d8c465f",
+          "rgbaSha256": "9d8c58c01c34c2fd35bea107288e7eb73e929fb8f34e7eec19cf956942030751",
+          "width": 48,
+          "height": 40
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-18-candidate.png",
+          "sha256": "12c1fefb879c9f45d5064ef6eaa5c3eb79394ef5fbe589e23e68564e3d8c465f",
+          "rgbaSha256": "9d8c58c01c34c2fd35bea107288e7eb73e929fb8f34e7eec19cf956942030751",
+          "width": 48,
+          "height": 40
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-18-control",
+      "input": "inputs/source-provenance-controls-18-control.svg",
+      "sourceSha256": "49fd2ccb959ea6bd824945613975583a60847a9605450133239d12a146a091eb",
+      "outputScale": 1,
+      "interaction": "ellipse-linearRGB-zero-blur-before",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 18,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-18-control.png",
+          "sha256": "12c1fefb879c9f45d5064ef6eaa5c3eb79394ef5fbe589e23e68564e3d8c465f",
+          "rgbaSha256": "9d8c58c01c34c2fd35bea107288e7eb73e929fb8f34e7eec19cf956942030751",
+          "width": 48,
+          "height": 40
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-18-control.png",
+          "sha256": "12c1fefb879c9f45d5064ef6eaa5c3eb79394ef5fbe589e23e68564e3d8c465f",
+          "rgbaSha256": "9d8c58c01c34c2fd35bea107288e7eb73e929fb8f34e7eec19cf956942030751",
+          "width": 48,
+          "height": 40
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-19-control",
+      "input": "inputs/source-provenance-controls-19-control.svg",
+      "sourceSha256": "ff9b114930978125e7e04b91232086cb5b0bef768d2f8aec4ea45bb0f900342c",
+      "outputScale": 1,
+      "interaction": "ellipse-linearRGB-small-blur-before",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 19,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-19-control.png",
+          "sha256": "8c8d4c52a70495b625d42688e2be35975fe0dc15a55b36954d9a359363edc6ce",
+          "rgbaSha256": "61fa4cbc3960d1111e35a9fd5031b4832fd0fa90bcdd1b352ea19a88805e2404",
+          "width": 48,
+          "height": 40
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-19-control.png",
+          "sha256": "8c8d4c52a70495b625d42688e2be35975fe0dc15a55b36954d9a359363edc6ce",
+          "rgbaSha256": "61fa4cbc3960d1111e35a9fd5031b4832fd0fa90bcdd1b352ea19a88805e2404",
+          "width": 48,
+          "height": 40
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-20-control",
+      "input": "inputs/source-provenance-controls-20-control.svg",
+      "sourceSha256": "aa389fc4e423d28c13f8ef9529811b0ab3aacfe77c819820f8211ffef6a7b808",
+      "outputScale": 1,
+      "interaction": "ellipse-linearRGB-merge-before",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 20,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-20-control.png",
+          "sha256": "12c1fefb879c9f45d5064ef6eaa5c3eb79394ef5fbe589e23e68564e3d8c465f",
+          "rgbaSha256": "9d8c58c01c34c2fd35bea107288e7eb73e929fb8f34e7eec19cf956942030751",
+          "width": 48,
+          "height": 40
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-20-control.png",
+          "sha256": "12c1fefb879c9f45d5064ef6eaa5c3eb79394ef5fbe589e23e68564e3d8c465f",
+          "rgbaSha256": "9d8c58c01c34c2fd35bea107288e7eb73e929fb8f34e7eec19cf956942030751",
+          "width": 48,
+          "height": 40
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-21-control",
+      "input": "inputs/source-provenance-controls-21-control.svg",
+      "sourceSha256": "7c926f14ffd4173392f19ec99743d03c1b446341480fc85b26c8eba4b7ceff41",
+      "outputScale": 1,
+      "interaction": "ellipse-linearRGB-zero-offset-before",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 21,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-21-control.png",
+          "sha256": "12c1fefb879c9f45d5064ef6eaa5c3eb79394ef5fbe589e23e68564e3d8c465f",
+          "rgbaSha256": "9d8c58c01c34c2fd35bea107288e7eb73e929fb8f34e7eec19cf956942030751",
+          "width": 48,
+          "height": 40
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-21-control.png",
+          "sha256": "12c1fefb879c9f45d5064ef6eaa5c3eb79394ef5fbe589e23e68564e3d8c465f",
+          "rgbaSha256": "9d8c58c01c34c2fd35bea107288e7eb73e929fb8f34e7eec19cf956942030751",
+          "width": 48,
+          "height": 40
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-22-control",
+      "input": "inputs/source-provenance-controls-22-control.svg",
+      "sourceSha256": "fff14bb3ee46a1caa77097597c5d5fe6fd6621dd08a0f487069a23fed3738cb5",
+      "outputScale": 1,
+      "interaction": "ellipse-linearRGB-zero-blur-after",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 22,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-22-control.png",
+          "sha256": "12c1fefb879c9f45d5064ef6eaa5c3eb79394ef5fbe589e23e68564e3d8c465f",
+          "rgbaSha256": "9d8c58c01c34c2fd35bea107288e7eb73e929fb8f34e7eec19cf956942030751",
+          "width": 48,
+          "height": 40
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-22-control.png",
+          "sha256": "12c1fefb879c9f45d5064ef6eaa5c3eb79394ef5fbe589e23e68564e3d8c465f",
+          "rgbaSha256": "9d8c58c01c34c2fd35bea107288e7eb73e929fb8f34e7eec19cf956942030751",
+          "width": 48,
+          "height": 40
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-23-control",
+      "input": "inputs/source-provenance-controls-23-control.svg",
+      "sourceSha256": "1d7628535380185c31a6f92ecd600288d152a48198270469fa7b6efdc3143702",
+      "outputScale": 1,
+      "interaction": "ellipse-linearRGB-merge-after",
+      "sourceBank": "source-provenance-controls",
+      "sourceIndex": 23,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-provenance-controls-23-control.png",
+          "sha256": "12c1fefb879c9f45d5064ef6eaa5c3eb79394ef5fbe589e23e68564e3d8c465f",
+          "rgbaSha256": "9d8c58c01c34c2fd35bea107288e7eb73e929fb8f34e7eec19cf956942030751",
+          "width": 48,
+          "height": 40
+        },
+        "linux": {
+          "path": "references/linux/source-provenance-controls-23-control.png",
+          "sha256": "12c1fefb879c9f45d5064ef6eaa5c3eb79394ef5fbe589e23e68564e3d8c465f",
+          "rgbaSha256": "9d8c58c01c34c2fd35bea107288e7eb73e929fb8f34e7eec19cf956942030751",
+          "width": 48,
+          "height": 40
+        }
+      }
+    },
+    {
+      "id": "opacity-controls-0-candidate",
+      "input": "inputs/opacity-controls-0-candidate.svg",
+      "sourceSha256": "212b7abdd8584407a011043be4b206946c4fa428baeacf7712c323245b8c8697",
+      "outputScale": 1,
+      "interaction": "opaque-source",
+      "sourceBank": "opacity-controls",
+      "sourceIndex": 0,
+      "sourceRole": "candidate",
+      "references": {
+        "windows": {
+          "path": "references/windows/opacity-controls-0-candidate.png",
+          "sha256": "12c1fefb879c9f45d5064ef6eaa5c3eb79394ef5fbe589e23e68564e3d8c465f",
+          "rgbaSha256": "9d8c58c01c34c2fd35bea107288e7eb73e929fb8f34e7eec19cf956942030751",
+          "width": 48,
+          "height": 40
+        },
+        "linux": {
+          "path": "references/linux/opacity-controls-0-candidate.png",
+          "sha256": "12c1fefb879c9f45d5064ef6eaa5c3eb79394ef5fbe589e23e68564e3d8c465f",
+          "rgbaSha256": "9d8c58c01c34c2fd35bea107288e7eb73e929fb8f34e7eec19cf956942030751",
+          "width": 48,
+          "height": 40
+        }
+      }
+    },
+    {
+      "id": "opacity-controls-0-control",
+      "input": "inputs/opacity-controls-0-control.svg",
+      "sourceSha256": "ca936dcd0a362a64a62d157ec2bd0bc453029e6cc5a7056790c3b35efbbbf9a7",
+      "outputScale": 1,
+      "interaction": "opaque-source",
+      "sourceBank": "opacity-controls",
+      "sourceIndex": 0,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/opacity-controls-0-control.png",
+          "sha256": "774d61d0cdafd7e6cd1b2b4b1158172721f74f2a34deb5ff420b27b20bb12fdd",
+          "rgbaSha256": "8a2e534a60d119d50f125f050738d04bd905303ff0e9ccef68a0bed505dbd583",
+          "width": 48,
+          "height": 40
+        },
+        "linux": {
+          "path": "references/linux/opacity-controls-0-control.png",
+          "sha256": "774d61d0cdafd7e6cd1b2b4b1158172721f74f2a34deb5ff420b27b20bb12fdd",
+          "rgbaSha256": "8a2e534a60d119d50f125f050738d04bd905303ff0e9ccef68a0bed505dbd583",
+          "width": 48,
+          "height": 40
+        }
+      }
+    },
+    {
+      "id": "opacity-controls-1-control",
+      "input": "inputs/opacity-controls-1-control.svg",
+      "sourceSha256": "82bdca2f91947b61ab5a365182ff7421bafc4db2f164b4efb3cccb17f58170b3",
+      "outputScale": 1,
+      "interaction": "outer-opacity",
+      "sourceBank": "opacity-controls",
+      "sourceIndex": 1,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/opacity-controls-1-control.png",
+          "sha256": "12c1fefb879c9f45d5064ef6eaa5c3eb79394ef5fbe589e23e68564e3d8c465f",
+          "rgbaSha256": "9d8c58c01c34c2fd35bea107288e7eb73e929fb8f34e7eec19cf956942030751",
+          "width": 48,
+          "height": 40
+        },
+        "linux": {
+          "path": "references/linux/opacity-controls-1-control.png",
+          "sha256": "12c1fefb879c9f45d5064ef6eaa5c3eb79394ef5fbe589e23e68564e3d8c465f",
+          "rgbaSha256": "9d8c58c01c34c2fd35bea107288e7eb73e929fb8f34e7eec19cf956942030751",
+          "width": 48,
+          "height": 40
+        }
+      }
+    },
+    {
+      "id": "opacity-controls-2-control",
+      "input": "inputs/opacity-controls-2-control.svg",
+      "sourceSha256": "9035c1b21df9ec3b92a3c30c4100cd83b919058c40b02f1810b085055e22e7b0",
+      "outputScale": 1,
+      "interaction": "fill-opacity",
+      "sourceBank": "opacity-controls",
+      "sourceIndex": 2,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/opacity-controls-2-control.png",
+          "sha256": "d14eaa65924d2810b7abf9f1e2cd0ae7855bbfc59974e8c448c4390e050edd2b",
+          "rgbaSha256": "10cdcb8da5e9a15877c42e65fd7c17db814307f138d591d40f3eabf3ccb1b9b6",
+          "width": 48,
+          "height": 40
+        },
+        "linux": {
+          "path": "references/linux/opacity-controls-2-control.png",
+          "sha256": "d14eaa65924d2810b7abf9f1e2cd0ae7855bbfc59974e8c448c4390e050edd2b",
+          "rgbaSha256": "10cdcb8da5e9a15877c42e65fd7c17db814307f138d591d40f3eabf3ccb1b9b6",
+          "width": 48,
+          "height": 40
+        }
+      }
+    },
+    {
+      "id": "opacity-controls-3-control",
+      "input": "inputs/opacity-controls-3-control.svg",
+      "sourceSha256": "f1ae35ad24e60fc13f22b45f926c2329413f786c93fb3c5010800595fe9a405c",
+      "outputScale": 1,
+      "interaction": "flat-alpha-source",
+      "sourceBank": "opacity-controls",
+      "sourceIndex": 3,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/opacity-controls-3-control.png",
+          "sha256": "5de23ab631cc66af7327188078e12279a4f77a0447ec98784bf68fe0302cd63f",
+          "rgbaSha256": "4486c9ddb28f7b71c8f44486cc1839e0ee2581f50876951907dcefe7bed12ab9",
+          "width": 48,
+          "height": 40
+        },
+        "linux": {
+          "path": "references/linux/opacity-controls-3-control.png",
+          "sha256": "5de23ab631cc66af7327188078e12279a4f77a0447ec98784bf68fe0302cd63f",
+          "rgbaSha256": "4486c9ddb28f7b71c8f44486cc1839e0ee2581f50876951907dcefe7bed12ab9",
+          "width": 48,
+          "height": 40
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-0-control",
+      "input": "inputs/boundary-controls-0-control.svg",
+      "sourceSha256": "c88fdca00f506dd898212a90765aa9b46c63ad4217aada10dd4352fe38e16bc7",
+      "outputScale": 1.5,
+      "interaction": "sRGB-tiny-blur",
+      "sourceBank": "boundary-controls",
+      "sourceIndex": 0,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/boundary-controls-0-control.png",
+          "sha256": "96a1b57ab91c3cc1d50717735a6223771c88071814746f5d091ecc1df0fb0417",
+          "rgbaSha256": "2c8d3f717e845908af98de484fc05773d1b09a62145e10f7e538f645c3d84b82",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/boundary-controls-0-control.png",
+          "sha256": "96a1b57ab91c3cc1d50717735a6223771c88071814746f5d091ecc1df0fb0417",
+          "rgbaSha256": "2c8d3f717e845908af98de484fc05773d1b09a62145e10f7e538f645c3d84b82",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-1-control",
+      "input": "inputs/boundary-controls-1-control.svg",
+      "sourceSha256": "ed3f3ef7d6d189012eccc4c09c8a56148dca83f89a3f81126b597c687bf98330",
+      "outputScale": 1.5,
+      "interaction": "sRGB-small-threshold-blur",
+      "sourceBank": "boundary-controls",
+      "sourceIndex": 1,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/boundary-controls-1-control.png",
+          "sha256": "8189226b9d5fe9721b0f76775c7ce41caf06b3186f321fc47b7ddfbe7c82a8aa",
+          "rgbaSha256": "4f880b7d8c7279f99860731cc60a4abc98c5ad8a8519eea96b6b50edd6310ed1",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/boundary-controls-1-control.png",
+          "sha256": "8189226b9d5fe9721b0f76775c7ce41caf06b3186f321fc47b7ddfbe7c82a8aa",
+          "rgbaSha256": "4f880b7d8c7279f99860731cc60a4abc98c5ad8a8519eea96b6b50edd6310ed1",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-2-control",
+      "input": "inputs/boundary-controls-2-control.svg",
+      "sourceSha256": "ff3677cb67e13696d86ceab896c0dd56f276a59071ef66472ca0a10f94b03ca3",
+      "outputScale": 1.5,
+      "interaction": "sRGB-cropped-zero-blur",
+      "sourceBank": "boundary-controls",
+      "sourceIndex": 2,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/boundary-controls-2-control.png",
+          "sha256": "e6aed4e7b58be890675416e38fbf62d199d3906a485bcf912c915a430b04e2ce",
+          "rgbaSha256": "58c1cd9f584b287f5afff28fd40b06ee8773c717c370fe08047895f90d85835d",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/boundary-controls-2-control.png",
+          "sha256": "e6aed4e7b58be890675416e38fbf62d199d3906a485bcf912c915a430b04e2ce",
+          "rgbaSha256": "58c1cd9f584b287f5afff28fd40b06ee8773c717c370fe08047895f90d85835d",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-3-control",
+      "input": "inputs/boundary-controls-3-control.svg",
+      "sourceSha256": "08cc6c8f1d5fde7218ab0da8b9e4056301addf2a4fc216508f91fd859d03d15e",
+      "outputScale": 1.5,
+      "interaction": "sRGB-cropped-merge",
+      "sourceBank": "boundary-controls",
+      "sourceIndex": 3,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/boundary-controls-3-control.png",
+          "sha256": "e6aed4e7b58be890675416e38fbf62d199d3906a485bcf912c915a430b04e2ce",
+          "rgbaSha256": "58c1cd9f584b287f5afff28fd40b06ee8773c717c370fe08047895f90d85835d",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/boundary-controls-3-control.png",
+          "sha256": "e6aed4e7b58be890675416e38fbf62d199d3906a485bcf912c915a430b04e2ce",
+          "rgbaSha256": "58c1cd9f584b287f5afff28fd40b06ee8773c717c370fe08047895f90d85835d",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-4-control",
+      "input": "inputs/boundary-controls-4-control.svg",
+      "sourceSha256": "10b10116fb55cb270714870c4f711deb4ea53f270b8e351822e2196f8e537956",
+      "outputScale": 1.5,
+      "interaction": "sRGB-cropped-zero-offset",
+      "sourceBank": "boundary-controls",
+      "sourceIndex": 4,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/boundary-controls-4-control.png",
+          "sha256": "e6aed4e7b58be890675416e38fbf62d199d3906a485bcf912c915a430b04e2ce",
+          "rgbaSha256": "58c1cd9f584b287f5afff28fd40b06ee8773c717c370fe08047895f90d85835d",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/boundary-controls-4-control.png",
+          "sha256": "e6aed4e7b58be890675416e38fbf62d199d3906a485bcf912c915a430b04e2ce",
+          "rgbaSha256": "58c1cd9f584b287f5afff28fd40b06ee8773c717c370fe08047895f90d85835d",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-5-control",
+      "input": "inputs/boundary-controls-5-control.svg",
+      "sourceSha256": "43db9541564b07631b164cfb537289a3f31776fc89b7c1a58cf6edf9d030603d",
+      "outputScale": 1.5,
+      "interaction": "sRGB-source-alpha",
+      "sourceBank": "boundary-controls",
+      "sourceIndex": 5,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/boundary-controls-5-control.png",
+          "sha256": "66a9b32e8e36894146db834fd3b50774abbf66450ba6c5ce3b152d868127d7da",
+          "rgbaSha256": "5082521be3c4fd162848aec11b8f1431d886a5f07d936f1c96433e14f8000f65",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/boundary-controls-5-control.png",
+          "sha256": "66a9b32e8e36894146db834fd3b50774abbf66450ba6c5ce3b152d868127d7da",
+          "rgbaSha256": "5082521be3c4fd162848aec11b8f1431d886a5f07d936f1c96433e14f8000f65",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-6-control",
+      "input": "inputs/boundary-controls-6-control.svg",
+      "sourceSha256": "b48fa4dadcbec345a45112f67445001141f3598df19d52670a46680b500d26b4",
+      "outputScale": 1.5,
+      "interaction": "sRGB-source-alpha-alias",
+      "sourceBank": "boundary-controls",
+      "sourceIndex": 6,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/boundary-controls-6-control.png",
+          "sha256": "66a9b32e8e36894146db834fd3b50774abbf66450ba6c5ce3b152d868127d7da",
+          "rgbaSha256": "5082521be3c4fd162848aec11b8f1431d886a5f07d936f1c96433e14f8000f65",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/boundary-controls-6-control.png",
+          "sha256": "66a9b32e8e36894146db834fd3b50774abbf66450ba6c5ce3b152d868127d7da",
+          "rgbaSha256": "5082521be3c4fd162848aec11b8f1431d886a5f07d936f1c96433e14f8000f65",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-7-control",
+      "input": "inputs/boundary-controls-7-control.svg",
+      "sourceSha256": "884ba7218040077d58ef15db9fe714decd573da7c96e41ca685c3cdac36c0d4e",
+      "outputScale": 1.5,
+      "interaction": "sRGB-post-clip",
+      "sourceBank": "boundary-controls",
+      "sourceIndex": 7,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/boundary-controls-7-control.png",
+          "sha256": "597d56fe7151a666f7ea14ee43374ba5424b199d0a8c0a282d9eb86c84442e12",
+          "rgbaSha256": "af39fc1346b3a93fb6537a2d73e4f44396eeb0cab99bf13f42df6829e9745653",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/boundary-controls-7-control.png",
+          "sha256": "597d56fe7151a666f7ea14ee43374ba5424b199d0a8c0a282d9eb86c84442e12",
+          "rgbaSha256": "af39fc1346b3a93fb6537a2d73e4f44396eeb0cab99bf13f42df6829e9745653",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-8-control",
+      "input": "inputs/boundary-controls-8-control.svg",
+      "sourceSha256": "7be670b4d17ecae5902bafc7fd5b7d21a6b8bf1a92f6603a3dd028b0f5931a3c",
+      "outputScale": 1.5,
+      "interaction": "linearRGB-tiny-blur",
+      "sourceBank": "boundary-controls",
+      "sourceIndex": 8,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/boundary-controls-8-control.png",
+          "sha256": "bd6da08060df0114dcc8ec43e16e16d3fc31ea2847f1db301b86cdaa892439e7",
+          "rgbaSha256": "aa5e037595f6752621b4b8f6ddb4a0137d3c5d83fd1bb2118b8187a9458b45c9",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/boundary-controls-8-control.png",
+          "sha256": "bd6da08060df0114dcc8ec43e16e16d3fc31ea2847f1db301b86cdaa892439e7",
+          "rgbaSha256": "aa5e037595f6752621b4b8f6ddb4a0137d3c5d83fd1bb2118b8187a9458b45c9",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-9-control",
+      "input": "inputs/boundary-controls-9-control.svg",
+      "sourceSha256": "a25810a994e44771060feff11d1c1328e40e4576255436c44a466b8551f86131",
+      "outputScale": 1.5,
+      "interaction": "linearRGB-small-threshold-blur",
+      "sourceBank": "boundary-controls",
+      "sourceIndex": 9,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/boundary-controls-9-control.png",
+          "sha256": "0f7b32db4607f9c6982d722d6ec17f6276da4f278ceae8a0b4a37aa376b8fcf2",
+          "rgbaSha256": "e3afc2c63aebd23b806079cd402ac0d1d859d693576d1693eda29f25a1bae6c8",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/boundary-controls-9-control.png",
+          "sha256": "0f7b32db4607f9c6982d722d6ec17f6276da4f278ceae8a0b4a37aa376b8fcf2",
+          "rgbaSha256": "e3afc2c63aebd23b806079cd402ac0d1d859d693576d1693eda29f25a1bae6c8",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-10-control",
+      "input": "inputs/boundary-controls-10-control.svg",
+      "sourceSha256": "9d42aa0232e4a3f6077e9e25399cc4ebfeb527bc2de22cfe8dea65659cb5f7c7",
+      "outputScale": 1.5,
+      "interaction": "linearRGB-cropped-zero-blur",
+      "sourceBank": "boundary-controls",
+      "sourceIndex": 10,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/boundary-controls-10-control.png",
+          "sha256": "25b7c281703d5e18d091bde10c04f137fdf739ea6b09d3a5cf159cbce31633ed",
+          "rgbaSha256": "b68a881f8c54318186f7badf36dfdacfc346a81dcfaee00315a54f12c9ad57fb",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/boundary-controls-10-control.png",
+          "sha256": "25b7c281703d5e18d091bde10c04f137fdf739ea6b09d3a5cf159cbce31633ed",
+          "rgbaSha256": "b68a881f8c54318186f7badf36dfdacfc346a81dcfaee00315a54f12c9ad57fb",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-11-control",
+      "input": "inputs/boundary-controls-11-control.svg",
+      "sourceSha256": "ab74d005fe8910de2ed1ecc4c303c54053dbc60f2dd2fa59ed1e45f860f6fd51",
+      "outputScale": 1.5,
+      "interaction": "linearRGB-cropped-merge",
+      "sourceBank": "boundary-controls",
+      "sourceIndex": 11,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/boundary-controls-11-control.png",
+          "sha256": "25b7c281703d5e18d091bde10c04f137fdf739ea6b09d3a5cf159cbce31633ed",
+          "rgbaSha256": "b68a881f8c54318186f7badf36dfdacfc346a81dcfaee00315a54f12c9ad57fb",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/boundary-controls-11-control.png",
+          "sha256": "25b7c281703d5e18d091bde10c04f137fdf739ea6b09d3a5cf159cbce31633ed",
+          "rgbaSha256": "b68a881f8c54318186f7badf36dfdacfc346a81dcfaee00315a54f12c9ad57fb",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-12-control",
+      "input": "inputs/boundary-controls-12-control.svg",
+      "sourceSha256": "73af2d474ac9ddc16d45e701ee7259f5c7736accba3019de166283095f3e4392",
+      "outputScale": 1.5,
+      "interaction": "linearRGB-cropped-zero-offset",
+      "sourceBank": "boundary-controls",
+      "sourceIndex": 12,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/boundary-controls-12-control.png",
+          "sha256": "25b7c281703d5e18d091bde10c04f137fdf739ea6b09d3a5cf159cbce31633ed",
+          "rgbaSha256": "b68a881f8c54318186f7badf36dfdacfc346a81dcfaee00315a54f12c9ad57fb",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/boundary-controls-12-control.png",
+          "sha256": "25b7c281703d5e18d091bde10c04f137fdf739ea6b09d3a5cf159cbce31633ed",
+          "rgbaSha256": "b68a881f8c54318186f7badf36dfdacfc346a81dcfaee00315a54f12c9ad57fb",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-13-control",
+      "input": "inputs/boundary-controls-13-control.svg",
+      "sourceSha256": "9828816884c88ee5d50cd9e0f5e924c511dbf3a544b7c43a45f2ffc02dabc592",
+      "outputScale": 1.5,
+      "interaction": "linearRGB-source-alpha",
+      "sourceBank": "boundary-controls",
+      "sourceIndex": 13,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/boundary-controls-13-control.png",
+          "sha256": "66a9b32e8e36894146db834fd3b50774abbf66450ba6c5ce3b152d868127d7da",
+          "rgbaSha256": "5082521be3c4fd162848aec11b8f1431d886a5f07d936f1c96433e14f8000f65",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/boundary-controls-13-control.png",
+          "sha256": "66a9b32e8e36894146db834fd3b50774abbf66450ba6c5ce3b152d868127d7da",
+          "rgbaSha256": "5082521be3c4fd162848aec11b8f1431d886a5f07d936f1c96433e14f8000f65",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-14-control",
+      "input": "inputs/boundary-controls-14-control.svg",
+      "sourceSha256": "4c2f61247b5874ee096a64b379b424bba7f395aea2fa99838506b46f2a18fba1",
+      "outputScale": 1.5,
+      "interaction": "linearRGB-source-alpha-alias",
+      "sourceBank": "boundary-controls",
+      "sourceIndex": 14,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/boundary-controls-14-control.png",
+          "sha256": "66a9b32e8e36894146db834fd3b50774abbf66450ba6c5ce3b152d868127d7da",
+          "rgbaSha256": "5082521be3c4fd162848aec11b8f1431d886a5f07d936f1c96433e14f8000f65",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/boundary-controls-14-control.png",
+          "sha256": "66a9b32e8e36894146db834fd3b50774abbf66450ba6c5ce3b152d868127d7da",
+          "rgbaSha256": "5082521be3c4fd162848aec11b8f1431d886a5f07d936f1c96433e14f8000f65",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-15-control",
+      "input": "inputs/boundary-controls-15-control.svg",
+      "sourceSha256": "571dc386d9f84344b87604eb0c9564a7a013d9e5a74ad1e9419e0814a7259f89",
+      "outputScale": 1.5,
+      "interaction": "linearRGB-post-clip",
+      "sourceBank": "boundary-controls",
+      "sourceIndex": 15,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/boundary-controls-15-control.png",
+          "sha256": "291dc5ef1db32c394ea2996ccca35c0768e44dbf61991f6892946d508af3f494",
+          "rgbaSha256": "22ab27708c01fb2b1a49ba9a801238a646b8dbaea954fa3c029c943a7cd323cc",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/boundary-controls-15-control.png",
+          "sha256": "291dc5ef1db32c394ea2996ccca35c0768e44dbf61991f6892946d508af3f494",
+          "rgbaSha256": "22ab27708c01fb2b1a49ba9a801238a646b8dbaea954fa3c029c943a7cd323cc",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "native-source-controls-0-candidate",
+      "input": "inputs/native-source-controls-0-candidate.svg",
+      "sourceSha256": "c16034ccc8ec3a9dd208138a479475fa118df4c7c9dd05faec8e26d8451bc9c3",
+      "outputScale": 1.5,
+      "interaction": "half-pixel-offset-versus-integer-source",
+      "sourceBank": "native-source-controls",
+      "sourceIndex": 0,
+      "sourceRole": "candidate",
+      "references": {
+        "windows": {
+          "path": "references/windows/native-source-controls-0-candidate.png",
+          "sha256": "bd6da08060df0114dcc8ec43e16e16d3fc31ea2847f1db301b86cdaa892439e7",
+          "rgbaSha256": "aa5e037595f6752621b4b8f6ddb4a0137d3c5d83fd1bb2118b8187a9458b45c9",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/native-source-controls-0-candidate.png",
+          "sha256": "bd6da08060df0114dcc8ec43e16e16d3fc31ea2847f1db301b86cdaa892439e7",
+          "rgbaSha256": "aa5e037595f6752621b4b8f6ddb4a0137d3c5d83fd1bb2118b8187a9458b45c9",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "native-source-controls-0-control",
+      "input": "inputs/native-source-controls-0-control.svg",
+      "sourceSha256": "422ca1551ccc1cdd6b4ce1ed9fa12eb95c36c584a1d257a173988dc3f29517b2",
+      "outputScale": 1.5,
+      "interaction": "half-pixel-offset-versus-integer-source",
+      "sourceBank": "native-source-controls",
+      "sourceIndex": 0,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/native-source-controls-0-control.png",
+          "sha256": "39e9b919872ad3abee188d720d7c7760152bc4ea30f5f8bfa395a1b07820ace9",
+          "rgbaSha256": "b8ebe1b0e7890f1867f748a60c09082fa0c951fcdac700f0d85ad933325d87e4",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/native-source-controls-0-control.png",
+          "sha256": "39e9b919872ad3abee188d720d7c7760152bc4ea30f5f8bfa395a1b07820ace9",
+          "rgbaSha256": "b8ebe1b0e7890f1867f748a60c09082fa0c951fcdac700f0d85ad933325d87e4",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "threshold-controls-6-control",
+      "input": "inputs/threshold-controls-6-control.svg",
+      "sourceSha256": "792b14ec3512edc613dc5dbfc7df90f81562506dbcd3891dedc104a0c0f34bd8",
+      "outputScale": 1.5,
+      "interaction": "sRGB-.019999",
+      "sourceBank": "threshold-controls",
+      "sourceIndex": 6,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/threshold-controls-6-control.png",
+          "sha256": "96a1b57ab91c3cc1d50717735a6223771c88071814746f5d091ecc1df0fb0417",
+          "rgbaSha256": "2c8d3f717e845908af98de484fc05773d1b09a62145e10f7e538f645c3d84b82",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/threshold-controls-6-control.png",
+          "sha256": "96a1b57ab91c3cc1d50717735a6223771c88071814746f5d091ecc1df0fb0417",
+          "rgbaSha256": "2c8d3f717e845908af98de484fc05773d1b09a62145e10f7e538f645c3d84b82",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "threshold-controls-7-control",
+      "input": "inputs/threshold-controls-7-control.svg",
+      "sourceSha256": "67ac81090c755d52cf69685203b8e625b701c2277119ff43ee2236844a67b83f",
+      "outputScale": 1.5,
+      "interaction": "sRGB-.020001",
+      "sourceBank": "threshold-controls",
+      "sourceIndex": 7,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/threshold-controls-7-control.png",
+          "sha256": "8189226b9d5fe9721b0f76775c7ce41caf06b3186f321fc47b7ddfbe7c82a8aa",
+          "rgbaSha256": "4f880b7d8c7279f99860731cc60a4abc98c5ad8a8519eea96b6b50edd6310ed1",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/threshold-controls-7-control.png",
+          "sha256": "8189226b9d5fe9721b0f76775c7ce41caf06b3186f321fc47b7ddfbe7c82a8aa",
+          "rgbaSha256": "4f880b7d8c7279f99860731cc60a4abc98c5ad8a8519eea96b6b50edd6310ed1",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "threshold-controls-17-control",
+      "input": "inputs/threshold-controls-17-control.svg",
+      "sourceSha256": "2026a840ebefaae0d4cab2a280da7d80d63b325728ae1b402cb8a0a2472e9d55",
+      "outputScale": 1.5,
+      "interaction": "linearRGB-.019999",
+      "sourceBank": "threshold-controls",
+      "sourceIndex": 17,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/threshold-controls-17-control.png",
+          "sha256": "bd6da08060df0114dcc8ec43e16e16d3fc31ea2847f1db301b86cdaa892439e7",
+          "rgbaSha256": "aa5e037595f6752621b4b8f6ddb4a0137d3c5d83fd1bb2118b8187a9458b45c9",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/threshold-controls-17-control.png",
+          "sha256": "bd6da08060df0114dcc8ec43e16e16d3fc31ea2847f1db301b86cdaa892439e7",
+          "rgbaSha256": "aa5e037595f6752621b4b8f6ddb4a0137d3c5d83fd1bb2118b8187a9458b45c9",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "threshold-controls-18-control",
+      "input": "inputs/threshold-controls-18-control.svg",
+      "sourceSha256": "813e78fd3a3f23a3cc88353159f4def757b5d61a113f37210097ef0af851ecbc",
+      "outputScale": 1.5,
+      "interaction": "linearRGB-.020001",
+      "sourceBank": "threshold-controls",
+      "sourceIndex": 18,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/threshold-controls-18-control.png",
+          "sha256": "0f7b32db4607f9c6982d722d6ec17f6276da4f278ceae8a0b4a37aa376b8fcf2",
+          "rgbaSha256": "e3afc2c63aebd23b806079cd402ac0d1d859d693576d1693eda29f25a1bae6c8",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/threshold-controls-18-control.png",
+          "sha256": "0f7b32db4607f9c6982d722d6ec17f6276da4f278ceae8a0b4a37aa376b8fcf2",
+          "rgbaSha256": "e3afc2c63aebd23b806079cd402ac0d1d859d693576d1693eda29f25a1bae6c8",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "axis-controls-0-control",
+      "input": "inputs/axis-controls-0-control.svg",
+      "sourceSha256": "f7ef9725f51032e3b6670c1b43fcae120a0e84153f5cbfba9071af8990a951b9",
+      "outputScale": 1.5,
+      "interaction": "sRGB-.4 .00001",
+      "sourceBank": "axis-controls",
+      "sourceIndex": 0,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/axis-controls-0-control.png",
+          "sha256": "96a1b57ab91c3cc1d50717735a6223771c88071814746f5d091ecc1df0fb0417",
+          "rgbaSha256": "2c8d3f717e845908af98de484fc05773d1b09a62145e10f7e538f645c3d84b82",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/axis-controls-0-control.png",
+          "sha256": "96a1b57ab91c3cc1d50717735a6223771c88071814746f5d091ecc1df0fb0417",
+          "rgbaSha256": "2c8d3f717e845908af98de484fc05773d1b09a62145e10f7e538f645c3d84b82",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "axis-controls-1-control",
+      "input": "inputs/axis-controls-1-control.svg",
+      "sourceSha256": "c43c4b7fdf34c1140d6e7b6f33eb8e4850221f13818cff59d036891ebf93cd84",
+      "outputScale": 1.5,
+      "interaction": "sRGB-.00001 .4",
+      "sourceBank": "axis-controls",
+      "sourceIndex": 1,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/axis-controls-1-control.png",
+          "sha256": "f7fd928fdc70b7d3d33824ad2839d390cf234921b1e0f9ca2916542cdf3317fa",
+          "rgbaSha256": "2c0494f8ad7b529d8e7f36fbd087723072c4f0672477e30afe6ecbe82b5509fc",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/axis-controls-1-control.png",
+          "sha256": "f7fd928fdc70b7d3d33824ad2839d390cf234921b1e0f9ca2916542cdf3317fa",
+          "rgbaSha256": "2c0494f8ad7b529d8e7f36fbd087723072c4f0672477e30afe6ecbe82b5509fc",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "axis-controls-2-control",
+      "input": "inputs/axis-controls-2-control.svg",
+      "sourceSha256": "123a414fe656ea2084614535ae5b0b8f93c02fb14373ef606749c496d77123ef",
+      "outputScale": 1.5,
+      "interaction": "linearRGB-.4 .00001",
+      "sourceBank": "axis-controls",
+      "sourceIndex": 2,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/axis-controls-2-control.png",
+          "sha256": "07aa8ebcdda8da39bf11e7484314a2324c5a2d7e1e58ea5a0c1e9720ce9c2f93",
+          "rgbaSha256": "111686c22bddc0967761c2f105976696d17b353a4734f8c95213736fb7c9b2e9",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/axis-controls-2-control.png",
+          "sha256": "07aa8ebcdda8da39bf11e7484314a2324c5a2d7e1e58ea5a0c1e9720ce9c2f93",
+          "rgbaSha256": "111686c22bddc0967761c2f105976696d17b353a4734f8c95213736fb7c9b2e9",
+          "width": 240,
+          "height": 168
+        }
+      }
+    },
+    {
+      "id": "axis-controls-3-control",
+      "input": "inputs/axis-controls-3-control.svg",
+      "sourceSha256": "de719852c3b454e2c293722a5f86ac89676b875738b3b7f482f88d0b2475de27",
+      "outputScale": 1.5,
+      "interaction": "linearRGB-.00001 .4",
+      "sourceBank": "axis-controls",
+      "sourceIndex": 3,
+      "sourceRole": "control",
+      "references": {
+        "windows": {
+          "path": "references/windows/axis-controls-3-control.png",
+          "sha256": "ad8ed58cdbc3654465e7e294400408f3fb97603be21a3420e2ac77f626775938",
+          "rgbaSha256": "e20a55edf586ff9504380658935b36ba5547190ab94f6645cd22d4b14c9672a8",
+          "width": 240,
+          "height": 168
+        },
+        "linux": {
+          "path": "references/linux/axis-controls-3-control.png",
+          "sha256": "ad8ed58cdbc3654465e7e294400408f3fb97603be21a3420e2ac77f626775938",
+          "rgbaSha256": "e20a55edf586ff9504380658935b36ba5547190ab94f6645cd22d4b14c9672a8",
+          "width": 240,
+          "height": 168
+        }
+      }
+    }
+  ]
+}

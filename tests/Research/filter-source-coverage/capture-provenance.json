@@ -1,0 +1,566 @@
+[
+  {
+    "bank": "source-provenance-controls",
+    "host": "windows",
+    "rawCaptureSha256": [
+      "6891c9528b4866fc83b2306546a59da828b19e7c273723d50b01d6457f047d14",
+      "6891c9528b4866fc83b2306546a59da828b19e7c273723d50b01d6457f047d14",
+      "6891c9528b4866fc83b2306546a59da828b19e7c273723d50b01d6457f047d14"
+    ],
+    "launches": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 583,
+        "debuggerReadyMilliseconds": 147,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 537,
+        "debuggerReadyMilliseconds": 140,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 537,
+        "debuggerReadyMilliseconds": 139,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  },
+  {
+    "bank": "source-provenance-controls",
+    "host": "linux",
+    "rawCaptureSha256": [
+      "6891c9528b4866fc83b2306546a59da828b19e7c273723d50b01d6457f047d14",
+      "6891c9528b4866fc83b2306546a59da828b19e7c273723d50b01d6457f047d14",
+      "6891c9528b4866fc83b2306546a59da828b19e7c273723d50b01d6457f047d14"
+    ],
+    "launches": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 4076,
+        "debuggerReadyMilliseconds": 2794,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 4000,
+        "debuggerReadyMilliseconds": 2781,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 3529,
+        "debuggerReadyMilliseconds": 2123,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  },
+  {
+    "bank": "opacity-controls",
+    "host": "windows",
+    "rawCaptureSha256": [
+      "9fc38cdeb82d397f1c14c572c4d157931205359425f57250eda62db40c35f12f",
+      "9fc38cdeb82d397f1c14c572c4d157931205359425f57250eda62db40c35f12f",
+      "9fc38cdeb82d397f1c14c572c4d157931205359425f57250eda62db40c35f12f"
+    ],
+    "launches": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 507,
+        "debuggerReadyMilliseconds": 157,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 533,
+        "debuggerReadyMilliseconds": 147,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 505,
+        "debuggerReadyMilliseconds": 150,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  },
+  {
+    "bank": "opacity-controls",
+    "host": "linux",
+    "rawCaptureSha256": [
+      "9fc38cdeb82d397f1c14c572c4d157931205359425f57250eda62db40c35f12f",
+      "9fc38cdeb82d397f1c14c572c4d157931205359425f57250eda62db40c35f12f",
+      "9fc38cdeb82d397f1c14c572c4d157931205359425f57250eda62db40c35f12f"
+    ],
+    "launches": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5267,
+        "debuggerReadyMilliseconds": 3943,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5191,
+        "debuggerReadyMilliseconds": 3543,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 4005,
+        "debuggerReadyMilliseconds": 2550,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  },
+  {
+    "bank": "boundary-controls",
+    "host": "windows",
+    "rawCaptureSha256": [
+      "c7e7490df19df4d20e965559a056dcc08c6d82ca4bd70d6380f9d3555cd872f2",
+      "c7e7490df19df4d20e965559a056dcc08c6d82ca4bd70d6380f9d3555cd872f2",
+      "c7e7490df19df4d20e965559a056dcc08c6d82ca4bd70d6380f9d3555cd872f2"
+    ],
+    "launches": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 602,
+        "debuggerReadyMilliseconds": 169,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 569,
+        "debuggerReadyMilliseconds": 139,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 10342,
+        "debuggerReadyMilliseconds": 146,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  },
+  {
+    "bank": "boundary-controls",
+    "host": "linux",
+    "rawCaptureSha256": [
+      "c7e7490df19df4d20e965559a056dcc08c6d82ca4bd70d6380f9d3555cd872f2",
+      "c7e7490df19df4d20e965559a056dcc08c6d82ca4bd70d6380f9d3555cd872f2",
+      "c7e7490df19df4d20e965559a056dcc08c6d82ca4bd70d6380f9d3555cd872f2"
+    ],
+    "launches": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5495,
+        "debuggerReadyMilliseconds": 3838,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5270,
+        "debuggerReadyMilliseconds": 3614,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 4693,
+        "debuggerReadyMilliseconds": 2696,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  },
+  {
+    "bank": "native-source-controls",
+    "host": "windows",
+    "rawCaptureSha256": [
+      "d6948554a786d9d06831101b620c88551e628630dc39425b45b46c17b706fe77",
+      "d6948554a786d9d06831101b620c88551e628630dc39425b45b46c17b706fe77",
+      "d6948554a786d9d06831101b620c88551e628630dc39425b45b46c17b706fe77"
+    ],
+    "launches": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 543,
+        "debuggerReadyMilliseconds": 191,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 609,
+        "debuggerReadyMilliseconds": 155,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 10425,
+        "debuggerReadyMilliseconds": 148,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  },
+  {
+    "bank": "native-source-controls",
+    "host": "linux",
+    "rawCaptureSha256": [
+      "d6948554a786d9d06831101b620c88551e628630dc39425b45b46c17b706fe77",
+      "d6948554a786d9d06831101b620c88551e628630dc39425b45b46c17b706fe77",
+      "d6948554a786d9d06831101b620c88551e628630dc39425b45b46c17b706fe77"
+    ],
+    "launches": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 6432,
+        "debuggerReadyMilliseconds": 4522,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 6197,
+        "debuggerReadyMilliseconds": 4019,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5736,
+        "debuggerReadyMilliseconds": 4193,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  },
+  {
+    "bank": "threshold-controls",
+    "host": "windows",
+    "rawCaptureSha256": [
+      "5cca21e2ebbf53e3f1c1344c4f2a40abe60ef447ef0f7730853c712d8b4f549b",
+      "5cca21e2ebbf53e3f1c1344c4f2a40abe60ef447ef0f7730853c712d8b4f549b",
+      "5cca21e2ebbf53e3f1c1344c4f2a40abe60ef447ef0f7730853c712d8b4f549b"
+    ],
+    "launches": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 584,
+        "debuggerReadyMilliseconds": 136,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 570,
+        "debuggerReadyMilliseconds": 169,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 638,
+        "debuggerReadyMilliseconds": 222,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  },
+  {
+    "bank": "threshold-controls",
+    "host": "linux",
+    "rawCaptureSha256": [
+      "5cca21e2ebbf53e3f1c1344c4f2a40abe60ef447ef0f7730853c712d8b4f549b",
+      "5cca21e2ebbf53e3f1c1344c4f2a40abe60ef447ef0f7730853c712d8b4f549b",
+      "5cca21e2ebbf53e3f1c1344c4f2a40abe60ef447ef0f7730853c712d8b4f549b"
+    ],
+    "launches": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5271,
+        "debuggerReadyMilliseconds": 3695,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 4030,
+        "debuggerReadyMilliseconds": 2623,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 3649,
+        "debuggerReadyMilliseconds": 2276,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  },
+  {
+    "bank": "axis-controls",
+    "host": "windows",
+    "rawCaptureSha256": [
+      "c86423dfa6559b02bf1e37a00b7ddce8edebb9275e0bb336724856ce9c5f2534",
+      "c86423dfa6559b02bf1e37a00b7ddce8edebb9275e0bb336724856ce9c5f2534",
+      "c86423dfa6559b02bf1e37a00b7ddce8edebb9275e0bb336724856ce9c5f2534"
+    ],
+    "launches": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 10445,
+        "debuggerReadyMilliseconds": 196,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 572,
+        "debuggerReadyMilliseconds": 159,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 630,
+        "debuggerReadyMilliseconds": 155,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  },
+  {
+    "bank": "axis-controls",
+    "host": "linux",
+    "rawCaptureSha256": [
+      "c86423dfa6559b02bf1e37a00b7ddce8edebb9275e0bb336724856ce9c5f2534",
+      "c86423dfa6559b02bf1e37a00b7ddce8edebb9275e0bb336724856ce9c5f2534",
+      "c86423dfa6559b02bf1e37a00b7ddce8edebb9275e0bb336724856ce9c5f2534"
+    ],
+    "launches": [
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 4024,
+        "debuggerReadyMilliseconds": 2703,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 3828,
+        "debuggerReadyMilliseconds": 2451,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      },
+      {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 3616,
+        "debuggerReadyMilliseconds": 2395,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "stderr": "omitted",
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    ]
+  }
+]

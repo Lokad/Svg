@@ -365,7 +365,7 @@ internal static class SvgGaussianBlur
         }
     }
 
-    /// <summary>Identifies a native no-op window so graph playback can retain the borrowed image bounds.</summary>
+    /// <summary>Identifies a copying pixel kernel; nonzero blurs can still materialize and round image bounds.</summary>
     internal static bool IsIdentity(SvgGaussianDeviation deviation)
         => deviation.Horizontal <= 135 && deviation.Vertical <= 135
             && Kernel(deviation.Horizontal).Identity && Kernel(deviation.Vertical).Identity;

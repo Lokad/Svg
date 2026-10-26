@@ -42,7 +42,7 @@ internal readonly record struct SvgFilterRegionContext(SvgAffineTransform Coordi
     internal bool IntermediateOutput { get; init; }
     /// <summary>Leaves the terminal sampled image in its operating space for an affine consumer to transfer after sampling.</summary>
     internal bool DeferFinalColorTransfer { get; init; }
-    /// <summary>Identifies picture-backed destinations, whose terminal dynamic source offsets use constant image paint.</summary>
+    /// <summary>Identifies picture-backed destinations, whose terminal sRGB source offsets use constant image paint.</summary>
     internal bool PictureOutput { get; init; }
     /// <summary>Retains native matrix arithmetic for image transforms after affine source capture.</summary>
     internal SvgFilterNativeMapping? NativeMapping { get; init; }
@@ -72,6 +72,8 @@ internal readonly record struct SvgFilterResult(SvgConverter.RasterizedSurface F
 /// the caller. Work includes every copy, conversion, blur pass and composition. Calls are independent.</remarks>
 internal static class SvgFilterPlayback
 {
+    private enum OffsetImagePaint { Packed, Constant, Floating, FloatingSamples }
+
     private readonly record struct UniformColor(bool Known, SvgShaderPaint Paint, bool HighPrecision);
     /// <summary>Rounds native layer bounds after the filter coordinate system's small integer-boundary inset.</summary>
     /// <remarks>Matches skif::RoundOut; this is coordinate rounding, not a pixel-comparison tolerance.
@@ -131,9 +133,16 @@ internal static class SvgFilterPlayback
                 bool shifted = primitive.Kind is SvgFilterPrimitiveKind.Offset or SvgFilterPrimitiveKind.DropShadow;
                 float dx = shifted ? (float)(primitive.OffsetX * map.ScaleX) : 0, dy = shifted ? (float)(primitive.OffsetY * map.ScaleY) : 0;
                 if (!float.IsFinite(dx) || !float.IsFinite(dy)) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source bounds exceed the coordinate range.");
-                float rx = 3f * (float)Math.Min(532, Math.Abs(primitive.SigmaX * map.ScaleX));
-                float ry = 3f * (float)Math.Min(532, Math.Abs(primitive.SigmaY * map.ScaleY));
-                if (kind == SvgFilterBoundsKind.StoredImage) { rx = MathF.Ceiling(rx); ry = MathF.Ceiling(ry); }
+                float sigmaX = (float)Math.Min(532, Math.Abs(primitive.SigmaX * map.ScaleX));
+                float sigmaY = (float)Math.Min(532, Math.Abs(primitive.SigmaY * map.ScaleY));
+                // Native capture hints and stored image extents use separate
+                // rounding, including materialized identity pixel kernels.
+                float rx = 3f * sigmaX, ry = 3f * sigmaY;
+                if (kind == SvgFilterBoundsKind.StoredImage)
+                {
+                    rx = sigmaX <= .03f ? 0 : MathF.Ceiling(rx);
+                    ry = sigmaY <= .03f ? 0 : MathF.Ceiling(ry);
+                }
                 output = new(input.Left + dx - rx, input.Top + dy - ry, input.Right + dx + rx, input.Bottom + dy + ry);
                 if (primitive.Kind == SvgFilterPrimitiveKind.DropShadow) output = Union(input, output);
             }
@@ -314,6 +323,7 @@ internal static class SvgFilterPlayback
                 outputs[0] = Allocate();
                 token.ThrowIfCancellationRequested();
             }
+            int finalPaintIndex = count == 0 ? -1 : ResolvePaintSource(new(finalIndex)).Index;
             for (int index = 0; index < count; index++)
             {
                 token.ThrowIfCancellationRequested();
@@ -350,8 +360,19 @@ internal static class SvgFilterPlayback
                 if (primitive.Kind == SvgFilterPrimitiveKind.GaussianBlur)
                 {
                     if (SvgGaussianBlur.IsIdentity(deviation))
-                        imageBounds[index] = primitive.Input.Index >= 0 ? imageBounds[primitive.Input.Index]
+                    {
+                        SvgPaintBounds inputBounds = primitive.Input.Index >= 0 ? imageBounds[primitive.Input.Index]
                             : map.Regions?.SourceBounds ?? new(0, 0, width, height);
+                        if (deviation.Horizontal > .03f || deviation.Vertical > .03f)
+                        {
+                            Charge(8);
+                            float radiusX = deviation.Horizontal <= .03f ? 0 : MathF.Ceiling(3f * deviation.Horizontal);
+                            float radiusY = deviation.Vertical <= .03f ? 0 : MathF.Ceiling(3f * deviation.Vertical);
+                            inputBounds = new(MathF.Floor(inputBounds.Left - radiusX), MathF.Floor(inputBounds.Top - radiusY),
+                                MathF.Ceiling(inputBounds.Right + radiusX), MathF.Ceiling(inputBounds.Bottom + radiusY));
+                        }
+                        imageBounds[index] = ClipImageBounds(inputBounds, index);
+                    }
                     if (deviation.Horizontal > 135 || deviation.Vertical > 135)
                     {
                         SvgPaintBounds inputBounds = primitive.Input.Index >= 0 ? regions[primitive.Input.Index]
@@ -464,7 +485,14 @@ internal static class SvgFilterPlayback
                             SvgShaderMatrix.Concat(placed, new(1, 0, -nativeOrigin.X, 0, 1, -nativeOrigin.Y)));
                         if (forward.ScaleX != 1 || forward.ScaleY != 1 || forward.SkewX != 0 || forward.SkewY != 0) nativeTransform = forward;
                     }
-                    if (index == finalIndex && primitive.Input.Index < 0 && map.Regions is { DeferFinalOffset: true }
+                    bool directSource = ResolvePaintSource(primitive.Input).Index < 0;
+                    if (primitive.OffsetX == 0 && primitive.OffsetY == 0)
+                    {
+                        placed = new(1, 0, 0, 0, 1, 0);
+                        nativeTransform = null;
+                        imageBounds[index] = ClipImageBounds(bounds, index);
+                    }
+                    if (index == finalPaintIndex && directSource && map.Regions is { DeferFinalOffset: true }
                         && (primitive.OffsetX * map.ScaleX != Math.Truncate(primitive.OffsetX * map.ScaleX)
                             || primitive.OffsetY * map.ScaleY != Math.Truncate(primitive.OffsetY * map.ScaleY)))
                     {
@@ -489,7 +517,7 @@ internal static class SvgFilterPlayback
                         float dx = placed.TranslateX, dy = placed.TranslateY;
                         if (nativeTransform is null && dx == MathF.Truncate(dx) && dy == MathF.Truncate(dy))
                         {
-                            Offset(input, output, dx, dy, inputBounds, null, null, false);
+                            Offset(input, output, dx, dy, inputBounds, null, null, OffsetImagePaint.Packed);
                             uniform[index] = uniform[primitive.Input.Index] with { HighPrecision = uniform[primitive.Input.Index].HighPrecision || colorSpace == SvgFilterColorSpace.LinearRgb };
                             SvgPaintBounds shifted = new(bounds.Left + dx, bounds.Top + dy, bounds.Right + dx, bounds.Bottom + dy);
                             SvgPaintBounds clip = imageBounds[index];
@@ -510,14 +538,14 @@ internal static class SvgFilterPlayback
                                         constant.Blend(converted.Pixels.AsSpan((y * width + x) * 4, 4), 255);
                             }
                             SvgPaintBounds bitmapBounds = colorSpace == SvgFilterColorSpace.LinearRgb ? RoundLayerBounds(bounds) : bounds;
-                            Offset(converted.Pixels, output, dx, dy, bitmapBounds, null, nativeTransform, false);
+                            Offset(converted.Pixels, output, dx, dy, bitmapBounds, null, nativeTransform, OffsetImagePaint.Packed);
                             int tail = finalIndex;
                             while (tail > index)
                             {
                                 token.ThrowIfCancellationRequested();
                                 Charge(1);
                                 SvgFilterPrimitive alias = resource.Primitives.Items[tail];
-                                if (alias.Kind == SvgFilterPrimitiveKind.GaussianBlur && alias.SigmaX == 0 && alias.SigmaY == 0) tail = alias.Input.Index;
+                                if (alias.Kind == SvgFilterPrimitiveKind.GaussianBlur && (float)Math.Abs(alias.SigmaX * map.ScaleX) <= .03f && (float)Math.Abs(alias.SigmaY * map.ScaleY) <= .03f) tail = alias.Input.Index;
                                 else if (alias.Kind == SvgFilterPrimitiveKind.Merge && alias.MergeCount == 1) tail = resource.MergeInputs.Items[alias.MergeFirst].Index;
                                 else break;
                             }
@@ -558,8 +586,21 @@ internal static class SvgFilterPlayback
                             }
                         }
                     }
-                    else Offset(input, output, primitive.OffsetX * map.ScaleX, primitive.OffsetY * map.ScaleY, inputBounds, null, nativeTransform,
-                        index == finalIndex && primitive.Input.Index < 0 && map.Regions?.PictureOutput == true);
+                    else
+                    {
+                        OffsetImagePaint imagePaint = OffsetImagePaint.Packed;
+                        if (index == finalPaintIndex)
+                        {
+                            if (colorSpace == SvgFilterColorSpace.LinearRgb)
+                            {
+                                if (inputLinear) imagePaint = OffsetImagePaint.FloatingSamples;
+                                else if (directSource) imagePaint = OffsetImagePaint.Floating;
+                            }
+                            else if (directSource && map.Regions?.PictureOutput == true) imagePaint = OffsetImagePaint.Constant;
+                        }
+                        Offset(input, output, primitive.OffsetX * map.ScaleX, primitive.OffsetY * map.ScaleY,
+                            inputBounds, null, nativeTransform, imagePaint);
+                    }
                     linear[index] = primitive.Input.Index >= 0 && uniform[primitive.Input.Index].Known && !uniform[index].Known
                         ? colorSpace == SvgFilterColorSpace.LinearRgb : inputLinear;
                 }
@@ -571,11 +612,12 @@ internal static class SvgFilterPlayback
                         Charge(bytes);
                         ReadInput(merged, index, graphic).CopyTo(output);
                         linear[index] = merged.Index >= 0 && linear[merged.Index];
+                        SvgPaintBounds sourceBounds = merged.Index >= 0 ? imageBounds[merged.Index]
+                            : map.Regions?.SourceBounds ?? new(0, 0, width, height);
+                        imageBounds[index] = ClipImageBounds(sourceBounds, index);
                         if (merged.Index >= 0 && uniform[merged.Index].Known)
                         {
                             uniform[index] = uniform[merged.Index] with { HighPrecision = uniform[merged.Index].HighPrecision || colorSpace == SvgFilterColorSpace.LinearRgb };
-                            SvgPaintBounds bounds = imageBounds[merged.Index], clip = imageBounds[index];
-                            imageBounds[index] = new(Math.Max(bounds.Left, clip.Left), Math.Max(bounds.Top, clip.Top), Math.Min(bounds.Right, clip.Right), Math.Min(bounds.Bottom, clip.Bottom));
                         }
                         if (map.Regions is not null && deferredImage is null) { Clip(output, regions[index]); ClipOffsetSamples(regions[index]); }
                         continue;
@@ -621,7 +663,7 @@ internal static class SvgFilterPlayback
                             blurred.Pixels[offset + 3] = (byte)a;
                         }
                     }
-                    Offset(blurred.Pixels, output, shadowX, shadowY, null, fractionalShadow ? tint : null, null, false);
+                    Offset(blurred.Pixels, output, shadowX, shadowY, null, fractionalShadow ? tint : null, null, OffsetImagePaint.Packed);
                     bool destinationLinear = colorSpace == SvgFilterColorSpace.LinearRgb;
                     bool convertSource = inputLinear != destinationLinear;
                     Charge(pixels * (convertSource ? 2 : 1));
@@ -688,6 +730,35 @@ internal static class SvgFilterPlayback
         static SvgShaderPaint FloodPaint(SvgSolidPaint paint)
             => new(paint.Color.Red / 255f * paint.Alpha, paint.Color.Green / 255f * paint.Alpha,
                 paint.Color.Blue / 255f * paint.Alpha, paint.Alpha);
+
+        // Effective-zero blurs and source aliases preserve the dynamic source's
+        // paint path through crops. Other identity pixel kernels materialize an image.
+        SvgFilterInput ResolvePaintSource(SvgFilterInput reference)
+        {
+            while (reference.Index >= 0)
+            {
+                token.ThrowIfCancellationRequested();
+                Charge(1);
+                SvgFilterPrimitive alias = resource.Primitives.Items[reference.Index];
+
+                SvgFilterInput next;
+                if (alias.Kind == SvgFilterPrimitiveKind.GaussianBlur && (float)Math.Abs(alias.SigmaX * map.ScaleX) <= .03f && (float)Math.Abs(alias.SigmaY * map.ScaleY) <= .03f
+                    || alias.Kind == SvgFilterPrimitiveKind.Offset && alias.OffsetX == 0 && alias.OffsetY == 0) next = alias.Input;
+                else if (alias.Kind == SvgFilterPrimitiveKind.Merge && alias.MergeCount == 1) next = resource.MergeInputs.Items[alias.MergeFirst];
+                else break;
+                if (next.Index >= reference.Index) throw new SvgException(SvgErrorCode.MalformedInput, "Filter aliases must refer to earlier results.");
+                reference = next;
+            }
+            return reference;
+        }
+
+        SvgPaintBounds ClipImageBounds(SvgPaintBounds bounds, int index)
+        {
+            if (map.Regions is null) return bounds;
+            SvgPaintBounds clip = regions[index];
+            return new(MathF.Max(bounds.Left, clip.Left), MathF.Max(bounds.Top, clip.Top),
+                MathF.Min(bounds.Right, clip.Right), MathF.Min(bounds.Bottom, clip.Bottom));
+        }
 
         void ClipOffsetSamples(SvgPaintBounds bounds)
         {
@@ -929,7 +1000,7 @@ internal static class SvgFilterPlayback
 
         static byte Modulate(byte value, byte alpha) => (byte)((value * alpha + 127) / 255);
 
-        void Offset(ReadOnlySpan<byte> input, Span<byte> output, double dx, double dy, SvgPaintBounds? imageBounds, SvgConstantShaderPaint? shadow, SvgShaderMatrix? nativeTransform, bool constantImagePaint)
+        void Offset(ReadOnlySpan<byte> input, Span<byte> output, double dx, double dy, SvgPaintBounds? imageBounds, SvgConstantShaderPaint? shadow, SvgShaderMatrix? nativeTransform, OffsetImagePaint imagePaint)
         {
             ValidateOffset(dx, dy);
             bool fractional = dx != Math.Truncate(dx) || dy != Math.Truncate(dy);
@@ -988,6 +1059,10 @@ internal static class SvgFilterPlayback
             int imageBottom = (int)MathF.Ceiling(Math.Clamp(bounds.Bottom, 0, height));
             if (imageRight <= imageLeft || imageBottom <= imageTop) return;
             if (fractional) Charge(16);
+            if (fractional && imagePaint is OffsetImagePaint.Floating or OffsetImagePaint.FloatingSamples) Charge(pixels * 4);
+            Span<SvgShaderPaint> coveredSamples = fractional && imagePaint == OffsetImagePaint.FloatingSamples
+                ? AllocateSamples() : Span<SvgShaderPaint>.Empty;
+            if (!coveredSamples.IsEmpty) linearOffsetSamples = true;
             // SkImageFilters::Offset uses nearest sampling, retaining the legacy
             // layer-space pixel displacement rather than bilinear interpolation.
             if (dx != Math.Truncate(dx)) dx = Math.Floor((float)dx + .5f);
@@ -1010,9 +1085,23 @@ internal static class SvgFilterPlayback
                         int sampleY = (int)Math.Clamp(sy, imageTop, imageBottom - 1);
                         int at = (sampleY * width + sampleX) * 4;
                         Span<byte> pixel = output.Slice((y * width + x) * 4, 4);
-                        // A terminal dynamic source uses the picture destination's constant
-                        // image paint. Stored graph inputs retain packed alpha modulation.
-                        if (constantImagePaint)
+                        // Linear image coverage stays unquantized through color transfer.
+                        // Source paint follows its destination; other stored inputs stay packed.
+                        if (!coveredSamples.IsEmpty)
+                        {
+                            float weight = alpha * (1f / 255f);
+                            SvgShaderPaint sample = new(input[at] * (1f / 255f) * weight, input[at + 1] * (1f / 255f) * weight,
+                                input[at + 2] * (1f / 255f) * weight, input[at + 3] * (1f / 255f) * weight);
+                            coveredSamples[y * width + x] = sample;
+                            sample.Blend(pixel, 255);
+                            continue;
+                        }
+                        if (imagePaint == OffsetImagePaint.Floating)
+                        {
+                            new SvgShaderPaint(input[at] / 255f, input[at + 1] / 255f, input[at + 2] / 255f, input[at + 3] / 255f).Blend(pixel, alpha);
+                            continue;
+                        }
+                        if (imagePaint == OffsetImagePaint.Constant)
                         {
                             new SvgConstantShaderPaint(input[at], input[at + 1], input[at + 2], input[at + 3]).Blend(pixel, alpha);
                             continue;

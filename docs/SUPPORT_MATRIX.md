@@ -531,6 +531,9 @@ and combine it with flood opacity before graph evaluation. Uniform paint,
 sampled images and final color transfer preserve their separate rounding stages;
 [native controls](../tests/Research/filter-uniform-precision/README.md) cover
 graph arithmetic, crops, opacity and affine restoration, and list remaining differences.
+[Source coverage controls](../tests/Research/filter-source-coverage/README.md)
+distinguish cropped aliases, effective-zero axes, small-blur materialization and
+source-image hint rounding before fractional displacement.
 CSS `display:none` on the filter or its defining `defs` suppresses the filtered
 output, including its source. It does not restore the unfiltered drawing.
 See the [definition display tests](../tests/Lokad.Svg.Tests/SvgDefinitionDisplayTests.cs)

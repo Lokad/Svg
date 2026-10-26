@@ -48,16 +48,15 @@ public sealed class SvgColoredFilterTests
     }
 
     [Fact]
-    public void Identity_windows_retain_source_image_bounds_before_fractional_displacement()
+    public void Zero_blur_retains_source_image_bounds_before_fractional_displacement()
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "colored-effects-markers", "fractional-offset-only.svg"));
         byte[] expected = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
         string source = System.Text.Encoding.UTF8.GetString(input);
-        foreach (string sigma in new[] { "0", ".4" })
-        {
-            byte[] identity = System.Text.Encoding.UTF8.GetBytes(source.Replace("<feOffset", "<feGaussianBlur stdDeviation='" + sigma + "'/><feOffset", StringComparison.Ordinal));
-            Assert.Equal(expected, SvgConverter.ConvertToPng(identity, SvgRenderOptions.Default, CancellationToken.None).ToArray());
-        }
+        // Nonzero identity pixel kernels have their own, naturally unequal
+        // browser references in filter-source-coverage; they materialize images.
+        byte[] identity = System.Text.Encoding.UTF8.GetBytes(source.Replace("<feOffset", "<feGaussianBlur stdDeviation='0'/><feOffset", StringComparison.Ordinal));
+        Assert.Equal(expected, SvgConverter.ConvertToPng(identity, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Theory]

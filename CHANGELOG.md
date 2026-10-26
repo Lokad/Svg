@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Preserve fractional filter source coverage through cropped aliases and small
+  blur materialization, including native deviation parsing and image-hint rounding.
+
 - Preserve native text filter image origins through stroke overrides, hidden text,
   reflection and resource replay, with separate recording and element bounds.
 
