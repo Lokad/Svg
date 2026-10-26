@@ -223,8 +223,9 @@ and stretching at float precision, including zero-angle text paths.
 The existing fragment owner also retains each item's UTF-16 source range,
 including nodes with no glyphs and prefixes consumed by a preceding ligature.
 Cursor layout applies relative offsets, fitting, absolute positions and anchors
-in that order. Source boxes retain physical float coordinates; baseline positions
-and independently rounded paint-origin/anchor terms preserve their metric precision.
+in that order. Source boxes retain physical float coordinates. Paint truncates the
+final anchored rectangle; baseline positions and inverse-scale displacements retain
+their metric precision. Natural fitting bounds are computed only for fitting requests.
 Ordinary text drawing rectangles enclose source bounds before placement/output
 mapping, preserving isolated-layer shader origins. Equal run paints share one
 scene record; generic font routes and filter capture bounds remain independent.

@@ -627,8 +627,7 @@ internal static class SvgGlyphLayout
         }
         finally { clusterReservation?.Dispose(); }
 
-        // Fragment origins and chunk-anchor shifts truncate independently;
-        // combining them changes half-grid middle anchoring. Ordinary offsets
+        // Paint quantizes the final anchored source rectangle. Ordinary offsets
         // within a shaped fragment retain scalar precision.
         // Resolve every addressable source character in native DX/DY, fitting,
         // X/Y and anchor order. Glyphless node items share the existing fragment owner.
@@ -639,41 +638,44 @@ internal static class SvgGlyphLayout
         {
             float screen = (float)metrics.Scale;
             double baselineY = originY, relativeY = 0;
-            float minimum = float.PositiveInfinity, maximum = float.NegativeInfinity;
-            float dx = 0, dy = 0;
-            int adjustmentIndex = 0;
-            for (int fragmentIndex = 0; fragmentIndex < fragments.Count; fragmentIndex++)
+            float minimum = 0, natural = 0;
+            if (fitting is not null)
             {
-                SvgTextPaintFragment fragment = fragments[fragmentIndex];
-                SvgDevicePoint css = fragment.SourceOrigin ?? default;
-                for (int source = fragment.SourceStart; source < fragment.SourceEnd; source += Rune.GetRuneAt(text, source).Utf16SequenceLength)
+                minimum = float.PositiveInfinity;
+                float maximum = float.NegativeInfinity, rangeDx = 0;
+                int rangeAdjustmentIndex = 0;
+                for (int fragmentIndex = 0; fragmentIndex < fragments.Count; fragmentIndex++)
                 {
-                    token.ThrowIfCancellationRequested(); work?.Consume(token);
-                    if (adjustmentIndex < adjustments.Length && adjustments[adjustmentIndex].Start == source)
+                    SvgTextPaintFragment fragment = fragments[fragmentIndex];
+                    SvgDevicePoint css = fragment.SourceOrigin ?? default;
+                    for (int source = fragment.SourceStart; source < fragment.SourceEnd; source += Rune.GetRuneAt(text, source).Utf16SequenceLength)
                     {
-                        SvgTextPositionAdjustment adjustment = adjustments[adjustmentIndex++];
-                        if (adjustment.X is not null) dx = 0;
-                        if (adjustment.Y is not null) dy = 0;
-                        dx += (float)adjustment.Dx; dy += (float)adjustment.Dy;
+                        token.ThrowIfCancellationRequested(); work?.Consume(token);
+                        if (rangeAdjustmentIndex < adjustments.Length && adjustments[rangeAdjustmentIndex].Start == source)
+                        {
+                            SvgTextPositionAdjustment adjustment = adjustments[rangeAdjustmentIndex++];
+                            if (adjustment.X is not null) rangeDx = 0;
+                            rangeDx += (float)adjustment.Dx;
+                        }
+                        float position = (float)css.X + rangeDx * screen;
+                        float width = source == fragment.SourceStart ? fragment.SourceWidth ?? 0 : 0;
+                        minimum = MathF.Min(minimum, position);
+                        maximum = MathF.Max(maximum, position + width);
                     }
-                    float position = (float)css.X + dx * screen;
-                    float width = source == fragment.SourceStart ? fragment.SourceWidth ?? 0 : 0;
-                    minimum = MathF.Min(minimum, position);
-                    maximum = MathF.Max(maximum, position + width);
                 }
+                natural = maximum - minimum;
             }
-            float natural = maximum - minimum;
             float stretch = fitting is { Mode: SvgTextLengthAdjust.SpacingAndGlyphs } fit && natural > 0
                 ? (float)fit.Length * screen / natural : 1;
             float spacing = fitting is { Mode: SvgTextLengthAdjust.Spacing } spaced && fragments.Count > 1
                 ? ((float)spaced.Length * screen - natural) / (fragments.Count - 1) : 0;
             if (!float.IsFinite(stretch) || !float.IsFinite(spacing))
                 throw new SvgException(SvgErrorCode.LimitExceeded, "Fitted text coordinates exceed the numeric range.");
-            dx = 0; dy = 0; adjustmentIndex = 0;
+            float dx = 0, dy = 0;
+            int adjustmentIndex = 0;
             float shiftX = (float)originX * screen, shiftY = (float)originY * screen;
             float spacingShift = 0, chunkMinimum = float.PositiveInfinity, chunkMaximum = float.NegativeInfinity, chunkOrigin = 0;
             int chunkStart = 0;
-            float paintMinimum = float.PositiveInfinity, paintMaximum = float.NegativeInfinity, paintFirst = 0;
             for (int fragmentIndex = 0; fragmentIndex < fragments.Count; fragmentIndex++)
             {
                 SvgTextPaintFragment fragment = fragments[fragmentIndex];
@@ -683,9 +685,8 @@ internal static class SvgGlyphLayout
                 if (fragmentIndex != chunkStart && startsChunk)
                 {
                     ApplyChunk(glyphs, fragments, chunkStart, fragmentIndex, chunkMinimum, chunkMaximum, chunkOrigin,
-                        paintMinimum, paintMaximum, paintFirst, anchor, metrics, fitting, stretch, work, token);
+                        anchor, metrics, fitting, stretch, work, token);
                     chunkStart = fragmentIndex; chunkMinimum = float.PositiveInfinity; chunkMaximum = float.NegativeInfinity;
-                    paintMinimum = float.PositiveInfinity; paintMaximum = float.NegativeInfinity;
                 }
                 for (int source = fragment.SourceStart; source < fragment.SourceEnd; source += Rune.GetRuneAt(text, source).Utf16SequenceLength)
                 {
@@ -709,13 +710,12 @@ internal static class SvgGlyphLayout
                     else if (fragmentIndex == 0 && source == fragment.SourceStart)
                         shiftX = (float)originX * screen - (float)css.X - (positionX - originalX);
                     if (adjustment.Y is double absoluteY) shiftY = (float)absoluteY * screen - (float)css.Y;
-                    float beforeXY = positionX;
                     positionX += shiftX; positionY += shiftY;
                     float width = source == fragment.SourceStart ? (fragment.SourceWidth ?? 0) * stretch : 0;
                     if (source == fragment.SourceStart)
                     {
                         fragments[fragmentIndex] = fragment with { SourceOrigin = new(positionX, positionY), SourceWidth = width, Width = fragment.Width * stretch };
-                        if (fragmentIndex == chunkStart) { chunkOrigin = positionX; paintFirst = beforeXY; }
+                        if (fragmentIndex == chunkStart) chunkOrigin = positionX;
                         for (int glyph = fragment.Start; glyph < fragment.End; glyph++)
                         {
                             token.ThrowIfCancellationRequested(); work?.Consume(token);
@@ -723,19 +723,17 @@ internal static class SvgGlyphLayout
                             if (rotations.Length != 0) rotations[glyph] = adjustment.Rotation ?? 0;
                         }
                     }
-                    paintMinimum = MathF.Min(paintMinimum, beforeXY);
-                    paintMaximum = MathF.Max(paintMaximum, beforeXY + width);
                     chunkMinimum = MathF.Min(chunkMinimum, positionX);
                     chunkMaximum = MathF.Max(chunkMaximum, positionX + width);
                     if (source == fragment.SourceStart) spacingShift += spacing;
                 }
             }
             ApplyChunk(glyphs, fragments, chunkStart, fragments.Count, chunkMinimum, chunkMaximum, chunkOrigin,
-                paintMinimum, paintMaximum, paintFirst, anchor, metrics, fitting, stretch, work, token);
+                anchor, metrics, fitting, stretch, work, token);
             return stretch;
 
             static void ApplyChunk(SvgPositionedGlyph[] glyphs, BudgetedParserList<SvgTextPaintFragment> fragments, int start, int end,
-                float minimum, float maximum, float first, float paintMinimum, float paintMaximum, float paintFirst, SvgTextAnchor anchor, SvgGlyphDeviceMetrics metrics,
+                float minimum, float maximum, float first, SvgTextAnchor anchor, SvgGlyphDeviceMetrics metrics,
                 SvgTextFitting? fitting, float stretch, ParserWorkCounter? work, CancellationToken token)
             {
                 float shift = first - (anchor switch
@@ -743,14 +741,6 @@ internal static class SvgGlyphLayout
                     SvgTextAnchor.Start => minimum,
                     SvgTextAnchor.Middle => (minimum + maximum) / 2,
                     SvgTextAnchor.End => maximum,
-                    _ => throw new ArgumentOutOfRangeException(nameof(anchor))
-                });
-                float paintWidth = MathF.Ceiling((paintMaximum - paintMinimum) * 64) / 64;
-                float paintShift = paintFirst - paintMinimum + (anchor switch
-                {
-                    SvgTextAnchor.Start => 0,
-                    SvgTextAnchor.Middle => -paintWidth / 2,
-                    SvgTextAnchor.End => -paintWidth,
                     _ => throw new ArgumentOutOfRangeException(nameof(anchor))
                 });
                 float screen = (float)metrics.Scale;
@@ -770,9 +760,14 @@ internal static class SvgGlyphLayout
                         painted = (MathF.Truncate(sourceX * 64) / 64 * stretch + translation) / screen;
                     }
                     else if (!metrics.UsesCharacterAdvances)
-                        painted = MathF.Truncate((float)origin.X * 64) / (metrics.Scale * 64)
-                            + MathF.Truncate(paintShift * 64) / (metrics.Scale * 64);
-                    else painted = (double)((float)origin.X + paintShift) / metrics.Scale;
+                    {
+                        // Quantize the final native rectangle. Keep the admitted
+                        // inverse scale on each independent logical displacement.
+                        float original = MathF.Truncate((float)origin.X * 64);
+                        float anchored = MathF.Truncate(sourceX * 64);
+                        painted = original / (metrics.Scale * 64) + (anchored - original) / (metrics.Scale * 64);
+                    }
+                    else painted = (double)sourceX / metrics.Scale;
                     for (int glyph = fragment.Start; glyph < fragment.End; glyph++)
                     {
                         token.ThrowIfCancellationRequested(); work?.Consume(token);

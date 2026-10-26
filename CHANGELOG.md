@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Round final anchored text rectangles and skip fitting-range work when no
+  fitting was requested.
 - Preserve text-node fragment widths and ligature-internal relative offsets through
   fitting and resource replay, including nodes that own no painted glyphs.
 - Document text keyword, positive font-size and clip/mask declaration boundaries,

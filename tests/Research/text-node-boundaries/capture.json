@@ -1057,6 +1057,246 @@
           "networkServiceCrashes": 0
         }
       ]
+    },
+    "anchored-rectangle-0": {
+      "windows": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ],
+      "linux": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ]
+    },
+    "anchored-rectangle-1": {
+      "windows": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ],
+      "linux": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ]
+    },
+    "anchored-rectangle-2": {
+      "windows": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ],
+      "linux": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ]
+    },
+    "anchored-rectangle-subgrid-0": {
+      "windows": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ],
+      "linux": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ]
+    },
+    "anchored-rectangle-subgrid-1": {
+      "windows": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ],
+      "linux": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ]
     }
   },
   "cases": [
@@ -12050,6 +12290,512 @@
           "rgbaSha256": "9ac561b6eb56fda39b3f2d73b3fc91fbeb76d235bab60750b4d8cabe67df9c23"
         }
       }
+    },
+    {
+      "id": "anchored-rectangle-anchor-0-control",
+      "input": "anchored-rectangle-anchor-0-control.svg",
+      "sourceSha256": "6e584aa8f8bf3800bfb0e42478103bc0a63a6cfefc538c8bb66a58d27dfdec6d",
+      "nativeSourceSha256": "8b78a581c320065f84457e1b6c3822cec7bf67918189f61c3e81d56af6c9c47e",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/92b143e50357e502af4e51b1b5a91a06a3a6b516b87b0b32bbe58840d307ddcd.png",
+          "referenceSha256": "92b143e50357e502af4e51b1b5a91a06a3a6b516b87b0b32bbe58840d307ddcd",
+          "rgbaSha256": "8a32e33d7498ebd1109a8767d11e001d56fccd3d385e954cd60df10cfe9daf6c"
+        },
+        "linux": {
+          "reference": "references/92e67ad8810c76fae2b53d096e560e69d929dac829ada70bf8ebe6f5f2cc09ca.png",
+          "referenceSha256": "92e67ad8810c76fae2b53d096e560e69d929dac829ada70bf8ebe6f5f2cc09ca",
+          "rgbaSha256": "46c4831d001dc704a71ab02a680a690c9d403c40e97c2c292a840e3f247abc89"
+        }
+      }
+    },
+    {
+      "id": "anchored-rectangle-anchor-1-control",
+      "input": "anchored-rectangle-anchor-1-control.svg",
+      "sourceSha256": "6b82027d772dffca48d3837817344920b7ac0e7480d46c549f274751ff5895f8",
+      "nativeSourceSha256": "1d2ac75d50bbc24150ff89898202c5d0784b529ce8e7bbb8102a69ccec909c53",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/9b4d46b79f954fdd94375708a531daebb1dbe72322bfb13271e7a8f55e6747c3.png",
+          "referenceSha256": "9b4d46b79f954fdd94375708a531daebb1dbe72322bfb13271e7a8f55e6747c3",
+          "rgbaSha256": "46899a43016edb889a559892fef386c800d5944d7416a54740c47acf824c80d1"
+        },
+        "linux": {
+          "reference": "references/2960139512881b56222cc245d35b0c5fa9ef276f030e5ebf4f25eba487ea1115.png",
+          "referenceSha256": "2960139512881b56222cc245d35b0c5fa9ef276f030e5ebf4f25eba487ea1115",
+          "rgbaSha256": "0b94bf2456edabc0a320f1cb5b5b9897303803a8ebcf425619e0060c11d4902c"
+        }
+      }
+    },
+    {
+      "id": "anchored-rectangle-anchor-2-control",
+      "input": "anchored-rectangle-anchor-2-control.svg",
+      "sourceSha256": "d6b7d7085b782d0e7a428c1e3a6150fa73a9222a5a94adb1f05cfc208f8b9d04",
+      "nativeSourceSha256": "3928d63d854ad2d698bcf100522a921753210fb26d3fb39412889a6508b02708",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/9062e8829d00c6c66621787a28c37c0d1310be19f2c76c4bf09b71e32cea538b.png",
+          "referenceSha256": "9062e8829d00c6c66621787a28c37c0d1310be19f2c76c4bf09b71e32cea538b",
+          "rgbaSha256": "d47fb818c9f6e60ebab278c95616f9cbd9c271b2c71c6c2df702f56e96438713"
+        },
+        "linux": {
+          "reference": "references/ad0b6edeaebc0f2cdf720001b3371d0c9e54937b38ba74bb7bcd2ae8663a6717.png",
+          "referenceSha256": "ad0b6edeaebc0f2cdf720001b3371d0c9e54937b38ba74bb7bcd2ae8663a6717",
+          "rgbaSha256": "390d387053b6bf1fc4b2648dba53101fc24d7d5c701f4752978a501c240db7cf"
+        }
+      }
+    },
+    {
+      "id": "anchored-rectangle-anchor-3-control",
+      "input": "anchored-rectangle-anchor-3-control.svg",
+      "sourceSha256": "339001c7f1293b4adccba65fdc32ee9310dc3649d80eda86ed41c7f7b2aade5c",
+      "nativeSourceSha256": "70b9403a25b70038a343e34b26ea8e73bb27d27da6a0ce14f94af9484a62064f",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/41827b47cbb13278adb3ea03c82886cb297c664e1f3e8620a86d03ac05abfd0e.png",
+          "referenceSha256": "41827b47cbb13278adb3ea03c82886cb297c664e1f3e8620a86d03ac05abfd0e",
+          "rgbaSha256": "46ed64c5aa155d75344cdb831b96a2c5b8567dd1900a63a55eb3e72ec2dd0a9c"
+        },
+        "linux": {
+          "reference": "references/3efc34ab5120c08c5d146739c8edf9b2599093842071c34c0ca97d4868fc4cc3.png",
+          "referenceSha256": "3efc34ab5120c08c5d146739c8edf9b2599093842071c34c0ca97d4868fc4cc3",
+          "rgbaSha256": "1f2440674a1ced16405e3b8e22e868556f2e282f9ba7fc8280d9483f19cd0e05"
+        }
+      }
+    },
+    {
+      "id": "anchored-rectangle-anchor-4-candidate",
+      "input": "anchored-rectangle-anchor-4-candidate.svg",
+      "sourceSha256": "5cb328247650c1ba3b5573bbe96bfd7a6a966f302730112487389a2448f8aea5",
+      "nativeSourceSha256": "9290d1932a432515bb668c18f12c978761a57afad4c94ef83b26b2dc502d6860",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/65a15a8800203d0b3ca257fcab9fbab118f63bcef21a81e10980c416faa7358d.png",
+          "referenceSha256": "65a15a8800203d0b3ca257fcab9fbab118f63bcef21a81e10980c416faa7358d",
+          "rgbaSha256": "b74dd41e7ab20ceba48917fa0c533e9b033585589173c7cbf08d4250995e0e60"
+        },
+        "linux": {
+          "reference": "references/339e41edd60bfd2cfc32ba4fa2e42484b6ff3cf569acb0e6db9292b00def074e.png",
+          "referenceSha256": "339e41edd60bfd2cfc32ba4fa2e42484b6ff3cf569acb0e6db9292b00def074e",
+          "rgbaSha256": "bfd9efeb532962837089ea02c8f19aad779b38fe09d6d7c2b5401beaf7433290"
+        }
+      }
+    },
+    {
+      "id": "anchored-rectangle-anchor-4-control",
+      "input": "anchored-rectangle-anchor-4-control.svg",
+      "sourceSha256": "ceb60274cfab2b68c80028e43b6e9177d27d086282930a5d8741a7d27c3ca302",
+      "nativeSourceSha256": "126b181c3c7240f31d0bb7102a9a1e21734779e2804c63ecf94f863d685597d0",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/65a15a8800203d0b3ca257fcab9fbab118f63bcef21a81e10980c416faa7358d.png",
+          "referenceSha256": "65a15a8800203d0b3ca257fcab9fbab118f63bcef21a81e10980c416faa7358d",
+          "rgbaSha256": "b74dd41e7ab20ceba48917fa0c533e9b033585589173c7cbf08d4250995e0e60"
+        },
+        "linux": {
+          "reference": "references/339e41edd60bfd2cfc32ba4fa2e42484b6ff3cf569acb0e6db9292b00def074e.png",
+          "referenceSha256": "339e41edd60bfd2cfc32ba4fa2e42484b6ff3cf569acb0e6db9292b00def074e",
+          "rgbaSha256": "bfd9efeb532962837089ea02c8f19aad779b38fe09d6d7c2b5401beaf7433290"
+        }
+      }
+    },
+    {
+      "id": "anchored-rectangle-anchor-5-candidate",
+      "input": "anchored-rectangle-anchor-5-candidate.svg",
+      "sourceSha256": "28e26a97d64cb3b245b59f2e69758b45005c4a3cf7a3fd2ca6ccc50ddd5f3540",
+      "nativeSourceSha256": "9746e91b8cf937bd4c830febd6ba2e84a2c26fbb2c8e2f6c43bd3867020e20ee",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/0be0165797ded5846ce85c57068bb4c108c33e80ac6a66ef1dec0e7b6a54391e.png",
+          "referenceSha256": "0be0165797ded5846ce85c57068bb4c108c33e80ac6a66ef1dec0e7b6a54391e",
+          "rgbaSha256": "f017afd3c72dbc80505555cf836742be4843300ea299fcfc2818c72cb89ff1c6"
+        },
+        "linux": {
+          "reference": "references/fed6605ac439bc9ef81ab99f7b11b88bc800f2ec1b8d562ccbb62136cb339aab.png",
+          "referenceSha256": "fed6605ac439bc9ef81ab99f7b11b88bc800f2ec1b8d562ccbb62136cb339aab",
+          "rgbaSha256": "4b2a4f712042d89e0d1ab815bf860f9f02b25cc529734ec44000d4b1a86fb736"
+        }
+      }
+    },
+    {
+      "id": "anchored-rectangle-anchor-6-control",
+      "input": "anchored-rectangle-anchor-6-control.svg",
+      "sourceSha256": "f36202060b20454724b074943675b86c41ca61788a07a1353c5805cd3036dbbb",
+      "nativeSourceSha256": "7ca669ad0824675304db5405c52e2eedf2893c8f831219e5db378aac06aed478",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/91e14ec9bf85b8eecd6064c74788585074e1fcbec9e7a6e947e49cc4596a2195.png",
+          "referenceSha256": "91e14ec9bf85b8eecd6064c74788585074e1fcbec9e7a6e947e49cc4596a2195",
+          "rgbaSha256": "a1d8ca41c204eb3fc148ec60e1ff6fa0552741a8dbc53c6251b1a13259f70964"
+        },
+        "linux": {
+          "reference": "references/ac8acdf694bd4083b532eca49b57275e5c97f36d22d8a6d23537b776c900ac4a.png",
+          "referenceSha256": "ac8acdf694bd4083b532eca49b57275e5c97f36d22d8a6d23537b776c900ac4a",
+          "rgbaSha256": "bac2faf4f9e1db98e6a2dc5a411b3a86c04291b0c3f076257db72e44873e2887"
+        }
+      }
+    },
+    {
+      "id": "anchored-rectangle-anchor-7-control",
+      "input": "anchored-rectangle-anchor-7-control.svg",
+      "sourceSha256": "3744d170a0c5dfb2d46e195507b7f3753be48e0d20a7114d2f4a3dd1e69ca044",
+      "nativeSourceSha256": "7ba67d185af70d5a96a1abe8d8dc08c7b3ed99d67eefb020723ef49bd6dcc85d",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/aa8748c07de13825bb6b9b5489e16a1fb1a41a6e861339a33e9e43f7f1f67b25.png",
+          "referenceSha256": "aa8748c07de13825bb6b9b5489e16a1fb1a41a6e861339a33e9e43f7f1f67b25",
+          "rgbaSha256": "a272b74ebb7da0861577e2d9ec758a192979797a242af3faa94cc45f521aba97"
+        },
+        "linux": {
+          "reference": "references/117b07b5d18d9ed7668e90bd0d0c13c2f7cf4967a00631309a5afec73567ab8e.png",
+          "referenceSha256": "117b07b5d18d9ed7668e90bd0d0c13c2f7cf4967a00631309a5afec73567ab8e",
+          "rgbaSha256": "ea11bfad1b2609cea058f409ddad2b63e309aa4960e6fba1b32965aecb8a6825"
+        }
+      }
+    },
+    {
+      "id": "anchored-rectangle-anchor-8-control",
+      "input": "anchored-rectangle-anchor-8-control.svg",
+      "sourceSha256": "71b1c41b0de9f2939c5bd4500503267bf1cde8f492d93c4e1839543dc26c2e6d",
+      "nativeSourceSha256": "700764e004b9d41be233311d1296ed9faa26c2e6764f43716d4c8c2bc4d270c4",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/aa34dbe880cd25e66420bc7e4c4884e9d4c311787d9ff23afe307bf184df92ff.png",
+          "referenceSha256": "aa34dbe880cd25e66420bc7e4c4884e9d4c311787d9ff23afe307bf184df92ff",
+          "rgbaSha256": "c743f5430f756f7e5ea0f22c603b35099b6762dc241b8807ea4bd58cd3ef0a3c"
+        },
+        "linux": {
+          "reference": "references/e71d7cf6158f7d043923d2ed0f50af04de65e90fefdf289b88678e86889374f3.png",
+          "referenceSha256": "e71d7cf6158f7d043923d2ed0f50af04de65e90fefdf289b88678e86889374f3",
+          "rgbaSha256": "2538ff699cca1769464079cb67991b23ec16a0fa5ad574bd5c066abfa934113d"
+        }
+      }
+    },
+    {
+      "id": "anchored-rectangle-anchor-9-candidate",
+      "input": "anchored-rectangle-anchor-9-candidate.svg",
+      "sourceSha256": "bc03e3fe8836043926538b7324a626387ee64675cffaf37f81f30c93f767e379",
+      "nativeSourceSha256": "d3ea99f6c5782b569dddf42708669825a77e0359a4ec5c82be470406edec561d",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/f252c619722607c9d402d9be6b1ed6afbb172dc6c98e2393c5be4938550566b3.png",
+          "referenceSha256": "f252c619722607c9d402d9be6b1ed6afbb172dc6c98e2393c5be4938550566b3",
+          "rgbaSha256": "b74b4fe3b545518241ff444a00550a0ce725b9ba81ec3322df13a8c462114815"
+        },
+        "linux": {
+          "reference": "references/e90317cd7d1b9e9b19d3e92b6db3087538f4aefb0a5e16bc6dac6ebbbb80e958.png",
+          "referenceSha256": "e90317cd7d1b9e9b19d3e92b6db3087538f4aefb0a5e16bc6dac6ebbbb80e958",
+          "rgbaSha256": "3ce67b2b3d1b1cce3a1acacd228109055f5e135d2ff19e0034c07ccdc0ee66cb"
+        }
+      }
+    },
+    {
+      "id": "anchored-rectangle-anchor-10-control",
+      "input": "anchored-rectangle-anchor-10-control.svg",
+      "sourceSha256": "d2ac17de2fa2bd8809f7d621a48011b7787852eebe65e037128df3c789291941",
+      "nativeSourceSha256": "9059f240c8a37c713a604850cd64e4a190b501b6eb0ca026e503292c4f87a407",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/cdbd779979beaea9f5f9cc37ee639e8ec823d970eb3a1c857c6648035ef50526.png",
+          "referenceSha256": "cdbd779979beaea9f5f9cc37ee639e8ec823d970eb3a1c857c6648035ef50526",
+          "rgbaSha256": "38cacc7113e716500b1d236c9f10961624760a8f0388884ce055c05b9c080f47"
+        },
+        "linux": {
+          "reference": "references/6dbba5ef7ee97398bc3d8ee9dcd4809bb5eacb5feb56e848b6dcfd0749af997f.png",
+          "referenceSha256": "6dbba5ef7ee97398bc3d8ee9dcd4809bb5eacb5feb56e848b6dcfd0749af997f",
+          "rgbaSha256": "a6b1936f7ce61a4e2f2b2c9966430d50ce4bfc635260c0855de593b1c0d24b97"
+        }
+      }
+    },
+    {
+      "id": "anchored-rectangle-anchor-11-control",
+      "input": "anchored-rectangle-anchor-11-control.svg",
+      "sourceSha256": "cd6513a7c4ec8c6f56191dc8e7a95c93dab1cea394a0b3e72f4b648732b21d36",
+      "nativeSourceSha256": "4a18307365a5ae665a2983c353325f3017aa4672d5fcb89c82414290708d48a6",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/2b21d230e9866b1b6d5767d460de964d6370910f506b1d9ace2fdced4c1910c8.png",
+          "referenceSha256": "2b21d230e9866b1b6d5767d460de964d6370910f506b1d9ace2fdced4c1910c8",
+          "rgbaSha256": "82d4e9f45ae6b4f9ec992087179ca19e622d8350152440404a0b05bf86b7e587"
+        },
+        "linux": {
+          "reference": "references/5fee354250daa7cfb97035f9a6fe2e2f83f40b0137c62668669e7dee9fa74ed4.png",
+          "referenceSha256": "5fee354250daa7cfb97035f9a6fe2e2f83f40b0137c62668669e7dee9fa74ed4",
+          "rgbaSha256": "98a800a00d0e8c3b58928b9f3eb989c619bf6a93783b29d6ec721ee8edab8ea9"
+        }
+      }
+    },
+    {
+      "id": "anchored-rectangle-anchor-46-candidate",
+      "input": "anchored-rectangle-anchor-46-candidate.svg",
+      "sourceSha256": "106aa26c1a793f9aa63f74183ee7818145f97cd23b9a11838adf3b2bfe04588a",
+      "nativeSourceSha256": "3132f845a3b50e7cc65cb54703425a20c585455f4102c365ad29e9b951c4fb00",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/17f51cd043eda023fc05915bdbaa8b02ee0b9b2b5a19d07243f01de89c2a8ed4.png",
+          "referenceSha256": "17f51cd043eda023fc05915bdbaa8b02ee0b9b2b5a19d07243f01de89c2a8ed4",
+          "rgbaSha256": "368b1e602292a9322ec12cc5d91f175e680f963b281b10bb51ea101b97268693"
+        },
+        "linux": {
+          "reference": "references/df10f8dc27afd3859814322515671d713d345a3d905d6504f53fded43827c5ec.png",
+          "referenceSha256": "df10f8dc27afd3859814322515671d713d345a3d905d6504f53fded43827c5ec",
+          "rgbaSha256": "a0be516652fc1b398a93443ccfc987744277ce448a78a0a54d9db49ed232da9f"
+        }
+      }
+    },
+    {
+      "id": "anchored-rectangle-anchor-46-control",
+      "input": "anchored-rectangle-anchor-46-control.svg",
+      "sourceSha256": "098c5af338f3b2509e5aa13e82edec996cd0b7e41542c602e59660b249eef60d",
+      "nativeSourceSha256": "ba6c23e54f733be10e106f3428a4b98649c2fc44651a4cf394c4a0c354e111b9",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/17f51cd043eda023fc05915bdbaa8b02ee0b9b2b5a19d07243f01de89c2a8ed4.png",
+          "referenceSha256": "17f51cd043eda023fc05915bdbaa8b02ee0b9b2b5a19d07243f01de89c2a8ed4",
+          "rgbaSha256": "368b1e602292a9322ec12cc5d91f175e680f963b281b10bb51ea101b97268693"
+        },
+        "linux": {
+          "reference": "references/df10f8dc27afd3859814322515671d713d345a3d905d6504f53fded43827c5ec.png",
+          "referenceSha256": "df10f8dc27afd3859814322515671d713d345a3d905d6504f53fded43827c5ec",
+          "rgbaSha256": "a0be516652fc1b398a93443ccfc987744277ce448a78a0a54d9db49ed232da9f"
+        }
+      }
+    },
+    {
+      "id": "anchored-rectangle-anchor-136-candidate",
+      "input": "anchored-rectangle-anchor-136-candidate.svg",
+      "sourceSha256": "682039db0865080ca9ac9df14c6df28a9f87349afe9db3876c10d4c48948674a",
+      "nativeSourceSha256": "fc4d16cb36f1bec79916a59b3b1e97d34778d1a51eadac063b26dda6edfce283",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/3d48661cdf50eab75cd80fdb252f7b8b577c118d9fe4ea1aa6b49ec8b3d93d35.png",
+          "referenceSha256": "3d48661cdf50eab75cd80fdb252f7b8b577c118d9fe4ea1aa6b49ec8b3d93d35",
+          "rgbaSha256": "c6be7f16ed1ee14c14c034b07bab49459e67e22954bbc46a26da505a58db8724"
+        },
+        "linux": {
+          "reference": "references/c83acadc8f882bad86779ac55757d206c8a24dc52842b2e4718dc6999538b012.png",
+          "referenceSha256": "c83acadc8f882bad86779ac55757d206c8a24dc52842b2e4718dc6999538b012",
+          "rgbaSha256": "99c3a97029f0688b7b14101795ca07ab98f98e349cfd492e9aaea8f3eec9c9ce"
+        }
+      }
+    },
+    {
+      "id": "anchored-rectangle-anchor-171-candidate",
+      "input": "anchored-rectangle-anchor-171-candidate.svg",
+      "sourceSha256": "7f6ed31190f2dc10695f96628de157de94f4e69e1d8f0e217e43616bbf09818b",
+      "nativeSourceSha256": "8c662f95fdd8fba811cf928583d9f2ee3ec312be88df9d0f37133f7c5f651ee7",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/fd1874240d967d760a7190b173ce7391fac768938ec57e24ecba12fc47ae3e94.png",
+          "referenceSha256": "fd1874240d967d760a7190b173ce7391fac768938ec57e24ecba12fc47ae3e94",
+          "rgbaSha256": "652789f4ded054814b43054d4b06b7d04e9d1e9fa22343c6a03a362c84774f48"
+        },
+        "linux": {
+          "reference": "references/1e5a0597d51be1b5dfb124da9da5f55c94b598ba92db56ebf5c92a54744c84b8.png",
+          "referenceSha256": "1e5a0597d51be1b5dfb124da9da5f55c94b598ba92db56ebf5c92a54744c84b8",
+          "rgbaSha256": "4752b30e8306633eceff90d1c5cae63409ae7e7095848bd986b6929d8ac7dc26"
+        }
+      }
+    },
+    {
+      "id": "anchored-rectangle-anchor-190-control",
+      "input": "anchored-rectangle-anchor-190-control.svg",
+      "sourceSha256": "c6abd258864828faf07ab4734924b5dd42dee59bf025d11ecfc3bef2b5c7cd50",
+      "nativeSourceSha256": "75e766ebf0d2e29e35c5433c196e184adb2898a30aff57cf8d2ff39207a1586c",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/968b12b7e15cd69990a1fc30f07edc9a9c2a5ccef26c2ee857cf5e7a5c92eadc.png",
+          "referenceSha256": "968b12b7e15cd69990a1fc30f07edc9a9c2a5ccef26c2ee857cf5e7a5c92eadc",
+          "rgbaSha256": "ba8131adec9808efcb80ad32df5cdffc8eab19bf0460a29bd43f4a4f7cbe23ef"
+        },
+        "linux": {
+          "reference": "references/52a35b072b7c07cf1047c4aa0ff97aca5727f1244007fd75f590bb672954b259.png",
+          "referenceSha256": "52a35b072b7c07cf1047c4aa0ff97aca5727f1244007fd75f590bb672954b259",
+          "rgbaSha256": "9e201fa01e9b7a555a4b77a7d709ce91a22b28270b3bcec7f3a60f160e435acf"
+        }
+      }
+    },
+    {
+      "id": "anchored-rectangle-subgrid-24-candidate",
+      "input": "anchored-rectangle-subgrid-24-candidate.svg",
+      "sourceSha256": "1c28ce5274d95b29cd5408013b22bf7ed3507615e6ddecab978ed8ee6a3580da",
+      "nativeSourceSha256": "50c4e2eb348ca31cbff93afe13b8511f40e9c22dcdea2772008a38a211ee3bf5",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/9f8fa702e17dbe0d360d1824bf33f241a2b670a6167d56d172923d2d0b3a383c.png",
+          "referenceSha256": "9f8fa702e17dbe0d360d1824bf33f241a2b670a6167d56d172923d2d0b3a383c",
+          "rgbaSha256": "fb9f54a08eaae4e65b5e0dddf097f7220d309f2d797352813d248d73ec992d76"
+        },
+        "linux": {
+          "reference": "references/25a6112c2e1606f5b73217e9e34b54468c82c3b83a89f308a5039787157d7a96.png",
+          "referenceSha256": "25a6112c2e1606f5b73217e9e34b54468c82c3b83a89f308a5039787157d7a96",
+          "rgbaSha256": "fb561506a17f2efd27836ed4367258ac9ecb4d13cc7f593af4b8e977fb02c900"
+        }
+      }
+    },
+    {
+      "id": "anchored-rectangle-subgrid-24-control",
+      "input": "anchored-rectangle-subgrid-24-control.svg",
+      "sourceSha256": "2a99d4e8f375db480a97aefcc44914bfb4757712b154c2ceab4941a42739c342",
+      "nativeSourceSha256": "ecb49464e63aa1ad6d009fd26431c855f8c2bdc6e8e1f18e04256ac9acd19b82",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/9f8fa702e17dbe0d360d1824bf33f241a2b670a6167d56d172923d2d0b3a383c.png",
+          "referenceSha256": "9f8fa702e17dbe0d360d1824bf33f241a2b670a6167d56d172923d2d0b3a383c",
+          "rgbaSha256": "fb9f54a08eaae4e65b5e0dddf097f7220d309f2d797352813d248d73ec992d76"
+        },
+        "linux": {
+          "reference": "references/25a6112c2e1606f5b73217e9e34b54468c82c3b83a89f308a5039787157d7a96.png",
+          "referenceSha256": "25a6112c2e1606f5b73217e9e34b54468c82c3b83a89f308a5039787157d7a96",
+          "rgbaSha256": "fb561506a17f2efd27836ed4367258ac9ecb4d13cc7f593af4b8e977fb02c900"
+        }
+      }
+    },
+    {
+      "id": "anchored-rectangle-subgrid-70-control",
+      "input": "anchored-rectangle-subgrid-70-control.svg",
+      "sourceSha256": "7cc8d8b2397a37eee26451bc006b6b33559d51dd0a733b67cee3cba5748642f6",
+      "nativeSourceSha256": "41e00d5bed3d3bd1db345ed8e8c0b60dbca4fe5d8138afda4b9a349d4d2e82b2",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/b385d91320de8d11402bae6f749fecabbb1cfcc7a529480f30ccbec31fa00a9e.png",
+          "referenceSha256": "b385d91320de8d11402bae6f749fecabbb1cfcc7a529480f30ccbec31fa00a9e",
+          "rgbaSha256": "3d8b4769f8248807caa3761b4ccd5a6d4ede1e44f5964731e2b4dae64c658165"
+        },
+        "linux": {
+          "reference": "references/635346f03334cefdbbdfd5ceb7b07826ff6400ba99fddc5b4eda8f7e2bdb4e9d.png",
+          "referenceSha256": "635346f03334cefdbbdfd5ceb7b07826ff6400ba99fddc5b4eda8f7e2bdb4e9d",
+          "rgbaSha256": "55902e9319fbbf7458c098963aa88e08d4f10bfb80c3774dd9e7939b4cc3a64a"
+        }
+      }
+    },
+    {
+      "id": "anchored-rectangle-subgrid-71-control",
+      "input": "anchored-rectangle-subgrid-71-control.svg",
+      "sourceSha256": "c4c06e69f4975b672f64dd795b8709d19ef2868f6cbfd41847fbd2a33e899626",
+      "nativeSourceSha256": "b772279782fed644b7f30c7c855d81bd366c218341740616ffee73e8c9df641d",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/aae8bac85f473a5cd254cd9fe03a49093e325e6ba25dfcc3b910911e335f7dcd.png",
+          "referenceSha256": "aae8bac85f473a5cd254cd9fe03a49093e325e6ba25dfcc3b910911e335f7dcd",
+          "rgbaSha256": "0ade4ed02728bb93cd39664c0ea43e5aa3c715ce306e0e79164a3f8d738d0f88"
+        },
+        "linux": {
+          "reference": "references/6a275972de2bcb3e5cf7e711e5d04c5384aa94f16c167498b98d70950c339c62.png",
+          "referenceSha256": "6a275972de2bcb3e5cf7e711e5d04c5384aa94f16c167498b98d70950c339c62",
+          "rgbaSha256": "19b90274a486c7ac6df131f95d12081d9b9a85345ac00183094829a85ed1c117"
+        }
+      }
+    },
+    {
+      "id": "anchored-rectangle-subgrid-106-control",
+      "input": "anchored-rectangle-subgrid-106-control.svg",
+      "sourceSha256": "bd262c2ca0068c1c79d58d3649ec8385c76a59f34154beed272b7bdd574d0654",
+      "nativeSourceSha256": "78b024e9240e419df8f101aa81d5e342335a7f5ad7b4067f00e0c0c12ad22bed",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
+      "platforms": {
+        "windows": {
+          "reference": "references/3001deb4d689cb2e579517eeae86c758e9a6bd871de142e2f365789c9515a310.png",
+          "referenceSha256": "3001deb4d689cb2e579517eeae86c758e9a6bd871de142e2f365789c9515a310",
+          "rgbaSha256": "17a1310eaf8936acd650ecd41e001d885315d1219798836feca83fe330fbe7a6"
+        },
+        "linux": {
+          "reference": "references/1201f71723dfa700cf3e5e097fb2a2d75622a47dc8f3e58b516163697f833c60.png",
+          "referenceSha256": "1201f71723dfa700cf3e5e097fb2a2d75622a47dc8f3e58b516163697f833c60",
+          "rgbaSha256": "5716b87cb4f8ea15a14f60b3ce23e4688710c0a8745a84d4eadadd5656a88c55"
+        }
+      }
     }
   ],
   "knownDifferences": [
@@ -12105,5 +12851,6 @@
     }
   ],
   "elementShapingBaselineCommit": "2f90c0164b8fcc535948f65f734c4e04c6fc6a45",
-  "sourceItemBaselineCommit": "9bad3a405af628a0b5483d7774028353dd49da03"
+  "sourceItemBaselineCommit": "9bad3a405af628a0b5483d7774028353dd49da03",
+  "anchoredRectangleBaselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a"
 }
