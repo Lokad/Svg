@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Retain unpainted text-path characters in shared gradient bounds, including
+  hidden spans and resource replay.
 - Round final anchored text rectangles and skip fitting-range work when no
   fitting was requested.
 - Preserve text-node fragment widths and ligature-internal relative offsets through

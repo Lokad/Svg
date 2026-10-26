@@ -128,7 +128,7 @@ internal static class SvgTextPathLayout
                         SvgGlyphFontStyle glyphFont = run.GetGlyphFont(glyphIndex);
                         double rotation = run.GetGlyphRotation(glyphIndex);
                         SvgTextGlyphPaint paint = run.GetGlyphPaint(glyphIndex++, pending.Color);
-                        if (!paint.IsPainted) { placements.Add(default); continue; }
+                        // Unpainted path glyphs still contribute to source paint bounds.
                         double distance = offset + glyph.X;
                         // Native SVG adds the device character offset and inline
                         // half-width before scalar division and the path offset.

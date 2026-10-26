@@ -19,3 +19,8 @@ Nonuniform fitting and fractional viewport cases cover native control-table
 scaling and source-grid baseline painting, including symbol replay and gradients.
 The [control-table vectors](../windows-font-unit-scaling/README.md) exercise
 axis precision and signed rounding independently of whole-image comparisons.
+
+Unpainted text-path glyphs retain their source bounds for gradients. Cases cover
+hidden and unfilled characters at each path position, curved and sloped paths,
+and use, symbol and pattern replay, including scaled output. Middle characters
+that leave the enclosing bounds unchanged provide positive controls.

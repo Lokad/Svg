@@ -1489,6 +1489,294 @@
           "networkServiceCrashes": 0
         }
       ]
+    },
+    "unpainted-path-decomposition-0": {
+      "windows": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ],
+      "linux": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ]
+    },
+    "unpainted-path-decomposition-1": {
+      "windows": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ],
+      "linux": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ]
+    },
+    "unpainted-path-decomposition-2": {
+      "windows": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ],
+      "linux": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ]
+    },
+    "unpainted-path-decomposition-3": {
+      "windows": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ],
+      "linux": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ]
+    },
+    "unpainted-path-matrix-0": {
+      "windows": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ],
+      "linux": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ]
+    },
+    "unpainted-path-matrix-1": {
+      "windows": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ],
+      "linux": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ]
     }
   },
   "cases": [
@@ -13316,11 +13604,320 @@
           "rgbaSha256": "98f73ffb3cc842e76a00aff150585397e9c48490436bd0d1edc4efafda1f4f95"
         }
       }
+    },
+    {
+      "id": "path-unpainted-original-0",
+      "input": "path-unpainted-original-0.svg",
+      "sourceSha256": "069e4a9c57271979f67298d7daae3e7f269806732d03fc7641aa2e141e1bd5ba",
+      "nativeSourceSha256": "c6697dc548c131325bde267ac2999f2fda7824bc3cb03cc2e8b4d1e3d09ef809",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "fd15390f5d3539ad455327e8c76c440ad278cd89",
+      "platforms": {
+        "windows": {
+          "reference": "references/35bbd0415aeff485c102785a0c77f171f520d62b6f97d1c3284108f52e4e57b2.png",
+          "referenceSha256": "35bbd0415aeff485c102785a0c77f171f520d62b6f97d1c3284108f52e4e57b2",
+          "rgbaSha256": "3cab353fac1af10b2e246520fdf40c61e5eecb69806be1089a544a7ef4b82841"
+        },
+        "linux": {
+          "reference": "references/04df23c3f8412944fe13c695f4cb6a9ff936731b0576e687c35f82d190c25054.png",
+          "referenceSha256": "04df23c3f8412944fe13c695f4cb6a9ff936731b0576e687c35f82d190c25054",
+          "rgbaSha256": "7de35c7657a0b7452ebc6b66d2f18c2cc4ed29a21fe77864ec0bbdefafd32c08"
+        }
+      }
+    },
+    {
+      "id": "path-unpainted-original-1",
+      "input": "path-unpainted-original-1.svg",
+      "sourceSha256": "89aeaf2ac143d8331518a07f9ba557633be2d92355b69397099c0bcd4f97c23a",
+      "nativeSourceSha256": "ee08adf33ad7933a397496def6fcda6f6389615677161d3231176a39584cfdd0",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "fd15390f5d3539ad455327e8c76c440ad278cd89",
+      "platforms": {
+        "windows": {
+          "reference": "references/35bbd0415aeff485c102785a0c77f171f520d62b6f97d1c3284108f52e4e57b2.png",
+          "referenceSha256": "35bbd0415aeff485c102785a0c77f171f520d62b6f97d1c3284108f52e4e57b2",
+          "rgbaSha256": "3cab353fac1af10b2e246520fdf40c61e5eecb69806be1089a544a7ef4b82841"
+        },
+        "linux": {
+          "reference": "references/04df23c3f8412944fe13c695f4cb6a9ff936731b0576e687c35f82d190c25054.png",
+          "referenceSha256": "04df23c3f8412944fe13c695f4cb6a9ff936731b0576e687c35f82d190c25054",
+          "rgbaSha256": "7de35c7657a0b7452ebc6b66d2f18c2cc4ed29a21fe77864ec0bbdefafd32c08"
+        }
+      }
+    },
+    {
+      "id": "path-unpainted-original-2",
+      "input": "path-unpainted-original-2.svg",
+      "sourceSha256": "1ace3aece850e5f371a56bd691cf7866abda1f8938f011eaa1ce04f92e64a7c2",
+      "nativeSourceSha256": "0206224338838d05a230a962e606e62f01511885bab973d07254fa1037e9a4f3",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "fd15390f5d3539ad455327e8c76c440ad278cd89",
+      "platforms": {
+        "windows": {
+          "reference": "references/365cb3a7ff9bebada78aa4a497ceaeb2ff631d6b1624cfe2bfc12ca8eca74b83.png",
+          "referenceSha256": "365cb3a7ff9bebada78aa4a497ceaeb2ff631d6b1624cfe2bfc12ca8eca74b83",
+          "rgbaSha256": "ccbf01008a336d19133050797bb6326a1d0f789d8913813c68b625540005a9a8"
+        },
+        "linux": {
+          "reference": "references/adc6cc3d317fe901d31ecdfdf18ef98f77f5198bd9c47dca703be66f62e75578.png",
+          "referenceSha256": "adc6cc3d317fe901d31ecdfdf18ef98f77f5198bd9c47dca703be66f62e75578",
+          "rgbaSha256": "ac0aeabed910fdb9177d7f7845e99e3045dc4c7c0221e776a4949c80ea280411"
+        }
+      }
+    },
+    {
+      "id": "path-unpainted-original-3",
+      "input": "path-unpainted-original-3.svg",
+      "sourceSha256": "5f652f21853502991fe5fac098ea8e57c4bb28dfb8f7c8dbd95e15d2cab3afb8",
+      "nativeSourceSha256": "a39d883db140688828424f854afca2cc13f552230b5cbaccea904ec23465d417",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "fd15390f5d3539ad455327e8c76c440ad278cd89",
+      "platforms": {
+        "windows": {
+          "reference": "references/365cb3a7ff9bebada78aa4a497ceaeb2ff631d6b1624cfe2bfc12ca8eca74b83.png",
+          "referenceSha256": "365cb3a7ff9bebada78aa4a497ceaeb2ff631d6b1624cfe2bfc12ca8eca74b83",
+          "rgbaSha256": "ccbf01008a336d19133050797bb6326a1d0f789d8913813c68b625540005a9a8"
+        },
+        "linux": {
+          "reference": "references/adc6cc3d317fe901d31ecdfdf18ef98f77f5198bd9c47dca703be66f62e75578.png",
+          "referenceSha256": "adc6cc3d317fe901d31ecdfdf18ef98f77f5198bd9c47dca703be66f62e75578",
+          "rgbaSha256": "ac0aeabed910fdb9177d7f7845e99e3045dc4c7c0221e776a4949c80ea280411"
+        }
+      }
+    },
+    {
+      "id": "path-unpainted-original-4",
+      "input": "path-unpainted-original-4.svg",
+      "sourceSha256": "9e2154209b7cc2fcc9171132348e3a62ee4bf3b2681021df446a6367373da5c7",
+      "nativeSourceSha256": "ea6dbdd819cf8c074835792581a7f2ecc4affefcf92402927abbeb1657438f43",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "fd15390f5d3539ad455327e8c76c440ad278cd89",
+      "platforms": {
+        "windows": {
+          "reference": "references/42490c8f15c7d01b2174aeb7491ba3360fd70157aecc98d5785a22520fb8d4d1.png",
+          "referenceSha256": "42490c8f15c7d01b2174aeb7491ba3360fd70157aecc98d5785a22520fb8d4d1",
+          "rgbaSha256": "91518e16baaa25829c5155150570e5eab13a569bc416efab784c4c90d61ba857"
+        },
+        "linux": {
+          "reference": "references/e61573edd0fb1ec28e1e62267ec84b7d58170385ed87ad9e79597c137fed3dd7.png",
+          "referenceSha256": "e61573edd0fb1ec28e1e62267ec84b7d58170385ed87ad9e79597c137fed3dd7",
+          "rgbaSha256": "fd2aa7ed068883d545dcf27f344ae9752d6c4ba2b9c20255efb12be1aa1e605a"
+        }
+      }
+    },
+    {
+      "id": "path-unpainted-original-5",
+      "input": "path-unpainted-original-5.svg",
+      "sourceSha256": "73e1e9f9099e5c0f76aee337b6d4c6e9c67820b2e16be68074d73cda7aef7520",
+      "nativeSourceSha256": "cb59f444070b20eac2efabdebf4bf83b98d86babb5baffa9aecfe0c6cb3646e2",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "fd15390f5d3539ad455327e8c76c440ad278cd89",
+      "platforms": {
+        "windows": {
+          "reference": "references/42490c8f15c7d01b2174aeb7491ba3360fd70157aecc98d5785a22520fb8d4d1.png",
+          "referenceSha256": "42490c8f15c7d01b2174aeb7491ba3360fd70157aecc98d5785a22520fb8d4d1",
+          "rgbaSha256": "91518e16baaa25829c5155150570e5eab13a569bc416efab784c4c90d61ba857"
+        },
+        "linux": {
+          "reference": "references/e61573edd0fb1ec28e1e62267ec84b7d58170385ed87ad9e79597c137fed3dd7.png",
+          "referenceSha256": "e61573edd0fb1ec28e1e62267ec84b7d58170385ed87ad9e79597c137fed3dd7",
+          "rgbaSha256": "fd2aa7ed068883d545dcf27f344ae9752d6c4ba2b9c20255efb12be1aa1e605a"
+        }
+      }
+    },
+    {
+      "id": "path-unpainted-original-6",
+      "input": "path-unpainted-original-6.svg",
+      "sourceSha256": "1ac6b07017ef79aec32e4617aa0fbf4f7c32f84acfe21c3e8c0e583e92e1eac5",
+      "nativeSourceSha256": "576847089e7a2a7fa3e9c1c00d0e12db68a3c0f4964ab4138cc5414ac73321ae",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "fd15390f5d3539ad455327e8c76c440ad278cd89",
+      "platforms": {
+        "windows": {
+          "reference": "references/0d07a28710b133aaee4cc5bdd8875f7497dbbbeaccf8c00a7f2860b409ae136b.png",
+          "referenceSha256": "0d07a28710b133aaee4cc5bdd8875f7497dbbbeaccf8c00a7f2860b409ae136b",
+          "rgbaSha256": "25f10c53822f7a95dd6637985c00bd3e47518344816d842005ac1744276bcfbc"
+        },
+        "linux": {
+          "reference": "references/bf81a1b5439c6815e897c90d11d1e7e87659a9b6b2ff15690e6cefe102df03f1.png",
+          "referenceSha256": "bf81a1b5439c6815e897c90d11d1e7e87659a9b6b2ff15690e6cefe102df03f1",
+          "rgbaSha256": "587c0fb88e8488dc002595f4d4d016f03afa58f20182512d0f83e8d9d7b534c4"
+        }
+      }
+    },
+    {
+      "id": "path-unpainted-original-7",
+      "input": "path-unpainted-original-7.svg",
+      "sourceSha256": "3e6b5112cd3311b1dac28b1b3f283df73777a0b36c52f5b4f3522e010704cc28",
+      "nativeSourceSha256": "20b50c37ddfcf0b3c62890391676c52c4acb37fe6b323a9a9e991f2e7ff6f74f",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "fd15390f5d3539ad455327e8c76c440ad278cd89",
+      "platforms": {
+        "windows": {
+          "reference": "references/0d07a28710b133aaee4cc5bdd8875f7497dbbbeaccf8c00a7f2860b409ae136b.png",
+          "referenceSha256": "0d07a28710b133aaee4cc5bdd8875f7497dbbbeaccf8c00a7f2860b409ae136b",
+          "rgbaSha256": "25f10c53822f7a95dd6637985c00bd3e47518344816d842005ac1744276bcfbc"
+        },
+        "linux": {
+          "reference": "references/bf81a1b5439c6815e897c90d11d1e7e87659a9b6b2ff15690e6cefe102df03f1.png",
+          "referenceSha256": "bf81a1b5439c6815e897c90d11d1e7e87659a9b6b2ff15690e6cefe102df03f1",
+          "rgbaSha256": "587c0fb88e8488dc002595f4d4d016f03afa58f20182512d0f83e8d9d7b534c4"
+        }
+      }
+    },
+    {
+      "id": "path-unpainted-direct-0",
+      "input": "path-unpainted-direct-0.svg",
+      "sourceSha256": "83a8b29b3eac8d5d0558306e9648303be75e298a4b3b02d660a9de5b7338131e",
+      "nativeSourceSha256": "4f9fc7326e10396dda78d1cee90c052c848f54297a73734c6ecba9197c7150ad",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "fd15390f5d3539ad455327e8c76c440ad278cd89",
+      "platforms": {
+        "windows": {
+          "reference": "references/26a69bf5fcd893131f1e9c51c11ba2ff2cadf2bfb255dd4d60f90961010c9182.png",
+          "referenceSha256": "26a69bf5fcd893131f1e9c51c11ba2ff2cadf2bfb255dd4d60f90961010c9182",
+          "rgbaSha256": "1a0fd5a90f3d3ad6cd780061d28a6f522cc1cb906d6f84e95b99f6a12925a543"
+        },
+        "linux": {
+          "reference": "references/cbf0d0b05f327a6ccd687a280568e7334858eb50993f558c7d37f2aa381db818.png",
+          "referenceSha256": "cbf0d0b05f327a6ccd687a280568e7334858eb50993f558c7d37f2aa381db818",
+          "rgbaSha256": "4da2fde71e6fed8984dfeb3e62a8306adce1777156d274f78d6b5133fd90f8d4"
+        }
+      }
+    },
+    {
+      "id": "path-unpainted-symbol-63",
+      "input": "path-unpainted-symbol-63.svg",
+      "sourceSha256": "b6e0eb93b0c139b24820cd411ac3fa9651ed1c68d0792a12d0eb87e8c964541b",
+      "nativeSourceSha256": "91c7337da8aa8acae9199f8248e93e61f20dba3fce864216285f86e408c4c3d3",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1.5,
+      "baselineCommit": "fd15390f5d3539ad455327e8c76c440ad278cd89",
+      "platforms": {
+        "windows": {
+          "reference": "references/9ae13de53916f20049eaf3dbcff4225773a2918ad7fc4b4f59d47f2460cd3b1c.png",
+          "referenceSha256": "9ae13de53916f20049eaf3dbcff4225773a2918ad7fc4b4f59d47f2460cd3b1c",
+          "rgbaSha256": "57aba7ad8340cf57a82aa208a29cd158382fc99db4fd60cdc7e03abf4bfa67f3"
+        },
+        "linux": {
+          "reference": "references/9ec9f64535fd0c9eda882f13db7467495985f751b23c81f86b829ac4d563a3fa.png",
+          "referenceSha256": "9ec9f64535fd0c9eda882f13db7467495985f751b23c81f86b829ac4d563a3fa",
+          "rgbaSha256": "8d5dd4846e8b691251a035f0f33455c35aac619675eaee7c4f4507d048627f74"
+        }
+      }
+    },
+    {
+      "id": "path-unpainted-direct-32",
+      "input": "path-unpainted-direct-32.svg",
+      "sourceSha256": "4eba0aef875aad05afbe518b7b7d9e1c6f18abbc2116c45ad63a23178390c6ae",
+      "nativeSourceSha256": "6265ccf9fd0e9df4718be0e95e50b25dc110cdd7eb014befa419015ee7fb010d",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "fd15390f5d3539ad455327e8c76c440ad278cd89",
+      "platforms": {
+        "windows": {
+          "reference": "references/88eedc89911d4400f06fa31928e900550bfa501bda0f8660f9f77915569a841f.png",
+          "referenceSha256": "88eedc89911d4400f06fa31928e900550bfa501bda0f8660f9f77915569a841f",
+          "rgbaSha256": "cea81186b4053747c75ca71921f73db36dfcde8cff5234a984fa97b82003c89c"
+        },
+        "linux": {
+          "reference": "references/1e06f869ba996f261f22fea6199cd3fcc4d4ef9d038b40e66f4650cc4a9911e4.png",
+          "referenceSha256": "1e06f869ba996f261f22fea6199cd3fcc4d4ef9d038b40e66f4650cc4a9911e4",
+          "rgbaSha256": "d6bda9ade18424f155aee907606945e8b1d7e55072e3b833973683eb4f46a13f"
+        }
+      }
+    },
+    {
+      "id": "path-unpainted-direct-40",
+      "input": "path-unpainted-direct-40.svg",
+      "sourceSha256": "cb3bb0fca01b39fbd080fb5deaf0c92a1e30c60bb8338695c5d411087286bd0e",
+      "nativeSourceSha256": "0f03de186b2d0c712318ffc503d6e2da10c4ba68f2a14d06d155e6465e979015",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "fd15390f5d3539ad455327e8c76c440ad278cd89",
+      "platforms": {
+        "windows": {
+          "reference": "references/6a30603395081a680eee959595fd8930956b1f8c68b41efba1b0cc75b75dba98.png",
+          "referenceSha256": "6a30603395081a680eee959595fd8930956b1f8c68b41efba1b0cc75b75dba98",
+          "rgbaSha256": "f56494d2d7a058ff8123b34711e24aba0dab5a11448d2ca78df73814fc370614"
+        },
+        "linux": {
+          "reference": "references/117c7deabe579a6ab59256287e01d1922a55585cd1e0c90f08f950e6655a1ef0.png",
+          "referenceSha256": "117c7deabe579a6ab59256287e01d1922a55585cd1e0c90f08f950e6655a1ef0",
+          "rgbaSha256": "9624105dde8d29c33d91aa06a78fc11cb6237cec519de5bd9e568dd0b1389d4b"
+        }
+      }
+    },
+    {
+      "id": "path-unpainted-use-1",
+      "input": "path-unpainted-use-1.svg",
+      "sourceSha256": "e9bf100b04511fc19cb9cb5fcbb3cd0d2323900835f42cc2b8a2f3e7c882776b",
+      "nativeSourceSha256": "dc45f3bddc34354ef297126bf8b1ec201d97d704a82601b31c366bafffb2a6e7",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "fd15390f5d3539ad455327e8c76c440ad278cd89",
+      "platforms": {
+        "windows": {
+          "reference": "references/372f3d0db2c2d5f179e9ae6fd70fec8e10bb062c14a1d74e501812e22e86be21.png",
+          "referenceSha256": "372f3d0db2c2d5f179e9ae6fd70fec8e10bb062c14a1d74e501812e22e86be21",
+          "rgbaSha256": "d3928cd72a88d5b5243bbb468b4299e3cdeb2fe3d5cbbeb3b778f6fe6f448d61"
+        },
+        "linux": {
+          "reference": "references/51699af8b93bd982afbd87751d8eae7c1db034aff9807dc8706b524326d517dd.png",
+          "referenceSha256": "51699af8b93bd982afbd87751d8eae7c1db034aff9807dc8706b524326d517dd",
+          "rgbaSha256": "d18610c7e3e03641a7d50e2b81a1adfb581e3cc491403470a048f23e5ebac03e"
+        }
+      }
+    },
+    {
+      "id": "path-unpainted-pattern-2",
+      "input": "path-unpainted-pattern-2.svg",
+      "sourceSha256": "07a5c1c4bcc1d5473ace0013e8200829c587f675b333c4340d5f47a973c73382",
+      "nativeSourceSha256": "5fb9d0d9d97c6dc2d967a95252420bf90760b2a920e273946265c010df28159a",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "baselineCommit": "fd15390f5d3539ad455327e8c76c440ad278cd89",
+      "platforms": {
+        "windows": {
+          "reference": "references/26a69bf5fcd893131f1e9c51c11ba2ff2cadf2bfb255dd4d60f90961010c9182.png",
+          "referenceSha256": "26a69bf5fcd893131f1e9c51c11ba2ff2cadf2bfb255dd4d60f90961010c9182",
+          "rgbaSha256": "1a0fd5a90f3d3ad6cd780061d28a6f522cc1cb906d6f84e95b99f6a12925a543"
+        },
+        "linux": {
+          "reference": "references/cbf0d0b05f327a6ccd687a280568e7334858eb50993f558c7d37f2aa381db818.png",
+          "referenceSha256": "cbf0d0b05f327a6ccd687a280568e7334858eb50993f558c7d37f2aa381db818",
+          "rgbaSha256": "4da2fde71e6fed8984dfeb3e62a8306adce1777156d274f78d6b5133fd90f8d4"
+        }
+      }
     }
   ],
   "knownDifferences": [],
   "elementShapingBaselineCommit": "2f90c0164b8fcc535948f65f734c4e04c6fc6a45",
   "sourceItemBaselineCommit": "9bad3a405af628a0b5483d7774028353dd49da03",
   "anchoredRectangleBaselineCommit": "7deb6862cbf1e3ce78548250620fb6e4ed1fb67a",
-  "controlTableBaselineCommit": "62f46e15a7be108bd511f2580b3ab6b66cf0f517"
+  "controlTableBaselineCommit": "62f46e15a7be108bd511f2580b3ab6b66cf0f517",
+  "unpaintedPathBaselineCommit": "fd15390f5d3539ad455327e8c76c440ad278cd89"
 }

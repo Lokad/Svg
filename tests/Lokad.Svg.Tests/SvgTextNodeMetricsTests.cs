@@ -37,22 +37,25 @@ public sealed class SvgTextNodeMetricsTests
         FontProvider provider = new();
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(input, Catalog, provider, CancellationToken.None);
         Assert.Equal(1, provider.Requests);
-        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
+        double outputScale = row.GetProperty("scale").GetDouble();
+        SvgRenderOptions options = new(null, outputScale, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
         RenderBudget parser = new(8_000_000), raster = new(8_000_000);
-        using (SvgRoot scene = SvgRootParser.Parse(input, options.Limits, parser, fonts, CancellationToken.None))
-        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, options, raster, CancellationToken.None))
+        ParserWorkCounter work = new(options.Limits.MaximumWorkUnits);
+        using (SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(input, options.Limits, parser, work, CancellationToken.None))
         {
-            // The two recorded fitting residuals are native-exact on Linux. Their Windows images remain independent evidence.
-            if (!row.TryGetProperty("nativeExactPlatforms", out JsonElement platforms)
-                || platforms.EnumerateArray().Any(value => value.GetString() == (OperatingSystem.IsWindows() ? "windows" : "linux")))
-                Assert.Equal(row.GetProperty("platforms").GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux")
-                    .GetProperty("rgbaSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(surface.Pixels)));
+            SvgRenderOptions rasterOptions = preparation.ResolveRasterOptions(options);
+            using SvgRoot scene = SvgRootParser.ParsePrepared(input, options.Limits, parser, fonts, work, CancellationToken.None,
+                preparation.GetOutputMap(rasterOptions), rasterOptions.Viewport, rasterOptions.OutputScale, preparation);
+            using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, rasterOptions, raster, CancellationToken.None);
+            Assert.Equal(row.GetProperty("platforms").GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux")
+                .GetProperty("rgbaSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(surface.Pixels)));
         }
         Assert.Equal(0, parser.Snapshot().CurrentBytes);
         Assert.Equal(0, raster.Snapshot().CurrentBytes);
         byte[] expected = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
         FontProvider preparedProvider = new();
-        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, Catalog, preparedProvider, SvgRenderOptions.Default, CancellationToken.None);
+        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, Catalog, preparedProvider,
+            new(null, outputScale, SvgColor.Transparent, SvgRenderLimits.Default), CancellationToken.None);
         Assert.Equal(1, preparedProvider.Requests);
         Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
         Assert.Equal(unchanged, input);

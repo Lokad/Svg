@@ -62,8 +62,10 @@ public sealed class SvgPaintInputReferenceTests
             ? new(null, scale.GetDouble(), SvgColor.Transparent, SvgRenderLimits.Default, fonts)
             : new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
         byte[] actual = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
+        // Scaled supplied-font references include a 150 by 78 pixel image.
+        const int maximumReferencePixels = 16_384;
         if (!hasPlatformReferences || OperatingSystem.IsWindows() || OperatingSystem.IsLinux())
-            Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 4096), PngRgbaDecoder.Decode(actual, 4096)).IsExact, id);
+            Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, maximumReferencePixels), PngRgbaDecoder.Decode(actual, maximumReferencePixels)).IsExact, id);
     }
 
     private static string Folder(string name) => Path.Combine(AppContext.BaseDirectory, "Research", name);
