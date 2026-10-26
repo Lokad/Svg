@@ -99,6 +99,29 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [InlineData(1, true, 2, 36, 84)]
+    [InlineData(.75, false, 2, 36, 84)]
+    [InlineData(.75, true, 2, 40, 88)]
+    [InlineData(.75, true, 1, 40, 88)]
+    [InlineData(1.5, true, 2, 40, 88)]
+    public async Task Gpos_filtered_partners_observe_scaled_element_boundaries(double scale, bool changesElement, int offset, double middleX, double lastX)
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(ReadKerningFlagFont("GposSkipBase"))], CancellationToken.None);
+        RenderBudget budget = new(16_384);
+        var layout = SvgGlyphLayout.CreateStorageAndMetrics(Assert.Single(snapshot.Fonts), "AVTW", 32, 16, 40, 0, 0, false,
+            [], [], [], [], [new(offset, changesElement)], SvgTextAnchor.Start,
+            new(scale, SvgGlyphMetricTarget.Windows, false), budget, "label", null, CancellationToken.None);
+        using (layout.Storage)
+        {
+            // Independent font vectors skip V/T while looking for W. Neither
+            // the ignored glyphs nor a comment may hide an element boundary.
+            Assert.Equal(middleX, layout.Storage.Glyphs[1].X);
+            Assert.Equal(lastX, layout.Storage.Glyphs[3].X);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
     [InlineData(false)]
     [InlineData(true)]
     public async Task Gpos_filtered_runs_retain_ligature_source_lengths_at_absolute_boundaries(bool absolute)

@@ -624,8 +624,9 @@ input, memory and work limits still apply. See the
 [descriptive-text regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.DescriptiveText.cs).
 Text nodes retain native fragment width rounding through comments, descriptions,
 CDATA and span boundaries, while kerning and ligatures may continue across nodes.
-[Fragment controls](../tests/Research/text-node-boundaries/README.md) cover fitting
-and resource replay, retaining the recorded Windows fitting residual separately.
+Scaled text follows native element boundaries when shaping spans.
+[Fragment controls](../tests/Research/text-node-boundaries/README.md) cover scaling,
+fitting and resource replay, retaining the recorded Windows fitting residual separately.
 
 Pair positioning selects the default Latin language system before DFLT, sharing
 selection with ligatures. Feature tags repeated in other language systems do not

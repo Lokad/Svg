@@ -7,7 +7,7 @@ using Lokad.Svg.Rendering;
 internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
 {
     private readonly SvgTextLayoutBuffer _layout;
-    private readonly BudgetedParserList<(SvgTextPaintStyle Paint, SvgInheritedTextStyle Font)> _scopes;
+    private readonly BudgetedParserList<(SvgTextPaintStyle Paint, SvgInheritedTextStyle Font, int Identity)> _scopes;
     private readonly RenderBudget _budget;
     private readonly ParserWorkCounter _workCounter;
     private readonly CancellationToken _cancellationToken;
@@ -16,6 +16,8 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
     private BudgetedParserList<SvgTextFontSpan>? _fontSpans;
     private readonly SvgInheritedTextStyle _defaultFont;
     private int _length;
+    private int _nextScopeIdentity;
+    private int _lastEmittedScopeIdentity;
     private bool _startsTextNode;
     private BudgetedParserList<SvgTextNodeBoundary>? _nodeBoundaries;
 
@@ -31,13 +33,13 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
         _defaultFont = font;
         _layout = new(budget, letterSpacing, font.WordSpacing, workCounter, cancellationToken);
         _scopes = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        try { _scopes.Add((paint, font)); }
+        try { _scopes.Add((paint, font, 0)); }
         catch { _scopes.Dispose(); _layout.Dispose(); throw; }
     }
 
     internal SvgTextPaintStyle GetPaint(int scopeDepth) => _scopes[scopeDepth].Paint;
     internal SvgInheritedTextStyle GetFont(int scopeDepth) => _scopes[scopeDepth].Font;
-    internal void EnterStyleSpan(SvgTextPaintStyle paint, SvgInheritedTextStyle font) => _scopes.Add((paint, font));
+    internal void EnterStyleSpan(SvgTextPaintStyle paint, SvgInheritedTextStyle font) => _scopes.Add((paint, font, checked(++_nextScopeIdentity)));
     internal void ExitPaintSpan() => _scopes.RemoveLast();
 
     /// <summary>Marks a source XML text/CDATA node once, independently of reader chunks and normalized appends.</summary>
@@ -60,10 +62,11 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
             if (start != 0)
             {
                 _nodeBoundaries ??= new(_budget, SvgMemoryCategory.Parser, _workCounter, _cancellationToken);
-                if (_nodeBoundaries.Count == 0 || _nodeBoundaries[^1].Offset != start) _nodeBoundaries.Add(new(start));
+                if (_nodeBoundaries.Count == 0 || _nodeBoundaries[^1].Offset != start) _nodeBoundaries.Add(new(start, _scopes[scopeDepth].Identity != _lastEmittedScopeIdentity));
             }
             _startsTextNode = false;
         }
+        _lastEmittedScopeIdentity = _scopes[scopeDepth].Identity;
         _length = checked(start + value.Length);
         if (_fontSpans is not null || !SameFont(font, _defaultFont))
         {

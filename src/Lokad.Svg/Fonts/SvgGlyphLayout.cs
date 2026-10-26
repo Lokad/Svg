@@ -1,4 +1,4 @@
-// SVG character fragment widths adapt Blink's spacing-before-rounding order.
+// SVG fragment widths and cross-element shaping adapt Blink's native operation order.
 // Copyright 2016, 2021 The Chromium Authors. See THIRD_PARTY_NOTICES.txt.
 namespace Lokad.Svg.Fonts;
 
@@ -152,7 +152,7 @@ internal static class SvgGlyphLayout
             int cachedLookupCount = 0;
             int glyphPosition = 0;
             int fragmentStart = 0;
-            int mappedNodeIndex = 0;
+            int mappedNodeIndex = 0, shapingNodeIndex = 0;
             int mappedSourceOffset = 0;
             int mappedSpacingIndex = 0;
             int mappedPositionIndex = 0;
@@ -218,6 +218,19 @@ internal static class SvgGlyphLayout
                     if (glyphPaints.Length != 0) glyphPaints[glyphPosition] = paintSpans[mappedPaintIndex].Paint;
                 }
                 if (mappedPositionIndex < positionAdjustments.Length) sourceEnd = Math.Min(sourceEnd, positionAdjustments[mappedPositionIndex].Start);
+                // Blink compares the first SVG item's scaled font with a
+                // following element's unscaled style font. Element changes
+                // therefore stop shaping when the screen font size differs.
+                bool scaledElementFontsDiffer = deviceMetrics is {} elementMetrics
+                    && (float)fontSize * (float)elementMetrics.Scale != (float)fontSize;
+                while (shapingNodeIndex < nodeBoundaries.Length
+                    && (nodeBoundaries[shapingNodeIndex].Offset <= mappedSourceOffset || !nodeBoundaries[shapingNodeIndex].ChangesElement))
+                {
+                    cancellationToken.ThrowIfCancellationRequested(); workCounter?.Consume(cancellationToken);
+                    shapingNodeIndex++;
+                }
+                if (scaledElementFontsDiffer && shapingNodeIndex < nodeBoundaries.Length)
+                    sourceEnd = Math.Min(sourceEnd, nodeBoundaries[shapingNodeIndex].Offset);
                 if (spacing == 0 && ligatures is {} graph && OpenTypeFont.TryGetLatinLigature(font.Bytes, font.Metrics, graph, text, mappedSourceOffset, sourceEnd, glyphIndex, workCounter, cancellationToken, out ushort ligatureGlyph, out int ligatureLength))
                 {
                     if (sourceLengths is null)
@@ -283,7 +296,7 @@ internal static class SvgGlyphLayout
             int positionBoundaryIndex = 0;
             int sourceOffset = 0;
             int fragmentIndex = 0;
-            int kerningRunEnd = 0, kerningBoundaryIndex = 0, nodeBoundaryIndex = 0;
+            int kerningRunEnd = 0, kerningBoundaryIndex = 0, nodeBoundaryIndex = 0, kerningNodeIndex = 0;
             double decorationOrigin = originX;
             float sourceCssPosition = 0;
             for (int index = 0; index < positionedGlyphCount; index++)
@@ -300,9 +313,15 @@ internal static class SvgGlyphLayout
                 sourceOffset += sourceLengths is null ? char.IsSurrogatePair(text, sourceOffset) ? 2 : 1 : sourceLengths[index];
                 while (positionBoundaryIndex < positionAdjustments.Length && positionAdjustments[positionBoundaryIndex].Start < sourceOffset) positionBoundaryIndex++;
                 bool chunkEnds = index + 1 == positionedGlyphCount || positionBoundaryIndex < positionAdjustments.Length && positionAdjustments[positionBoundaryIndex].Start == sourceOffset && positionAdjustments[positionBoundaryIndex].HasAbsolutePosition;
-                bool nodeEnds = false;
+                bool nodeEnds = false, elementEnds = false;
                 while (nodeBoundaryIndex < nodeBoundaries.Length && nodeBoundaries[nodeBoundaryIndex].Offset <= sourceOffset)
-                { nodeEnds = true; nodeBoundaryIndex++; }
+                {
+                    nodeEnds = true;
+                    elementEnds |= nodeBoundaries[nodeBoundaryIndex].ChangesElement;
+                    nodeBoundaryIndex++;
+                }
+                bool scaledElementFontsDiffer = deviceMetrics is {} elementMetrics
+                    && (float)fontSize * (float)elementMetrics.Scale != (float)fontSize;
                 bool sameFont = glyphFonts.Length == 0 || index + 1 < positionedGlyphCount && glyphFonts[index] == glyphFonts[index + 1];
                 bool sameSpacing = letterSpacingSpans.IsEmpty || spacingSpanIndex + 1 == letterSpacingSpans.Length
                     || letterSpacingSpans[spacingSpanIndex].End != sourceOffset
@@ -312,7 +331,7 @@ internal static class SvgGlyphLayout
                     && ReferenceEquals(glyphPaints[index].Decoration, glyphPaints[index + 1].Decoration);
                 bool samePaint = glyphPaints.Length == 0 || index + 1 < positionedGlyphCount && glyphPaints[index] == glyphPaints[index + 1];
                 int pairAdjustment = 0;
-                if (!chunkEnds && sameFont && sameSpacing)
+                if (!chunkEnds && !(elementEnds && scaledElementFontsDiffer) && sameFont && sameSpacing)
                 {
                     if (font.Metrics.Gpos is { HasFilteredPairs: true })
                     {
@@ -327,6 +346,14 @@ internal static class SvgGlyphLayout
                                 kerningBoundaryIndex++;
                             }
                             int absoluteEnd = kerningBoundaryIndex < positionAdjustments.Length ? positionAdjustments[kerningBoundaryIndex].Start : text.Length;
+                            while (kerningNodeIndex < nodeBoundaries.Length
+                                && (nodeBoundaries[kerningNodeIndex].Offset <= sourceOffset || !nodeBoundaries[kerningNodeIndex].ChangesElement))
+                            {
+                                cancellationToken.ThrowIfCancellationRequested(); workCounter?.Consume(cancellationToken);
+                                kerningNodeIndex++;
+                            }
+                            if (scaledElementFontsDiffer && kerningNodeIndex < nodeBoundaries.Length)
+                                absoluteEnd = Math.Min(absoluteEnd, nodeBoundaries[kerningNodeIndex].Offset);
                             kerningRunEnd = index + 1;
                             int runSourceEnd = sourceOffset;
                             int runSpacingIndex = spacingSpanIndex;

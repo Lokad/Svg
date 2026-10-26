@@ -73,8 +73,8 @@ internal readonly record struct SvgExtractedTextRun(BudgetedTextLayout Layout, S
     public void Dispose() { Layout.Dispose(); PaintSpans.Dispose(); FontSpans.Dispose(); NodeBoundaries.Dispose(); }
 }
 
-/// <summary>Marks a normalized UTF-16 text-node boundary for fragment metrics, without splitting shaping.</summary>
-internal readonly record struct SvgTextNodeBoundary(int Offset);
+/// <summary>Marks a normalized UTF-16 text-node boundary and whether the owning text element changed.</summary>
+internal readonly record struct SvgTextNodeBoundary(int Offset, bool ChangesElement);
 
 /// <summary>Retains inherited font declarations over one normalized UTF-16 interval.</summary>
 internal readonly record struct SvgTextFontSpan(int Start, int End, SvgInheritedTextStyle Font);

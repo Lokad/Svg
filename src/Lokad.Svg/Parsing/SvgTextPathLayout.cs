@@ -204,7 +204,17 @@ internal static class SvgTextPathLayout
                             // Zero-angle fragments truncate their whole scaled paint origin too.
                             SvgGlyphDeviceMetrics metrics = new(pathScale, OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, true);
                             SvgAffineTransform origin = metrics.PlaceTextPathPaint(SvgAffineTransform.FromTranslation(placed.X, placed.Y), 0, 0, glyphFont.FontSize, glyphFont.Font.Metrics);
-                            placed = placed with { X = origin.E, Y = origin.F };
+                            double paintedX = origin.E;
+                            if (run.GlyphStretch != 1)
+                            {
+                                // Zero-angle paths use the same physical paint-origin
+                                // truncation and float stretch composition as ordinary text.
+                                float sourceX = (float)placed.X * (float)pathScale;
+                                float stretch = (float)run.GlyphStretch;
+                                float translation = sourceX - stretch * sourceX;
+                                paintedX = (MathF.Truncate(sourceX * 64f) / 64 * stretch + translation) / (float)pathScale;
+                            }
+                            placed = placed with { X = paintedX, Y = origin.F };
                         }
                         if (run.GlyphStretch != 1)
                         {

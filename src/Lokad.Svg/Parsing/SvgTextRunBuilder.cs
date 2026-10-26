@@ -198,10 +198,11 @@ internal static class SvgTextRunBuilder
                 {
                     if (fragments[fittedFragment].SourceOrigin is {} sourceOrigin)
                     {
-                        // Fitted SVG paint uses a physical 26.6 origin before scaling about the unrounded source origin.
+                        // Float composition after physical 26.6 truncation preserves
+                        // native quarter-pixel strike selection at rounding ties.
                         float sourceX = (float)sourceOrigin.X;
                         float translation = sourceX - (float)scale * sourceX;
-                        double painted = Math.Truncate(sourceX * 64f) / 64 * (float)scale + translation;
+                        float painted = MathF.Truncate(sourceX * 64f) / 64 * (float)scale + translation;
                         fittedPaintShift = painted / sourceScale - x;
                     }
                     fittedFragment++;
