@@ -33,13 +33,14 @@ internal static partial class OpenTypeFont
                 int count = cvtRange.Length / 2;
                 using RenderBudget.BudgetReservation? scratch = count == 0 ? null : budget.Reserve(ParserCollectionMemory.GetArrayByteCount<int>(count), SvgMemoryCategory.Geometry);
                 int[] cvt = new int[count];
-                int controlScale = target.ControlScale == TrueTypeHintControlScale.FractionalFontUnits ? (scale.Vertical >> 6) << 6 : scale.Vertical;
+                int controlBasis = target.UsesWindowsArithmetic ? Math.Max(scale.Vertical, scale.Horizontal) : scale.Vertical;
+                int controlScale = target.ControlScale == TrueTypeHintControlScale.FractionalFontUnits ? (controlBasis >> 6) << 6 : controlBasis;
                 for (int i = 0; i < count; i++)
                 {
                     work.Consume(token);
                     int value = ReadInt16(bytes.Span, cvtRange.Offset + i * 2);
                     cvt[i] = target.UsesWindowsArithmetic && target.ControlScale == TrueTypeHintControlScale.FullPrecision
-                        ? TrueTypeHintDeviceScale.ScaleWindows(value, scale.WindowsVertical) : Scale(value, controlScale);
+                        ? scale.ScaleWindowsControl(value) : Scale(value, controlScale);
                 }
                 _machine = TrueTypeHinting.Create(profile, cvt, [], [], ppem, scale, target, budget, work, token);
                 try

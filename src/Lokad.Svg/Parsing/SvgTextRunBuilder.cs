@@ -298,7 +298,7 @@ internal sealed class SvgTextRun : IDisposable
     internal SvgTextGlyphPaint GetGlyphPaint(int index, SvgColor fallbackColor) => _glyphs.GlyphPaints.IsEmpty ? _defaultPaint ?? new(new(fallbackColor, fallbackColor.Alpha / 255f), true) : _glyphs.GlyphPaints[index];
     internal double GetGlyphRotation(int index) => _glyphs.GlyphRotations.IsEmpty ? 0 : _glyphs.GlyphRotations[index];
 
-    /// <summary>Composes character-local rotation with the existing glyph and element placement.</summary>
+    /// <summary>Applies source-grid paint precision and composes character-local rotation with glyph and element placement.</summary>
     internal (SvgPositionedGlyph Position, SvgAffineTransform Map) GetGlyphPlacement(int index, SvgAffineTransform placement)
         => GetPlacement(index, placement, true);
 
@@ -310,6 +310,24 @@ internal sealed class SvgTextRun : IDisposable
         SvgPositionedGlyph glyph = Glyphs[index];
         double angle = GetGlyphRotation(index);
         double glyphStretch = stretch ? GlyphStretch : 1;
+        // Blink truncates the source-font rectangle before viewport mapping.
+        // Apply its baseline displacement to the paint copy of the glyph.
+        if (stretch && angle == 0 && _deviceMetrics is {} paintMetrics)
+        {
+            SvgGlyphFontStyle face = GetGlyphFont(index);
+            float size = SvgGlyphDeviceMetrics.GetEffectiveFontSize(face.FontSize * paintMetrics.Scale);
+            OpenTypeFontMetrics font = face.Font.Metrics;
+            float ascent = paintMetrics.Target == SvgGlyphMetricTarget.Windows
+                ? size * font.LineMetrics.WindowsAscender / font.UnitsPerEm
+                : font.LineMetrics.Ascender * (size / font.UnitsPerEm);
+            float above = MathF.Floor(ascent + .5f);
+            float sourceY = (float)glyph.Y * (float)paintMetrics.Scale;
+            float top = sourceY - above;
+            float painted = MathF.Truncate(top * 64) / 64 + above;
+            double y = glyph.Y + (painted - sourceY) / paintMetrics.Scale;
+            if (!double.IsFinite(y)) throw new SvgException(SvgErrorCode.LimitExceeded, "The text paint baseline exceeds the numeric range.");
+            glyph = glyph with { Y = y };
+        }
         if (angle == 0 && glyphStretch == 1) return placement.IsTranslation ? (glyph.Translate(placement), SvgAffineTransform.Identity) : (glyph, placement);
         SvgAffineTransform map = SvgAffineTransform.FromTranslation(glyph.X, glyph.Y)
             .ComposeChecked(SvgAffineTransform.FromRotationDegrees(angle)).ComposeChecked(SvgAffineTransform.FromScale(glyphStretch, 1));

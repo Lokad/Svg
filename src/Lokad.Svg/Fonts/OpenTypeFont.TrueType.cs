@@ -89,13 +89,14 @@ internal static partial class OpenTypeFont
         using RenderBudget.BudgetReservation scratch = budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
         TrueTypeHintPoint[] points = new TrueTypeHintPoint[pointCount + 4];
         int[] cvt = new int[cvtCount];
-        int controlScale = target.ControlScale == TrueTypeHintControlScale.FractionalFontUnits ? (scale >> 6) << 6 : scale;
+        int controlBasis = target.UsesWindowsArithmetic ? Math.Max(scale, horizontalScale) : scale;
+        int controlScale = target.ControlScale == TrueTypeHintControlScale.FractionalFontUnits ? (controlBasis >> 6) << 6 : controlBasis;
         for (int i = 0; i < cvt.Length; i++)
         {
             work.Consume(token);
             int value = ReadInt16(bytes.Span, cvtRange.Offset + i * 2);
             cvt[i] = target.UsesWindowsArithmetic && target.ControlScale == TrueTypeHintControlScale.FullPrecision
-                ? TrueTypeHintDeviceScale.ScaleWindows(value, deviceScale.WindowsVertical) : ScaleTrueTypeFixed(value, controlScale, target);
+                ? deviceScale.ScaleWindowsControl(value) : ScaleTrueTypeFixed(value, controlScale, target);
         }
         for (int i = 0; i < pointCount; i++) { work.Consume(token); points[i] = new(ScaleHorizontal(decoded.Points[i].X), Scale(decoded.Points[i].Y), decoded.Points[i].X, decoded.Points[i].Y) { IsOnCurve = decoded.Points[i].IsOnCurve }; }
         OpenTypeGlyphHeader header = ParseGlyphHeader(bytes, structure.Value.GlyphRange) ?? throw InvalidFont("A nonempty glyph has no header.");

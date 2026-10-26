@@ -15,6 +15,7 @@ their images are checked through direct and prepared rendering, limits and retry
 Anchored rectangle cases cover half-grid widths, fractional relative offsets,
 backtracking and nonintegral author origins through both root lists and spans.
 
-Two fitting inputs retain an existing three-pixel Windows difference separately
-from the exact cases. Their native images are preserved; both inputs are exact
-on Linux. No image tolerance or reference is changed to hide that difference.
+Nonuniform fitting and fractional viewport cases cover native control-table
+scaling and source-grid baseline painting, including symbol replay and gradients.
+The [control-table vectors](../windows-font-unit-scaling/README.md) exercise
+axis precision and signed rounding independently of whole-image comparisons.

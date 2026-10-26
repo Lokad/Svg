@@ -11,11 +11,17 @@ to a whole pixel, and draw a four-pixel band. The twenty
 font files, enabled fitting and symmetric ClearType. Native nonzero bitmap
 bounds encode the value without needing internal native outline access.
 
-Windows retains floating-point scale precision before rounding: 714 at 11.5 px
-becomes 526 coordinate units; premature 16.16 scaling produces 525. Signed
-half units round toward positive infinity, including WCVTF. Other targets
-retain their existing fixed-point arithmetic. The offline tests check both
-band edges, unchanged source bytes and released storage.
+Windows points, distances and vertical-dominant control tables retain
+floating-point precision: 714 at 11.5 px becomes 526 coordinate units;
+premature 16.16 scaling produces 525. Signed half units round toward positive
+infinity. The offline tests check both band edges, unchanged source bytes and
+released storage.
+
+A larger horizontal strike initializes its control table with a 16.16 scale
+and rounds signed halves away from zero. Reads quantize the projection-to-table
+ratio to 16.16; writes divide by that same ratio. WCVTF uses the table's axis
+independently of the current projection. The [control-value tests](../../Lokad.Svg.Tests/TrueTypeHintingTests.WindowsControlValues.cs)
+retain native band observations for both axes, compression and signed values.
 
 These fixtures protect shared fitting semantics. Complete font sheets retain
 their separate selection, independent metric and exact image acceptance gates.

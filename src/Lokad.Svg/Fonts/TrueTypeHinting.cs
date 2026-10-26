@@ -41,6 +41,19 @@ internal readonly record struct TrueTypeHintDeviceScale(int Vertical, int Horizo
     internal float WindowsVertical { get; init; } = Vertical / 4194304f;
     internal float WindowsHorizontal { get; init; } = Horizontal / 4194304f;
 
+    /// <summary>Scales a Windows control value on its maximum device axis with the native precision of that axis.</summary>
+    internal int ScaleWindowsControl(int value)
+    {
+        // The vertical table retains floating-point precision; a larger
+        // horizontal strike uses a 16.16 scale and signed-magnitude rounding.
+        if (WindowsHorizontal <= WindowsVertical) return ScaleWindows(value, WindowsVertical);
+        long product = (long)value * Math.Max(Vertical, Horizontal);
+        long rounded = Math.Sign(product) * ((Math.Abs(product) + 32768) >> 16);
+        if (rounded < int.MinValue || rounded > int.MaxValue)
+            throw new SvgException(SvgErrorCode.LimitExceeded, "A TrueType control value exceeds its signed bound.");
+        return (int)rounded;
+    }
+
     internal static int ScaleWindows(int value, float fontToPixels)
     {
         // Round after native float scaling; a 16.16 ratio can cross a
@@ -120,6 +133,8 @@ internal sealed partial class TrueTypeHinting : IDisposable
         _reservation = reservation; _work = work; _token = token;
     }
 
+    /// <summary>Copies control values and borrows glyph points and contour ends for an exclusively owned interpreter.</summary>
+    /// <remarks>Windows control values arrive scaled on the maximum device axis. The caller retains the borrowed arrays until disposal. Creation and execution share the supplied work, cancellation and memory budgets; independent owners may run concurrently.</remarks>
     internal static TrueTypeHinting Create(TrueTypeHintProfile profile, int[] cvt, TrueTypeHintPoint[] glyph, ushort[] ends, int ppem, TrueTypeHintDeviceScale scale, TrueTypeHintTarget target, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         work.Consume(token);
@@ -550,8 +565,8 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 case 0x70:
                 {
                     int value = Pop();
-                    _cvt[Index(Pop(), _cvt.Length)] = _target.UsesWindowsArithmetic && (_projection.X == 0 || _projection.Y == 0)
-                        ? TrueTypeHintDeviceScale.ScaleWindows(value, _projection.Y == 0 ? _scale.WindowsHorizontal : _scale.WindowsVertical)
+                    _cvt[Index(Pop(), _cvt.Length)] = _target.UsesWindowsArithmetic
+                        ? _scale.ScaleWindowsControl(value)
                         : Divide(value, 65536, ProjectionScale);
                     break;
                 }
@@ -816,8 +831,11 @@ internal sealed partial class TrueTypeHinting : IDisposable
         if (target.Version is < 0 or > 255 || (target.QueryFlags & ~TrueTypeHintQueryFlags.All) != 0 || target.ControlScale is not TrueTypeHintControlScale.FullPrecision and not TrueTypeHintControlScale.FractionalFontUnits || target.Preparation is not TrueTypeHintPreparation.Single and not TrueTypeHintPreparation.DefaultThenTarget || target.Grid is not TrueTypeHintGrid.Physical and not TrueTypeHintGrid.ClearType || !double.IsFinite(target.HorizontalRatio) || target.HorizontalRatio <= 0)
             throw Invalid("The TrueType hint target is invalid.");
     }
-    private int ReadControl(int index) => ScaleRatio(_cvt[index], ProjectionRatio);
-    private int StoreControl(int value) => ScaleRatio(value, 1 / ProjectionRatio);
+    // Windows quantizes the projection-to-table ratio before either reading
+    // a value or dividing by that same ratio for a write.
+    private double ControlRatio => _target.UsesWindowsArithmetic ? Math.Round(ProjectionRatio / Math.Max(1, _target.HorizontalRatio) * 65536, MidpointRounding.AwayFromZero) / 65536 : ProjectionRatio;
+    private int ReadControl(int index) => ScaleRatio(_cvt[index], ControlRatio);
+    private int StoreControl(int value) => ScaleRatio(value, 1 / ControlRatio);
     private int ScaleHorizontal(int value) => ScaleRatio(value, _target.HorizontalRatio);
     private static int ScaleRatio(int value, double ratio)
     {
