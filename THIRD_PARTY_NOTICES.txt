@@ -77,7 +77,7 @@ src/shaders/SkImageShader.cpp,
 and include/core/SkRect.h, include/private/SkMath.h, include/private/SkFixed.h,
 include/private/SkFloatingPoint.h.
 Copyright 2006, 2008, 2009, 2011, 2016 The Android Open Source Project;
-2010, 2011, 2012, 2014, 2015, 2016, 2018 Google Inc.; 2018, 2019, 2022, 2023, 2024, 2025 Google LLC.
+2010, 2011, 2012, 2013, 2014, 2015, 2016, 2018 Google Inc.; 2018, 2019, 2022, 2023, 2024, 2025 Google LLC.
 
 Dash endpoint interpolation also adapts src/core/SkContourMeasure.cpp and
 include/core/SkScalar.h at 8b8c3872fbc03f025855db96ce683f34ec98a815.
