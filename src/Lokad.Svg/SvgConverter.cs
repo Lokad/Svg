@@ -3385,10 +3385,11 @@ public static partial class SvgConverter
                     outputMap = outputMap.ComposeChecked(sourcePlacement);
                 authoredMap = frame?.NativeCapturePlacement is {} nativeCapture
                     ? nativeCapture.ComposeNative(replay.SceneMap) : outputMap.ComposeChecked(replay.SceneMap);
-                // A source recorded in its owning filter's map already belongs
-                // to that layer's coordinates. Reuse the layer map rather than
-                // cancelling rounded inverse/source matrices for each shape.
-                if (frame is { NativeCapturePlacement: not null, FilterSourceMap: {} sourceRelation }
+                // Recorded source drawings already belong to the filter layer.
+                // Clip geometry keeps its own native concatenation; fitted glyphs
+                // already use device coordinates rather than this recording map.
+                if (!collectingViewportClip && coordinateSpace == PathCoordinateSpace.User
+                    && frame is { NativeCapturePlacement: not null, FilterSourceMap: {} sourceRelation }
                     && sourceRelation.Source == replay.SceneMap)
                     authoredMap = SvgAffineTransform.FromTranslation(horizontalOffset, verticalOffset).ComposeNative(sourceRelation.Layer);
                 if (authoredPath?.StrokeStyle?.NonScalingMap is {} nonScaling)

@@ -1,9 +1,12 @@
 # Filter source recording coordinates
 
-Sources recorded in their owning filter's map already belong to that layer's
+User-space source drawings recorded in their owning filter's map belong to that layer's
 coordinates. Reusing the layer map avoids cancelling independently rounded
 inverse/source matrices. The rule applies to the recorded source rather than
 selecting a shape type.
+Clip geometry retains its own native concatenation; fitted glyphs retain their
+device coordinates. The existing [clipped gradient control](../affine-source-exit-sheet/linear-source-clip.svg)
+protects that separate clip ownership without duplicating the fixture.
 
 The three [inputs](capture.json) retain independent healthy, byte-stable
 Windows/Linux page captures from three fresh processes each. They cover a

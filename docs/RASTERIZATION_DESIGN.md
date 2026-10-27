@@ -243,8 +243,10 @@ and source-over, and the image draw uses the destination clip. Shader consumers
 retain their separate sampling rules. The
 [source/composition controls](../tests/Research/filter-merge-image-draw/README.md)
 preserve these distinctions, including platform-specific glyph image bounds.
-Sources recorded in their owning filter's map use the existing layer transform;
+User-space source drawings recorded in their owning filter's map use its layer transform;
 independently rounded inverse/source products must not reconstruct that map.
+Clip geometry retains its own native concatenation, and fitted glyph outlines
+retain device-coordinate placement.
 The [recording-coordinate controls](../tests/Research/filter-source-recording-map/README.md)
 retain ellipse and curve coverage with separate allocation and sampling bounds.
 

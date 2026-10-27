@@ -41,6 +41,9 @@ The [recording-coordinate controls](Research/filter-source-recording-map/README.
 add three ellipse inputs and reuse the existing linear neutral reference. They
 protect the shared source/layer map while the transformed-curve controls retain
 their own native images.
+The existing clipped-gradient control in the affine source sheet separately
+protects clip-map ownership; include `SvgFontLayoutDiagramTests` when changing
+source recording coordinates.
 The full milestone command includes every extended case:
 
 ```powershell
