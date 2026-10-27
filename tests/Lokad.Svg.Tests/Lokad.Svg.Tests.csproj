@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/raster-capture-profiles/inputs/pattern-viewbox-filter.svg" Link="TestData/raster-capture-profiles/pattern-viewbox-filter.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/filter-source-coverage/mechanisms.json" Link="TestData/filter-source-coverage/mechanisms.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>

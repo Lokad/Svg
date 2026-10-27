@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Keep large vector patterns on one raster device so gradients retain their
+  native phase across compositor seams.
+
 - Preserve fractional filter source coverage through cropped aliases and small
   blur materialization, including native deviation parsing and image-hint rounding.
 

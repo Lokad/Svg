@@ -106,6 +106,8 @@ does not enlarge the physical viewport clip, including a minimum one-pixel canva
 separate local, reference and bitmap mappings. Gradient, image and glyph consumers
 round at different native stages; combining their arithmetic can move samples or
 change dithering even when the real-valued transform is equivalent.
+Vector patterns rasterize one source image. Outer compositor tile boundaries
+do not split that paint device or reset its shader/dither origins.
 
 ## Paint and compositing
 

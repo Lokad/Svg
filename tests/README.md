@@ -57,6 +57,12 @@ storage, cleanup and prepared replay contracts run separately from the images.
 The [filter source coverage controls](Research/filter-source-coverage/README.md)
 separate 20 native deviation values, 90 coverage vectors, bounds mechanisms and
 two ownership contracts from 59 canonical browser-backed images per platform.
+Their original Canvas captures are preserved and independently checked against
+recipe-3 page captures, with explicit root-size materializations for scaled inputs.
+The [raster device controls](Research/raster-capture-profiles/README.md) add ten
+canonical images and two wide-pattern ownership contracts. They distinguish
+pattern image devices from outer compositor tiles and retain naturally unequal
+Canvas/page profiles.
 
 Color/filter numerical-context cross products remain available with
 `--filter Category=Research`. Their [gradient](Research/gradient-color-alpha/research-cases.json)

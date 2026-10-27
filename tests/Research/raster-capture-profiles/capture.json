@@ -1,0 +1,301 @@
+{
+  "captureProfile": "recipe3-page-img-screenshot",
+  "browser": "Chromium 153.0.8010.52",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "pngStability": "byte-identical",
+  "license": "MIT",
+  "licenseEvidence": "../../../LICENSE.txt",
+  "cases": [
+    {
+      "id": "page-filtered-gradient",
+      "input": "inputs/page-filtered-gradient.svg",
+      "sourceSha256": "46e2e52028d99742bc045e9e8141b9f72f0c877d681d2c238f9c4123bdcaf0a5",
+      "interaction": "Ordinary page capture retains compositor tile ownership; Canvas uses a distinct device.",
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/page-filtered-gradient.png",
+          "sha256": "24b252170beec454f1f5b75d679a14b21d41f7aa102deea841e33739c0a748e9",
+          "captureSha256": [
+            "24b252170beec454f1f5b75d679a14b21d41f7aa102deea841e33739c0a748e9",
+            "24b252170beec454f1f5b75d679a14b21d41f7aa102deea841e33739c0a748e9",
+            "24b252170beec454f1f5b75d679a14b21d41f7aa102deea841e33739c0a748e9"
+          ],
+          "canvas": {
+            "path": "references/canvas/windows/page-filtered-gradient.png",
+            "sha256": "4cd7b6256adfda5ecc8845cf7cdfcd48d5134a66c0c9b075301a0b99412d3cc7",
+            "changedPixels": 124,
+            "maximumChannelError": 1,
+            "alphaChangedPixels": 0
+          }
+        },
+        "linux": {
+          "path": "references/recipe3/linux/page-filtered-gradient.png",
+          "sha256": "24b252170beec454f1f5b75d679a14b21d41f7aa102deea841e33739c0a748e9",
+          "captureSha256": [
+            "24b252170beec454f1f5b75d679a14b21d41f7aa102deea841e33739c0a748e9",
+            "24b252170beec454f1f5b75d679a14b21d41f7aa102deea841e33739c0a748e9",
+            "24b252170beec454f1f5b75d679a14b21d41f7aa102deea841e33739c0a748e9"
+          ],
+          "canvas": {
+            "path": "references/canvas/linux/page-filtered-gradient.png",
+            "sha256": "4cd7b6256adfda5ecc8845cf7cdfcd48d5134a66c0c9b075301a0b99412d3cc7",
+            "changedPixels": 124,
+            "maximumChannelError": 1,
+            "alphaChangedPixels": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "page-gradient",
+      "input": "inputs/page-gradient.svg",
+      "sourceSha256": "4f8e5bc38b7570a88e58d2d7c20ee118c4636c18439002f9a455fead1ffe7d17",
+      "interaction": "Ordinary page capture retains compositor tile ownership; Canvas uses a distinct device.",
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/page-gradient.png",
+          "sha256": "3ace083743d20d7a273fa6f7de7460e7529b07fc4a2d6165ec795872fc33509f",
+          "captureSha256": [
+            "3ace083743d20d7a273fa6f7de7460e7529b07fc4a2d6165ec795872fc33509f",
+            "3ace083743d20d7a273fa6f7de7460e7529b07fc4a2d6165ec795872fc33509f",
+            "3ace083743d20d7a273fa6f7de7460e7529b07fc4a2d6165ec795872fc33509f"
+          ],
+          "canvas": {
+            "path": "references/canvas/windows/page-gradient.png",
+            "sha256": "791e7f20846e5cd0080214c040887cb278a38fce8b89cb9b99cfb81a2c42f330",
+            "changedPixels": 544,
+            "maximumChannelError": 1,
+            "alphaChangedPixels": 0
+          }
+        },
+        "linux": {
+          "path": "references/recipe3/linux/page-gradient.png",
+          "sha256": "3ace083743d20d7a273fa6f7de7460e7529b07fc4a2d6165ec795872fc33509f",
+          "captureSha256": [
+            "3ace083743d20d7a273fa6f7de7460e7529b07fc4a2d6165ec795872fc33509f",
+            "3ace083743d20d7a273fa6f7de7460e7529b07fc4a2d6165ec795872fc33509f",
+            "3ace083743d20d7a273fa6f7de7460e7529b07fc4a2d6165ec795872fc33509f"
+          ],
+          "canvas": {
+            "path": "references/canvas/linux/page-gradient.png",
+            "sha256": "791e7f20846e5cd0080214c040887cb278a38fce8b89cb9b99cfb81a2c42f330",
+            "changedPixels": 544,
+            "maximumChannelError": 1,
+            "alphaChangedPixels": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "pattern-filtered-gradient",
+      "input": "inputs/pattern-filtered-gradient.svg",
+      "sourceSha256": "3733da586e7b34085f06c7651516f366bfcf5b9900bc1f5c3e870d4265f5703c",
+      "interaction": "A vector pattern owns one raster image across the outer compositor seam.",
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/pattern-filtered-gradient.png",
+          "sha256": "2fb39fe3fe10784580bf0b577d4ff119d16c085878b4785b71fb812bc7d59c92",
+          "captureSha256": [
+            "2fb39fe3fe10784580bf0b577d4ff119d16c085878b4785b71fb812bc7d59c92",
+            "2fb39fe3fe10784580bf0b577d4ff119d16c085878b4785b71fb812bc7d59c92",
+            "2fb39fe3fe10784580bf0b577d4ff119d16c085878b4785b71fb812bc7d59c92"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/pattern-filtered-gradient.png",
+          "sha256": "2fb39fe3fe10784580bf0b577d4ff119d16c085878b4785b71fb812bc7d59c92",
+          "captureSha256": [
+            "2fb39fe3fe10784580bf0b577d4ff119d16c085878b4785b71fb812bc7d59c92",
+            "2fb39fe3fe10784580bf0b577d4ff119d16c085878b4785b71fb812bc7d59c92",
+            "2fb39fe3fe10784580bf0b577d4ff119d16c085878b4785b71fb812bc7d59c92"
+          ]
+        }
+      }
+    },
+    {
+      "id": "pattern-gradient",
+      "input": "inputs/pattern-gradient.svg",
+      "sourceSha256": "7dfb5e6a3af4e161d8ab92cb94112c99b0f88f630fec98ea8ceaba7d1152531e",
+      "interaction": "A vector pattern owns one raster image across the outer compositor seam.",
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/pattern-gradient.png",
+          "sha256": "b97933f304274c6809278ca24d827a9bc2593763d861933fee340055e9d4b78c",
+          "captureSha256": [
+            "b97933f304274c6809278ca24d827a9bc2593763d861933fee340055e9d4b78c",
+            "b97933f304274c6809278ca24d827a9bc2593763d861933fee340055e9d4b78c",
+            "b97933f304274c6809278ca24d827a9bc2593763d861933fee340055e9d4b78c"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/pattern-gradient.png",
+          "sha256": "b97933f304274c6809278ca24d827a9bc2593763d861933fee340055e9d4b78c",
+          "captureSha256": [
+            "b97933f304274c6809278ca24d827a9bc2593763d861933fee340055e9d4b78c",
+            "b97933f304274c6809278ca24d827a9bc2593763d861933fee340055e9d4b78c",
+            "b97933f304274c6809278ca24d827a9bc2593763d861933fee340055e9d4b78c"
+          ]
+        }
+      }
+    },
+    {
+      "id": "pattern-fractional-filter",
+      "input": "inputs/pattern-fractional-filter.svg",
+      "sourceSha256": "4c05f82c6bb588dfa5e29caab7d7b3e0d6dc693d020adbdf0c2eaba03e19e670",
+      "interaction": "Pattern image ownership through fractional-offset.",
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/pattern-fractional-filter.png",
+          "sha256": "57fd47efc550385b4b92a9aa7f5117429099b28bb69616b24438f8c8992670c0",
+          "captureSha256": [
+            "57fd47efc550385b4b92a9aa7f5117429099b28bb69616b24438f8c8992670c0",
+            "57fd47efc550385b4b92a9aa7f5117429099b28bb69616b24438f8c8992670c0",
+            "57fd47efc550385b4b92a9aa7f5117429099b28bb69616b24438f8c8992670c0"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/pattern-fractional-filter.png",
+          "sha256": "57fd47efc550385b4b92a9aa7f5117429099b28bb69616b24438f8c8992670c0",
+          "captureSha256": [
+            "57fd47efc550385b4b92a9aa7f5117429099b28bb69616b24438f8c8992670c0",
+            "57fd47efc550385b4b92a9aa7f5117429099b28bb69616b24438f8c8992670c0",
+            "57fd47efc550385b4b92a9aa7f5117429099b28bb69616b24438f8c8992670c0"
+          ]
+        }
+      }
+    },
+    {
+      "id": "pattern-fractional-direct",
+      "input": "inputs/pattern-fractional-direct.svg",
+      "sourceSha256": "22df20c97a6aec909006fa85a2cbc77931a0fd7344c151c5aeed3c4302e2154a",
+      "interaction": "Pattern image ownership through fractional-offset.",
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/pattern-fractional-direct.png",
+          "sha256": "cfa387ea53fc6f5e638fd433c8a81099c3f7c47b3af9ce3c42f3ea84f1858677",
+          "captureSha256": [
+            "cfa387ea53fc6f5e638fd433c8a81099c3f7c47b3af9ce3c42f3ea84f1858677",
+            "cfa387ea53fc6f5e638fd433c8a81099c3f7c47b3af9ce3c42f3ea84f1858677",
+            "cfa387ea53fc6f5e638fd433c8a81099c3f7c47b3af9ce3c42f3ea84f1858677"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/pattern-fractional-direct.png",
+          "sha256": "cfa387ea53fc6f5e638fd433c8a81099c3f7c47b3af9ce3c42f3ea84f1858677",
+          "captureSha256": [
+            "cfa387ea53fc6f5e638fd433c8a81099c3f7c47b3af9ce3c42f3ea84f1858677",
+            "cfa387ea53fc6f5e638fd433c8a81099c3f7c47b3af9ce3c42f3ea84f1858677",
+            "cfa387ea53fc6f5e638fd433c8a81099c3f7c47b3af9ce3c42f3ea84f1858677"
+          ]
+        }
+      }
+    },
+    {
+      "id": "pattern-viewbox-filter",
+      "input": "inputs/pattern-viewbox-filter.svg",
+      "sourceSha256": "ba23b3ce7d94857f17791840b364f69addc08a651a43e3fae62657708fc918ed",
+      "interaction": "Pattern image ownership through scaled-viewbox.",
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/pattern-viewbox-filter.png",
+          "sha256": "04584b6a420209451c2a42806e42d5f78e036222bb0a7342a4b843629835dff9",
+          "captureSha256": [
+            "04584b6a420209451c2a42806e42d5f78e036222bb0a7342a4b843629835dff9",
+            "04584b6a420209451c2a42806e42d5f78e036222bb0a7342a4b843629835dff9",
+            "04584b6a420209451c2a42806e42d5f78e036222bb0a7342a4b843629835dff9"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/pattern-viewbox-filter.png",
+          "sha256": "04584b6a420209451c2a42806e42d5f78e036222bb0a7342a4b843629835dff9",
+          "captureSha256": [
+            "04584b6a420209451c2a42806e42d5f78e036222bb0a7342a4b843629835dff9",
+            "04584b6a420209451c2a42806e42d5f78e036222bb0a7342a4b843629835dff9",
+            "04584b6a420209451c2a42806e42d5f78e036222bb0a7342a4b843629835dff9"
+          ]
+        }
+      }
+    },
+    {
+      "id": "pattern-viewbox-direct",
+      "input": "inputs/pattern-viewbox-direct.svg",
+      "sourceSha256": "ef1f62fe790207f8002152c28190e6eb82abcda1a974f204e1c7acc7fc13041b",
+      "interaction": "Pattern image ownership through scaled-viewbox.",
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/pattern-viewbox-direct.png",
+          "sha256": "d714963fabf2720abcf8801d41c1746aa55c516a64053c4fb215788cff02b8ca",
+          "captureSha256": [
+            "d714963fabf2720abcf8801d41c1746aa55c516a64053c4fb215788cff02b8ca",
+            "d714963fabf2720abcf8801d41c1746aa55c516a64053c4fb215788cff02b8ca",
+            "d714963fabf2720abcf8801d41c1746aa55c516a64053c4fb215788cff02b8ca"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/pattern-viewbox-direct.png",
+          "sha256": "d714963fabf2720abcf8801d41c1746aa55c516a64053c4fb215788cff02b8ca",
+          "captureSha256": [
+            "d714963fabf2720abcf8801d41c1746aa55c516a64053c4fb215788cff02b8ca",
+            "d714963fabf2720abcf8801d41c1746aa55c516a64053c4fb215788cff02b8ca",
+            "d714963fabf2720abcf8801d41c1746aa55c516a64053c4fb215788cff02b8ca"
+          ]
+        }
+      }
+    },
+    {
+      "id": "pattern-curved-filter",
+      "input": "inputs/pattern-curved-filter.svg",
+      "sourceSha256": "740abcb6c4386310ec8aed36d19603a793c08622136d566dc2bd5c133d3c15fa",
+      "interaction": "Pattern image ownership through curved-source.",
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/pattern-curved-filter.png",
+          "sha256": "5dc1a311dc06e288eb49285cc87f7372906545ba537787d0a230e27febbfd823",
+          "captureSha256": [
+            "5dc1a311dc06e288eb49285cc87f7372906545ba537787d0a230e27febbfd823",
+            "5dc1a311dc06e288eb49285cc87f7372906545ba537787d0a230e27febbfd823",
+            "5dc1a311dc06e288eb49285cc87f7372906545ba537787d0a230e27febbfd823"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/pattern-curved-filter.png",
+          "sha256": "5dc1a311dc06e288eb49285cc87f7372906545ba537787d0a230e27febbfd823",
+          "captureSha256": [
+            "5dc1a311dc06e288eb49285cc87f7372906545ba537787d0a230e27febbfd823",
+            "5dc1a311dc06e288eb49285cc87f7372906545ba537787d0a230e27febbfd823",
+            "5dc1a311dc06e288eb49285cc87f7372906545ba537787d0a230e27febbfd823"
+          ]
+        }
+      }
+    },
+    {
+      "id": "pattern-curved-direct",
+      "input": "inputs/pattern-curved-direct.svg",
+      "sourceSha256": "e2d28d0bacfbf925f08279ee394e78e604ed3b2055eba8dd39e62c12bf390d75",
+      "interaction": "Pattern image ownership through curved-source.",
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/pattern-curved-direct.png",
+          "sha256": "6c346168c4566730202eb897042b566eefee0bee1a25a74d8620ca4fdd6b4e0d",
+          "captureSha256": [
+            "6c346168c4566730202eb897042b566eefee0bee1a25a74d8620ca4fdd6b4e0d",
+            "6c346168c4566730202eb897042b566eefee0bee1a25a74d8620ca4fdd6b4e0d",
+            "6c346168c4566730202eb897042b566eefee0bee1a25a74d8620ca4fdd6b4e0d"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/pattern-curved-direct.png",
+          "sha256": "6c346168c4566730202eb897042b566eefee0bee1a25a74d8620ca4fdd6b4e0d",
+          "captureSha256": [
+            "6c346168c4566730202eb897042b566eefee0bee1a25a74d8620ca4fdd6b4e0d",
+            "6c346168c4566730202eb897042b566eefee0bee1a25a74d8620ca4fdd6b4e0d",
+            "6c346168c4566730202eb897042b566eefee0bee1a25a74d8620ca4fdd6b4e0d"
+          ]
+        }
+      }
+    }
+  ]
+}

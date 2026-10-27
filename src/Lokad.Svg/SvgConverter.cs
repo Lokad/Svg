@@ -274,7 +274,9 @@ public static partial class SvgConverter
         if (scaledWidth > options.Limits.MaximumDimension || scaledHeight > options.Limits.MaximumDimension) throw new SvgException(SvgErrorCode.LimitExceeded, "Output dimensions exceed the configured dimension limit.");
         int outputWidth = (int)scaledWidth;
         int outputHeight = (int)scaledHeight;
-        SvgCpuRasterGrid rasterGrid = new(outputWidth, outputHeight, frame?.SingleBitmap == true);
+        // A vector pattern owns one raster image, independent of outer compositor tiles.
+        SvgCpuRasterGrid rasterGrid = new(outputWidth, outputHeight,
+            frame?.SingleBitmap == true || surfaceMode == RasterSurfaceMode.PremultipliedPattern);
         SvgAffineTransform sourcePlacement = frame?.SourcePlacement ?? SvgAffineTransform.Identity;
         if (!sourcePlacement.TryInvert(out SvgAffineTransform sourceInverse))
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filter source placement must be invertible.");
