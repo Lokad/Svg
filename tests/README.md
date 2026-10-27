@@ -74,6 +74,14 @@ canonical images for operating color spaces, opacity, merge/offset aliases, patt
 destinations and backdrop preservation. Eleven positive controls and three naturally
 unequal native color-space pairs protect the distinctions between those paths.
 
+The [affine restoration controls](Research/filter-affine-restoration/README.md)
+add 35 canonical images for per-bitmap source requests, nonzero crop bounds, logical
+image extents, sprite ties and fractional graphs. Their naturally unequal crop and
+color-space references remain separate. [Direct sprite mechanisms](Lokad.Svg.Tests/SvgFilterSpriteMechanismTests.cs)
+cover adjacent floats and negative ties; [two representative ownership inputs](Lokad.Svg.Tests/SvgFilterBitmapOwnershipTests.cs)
+cover clip-prepass and bitmap-graph storage, refusal, cancellation, retry and prepared
+replay without multiplying every image across the API matrix.
+
 Color/filter numerical-context cross products remain available with
 `--filter Category=Research`. Their [gradient](Research/gradient-color-alpha/research-cases.json)
 and [filter](Research/filter-uniform-precision/research-cases.json) selections

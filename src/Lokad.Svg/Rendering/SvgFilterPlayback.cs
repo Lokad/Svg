@@ -1,4 +1,5 @@
 // Packed multiply blending adapts pinned SkRasterPipeline_opts.h.
+// Nearest sprite translation admission follows pinned SkMatrix.cpp.
 // Copyright 2018, 2022 Google LLC. See THIRD_PARTY_NOTICES.txt.
 using Lokad.Svg.Parsing;
 
@@ -16,7 +17,11 @@ internal sealed record SvgFilterDeferredImage(SvgShaderMatrix ImageToSource, Svg
 {
     /// <summary>Retains a materialized uniform texel across compact-storage cropping; SourceBounds still limits its image coverage.</summary>
     internal SvgConstantShaderPaint? Constant { get; init; }
+    /// <summary>Retains a pending source color filter independently of the stored pixel color space.</summary>
+    internal SvgFilterDeferredColorFilter ColorFilter { get; init; }
 }
+
+internal enum SvgFilterDeferredColorFilter : byte { None, SourceAlpha, LinearRgbRoundTrip }
 
 internal enum SvgFilterImageSampling : byte { Nearest, Linear }
 
@@ -73,6 +78,17 @@ internal readonly record struct SvgFilterResult(SvgConverter.RasterizedSurface F
 internal static class SvgFilterPlayback
 {
     private enum OffsetImagePaint { Packed, Constant, Floating, FloatingSamples }
+
+    /// <summary>Tests origin alignment for a pure nearest-sampled translation on the native four-bit AA grid.</summary>
+    /// <remarks>The caller admits matrix type, image extents and pixel coordinates separately and charges
+    /// bounded setup work. This immutable predicate allocates nothing; nonfinite arithmetic is ineligible.</remarks>
+    internal static bool IsNearestSpriteTranslation(float offset)
+    {
+        float subpixel = offset * 16;
+        return float.IsFinite(offset) && float.IsFinite(subpixel)
+            && MathF.Floor(subpixel + .5f) == MathF.Floor(offset + .5f) * 16;
+    }
+
 
     private readonly record struct UniformColor(bool Known, SvgShaderPaint Paint, bool HighPrecision);
     /// <summary>Rounds native layer bounds after the filter coordinate system's small integer-boundary inset.</summary>
@@ -492,23 +508,24 @@ internal static class SvgFilterPlayback
                         nativeTransform = null;
                         imageBounds[index] = ClipImageBounds(bounds, index);
                     }
-                    if (index == finalPaintIndex && directSource && map.Regions is { DeferFinalOffset: true }
+                    const float roundEpsilon = 1e-3f;
+                    bool aligned = MathF.Abs(placed.ScaleX - 1) <= roundEpsilon && MathF.Abs(placed.ScaleY - 1) <= roundEpsilon
+                        && MathF.Abs(placed.SkewX) <= roundEpsilon && MathF.Abs(placed.SkewY) <= roundEpsilon
+                        && MathF.Abs(placed.TranslateX - MathF.Floor(placed.TranslateX + .5f)) <= roundEpsilon
+                        && MathF.Abs(placed.TranslateY - MathF.Floor(placed.TranslateY + .5f)) <= roundEpsilon;
+                    if (index == finalPaintIndex && directSource && map.Regions is { DeferFinalOffset: true } && !aligned
                         && (primitive.OffsetX * map.ScaleX != Math.Truncate(primitive.OffsetX * map.ScaleX)
                             || primitive.OffsetY * map.ScaleY != Math.Truncate(primitive.OffsetY * map.ScaleY)))
                     {
-                        // The source bitmap remains unsampled until its affine consumer.
-                        // Skia retains default linear sampling for nearly pixel-aligned filter transforms.
-                        const float roundEpsilon = 1e-3f;
-                        bool aligned = MathF.Abs(placed.ScaleX - 1) <= roundEpsilon && MathF.Abs(placed.ScaleY - 1) <= roundEpsilon
-                            && MathF.Abs(placed.SkewX) <= roundEpsilon && MathF.Abs(placed.SkewY) <= roundEpsilon
-                            && MathF.Abs(placed.TranslateX - MathF.Floor(placed.TranslateX + .5f)) <= roundEpsilon
-                            && MathF.Abs(placed.TranslateY - MathF.Floor(placed.TranslateY + .5f)) <= roundEpsilon;
+                        // Fractional nearest transforms retain their source until the
+                        // affine draw. Integer-aligned outputs use the ordinary stored
+                        // result so color transfer precedes the later linear sampling.
                         SvgShaderMatrix imageToSource = SvgShaderMatrix.Concat(placed, new(1, 0, bounds.Left - nativeOrigin.X, 0, 1, bounds.Top - nativeOrigin.Y));
-                        // The following SVG crop moves a pixel-aligned transform into
-                        // its integer image subset, retaining native origin snapping.
-                        if (aligned)
-                            imageToSource = new(1, 0, MathF.Floor(imageToSource.TranslateX + .5f), 0, 1, MathF.Floor(imageToSource.TranslateY + .5f));
-                        deferredImage = new(imageToSource, bounds, regions[index], aligned ? SvgFilterImageSampling.Linear : SvgFilterImageSampling.Nearest);
+                        SvgFilterDeferredColorFilter pending = colorSpace == SvgFilterColorSpace.LinearRgb
+                            ? SvgFilterDeferredColorFilter.LinearRgbRoundTrip
+                            : ResolvePaintSource(primitive.Input) == SvgFilterInput.SourceAlpha ? SvgFilterDeferredColorFilter.SourceAlpha : SvgFilterDeferredColorFilter.None;
+                        deferredImage = new(imageToSource, bounds, regions[index], SvgFilterImageSampling.Nearest) { ColorFilter = pending };
+                        linear[index] = inputLinear;
                         Charge(pixels);
                         input.CopyTo(output);
                     }
@@ -588,7 +605,8 @@ internal static class SvgFilterPlayback
                     }
                     else
                     {
-                        OffsetImagePaint imagePaint = OffsetImagePaint.Packed;
+                        OffsetImagePaint imagePaint = colorSpace == SvgFilterColorSpace.LinearRgb && directSource && !inputLinear
+                            ? OffsetImagePaint.Floating : OffsetImagePaint.Packed;
                         if (index == finalPaintIndex)
                         {
                             if (colorSpace == SvgFilterColorSpace.LinearRgb)
@@ -1046,6 +1064,15 @@ internal static class SvgFilterPlayback
                 MathF.Min(bounds.Top, MathF.Floor(bounds.Top + (float)dy)),
                 MathF.Max(bounds.Right, MathF.Ceiling(bounds.Right + (float)dx)),
                 MathF.Max(bounds.Bottom, MathF.Ceiling(bounds.Bottom + (float)dy)));
+            if (fractional && nativeTransform is null)
+            {
+                Charge(16);
+                // A nearest image translation whose AA rectangle rounds to the
+                // same four-bit pixel grid takes the native sprite path. Its
+                // image-edge AA is absent; the source's own coverage remains.
+                fractional = !IsNearestSpriteTranslation((float)dx) || !IsNearestSpriteTranslation((float)dy);
+            }
+
             if (nativeTransform is {} forward)
             {
                 OffsetTransformed(input, output, bounds, forward);
@@ -1059,7 +1086,8 @@ internal static class SvgFilterPlayback
             int imageBottom = (int)MathF.Ceiling(Math.Clamp(bounds.Bottom, 0, height));
             if (imageRight <= imageLeft || imageBottom <= imageTop) return;
             if (fractional) Charge(16);
-            if (fractional && imagePaint is OffsetImagePaint.Floating or OffsetImagePaint.FloatingSamples) Charge(pixels * 4);
+            if (fractional && imagePaint is OffsetImagePaint.Floating or OffsetImagePaint.FloatingSamples)
+                Charge(pixels * (imagePaint == OffsetImagePaint.Floating ? 12 : 4));
             Span<SvgShaderPaint> coveredSamples = fractional && imagePaint == OffsetImagePaint.FloatingSamples
                 ? AllocateSamples() : Span<SvgShaderPaint>.Empty;
             if (!coveredSamples.IsEmpty) linearOffsetSamples = true;
@@ -1098,7 +1126,8 @@ internal static class SvgFilterPlayback
                         }
                         if (imagePaint == OffsetImagePaint.Floating)
                         {
-                            new SvgShaderPaint(input[at] / 255f, input[at + 1] / 255f, input[at + 2] / 255f, input[at + 3] / 255f).Blend(pixel, alpha);
+                            SvgShaderPaint paint = new(input[at] / 255f, input[at + 1] / 255f, input[at + 2] / 255f, input[at + 3] / 255f);
+                            SvgFilterColorTransfer.Convert(SvgFilterColorTransfer.Convert(paint, SvgFilterColorSpace.LinearRgb), SvgFilterColorSpace.Srgb).Blend(pixel, alpha);
                             continue;
                         }
                         if (imagePaint == OffsetImagePaint.Constant)

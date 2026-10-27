@@ -1,5 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/filter-affine-restoration/capture.json" Link="TestData/filter-affine-restoration/capture.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/filter-affine-restoration/inputs/model-source-alpha.svg" Link="TestData/filter-affine-restoration/inputs/model-source-alpha.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/filter-affine-restoration/inputs/interaction-fractional-chain.svg" Link="TestData/filter-affine-restoration/inputs/interaction-fractional-chain.svg" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="../Research/raster-capture-profiles/inputs/pattern-viewbox-filter.svg" Link="TestData/raster-capture-profiles/pattern-viewbox-filter.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/filter-source-coverage/mechanisms.json" Link="TestData/filter-source-coverage/mechanisms.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

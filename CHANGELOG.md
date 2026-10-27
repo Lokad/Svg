@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Preserve affine and fractional filter image bounds, crop coverage and source
+  capture across compositor bitmaps, including negative offsets, reflections and
+  offset graphs. See the [native controls](tests/Research/filter-affine-restoration/README.md).
+
 - Preserve filter restoration precision across linear-RGB/sRGB transfers, opacity,
   offset and merge aliases, pattern images, and clipped nontransparent backdrops.
 
