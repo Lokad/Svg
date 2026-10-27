@@ -1,0 +1,815 @@
+{
+  "baselineCommit": "1439dae8ee3b8c2b5e3685dba53a137dea7d1c4e",
+  "cases": [
+    {
+      "id": "source-rotated-duplicate-candidate",
+      "sourceSha256": "815eb7577551f51ab0bdb52f6fdc14b93a866b3a22c5b8afbb19bf5719084503",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 13,
+          "alphaChangedPixels": 6,
+          "sum": 322
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 13,
+          "alphaChangedPixels": 6,
+          "sum": 322
+        }
+      }
+    },
+    {
+      "id": "source-rotated-duplicate-control",
+      "sourceSha256": "64699d0eea79ab13548170b36f7b02edd50f5a67dffdf3dfd37fe3cce53985ba",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "source-rotated-duplicate-unfiltered",
+      "sourceSha256": "6eb69418a3c9f39824a9125432b08c1f2c65300c54d5aca525c34a6a074cd0d9",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "source-rotated-duplicate-neutral",
+      "sourceSha256": "5de27242760dd6639c531782b78a897bf4f7f8c131efe25e6d51c410afa4f62a",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 10,
+          "alphaChangedPixels": 8,
+          "sum": 316
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 10,
+          "alphaChangedPixels": 8,
+          "sum": 316
+        }
+      }
+    },
+    {
+      "id": "source-sheared-duplicate-candidate",
+      "sourceSha256": "5cd0bbd8fdd7837677cf2023c55593632e9e0b7465891e8e113599e5d565312d",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "source-sheared-duplicate-control",
+      "sourceSha256": "5c5190504aafcfe5f54bcdd0440d311fc162cc7063381c8105f7abd32f1b80f8",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "source-sheared-duplicate-unfiltered",
+      "sourceSha256": "cf175a865ea8227cb8d94bf37aae13180d44b40690a345849f704bf9b7e8a423",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "source-sheared-duplicate-neutral",
+      "sourceSha256": "e042d3a539acf1588d7953f8adc11f985b16442c05a52d934f0922f5724f9631",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "source-sheared-offset-candidate",
+      "sourceSha256": "77742825939b73419ea827078f6e27dc6e61f492e6e0b51e75f2712e94f66a35",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "source-sheared-offset-control",
+      "sourceSha256": "79b57d9c85c2630b758b3829a5db650fa6dc17cdc8d5d5c7344cae5d2e11bfbc",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 44,
+          "alphaChangedPixels": 30,
+          "sum": 101
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 44,
+          "alphaChangedPixels": 30,
+          "sum": 101
+        }
+      }
+    },
+    {
+      "id": "source-scaled-curve-candidate",
+      "sourceSha256": "19fa701fa6ef4f61e331c715e48b0df18840fc7cc51f24c66380c3fb467fa7cb",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 4,
+          "alphaChangedPixels": 0,
+          "sum": 59
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 4,
+          "alphaChangedPixels": 0,
+          "sum": 59
+        }
+      }
+    },
+    {
+      "id": "source-scaled-curve-control",
+      "sourceSha256": "c2ee7b9e7c87d5bf6e1e147304ce16c5d392bb8f639f9b8a9ca42be4db91de76",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 3,
+          "alphaChangedPixels": 0,
+          "sum": 11
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 3,
+          "alphaChangedPixels": 0,
+          "sum": 11
+        }
+      }
+    },
+    {
+      "id": "source-fractional-offset-candidate",
+      "sourceSha256": "69e9c82c061724c359158627918dd16010fc0ef9f3775abc928a0fe87f0cacde",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 5,
+          "alphaChangedPixels": 3,
+          "sum": 33
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 5,
+          "alphaChangedPixels": 3,
+          "sum": 33
+        }
+      }
+    },
+    {
+      "id": "source-fractional-offset-control",
+      "sourceSha256": "2f92a8618b8ae3f609ae6c150757063c8e68571cf7d11a77bfd33cd55cf5423a",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 5,
+          "alphaChangedPixels": 3,
+          "sum": 33
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 5,
+          "alphaChangedPixels": 3,
+          "sum": 33
+        }
+      }
+    },
+    {
+      "id": "source-scaled-image-candidate",
+      "sourceSha256": "0749944d5bb21820f3eba3252da439c48e503a82cd0ea22f1be817380caff1ec",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 20,
+          "alphaChangedPixels": 4,
+          "sum": 126
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 20,
+          "alphaChangedPixels": 4,
+          "sum": 126
+        }
+      }
+    },
+    {
+      "id": "source-scaled-image-control",
+      "sourceSha256": "240aa5a5285a09e10f92c12aaa8b085af4825a6aefa48aec484a9b3672b23062",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 10,
+          "alphaChangedPixels": 0,
+          "sum": 80
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 10,
+          "alphaChangedPixels": 0,
+          "sum": 80
+        }
+      }
+    },
+    {
+      "id": "interaction-mixed-space-candidate",
+      "sourceSha256": "d728efb0e5b48f6b31c46a94dbfd70a87f739c1c277dc029d69d4808c1490f93",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 53,
+          "alphaChangedPixels": 16,
+          "sum": 103
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 53,
+          "alphaChangedPixels": 16,
+          "sum": 103
+        }
+      }
+    },
+    {
+      "id": "interaction-mixed-space-control",
+      "sourceSha256": "5d36b3cce5c74e3079142cc7d00fb7d42967d8055ef9d9fb9b1e523ff79ae693",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 34,
+          "alphaChangedPixels": 17,
+          "sum": 103
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 34,
+          "alphaChangedPixels": 17,
+          "sum": 103
+        }
+      }
+    },
+    {
+      "id": "interaction-materialized-blur-candidate",
+      "sourceSha256": "d39288622766baa91343326b7dd8eb8769e651601a1b545bab0e583f5e20d256",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "interaction-materialized-blur-control",
+      "sourceSha256": "5a430f13f49f227f954ad70cd43fdad1a8ce7ff5058452cf60c2c50f0de41bee",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "interaction-crop-reuse-candidate",
+      "sourceSha256": "b10ef2a7a81017b74cf40242a38f5f3d606f371dde0436681c4e200b1047775a",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "interaction-crop-reuse-control",
+      "sourceSha256": "1c0c5c66df331b4b430696bdacbdbfa479a31fb22e2b04aedb3c13842b858e89",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 48,
+          "alphaChangedPixels": 16,
+          "sum": 274
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 48,
+          "alphaChangedPixels": 16,
+          "sum": 274
+        }
+      }
+    },
+    {
+      "id": "interaction-resource-consumers-candidate",
+      "sourceSha256": "0c6ce65ca8fc36517b28c154c521570864192685e1074d2f4cb9264f78209424",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 45,
+          "alphaChangedPixels": 12,
+          "sum": 169
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 45,
+          "alphaChangedPixels": 12,
+          "sum": 169
+        }
+      }
+    },
+    {
+      "id": "interaction-resource-consumers-control",
+      "sourceSha256": "45ea047963d081ff44667a9a327ada80230b1c06f3f46f1796ef5d29d1a14f97",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 45,
+          "alphaChangedPixels": 12,
+          "sum": 169
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 45,
+          "alphaChangedPixels": 12,
+          "sum": 169
+        }
+      }
+    },
+    {
+      "id": "curve-source-merge",
+      "sourceSha256": "447fac3102d91a85298fd29bbf02b5ea4ebcb1ecf160717b0e0c7f943de2615d",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 5,
+          "alphaChangedPixels": 3,
+          "sum": 71
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 5,
+          "alphaChangedPixels": 3,
+          "sum": 71
+        }
+      }
+    },
+    {
+      "id": "curve-source-composite",
+      "sourceSha256": "5422adb795b3fc9da09fdc052e6ff7c6be71f8357fc4bfa0c393259f31254fb3",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "curve-source-neutral",
+      "sourceSha256": "7aeb788d27c58a57cd1dd57e712189222e3f796faffb0ee7eda731f0dd51a560",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "curve-source-unfiltered",
+      "sourceSha256": "6abce35f53d5e5c1bad0548af8d7b4e4b9fcd82d9f721f3e1f708b5813fc8e15",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "original-r113-original-42-candidate",
+      "sourceSha256": "6aa911bfe82eebd003361caf72db012dc6185b89ed8ca56c77331e968e5c7502",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "original-r113-original-42-control",
+      "sourceSha256": "6cfd2025ac293e62bb8345e1959fef8cba5a47c6f65bbc72bb3fcc6d83d648c5",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 38,
+          "alphaChangedPixels": 14,
+          "sum": 84
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 38,
+          "alphaChangedPixels": 14,
+          "sum": 84
+        }
+      }
+    },
+    {
+      "id": "original-r115-shift-162-candidate",
+      "sourceSha256": "8a9abe2bad3fe7c2ce4f248f36d3adc10ad16ad68e8fe7e07a16cc7dff2b408b",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "original-r115-shift-162-control",
+      "sourceSha256": "debbcf610804036998b49834e2151aca15646aabc53b63baa569ed9562a4a8da",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 8,
+          "alphaChangedPixels": 8,
+          "sum": 106
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 8,
+          "alphaChangedPixels": 8,
+          "sum": 106
+        }
+      }
+    },
+    {
+      "id": "original-r113-extra-28-candidate",
+      "sourceSha256": "c87e0d9337e4be44abbadaaafc11d398db7d64ddc7d95c8412e510e5edb4b87f",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 3,
+          "alphaChangedPixels": 3,
+          "sum": 3
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 3,
+          "alphaChangedPixels": 3,
+          "sum": 3
+        }
+      }
+    },
+    {
+      "id": "consumer-text-candidate",
+      "sourceSha256": "63d5ef0f9f2c3db6238bd6d366546eff66fd6d23d4aaeeba23d065b0f3912aa4",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 1,
+          "alphaChangedPixels": 1,
+          "sum": 23
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 3,
+          "alphaChangedPixels": 3,
+          "sum": 93
+        }
+      }
+    },
+    {
+      "id": "consumer-text-control",
+      "sourceSha256": "ddec898ec1dd5254d1a4ee0351f5fec7a992363bb183ac737841b57021737834",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 1,
+          "alphaChangedPixels": 1,
+          "sum": 17
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 3,
+          "alphaChangedPixels": 3,
+          "sum": 84
+        }
+      }
+    },
+    {
+      "id": "consumer-symbol-candidate",
+      "sourceSha256": "8ac6de480638360c5e63d55575041da20c944dee6252f0819f1efdae76e45edc",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 5,
+          "alphaChangedPixels": 4,
+          "sum": 48
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 5,
+          "alphaChangedPixels": 4,
+          "sum": 48
+        }
+      }
+    },
+    {
+      "id": "consumer-symbol-control",
+      "sourceSha256": "fdbbf787a65b84dec56957956f8a50fe6ac07c56c79456a00c843b38214f7668",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 6,
+          "alphaChangedPixels": 1,
+          "sum": 300
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 6,
+          "alphaChangedPixels": 1,
+          "sum": 300
+        }
+      }
+    },
+    {
+      "id": "consumer-mask-candidate",
+      "sourceSha256": "bd7d9df78a99a0a4c432653f4700d52c7bbf7b670f406aeac9df53feec92146d",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 3,
+          "alphaChangedPixels": 2,
+          "sum": 21
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 3,
+          "alphaChangedPixels": 2,
+          "sum": 21
+        }
+      }
+    },
+    {
+      "id": "consumer-mask-control",
+      "sourceSha256": "69f25194b00cfbda5160ba5f6cb7499633104bb81602ddf758b57adfbfdc9ea6",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 4,
+          "alphaChangedPixels": 2,
+          "sum": 44
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 4,
+          "alphaChangedPixels": 2,
+          "sum": 44
+        }
+      }
+    },
+    {
+      "id": "text-source-neutral",
+      "sourceSha256": "4b7405de3819cd6d225a8b098e455523985ec74bb5b97059ba27cb12d92d2abb",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "text-source-unfiltered",
+      "sourceSha256": "47d7b23d5ac0f128a9e155bedaeb290c33a9a3ecfe951e92d38d6e85e26e93d1",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "text-negative-1-candidate",
+      "sourceSha256": "f70a039eaa83558944e59c2d2d55a86d4ba0cfcebc007a0cee554a16a6fff820",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 1,
+          "alphaChangedPixels": 1,
+          "sum": 16
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "text-negative-1-control",
+      "sourceSha256": "17aff1adcfcacc8460ad66c87a62bad808256e780bbdce24515b48d5892700db",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 1,
+          "alphaChangedPixels": 1,
+          "sum": 28
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 1,
+          "alphaChangedPixels": 1,
+          "sum": 1
+        }
+      }
+    },
+    {
+      "id": "text-negative-1p5-candidate",
+      "sourceSha256": "f70a039eaa83558944e59c2d2d55a86d4ba0cfcebc007a0cee554a16a6fff820",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "text-negative-1p5-control",
+      "sourceSha256": "17aff1adcfcacc8460ad66c87a62bad808256e780bbdce24515b48d5892700db",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 1,
+          "alphaChangedPixels": 1,
+          "sum": 43
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    }
+  ]
+}
