@@ -26,7 +26,7 @@ public sealed class SvgFilterStoredImageBoundsTests
             // Compiled pinned SkMulDiv255Round vectors are indexed by source
             // alpha and coverage. Packed bitmap and constant stores differ.
             byte[] native = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData/clip-alpha-native.bin"));
-            using (SvgFilterResult result = SvgFilterPlayback.Apply(source, 8, 8, Resource(scene), Map, scratch, long.MaxValue, CancellationToken.None))
+            using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, 8, 8, Resource(scene), Map, scratch, long.MaxValue, CancellationToken.None))
                 Assert.Equal(native[alpha * 256 + coverage], result.Pixels[(3 * 8 + 2) * 4 + 3]);
             Assert.Equal(0, scratch.Snapshot().CurrentBytes);
             Assert.Equal(unchanged, source);
@@ -52,7 +52,7 @@ public sealed class SvgFilterStoredImageBoundsTests
             byte[] source = Source(128);
             byte[] unchanged = source.ToArray();
             RenderBudget scratch = new(1_000_000);
-            using (SvgFilterResult result = SvgFilterPlayback.Apply(source, 8, 8, Resource(scene), Map, scratch, long.MaxValue, CancellationToken.None))
+            using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, 8, 8, Resource(scene), Map, scratch, long.MaxValue, CancellationToken.None))
             {
                 SvgFilterDeferredImage image = Assert.IsType<SvgFilterDeferredImage>(result.DeferredImage);
                 Assert.Equal(SvgFilterImageSampling.Nearest, image.Sampling);

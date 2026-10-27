@@ -1,5 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/filter-stage-boundaries/capture.json" Link="TestData/filter-stage-boundaries/capture.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/filter-stage-boundaries/inputs/alias-materialized-copy-blur.svg" Link="TestData/filter-stage-boundaries/inputs/alias-materialized-copy-blur.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/filter-stored-images/capture.json" Link="TestData/filter-stored-images/capture.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/filter-stored-images/inputs/interaction-stored-two-branch-merge.svg" Link="TestData/filter-stored-images/inputs/interaction-stored-two-branch-merge.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/filter-image-placement/capture.json" Link="TestData/filter-image-placement/capture.json" CopyToOutputDirectory="PreserveNewest" />

@@ -1,0 +1,183 @@
+{
+  "commit": "2232a3918f39097aca37e8ef3d6ec792f9590269",
+  "rendererSha256": "5a535ba3be1f60e5cee1582d6f85bfe2d8fe25c5fe13b3c9ae69bc670cd1080c",
+  "captureProfile": "recipe3-page-img-screenshot",
+  "failingInputsPerHost": 15,
+  "positiveControlsPerHost": 2,
+  "comparisons": {
+    "windows": [
+      {
+        "id": "crop-source-request",
+        "changed": 36,
+        "alphaChanged": 36
+      },
+      {
+        "id": "crop-stored-subset",
+        "changed": 55,
+        "alphaChanged": 55
+      },
+      {
+        "id": "uniform-flood-offset",
+        "changed": 937,
+        "alphaChanged": 36
+      },
+      {
+        "id": "affine-compact-shadow",
+        "changed": 12,
+        "alphaChanged": 4
+      },
+      {
+        "id": "affine-expanded-shadow",
+        "changed": 5,
+        "alphaChanged": 4
+      },
+      {
+        "id": "alias-zero-blur",
+        "changed": 5,
+        "alphaChanged": 4
+      },
+      {
+        "id": "alias-single-merge",
+        "changed": 5,
+        "alphaChanged": 4
+      },
+      {
+        "id": "alias-identity-offset",
+        "changed": 5,
+        "alphaChanged": 4
+      },
+      {
+        "id": "alias-effective-zero-blur",
+        "changed": 6,
+        "alphaChanged": 4
+      },
+      {
+        "id": "alias-materialized-copy-blur",
+        "changed": 6,
+        "alphaChanged": 4
+      },
+      {
+        "id": "alias-wide-alias-crop",
+        "changed": 5,
+        "alphaChanged": 4
+      },
+      {
+        "id": "alias-tight-alias-crop",
+        "changed": 2,
+        "alphaChanged": 1
+      },
+      {
+        "id": "alias-alias-chain",
+        "changed": 5,
+        "alphaChanged": 4
+      },
+      {
+        "id": "alias-fractional-offset-chain",
+        "changed": 33,
+        "alphaChanged": 28
+      },
+      {
+        "id": "alias-alpha-zero-blur",
+        "changed": 5,
+        "alphaChanged": 4
+      },
+      {
+        "id": "alias-srgb-zero-blur",
+        "changed": 0,
+        "alphaChanged": 0
+      },
+      {
+        "id": "alias-srgb-compatible-integer-offset",
+        "changed": 0,
+        "alphaChanged": 0
+      }
+    ],
+    "linux": [
+      {
+        "id": "crop-source-request",
+        "changed": 36,
+        "alphaChanged": 36
+      },
+      {
+        "id": "crop-stored-subset",
+        "changed": 55,
+        "alphaChanged": 55
+      },
+      {
+        "id": "uniform-flood-offset",
+        "changed": 937,
+        "alphaChanged": 36
+      },
+      {
+        "id": "affine-compact-shadow",
+        "changed": 12,
+        "alphaChanged": 4
+      },
+      {
+        "id": "affine-expanded-shadow",
+        "changed": 5,
+        "alphaChanged": 4
+      },
+      {
+        "id": "alias-zero-blur",
+        "changed": 5,
+        "alphaChanged": 4
+      },
+      {
+        "id": "alias-single-merge",
+        "changed": 5,
+        "alphaChanged": 4
+      },
+      {
+        "id": "alias-identity-offset",
+        "changed": 5,
+        "alphaChanged": 4
+      },
+      {
+        "id": "alias-effective-zero-blur",
+        "changed": 6,
+        "alphaChanged": 4
+      },
+      {
+        "id": "alias-materialized-copy-blur",
+        "changed": 6,
+        "alphaChanged": 4
+      },
+      {
+        "id": "alias-wide-alias-crop",
+        "changed": 5,
+        "alphaChanged": 4
+      },
+      {
+        "id": "alias-tight-alias-crop",
+        "changed": 2,
+        "alphaChanged": 1
+      },
+      {
+        "id": "alias-alias-chain",
+        "changed": 5,
+        "alphaChanged": 4
+      },
+      {
+        "id": "alias-fractional-offset-chain",
+        "changed": 33,
+        "alphaChanged": 28
+      },
+      {
+        "id": "alias-alpha-zero-blur",
+        "changed": 5,
+        "alphaChanged": 4
+      },
+      {
+        "id": "alias-srgb-zero-blur",
+        "changed": 0,
+        "alphaChanged": 0
+      },
+      {
+        "id": "alias-srgb-compatible-integer-offset",
+        "changed": 0,
+        "alphaChanged": 0
+      }
+    ]
+  }
+}

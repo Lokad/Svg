@@ -22,7 +22,7 @@ public sealed class SvgShadowTintMechanismTests
     public void Native_unpremultiplied_color_and_alpha_admission_precede_packed_tint(bool linear, float opacity,
         byte red, byte green, byte blue, byte alpha)
     {
-        SvgShaderPaint tint = SvgFilterPlayback.PrepareIntegerShadowTint(new(new(64, 112, 176, 255), opacity),
+        SvgShaderPaint tint = SvgFilterPlayback.PrepareShadowShaderTint(new(new(64, 112, 176, 255), opacity),
             linear ? SvgFilterColorSpace.LinearRgb : SvgFilterColorSpace.Srgb);
         Assert.Equal(new SvgConstantShaderPaint(red, green, blue, alpha), tint.AsConstant(1));
     }
@@ -30,7 +30,7 @@ public sealed class SvgShadowTintMechanismTests
     [Fact]
     public void Pending_linear_color_filter_preserves_tint_precision_until_coverage()
     {
-        SvgShaderPaint tint = SvgFilterPlayback.PrepareIntegerShadowTint(new(new(64, 112, 176, 255), .25f), SvgFilterColorSpace.LinearRgb);
+        SvgShaderPaint tint = SvgFilterPlayback.PrepareShadowShaderTint(new(new(64, 112, 176, 255), .25f), SvgFilterColorSpace.LinearRgb);
         const float weight = 120f / 255f;
         byte[] pixel = new byte[4];
         new SvgShaderPaint(tint.Red * weight, tint.Green * weight, tint.Blue * weight, tint.Alpha * weight).Blend(pixel, 255);

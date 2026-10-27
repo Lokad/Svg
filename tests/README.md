@@ -100,6 +100,13 @@ Eleven direct graph/bounds cases cover authored numerical fringes. One selected
 near-integer input checks scratch ownership and prepared replay; the distinct
 binary/antialiased parent-clip images retain their native two-pixel difference.
 
+The [stage boundary controls](Research/filter-stage-boundaries/README.md) retain
+seventeen canonical images, including fifteen failing-before inputs, separately
+from 24 direct request/materialization/sampling mechanisms. One selected copy-blur
+input checks metadata and resolved-image ownership, cancellation and prepared replay.
+Image-free aliases and materializing stages preserve their distinct responsibilities;
+these fixtures do not multiply numerical boundaries across all output APIs.
+
 The [stored image controls](Research/filter-stored-images/README.md) add nineteen
 canonical regressions for retained terminal offsets, offset/merge image extents
 and source-alpha materialization. Seventeen direct cases cover bounds and numerical

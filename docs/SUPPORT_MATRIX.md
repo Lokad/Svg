@@ -534,6 +534,14 @@ graph arithmetic, crops, opacity and affine restoration, and list remaining diff
 [Source coverage controls](../tests/Research/filter-source-coverage/README.md)
 distinguish cropped aliases, effective-zero axes, small-blur materialization and
 source-image hint rounding before fractional displacement.
+Graph evaluation retains requested image subsets, captured source and native image
+hints separately from available storage. Nested capture includes child output;
+rescaled kernels use the captured subset.
+Pending color and sampled offsets survive image-free aliases; crops and blur
+materialization resolve them at their consuming stage. Shader sampling and image
+drawing retain separate edge coverage. The
+[stage boundary controls](../tests/Research/filter-stage-boundaries/README.md)
+cover these distinctions and preserve naturally unequal compact/expanded shadows.
 CSS `display:none` on the filter or its defining `defs` suppresses the filtered
 output, including its source. It does not restore the unfiltered drawing.
 See the [definition display tests](../tests/Lokad.Svg.Tests/SvgDefinitionDisplayTests.cs)

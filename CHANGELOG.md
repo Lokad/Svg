@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Preserve filter requests and pending color/sampling through crops and aliases.
+  Keep captured source, child output and stored-image extents distinct, retaining
+  shadow fringes and scaled/nested composition. Enforce total raster work before
+  returning storage. See the
+  [native controls](tests/Research/filter-stage-boundaries/README.md).
+
 - Retain terminal offsets of materialized filter images, propagate stored offset
   and merge extents, and preserve source-alpha shader rounding before resampling.
   See the [native controls](tests/Research/filter-stored-images/README.md).

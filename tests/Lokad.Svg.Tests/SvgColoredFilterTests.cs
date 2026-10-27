@@ -77,17 +77,17 @@ public sealed class SvgColoredFilterTests
             RenderBudget budget = new(1_000_000);
             byte[] expected;
             long work;
-            using (SvgFilterResult result = SvgFilterPlayback.Apply(source, 1, 1, resource, new(1, 1), budget, long.MaxValue, CancellationToken.None))
+            using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, 1, 1, resource, new(1, 1), budget, long.MaxValue, CancellationToken.None))
             { expected = result.Pixels.ToArray(); work = result.WorkUnits; }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                SvgFilterPlayback.Apply(source, 1, 1, resource, new(1, 1), budget, work - 1, CancellationToken.None)).ErrorCode);
+                SvgFilterPlayback.ApplyFullFrame(source, 1, 1, resource, new(1, 1), budget, work - 1, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
             RenderBudget tight = new(Math.Max(1, budget.Snapshot().PeakBytes - 1));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                SvgFilterPlayback.Apply(source, 1, 1, resource, new(1, 1), tight, work, CancellationToken.None)).ErrorCode);
+                SvgFilterPlayback.ApplyFullFrame(source, 1, 1, resource, new(1, 1), tight, work, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, tight.Snapshot().CurrentBytes);
-            using (SvgFilterResult retry = SvgFilterPlayback.Apply(source, 1, 1, resource, new(1, 1), budget, work, CancellationToken.None))
+            using (SvgFilterResult retry = SvgFilterPlayback.ApplyFullFrame(source, 1, 1, resource, new(1, 1), budget, work, CancellationToken.None))
                 Assert.Equal(expected, retry.Pixels);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
             Assert.Equal(unchanged, source);
@@ -149,7 +149,7 @@ public sealed class SvgColoredFilterTests
             Assert.Equal(unchanged, source);
 
             SvgFilterResult Run(RenderBudget owner, long maximumWork, CancellationToken token)
-                => SvgFilterPlayback.Apply(source, 64, 64, resource, new(1, 1), owner, maximumWork, token);
+                => SvgFilterPlayback.ApplyFullFrame(source, 64, 64, resource, new(1, 1), owner, maximumWork, token);
         }
         Assert.Equal(0, parser.Snapshot().CurrentBytes);
     }

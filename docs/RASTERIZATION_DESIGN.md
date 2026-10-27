@@ -88,6 +88,16 @@ ancestors. Forward replay preserves authored/inherited paint and source order.
 Keep geometry/object bounds, visual stroke bounds, construction clips, dispatch
 bounds and stored bitmap bounds distinct. Object-box paints/resources bind to
 pre-clip geometry. Cropping storage must preserve the logical device origin.
+Filter graphs keep per-node output requests, source content clips, captured subsets
+and native image hints separate from physical scratch grids. Parent filters take
+their children's filtered output as input. Rescaled kernels read captured subsets;
+image consumers retain native hints and their separate rounding. Pending nearest
+images retain a borrowed source reference,
+forward map and layer crop through compatible aliases. Shader consumers sample
+that view; image drawing retains its separate edge coverage. A consuming crop or
+materialization resolves pending pixels in the required color space. The
+[stage boundary controls](../tests/Research/filter-stage-boundaries/README.md)
+exercise those distinctions without equating compact and expanded graphs.
 Nested viewports keep the parent affine map outside their local viewBox map.
 
 [Non-scaling drawing bounds](../src/Lokad.Svg/Parsing/SvgNativeVisualBounds.cs)
