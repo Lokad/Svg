@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Preserve filter restoration precision across linear-RGB/sRGB transfers, opacity,
+  offset and merge aliases, pattern images, and clipped nontransparent backdrops.
+
 - Preserve ancestor clip ownership around child filters, including forward and
   object-bounding rectangles, retained use and pattern scenes. Keep source-only
   clips and per-bitmap filter requests separate.

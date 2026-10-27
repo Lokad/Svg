@@ -8,32 +8,43 @@ public sealed class SvgFilterClipOwnershipReferenceTests
 {
     public static IEnumerable<object[]> Cases()
     {
-        using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(), "capture.json")));
-        foreach (JsonElement row in data.RootElement.GetProperty("cases").EnumerateArray())
-            yield return [row.GetProperty("id").GetString() ?? throw new InvalidDataException()];
+        foreach (string family in new[] { "filter-clip-ownership", "filter-restoration" })
+        {
+            using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(family), "capture.json")));
+            foreach (JsonElement row in data.RootElement.GetProperty("cases").EnumerateArray())
+                yield return [family, row.GetProperty("id").GetString() ?? throw new InvalidDataException()];
+        }
     }
 
     [Theory]
     [MemberData(nameof(Cases))]
     [Trait("Layer", "Rendering")]
-    public void Source_and_output_clips_retain_their_independent_browser_images(string id)
+    public void Source_and_output_clips_retain_their_independent_browser_images(string family, string id)
     {
-        using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(), "capture.json")));
+        using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(family), "capture.json")));
         Assert.Equal("recipe3-page-img-screenshot", data.RootElement.GetProperty("captureProfile").GetString());
         Assert.Equal(3, data.RootElement.GetProperty("freshProcessCaptures").GetInt32());
         Assert.Equal("healthy", data.RootElement.GetProperty("captureStartupHealth").GetString());
         Assert.True(data.RootElement.GetProperty("captureProfilesCleaned").GetBoolean());
         JsonElement row = data.RootElement.GetProperty("cases").EnumerateArray().Single(item => item.GetProperty("id").GetString() == id);
         JsonElement image = row.GetProperty("references").GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux");
-        byte[] input = File.ReadAllBytes(Path.Combine(Folder(), row.GetProperty("input").GetString() ?? throw new InvalidDataException()));
-        byte[] reference = File.ReadAllBytes(Path.Combine(Folder(), image.GetProperty("path").GetString() ?? throw new InvalidDataException()));
+        byte[] input = File.ReadAllBytes(Path.Combine(Folder(family), row.GetProperty("input").GetString() ?? throw new InvalidDataException()));
+        byte[] reference = File.ReadAllBytes(Path.Combine(Folder(family), image.GetProperty("path").GetString() ?? throw new InvalidDataException()));
         Assert.Equal(row.GetProperty("sourceSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(input)));
         Assert.Equal(image.GetProperty("sha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(reference)));
         Assert.All(image.GetProperty("captureSha256").EnumerateArray(), value => Assert.Equal(image.GetProperty("sha256").GetString(), value.GetString()));
         RgbaImage expected = PngRgbaDecoder.Decode(reference, 1_048_576);
+        if (image.TryGetProperty("independentControl", out JsonElement control))
+        {
+            byte[] independent = File.ReadAllBytes(Path.Combine(Folder(family), control.GetProperty("path").GetString() ?? throw new InvalidDataException()));
+            Assert.Equal(control.GetProperty("sha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(independent)));
+            PixelComparison contrast = PixelComparer.Compare(expected, PngRgbaDecoder.Decode(independent, 1_048_576));
+            Assert.Equal(control.GetProperty("changedPixels").GetInt32(), contrast.ChangedPixelCount);
+            Assert.Equal(control.GetProperty("alphaChangedPixels").GetInt32(), contrast.AlphaChangedPixelCount);
+        }
         byte[] actual = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
         Assert.True(PixelComparer.Compare(expected, PngRgbaDecoder.Decode(actual, 1_048_576)).IsExact, id);
     }
 
-    private static string Folder() => Path.Combine(AppContext.BaseDirectory, "Research", "filter-clip-ownership");
+    private static string Folder(string family) => Path.Combine(AppContext.BaseDirectory, "Research", family);
 }

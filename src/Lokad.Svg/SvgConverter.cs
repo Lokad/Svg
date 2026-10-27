@@ -1456,6 +1456,9 @@ public static partial class SvgConverter
                 ParserWorkCounter planWork = new(options.Limits.MaximumWorkUnits - workUnits);
                 using BudgetedParserList<SvgOffsetFilterPlacement> placements = new(budget, SvgMemoryCategory.Temporary, planWork, cancellationToken);
                 SvgFilterPrimitive final = primitives[^1];
+                // A single-input merge retains its own operating space; only
+                // reachable offset branches may add another transfer requirement.
+                bool hasLinearTransfer = (final.ColorSpace ?? resource.ColorSpace) == SvgFilterColorSpace.LinearRgb;
                 if (final.Kind == SvgFilterPrimitiveKind.Merge)
                     foreach (SvgFilterInput input in resource.MergeInputs.Items.AsSpan(final.MergeFirst, final.MergeCount)) Add(input);
                 else Add(new(primitives.Length - 1));
@@ -1486,6 +1489,7 @@ public static partial class SvgConverter
                     requested = new(Math.Max(requested.Left, outputClip.Left), Math.Max(requested.Top, outputClip.Top),
                         Math.Min(requested.Right, outputClip.Right), Math.Min(requested.Bottom, outputClip.Bottom));
                 if (requested.Right <= requested.Left || requested.Bottom <= requested.Top) return true;
+                Span<byte> materialized = stackalloc byte[4];
                 foreach (SvgCpuRasterContext tile in rasterGrid.GetContexts(requested))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -1548,7 +1552,10 @@ public static partial class SvgConverter
                     int tw = tile.BitmapClip.Right - tile.BitmapClip.Left, th = tile.BitmapClip.Bottom - tile.BitmapClip.Top;
                     using RenderBudget.BudgetReservation tileOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<byte>(checked(tw * th * 4)), SvgMemoryCategory.Surface);
                     byte[] pixels = new byte[tw * th * 4];
-                    bool linear = placements.Count > 1 && (final.ColorSpace ?? resource.ColorSpace) == SvgFilterColorSpace.LinearRgb;
+                    SvgFilterColorSpace outputColorSpace = final.ColorSpace ?? resource.ColorSpace;
+                    bool directSource = placements.Count == 1 && !placements[0].AlphaOnly;
+                    bool colorFiltered = placements.Count == 1 && (placements[0].AlphaOnly || hasLinearTransfer);
+                    bool linear = placements.Count > 1 && outputColorSpace == SvgFilterColorSpace.LinearRgb;
                     for (int placementIndex = 0; placementIndex < placements.Count; placementIndex++)
                     {
                         SvgOffsetFilterPlacement placement = placements[placementIndex];
@@ -1580,18 +1587,47 @@ public static partial class SvgConverter
                     int restoreLeft = Math.Max(requested.Left, tile.Interior.Left), restoreTop = Math.Max(requested.Top, tile.Interior.Top);
                     int restoreRight = Math.Min(requested.Right, tile.Interior.Right), restoreBottom = Math.Min(requested.Bottom, tile.Interior.Bottom);
                     Charge((long)Math.Max(0, restoreRight - restoreLeft) * Math.Max(0, restoreBottom - restoreTop));
+                    float opacity = command.SourceOpacity.Value * foldedOpacity;
+                    byte paintAlpha = (byte)Math.Clamp((int)MathF.Floor(opacity * 255 + .5f), 0, 255);
                     for (int y = restoreTop; y < restoreBottom; y++)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
                         for (int x = restoreLeft; x < restoreRight; x++)
                         {
+                            byte coverage = activeViewportClip.Length == 0 ? (byte)255 : activeViewportClip[(y * outputWidth + x) * 4 + 3];
+                            // The packed blitter consumes nonzero AA runs. A zero
+                            // run must leave an already-painted backdrop untouched.
+                            if (coverage == 0) continue;
                             int p = ((y - tile.BitmapClip.Top) * tw + x - tile.BitmapClip.Left) * 4;
                             const float byteScale = 1f / 255f;
                             SvgShaderPaint paint = new(pixels[p] * byteScale, pixels[p + 1] * byteScale, pixels[p + 2] * byteScale, pixels[p + 3] * byteScale);
                             if (linear) paint = SvgFilterColorTransfer.Convert(paint, SvgFilterColorSpace.Srgb);
-                            float opacity = command.SourceOpacity.Value * foldedOpacity;
+                            else if (directSource && hasLinearTransfer)
+                                paint = SvgFilterColorTransfer.Convert(SvgFilterColorTransfer.Convert(paint, SvgFilterColorSpace.LinearRgb), SvgFilterColorSpace.Srgb);
+                            Span<byte> target = destination.AsSpan((y * outputWidth + x) * 4, 4);
+                            // Non-unit paint alpha resolves transfer samples first.
+                            // Same-space images retain their stored lane arithmetic.
+                            if (opacity != 1 || !colorFiltered && outputColorSpace == SvgFilterColorSpace.Srgb)
+                            {
+                                scoped ReadOnlySpan<byte> stored = pixels.AsSpan(p, 4);
+                                if (linear || directSource && hasLinearTransfer)
+                                {
+                                    materialized.Clear();
+                                    paint.Blend(materialized, 255);
+                                    stored = materialized;
+                                }
+                                if (surfaceMode == RasterSurfaceMode.PremultipliedPattern)
+                                {
+                                    SvgConstantShaderPaint sample = new((byte)((stored[0] * paintAlpha + 255) >> 8),
+                                        (byte)((stored[1] * paintAlpha + 255) >> 8), (byte)((stored[2] * paintAlpha + 255) >> 8),
+                                        (byte)((stored[3] * paintAlpha + 255) >> 8));
+                                    sample.Blend(target, coverage);
+                                }
+                                else BlendClippedLayerPixel(target, stored, paintAlpha, 255, coverage);
+                                continue;
+                            }
                             new SvgShaderPaint(paint.Red * opacity, paint.Green * opacity, paint.Blue * opacity, paint.Alpha * opacity)
-                                .Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), activeViewportClip.Length == 0 ? (byte)255 : activeViewportClip[(y * outputWidth + x) * 4 + 3]);
+                                .Blend(target, coverage);
                         }
                     }
                 }
@@ -1608,6 +1644,7 @@ public static partial class SvgConverter
                         SvgFilterPrimitive primitive = resource.Primitives.Items[input.Index];
                         clip = new((float)Math.Max(clip.Left, region.Left + dx), (float)Math.Max(clip.Top, region.Top + dy),
                             (float)Math.Min(clip.Right, region.Right + dx), (float)Math.Min(clip.Bottom, region.Bottom + dy));
+                        hasLinearTransfer |= (primitive.ColorSpace ?? resource.ColorSpace) == SvgFilterColorSpace.LinearRgb;
                         dx += primitive.OffsetX * primitiveMap.ScaleX; dy += primitive.OffsetY * primitiveMap.ScaleY;
                         if (!double.IsFinite(dx) || !double.IsFinite(dy) || Math.Abs(dx) > int.MaxValue || Math.Abs(dy) > int.MaxValue)
                             throw new SvgException(SvgErrorCode.LimitExceeded, "Offset chain exceeds the supported coordinate range.");
@@ -2226,7 +2263,7 @@ public static partial class SvgConverter
                                 && (SvgAnalyticRectangleClip.GetCoverage(bounds, antialiasing, layer.Left, layer.Top).Apply(255) != 255
                                     || SvgAnalyticRectangleClip.GetCoverage(bounds, antialiasing, layer.Right - 1, layer.Bottom - 1).Apply(255) != 255);
                         }
-                        if ((affineViewportClip || viewportClip && command.RegionKind == SvgLayerRegionKind.Viewport && command.MaskContentIndex < 0)
+                        if ((affineViewportClip || viewportClip && command.MaskContentIndex < 0)
                             && command.SourceOpacity.Value == 1 && command.MaskAlpha == 255)
                         {
                             SvgMaskContent? viewportContent = null;

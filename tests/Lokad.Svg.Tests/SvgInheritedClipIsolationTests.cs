@@ -82,17 +82,19 @@ public sealed class SvgInheritedClipIsolationTests
     [InlineData(false, "filter")]
     [InlineData(true, "filter")]
     [InlineData(false, "curved-filter")]
+    [InlineData(false, "srgb-filter")]
     public void Isolated_clip_scopes_release_storage_after_denial_and_cancellation(bool forward, string effect)
     {
         string definitions = "<defs><clipPath id='c'><rect x='5.25' y='3.75' width='19.5' height='22'/></clipPath><clipPath id='inner'><rect x='3.5' y='4.5' width='18.75' height='20.25'/></clipPath><mask id='m' mask-type='alpha' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><rect width='32' height='32' fill='white' fill-opacity='.75'/></mask><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feOffset dx='1' dy='1'/></filter></defs>";
         if (effect == "curved-filter") definitions = definitions.Replace("<rect x='5.25' y='3.75' width='19.5' height='22'/>", "<ellipse cx='16' cy='16' rx='12.5' ry='10.5'/>", StringComparison.Ordinal);
+        if (effect == "srgb-filter") definitions = definitions.Replace("<filter id='f'", "<filter id='f' color-interpolation-filters='sRGB'", StringComparison.Ordinal);
         string attributes = effect switch
         {
             "own-clip" => " clip-path='url(#inner)'",
             "own-clip-mask" => " clip-path='url(#inner)' mask='url(#m)'",
             "mask" => " mask='url(#m)'",
             "opaque-mask" => " mask='url(#m)'",
-            "filter" or "curved-filter" => " filter='url(#f)'",
+            "filter" or "curved-filter" or "srgb-filter" => " filter='url(#f)'",
             _ => ""
         };
         string ownerOpacity = effect == "opaque-mask" ? "1" : ".5";

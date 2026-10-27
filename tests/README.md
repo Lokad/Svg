@@ -69,6 +69,11 @@ keep fourteen canonical source/output clip images separate from sibling-work,
 empty-intersection and ownership checks. Distinct lowering paths retain their
 own references, including source-only clipping and pattern/retained replay.
 
+The [filter restoration controls](Research/filter-restoration/README.md) add thirty
+canonical images for operating color spaces, opacity, merge/offset aliases, pattern
+destinations and backdrop preservation. Eleven positive controls and three naturally
+unequal native color-space pairs protect the distinctions between those paths.
+
 Color/filter numerical-context cross products remain available with
 `--filter Category=Research`. Their [gradient](Research/gradient-color-alpha/research-cases.json)
 and [filter](Research/filter-uniform-precision/research-cases.json) selections
