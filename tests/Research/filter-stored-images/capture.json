@@ -1,0 +1,534 @@
+{
+  "captureProfile": "recipe3-page-img-screenshot",
+  "browser": "Chromium 153.0.8010.52",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "pngStability": "byte-identical",
+  "background": "transparent",
+  "deviceScale": 1,
+  "width": 32,
+  "height": 32,
+  "license": "MIT",
+  "licenseEvidence": "../../../LICENSE.txt",
+  "platformPins": {
+    "windows": "../../../tools/chrome-for-testing.json",
+    "linux": "../../../tools/chrome-for-testing.linux64.json"
+  },
+  "cases": [
+    {
+      "id": "source-translated-copy-blur-alpha",
+      "input": "inputs/source-translated-copy-blur-alpha.svg",
+      "sourceSha256": "462a31ca6ec0af86a41f9f4a8089e712365c2bb3b28309e34df115a3e2775b60",
+      "references": {
+        "windows": {
+          "path": "references/windows/source-translated-copy-blur-alpha.png",
+          "sha256": "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+          "captureSha256": [
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23"
+          ],
+          "rgbaSha256": "35a74842c3f20bdf34f81a0b774cdf4f8d14560eef36fcc60a4da88144be3986"
+        },
+        "linux": {
+          "path": "references/linux/source-translated-copy-blur-alpha.png",
+          "sha256": "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+          "captureSha256": [
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23"
+          ],
+          "rgbaSha256": "35a74842c3f20bdf34f81a0b774cdf4f8d14560eef36fcc60a4da88144be3986"
+        }
+      }
+    },
+    {
+      "id": "chain-two-fractional-offsets",
+      "input": "inputs/chain-two-fractional-offsets.svg",
+      "sourceSha256": "b27ca63b7a380d77c7be8a74bb1e066ee0698155f631541b3296b30199fd6ce4",
+      "references": {
+        "windows": {
+          "path": "references/windows/chain-two-fractional-offsets.png",
+          "sha256": "0dacbaee440a02eaeb963961348e836fe926dc425978256de5b425431e424692",
+          "captureSha256": [
+            "0dacbaee440a02eaeb963961348e836fe926dc425978256de5b425431e424692",
+            "0dacbaee440a02eaeb963961348e836fe926dc425978256de5b425431e424692",
+            "0dacbaee440a02eaeb963961348e836fe926dc425978256de5b425431e424692"
+          ],
+          "rgbaSha256": "dd1927bc0a4e284496ff821ade60d4ad1c8ebd4eafec43beaf06689a61ecfddc"
+        },
+        "linux": {
+          "path": "references/linux/chain-two-fractional-offsets.png",
+          "sha256": "0dacbaee440a02eaeb963961348e836fe926dc425978256de5b425431e424692",
+          "captureSha256": [
+            "0dacbaee440a02eaeb963961348e836fe926dc425978256de5b425431e424692",
+            "0dacbaee440a02eaeb963961348e836fe926dc425978256de5b425431e424692",
+            "0dacbaee440a02eaeb963961348e836fe926dc425978256de5b425431e424692"
+          ],
+          "rgbaSha256": "dd1927bc0a4e284496ff821ade60d4ad1c8ebd4eafec43beaf06689a61ecfddc"
+        }
+      }
+    },
+    {
+      "id": "chain-canceling-fractional-offsets",
+      "input": "inputs/chain-canceling-fractional-offsets.svg",
+      "sourceSha256": "381456f48cf2d606fc694ecf1da4f48786a53eadf7ab0e250a40594b4149f872",
+      "references": {
+        "windows": {
+          "path": "references/windows/chain-canceling-fractional-offsets.png",
+          "sha256": "6a05c7cac7c747f4951b78f2224dcbc9e79230a3fba16608ca646f8099b46d13",
+          "captureSha256": [
+            "6a05c7cac7c747f4951b78f2224dcbc9e79230a3fba16608ca646f8099b46d13",
+            "6a05c7cac7c747f4951b78f2224dcbc9e79230a3fba16608ca646f8099b46d13",
+            "6a05c7cac7c747f4951b78f2224dcbc9e79230a3fba16608ca646f8099b46d13"
+          ],
+          "rgbaSha256": "0afd0dc17373dd7569aa532151e247e4d6025de96cd22585ba7af609a4ae15be"
+        },
+        "linux": {
+          "path": "references/linux/chain-canceling-fractional-offsets.png",
+          "sha256": "6a05c7cac7c747f4951b78f2224dcbc9e79230a3fba16608ca646f8099b46d13",
+          "captureSha256": [
+            "6a05c7cac7c747f4951b78f2224dcbc9e79230a3fba16608ca646f8099b46d13",
+            "6a05c7cac7c747f4951b78f2224dcbc9e79230a3fba16608ca646f8099b46d13",
+            "6a05c7cac7c747f4951b78f2224dcbc9e79230a3fba16608ca646f8099b46d13"
+          ],
+          "rgbaSha256": "0afd0dc17373dd7569aa532151e247e4d6025de96cd22585ba7af609a4ae15be"
+        }
+      }
+    },
+    {
+      "id": "chain-canceling-authored-integers",
+      "input": "inputs/chain-canceling-authored-integers.svg",
+      "sourceSha256": "4a08a7d73259688863a3906cbec4750e215f1e110cac9faeb81e56cce4b23931",
+      "references": {
+        "windows": {
+          "path": "references/windows/chain-canceling-authored-integers.png",
+          "sha256": "8edb13f117c836bbc715374c32fe8b7c7fd3faaf4ad062236a0608e84db8ccb3",
+          "captureSha256": [
+            "8edb13f117c836bbc715374c32fe8b7c7fd3faaf4ad062236a0608e84db8ccb3",
+            "8edb13f117c836bbc715374c32fe8b7c7fd3faaf4ad062236a0608e84db8ccb3",
+            "8edb13f117c836bbc715374c32fe8b7c7fd3faaf4ad062236a0608e84db8ccb3"
+          ],
+          "rgbaSha256": "6c6a3619e0d29ea2fcd73e07db92e00e4081b075fdc10862c1783facb2c180f0"
+        },
+        "linux": {
+          "path": "references/linux/chain-canceling-authored-integers.png",
+          "sha256": "8edb13f117c836bbc715374c32fe8b7c7fd3faaf4ad062236a0608e84db8ccb3",
+          "captureSha256": [
+            "8edb13f117c836bbc715374c32fe8b7c7fd3faaf4ad062236a0608e84db8ccb3",
+            "8edb13f117c836bbc715374c32fe8b7c7fd3faaf4ad062236a0608e84db8ccb3",
+            "8edb13f117c836bbc715374c32fe8b7c7fd3faaf4ad062236a0608e84db8ccb3"
+          ],
+          "rgbaSha256": "6c6a3619e0d29ea2fcd73e07db92e00e4081b075fdc10862c1783facb2c180f0"
+        }
+      }
+    },
+    {
+      "id": "chain-materialized-then-offset",
+      "input": "inputs/chain-materialized-then-offset.svg",
+      "sourceSha256": "dba086e38ddd8dafdf01194300688ee6d175db24dc371daead55cafb2646d25c",
+      "references": {
+        "windows": {
+          "path": "references/windows/chain-materialized-then-offset.png",
+          "sha256": "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a",
+          "captureSha256": [
+            "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a",
+            "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a",
+            "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a"
+          ],
+          "rgbaSha256": "4d69f7e2945b71d80d22f018618924f0ce551adbb218e8278fd935f1fd7ddaed"
+        },
+        "linux": {
+          "path": "references/linux/chain-materialized-then-offset.png",
+          "sha256": "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a",
+          "captureSha256": [
+            "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a",
+            "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a",
+            "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a"
+          ],
+          "rgbaSha256": "4d69f7e2945b71d80d22f018618924f0ce551adbb218e8278fd935f1fd7ddaed"
+        }
+      }
+    },
+    {
+      "id": "interaction-stored-rgb-linear",
+      "input": "inputs/interaction-stored-rgb-linear.svg",
+      "sourceSha256": "aca159e5108f158b4247e888e2520240b0c2a84c90fd247c50e0ec4af1408a89",
+      "references": {
+        "windows": {
+          "path": "references/windows/interaction-stored-rgb-linear.png",
+          "sha256": "08d2e41a3739cd6e3d11be60bc4a1872053e2a351c0f697833baa606815f1ff5",
+          "captureSha256": [
+            "08d2e41a3739cd6e3d11be60bc4a1872053e2a351c0f697833baa606815f1ff5",
+            "08d2e41a3739cd6e3d11be60bc4a1872053e2a351c0f697833baa606815f1ff5",
+            "08d2e41a3739cd6e3d11be60bc4a1872053e2a351c0f697833baa606815f1ff5"
+          ],
+          "rgbaSha256": "3d5275c524a9939ff8437056c70732420c57a7dc742cda1bab5ca36cc644c482"
+        },
+        "linux": {
+          "path": "references/linux/interaction-stored-rgb-linear.png",
+          "sha256": "08d2e41a3739cd6e3d11be60bc4a1872053e2a351c0f697833baa606815f1ff5",
+          "captureSha256": [
+            "08d2e41a3739cd6e3d11be60bc4a1872053e2a351c0f697833baa606815f1ff5",
+            "08d2e41a3739cd6e3d11be60bc4a1872053e2a351c0f697833baa606815f1ff5",
+            "08d2e41a3739cd6e3d11be60bc4a1872053e2a351c0f697833baa606815f1ff5"
+          ],
+          "rgbaSha256": "3d5275c524a9939ff8437056c70732420c57a7dc742cda1bab5ca36cc644c482"
+        }
+      }
+    },
+    {
+      "id": "interaction-stored-alpha-srgb",
+      "input": "inputs/interaction-stored-alpha-srgb.svg",
+      "sourceSha256": "8022d06d1df0b2d2411ca0c94eae82228c95900c1646c403074355b77640ff3b",
+      "references": {
+        "windows": {
+          "path": "references/windows/interaction-stored-alpha-srgb.png",
+          "sha256": "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+          "captureSha256": [
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23"
+          ],
+          "rgbaSha256": "35a74842c3f20bdf34f81a0b774cdf4f8d14560eef36fcc60a4da88144be3986"
+        },
+        "linux": {
+          "path": "references/linux/interaction-stored-alpha-srgb.png",
+          "sha256": "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+          "captureSha256": [
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23"
+          ],
+          "rgbaSha256": "35a74842c3f20bdf34f81a0b774cdf4f8d14560eef36fcc60a4da88144be3986"
+        }
+      }
+    },
+    {
+      "id": "interaction-stored-rgb-srgb",
+      "input": "inputs/interaction-stored-rgb-srgb.svg",
+      "sourceSha256": "0128fb46574109cd9a492b5c3da5c70104fc95bda391ba7639d30b4df8f274a3",
+      "references": {
+        "windows": {
+          "path": "references/windows/interaction-stored-rgb-srgb.png",
+          "sha256": "2e90df821b570244c944d10b02934aefd1366ce88d538f5bbb169606317f0e90",
+          "captureSha256": [
+            "2e90df821b570244c944d10b02934aefd1366ce88d538f5bbb169606317f0e90",
+            "2e90df821b570244c944d10b02934aefd1366ce88d538f5bbb169606317f0e90",
+            "2e90df821b570244c944d10b02934aefd1366ce88d538f5bbb169606317f0e90"
+          ],
+          "rgbaSha256": "4b8732ac6a4a53f662fd53d043d116f36db51f674df08d9f70a7907974c71bed"
+        },
+        "linux": {
+          "path": "references/linux/interaction-stored-rgb-srgb.png",
+          "sha256": "2e90df821b570244c944d10b02934aefd1366ce88d538f5bbb169606317f0e90",
+          "captureSha256": [
+            "2e90df821b570244c944d10b02934aefd1366ce88d538f5bbb169606317f0e90",
+            "2e90df821b570244c944d10b02934aefd1366ce88d538f5bbb169606317f0e90",
+            "2e90df821b570244c944d10b02934aefd1366ce88d538f5bbb169606317f0e90"
+          ],
+          "rgbaSha256": "4b8732ac6a4a53f662fd53d043d116f36db51f674df08d9f70a7907974c71bed"
+        }
+      }
+    },
+    {
+      "id": "interaction-stored-zero-alias",
+      "input": "inputs/interaction-stored-zero-alias.svg",
+      "sourceSha256": "9c87ece15a7491b851c07a8e6d0f9d56c070acb6e6dd0b319d0995f8c2e8bf07",
+      "references": {
+        "windows": {
+          "path": "references/windows/interaction-stored-zero-alias.png",
+          "sha256": "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a",
+          "captureSha256": [
+            "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a",
+            "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a",
+            "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a"
+          ],
+          "rgbaSha256": "4d69f7e2945b71d80d22f018618924f0ce551adbb218e8278fd935f1fd7ddaed"
+        },
+        "linux": {
+          "path": "references/linux/interaction-stored-zero-alias.png",
+          "sha256": "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a",
+          "captureSha256": [
+            "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a",
+            "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a",
+            "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a"
+          ],
+          "rgbaSha256": "4d69f7e2945b71d80d22f018618924f0ce551adbb218e8278fd935f1fd7ddaed"
+        }
+      }
+    },
+    {
+      "id": "interaction-stored-merge-alias",
+      "input": "inputs/interaction-stored-merge-alias.svg",
+      "sourceSha256": "3eb0cface45a3b9b631bcbe917f9c843bd4163ea7f21dbde5489796f9156c9f3",
+      "references": {
+        "windows": {
+          "path": "references/windows/interaction-stored-merge-alias.png",
+          "sha256": "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a",
+          "captureSha256": [
+            "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a",
+            "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a",
+            "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a"
+          ],
+          "rgbaSha256": "4d69f7e2945b71d80d22f018618924f0ce551adbb218e8278fd935f1fd7ddaed"
+        },
+        "linux": {
+          "path": "references/linux/interaction-stored-merge-alias.png",
+          "sha256": "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a",
+          "captureSha256": [
+            "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a",
+            "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a",
+            "533f1d72d18157cd79e2b7717421551882021cf07e04697b4ce604aa19d5ee0a"
+          ],
+          "rgbaSha256": "4d69f7e2945b71d80d22f018618924f0ce551adbb218e8278fd935f1fd7ddaed"
+        }
+      }
+    },
+    {
+      "id": "interaction-stored-aa-parent",
+      "input": "inputs/interaction-stored-aa-parent.svg",
+      "sourceSha256": "17ffc215a82ca13cce3a4ae9ee8894652eced187a5fa5a2493b2a28a0485f7ae",
+      "references": {
+        "windows": {
+          "path": "references/windows/interaction-stored-aa-parent.png",
+          "sha256": "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+          "captureSha256": [
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23"
+          ],
+          "rgbaSha256": "35a74842c3f20bdf34f81a0b774cdf4f8d14560eef36fcc60a4da88144be3986"
+        },
+        "linux": {
+          "path": "references/linux/interaction-stored-aa-parent.png",
+          "sha256": "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+          "captureSha256": [
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23"
+          ],
+          "rgbaSha256": "35a74842c3f20bdf34f81a0b774cdf4f8d14560eef36fcc60a4da88144be3986"
+        }
+      }
+    },
+    {
+      "id": "interaction-stored-reflection",
+      "input": "inputs/interaction-stored-reflection.svg",
+      "sourceSha256": "590a2c6643aeadffcf16c33084b4b4c32a8644835a492cd9d0b8120ff598e270",
+      "references": {
+        "windows": {
+          "path": "references/windows/interaction-stored-reflection.png",
+          "sha256": "b4032d1a3ba00eff2e408ebc3043f8efd7aade2abdea338372d1375171cd3c71",
+          "captureSha256": [
+            "b4032d1a3ba00eff2e408ebc3043f8efd7aade2abdea338372d1375171cd3c71",
+            "b4032d1a3ba00eff2e408ebc3043f8efd7aade2abdea338372d1375171cd3c71",
+            "b4032d1a3ba00eff2e408ebc3043f8efd7aade2abdea338372d1375171cd3c71"
+          ],
+          "rgbaSha256": "871c0aba1b906a86f4f996255714136e05e52ccd1f94a204460b7750fdd12440"
+        },
+        "linux": {
+          "path": "references/linux/interaction-stored-reflection.png",
+          "sha256": "b4032d1a3ba00eff2e408ebc3043f8efd7aade2abdea338372d1375171cd3c71",
+          "captureSha256": [
+            "b4032d1a3ba00eff2e408ebc3043f8efd7aade2abdea338372d1375171cd3c71",
+            "b4032d1a3ba00eff2e408ebc3043f8efd7aade2abdea338372d1375171cd3c71",
+            "b4032d1a3ba00eff2e408ebc3043f8efd7aade2abdea338372d1375171cd3c71"
+          ],
+          "rgbaSha256": "871c0aba1b906a86f4f996255714136e05e52ccd1f94a204460b7750fdd12440"
+        }
+      }
+    },
+    {
+      "id": "interaction-stored-backdrop",
+      "input": "inputs/interaction-stored-backdrop.svg",
+      "sourceSha256": "45dbfcba3cdd918772e4e674da62bc36ab324ff60c73519bbd25906549f43999",
+      "references": {
+        "windows": {
+          "path": "references/windows/interaction-stored-backdrop.png",
+          "sha256": "bdfed2123890d1f7d7d5fd08289adba42cd37df3035d23eaf49e2a248b49fb36",
+          "captureSha256": [
+            "bdfed2123890d1f7d7d5fd08289adba42cd37df3035d23eaf49e2a248b49fb36",
+            "bdfed2123890d1f7d7d5fd08289adba42cd37df3035d23eaf49e2a248b49fb36",
+            "bdfed2123890d1f7d7d5fd08289adba42cd37df3035d23eaf49e2a248b49fb36"
+          ],
+          "rgbaSha256": "1cc59f2ec952ae82443b57b1064b0f0b7586579be04c2c49103438d524e5a963"
+        },
+        "linux": {
+          "path": "references/linux/interaction-stored-backdrop.png",
+          "sha256": "bdfed2123890d1f7d7d5fd08289adba42cd37df3035d23eaf49e2a248b49fb36",
+          "captureSha256": [
+            "bdfed2123890d1f7d7d5fd08289adba42cd37df3035d23eaf49e2a248b49fb36",
+            "bdfed2123890d1f7d7d5fd08289adba42cd37df3035d23eaf49e2a248b49fb36",
+            "bdfed2123890d1f7d7d5fd08289adba42cd37df3035d23eaf49e2a248b49fb36"
+          ],
+          "rgbaSha256": "1cc59f2ec952ae82443b57b1064b0f0b7586579be04c2c49103438d524e5a963"
+        }
+      }
+    },
+    {
+      "id": "interaction-stored-use",
+      "input": "inputs/interaction-stored-use.svg",
+      "sourceSha256": "a7054d80a8233365ca8879cb7a6ff6ee433c1beba96c0b5090404a8927d48573",
+      "references": {
+        "windows": {
+          "path": "references/windows/interaction-stored-use.png",
+          "sha256": "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+          "captureSha256": [
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23"
+          ],
+          "rgbaSha256": "35a74842c3f20bdf34f81a0b774cdf4f8d14560eef36fcc60a4da88144be3986"
+        },
+        "linux": {
+          "path": "references/linux/interaction-stored-use.png",
+          "sha256": "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+          "captureSha256": [
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23"
+          ],
+          "rgbaSha256": "35a74842c3f20bdf34f81a0b774cdf4f8d14560eef36fcc60a4da88144be3986"
+        }
+      }
+    },
+    {
+      "id": "interaction-stored-pattern",
+      "input": "inputs/interaction-stored-pattern.svg",
+      "sourceSha256": "074433c58124bc83eaefb143bf7f84adc194df1ddb73b551529993239e7b97fe",
+      "references": {
+        "windows": {
+          "path": "references/windows/interaction-stored-pattern.png",
+          "sha256": "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+          "captureSha256": [
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23"
+          ],
+          "rgbaSha256": "35a74842c3f20bdf34f81a0b774cdf4f8d14560eef36fcc60a4da88144be3986"
+        },
+        "linux": {
+          "path": "references/linux/interaction-stored-pattern.png",
+          "sha256": "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+          "captureSha256": [
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23",
+            "cff8e569ed7b73f68ac605aaca0827bebd52cbb6db09b81f0920a9bb0b916a23"
+          ],
+          "rgbaSha256": "35a74842c3f20bdf34f81a0b774cdf4f8d14560eef36fcc60a4da88144be3986"
+        }
+      }
+    },
+    {
+      "id": "interaction-stored-stroke",
+      "input": "inputs/interaction-stored-stroke.svg",
+      "sourceSha256": "a1a83daffedadb5b7287676a0cb05f66db37dc8a32bc33dcee62ca6f5dba4bc6",
+      "references": {
+        "windows": {
+          "path": "references/windows/interaction-stored-stroke.png",
+          "sha256": "13cce4122ad95f7eaf58544aa529756717726239282a4eeea736fe358f2dc83d",
+          "captureSha256": [
+            "13cce4122ad95f7eaf58544aa529756717726239282a4eeea736fe358f2dc83d",
+            "13cce4122ad95f7eaf58544aa529756717726239282a4eeea736fe358f2dc83d",
+            "13cce4122ad95f7eaf58544aa529756717726239282a4eeea736fe358f2dc83d"
+          ],
+          "rgbaSha256": "d1b98722a5225db1c828a37aa07c6dc1a0c0de81cb80bcc647654d323dbf6d29"
+        },
+        "linux": {
+          "path": "references/linux/interaction-stored-stroke.png",
+          "sha256": "13cce4122ad95f7eaf58544aa529756717726239282a4eeea736fe358f2dc83d",
+          "captureSha256": [
+            "13cce4122ad95f7eaf58544aa529756717726239282a4eeea736fe358f2dc83d",
+            "13cce4122ad95f7eaf58544aa529756717726239282a4eeea736fe358f2dc83d",
+            "13cce4122ad95f7eaf58544aa529756717726239282a4eeea736fe358f2dc83d"
+          ],
+          "rgbaSha256": "d1b98722a5225db1c828a37aa07c6dc1a0c0de81cb80bcc647654d323dbf6d29"
+        }
+      }
+    },
+    {
+      "id": "interaction-stored-two-branch-merge",
+      "input": "inputs/interaction-stored-two-branch-merge.svg",
+      "sourceSha256": "fb1f0c424e45dcbf490307b3270c13dad1d7a96842682bb48f2d0f1968068867",
+      "references": {
+        "windows": {
+          "path": "references/windows/interaction-stored-two-branch-merge.png",
+          "sha256": "129caec1ced2ef6b77e31267bf5e656e52cf978658990cd329906ba15c43fb54",
+          "captureSha256": [
+            "129caec1ced2ef6b77e31267bf5e656e52cf978658990cd329906ba15c43fb54",
+            "129caec1ced2ef6b77e31267bf5e656e52cf978658990cd329906ba15c43fb54",
+            "129caec1ced2ef6b77e31267bf5e656e52cf978658990cd329906ba15c43fb54"
+          ],
+          "rgbaSha256": "31d4bb0ddc66a97f0fe4c694b095ee6f595334a46fd965d26bbe7d00681b8ef1"
+        },
+        "linux": {
+          "path": "references/linux/interaction-stored-two-branch-merge.png",
+          "sha256": "129caec1ced2ef6b77e31267bf5e656e52cf978658990cd329906ba15c43fb54",
+          "captureSha256": [
+            "129caec1ced2ef6b77e31267bf5e656e52cf978658990cd329906ba15c43fb54",
+            "129caec1ced2ef6b77e31267bf5e656e52cf978658990cd329906ba15c43fb54",
+            "129caec1ced2ef6b77e31267bf5e656e52cf978658990cd329906ba15c43fb54"
+          ],
+          "rgbaSha256": "31d4bb0ddc66a97f0fe4c694b095ee6f595334a46fd965d26bbe7d00681b8ef1"
+        }
+      }
+    },
+    {
+      "id": "alpha-curve-alpha-0",
+      "input": "inputs/alpha-curve-alpha-0.svg",
+      "sourceSha256": "c6b3c83c4ad686d5ca80a04ee93bb656e4004ddd3b0ca6fbbd5fc6dcb5ea0ad3",
+      "references": {
+        "windows": {
+          "path": "references/windows/alpha-curve-alpha-0.png",
+          "sha256": "ee4620a2b800923c06059988ca2ac37d75714c21451380f53f950a32c9481a64",
+          "captureSha256": [
+            "ee4620a2b800923c06059988ca2ac37d75714c21451380f53f950a32c9481a64",
+            "ee4620a2b800923c06059988ca2ac37d75714c21451380f53f950a32c9481a64",
+            "ee4620a2b800923c06059988ca2ac37d75714c21451380f53f950a32c9481a64"
+          ],
+          "rgbaSha256": "a3e89f07b549df48103571405cd0f72aec46a62d6071a83f2f1158d2bfdd055b"
+        },
+        "linux": {
+          "path": "references/linux/alpha-curve-alpha-0.png",
+          "sha256": "ee4620a2b800923c06059988ca2ac37d75714c21451380f53f950a32c9481a64",
+          "captureSha256": [
+            "ee4620a2b800923c06059988ca2ac37d75714c21451380f53f950a32c9481a64",
+            "ee4620a2b800923c06059988ca2ac37d75714c21451380f53f950a32c9481a64",
+            "ee4620a2b800923c06059988ca2ac37d75714c21451380f53f950a32c9481a64"
+          ],
+          "rgbaSha256": "a3e89f07b549df48103571405cd0f72aec46a62d6071a83f2f1158d2bfdd055b"
+        }
+      }
+    },
+    {
+      "id": "alpha-rectangle-low-alpha",
+      "input": "inputs/alpha-rectangle-low-alpha.svg",
+      "sourceSha256": "6afd6b8138989004256d0608025ef1f9b213d7f1d5fcd8d0e695229c8352ea2d",
+      "references": {
+        "windows": {
+          "path": "references/windows/alpha-rectangle-low-alpha.png",
+          "sha256": "bcec9b636613c8b5378af674c1cf93ea39989f05947257d49cfb14a005b4293a",
+          "captureSha256": [
+            "bcec9b636613c8b5378af674c1cf93ea39989f05947257d49cfb14a005b4293a",
+            "bcec9b636613c8b5378af674c1cf93ea39989f05947257d49cfb14a005b4293a",
+            "bcec9b636613c8b5378af674c1cf93ea39989f05947257d49cfb14a005b4293a"
+          ],
+          "rgbaSha256": "a4971cf43ae370c5964a193943fa69e5449c4801069021e56aaa3a3e16840b12"
+        },
+        "linux": {
+          "path": "references/linux/alpha-rectangle-low-alpha.png",
+          "sha256": "bcec9b636613c8b5378af674c1cf93ea39989f05947257d49cfb14a005b4293a",
+          "captureSha256": [
+            "bcec9b636613c8b5378af674c1cf93ea39989f05947257d49cfb14a005b4293a",
+            "bcec9b636613c8b5378af674c1cf93ea39989f05947257d49cfb14a005b4293a",
+            "bcec9b636613c8b5378af674c1cf93ea39989f05947257d49cfb14a005b4293a"
+          ],
+          "rgbaSha256": "a4971cf43ae370c5964a193943fa69e5449c4801069021e56aaa3a3e16840b12"
+        }
+      }
+    }
+  ]
+}

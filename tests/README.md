@@ -100,6 +100,11 @@ Eleven direct graph/bounds cases cover authored numerical fringes. One selected
 near-integer input checks scratch ownership and prepared replay; the distinct
 binary/antialiased parent-clip images retain their native two-pixel difference.
 
+The [stored image controls](Research/filter-stored-images/README.md) add nineteen
+canonical regressions for retained terminal offsets, offset/merge image extents
+and source-alpha materialization. Seventeen direct cases cover bounds and numerical
+store boundaries; one merged input checks ownership and prepared replay.
+
 Color/filter numerical-context cross products remain available with
 `--filter Category=Research`. Their [gradient](Research/gradient-color-alpha/research-cases.json)
 and [filter](Research/filter-uniform-precision/research-cases.json) selections

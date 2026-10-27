@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Retain terminal offsets of materialized filter images, propagate stored offset
+  and merge extents, and preserve source-alpha shader rounding before resampling.
+  See the [native controls](tests/Research/filter-stored-images/README.md).
+
 - Enclose filter source hints before layer scaling and select image edge coverage
   using the actual parent clip. Preserve translated alpha, near-integer offsets
   and reflected placement. See the [native controls](tests/Research/filter-image-placement/README.md).
