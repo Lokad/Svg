@@ -89,6 +89,11 @@ naturally unequal expanded graphs. One additional ownership case covers the
 integer offset with a retained color filter; fractional blur ownership remains
 covered by its existing case.
 
+The [retained alpha controls](Research/filter-alpha-stages/README.md) add fifteen
+canonical images, seventeen direct alias/materialization checks, and one selected
+pattern input for ownership and prepared replay. Source-alpha stage metadata
+survives image-free aliases; materialized images keep their separate native path.
+
 Color/filter numerical-context cross products remain available with
 `--filter Category=Research`. Their [gradient](Research/gradient-color-alpha/research-cases.json)
 and [filter](Research/filter-uniform-precision/research-cases.json) selections

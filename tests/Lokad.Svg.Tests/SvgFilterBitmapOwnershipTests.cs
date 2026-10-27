@@ -9,11 +9,12 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgFilterBitmapOwnershipTests
 {
     [Theory]
-    [InlineData("model-source-alpha")]
-    [InlineData("interaction-fractional-chain")]
-    public void Crop_prepass_and_bitmap_graph_scratch_release_after_denial_cancellation_and_retry(string id)
+    [InlineData("filter-affine-restoration", "model-source-alpha")]
+    [InlineData("filter-affine-restoration", "interaction-fractional-chain")]
+    [InlineData("filter-alpha-stages", "interaction-pattern-alpha")]
+    public void Filter_scratch_releases_after_denial_cancellation_and_retry(string family, string id)
     {
-        string folder = Path.Combine(AppContext.BaseDirectory, "TestData", "filter-affine-restoration");
+        string folder = Path.Combine(AppContext.BaseDirectory, "TestData", family);
         byte[] input = File.ReadAllBytes(Path.Combine(folder, "inputs", id + ".svg"));
         byte[] unchanged = input.ToArray();
         using JsonDocument capture = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder, "capture.json")));
@@ -29,11 +30,12 @@ public sealed class SvgFilterBitmapOwnershipTests
     }
 
     [Theory]
-    [InlineData("model-source-alpha")]
-    [InlineData("interaction-fractional-chain")]
-    public async Task Prepared_bitmap_replay_preserves_input_and_borrowed_destination_after_cancellation(string id)
+    [InlineData("filter-affine-restoration", "model-source-alpha")]
+    [InlineData("filter-affine-restoration", "interaction-fractional-chain")]
+    [InlineData("filter-alpha-stages", "interaction-pattern-alpha")]
+    public async Task Prepared_bitmap_replay_preserves_input_and_borrowed_destination_after_cancellation(string family, string id)
     {
-        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "filter-affine-restoration", "inputs", id + ".svg"));
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", family, "inputs", id + ".svg"));
         byte[] unchanged = input.ToArray();
         byte[] expected = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,

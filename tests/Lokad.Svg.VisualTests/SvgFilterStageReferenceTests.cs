@@ -8,7 +8,7 @@ public sealed class SvgFilterStageReferenceTests
 {
     public static IEnumerable<object[]> Cases()
     {
-        foreach (string family in new[] { "filter-clip-ownership", "filter-restoration", "filter-affine-restoration", "filter-shadow-stages" })
+        foreach (string family in new[] { "filter-clip-ownership", "filter-restoration", "filter-affine-restoration", "filter-shadow-stages", "filter-alpha-stages" })
         {
             using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(family), "capture.json")));
             foreach (JsonElement row in data.RootElement.GetProperty("cases").EnumerateArray())

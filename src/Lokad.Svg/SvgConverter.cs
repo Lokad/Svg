@@ -339,6 +339,7 @@ public static partial class SvgConverter
         SvgPatternGeometry? nextPatternTile = null;
         SvgFilterDeferredImage? deferredImage = null;
         SvgFilterColorSpace filterOutputColorSpace = SvgFilterColorSpace.Srgb;
+        SvgFilterDeferredColorFilter filterSamplingColorFilter = SvgFilterDeferredColorFilter.None;
         RenderBudget.BudgetReservation surface = budget.Reserve(surfaceByteCount, SvgMemoryCategory.Surface);
         try
         {
@@ -388,7 +389,7 @@ public static partial class SvgConverter
                 if (commandIndex != root.Commands.Length) throw new SvgException(SvgErrorCode.MalformedInput, "SVG group structure is unbalanced.");
             }
             if (surfaceMode == RasterSurfaceMode.Capture) ApplyCaptureUnpremultiply(pixels, pixelCount, cancellationToken);
-            return new RasterizedSurface(outputWidth, outputHeight, pixels, surface, workUnits) { DeferredImage = deferredImage, FilterColorSpace = filterOutputColorSpace };
+            return new RasterizedSurface(outputWidth, outputHeight, pixels, surface, workUnits) { DeferredImage = deferredImage, FilterColorSpace = filterOutputColorSpace, SamplingColorFilter = filterSamplingColorFilter };
         }
         catch
         {
@@ -739,7 +740,11 @@ public static partial class SvgConverter
             }
             using SvgFilterResult filtered = SvgFilterPlayback.Apply(source, fw, fh, resource, primitiveMap, budget, limits.MaximumWorkUnits - workUnits, cancellationToken);
             workUnits += filtered.WorkUnits;
-            if (frame?.FilterBinding is {} colorOutput && colorOutput.Index == command.MaskContentIndex) filterOutputColorSpace = filtered.ColorSpace;
+            if (frame?.FilterBinding is {} colorOutput && colorOutput.Index == command.MaskContentIndex)
+            {
+                filterOutputColorSpace = filtered.ColorSpace;
+                filterSamplingColorFilter = filtered.SamplingColorFilter;
+            }
             if (filtered.DeferredImage is {} deferred)
             {
                 ParserWorkCounter deferredWork = new(options.Limits.MaximumWorkUnits - workUnits);
@@ -1018,7 +1023,8 @@ public static partial class SvgConverter
                     bool floatingOffset = resource.Primitives.Items.Length > 0
                         && resource.Primitives.Items[^1] is { Kind: SvgFilterPrimitiveKind.Offset, Input: { Index: < 0 } } finalPrimitive
                         && (finalPrimitive.ColorSpace ?? resource.ColorSpace) == SvgFilterColorSpace.LinearRgb;
-                    bool floatingSamples = image.FilterColorSpace == SvgFilterColorSpace.LinearRgb || floatingOffset || imageEdges
+                    bool floatingSamples = image.FilterColorSpace == SvgFilterColorSpace.LinearRgb
+                        || image.SamplingColorFilter == SvgFilterDeferredColorFilter.SourceAlpha || floatingOffset || imageEdges
                         && (resource.Primitives.Items[^1].ColorSpace ?? resource.ColorSpace) == SvgFilterColorSpace.LinearRgb;
                     long restoreWork = 128L + (long)Math.Max(0, restoreRight - restoreLeft) * Math.Max(0, restoreBottom - restoreTop)
                         * ((floatingSamples ? 8 : 4) + (imageEdges ? 2 : 0));
@@ -1083,11 +1089,12 @@ public static partial class SvgConverter
                                 }
                                 SvgShaderPaint floating = SvgShaderPaint.SampleAffine(image.Pixels, image.Width, image.Height, u, v,
                                     sampleOrigin, opacity / 255f);
-                                // A materialized offset source preserves its operating
-                                // color-space roundtrip through the floating store.
-                                floating = image.FilterColorSpace == SvgFilterColorSpace.LinearRgb
-                                    ? SvgFilterColorTransfer.Convert(floating, SvgFilterColorSpace.Srgb)
-                                    : SvgFilterColorTransfer.Convert(SvgFilterColorTransfer.Convert(floating, SvgFilterColorSpace.LinearRgb), SvgFilterColorSpace.Srgb);
+                                // Operating-space transfers precede the store. A retained
+                                // alpha shader only requires floating sampling.
+                                if (image.FilterColorSpace == SvgFilterColorSpace.LinearRgb)
+                                    floating = SvgFilterColorTransfer.Convert(floating, SvgFilterColorSpace.Srgb);
+                                else if (image.SamplingColorFilter != SvgFilterDeferredColorFilter.SourceAlpha)
+                                    floating = SvgFilterColorTransfer.Convert(SvgFilterColorTransfer.Convert(floating, SvgFilterColorSpace.LinearRgb), SvgFilterColorSpace.Srgb);
                                 floating.Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), edgeCoverage);
                                 continue;
                             }
@@ -1617,6 +1624,9 @@ public static partial class SvgConverter
                 else Add(new(primitives.Length - 1));
                 workUnits += planWork.Used;
                 if (placements.Count == 0 || end == first) return true;
+                if (frame?.FilterBinding is {} alphaOutput && alphaOutput.Index == command.MaskContentIndex)
+                    filterSamplingColorFilter = placements.Count == 1 && placements[0].AlphaOnly
+                        ? SvgFilterDeferredColorFilter.SourceAlpha : SvgFilterDeferredColorFilter.None;
                 using RenderBudget.BudgetReservation commandOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(end - first), SvgMemoryCategory.Scene);
                 SvgDrawCommand[] draws = new SvgDrawCommand[end - first];
                 Charge(draws.Length);
@@ -5047,6 +5057,10 @@ public static partial class SvgConverter
         internal SvgFilterDeferredImage? DeferredImage { get; init; }
         /// <summary>Identifies borrowed affine filter pixels awaiting their final transfer; ordinary raster surfaces are sRGB.</summary>
         internal SvgFilterColorSpace FilterColorSpace { get; init; } = SvgFilterColorSpace.Srgb;
+        /// <summary>Retains an image-free source color-filter stage until affine sampling; owns no extra storage.</summary>
+        internal SvgFilterDeferredColorFilter SamplingColorFilter { get; init; }
+        /// <summary>Tracks sampling retained by an unevaluated filter transform; materialized images have no pending color filter.</summary>
+        internal SvgFilterImageSampling FilterImageSampling { get; init; }
         public void Dispose() => Reservation.Dispose();
     }
 

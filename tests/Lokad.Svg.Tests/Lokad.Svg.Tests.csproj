@@ -1,5 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/filter-alpha-stages/capture.json" Link="TestData/filter-alpha-stages/capture.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/filter-alpha-stages/inputs/interaction-pattern-alpha.svg" Link="TestData/filter-alpha-stages/inputs/interaction-pattern-alpha.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/filter-affine-restoration/capture.json" Link="TestData/filter-affine-restoration/capture.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/filter-affine-restoration/inputs/model-source-alpha.svg" Link="TestData/filter-affine-restoration/inputs/model-source-alpha.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/filter-affine-restoration/inputs/interaction-fractional-chain.svg" Link="TestData/filter-affine-restoration/inputs/interaction-fractional-chain.svg" CopyToOutputDirectory="PreserveNewest" />

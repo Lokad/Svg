@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Retain source-alpha shader precision through zero blur, one-node merge and
+  zero-offset aliases during affine image sampling, including backdrop, use and
+  pattern replay. See the [native controls](tests/Research/filter-alpha-stages/README.md).
+
 - Quantize compact shadow tint and opacity before coverage, retaining float
   precision for pending linear-RGB color conversion and packed lanes for blurred
   images. See the [native controls](tests/Research/filter-shadow-stages/README.md).

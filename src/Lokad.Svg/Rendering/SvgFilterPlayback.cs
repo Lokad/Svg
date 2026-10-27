@@ -64,6 +64,8 @@ internal readonly record struct SvgFilterResult(SvgConverter.RasterizedSurface F
 {
     internal SvgFilterDeferredImage? DeferredImage { get; init; }
     internal SvgFilterUniformPaint? UniformPaint { get; init; }
+    /// <summary>Retains a source color-filter stage through image-free aliases for later image sampling.</summary>
+    internal SvgFilterDeferredColorFilter SamplingColorFilter => Frame.SamplingColorFilter;
     /// <summary>Identifies the stored pixel lanes; optional uniform paint metadata remains sRGB.</summary>
     internal SvgFilterColorSpace ColorSpace { get; init; } = SvgFilterColorSpace.Srgb;
     internal byte[] Pixels => Frame.Pixels;
@@ -359,6 +361,7 @@ internal static class SvgFilterPlayback
             {
                 token.ThrowIfCancellationRequested();
                 SvgFilterPrimitive primitive = resource.Primitives.Items[index];
+                bool nearestSampling = false;
                 // Flood supplies a CSS color without interpolation; its declared
                 // interpolation property does not change the color's sRGB origin.
                 SvgFilterColorSpace colorSpace = primitive.Kind == SvgFilterPrimitiveKind.Flood
@@ -528,6 +531,7 @@ internal static class SvgFilterPlayback
                         && MathF.Abs(placed.SkewX) <= roundEpsilon && MathF.Abs(placed.SkewY) <= roundEpsilon
                         && MathF.Abs(placed.TranslateX - MathF.Floor(placed.TranslateX + .5f)) <= roundEpsilon
                         && MathF.Abs(placed.TranslateY - MathF.Floor(placed.TranslateY + .5f)) <= roundEpsilon;
+                    nearestSampling = !aligned;
                     if (index == finalPaintIndex && directSource && map.Regions is { DeferFinalOffset: true } && !aligned
                         && (primitive.OffsetX * map.ScaleX != Math.Truncate(primitive.OffsetX * map.ScaleX)
                             || primitive.OffsetY * map.ScaleY != Math.Truncate(primitive.OffsetY * map.ScaleY)))
@@ -645,6 +649,7 @@ internal static class SvgFilterPlayback
                         Charge(bytes);
                         ReadInput(merged, index, graphic).CopyTo(output);
                         linear[index] = merged.Index >= 0 && linear[merged.Index];
+                        RetainSampling(index, merged, false);
                         SvgPaintBounds sourceBounds = merged.Index >= 0 ? imageBounds[merged.Index]
                             : map.Regions?.SourceBounds ?? new(0, 0, width, height);
                         imageBounds[index] = ClipImageBounds(sourceBounds, index);
@@ -717,6 +722,9 @@ internal static class SvgFilterPlayback
                     linear[index] = destinationLinear;
                 }
                 else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filter primitive is not implemented.");
+                if (primitive.Kind == SvgFilterPrimitiveKind.Offset
+                    || primitive.Kind == SvgFilterPrimitiveKind.GaussianBlur && deviation.Horizontal <= .03f && deviation.Vertical <= .03f)
+                    RetainSampling(index, primitive.Input, nearestSampling);
                 if (primitive.Kind == SvgFilterPrimitiveKind.GaussianBlur && primitive.SigmaX == 0 && primitive.SigmaY == 0
                     && primitive.Input.Index >= 0 && uniform[primitive.Input.Index].Known)
                 {
@@ -757,7 +765,14 @@ internal static class SvgFilterPlayback
             }
             token.ThrowIfCancellationRequested();
             returned = true;
-            return new(outputs[finalIndex] with { WorkUnits = work }, samples, sampleOwner) { ColorSpace = count > 0 && map.Regions?.DeferFinalColorTransfer == true && linear[finalIndex] ? SvgFilterColorSpace.LinearRgb : SvgFilterColorSpace.Srgb, DeferredImage = deferredImage, UniformPaint = count > 0 && uniform[finalIndex].Known ? new(uniform[finalIndex].Paint, imageBounds[finalIndex], uniform[finalIndex].HighPrecision) : null };
+            return new(outputs[finalIndex] with { WorkUnits = work }, samples, sampleOwner)
+            {
+                ColorSpace = count > 0 && map.Regions?.DeferFinalColorTransfer == true && linear[finalIndex]
+                    ? SvgFilterColorSpace.LinearRgb : SvgFilterColorSpace.Srgb,
+                DeferredImage = deferredImage,
+                UniformPaint = count > 0 && uniform[finalIndex].Known
+                    ? new(uniform[finalIndex].Paint, imageBounds[finalIndex], uniform[finalIndex].HighPrecision) : null
+            };
         }
         finally
         {
@@ -791,6 +806,26 @@ internal static class SvgFilterPlayback
                 reference = next;
             }
             return reference;
+        }
+
+        // A retained alpha filter follows compatible sampling transforms. Two
+        // nontrivial nearest transforms resolve the first image, consuming its
+        // color filter. State lives on the existing owned output record.
+        void RetainSampling(int index, SvgFilterInput reference, bool nearest)
+        {
+            token.ThrowIfCancellationRequested();
+            Charge(1);
+            SvgFilterDeferredColorFilter colorFilter = reference == SvgFilterInput.SourceAlpha
+                ? SvgFilterDeferredColorFilter.SourceAlpha
+                : reference.Index >= 0 ? outputs[reference.Index].SamplingColorFilter : SvgFilterDeferredColorFilter.None;
+            SvgFilterImageSampling sampling = reference.Index >= 0
+                ? outputs[reference.Index].FilterImageSampling : SvgFilterImageSampling.Linear;
+            if (nearest)
+            {
+                if (sampling == SvgFilterImageSampling.Nearest) colorFilter = SvgFilterDeferredColorFilter.None;
+                sampling = SvgFilterImageSampling.Nearest;
+            }
+            outputs[index] = outputs[index] with { SamplingColorFilter = colorFilter, FilterImageSampling = sampling };
         }
 
         SvgPaintBounds ClipImageBounds(SvgPaintBounds bounds, int index)
