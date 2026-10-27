@@ -63,6 +63,10 @@ tools/capture-chrome.ps1 -InputPath tests/Research/circle-6x6.svg -OutputPath ar
   before navigation, then waits for load and image decoding. Historical references
   keep their actual recipe 1/2/3; new admission uses the pinned current recipe.
   A recipe change requires review of affected baselines, not metadata relabeling.
+- Canvas `drawImage`/`toDataURL` probes use a different raster path. Their dither
+  phase can differ from page screenshots across compositor seams. Keep them as
+  exploratory evidence until each proposed reference is independently qualified
+  through `ChromeSvgCapture`; preserve naturally unequal profiles separately.
 - [ChromeSvgCapture](Lokad.Svg.Chrome/ChromeSvgCapture.cs) renders an unstyled block
   `img` and screenshots the page's top-left with `captureBeyondViewport=false`.
   Explicit root dimensions determine intrinsic size: smaller screenshots crop,

@@ -1,0 +1,1664 @@
+{
+  "captureProfile": "recipe3-page-img-screenshot",
+  "browser": "Chromium 153.0.8010.52",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "pngStability": "byte-identical",
+  "materialization": "Scaled font-free inputs retain original user space in an explicit root viewBox; profile equality is independently measured for each fixture.",
+  "cases": [
+    {
+      "id": "source-provenance-controls-0-candidate",
+      "conversionSourceSha256": "ea5f41a82d21ecd904f8ad689f708aee490688a1e2848f563c93c3dd60c85af5",
+      "captureInput": "capture-inputs/source-provenance-controls-0-candidate.svg",
+      "captureInputSha256": "c1f26703fb5a1f2488b251d3b40246ca919c67f183cd3682a0a89ee6b05fa4c3",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-0-candidate.png",
+          "sha256": "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+          "captureSha256": [
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-0-candidate.png",
+          "sha256": "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+          "captureSha256": [
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-0-control",
+      "conversionSourceSha256": "eafd5113f87dbaa93838eb364d5da8452d8cf7d3f5838006d9fe6efb0ad27dae",
+      "captureInput": "capture-inputs/source-provenance-controls-0-control.svg",
+      "captureInputSha256": "97414639503a1c5a4ad3b1550f99886cce20075fac5c60ed3f61f824b383752a",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-0-control.png",
+          "sha256": "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+          "captureSha256": [
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-0-control.png",
+          "sha256": "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+          "captureSha256": [
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-1-control",
+      "conversionSourceSha256": "888520243222ef3c0cc7d3097e10470bb48604c10c985b4b4cc7e21a689b5dd8",
+      "captureInput": "capture-inputs/source-provenance-controls-1-control.svg",
+      "captureInputSha256": "aa8563729fcf9bcd05476a04c0a5cf3d31749773b712fcae6b3555885bdda5f8",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-1-control.png",
+          "sha256": "1e2b67852bbf58002d5daf81594ab9f1b71928ef85a863b7c3a0af22d09fad73",
+          "captureSha256": [
+            "1e2b67852bbf58002d5daf81594ab9f1b71928ef85a863b7c3a0af22d09fad73",
+            "1e2b67852bbf58002d5daf81594ab9f1b71928ef85a863b7c3a0af22d09fad73",
+            "1e2b67852bbf58002d5daf81594ab9f1b71928ef85a863b7c3a0af22d09fad73"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-1-control.png",
+          "sha256": "1e2b67852bbf58002d5daf81594ab9f1b71928ef85a863b7c3a0af22d09fad73",
+          "captureSha256": [
+            "1e2b67852bbf58002d5daf81594ab9f1b71928ef85a863b7c3a0af22d09fad73",
+            "1e2b67852bbf58002d5daf81594ab9f1b71928ef85a863b7c3a0af22d09fad73",
+            "1e2b67852bbf58002d5daf81594ab9f1b71928ef85a863b7c3a0af22d09fad73"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-2-control",
+      "conversionSourceSha256": "8710477866ccb742915ad23ef0d91d98115f5425ea375d6a65369647acdb578c",
+      "captureInput": "capture-inputs/source-provenance-controls-2-control.svg",
+      "captureInputSha256": "e97994cd4601bedf14b6e392d70073c4b845dfeed8a2b667ad26858be938de06",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-2-control.png",
+          "sha256": "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+          "captureSha256": [
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-2-control.png",
+          "sha256": "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+          "captureSha256": [
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-3-control",
+      "conversionSourceSha256": "d0a53b19b6466afd775be1d247176a3ed49cbdf92b1e923e023a63b88345afd7",
+      "captureInput": "capture-inputs/source-provenance-controls-3-control.svg",
+      "captureInputSha256": "632f2c09f9fbf81909d3e87809706f215a00089fdfdfad7a1b4010abefff08ee",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-3-control.png",
+          "sha256": "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+          "captureSha256": [
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-3-control.png",
+          "sha256": "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+          "captureSha256": [
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-4-control",
+      "conversionSourceSha256": "cbdceb1ea9409518296bf746d5b238639e016c3d9f0310e642838fac40f9bc09",
+      "captureInput": "capture-inputs/source-provenance-controls-4-control.svg",
+      "captureInputSha256": "df1d0a5f0113be500a525dce47ad2a18d9b1b22b83f7f0e4e05fd76f96a32860",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-4-control.png",
+          "sha256": "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+          "captureSha256": [
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-4-control.png",
+          "sha256": "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+          "captureSha256": [
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-5-control",
+      "conversionSourceSha256": "cfc090135c65ac8a7d7ab70edc0bb943468c7fd55f3a876d296acf6467e20ddf",
+      "captureInput": "capture-inputs/source-provenance-controls-5-control.svg",
+      "captureInputSha256": "5f423dda7a540b0929f78d6820ec672fc7fbc0e58ec63b9b9255134073ccbc4d",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-5-control.png",
+          "sha256": "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+          "captureSha256": [
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-5-control.png",
+          "sha256": "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+          "captureSha256": [
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-6-candidate",
+      "conversionSourceSha256": "d5c3319ca4fd44cfe5af36ffc8d6b8fe0119ab2bb6d7aa37c55df7d1d9b8ebe7",
+      "captureInput": "capture-inputs/source-provenance-controls-6-candidate.svg",
+      "captureInputSha256": "5759b8a95d954b90dd62c874bf8463a411548cf371cc64fef8eac05730848083",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-6-candidate.png",
+          "sha256": "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+          "captureSha256": [
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-6-candidate.png",
+          "sha256": "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+          "captureSha256": [
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-6-control",
+      "conversionSourceSha256": "b81796fdc4ac35c1ac6548088c73bb1b1d069810dac17079bb67981555bf8201",
+      "captureInput": "capture-inputs/source-provenance-controls-6-control.svg",
+      "captureInputSha256": "71ac61c655f5eeb9df7dacb2afe3cc1a05d6796f871b6bff20522faa672b54b2",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-6-control.png",
+          "sha256": "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+          "captureSha256": [
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-6-control.png",
+          "sha256": "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+          "captureSha256": [
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-7-control",
+      "conversionSourceSha256": "9195f3231ebb2ef23bad32a9410fbb7ccf093f2402ccdfff04899c63d9d04a3b",
+      "captureInput": "capture-inputs/source-provenance-controls-7-control.svg",
+      "captureInputSha256": "233ebfc21f879c72418c6a365dcc66697c8ef3a509ca74577beb558430568c45",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-7-control.png",
+          "sha256": "906ec4aafe06cdaf9e59bc26ac06ab545fef3d2d75eb61b1b0eb72b49420d430",
+          "captureSha256": [
+            "906ec4aafe06cdaf9e59bc26ac06ab545fef3d2d75eb61b1b0eb72b49420d430",
+            "906ec4aafe06cdaf9e59bc26ac06ab545fef3d2d75eb61b1b0eb72b49420d430",
+            "906ec4aafe06cdaf9e59bc26ac06ab545fef3d2d75eb61b1b0eb72b49420d430"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-7-control.png",
+          "sha256": "906ec4aafe06cdaf9e59bc26ac06ab545fef3d2d75eb61b1b0eb72b49420d430",
+          "captureSha256": [
+            "906ec4aafe06cdaf9e59bc26ac06ab545fef3d2d75eb61b1b0eb72b49420d430",
+            "906ec4aafe06cdaf9e59bc26ac06ab545fef3d2d75eb61b1b0eb72b49420d430",
+            "906ec4aafe06cdaf9e59bc26ac06ab545fef3d2d75eb61b1b0eb72b49420d430"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-8-control",
+      "conversionSourceSha256": "7458c27687494cc5876624cbccb7dd9a8f03ffaab9f2a14dfa17cc836bcbb735",
+      "captureInput": "capture-inputs/source-provenance-controls-8-control.svg",
+      "captureInputSha256": "a127ae94d4c7df0ebf4ad6a38aae968be0ab567721289a8e77890a29e835ca32",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-8-control.png",
+          "sha256": "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+          "captureSha256": [
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-8-control.png",
+          "sha256": "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+          "captureSha256": [
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-9-control",
+      "conversionSourceSha256": "58914cbedf953115a61c424f823f3632d12a5966e6786fe7c1dfee96caeac689",
+      "captureInput": "capture-inputs/source-provenance-controls-9-control.svg",
+      "captureInputSha256": "302493f7c2dc1b9938cd1fd9a9f7a24a9251a51e8193b4525afe6fdec8fbde83",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-9-control.png",
+          "sha256": "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+          "captureSha256": [
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-9-control.png",
+          "sha256": "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+          "captureSha256": [
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-10-control",
+      "conversionSourceSha256": "70c62b75d642adcf06bc32befce60b09e385eff794a82b8e7cecca18df114e95",
+      "captureInput": "capture-inputs/source-provenance-controls-10-control.svg",
+      "captureInputSha256": "30b29f65018549a5e972fe00d95648a6274ecde57290531a5acc7d2c05690c3b",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-10-control.png",
+          "sha256": "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+          "captureSha256": [
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-10-control.png",
+          "sha256": "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+          "captureSha256": [
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-11-control",
+      "conversionSourceSha256": "76a6c1cb1f3346fedd3d861b2959321b66774fc163dc4e21a8a55ff3a901736d",
+      "captureInput": "capture-inputs/source-provenance-controls-11-control.svg",
+      "captureInputSha256": "56313d06481c306b093f6a6ea48f9e52cf21bf6942764c11cce10844eb6c78c7",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-11-control.png",
+          "sha256": "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+          "captureSha256": [
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-11-control.png",
+          "sha256": "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+          "captureSha256": [
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-12-candidate",
+      "conversionSourceSha256": "6a3ceb0b3c7b6cb3787e6c6b1f71ca128865c814aac766af49bacf4f67ce6a67",
+      "captureInput": "inputs/source-provenance-controls-12-candidate.svg",
+      "captureInputSha256": "6a3ceb0b3c7b6cb3787e6c6b1f71ca128865c814aac766af49bacf4f67ce6a67",
+      "width": 48,
+      "height": 40,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-12-candidate.png",
+          "sha256": "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+          "captureSha256": [
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-12-candidate.png",
+          "sha256": "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+          "captureSha256": [
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-12-control",
+      "conversionSourceSha256": "c2f46ca65a3c5f7094516b35232e4d40c5aa1489d8432e4549c2d117603c5d39",
+      "captureInput": "inputs/source-provenance-controls-12-control.svg",
+      "captureInputSha256": "c2f46ca65a3c5f7094516b35232e4d40c5aa1489d8432e4549c2d117603c5d39",
+      "width": 48,
+      "height": 40,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-12-control.png",
+          "sha256": "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+          "captureSha256": [
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-12-control.png",
+          "sha256": "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+          "captureSha256": [
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-13-control",
+      "conversionSourceSha256": "e14bfbef98d0364c9b9a49b9992814bce2f4bf80c207c1cfcf267ebc9732b7dc",
+      "captureInput": "inputs/source-provenance-controls-13-control.svg",
+      "captureInputSha256": "e14bfbef98d0364c9b9a49b9992814bce2f4bf80c207c1cfcf267ebc9732b7dc",
+      "width": 48,
+      "height": 40,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-13-control.png",
+          "sha256": "ff11cfdd75eb9627dc670035395fe12e166abc47d7fa659cabdd7409bca1f26d",
+          "captureSha256": [
+            "ff11cfdd75eb9627dc670035395fe12e166abc47d7fa659cabdd7409bca1f26d",
+            "ff11cfdd75eb9627dc670035395fe12e166abc47d7fa659cabdd7409bca1f26d",
+            "ff11cfdd75eb9627dc670035395fe12e166abc47d7fa659cabdd7409bca1f26d"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-13-control.png",
+          "sha256": "ff11cfdd75eb9627dc670035395fe12e166abc47d7fa659cabdd7409bca1f26d",
+          "captureSha256": [
+            "ff11cfdd75eb9627dc670035395fe12e166abc47d7fa659cabdd7409bca1f26d",
+            "ff11cfdd75eb9627dc670035395fe12e166abc47d7fa659cabdd7409bca1f26d",
+            "ff11cfdd75eb9627dc670035395fe12e166abc47d7fa659cabdd7409bca1f26d"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-14-control",
+      "conversionSourceSha256": "55921e7f32c8163ddc7b20359692be7e3ba389613f328911a5e295e97e491452",
+      "captureInput": "inputs/source-provenance-controls-14-control.svg",
+      "captureInputSha256": "55921e7f32c8163ddc7b20359692be7e3ba389613f328911a5e295e97e491452",
+      "width": 48,
+      "height": 40,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-14-control.png",
+          "sha256": "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+          "captureSha256": [
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-14-control.png",
+          "sha256": "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+          "captureSha256": [
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-15-control",
+      "conversionSourceSha256": "a1eeaca8f87540f7f56019a80e256850df69377a0028ecac78c55bd34787f64d",
+      "captureInput": "inputs/source-provenance-controls-15-control.svg",
+      "captureInputSha256": "a1eeaca8f87540f7f56019a80e256850df69377a0028ecac78c55bd34787f64d",
+      "width": 48,
+      "height": 40,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-15-control.png",
+          "sha256": "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+          "captureSha256": [
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-15-control.png",
+          "sha256": "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+          "captureSha256": [
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-16-control",
+      "conversionSourceSha256": "2a25182218cf7f91062be416ab87c1ee5e2ba9f3e7d832398b381e6416b84442",
+      "captureInput": "inputs/source-provenance-controls-16-control.svg",
+      "captureInputSha256": "2a25182218cf7f91062be416ab87c1ee5e2ba9f3e7d832398b381e6416b84442",
+      "width": 48,
+      "height": 40,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-16-control.png",
+          "sha256": "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+          "captureSha256": [
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-16-control.png",
+          "sha256": "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+          "captureSha256": [
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-17-control",
+      "conversionSourceSha256": "88667ba0955d2faea709fe2b7c5cdbbaefc95739b0fefe80e8776c5e4e98be1c",
+      "captureInput": "inputs/source-provenance-controls-17-control.svg",
+      "captureInputSha256": "88667ba0955d2faea709fe2b7c5cdbbaefc95739b0fefe80e8776c5e4e98be1c",
+      "width": 48,
+      "height": 40,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-17-control.png",
+          "sha256": "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+          "captureSha256": [
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-17-control.png",
+          "sha256": "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+          "captureSha256": [
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+            "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-18-candidate",
+      "conversionSourceSha256": "f172da3a3286486557651956d815e89d13d3289d6634c091bb2a512c419a4317",
+      "captureInput": "inputs/source-provenance-controls-18-candidate.svg",
+      "captureInputSha256": "f172da3a3286486557651956d815e89d13d3289d6634c091bb2a512c419a4317",
+      "width": 48,
+      "height": 40,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-18-candidate.png",
+          "sha256": "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+          "captureSha256": [
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-18-candidate.png",
+          "sha256": "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+          "captureSha256": [
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-18-control",
+      "conversionSourceSha256": "49fd2ccb959ea6bd824945613975583a60847a9605450133239d12a146a091eb",
+      "captureInput": "inputs/source-provenance-controls-18-control.svg",
+      "captureInputSha256": "49fd2ccb959ea6bd824945613975583a60847a9605450133239d12a146a091eb",
+      "width": 48,
+      "height": 40,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-18-control.png",
+          "sha256": "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+          "captureSha256": [
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-18-control.png",
+          "sha256": "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+          "captureSha256": [
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-19-control",
+      "conversionSourceSha256": "ff9b114930978125e7e04b91232086cb5b0bef768d2f8aec4ea45bb0f900342c",
+      "captureInput": "inputs/source-provenance-controls-19-control.svg",
+      "captureInputSha256": "ff9b114930978125e7e04b91232086cb5b0bef768d2f8aec4ea45bb0f900342c",
+      "width": 48,
+      "height": 40,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-19-control.png",
+          "sha256": "3b66236b8f862fa5aca0b983cb8e3acffbb030a480b4451d688b82d0fae578ad",
+          "captureSha256": [
+            "3b66236b8f862fa5aca0b983cb8e3acffbb030a480b4451d688b82d0fae578ad",
+            "3b66236b8f862fa5aca0b983cb8e3acffbb030a480b4451d688b82d0fae578ad",
+            "3b66236b8f862fa5aca0b983cb8e3acffbb030a480b4451d688b82d0fae578ad"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-19-control.png",
+          "sha256": "3b66236b8f862fa5aca0b983cb8e3acffbb030a480b4451d688b82d0fae578ad",
+          "captureSha256": [
+            "3b66236b8f862fa5aca0b983cb8e3acffbb030a480b4451d688b82d0fae578ad",
+            "3b66236b8f862fa5aca0b983cb8e3acffbb030a480b4451d688b82d0fae578ad",
+            "3b66236b8f862fa5aca0b983cb8e3acffbb030a480b4451d688b82d0fae578ad"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-20-control",
+      "conversionSourceSha256": "aa389fc4e423d28c13f8ef9529811b0ab3aacfe77c819820f8211ffef6a7b808",
+      "captureInput": "inputs/source-provenance-controls-20-control.svg",
+      "captureInputSha256": "aa389fc4e423d28c13f8ef9529811b0ab3aacfe77c819820f8211ffef6a7b808",
+      "width": 48,
+      "height": 40,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-20-control.png",
+          "sha256": "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+          "captureSha256": [
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-20-control.png",
+          "sha256": "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+          "captureSha256": [
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-21-control",
+      "conversionSourceSha256": "7c926f14ffd4173392f19ec99743d03c1b446341480fc85b26c8eba4b7ceff41",
+      "captureInput": "inputs/source-provenance-controls-21-control.svg",
+      "captureInputSha256": "7c926f14ffd4173392f19ec99743d03c1b446341480fc85b26c8eba4b7ceff41",
+      "width": 48,
+      "height": 40,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-21-control.png",
+          "sha256": "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+          "captureSha256": [
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-21-control.png",
+          "sha256": "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+          "captureSha256": [
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-22-control",
+      "conversionSourceSha256": "fff14bb3ee46a1caa77097597c5d5fe6fd6621dd08a0f487069a23fed3738cb5",
+      "captureInput": "inputs/source-provenance-controls-22-control.svg",
+      "captureInputSha256": "fff14bb3ee46a1caa77097597c5d5fe6fd6621dd08a0f487069a23fed3738cb5",
+      "width": 48,
+      "height": 40,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-22-control.png",
+          "sha256": "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+          "captureSha256": [
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-22-control.png",
+          "sha256": "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+          "captureSha256": [
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-provenance-controls-23-control",
+      "conversionSourceSha256": "1d7628535380185c31a6f92ecd600288d152a48198270469fa7b6efdc3143702",
+      "captureInput": "inputs/source-provenance-controls-23-control.svg",
+      "captureInputSha256": "1d7628535380185c31a6f92ecd600288d152a48198270469fa7b6efdc3143702",
+      "width": 48,
+      "height": 40,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/source-provenance-controls-23-control.png",
+          "sha256": "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+          "captureSha256": [
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/source-provenance-controls-23-control.png",
+          "sha256": "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+          "captureSha256": [
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7"
+          ]
+        }
+      }
+    },
+    {
+      "id": "opacity-controls-0-candidate",
+      "conversionSourceSha256": "212b7abdd8584407a011043be4b206946c4fa428baeacf7712c323245b8c8697",
+      "captureInput": "inputs/opacity-controls-0-candidate.svg",
+      "captureInputSha256": "212b7abdd8584407a011043be4b206946c4fa428baeacf7712c323245b8c8697",
+      "width": 48,
+      "height": 40,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/opacity-controls-0-candidate.png",
+          "sha256": "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+          "captureSha256": [
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/opacity-controls-0-candidate.png",
+          "sha256": "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+          "captureSha256": [
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7"
+          ]
+        }
+      }
+    },
+    {
+      "id": "opacity-controls-0-control",
+      "conversionSourceSha256": "ca936dcd0a362a64a62d157ec2bd0bc453029e6cc5a7056790c3b35efbbbf9a7",
+      "captureInput": "inputs/opacity-controls-0-control.svg",
+      "captureInputSha256": "ca936dcd0a362a64a62d157ec2bd0bc453029e6cc5a7056790c3b35efbbbf9a7",
+      "width": 48,
+      "height": 40,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/opacity-controls-0-control.png",
+          "sha256": "2de8844889819e9b3d5c09249947de966d02b02e69bd830ef8ef3024caf07b17",
+          "captureSha256": [
+            "2de8844889819e9b3d5c09249947de966d02b02e69bd830ef8ef3024caf07b17",
+            "2de8844889819e9b3d5c09249947de966d02b02e69bd830ef8ef3024caf07b17",
+            "2de8844889819e9b3d5c09249947de966d02b02e69bd830ef8ef3024caf07b17"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/opacity-controls-0-control.png",
+          "sha256": "2de8844889819e9b3d5c09249947de966d02b02e69bd830ef8ef3024caf07b17",
+          "captureSha256": [
+            "2de8844889819e9b3d5c09249947de966d02b02e69bd830ef8ef3024caf07b17",
+            "2de8844889819e9b3d5c09249947de966d02b02e69bd830ef8ef3024caf07b17",
+            "2de8844889819e9b3d5c09249947de966d02b02e69bd830ef8ef3024caf07b17"
+          ]
+        }
+      }
+    },
+    {
+      "id": "opacity-controls-1-control",
+      "conversionSourceSha256": "82bdca2f91947b61ab5a365182ff7421bafc4db2f164b4efb3cccb17f58170b3",
+      "captureInput": "inputs/opacity-controls-1-control.svg",
+      "captureInputSha256": "82bdca2f91947b61ab5a365182ff7421bafc4db2f164b4efb3cccb17f58170b3",
+      "width": 48,
+      "height": 40,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/opacity-controls-1-control.png",
+          "sha256": "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+          "captureSha256": [
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/opacity-controls-1-control.png",
+          "sha256": "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+          "captureSha256": [
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7",
+            "7427f22b1c69dbb80cf8027b534cb270e849932372bf8fb8fc5d6baf967093a7"
+          ]
+        }
+      }
+    },
+    {
+      "id": "opacity-controls-2-control",
+      "conversionSourceSha256": "9035c1b21df9ec3b92a3c30c4100cd83b919058c40b02f1810b085055e22e7b0",
+      "captureInput": "inputs/opacity-controls-2-control.svg",
+      "captureInputSha256": "9035c1b21df9ec3b92a3c30c4100cd83b919058c40b02f1810b085055e22e7b0",
+      "width": 48,
+      "height": 40,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/opacity-controls-2-control.png",
+          "sha256": "196152ba931766e3147b8e22eb29f9cdcc0374f9427a7838c748d9e23d7597c9",
+          "captureSha256": [
+            "196152ba931766e3147b8e22eb29f9cdcc0374f9427a7838c748d9e23d7597c9",
+            "196152ba931766e3147b8e22eb29f9cdcc0374f9427a7838c748d9e23d7597c9",
+            "196152ba931766e3147b8e22eb29f9cdcc0374f9427a7838c748d9e23d7597c9"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/opacity-controls-2-control.png",
+          "sha256": "196152ba931766e3147b8e22eb29f9cdcc0374f9427a7838c748d9e23d7597c9",
+          "captureSha256": [
+            "196152ba931766e3147b8e22eb29f9cdcc0374f9427a7838c748d9e23d7597c9",
+            "196152ba931766e3147b8e22eb29f9cdcc0374f9427a7838c748d9e23d7597c9",
+            "196152ba931766e3147b8e22eb29f9cdcc0374f9427a7838c748d9e23d7597c9"
+          ]
+        }
+      }
+    },
+    {
+      "id": "opacity-controls-3-control",
+      "conversionSourceSha256": "f1ae35ad24e60fc13f22b45f926c2329413f786c93fb3c5010800595fe9a405c",
+      "captureInput": "inputs/opacity-controls-3-control.svg",
+      "captureInputSha256": "f1ae35ad24e60fc13f22b45f926c2329413f786c93fb3c5010800595fe9a405c",
+      "width": 48,
+      "height": 40,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/opacity-controls-3-control.png",
+          "sha256": "7cae7171299c654f7e2d23a28d0c0860c0dec77372d768843a4b7ff7930f6a4c",
+          "captureSha256": [
+            "7cae7171299c654f7e2d23a28d0c0860c0dec77372d768843a4b7ff7930f6a4c",
+            "7cae7171299c654f7e2d23a28d0c0860c0dec77372d768843a4b7ff7930f6a4c",
+            "7cae7171299c654f7e2d23a28d0c0860c0dec77372d768843a4b7ff7930f6a4c"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/opacity-controls-3-control.png",
+          "sha256": "7cae7171299c654f7e2d23a28d0c0860c0dec77372d768843a4b7ff7930f6a4c",
+          "captureSha256": [
+            "7cae7171299c654f7e2d23a28d0c0860c0dec77372d768843a4b7ff7930f6a4c",
+            "7cae7171299c654f7e2d23a28d0c0860c0dec77372d768843a4b7ff7930f6a4c",
+            "7cae7171299c654f7e2d23a28d0c0860c0dec77372d768843a4b7ff7930f6a4c"
+          ]
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-0-control",
+      "conversionSourceSha256": "c88fdca00f506dd898212a90765aa9b46c63ad4217aada10dd4352fe38e16bc7",
+      "captureInput": "capture-inputs/boundary-controls-0-control.svg",
+      "captureInputSha256": "246ad59bf6f9d34b5c2023bfa828a19003e89fd69175e6d34d2b947ec8f34fe9",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/boundary-controls-0-control.png",
+          "sha256": "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+          "captureSha256": [
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/boundary-controls-0-control.png",
+          "sha256": "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+          "captureSha256": [
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3"
+          ]
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-1-control",
+      "conversionSourceSha256": "ed3f3ef7d6d189012eccc4c09c8a56148dca83f89a3f81126b597c687bf98330",
+      "captureInput": "capture-inputs/boundary-controls-1-control.svg",
+      "captureInputSha256": "ef59dcd06a02fbe6c047de3119458b8da39a1f008354b38ecbe2d15a84c7c3ff",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/boundary-controls-1-control.png",
+          "sha256": "99107aa4b1bd7cd928bb8c02938c2ad0126f1a60d5546ec31aa5824e218ff0be",
+          "captureSha256": [
+            "99107aa4b1bd7cd928bb8c02938c2ad0126f1a60d5546ec31aa5824e218ff0be",
+            "99107aa4b1bd7cd928bb8c02938c2ad0126f1a60d5546ec31aa5824e218ff0be",
+            "99107aa4b1bd7cd928bb8c02938c2ad0126f1a60d5546ec31aa5824e218ff0be"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/boundary-controls-1-control.png",
+          "sha256": "99107aa4b1bd7cd928bb8c02938c2ad0126f1a60d5546ec31aa5824e218ff0be",
+          "captureSha256": [
+            "99107aa4b1bd7cd928bb8c02938c2ad0126f1a60d5546ec31aa5824e218ff0be",
+            "99107aa4b1bd7cd928bb8c02938c2ad0126f1a60d5546ec31aa5824e218ff0be",
+            "99107aa4b1bd7cd928bb8c02938c2ad0126f1a60d5546ec31aa5824e218ff0be"
+          ]
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-2-control",
+      "conversionSourceSha256": "ff3677cb67e13696d86ceab896c0dd56f276a59071ef66472ca0a10f94b03ca3",
+      "captureInput": "capture-inputs/boundary-controls-2-control.svg",
+      "captureInputSha256": "14170b5839ca4bc821abae58393220700b905565f46f0c2f1b3e784213d04eaf",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/boundary-controls-2-control.png",
+          "sha256": "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9",
+          "captureSha256": [
+            "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9",
+            "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9",
+            "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/boundary-controls-2-control.png",
+          "sha256": "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9",
+          "captureSha256": [
+            "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9",
+            "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9",
+            "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9"
+          ]
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-3-control",
+      "conversionSourceSha256": "08cc6c8f1d5fde7218ab0da8b9e4056301addf2a4fc216508f91fd859d03d15e",
+      "captureInput": "capture-inputs/boundary-controls-3-control.svg",
+      "captureInputSha256": "23ff37bfb980e74cd50c9f748bb749521de2f6ea3c36a60f3161e89eefe85259",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/boundary-controls-3-control.png",
+          "sha256": "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9",
+          "captureSha256": [
+            "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9",
+            "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9",
+            "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/boundary-controls-3-control.png",
+          "sha256": "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9",
+          "captureSha256": [
+            "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9",
+            "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9",
+            "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9"
+          ]
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-4-control",
+      "conversionSourceSha256": "10b10116fb55cb270714870c4f711deb4ea53f270b8e351822e2196f8e537956",
+      "captureInput": "capture-inputs/boundary-controls-4-control.svg",
+      "captureInputSha256": "c5d8e490b748175c52ab8207e4836832abe913361805470e44ca105692e54b80",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/boundary-controls-4-control.png",
+          "sha256": "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9",
+          "captureSha256": [
+            "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9",
+            "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9",
+            "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/boundary-controls-4-control.png",
+          "sha256": "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9",
+          "captureSha256": [
+            "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9",
+            "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9",
+            "316648d7dd0625c8c3f58bb8ee1b2c723ddc1380916d8c93e77475c5c3a6b5c9"
+          ]
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-5-control",
+      "conversionSourceSha256": "43db9541564b07631b164cfb537289a3f31776fc89b7c1a58cf6edf9d030603d",
+      "captureInput": "capture-inputs/boundary-controls-5-control.svg",
+      "captureInputSha256": "bff90386c840a0c1501d6124854541fed967e31a661ea50759f271adc2189484",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/boundary-controls-5-control.png",
+          "sha256": "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+          "captureSha256": [
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/boundary-controls-5-control.png",
+          "sha256": "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+          "captureSha256": [
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37"
+          ]
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-6-control",
+      "conversionSourceSha256": "b48fa4dadcbec345a45112f67445001141f3598df19d52670a46680b500d26b4",
+      "captureInput": "capture-inputs/boundary-controls-6-control.svg",
+      "captureInputSha256": "316a3213026ca14fe040556eb1aca6c2833a4cb35f16cfd9bb6b9341271c3fc7",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/boundary-controls-6-control.png",
+          "sha256": "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+          "captureSha256": [
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/boundary-controls-6-control.png",
+          "sha256": "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+          "captureSha256": [
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37"
+          ]
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-7-control",
+      "conversionSourceSha256": "884ba7218040077d58ef15db9fe714decd573da7c96e41ca685c3cdac36c0d4e",
+      "captureInput": "capture-inputs/boundary-controls-7-control.svg",
+      "captureInputSha256": "5970777b607639ee54896bdeec1e13741a9372b7483deba7069f5c1447ff0dce",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/boundary-controls-7-control.png",
+          "sha256": "d3154426896df1eeb83a4350cd5769760dfc4502ab5d636aaca08939f99fd98f",
+          "captureSha256": [
+            "d3154426896df1eeb83a4350cd5769760dfc4502ab5d636aaca08939f99fd98f",
+            "d3154426896df1eeb83a4350cd5769760dfc4502ab5d636aaca08939f99fd98f",
+            "d3154426896df1eeb83a4350cd5769760dfc4502ab5d636aaca08939f99fd98f"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/boundary-controls-7-control.png",
+          "sha256": "d3154426896df1eeb83a4350cd5769760dfc4502ab5d636aaca08939f99fd98f",
+          "captureSha256": [
+            "d3154426896df1eeb83a4350cd5769760dfc4502ab5d636aaca08939f99fd98f",
+            "d3154426896df1eeb83a4350cd5769760dfc4502ab5d636aaca08939f99fd98f",
+            "d3154426896df1eeb83a4350cd5769760dfc4502ab5d636aaca08939f99fd98f"
+          ]
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-8-control",
+      "conversionSourceSha256": "7be670b4d17ecae5902bafc7fd5b7d21a6b8bf1a92f6603a3dd028b0f5931a3c",
+      "captureInput": "capture-inputs/boundary-controls-8-control.svg",
+      "captureInputSha256": "2fc5c90e2530b55e2817828282ec30b0f67d28136d4fe05cf1d9f1cb218b4018",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/boundary-controls-8-control.png",
+          "sha256": "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+          "captureSha256": [
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/boundary-controls-8-control.png",
+          "sha256": "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+          "captureSha256": [
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c"
+          ]
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-9-control",
+      "conversionSourceSha256": "a25810a994e44771060feff11d1c1328e40e4576255436c44a466b8551f86131",
+      "captureInput": "capture-inputs/boundary-controls-9-control.svg",
+      "captureInputSha256": "e3a81b02415ada6de97e45057698bf7c47c5a67fd6d57f88b0dda7f27d55ef14",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/boundary-controls-9-control.png",
+          "sha256": "2448dd209da18914a3e98c2ff87485872e7dddd963017f64f025cc2105831f93",
+          "captureSha256": [
+            "2448dd209da18914a3e98c2ff87485872e7dddd963017f64f025cc2105831f93",
+            "2448dd209da18914a3e98c2ff87485872e7dddd963017f64f025cc2105831f93",
+            "2448dd209da18914a3e98c2ff87485872e7dddd963017f64f025cc2105831f93"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/boundary-controls-9-control.png",
+          "sha256": "2448dd209da18914a3e98c2ff87485872e7dddd963017f64f025cc2105831f93",
+          "captureSha256": [
+            "2448dd209da18914a3e98c2ff87485872e7dddd963017f64f025cc2105831f93",
+            "2448dd209da18914a3e98c2ff87485872e7dddd963017f64f025cc2105831f93",
+            "2448dd209da18914a3e98c2ff87485872e7dddd963017f64f025cc2105831f93"
+          ]
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-10-control",
+      "conversionSourceSha256": "9d42aa0232e4a3f6077e9e25399cc4ebfeb527bc2de22cfe8dea65659cb5f7c7",
+      "captureInput": "capture-inputs/boundary-controls-10-control.svg",
+      "captureInputSha256": "bb113c5d30faffd2cd056ef6f9cb5a58a4f602dc36543fa3cdbee805b0c061e9",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/boundary-controls-10-control.png",
+          "sha256": "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437",
+          "captureSha256": [
+            "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437",
+            "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437",
+            "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/boundary-controls-10-control.png",
+          "sha256": "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437",
+          "captureSha256": [
+            "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437",
+            "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437",
+            "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437"
+          ]
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-11-control",
+      "conversionSourceSha256": "ab74d005fe8910de2ed1ecc4c303c54053dbc60f2dd2fa59ed1e45f860f6fd51",
+      "captureInput": "capture-inputs/boundary-controls-11-control.svg",
+      "captureInputSha256": "1badd34dfaa1d80b2894261d26c40e1cb9558cb8ddbfec56e45ac0c8685a04d0",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/boundary-controls-11-control.png",
+          "sha256": "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437",
+          "captureSha256": [
+            "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437",
+            "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437",
+            "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/boundary-controls-11-control.png",
+          "sha256": "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437",
+          "captureSha256": [
+            "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437",
+            "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437",
+            "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437"
+          ]
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-12-control",
+      "conversionSourceSha256": "73af2d474ac9ddc16d45e701ee7259f5c7736accba3019de166283095f3e4392",
+      "captureInput": "capture-inputs/boundary-controls-12-control.svg",
+      "captureInputSha256": "4b41c12ce5919d2b9b39ccac47e63c7f10fc6bf96979a2f11d5dc71884f578a1",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/boundary-controls-12-control.png",
+          "sha256": "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437",
+          "captureSha256": [
+            "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437",
+            "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437",
+            "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/boundary-controls-12-control.png",
+          "sha256": "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437",
+          "captureSha256": [
+            "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437",
+            "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437",
+            "e54faf368759a33bc8b7a4478b2d45e319590fa32919501da0d9afa419e4a437"
+          ]
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-13-control",
+      "conversionSourceSha256": "9828816884c88ee5d50cd9e0f5e924c511dbf3a544b7c43a45f2ffc02dabc592",
+      "captureInput": "capture-inputs/boundary-controls-13-control.svg",
+      "captureInputSha256": "b32fe4d3040eb184ad470fb885e873780d320a8f6c223bf2639a46a415701272",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/boundary-controls-13-control.png",
+          "sha256": "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+          "captureSha256": [
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/boundary-controls-13-control.png",
+          "sha256": "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+          "captureSha256": [
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37"
+          ]
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-14-control",
+      "conversionSourceSha256": "4c2f61247b5874ee096a64b379b424bba7f395aea2fa99838506b46f2a18fba1",
+      "captureInput": "capture-inputs/boundary-controls-14-control.svg",
+      "captureInputSha256": "34dfda3de9f97c51a43b4418d2eb95f70743edc9c4aa368813b64ae02ba38404",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/boundary-controls-14-control.png",
+          "sha256": "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+          "captureSha256": [
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/boundary-controls-14-control.png",
+          "sha256": "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+          "captureSha256": [
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37",
+            "425433085c9f714815b788f2bcd24e57b37080ce38127df4ce7a3a570ce47b37"
+          ]
+        }
+      }
+    },
+    {
+      "id": "boundary-controls-15-control",
+      "conversionSourceSha256": "571dc386d9f84344b87604eb0c9564a7a013d9e5a74ad1e9419e0814a7259f89",
+      "captureInput": "capture-inputs/boundary-controls-15-control.svg",
+      "captureInputSha256": "2c4b6c1f52072b7425704f9458681c88edbaa2864b23c1b98b303e2e1e705ab2",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/boundary-controls-15-control.png",
+          "sha256": "438578186f89e07b79ad383b4265727585ab9a565fc50920222422990c968f26",
+          "captureSha256": [
+            "438578186f89e07b79ad383b4265727585ab9a565fc50920222422990c968f26",
+            "438578186f89e07b79ad383b4265727585ab9a565fc50920222422990c968f26",
+            "438578186f89e07b79ad383b4265727585ab9a565fc50920222422990c968f26"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/boundary-controls-15-control.png",
+          "sha256": "438578186f89e07b79ad383b4265727585ab9a565fc50920222422990c968f26",
+          "captureSha256": [
+            "438578186f89e07b79ad383b4265727585ab9a565fc50920222422990c968f26",
+            "438578186f89e07b79ad383b4265727585ab9a565fc50920222422990c968f26",
+            "438578186f89e07b79ad383b4265727585ab9a565fc50920222422990c968f26"
+          ]
+        }
+      }
+    },
+    {
+      "id": "native-source-controls-0-candidate",
+      "conversionSourceSha256": "c16034ccc8ec3a9dd208138a479475fa118df4c7c9dd05faec8e26d8451bc9c3",
+      "captureInput": "capture-inputs/native-source-controls-0-candidate.svg",
+      "captureInputSha256": "036f623e2d8ca0390fbb15109d33f9cc0a5a07dd31fcdb19c876c6826cec2cba",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/native-source-controls-0-candidate.png",
+          "sha256": "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+          "captureSha256": [
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/native-source-controls-0-candidate.png",
+          "sha256": "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+          "captureSha256": [
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c"
+          ]
+        }
+      }
+    },
+    {
+      "id": "native-source-controls-0-control",
+      "conversionSourceSha256": "422ca1551ccc1cdd6b4ce1ed9fa12eb95c36c584a1d257a173988dc3f29517b2",
+      "captureInput": "capture-inputs/native-source-controls-0-control.svg",
+      "captureInputSha256": "13fe26c95821c57c331fccd24153b89878e4634773bff839db362afe4cd7dc19",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/native-source-controls-0-control.png",
+          "sha256": "7b10b71b7a6495b284d75c9088146db86384cd6bb5dd596d6535979cd70a6d55",
+          "captureSha256": [
+            "7b10b71b7a6495b284d75c9088146db86384cd6bb5dd596d6535979cd70a6d55",
+            "7b10b71b7a6495b284d75c9088146db86384cd6bb5dd596d6535979cd70a6d55",
+            "7b10b71b7a6495b284d75c9088146db86384cd6bb5dd596d6535979cd70a6d55"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/native-source-controls-0-control.png",
+          "sha256": "7b10b71b7a6495b284d75c9088146db86384cd6bb5dd596d6535979cd70a6d55",
+          "captureSha256": [
+            "7b10b71b7a6495b284d75c9088146db86384cd6bb5dd596d6535979cd70a6d55",
+            "7b10b71b7a6495b284d75c9088146db86384cd6bb5dd596d6535979cd70a6d55",
+            "7b10b71b7a6495b284d75c9088146db86384cd6bb5dd596d6535979cd70a6d55"
+          ]
+        }
+      }
+    },
+    {
+      "id": "threshold-controls-6-control",
+      "conversionSourceSha256": "792b14ec3512edc613dc5dbfc7df90f81562506dbcd3891dedc104a0c0f34bd8",
+      "captureInput": "capture-inputs/threshold-controls-6-control.svg",
+      "captureInputSha256": "a6ffc9396503ab35ce1f7cbe6682bf77f35bd3a5269bd85355f15319fd9fed28",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/threshold-controls-6-control.png",
+          "sha256": "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+          "captureSha256": [
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/threshold-controls-6-control.png",
+          "sha256": "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+          "captureSha256": [
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3"
+          ]
+        }
+      }
+    },
+    {
+      "id": "threshold-controls-7-control",
+      "conversionSourceSha256": "67ac81090c755d52cf69685203b8e625b701c2277119ff43ee2236844a67b83f",
+      "captureInput": "capture-inputs/threshold-controls-7-control.svg",
+      "captureInputSha256": "810b88acf73793549456f13d454798ad15462de8d48a665e51366c2790a88275",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/threshold-controls-7-control.png",
+          "sha256": "99107aa4b1bd7cd928bb8c02938c2ad0126f1a60d5546ec31aa5824e218ff0be",
+          "captureSha256": [
+            "99107aa4b1bd7cd928bb8c02938c2ad0126f1a60d5546ec31aa5824e218ff0be",
+            "99107aa4b1bd7cd928bb8c02938c2ad0126f1a60d5546ec31aa5824e218ff0be",
+            "99107aa4b1bd7cd928bb8c02938c2ad0126f1a60d5546ec31aa5824e218ff0be"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/threshold-controls-7-control.png",
+          "sha256": "99107aa4b1bd7cd928bb8c02938c2ad0126f1a60d5546ec31aa5824e218ff0be",
+          "captureSha256": [
+            "99107aa4b1bd7cd928bb8c02938c2ad0126f1a60d5546ec31aa5824e218ff0be",
+            "99107aa4b1bd7cd928bb8c02938c2ad0126f1a60d5546ec31aa5824e218ff0be",
+            "99107aa4b1bd7cd928bb8c02938c2ad0126f1a60d5546ec31aa5824e218ff0be"
+          ]
+        }
+      }
+    },
+    {
+      "id": "threshold-controls-17-control",
+      "conversionSourceSha256": "2026a840ebefaae0d4cab2a280da7d80d63b325728ae1b402cb8a0a2472e9d55",
+      "captureInput": "capture-inputs/threshold-controls-17-control.svg",
+      "captureInputSha256": "35f7ca48190e1d9cfec17d601773b04561730e624b3ea314e911ae5ed751c1d1",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/threshold-controls-17-control.png",
+          "sha256": "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+          "captureSha256": [
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/threshold-controls-17-control.png",
+          "sha256": "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+          "captureSha256": [
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c",
+            "e8851fdb5088d42a2c1d7cf3db686b9cf480ca9a26ebce0a90951e4c22d8451c"
+          ]
+        }
+      }
+    },
+    {
+      "id": "threshold-controls-18-control",
+      "conversionSourceSha256": "813e78fd3a3f23a3cc88353159f4def757b5d61a113f37210097ef0af851ecbc",
+      "captureInput": "capture-inputs/threshold-controls-18-control.svg",
+      "captureInputSha256": "847d224258ee5b09ea461e98e5f8a983b80ea0e12157facde373f5c5643c58fa",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/threshold-controls-18-control.png",
+          "sha256": "2448dd209da18914a3e98c2ff87485872e7dddd963017f64f025cc2105831f93",
+          "captureSha256": [
+            "2448dd209da18914a3e98c2ff87485872e7dddd963017f64f025cc2105831f93",
+            "2448dd209da18914a3e98c2ff87485872e7dddd963017f64f025cc2105831f93",
+            "2448dd209da18914a3e98c2ff87485872e7dddd963017f64f025cc2105831f93"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/threshold-controls-18-control.png",
+          "sha256": "2448dd209da18914a3e98c2ff87485872e7dddd963017f64f025cc2105831f93",
+          "captureSha256": [
+            "2448dd209da18914a3e98c2ff87485872e7dddd963017f64f025cc2105831f93",
+            "2448dd209da18914a3e98c2ff87485872e7dddd963017f64f025cc2105831f93",
+            "2448dd209da18914a3e98c2ff87485872e7dddd963017f64f025cc2105831f93"
+          ]
+        }
+      }
+    },
+    {
+      "id": "axis-controls-0-control",
+      "conversionSourceSha256": "f7ef9725f51032e3b6670c1b43fcae120a0e84153f5cbfba9071af8990a951b9",
+      "captureInput": "capture-inputs/axis-controls-0-control.svg",
+      "captureInputSha256": "d19194ca5a46ab2faf89ff4974673eddf462e087bc49909da29a4fa6b304216e",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/axis-controls-0-control.png",
+          "sha256": "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+          "captureSha256": [
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/axis-controls-0-control.png",
+          "sha256": "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+          "captureSha256": [
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3",
+            "e362da02d6e38cbdcc48a309b9bd0bba6d33678972b2acdd6592eea70fc5feb3"
+          ]
+        }
+      }
+    },
+    {
+      "id": "axis-controls-1-control",
+      "conversionSourceSha256": "c43c4b7fdf34c1140d6e7b6f33eb8e4850221f13818cff59d036891ebf93cd84",
+      "captureInput": "capture-inputs/axis-controls-1-control.svg",
+      "captureInputSha256": "26992df0271fccd55cba26e8f787500b13eff17787cea8f6cf076d56bd21f58a",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/axis-controls-1-control.png",
+          "sha256": "1e2b67852bbf58002d5daf81594ab9f1b71928ef85a863b7c3a0af22d09fad73",
+          "captureSha256": [
+            "1e2b67852bbf58002d5daf81594ab9f1b71928ef85a863b7c3a0af22d09fad73",
+            "1e2b67852bbf58002d5daf81594ab9f1b71928ef85a863b7c3a0af22d09fad73",
+            "1e2b67852bbf58002d5daf81594ab9f1b71928ef85a863b7c3a0af22d09fad73"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/axis-controls-1-control.png",
+          "sha256": "1e2b67852bbf58002d5daf81594ab9f1b71928ef85a863b7c3a0af22d09fad73",
+          "captureSha256": [
+            "1e2b67852bbf58002d5daf81594ab9f1b71928ef85a863b7c3a0af22d09fad73",
+            "1e2b67852bbf58002d5daf81594ab9f1b71928ef85a863b7c3a0af22d09fad73",
+            "1e2b67852bbf58002d5daf81594ab9f1b71928ef85a863b7c3a0af22d09fad73"
+          ]
+        }
+      }
+    },
+    {
+      "id": "axis-controls-2-control",
+      "conversionSourceSha256": "123a414fe656ea2084614535ae5b0b8f93c02fb14373ef606749c496d77123ef",
+      "captureInput": "capture-inputs/axis-controls-2-control.svg",
+      "captureInputSha256": "ac5cc78f8980a98e88eb7599e64f0852b1ff853ecda40b7cda112efeb7b8f279",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/axis-controls-2-control.png",
+          "sha256": "2850d570668e7c1f521973b27c81f4b2771b26afedaf67c176c54080c311544f",
+          "captureSha256": [
+            "2850d570668e7c1f521973b27c81f4b2771b26afedaf67c176c54080c311544f",
+            "2850d570668e7c1f521973b27c81f4b2771b26afedaf67c176c54080c311544f",
+            "2850d570668e7c1f521973b27c81f4b2771b26afedaf67c176c54080c311544f"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/axis-controls-2-control.png",
+          "sha256": "2850d570668e7c1f521973b27c81f4b2771b26afedaf67c176c54080c311544f",
+          "captureSha256": [
+            "2850d570668e7c1f521973b27c81f4b2771b26afedaf67c176c54080c311544f",
+            "2850d570668e7c1f521973b27c81f4b2771b26afedaf67c176c54080c311544f",
+            "2850d570668e7c1f521973b27c81f4b2771b26afedaf67c176c54080c311544f"
+          ]
+        }
+      }
+    },
+    {
+      "id": "axis-controls-3-control",
+      "conversionSourceSha256": "de719852c3b454e2c293722a5f86ac89676b875738b3b7f482f88d0b2475de27",
+      "captureInput": "capture-inputs/axis-controls-3-control.svg",
+      "captureInputSha256": "e28ac7d7cf70943fcc806aa7724dca992f99d9b26830ff434889e3c9684c204a",
+      "width": 240,
+      "height": 168,
+      "references": {
+        "windows": {
+          "path": "references/recipe3/windows/axis-controls-3-control.png",
+          "sha256": "906ec4aafe06cdaf9e59bc26ac06ab545fef3d2d75eb61b1b0eb72b49420d430",
+          "captureSha256": [
+            "906ec4aafe06cdaf9e59bc26ac06ab545fef3d2d75eb61b1b0eb72b49420d430",
+            "906ec4aafe06cdaf9e59bc26ac06ab545fef3d2d75eb61b1b0eb72b49420d430",
+            "906ec4aafe06cdaf9e59bc26ac06ab545fef3d2d75eb61b1b0eb72b49420d430"
+          ]
+        },
+        "linux": {
+          "path": "references/recipe3/linux/axis-controls-3-control.png",
+          "sha256": "906ec4aafe06cdaf9e59bc26ac06ab545fef3d2d75eb61b1b0eb72b49420d430",
+          "captureSha256": [
+            "906ec4aafe06cdaf9e59bc26ac06ab545fef3d2d75eb61b1b0eb72b49420d430",
+            "906ec4aafe06cdaf9e59bc26ac06ab545fef3d2d75eb61b1b0eb72b49420d430",
+            "906ec4aafe06cdaf9e59bc26ac06ab545fef3d2d75eb61b1b0eb72b49420d430"
+          ]
+        }
+      }
+    }
+  ]
+}

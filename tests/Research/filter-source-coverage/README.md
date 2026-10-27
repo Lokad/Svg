@@ -3,10 +3,16 @@
 These original SVGs distinguish source paint, stored graph images, cropped
 aliases and blur materialization before fractional displacement. Each of the 59
 inputs runs once through owned synchronous conversion against its own unaltered
-Chromium 153.0.8010.52 image. Windows and Linux references were captured separately
-in three healthy fresh processes; the decoded images agree across captures and
-platforms. [Capture provenance](capture-provenance.json) and [image hashes](images.json)
-retain their origin. The fixtures use the repository's [MIT license](../../../LICENSE.txt).
+Chromium 153.0.8010.52 image. The original [Canvas PNGs](images.json) and
+[provenance hashes](capture-provenance.json) are preserved. Independent
+[recipe-3 page captures](declared-profile.json) qualify all 59 inputs on Windows
+and Linux, with three healthy, byte-identical fresh captures per input and host.
+Every retained Canvas image matches its page counterpart exactly in decoded pixels.
+Scaled font-free inputs have committed capture materializations with explicit root
+dimensions and the original logical viewBox; that equivalence is checked per input.
+The [capture procedure](../../../tools/README.md#capture-and-reference-rules)
+keeps Canvas/page profiles separate when they naturally differ.
+The fixtures use the repository's [MIT license](../../../LICENSE.txt).
 
 Identical source bytes and render options are included once. Equal resulting
 images do not remove different graphs: zero blur, one-input merge, zero offset,
