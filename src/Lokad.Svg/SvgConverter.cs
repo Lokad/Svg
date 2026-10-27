@@ -3385,11 +3385,11 @@ public static partial class SvgConverter
                     outputMap = outputMap.ComposeChecked(sourcePlacement);
                 authoredMap = frame?.NativeCapturePlacement is {} nativeCapture
                     ? nativeCapture.ComposeNative(replay.SceneMap) : outputMap.ComposeChecked(replay.SceneMap);
-                // A retained rectangle drawn in the same recording map stays an
-                // axis-aligned native rectangle in the filter's source layer.
-                // Keep rounded path and shader maps for the other consumers.
+                // A source recorded in its owning filter's map already belongs
+                // to that layer's coordinates. Reuse the layer map rather than
+                // cancelling rounded inverse/source matrices for each shape.
                 if (frame is { NativeCapturePlacement: not null, FilterSourceMap: {} sourceRelation }
-                    && sourceRelation.Source == replay.SceneMap && replay.IsRectangleFill)
+                    && sourceRelation.Source == replay.SceneMap)
                     authoredMap = SvgAffineTransform.FromTranslation(horizontalOffset, verticalOffset).ComposeNative(sourceRelation.Layer);
                 if (authoredPath?.StrokeStyle?.NonScalingMap is {} nonScaling)
                 {

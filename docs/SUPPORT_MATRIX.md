@@ -542,6 +542,9 @@ clip. [Source/composition controls](../tests/Research/filter-merge-image-draw/RE
 cover affine, fractional, supplied-font and resource consumers, while the
 [historical corpus](../tests/Research/filter-source-composition/README.md) retains
 individual periodic checks with unchanged native references.
+Sources recorded in the owning filter's map share its layer transform; the
+[recording controls](../tests/Research/filter-source-recording-map/README.md)
+retain neutral and fractional ellipse coverage alongside transformed curves.
 [Source coverage controls](../tests/Research/filter-source-coverage/README.md)
 distinguish cropped aliases, effective-zero axes, small-blur materialization and
 source-image hint rounding before fractional displacement.

@@ -37,6 +37,10 @@ ownership inputs. The [historical corpus](Research/filter-source-composition/REA
 keeps 2,253 individual checks in the research category. Its coverage index maps
 every original role, consolidating only identical authored inputs/options with
 matching native pixels on both hosts; references remain unchanged.
+The [recording-coordinate controls](Research/filter-source-recording-map/README.md)
+add three ellipse inputs and reuse the existing linear neutral reference. They
+protect the shared source/layer map while the transformed-curve controls retain
+their own native images.
 The full milestone command includes every extended case:
 
 ```powershell

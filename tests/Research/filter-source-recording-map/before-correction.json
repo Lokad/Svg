@@ -1,0 +1,69 @@
+{
+  "publishedBaseline": "1439dae8ee3b8c2b5e3685dba53a137dea7d1c4e",
+  "initialLocalBaseline": "1bd36495899ce888cfeacca5e0ac0b3c102cb21d",
+  "cases": [
+    {
+      "id": "ellipse-srgb",
+      "platforms": {
+        "windows": {
+          "published": {
+            "changedPixels": 0
+          },
+          "initialLocal": {
+            "changedPixels": 2
+          }
+        },
+        "linux": {
+          "published": {
+            "changedPixels": 0
+          },
+          "initialLocal": {
+            "changedPixels": 2
+          }
+        }
+      }
+    },
+    {
+      "id": "ellipse-unfiltered",
+      "platforms": {
+        "windows": {
+          "published": {
+            "changedPixels": 0
+          },
+          "initialLocal": {
+            "changedPixels": 0
+          }
+        },
+        "linux": {
+          "published": {
+            "changedPixels": 0
+          },
+          "initialLocal": {
+            "changedPixels": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "ellipse-positive-offset",
+      "platforms": {
+        "windows": {
+          "published": {
+            "changedPixels": 2
+          },
+          "initialLocal": {
+            "changedPixels": 2
+          }
+        },
+        "linux": {
+          "published": {
+            "changedPixels": 2
+          },
+          "initialLocal": {
+            "changedPixels": 2
+          }
+        }
+      }
+    }
+  ]
+}

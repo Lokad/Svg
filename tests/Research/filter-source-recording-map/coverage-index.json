@@ -1,0 +1,25 @@
+{
+  "cases": [
+    {
+      "originalId": "linear",
+      "folder": "offset-merge-inputs",
+      "id": "affine-image-47",
+      "reason": "Identical authored SVG/options and native RGBA on both hosts; retain its existing reference and test."
+    },
+    {
+      "originalId": "srgb",
+      "folder": "filter-source-recording-map",
+      "id": "ellipse-srgb"
+    },
+    {
+      "originalId": "unfiltered",
+      "folder": "filter-source-recording-map",
+      "id": "ellipse-unfiltered"
+    },
+    {
+      "originalId": "positive_offset",
+      "folder": "filter-source-recording-map",
+      "id": "ellipse-positive-offset"
+    }
+  ]
+}
