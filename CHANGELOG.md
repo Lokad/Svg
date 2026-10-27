@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Preserve ancestor clip ownership around child filters, including forward and
+  object-bounding rectangles, retained use and pattern scenes. Keep source-only
+  clips and per-bitmap filter requests separate.
+
 - Keep large vector patterns on one raster device so gradients retain their
   native phase across compositor seams.
 

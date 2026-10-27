@@ -1,0 +1,377 @@
+{
+  "captureProfile": "recipe3-page-img-screenshot",
+  "browser": "Chromium 153.0.8010.52",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "pngStability": "byte-identical",
+  "license": "MIT",
+  "licenseEvidence": "../../../LICENSE.txt",
+  "cases": [
+    {
+      "id": "after-only",
+      "input": "inputs/after-only.svg",
+      "sourceSha256": "b60068d34cee3dc2a39a1464236d310f1f53ab8f300d1a6373fe106588f7cabf",
+      "interaction": "Ancestor clip surrounds a child filter and a sibling paint.",
+      "references": {
+        "windows": {
+          "path": "references/windows/after-only.png",
+          "sha256": "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+          "captureSha256": [
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6"
+          ]
+        },
+        "linux": {
+          "path": "references/linux/after-only.png",
+          "sha256": "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+          "captureSha256": [
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6"
+          ]
+        }
+      }
+    },
+    {
+      "id": "before-and-after",
+      "input": "inputs/before-and-after.svg",
+      "sourceSha256": "fc55e35420668bd957345766d5ad38c275d3a2209dd434fcdf41f033b42378b0",
+      "interaction": "Separate source and output clips both apply around displacement.",
+      "references": {
+        "windows": {
+          "path": "references/windows/before-and-after.png",
+          "sha256": "1f363bc1b9391f8dfc423724082a5bdd341a0c54503d934dd5abd006fcf0278c",
+          "captureSha256": [
+            "1f363bc1b9391f8dfc423724082a5bdd341a0c54503d934dd5abd006fcf0278c",
+            "1f363bc1b9391f8dfc423724082a5bdd341a0c54503d934dd5abd006fcf0278c",
+            "1f363bc1b9391f8dfc423724082a5bdd341a0c54503d934dd5abd006fcf0278c"
+          ]
+        },
+        "linux": {
+          "path": "references/linux/before-and-after.png",
+          "sha256": "1f363bc1b9391f8dfc423724082a5bdd341a0c54503d934dd5abd006fcf0278c",
+          "captureSha256": [
+            "1f363bc1b9391f8dfc423724082a5bdd341a0c54503d934dd5abd006fcf0278c",
+            "1f363bc1b9391f8dfc423724082a5bdd341a0c54503d934dd5abd006fcf0278c",
+            "1f363bc1b9391f8dfc423724082a5bdd341a0c54503d934dd5abd006fcf0278c"
+          ]
+        }
+      }
+    },
+    {
+      "id": "before-only",
+      "input": "inputs/before-only.svg",
+      "sourceSha256": "7d8969ce07d77af72ec6d75ce39ce89deef881ef522059466090edb7fd20bece",
+      "interaction": "A source-local clip moves with the filtered pixels.",
+      "references": {
+        "windows": {
+          "path": "references/windows/before-only.png",
+          "sha256": "8e0251a8399a434289df01575c189d1f021c19728908c174b28014f627ceb62c",
+          "captureSha256": [
+            "8e0251a8399a434289df01575c189d1f021c19728908c174b28014f627ceb62c",
+            "8e0251a8399a434289df01575c189d1f021c19728908c174b28014f627ceb62c",
+            "8e0251a8399a434289df01575c189d1f021c19728908c174b28014f627ceb62c"
+          ]
+        },
+        "linux": {
+          "path": "references/linux/before-only.png",
+          "sha256": "8e0251a8399a434289df01575c189d1f021c19728908c174b28014f627ceb62c",
+          "captureSha256": [
+            "8e0251a8399a434289df01575c189d1f021c19728908c174b28014f627ceb62c",
+            "8e0251a8399a434289df01575c189d1f021c19728908c174b28014f627ceb62c",
+            "8e0251a8399a434289df01575c189d1f021c19728908c174b28014f627ceb62c"
+          ]
+        }
+      }
+    },
+    {
+      "id": "zero-after",
+      "input": "inputs/zero-after.svg",
+      "sourceSha256": "d28c61423af84667bc0f79f1a08ccf45cc78895125fa903752cb926b0cb8c8d9",
+      "interaction": "Identity displacement still retains the output clip and image origin.",
+      "references": {
+        "windows": {
+          "path": "references/windows/zero-after.png",
+          "sha256": "854a2bee934058c65beca1752d1e4133e549acbccbbcaab4e4d51d9d866a404a",
+          "captureSha256": [
+            "854a2bee934058c65beca1752d1e4133e549acbccbbcaab4e4d51d9d866a404a",
+            "854a2bee934058c65beca1752d1e4133e549acbccbbcaab4e4d51d9d866a404a",
+            "854a2bee934058c65beca1752d1e4133e549acbccbbcaab4e4d51d9d866a404a"
+          ]
+        },
+        "linux": {
+          "path": "references/linux/zero-after.png",
+          "sha256": "854a2bee934058c65beca1752d1e4133e549acbccbbcaab4e4d51d9d866a404a",
+          "captureSha256": [
+            "854a2bee934058c65beca1752d1e4133e549acbccbbcaab4e4d51d9d866a404a",
+            "854a2bee934058c65beca1752d1e4133e549acbccbbcaab4e4d51d9d866a404a",
+            "854a2bee934058c65beca1752d1e4133e549acbccbbcaab4e4d51d9d866a404a"
+          ]
+        }
+      }
+    },
+    {
+      "id": "zero-double",
+      "input": "inputs/zero-double.svg",
+      "sourceSha256": "93827c3098de05a3d9c18ce3cdf3ff9399fb48eeb45bcd9d0855461d84844802",
+      "interaction": "Independent source and output clips remain observable at zero displacement.",
+      "references": {
+        "windows": {
+          "path": "references/windows/zero-double.png",
+          "sha256": "2a664aec36d41c575814b24495745e8bca10b9a29cef7b75a6fc5a2fc8a1873f",
+          "captureSha256": [
+            "2a664aec36d41c575814b24495745e8bca10b9a29cef7b75a6fc5a2fc8a1873f",
+            "2a664aec36d41c575814b24495745e8bca10b9a29cef7b75a6fc5a2fc8a1873f",
+            "2a664aec36d41c575814b24495745e8bca10b9a29cef7b75a6fc5a2fc8a1873f"
+          ]
+        },
+        "linux": {
+          "path": "references/linux/zero-double.png",
+          "sha256": "2a664aec36d41c575814b24495745e8bca10b9a29cef7b75a6fc5a2fc8a1873f",
+          "captureSha256": [
+            "2a664aec36d41c575814b24495745e8bca10b9a29cef7b75a6fc5a2fc8a1873f",
+            "2a664aec36d41c575814b24495745e8bca10b9a29cef7b75a6fc5a2fc8a1873f",
+            "2a664aec36d41c575814b24495745e8bca10b9a29cef7b75a6fc5a2fc8a1873f"
+          ]
+        }
+      }
+    },
+    {
+      "id": "alpha-after",
+      "input": "inputs/alpha-after.svg",
+      "sourceSha256": "c46c263cfb505285c818aad9347a03e5b248fbc9f325c7c82494ea0a6b9f36e7",
+      "interaction": "SourceAlpha preserves ancestor output coverage.",
+      "references": {
+        "windows": {
+          "path": "references/windows/alpha-after.png",
+          "sha256": "b1d8292c3e98072b8adfb2344a29b67f2784dc73986cc952dc9fd379e5fe3278",
+          "captureSha256": [
+            "b1d8292c3e98072b8adfb2344a29b67f2784dc73986cc952dc9fd379e5fe3278",
+            "b1d8292c3e98072b8adfb2344a29b67f2784dc73986cc952dc9fd379e5fe3278",
+            "b1d8292c3e98072b8adfb2344a29b67f2784dc73986cc952dc9fd379e5fe3278"
+          ]
+        },
+        "linux": {
+          "path": "references/linux/alpha-after.png",
+          "sha256": "b1d8292c3e98072b8adfb2344a29b67f2784dc73986cc952dc9fd379e5fe3278",
+          "captureSha256": [
+            "b1d8292c3e98072b8adfb2344a29b67f2784dc73986cc952dc9fd379e5fe3278",
+            "b1d8292c3e98072b8adfb2344a29b67f2784dc73986cc952dc9fd379e5fe3278",
+            "b1d8292c3e98072b8adfb2344a29b67f2784dc73986cc952dc9fd379e5fe3278"
+          ]
+        }
+      }
+    },
+    {
+      "id": "alpha-double",
+      "input": "inputs/alpha-double.svg",
+      "sourceSha256": "c477343a1ff7257e2a911e0549d1433dc683f5110d4162b3c1638a38ec0d4f0b",
+      "interaction": "SourceAlpha keeps separate source and output clip coverage.",
+      "references": {
+        "windows": {
+          "path": "references/windows/alpha-double.png",
+          "sha256": "8b16bbaeea5985d889f18095346370faa09a572b008ceb9117d5fdfddec91972",
+          "captureSha256": [
+            "8b16bbaeea5985d889f18095346370faa09a572b008ceb9117d5fdfddec91972",
+            "8b16bbaeea5985d889f18095346370faa09a572b008ceb9117d5fdfddec91972",
+            "8b16bbaeea5985d889f18095346370faa09a572b008ceb9117d5fdfddec91972"
+          ]
+        },
+        "linux": {
+          "path": "references/linux/alpha-double.png",
+          "sha256": "8b16bbaeea5985d889f18095346370faa09a572b008ceb9117d5fdfddec91972",
+          "captureSha256": [
+            "8b16bbaeea5985d889f18095346370faa09a572b008ceb9117d5fdfddec91972",
+            "8b16bbaeea5985d889f18095346370faa09a572b008ceb9117d5fdfddec91972",
+            "8b16bbaeea5985d889f18095346370faa09a572b008ceb9117d5fdfddec91972"
+          ]
+        }
+      }
+    },
+    {
+      "id": "forward-rectangle",
+      "input": "inputs/forward-rectangle.svg",
+      "sourceSha256": "f37b19b9924cf41deebd20976d5eaae2b747b0d9c1c395d2ad2c03dc03cc902a",
+      "interaction": "Forward rectangular parent clipping encloses the isolated child.",
+      "references": {
+        "windows": {
+          "path": "references/windows/forward-rectangle.png",
+          "sha256": "c474919cd595960c7e6a32009277572c47f5e9d08eba2c0a5370a9370fb6d9e6",
+          "captureSha256": [
+            "c474919cd595960c7e6a32009277572c47f5e9d08eba2c0a5370a9370fb6d9e6",
+            "c474919cd595960c7e6a32009277572c47f5e9d08eba2c0a5370a9370fb6d9e6",
+            "c474919cd595960c7e6a32009277572c47f5e9d08eba2c0a5370a9370fb6d9e6"
+          ]
+        },
+        "linux": {
+          "path": "references/linux/forward-rectangle.png",
+          "sha256": "c474919cd595960c7e6a32009277572c47f5e9d08eba2c0a5370a9370fb6d9e6",
+          "captureSha256": [
+            "c474919cd595960c7e6a32009277572c47f5e9d08eba2c0a5370a9370fb6d9e6",
+            "c474919cd595960c7e6a32009277572c47f5e9d08eba2c0a5370a9370fb6d9e6",
+            "c474919cd595960c7e6a32009277572c47f5e9d08eba2c0a5370a9370fb6d9e6"
+          ]
+        }
+      }
+    },
+    {
+      "id": "object-rectangle",
+      "input": "inputs/object-rectangle.svg",
+      "sourceSha256": "8187a77899b68edf08b4e8c652041612a6d1fe999c62df116a2744a8ead6b34b",
+      "interaction": "Object-bounding parent clipping uses group source bounds and filters output.",
+      "references": {
+        "windows": {
+          "path": "references/windows/object-rectangle.png",
+          "sha256": "b8e846465bbfb6ed51eb2a0fc7cabd38bf5d5d37419030aa07aaac40e9be42c8",
+          "captureSha256": [
+            "b8e846465bbfb6ed51eb2a0fc7cabd38bf5d5d37419030aa07aaac40e9be42c8",
+            "b8e846465bbfb6ed51eb2a0fc7cabd38bf5d5d37419030aa07aaac40e9be42c8",
+            "b8e846465bbfb6ed51eb2a0fc7cabd38bf5d5d37419030aa07aaac40e9be42c8"
+          ]
+        },
+        "linux": {
+          "path": "references/linux/object-rectangle.png",
+          "sha256": "b8e846465bbfb6ed51eb2a0fc7cabd38bf5d5d37419030aa07aaac40e9be42c8",
+          "captureSha256": [
+            "b8e846465bbfb6ed51eb2a0fc7cabd38bf5d5d37419030aa07aaac40e9be42c8",
+            "b8e846465bbfb6ed51eb2a0fc7cabd38bf5d5d37419030aa07aaac40e9be42c8",
+            "b8e846465bbfb6ed51eb2a0fc7cabd38bf5d5d37419030aa07aaac40e9be42c8"
+          ]
+        }
+      }
+    },
+    {
+      "id": "filtered-leaf",
+      "input": "inputs/filtered-leaf.svg",
+      "sourceSha256": "f1e773948d5cd5ddb483fb29707c33fb03167080deabf27fb672549e7bf5ec62",
+      "interaction": "A filtered leaf retains the same ancestor ownership as a filtered group.",
+      "references": {
+        "windows": {
+          "path": "references/windows/filtered-leaf.png",
+          "sha256": "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+          "captureSha256": [
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6"
+          ]
+        },
+        "linux": {
+          "path": "references/linux/filtered-leaf.png",
+          "sha256": "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+          "captureSha256": [
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6"
+          ]
+        }
+      }
+    },
+    {
+      "id": "own-mask",
+      "input": "inputs/own-mask.svg",
+      "sourceSha256": "089b2d64745697cae62d5129fd197b2e211b1f86eabad7c56afe7be6760242ad",
+      "interaction": "Ancestor clipping surrounds the child filter and its own mask.",
+      "references": {
+        "windows": {
+          "path": "references/windows/own-mask.png",
+          "sha256": "f610420060ec14ab22b8a02ced84db099271ea98ca4b33e404b1db2ee0b8f9ba",
+          "captureSha256": [
+            "f610420060ec14ab22b8a02ced84db099271ea98ca4b33e404b1db2ee0b8f9ba",
+            "f610420060ec14ab22b8a02ced84db099271ea98ca4b33e404b1db2ee0b8f9ba",
+            "f610420060ec14ab22b8a02ced84db099271ea98ca4b33e404b1db2ee0b8f9ba"
+          ]
+        },
+        "linux": {
+          "path": "references/linux/own-mask.png",
+          "sha256": "f610420060ec14ab22b8a02ced84db099271ea98ca4b33e404b1db2ee0b8f9ba",
+          "captureSha256": [
+            "f610420060ec14ab22b8a02ced84db099271ea98ca4b33e404b1db2ee0b8f9ba",
+            "f610420060ec14ab22b8a02ced84db099271ea98ca4b33e404b1db2ee0b8f9ba",
+            "f610420060ec14ab22b8a02ced84db099271ea98ca4b33e404b1db2ee0b8f9ba"
+          ]
+        }
+      }
+    },
+    {
+      "id": "same-element-clip",
+      "input": "inputs/same-element-clip.svg",
+      "sourceSha256": "b23693438f3877820df20cbbfaaac3cd00ac935a91e80ddaac5e13ec430beadf",
+      "interaction": "A filter-owning element clips its output.",
+      "references": {
+        "windows": {
+          "path": "references/windows/same-element-clip.png",
+          "sha256": "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+          "captureSha256": [
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6"
+          ]
+        },
+        "linux": {
+          "path": "references/linux/same-element-clip.png",
+          "sha256": "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+          "captureSha256": [
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6"
+          ]
+        }
+      }
+    },
+    {
+      "id": "pattern-owner",
+      "input": "inputs/pattern-owner.svg",
+      "sourceSha256": "e93f9f4c5ccd43f524db29108a49f71c135dd7155c517212da936b6f52f0d3e3",
+      "interaction": "Pattern group clipping encloses a child filter on the pattern device.",
+      "references": {
+        "windows": {
+          "path": "references/windows/pattern-owner.png",
+          "sha256": "a0e9011a93fa98fcb20a6f293c236303779cdcf44f4d63458c4189d7e802655b",
+          "captureSha256": [
+            "a0e9011a93fa98fcb20a6f293c236303779cdcf44f4d63458c4189d7e802655b",
+            "a0e9011a93fa98fcb20a6f293c236303779cdcf44f4d63458c4189d7e802655b",
+            "a0e9011a93fa98fcb20a6f293c236303779cdcf44f4d63458c4189d7e802655b"
+          ]
+        },
+        "linux": {
+          "path": "references/linux/pattern-owner.png",
+          "sha256": "a0e9011a93fa98fcb20a6f293c236303779cdcf44f4d63458c4189d7e802655b",
+          "captureSha256": [
+            "a0e9011a93fa98fcb20a6f293c236303779cdcf44f4d63458c4189d7e802655b",
+            "a0e9011a93fa98fcb20a6f293c236303779cdcf44f4d63458c4189d7e802655b",
+            "a0e9011a93fa98fcb20a6f293c236303779cdcf44f4d63458c4189d7e802655b"
+          ]
+        }
+      }
+    },
+    {
+      "id": "forward-use",
+      "input": "inputs/forward-use.svg",
+      "sourceSha256": "a881ad2d7b2046a3f353f3125ee8f928c4627994bb5a80e473e85621b7625e63",
+      "interaction": "Forward retained group replay preserves ancestor clip ownership.",
+      "references": {
+        "windows": {
+          "path": "references/windows/forward-use.png",
+          "sha256": "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+          "captureSha256": [
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6"
+          ]
+        },
+        "linux": {
+          "path": "references/linux/forward-use.png",
+          "sha256": "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+          "captureSha256": [
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6",
+            "74c141ae9e243a8b84e0a27419d9f30b40c3a2b75a6f61aff650e063ec1efca6"
+          ]
+        }
+      }
+    }
+  ]
+}

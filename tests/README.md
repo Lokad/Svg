@@ -64,6 +64,11 @@ canonical images and two wide-pattern ownership contracts. They distinguish
 pattern image devices from outer compositor tiles and retain naturally unequal
 Canvas/page profiles.
 
+The [filter clip ownership controls](Research/filter-clip-ownership/README.md)
+keep fourteen canonical source/output clip images separate from sibling-work,
+empty-intersection and ownership checks. Distinct lowering paths retain their
+own references, including source-only clipping and pattern/retained replay.
+
 Color/filter numerical-context cross products remain available with
 `--filter Category=Research`. Their [gradient](Research/gradient-color-alpha/research-cases.json)
 and [filter](Research/filter-uniform-precision/research-cases.json) selections

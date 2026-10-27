@@ -16,7 +16,10 @@ internal readonly record struct SvgDeferredPatternContent(SvgSceneBuilder Builde
 /// cancellation aware. Content becomes immutable before the root scene is returned.</remarks>
 internal static class SvgPatternUseReplay
 {
-    private readonly record struct ScopeRange(int First, int End);
+    private readonly record struct ScopeRange(int First, int End)
+    {
+        internal bool ClipsFilterOutput { get; init; }
+    }
 
     internal static void Retain(XmlReader reader, SvgRootAttributes root, SvgDocumentState state,
         IReadOnlyDictionary<string, SvgColor> colors, SvgSceneBuilder builder, ParserWorkCounter work, CancellationToken token)
@@ -104,6 +107,23 @@ internal static class SvgPatternUseReplay
                 ScopeRange range = ranges[scopeIndex];
                 compact |= !scope.HasOpacity && scope.MaskId is null;
                 if (scope.ClipId is not {} clipId || SvgClipPathSyntax.IsDisabled(clipId, state)) continue;
+                bool clipsFilterOutput = false;
+                for (int index = range.First + 1; index < range.End; index++)
+                {
+                    work.Consume(token);
+                    if (builder.CommandAt(index) is { Kind: SvgDrawCommandKind.BeginGroup, RegionKind: SvgLayerRegionKind.Filter })
+                    {
+                        clipsFilterOutput = true;
+                        break;
+                    }
+                }
+                // A leaf binding would move this ancestor clip into a child filter.
+                // Resolve its compacted command range through the ordinary group path.
+                if (clipsFilterOutput)
+                {
+                    ranges[scopeIndex] = range with { ClipsFilterOutput = true };
+                    continue;
+                }
                 SvgLeafMaskOperation? scopeClip = BindScopeClip(scope, range, builder, state, work, token);
                 SvgLeafMaskBinding? lastInner = null, lastBinding = null;
                 for (int index = range.First + 1; index < range.End; index++)
@@ -158,8 +178,12 @@ internal static class SvgPatternUseReplay
             {
                 work.Consume(token);
                 SvgPatternContentScope scope = scopes[index];
-                if (scope.MaskId is not {} id) continue;
                 ScopeRange range = ranges[index];
+                if (range.ClipsFilterOutput && scope.ClipId is {} clipId)
+                    state.PendingGroupClips.Add(new PendingGroupClip(clipId, null, scope.Map,
+                        compact ? positions[range.First] : range.First,
+                        compact ? positions[range.End] : range.End, 0, builder) { UsesNativeClip = true });
+                if (scope.MaskId is not {} id) continue;
                 state.PendingGroupMasks.Add(new(id, compact ? positions[range.First] : range.First,
                     compact ? positions[range.End] : range.End, 0, null, scope.Map, builder, scope.HasOwnFilter));
             }

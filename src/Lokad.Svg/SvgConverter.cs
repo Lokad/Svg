@@ -581,6 +581,9 @@ public static partial class SvgConverter
             }
             bool boundedSource = activeViewportBounds is not null || layerBounds.Left != 0 || layerBounds.Top != 0
                 || layerBounds.Right != outputWidth || layerBounds.Bottom != outputHeight;
+            // Offset replay captures source ink; its native image hint and output
+            // clip are computed separately. Enlarging this ink box changes curves.
+            if (TryRenderOffsetSources()) return end + 1;
             if (boundedSource && frame?.NativeSourceBounds is null)
             {
                 // Native saveLayer rounds its visual hint in parameter space before
@@ -605,7 +608,6 @@ public static partial class SvgConverter
                 sourceRight = Math.Ceiling(hint.Right); sourceBottom = Math.Ceiling(hint.Bottom);
                 workUnits += hintWork.Used;
             }
-            if (TryRenderOffsetSources()) return end + 1;
             double paddingX = 0, paddingY = 0;
             double offsetPaddingX = 0, offsetPaddingY = 0;
             foreach (SvgFilterPrimitive primitive in resource.Primitives.Items)
@@ -1480,6 +1482,10 @@ public static partial class SvgConverter
                 }
                 SvgAnalyticClipBounds requested = new(Math.Max(layerBounds.Left, ClampFloor(region.Left, outputWidth)), Math.Max(layerBounds.Top, ClampFloor(region.Top, outputHeight)),
                     Math.Min(layerBounds.Right, ClampCeiling(region.Right, outputWidth)), Math.Min(layerBounds.Bottom, ClampCeiling(region.Bottom, outputHeight)));
+                if (activeViewportBounds is {} outputClip)
+                    requested = new(Math.Max(requested.Left, outputClip.Left), Math.Max(requested.Top, outputClip.Top),
+                        Math.Min(requested.Right, outputClip.Right), Math.Min(requested.Bottom, outputClip.Bottom));
+                if (requested.Right <= requested.Left || requested.Bottom <= requested.Top) return true;
                 foreach (SvgCpuRasterContext tile in rasterGrid.GetContexts(requested))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -1520,6 +1526,12 @@ public static partial class SvgConverter
                         objectSourceUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), region);
                     SvgPaintBounds requestedSource = new(MathF.Max(requested.Left, tile.BitmapClip.Left), MathF.Max(requested.Top, tile.BitmapClip.Top),
                         MathF.Min(requested.Right, tile.BitmapClip.Right), MathF.Min(requested.Bottom, tile.BitmapClip.Bottom));
+                    // Each compositor bitmap owns its clipped request and image origin.
+                    Charge(1);
+                    if (activeViewportCoverage is {} clipCoverage && clipCoverage.TryGetBounds(tile.BitmapClip, out SvgAnalyticClipBounds bitmapClip))
+                        requestedSource = new(MathF.Max(requestedSource.Left, bitmapClip.Left), MathF.Max(requestedSource.Top, bitmapClip.Top),
+                            MathF.Min(requestedSource.Right, bitmapClip.Right), MathF.Min(requestedSource.Bottom, bitmapClip.Bottom));
+                    if (requestedSource.Right <= requestedSource.Left || requestedSource.Bottom <= requestedSource.Top) continue;
                     SvgPaintBounds needed = SvgFilterPlayback.RequiredSourceBounds(resource, primitiveMap, sourceContext, requestedSource, budget, imageWork, cancellationToken);
                     SvgPaintBounds painted = new((float)(imageVisual.Left * horizontalScale + horizontalOffset), (float)(imageVisual.Top * verticalScale + verticalOffset),
                         (float)(imageVisual.Right * horizontalScale + horizontalOffset), (float)(imageVisual.Bottom * verticalScale + verticalOffset));

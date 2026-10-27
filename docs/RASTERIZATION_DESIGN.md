@@ -190,6 +190,12 @@ Filter sources preserve native rectangle coverage and layer-bound rounding.
 Object-box output clips index balanced source ranges once before measuring targets.
 sRGB and linear-RGB image sampling retain their distinct precision. Resource
 clips enclose group isolation, applying coverage once when opacity restores.
+Ancestor clips also surround child filter output; source-local clips stay inside
+the filter. Balanced group ranges preserve that order in direct and pattern
+scenes. Offset captures keep source ink separate from image hints, and each
+compositor bitmap supplies its own clipped output request. The
+[ownership controls](../tests/Research/filter-clip-ownership/README.md) retain
+independent native evidence for those paths.
 Solid paint and inherited currentColor retain validated source alpha through
 shape, instance, mask and glyph construction. Text element opacity encloses the
 ordered fill, stroke and decoration commands, including deferred paint slots.

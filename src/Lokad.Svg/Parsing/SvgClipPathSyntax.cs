@@ -750,11 +750,7 @@ internal static class SvgClipPathSyntax
                             ? SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(pending.Transform)
                             : pending.Transform;
                         SvgDrawCommand begin = CreateRectangleScope(box, map, state, state.Scene, workCounter, cancellationToken);
-                        bool exists = heads.TryGetValue(pending.Scene, out SceneScopeHead head);
-                        scopes.Add(new(pending.FirstCommandIndex, pending.EndCommandIndex, begin, head.First));
-                        SceneScopeHead replacement = new(pending.Scene, scopes.Count);
-                        if (exists) heads.Replace(pending.Scene, replacement);
-                        else heads.TryAdd(pending.Scene, replacement);
+                        QueueScope(pending, begin);
                         continue;
                     }
                     if (!pending.Transform.IsAxisAligned || pending.UsesNativeClip || ContainsGlyph(pending))
@@ -789,6 +785,11 @@ internal static class SvgClipPathSyntax
                         if (command.Kind == SvgDrawCommandKind.Geometry) target.Add(state.Scene.GeometryAt(command.GeometryIndex), state, workCounter, cancellationToken);
                     }
                     SvgLeafMaskOperation operation = target.Register(fractions, state, workCounter, cancellationToken);
+                    if (ContainsIsolatedLayer(pending))
+                    {
+                        WrapOperation(pending, operation);
+                        continue;
+                    }
                     for (int index = pending.FirstCommandIndex; index < pending.EndCommandIndex; index++)
                     {
                         workCounter.Consume(cancellationToken);
@@ -810,6 +811,11 @@ internal static class SvgClipPathSyntax
                             if (command.Kind == SvgDrawCommandKind.Geometry) target.Add(state.Scene.GeometryAt(command.GeometryIndex), state, workCounter, cancellationToken);
                         }
                         SvgLeafMaskOperation boundingOperation = target.Register(polygon, state, workCounter, cancellationToken);
+                        if (ContainsIsolatedLayer(pending))
+                        {
+                            WrapOperation(pending, boundingOperation);
+                            continue;
+                        }
                         for (int index = pending.FirstCommandIndex; index < pending.EndCommandIndex; index++)
                         {
                             workCounter.Consume(cancellationToken);
@@ -826,6 +832,14 @@ internal static class SvgClipPathSyntax
                     (SvgClipBox bounds, int contentIndex) = polygon.NestedClipId is not null
                         ? RegisterNestedResourceMask(pending.ClipId, polygon, map, state.Scene, state, workCounter, cancellationToken)
                         : polygon.Register(map, polygon.UsesNativeReplay, state, state.Scene, workCounter, cancellationToken);
+                    if (ContainsIsolatedLayer(pending))
+                    {
+                        bool mask = polygon.NestedClipId is not null || polygon.UsesMaskFallback;
+                        SvgDrawCommand begin = new(SvgDrawCommandKind.BeginGroup, -1, 255, mask ? null : bounds, contentIndex, 255)
+                        { RegionKind = mask ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.AffineViewport };
+                        QueueScope(pending, begin);
+                        continue;
+                    }
                     SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
                     operation.Resolved = true;
                     operation.Value = 255;
@@ -855,6 +869,23 @@ internal static class SvgClipPathSyntax
         }
         foreach (SceneScopeHead head in heads.Values) WrapCommands(head);
 
+        void QueueScope(PendingGroupClip pending, SvgDrawCommand begin)
+        {
+            bool exists = heads.TryGetValue(pending.Scene, out SceneScopeHead head);
+            scopes.Add(new(pending.FirstCommandIndex, pending.EndCommandIndex, begin, head.First));
+            SceneScopeHead replacement = new(pending.Scene, scopes.Count);
+            if (exists) heads.Replace(pending.Scene, replacement);
+            else heads.TryAdd(pending.Scene, replacement);
+        }
+
+        void WrapOperation(PendingGroupClip pending, SvgLeafMaskOperation operation)
+        {
+            if (operation.AffineViewport is {} clip)
+                (operation.Region, operation.ContentIndex) = clip.Register(state, pending.Scene, workCounter, cancellationToken);
+            QueueScope(pending, new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, operation.RecordingScope.Value,
+                operation.SourceOpacity, operation.Region, operation.ContentIndex, operation.Value) { RegionKind = operation.RegionKind });
+        }
+
         bool ContainsGlyph(PendingGroupClip pending)
         {
             for (int index = pending.FirstCommandIndex; index < pending.EndCommandIndex; index++)
@@ -868,13 +899,13 @@ internal static class SvgClipPathSyntax
 
         bool ContainsIsolatedLayer(PendingGroupClip pending)
         {
-            // A mask owns an isolated source even at unit opacity; pure viewport
-            // scopes retain their separate clip-stack behavior.
+            // Masks and filters own isolated sources even at unit opacity. An
+            // ancestor clip encloses their results; viewport scopes remain clips.
             for (int index = pending.FirstCommandIndex; index < pending.EndCommandIndex; index++)
             {
                 workCounter.Consume(cancellationToken);
                 if (pending.Scene.CommandAt(index) is { Kind: SvgDrawCommandKind.BeginGroup } command
-                    && (command.SourceOpacity.Value != 1 || command.RegionKind == SvgLayerRegionKind.Mask)) return true;
+                    && (command.SourceOpacity.Value != 1 || command.RegionKind is SvgLayerRegionKind.Mask or SvgLayerRegionKind.Filter)) return true;
             }
             return false;
         }
