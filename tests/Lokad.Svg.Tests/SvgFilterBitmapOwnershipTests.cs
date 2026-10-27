@@ -17,6 +17,8 @@ public sealed class SvgFilterBitmapOwnershipTests
     [InlineData("filter-stage-boundaries", "alias-materialized-copy-blur")]
     [InlineData("filter-opacity-sampling", "cropped-placements-affine-srgb-91-control-1")]
     [InlineData("filter-opacity-sampling", "contracts-sprite-near-zero-control")]
+    [InlineData("filter-merge-image-draw", "interaction-mixed-space-candidate")]
+    [InlineData("filter-merge-image-draw", "original-r113-original-42-control")]
     public void Filter_scratch_releases_after_denial_cancellation_and_retry(string family, string id)
     {
         string folder = Path.Combine(AppContext.BaseDirectory, "TestData", family);
@@ -24,7 +26,8 @@ public sealed class SvgFilterBitmapOwnershipTests
         byte[] unchanged = input.ToArray();
         using JsonDocument capture = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder, "capture.json")));
         JsonElement row = capture.RootElement.GetProperty("cases").EnumerateArray().Single(item => item.GetProperty("id").GetString() == id);
-        string expected = row.GetProperty("references").GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux")
+        JsonElement references = row.TryGetProperty("references", out JsonElement stageReferences) ? stageReferences : row.GetProperty("platforms");
+        string expected = references.GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux")
             .GetProperty("rgbaSha256").GetString() ?? throw new InvalidDataException("Missing native pixel hash.");
         RenderBudget parser = new(1_000_000);
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None))
@@ -43,6 +46,8 @@ public sealed class SvgFilterBitmapOwnershipTests
     [InlineData("filter-stage-boundaries", "alias-materialized-copy-blur")]
     [InlineData("filter-opacity-sampling", "cropped-placements-affine-srgb-91-control-1")]
     [InlineData("filter-opacity-sampling", "contracts-sprite-near-zero-control")]
+    [InlineData("filter-merge-image-draw", "interaction-mixed-space-candidate")]
+    [InlineData("filter-merge-image-draw", "original-r113-original-42-control")]
     public async Task Prepared_bitmap_replay_preserves_input_and_borrowed_destination_after_cancellation(string family, string id)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", family, "inputs", id + ".svg"));

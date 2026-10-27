@@ -234,6 +234,16 @@ source-free uniform paint retains its logical extent. The
 [opacity and sampling controls](../tests/Research/filter-opacity-sampling/README.md)
 retain actual-input browser references and representative ownership checks.
 
+Source-image requests intersect native hints before enclosure; their sampling
+extent remains separate from the capture allocation, transparent guards and
+finite captured content. Owned source devices share content-clip construction.
+Retained offset transforms carry their operating space and compose only within
+that space. Merge consumes them as images: color transfer precedes edge coverage
+and source-over, and the image draw uses the destination clip. Shader consumers
+retain their separate sampling rules. The
+[source/composition controls](../tests/Research/filter-merge-image-draw/README.md)
+preserve these distinctions, including platform-specific glyph image bounds.
+
 ## Supplied fonts
 
 Rendering consumes verified immutable font bytes supplied by the host. Shared

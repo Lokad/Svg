@@ -535,6 +535,13 @@ captures separately from their current resolution status. Enclosing opacity
 layers apply alpha after sampling/crop coverage and retain their own destination
 bounds; [focused controls](../tests/Research/filter-opacity-sampling/README.md)
 cover those boundaries and active instance consumers.
+Requested source-image sampling bounds remain separate from scratch allocation
+and captured content. Retained image transforms preserve operating-space changes;
+merge draws apply color transfer before edge coverage and use their destination
+clip. [Source/composition controls](../tests/Research/filter-merge-image-draw/README.md)
+cover affine, fractional, supplied-font and resource consumers, while the
+[historical corpus](../tests/Research/filter-source-composition/README.md) retains
+individual periodic checks with unchanged native references.
 [Source coverage controls](../tests/Research/filter-source-coverage/README.md)
 distinguish cropped aliases, effective-zero axes, small-blur materialization and
 source-image hint rounding before fractional displacement.

@@ -31,6 +31,12 @@ retain canonical native images and two distinct allocation/ownership witnesses.
 The [uniform-bank status](Research/filter-uniform-precision/resolved-known-differences.json)
 adds exact assertions for historical differences without replacing captures:
 two scaled shadows stay routine and the other 1,204 join the research matrix.
+The [source/composition controls](Research/filter-merge-image-draw/README.md)
+add 45 routine native inputs, direct image-bound admission checks and two selected
+ownership inputs. The [historical corpus](Research/filter-source-composition/README.md)
+keeps 2,253 individual checks in the research category. Its coverage index maps
+every original role, consolidating only identical authored inputs/options with
+matching native pixels on both hosts; references remain unchanged.
 The full milestone command includes every extended case:
 
 ```powershell

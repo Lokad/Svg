@@ -1,5 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/filter-merge-image-draw/capture.json" Link="TestData/filter-merge-image-draw/capture.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/filter-merge-image-draw/inputs/interaction-mixed-space-candidate.svg" Link="TestData/filter-merge-image-draw/inputs/interaction-mixed-space-candidate.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/filter-merge-image-draw/inputs/original-r113-original-42-control.svg" Link="TestData/filter-merge-image-draw/inputs/original-r113-original-42-control.svg" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="../Research/filter-opacity-sampling/capture.json" Link="TestData/filter-opacity-sampling/capture.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/filter-opacity-sampling/inputs/cropped-placements-affine-srgb-91-control-1.svg" Link="TestData/filter-opacity-sampling/inputs/cropped-placements-affine-srgb-91-control-1.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/filter-opacity-sampling/inputs/contracts-sprite-near-zero-control.svg" Link="TestData/filter-opacity-sampling/inputs/contracts-sprite-near-zero-control.svg" CopyToOutputDirectory="PreserveNewest" />

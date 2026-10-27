@@ -18,7 +18,7 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
     {
         Dictionary<(string Folder, string Id), JsonElement> cases = new();
         HashSet<(string Folder, string Id)> resolvedCases = new();
-        foreach (string folder in new[] { "offset-merge-inputs", "linear-shape-source-maps", "radial-axis-source-maps", "gradient-spread-stages", "gradient-paint-replay", "gradient-factory-colors", "linear-periodic-stops", "gradient-stop-preparation", "gradient-color-alpha", "filter-uniform-precision", "solid-paint-alpha", "pattern-source-selection", "text-node-boundaries", "hairline-clip-rounding" })
+        foreach (string folder in new[] { "offset-merge-inputs", "filter-merge-image-draw", "filter-source-composition", "linear-shape-source-maps", "radial-axis-source-maps", "gradient-spread-stages", "gradient-paint-replay", "gradient-factory-colors", "linear-periodic-stops", "gradient-stop-preparation", "gradient-color-alpha", "filter-uniform-precision", "solid-paint-alpha", "pattern-source-selection", "text-node-boundaries", "hairline-clip-rounding" })
         {
             using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(folder), "capture.json")));
             foreach (JsonElement row in data.RootElement.GetProperty("cases").EnumerateArray())
@@ -53,7 +53,7 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
         }
         CaseIndex = cases;
         ResearchColorAndFilterCases = resolvedCases;
-        foreach (string folder in new[] { "gradient-color-alpha", "filter-uniform-precision" })
+        foreach (string folder in new[] { "gradient-color-alpha", "filter-uniform-precision", "filter-source-composition" })
         {
             using JsonDocument selection = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(folder), "research-cases.json")));
             foreach (JsonElement selected in selection.RootElement.GetProperty("cases").EnumerateArray())
@@ -114,7 +114,13 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
         if (hasFonts)
         {
             Assert.Equal(row.GetProperty("nativeFontSha256").GetString(), _fonts.Sha256);
-            string nativeInput = System.Text.Encoding.UTF8.GetString(input).Replace("font-family='serif'", "font-family='ReviewFont'", StringComparison.Ordinal);
+            byte[] captureInput = input;
+            if (row.TryGetProperty("captureInput", out JsonElement capturePath))
+            {
+                captureInput = File.ReadAllBytes(Path.Combine(Folder(folder), capturePath.GetString() ?? throw new InvalidDataException("Missing native capture path.")));
+                Assert.Equal(row.GetProperty("captureInputSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(captureInput)));
+            }
+            string nativeInput = System.Text.Encoding.UTF8.GetString(captureInput).Replace("font-family='serif'", "font-family='ReviewFont'", StringComparison.Ordinal);
             nativeInput = nativeInput.Insert(nativeInput.IndexOf('>') + 1, _fonts.Css);
             Assert.Equal(row.GetProperty("nativeSourceSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(nativeInput))));
         }

@@ -8,6 +8,39 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgFilterSourceHintTests
 {
     [Theory]
+    [InlineData(-.25f, -.75f, 8.25f, 9.75f, -1, -1, 9, 10)]
+    [InlineData(2.25f, 3.75f, 7.25f, 8.75f, 2, 3, 8, 9)]
+    [InlineData(-20, -20, 20, 20, -10, -10, 10, 10)]
+    [InlineData(1, 2, 7, 8, 1, 2, 7, 8)]
+    [InlineData(-.0001f, .0001f, 7.0001f, 7.9999f, -1, 0, 8, 8)]
+    public void Requested_image_intersects_before_enclosing_without_layer_inset(float left, float top,
+        float right, float bottom, float expectedLeft, float expectedTop, float expectedRight, float expectedBottom)
+    {
+        SvgPaintBounds hint = new(left, top, right, bottom);
+        SvgPaintBounds request = new(-10, -10, 10, 10);
+        SvgPaintBounds expected = new(expectedLeft, expectedTop, expectedRight, expectedBottom);
+        Assert.Equal(expected, SvgFilterPlayback.RequestedSourceImageBounds(hint, request));
+        Assert.Equal(expected, SvgFilterPlayback.RequestedSourceImageBounds(request, hint));
+    }
+
+    public static IEnumerable<object[]> InvalidImageCoordinates()
+    {
+        foreach (float coordinate in new[] { float.NaN, float.PositiveInfinity, float.NegativeInfinity, 2147483648f, -2147483904f })
+            for (int index = 0; index < 4; index++) yield return [coordinate, index];
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidImageCoordinates))]
+    public void Requested_image_admits_each_coordinate_before_integer_conversion(float coordinate, int index)
+    {
+        float[] edges = [0, 0, 1, 1];
+        edges[index] = coordinate;
+        SvgPaintBounds hint = new(edges[0], edges[1], edges[2], edges[3]);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+            SvgFilterPlayback.RequestedSourceImageBounds(hint, hint)).ErrorCode);
+    }
+
+    [Theory]
     [InlineData(-1, 5, 11, 26, 23)]
     [InlineData(-.5, 5, 11, 26, 23)]
     [InlineData(-.01, 5, 11, 26, 23)]

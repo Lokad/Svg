@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Preserve requested source-image bounds independently of capture storage, and
+  retain image operating spaces through offset aliases. Merge draws transfer
+  sampled color before coverage and use their destination clip. This corrects
+  affine, fractional and supplied-font filter sampling through resource replay.
+  See the [native controls](tests/Research/filter-merge-image-draw/README.md).
+
 - Preserve packed filter-image coverage and enclosing opacity-layer bounds,
   applying opacity after sampling and crop coverage. Share shadow-tint and offset
   padding arithmetic. Retain near-integer sprite behavior and independent
