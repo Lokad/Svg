@@ -1,5 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/image-source-views/capture.json" Link="TestData/image-source-views/capture.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/image-source-views/inputs/minify-odd-half.svg" Link="TestData/image-source-views/inputs/minify-odd-half.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/image-source-views/inputs/minify-crop-positive-origin.svg" Link="TestData/image-source-views/inputs/minify-crop-positive-origin.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/image-source-views/inputs/minify-pattern-odd-opacity.svg" Link="TestData/image-source-views/inputs/minify-pattern-odd-opacity.svg" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="../Research/filter-merge-image-draw/capture.json" Link="TestData/filter-merge-image-draw/capture.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/filter-merge-image-draw/inputs/interaction-mixed-space-candidate.svg" Link="TestData/filter-merge-image-draw/inputs/interaction-mixed-space-candidate.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/filter-merge-image-draw/inputs/original-r113-original-42-control.svg" Link="TestData/filter-merge-image-draw/inputs/original-r113-original-42-control.svg" CopyToOutputDirectory="PreserveNewest" />

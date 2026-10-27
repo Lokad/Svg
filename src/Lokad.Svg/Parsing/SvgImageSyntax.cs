@@ -38,7 +38,7 @@ internal readonly record struct SvgImageSyntax(string Href, double X, double Y, 
     }
 
     /// <summary>Retains the full pixel map separately from the meet/slice drawable box.</summary>
-    internal static (SvgRectangle Box, SvgShaderMatrix Local) MapRasterPlacement(string? preserveAspectRatio,
+    internal static (SvgRectangle Box, SvgShaderMatrix Local, SvgImageSourceRect SourceRect) MapRasterPlacement(string? preserveAspectRatio,
         SvgImageSyntax syntax, int pixelWidth, int pixelHeight, double width, double height)
     {
         (SvgViewBoxAlignment horizontal, SvgViewBoxAlignment vertical, SvgViewBoxFit fit) = ParsePlacementAspectRatio(preserveAspectRatio);
@@ -79,7 +79,10 @@ internal readonly record struct SvgImageSyntax(string Href, double X, double Y, 
         float sx = (left + destinationWidth - left) / (sourceLeft + sourceWidth - sourceLeft);
         float sy = (top + destinationHeight - top) / (sourceTop + sourceHeight - sourceTop);
         SvgShaderMatrix local = new(sx, 0, left - sourceLeft * sx, 0, sy, top - sourceTop * sy);
-        return (new(left, top, Math.Max(0, destinationWidth), Math.Max(0, destinationHeight), default, true, null), local);
+        SvgImageSourceRect sourceRect = new(Math.Clamp(sourceLeft, 0, pixelWidth), Math.Clamp(sourceTop, 0, pixelHeight),
+            Math.Clamp(sourceLeft + sourceWidth, 0, pixelWidth), Math.Clamp(sourceTop + sourceHeight, 0, pixelHeight));
+        if (!sourceRect.IsFinite) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Image source crop is not finite.");
+        return (new(left, top, Math.Max(0, destinationWidth), Math.Max(0, destinationHeight), default, true, null), local, sourceRect);
 
         static float Align(float origin, float available, float used, SvgViewBoxAlignment alignment) => alignment switch
         {

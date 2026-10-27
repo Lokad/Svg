@@ -26,6 +26,11 @@ dotnet test -c Release --no-build --filter 'Category!=Research'
 Only the explicitly selected extended matrix has this category; it does not
 exclude the other native research-reference tests. `Layer` traits identify the
 classes migrated to these responsibilities; they are not a complete suite index.
+The [embedded-image source views](Research/image-source-views/README.md) retain
+120 canonical images for 126 original/acceptance roles, 39 direct mechanism cases
+and three selected allocation paths with raw/prepared ownership checks. They
+separate source crops, decoded-view reduction and picture mip interpolation from
+destination coverage and from the general API matrix.
 The [filter opacity and sampling controls](Research/filter-opacity-sampling/README.md)
 retain canonical native images and two distinct allocation/ownership witnesses.
 The [uniform-bank status](Research/filter-uniform-precision/resolved-known-differences.json)

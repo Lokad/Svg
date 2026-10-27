@@ -191,6 +191,17 @@ including nested instances and pattern content.
 Effects obey the [composition contract](SUPPORT_MATRIX.md#clips-masks-and-composition).
 Isolation and restoration must apply each clip/opacity once.
 
+Embedded images retain decoded storage, the fractional source window and the
+destination clip independently. Integer sampling views enclose the source window;
+their coordinates are local to that view while texels retain the decoded stride.
+Recorded draws choose ceil-sized decoded levels from rounded device requests,
+then use the existing Q15 source-replacement sampler. Picture draws keep their
+floor-sized mips and float level interpolation; strict source subsets retain
+clamped sampling. Reduction reserves scratch before allocation, charges each
+sample and releases intermediate levels on failure. The
+[source-view controls](../tests/Research/image-source-views/README.md) protect these
+stage boundaries without multiplying every image across API destinations.
+
 [Filter playback](../src/Lokad.Svg/Rendering/SvgFilterPlayback.cs) retains primitive
 regions, result dependencies, operating color spaces and source-bitmap placement.
 Padded source capture, cropped storage, intermediate image subsets and restoration

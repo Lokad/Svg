@@ -21,6 +21,8 @@ and clip construction order, and retained convex shape classification,
 and antialiased line/curve hairline coverage/dispatch,
 and fused CPU Gaussian three-box blur with scaled integer division,
 progressive image-filter rescaling and sRGB filter transfer functions.
+Source-image subsets, mip selection and premultiplied box/triangle reduction
+also adapt the bitmap-device, mipmap and pixmap-draw sources listed below.
 Filter image requests, pending crop/color stages and nearest shader boundary
 selection also adapt the image-filter and image-shader sources listed below.
 Binary rectangular-viewport line setup, winding spans, region-clipped rectangle
@@ -52,6 +54,8 @@ src/core/SkBezierCurves.cpp, src/core/SkFloatingPoint.cpp, src/core/SkEdge.cpp, 
 src/core/SkStrokerPriv.cpp, src/core/SkStroke.cpp, src/core/SkPathBuilder.cpp,
 src/core/SkPathMakers.h, src/core/SkPathRawShapes.cpp, src/core/SkRRect.cpp,
 src/core/SkBlitter.h, src/core/SkBlitter.cpp, src/core/SkBlitter_ARGB32.cpp, src/core/SkBitmapProcState.cpp,
+src/core/SkBitmapDevice.cpp, src/core/SkMipmap.cpp, src/core/SkMipmapAccessor.cpp,
+src/core/SkMipmapHQDownSampler.cpp, src/core/SkPixmapDraw.cpp,
 src/core/SkBitmapProcState_matrixProcs.cpp, src/core/SkBitmapProcState.h,
 src/core/SkBlitRow_D32.cpp, src/core/SkColorData.h, src/core/SkMatrix.cpp, src/core/SkPoint.cpp, src/core/SkPathPriv.cpp,
 src/core/SkRasterClip.cpp, src/core/SkAAClip.cpp, src/core/SkScan_AAAPath.cpp,
@@ -117,6 +121,10 @@ paint positioning, ordered text strokes, solid SVG text-decoration
 metrics/rectangle placement, source text paint boxes and drawing-rectangle enclosure,
 character fragment spacing, non-scaling-stroke drawing bounds and CSS gradient-coordinate
 decimal parsing and functional-color alpha precision.
+Embedded-image decoded-view dimensions and draw-stage selection also adapt
+cc/tiles/mipmap_util.cc, cc/tiles/software_image_decode_cache_utils.cc,
+cc/paint/draw_image.cc, cc/paint/paint_op.cc and cc/paint/paint_flags.cc
+at the same release tag.
 It has no Chromium runtime dependency.
 
 Source release tag: 153.0.8010.52

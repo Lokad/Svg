@@ -3158,22 +3158,52 @@ public static partial class SvgConverter
         void RasterizeImage(SvgImageGeometry image, SvgAuthoredPath? authoredPath, byte[] destination)
         {
             byte opacity = (byte)Math.Clamp((int)(ShaderAlpha(image.Opacity) * 255f + .5f), 0, 255);
-            if (!image.Box.HasFill || opacity == 0 || image.Box.Width == 0 || image.Box.Height == 0) return;
+            if (!image.Box.HasFill || opacity == 0 || image.Box.Width == 0 || image.Box.Height == 0 || image.SourceRect.IsEmpty) return;
+            SvgAnalyticClipBounds sampleBounds = image.SourceRect.PixelBounds;
+            int sampleWidth = sampleBounds.Right - sampleBounds.Left, sampleHeight = sampleBounds.Bottom - sampleBounds.Top;
+            bool sourceIsSubset = image.SourceRect != new SvgImageSourceRect(0, 0, image.Width, image.Height);
             SvgRectangleRaster raster = PrepareRectangle(image.Box);
             raster = raster with { Left = Math.Max(raster.Left, layerBounds.Left), Top = Math.Max(raster.Top, layerBounds.Top),
                 Right = Math.Min(raster.Right, layerBounds.Right), Bottom = Math.Min(raster.Bottom, layerBounds.Bottom) };
             if (raster.Left >= raster.Right || raster.Top >= raster.Bottom) return;
-            using RasterizedSurface? mask = authoredPath is null ? null : PrepareImageMask(authoredPath, image.Box.Clip, raster);
-            long sampleWork = (long)(raster.Right - raster.Left) * (raster.Bottom - raster.Top) * 4;
-            if (sampleWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded image sampling exceeds the configured work limit.");
-            workUnits += sampleWork;
             SvgShaderMatrix output = new((float)horizontalScale, 0, (float)horizontalOffset, 0, (float)verticalScale, (float)verticalOffset);
-            SvgShaderCoordinates coordinates = SvgShaderCoordinates.CreateImage(SvgShaderMatrix.Concat(output, image.ReferenceMap), image.LocalMap);
+            SvgShaderMatrix samplingMap = image.LocalMap;
+            if (sampleBounds.Left != 0 || sampleBounds.Top != 0)
+                samplingMap = SvgShaderMatrix.Concat(samplingMap, new(1, 0, sampleBounds.Left, 0, 1, sampleBounds.Top));
+            SvgShaderCoordinates coordinates = SvgShaderCoordinates.CreateImage(SvgShaderMatrix.Concat(output, image.ReferenceMap), samplingMap);
             // The transparent source border clips painting without moving the native
             // bitmap's shader seed. Retain that bitmap origin even in a compact capture.
             SvgCpuBitmapOrigin? capturedImageOrigin = frame is { ImageShaderOrigin: {} nativeOrigin, ContentClip: {} content } sourceFrame && content == layerBounds
                 ? new(nativeOrigin.X - sourceFrame.CaptureOrigin.X, nativeOrigin.Y - sourceFrame.CaptureOrigin.Y) : null;
+            (int Width, int Height) decodeSize = surfaceMode == RasterSurfaceMode.PremultipliedPattern
+                ? (sampleWidth, sampleHeight)
+                : SvgImageMipMap.SelectDecodeSize(SvgShaderMatrix.Concat(SvgShaderMatrix.Concat(output, image.ReferenceMap), samplingMap), sampleWidth, sampleHeight);
+            if (decodeSize.Width == 0 || decodeSize.Height == 0) return;
+            (int Upper, float LowerWeight) pictureLevels = image.UniformSample is null && surfaceMode == RasterSurfaceMode.PremultipliedPattern && !sourceIsSubset
+                && coordinates.TryGetMatrix(new(0, 0), out SvgShaderMatrix pictureInverse)
+                ? SvgImageMipMap.SelectLinearLevels(pictureInverse, sampleWidth, sampleHeight) : (0, 0);
+            int pictureMip = pictureLevels.Upper;
+            bool pictureReduction = pictureMip != 0 || pictureLevels.LowerWeight != 0;
+            if (pictureReduction) decodeSize = (Math.Max(1, sampleWidth >> pictureMip), Math.Max(1, sampleHeight >> pictureMip));
+            using RasterizedSurface? mask = authoredPath is null ? null : PrepareImageMask(authoredPath, image.Box.Clip, raster);
+            long sampleWork = (long)(raster.Right - raster.Left) * (raster.Bottom - raster.Top)
+                * (pictureLevels.LowerWeight != 0 ? 8 : 4);
+            if (sampleWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded image sampling exceeds the configured work limit.");
+            workUnits += sampleWork;
+            (RasterizedSurface? mipValue, RasterizedSurface? lowerValue) = PrepareImageLevels();
+            using RasterizedSurface? mip = mipValue;
+            using RasterizedSurface? lowerMip = lowerValue;
+            int sourceWidth = image.Width, sourceHeight = image.Height;
             byte[] source = image.UniformSample is null ? image.Pixels : [];
+            if (mip is {} level)
+            {
+                samplingMap = SvgShaderMatrix.Concat(samplingMap, new((float)sampleWidth / level.Width, 0, 0, 0, (float)sampleHeight / level.Height, 0));
+                coordinates = SvgShaderCoordinates.CreateImage(SvgShaderMatrix.Concat(output, image.ReferenceMap), samplingMap);
+                source = level.Pixels;
+                sourceWidth = sampleWidth = level.Width;
+                sourceHeight = sampleHeight = level.Height;
+                sampleBounds = new(0, 0, level.Width, level.Height);
+            }
             for (int y = raster.Top; y < raster.Bottom; y++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -3199,7 +3229,8 @@ public static partial class SvgConverter
                         if (surfaceMode == RasterSurfaceMode.PremultipliedPattern)
                         {
                             (sampleX, sampleY) = affineInverse.Map(pixelX, pixelY);
-                            SamplePicture(sampleX, sampleY).Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), coverage);
+                            if (sourceIsSubset) SampleAffine(sampleX, sampleY).Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), coverage);
+                            else SamplePicture(sampleX, sampleY).Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), coverage);
                         }
                         else SampleAffine(sampleX, sampleY).Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), coverage);
                         continue;
@@ -3214,7 +3245,7 @@ public static partial class SvgConverter
                             if (inverse.TryInvert(out SvgShaderMatrix forward) && MathF.Abs(forward.ScaleX - 1) <= 1f / 32768f
                                 && MathF.Abs(forward.ScaleY - 1) <= 1f / 32768f)
                                 inverse = new(1, 0, -forward.TranslateX, 0, 1, -forward.TranslateY);
-                        filtering = image.Width < 16384 && image.Height < 16384
+                        filtering = sampleWidth < 16384 && sampleHeight < 16384
                             && !(inverse.ScaleX == 1 && inverse.ScaleY == 1
                                 && MathF.Abs(inverse.TranslateX - MathF.Floor(inverse.TranslateX + .5f)) <= 1f / 256f
                                 && MathF.Abs(inverse.TranslateY - MathF.Floor(inverse.TranslateY + .5f)) <= 1f / 256f);
@@ -3231,6 +3262,75 @@ public static partial class SvgConverter
                 }
             }
 
+            // Retain only the selected decoded view or adjacent picture mip levels.
+            // Every scratch level is reserved before allocation and released on all exits.
+            (RasterizedSurface? Upper, RasterizedSurface? Lower) PrepareImageLevels()
+            {
+                if (image.UniformSample is not null || !pictureReduction && decodeSize == (sampleWidth, sampleHeight)) return (null, null);
+                SvgShaderMatrix resizeInverse = new(1f / ((float)decodeSize.Width / sampleWidth), 0, 0, 0, 1f / ((float)decodeSize.Height / sampleHeight), 0);
+                int count = pictureReduction ? pictureMip + (pictureLevels.LowerWeight != 0 ? 1 : 0) : SvgImageMipMap.SelectLevel(resizeInverse, sampleWidth, sampleHeight);
+                RasterizedSurface? previous = null, retainedUpper = null;
+                try
+                {
+                    byte[] pixels = image.Pixels;
+                    int stride = image.Width;
+                    SvgAnalyticClipBounds bounds = sampleBounds;
+                    for (int index = 0; index < count; index++)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        if (pictureLevels.LowerWeight != 0 && index == count - 1)
+                        {
+                            retainedUpper = previous;
+                            previous = null;
+                        }
+                        int width = Math.Max(1, (bounds.Right - bounds.Left) / 2);
+                        int height = Math.Max(1, (bounds.Bottom - bounds.Top) / 2);
+                        long reductionWork = (long)width * height * SvgImageMipMap.SampleCount(bounds);
+                        if (reductionWork > options.Limits.MaximumWorkUnits - workUnits)
+                            throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded image reduction exceeds the configured work limit.");
+                        workUnits += reductionWork;
+                        RenderBudget.BudgetReservation reservation = budget.Reserve(checked((long)width * height * 4 + 64), SvgMemoryCategory.Surface);
+                        RasterizedSurface next;
+                        try
+                        {
+                            byte[] reduced = new byte[checked(width * height * 4)];
+                            SvgImageMipMap.Reduce(pixels, stride, bounds, reduced, cancellationToken);
+                            next = new(width, height, reduced, reservation, 0);
+                        }
+                        catch { reservation.Dispose(); throw; }
+                        previous?.Dispose();
+                        previous = next;
+                        pixels = next.Pixels;
+                        stride = width;
+                        bounds = new(0, 0, width, height);
+                    }
+                    if (!pictureReduction && (previous is not {} last || last.Width != decodeSize.Width || last.Height != decodeSize.Height))
+                    {
+                        long resizeWork = (long)decodeSize.Width * decodeSize.Height * 4;
+                        if (resizeWork > options.Limits.MaximumWorkUnits - workUnits)
+                            throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded image resize exceeds the configured work limit.");
+                        workUnits += resizeWork;
+                        RenderBudget.BudgetReservation reservation = budget.Reserve(checked((long)decodeSize.Width * decodeSize.Height * 4 + 64), SvgMemoryCategory.Surface);
+                        RasterizedSurface resized;
+                        try
+                        {
+                            byte[] reduced = new byte[checked(decodeSize.Width * decodeSize.Height * 4)];
+                            SvgImageMipMap.Resize(pixels, stride, bounds, reduced, decodeSize.Width, decodeSize.Height, cancellationToken);
+                            resized = new(decodeSize.Width, decodeSize.Height, reduced, reservation, 0);
+                        }
+                        catch { reservation.Dispose(); throw; }
+                        previous?.Dispose();
+                        previous = resized;
+                    }
+                    (RasterizedSurface? Upper, RasterizedSurface? Lower) result = pictureLevels.LowerWeight != 0
+                        ? (retainedUpper, previous) : (previous, null);
+                    previous = null;
+                    retainedUpper = null;
+                    return result;
+                }
+                finally { previous?.Dispose(); retainedUpper?.Dispose(); }
+            }
+
             // Native bitmap interpolation retains four-bit fractions and truncates
             // the bilerp before independent packed paint alpha is applied.
             SvgConstantShaderPaint Sample(long x, long y, bool filtering)
@@ -3238,12 +3338,12 @@ public static partial class SvgConverter
                 if (image.UniformSample is {} uniform) return ApplyOpacity(uniform, false);
                 long bias = filtering ? 2147483648L : 65536L;
                 x -= bias; y -= bias;
-                int left = (int)Math.Clamp(x >> 32, -1, image.Width), top = (int)Math.Clamp(y >> 32, -1, image.Height);
+                int left = (int)Math.Clamp(x >> 32, -1, sampleWidth), top = (int)Math.Clamp(y >> 32, -1, sampleHeight);
                 int fx = filtering ? (int)(x >> 28 & 15) : 0, fy = filtering ? (int)(y >> 28 & 15) : 0;
-                int x0 = Math.Clamp(left, 0, image.Width - 1), x1 = Math.Clamp(left + 1, 0, image.Width - 1);
-                int y0 = Math.Clamp(top, 0, image.Height - 1), y1 = Math.Clamp(top + 1, 0, image.Height - 1);
-                int a = (y0 * image.Width + x0) * 4, b = (y0 * image.Width + x1) * 4;
-                int c = (y1 * image.Width + x0) * 4, d = (y1 * image.Width + x1) * 4;
+                int x0 = Math.Clamp(left, 0, sampleWidth - 1) + sampleBounds.Left, x1 = Math.Clamp(left + 1, 0, sampleWidth - 1) + sampleBounds.Left;
+                int y0 = Math.Clamp(top, 0, sampleHeight - 1) + sampleBounds.Top, y1 = Math.Clamp(top + 1, 0, sampleHeight - 1) + sampleBounds.Top;
+                int a = (y0 * sourceWidth + x0) * 4, b = (y0 * sourceWidth + x1) * 4;
+                int c = (y1 * sourceWidth + x0) * 4, d = (y1 * sourceWidth + x1) * 4;
                 SvgConstantShaderPaint sample = SvgConstantShaderPaint.Interpolate(Pixel(source, a), Pixel(source, b), Pixel(source, c), Pixel(source, d), fx, fy);
                 return ApplyOpacity(sample, false);
 
@@ -3269,19 +3369,33 @@ public static partial class SvgConverter
                 float alpha = ShaderAlpha(image.Opacity);
                 if (image.UniformSample is {} uniform)
                     return SvgShaderPaint.Pattern(uniform.Red, uniform.Green, uniform.Blue, uniform.Alpha, alpha);
-                x = Math.Clamp(x, -1, image.Width) - .5f;
-                y = Math.Clamp(y, -1, image.Height) - .5f;
+                SvgShaderPaint upper = SampleView(source, sourceWidth, sampleBounds, x, y, pictureLevels.LowerWeight == 0 ? alpha : 1);
+                if (lowerMip is not {} lower || pictureLevels.LowerWeight == 0) return upper;
+                SvgShaderPaint smaller = SampleView(lower.Pixels, lower.Width, new(0, 0, lower.Width, lower.Height),
+                    x * ((float)lower.Width / sampleWidth), y * ((float)lower.Height / sampleHeight), 1);
+                float weight = pictureLevels.LowerWeight;
+                return new(MathF.FusedMultiplyAdd(smaller.Red - upper.Red, weight, upper.Red) * alpha,
+                    MathF.FusedMultiplyAdd(smaller.Green - upper.Green, weight, upper.Green) * alpha,
+                    MathF.FusedMultiplyAdd(smaller.Blue - upper.Blue, weight, upper.Blue) * alpha,
+                    MathF.FusedMultiplyAdd(smaller.Alpha - upper.Alpha, weight, upper.Alpha) * alpha);
+            }
+
+            SvgShaderPaint SampleView(byte[] pixels, int stride, SvgAnalyticClipBounds bounds, float x, float y, float alpha)
+            {
+                int viewWidth = bounds.Right - bounds.Left, viewHeight = bounds.Bottom - bounds.Top;
+                x = Math.Clamp(x, -1, viewWidth) - .5f;
+                y = Math.Clamp(y, -1, viewHeight) - .5f;
                 int left = (int)MathF.Floor(x), top = (int)MathF.Floor(y);
                 float fx = x - left, fy = y - top;
-                int a = (Math.Clamp(top, 0, image.Height - 1) * image.Width + Math.Clamp(left, 0, image.Width - 1)) * 4;
-                int b = (Math.Clamp(top, 0, image.Height - 1) * image.Width + Math.Clamp(left + 1, 0, image.Width - 1)) * 4;
-                int c = (Math.Clamp(top + 1, 0, image.Height - 1) * image.Width + Math.Clamp(left, 0, image.Width - 1)) * 4;
-                int d = (Math.Clamp(top + 1, 0, image.Height - 1) * image.Width + Math.Clamp(left + 1, 0, image.Width - 1)) * 4;
+                int a = ((Math.Clamp(top, 0, viewHeight - 1) + bounds.Top) * stride + Math.Clamp(left, 0, viewWidth - 1) + bounds.Left) * 4;
+                int b = ((Math.Clamp(top, 0, viewHeight - 1) + bounds.Top) * stride + Math.Clamp(left + 1, 0, viewWidth - 1) + bounds.Left) * 4;
+                int c = ((Math.Clamp(top + 1, 0, viewHeight - 1) + bounds.Top) * stride + Math.Clamp(left, 0, viewWidth - 1) + bounds.Left) * 4;
+                int d = ((Math.Clamp(top + 1, 0, viewHeight - 1) + bounds.Top) * stride + Math.Clamp(left + 1, 0, viewWidth - 1) + bounds.Left) * 4;
                 return SvgShaderPaint.InterpolatePremultiplied(
-                    new(source[a], source[a + 1], source[a + 2], source[a + 3]),
-                    new(source[b], source[b + 1], source[b + 2], source[b + 3]),
-                    new(source[c], source[c + 1], source[c + 2], source[c + 3]),
-                    new(source[d], source[d + 1], source[d + 2], source[d + 3]), fx, fy, alpha);
+                    new(pixels[a], pixels[a + 1], pixels[a + 2], pixels[a + 3]),
+                    new(pixels[b], pixels[b + 1], pixels[b + 2], pixels[b + 3]),
+                    new(pixels[c], pixels[c + 1], pixels[c + 2], pixels[c + 3]),
+                    new(pixels[d], pixels[d + 1], pixels[d + 2], pixels[d + 3]), fx, fy, alpha);
             }
 
             // Pinned raster-pipeline bilerp_clamp_8888 retains Q15 intermediate
@@ -3291,7 +3405,7 @@ public static partial class SvgConverter
             SvgConstantShaderPaint SampleAffine(float x, float y)
             {
                 if (image.UniformSample is {} uniform) return ApplyOpacity(uniform, true);
-                return ApplyOpacity(SvgConstantShaderPaint.SampleAffine(source, image.Width, image.Height, x, y, false), true);
+                return ApplyOpacity(SvgConstantShaderPaint.SampleAffine(source, sourceWidth, sourceHeight, x, y, false, new(0, 0), sampleBounds), true);
             }
 
             // Borrow the retained rectangle into the current bitmap's path traversal.

@@ -24,23 +24,32 @@ internal readonly record struct SvgConstantShaderPaint(byte Red, byte Green, byt
     /// cancellation remain caller-owned; the offset allocates no storage.</remarks>
     internal static SvgConstantShaderPaint SampleAffine(ReadOnlySpan<byte> pixels, int width, int height,
         float x, float y, bool transparentBorder, SvgCpuBitmapOrigin pixelOffset)
+        => SampleAffine(pixels, width, height, x, y, transparentBorder, pixelOffset, new(0, 0, width, height));
+
+    /// <summary>Samples an integer source view without copying the decoded raster.</summary>
+    /// <remarks>Bounds are admitted pixel coordinates within the borrowed raster. Coordinates
+    /// belong to the view; offsets follow fixed rounding. The caller owns work and cancellation.</remarks>
+    internal static SvgConstantShaderPaint SampleAffine(ReadOnlySpan<byte> pixels, int width, int height,
+        float x, float y, bool transparentBorder, SvgCpuBitmapOrigin pixelOffset, SvgAnalyticClipBounds bounds)
     {
+        int sampleWidth = bounds.Right - bounds.Left, sampleHeight = bounds.Bottom - bounds.Top;
         if (transparentBorder && (x + pixelOffset.X < -1 || y + pixelOffset.Y < -1
-            || x + pixelOffset.X > width + 1 || y + pixelOffset.Y > height + 1)) return default;
-        if (!transparentBorder) { x = Math.Clamp(x, -1, width); y = Math.Clamp(y, -1, height); }
+            || x + pixelOffset.X > sampleWidth + 1 || y + pixelOffset.Y > sampleHeight + 1)) return default;
+        if (!transparentBorder) { x = Math.Clamp(x, -1, sampleWidth); y = Math.Clamp(y, -1, sampleHeight); }
         long qx = (long)MathF.Floor(65536f * x + .5f) - 32768 + ((long)pixelOffset.X << 16);
         long qy = (long)MathF.Floor(65536f * y + .5f) - 32768 + ((long)pixelOffset.Y << 16);
         int tx = unchecked((short)(qx ^ 0x8000)), ty = unchecked((short)(qy ^ 0x8000));
         int left = (int)(qx >> 16), top = (int)(qy >> 16);
-        return InterpolatePipeline(Pixel(pixels, width, height, left, top, transparentBorder),
-            Pixel(pixels, width, height, left + 1, top, transparentBorder),
-            Pixel(pixels, width, height, left, top + 1, transparentBorder),
-            Pixel(pixels, width, height, left + 1, top + 1, transparentBorder), tx, ty);
+        return InterpolatePipeline(Pixel(pixels, width, left, top, transparentBorder, bounds),
+            Pixel(pixels, width, left + 1, top, transparentBorder, bounds),
+            Pixel(pixels, width, left, top + 1, transparentBorder, bounds),
+            Pixel(pixels, width, left + 1, top + 1, transparentBorder, bounds), tx, ty);
 
-        static SvgConstantShaderPaint Pixel(ReadOnlySpan<byte> data, int w, int h, int px, int py, bool border)
+        static SvgConstantShaderPaint Pixel(ReadOnlySpan<byte> data, int stride, int px, int py, bool border, SvgAnalyticClipBounds subset)
         {
+            int w = subset.Right - subset.Left, h = subset.Bottom - subset.Top;
             if (border && ((uint)px >= (uint)w || (uint)py >= (uint)h)) return default;
-            int at = (Math.Clamp(py, 0, h - 1) * w + Math.Clamp(px, 0, w - 1)) * 4;
+            int at = ((Math.Clamp(py, 0, h - 1) + subset.Top) * stride + Math.Clamp(px, 0, w - 1) + subset.Left) * 4;
             return new(data[at], data[at + 1], data[at + 2], data[at + 3]);
         }
     }

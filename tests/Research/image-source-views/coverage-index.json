@@ -1,0 +1,636 @@
+{
+  "originalRoles": 126,
+  "tests": 120,
+  "roles": [
+    {
+      "role": "original-crop-image-aspect-0636-candidate",
+      "test": "original-crop-image-aspect-0636-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-image-aspect-0636-control",
+      "test": "original-crop-image-aspect-0636-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-image-aspect-0660-candidate",
+      "test": "original-crop-image-aspect-0660-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-image-aspect-0660-control",
+      "test": "original-crop-image-aspect-0660-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-image-aspect-0662-candidate",
+      "test": "original-crop-image-aspect-0662-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-image-aspect-0662-control",
+      "test": "original-crop-image-aspect-0662-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-image-crop-boundary-b-0120-candidate",
+      "test": "original-crop-image-crop-boundary-b-0120-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-image-crop-boundary-b-0120-control",
+      "test": "original-crop-image-crop-boundary-b-0120-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-image-crop-boundary-b-0121-candidate",
+      "test": "original-crop-image-crop-boundary-b-0121-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-image-crop-boundary-b-0121-control",
+      "test": "original-crop-image-crop-boundary-b-0121-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-image-crop-boundary-b-0122-candidate",
+      "test": "original-crop-image-crop-boundary-b-0122-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-image-crop-boundary-b-0122-control",
+      "test": "original-crop-image-crop-boundary-b-0122-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-image-crop-boundary-b-0123-candidate",
+      "test": "original-crop-image-crop-boundary-b-0123-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-image-crop-boundary-b-0123-control",
+      "test": "original-crop-image-crop-boundary-b-0123-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-image-crop-boundary-b-0128-candidate",
+      "test": "original-crop-image-crop-boundary-b-0128-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-image-crop-boundary-b-0128-control",
+      "test": "original-crop-image-crop-boundary-b-0128-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-image-crop-boundary-b-0130-candidate",
+      "test": "original-crop-image-crop-boundary-b-0130-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-image-crop-boundary-b-0130-control",
+      "test": "original-crop-image-crop-boundary-b-0130-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-pattern-image-source-c-0000-candidate",
+      "test": "original-crop-pattern-image-source-c-0000-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-pattern-image-source-c-0000-control",
+      "test": "original-crop-pattern-image-source-c-0000-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-pattern-image-source-c-0004-candidate",
+      "test": "original-crop-pattern-image-source-c-0004-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-pattern-image-source-c-0004-control",
+      "test": "original-crop-pattern-image-source-c-0004-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-pattern-image-source-c-0006-candidate",
+      "test": "original-crop-pattern-image-source-c-0006-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-pattern-image-source-c-0006-control",
+      "test": "original-crop-pattern-image-source-c-0006-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-pattern-image-source-c-0008-candidate",
+      "test": "original-crop-pattern-image-source-c-0008-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-crop-pattern-image-source-c-0008-control",
+      "test": "original-crop-pattern-image-source-c-0008-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-wide-min",
+      "test": "acceptance-wide-min",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-wide-mid",
+      "test": "acceptance-wide-mid",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-wide-max",
+      "test": "acceptance-wide-max",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-wide-fractional",
+      "test": "acceptance-wide-fractional",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-wide-one-pixel",
+      "test": "acceptance-wide-one-pixel",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-wide-subpixel",
+      "test": "acceptance-wide-subpixel",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-tall-min",
+      "test": "acceptance-tall-min",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-tall-mid",
+      "test": "acceptance-tall-mid",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-tall-max",
+      "test": "acceptance-tall-max",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-tall-fractional",
+      "test": "acceptance-tall-fractional",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-tall-one-pixel",
+      "test": "acceptance-tall-one-pixel",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-tall-subpixel",
+      "test": "acceptance-tall-subpixel",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-mixed-wide-direct",
+      "test": "acceptance-mixed-wide-direct",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-mixed-tall-direct",
+      "test": "acceptance-mixed-tall-direct",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-image-opacity-background",
+      "test": "acceptance-image-opacity-background",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-group-opacity",
+      "test": "acceptance-group-opacity",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-use-fractional",
+      "test": "acceptance-use-fractional",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-symbol-viewport",
+      "test": "acceptance-symbol-viewport",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-wide-shear",
+      "test": "acceptance-wide-shear",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-tall-reflection",
+      "test": "acceptance-tall-reflection",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-wide-downscale",
+      "test": "acceptance-wide-downscale",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-tall-downscale",
+      "test": "acceptance-tall-downscale",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-pattern-integral-origin-zero",
+      "test": "acceptance-pattern-integral-origin-zero",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-pattern-integral-origin-positive",
+      "test": "acceptance-pattern-integral-origin-positive",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-pattern-image-opacity",
+      "test": "acceptance-pattern-image-opacity",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-pattern-mixed-alpha",
+      "test": "acceptance-pattern-mixed-alpha",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-pattern-shear",
+      "test": "acceptance-pattern-shear",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-pattern-output-scale",
+      "test": "acceptance-pattern-output-scale",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-rectangular-clip",
+      "test": "acceptance-rectangular-clip",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-curved-clip",
+      "test": "acceptance-curved-clip",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-alpha-mask",
+      "test": "acceptance-alpha-mask",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-luminance-mask",
+      "test": "acceptance-luminance-mask",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-fractional-filter",
+      "test": "acceptance-fractional-filter",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-blurred-filter",
+      "test": "acceptance-blurred-filter",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-width-auto-control",
+      "test": "acceptance-width-auto-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-height-auto-control",
+      "test": "acceptance-height-auto-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-meet-pattern-control",
+      "test": "acceptance-meet-pattern-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-none-shear-control",
+      "test": "acceptance-none-shear-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-odd-below-half",
+      "test": "minify-odd-below-half",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-odd-half",
+      "test": "minify-odd-half",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-odd-above-half",
+      "test": "minify-odd-above-half",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-odd-quarter",
+      "test": "minify-odd-quarter",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-odd-eighth",
+      "test": "minify-odd-eighth",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-odd-sixteenth",
+      "test": "minify-odd-sixteenth",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-even-below-half",
+      "test": "minify-even-below-half",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-even-half",
+      "test": "minify-even-half",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-even-above-half",
+      "test": "minify-even-above-half",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-even-quarter",
+      "test": "minify-even-quarter",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-even-eighth",
+      "test": "minify-even-eighth",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-even-sixteenth",
+      "test": "minify-even-sixteenth",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-horizontal-half",
+      "test": "minify-horizontal-half",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-horizontal-quarter",
+      "test": "minify-horizontal-quarter",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-horizontal-sixteenth",
+      "test": "minify-horizontal-sixteenth",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-vertical-half",
+      "test": "minify-vertical-half",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-vertical-quarter",
+      "test": "minify-vertical-quarter",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-vertical-sixteenth",
+      "test": "minify-vertical-sixteenth",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-odd-anisotropic-none",
+      "test": "minify-odd-anisotropic-none",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-odd-shear",
+      "test": "minify-odd-shear",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-odd-reflection",
+      "test": "minify-odd-reflection",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-pattern-odd-opacity",
+      "test": "minify-pattern-odd-opacity",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-crop-positive-origin",
+      "test": "minify-crop-positive-origin",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-crop-fractional-origin",
+      "test": "minify-crop-fractional-origin",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-pattern-crop-positive-origin",
+      "test": "minify-pattern-crop-positive-origin",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "minify-crop-output-map",
+      "test": "minify-crop-output-map",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-symbol-image-group-image-opacity-replay-38-candidate",
+      "test": "original-alpha-symbol-image-group-image-opacity-replay-38-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-symbol-image-group-image-opacity-replay-38-control",
+      "test": "original-alpha-symbol-image-group-image-opacity-replay-38-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-symbol-image-group-image-opacity-replay-74-candidate",
+      "test": "original-alpha-symbol-image-group-image-opacity-replay-74-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-symbol-image-group-image-opacity-replay-74-control",
+      "test": "original-alpha-symbol-image-group-image-opacity-replay-74-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-symbol-image-group-image-opacity-replay-182-candidate",
+      "test": "original-alpha-symbol-image-group-image-opacity-replay-182-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-symbol-image-group-image-opacity-replay-182-control",
+      "test": "original-alpha-symbol-image-group-image-opacity-replay-182-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-symbol-image-group-image-opacity-replay-206-candidate",
+      "test": "original-alpha-symbol-image-group-image-opacity-replay-206-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-symbol-image-group-image-opacity-replay-206-control",
+      "test": "original-alpha-symbol-image-group-image-opacity-replay-206-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-image-opacity-replay-72-candidate",
+      "test": "original-alpha-image-opacity-replay-72-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-image-opacity-replay-72-control",
+      "test": "original-alpha-image-opacity-replay-72-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-image-opacity-replay-73-candidate",
+      "test": "original-alpha-image-opacity-replay-73-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-image-opacity-replay-73-control",
+      "test": "original-alpha-image-opacity-replay-72-candidate",
+      "reason": "Identical authored bytes, options and native pixels on both hosts."
+    },
+    {
+      "role": "original-alpha-image-opacity-replay-74-candidate",
+      "test": "original-alpha-symbol-image-group-image-opacity-replay-74-candidate",
+      "reason": "Identical authored bytes, options and native pixels on both hosts."
+    },
+    {
+      "role": "original-alpha-image-opacity-replay-74-control",
+      "test": "original-alpha-image-opacity-replay-72-candidate",
+      "reason": "Identical authored bytes, options and native pixels on both hosts."
+    },
+    {
+      "role": "original-alpha-image-opacity-replay-75-candidate",
+      "test": "original-alpha-image-opacity-replay-75-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-image-opacity-replay-75-control",
+      "test": "original-alpha-image-opacity-replay-75-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-image-opacity-replay-90-candidate",
+      "test": "original-alpha-image-opacity-replay-90-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-image-opacity-replay-90-control",
+      "test": "original-alpha-image-opacity-replay-90-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-image-opacity-replay-110-candidate",
+      "test": "original-alpha-image-opacity-replay-110-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-image-opacity-replay-110-control",
+      "test": "original-alpha-image-opacity-replay-110-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-image-opacity-replay-56-candidate",
+      "test": "original-alpha-image-opacity-replay-56-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-image-opacity-replay-56-control",
+      "test": "original-alpha-image-opacity-replay-56-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-image-opacity-replay-146-candidate",
+      "test": "original-alpha-image-opacity-replay-146-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-image-opacity-replay-146-control",
+      "test": "original-alpha-image-opacity-replay-146-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-uniform-image-alpha-layers-a127-o.5-group-144-candidate",
+      "test": "original-alpha-image-opacity-replay-72-control",
+      "reason": "Identical authored bytes, options and native pixels on both hosts."
+    },
+    {
+      "role": "original-alpha-uniform-image-alpha-layers-a127-o.5-group-144-control",
+      "test": "original-alpha-uniform-image-alpha-layers-a127-o.5-group-144-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-uniform-image-alpha-layers-a127-o.5-pattern-147-candidate",
+      "test": "original-alpha-uniform-image-alpha-layers-a127-o.5-pattern-147-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-uniform-image-alpha-layers-a127-o.5-pattern-147-control",
+      "test": "original-alpha-uniform-image-alpha-layers-a127-o.5-group-144-control",
+      "reason": "Identical authored bytes, options and native pixels on both hosts."
+    },
+    {
+      "role": "original-alpha-uniform-image-alpha-layers-a127-o.5-group-148-candidate",
+      "test": "original-alpha-image-opacity-replay-90-control",
+      "reason": "Identical authored bytes, options and native pixels on both hosts."
+    },
+    {
+      "role": "original-alpha-uniform-image-alpha-layers-a127-o.5-group-148-control",
+      "test": "original-alpha-uniform-image-alpha-layers-a127-o.5-group-148-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-uniform-image-alpha-layers-a64-o.5-group-84-candidate",
+      "test": "original-alpha-uniform-image-alpha-layers-a64-o.5-group-84-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-uniform-image-alpha-layers-a64-o.5-group-84-control",
+      "test": "original-alpha-uniform-image-alpha-layers-a64-o.5-group-84-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-uniform-image-alpha-layers-a128-o.5-group-204-candidate",
+      "test": "original-alpha-uniform-image-alpha-layers-a128-o.5-group-204-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-uniform-image-alpha-layers-a128-o.5-group-204-control",
+      "test": "original-alpha-uniform-image-alpha-layers-a128-o.5-group-204-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-uniform-image-alpha-layers-a1-o.1-group-8-candidate",
+      "test": "original-alpha-uniform-image-alpha-layers-a1-o.1-group-8-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-alpha-uniform-image-alpha-layers-a1-o.1-group-8-control",
+      "test": "original-alpha-uniform-image-alpha-layers-a1-o.1-group-8-control",
+      "reason": "Independent native input."
+    }
+  ]
+}

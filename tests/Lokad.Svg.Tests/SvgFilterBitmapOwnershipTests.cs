@@ -9,6 +9,9 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgFilterBitmapOwnershipTests
 {
     [Theory]
+    [InlineData("image-source-views", "minify-odd-half")]
+    [InlineData("image-source-views", "minify-crop-positive-origin")]
+    [InlineData("image-source-views", "minify-pattern-odd-opacity")]
     [InlineData("filter-affine-restoration", "model-source-alpha")]
     [InlineData("filter-affine-restoration", "interaction-fractional-chain")]
     [InlineData("filter-alpha-stages", "interaction-pattern-alpha")]
@@ -38,6 +41,9 @@ public sealed class SvgFilterBitmapOwnershipTests
     }
 
     [Theory]
+    [InlineData("image-source-views", "minify-odd-half")]
+    [InlineData("image-source-views", "minify-crop-positive-origin")]
+    [InlineData("image-source-views", "minify-pattern-odd-opacity")]
     [InlineData("filter-affine-restoration", "model-source-alpha")]
     [InlineData("filter-affine-restoration", "interaction-fractional-chain")]
     [InlineData("filter-alpha-stages", "interaction-pattern-alpha")]

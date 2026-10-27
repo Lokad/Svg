@@ -408,6 +408,10 @@ relationships, CRCs and bounded decompression are validated. IDAT chunks must be
 consecutive; transparency must precede image data and follow any palette.
 Image placement supports finite geometry/viewBox percentages, meet/slice
 alignments, `preserveAspectRatio="none"` and general affine maps.
+Slice sampling retains its source-pixel window independently of destination
+clipping. Minification preserves decoded-view and picture-sampling precision;
+the [source-view regressions](../tests/Research/image-source-views/README.md)
+cover fractional crops, odd dimensions, alpha and resource consumers.
 Images with absent or empty href values paint nothing.
 Percentages resolve in each instance's viewport, including nested viewBox and
 symbol instances. Omitted image dimensions use the PNG's intrinsic size; if one

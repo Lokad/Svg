@@ -1,0 +1,1926 @@
+{
+  "commit": "ef5766071a47c9cf22a7b506cac2686be7849169",
+  "policy": "Exact per-input comparisons against unchanged native images, independently of API/pair agreement.",
+  "cases": [
+    {
+      "id": "original-crop-image-aspect-0636-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-image-aspect-0636-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-image-aspect-0636-control",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 13,
+      "alphaChangedPixels": 0,
+      "sum": 203
+    },
+    {
+      "id": "original-crop-image-aspect-0636-control",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 13,
+      "alphaChangedPixels": 0,
+      "sum": 203
+    },
+    {
+      "id": "original-crop-image-aspect-0660-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-image-aspect-0660-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-image-aspect-0660-control",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 48,
+      "alphaChangedPixels": 0,
+      "sum": 2975
+    },
+    {
+      "id": "original-crop-image-aspect-0660-control",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 48,
+      "alphaChangedPixels": 0,
+      "sum": 2975
+    },
+    {
+      "id": "original-crop-image-aspect-0662-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-image-aspect-0662-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-image-aspect-0662-control",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 39,
+      "alphaChangedPixels": 0,
+      "sum": 2354
+    },
+    {
+      "id": "original-crop-image-aspect-0662-control",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 39,
+      "alphaChangedPixels": 0,
+      "sum": 2354
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0120-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0120-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0120-control",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 48,
+      "alphaChangedPixels": 0,
+      "sum": 2975
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0120-control",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 48,
+      "alphaChangedPixels": 0,
+      "sum": 2975
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0121-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0121-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0121-control",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 48,
+      "alphaChangedPixels": 0,
+      "sum": 2975
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0121-control",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 48,
+      "alphaChangedPixels": 0,
+      "sum": 2975
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0122-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0122-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0122-control",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 48,
+      "alphaChangedPixels": 0,
+      "sum": 2975
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0122-control",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 48,
+      "alphaChangedPixels": 0,
+      "sum": 2975
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0123-candidate",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 20,
+      "alphaChangedPixels": 0,
+      "sum": 42
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0123-candidate",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 20,
+      "alphaChangedPixels": 0,
+      "sum": 42
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0123-control",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 64,
+      "alphaChangedPixels": 0,
+      "sum": 2640
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0123-control",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 64,
+      "alphaChangedPixels": 0,
+      "sum": 2640
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0128-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0128-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0128-control",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 46,
+      "alphaChangedPixels": 0,
+      "sum": 2412
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0128-control",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 46,
+      "alphaChangedPixels": 0,
+      "sum": 2412
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0130-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0130-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0130-control",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 46,
+      "alphaChangedPixels": 0,
+      "sum": 2412
+    },
+    {
+      "id": "original-crop-image-crop-boundary-b-0130-control",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 46,
+      "alphaChangedPixels": 0,
+      "sum": 2412
+    },
+    {
+      "id": "original-crop-pattern-image-source-c-0000-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-pattern-image-source-c-0000-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-pattern-image-source-c-0000-control",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-pattern-image-source-c-0000-control",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-pattern-image-source-c-0004-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-pattern-image-source-c-0004-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-pattern-image-source-c-0004-control",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-pattern-image-source-c-0004-control",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-crop-pattern-image-source-c-0006-candidate",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 48,
+      "alphaChangedPixels": 0,
+      "sum": 2780
+    },
+    {
+      "id": "original-crop-pattern-image-source-c-0006-candidate",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 48,
+      "alphaChangedPixels": 0,
+      "sum": 2780
+    },
+    {
+      "id": "original-crop-pattern-image-source-c-0006-control",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 48,
+      "alphaChangedPixels": 0,
+      "sum": 2786
+    },
+    {
+      "id": "original-crop-pattern-image-source-c-0006-control",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 48,
+      "alphaChangedPixels": 0,
+      "sum": 2786
+    },
+    {
+      "id": "original-crop-pattern-image-source-c-0008-candidate",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 100,
+      "alphaChangedPixels": 0,
+      "sum": 3916
+    },
+    {
+      "id": "original-crop-pattern-image-source-c-0008-candidate",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 100,
+      "alphaChangedPixels": 0,
+      "sum": 3916
+    },
+    {
+      "id": "original-crop-pattern-image-source-c-0008-control",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 51,
+      "alphaChangedPixels": 0,
+      "sum": 3476
+    },
+    {
+      "id": "original-crop-pattern-image-source-c-0008-control",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 51,
+      "alphaChangedPixels": 0,
+      "sum": 3476
+    },
+    {
+      "id": "acceptance-wide-min",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 32,
+      "alphaChangedPixels": 0,
+      "sum": 643
+    },
+    {
+      "id": "acceptance-wide-min",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 32,
+      "alphaChangedPixels": 0,
+      "sum": 643
+    },
+    {
+      "id": "acceptance-wide-mid",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-wide-mid",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-wide-max",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 32,
+      "alphaChangedPixels": 0,
+      "sum": 649
+    },
+    {
+      "id": "acceptance-wide-max",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 32,
+      "alphaChangedPixels": 0,
+      "sum": 649
+    },
+    {
+      "id": "acceptance-wide-fractional",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 21,
+      "alphaChangedPixels": 0,
+      "sum": 102
+    },
+    {
+      "id": "acceptance-wide-fractional",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 21,
+      "alphaChangedPixels": 0,
+      "sum": 102
+    },
+    {
+      "id": "acceptance-wide-one-pixel",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 34,
+      "alphaChangedPixels": 0,
+      "sum": 2593
+    },
+    {
+      "id": "acceptance-wide-one-pixel",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 34,
+      "alphaChangedPixels": 0,
+      "sum": 2593
+    },
+    {
+      "id": "acceptance-wide-subpixel",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 17,
+      "alphaChangedPixels": 17,
+      "sum": 224
+    },
+    {
+      "id": "acceptance-wide-subpixel",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 17,
+      "alphaChangedPixels": 17,
+      "sum": 224
+    },
+    {
+      "id": "acceptance-tall-min",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 32,
+      "alphaChangedPixels": 0,
+      "sum": 661
+    },
+    {
+      "id": "acceptance-tall-min",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 32,
+      "alphaChangedPixels": 0,
+      "sum": 661
+    },
+    {
+      "id": "acceptance-tall-mid",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-tall-mid",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-tall-max",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 32,
+      "alphaChangedPixels": 0,
+      "sum": 663
+    },
+    {
+      "id": "acceptance-tall-max",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 32,
+      "alphaChangedPixels": 0,
+      "sum": 663
+    },
+    {
+      "id": "acceptance-tall-fractional",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-tall-fractional",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-tall-one-pixel",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 34,
+      "alphaChangedPixels": 0,
+      "sum": 1908
+    },
+    {
+      "id": "acceptance-tall-one-pixel",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 34,
+      "alphaChangedPixels": 0,
+      "sum": 1908
+    },
+    {
+      "id": "acceptance-tall-subpixel",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 17,
+      "alphaChangedPixels": 16,
+      "sum": 1131
+    },
+    {
+      "id": "acceptance-tall-subpixel",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 17,
+      "alphaChangedPixels": 16,
+      "sum": 1131
+    },
+    {
+      "id": "acceptance-mixed-wide-direct",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 21,
+      "alphaChangedPixels": 20,
+      "sum": 221
+    },
+    {
+      "id": "acceptance-mixed-wide-direct",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 21,
+      "alphaChangedPixels": 20,
+      "sum": 221
+    },
+    {
+      "id": "acceptance-mixed-tall-direct",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 21,
+      "alphaChangedPixels": 21,
+      "sum": 1494
+    },
+    {
+      "id": "acceptance-mixed-tall-direct",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 21,
+      "alphaChangedPixels": 21,
+      "sum": 1494
+    },
+    {
+      "id": "acceptance-image-opacity-background",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 15,
+      "alphaChangedPixels": 0,
+      "sum": 33
+    },
+    {
+      "id": "acceptance-image-opacity-background",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 15,
+      "alphaChangedPixels": 0,
+      "sum": 33
+    },
+    {
+      "id": "acceptance-group-opacity",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-group-opacity",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-use-fractional",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-use-fractional",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-symbol-viewport",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-symbol-viewport",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-wide-shear",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-wide-shear",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-tall-reflection",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-tall-reflection",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-wide-downscale",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 4,
+      "alphaChangedPixels": 4,
+      "sum": 835
+    },
+    {
+      "id": "acceptance-wide-downscale",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 4,
+      "alphaChangedPixels": 4,
+      "sum": 835
+    },
+    {
+      "id": "acceptance-tall-downscale",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 2,
+      "alphaChangedPixels": 2,
+      "sum": 397
+    },
+    {
+      "id": "acceptance-tall-downscale",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 2,
+      "alphaChangedPixels": 2,
+      "sum": 397
+    },
+    {
+      "id": "acceptance-pattern-integral-origin-zero",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 63,
+      "alphaChangedPixels": 0,
+      "sum": 1246
+    },
+    {
+      "id": "acceptance-pattern-integral-origin-zero",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 63,
+      "alphaChangedPixels": 0,
+      "sum": 1246
+    },
+    {
+      "id": "acceptance-pattern-integral-origin-positive",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 53,
+      "alphaChangedPixels": 0,
+      "sum": 1115
+    },
+    {
+      "id": "acceptance-pattern-integral-origin-positive",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 53,
+      "alphaChangedPixels": 0,
+      "sum": 1115
+    },
+    {
+      "id": "acceptance-pattern-image-opacity",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 126,
+      "alphaChangedPixels": 0,
+      "sum": 151
+    },
+    {
+      "id": "acceptance-pattern-image-opacity",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 126,
+      "alphaChangedPixels": 0,
+      "sum": 151
+    },
+    {
+      "id": "acceptance-pattern-mixed-alpha",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 36,
+      "alphaChangedPixels": 13,
+      "sum": 277
+    },
+    {
+      "id": "acceptance-pattern-mixed-alpha",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 36,
+      "alphaChangedPixels": 13,
+      "sum": 277
+    },
+    {
+      "id": "acceptance-pattern-shear",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 56,
+      "alphaChangedPixels": 13,
+      "sum": 446
+    },
+    {
+      "id": "acceptance-pattern-shear",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 56,
+      "alphaChangedPixels": 13,
+      "sum": 446
+    },
+    {
+      "id": "acceptance-pattern-output-scale",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 75,
+      "alphaChangedPixels": 20,
+      "sum": 379
+    },
+    {
+      "id": "acceptance-pattern-output-scale",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 75,
+      "alphaChangedPixels": 20,
+      "sum": 379
+    },
+    {
+      "id": "acceptance-rectangular-clip",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-rectangular-clip",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-curved-clip",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-curved-clip",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-alpha-mask",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 21,
+      "alphaChangedPixels": 16,
+      "sum": 243
+    },
+    {
+      "id": "acceptance-alpha-mask",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 21,
+      "alphaChangedPixels": 16,
+      "sum": 243
+    },
+    {
+      "id": "acceptance-luminance-mask",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-luminance-mask",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-fractional-filter",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 21,
+      "alphaChangedPixels": 21,
+      "sum": 279
+    },
+    {
+      "id": "acceptance-fractional-filter",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 21,
+      "alphaChangedPixels": 21,
+      "sum": 279
+    },
+    {
+      "id": "acceptance-blurred-filter",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-blurred-filter",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-width-auto-control",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-width-auto-control",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-height-auto-control",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-height-auto-control",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-meet-pattern-control",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-meet-pattern-control",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-none-shear-control",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-none-shear-control",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "minify-odd-below-half",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 12,
+      "alphaChangedPixels": 12,
+      "sum": 1641
+    },
+    {
+      "id": "minify-odd-below-half",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 12,
+      "alphaChangedPixels": 12,
+      "sum": 1641
+    },
+    {
+      "id": "minify-odd-half",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 12,
+      "alphaChangedPixels": 12,
+      "sum": 1641
+    },
+    {
+      "id": "minify-odd-half",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 12,
+      "alphaChangedPixels": 12,
+      "sum": 1641
+    },
+    {
+      "id": "minify-odd-above-half",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 12,
+      "alphaChangedPixels": 12,
+      "sum": 1161
+    },
+    {
+      "id": "minify-odd-above-half",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 12,
+      "alphaChangedPixels": 12,
+      "sum": 1161
+    },
+    {
+      "id": "minify-odd-quarter",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 4,
+      "alphaChangedPixels": 4,
+      "sum": 501
+    },
+    {
+      "id": "minify-odd-quarter",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 4,
+      "alphaChangedPixels": 4,
+      "sum": 501
+    },
+    {
+      "id": "minify-odd-eighth",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 4,
+      "alphaChangedPixels": 3,
+      "sum": 898
+    },
+    {
+      "id": "minify-odd-eighth",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 4,
+      "alphaChangedPixels": 3,
+      "sum": 898
+    },
+    {
+      "id": "minify-odd-sixteenth",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 1,
+      "alphaChangedPixels": 1,
+      "sum": 557
+    },
+    {
+      "id": "minify-odd-sixteenth",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 1,
+      "alphaChangedPixels": 1,
+      "sum": 557
+    },
+    {
+      "id": "minify-even-below-half",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 25,
+      "alphaChangedPixels": 24,
+      "sum": 4340
+    },
+    {
+      "id": "minify-even-below-half",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 25,
+      "alphaChangedPixels": 24,
+      "sum": 4340
+    },
+    {
+      "id": "minify-even-half",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 25,
+      "alphaChangedPixels": 24,
+      "sum": 4340
+    },
+    {
+      "id": "minify-even-half",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 25,
+      "alphaChangedPixels": 24,
+      "sum": 4340
+    },
+    {
+      "id": "minify-even-above-half",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 25,
+      "alphaChangedPixels": 24,
+      "sum": 4340
+    },
+    {
+      "id": "minify-even-above-half",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 25,
+      "alphaChangedPixels": 24,
+      "sum": 4340
+    },
+    {
+      "id": "minify-even-quarter",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 9,
+      "alphaChangedPixels": 9,
+      "sum": 1462
+    },
+    {
+      "id": "minify-even-quarter",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 9,
+      "alphaChangedPixels": 9,
+      "sum": 1462
+    },
+    {
+      "id": "minify-even-eighth",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 4,
+      "alphaChangedPixels": 4,
+      "sum": 910
+    },
+    {
+      "id": "minify-even-eighth",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 4,
+      "alphaChangedPixels": 4,
+      "sum": 910
+    },
+    {
+      "id": "minify-even-sixteenth",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 1,
+      "alphaChangedPixels": 1,
+      "sum": 216
+    },
+    {
+      "id": "minify-even-sixteenth",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 1,
+      "alphaChangedPixels": 1,
+      "sum": 216
+    },
+    {
+      "id": "minify-horizontal-half",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 4,
+      "alphaChangedPixels": 4,
+      "sum": 796
+    },
+    {
+      "id": "minify-horizontal-half",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 4,
+      "alphaChangedPixels": 4,
+      "sum": 796
+    },
+    {
+      "id": "minify-horizontal-quarter",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 3,
+      "alphaChangedPixels": 3,
+      "sum": 1253
+    },
+    {
+      "id": "minify-horizontal-quarter",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 3,
+      "alphaChangedPixels": 3,
+      "sum": 1253
+    },
+    {
+      "id": "minify-horizontal-sixteenth",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 1,
+      "alphaChangedPixels": 1,
+      "sum": 553
+    },
+    {
+      "id": "minify-horizontal-sixteenth",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 1,
+      "alphaChangedPixels": 1,
+      "sum": 553
+    },
+    {
+      "id": "minify-vertical-half",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 5,
+      "alphaChangedPixels": 5,
+      "sum": 504
+    },
+    {
+      "id": "minify-vertical-half",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 5,
+      "alphaChangedPixels": 5,
+      "sum": 504
+    },
+    {
+      "id": "minify-vertical-quarter",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 2,
+      "alphaChangedPixels": 2,
+      "sum": 861
+    },
+    {
+      "id": "minify-vertical-quarter",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 2,
+      "alphaChangedPixels": 2,
+      "sum": 861
+    },
+    {
+      "id": "minify-vertical-sixteenth",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 1,
+      "alphaChangedPixels": 1,
+      "sum": 256
+    },
+    {
+      "id": "minify-vertical-sixteenth",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 1,
+      "alphaChangedPixels": 1,
+      "sum": 256
+    },
+    {
+      "id": "minify-odd-anisotropic-none",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 8,
+      "alphaChangedPixels": 8,
+      "sum": 1304
+    },
+    {
+      "id": "minify-odd-anisotropic-none",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 8,
+      "alphaChangedPixels": 8,
+      "sum": 1304
+    },
+    {
+      "id": "minify-odd-shear",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 6,
+      "alphaChangedPixels": 6,
+      "sum": 1191
+    },
+    {
+      "id": "minify-odd-shear",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 6,
+      "alphaChangedPixels": 6,
+      "sum": 1191
+    },
+    {
+      "id": "minify-odd-reflection",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 12,
+      "alphaChangedPixels": 12,
+      "sum": 1641
+    },
+    {
+      "id": "minify-odd-reflection",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 12,
+      "alphaChangedPixels": 12,
+      "sum": 1641
+    },
+    {
+      "id": "minify-pattern-odd-opacity",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 4,
+      "alphaChangedPixels": 4,
+      "sum": 594
+    },
+    {
+      "id": "minify-pattern-odd-opacity",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 4,
+      "alphaChangedPixels": 4,
+      "sum": 594
+    },
+    {
+      "id": "minify-crop-positive-origin",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 6,
+      "alphaChangedPixels": 6,
+      "sum": 1056
+    },
+    {
+      "id": "minify-crop-positive-origin",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 6,
+      "alphaChangedPixels": 6,
+      "sum": 1056
+    },
+    {
+      "id": "minify-crop-fractional-origin",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 4,
+      "alphaChangedPixels": 4,
+      "sum": 414
+    },
+    {
+      "id": "minify-crop-fractional-origin",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 4,
+      "alphaChangedPixels": 4,
+      "sum": 414
+    },
+    {
+      "id": "minify-pattern-crop-positive-origin",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 6,
+      "alphaChangedPixels": 0,
+      "sum": 58
+    },
+    {
+      "id": "minify-pattern-crop-positive-origin",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 6,
+      "alphaChangedPixels": 0,
+      "sum": 58
+    },
+    {
+      "id": "minify-crop-output-map",
+      "host": "windows",
+      "exact": false,
+      "changedPixels": 4,
+      "alphaChangedPixels": 4,
+      "sum": 684
+    },
+    {
+      "id": "minify-crop-output-map",
+      "host": "linux",
+      "exact": false,
+      "changedPixels": 4,
+      "alphaChangedPixels": 4,
+      "sum": 684
+    },
+    {
+      "id": "original-alpha-symbol-image-group-image-opacity-replay-38-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-symbol-image-group-image-opacity-replay-38-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-symbol-image-group-image-opacity-replay-38-control",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-symbol-image-group-image-opacity-replay-38-control",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-symbol-image-group-image-opacity-replay-74-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-symbol-image-group-image-opacity-replay-74-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-symbol-image-group-image-opacity-replay-74-control",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-symbol-image-group-image-opacity-replay-74-control",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-symbol-image-group-image-opacity-replay-182-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-symbol-image-group-image-opacity-replay-182-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-symbol-image-group-image-opacity-replay-182-control",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-symbol-image-group-image-opacity-replay-182-control",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-symbol-image-group-image-opacity-replay-206-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-symbol-image-group-image-opacity-replay-206-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-symbol-image-group-image-opacity-replay-206-control",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-symbol-image-group-image-opacity-replay-206-control",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-72-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-72-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-72-control",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-72-control",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-73-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-73-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-75-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-75-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-75-control",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-75-control",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-90-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-90-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-90-control",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-90-control",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-110-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-110-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-110-control",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-110-control",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-56-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-56-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-56-control",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-56-control",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-146-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-146-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-146-control",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-image-opacity-replay-146-control",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-uniform-image-alpha-layers-a127-o.5-group-144-control",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-uniform-image-alpha-layers-a127-o.5-group-144-control",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-uniform-image-alpha-layers-a127-o.5-pattern-147-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-uniform-image-alpha-layers-a127-o.5-pattern-147-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-uniform-image-alpha-layers-a127-o.5-group-148-control",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-uniform-image-alpha-layers-a127-o.5-group-148-control",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-uniform-image-alpha-layers-a64-o.5-group-84-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-uniform-image-alpha-layers-a64-o.5-group-84-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-uniform-image-alpha-layers-a64-o.5-group-84-control",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-uniform-image-alpha-layers-a64-o.5-group-84-control",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-uniform-image-alpha-layers-a128-o.5-group-204-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-uniform-image-alpha-layers-a128-o.5-group-204-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-uniform-image-alpha-layers-a128-o.5-group-204-control",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-uniform-image-alpha-layers-a128-o.5-group-204-control",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-uniform-image-alpha-layers-a1-o.1-group-8-candidate",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-uniform-image-alpha-layers-a1-o.1-group-8-candidate",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-uniform-image-alpha-layers-a1-o.1-group-8-control",
+      "host": "windows",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-alpha-uniform-image-alpha-layers-a1-o.1-group-8-control",
+      "host": "linux",
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    }
+  ]
+}

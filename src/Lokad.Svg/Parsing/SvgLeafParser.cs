@@ -201,7 +201,7 @@ internal static class SvgLeafParser
                     return SvgGeometry.FromRectangle(empty);
                 }
                 string? aspect = reader.GetAttribute("preserveAspectRatio");
-                (SvgRectangle box, SvgShaderMatrix local) = SvgImageSyntax.MapRasterPlacement(aspect, syntax, image.Width, image.Height, width, height);
+                (SvgRectangle box, SvgShaderMatrix local, SvgImageSourceRect sourceRect) = SvgImageSyntax.MapRasterPlacement(aspect, syntax, image.Width, image.Height, width, height);
                 SvgRectangle sourceBox = box;
                 bool affine = !element.Transform.IsAxisAligned;
                 if (affine)
@@ -220,8 +220,8 @@ internal static class SvgLeafParser
                 SvgShaderMatrix referenceMap = new((float)reference.A, (float)reference.C, (float)reference.E,
                     (float)reference.B, (float)reference.D, (float)reference.F);
                 SvgGeometry geometry = SvgGeometry.FromImage(image.Raster is {} pixels
-                    ? new(pixels, image.Width, image.Height, box, referenceMap, local, element.Presentation.Opacity)
-                    : new(image.Color, image.Width, image.Height, box, referenceMap, local, element.Presentation.Opacity));
+                    ? new(pixels, image.Width, image.Height, box, sourceRect, referenceMap, local, element.Presentation.Opacity)
+                    : new(image.Color, image.Width, image.Height, box, sourceRect, referenceMap, local, element.Presentation.Opacity));
                 if (!affine) return geometry;
                 try
                 {
