@@ -1,6 +1,6 @@
 # Uniform filter precision
 
-The [capture](capture.json) retains 7,044 exact and 1,206 deferred cases,
+The historical [capture](capture.json) retains 7,044 exact and 1,206 deferred cases,
 sharing 5,274 SVGs and 2,417 native PNGs by content hash. Each input has three
 healthy, stable captures on Windows and Linux; both platforms agree on these
 font-free images. Candidate and control spellings keep their own references.
@@ -14,8 +14,15 @@ compact pixel storage, and SVG layout bounds from stored-image bounds.
 [Image tests](../../Lokad.Svg.VisualTests/SvgPaintInputReferenceTests.cs) verify
 source and reference hashes before comparing pixels. [Ownership tests](../../Lokad.Svg.Tests/SvgUniformFilterOwnershipTests.cs)
 cover native pixels, memory/work denial, cancellation, cleanup and retry.
-`knownDifferences` records remaining mismatches separately for each host;
-these inputs do not assert equality with their controls.
+`knownDifferences` preserves the original mismatches separately for each host.
+The separate [current status](resolved-known-differences.json) binds that unchanged
+capture by hash: all 1,206 historical differences now have exact image assertions
+on both hosts. Two scaled compact shadows stay routine, guarding sRGB zero-blur
+and linear-RGB blurred materialization; the other 1,204 remain individual
+`Category=Research` cases. Their references are unchanged. Inputs do not assert
+equality with their controls. The focused
+[opacity and sampling witnesses](../filter-opacity-sampling/README.md) exercise
+the shared correction during routine development.
 
 Routine rendering retains 4,532 cases, preserving graph topology, operands,
 color space, crops, backdrops, placement and scale. The [research selection](research-cases.json)

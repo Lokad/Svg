@@ -26,6 +26,11 @@ dotnet test -c Release --no-build --filter 'Category!=Research'
 Only the explicitly selected extended matrix has this category; it does not
 exclude the other native research-reference tests. `Layer` traits identify the
 classes migrated to these responsibilities; they are not a complete suite index.
+The [filter opacity and sampling controls](Research/filter-opacity-sampling/README.md)
+retain canonical native images and two distinct allocation/ownership witnesses.
+The [uniform-bank status](Research/filter-uniform-precision/resolved-known-differences.json)
+adds exact assertions for historical differences without replacing captures:
+two scaled shadows stay routine and the other 1,204 join the research matrix.
 The full milestone command includes every extended case:
 
 ```powershell

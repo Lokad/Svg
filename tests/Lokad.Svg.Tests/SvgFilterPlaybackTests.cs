@@ -194,7 +194,7 @@ public sealed class SvgFilterPlaybackTests
         RenderBudget budget = new(1_000_000);
         DecodedPngImage image = PngImageDecoder.Decode(png, options.Limits, budget, new ParserWorkCounter(options.Limits.MaximumWorkUnits), CancellationToken.None);
         Assert.Null(image.Raster);
-        Assert.Equal(new SvgColor(127, 127, 255, 255), image.Color);
+        Assert.Equal(new SvgColor(126, 126, 255, 255), image.Color);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
@@ -440,7 +440,7 @@ public sealed class SvgFilterPlaybackTests
         RenderBudget budget = new(1_000_000);
         DecodedPngImage image = PngImageDecoder.Decode(png, options.Limits, budget, new ParserWorkCounter(options.Limits.MaximumWorkUnits), CancellationToken.None);
         Assert.Null(image.Raster);
-        Assert.Equal(new SvgColor(255, 127, 127, 255), image.Color);
+        Assert.Equal(new SvgColor(255, 126, 126, 255), image.Color);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 

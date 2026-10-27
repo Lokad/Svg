@@ -530,7 +530,11 @@ Floods retain functional-color alpha separately from the public byte-color value
 and combine it with flood opacity before graph evaluation. Uniform paint,
 sampled images and final color transfer preserve their separate rounding stages;
 [native controls](../tests/Research/filter-uniform-precision/README.md) cover
-graph arithmetic, crops, opacity and affine restoration, and list remaining differences.
+graph arithmetic, crops, opacity and affine restoration, preserving historical
+captures separately from their current resolution status. Enclosing opacity
+layers apply alpha after sampling/crop coverage and retain their own destination
+bounds; [focused controls](../tests/Research/filter-opacity-sampling/README.md)
+cover those boundaries and active instance consumers.
 [Source coverage controls](../tests/Research/filter-source-coverage/README.md)
 distinguish cropped aliases, effective-zero axes, small-blur materialization and
 source-image hint rounding before fractional displacement.

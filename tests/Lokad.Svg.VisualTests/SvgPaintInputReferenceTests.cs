@@ -17,6 +17,7 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
     static SvgPaintInputReferenceTests()
     {
         Dictionary<(string Folder, string Id), JsonElement> cases = new();
+        HashSet<(string Folder, string Id)> resolvedCases = new();
         foreach (string folder in new[] { "offset-merge-inputs", "linear-shape-source-maps", "radial-axis-source-maps", "gradient-spread-stages", "gradient-paint-replay", "gradient-factory-colors", "linear-periodic-stops", "gradient-stop-preparation", "gradient-color-alpha", "filter-uniform-precision", "solid-paint-alpha", "pattern-source-selection", "text-node-boundaries", "hairline-clip-rounding" })
         {
             using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(folder), "capture.json")));
@@ -26,9 +27,32 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
                 // Independent clones retain managed metadata after the source document is disposed.
                 cases.Add((folder, id), row.Clone());
             }
+            if (folder == "filter-uniform-precision")
+            {
+                using JsonDocument status = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(folder), "resolved-known-differences.json")));
+                string captureText = File.ReadAllText(Path.Combine(Folder(folder), "capture.json")).Replace("\r\n", "\n", StringComparison.Ordinal);
+                string captureHash = Convert.ToHexStringLower(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(captureText)));
+                if (status.RootElement.GetProperty("sourceCaptureSha256").GetString() != captureHash)
+                    throw new InvalidDataException("Historical filter capture changed after its status audit.");
+                HashSet<string> ids = status.RootElement.GetProperty("resolvedHistoricalIds").EnumerateArray()
+                    .Select(item => item.GetString() ?? throw new InvalidDataException("Missing resolved filter id."))
+                    .ToHashSet(StringComparer.Ordinal);
+                HashSet<string> routineIds = status.RootElement.GetProperty("routineHistoricalIds").EnumerateArray()
+                    .Select(item => item.GetString() ?? throw new InvalidDataException("Missing routine filter id."))
+                    .ToHashSet(StringComparer.Ordinal);
+                foreach (JsonElement row in data.RootElement.GetProperty("knownDifferences").EnumerateArray())
+                {
+                    string id = row.GetProperty("id").GetString() ?? throw new InvalidDataException("Missing historical filter id.");
+                    if (!ids.Remove(id)) continue;
+                    cases.Add((folder, id), row.Clone());
+                    if (!routineIds.Remove(id)) resolvedCases.Add((folder, id));
+                }
+                if (ids.Count != 0 || routineIds.Count != 0)
+                    throw new InvalidDataException("Resolved filter status names an unknown historical input.");
+            }
         }
         CaseIndex = cases;
-        ResearchColorAndFilterCases = new();
+        ResearchColorAndFilterCases = resolvedCases;
         foreach (string folder in new[] { "gradient-color-alpha", "filter-uniform-precision" })
         {
             using JsonDocument selection = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(folder), "research-cases.json")));
@@ -56,7 +80,7 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
     }
 
     [Fact]
-    public void Routine_and_research_cases_partition_the_unchanged_capture_corpus()
+    public void Routine_and_research_cases_partition_the_resolved_capture_corpus()
     {
         (string, string)[] all = Cases().Concat(ResearchCases()).Select(row => ((string)row[0], (string)row[1])).ToArray();
         Assert.Equal(CaseIndex.Count, all.Length);

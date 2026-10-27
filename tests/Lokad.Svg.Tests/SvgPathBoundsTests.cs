@@ -81,10 +81,18 @@ public sealed class SvgPathBoundsTests
             new(SvgAuthoredPathVerb.Quadratic, SvgAuthoredArcFlags.None, new(24.75, -4.125), new(21.625, 20.375), default),
         ];
         ParserWorkCounter work = new(1_000_000);
-        for (int index = 0; index < 32; index++) SvgPathBounds.Compute(commands, work, CancellationToken.None);
+        // Warm the measured loop as well as the bounds implementation.
+        QueryBounds(commands, work);
+        QueryBounds(commands, work);
         long before = GC.GetAllocatedBytesForCurrentThread();
-        for (int index = 0; index < 1024; index++) SvgPathBounds.Compute(commands, work, CancellationToken.None);
+        QueryBounds(commands, work);
         Assert.Equal(before, GC.GetAllocatedBytesForCurrentThread());
+
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+        static void QueryBounds(SvgAuthoredPathCommand[] input, ParserWorkCounter counter)
+        {
+            for (int index = 0; index < 1024; index++) SvgPathBounds.Compute(input, counter, CancellationToken.None);
+        }
     }
 
     [Theory]

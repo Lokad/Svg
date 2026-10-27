@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Preserve packed filter-image coverage and enclosing opacity-layer bounds,
+  applying opacity after sampling and crop coverage. Share shadow-tint and offset
+  padding arithmetic. Retain near-integer sprite behavior and independent
+  compact/expanded shadows through use, symbol and pattern replay. See the
+  [native controls](tests/Research/filter-opacity-sampling/README.md).
+
 - Preserve filter requests and pending color/sampling through crops and aliases.
   Keep captured source, child output and stored-image extents distinct, retaining
   shadow fringes and scaled/nested composition. Enforce total raster work before

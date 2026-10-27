@@ -1,0 +1,963 @@
+{
+  "baselineCommit": "c1c356cfcb12163c0bdf4cdd88c779509b41b83d",
+  "rendererSha256": "c47c6f87d4f94d9b1e2b94be193e6ae7dca719d30cff6c05708eafb9355f8fa7",
+  "actualInputsPerHost": 53,
+  "failingInputsPerHost": 37,
+  "positiveInputsPerHost": 16,
+  "cases": [
+    {
+      "id": "background-group-filter-transparent",
+      "sourceSha256": "35b17074081d2e9830a0770286aa050757dbb07de73e29062940891962674c98",
+      "before": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "background-group-filter-white-page",
+      "sourceSha256": "35b17074081d2e9830a0770286aa050757dbb07de73e29062940891962674c98",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 16,
+          "alphaChangedPixels": 0,
+          "sum": 32
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 16,
+          "alphaChangedPixels": 0,
+          "sum": 32
+        }
+      }
+    },
+    {
+      "id": "background-group-filter-white-inside",
+      "sourceSha256": "8c24e40eb9ea3d213a37d397003610158b1895eb4816a87bb606156d0e1f610d",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 16,
+          "alphaChangedPixels": 0,
+          "sum": 32
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 16,
+          "alphaChangedPixels": 0,
+          "sum": 32
+        }
+      }
+    },
+    {
+      "id": "background-element-filter-transparent",
+      "sourceSha256": "7cdcad631413a9035d5e6e2a4356a1c59bdbac7401f10dbb9773d68ec7e10f67",
+      "before": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "background-element-filter-white-page",
+      "sourceSha256": "7cdcad631413a9035d5e6e2a4356a1c59bdbac7401f10dbb9773d68ec7e10f67",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 16,
+          "alphaChangedPixels": 0,
+          "sum": 32
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 16,
+          "alphaChangedPixels": 0,
+          "sum": 32
+        }
+      }
+    },
+    {
+      "id": "background-element-filter-white-inside",
+      "sourceSha256": "dad2d024a4bc711f05d059b80956aa62ec6256cc8529f60f0884a733d8fec887",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 16,
+          "alphaChangedPixels": 0,
+          "sum": 32
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 16,
+          "alphaChangedPixels": 0,
+          "sum": 32
+        }
+      }
+    },
+    {
+      "id": "background-unfiltered-transparent",
+      "sourceSha256": "26c45f4d4b03d1652fc3d0d195ccc16fbda01e32423af4a3e45de18dc67e5b35",
+      "before": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "background-unfiltered-white-page",
+      "sourceSha256": "26c45f4d4b03d1652fc3d0d195ccc16fbda01e32423af4a3e45de18dc67e5b35",
+      "before": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "background-unfiltered-white-inside",
+      "sourceSha256": "b87b93efce7c5210c661cbd31f2bdc72e35dde824910bb4660ef5cd75148e3df",
+      "before": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "background-group-filter-srgb-white-page",
+      "sourceSha256": "826ca041d05e431f1c848efa7aa157559d7644390fb952561885ce83afa2e5ea",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 16,
+          "alphaChangedPixels": 0,
+          "sum": 32
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 16,
+          "alphaChangedPixels": 0,
+          "sum": 32
+        }
+      }
+    },
+    {
+      "id": "background-group-filter-srgb-white-inside",
+      "sourceSha256": "52b6b29cc48ef7b4df66762b3065926843b083841e75b39af0b61b1a521fae83",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 16,
+          "alphaChangedPixels": 0,
+          "sum": 32
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 16,
+          "alphaChangedPixels": 0,
+          "sum": 32
+        }
+      }
+    },
+    {
+      "id": "background-element-filter-srgb-white-page",
+      "sourceSha256": "783e7f21a7ecb46c36ccb9f6e264efa2ae0c4ac242f432748077c0d7e0becc2c",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 16,
+          "alphaChangedPixels": 0,
+          "sum": 32
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 16,
+          "alphaChangedPixels": 0,
+          "sum": 32
+        }
+      }
+    },
+    {
+      "id": "background-element-filter-srgb-white-inside",
+      "sourceSha256": "57863f3e0f4e7f3624f945b1e989eaf17f84d0f99a4466e0a662ff8c3ab22cf4",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 16,
+          "alphaChangedPixels": 0,
+          "sum": 32
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 16,
+          "alphaChangedPixels": 0,
+          "sum": 32
+        }
+      }
+    },
+    {
+      "id": "profiles-crop-flood-1-candidate",
+      "sourceSha256": "34e1415d3f0b674ab1842a2b42a9ea50cd7357303205e9b76c72d1a99cbc1cd2",
+      "before": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "profiles-crop-flood-1-control",
+      "sourceSha256": "c97e3edaa18bc8078118d347e09431e4a4235393ee3ac849a101a74db8523cec",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 992,
+          "alphaChangedPixels": 0,
+          "sum": 992
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 992,
+          "alphaChangedPixels": 0,
+          "sum": 992
+        }
+      }
+    },
+    {
+      "id": "profiles-crop-flood-1p5-candidate",
+      "sourceSha256": "34e1415d3f0b674ab1842a2b42a9ea50cd7357303205e9b76c72d1a99cbc1cd2",
+      "before": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "profiles-crop-flood-1p5-control",
+      "sourceSha256": "c97e3edaa18bc8078118d347e09431e4a4235393ee3ac849a101a74db8523cec",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 2208,
+          "alphaChangedPixels": 0,
+          "sum": 2208
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 2208,
+          "alphaChangedPixels": 0,
+          "sum": 2208
+        }
+      }
+    },
+    {
+      "id": "profiles-crop-integer-1-candidate",
+      "sourceSha256": "1faff9fe502fc563fd539f9648029b41ba1e27714ab1f3184a50bf5d4c1857ec",
+      "before": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "profiles-crop-integer-1-control",
+      "sourceSha256": "2e3be64fa89bdd69e5f139c642343e4bdda49b2e2f226f064f23e3c2cf02d3ee",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 930,
+          "alphaChangedPixels": 0,
+          "sum": 930
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 930,
+          "alphaChangedPixels": 0,
+          "sum": 930
+        }
+      }
+    },
+    {
+      "id": "profiles-crop-integer-1p5-candidate",
+      "sourceSha256": "1faff9fe502fc563fd539f9648029b41ba1e27714ab1f3184a50bf5d4c1857ec",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 137,
+          "alphaChangedPixels": 0,
+          "sum": 727
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 137,
+          "alphaChangedPixels": 0,
+          "sum": 727
+        }
+      }
+    },
+    {
+      "id": "profiles-crop-integer-1p5-control",
+      "sourceSha256": "2e3be64fa89bdd69e5f139c642343e4bdda49b2e2f226f064f23e3c2cf02d3ee",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 2115,
+          "alphaChangedPixels": 0,
+          "sum": 2751
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 2115,
+          "alphaChangedPixels": 0,
+          "sum": 2751
+        }
+      }
+    },
+    {
+      "id": "profiles-crop-half-1-candidate",
+      "sourceSha256": "741fed03c6b62db8ddd8a7f323cb90e4b4a71cb0d336e11fd2b8192c4678c12a",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 30,
+          "alphaChangedPixels": 0,
+          "sum": 60
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 30,
+          "alphaChangedPixels": 0,
+          "sum": 60
+        }
+      }
+    },
+    {
+      "id": "profiles-crop-half-1-control",
+      "sourceSha256": "0f82e83d3d5160e903eb27e6d751d495b8200ba9cfc57c21a603d8ec76389a23",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 960,
+          "alphaChangedPixels": 0,
+          "sum": 990
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 960,
+          "alphaChangedPixels": 0,
+          "sum": 990
+        }
+      }
+    },
+    {
+      "id": "profiles-crop-half-1p5-candidate",
+      "sourceSha256": "741fed03c6b62db8ddd8a7f323cb90e4b4a71cb0d336e11fd2b8192c4678c12a",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 136,
+          "alphaChangedPixels": 0,
+          "sum": 554
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 136,
+          "alphaChangedPixels": 0,
+          "sum": 554
+        }
+      }
+    },
+    {
+      "id": "profiles-crop-half-1p5-control",
+      "sourceSha256": "0f82e83d3d5160e903eb27e6d751d495b8200ba9cfc57c21a603d8ec76389a23",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 2160,
+          "alphaChangedPixels": 0,
+          "sum": 2669
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 2160,
+          "alphaChangedPixels": 0,
+          "sum": 2669
+        }
+      }
+    },
+    {
+      "id": "cropped-placements-affine-srgb-91-candidate-1",
+      "sourceSha256": "cb96752da31f99507ede02732af57c35e9494cc51c8df4812889d32d6b9dfc8f",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 873,
+          "alphaChangedPixels": 0,
+          "sum": 1741
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 873,
+          "alphaChangedPixels": 0,
+          "sum": 1741
+        }
+      }
+    },
+    {
+      "id": "cropped-placements-affine-srgb-91-control-1",
+      "sourceSha256": "b16f5c718ac72a8633e979f5a74bbd3b2182191ca82735b7fe9ea6d3fdd310a7",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 873,
+          "alphaChangedPixels": 0,
+          "sum": 1746
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 873,
+          "alphaChangedPixels": 0,
+          "sum": 1746
+        }
+      }
+    },
+    {
+      "id": "cropped-placements-affine-srgb-92-candidate-1",
+      "sourceSha256": "84e265967bdbf1f9b8b9e1f28d986983789c461b901bb5f21bb89ea1f9fef2e4",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 873,
+          "alphaChangedPixels": 0,
+          "sum": 1741
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 873,
+          "alphaChangedPixels": 0,
+          "sum": 1741
+        }
+      }
+    },
+    {
+      "id": "cropped-placements-affine-srgb-92-control-1",
+      "sourceSha256": "0e2505f133fc428dfbf158a9c9a93775f7bfa7a29e3298570faef668757d2b3b",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 873,
+          "alphaChangedPixels": 0,
+          "sum": 1746
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 873,
+          "alphaChangedPixels": 0,
+          "sum": 1746
+        }
+      }
+    },
+    {
+      "id": "cropped-placements-affine-linearrgb-91-control-1",
+      "sourceSha256": "d525cd0c37080988c3d4a36b98abbe2d16d5abbc9c5594079b5551a37a920048",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 864,
+          "alphaChangedPixels": 0,
+          "sum": 875
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 864,
+          "alphaChangedPixels": 0,
+          "sum": 875
+        }
+      }
+    },
+    {
+      "id": "cropped-placements-affine-linearrgb-92-control-1",
+      "sourceSha256": "d92e31b621211caba2c7d816c01957cd8f29bfcfd23ad44420db582793d038cd",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 864,
+          "alphaChangedPixels": 0,
+          "sum": 875
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 864,
+          "alphaChangedPixels": 0,
+          "sum": 875
+        }
+      }
+    },
+    {
+      "id": "cropped-placements-affine-srgb-127-candidate-1p5",
+      "sourceSha256": "cb96752da31f99507ede02732af57c35e9494cc51c8df4812889d32d6b9dfc8f",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 1958,
+          "alphaChangedPixels": 0,
+          "sum": 3905
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 1958,
+          "alphaChangedPixels": 0,
+          "sum": 3905
+        }
+      }
+    },
+    {
+      "id": "cropped-placements-affine-srgb-127-control-1p5",
+      "sourceSha256": "b16f5c718ac72a8633e979f5a74bbd3b2182191ca82735b7fe9ea6d3fdd310a7",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 1958,
+          "alphaChangedPixels": 0,
+          "sum": 3916
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 1958,
+          "alphaChangedPixels": 0,
+          "sum": 3916
+        }
+      }
+    },
+    {
+      "id": "cropped-placements-affine-srgb-128-candidate-1p5",
+      "sourceSha256": "84e265967bdbf1f9b8b9e1f28d986983789c461b901bb5f21bb89ea1f9fef2e4",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 1958,
+          "alphaChangedPixels": 0,
+          "sum": 3905
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 1958,
+          "alphaChangedPixels": 0,
+          "sum": 3905
+        }
+      }
+    },
+    {
+      "id": "cropped-placements-affine-srgb-128-control-1p5",
+      "sourceSha256": "0e2505f133fc428dfbf158a9c9a93775f7bfa7a29e3298570faef668757d2b3b",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 1958,
+          "alphaChangedPixels": 0,
+          "sum": 3916
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 1958,
+          "alphaChangedPixels": 0,
+          "sum": 3916
+        }
+      }
+    },
+    {
+      "id": "cropped-placements-affine-linearrgb-127-candidate-1p5",
+      "sourceSha256": "f8633cd76f7eec5e2f8162a19d5883cbb46a15dac23ddb2943657e6d37d5c3ce",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 1945,
+          "alphaChangedPixels": 0,
+          "sum": 1952
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 1945,
+          "alphaChangedPixels": 0,
+          "sum": 1952
+        }
+      }
+    },
+    {
+      "id": "cropped-placements-affine-linearrgb-127-control-1p5",
+      "sourceSha256": "d525cd0c37080988c3d4a36b98abbe2d16d5abbc9c5594079b5551a37a920048",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 1947,
+          "alphaChangedPixels": 0,
+          "sum": 1958
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 1947,
+          "alphaChangedPixels": 0,
+          "sum": 1958
+        }
+      }
+    },
+    {
+      "id": "cropped-placements-affine-linearrgb-128-candidate-1p5",
+      "sourceSha256": "433afb0f8c5ee37a3ed077c64de54a821371852969f54d47df8da37ee9c54f5d",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 1945,
+          "alphaChangedPixels": 0,
+          "sum": 1952
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 1945,
+          "alphaChangedPixels": 0,
+          "sum": 1952
+        }
+      }
+    },
+    {
+      "id": "cropped-placements-affine-linearrgb-128-control-1p5",
+      "sourceSha256": "d92e31b621211caba2c7d816c01957cd8f29bfcfd23ad44420db582793d038cd",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 1947,
+          "alphaChangedPixels": 0,
+          "sum": 1958
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 1947,
+          "alphaChangedPixels": 0,
+          "sum": 1958
+        }
+      }
+    },
+    {
+      "id": "contracts-shadow-use-candidate",
+      "sourceSha256": "3683a5b0190ec123b2c5cad350982403c37e73315b7051b8b637129cbb9a0a65",
+      "before": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "contracts-shadow-use-control",
+      "sourceSha256": "7baf5efe473461047010e4af1e19e8480eb883acb273f2eef7f56fc46ec3f9c9",
+      "before": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "contracts-shadow-symbol-candidate",
+      "sourceSha256": "96ac287a8d0ba7c6e65aea2c5db428bd709a82c8a58103a236e270f4b45757e7",
+      "before": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "contracts-shadow-symbol-control",
+      "sourceSha256": "906cc3278c7f7612cbb60c8ee1226c4a145397011568e4aeae79d0f1aa9c6a99",
+      "before": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "contracts-shadow-pattern-candidate",
+      "sourceSha256": "909757e6716e6c4707fb1581fd524ab0f635b10df458dbf85cf30d0b1d48e5b1",
+      "before": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "contracts-shadow-pattern-control",
+      "sourceSha256": "a9cfbacf658dc0536fda8e6c29e69285feae365ceb1d2ba565b8e52735c7d7f8",
+      "before": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "contracts-sprite-near-zero-candidate",
+      "sourceSha256": "c24174a7ee0dcad654a6af7eb9e1a83f1dcc0278e01705838236e2de9e687b41",
+      "before": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "contracts-sprite-near-zero-control",
+      "sourceSha256": "6912eef7dcdc9e5710c8a681884d04d9884cbd35ef56534def2c4a00f34a7d75",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 62,
+          "alphaChangedPixels": 0,
+          "sum": 124
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 62,
+          "alphaChangedPixels": 0,
+          "sum": 124
+        }
+      }
+    },
+    {
+      "id": "contracts-sprite-near-one-candidate",
+      "sourceSha256": "9cd798ded22ca3a818827a3557436f647045c356820fb5f2bbda4f6c231c7979",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 62,
+          "alphaChangedPixels": 0,
+          "sum": 124
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 62,
+          "alphaChangedPixels": 0,
+          "sum": 124
+        }
+      }
+    },
+    {
+      "id": "contracts-sprite-near-one-control",
+      "sourceSha256": "3f279d643ab508108ed1aed1f88dc6fc03274d12701b283ee40c8e6dc37744c4",
+      "before": {
+        "windows": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        },
+        "linux": {
+          "exact": true,
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "sum": 0
+        }
+      }
+    },
+    {
+      "id": "contracts-sheared-transparent-1-candidate",
+      "sourceSha256": "616a00f174710c9959e92ade0b7e390d358bb8bf21bf439b82aa535e52233ff3",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 876,
+          "alphaChangedPixels": 868,
+          "sum": 12297
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 876,
+          "alphaChangedPixels": 868,
+          "sum": 12297
+        }
+      }
+    },
+    {
+      "id": "contracts-sheared-transparent-1-control",
+      "sourceSha256": "6e702b6f6a507fb41ea4ad4afb8b7637b3d9e4427bdae9da2063ecbc7c0326af",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 876,
+          "alphaChangedPixels": 22,
+          "sum": 9778
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 876,
+          "alphaChangedPixels": 22,
+          "sum": 9778
+        }
+      }
+    },
+    {
+      "id": "contracts-sheared-transparent-1p5-candidate",
+      "sourceSha256": "616a00f174710c9959e92ade0b7e390d358bb8bf21bf439b82aa535e52233ff3",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 1965,
+          "alphaChangedPixels": 1960,
+          "sum": 26686
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 1965,
+          "alphaChangedPixels": 1960,
+          "sum": 26686
+        }
+      }
+    },
+    {
+      "id": "contracts-sheared-transparent-1p5-control",
+      "sourceSha256": "6e702b6f6a507fb41ea4ad4afb8b7637b3d9e4427bdae9da2063ecbc7c0326af",
+      "before": {
+        "windows": {
+          "exact": false,
+          "changedPixels": 1965,
+          "alphaChangedPixels": 35,
+          "sum": 20914
+        },
+        "linux": {
+          "exact": false,
+          "changedPixels": 1965,
+          "alphaChangedPixels": 35,
+          "sum": 20914
+        }
+      }
+    }
+  ]
+}

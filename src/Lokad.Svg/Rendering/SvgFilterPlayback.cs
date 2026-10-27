@@ -59,7 +59,11 @@ internal readonly record struct SvgFilterRegionContext(SvgAffineTransform Coordi
 }
 
 /// <summary>Retains a uniform sRGB filter result and its finite source-grid coverage without owning storage.</summary>
-internal readonly record struct SvgFilterUniformPaint(SvgShaderPaint Paint, SvgPaintBounds Bounds, bool HighPrecision);
+internal readonly record struct SvgFilterUniformPaint(SvgShaderPaint Paint, SvgPaintBounds Bounds, bool HighPrecision)
+{
+    /// <summary>Retains terminal nearest-image edge coverage separately from packed uniform texels.</summary>
+    internal SvgRectangleCoverage? Coverage { get; init; }
+}
 
 /// <summary>Owns the graph output and optional unquantized final shader samples until composition.</summary>
 internal readonly record struct SvgFilterResult(SvgConverter.RasterizedSurface Frame,
@@ -410,6 +414,7 @@ internal static class SvgFilterPlayback
         bool linearOffsetSamples = false;
         RenderBudget.BudgetReservation? sampleOwner = null;
         SvgFilterDeferredImage? deferredImage = null;
+        SvgFilterUniformPaint? sampledUniform = null;
         int finalIndex = count == 0 ? 0 : count - 1;
         try
         {
@@ -676,7 +681,9 @@ internal static class SvgFilterPlayback
                                     if (x >= MathF.Floor(bounds.Left) && x < MathF.Ceiling(bounds.Right) && y >= MathF.Floor(bounds.Top) && y < MathF.Ceiling(bounds.Bottom))
                                         constant.Blend(converted.Pixels.AsSpan((y * width + x) * 4, 4), 255);
                             }
-                            SvgPaintBounds bitmapBounds = colorSpace == SvgFilterColorSpace.LinearRgb ? RoundLayerBounds(bounds) : bounds;
+                            // The allocated uniform image owns integer texels in
+                            // either color space; logical crops remain separate.
+                            SvgPaintBounds bitmapBounds = RoundLayerBounds(bounds);
                             Offset(converted.Pixels, output, dx, dy, bitmapBounds, null, nativeTransform, OffsetImagePaint.Packed);
                             int tail = finalIndex;
                             while (tail > index)
@@ -721,11 +728,27 @@ internal static class SvgFilterPlayback
                                 Charge(bytes);
                                 converted.Pixels.CopyTo(output);
                             }
+                            else if (tail == index && nativeTransform is null && colorSpace == SvgFilterColorSpace.Srgb
+                                && (!IsNearestSpriteTranslation(dx) || !IsNearestSpriteTranslation(dy)))
+                            {
+                                // Nearest sampling keeps uniform texels packed while
+                                // final image-edge coverage blends against the caller.
+                                // An enclosing opacity layer still consumes output bytes.
+                                Charge(48);
+                                SvgPaintBounds expanded = OffsetSamplingBounds(bitmapBounds, dx, dy);
+                                SvgPaintBounds texels = new(bitmapBounds.Left + dx, bitmapBounds.Top + dy,
+                                    bitmapBounds.Right + dx, bitmapBounds.Bottom + dy);
+                                sampledUniform = new(new(constant.Red / 255f, constant.Green / 255f, constant.Blue / 255f, constant.Alpha / 255f),
+                                    ClipImageBounds(texels, finalIndex), false)
+                                {
+                                    Coverage = SvgRectangleCoverage.Create(expanded.Left + dx, expanded.Top + dy,
+                                        expanded.Right + dx, expanded.Bottom + dy, width, height)
+                                };
+                            }
                             else if (tail == index && nativeTransform is null && colorSpace == SvgFilterColorSpace.LinearRgb)
                             {
                                 Span<SvgShaderPaint> values = AllocateSamples();
-                                SvgPaintBounds expanded = new(MathF.Min(bitmapBounds.Left, MathF.Floor(bitmapBounds.Left + dx)), MathF.Min(bitmapBounds.Top, MathF.Floor(bitmapBounds.Top + dy)),
-                                    MathF.Max(bitmapBounds.Right, MathF.Ceiling(bitmapBounds.Right + dx)), MathF.Max(bitmapBounds.Bottom, MathF.Ceiling(bitmapBounds.Bottom + dy)));
+                                SvgPaintBounds expanded = OffsetSamplingBounds(bitmapBounds, dx, dy);
                                 SvgRectangleCoverage edge = SvgRectangleCoverage.Create(expanded.Left + dx, expanded.Top + dy, expanded.Right + dx, expanded.Bottom + dy, width, height);
                                 int left = (int)MathF.Floor(Math.Clamp(expanded.Left, 0, width)), top = (int)MathF.Floor(Math.Clamp(expanded.Top, 0, height));
                                 int right = (int)MathF.Ceiling(Math.Clamp(expanded.Right, 0, width)), bottom = (int)MathF.Ceiling(Math.Clamp(expanded.Bottom, 0, height));
@@ -820,9 +843,14 @@ internal static class SvgFilterPlayback
                     work += SvgGaussianBlur.Apply(alpha.Pixels, blurred.Pixels, width, height, deviation, budget, availableWork - work, token);
                     double shadowX = primitive.OffsetX * map.ScaleX, shadowY = primitive.OffsetY * map.ScaleY;
                     bool fractionalShadow = shadowX != Math.Truncate(shadowX) || shadowY != Math.Truncate(shadowY);
-                    SvgConstantShaderPaint tint = fractionalShadow ? ShadowTint(primitive, colorSpace) : default;
                     bool retainedColorFilter = colorSpace == SvgFilterColorSpace.LinearRgb && !inputLinear
                         && deviation.Horizontal <= .03f && deviation.Vertical <= .03f;
+                    SvgConstantShaderPaint tint = default;
+                    if (fractionalShadow && !retainedColorFilter)
+                    {
+                        Charge(32);
+                        tint = PrepareShadowShaderTint(primitive.Flood, colorSpace).AsConstant(1);
+                    }
                     if (!fractionalShadow)
                     {
                         Charge(32 + pixels * 4);
@@ -945,7 +973,7 @@ internal static class SvgFilterPlayback
                     ? SvgFilterColorSpace.LinearRgb : SvgFilterColorSpace.Srgb,
                 DeferredImage = deferredImage,
                 UniformPaint = count > 0 && uniform[finalIndex].Known
-                    ? new(uniform[finalIndex].Paint, imageBounds[finalIndex], uniform[finalIndex].HighPrecision) : null
+                    ? new(uniform[finalIndex].Paint, imageBounds[finalIndex], uniform[finalIndex].HighPrecision) : sampledUniform
             };
         }
         finally
@@ -1323,21 +1351,6 @@ internal static class SvgFilterPlayback
                 => value <= 0 ? 0 : value >= maximum ? maximum : upper ? (int)Math.Ceiling(value) : (int)Math.Floor(value);
         }
 
-        SvgConstantShaderPaint ShadowTint(SvgFilterPrimitive primitive, SvgFilterColorSpace colorSpace)
-        {
-            float alpha = primitive.Flood.Alpha;
-            if (colorSpace == SvgFilterColorSpace.Srgb)
-                return new(Quantize(primitive.Flood.Color.Red * alpha), Quantize(primitive.Flood.Color.Green * alpha), Quantize(primitive.Flood.Color.Blue * alpha), Quantize(255 * alpha));
-            // CSS tint and source pixels enter the same operating space before
-            // native premultiplied constant lanes and image composition.
-            Charge(16);
-            SvgShaderPaint tint = SvgFilterColorTransfer.Convert(new(primitive.Flood.Color.Red * (1f / 255f),
-                primitive.Flood.Color.Green * (1f / 255f), primitive.Flood.Color.Blue * (1f / 255f), 1), colorSpace);
-            return new(Quantize(tint.Red * alpha * 255), Quantize(tint.Green * alpha * 255), Quantize(tint.Blue * alpha * 255), Quantize(255 * alpha));
-
-            static byte Quantize(float value) => (byte)Math.Clamp((int)MathF.Floor(value + .5f), 0, 255);
-        }
-
         static byte Modulate(byte value, byte alpha) => (byte)((value * alpha + 127) / 255);
 
         void Offset(ReadOnlySpan<byte> input, Span<byte> output, double dx, double dy, SvgPaintBounds? imageBounds, SvgConstantShaderPaint? shadow, SvgShaderMatrix? nativeTransform, OffsetImagePaint imagePaint)
@@ -1382,10 +1395,7 @@ internal static class SvgFilterPlayback
             // The SVG filter scope retains the union of source and displaced
             // drawable bounds. Its transparent padding must stay in the image;
             // nearest sampling clamps to this capture, not to painted geometry.
-            bounds = new(MathF.Min(bounds.Left, MathF.Floor(bounds.Left + (float)dx)),
-                MathF.Min(bounds.Top, MathF.Floor(bounds.Top + (float)dy)),
-                MathF.Max(bounds.Right, MathF.Ceiling(bounds.Right + (float)dx)),
-                MathF.Max(bounds.Bottom, MathF.Ceiling(bounds.Bottom + (float)dy)));
+            bounds = OffsetSamplingBounds(bounds, (float)dx, (float)dy);
             if (fractional && nativeTransform is null)
             {
                 Charge(16);
@@ -1526,6 +1536,12 @@ internal static class SvgFilterPlayback
                 }
             }
         }
+
+        // Retain displaced capture padding separately from the finite colored
+        // texels. Pure shared setup; callers charge work and own cancellation.
+        static SvgPaintBounds OffsetSamplingBounds(SvgPaintBounds bounds, float dx, float dy)
+            => new(MathF.Min(bounds.Left, MathF.Floor(bounds.Left + dx)), MathF.Min(bounds.Top, MathF.Floor(bounds.Top + dy)),
+                MathF.Max(bounds.Right, MathF.Ceiling(bounds.Right + dx)), MathF.Max(bounds.Bottom, MathF.Ceiling(bounds.Bottom + dy)));
 
         static void ValidateOffset(double dx, double dy)
         {

@@ -223,6 +223,16 @@ of compact storage. Affine frames identify their stored color space so final
 transfer follows sampling. Virtual SVG output bounds and sampled source-image
 bounds round in their respective coordinate systems; output admission keeps
 replaced source geometry from enlarging an opacity layer.
+Terminal uniform nearest-image draws retain packed texels and finite edge coverage
+separately; sprite-admitted translations omit image-edge antialiasing. Bitmap
+coverage combines source and backdrop products before the final packed shift.
+An enclosing opacity layer first materializes sampling, color transfer and crop
+coverage, then applies global bitmap alpha. Its painted extent bounds restoration
+and clip construction; stored-image extents remain independent. Dynamic source
+hints enclose their parameter-space capture before graph propagation, while
+source-free uniform paint retains its logical extent. The
+[opacity and sampling controls](../tests/Research/filter-opacity-sampling/README.md)
+retain actual-input browser references and representative ownership checks.
 
 ## Supplied fonts
 

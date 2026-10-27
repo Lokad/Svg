@@ -1,5 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/filter-opacity-sampling/capture.json" Link="TestData/filter-opacity-sampling/capture.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/filter-opacity-sampling/inputs/cropped-placements-affine-srgb-91-control-1.svg" Link="TestData/filter-opacity-sampling/inputs/cropped-placements-affine-srgb-91-control-1.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/filter-opacity-sampling/inputs/contracts-sprite-near-zero-control.svg" Link="TestData/filter-opacity-sampling/inputs/contracts-sprite-near-zero-control.svg" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="../Research/filter-stage-boundaries/capture.json" Link="TestData/filter-stage-boundaries/capture.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/filter-stage-boundaries/inputs/alias-materialized-copy-blur.svg" Link="TestData/filter-stage-boundaries/inputs/alias-materialized-copy-blur.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/filter-stored-images/capture.json" Link="TestData/filter-stored-images/capture.json" CopyToOutputDirectory="PreserveNewest" />

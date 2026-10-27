@@ -8,7 +8,7 @@ public sealed class SvgFilterStageReferenceTests
 {
     public static IEnumerable<object[]> Cases()
     {
-        foreach (string family in new[] { "filter-clip-ownership", "filter-restoration", "filter-affine-restoration", "filter-shadow-stages", "filter-alpha-stages", "filter-image-placement", "filter-stored-images", "filter-stage-boundaries" })
+        foreach (string family in new[] { "filter-clip-ownership", "filter-restoration", "filter-affine-restoration", "filter-shadow-stages", "filter-alpha-stages", "filter-image-placement", "filter-stored-images", "filter-stage-boundaries", "filter-opacity-sampling" })
         {
             using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(family), "capture.json")));
             foreach (JsonElement row in data.RootElement.GetProperty("cases").EnumerateArray())
@@ -42,7 +42,11 @@ public sealed class SvgFilterStageReferenceTests
             Assert.Equal(control.GetProperty("changedPixels").GetInt32(), contrast.ChangedPixelCount);
             Assert.Equal(control.GetProperty("alphaChangedPixels").GetInt32(), contrast.AlphaChangedPixelCount);
         }
-        byte[] actual = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        double scale = row.TryGetProperty("scale", out JsonElement outputScale) ? outputScale.GetDouble() : 1;
+        SvgColor background = row.TryGetProperty("whiteBackground", out JsonElement white) && white.GetBoolean()
+            ? new(255, 255, 255, 255) : SvgColor.Transparent;
+        SvgRenderOptions options = new(null, scale, background, SvgRenderLimits.Default);
+        byte[] actual = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
         Assert.True(PixelComparer.Compare(expected, PngRgbaDecoder.Decode(actual, 1_048_576)).IsExact, id);
     }
 
