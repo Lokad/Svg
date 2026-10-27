@@ -12,7 +12,7 @@ single-input and multi-input merges, unused branches, and a nontransparent backd
 The three operating-space pairs have independently unequal native edge colors,
 with equal alpha. Their differences remain checked alongside each exact image.
 
-The [rendering tests](../../Lokad.Svg.VisualTests/SvgFilterClipOwnershipReferenceTests.cs)
+The [rendering tests](../../Lokad.Svg.VisualTests/SvgFilterStageReferenceTests.cs)
 use one canonical conversion per input. Numerical transfer, parser and ownership
 checks remain separate; destination forms stay in the representative API matrix.
 See the [capture procedure](../../../tools/README.md#capture-and-reference-rules),

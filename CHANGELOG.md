@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Quantize compact shadow tint and opacity before coverage, retaining float
+  precision for pending linear-RGB color conversion and packed lanes for blurred
+  images. See the [native controls](tests/Research/filter-shadow-stages/README.md).
+
 - Preserve affine and fractional filter image bounds, crop coverage and source
   capture across compositor bitmaps, including negative offsets, reflections and
   offset graphs. See the [native controls](tests/Research/filter-affine-restoration/README.md).

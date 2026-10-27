@@ -12,7 +12,7 @@ orders, double clipping, zero displacement and SourceAlpha. Forward declarations
 object-bounding rectangles, filtered leaves, own masks, retained use and pattern
 devices cover distinct lowering paths even when images coincide.
 
-The [rendering tests](../../Lokad.Svg.VisualTests/SvgFilterClipOwnershipReferenceTests.cs)
+The [rendering tests](../../Lokad.Svg.VisualTests/SvgFilterStageReferenceTests.cs)
 use one canonical conversion for each input. Separate
 [mechanism and ownership tests](../../Lokad.Svg.Tests/SvgInheritedClipIsolationTests.cs)
 check linear sibling-scope work, empty output intersections, refusal, cancellation,

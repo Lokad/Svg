@@ -4,11 +4,11 @@ using Lokad.Svg.VisualDiff;
 
 namespace Lokad.Svg.VisualTests;
 
-public sealed class SvgFilterClipOwnershipReferenceTests
+public sealed class SvgFilterStageReferenceTests
 {
     public static IEnumerable<object[]> Cases()
     {
-        foreach (string family in new[] { "filter-clip-ownership", "filter-restoration", "filter-affine-restoration" })
+        foreach (string family in new[] { "filter-clip-ownership", "filter-restoration", "filter-affine-restoration", "filter-shadow-stages" })
         {
             using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(family), "capture.json")));
             foreach (JsonElement row in data.RootElement.GetProperty("cases").EnumerateArray())
@@ -19,7 +19,7 @@ public sealed class SvgFilterClipOwnershipReferenceTests
     [Theory]
     [MemberData(nameof(Cases))]
     [Trait("Layer", "Rendering")]
-    public void Source_and_output_clips_retain_their_independent_browser_images(string family, string id)
+    public void Filter_stages_retain_their_independent_browser_images(string family, string id)
     {
         using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(family), "capture.json")));
         Assert.Equal("recipe3-page-img-screenshot", data.RootElement.GetProperty("captureProfile").GetString());

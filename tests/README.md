@@ -82,6 +82,13 @@ cover adjacent floats and negative ties; [two representative ownership inputs](L
 cover clip-prepass and bitmap-graph storage, refusal, cancellation, retry and prepared
 replay without multiplying every image across the API matrix.
 
+The [shadow stage controls](Research/filter-shadow-stages/README.md) keep sixty
+canonical browser-backed images separate from thirteen direct tint vectors.
+They preserve ten failing-before cases and fifty positive controls, including
+naturally unequal expanded graphs. One additional ownership case covers the
+integer offset with a retained color filter; fractional blur ownership remains
+covered by its existing case.
+
 Color/filter numerical-context cross products remain available with
 `--filter Category=Research`. Their [gradient](Research/gradient-color-alpha/research-cases.json)
 and [filter](Research/filter-uniform-precision/research-cases.json) selections

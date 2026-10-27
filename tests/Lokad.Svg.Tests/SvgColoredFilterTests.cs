@@ -114,10 +114,13 @@ public sealed class SvgColoredFilterTests
         Assert.Equal(0, output.Length);
     }
 
-    [Fact]
-    public void Linear_shadow_conversion_releases_material_surfaces_on_denial_cancellation_and_retry()
+    [Theory]
+    [InlineData(".25", ".5", "1.25 .75")]
+    [InlineData("0", "0", "0")]
+    public void Linear_shadow_conversion_releases_material_surfaces_on_denial_cancellation_and_retry(string dx, string dy, string deviation)
     {
-        byte[] input = Document("<feDropShadow dx='.25' dy='.5' stdDeviation='1.25 .75' flood-color='#65377a' flood-opacity='.625'/>", "linearRGB");
+        byte[] input = Document("<feDropShadow dx='" + dx + "' dy='" + dy + "' stdDeviation='" + deviation
+            + "' flood-color='#65377a' flood-opacity='.625'/>", "linearRGB");
         RenderBudget parser = new(1_000_000);
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None))
         {

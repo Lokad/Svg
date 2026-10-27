@@ -89,6 +89,21 @@ internal static class SvgFilterPlayback
             && MathF.Floor(subpixel + .5f) == MathF.Floor(offset + .5f) * 16;
     }
 
+    /// <summary>Prepares a compact shadow's native unpremultiplied color and opacity bytes before premultiplication.</summary>
+    /// <remarks>The validated CSS paint is sRGB; color conversion precedes byte admission. The result retains
+    /// float precision for a pending input color filter. Callers choose its eventual packing, charge bounded
+    /// setup work and own cancellation. This immutable operation allocates nothing and permits concurrent calls.</remarks>
+    internal static SvgShaderPaint PrepareIntegerShadowTint(SvgSolidPaint paint, SvgFilterColorSpace colorSpace)
+    {
+        const float byteScale = 1f / 255f;
+        SvgShaderPaint color = new(paint.Color.Red * byteScale, paint.Color.Green * byteScale, paint.Color.Blue * byteScale, 1);
+        if (colorSpace == SvgFilterColorSpace.LinearRgb) color = SvgFilterColorTransfer.Convert(color, colorSpace);
+        float alpha = Quantize(paint.Alpha);
+        return new(Quantize(color.Red) * alpha, Quantize(color.Green) * alpha, Quantize(color.Blue) * alpha, alpha);
+
+        static float Quantize(float value) => MathF.Floor(value * 255 + .5f) * byteScale;
+    }
+
 
     private readonly record struct UniformColor(bool Known, SvgShaderPaint Paint, bool HighPrecision);
     /// <summary>Rounds native layer bounds after the filter coordinate system's small integer-boundary inset.</summary>
@@ -658,27 +673,35 @@ internal static class SvgFilterPlayback
                     work += SvgGaussianBlur.Apply(alpha.Pixels, blurred.Pixels, width, height, deviation, budget, availableWork - work, token);
                     double shadowX = primitive.OffsetX * map.ScaleX, shadowY = primitive.OffsetY * map.ScaleY;
                     bool fractionalShadow = shadowX != Math.Truncate(shadowX) || shadowY != Math.Truncate(shadowY);
-                    SvgConstantShaderPaint tint = ShadowTint(primitive, colorSpace);
+                    SvgConstantShaderPaint tint = fractionalShadow ? ShadowTint(primitive, colorSpace) : default;
                     if (!fractionalShadow)
                     {
-                        Charge(pixels);
+                        Charge(32 + pixels * 4);
+                        SvgShaderPaint nativeTint = PrepareIntegerShadowTint(primitive.Flood, colorSpace);
+                        SvgConstantShaderPaint packedTint = nativeTint.AsConstant(1);
+                        // An effective-zero blur retains its input color filter. A nonzero
+                        // blur materializes that image even when its pixel kernel only copies.
+                        // The pending color conversion selects floating raster stages; the
+                        // materialized image instead applies packed source-in tint lanes.
+                        bool retainedColorFilter = colorSpace == SvgFilterColorSpace.LinearRgb && !inputLinear
+                            && deviation.Horizontal <= .03f && deviation.Vertical <= .03f;
                         for (int offset = 0; offset < bytes; offset += 4)
                         {
                             token.ThrowIfCancellationRequested();
-                            if (colorSpace == SvgFilterColorSpace.LinearRgb)
+                            byte coverage = blurred.Pixels[offset + 3];
+                            if (!retainedColorFilter)
                             {
-                                byte coverage = blurred.Pixels[offset + 3];
-                                blurred.Pixels[offset] = Modulate(tint.Red, coverage);
-                                blurred.Pixels[offset + 1] = Modulate(tint.Green, coverage);
-                                blurred.Pixels[offset + 2] = Modulate(tint.Blue, coverage);
-                                blurred.Pixels[offset + 3] = Modulate(tint.Alpha, coverage);
+                                blurred.Pixels[offset] = Modulate(packedTint.Red, coverage);
+                                blurred.Pixels[offset + 1] = Modulate(packedTint.Green, coverage);
+                                blurred.Pixels[offset + 2] = Modulate(packedTint.Blue, coverage);
+                                blurred.Pixels[offset + 3] = Modulate(packedTint.Alpha, coverage);
                                 continue;
                             }
-                            int a = (int)MathF.Floor(blurred.Pixels[offset + 3] * primitive.Flood.Alpha + .5f);
-                            blurred.Pixels[offset] = (byte)((primitive.Flood.Color.Red * a + 127) / 255);
-                            blurred.Pixels[offset + 1] = (byte)((primitive.Flood.Color.Green * a + 127) / 255);
-                            blurred.Pixels[offset + 2] = (byte)((primitive.Flood.Color.Blue * a + 127) / 255);
-                            blurred.Pixels[offset + 3] = (byte)a;
+                            float weight = coverage * (1f / 255f);
+                            Span<byte> pixel = blurred.Pixels.AsSpan(offset, 4);
+                            pixel.Clear();
+                            new SvgShaderPaint(nativeTint.Red * weight, nativeTint.Green * weight,
+                                nativeTint.Blue * weight, nativeTint.Alpha * weight).Blend(pixel, 255);
                         }
                     }
                     Offset(blurred.Pixels, output, shadowX, shadowY, null, fractionalShadow ? tint : null, null, OffsetImagePaint.Packed);

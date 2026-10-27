@@ -19,7 +19,7 @@ at 151 alpha pixels; right, bottom and combined tail crops differ from the origi
 source-alpha input at 78, two and 80 alpha pixels. The rendering tests check those
 contrasts as well as exact output, preserving the distinctions between the paths.
 
-The [rendering tests](../../Lokad.Svg.VisualTests/SvgFilterClipOwnershipReferenceTests.cs)
+The [rendering tests](../../Lokad.Svg.VisualTests/SvgFilterStageReferenceTests.cs)
 use one canonical owned conversion per input. Direct sprite-boundary mechanisms
 and representative replay/ownership contracts run separately; the rendering bank
 does not repeat every destination form. See the [test responsibilities](../../README.md),
