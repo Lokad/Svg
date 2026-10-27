@@ -862,6 +862,7 @@ public static partial class SvgConverter
                 int geometryCount = 0;
                 bool preparationCharged = false;
                 SvgPaintBounds? objectBounds = null, visualBounds = null;
+                SvgPaintBounds? parameterObjectBounds = null, parameterVisualBounds = null;
                 try
                 {
                     commands[0] = command with { SourceOpacity = SvgPaintOpacity.Opaque };
@@ -877,7 +878,11 @@ public static partial class SvgConverter
                                 SvgRecordedPaintValue paint = GetRecordedPaintValue(geometry.RecordedPaint);
                                 if (paint.ObjectBounds is {} anchorBounds)
                                 {
-                                    if (!paint.IsMarkerContent) objectBounds = Union(objectBounds, anchorBounds.Map(placement, preparation, cancellationToken));
+                                    if (!paint.IsMarkerContent)
+                                    {
+                                        objectBounds = Union(objectBounds, anchorBounds.Map(placement, preparation, cancellationToken));
+                                        parameterObjectBounds = Union(parameterObjectBounds, anchorBounds.Map(parameterInverse, preparation, cancellationToken));
+                                    }
                                 }
                                 geometries[geometryCount] = geometry;
                                 commands[index - first + 1] = item with { GeometryIndex = geometryCount++ };
@@ -889,12 +894,15 @@ public static partial class SvgConverter
                                 item = item with { GeometryIndex = geometryCount++ };
                                 SvgPaintBounds layout = geometry.Glyph.Source.LayoutBounds(parameterInverse, preparation, cancellationToken);
                                 objectBounds = Union(objectBounds, layout.Map(layerMap, preparation, cancellationToken));
+                                parameterObjectBounds = Union(parameterObjectBounds, layout);
                                 // Native text recording encloses the font layout before its
                                 // filter layer maps the resulting integer visual rectangle.
                                 SvgPaintBounds glyphVisual = new SvgPaintBounds(MathF.Floor(layout.Left), MathF.Floor(layout.Top), MathF.Ceiling(layout.Right), MathF.Ceiling(layout.Bottom))
                                     .Map(layerMap, preparation, cancellationToken);
                                 float inflation = (float)geometry.Glyph.StrokeBoundsInflation;
                                 visualBounds = Union(visualBounds, new(glyphVisual.Left - inflation, glyphVisual.Top - inflation, glyphVisual.Right + inflation, glyphVisual.Bottom + inflation));
+                                parameterVisualBounds = Union(parameterVisualBounds, new(MathF.Floor(layout.Left) - inflation / scaleX,
+                                    MathF.Floor(layout.Top) - inflation / scaleY, MathF.Ceiling(layout.Right) + inflation / scaleX, MathF.Ceiling(layout.Bottom) + inflation / scaleY));
                                 commands[index - first + 1] = item;
                                 continue;
                             }
@@ -906,13 +914,22 @@ public static partial class SvgConverter
                             SvgPaintBounds bounds = new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height))
                                 .Map(placement.ComposeChecked(source.SceneMap), preparation, cancellationToken);
                             if (!GetRecordedPaintValue(geometry.RecordedPaint).IsMarkerContent)
+                            {
                                 objectBounds = Union(objectBounds, bounds);
+                                parameterObjectBounds = Union(parameterObjectBounds, new SvgPaintBounds((float)box.X, (float)box.Y,
+                                    (float)(box.X + box.Width), (float)(box.Y + box.Height)).Map(parameterInverse.ComposeChecked(source.SceneMap), preparation, cancellationToken));
+                            }
                             SvgAuthoredPath outline = source.StrokeOutline ?? source;
                             box = SvgPathBounds.Compute(outline.Commands, preparation, cancellationToken);
                             visualBounds = Union(visualBounds, new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height))
                                 .Map(placement.ComposeChecked(outline.SceneMap), preparation, cancellationToken));
+                            parameterVisualBounds = Union(parameterVisualBounds, new SvgPaintBounds((float)box.X, (float)box.Y,
+                                (float)(box.X + box.Width), (float)(box.Y + box.Height)).Map(parameterInverse.ComposeChecked(outline.SceneMap), preparation, cancellationToken));
                             if (GetRecordedPaintValue(geometry.RecordedPaint).VisualBounds is {} drawingHint)
+                            {
                                 visualBounds = Union(visualBounds, drawingHint.Map(placement, preparation, cancellationToken));
+                                parameterVisualBounds = Union(parameterVisualBounds, drawingHint.Map(parameterInverse, preparation, cancellationToken));
+                            }
                         }
                         commands[index - first + 1] = item;
                     }
@@ -926,7 +943,17 @@ public static partial class SvgConverter
                         ? SvgAffineTransform.FromScaleOffset(distances.ScaleX, distances.ScaleY, objects.Left, objects.Top) : layerMap,
                         objectUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), layerRegion);
                     SvgPaintBounds hint = SvgFilterPlayback.SourceLayerBounds(resource, distances, context, visual, budget, preparation, cancellationToken);
-                    SvgPaintBounds parameterHint = SvgFilterPlayback.RoundLayerBounds(new(hint.Left / scaleX, hint.Top / scaleY, hint.Right / scaleX, hint.Bottom / scaleY));
+                    // Capture hints are rounded before layer scaling. Inverting a
+                    // layer-space hint loses authored fringes and perturbs integers.
+                    SvgPaintBounds parameterObjects = parameterObjectBounds ?? default, parameterVisual = parameterVisualBounds ?? default;
+                    SvgFilterBinding parameterBinding = binding with { Transform = SvgAffineTransform.Identity, ObjectBounds = parameterObjects, VisualBounds = parameterVisual };
+                    SvgFilterDeviceMap parameterDistances = objectUnits
+                        ? new(parameterObjects.Right - parameterObjects.Left, parameterObjects.Bottom - parameterObjects.Top) : new(1, 1);
+                    SvgFilterRegionContext parameterContext = new(objectUnits
+                        ? SvgAffineTransform.FromScaleOffset(parameterDistances.ScaleX, parameterDistances.ScaleY, parameterObjects.Left, parameterObjects.Top)
+                        : SvgAffineTransform.Identity, context.LengthBases, FilterRegion(parameterBinding, resource, preparation, SvgAffineTransform.Identity));
+                    SvgPaintBounds parameterOutputHint = SvgFilterPlayback.SourceLayerBounds(resource, parameterDistances, parameterContext, parameterVisual, budget, preparation, cancellationToken);
+                    SvgPaintBounds parameterHint = SvgFilterPlayback.RoundParameterBounds(parameterOutputHint);
                     SvgPaintBounds nativeHint = new(parameterHint.Left * scaleX, parameterHint.Top * scaleY, parameterHint.Right * scaleX, parameterHint.Bottom * scaleY);
                     SvgPaintBounds nativeSource = SvgFilterPlayback.RoundLayerBounds(nativeHint);
                     SvgPaintBounds nativeImage = SvgFilterPlayback.SourceLayerBounds(resource, distances, context, nativeSource,
@@ -1049,8 +1076,12 @@ public static partial class SvgConverter
                         [], [], dispatch, outputWidth, outputHeight);
                     long edgeWork = 0;
                     bool edgeEligible = true;
+                    // Image geometry is antialiased independently of clip type;
+                    // only an actual AA clip selects its RLE accumulation path.
+                    SvgAnalyticPaintClip edgePaintClip = activeViewportClip.Length != 0 && !activeViewportIsBinary
+                        ? SvgAnalyticPaintClip.Antialiased : SvgAnalyticPaintClip.Binary;
                     using SvgAnalyticCoverage edgeWalker = imageEdges ? SvgAnalyticCoverage.Prepare(ref edgePreparation, restoreLeft, restoreRight, restoreTop, restoreBottom,
-                        new(restoreLeft, restoreRight), new SvgAnalyticClipContext(edgeArea), SvgAnalyticPaintClip.Binary,
+                        new(restoreLeft, restoreRight), new SvgAnalyticClipContext(edgeArea), edgePaintClip,
                         limits.MaximumWorkUnits - workUnits, budget, out edgeWork, out edgeEligible, cancellationToken) : default;
                     workUnits += edgeWork;
                     if (!edgeEligible) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine filter image edges are outside the retained boundary.");
@@ -1338,8 +1369,10 @@ public static partial class SvgConverter
                         }
                         if (!linear)
                         {
+                            SvgAnalyticPaintClip imagePaintClip = cropped || activeViewportClip.Length != 0 && !activeViewportIsBinary
+                                ? SvgAnalyticPaintClip.Antialiased : SvgAnalyticPaintClip.Binary;
                             walker = SvgAnalyticCoverage.Prepare(ref imagePreparation, area.Left, area.Right, area.Top, area.Bottom,
-                                new(area.Left, area.Right), new SvgAnalyticClipContext(imageClip, bitmap.Origin), SvgAnalyticPaintClip.Antialiased,
+                                new(area.Left, area.Right), new SvgAnalyticClipContext(imageClip, bitmap.Origin), imagePaintClip,
                                 limits.MaximumWorkUnits - workUnits, budget, out long setupWork, out bool eligible, cancellationToken);
                             Charge(setupWork);
                             if (!eligible) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Deferred affine image edges are outside the retained boundary.");
@@ -2042,8 +2075,8 @@ public static partial class SvgConverter
                     SvgFilterRegionContext nativeContext = new(objectUnits
                         ? SvgAffineTransform.FromScaleOffset(nativeDistances.ScaleX, nativeDistances.ScaleY, nativeBinding.ObjectBounds.Left, nativeBinding.ObjectBounds.Top) : layerMap,
                         context.LengthBases, FilterRegion(nativeBinding, filter, counter, SvgAffineTransform.Identity));
-                    SvgPaintBounds hint = SvgFilterPlayback.SourceLayerBounds(filter, nativeDistances, nativeContext, nativeBinding.VisualBounds, budget, counter, cancellationToken);
-                    SvgPaintBounds parameterHint = SvgFilterPlayback.RoundLayerBounds(new(hint.Left / scaleX, hint.Top / scaleY, hint.Right / scaleX, hint.Bottom / scaleY));
+                    SvgPaintBounds parameterOutputHint = SvgFilterPlayback.SourceLayerBounds(filter, distances, context, sourceHint, budget, counter, cancellationToken);
+                    SvgPaintBounds parameterHint = SvgFilterPlayback.RoundParameterBounds(parameterOutputHint);
                     SvgPaintBounds nativeSource = SvgFilterPlayback.RoundLayerBounds(new(parameterHint.Left * scaleX, parameterHint.Top * scaleY,
                         parameterHint.Right * scaleX, parameterHint.Bottom * scaleY));
                     return SvgFilterPlayback.SourceLayerBounds(filter, nativeDistances, nativeContext, nativeSource,

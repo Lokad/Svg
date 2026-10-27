@@ -12,6 +12,7 @@ public sealed class SvgFilterBitmapOwnershipTests
     [InlineData("filter-affine-restoration", "model-source-alpha")]
     [InlineData("filter-affine-restoration", "interaction-fractional-chain")]
     [InlineData("filter-alpha-stages", "interaction-pattern-alpha")]
+    [InlineData("filter-image-placement", "clip-near-integer-aa-parent")]
     public void Filter_scratch_releases_after_denial_cancellation_and_retry(string family, string id)
     {
         string folder = Path.Combine(AppContext.BaseDirectory, "TestData", family);
@@ -33,6 +34,7 @@ public sealed class SvgFilterBitmapOwnershipTests
     [InlineData("filter-affine-restoration", "model-source-alpha")]
     [InlineData("filter-affine-restoration", "interaction-fractional-chain")]
     [InlineData("filter-alpha-stages", "interaction-pattern-alpha")]
+    [InlineData("filter-image-placement", "clip-near-integer-aa-parent")]
     public async Task Prepared_bitmap_replay_preserves_input_and_borrowed_destination_after_cancellation(string family, string id)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", family, "inputs", id + ".svg"));

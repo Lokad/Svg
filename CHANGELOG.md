@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Enclose filter source hints before layer scaling and select image edge coverage
+  using the actual parent clip. Preserve translated alpha, near-integer offsets
+  and reflected placement. See the [native controls](tests/Research/filter-image-placement/README.md).
+
 - Retain source-alpha shader precision through zero blur, one-node merge and
   zero-offset aliases during affine image sampling, including backdrop, use and
   pattern replay. See the [native controls](tests/Research/filter-alpha-stages/README.md).

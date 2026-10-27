@@ -94,6 +94,12 @@ canonical images, seventeen direct alias/materialization checks, and one selecte
 pattern input for ownership and prepared replay. Source-alpha stage metadata
 survives image-free aliases; materialized images keep their separate native path.
 
+The [image placement controls](Research/filter-image-placement/README.md) add twelve
+canonical images for parameter-space source hints and actual image-clip context.
+Eleven direct graph/bounds cases cover authored numerical fringes. One selected
+near-integer input checks scratch ownership and prepared replay; the distinct
+binary/antialiased parent-clip images retain their native two-pixel difference.
+
 Color/filter numerical-context cross products remain available with
 `--filter Category=Research`. Their [gradient](Research/gradient-color-alpha/research-cases.json)
 and [filter](Research/filter-uniform-precision/research-cases.json) selections

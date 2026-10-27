@@ -108,6 +108,12 @@ internal static class SvgFilterPlayback
 
 
     private readonly record struct UniformColor(bool Known, SvgShaderPaint Paint, bool HighPrecision);
+    /// <summary>Encloses an authored source capture hint before mapping it to the filter layer.</summary>
+    /// <remarks>Finite parameter-space inputs are caller-validated. Unlike layer rounding, this preserves
+    /// every nonzero authored fringe. It allocates nothing; callers charge bounded setup work.</remarks>
+    internal static SvgPaintBounds RoundParameterBounds(SvgPaintBounds value)
+        => new(MathF.Floor(value.Left), MathF.Floor(value.Top), MathF.Ceiling(value.Right), MathF.Ceiling(value.Bottom));
+
     /// <summary>Rounds native layer bounds after the filter coordinate system's small integer-boundary inset.</summary>
     /// <remarks>Matches skif::RoundOut; this is coordinate rounding, not a pixel-comparison tolerance.
     /// The finite inputs are caller-validated and the caller charges bounded setup work.</remarks>
