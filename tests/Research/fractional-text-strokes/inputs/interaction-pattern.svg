@@ -1,0 +1,1 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><pattern id='p' width='24' height='24' patternUnits='userSpaceOnUse'><g transform='translate(2 2) scale(1.25)'><text x='2' y='11' font-family='serif' font-size='10' fill='red' stroke='blue' stroke-width='.5' >Ag</text></g></pattern></defs><rect width='32' height='32' fill='url(#p)'/></svg>

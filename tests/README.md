@@ -46,6 +46,11 @@ The [text/instance controls](Research/text-instance-composition/README.md) retai
 metadata contracts. The 768 symbol/viewport rendering pairs remain canonical;
 six selected prepared-replay cases cover font, stroke and viewport interactions.
 Existing 42/43-child work-limit checks and the general API matrix remain separate.
+The [fractional stroke controls](Research/fractional-text-strokes/README.md) retain
+45 independent source/options for 51 roles, all exact on both hosts. Twenty-three
+direct cases cover alignment and rounding; one dimension contract separates the
+sample plane from its guards. Prepared replay and general ownership stay in their
+representative contracts.
 The [clipped stroke controls](Research/clipped-stroke-preparation/README.md)
 retain 28 native inputs, fourteen direct mechanism cases and two selected
 opacity/viewport ownership paths. Signed coordinate boundaries are tested

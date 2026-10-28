@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Keep glyph filter guards outside the sampled bitmap, with matching bounds and
+  dimension accounting. Share vertical-baseline X rounding and axis-aligned
+  outline fitting across fills and strokes. See the
+  [native controls](tests/Research/fractional-text-strokes/README.md).
+
 - Preserve text object boxes, mask visual enclosures and clip dependencies through
   instance replay. Avoid unnecessary identity layers and keep alpha/luminance
   paint contexts and filter clip/paint coverage distinct. See the

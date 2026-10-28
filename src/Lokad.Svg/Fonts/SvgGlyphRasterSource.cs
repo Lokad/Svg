@@ -118,7 +118,7 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
             contours.WindowsLcdMode = mode;
             contours.ExtendWindowsLcdSpans = font.Metrics.ExtendWindowsLcdSpans;
             SvgDevicePoint origin = _glyphMap.Apply(_glyph.X, _glyph.Y);
-            float originX = MathF.Floor((float)(origin.X * scaleX + offsetX) * 4f + .5f) / 4f;
+            float originX = SvgGlyphStrikeTransform.RoundXOrigin((float)(origin.X * scaleX + offsetX), HasGlyphMap ? strike.RelaxedMap : SvgAffineTransform.Identity);
             float originY = HasGlyphMap && strike.RelaxedMap.B != 0 ? MathF.Floor((float)(origin.Y * scaleY + offsetY) * 4f + .5f) / 4f
                 : MathF.Floor((float)(origin.Y * scaleY + offsetY) + .5f);
             float ratioX = HasGlyphMap ? 1 : (float)(scaleX / scaleY);
@@ -198,8 +198,7 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
         SvgGlyphStrikeTransform strike = CreateMappedStrike(scaleX, scaleY);
         // Skia keeps FreeType light fitting for axis-aligned maps, including
         // quarter turns; other rotations and skew use unhinted contours.
-        bool axisAligned = strike.RelaxedMap.B == 0 && strike.RelaxedMap.C == 0 || strike.RelaxedMap.A == 0 && strike.RelaxedMap.D == 0;
-        using OpenTypeGlyphContourStorage contours = axisAligned
+        using OpenTypeGlyphContourStorage contours = strike.HasAxisAlignedOutline
             ? OpenTypeFont.GetLatinLightContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike.DeviceSize, budget, work, token)
             : OpenTypeFont.GetUnhintedDeviceContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike.DeviceSize, budget, work, token);
         using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Geometry, work, token);
@@ -223,7 +222,7 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
         }
         SvgAffineTransform map = SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX, offsetY).ComposeChecked(_glyphMap);
         SvgDevicePoint glyphOrigin = map.Apply(_glyph.X, _glyph.Y);
-        float originX = MathF.Floor((float)glyphOrigin.X * 4f + .5f) / 4f;
+        float originX = SvgGlyphStrikeTransform.RoundXOrigin((float)glyphOrigin.X, strike.RelaxedMap);
         float originY = strike.RelaxedMap.B == 0 ? MathF.Floor((float)glyphOrigin.Y + .5f) : MathF.Floor((float)glyphOrigin.Y * 4f + .5f) / 4f;
         if (!float.IsFinite(originX) || !float.IsFinite(originY)) throw new SvgException(SvgErrorCode.LimitExceeded, "The mapped glyph placement exceeds the device range.");
         map = new(strike.RemainingMap.A, strike.RemainingMap.B, strike.RemainingMap.C, strike.RemainingMap.D, originX, originY);

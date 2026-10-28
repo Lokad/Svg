@@ -8,6 +8,9 @@ using Lokad.Svg.Rendering;
 /// <remarks>This immutable value owns no storage. Its bounded arithmetic is independent of the borrowed font and safe for concurrent callers. Placement uses the original transform separately; only outline construction uses these coefficients.</remarks>
 internal readonly record struct SvgGlyphStrikeTransform(float DeviceSize, SvgAffineTransform RemainingMap, SvgAffineTransform RelaxedMap)
 {
+    /// <summary>Whether both glyph axes remain aligned with device axes, including quarter turns.</summary>
+    internal bool HasAxisAlignedOutline => RelaxedMap.B == 0 && RelaxedMap.C == 0 || RelaxedMap.A == 0 && RelaxedMap.D == 0;
+
     internal static SvgGlyphStrikeTransform Create(double deviceFontSize, SvgAffineTransform map)
     {
         float size = (float)deviceFontSize;
@@ -42,6 +45,16 @@ internal readonly record struct SvgGlyphStrikeTransform(float DeviceSize, SvgAff
         SvgAffineTransform remaining = new(x * inverse, y * inverse, cx * inverse, dy * inverse, 0, 0);
         return new(vertical, remaining, relaxed);
 
+    }
+
+    /// <summary>Rounds device X to the native strike grid; vertical baselines snap to an integer column.</summary>
+    /// <remarks>Uses the already relaxed baseline map. Pure bounded arithmetic owns no storage and is safe for concurrent consumers.</remarks>
+    internal static float RoundXOrigin(float value, SvgAffineTransform map)
+    {
+        float samples = map.A == 0 && map.B != 0 ? 1 : 4;
+        float rounded = MathF.Floor(value * samples + .5f) / samples;
+        if (!float.IsFinite(rounded)) throw new SvgException(SvgErrorCode.LimitExceeded, "The glyph origin exceeds the device range.");
+        return rounded;
     }
 
     /// <summary>Retains the native scaler matrix precision before choosing a fitted device size.</summary>

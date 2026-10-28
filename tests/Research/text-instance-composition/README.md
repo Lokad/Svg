@@ -20,8 +20,9 @@ Their native pixels differ. Earlier viewport-reference bytes remain retained
 against the explicit viewport source; no layout implementation or reference was
 rewritten to make density agree with viewport resizing.
 
-149 records are exact on Windows and 153 on Linux. Four Windows stroke records
-retain the same known four-pixel R59 residual through independently captured
-clipped/unclipped graphs; the [isolation evidence](stroke-isolation.json) locates
-it inside the viewport. R59 remains open. One painted native input retains the
-explicit R74/C04 exclusion for nested SVG inside a retained definition group.
+153 records are exact on both hosts. The four Windows stroke differences are
+corrected against their unchanged native references. The earlier
+[stroke isolation](stroke-isolation.json) retains the failing-before evidence;
+[fractional stroke controls](../fractional-text-strokes/README.md) cover the shared
+sampling-domain and baseline fixes. One painted native input retains the explicit
+R74/C04 exclusion for nested SVG inside a retained definition group.

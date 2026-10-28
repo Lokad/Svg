@@ -688,7 +688,10 @@ groups, use, symbols, patterns and masks. Identity groups avoid an unnecessary
 offscreen image; real opacity still isolates. The
 [instance-composition controls](../tests/Research/text-instance-composition/README.md)
 retain mask-mode, source/owning clip and density/viewport distinctions. Their
-ordinary Windows stroke residual remains separately tracked.
+ordinary fractional strokes match the original native references. The
+[stroke controls](../tests/Research/fractional-text-strokes/README.md) cover guard
+sampling, vertical-baseline rounding, outline alignment and resource replay;
+dimension limits apply to the allocated sample plane.
 [Fragment controls](../tests/Research/text-node-boundaries/README.md) cover scaling,
 fitting and resource replay, retaining the recorded Windows fitting residual separately.
 

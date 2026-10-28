@@ -37,14 +37,14 @@ internal sealed partial class SvgGlyphRasterSource
         inverse = SvgAffineTransform.FromMatrix((float)inverse.A, (float)inverse.B, (float)inverse.C, (float)inverse.D, 0, 0);
         SvgDevicePoint origin = SvgNativePathStroke.MapPoint(_glyphMap, new(_glyph.X, _glyph.Y));
         float deviceX = (float)(origin.X * scaleX + offsetX), deviceY = (float)(origin.Y * scaleY + offsetY);
-        float roundedX = MathF.Floor(deviceX * 4 + .5f) / 4;
+        float roundedX = SvgGlyphStrikeTransform.RoundXOrigin(deviceX, linear);
         float roundedY = linear.B == 0 ? MathF.Floor(deviceY + .5f) : MathF.Floor(deviceY * 4 + .5f) / 4;
         float integerX = MathF.Floor(roundedX), integerY = MathF.Floor(roundedY);
         float phaseX = roundedX - integerX, phaseY = roundedY - integerY;
         bool windows = OperatingSystem.IsWindows();
         using OpenTypeGlyphContourStorage decoded = windows
             ? OpenTypeFont.GetGlyphContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, budget, work, token)
-            : linear.B == 0 && linear.C == 0
+            : strike.HasAxisAlignedOutline
                 ? OpenTypeFont.GetLatinLightContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike.DeviceSize, budget, work, token)
                 : OpenTypeFont.GetUnhintedDeviceContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike.DeviceSize, budget, work, token);
         float pointScale = windows ? strike.DeviceSize / font.UnitsPerEm : 1f / 64;

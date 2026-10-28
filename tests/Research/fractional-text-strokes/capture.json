@@ -1,0 +1,3548 @@
+{
+  "policy": "One canonical conversion per source/options; retain all independent graph roles. Exact RGBA only. Captures embed the unchanged committed Noto Sans font under a ReviewFont alias. OutputScale1.25 keeps SVG32 CSS at DPR1.25.",
+  "browser": {
+    "version": "153.0.8010.52",
+    "freshProcessCaptures": 3,
+    "stability": "identical decoded RGBA",
+    "exactBinarySourceCommitVerified": false
+  },
+  "font": {
+    "path": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+    "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+    "license": "../supplied-font-labels/fonts/OFL.txt"
+  },
+  "logicalRoles": 51,
+  "uniqueInputOptions": 45,
+  "summary": {
+    "windows": {
+      "actuals": 45,
+      "exact": 45,
+      "knownDifferences": 0,
+      "exclusions": 0
+    },
+    "linux": {
+      "actuals": 45,
+      "exact": 45,
+      "knownDifferences": 0,
+      "exclusions": 0
+    }
+  },
+  "cases": [
+    {
+      "id": "original-batch6-95-candidate",
+      "input": "inputs/original-batch6-95-candidate.svg",
+      "sourceSha256": "768eae2932ba8610317d3d7b96e9e06cd68e69a60771c4a772db3e909a5190a7",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "original-batch6-95-candidate",
+        "screening-batch6-95-candidate"
+      ],
+      "purpose": "Original calibrated R59 actual or exact control",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/c87193b982adf5f2944ca0160d6855993e85699de84767a518e3c5314bdcf09c.png",
+          "referenceSha256": "c87193b982adf5f2944ca0160d6855993e85699de84767a518e3c5314bdcf09c",
+          "nativeSourceSha256": "12990fc9652aff11dc919145a336e30c655826d67ff2796cf7fc141aedb02264",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "c87193b982adf5f2944ca0160d6855993e85699de84767a518e3c5314bdcf09c",
+            "c87193b982adf5f2944ca0160d6855993e85699de84767a518e3c5314bdcf09c",
+            "c87193b982adf5f2944ca0160d6855993e85699de84767a518e3c5314bdcf09c"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/020c90374d1d6dc7530c36bf287ec040dcdb8761fe94a228a1e0d74c9da93741.png",
+          "referenceSha256": "020c90374d1d6dc7530c36bf287ec040dcdb8761fe94a228a1e0d74c9da93741",
+          "nativeSourceSha256": "12990fc9652aff11dc919145a336e30c655826d67ff2796cf7fc141aedb02264",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "020c90374d1d6dc7530c36bf287ec040dcdb8761fe94a228a1e0d74c9da93741",
+            "020c90374d1d6dc7530c36bf287ec040dcdb8761fe94a228a1e0d74c9da93741",
+            "020c90374d1d6dc7530c36bf287ec040dcdb8761fe94a228a1e0d74c9da93741"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "original-batch6-95-control",
+      "input": "inputs/original-batch6-95-control.svg",
+      "sourceSha256": "7a70d8ad94533c50dc8cacd4de5e908f10cb6581a573920e8b1503c68a6d3136",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "original-batch6-95-control",
+        "screening-batch6-95-control"
+      ],
+      "purpose": "Original calibrated R59 actual or exact control",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/c87193b982adf5f2944ca0160d6855993e85699de84767a518e3c5314bdcf09c.png",
+          "referenceSha256": "c87193b982adf5f2944ca0160d6855993e85699de84767a518e3c5314bdcf09c",
+          "nativeSourceSha256": "77c0d0eb523a4828682fe2dcb2d7d9400d91ded5460ed43dbaddc0e8829bcba6",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "c87193b982adf5f2944ca0160d6855993e85699de84767a518e3c5314bdcf09c",
+            "c87193b982adf5f2944ca0160d6855993e85699de84767a518e3c5314bdcf09c",
+            "c87193b982adf5f2944ca0160d6855993e85699de84767a518e3c5314bdcf09c"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/020c90374d1d6dc7530c36bf287ec040dcdb8761fe94a228a1e0d74c9da93741.png",
+          "referenceSha256": "020c90374d1d6dc7530c36bf287ec040dcdb8761fe94a228a1e0d74c9da93741",
+          "nativeSourceSha256": "77c0d0eb523a4828682fe2dcb2d7d9400d91ded5460ed43dbaddc0e8829bcba6",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "020c90374d1d6dc7530c36bf287ec040dcdb8761fe94a228a1e0d74c9da93741",
+            "020c90374d1d6dc7530c36bf287ec040dcdb8761fe94a228a1e0d74c9da93741",
+            "020c90374d1d6dc7530c36bf287ec040dcdb8761fe94a228a1e0d74c9da93741"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "original-batch6-93-candidate",
+      "input": "inputs/original-batch6-93-candidate.svg",
+      "sourceSha256": "4ad7a190bdc3e6edf97e37e2941482fb2c81eb8e0989a3b6bee6f9adfff01ee4",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "original-batch6-93-candidate"
+      ],
+      "purpose": "Original calibrated R59 actual or exact control",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/798143b4af0ff5b227910530f262e6a18f585ea7a5c82eda9b53e7f386981b1d.png",
+          "referenceSha256": "798143b4af0ff5b227910530f262e6a18f585ea7a5c82eda9b53e7f386981b1d",
+          "nativeSourceSha256": "9437b1b403b36f2d0e1b24331a41b325f1de184e67917c790b8238fc9010b99e",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "798143b4af0ff5b227910530f262e6a18f585ea7a5c82eda9b53e7f386981b1d",
+            "798143b4af0ff5b227910530f262e6a18f585ea7a5c82eda9b53e7f386981b1d",
+            "798143b4af0ff5b227910530f262e6a18f585ea7a5c82eda9b53e7f386981b1d"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/32bcceba5c2777a3a90ecbaebd7eb38d08f8d93a7d6b5776c64e9a53f99ce2dd.png",
+          "referenceSha256": "32bcceba5c2777a3a90ecbaebd7eb38d08f8d93a7d6b5776c64e9a53f99ce2dd",
+          "nativeSourceSha256": "9437b1b403b36f2d0e1b24331a41b325f1de184e67917c790b8238fc9010b99e",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "32bcceba5c2777a3a90ecbaebd7eb38d08f8d93a7d6b5776c64e9a53f99ce2dd",
+            "32bcceba5c2777a3a90ecbaebd7eb38d08f8d93a7d6b5776c64e9a53f99ce2dd",
+            "32bcceba5c2777a3a90ecbaebd7eb38d08f8d93a7d6b5776c64e9a53f99ce2dd"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "original-batch6-93-control",
+      "input": "inputs/original-batch6-93-control.svg",
+      "sourceSha256": "c6ee4a4f420a53762edfac1660e565824447b54a02da314be8445db11da784d0",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "original-batch6-93-control"
+      ],
+      "purpose": "Original calibrated R59 actual or exact control",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/798143b4af0ff5b227910530f262e6a18f585ea7a5c82eda9b53e7f386981b1d.png",
+          "referenceSha256": "798143b4af0ff5b227910530f262e6a18f585ea7a5c82eda9b53e7f386981b1d",
+          "nativeSourceSha256": "bf67942a6f904c06c3b7da527375f20f3e8f5467a893bf3409c445d08f44c812",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "798143b4af0ff5b227910530f262e6a18f585ea7a5c82eda9b53e7f386981b1d",
+            "798143b4af0ff5b227910530f262e6a18f585ea7a5c82eda9b53e7f386981b1d",
+            "798143b4af0ff5b227910530f262e6a18f585ea7a5c82eda9b53e7f386981b1d"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/32bcceba5c2777a3a90ecbaebd7eb38d08f8d93a7d6b5776c64e9a53f99ce2dd.png",
+          "referenceSha256": "32bcceba5c2777a3a90ecbaebd7eb38d08f8d93a7d6b5776c64e9a53f99ce2dd",
+          "nativeSourceSha256": "bf67942a6f904c06c3b7da527375f20f3e8f5467a893bf3409c445d08f44c812",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "32bcceba5c2777a3a90ecbaebd7eb38d08f8d93a7d6b5776c64e9a53f99ce2dd",
+            "32bcceba5c2777a3a90ecbaebd7eb38d08f8d93a7d6b5776c64e9a53f99ce2dd",
+            "32bcceba5c2777a3a90ecbaebd7eb38d08f8d93a7d6b5776c64e9a53f99ce2dd"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "original-batch6-94-candidate",
+      "input": "inputs/original-batch6-94-candidate.svg",
+      "sourceSha256": "332d18ef66a6e05f934682426eb3d0b5d3f39cfe1a7e6ab97ffe739f17790467",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "original-batch6-94-candidate",
+        "screening-batch6-94-candidate"
+      ],
+      "purpose": "Original calibrated R59 actual or exact control",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/3e5443fd8cbbc804fdd30a8860d2294ae182bc2915445ef7d61338208fcb10de.png",
+          "referenceSha256": "3e5443fd8cbbc804fdd30a8860d2294ae182bc2915445ef7d61338208fcb10de",
+          "nativeSourceSha256": "c1b1de0fb7391c392d42b0b4f1ed70b67466a71bcf181f242240a11f9c97b1a0",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "3e5443fd8cbbc804fdd30a8860d2294ae182bc2915445ef7d61338208fcb10de",
+            "3e5443fd8cbbc804fdd30a8860d2294ae182bc2915445ef7d61338208fcb10de",
+            "3e5443fd8cbbc804fdd30a8860d2294ae182bc2915445ef7d61338208fcb10de"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/ead2b753e835128fb6bbf07ad5eb6eacf662ffba5cba44f1f3916443da76f20d.png",
+          "referenceSha256": "ead2b753e835128fb6bbf07ad5eb6eacf662ffba5cba44f1f3916443da76f20d",
+          "nativeSourceSha256": "c1b1de0fb7391c392d42b0b4f1ed70b67466a71bcf181f242240a11f9c97b1a0",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "ead2b753e835128fb6bbf07ad5eb6eacf662ffba5cba44f1f3916443da76f20d",
+            "ead2b753e835128fb6bbf07ad5eb6eacf662ffba5cba44f1f3916443da76f20d",
+            "ead2b753e835128fb6bbf07ad5eb6eacf662ffba5cba44f1f3916443da76f20d"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "original-batch6-94-control",
+      "input": "inputs/original-batch6-94-control.svg",
+      "sourceSha256": "a864ee9c866d0c1a6dcde322fe28f640fedbbf97a02e23c4e8cdcf47e9221bde",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "original-batch6-94-control",
+        "screening-batch6-94-control"
+      ],
+      "purpose": "Original calibrated R59 actual or exact control",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/3e5443fd8cbbc804fdd30a8860d2294ae182bc2915445ef7d61338208fcb10de.png",
+          "referenceSha256": "3e5443fd8cbbc804fdd30a8860d2294ae182bc2915445ef7d61338208fcb10de",
+          "nativeSourceSha256": "7f54cdeb3aab6ea4131d4a7305a780f735af4ff65b7f51c06b247a7e8a42a8ad",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "3e5443fd8cbbc804fdd30a8860d2294ae182bc2915445ef7d61338208fcb10de",
+            "3e5443fd8cbbc804fdd30a8860d2294ae182bc2915445ef7d61338208fcb10de",
+            "3e5443fd8cbbc804fdd30a8860d2294ae182bc2915445ef7d61338208fcb10de"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/ead2b753e835128fb6bbf07ad5eb6eacf662ffba5cba44f1f3916443da76f20d.png",
+          "referenceSha256": "ead2b753e835128fb6bbf07ad5eb6eacf662ffba5cba44f1f3916443da76f20d",
+          "nativeSourceSha256": "7f54cdeb3aab6ea4131d4a7305a780f735af4ff65b7f51c06b247a7e8a42a8ad",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "ead2b753e835128fb6bbf07ad5eb6eacf662ffba5cba44f1f3916443da76f20d",
+            "ead2b753e835128fb6bbf07ad5eb6eacf662ffba5cba44f1f3916443da76f20d",
+            "ead2b753e835128fb6bbf07ad5eb6eacf662ffba5cba44f1f3916443da76f20d"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "original-batch6-23-candidate",
+      "input": "inputs/original-batch6-23-candidate.svg",
+      "sourceSha256": "e57d396daa946b29df603bb233d4a71ad6a5225d2458b75d30df96bb4102f817",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "original-batch6-23-candidate"
+      ],
+      "purpose": "Original calibrated R59 actual or exact control",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/8995bbaf22cab25106ed7556fe012ecdfb6636ae49363c13351f049b728a066e.png",
+          "referenceSha256": "8995bbaf22cab25106ed7556fe012ecdfb6636ae49363c13351f049b728a066e",
+          "nativeSourceSha256": "f20c4b6aa5e3583fbd25002c255137234f9101373f066493a86c8a285ca12215",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "8995bbaf22cab25106ed7556fe012ecdfb6636ae49363c13351f049b728a066e",
+            "8995bbaf22cab25106ed7556fe012ecdfb6636ae49363c13351f049b728a066e",
+            "8995bbaf22cab25106ed7556fe012ecdfb6636ae49363c13351f049b728a066e"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/7e6d5e04b16c0f720595fde4b00b0e0e152645606de373808908a9758a0a4e46.png",
+          "referenceSha256": "7e6d5e04b16c0f720595fde4b00b0e0e152645606de373808908a9758a0a4e46",
+          "nativeSourceSha256": "f20c4b6aa5e3583fbd25002c255137234f9101373f066493a86c8a285ca12215",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "7e6d5e04b16c0f720595fde4b00b0e0e152645606de373808908a9758a0a4e46",
+            "7e6d5e04b16c0f720595fde4b00b0e0e152645606de373808908a9758a0a4e46",
+            "7e6d5e04b16c0f720595fde4b00b0e0e152645606de373808908a9758a0a4e46"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "original-batch6-23-control",
+      "input": "inputs/original-batch6-23-control.svg",
+      "sourceSha256": "0d85fb5ee0634656f983a0254997dd9740bcda34255e566aa9cfdef564d037a6",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "original-batch6-23-control"
+      ],
+      "purpose": "Original calibrated R59 actual or exact control",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/8995bbaf22cab25106ed7556fe012ecdfb6636ae49363c13351f049b728a066e.png",
+          "referenceSha256": "8995bbaf22cab25106ed7556fe012ecdfb6636ae49363c13351f049b728a066e",
+          "nativeSourceSha256": "cb12a9b3def67f1635ecc1b98fbcc5da580e782ea2342fe6059ad85a9ef860e2",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "8995bbaf22cab25106ed7556fe012ecdfb6636ae49363c13351f049b728a066e",
+            "8995bbaf22cab25106ed7556fe012ecdfb6636ae49363c13351f049b728a066e",
+            "8995bbaf22cab25106ed7556fe012ecdfb6636ae49363c13351f049b728a066e"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/7e6d5e04b16c0f720595fde4b00b0e0e152645606de373808908a9758a0a4e46.png",
+          "referenceSha256": "7e6d5e04b16c0f720595fde4b00b0e0e152645606de373808908a9758a0a4e46",
+          "nativeSourceSha256": "cb12a9b3def67f1635ecc1b98fbcc5da580e782ea2342fe6059ad85a9ef860e2",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "7e6d5e04b16c0f720595fde4b00b0e0e152645606de373808908a9758a0a4e46",
+            "7e6d5e04b16c0f720595fde4b00b0e0e152645606de373808908a9758a0a4e46",
+            "7e6d5e04b16c0f720595fde4b00b0e0e152645606de373808908a9758a0a4e46"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "original-batch6-59-candidate",
+      "input": "inputs/original-batch6-59-candidate.svg",
+      "sourceSha256": "dfc5d0261d915a1330ddd8d2cbe17e1fd9f9bac4af57219751ec04ca115e2ec5",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "original-batch6-59-candidate",
+        "screening-batch6-59-candidate"
+      ],
+      "purpose": "Original calibrated R59 actual or exact control",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/1820f594004eb8aa98257bff2255d582f6e48fc3302f7838ebcc24af14e253b4.png",
+          "referenceSha256": "1820f594004eb8aa98257bff2255d582f6e48fc3302f7838ebcc24af14e253b4",
+          "nativeSourceSha256": "a79aa7d778cea3235e376b493e65f4b3295e68be505a231a4d019234ccfbef79",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "1820f594004eb8aa98257bff2255d582f6e48fc3302f7838ebcc24af14e253b4",
+            "1820f594004eb8aa98257bff2255d582f6e48fc3302f7838ebcc24af14e253b4",
+            "1820f594004eb8aa98257bff2255d582f6e48fc3302f7838ebcc24af14e253b4"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/9828a9c752822559061b1474ee3c304cdf0b30d8d7571d55bef0ffeebabaeef1.png",
+          "referenceSha256": "9828a9c752822559061b1474ee3c304cdf0b30d8d7571d55bef0ffeebabaeef1",
+          "nativeSourceSha256": "a79aa7d778cea3235e376b493e65f4b3295e68be505a231a4d019234ccfbef79",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "9828a9c752822559061b1474ee3c304cdf0b30d8d7571d55bef0ffeebabaeef1",
+            "9828a9c752822559061b1474ee3c304cdf0b30d8d7571d55bef0ffeebabaeef1",
+            "9828a9c752822559061b1474ee3c304cdf0b30d8d7571d55bef0ffeebabaeef1"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "original-batch6-59-control",
+      "input": "inputs/original-batch6-59-control.svg",
+      "sourceSha256": "df2fba21e65f3edee4c58110db8d339457b140e45f529e8cd7431af60568402a",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "original-batch6-59-control",
+        "screening-batch6-59-control"
+      ],
+      "purpose": "Original calibrated R59 actual or exact control",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/1820f594004eb8aa98257bff2255d582f6e48fc3302f7838ebcc24af14e253b4.png",
+          "referenceSha256": "1820f594004eb8aa98257bff2255d582f6e48fc3302f7838ebcc24af14e253b4",
+          "nativeSourceSha256": "144e2a9d2b6005be91df39c28962a5a3fdce626457a11fbb7695a321d28b4c5a",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "1820f594004eb8aa98257bff2255d582f6e48fc3302f7838ebcc24af14e253b4",
+            "1820f594004eb8aa98257bff2255d582f6e48fc3302f7838ebcc24af14e253b4",
+            "1820f594004eb8aa98257bff2255d582f6e48fc3302f7838ebcc24af14e253b4"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/9828a9c752822559061b1474ee3c304cdf0b30d8d7571d55bef0ffeebabaeef1.png",
+          "referenceSha256": "9828a9c752822559061b1474ee3c304cdf0b30d8d7571d55bef0ffeebabaeef1",
+          "nativeSourceSha256": "144e2a9d2b6005be91df39c28962a5a3fdce626457a11fbb7695a321d28b4c5a",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "9828a9c752822559061b1474ee3c304cdf0b30d8d7571d55bef0ffeebabaeef1",
+            "9828a9c752822559061b1474ee3c304cdf0b30d8d7571d55bef0ffeebabaeef1",
+            "9828a9c752822559061b1474ee3c304cdf0b30d8d7571d55bef0ffeebabaeef1"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "original-batch6-89-candidate",
+      "input": "inputs/original-batch6-89-candidate.svg",
+      "sourceSha256": "a83462b7e903f03be14f560f416c8b1fc2dc37ab8fe38bb3f9da1ee9157caa55",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "original-batch6-89-candidate"
+      ],
+      "purpose": "Original calibrated R59 actual or exact control",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/06c50985dff6a79432f8bb6b1ab2ba78b4994d8937861dd36c306adb2a613610.png",
+          "referenceSha256": "06c50985dff6a79432f8bb6b1ab2ba78b4994d8937861dd36c306adb2a613610",
+          "nativeSourceSha256": "b425744e124e9047dd18272e56ea4503f32488950a45b230d786fdc96de84dee",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "06c50985dff6a79432f8bb6b1ab2ba78b4994d8937861dd36c306adb2a613610",
+            "06c50985dff6a79432f8bb6b1ab2ba78b4994d8937861dd36c306adb2a613610",
+            "06c50985dff6a79432f8bb6b1ab2ba78b4994d8937861dd36c306adb2a613610"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/dfe048c89f75326e25fc554808a35ebdb91019899e6cda0f9b108d978b0875ba.png",
+          "referenceSha256": "dfe048c89f75326e25fc554808a35ebdb91019899e6cda0f9b108d978b0875ba",
+          "nativeSourceSha256": "b425744e124e9047dd18272e56ea4503f32488950a45b230d786fdc96de84dee",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "dfe048c89f75326e25fc554808a35ebdb91019899e6cda0f9b108d978b0875ba",
+            "dfe048c89f75326e25fc554808a35ebdb91019899e6cda0f9b108d978b0875ba",
+            "dfe048c89f75326e25fc554808a35ebdb91019899e6cda0f9b108d978b0875ba"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "original-batch6-89-control",
+      "input": "inputs/original-batch6-89-control.svg",
+      "sourceSha256": "c135c0c7db6d0fb039897373b21e86ca3369a248930852bee0d9c7f5be34cba0",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "original-batch6-89-control"
+      ],
+      "purpose": "Original calibrated R59 actual or exact control",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/06c50985dff6a79432f8bb6b1ab2ba78b4994d8937861dd36c306adb2a613610.png",
+          "referenceSha256": "06c50985dff6a79432f8bb6b1ab2ba78b4994d8937861dd36c306adb2a613610",
+          "nativeSourceSha256": "01bff0fdd673794d68e26f766d574347c4cc4e08d7f6d8d4ff2fa57c51045784",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "06c50985dff6a79432f8bb6b1ab2ba78b4994d8937861dd36c306adb2a613610",
+            "06c50985dff6a79432f8bb6b1ab2ba78b4994d8937861dd36c306adb2a613610",
+            "06c50985dff6a79432f8bb6b1ab2ba78b4994d8937861dd36c306adb2a613610"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/dfe048c89f75326e25fc554808a35ebdb91019899e6cda0f9b108d978b0875ba.png",
+          "referenceSha256": "dfe048c89f75326e25fc554808a35ebdb91019899e6cda0f9b108d978b0875ba",
+          "nativeSourceSha256": "01bff0fdd673794d68e26f766d574347c4cc4e08d7f6d8d4ff2fa57c51045784",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "dfe048c89f75326e25fc554808a35ebdb91019899e6cda0f9b108d978b0875ba",
+            "dfe048c89f75326e25fc554808a35ebdb91019899e6cda0f9b108d978b0875ba",
+            "dfe048c89f75326e25fc554808a35ebdb91019899e6cda0f9b108d978b0875ba"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "screening-batch6-55-candidate",
+      "input": "inputs/screening-batch6-55-candidate.svg",
+      "sourceSha256": "27de612083a511617485935e324951e42f9e39ae2c84073715ebdef638248421",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "screening-batch6-55-candidate"
+      ],
+      "purpose": "Changed original216 screening input: independently qualify actual graph; stroke",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/fbb94a07e37cc2e896917ce797d314443ddb8d548503c9a74269f38d0680f483.png",
+          "referenceSha256": "fbb94a07e37cc2e896917ce797d314443ddb8d548503c9a74269f38d0680f483",
+          "nativeSourceSha256": "068620a85bf4c4fdcf986d06726f836c9dade8fe9e19399bae299b12dcd0dd51",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "fbb94a07e37cc2e896917ce797d314443ddb8d548503c9a74269f38d0680f483",
+            "fbb94a07e37cc2e896917ce797d314443ddb8d548503c9a74269f38d0680f483",
+            "fbb94a07e37cc2e896917ce797d314443ddb8d548503c9a74269f38d0680f483"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/9b0a17ad12cbde61e3977ae02c9f870643bf88fb551530da6a8624bc46e08246.png",
+          "referenceSha256": "9b0a17ad12cbde61e3977ae02c9f870643bf88fb551530da6a8624bc46e08246",
+          "nativeSourceSha256": "068620a85bf4c4fdcf986d06726f836c9dade8fe9e19399bae299b12dcd0dd51",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "9b0a17ad12cbde61e3977ae02c9f870643bf88fb551530da6a8624bc46e08246",
+            "9b0a17ad12cbde61e3977ae02c9f870643bf88fb551530da6a8624bc46e08246",
+            "9b0a17ad12cbde61e3977ae02c9f870643bf88fb551530da6a8624bc46e08246"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "screening-batch6-55-control",
+      "input": "inputs/screening-batch6-55-control.svg",
+      "sourceSha256": "432e5d224b39e27975daebeba06c9c2b642fab649a2a1c1ab5d55dde39bd2386",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "screening-batch6-55-control"
+      ],
+      "purpose": "Changed original216 screening input: independently qualify actual graph; stroke",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/fbb94a07e37cc2e896917ce797d314443ddb8d548503c9a74269f38d0680f483.png",
+          "referenceSha256": "fbb94a07e37cc2e896917ce797d314443ddb8d548503c9a74269f38d0680f483",
+          "nativeSourceSha256": "b996d1eaf6cb08ee74a93155ba305225d8e56a6b22e514cbaaf21f9433f049b2",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "fbb94a07e37cc2e896917ce797d314443ddb8d548503c9a74269f38d0680f483",
+            "fbb94a07e37cc2e896917ce797d314443ddb8d548503c9a74269f38d0680f483",
+            "fbb94a07e37cc2e896917ce797d314443ddb8d548503c9a74269f38d0680f483"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/9b0a17ad12cbde61e3977ae02c9f870643bf88fb551530da6a8624bc46e08246.png",
+          "referenceSha256": "9b0a17ad12cbde61e3977ae02c9f870643bf88fb551530da6a8624bc46e08246",
+          "nativeSourceSha256": "b996d1eaf6cb08ee74a93155ba305225d8e56a6b22e514cbaaf21f9433f049b2",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "9b0a17ad12cbde61e3977ae02c9f870643bf88fb551530da6a8624bc46e08246",
+            "9b0a17ad12cbde61e3977ae02c9f870643bf88fb551530da6a8624bc46e08246",
+            "9b0a17ad12cbde61e3977ae02c9f870643bf88fb551530da6a8624bc46e08246"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "screening-batch6-56-candidate",
+      "input": "inputs/screening-batch6-56-candidate.svg",
+      "sourceSha256": "cb01fad047dfdc5e92358acb71bdf0916c36c89df10a5cf4f9dcb5578b5df18e",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "screening-batch6-56-candidate"
+      ],
+      "purpose": "Changed original216 screening input: independently qualify actual graph; both",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/9fac417d0042d8968763499d2468d0992b82f17233776aa134a363b2863d47bf.png",
+          "referenceSha256": "9fac417d0042d8968763499d2468d0992b82f17233776aa134a363b2863d47bf",
+          "nativeSourceSha256": "475765002b844bedb7a65cc6d828bb0dd97b20a1965248518cc747d84bdec5e8",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "9fac417d0042d8968763499d2468d0992b82f17233776aa134a363b2863d47bf",
+            "9fac417d0042d8968763499d2468d0992b82f17233776aa134a363b2863d47bf",
+            "9fac417d0042d8968763499d2468d0992b82f17233776aa134a363b2863d47bf"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/552abc30aae84325aa4c0f97bd311d6ee069c065d13e841c17c1a937eb06e52a.png",
+          "referenceSha256": "552abc30aae84325aa4c0f97bd311d6ee069c065d13e841c17c1a937eb06e52a",
+          "nativeSourceSha256": "475765002b844bedb7a65cc6d828bb0dd97b20a1965248518cc747d84bdec5e8",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "552abc30aae84325aa4c0f97bd311d6ee069c065d13e841c17c1a937eb06e52a",
+            "552abc30aae84325aa4c0f97bd311d6ee069c065d13e841c17c1a937eb06e52a",
+            "552abc30aae84325aa4c0f97bd311d6ee069c065d13e841c17c1a937eb06e52a"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "screening-batch6-56-control",
+      "input": "inputs/screening-batch6-56-control.svg",
+      "sourceSha256": "6a8ff70aa2d8cf9796f7b71b0cb64f2bf03fa8c341cafcfb6d77bcfc2bcea79e",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "screening-batch6-56-control"
+      ],
+      "purpose": "Changed original216 screening input: independently qualify actual graph; both",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/9fac417d0042d8968763499d2468d0992b82f17233776aa134a363b2863d47bf.png",
+          "referenceSha256": "9fac417d0042d8968763499d2468d0992b82f17233776aa134a363b2863d47bf",
+          "nativeSourceSha256": "de663b58dff000313fce2f14e29530093bd1570a17d23947e37039c8d331b2a5",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "9fac417d0042d8968763499d2468d0992b82f17233776aa134a363b2863d47bf",
+            "9fac417d0042d8968763499d2468d0992b82f17233776aa134a363b2863d47bf",
+            "9fac417d0042d8968763499d2468d0992b82f17233776aa134a363b2863d47bf"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/552abc30aae84325aa4c0f97bd311d6ee069c065d13e841c17c1a937eb06e52a.png",
+          "referenceSha256": "552abc30aae84325aa4c0f97bd311d6ee069c065d13e841c17c1a937eb06e52a",
+          "nativeSourceSha256": "de663b58dff000313fce2f14e29530093bd1570a17d23947e37039c8d331b2a5",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "552abc30aae84325aa4c0f97bd311d6ee069c065d13e841c17c1a937eb06e52a",
+            "552abc30aae84325aa4c0f97bd311d6ee069c065d13e841c17c1a937eb06e52a",
+            "552abc30aae84325aa4c0f97bd311d6ee069c065d13e841c17c1a937eb06e52a"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "screening-batch6-58-candidate",
+      "input": "inputs/screening-batch6-58-candidate.svg",
+      "sourceSha256": "43df090e6d7e148227edbe19ae91a83cbf4d21b6d630f980bb047187154aa827",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "screening-batch6-58-candidate"
+      ],
+      "purpose": "Changed original216 screening input: independently qualify actual graph; stroke",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/9aa82c1cd43acf821abf2977e2a89055c4501b19118444b28474f50e156d804b.png",
+          "referenceSha256": "9aa82c1cd43acf821abf2977e2a89055c4501b19118444b28474f50e156d804b",
+          "nativeSourceSha256": "facbd17a9bd93b97f863fba5e39a8d5de6e012a24883d2368923468989858c47",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "9aa82c1cd43acf821abf2977e2a89055c4501b19118444b28474f50e156d804b",
+            "9aa82c1cd43acf821abf2977e2a89055c4501b19118444b28474f50e156d804b",
+            "9aa82c1cd43acf821abf2977e2a89055c4501b19118444b28474f50e156d804b"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/a0992efad0c0b77e4b18fda1ce40bb9fcc0e515b563f4035a9f20f7437ff32c9.png",
+          "referenceSha256": "a0992efad0c0b77e4b18fda1ce40bb9fcc0e515b563f4035a9f20f7437ff32c9",
+          "nativeSourceSha256": "facbd17a9bd93b97f863fba5e39a8d5de6e012a24883d2368923468989858c47",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "a0992efad0c0b77e4b18fda1ce40bb9fcc0e515b563f4035a9f20f7437ff32c9",
+            "a0992efad0c0b77e4b18fda1ce40bb9fcc0e515b563f4035a9f20f7437ff32c9",
+            "a0992efad0c0b77e4b18fda1ce40bb9fcc0e515b563f4035a9f20f7437ff32c9"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "screening-batch6-58-control",
+      "input": "inputs/screening-batch6-58-control.svg",
+      "sourceSha256": "22c65d7372f046a7caca8762d1a1218fe9d12f4c00925039f35e9bb8ce0b852a",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "screening-batch6-58-control"
+      ],
+      "purpose": "Changed original216 screening input: independently qualify actual graph; stroke",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/9aa82c1cd43acf821abf2977e2a89055c4501b19118444b28474f50e156d804b.png",
+          "referenceSha256": "9aa82c1cd43acf821abf2977e2a89055c4501b19118444b28474f50e156d804b",
+          "nativeSourceSha256": "038d9ea701567cb5bd54f701dca652c024d73301cf424771c949db7f0fa32981",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "9aa82c1cd43acf821abf2977e2a89055c4501b19118444b28474f50e156d804b",
+            "9aa82c1cd43acf821abf2977e2a89055c4501b19118444b28474f50e156d804b",
+            "9aa82c1cd43acf821abf2977e2a89055c4501b19118444b28474f50e156d804b"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/a0992efad0c0b77e4b18fda1ce40bb9fcc0e515b563f4035a9f20f7437ff32c9.png",
+          "referenceSha256": "a0992efad0c0b77e4b18fda1ce40bb9fcc0e515b563f4035a9f20f7437ff32c9",
+          "nativeSourceSha256": "038d9ea701567cb5bd54f701dca652c024d73301cf424771c949db7f0fa32981",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "a0992efad0c0b77e4b18fda1ce40bb9fcc0e515b563f4035a9f20f7437ff32c9",
+            "a0992efad0c0b77e4b18fda1ce40bb9fcc0e515b563f4035a9f20f7437ff32c9",
+            "a0992efad0c0b77e4b18fda1ce40bb9fcc0e515b563f4035a9f20f7437ff32c9"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "screening-batch6-91-candidate",
+      "input": "inputs/screening-batch6-91-candidate.svg",
+      "sourceSha256": "cd3e2aa4a7e01e8c2b902b70b14187809afaafcb982a012e65cb6f13a46865ca",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "screening-batch6-91-candidate"
+      ],
+      "purpose": "Changed original216 screening input: independently qualify actual graph; stroke",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/6eca9478c1d34467203e08eb7646300582fa03c82c0a83266dbd61ef745feeb2.png",
+          "referenceSha256": "6eca9478c1d34467203e08eb7646300582fa03c82c0a83266dbd61ef745feeb2",
+          "nativeSourceSha256": "e2536ca0ec510584fc5c597abd1fbdaccb1db600e8b9499cfd3d00e8aac8096e",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "6eca9478c1d34467203e08eb7646300582fa03c82c0a83266dbd61ef745feeb2",
+            "6eca9478c1d34467203e08eb7646300582fa03c82c0a83266dbd61ef745feeb2",
+            "6eca9478c1d34467203e08eb7646300582fa03c82c0a83266dbd61ef745feeb2"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/79f947330f5c080b1aaf7e1ef433b70b163dd58fa8254628a438e1f80125ba4c.png",
+          "referenceSha256": "79f947330f5c080b1aaf7e1ef433b70b163dd58fa8254628a438e1f80125ba4c",
+          "nativeSourceSha256": "e2536ca0ec510584fc5c597abd1fbdaccb1db600e8b9499cfd3d00e8aac8096e",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "79f947330f5c080b1aaf7e1ef433b70b163dd58fa8254628a438e1f80125ba4c",
+            "79f947330f5c080b1aaf7e1ef433b70b163dd58fa8254628a438e1f80125ba4c",
+            "79f947330f5c080b1aaf7e1ef433b70b163dd58fa8254628a438e1f80125ba4c"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "screening-batch6-91-control",
+      "input": "inputs/screening-batch6-91-control.svg",
+      "sourceSha256": "76867d1a2a4accabd4161ac4b9bb2880e646609a0985af56bc7c797a4b8382f4",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "screening-batch6-91-control"
+      ],
+      "purpose": "Changed original216 screening input: independently qualify actual graph; stroke",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/6eca9478c1d34467203e08eb7646300582fa03c82c0a83266dbd61ef745feeb2.png",
+          "referenceSha256": "6eca9478c1d34467203e08eb7646300582fa03c82c0a83266dbd61ef745feeb2",
+          "nativeSourceSha256": "a40cbabe93f7f6d93c9cb8a96ffb91fe5c318f03cc430fbf2ef7bc9a5369a6d6",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "6eca9478c1d34467203e08eb7646300582fa03c82c0a83266dbd61ef745feeb2",
+            "6eca9478c1d34467203e08eb7646300582fa03c82c0a83266dbd61ef745feeb2",
+            "6eca9478c1d34467203e08eb7646300582fa03c82c0a83266dbd61ef745feeb2"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/79f947330f5c080b1aaf7e1ef433b70b163dd58fa8254628a438e1f80125ba4c.png",
+          "referenceSha256": "79f947330f5c080b1aaf7e1ef433b70b163dd58fa8254628a438e1f80125ba4c",
+          "nativeSourceSha256": "a40cbabe93f7f6d93c9cb8a96ffb91fe5c318f03cc430fbf2ef7bc9a5369a6d6",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "79f947330f5c080b1aaf7e1ef433b70b163dd58fa8254628a438e1f80125ba4c",
+            "79f947330f5c080b1aaf7e1ef433b70b163dd58fa8254628a438e1f80125ba4c",
+            "79f947330f5c080b1aaf7e1ef433b70b163dd58fa8254628a438e1f80125ba4c"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "screening-batch6-92-candidate",
+      "input": "inputs/screening-batch6-92-candidate.svg",
+      "sourceSha256": "02978c240fda8acb9cd35add9c6baa79ed4bab77799bd87de8fea038c3e082b0",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "screening-batch6-92-candidate"
+      ],
+      "purpose": "Changed original216 screening input: independently qualify actual graph; both",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/1877f1210212f6986c6ddc9e9f98c7cb8a3d8948598567923a58372565cfe472.png",
+          "referenceSha256": "1877f1210212f6986c6ddc9e9f98c7cb8a3d8948598567923a58372565cfe472",
+          "nativeSourceSha256": "a3be81ff65f308f28a4913372038a1aa8ce0b1cb37fd62af19279262213b7c3c",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "1877f1210212f6986c6ddc9e9f98c7cb8a3d8948598567923a58372565cfe472",
+            "1877f1210212f6986c6ddc9e9f98c7cb8a3d8948598567923a58372565cfe472",
+            "1877f1210212f6986c6ddc9e9f98c7cb8a3d8948598567923a58372565cfe472"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/7b38b57604b67a741b0e86affecc8fc831fe79e0f7e3fd416200f6bb68e71ffa.png",
+          "referenceSha256": "7b38b57604b67a741b0e86affecc8fc831fe79e0f7e3fd416200f6bb68e71ffa",
+          "nativeSourceSha256": "a3be81ff65f308f28a4913372038a1aa8ce0b1cb37fd62af19279262213b7c3c",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "7b38b57604b67a741b0e86affecc8fc831fe79e0f7e3fd416200f6bb68e71ffa",
+            "7b38b57604b67a741b0e86affecc8fc831fe79e0f7e3fd416200f6bb68e71ffa",
+            "7b38b57604b67a741b0e86affecc8fc831fe79e0f7e3fd416200f6bb68e71ffa"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "screening-batch6-92-control",
+      "input": "inputs/screening-batch6-92-control.svg",
+      "sourceSha256": "58c6b7eb842002ee163436f17788b15f814234286f71426343b63d64a7371e3b",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "screening-batch6-92-control"
+      ],
+      "purpose": "Changed original216 screening input: independently qualify actual graph; both",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/1877f1210212f6986c6ddc9e9f98c7cb8a3d8948598567923a58372565cfe472.png",
+          "referenceSha256": "1877f1210212f6986c6ddc9e9f98c7cb8a3d8948598567923a58372565cfe472",
+          "nativeSourceSha256": "c0e48b3d54e9cf7574720f2aad49c076d3ce9a26e069df8271229c4934bc1e6b",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "1877f1210212f6986c6ddc9e9f98c7cb8a3d8948598567923a58372565cfe472",
+            "1877f1210212f6986c6ddc9e9f98c7cb8a3d8948598567923a58372565cfe472",
+            "1877f1210212f6986c6ddc9e9f98c7cb8a3d8948598567923a58372565cfe472"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/7b38b57604b67a741b0e86affecc8fc831fe79e0f7e3fd416200f6bb68e71ffa.png",
+          "referenceSha256": "7b38b57604b67a741b0e86affecc8fc831fe79e0f7e3fd416200f6bb68e71ffa",
+          "nativeSourceSha256": "c0e48b3d54e9cf7574720f2aad49c076d3ce9a26e069df8271229c4934bc1e6b",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "7b38b57604b67a741b0e86affecc8fc831fe79e0f7e3fd416200f6bb68e71ffa",
+            "7b38b57604b67a741b0e86affecc8fc831fe79e0f7e3fd416200f6bb68e71ffa",
+            "7b38b57604b67a741b0e86affecc8fc831fe79e0f7e3fd416200f6bb68e71ffa"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "interaction-thin-width",
+      "input": "inputs/interaction-thin-width.svg",
+      "sourceSha256": "22b85e3b40fc5a05896605c750f869f6dcb6dbfd2aad98cb386fa56f4110829f",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "interaction-thin-width"
+      ],
+      "purpose": "Thin stroke width through the same fractional font scale",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/04cd0d1deec97c2580daa6f3b2cd5590643bca15904256adcd288c1d0dc3908b.png",
+          "referenceSha256": "04cd0d1deec97c2580daa6f3b2cd5590643bca15904256adcd288c1d0dc3908b",
+          "nativeSourceSha256": "8651f71eb62eded6ef75ed187afd074a9649bf300b978d4d34c307b1169c1e4c",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "04cd0d1deec97c2580daa6f3b2cd5590643bca15904256adcd288c1d0dc3908b",
+            "04cd0d1deec97c2580daa6f3b2cd5590643bca15904256adcd288c1d0dc3908b",
+            "04cd0d1deec97c2580daa6f3b2cd5590643bca15904256adcd288c1d0dc3908b"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/5ae8d13d4ee5cb8f5adbfc6b0f253a7e3bd8724255e97ce371d643f762302223.png",
+          "referenceSha256": "5ae8d13d4ee5cb8f5adbfc6b0f253a7e3bd8724255e97ce371d643f762302223",
+          "nativeSourceSha256": "8651f71eb62eded6ef75ed187afd074a9649bf300b978d4d34c307b1169c1e4c",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "5ae8d13d4ee5cb8f5adbfc6b0f253a7e3bd8724255e97ce371d643f762302223",
+            "5ae8d13d4ee5cb8f5adbfc6b0f253a7e3bd8724255e97ce371d643f762302223",
+            "5ae8d13d4ee5cb8f5adbfc6b0f253a7e3bd8724255e97ce371d643f762302223"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "interaction-wide-width",
+      "input": "inputs/interaction-wide-width.svg",
+      "sourceSha256": "f3780ef928ba219e07d97c300e90bea4ef878e0563e1e252af7e8473569f9f8b",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "interaction-wide-width"
+      ],
+      "purpose": "Integer authored width with geometric stroke construction",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/a49c43784d6bdca0ec410ea80ebc014df9bd90b59f480a4fc110134129b8787e.png",
+          "referenceSha256": "a49c43784d6bdca0ec410ea80ebc014df9bd90b59f480a4fc110134129b8787e",
+          "nativeSourceSha256": "00b199a84912198a255a4bdc41d22a95898379aa894c0bc04776a3502d9eb21b",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "a49c43784d6bdca0ec410ea80ebc014df9bd90b59f480a4fc110134129b8787e",
+            "a49c43784d6bdca0ec410ea80ebc014df9bd90b59f480a4fc110134129b8787e",
+            "a49c43784d6bdca0ec410ea80ebc014df9bd90b59f480a4fc110134129b8787e"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/2c1500b590802c70aa67039444534a8ad171b4488237d137ec5484eef9ce8b8b.png",
+          "referenceSha256": "2c1500b590802c70aa67039444534a8ad171b4488237d137ec5484eef9ce8b8b",
+          "nativeSourceSha256": "00b199a84912198a255a4bdc41d22a95898379aa894c0bc04776a3502d9eb21b",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "2c1500b590802c70aa67039444534a8ad171b4488237d137ec5484eef9ce8b8b",
+            "2c1500b590802c70aa67039444534a8ad171b4488237d137ec5484eef9ce8b8b",
+            "2c1500b590802c70aa67039444534a8ad171b4488237d137ec5484eef9ce8b8b"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "interaction-wider-width",
+      "input": "inputs/interaction-wider-width.svg",
+      "sourceSha256": "e4ba91082fbf4ed28f31853f567b496dc171759150f2b942871cc2b8f690ed5d",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "interaction-wider-width"
+      ],
+      "purpose": "Larger outline and visual enclosure",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/0c8853c8f696f0c7d8663c2c2ffd48064ebb8787c4323bc6ea41dfc99f99c952.png",
+          "referenceSha256": "0c8853c8f696f0c7d8663c2c2ffd48064ebb8787c4323bc6ea41dfc99f99c952",
+          "nativeSourceSha256": "65cbf1544f196d4a910e9e492013e67439154d9ffebcb1680ab80ed380d3f710",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "0c8853c8f696f0c7d8663c2c2ffd48064ebb8787c4323bc6ea41dfc99f99c952",
+            "0c8853c8f696f0c7d8663c2c2ffd48064ebb8787c4323bc6ea41dfc99f99c952",
+            "0c8853c8f696f0c7d8663c2c2ffd48064ebb8787c4323bc6ea41dfc99f99c952"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/fb275a381369cac403f27fcf66a1fe3be8f3658f5372b9ea695aa6fd79a39b51.png",
+          "referenceSha256": "fb275a381369cac403f27fcf66a1fe3be8f3658f5372b9ea695aa6fd79a39b51",
+          "nativeSourceSha256": "65cbf1544f196d4a910e9e492013e67439154d9ffebcb1680ab80ed380d3f710",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "fb275a381369cac403f27fcf66a1fe3be8f3658f5372b9ea695aa6fd79a39b51",
+            "fb275a381369cac403f27fcf66a1fe3be8f3658f5372b9ea695aa6fd79a39b51",
+            "fb275a381369cac403f27fcf66a1fe3be8f3658f5372b9ea695aa6fd79a39b51"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "interaction-stroke-fill-order",
+      "input": "inputs/interaction-stroke-fill-order.svg",
+      "sourceSha256": "c381b004df639ca10cdbeb842bb7c98181ddfda10c75f93216f3df9e5918ff42",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "interaction-stroke-fill-order"
+      ],
+      "purpose": "Stroke-before-fill compositing",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/17bf275b6113d68b1d69c3a81c28c0a25d6f61e0090fc4765cbe07776cb1f990.png",
+          "referenceSha256": "17bf275b6113d68b1d69c3a81c28c0a25d6f61e0090fc4765cbe07776cb1f990",
+          "nativeSourceSha256": "e8f0e803609060af0c82490dd4729964493eaf0d253c818257d6516b486128a2",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "17bf275b6113d68b1d69c3a81c28c0a25d6f61e0090fc4765cbe07776cb1f990",
+            "17bf275b6113d68b1d69c3a81c28c0a25d6f61e0090fc4765cbe07776cb1f990",
+            "17bf275b6113d68b1d69c3a81c28c0a25d6f61e0090fc4765cbe07776cb1f990"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/53b0d2eb31970cb698d3a828ffb54b0ff04de1151809bcc195e8d13be703fa0e.png",
+          "referenceSha256": "53b0d2eb31970cb698d3a828ffb54b0ff04de1151809bcc195e8d13be703fa0e",
+          "nativeSourceSha256": "e8f0e803609060af0c82490dd4729964493eaf0d253c818257d6516b486128a2",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "53b0d2eb31970cb698d3a828ffb54b0ff04de1151809bcc195e8d13be703fa0e",
+            "53b0d2eb31970cb698d3a828ffb54b0ff04de1151809bcc195e8d13be703fa0e",
+            "53b0d2eb31970cb698d3a828ffb54b0ff04de1151809bcc195e8d13be703fa0e"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "interaction-dashed",
+      "input": "inputs/interaction-dashed.svg",
+      "sourceSha256": "3e9dd97037e6ccccb73648827e575a51bc802208568b036e5ffe58412d102159",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "interaction-dashed"
+      ],
+      "purpose": "Retained quadratic dash construction",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/0f89d6a590a2c2db4c5e2b7c0ebf67b6765c7415db8207b6c05c45a0b264d4d9.png",
+          "referenceSha256": "0f89d6a590a2c2db4c5e2b7c0ebf67b6765c7415db8207b6c05c45a0b264d4d9",
+          "nativeSourceSha256": "7911f61afe96115b5be3cfef8a46398e1de3555b39e2f9b9788527c2eba89d48",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "0f89d6a590a2c2db4c5e2b7c0ebf67b6765c7415db8207b6c05c45a0b264d4d9",
+            "0f89d6a590a2c2db4c5e2b7c0ebf67b6765c7415db8207b6c05c45a0b264d4d9",
+            "0f89d6a590a2c2db4c5e2b7c0ebf67b6765c7415db8207b6c05c45a0b264d4d9"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/36c031e2a5bbedcfbd7123572116b7308a5d567d7eb38a7b5e7be2dcd2303310.png",
+          "referenceSha256": "36c031e2a5bbedcfbd7123572116b7308a5d567d7eb38a7b5e7be2dcd2303310",
+          "nativeSourceSha256": "7911f61afe96115b5be3cfef8a46398e1de3555b39e2f9b9788527c2eba89d48",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "36c031e2a5bbedcfbd7123572116b7308a5d567d7eb38a7b5e7be2dcd2303310",
+            "36c031e2a5bbedcfbd7123572116b7308a5d567d7eb38a7b5e7be2dcd2303310",
+            "36c031e2a5bbedcfbd7123572116b7308a5d567d7eb38a7b5e7be2dcd2303310"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "interaction-non-scaling",
+      "input": "inputs/interaction-non-scaling.svg",
+      "sourceSha256": "ef352b4a3a7b28894bc93aa1ae1293107c04f1f528045a6e55d132c990903763",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "interaction-non-scaling"
+      ],
+      "purpose": "Non-scaling stroke width and font strike interaction",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/a50f24c3a347b1c332e84e7f7b655c940eee0785638edea7c0f9c568a8099935.png",
+          "referenceSha256": "a50f24c3a347b1c332e84e7f7b655c940eee0785638edea7c0f9c568a8099935",
+          "nativeSourceSha256": "e62b72142784e4645ae5fbca051b3cfef4ea441978957fd8278f0fbadec0939f",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "a50f24c3a347b1c332e84e7f7b655c940eee0785638edea7c0f9c568a8099935",
+            "a50f24c3a347b1c332e84e7f7b655c940eee0785638edea7c0f9c568a8099935",
+            "a50f24c3a347b1c332e84e7f7b655c940eee0785638edea7c0f9c568a8099935"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/46fe28cfbeca15dc1cf71562325cb08de634a2045f61c150dbc1949e68f1d61c.png",
+          "referenceSha256": "46fe28cfbeca15dc1cf71562325cb08de634a2045f61c150dbc1949e68f1d61c",
+          "nativeSourceSha256": "e62b72142784e4645ae5fbca051b3cfef4ea441978957fd8278f0fbadec0939f",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "46fe28cfbeca15dc1cf71562325cb08de634a2045f61c150dbc1949e68f1d61c",
+            "46fe28cfbeca15dc1cf71562325cb08de634a2045f61c150dbc1949e68f1d61c",
+            "46fe28cfbeca15dc1cf71562325cb08de634a2045f61c150dbc1949e68f1d61c"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "interaction-reflected",
+      "input": "inputs/interaction-reflected.svg",
+      "sourceSha256": "10bcc23a022fb27b15857a8d681213a523770c2c935289cf1bb9c442f8d2a589",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "interaction-reflected"
+      ],
+      "purpose": "Reflected stroke construction and bitmap placement",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/c66728ca7c630547187a9e777b687843c4efa924ee7e722578bbef4a9062b097.png",
+          "referenceSha256": "c66728ca7c630547187a9e777b687843c4efa924ee7e722578bbef4a9062b097",
+          "nativeSourceSha256": "9115ca320c44c1c5edaa2bc7bfeaac49316d72e076cbadc11de248bb48e95ff7",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "c66728ca7c630547187a9e777b687843c4efa924ee7e722578bbef4a9062b097",
+            "c66728ca7c630547187a9e777b687843c4efa924ee7e722578bbef4a9062b097",
+            "c66728ca7c630547187a9e777b687843c4efa924ee7e722578bbef4a9062b097"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/aad4f1ecf2b23c843e63146aa09731262f4bd48297151a74d71cf2c2c387da67.png",
+          "referenceSha256": "aad4f1ecf2b23c843e63146aa09731262f4bd48297151a74d71cf2c2c387da67",
+          "nativeSourceSha256": "9115ca320c44c1c5edaa2bc7bfeaac49316d72e076cbadc11de248bb48e95ff7",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "aad4f1ecf2b23c843e63146aa09731262f4bd48297151a74d71cf2c2c387da67",
+            "aad4f1ecf2b23c843e63146aa09731262f4bd48297151a74d71cf2c2c387da67",
+            "aad4f1ecf2b23c843e63146aa09731262f4bd48297151a74d71cf2c2c387da67"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "interaction-skewed",
+      "input": "inputs/interaction-skewed.svg",
+      "sourceSha256": "d673bd31c228c847553886f36cfbea0241ed28536127cbd33327893af2f63025",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "interaction-skewed"
+      ],
+      "purpose": "Non-diagonal remaining strike matrix",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/1ad17cb479df98eda544baf4e4865c53dd7813014858ee01ca70468a7e2d9621.png",
+          "referenceSha256": "1ad17cb479df98eda544baf4e4865c53dd7813014858ee01ca70468a7e2d9621",
+          "nativeSourceSha256": "538de51df1a05c0acb444dbef6610540efc79e79346ad7ef0bdefe27a57df8c3",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "1ad17cb479df98eda544baf4e4865c53dd7813014858ee01ca70468a7e2d9621",
+            "1ad17cb479df98eda544baf4e4865c53dd7813014858ee01ca70468a7e2d9621",
+            "1ad17cb479df98eda544baf4e4865c53dd7813014858ee01ca70468a7e2d9621"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/55740938f94c53dd9a8e13dd94038a2990922e4fc4543f0ffab2f2f2152232de.png",
+          "referenceSha256": "55740938f94c53dd9a8e13dd94038a2990922e4fc4543f0ffab2f2f2152232de",
+          "nativeSourceSha256": "538de51df1a05c0acb444dbef6610540efc79e79346ad7ef0bdefe27a57df8c3",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "55740938f94c53dd9a8e13dd94038a2990922e4fc4543f0ffab2f2f2152232de",
+            "55740938f94c53dd9a8e13dd94038a2990922e4fc4543f0ffab2f2f2152232de",
+            "55740938f94c53dd9a8e13dd94038a2990922e4fc4543f0ffab2f2f2152232de"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "interaction-quarter-turn",
+      "input": "inputs/interaction-quarter-turn.svg",
+      "sourceSha256": "4ca10bee5e8246f875c198c8a8912284bb59c48e0218006e7d8bcd1d10178a16",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "interaction-quarter-turn"
+      ],
+      "purpose": "Quarter-turn path construction and phase placement",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/871ae6e13cbb8ba1bc49636e4637eeb2283d9db65b0c7d493c187f4f6bbef7ec.png",
+          "referenceSha256": "871ae6e13cbb8ba1bc49636e4637eeb2283d9db65b0c7d493c187f4f6bbef7ec",
+          "nativeSourceSha256": "f7a7c7974287bcc3f45b0b032b7ed3a8a3ce563f51d621f3fc24d9e4c0c2e487",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "871ae6e13cbb8ba1bc49636e4637eeb2283d9db65b0c7d493c187f4f6bbef7ec",
+            "871ae6e13cbb8ba1bc49636e4637eeb2283d9db65b0c7d493c187f4f6bbef7ec",
+            "871ae6e13cbb8ba1bc49636e4637eeb2283d9db65b0c7d493c187f4f6bbef7ec"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/7b6e56a12fd4c4bf6b7bf880e741b4d46a90d75b47ec521d71cd22c6753e281c.png",
+          "referenceSha256": "7b6e56a12fd4c4bf6b7bf880e741b4d46a90d75b47ec521d71cd22c6753e281c",
+          "nativeSourceSha256": "f7a7c7974287bcc3f45b0b032b7ed3a8a3ce563f51d621f3fc24d9e4c0c2e487",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "7b6e56a12fd4c4bf6b7bf880e741b4d46a90d75b47ec521d71cd22c6753e281c",
+            "7b6e56a12fd4c4bf6b7bf880e741b4d46a90d75b47ec521d71cd22c6753e281c",
+            "7b6e56a12fd4c4bf6b7bf880e741b4d46a90d75b47ec521d71cd22c6753e281c"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "interaction-opacity",
+      "input": "inputs/interaction-opacity.svg",
+      "sourceSha256": "b5c5d8e136f1afaf59fd13ab2c1e05f79671d03c3dbccd8d94a89de91ef7b2d4",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "interaction-opacity"
+      ],
+      "purpose": "Real opacity bitmap isolation",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/646dee28d54a3813c2d434d5c70fae665ae81ad6f1f4b3219a0f7b36c2942ae2.png",
+          "referenceSha256": "646dee28d54a3813c2d434d5c70fae665ae81ad6f1f4b3219a0f7b36c2942ae2",
+          "nativeSourceSha256": "94aa368912e94e80670816d21b67b0ec0423978583aa8d3373454b08f244f19c",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "646dee28d54a3813c2d434d5c70fae665ae81ad6f1f4b3219a0f7b36c2942ae2",
+            "646dee28d54a3813c2d434d5c70fae665ae81ad6f1f4b3219a0f7b36c2942ae2",
+            "646dee28d54a3813c2d434d5c70fae665ae81ad6f1f4b3219a0f7b36c2942ae2"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/7a6c5a0dc20bc00344eae034e347de4aff17a4293e5501dec56036c53371d78b.png",
+          "referenceSha256": "7a6c5a0dc20bc00344eae034e347de4aff17a4293e5501dec56036c53371d78b",
+          "nativeSourceSha256": "94aa368912e94e80670816d21b67b0ec0423978583aa8d3373454b08f244f19c",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "7a6c5a0dc20bc00344eae034e347de4aff17a4293e5501dec56036c53371d78b",
+            "7a6c5a0dc20bc00344eae034e347de4aff17a4293e5501dec56036c53371d78b",
+            "7a6c5a0dc20bc00344eae034e347de4aff17a4293e5501dec56036c53371d78b"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "interaction-filter-offset",
+      "input": "inputs/interaction-filter-offset.svg",
+      "sourceSha256": "2996d3c4fbd21b303e7bffab15127fd7e226d719cb2ac8bb929ea7f9a0e583da",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "interaction-filter-offset"
+      ],
+      "purpose": "Fractional filter image sampling after glyph mask generation",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/9d00767f89478c3b900c3a8af76badf4c4f4dea037ef3d2db4c60a49f0516728.png",
+          "referenceSha256": "9d00767f89478c3b900c3a8af76badf4c4f4dea037ef3d2db4c60a49f0516728",
+          "nativeSourceSha256": "b4d9f2297555c072d1dd11561e3e43c6d83f0c302a85de3af78405ba4976315b",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "9d00767f89478c3b900c3a8af76badf4c4f4dea037ef3d2db4c60a49f0516728",
+            "9d00767f89478c3b900c3a8af76badf4c4f4dea037ef3d2db4c60a49f0516728",
+            "9d00767f89478c3b900c3a8af76badf4c4f4dea037ef3d2db4c60a49f0516728"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/4260109a76837aa72f372292293e30efc23a13e264d7f5e4eb3b10fb18dadd9f.png",
+          "referenceSha256": "4260109a76837aa72f372292293e30efc23a13e264d7f5e4eb3b10fb18dadd9f",
+          "nativeSourceSha256": "b4d9f2297555c072d1dd11561e3e43c6d83f0c302a85de3af78405ba4976315b",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "4260109a76837aa72f372292293e30efc23a13e264d7f5e4eb3b10fb18dadd9f",
+            "4260109a76837aa72f372292293e30efc23a13e264d7f5e4eb3b10fb18dadd9f",
+            "4260109a76837aa72f372292293e30efc23a13e264d7f5e4eb3b10fb18dadd9f"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "interaction-alpha-mask",
+      "input": "inputs/interaction-alpha-mask.svg",
+      "sourceSha256": "d8189653222d27a894a9ffa278420643f85e2161deaba594afbb1954bfa4f30f",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "interaction-alpha-mask"
+      ],
+      "purpose": "Independent alpha-mask composition",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/d02805724c878182e8cc4e7d9048c37cb41da301b39e7065ffce4c61f628c0c9.png",
+          "referenceSha256": "d02805724c878182e8cc4e7d9048c37cb41da301b39e7065ffce4c61f628c0c9",
+          "nativeSourceSha256": "1cccb958e067c80a83213e0f9419ec3c9ead642582becf38e4bace06c75044de",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "d02805724c878182e8cc4e7d9048c37cb41da301b39e7065ffce4c61f628c0c9",
+            "d02805724c878182e8cc4e7d9048c37cb41da301b39e7065ffce4c61f628c0c9",
+            "d02805724c878182e8cc4e7d9048c37cb41da301b39e7065ffce4c61f628c0c9"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/b99571bda22bf32f4ee88ceb45f6d593aca86cc205b534dd7c36e41ad6c4b3f7.png",
+          "referenceSha256": "b99571bda22bf32f4ee88ceb45f6d593aca86cc205b534dd7c36e41ad6c4b3f7",
+          "nativeSourceSha256": "1cccb958e067c80a83213e0f9419ec3c9ead642582becf38e4bace06c75044de",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "b99571bda22bf32f4ee88ceb45f6d593aca86cc205b534dd7c36e41ad6c4b3f7",
+            "b99571bda22bf32f4ee88ceb45f6d593aca86cc205b534dd7c36e41ad6c4b3f7",
+            "b99571bda22bf32f4ee88ceb45f6d593aca86cc205b534dd7c36e41ad6c4b3f7"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "interaction-object-clip",
+      "input": "inputs/interaction-object-clip.svg",
+      "sourceSha256": "2214ae0cda2255428568b28079722381455ba91cd0a95f1842865494452446e1",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "interaction-object-clip"
+      ],
+      "purpose": "Source object box versus glyph visual bounds",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/22834649a3a3a50646c22554bc23db9e1ee43dfe23d1d3c930d1f7f291f8d727.png",
+          "referenceSha256": "22834649a3a3a50646c22554bc23db9e1ee43dfe23d1d3c930d1f7f291f8d727",
+          "nativeSourceSha256": "5627680ea4db282c95e373e62a030646bb7440c2efeffe2f8104b93643c9ce02",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "22834649a3a3a50646c22554bc23db9e1ee43dfe23d1d3c930d1f7f291f8d727",
+            "22834649a3a3a50646c22554bc23db9e1ee43dfe23d1d3c930d1f7f291f8d727",
+            "22834649a3a3a50646c22554bc23db9e1ee43dfe23d1d3c930d1f7f291f8d727"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/a8c3acdf49b54e6ec4392f3687eea1080b566d83fb8125c3189f271300f46957.png",
+          "referenceSha256": "a8c3acdf49b54e6ec4392f3687eea1080b566d83fb8125c3189f271300f46957",
+          "nativeSourceSha256": "5627680ea4db282c95e373e62a030646bb7440c2efeffe2f8104b93643c9ce02",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "a8c3acdf49b54e6ec4392f3687eea1080b566d83fb8125c3189f271300f46957",
+            "a8c3acdf49b54e6ec4392f3687eea1080b566d83fb8125c3189f271300f46957",
+            "a8c3acdf49b54e6ec4392f3687eea1080b566d83fb8125c3189f271300f46957"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "interaction-symbol",
+      "input": "inputs/interaction-symbol.svg",
+      "sourceSha256": "1232470efdc05fb863da1c34f2fb850b05ec7eb51075202b61c6681049a319fb",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "interaction-symbol"
+      ],
+      "purpose": "Retained symbol replay and viewport clipping",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/137691ba61fbcf3869c173f7c124a8168724d2e3b8cc6293fbe3d0687c7eafd7.png",
+          "referenceSha256": "137691ba61fbcf3869c173f7c124a8168724d2e3b8cc6293fbe3d0687c7eafd7",
+          "nativeSourceSha256": "ccefd5d98fcda5203d680046dcf5d8411d24931dab41b100d521d9e5985e4c5c",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "137691ba61fbcf3869c173f7c124a8168724d2e3b8cc6293fbe3d0687c7eafd7",
+            "137691ba61fbcf3869c173f7c124a8168724d2e3b8cc6293fbe3d0687c7eafd7",
+            "137691ba61fbcf3869c173f7c124a8168724d2e3b8cc6293fbe3d0687c7eafd7"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/488810c8a5e8f37c3ac524fe772566a7f2328a0c67de22dfe57af25c64729425.png",
+          "referenceSha256": "488810c8a5e8f37c3ac524fe772566a7f2328a0c67de22dfe57af25c64729425",
+          "nativeSourceSha256": "ccefd5d98fcda5203d680046dcf5d8411d24931dab41b100d521d9e5985e4c5c",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "488810c8a5e8f37c3ac524fe772566a7f2328a0c67de22dfe57af25c64729425",
+            "488810c8a5e8f37c3ac524fe772566a7f2328a0c67de22dfe57af25c64729425",
+            "488810c8a5e8f37c3ac524fe772566a7f2328a0c67de22dfe57af25c64729425"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "interaction-pattern",
+      "input": "inputs/interaction-pattern.svg",
+      "sourceSha256": "4f56789b2cb05ea4c6d5b801817bdf28e868decb5c3fcb95099e3acd16511591",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "interaction-pattern"
+      ],
+      "purpose": "Supplied glyph strokes inside a pattern picture",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/8ad4dda8588532d088433ce46a1c0cff5a0e47d0f4b202426b1c28b9b86f6003.png",
+          "referenceSha256": "8ad4dda8588532d088433ce46a1c0cff5a0e47d0f4b202426b1c28b9b86f6003",
+          "nativeSourceSha256": "44360a04cfb4e8a6592a4476bf012c796b6f210fde6fe7d6b493c5cefbe11045",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "8ad4dda8588532d088433ce46a1c0cff5a0e47d0f4b202426b1c28b9b86f6003",
+            "8ad4dda8588532d088433ce46a1c0cff5a0e47d0f4b202426b1c28b9b86f6003",
+            "8ad4dda8588532d088433ce46a1c0cff5a0e47d0f4b202426b1c28b9b86f6003"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/5be57d4a0b2ec572bbe25ded17e983f431056b1c738b91da8a58d78ec6e4a4e7.png",
+          "referenceSha256": "5be57d4a0b2ec572bbe25ded17e983f431056b1c738b91da8a58d78ec6e4a4e7",
+          "nativeSourceSha256": "44360a04cfb4e8a6592a4476bf012c796b6f210fde6fe7d6b493c5cefbe11045",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "5be57d4a0b2ec572bbe25ded17e983f431056b1c738b91da8a58d78ec6e4a4e7",
+            "5be57d4a0b2ec572bbe25ded17e983f431056b1c738b91da8a58d78ec6e4a4e7",
+            "5be57d4a0b2ec572bbe25ded17e983f431056b1c738b91da8a58d78ec6e4a4e7"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "interaction-density-1_25",
+      "input": "inputs/interaction-density-1_25.svg",
+      "sourceSha256": "73200ffa7cafb4a134c3f8676f46b3c328dc6cfa11c2afe74f5ad385bd05abba",
+      "outputScale": 1.25,
+      "font": true,
+      "roles": [
+        "interaction-density-1_25"
+      ],
+      "purpose": "Raster density uses SVG32 CSS at DPR1.25; no larger viewport substitution",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1.25
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/9a6a64c326d0d53891b2c81f6ba8712a2bb326369eeb16079849527c0d730ee2.png",
+          "referenceSha256": "9a6a64c326d0d53891b2c81f6ba8712a2bb326369eeb16079849527c0d730ee2",
+          "nativeSourceSha256": "83ec8cc6fc15eed4e0ab2012bf2a5bcd40fb7702963e66beb0926c29ea3fed75",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "9a6a64c326d0d53891b2c81f6ba8712a2bb326369eeb16079849527c0d730ee2",
+            "9a6a64c326d0d53891b2c81f6ba8712a2bb326369eeb16079849527c0d730ee2",
+            "9a6a64c326d0d53891b2c81f6ba8712a2bb326369eeb16079849527c0d730ee2"
+          ],
+          "width": 40,
+          "height": 40,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 40,
+            "MinimumMismatchY": 40,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/b9bbf8d228be84e5d5efed8e1034d0ae3666915a18ac2045b2c5f3d4641a89f5.png",
+          "referenceSha256": "b9bbf8d228be84e5d5efed8e1034d0ae3666915a18ac2045b2c5f3d4641a89f5",
+          "nativeSourceSha256": "83ec8cc6fc15eed4e0ab2012bf2a5bcd40fb7702963e66beb0926c29ea3fed75",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "b9bbf8d228be84e5d5efed8e1034d0ae3666915a18ac2045b2c5f3d4641a89f5",
+            "b9bbf8d228be84e5d5efed8e1034d0ae3666915a18ac2045b2c5f3d4641a89f5",
+            "b9bbf8d228be84e5d5efed8e1034d0ae3666915a18ac2045b2c5f3d4641a89f5"
+          ],
+          "width": 40,
+          "height": 40,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 40,
+            "MinimumMismatchY": 40,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "interaction-small-glyph",
+      "input": "inputs/interaction-small-glyph.svg",
+      "sourceSha256": "7a068bab4ce10fe10447fe9e069b00822c0c25e09a2b0eeb87ca05a98891ac76",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "interaction-small-glyph"
+      ],
+      "purpose": "Small nonempty sample plane and external filter guards",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/eadd33172e3abc0b7f045ed3bdc2df6e634b6d94a1f5141461a4cee5259595db.png",
+          "referenceSha256": "eadd33172e3abc0b7f045ed3bdc2df6e634b6d94a1f5141461a4cee5259595db",
+          "nativeSourceSha256": "71755eb3f6b14ac2ea488d04bfc5fe01f05f49a3881e73e5b3d7526ddf04279a",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "eadd33172e3abc0b7f045ed3bdc2df6e634b6d94a1f5141461a4cee5259595db",
+            "eadd33172e3abc0b7f045ed3bdc2df6e634b6d94a1f5141461a4cee5259595db",
+            "eadd33172e3abc0b7f045ed3bdc2df6e634b6d94a1f5141461a4cee5259595db"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/91bf42e5b5682a83c777a35eb54dc76120a4d53580211d193a5acb7b617e1f25.png",
+          "referenceSha256": "91bf42e5b5682a83c777a35eb54dc76120a4d53580211d193a5acb7b617e1f25",
+          "nativeSourceSha256": "71755eb3f6b14ac2ea488d04bfc5fe01f05f49a3881e73e5b3d7526ddf04279a",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "91bf42e5b5682a83c777a35eb54dc76120a4d53580211d193a5acb7b617e1f25",
+            "91bf42e5b5682a83c777a35eb54dc76120a4d53580211d193a5acb7b617e1f25",
+            "91bf42e5b5682a83c777a35eb54dc76120a4d53580211d193a5acb7b617e1f25"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "interaction-stroke-opacity",
+      "input": "inputs/interaction-stroke-opacity.svg",
+      "sourceSha256": "63bafcbccb04eb7c1d129fbc9ce3743d82d2372cdd58b2fb48246d41b618d030",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "interaction-stroke-opacity"
+      ],
+      "purpose": "Stroke color alpha applied after glyph-mask generation",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/949c4555d07f0679108c17f44abcf387e7a5d28781dcd88f1f6053b26a540110.png",
+          "referenceSha256": "949c4555d07f0679108c17f44abcf387e7a5d28781dcd88f1f6053b26a540110",
+          "nativeSourceSha256": "9375d15fc3fd8d1db736f2ab14f12f42de283062dba730ae4317d6682ca16c2c",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "949c4555d07f0679108c17f44abcf387e7a5d28781dcd88f1f6053b26a540110",
+            "949c4555d07f0679108c17f44abcf387e7a5d28781dcd88f1f6053b26a540110",
+            "949c4555d07f0679108c17f44abcf387e7a5d28781dcd88f1f6053b26a540110"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/544a8502bf74e10c1a8d4764ef70b37a4335c40dd4c7204c4b9579ddd6aa347e.png",
+          "referenceSha256": "544a8502bf74e10c1a8d4764ef70b37a4335c40dd4c7204c4b9579ddd6aa347e",
+          "nativeSourceSha256": "9375d15fc3fd8d1db736f2ab14f12f42de283062dba730ae4317d6682ca16c2c",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "544a8502bf74e10c1a8d4764ef70b37a4335c40dd4c7204c4b9579ddd6aa347e",
+            "544a8502bf74e10c1a8d4764ef70b37a4335c40dd4c7204c4b9579ddd6aa347e",
+            "544a8502bf74e10c1a8d4764ef70b37a4335c40dd4c7204c4b9579ddd6aa347e"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "quarter-fill-only",
+      "input": "inputs/quarter-fill-only.svg",
+      "sourceSha256": "f0adcd8f5d520e849e10235366f07d2ee8e52cd2eb8b7ea7297b2dd23f0842cc",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "quarter-fill-only"
+      ],
+      "purpose": "Isolate pre-existing fill placement",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/c5138749fa500b0540c1b7a9243df3308b1ce1dcb23b0bbb59552a1563917a55.png",
+          "referenceSha256": "c5138749fa500b0540c1b7a9243df3308b1ce1dcb23b0bbb59552a1563917a55",
+          "nativeSourceSha256": "d6ae6814d7cf58b5dc404fb0fde255d6aa68cc2959b0bb05113f85d9531ffd81",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "c5138749fa500b0540c1b7a9243df3308b1ce1dcb23b0bbb59552a1563917a55",
+            "c5138749fa500b0540c1b7a9243df3308b1ce1dcb23b0bbb59552a1563917a55",
+            "c5138749fa500b0540c1b7a9243df3308b1ce1dcb23b0bbb59552a1563917a55"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/fd618418a9d957e5d424efc739debbda6ce8956080b1a0239685cc9049dcd388.png",
+          "referenceSha256": "fd618418a9d957e5d424efc739debbda6ce8956080b1a0239685cc9049dcd388",
+          "nativeSourceSha256": "d6ae6814d7cf58b5dc404fb0fde255d6aa68cc2959b0bb05113f85d9531ffd81",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "fd618418a9d957e5d424efc739debbda6ce8956080b1a0239685cc9049dcd388",
+            "fd618418a9d957e5d424efc739debbda6ce8956080b1a0239685cc9049dcd388",
+            "fd618418a9d957e5d424efc739debbda6ce8956080b1a0239685cc9049dcd388"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "quarter-stroke-only",
+      "input": "inputs/quarter-stroke-only.svg",
+      "sourceSha256": "521395985bbcf958b19003bbe2f429cf5ab66d2cd81f5e617dbb342d9c43da4d",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "quarter-stroke-only"
+      ],
+      "purpose": "Isolate native stroke placement",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/b12bb7351d91759ba45a7f96824d0a4639c2e306ab65e3b218e20315abffd643.png",
+          "referenceSha256": "b12bb7351d91759ba45a7f96824d0a4639c2e306ab65e3b218e20315abffd643",
+          "nativeSourceSha256": "fff6559bcac01e1f91ac53ad04375f5dcb803eae8b3c40ef1ae95f0452a6b015",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "b12bb7351d91759ba45a7f96824d0a4639c2e306ab65e3b218e20315abffd643",
+            "b12bb7351d91759ba45a7f96824d0a4639c2e306ab65e3b218e20315abffd643",
+            "b12bb7351d91759ba45a7f96824d0a4639c2e306ab65e3b218e20315abffd643"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/33320485e03f1f01923563c961ddf1122bf1aeeb808d46ba0676ed63439546dc.png",
+          "referenceSha256": "33320485e03f1f01923563c961ddf1122bf1aeeb808d46ba0676ed63439546dc",
+          "nativeSourceSha256": "fff6559bcac01e1f91ac53ad04375f5dcb803eae8b3c40ef1ae95f0452a6b015",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "33320485e03f1f01923563c961ddf1122bf1aeeb808d46ba0676ed63439546dc",
+            "33320485e03f1f01923563c961ddf1122bf1aeeb808d46ba0676ed63439546dc",
+            "33320485e03f1f01923563c961ddf1122bf1aeeb808d46ba0676ed63439546dc"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "quarter-both-integer-x",
+      "input": "inputs/quarter-both-integer-x.svg",
+      "sourceSha256": "c0294dacee2cdcfd3812a97f2d7cd8b86aaf107c7c15bf6dfce6349c54ecf796",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "quarter-both-integer-x"
+      ],
+      "purpose": "Place vertical baseline on an integer X",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/871ae6e13cbb8ba1bc49636e4637eeb2283d9db65b0c7d493c187f4f6bbef7ec.png",
+          "referenceSha256": "871ae6e13cbb8ba1bc49636e4637eeb2283d9db65b0c7d493c187f4f6bbef7ec",
+          "nativeSourceSha256": "318d809db3fd3fbe3729beecb1550cf0469529ccfc179a7fe12a683fc9ee1e0c",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "871ae6e13cbb8ba1bc49636e4637eeb2283d9db65b0c7d493c187f4f6bbef7ec",
+            "871ae6e13cbb8ba1bc49636e4637eeb2283d9db65b0c7d493c187f4f6bbef7ec",
+            "871ae6e13cbb8ba1bc49636e4637eeb2283d9db65b0c7d493c187f4f6bbef7ec"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/7b6e56a12fd4c4bf6b7bf880e741b4d46a90d75b47ec521d71cd22c6753e281c.png",
+          "referenceSha256": "7b6e56a12fd4c4bf6b7bf880e741b4d46a90d75b47ec521d71cd22c6753e281c",
+          "nativeSourceSha256": "318d809db3fd3fbe3729beecb1550cf0469529ccfc179a7fe12a683fc9ee1e0c",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "7b6e56a12fd4c4bf6b7bf880e741b4d46a90d75b47ec521d71cd22c6753e281c",
+            "7b6e56a12fd4c4bf6b7bf880e741b4d46a90d75b47ec521d71cd22c6753e281c",
+            "7b6e56a12fd4c4bf6b7bf880e741b4d46a90d75b47ec521d71cd22c6753e281c"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "quarter-stroke-integer-x",
+      "input": "inputs/quarter-stroke-integer-x.svg",
+      "sourceSha256": "0e3e3ded8023cf1170c6964a98fc7326c00760e3a4bff113ca57c7df86195ea5",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "quarter-stroke-integer-x"
+      ],
+      "purpose": "Stroke-only integer X control",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/b12bb7351d91759ba45a7f96824d0a4639c2e306ab65e3b218e20315abffd643.png",
+          "referenceSha256": "b12bb7351d91759ba45a7f96824d0a4639c2e306ab65e3b218e20315abffd643",
+          "nativeSourceSha256": "e84756bcb3d5eb6a62c6b9addd6ddd13c976b07a83f8fc0c98febdda65970683",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "b12bb7351d91759ba45a7f96824d0a4639c2e306ab65e3b218e20315abffd643",
+            "b12bb7351d91759ba45a7f96824d0a4639c2e306ab65e3b218e20315abffd643",
+            "b12bb7351d91759ba45a7f96824d0a4639c2e306ab65e3b218e20315abffd643"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/33320485e03f1f01923563c961ddf1122bf1aeeb808d46ba0676ed63439546dc.png",
+          "referenceSha256": "33320485e03f1f01923563c961ddf1122bf1aeeb808d46ba0676ed63439546dc",
+          "nativeSourceSha256": "e84756bcb3d5eb6a62c6b9addd6ddd13c976b07a83f8fc0c98febdda65970683",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "33320485e03f1f01923563c961ddf1122bf1aeeb808d46ba0676ed63439546dc",
+            "33320485e03f1f01923563c961ddf1122bf1aeeb808d46ba0676ed63439546dc",
+            "33320485e03f1f01923563c961ddf1122bf1aeeb808d46ba0676ed63439546dc"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "quarter-stroke-integer-y",
+      "input": "inputs/quarter-stroke-integer-y.svg",
+      "sourceSha256": "efb1939552392809269c108ec3ecb53b7ac6f86fd8f05a8b6eccc11489a8480e",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "quarter-stroke-integer-y"
+      ],
+      "purpose": "Stroke-only integer Y control",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "svgCssWidth": 32,
+        "svgCssHeight": 32,
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/84166a8489abdfd8cd6ba10ee53fdb089424ccfa33927bae35a23be72d2e36fc.png",
+          "referenceSha256": "84166a8489abdfd8cd6ba10ee53fdb089424ccfa33927bae35a23be72d2e36fc",
+          "nativeSourceSha256": "932e13dfb125c976dd7ec8a5ceddee985602215c9bbff1ce3d7928d7328efcf6",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "84166a8489abdfd8cd6ba10ee53fdb089424ccfa33927bae35a23be72d2e36fc",
+            "84166a8489abdfd8cd6ba10ee53fdb089424ccfa33927bae35a23be72d2e36fc",
+            "84166a8489abdfd8cd6ba10ee53fdb089424ccfa33927bae35a23be72d2e36fc"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/baa58e90d1cc8b7943684bb2145f29239b29ce00d184c5649da4a863f913276f.png",
+          "referenceSha256": "baa58e90d1cc8b7943684bb2145f29239b29ce00d184c5649da4a863f913276f",
+          "nativeSourceSha256": "932e13dfb125c976dd7ec8a5ceddee985602215c9bbff1ce3d7928d7328efcf6",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "capturePngSha256": [
+            "baa58e90d1cc8b7943684bb2145f29239b29ce00d184c5649da4a863f913276f",
+            "baa58e90d1cc8b7943684bb2145f29239b29ce00d184c5649da4a863f913276f",
+            "baa58e90d1cc8b7943684bb2145f29239b29ce00d184c5649da4a863f913276f"
+          ],
+          "width": 32,
+          "height": 32,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    }
+  ]
+}

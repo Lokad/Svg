@@ -4922,6 +4922,10 @@ public static partial class SvgConverter
             {
                 bool horizontalStrokeFilter = glyph.StrokePaint is not null && OperatingSystem.IsWindows();
                 int sampleScale = horizontalStrokeFilter ? 4 : 1;
+                // Native mask bounds include filter guards, but the four-times
+                // sample image excludes them. Keep its map, limits and filter
+                // indices in that same interior domain.
+                int sampleInset = horizontalStrokeFilter ? 1 : 0;
                 SvgAffineTransform map = sourcePath.SceneMap;
                 double originX = Math.Floor(map.E), originY = Math.Floor(map.F);
                 float phaseX = (float)(map.E - originX), phaseY = (float)(map.F - originY);
@@ -4949,18 +4953,19 @@ public static partial class SvgConverter
                 double bitmapWidth = right - left, bitmapHeight = bottom - top;
                 if (!double.IsFinite(bitmapWidth) || !double.IsFinite(bitmapHeight))
                     throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph bitmap bounds exceed the device range.");
-                if (bitmapWidth <= 0 || bitmapHeight <= 0 || originX + right <= 0 || originY + bottom <= 0
+                double samplingWidth = (bitmapWidth - 2 * sampleInset) * sampleScale;
+                if (samplingWidth <= 0 || bitmapHeight <= 0 || originX + right <= 0 || originY + bottom <= 0
                     || originX + left >= outputWidth || originY + top >= outputHeight) return;
                 SvgRenderLimits limits = options.Limits;
-                if (bitmapWidth * sampleScale > limits.MaximumDimension || bitmapHeight > limits.MaximumDimension
-                    || bitmapWidth * bitmapHeight * sampleScale > limits.MaximumPixels || bitmapWidth * bitmapHeight * sampleScale > int.MaxValue / 4)
+                if (samplingWidth > limits.MaximumDimension || bitmapHeight > limits.MaximumDimension
+                    || samplingWidth * bitmapHeight > limits.MaximumPixels || samplingWidth * bitmapHeight > int.MaxValue / 4)
                     throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph bitmap exceeds the configured surface limits.");
-                int width = (int)bitmapWidth * sampleScale, height = (int)bitmapHeight;
+                int width = (int)samplingWidth, height = (int)bitmapHeight;
                 long remaining = limits.MaximumWorkUnits - workUnits;
                 if (remaining <= 0) throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph bitmap exceeds the configured work limit.");
                 OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
                 SvgAuthoredPath localPath;
-                try { localPath = SvgAuthoredPath.Create(owned, SvgAffineTransform.FromScaleOffset(sampleScale, 1, -left * sampleScale, -top), budget); }
+                try { localPath = SvgAuthoredPath.Create(owned, SvgAffineTransform.FromScaleOffset(sampleScale, 1, -(left + sampleInset) * sampleScale, -top), budget); }
                 catch { owned.Dispose(); throw; }
                 using (localPath)
                 using (SvgPolygonFill fill = SvgPolygonFill.Create([], [], null, new SvgColor(0, 0, 0, 255), true, false, SvgPolygonMapping.NativeFillEdges, null, null, budget))
@@ -4989,7 +4994,7 @@ public static partial class SvgConverter
                         {
                             if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
                             int row = (int)(y - deviceTop) * width * 4;
-                            int sampleX = (int)(x - deviceLeft) * sampleScale;
+                            int sampleX = ((int)(x - deviceLeft) - sampleInset) * sampleScale;
                             byte coverage = horizontalStrokeFilter ? FilterStroke(bitmap.Pixels.AsSpan(row, width * 4), sampleX) : bitmap.Pixels[row + sampleX * 4 + 3];
                             byte alpha = ViewportAlpha(preblend[coverage], x, y);
                             GlyphPaintAt(x, y).Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), alpha, SvgAnalyticPaintKind.Mask);

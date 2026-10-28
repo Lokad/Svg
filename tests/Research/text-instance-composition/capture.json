@@ -1,5 +1,5 @@
 {
-  "policy": "One canonical owned synchronous conversion per distinct source/options. Source aliases retain every original role; image equality never removes distinct graphs. Exact native comparisons have no tolerance. Known R59 stroke differences and the R74/C04 exclusion stay explicit.",
+  "policy": "One canonical owned synchronous conversion per distinct source/options. Source aliases retain every original role; image equality never removes distinct graphs. Every supported actual compares exact native RGBA. The R74/C04 exclusion stays explicit.",
   "browser": {
     "version": "153.0.8010.52",
     "freshProcessCaptures": 3,
@@ -16,8 +16,8 @@
   "summary": {
     "windows": {
       "actuals": 154,
-      "exact": 149,
-      "knownDifferences": 4,
+      "exact": 153,
+      "knownDifferences": 0,
       "exclusions": 1
     },
     "linux": {
@@ -9951,19 +9951,18 @@
           "height": 32,
           "comparison": {
             "DimensionsMatch": true,
-            "ChangedPixelCount": 4,
-            "MaximumChannelError": 38,
-            "MeanAbsoluteError": 0.0390625,
-            "RootMeanSquareError": 1.117597171390479,
-            "MaximumAlphaError": 3,
-            "AlphaChangedPixelCount": 4,
-            "MinimumMismatchX": 16,
-            "MinimumMismatchY": 14,
-            "MaximumMismatchX": 19,
-            "MaximumMismatchY": 14,
-            "IsExact": false
-          },
-          "remainingFinding": "R59"
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
         },
         "linux": {
           "reference": "references/065172d11503900621b1173f0635ddf433a8969d65b0d3f1f0845271e2b14b3a.png",
@@ -10019,19 +10018,18 @@
           "height": 32,
           "comparison": {
             "DimensionsMatch": true,
-            "ChangedPixelCount": 4,
-            "MaximumChannelError": 38,
-            "MeanAbsoluteError": 0.0390625,
-            "RootMeanSquareError": 1.117597171390479,
-            "MaximumAlphaError": 3,
-            "AlphaChangedPixelCount": 4,
-            "MinimumMismatchX": 16,
-            "MinimumMismatchY": 14,
-            "MaximumMismatchX": 19,
-            "MaximumMismatchY": 14,
-            "IsExact": false
-          },
-          "remainingFinding": "R59"
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
         },
         "linux": {
           "reference": "references/065172d11503900621b1173f0635ddf433a8969d65b0d3f1f0845271e2b14b3a.png",
@@ -10221,19 +10219,18 @@
           "height": 32,
           "comparison": {
             "DimensionsMatch": true,
-            "ChangedPixelCount": 4,
-            "MaximumChannelError": 38,
-            "MeanAbsoluteError": 0.0390625,
-            "RootMeanSquareError": 1.117597171390479,
-            "MaximumAlphaError": 3,
-            "AlphaChangedPixelCount": 4,
-            "MinimumMismatchX": 16,
-            "MinimumMismatchY": 14,
-            "MaximumMismatchX": 19,
-            "MaximumMismatchY": 14,
-            "IsExact": false
-          },
-          "remainingFinding": "R59"
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
         },
         "linux": {
           "reference": "references/020c90374d1d6dc7530c36bf287ec040dcdb8761fe94a228a1e0d74c9da93741.png",
@@ -10289,19 +10286,18 @@
           "height": 32,
           "comparison": {
             "DimensionsMatch": true,
-            "ChangedPixelCount": 4,
-            "MaximumChannelError": 38,
-            "MeanAbsoluteError": 0.0390625,
-            "RootMeanSquareError": 1.117597171390479,
-            "MaximumAlphaError": 3,
-            "AlphaChangedPixelCount": 4,
-            "MinimumMismatchX": 16,
-            "MinimumMismatchY": 14,
-            "MaximumMismatchX": 19,
-            "MaximumMismatchY": 14,
-            "IsExact": false
-          },
-          "remainingFinding": "R59"
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 32,
+            "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
         },
         "linux": {
           "reference": "references/020c90374d1d6dc7530c36bf287ec040dcdb8761fe94a228a1e0d74c9da93741.png",

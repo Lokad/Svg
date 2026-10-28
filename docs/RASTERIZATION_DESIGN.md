@@ -137,6 +137,13 @@ does not enlarge the physical viewport clip, including a minimum one-pixel canva
 Raster density and changing SVG width/viewBox are distinct capture contexts; see
 the [native controls](../tests/Research/text-instance-composition/README.md).
 
+Glyph mask bounds retain horizontal filter guards outside the four-times sample
+image. Sampling origins, allocation, limits and filter indices use its interior
+domain. Vertical baselines snap device X to an integer; fills and strokes share
+that rounding and the quarter-turn outline-alignment predicate. Shaping and
+logical layout precede these raster choices. See the
+[stroke controls](../tests/Research/fractional-text-strokes/README.md).
+
 [Shader coordinates](../src/Lokad.Svg/Rendering/SvgShaderCoordinates.cs) preserve
 separate local, reference and bitmap mappings. Gradient, image and glyph consumers
 round at different native stages; combining their arithmetic can move samples or
