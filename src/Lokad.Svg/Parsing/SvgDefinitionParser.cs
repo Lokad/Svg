@@ -1243,7 +1243,8 @@ internal static class SvgDefinitionParser
             SvgComputedStyle style = context.ResolveStyle(reader);
             // Later instances can move integer shader edges onto fractional pixels.
             // Keep the common lowerer's native stroke source beside the cached paint.
-            context = context with { RetainInstanceStrokePath = context.RetainInstanceStrokePath
+            context = context with { RetainInstanceFillPath = context.RetainInstanceFillPath || state.MarkerDefinition is not null,
+                RetainInstanceStrokePath = context.RetainInstanceStrokePath
                 || SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke) && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width) };
             // The retained adapter binds source clips after the complete registry exists.
             bool previousClipDeferral = state.DeferringLeafClip;
@@ -1754,7 +1755,7 @@ internal static class SvgDefinitionParser
         {
             SvgDefinitionLeafSource first = state.PatternRectangleSource ?? throw new InvalidOperationException("Rectangle promotion requires retained source attributes.");
             SvgPaintableElementContext previous = state.PatternRectangleContext;
-            SvgPaintRecording.AdoptLeafScene(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, previous.InheritedPresentation.PaintOrder, previous.InheritedPresentation.Markers, previous.InheritedPresentation.ElementOpacity, previous.InheritedPresentation.ElementDisplay, previous.InheritedPresentation.TextMetrics, previous.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, previous.LengthBases, false, previous.InheritedPresentation.IsDisplayed, state), builder, state);
+            SvgPaintRecording.AdoptLeafScene(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, previous.InheritedPresentation.PaintOrder, previous.InheritedPresentation.Markers, previous.InheritedPresentation.ElementOpacity, previous.InheritedPresentation.ElementDisplay, previous.InheritedPresentation.TextMetrics, previous.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, previous.LengthBases, SvgSourceContourRetention.None, previous.InheritedPresentation.IsDisplayed, state), builder, state);
             state.PatternTile = tile with { Content = null };
         }
         return builder;

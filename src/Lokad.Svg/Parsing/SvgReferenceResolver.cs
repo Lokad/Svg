@@ -13,6 +13,8 @@ internal readonly record struct SvgUseReference(string Id, double X, double Y, d
     /// <summary>Records the absence of an instance opacity layer, using the validated source value rather than its rounded alpha byte.</summary>
     internal bool AllowsSolidPaintAnalysis { get; init; }
     internal bool IsMarker { get; init; }
+    /// <summary>Carries a marker canvas stage through retained child and deferred paint construction.</summary>
+    internal SvgNativeCanvasStage? DrawMap { get; init; }
     /// <summary>Allows finite computed inverse stroke-unit poses until an enclosing source map cancels them; authored transforms retain their range checks.</summary>
     internal bool HasInverseStrokePose { get; init; }
     internal SvgRecordingScope RecordingScope { get; init; }
@@ -167,7 +169,9 @@ internal static class SvgReferenceResolver
                 || !reference.Transform.IsAxisAligned && source.LocalName is "path" or "rect" or "polygon" or "polyline"
                 || placedNativeStroke
                 || source.LocalName == "line" && strokePlacement != SvgAffineTransform.Identity;
-            if (source.AuthoredStyle.VectorEffect is not null || retainMappedContour || state.FilterGroupDepth > 0 && definition.Geometries.Length == 0
+            SvgSourceContourRetention retention = retainMappedContour ? SvgSourceContourRetention.Stroke : SvgSourceContourRetention.None;
+            if (source.LocalName == "rect" && reference.DrawMap is not null) retention |= SvgSourceContourRetention.Fill;
+            if (source.AuthoredStyle.VectorEffect is not null || retention != SvgSourceContourRetention.None || state.FilterGroupDepth > 0 && definition.Geometries.Length == 0
                 || source.RequiresConstruction(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers))
             {
                 foreach (SvgGeometry geometry in definition.Geometries)
@@ -178,7 +182,7 @@ internal static class SvgReferenceResolver
                     if (geometry.LeafMask is not null && SvgLocalUrl.GetReference(source.GetAttribute("mask")) is not null)
                         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Instance stroke construction on masked definitions is not implemented.");
                 }
-                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers, reference.ElementParentOpacity, reference.ElementParentDisplay, reference.TextMetrics, reference.NonScalingStroke, strokePlacement, definition.InstanceLengthBases(reference), retainMappedContour, reference.IsDisplayed, state);
+                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers, reference.ElementParentOpacity, reference.ElementParentDisplay, reference.TextMetrics, reference.NonScalingStroke, strokePlacement, definition.InstanceLengthBases(reference), retention, reference.IsDisplayed, state);
                 try { return Apply(constructed with { SymbolViewBox = definition.SymbolViewBox, EstablishesViewport = definition.EstablishesViewport }, reference with { StrokeOverride = null, PaintServerId = null, PaintServerFill = null }, frame, state, workCounter, cancellationToken); }
                 finally { foreach (SvgGeometry geometry in constructed.Geometries) geometry.Dispose(); }
             }
@@ -1288,7 +1292,7 @@ internal static class SvgReferenceResolver
         if (cache.TryGetValue(source, out SvgRecordedPaint previous)) return previous;
         float alpha = value.IsEffectAnchor ? 0 : value.IsMarkerContent ? value.Alpha : shaderOpacity is SvgPaintOpacity shader ? shader.Alpha / 255f
             : !stroke && reference.FillOverride is SvgPaint fill ? SvgPaintResolver.ResolveSolidPaint(fill).Alpha : value.Alpha;
-        SvgRecordedPaint result = state.Scene.RegisterRecordedPaint(new(mapper.MapPaintIdentity(value.Identity), alpha, value.Foldable, mapper.Map(value.Scope), value.ElementOpacity, mapper.Map(value.OpacityScope)) { RecordingTransform = reference.RecordingTransform, PaintOrder = value.PaintOrder, Role = value.Role, SourceVisualBounds = value.SourceVisualBounds?.Map(placement, work, token), ElementVisualBounds = value.ElementVisualBounds?.MapLayout(placement, work, token), VisualBounds = value.VisualBounds?.Map(placement, work, token), ObjectBounds = value.ObjectBounds?.Map(placement, work, token), SourceObjectBounds = value.SourceObjectBounds is {} sourceBox ? sourceBox with { SceneMap = placement.Compose(sourceBox.SceneMap) } : null });
+        SvgRecordedPaint result = state.Scene.RegisterRecordedPaint(new(mapper.MapPaintIdentity(value.Identity), alpha, value.Foldable, mapper.Map(value.Scope), value.ElementOpacity, mapper.Map(value.OpacityScope)) { RecordingTransform = reference.RecordingTransform, DrawMap = value.DrawMap is {} drawMap ? state.Scene.RetainNativeCanvasStage(new(placement.Compose(drawMap.Map.Parent), drawMap.Map.ViewBox, placement.Compose(drawMap.Map.Source))) : null, PaintOrder = value.PaintOrder, Role = value.Role, SourceVisualBounds = value.SourceVisualBounds?.Map(placement, work, token), ElementVisualBounds = value.ElementVisualBounds?.MapLayout(placement, work, token), VisualBounds = value.VisualBounds?.Map(placement, work, token), ObjectBounds = value.ObjectBounds?.Map(placement, work, token), SourceObjectBounds = value.SourceObjectBounds is {} sourceBox ? sourceBox with { SceneMap = placement.Compose(sourceBox.SceneMap) } : null });
         cache.TryAdd(source, result);
         return result;
     }

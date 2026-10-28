@@ -13,6 +13,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     internal SvgTextMetricScope TextMetrics { get; init; }
     internal SvgRecordingScope RecordingScope { get; init; }
     internal bool RetainInstanceStrokePath { get; init; }
+    internal bool RetainInstanceFillPath { get; init; }
     internal bool CanPaintEmptyNativeBounds { get; init; }
     internal SvgComputedStyle? AuthoredStyle { get; init; }
     internal string? InheritedClipRule { get; init; }

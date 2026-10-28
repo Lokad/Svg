@@ -30,4 +30,4 @@ domains and authored object boxes. One selected
 [ownership witness](../../Lokad.Svg.Tests/SvgFilterRegionOwnershipTests.cs)
 covers retained bounds, padded storage, refusal, cancellation, cleanup and retry.
 The general API matrix supplies destination and prepared-document contracts.
-Large-coordinate marker poses remain an open correctness area.
+Marker placement has separate [canvas-stage controls](../marker-canvas-stages/README.md).

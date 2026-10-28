@@ -358,14 +358,16 @@ internal static class SvgMarkerRenderer
                     : local.ComposeChecked(SvgAffineTransform.FromScale(unitScale, unitScale))
                         .ComposeChecked(SvgAffineTransform.FromTranslation(-anchor.X, -anchor.Y));
                 // The marker's pose and content viewport are separate native matrices.
-                // Round the pose before composing the enclosing source transform.
+                // Keep the rounded pose separate from its source and output canvas maps.
                 double offsetX = nonScalingUnits ? Math.Clamp(local.E, -float.MaxValue, float.MaxValue) : local.E;
                 double offsetY = nonScalingUnits ? Math.Clamp(local.F, -float.MaxValue, float.MaxValue) : local.F;
-                SvgAffineTransform placement = context.ResolveTransform(reader).ComposeNative(new(
-                    (float)local.A, (float)local.B, (float)local.C, (float)local.D, (float)offsetX, (float)offsetY));
+                SvgAffineTransform pose = new((float)local.A, (float)local.B, (float)local.C, (float)local.D, (float)offsetX, (float)offsetY);
+                SvgAffineTransform parentMap = context.ResolveTransform(reader);
+                SvgAffineTransform placement = parentMap.ComposeNative(pose);
+                SvgNativeCanvasStage drawMap = state.Scene.RetainNativeCanvasStage(new(SvgViewportFrame.MapGeometry(parentMap, frame), pose, SvgViewportFrame.MapGeometry(placement, frame)));
                 SvgUseReference reference = new(id, 0, 0, marker.Width, marker.Height, placement, SvgAffineTransform.Identity,
                     255, SvgPresentationResolver.IsPainted(style, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible), null, null, null)
-                { IsMarker = true, HasInverseStrokePose = nonScalingUnits, IsDisplayed = context.InheritedPresentation.IsDisplayed && (style.GetDisplay() != SvgDisplay.None),
+                { IsMarker = true, DrawMap = drawMap, HasInverseStrokePose = nonScalingUnits, IsDisplayed = context.InheritedPresentation.IsDisplayed && (style.GetDisplay() != SvgDisplay.None),
                     IsVisible = SvgPresentationResolver.ParseVisibility(style.Visibility, context.InheritedPresentation.IsVisible),
                     InheritedFill = SvgPaint.Default, RecordingScope = state.NewRecordingScope(), AllowsSolidPaintAnalysis = true };
                 bool previousPicture = state.IsResourcePicture;
@@ -385,9 +387,9 @@ internal static class SvgMarkerRenderer
                             && geometry.Rectangle is { Width: > 0, Height: > 0, Stroke: null })
                             mapped[transferred] = geometry = RetainRectangle(geometry, state, work, token);
                         if (geometry.RecordedPaint.Identity > 0)
-                            state.Scene.ChangeRecordedPaint(geometry.RecordedPaint, state.Scene.GetRecordedPaintValue(geometry.RecordedPaint) with { IsMarkerContent = true });
+                            state.Scene.ChangeRecordedPaint(geometry.RecordedPaint, state.Scene.GetRecordedPaintValue(geometry.RecordedPaint) with { IsMarkerContent = true, DrawMap = drawMap });
                         if (geometry.RecordedStrokePaint.Identity > 0)
-                            state.Scene.ChangeRecordedPaint(geometry.RecordedStrokePaint, state.Scene.GetRecordedPaintValue(geometry.RecordedStrokePaint) with { IsMarkerContent = true });
+                            state.Scene.ChangeRecordedPaint(geometry.RecordedStrokePaint, state.Scene.GetRecordedPaintValue(geometry.RecordedStrokePaint) with { IsMarkerContent = true, DrawMap = drawMap });
                         output.Add(geometry);
                     }
                 }

@@ -17,6 +17,8 @@ internal enum SvgRecordedPaintRole : byte { Fill = 0, Stroke = 1, MarkerContent 
 internal readonly record struct SvgRecordedPaintValue(SvgPaintOperationIdentity Identity, float Alpha, bool Foldable, SvgRecordedPaintRole Role, SvgPaintOrder PaintOrder, SvgRecordingScope Scope, SvgPaintOpacity ElementOpacity, SvgRecordingScope OpacityScope)
 {
     internal SvgRecordedTransform? RecordingTransform { get; init; }
+    /// <summary>Borrows the scene-owned native draw boundary independently of viewport clipping.</summary>
+    internal SvgNativeCanvasStage? DrawMap { get; init; }
     // Resource paint stays independent when its host instance binds fill and stroke.
     internal bool IsStroke { get => (Role & SvgRecordedPaintRole.Stroke) != 0; init => Role = value ? Role | SvgRecordedPaintRole.Stroke : Role & ~SvgRecordedPaintRole.Stroke; }
     internal bool IsMarkerContent { get => (Role & SvgRecordedPaintRole.MarkerContent) != 0; init => Role = value ? Role | SvgRecordedPaintRole.MarkerContent : Role & ~SvgRecordedPaintRole.MarkerContent; }

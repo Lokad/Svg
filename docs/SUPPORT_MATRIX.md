@@ -145,7 +145,9 @@ placement, output scaling and nested viewports; the
 independent references. Fixed filter lengths resolve before placement, while
 authored object boxes and padded primitive-region maps retain their coordinate
 domains; see the [filter-region controls](../tests/Research/filter-region-coordinates/README.md).
-Large-coordinate marker poses retain known rendering discrepancies.
+Marker poses retain their native canvas stage through source/use transforms,
+viewport clips, opacity and output placement; see the
+[marker controls](../tests/Research/marker-canvas-stages/README.md).
 Polygon/polyline point coordinates are bare SVG numbers; CSS length units such
 as px are unsupported in these numeric lists. Coordinates use native float place
 values; overflow (including excessive integer padding) discards the entire point
@@ -516,7 +518,6 @@ marker content. Local gradient and pattern paints may follow the marker and its
 rendered host; deferred children retain inherited fills. See the
 [binding regressions](../tests/Lokad.Svg.Tests/SvgMarkerPaintBindingTests.cs) and
 [browser evidence](../tests/Research/marker-paint-binding/capture.json).
-Affine rectangle marker content with shader fills remains unsupported.
 A marker's display property does not suppress its content;
 a symbol's `display:none` does suppress its instances. CSS `display:none` on a
 marker's defining `defs` prevents its activation, including ex metric requests.

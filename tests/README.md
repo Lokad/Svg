@@ -33,6 +33,10 @@ The [filter-region controls](Research/filter-region-coordinates/README.md) retai
 65 independent native inputs, 27 direct mechanisms and one selected ownership
 witness. Their source/image coordinate interactions retain the existing tests;
 the rendering bank uses one canonical conversion path.
+The [marker canvas controls](Research/marker-canvas-stages/README.md) retain 37
+independent native inputs, five mechanisms and two selected opacity/shader
+ownership paths. Existing culling and inverse-stroke resource regressions remain
+independently asserted.
 The [embedded-image source views](Research/image-source-views/README.md) retain
 120 canonical images for 126 original/acceptance roles, 39 direct mechanism cases
 and three selected allocation paths with raw/prepared ownership checks. They

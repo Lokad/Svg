@@ -269,7 +269,8 @@ internal sealed class SvgAuthoredPath : IDisposable
                 };
             }
             copiedOutline = _strokeOutline?.Copy(placement, budget, workCounter, cancellationToken);
-            return Create(owned, placement.ComposeChecked(SceneMap), copiedStyle, copiedOutline, _fillShape, budget);
+            // Scene placement is finite metadata; the completed output map owns device admission.
+            return Create(owned, placement.Compose(SceneMap), copiedStyle, copiedOutline, _fillShape, budget);
         }
         catch { owned.Dispose(); copiedOutline?.Dispose(); throw; }
     }

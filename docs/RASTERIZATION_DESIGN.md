@@ -58,6 +58,15 @@ Scene geometry keeps inline primitive values and one typed reference payload,
 rather than a reference slot for every paint/geometry variant. The payload owns
 its resource reservations; authored-path ownership remains separate.
 
+Marker paints borrow a shared scene-owned native canvas stage independently of
+whether their viewport clips. Its source/parent maps stay separate from the
+rounded pose until device preparation; contours and shaders consume the same
+prepared mapping. Rectangle source corners survive deferred paint construction.
+Allocation bounds enclose ink, while physical clips retain their own rounding.
+Culled markers discard inner drawing scopes so ancestor filters remain eligible.
+The [marker controls](../tests/Research/marker-canvas-stages/README.md) cover these
+interactions alongside direct mechanisms and selected ownership paths.
+
 ## Geometry and native raster routes
 
 Preserve directed line, quadratic, cubic and rational-conic commands until the

@@ -1,0 +1,266 @@
+{
+  "originalMarkerRoles": 16,
+  "diagnosticControls": 4,
+  "interactionControls": 17,
+  "roles": [
+    {
+      "id": "original-range-0013-candidate",
+      "kind": "original",
+      "purpose": "range-0013-candidate",
+      "sourceSha256": "389751cc958d37fb016b54dd183ade787c4ae52370aec23d35ed42dddd077790",
+      "scale": 1
+    },
+    {
+      "id": "original-range-0013-control",
+      "kind": "original",
+      "purpose": "range-0013-control",
+      "sourceSha256": "7ffc1f51191c79ac27621c2d06a0d6af361f6dc71ac06a5f8a48078973cd7502",
+      "scale": 1
+    },
+    {
+      "id": "original-range-0015-candidate",
+      "kind": "original",
+      "purpose": "range-0015-candidate",
+      "sourceSha256": "47abc8b09916a5199b0d6318bca301d357a8ca9ef68e9ef654f37af43d0981c4",
+      "scale": 1
+    },
+    {
+      "id": "original-range-0015-control",
+      "kind": "original",
+      "purpose": "range-0015-control",
+      "sourceSha256": "3c1e99b4f5ba6196c8ec679ed6016282e18eb676d0a76518d1fb8f450bba1e79",
+      "scale": 1
+    },
+    {
+      "id": "original-range-0029-candidate",
+      "kind": "original",
+      "purpose": "range-0029-candidate",
+      "sourceSha256": "5aee131e55fa99301a057e245c96de54eb041e9e05622bf3b17195966ec79754",
+      "scale": 1
+    },
+    {
+      "id": "original-range-0029-control",
+      "kind": "original",
+      "purpose": "range-0029-control",
+      "sourceSha256": "6faf142a3284fe96c0d4cd4a9aff6323a6e3c0f9dcff2b8432c4285d45a0a3d7",
+      "scale": 1
+    },
+    {
+      "id": "original-range-0061-candidate",
+      "kind": "original",
+      "purpose": "range-0061-candidate",
+      "sourceSha256": "4113dc2906703535ed2ac033a90da8567d18116929e74922f84660b645577284",
+      "scale": 1
+    },
+    {
+      "id": "original-range-0061-control",
+      "kind": "original",
+      "purpose": "range-0061-control",
+      "sourceSha256": "605a933cb183eae24a8b5765bf6850ba7c507bb92a6baa11157dea3215c6ca15",
+      "scale": 1
+    },
+    {
+      "id": "original-range-0333-candidate",
+      "kind": "original",
+      "purpose": "range-0333-candidate",
+      "sourceSha256": "11a19c2b4c5728b22c20fad2069fad731576c56fcd4d104bdb4c5b100260309f",
+      "scale": 1
+    },
+    {
+      "id": "original-range-0333-control",
+      "kind": "original",
+      "purpose": "range-0333-control",
+      "sourceSha256": "a4b06ded78bdcc1a11ddb5181c81e5b3c916324ef196b258433a813dae0f64f8",
+      "scale": 1
+    },
+    {
+      "id": "original-range-0335-candidate",
+      "kind": "original",
+      "purpose": "range-0335-candidate",
+      "sourceSha256": "dcc2aac3db52f4968ab290eabc5c3a7fb8d824896042dc697619874a92eff5bf",
+      "scale": 1
+    },
+    {
+      "id": "original-range-0335-control",
+      "kind": "original",
+      "purpose": "range-0335-control",
+      "sourceSha256": "5c68db6cf31c413e1b03ae177c342e97ef108ec36bc7d625048208d3fa570831",
+      "scale": 1
+    },
+    {
+      "id": "original-range-0349-candidate",
+      "kind": "original",
+      "purpose": "range-0349-candidate",
+      "sourceSha256": "d87bac022611367c01900f13685fc0b86c9d39e6ef547da618fe172ae131786a",
+      "scale": 1
+    },
+    {
+      "id": "original-range-0349-control",
+      "kind": "original",
+      "purpose": "range-0349-control",
+      "sourceSha256": "77c91eb431e3a9d227c6f011428fc58fd55c90799f74d7557b57704780785f56",
+      "scale": 1
+    },
+    {
+      "id": "original-range-0381-candidate",
+      "kind": "original",
+      "purpose": "range-0381-candidate",
+      "sourceSha256": "80b3e79cfde28bd300cddd179135613b1cce60ed29cdc38ec2c066065b6dcdfe",
+      "scale": 1
+    },
+    {
+      "id": "original-range-0381-control",
+      "kind": "original",
+      "purpose": "range-0381-control",
+      "sourceSha256": "46b9c87d680b54f2416986026ea6952d8094ec3d64070e43b83f18756791b784",
+      "scale": 1
+    },
+    {
+      "id": "diagnostic-direct-shape",
+      "kind": "diagnostic",
+      "purpose": "range-0013-candidate",
+      "sourceSha256": "0200db5a18bc9fe8231fbb708e2632ac3335dc842eb7db1557755fe8e734f974",
+      "scale": 1
+    },
+    {
+      "id": "diagnostic-group-shape",
+      "kind": "diagnostic",
+      "purpose": "range-0013-candidate",
+      "sourceSha256": "644a23ab9ff8c995bd13f89ee5124a895a392426f578472de4e62b6dc3c01ec4",
+      "scale": 1
+    },
+    {
+      "id": "diagnostic-visible-marker-overflow",
+      "kind": "diagnostic",
+      "purpose": "range-0013-candidate",
+      "sourceSha256": "a36c7859583814182acc7b60c16c692b782d0f2f0890a6a960d4ac32d9ef8476",
+      "scale": 1
+    },
+    {
+      "id": "diagnostic-path-marker-content",
+      "kind": "diagnostic",
+      "purpose": "range-0013-candidate",
+      "sourceSha256": "023fdd7db08cd1068c6b5f6d50b77bfea496e1360e8dfd2946c39353a2b8cea2",
+      "scale": 1
+    },
+    {
+      "id": "root-visible-overflow",
+      "kind": "interaction",
+      "purpose": "Root map without marker viewport clipping",
+      "sourceSha256": "0e9b8461a37604510352a4afc9eb71b5628c62d6ca914824ab781945f2c95c1d",
+      "scale": 1
+    },
+    {
+      "id": "root-path-content",
+      "kind": "interaction",
+      "purpose": "Authored path and viewport stay independent",
+      "sourceSha256": "356e77e5335ba403942f7a8ec1377b4a4a77247bc8837bcfff04e38415366435",
+      "scale": 1
+    },
+    {
+      "id": "root-marker-viewbox",
+      "kind": "interaction",
+      "purpose": "Marker viewBox and reference point precede root mapping",
+      "sourceSha256": "be19950c9336d727190e532e7ebd52d30a4f70784d14934c593c01e5db39e350",
+      "scale": 1
+    },
+    {
+      "id": "use-reference-point",
+      "kind": "interaction",
+      "purpose": "Fractional reference point under live use",
+      "sourceSha256": "6f582f88933bae246070f98380790b8c4d80bdc73ea09f9c2eede050e07b4dd4",
+      "scale": 1
+    },
+    {
+      "id": "use-orientation-angle",
+      "kind": "interaction",
+      "purpose": "Fixed marker rotation and binary viewport",
+      "sourceSha256": "e55e5a8dd4845efcf7a3de043378b40da044385797cbbcb6282d1811bf8b8e16",
+      "scale": 1
+    },
+    {
+      "id": "use-orientation-auto",
+      "kind": "interaction",
+      "purpose": "Independent tangents on polygon vertices",
+      "sourceSha256": "53e839b2ec01ffa2fc9faa89a8c37632a6d1461997a83452ee5c369af9e263be",
+      "scale": 1
+    },
+    {
+      "id": "use-orientation-reverse",
+      "kind": "interaction",
+      "purpose": "Start-only reversal and remaining vertex orientation",
+      "sourceSha256": "8c7bbd50a50968edfd37df7bb54bf2e91bbdc4a091a15bdb442f89c87e3e426f",
+      "scale": 1
+    },
+    {
+      "id": "use-content-transform",
+      "kind": "interaction",
+      "purpose": "Authored content transform remains inside viewport",
+      "sourceSha256": "c80ef39423aeea1423052823c697477be5c664b45a7ba779fc4a6bb63c2168eb",
+      "scale": 1
+    },
+    {
+      "id": "use-inherited-markers",
+      "kind": "interaction",
+      "purpose": "Live inherited marker construction",
+      "sourceSha256": "c9e73cacf0fa86018d910cc6aa7bcc1e7f133f0b244cdd36ae53654cae338298",
+      "scale": 1
+    },
+    {
+      "id": "use-source-transform",
+      "kind": "interaction",
+      "purpose": "Source transform and parent use are distinct stages",
+      "sourceSha256": "0eb57fb36452eb35138dc47c5d9ccae7b438ad7d7756c5ea4729f7f8c4dba534",
+      "scale": 1
+    },
+    {
+      "id": "use-group-reference",
+      "kind": "interaction",
+      "purpose": "Retained group replay",
+      "sourceSha256": "2f1cfaf0427470ebe75cc7e8fc2486195046641e91effd0aa4f74dd00908dcf9",
+      "scale": 1
+    },
+    {
+      "id": "use-nested-viewport",
+      "kind": "interaction",
+      "purpose": "Owning nested viewport with marker viewport",
+      "sourceSha256": "1a7bd094f511b39608cd61ed9b25e04b08a2d98024dbf4817f8c1b1b766f296d",
+      "scale": 1
+    },
+    {
+      "id": "use-source-opacity",
+      "kind": "interaction",
+      "purpose": "Source opacity surrounds marker painting",
+      "sourceSha256": "52713b1bfcefd048d924bccff0b718bd439cd8826c658cb103e94f84132cdf6b",
+      "scale": 1
+    },
+    {
+      "id": "use-instance-opacity",
+      "kind": "interaction",
+      "purpose": "Instance opacity surrounds marker viewport",
+      "sourceSha256": "ff94bc9b9feccb2d0474529acc532ce54c5307bd06eedcc57791293e9293017c",
+      "scale": 1
+    },
+    {
+      "id": "use-gradient-content",
+      "kind": "interaction",
+      "purpose": "Axis-aligned marker shader source binding",
+      "sourceSha256": "1590c5524545c20ed5a6a0526e0f165d87f751c61134794d07507062c8f47849",
+      "scale": 1
+    },
+    {
+      "id": "use-output-double",
+      "kind": "interaction",
+      "purpose": "Output map and marker native concatenation",
+      "sourceSha256": "389751cc958d37fb016b54dd183ade787c4ae52370aec23d35ed42dddd077790",
+      "scale": 2
+    },
+    {
+      "id": "root-output-fractional",
+      "kind": "interaction",
+      "purpose": "Fractional output with large root viewBox",
+      "sourceSha256": "47abc8b09916a5199b0d6318bca301d357a8ca9ef68e9ef654f37af43d0981c4",
+      "scale": 0.75
+    }
+  ]
+}

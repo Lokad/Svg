@@ -1,5 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/marker-canvas-stages/capture.json" Link="TestData/marker-canvas-stages/capture.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/marker-canvas-stages/inputs/use-source-opacity.svg" Link="TestData/marker-canvas-stages/inputs/use-source-opacity.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/marker-canvas-stages/inputs/use-gradient-content.svg" Link="TestData/marker-canvas-stages/inputs/use-gradient-content.svg" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="../Research/filter-region-coordinates/capture.json" Link="TestData/filter-region-coordinates/capture.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/filter-region-coordinates/inputs/object-region-object-primitives.svg" Link="TestData/filter-region-coordinates/inputs/object-region-object-primitives.svg" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

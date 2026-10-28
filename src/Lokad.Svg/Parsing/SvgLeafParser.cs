@@ -25,8 +25,8 @@ internal static class SvgLeafParser
         double cornerX = syntax.CornerX ?? syntax.CornerY ?? 0;
         double cornerY = syntax.CornerY ?? syntax.CornerX ?? 0;
         bool rounded = cornerX != 0 || cornerY != 0;
-        if ((!earlyTransform.IsAxisAligned || context.RetainInstanceStrokePath) && !rounded
-            && (!SvgGradientSyntax.IsGradientFill(patternStyle.Fill) || !earlyTransform.IsAxisAligned)
+        if ((!earlyTransform.IsAxisAligned || context.RetainInstanceStrokePath || context.RetainInstanceFillPath) && !rounded
+            && (context.RetainInstanceFillPath || !SvgGradientSyntax.IsGradientFill(patternStyle.Fill) || !earlyTransform.IsAxisAligned)
             && (patternStyle.Stroke is null or "none" || SvgStrokeStyleSyntax.IsZeroStrokeWidth(patternStyle.Width ?? syntax.StrokeWidth)))
             return LowerTransformedFill(reader, context, syntax, frame, state);
         if (!earlyTransform.IsAxisAligned && !rounded)

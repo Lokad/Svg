@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Preserve marker canvas stages independently of clipping and paint kind through
+  source transforms, use replay and output scaling. Retain local rectangle
+  contours, enclose opacity-layer allocations, and keep culled marker scopes
+  from clipping ancestor effects. See the
+  [native controls](tests/Research/marker-canvas-stages/README.md).
+
 - Resolve fixed filter and translate lengths before placement, retain authored
   object boxes, and map primitive crops in padded bitmap coordinates. This
   corrects large-coordinate own-filter output while preserving source-image

@@ -3,6 +3,10 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
+/// <summary>Separates native fill-source retention from instance stroke construction.</summary>
+[Flags]
+internal enum SvgSourceContourRetention : byte { None = 0, Fill = 1, Stroke = 2 }
+
 /// <summary>Retains one validated shape's immutable attributes and authored style for instance fill and stroke construction.</summary>
 /// <remarks>The document string store retains immutable values; the document reservation list owns the reader and
 /// attribute array. This is an attribute adapter for existing leaf lowerers, with no child tree or serialized XML.
@@ -109,7 +113,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
             || resolved with { StrokeOpacity = null } != _constructedStroke with { StrokeOpacity = null };
     }
 
-    internal SvgDefinition Lower(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, string? paintServerFill, SvgPaintOrder paintOrder, SvgMarkerStyle markers, SvgPaintOpacity parentOpacity, SvgDisplay parentDisplay, SvgTextMetricScope textMetrics, bool parentNonScalingStroke, SvgAffineTransform instancePlacement, SvgViewportLengthBases lengthBases, bool retainMappedContour, bool isDisplayed, SvgDocumentState state)
+    internal SvgDefinition Lower(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, string? paintServerFill, SvgPaintOrder paintOrder, SvgMarkerStyle markers, SvgPaintOpacity parentOpacity, SvgDisplay parentDisplay, SvgTextMetricScope textMetrics, bool parentNonScalingStroke, SvgAffineTransform instancePlacement, SvgViewportLengthBases lengthBases, SvgSourceContourRetention retention, bool isDisplayed, SvgDocumentState state)
     {
         _attribute = -1;
         // A use supplies fill only where the source did not author one. The original
@@ -123,11 +127,13 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
         SvgPaintableElementContext context = new(new(paint, true, true, SvgAffineTransform.Identity) { NonScalingStroke = parentNonScalingStroke, TextMetrics = textMetrics, OwnOpacity = parentOpacity, ElementDisplay = parentDisplay, PaintOrder = paintOrder, Markers = markers }, SvgInheritedTextStyle.Default,
             resolved, default, _colors, _work, _token, state.OutputMagnification * instanceMagnification, fillRule)
         {
-            StrokeHostMap = state.OutputMap.ComposeChecked(instancePlacement),
+            // Inverse stroke-unit intermediates remain finite until complete draw placement.
+            StrokeHostMap = state.OutputMap.Compose(instancePlacement),
             RecordingScope = new(1),
             AuthoredStyle = authored,
             LengthBases = lengthBases,
-            RetainInstanceStrokePath = retainMappedContour || _element == "rect" && SvgGradientSyntax.IsGradientStrokeUrl(resolved.Stroke)
+            RetainInstanceFillPath = (retention & SvgSourceContourRetention.Fill) != 0,
+            RetainInstanceStrokePath = (retention & SvgSourceContourRetention.Stroke) != 0 || _element == "rect" && SvgGradientSyntax.IsGradientStrokeUrl(resolved.Stroke)
                 && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(resolved.Width)
         };
         // Raw construction stays independent of display; only live instances activate source effects.

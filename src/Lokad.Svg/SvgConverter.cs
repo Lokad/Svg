@@ -2785,8 +2785,11 @@ public static partial class SvgConverter
                         // Skia hard-rectangle clipping rounds each mapped edge to the nearest integer
                         // (Copyright 2006 The Android Open Source Project; see THIRD_PARTY_NOTICES.txt);
                         // half-pixel ties move toward positive infinity on both sides.
-                        SvgAnalyticClipBounds maskBounds = new(ClampFloor(regionLeft + 0.5, outputWidth), ClampFloor(regionTop + 0.5, outputHeight),
-                            ClampFloor(regionRight + 0.5, outputWidth), ClampFloor(regionBottom + 0.5, outputHeight));
+                        // Allocation bounds enclose ink; physical mask/viewport clips keep nearest-edge rounding.
+                        SvgAnalyticClipBounds maskBounds = command.RegionKind == SvgLayerRegionKind.Bounds
+                            ? new(ClampFloor(regionLeft, outputWidth), ClampFloor(regionTop, outputHeight), ClampCeiling(regionRight, outputWidth), ClampCeiling(regionBottom, outputHeight))
+                            : new(ClampFloor(regionLeft + 0.5, outputWidth), ClampFloor(regionTop + 0.5, outputHeight),
+                                ClampFloor(regionRight + 0.5, outputWidth), ClampFloor(regionBottom + 0.5, outputHeight));
                         byte[] maskSurface = [];
                         byte maskLuminance = 255;
                         bool maskIsAlpha = false;
@@ -3142,8 +3145,10 @@ public static partial class SvgConverter
             if (!reusablePattern || patternTileCache is {} retained && (!retained.MatchesSource(geometry.Pattern) || NeedsPatternMapping(geometry.Pattern) && budget.AvailableBytes < 512)) ReleasePatternTile();
             SvgRecordedPaintValue previousPaint = activePaint;
             SvgRecordedPaintValue previousStroke = activeStrokePaint;
+            SvgViewportDrawMap? previousDrawMap = activeViewportDrawMap;
             activePaint = GetRecordedPaintValue(geometry.RecordedPaint);
             activeStrokePaint = GetRecordedPaintValue(geometry.RecordedStrokePaint);
+            activeViewportDrawMap = activePaint.DrawMap?.Map ?? activeViewportDrawMap;
             try
             {
                 bool combined = geometry.Kind switch
@@ -3162,7 +3167,7 @@ public static partial class SvgConverter
                 }
                 else RasterizeGeometryCore(geometry, destination, SvgPaintPass.All);
             }
-            finally { activePaint = previousPaint; activeStrokePaint = previousStroke; }
+            finally { activePaint = previousPaint; activeStrokePaint = previousStroke; activeViewportDrawMap = previousDrawMap; }
         }
 
         void RasterizeGeometryCore(SvgGeometry geometry, byte[] destination, SvgPaintPass pass)
@@ -5062,7 +5067,8 @@ public static partial class SvgConverter
         SvgRectangleCoverage? PrepareRectangleFill(SvgAuthoredPath? source, SvgAffineTransform map)
         {
             if (source is not { IsRectangleFill: true }) return null;
-            if (sourcePlacement == SvgAffineTransform.Identity)
+            // Retained canvas stages already prepared this map; rebuilding it loses their rounding.
+            if (sourcePlacement == SvgAffineTransform.Identity && activeViewportDrawMap is null)
                 map = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset).ComposeChecked(source.SceneMap);
             if (!map.PreservesAxisAlignedRectangles) return null;
             SvgRectanglePathRecognizer recognizer = new();

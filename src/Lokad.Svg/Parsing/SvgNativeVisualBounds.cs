@@ -155,7 +155,8 @@ internal static class SvgNativeVisualBounds
                     { IsEffectAnchor = true, IsMarkerContent = true, ObjectBounds = new((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height)), VisualBounds = default(SvgPaintBounds) };
                     recorded = state.Scene.RegisterRecordedPaint(inert);
                 }
-                parsed.Storage.Items[index] = SvgGeometry.FromRectangle(default) with { RecordedPaint = recorded, LeafMask = geometry.LeafMask };
+                // A culled marker retains no inner drawing scopes that could clip an ancestor effect.
+                parsed.Storage.Items[index] = SvgGeometry.FromRectangle(default) with { RecordedPaint = recorded, LeafMask = state.Scene.GetRecordedPaintValue(recorded).IsMarkerContent ? null : geometry.LeafMask };
                 geometry.Dispose();
             }
             return parsed;
