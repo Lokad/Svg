@@ -20,6 +20,7 @@ public sealed class SvgGlyphViewportClipTests
 
     [Theory]
     [MemberData(nameof(ViewportCases))]
+    [Trait("Layer", "Rendering")]
     public async Task Symbol_and_nested_viewport_keep_independently_measured_native_equivalence(string text, int size, string aspect, string x, string y, bool stroke)
     {
         // All 768 actual browser pairs establish this equivalence independently.
@@ -32,6 +33,24 @@ public sealed class SvgGlyphViewportClipTests
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
         byte[] expected = SvgConverter.ConvertToPng(inline, options, CancellationToken.None).ToArray();
         Assert.Equal(expected, SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
+    }
+
+    [Theory]
+    [InlineData("II", 10, "xMaxYMin slice", "4", "6.5", false)]
+    [InlineData("II", 10, "xMaxYMin slice", "4.5", "6.5", false)]
+    [InlineData("Ag", 10, "xMaxYMin slice", "4", "6.75", true)]
+    [InlineData("AVA", 12, "xMinYMax slice", "4.5", "6.75", true)]
+    [InlineData("II", 8, "none", "4", "6", false)]
+    [InlineData("Ag", 16, "xMidYMid meet", "4.5", "6.25", false)]
+    [Trait("Layer", "Contract")]
+    public async Task Prepared_symbol_replay_preserves_selected_font_and_viewport_interactions(string text, int size, string aspect, string x, string y, bool stroke)
+    {
+        byte[] input = Document(text, size, aspect, x, y, stroke, "red", true);
+        SvgFontPackCatalog catalog = Catalog();
+        FontProvider provider = new();
+        using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
+        byte[] expected = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
         using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
         Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
     }

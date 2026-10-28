@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/text-instance-composition/mechanisms/*.svg" Link="TestData/text-instance-composition/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="../Research/ordered-clip-coverage/capture.json" Link="TestData/ordered-clip-coverage/capture.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/ordered-clip-coverage/native-boundaries.json" Link="TestData/ordered-clip-coverage/native-boundaries.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/ordered-clip-coverage/inputs/contained-count-0424-candidate.svg" Link="TestData/ordered-clip-coverage/inputs/contained-count-0424-candidate.svg" CopyToOutputDirectory="PreserveNewest" />

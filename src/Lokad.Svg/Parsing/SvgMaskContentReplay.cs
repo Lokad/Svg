@@ -161,7 +161,7 @@ internal static class SvgMaskContentReplay
                         IsVisible = context.InheritedPresentation.IsVisible
                     };
                     SvgGeometry[] mapped = SvgReferenceResolver.Apply(new([], false, null, null) { SymbolContent = group }, reference, null, state, work, token);
-                    SvgPaintRecording.AdoptLeafScene(new(mapped, false, null, null), builder, state);
+                    SvgPaintRecording.AdoptLeafScene(new(mapped, false, null, null), builder, state, work, token);
                 }
                 else if (child.Source.LocalName == "use")
                 {
@@ -171,7 +171,7 @@ internal static class SvgMaskContentReplay
                 else
                 {
                     SvgDefinition lowered = SvgDefinitionParser.LowerInstanceSource(child.Source, context, state);
-                    SvgPaintRecording.AdoptLeafScene(lowered, builder, state);
+                    SvgPaintRecording.AdoptLeafScene(lowered, builder, state, work, token);
                 }
             }
             if (region is {} clip)
@@ -250,7 +250,7 @@ internal static class SvgMaskContentReplay
         };
         using SvgSceneBuilder builder = new(state.Budget, work, token);
         SvgDefinition lowered = SvgDefinitionParser.LowerInstanceSource(child.Source, context, state);
-        SvgPaintRecording.AdoptLeafScene(lowered, builder, state);
+        SvgPaintRecording.AdoptLeafScene(lowered, builder, state, work, token);
         SvgLeafMaskComposition.Emit(state, builder, work, token);
         SvgVectorContent content = SvgVectorContent.Create(builder.Build(), state.Budget);
         try { state.Scene.AdoptVectorContent(content); }

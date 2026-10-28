@@ -1363,6 +1363,9 @@ internal sealed class SvgSceneBuilder : IDisposable
 
     internal SvgGeometry GeometryAt(int index) => _geometries[index];
 
+    /// <summary>Borrows one materialized mask while its builder is alive; callers copy it into their final scene.</summary>
+    internal SvgMaskContent MaskContentAt(int index) => _maskContents[index];
+
     internal int CommandCount => _commands.Count;
 
     internal SvgDrawCommand CommandAt(int index) => _commands[index];

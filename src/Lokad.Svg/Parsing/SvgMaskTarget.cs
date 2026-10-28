@@ -18,16 +18,20 @@ internal readonly record struct SvgMaskTarget(SvgAffineTransform Map, SvgRectang
         return new(map, bounds, region);
     }
 
-    /// <summary>Encloses an axis-aligned mask's source clip before placement, preserving fractional poses.</summary>
+    /// <summary>Encloses the union of an axis-aligned mask region and target visual bounds before placement.</summary>
     /// <remarks>Returns no descriptor when the ordinary scene-space enclosure suffices. Values own
-    /// no storage; four boundary visits charge shared work and cancellation before mapping.</remarks>
-    internal static SvgClipBox? SourcePaintRegion(string id, SvgAffineTransform map, SvgRectangle bounds, SvgClipBox sceneRegion,
+    /// no storage; visual mapping and four enclosure boundaries charge shared work and cancellation.</remarks>
+    internal static SvgClipBox? SourcePaintRegion(string id, SvgAffineTransform map, SvgRectangle bounds, SvgPaintBounds sceneVisualBounds, SvgClipBox sceneRegion,
         SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
         if (!map.IsAxisAligned || !map.TryInvert(out SvgAffineTransform inverse)) return null;
         for (int index = 0; index < 4; index++) work.Consume(token);
         SvgMaskTarget target = Create(id, map, inverse.Apply(bounds), state);
-        SvgClipBox box = target.Region;
+        SvgClipBox region = target.Region;
+        SvgPaintBounds visual = sceneVisualBounds.Map(inverse, work, token);
+        double x = Math.Min(region.X, visual.Left), y = Math.Min(region.Y, visual.Top);
+        SvgClipBox box = new(x, y, Math.Max(region.Right, visual.Right) - x,
+            Math.Max(region.Bottom, visual.Bottom) - y);
         float left = MathF.Floor((float)box.X), top = MathF.Floor((float)box.Y);
         float right = MathF.Ceiling((float)box.Right), bottom = MathF.Ceiling((float)box.Bottom);
         SvgClipBox placed = map.Apply(new SvgClipBox(left, top, right - left, bottom - top));

@@ -1,0 +1,181 @@
+{
+  "policy": "Density and viewport graphs are independent; earlier captures remain immutable.",
+  "cases": [
+    {
+      "originalRole": "object-scaled-use",
+      "densityCase": "object-scaled-use",
+      "viewportCase": "scaling-viewport-clipped",
+      "policy": "Earlier image bytes are retained and match the explicit larger-viewport source. Density keeps the original logical SVG and uses DPR1.25. No reference or layout implementation changed.",
+      "platforms": {
+        "windows": {
+          "earlierViewportReference": {
+            "reference": "references/c92ed4f5dcd57f954780d2c5073e3c1a6970756c96572fd82e6a02f5c7a51725.png",
+            "referenceSha256": "c92ed4f5dcd57f954780d2c5073e3c1a6970756c96572fd82e6a02f5c7a51725",
+            "nativeSourceSha256": "cb423f2e2da8b4cae0287224f87963048ca9b1e07cf2272257578bc7315b1e5b",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profilesCleaned": true
+          },
+          "viewportReference": {
+            "reference": "references/c92ed4f5dcd57f954780d2c5073e3c1a6970756c96572fd82e6a02f5c7a51725.png",
+            "referenceSha256": "c92ed4f5dcd57f954780d2c5073e3c1a6970756c96572fd82e6a02f5c7a51725",
+            "nativeSourceSha256": "cb423f2e2da8b4cae0287224f87963048ca9b1e07cf2272257578bc7315b1e5b",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profilesCleaned": true
+          },
+          "densityReference": {
+            "reference": "references/21b40f204d6e5f5dd7ad83a487ab9db3c732cf6cc211f639032f8d6aae644358.png",
+            "referenceSha256": "21b40f204d6e5f5dd7ad83a487ab9db3c732cf6cc211f639032f8d6aae644358",
+            "nativeSourceSha256": "5979e4877b026f1402b94ada46b187e83c000f727306621892623aa054f512ae",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profilesCleaned": true
+          },
+          "nativeContextComparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 20,
+            "MaximumChannelError": 40,
+            "MeanAbsoluteError": 0.041875,
+            "RootMeanSquareError": 1.0071618539241844,
+            "MaximumAlphaError": 40,
+            "AlphaChangedPixelCount": 20,
+            "MinimumMismatchX": 7,
+            "MinimumMismatchY": 20,
+            "MaximumMismatchX": 17,
+            "MaximumMismatchY": 28,
+            "IsExact": false
+          }
+        },
+        "linux": {
+          "earlierViewportReference": {
+            "reference": "references/81c9fe8ee910530ce3c360350f9851ed7b8524fbee00fb656000459a48ff7a40.png",
+            "referenceSha256": "81c9fe8ee910530ce3c360350f9851ed7b8524fbee00fb656000459a48ff7a40",
+            "nativeSourceSha256": "cb423f2e2da8b4cae0287224f87963048ca9b1e07cf2272257578bc7315b1e5b",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profilesCleaned": true
+          },
+          "viewportReference": {
+            "reference": "references/81c9fe8ee910530ce3c360350f9851ed7b8524fbee00fb656000459a48ff7a40.png",
+            "referenceSha256": "81c9fe8ee910530ce3c360350f9851ed7b8524fbee00fb656000459a48ff7a40",
+            "nativeSourceSha256": "cb423f2e2da8b4cae0287224f87963048ca9b1e07cf2272257578bc7315b1e5b",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profilesCleaned": true
+          },
+          "densityReference": {
+            "reference": "references/c94ab830b8d1a71f8f001d3e81193d51d585a3084f8b5dcf323f24f04d98f5b8.png",
+            "referenceSha256": "c94ab830b8d1a71f8f001d3e81193d51d585a3084f8b5dcf323f24f04d98f5b8",
+            "nativeSourceSha256": "5979e4877b026f1402b94ada46b187e83c000f727306621892623aa054f512ae",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profilesCleaned": true
+          },
+          "nativeContextComparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 54,
+            "MaximumChannelError": 255,
+            "MeanAbsoluteError": 0.1309375,
+            "RootMeanSquareError": 4.660807333499208,
+            "MaximumAlphaError": 66,
+            "AlphaChangedPixelCount": 54,
+            "MinimumMismatchX": 7,
+            "MinimumMismatchY": 16,
+            "MaximumMismatchX": 18,
+            "MaximumMismatchY": 28,
+            "IsExact": false
+          }
+        }
+      }
+    },
+    {
+      "originalRole": "object-scaled-use-unclipped",
+      "densityCase": "object-scaled-use-unclipped",
+      "viewportCase": "scaling-viewport-unclipped",
+      "policy": "Earlier image bytes are retained and match the explicit larger-viewport source. Density keeps the original logical SVG and uses DPR1.25. No reference or layout implementation changed.",
+      "platforms": {
+        "windows": {
+          "earlierViewportReference": {
+            "reference": "references/21d66e85c5046b9af033090ff93f60e28d33dcd99e824cb4a2ed0a709441811c.png",
+            "referenceSha256": "21d66e85c5046b9af033090ff93f60e28d33dcd99e824cb4a2ed0a709441811c",
+            "nativeSourceSha256": "3b2719ec9ddca53971effcee6155e7772e0e47d94e2f37088ccd992d6df2808c",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profilesCleaned": true
+          },
+          "viewportReference": {
+            "reference": "references/21d66e85c5046b9af033090ff93f60e28d33dcd99e824cb4a2ed0a709441811c.png",
+            "referenceSha256": "21d66e85c5046b9af033090ff93f60e28d33dcd99e824cb4a2ed0a709441811c",
+            "nativeSourceSha256": "3b2719ec9ddca53971effcee6155e7772e0e47d94e2f37088ccd992d6df2808c",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profilesCleaned": true
+          },
+          "densityReference": {
+            "reference": "references/9d150dd7462ece5a0473cc43e164f03de9713d6c50b16f20aebd714a0b9ed05c.png",
+            "referenceSha256": "9d150dd7462ece5a0473cc43e164f03de9713d6c50b16f20aebd714a0b9ed05c",
+            "nativeSourceSha256": "694b0d4f61b67c6a231d0828fc032e63b82c9e12070b8455d12646952f0da5c8",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profilesCleaned": true
+          },
+          "nativeContextComparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 14,
+            "MaximumChannelError": 12,
+            "MeanAbsoluteError": 0.01484375,
+            "RootMeanSquareError": 0.3466356155965512,
+            "MaximumAlphaError": 12,
+            "AlphaChangedPixelCount": 14,
+            "MinimumMismatchX": 8,
+            "MinimumMismatchY": 19,
+            "MaximumMismatchX": 19,
+            "MaximumMismatchY": 28,
+            "IsExact": false
+          }
+        },
+        "linux": {
+          "earlierViewportReference": {
+            "reference": "references/88308a6367af13548786da4990bc1ac851e1de77b4afe63b6959d84902834844.png",
+            "referenceSha256": "88308a6367af13548786da4990bc1ac851e1de77b4afe63b6959d84902834844",
+            "nativeSourceSha256": "3b2719ec9ddca53971effcee6155e7772e0e47d94e2f37088ccd992d6df2808c",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profilesCleaned": true
+          },
+          "viewportReference": {
+            "reference": "references/88308a6367af13548786da4990bc1ac851e1de77b4afe63b6959d84902834844.png",
+            "referenceSha256": "88308a6367af13548786da4990bc1ac851e1de77b4afe63b6959d84902834844",
+            "nativeSourceSha256": "3b2719ec9ddca53971effcee6155e7772e0e47d94e2f37088ccd992d6df2808c",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profilesCleaned": true
+          },
+          "densityReference": {
+            "reference": "references/4afbc563c54992dffea959a981c54079f38bda9ca21e9f8ee2a8b0f6cb541c5c.png",
+            "referenceSha256": "4afbc563c54992dffea959a981c54079f38bda9ca21e9f8ee2a8b0f6cb541c5c",
+            "nativeSourceSha256": "694b0d4f61b67c6a231d0828fc032e63b82c9e12070b8455d12646952f0da5c8",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profilesCleaned": true
+          },
+          "nativeContextComparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 69,
+            "MaximumChannelError": 8,
+            "MeanAbsoluteError": 0.0315625,
+            "RootMeanSquareError": 0.3441474974484051,
+            "MaximumAlphaError": 8,
+            "AlphaChangedPixelCount": 69,
+            "MinimumMismatchX": 7,
+            "MinimumMismatchY": 16,
+            "MaximumMismatchX": 20,
+            "MaximumMismatchY": 28,
+            "IsExact": false
+          }
+        }
+      }
+    }
+  ]
+}

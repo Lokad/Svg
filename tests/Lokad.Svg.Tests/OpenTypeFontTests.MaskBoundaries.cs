@@ -51,22 +51,9 @@ public sealed partial class OpenTypeFontTests
             byte[] input = MaskBoundaryInput(mask + source, body, map);
             using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None);
             SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
-            if (route == "live-use")
-            {
-                Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, options, CancellationToken.None)).ErrorCode);
-                SvgException error = await Assert.ThrowsAsync<SvgException>(async () =>
-                {
-                    using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
-                    prepared.ConvertToPng(CancellationToken.None);
-                });
-                Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
-            }
-            else
-            {
-                byte[] expected = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
-                using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
-                Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
-            }
+            byte[] expected = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
+            using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
+            Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
         }
     }
 

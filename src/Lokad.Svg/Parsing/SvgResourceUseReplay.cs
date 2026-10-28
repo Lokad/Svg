@@ -145,6 +145,7 @@ internal static class SvgResourceUseReplay
         try { mapped = SvgReferenceResolver.ApplyFilterSource(source, use.Reference with { Opacity = 255 }, null, state, work, token); }
         finally { state.IsResourcePicture = previousPicture; }
         bool adopted = false;
+        SvgLeafMaskMapper? masks = null;
         try
         {
             if (kind == SvgResourceUseKind.Pattern)
@@ -158,7 +159,9 @@ internal static class SvgResourceUseReplay
             foreach (ref SvgGeometry geometry in mapped.AsSpan())
             {
                 work.Consume(token);
-                geometry = SvgPaintRecording.RebindLeafPaint(geometry, state.Scene, builder);
+                if (geometry.LeafMask is not null && !ReferenceEquals(state.Scene, builder))
+                    masks ??= SvgLeafMaskMapper.CreateSceneTransfer(state, state.Scene, builder, work, token);
+                geometry = SvgPaintRecording.RebindLeafScene(geometry, state.Scene, builder, masks);
             }
             SvgSceneBuilder? previous = state.DefinitionReplayScene;
             state.DefinitionReplayScene = builder;
@@ -179,6 +182,6 @@ internal static class SvgResourceUseReplay
             finally { state.DefinitionReplayScene = previous; }
             adopted = true;
         }
-        finally { if (!adopted) foreach (SvgGeometry geometry in mapped) geometry.Dispose(); }
+        finally { masks?.Dispose(); if (!adopted) foreach (SvgGeometry geometry in mapped) geometry.Dispose(); }
     }
 }

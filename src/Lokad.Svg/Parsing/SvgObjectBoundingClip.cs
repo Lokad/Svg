@@ -32,7 +32,13 @@ internal struct SvgObjectBoundingClip
         SvgRecordedPaintValue paint = state.Scene.GetRecordedPaintValue(geometry.RecordedPaint);
         if (paint.IsEffectAnchor && paint.ObjectBounds is null) return;
         SvgRectangle bounds;
-        if (geometry.AuthoredPath is {} source)
+        if (paint.SourceObjectBounds is {} authored)
+        {
+            SvgPaintBounds box = authored.Bounds;
+            SvgAffineTransform local = authored.SceneMap == _map ? SvgAffineTransform.Identity : _inverse.ComposeChecked(authored.SceneMap);
+            bounds = MapBox(new(box.Left, box.Top, box.Right - box.Left, box.Bottom - box.Top, default, true, null), local, work, token);
+        }
+        else if (geometry.AuthoredPath is {} source)
         {
             if (_map.IsAxisAligned && source.SceneMap.IsAxisAligned)
                 bounds = _inverse.Apply(source.SceneMap.Apply(source.StrokeStyle?.SourceBounds ?? SvgPathBounds.Compute(source.Commands, work, token)));

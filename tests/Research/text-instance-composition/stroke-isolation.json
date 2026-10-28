@@ -1,0 +1,106 @@
+{
+  "policy": "All native inputs/references remain distinct and unchanged; no graph is removed because its resulting image is equal.",
+  "cases": [
+    {
+      "host": "windows",
+      "roles": [
+        "original-r58-batch5-615-candidate",
+        "original-r58-batch5-615-control",
+        "unclipped-stroke-text-map",
+        "unclipped-stroke-group-map"
+      ],
+      "changedPixels": 4,
+      "differences": [
+        {
+          "x": 16,
+          "y": 14,
+          "actual": [
+            60,
+            0,
+            196,
+            210
+          ],
+          "native": [
+            56,
+            0,
+            199,
+            213
+          ]
+        },
+        {
+          "x": 17,
+          "y": 14,
+          "actual": [
+            62,
+            0,
+            193,
+            253
+          ],
+          "native": [
+            24,
+            0,
+            231,
+            255
+          ]
+        },
+        {
+          "x": 18,
+          "y": 14,
+          "actual": [
+            61,
+            0,
+            194,
+            251
+          ],
+          "native": [
+            28,
+            0,
+            227,
+            254
+          ]
+        },
+        {
+          "x": 19,
+          "y": 14,
+          "actual": [
+            40,
+            0,
+            215,
+            216
+          ],
+          "native": [
+            39,
+            0,
+            216,
+            217
+          ]
+        }
+      ],
+      "viewport": {
+        "x": 4,
+        "y": 6.75,
+        "width": 20,
+        "height": 12
+      },
+      "interpretation": "Identical interior stroke residual with and without the viewport, through independent text/group and nested/symbol graphs. R59 remains open; this is not a clip-edge residual."
+    },
+    {
+      "host": "linux",
+      "roles": [
+        "original-r58-batch5-615-candidate",
+        "original-r58-batch5-615-control",
+        "unclipped-stroke-text-map",
+        "unclipped-stroke-group-map"
+      ],
+      "changedPixels": 0,
+      "differences": [],
+      "viewport": {
+        "x": 4,
+        "y": 6.75,
+        "width": 20,
+        "height": 12
+      },
+      "interpretation": "Identical interior stroke residual with and without the viewport, through independent text/group and nested/symbol graphs. R59 remains open; this is not a clip-edge residual."
+    }
+  ]
+}

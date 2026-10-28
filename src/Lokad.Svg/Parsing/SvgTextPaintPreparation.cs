@@ -50,8 +50,13 @@ internal struct SvgTextPaintPreparation
         }
         SvgRecordedPaintValue previous = state.Scene.GetRecordedPaintValue(_lastPaint);
         if (_lastPaint.Identity == 0 || previous.Alpha != alpha || !ReferenceEquals(previous.RecordingTransform, recording))
+        {
+            SvgRectangle box = ObjectBox ?? SourceBox ?? throw new InvalidOperationException("Text object bounds are not prepared.");
+            SvgSourceObjectBounds objects = new(new((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height)), placement);
             _lastPaint = state.Scene.RegisterRecordedPaint(new(state.NewPaintOperationIdentity(), alpha, false, new SvgRecordingScope(1),
-                SvgPaintOpacity.Opaque, new SvgRecordingScope(1)) { RecordingTransform = recording, VisualBounds = _drawingBounds });
+                SvgPaintOpacity.Opaque, new SvgRecordingScope(1)) { RecordingTransform = recording, VisualBounds = _drawingBounds,
+                    SourceObjectBounds = objects, ObjectBounds = objects.Bounds.Map(placement, work, token) });
+        }
         return _lastPaint;
     }
 }

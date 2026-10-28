@@ -24,17 +24,25 @@ internal static class SvgLeafMaskAssertions
     }
 
     internal static void UniformScope(SvgRoot root, byte value, SvgClipBox? region)
-        => UniformScope(root, value, region, new(-1));
+        => UniformScope(root, value, region, new(-1), null);
+
+    internal static void UniformScope(SvgRoot root, byte value, SvgClipBox? region, SvgClipBox paintRegion)
+        => UniformScope(root, value, region, new(-1), paintRegion);
 
     internal static void UniformGroupScope(SvgRoot root, byte value, SvgClipBox? region)
-        => UniformScope(root, value, region, new(1));
+        => UniformScope(root, value, region, new(1), null);
 
     internal static void UniformScopeWithViewport(SvgRoot root, byte value, SvgClipBox? region,
         SvgClipBox sourceViewport, SvgAffineTransform map)
+        => UniformScopeWithViewport(root, value, region, sourceViewport, map, null);
+
+    internal static void UniformScopeWithViewport(SvgRoot root, byte value, SvgClipBox? region,
+        SvgClipBox sourceViewport, SvgAffineTransform map, SvgClipBox? paintRegion)
     {
         Assert.Equal(5, root.Commands.Length);
         SvgDrawCommand begin = root.Commands[0];
-        Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, begin.MaskRegion, -1, value), begin);
+        int contentIndex = paintRegion is null ? -1 : PaintRegion(root, begin.MaskContentIndex, paintRegion.Value);
+        Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, begin.MaskRegion, contentIndex, value), begin);
         if (region is {} explicitRegion) Assert.Equal(explicitRegion, begin.MaskRegion);
         else Assert.IsType<SvgClipBox>(begin.MaskRegion);
         Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255), root.Commands[4]);
@@ -65,7 +73,7 @@ internal static class SvgLeafMaskAssertions
         Assert.Null(Assert.Single(root.Geometries).LeafMask);
     }
 
-    private static void UniformScope(SvgRoot root, byte value, SvgClipBox? region, SvgRecordingScope recordingScope)
+    private static void UniformScope(SvgRoot root, byte value, SvgClipBox? region, SvgRecordingScope recordingScope, SvgClipBox? paintRegion)
     {
         // An omitted expected region means a default region, which still owns a mask layer.
         bool isolates = root.Geometries.Length != 0;
@@ -73,7 +81,8 @@ internal static class SvgLeafMaskAssertions
         if (isolates)
         {
             SvgDrawCommand begin = root.Commands[0];
-            Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, recordingScope.Value, 255, begin.MaskRegion, -1, value), begin);
+            int contentIndex = paintRegion is null ? -1 : PaintRegion(root, begin.MaskContentIndex, paintRegion.Value);
+            Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, recordingScope.Value, 255, begin.MaskRegion, contentIndex, value), begin);
             if (region is {} explicitRegion) Assert.Equal(explicitRegion, begin.MaskRegion);
             else Assert.IsType<SvgClipBox>(begin.MaskRegion);
             Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255), root.Commands[^1]);
@@ -84,4 +93,20 @@ internal static class SvgLeafMaskAssertions
             Assert.Null(root.Geometries[index].LeafMask);
         }
     }
+    private static int PaintRegion(SvgRoot root, int index, SvgClipBox expected)
+    {
+        SvgSceneStorage storage = Assert.IsType<SvgSceneStorage>(root.SceneStorage);
+        Assert.InRange(index, 0, storage.MaskContents.Length - 1);
+        SvgMaskContent content = storage.MaskContents[index];
+        Assert.Equal(expected, content.SourcePaintRegion);
+        Assert.Equal((byte)255, content.ConstantAlpha);
+        Assert.Equal((byte)255, content.Luminance);
+        Assert.True(content.IsAlpha);
+        Assert.Empty(content.Geometries);
+        Assert.Null(content.VectorContent);
+        Assert.Null(content.ClipKind);
+        Assert.Equal(-1, content.BoundsClipContentIndex);
+        return index;
+    }
+
 }

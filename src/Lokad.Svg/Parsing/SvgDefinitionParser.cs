@@ -428,7 +428,7 @@ internal static class SvgDefinitionParser
                     {
                         state.MaskContentBox = UnionMaskContentBox(lowered.Geometries, workCounter, cancellationToken);
                         SvgSceneBuilder builder = state.MaskContentBuilder = new(state.Budget, workCounter, cancellationToken);
-                        SvgPaintRecording.AdoptLeafScene(lowered, builder, state);
+                        SvgPaintRecording.AdoptLeafScene(lowered, builder, state, workCounter, cancellationToken);
                     }
                     catch { foreach (SvgGeometry geometry in lowered.Geometries) geometry.Dispose(); throw; }
                     SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
@@ -606,7 +606,7 @@ internal static class SvgDefinitionParser
                         SvgComputedStyle style = tileContext.ResolveStyle(reader);
                         RejectPatternContentPaint(style, state);
                         SvgSceneBuilder builder = GetPatternContentBuilder(state, workCounter, cancellationToken);
-                        SvgPaintRecording.AdoptLeafScene(LowerInstanceSource(reader, tileContext, state), builder, state);
+                        SvgPaintRecording.AdoptLeafScene(LowerInstanceSource(reader, tileContext, state), builder, state, workCounter, cancellationToken);
                         SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
                         return true;
                     }
@@ -652,7 +652,7 @@ internal static class SvgDefinitionParser
                 SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
                 return true;
 
-                void AdoptLeaf(SvgDefinition lowered) => SvgPaintRecording.AdoptLeafScene(lowered, builder, state);
+                void AdoptLeaf(SvgDefinition lowered) => SvgPaintRecording.AdoptLeafScene(lowered, builder, state, workCounter, cancellationToken);
             }
             state.HasUnsupportedContent = true;
             return true;
@@ -1632,7 +1632,7 @@ internal static class SvgDefinitionParser
         {
             SvgDefinitionLeafSource first = state.PatternRectangleSource ?? throw new InvalidOperationException("Rectangle promotion requires retained source attributes.");
             SvgPaintableElementContext previous = state.PatternRectangleContext;
-            SvgPaintRecording.AdoptLeafScene(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, previous.InheritedPresentation.PaintOrder, previous.InheritedPresentation.Markers, previous.InheritedPresentation.ElementOpacity, previous.InheritedPresentation.ElementDisplay, previous.InheritedPresentation.TextMetrics, previous.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, previous.LengthBases, SvgSourceContourRetention.None, previous.InheritedPresentation.IsDisplayed, state), builder, state);
+            SvgPaintRecording.AdoptLeafScene(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, previous.InheritedPresentation.PaintOrder, previous.InheritedPresentation.Markers, previous.InheritedPresentation.ElementOpacity, previous.InheritedPresentation.ElementDisplay, previous.InheritedPresentation.TextMetrics, previous.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, previous.LengthBases, SvgSourceContourRetention.None, previous.InheritedPresentation.IsDisplayed, state), builder, state, workCounter, cancellationToken);
             state.PatternTile = tile with { Content = null };
         }
         return builder;

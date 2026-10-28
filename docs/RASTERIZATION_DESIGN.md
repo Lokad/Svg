@@ -123,11 +123,19 @@ viewport projection. Resource pictures use local visual bounds without document
 drawing-record culling. Culled drawings keep inert anchors for object-box resources
 and filters that can generate pixels from transparent input.
 
+Mask paint clips enclose the union of the mask region and target visual bounds
+before source placement. Normalized resources retain separate object boxes.
+Instance replay carries local visual bounds and materialized clip dependencies
+without changing their source paint arena. Alpha masks consume the paint clip
+during replay; luminance pictures retain their color context and clip at restore.
+
 Sizing inspection and conversion share root CSS/unit resolution.
 Opt-in raster bounds choose one uniform output scale before lowering, leaving
 the logical viewport and percentage bases intact. Logical picture font sizing
 precedes the separate native raster strike transform. Integer canvas rounding
 does not enlarge the physical viewport clip, including a minimum one-pixel canvas.
+Raster density and changing SVG width/viewBox are distinct capture contexts; see
+the [native controls](../tests/Research/text-instance-composition/README.md).
 
 [Shader coordinates](../src/Lokad.Svg/Rendering/SvgShaderCoordinates.cs) preserve
 separate local, reference and bitmap mappings. Gradient, image and glyph consumers

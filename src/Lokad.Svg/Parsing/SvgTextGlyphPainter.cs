@@ -224,10 +224,12 @@ internal static class SvgTextGlyphPainter
         {
             float alpha = glyph.Shader is null ? sourcePaint.Alpha : glyph.Color.Alpha / 255f;
             SvgPaintBounds? objects = null, sourceVisual = null, elementVisual = null;
+            SvgSourceObjectBounds? sourceObjectsMetadata = null;
             if (state.FilterGroupDepth > 0 && prepared.NativeDrawing)
             {
                 SvgRectangle box = prepared.ObjectBox ?? (prepared.SourceBox ??= SvgTextLayoutBounds.Measure(run, paths, placement, state.TextBoundsMetrics, work, token));
-                objects = new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height)).Map(placement, work, token);
+                sourceObjectsMetadata = new(new((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height)), placement);
+                objects = sourceObjectsMetadata.Value.Bounds.Map(placement, work, token);
                 if (prepared.FilterVisualBounds is null)
                 {
                     SvgRectangle fragments = SvgTextLayoutBounds.MeasureSourceVisual(run, paths, placement, state.TextBoundsMetrics, work, token);
@@ -288,6 +290,7 @@ internal static class SvgTextGlyphPainter
                 {
                     RecordingTransform = recording,
                     ObjectBounds = sourceObjects ?? bounds,
+                    SourceObjectBounds = sourceObjectsMetadata,
                     SourceVisualBounds = sourceVisualBounds,
                     ElementVisualBounds = elementVisualBounds,
                     VisualBounds = new(bounds.Left - inflation, bounds.Top - inflation, bounds.Right + inflation, bounds.Bottom + inflation)

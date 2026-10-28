@@ -2567,12 +2567,12 @@ public static partial class SvgConverter
                             continue;
                         }
                         if (command.MaskRegion is null && command.MaskContentIndex < 0 && command.MaskAlpha == 255
-                            && TrySinglePaint(index, command.RecordingScope))
+                            && (command.SourceOpacity.Value == 1 || TrySinglePaint(index, command.RecordingScope)))
                         {
                             float previousOpacity = foldedOpacity;
                             foldedOpacity *= command.SourceOpacity.Value;
-                            // Pure clip scopes preserve a single paint operation. Keep
-                            // the clips active while folding opacity into that paint.
+                            // Identity groups replay their paints directly. Single-paint
+                            // groups can also fold opacity while retaining active clips.
                             try { index = RenderCommands(index, destination, true); }
                             finally { foldedOpacity = previousOpacity; }
                             continue;
@@ -2661,7 +2661,7 @@ public static partial class SvgConverter
                                 bool previousRectangle = activeViewportIsRectangle;
                                 bool binaryClip;
                                 if (viewportContent is {} clipContent)
-                                    clipCoverage = RasterizeMaskContent(clipContent, clipPixels, true, clipContent.ClipKind is SvgClipContentKind.AffineViewport or SvgClipContentKind.BinaryViewport or SvgClipContentKind.BinaryExclusion ? layer : previousLayer, out binaryClip);
+                                    clipCoverage = RasterizeMaskContent(clipContent, clipPixels, true, clipContent.ClipKind is SvgClipContentKind.AffineViewport or SvgClipContentKind.BinaryViewport or SvgClipContentKind.BinaryExclusion ? layer : previousLayer, SvgAnalyticPaintClip.Antialiased, [], out binaryClip);
                                 else
                                 {
                                     binaryClip = true;
@@ -2751,11 +2751,17 @@ public static partial class SvgConverter
                         // bitmap lies inside opaque runs of an otherwise AA clip.
                         bool parentRequiresShader = !paintedClipMask && parentViewportClip.Length != 0 && !activeViewportIsBinary
                             && !IsOpaqueClipRectangle(parentViewportClip, layer);
+                        bool sourcePreviousBinary = activeViewportIsBinary, sourcePreviousRectangle = activeViewportIsRectangle;
+                        SvgAnalyticClipBounds? sourcePreviousBounds = activeViewportBounds;
+                        SvgCpuClipCoverage? sourcePreviousCoverage = activeViewportCoverage;
+                        byte[] sourcePaintClipPixels = [];
+                        RenderBudget.BudgetReservation? sourcePaintClipOwner = null;
                         activeViewportClip = paintedClipMask ? parentViewportClip : [];
                         layerBounds = layer;
                         // An inner isolated surface paints before its parent's clip;
                         // folded single paints keep the existing consumer instead.
                         maskClipAntialiased = false;
+                        SvgAnalyticPaintClip sourcePaintClip = SvgAnalyticPaintClip.Binary;
                         if (command.RegionKind == SvgLayerRegionKind.Mask && placedRegion is {} paintRegion)
                         {
                             const long maskClipSetupWork = 8;
@@ -2777,9 +2783,43 @@ public static partial class SvgConverter
                                 new(retainedPaintRegion ? (float)paintRegion.Right : MathF.Ceiling((float)paintRegion.Right), retainedPaintRegion ? (float)paintRegion.Bottom : MathF.Ceiling((float)paintRegion.Bottom)), new(0, 0));
                             // An affine mask target keeps the native AA paint consumer even under a fully white mask.
                             maskClipAntialiased = affineMaskTarget || SvgAnalyticRectangleClip.Classify(first.X, first.Y, last.X, last.Y, previousLayer, SvgClipAntialiasing.All) == SvgAnalyticPaintClip.Antialiased;
+                            sourcePaintClip = maskClipAntialiased ? SvgAnalyticPaintClip.Antialiased : SvgAnalyticPaintClip.Binary;
+                            if (retainedPaintRegion && sourcePlacement.IsAxisAligned && maskClipAntialiased)
+                            {
+                                if (pixelCount > options.Limits.MaximumWorkUnits - workUnits)
+                                    throw new SvgException(SvgErrorCode.LimitExceeded, "Mask region coverage exceeds the configured limit.");
+                                workUnits += pixelCount;
+                                RenderBudget.BudgetReservation owner = budget.Reserve(surfaceByteCount, SvgMemoryCategory.Surface);
+                                try
+                                {
+                                    byte[] regionPixels = new byte[surfaceByteCount];
+                                    SvgRectangleCoverage regionCoverage = SvgRectangleCoverage.Create(Math.Min(first.X,last.X), Math.Min(first.Y,last.Y),
+                                        Math.Max(first.X,last.X), Math.Max(first.Y,last.Y), outputWidth, outputHeight);
+                                    for (int y = 0; y < outputHeight; y++)
+                                    {
+                                        cancellationToken.ThrowIfCancellationRequested();
+                                        for (int x = 0; x < outputWidth; x++) regionPixels[(y*outputWidth+x)*4+3] = regionCoverage.GetAlpha(x,y);
+                                    }
+                                    sourcePaintClipPixels = regionPixels;
+                                    sourcePaintClipOwner = owner;
+                                }
+                                catch { owner.Dispose(); throw; }
+                            }
+                        }
+                        using RenderBudget.BudgetReservation? sourcePaintClipLease = sourcePaintClipOwner;
+                        if (sourcePaintClipPixels.Length != 0)
+                        {
+                            activeViewportClip = sourcePaintClipPixels;
+                            activeViewportIsBinary = false; activeViewportIsRectangle = true;
+                            activeViewportBounds = layer; activeViewportCoverage = null;
                         }
                         try { index = RenderCommands(index, groupPixels, true); }
-                        finally { layerBounds = previousLayer; activeViewportClip = parentViewportClip; maskClipAntialiased = previousMaskClip; }
+                        finally
+                        {
+                            layerBounds = previousLayer; activeViewportClip = parentViewportClip; maskClipAntialiased = previousMaskClip;
+                            activeViewportIsBinary = sourcePreviousBinary; activeViewportIsRectangle = sourcePreviousRectangle;
+                            activeViewportBounds = sourcePreviousBounds; activeViewportCoverage = sourcePreviousCoverage;
+                        }
                         long compositionWork = pixelCount;
                         if (compositionWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Group opacity composition exceeds the configured limit.");
                         workUnits += compositionWork;
@@ -2816,7 +2856,7 @@ public static partial class SvgConverter
                                 maskSurface = new byte[checked(pixelCount * 4)];
                                 SvgAnalyticClipBounds contentBounds = affineViewportClip ? layer
                                     : new(Math.Max(layer.Left, maskBounds.Left), Math.Max(layer.Top, maskBounds.Top), Math.Min(layer.Right, maskBounds.Right), Math.Min(layer.Bottom, maskBounds.Bottom));
-                                using SvgCpuClipCoverage? maskCoverage = RasterizeMaskContent(maskContent, maskSurface, affineViewportClip, contentBounds, out _);
+                                using SvgCpuClipCoverage? maskCoverage = RasterizeMaskContent(maskContent, maskSurface, affineViewportClip, contentBounds, sourcePaintClip, sourcePaintClipPixels, out _);
                             }
                             catch
                             {
@@ -2938,7 +2978,7 @@ public static partial class SvgConverter
         // Borrow caller-reserved destination storage. Clip collection forces ordered AA runs;
         // mask/clip content is independent of the surrounding paint opacity and clip stack.
         // Geometry traversal retains the existing work, cancellation and temporary-owner contracts.
-        SvgCpuClipCoverage? RasterizeMaskContent(SvgMaskContent content, byte[] destination, bool viewport, SvgAnalyticClipBounds contentBounds, out bool binaryViewport)
+        SvgCpuClipCoverage? RasterizeMaskContent(SvgMaskContent content, byte[] destination, bool viewport, SvgAnalyticClipBounds contentBounds, SvgAnalyticPaintClip paintClip, byte[] sourcePaintClipPixels, out bool binaryViewport)
         {
             binaryViewport = content.ClipKind is SvgClipContentKind.BinaryViewport or SvgClipContentKind.BinaryExclusion;
             ReleasePatternTile();
@@ -2957,8 +2997,12 @@ public static partial class SvgConverter
             if (!viewport) layerClipCoverage = previousCoverage ?? layerClipCoverage;
             float previousOpacity = foldedOpacity;
             bool previousCollector = collectingViewportClip;
+            bool previousBinary = activeViewportIsBinary, previousRectangle = activeViewportIsRectangle;
+
             bool previousMaskClip = maskClipAntialiased;
-            maskClipAntialiased = false;
+            // Alpha-only mask replay retains the source's native paint-clip consumer.
+            // Luminance masks keep their independent color-picture dispatch.
+            maskClipAntialiased = !viewport && content.IsAlpha && paintClip == SvgAnalyticPaintClip.Antialiased;
             bool previousLuminanceLayer = maskLuminanceLayer;
             maskLuminanceLayer = content.UsesAffineTarget && !content.IsAlpha;
             SvgAnalyticClipBounds previousLayer = layerBounds;
@@ -2973,6 +3017,11 @@ public static partial class SvgConverter
             horizontalScale *= maskMap.A;
             verticalScale *= maskMap.D;
             activeViewportClip = []; activeViewportBounds = null; activeViewportCoverage = null; foldedOpacity = 1;
+            if (!viewport && content.IsAlpha && sourcePaintClipPixels.Length != 0)
+            {
+                activeViewportClip = sourcePaintClipPixels; activeViewportBounds = contentBounds;
+                activeViewportIsBinary = false; activeViewportIsRectangle = true;
+            }
             activeConstructionClip = []; activeConstructionBounds = null; activeConstructionCoverage = null;
             collectingViewportClip = viewport; collectingClipCoverage = null;
             layerBounds = contentBounds;
@@ -3013,7 +3062,7 @@ public static partial class SvgConverter
                     boundsPixels = new byte[surfaceByteCount];
                     // Native clipPath constructs against the already clipped enclosing rectangle.
                     // Its bounds and border bytes belong to each bitmap; its alpha remains separate.
-                    boundsCoverage = RasterizeMaskContent(storage.MaskContents[content.BoundsClipContentIndex], boundsPixels, true, contentBounds, out _);
+                    boundsCoverage = RasterizeMaskContent(storage.MaskContents[content.BoundsClipContentIndex], boundsPixels, true, contentBounds, SvgAnalyticPaintClip.Antialiased, [], out _);
                     if (viewport && previousClip.Length != 0)
                     {
                         // The enclosing rectangle intersects the existing native clip
@@ -3067,6 +3116,19 @@ public static partial class SvgConverter
                         destination[offset] = (byte)((destination[offset] * boundsPixels[offset] + 127) / 255);
                     }
                 }
+                if (!viewport && !content.IsAlpha && sourcePaintClipPixels.Length != 0)
+                {
+                    if (pixelCount > options.Limits.MaximumWorkUnits - workUnits)
+                        throw new SvgException(SvgErrorCode.LimitExceeded, "Mask region restore exceeds the configured limit.");
+                    workUnits += pixelCount;
+                    for (int pixel = 0; pixel < pixelCount; pixel++)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        int offset = pixel*4;
+                        byte alpha = sourcePaintClipPixels[offset+3];
+                        for (int lane = 0; lane < 4; lane++) destination[offset+lane] = MultiplyAlpha(destination[offset+lane],alpha);
+                    }
+                }
                 transferred = true;
                 return coverage;
             }
@@ -3085,6 +3147,7 @@ public static partial class SvgConverter
                 horizontalScale = previousScaleX; verticalScale = previousScaleY; horizontalOffset = previousOffsetX; verticalOffset = previousOffsetY;
                 layerBounds = previousLayer;
                 maskClipAntialiased = previousMaskClip;
+                activeViewportIsBinary = previousBinary; activeViewportIsRectangle = previousRectangle;
                 maskLuminanceLayer = previousLuminanceLayer;
                 ReleasePatternTile();
             }
@@ -3826,13 +3889,14 @@ public static partial class SvgConverter
             using MappedPolygon raster = MapPolygon(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, polygon.QuadSpans, polygon.CubicSpans, polygon.Mapping, polygon.Clip, authoredPath, fontPreblend.Length == 0 ? PathCoordinateSpace.User : PathCoordinateSpace.Device);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             SvgAnalyticPaint glyphPaint = ResolveSolidPaint(polygon.Color);
-            if (surfaceMode == RasterSurfaceMode.PremultipliedFilter && fontPreblend.IsEmpty
-                && authoredPath is { IsKnownConvex: true, StrokeStyle: null } rectangleSource
+            if (surfaceMode == RasterSurfaceMode.PremultipliedFilter && fontPreblend.IsEmpty && !collectingViewportClip
+                && authoredPath is { IsRectangleFill: true, StrokeStyle: null } rectangleSource
                 && rectangleSource.Commands.Length == 5 && raster.AuthoredMap.IsAxisAligned
                 && raster.QuadSpans.Length == 0 && raster.CubicSpans.Length == 0)
             {
-                // A native rectangle can become axis-aligned again in a filter's
-                // source bitmap. Preserve its direct rectangle coverage there.
+                // An authored rectangle paint can become axis-aligned again in a filter
+                // source. Clip construction retains its own coverage consumer; convex
+                // path identity alone does not authorize rectangle-paint arithmetic.
                 long rectangleWork = 4L + (long)(raster.EndX - raster.StartX) * (raster.EndY - raster.StartY);
                 if (rectangleWork > options.Limits.MaximumWorkUnits - workUnits)
                     throw new SvgException(SvgErrorCode.LimitExceeded, "Retained rectangle raster work exceeds the configured limit.");

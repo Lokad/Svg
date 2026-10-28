@@ -190,7 +190,7 @@ internal static class SvgMaskSyntax
                 pending.Operation.Value = value;
                 pending.Operation.Resolved = true;
                 if (pending.GeometryCount == 0) continue;
-                SvgRectangle fallback = UnionBounds(state, pending, workCounter, cancellationToken);
+                SvgRectangle fallback = UnionBounds(state, pending, workCounter, cancellationToken, out SvgPaintBounds visualBounds);
                 SvgGeometry first = state.Scene.GeometryAt(pending.FirstGeometryIndex);
                 SvgRectangle objectBox = state.Scene.GetRecordedPaintValue(first.RecordedPaint).ObjectBounds is not null
                     ? RecordedObjectBox(first, state, workCounter, cancellationToken) : fallback;
@@ -222,10 +222,11 @@ internal static class SvgMaskSyntax
                 pending.Operation.Region = region;
                 SvgRectangle localBounds = nativeTarget is {} storedTarget ? storedTarget.ObjectBounds
                     : spatialMap.TryInvert(out SvgAffineTransform inverse) ? inverse.Apply(objectBox) : default;
-                pending.Operation.NativeMask = new(pending.MaskId, spatialMap, new(localBounds.X, localBounds.Y, localBounds.Width, localBounds.Height))
+                pending.Operation.NativeMask = new(pending.MaskId, spatialMap, new(localBounds.X, localBounds.Y, localBounds.Width, localBounds.Height),
+                    spatialMap.TryInvert(out SvgAffineTransform visualInverse) ? visualBounds.Map(visualInverse, workCounter, cancellationToken) : default)
                     { ConstantAlpha = pending.Operation.ContentIndex < 0 ? pending.Operation.Value : null };
 
-                if (SvgMaskTarget.SourcePaintRegion(pending.MaskId, spatialMap, objectBox, region, state, workCounter, cancellationToken) is {} paintRegion)
+                if (SvgMaskTarget.SourcePaintRegion(pending.MaskId, spatialMap, objectBox, visualBounds, region, state, workCounter, cancellationToken) is {} paintRegion)
                     pending.Operation.ContentIndex = state.Scene.BindMaskPaintRegion(pending.Operation.ContentIndex, paintRegion);
 
                 for (int geometryIndex = pending.FirstGeometryIndex; geometryIndex < pending.FirstGeometryIndex + pending.GeometryCount; geometryIndex++)
@@ -237,16 +238,21 @@ internal static class SvgMaskSyntax
             finally { state.DefinitionReplayScene = previous; }
         }
 
-        static SvgRectangle UnionBounds(SvgDocumentState state, PendingLeafMask pending, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static SvgRectangle UnionBounds(SvgDocumentState state, PendingLeafMask pending, ParserWorkCounter workCounter, CancellationToken cancellationToken, out SvgPaintBounds visualBounds)
         {
             double left = double.PositiveInfinity;
             double top = double.PositiveInfinity;
             double right = double.NegativeInfinity;
             double bottom = double.NegativeInfinity;
+            visualBounds = new(float.PositiveInfinity, float.PositiveInfinity, float.NegativeInfinity, float.NegativeInfinity);
             for (int geometryIndex = pending.FirstGeometryIndex; geometryIndex < pending.FirstGeometryIndex + pending.GeometryCount; geometryIndex++)
             {
                 workCounter.Consume(cancellationToken);
-                SvgRectangle bounds = ResourceBounds(state.Scene.GeometryAt(geometryIndex), workCounter, cancellationToken);
+                SvgGeometry geometry = state.Scene.GeometryAt(geometryIndex);
+                SvgPaintBounds visual = RecordedVisualBounds(geometry, state, workCounter, cancellationToken);
+                visualBounds = new(MathF.Min(visualBounds.Left, visual.Left), MathF.Min(visualBounds.Top, visual.Top),
+                    MathF.Max(visualBounds.Right, visual.Right), MathF.Max(visualBounds.Bottom, visual.Bottom));
+                SvgRectangle bounds = ResourceBounds(geometry, workCounter, cancellationToken);
                 if (bounds.X < left) left = bounds.X;
                 if (bounds.Y < top) top = bounds.Y;
                 if (bounds.X + bounds.Width > right) right = bounds.X + bounds.Width;
@@ -470,7 +476,21 @@ internal static class SvgMaskSyntax
             {
                 SvgAffineTransform map = pending.Transform;
                 if (pending.Parent is {} parent) map = SvgAffineTransform.FromScaleOffset(parent.ScaleX, parent.ScaleY, parent.OffsetX, parent.OffsetY).ComposeChecked(map);
-                if (SvgMaskTarget.SourcePaintRegion(pending.MaskId, map, GroupChildrenUnion(state, pending, work, token), region, state, work, token) is {} clip)
+                SvgPaintBounds? visualBounds = null;
+                for (int index = pending.FirstCommandIndex; index < pending.EndCommandIndex; index++)
+                {
+                    work.Consume(token);
+                    SvgDrawCommand command = state.Scene.CommandAt(index);
+                    if (command.Kind != SvgDrawCommandKind.Geometry) continue;
+                    SvgGeometry geometry = state.Scene.GeometryAt(command.GeometryIndex);
+                    SvgRecordedPaintValue paint = state.Scene.GetRecordedPaintValue(geometry.RecordedPaint);
+                    if (paint.IsEffectAnchor && paint.ObjectBounds is null) continue;
+                    SvgPaintBounds next = RecordedVisualBounds(geometry, state, work, token);
+                    visualBounds = visualBounds is {} previous
+                        ? new(MathF.Min(previous.Left, next.Left), MathF.Min(previous.Top, next.Top), MathF.Max(previous.Right, next.Right), MathF.Max(previous.Bottom, next.Bottom))
+                        : next;
+                }
+                if (visualBounds is {} visual && SvgMaskTarget.SourcePaintRegion(pending.MaskId, map, GroupChildrenUnion(state, pending, work, token), visual, region, state, work, token) is {} clip)
                     maskContentIndex = state.Scene.BindMaskPaintRegion(maskContentIndex, clip);
             }
             SvgDrawCommand scope = state.Scene.CommandAt(pending.FirstCommandIndex);
@@ -529,6 +549,17 @@ internal static class SvgMaskSyntax
         return new SvgRectangle(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, false, null);
     }
 
+    /// <summary>Reads the recorded visual enclosure independently of normalized object bounds and actual raster ink.</summary>
+    /// <remarks>Returns immutable borrowed metadata, falling back to existing geometry coverage bounds.
+    /// Fallback measurement charges caller work and cancellation; this operation owns no storage.</remarks>
+    internal static SvgPaintBounds RecordedVisualBounds(SvgGeometry geometry, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        SvgRecordedPaintValue paint = state.Scene.GetRecordedPaintValue(geometry.RecordedPaint);
+        if ((paint.ElementVisualBounds ?? paint.VisualBounds) is {} visual) return visual;
+        SvgRectangle box = ResourceCoverageBox(geometry, work, token);
+        return new((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height));
+    }
+
     internal static SvgRectangle RecordedObjectBox(SvgGeometry geometry, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
         SvgPaintBounds? recorded = state.Scene.GetRecordedPaintValue(geometry.RecordedPaint).ObjectBounds;
@@ -542,7 +573,10 @@ internal static class SvgMaskSyntax
         => geometry.Kind == SvgGeometryKind.GlyphContours
             ? SvgGlyphOutline.Bounds(geometry.Glyph.Contours, SvgAffineTransform.Identity, work, token) : BoundingBox(geometry);
 
-    private static SvgRectangle ResourceCoverageBox(SvgGeometry geometry, ParserWorkCounter work, CancellationToken token)
+    /// <summary>Measures borrowed visual coverage, including glyph and rectangle strokes, under the caller's work/token.</summary>
+    /// <remarks>Returns a value without taking geometry ownership. Reads immutable contours; independent
+    /// callers use separate work counters. Existing non-glyph coverage routes retain their semantics.</remarks>
+    internal static SvgRectangle ResourceCoverageBox(SvgGeometry geometry, ParserWorkCounter work, CancellationToken token)
     {
         if (geometry.Kind != SvgGeometryKind.GlyphContours) return CoverageBox(geometry);
         SvgRectangle box = ResourceBounds(geometry, work, token);

@@ -386,26 +386,33 @@ internal static class SvgPaintRecording
 
     /// <summary>Adopts a lowered leaf batch into a replay scene, rebinding recorded paints from the document scene.</summary>
     /// <remarks>The target owns adopted geometry. Failure disposes all source values idempotently; both builders retain their bounded work/cancellation contracts.</remarks>
-    internal static void AdoptLeafScene(SvgDefinition lowered, SvgSceneBuilder builder, SvgDocumentState state)
+    internal static void AdoptLeafScene(SvgDefinition lowered, SvgSceneBuilder builder, SvgDocumentState state,
+        ParserWorkCounter work, CancellationToken token)
     {
+        SvgLeafMaskMapper? masks = null;
         try
         {
             foreach (SvgGeometry geometry in lowered.Geometries)
-                builder.AddGeometry(RebindLeafPaint(geometry, state.Scene, builder));
+            {
+                if (geometry.LeafMask is not null && !ReferenceEquals(state.Scene, builder))
+                    masks ??= SvgLeafMaskMapper.CreateSceneTransfer(state, state.Scene, builder, work, token);
+                builder.AddGeometry(RebindLeafScene(geometry, state.Scene, builder, masks));
+            }
         }
         catch { foreach (SvgGeometry geometry in lowered.Geometries) geometry.Dispose(); throw; }
+        finally { masks?.Dispose(); }
     }
 
-    /// <summary>Rebinds borrowed paint metadata before owned geometry moves into another scene.</summary>
+    /// <summary>Rebinds borrowed paints and scene-local effects before owned geometry moves into another scene.</summary>
     /// <remarks>Geometry ownership stays with the caller until adoption. Destination registration
     /// charges bounded scene storage/work and checks cancellation; references are scene-local.</remarks>
-    internal static SvgGeometry RebindLeafPaint(SvgGeometry geometry, SvgSceneBuilder source, SvgSceneBuilder destination)
+    internal static SvgGeometry RebindLeafScene(SvgGeometry geometry, SvgSceneBuilder source, SvgSceneBuilder destination, SvgLeafMaskMapper? masks)
     {
         SvgRecordedPaint fill = geometry.RecordedPaint.Identity > 0
             ? destination.RegisterRecordedPaint(source.GetRecordedPaintValue(geometry.RecordedPaint)) : geometry.RecordedPaint;
         SvgRecordedPaint stroke = geometry.RecordedStrokePaint.Identity > 0
             ? destination.RegisterRecordedPaint(source.GetRecordedPaintValue(geometry.RecordedStrokePaint)) : geometry.RecordedStrokePaint;
-        return geometry with { RecordedPaint = fill, RecordedStrokePaint = stroke };
+        return geometry with { RecordedPaint = fill, RecordedStrokePaint = stroke, LeafMask = masks is null ? geometry.LeafMask : masks.Map(geometry.LeafMask) };
     }
 
     internal static void FinishScene(SvgDocumentState state, int first, ParserWorkCounter work, CancellationToken token)

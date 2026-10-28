@@ -101,7 +101,7 @@ internal static class SvgDeferredPaintLeaves
             for (int scope = 0; scope < pending.MaskScopeCount; scope++)
                 state.MaskScopes.Add(state.MaskScopeSnapshots[pending.MaskScopeStart + scope]);
             if (pending.Kind == SvgDeferredPaintKind.PatternDefinition)
-                SvgPaintRecording.AdoptLeafScene(SvgDefinitionParser.LowerInstanceSource(pending.Source, pending.Context, state), pending.Scene, state);
+                SvgPaintRecording.AdoptLeafScene(SvgDefinitionParser.LowerInstanceSource(pending.Source, pending.Context, state), pending.Scene, state, work, token);
             else
                 SvgRenderedLeafParser.ParseResolved(pending.Source, pending.Context, root, state, limits,
                     state.Budget, null, work, token);

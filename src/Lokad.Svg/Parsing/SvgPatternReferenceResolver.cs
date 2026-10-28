@@ -135,7 +135,7 @@ internal static class SvgPatternReferenceResolver
                 context.InheritedFillRule, context.InheritedPresentation.PaintServerFill, context.InheritedPresentation.PaintOrder, context.InheritedPresentation.Markers, context.InheritedPresentation.ElementOpacity, context.InheritedPresentation.ElementDisplay, context.InheritedPresentation.TextMetrics, context.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, context.LengthBases, SvgSourceContourRetention.None, context.InheritedPresentation.IsDisplayed, state);
         }
         finally { state.IsResourcePicture = previousPicture; }
-        SvgPaintRecording.AdoptLeafScene(lowered, builder, state);
+        SvgPaintRecording.AdoptLeafScene(lowered, builder, state, work, token);
         SvgLeafMaskComposition.Emit(state, builder, work, token);
         SvgVectorContent content = SvgVectorContent.Create(builder.Build(), state.Budget);
         try { state.Scene.AdoptVectorContent(content); }

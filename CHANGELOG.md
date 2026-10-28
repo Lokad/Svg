@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Preserve text object boxes, mask visual enclosures and clip dependencies through
+  instance replay. Avoid unnecessary identity layers and keep alpha/luminance
+  paint contexts and filter clip/paint coverage distinct. See the
+  [native controls](tests/Research/text-instance-composition/README.md).
+
 - Resolve clip unions once from ordered original children, preserving native
   winding and contour starts. Reclassify straight controls after float placement
   and retain enclosing clips and authored paint coverage in large-child replay.

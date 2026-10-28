@@ -1061,13 +1061,16 @@ internal static class SvgReferenceResolver
         double right = double.NegativeInfinity, bottom = double.NegativeInfinity;
         double visualLeft = double.PositiveInfinity, visualTop = double.PositiveInfinity;
         double visualRight = double.NegativeInfinity, visualBottom = double.NegativeInfinity;
+        SvgPaintBounds paintBounds = new(float.PositiveInfinity, float.PositiveInfinity, float.NegativeInfinity, float.NegativeInfinity);
         bool filteredSource = false;
         foreach (SvgGeometry geometry in geometries)
         {
             workCounter.Consume(cancellationToken);
-            SvgRectangle visual = SvgMaskSyntax.BoundingBox(geometry);
+            SvgRectangle visual = SvgMaskSyntax.ResourceCoverageBox(geometry, workCounter, cancellationToken);
             visualLeft = Math.Min(visualLeft, visual.X); visualTop = Math.Min(visualTop, visual.Y);
             visualRight = Math.Max(visualRight, visual.X + visual.Width); visualBottom = Math.Max(visualBottom, visual.Y + visual.Height);
+            SvgPaintBounds painted = SvgMaskSyntax.RecordedVisualBounds(geometry, state, workCounter, cancellationToken);
+            paintBounds = new(MathF.Min(paintBounds.Left, painted.Left), MathF.Min(paintBounds.Top, painted.Top), MathF.Max(paintBounds.Right, painted.Right), MathF.Max(paintBounds.Bottom, painted.Bottom));
             SvgRectangle box = SvgMaskSyntax.RecordedObjectBox(geometry, state, workCounter, cancellationToken);
             left = Math.Min(left, box.X); top = Math.Min(top, box.Y);
             right = Math.Max(right, box.X + box.Width); bottom = Math.Max(bottom, box.Y + box.Height);
@@ -1111,7 +1114,7 @@ internal static class SvgReferenceResolver
             foreach (SvgGeometry geometry in geometries)
             {
                 workCounter.Consume(cancellationToken);
-                SvgMaskSyntax.ValidateMaskCoverage(maskReference, state, SvgMaskSyntax.BoundingBox(geometry));
+                SvgMaskSyntax.ValidateMaskCoverage(maskReference, state, SvgMaskSyntax.ResourceCoverageBox(geometry, workCounter, cancellationToken));
             }
         SvgClipBox region = nativeTarget is {} native ? native.SceneBounds(workCounter, cancellationToken) : ResolveInstanceMaskRegion(maskReference, state, fallback);
         SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
@@ -1119,13 +1122,14 @@ internal static class SvgReferenceResolver
         operation.ContentIndex = contentIndex;
         operation.Region = nativeTarget is null && maskReference is not null && state.MaskRegions.TryGetValue(SvgMaskSyntax.ParseMaskId(maskReference), out _) ? placement.Apply(region) : region;
         if (maskId is not null && operation.Region is {} regionBox
-            && SvgMaskTarget.SourcePaintRegion(maskId, placement, fallback, regionBox, state, workCounter, cancellationToken) is {} paintRegion)
+            && SvgMaskTarget.SourcePaintRegion(maskId, placement, fallback, paintBounds, regionBox, state, workCounter, cancellationToken) is {} paintRegion)
             operation.ContentIndex = state.Scene.BindMaskPaintRegion(operation.ContentIndex, paintRegion);
         if (maskId is not null)
         {
             SvgRectangle localBounds = nativeTarget is {} retainedTarget ? retainedTarget.ObjectBounds
                 : placement.TryInvert(out SvgAffineTransform inverse) ? inverse.Apply(fallback) : default;
-            operation.NativeMask = new(maskId, placement, new(localBounds.X, localBounds.Y, localBounds.Width, localBounds.Height)) { ConstantAlpha = contentIndex < 0 ? mask : null };
+            operation.NativeMask = new(maskId, placement, new(localBounds.X, localBounds.Y, localBounds.Width, localBounds.Height),
+                placement.TryInvert(out SvgAffineTransform visualInverse) ? paintBounds.Map(visualInverse, workCounter, cancellationToken) : default) { ConstantAlpha = contentIndex < 0 ? mask : null };
         }
         using BudgetedParserDictionary<SvgLeafMaskBinding, SvgLeafMaskBindingReference> bindings = new(state.Budget, SvgMemoryCategory.Parser, 96);
         SvgLeafMaskBinding? noInner = null;
@@ -1881,7 +1885,7 @@ internal static class SvgReferenceResolver
                 pendingUse.DeferredClip?.ClipId, state, workCounter, cancellationToken);
             try
             {
-                if (pendingUse.MaskScopeCount > 0) foreach (SvgGeometry geometry in applied) SvgMaskSyntax.ValidateMaskScopeSnapshot(state, pendingUse.MaskScopeStart, pendingUse.MaskScopeCount, SvgMaskSyntax.BoundingBox(geometry));
+                if (pendingUse.MaskScopeCount > 0) foreach (SvgGeometry geometry in applied) SvgMaskSyntax.ValidateMaskScopeSnapshot(state, pendingUse.MaskScopeStart, pendingUse.MaskScopeCount, SvgMaskSyntax.ResourceCoverageBox(geometry, workCounter, cancellationToken));
                 return applied;
             }
             catch { foreach (SvgGeometry geometry in applied) geometry.Dispose(); throw; }

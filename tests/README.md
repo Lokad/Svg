@@ -41,6 +41,10 @@ The [ordered clip controls](Research/ordered-clip-coverage/README.md) retain 91
 unique input/options records covering 104 original and interaction roles, nine
 direct mechanisms and five selected ownership/replay cases. Identical source
 aliases share records; unequal graphs keep independent native references.
+The [text/instance controls](Research/text-instance-composition/README.md) retain
+154 source/options records, seventeen mechanisms and explicit scalar-mask
+metadata contracts. The 768 symbol/viewport rendering pairs remain canonical;
+six selected prepared-replay cases cover font, stroke and viewport interactions.
 Existing 42/43-child work-limit checks and the general API matrix remain separate.
 The [clipped stroke controls](Research/clipped-stroke-preparation/README.md)
 retain 28 native inputs, fourteen direct mechanism cases and two selected

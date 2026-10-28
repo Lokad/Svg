@@ -8,8 +8,9 @@ internal readonly record struct SvgLeafMaskBindingReference(SvgLeafMaskBinding B
 internal readonly record struct SvgFilterClipScope(int Depth, SvgLeafMaskBinding Binding);
 internal readonly record struct SvgNativeClipReference(string Id, SvgAffineTransform Map);
 /// <summary>Borrows a mask id and pre-placement target bounds until an instance registers content in its final scene.</summary>
-internal readonly record struct SvgRetainedMask(string Id, SvgAffineTransform Map, SvgClipBox ObjectBounds)
+internal readonly record struct SvgRetainedMask(string Id, SvgAffineTransform Map, SvgClipBox ObjectBounds, SvgPaintBounds LocalVisualBounds)
 {
+    // Local visual bounds remain independent of normalized object bounds while instances compose Map.
     /// <summary>Retains scalar coverage while later instances recompute their own paint clip.</summary>
     internal byte? ConstantAlpha { get; init; }
 }
@@ -75,6 +76,10 @@ internal sealed class SvgLeafMaskBinding : IDisposable
 internal sealed class SvgLeafMaskMapper : IDisposable
 {
     private const long OwnerBytes = 768;
+    private readonly record struct SceneTransfer(SvgSceneBuilder Source, SvgSceneBuilder Destination);
+    private readonly SceneTransfer? _transfer;
+    private readonly BudgetedParserDictionary<int, int>? _contents;
+    private readonly BudgetedParserList<int>? _contentStack;
     private readonly RenderBudget.BudgetReservation _owner;
     private readonly SvgDocumentState _state;
     private readonly SvgAffineTransform _map;
@@ -84,9 +89,15 @@ internal sealed class SvgLeafMaskMapper : IDisposable
     private readonly BudgetedParserDictionary<SvgLeafMaskOperation, SvgLeafMaskOperationReference> _operations;
     private readonly BudgetedParserDictionary<SvgLeafMaskBinding, SvgLeafMaskBindingReference> _bindings;
     private readonly BudgetedParserList<SvgLeafMaskBindingReference> _stack;
-    private SvgLeafMaskMapper(SvgDocumentState state, SvgAffineTransform map, ParserWorkCounter work, CancellationToken token, RenderBudget.BudgetReservation owner)
+    private SvgLeafMaskMapper(SvgDocumentState state, SvgAffineTransform map, ParserWorkCounter work, CancellationToken token, RenderBudget.BudgetReservation owner, SceneTransfer? transfer)
     {
         _owner = owner;
+        _transfer = transfer;
+        if (transfer is not null)
+        {
+            _contents = new(state.Budget, SvgMemoryCategory.Parser, 96);
+            _contentStack = new(state.Budget, SvgMemoryCategory.Parser, work, token);
+        }
         _state = state;
         _map = map;
         _work = work;
@@ -99,7 +110,19 @@ internal sealed class SvgLeafMaskMapper : IDisposable
     internal static SvgLeafMaskMapper Create(SvgDocumentState state, SvgAffineTransform map, ParserWorkCounter work, CancellationToken token)
     {
         RenderBudget.BudgetReservation owner = state.Budget.Reserve(OwnerBytes, SvgMemoryCategory.Parser);
-        try { return new(state, map, work, token, owner); }
+        try { return new(state, map, work, token, owner, null); }
+        catch { owner.Dispose(); throw; }
+    }
+
+    /// <summary>Rebinds borrowed scene-local effects without changing their placement or source paint lookup.</summary>
+    /// <remarks>The destination owns copied content. The document owns mapped operations/bindings;
+    /// this single-threaded mapper owns only bounded caches. Work/cancellation cover every transfer,
+    /// and disposal releases scratch after success or failure without disposing either scene.</remarks>
+    internal static SvgLeafMaskMapper CreateSceneTransfer(SvgDocumentState state, SvgSceneBuilder source,
+        SvgSceneBuilder destination, ParserWorkCounter work, CancellationToken token)
+    {
+        RenderBudget.BudgetReservation owner = state.Budget.Reserve(OwnerBytes + 256, SvgMemoryCategory.Parser);
+        try { return new(state, SvgAffineTransform.Identity, work, token, owner, new(source, destination)); }
         catch { owner.Dispose(); throw; }
     }
 
@@ -130,16 +153,74 @@ internal sealed class SvgLeafMaskMapper : IDisposable
                 operation = new(SvgLeafMaskComposition.NewOperation(_state, original.Operation, _map));
                 operation.Operation.RecordingScope = _recordingMapper is null ? original.Operation.RecordingScope : _recordingMapper.Map(original.Operation.RecordingScope);
                 _operations.TryAdd(original.Operation, operation);
+                if (_transfer is {} transfer)
+                {
+                    for (SvgLeafMaskOperation? current = original.Operation; current is not null; current = current.EnclosingClip)
+                    {
+                        _work.Consume(_token);
+                        if (!_operations.TryGetValue(current, out SvgLeafMaskOperationReference mapped))
+                        {
+                            mapped = new(SvgLeafMaskComposition.NewOperation(_state, current, SvgAffineTransform.Identity));
+                            mapped.Operation.RecordingScope = current.RecordingScope;
+                            _operations.TryAdd(current, mapped);
+                        }
+                        mapped.Operation.Region = current.Region;
+                        if (current.Resolved && current.ContentIndex >= 0 && current.Filter is null)
+                            mapped.Operation.ContentIndex = TransferContent(current.ContentIndex, transfer);
+                        if (current.EnclosingClip is {} enclosing)
+                        {
+                            if (!_operations.TryGetValue(enclosing, out SvgLeafMaskOperationReference copied))
+                            {
+                                copied = new(SvgLeafMaskComposition.NewOperation(_state, enclosing, SvgAffineTransform.Identity));
+                                copied.Operation.RecordingScope = enclosing.RecordingScope;
+                                _operations.TryAdd(enclosing, copied);
+                            }
+                            mapped.Operation.EnclosingClip = copied.Operation;
+                        }
+                    }
+                }
             }
             inner = SvgLeafMaskComposition.NewBinding(_state, operation.Operation, inner);
             _bindings.TryAdd(original, new(inner));
         }
         return inner;
+
+        int TransferContent(int contentIndex, SceneTransfer transfer)
+        {
+            BudgetedParserDictionary<int, int> contents = _contents ?? throw new InvalidOperationException("Scene transfer requires its content cache.");
+            BudgetedParserList<int> pending = _contentStack ?? throw new InvalidOperationException("Scene transfer requires its traversal stack.");
+            if (contents.TryGetValue(contentIndex, out int existing)) return existing;
+            pending.Clear();
+            for (int index = contentIndex; index >= 0 && !contents.TryGetValue(index, out _);)
+            {
+                _work.Consume(_token);
+                pending.Add(index);
+                int bounds = transfer.Source.MaskContentAt(index).BoundsClipContentIndex;
+                if (bounds >= index) throw new InvalidOperationException("A transferred bounds clip must precede its content.");
+                index = bounds;
+            }
+            for (int index = pending.Count - 1; index >= 0; index--)
+            {
+                _work.Consume(_token);
+                SvgMaskContent content = transfer.Source.MaskContentAt(pending[index]);
+                int bounds = content.BoundsClipContentIndex;
+                int mappedBounds = -1;
+                if (bounds >= 0 && !contents.TryGetValue(bounds, out mappedBounds))
+                    throw new InvalidOperationException("A transferred bounds clip must be registered first.");
+                int mapped = transfer.Destination.AddMaskContent(content with { BoundsClipContentIndex = mappedBounds });
+                contents.TryAdd(pending[index], mapped);
+            }
+            if (!contents.TryGetValue(contentIndex, out int result))
+                throw new InvalidOperationException("Scene transfer did not register its mask content.");
+            return result;
+        }
     }
     /// <summary>Releases scratch/cache arrays and their owners, preserving registry-owned mapped chains.</summary>
     /// <remarks>Single-threaded cleanup does not observe cancellation and may run after partial mapping failures.</remarks>
     public void Dispose()
     {
+        _contents?.Dispose();
+        _contentStack?.Dispose();
         _operations.Dispose();
         _bindings.Dispose();
         _stack.Dispose();
@@ -154,7 +235,7 @@ internal static class SvgLeafMaskComposition
     internal static SvgLeafMaskOperation NewOperation(SvgDocumentState state, SvgLeafMaskOperation? source, SvgAffineTransform map)
     {
         // Aggregate allowance includes retained resource/target metadata and its scalar coverage.
-        RenderBudget.BudgetReservation reservation = state.Budget.Reserve(400, SvgMemoryCategory.Parser);
+        RenderBudget.BudgetReservation reservation = state.Budget.Reserve(416, SvgMemoryCategory.Parser);
         try
         {
             SvgLeafMaskOperation operation = new(reservation, source, map);
@@ -398,7 +479,7 @@ internal static class SvgLeafMaskComposition
                         SvgClipBox region = operation.Region ?? scalarTarget.SceneBounds(work, token);
                         operation.Region = region;
                         operation.Value = constant;
-                        if (SvgMaskTarget.SourcePaintRegion(nativeMask.Id, nativeMask.Map, nativeMask.Map.Apply(local), region, state, work, token) is {} paintRegion)
+                        if (SvgMaskTarget.SourcePaintRegion(nativeMask.Id, nativeMask.Map, nativeMask.Map.Apply(local), nativeMask.LocalVisualBounds.Map(nativeMask.Map, work, token), region, state, work, token) is {} paintRegion)
                             operation.ContentIndex = scene.BindMaskPaintRegion(-1, paintRegion);
                     }
                     else

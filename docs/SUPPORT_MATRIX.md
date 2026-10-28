@@ -63,6 +63,7 @@ one positive bound is required. `GetRasterSize(outputScale, bounds, limits)` pla
 the same output without fonts or raster allocation. A uniform scale no greater
 than `OutputScale` fits those bounds and the hard raster limits; logical sizing,
 percentages, viewBox and clipping remain unchanged. Bounds never request upscaling.
+OutputScale changes raster density; changing SVG width/viewBox changes layout.
 Integer dimensions use nearest rounding away from zero, at least one pixel per
 axis, with conservative scale reduction when the rounded product exceeds a cap.
 An empty physical viewport clip still paints no content in that minimum canvas.
@@ -391,8 +392,8 @@ Masks on use children inside symbols retain instance placement. Masks on retaine
 group containers inside symbols remain unsupported.
 Masked rectangle/path sources require axis-aligned instance placement, including
 inside symbols; a mask on the live rectangle/path `use` supports affine placement.
-A mask on a direct text `use` is unsupported; direct masked text and references
-to text that already carries its mask are admitted. See the
+Direct masked text, masks on a text `use`, and references to text that already
+carries its mask are admitted. See the
 [mask boundary tests](../tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskBoundaries.cs).
 Explicit `clip-path="none"` and `mask="none"` omit that element's binding; ancestor
 clips and masks still apply.
@@ -682,6 +683,12 @@ box and tight ink capture. Stroke overrides, layout-only text and reflected
 placement retain native source-image origins; the
 [filter-source controls](../tests/Research/text-paint-bounds/filter-source-images.json)
 use independent exact references.
+Source text object boxes remain separate from visual paint enclosures through
+groups, use, symbols, patterns and masks. Identity groups avoid an unnecessary
+offscreen image; real opacity still isolates. The
+[instance-composition controls](../tests/Research/text-instance-composition/README.md)
+retain mask-mode, source/owning clip and density/viewport distinctions. Their
+ordinary Windows stroke residual remains separately tracked.
 [Fragment controls](../tests/Research/text-node-boundaries/README.md) cover scaling,
 fitting and resource replay, retaining the recorded Windows fitting residual separately.
 

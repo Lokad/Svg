@@ -793,7 +793,7 @@ public sealed class SvgUseInstanceTests
         Assert.Equal(2, root.Geometries.Length);
         Assert.Equal(SvgGeometryKind.PatternPolygon, root.Geometries[1].Kind);
         Assert.Equal(255, root.Geometries[1].PatternPolygon.Opacity);
-        SvgLeafMaskAssertions.UniformScope(root, 128, null);
+        SvgLeafMaskAssertions.UniformScope(root, 128, null, new(-1, -1, 12, 12));
     }
 
     [Fact]
@@ -826,7 +826,7 @@ public sealed class SvgUseInstanceTests
         Assert.Equal(2, root.Geometries.Length);
         Assert.Equal(SvgGeometryKind.RadialPolygon, root.Geometries[1].Kind);
         Assert.Equal(255, root.Geometries[1].RadialPolygon.Opacity);
-        SvgLeafMaskAssertions.UniformScope(root, 128, null);
+        SvgLeafMaskAssertions.UniformScope(root, 128, null, new(-1, -1, 12, 12));
     }
 
     [Fact]
@@ -860,7 +860,7 @@ public sealed class SvgUseInstanceTests
         Assert.Equal(2, root.Geometries.Length);
         Assert.Equal(SvgGeometryKind.GradientPolygon, root.Geometries[1].Kind);
         Assert.Equal(255, root.Geometries[1].GradientPolygon.Opacity);
-        SvgLeafMaskAssertions.UniformScope(root, 128, null);
+        SvgLeafMaskAssertions.UniformScope(root, 128, null, new(-1, -1, 12, 12));
     }
 
     [Fact]
