@@ -10,9 +10,12 @@ internal readonly record struct SvgViewportDrawMap(SvgAffineTransform Parent, Sv
 {
     internal SvgAffineTransform Prepare(SvgAffineTransform output, SvgAffineTransform target)
     {
-        SvgAffineTransform result = output.ComposeChecked(Parent).ComposeNative(ViewBox);
+        // Admission belongs to the complete map. Native canvas intermediates
+        // can exceed that range before the viewBox restores the admitted scale.
+        output.ComposeChecked(target);
+        SvgAffineTransform result = output.Compose(Parent).ComposeNative(ViewBox);
         if (target == Source) return result;
         if (!Source.TryInvert(out SvgAffineTransform inverse)) return output.ComposeChecked(target);
-        return result.ComposeNative(inverse.ComposeChecked(target));
+        return result.ComposeNative(inverse.Compose(target));
     }
 }

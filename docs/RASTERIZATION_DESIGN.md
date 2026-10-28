@@ -134,9 +134,11 @@ Linear and radial point-list paints bind to authored bounds and the same instanc
 map as their contours. Symbol viewport clips retain the inverse viewBox rectangle
 in source floats; unrounded scene maps retain a separate viewBox canvas stage
 until device placement. Clip classification, binary/antialiased coverage and
-mapped paints share that forward preparation. Clip coverage
-is constructed in device space, without trimming it using earlier rounded scene
-bounds. See the [source-map controls](../tests/Research/point-list-source-maps/README.md).
+mapped paints share that forward preparation.
+Radial matrices expressed in an object bounding box convert to scene coordinates
+before this preparation. Clip coverage is constructed in device space, without
+trimming it using earlier rounded scene bounds. See the
+[source-map controls](../tests/Research/point-list-source-maps/README.md).
 Pattern fills and strokes share a definition-owned replay scene; rectangle content
 must retain its target map before instance and viewport placement.
 Paint-filled paths and point lists compose ordinary fill and stroke lowering;

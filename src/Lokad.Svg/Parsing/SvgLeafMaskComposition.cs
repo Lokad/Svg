@@ -360,7 +360,7 @@ internal static class SvgLeafMaskComposition
                         {
                             Map = mapped.Map.ComposeChecked(affine.Map),
                             DrawMap = affine.DrawMap is {} drawMap
-                                ? new(mapped.Map.ComposeChecked(drawMap.Parent), drawMap.ViewBox, mapped.Map.ComposeChecked(drawMap.Source)) : null
+                                ? new(mapped.Map.Compose(drawMap.Parent), drawMap.ViewBox, mapped.Map.ComposeChecked(drawMap.Source)) : null
                         };
                     else if (source.RegionKind is (SvgLayerRegionKind.Viewport or SvgLayerRegionKind.FilterOutputClip) && !mapped.Map.IsAxisAligned && source.Region is SvgClipBox viewport)
                     {

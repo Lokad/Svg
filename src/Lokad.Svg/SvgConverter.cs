@@ -3089,6 +3089,17 @@ public static partial class SvgConverter
             return MapSourceTransform(output, target);
         }
 
+        SvgAffineTransform? NativeRadialViewportReference(SvgRadialGradient gradient, SvgRectangle box)
+        {
+            if (activeViewportDrawMap is null || gradient.NativePaintMatrices is not {} matrices) return null;
+            SvgAffineTransform target = matrices.Referencing;
+            // Object-box matrices reference normalized paint coordinates. Convert
+            // those to scene units before shared viewport draw preparation.
+            if (!gradient.IsUserSpace)
+                target = SvgAffineTransform.FromScaleOffset(box.Width, box.Height, box.X, box.Y).Compose(target);
+            return NativeViewportReference(target);
+        }
+
         void RasterizeGeometry(SvgGeometry geometry, byte[] destination)
         {
             bool reusablePattern = geometry.Kind == SvgGeometryKind.PatternFill && geometry.Pattern.Stroke is null && geometry.LeafMask is null;
@@ -3988,7 +3999,7 @@ public static partial class SvgConverter
             SvgRectangle box = outline.Box;
             bool constantFactory = SvgShaderCoordinates.IsConstantFactory(definition);
             SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateRadial(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, sourcePlacement,
-                definition.NativePaintMatrices is {} matrices ? NativeViewportReference(matrices.Referencing) : null);
+                NativeRadialViewportReference(definition, box));
             if (definition.Radius < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Radial gradient radii must not be negative.");
             using SvgGradientRamp ramp = constantFactory ? default : PrepareGradientRamp(definition.Stops, definition.Spread);
 
@@ -4463,7 +4474,7 @@ public static partial class SvgConverter
         {
             bool constantFactory = SvgShaderCoordinates.IsConstantFactory(definition);
             SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateRadial(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, sourcePlacement,
-                definition.NativePaintMatrices is {} matrices ? NativeViewportReference(matrices.Referencing) : null);
+                NativeRadialViewportReference(definition, box));
             if (definition.Stops.Length > 0 && constantFactory)
             {
                 RasterizeConstantGradient(definition.Stops, definition.Spread, area, opacity, paint, destination);

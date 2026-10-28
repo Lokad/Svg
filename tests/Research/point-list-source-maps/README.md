@@ -28,9 +28,10 @@ coordinates through placement. Earlier scene-space rounding cannot trim the
 device clip. Large-coordinate marker poses and own-filter regions remain open
 correctness areas; this collection does not claim to close them.
 
-Eight [mechanism cases](../../Lokad.Svg.Tests/SvgPointListViewportTests.cs) exercise
+Twelve [mechanism cases](../../Lokad.Svg.Tests/SvgPointListViewportTests.cs) exercise
 source endpoint rounding, viewBox concatenation and the existing transform limit
-directly. Existing numerical/parser banks retain exhaustive admission boundaries.
+directly, including finite intermediates outside the complete map's admitted range.
+Existing numerical/parser banks retain exhaustive admission boundaries.
 Two selected [ownership cases](../../Lokad.Svg.Tests/SvgPointListPaintOwnershipTests.cs)
 cover source-paint and retained-viewport allocations, memory/work refusal,
 cancellation, cleanup and retry. General destination and prepared-document
