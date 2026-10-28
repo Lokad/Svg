@@ -235,7 +235,7 @@ public static partial class SvgConverter
     /// metadata growth and visits, checks cancellation, and releases frames without cancellation.</summary>
     private readonly record struct ViewportClipFrame(byte[] PreviousPixels, bool PreviousBinary, bool PreviousRectangle,
         SvgAnalyticClipBounds? PreviousBounds, SvgCpuClipCoverage? PreviousCoverage,
-        RenderBudget.BudgetReservation? Reservation, SvgCpuClipCoverage? Coverage);
+        RenderBudget.BudgetReservation? Reservation, SvgCpuClipCoverage? Coverage, SvgViewportDrawMap? PreviousDrawMap);
 
     private enum SourceImageBoundsKind { Recorded, Element }
 
@@ -333,6 +333,7 @@ public static partial class SvgConverter
         SvgCpuClipCoverage? clipWindowCoverage = null;
         SvgAnalyticClipBounds? clipWindowBounds = null;
         SvgAnalyticClipBounds? activeViewportBounds = null;
+        SvgViewportDrawMap? activeViewportDrawMap = null;
         SvgRecordedPaintValue activePaint = default;
         SvgRecordedPaintValue activeStrokePaint = default;
         SvgPatternTileCache? patternTileCache = null;
@@ -2669,7 +2670,8 @@ public static partial class SvgConverter
                                 layer = CoverageBounds(clipPixels, layer, out bool rectangleClip);
                                 SvgAnalyticClipBounds? previousBounds = activeViewportBounds;
                                 SvgCpuClipCoverage? previousCoverage = activeViewportCoverage;
-                                bool equivalent = binaryClip && previousBinary && rectangleClip && previousRectangle && previousBounds == layer;
+                                bool equivalent = binaryClip && previousBinary && rectangleClip && previousRectangle && previousBounds == layer
+                                    && (viewportContent?.DrawMap is null || viewportContent?.DrawMap == activeViewportDrawMap);
                                 ParserWorkCounter metadataWork = clipFrameWork ??= new(options.Limits.MaximumWorkUnits);
                                 clipFrames ??= new(budget, SvgMemoryCategory.Surface, metadataWork, cancellationToken);
                                 cancellationToken.ThrowIfCancellationRequested();
@@ -2681,7 +2683,7 @@ public static partial class SvgConverter
                                 try
                                 {
                                     clipFrames.Add(equivalent ? default : new(previousClip, previousBinary, previousRectangle,
-                                        previousBounds, previousCoverage, clipReservation, clipCoverage));
+                                        previousBounds, previousCoverage, clipReservation, clipCoverage, activeViewportDrawMap));
                                 }
                                 finally
                                 {
@@ -2697,6 +2699,7 @@ public static partial class SvgConverter
                                 activeViewportIsBinary = binaryClip && previousBinary;
                                 activeViewportIsRectangle = rectangleClip;
                                 activeViewportBounds = layer;
+                                activeViewportDrawMap = viewportContent?.DrawMap ?? activeViewportDrawMap;
                                 continue;
                             }
                             finally
@@ -2855,6 +2858,7 @@ public static partial class SvgConverter
                 activeViewportIsBinary = saved.PreviousBinary;
                 activeViewportIsRectangle = saved.PreviousRectangle;
                 activeViewportBounds = saved.PreviousBounds;
+                activeViewportDrawMap = saved.PreviousDrawMap;
                 activeViewportCoverage = saved.PreviousCoverage;
                 saved.Coverage?.Dispose();
                 reservation.Dispose();
@@ -2919,6 +2923,8 @@ public static partial class SvgConverter
             maskLuminanceLayer = content.UsesAffineTarget && !content.IsAlpha;
             SvgAnalyticClipBounds previousLayer = layerBounds;
             SvgRoot previousRoot = root;
+            SvgViewportDrawMap? previousDrawMap = activeViewportDrawMap;
+            activeViewportDrawMap = viewport ? content.DrawMap ?? previousDrawMap : null;
             double previousScaleX = horizontalScale, previousScaleY = verticalScale, previousOffsetX = horizontalOffset, previousOffsetY = verticalOffset;
             SvgAffineTransform maskMap = content.CoordinateMap;
             if (!maskMap.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned mask replay maps are implemented.");
@@ -2955,7 +2961,7 @@ public static partial class SvgConverter
                     workUnits += classificationWork;
                     SvgAffineTransform clipMap = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
                     if (sourcePlacement != SvgAffineTransform.Identity) clipMap = clipMap.Compose(sourcePlacement);
-                    binaryViewport = RoundsToBinaryRectangle(rectangle, clipMap.Compose(rectangle.SceneMap), contentBounds);
+                    binaryViewport = RoundsToBinaryRectangle(rectangle, MapSourceTransform(clipMap, rectangle.SceneMap), contentBounds);
                 }
                 byte[] boundsPixels = [];
                 if (content.BoundsClipContentIndex >= 0)
@@ -3006,7 +3012,7 @@ public static partial class SvgConverter
                     SvgAffineTransform clipMap = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
                     if (sourcePlacement != SvgAffineTransform.Identity) clipMap = clipMap.ComposeChecked(sourcePlacement);
                     workUnits += SvgBinaryViewportCoverage.Rasterize(viewportPath,
-                        clipMap, rasterGrid,
+                        MapSourceTransform(clipMap, viewportPath.SceneMap), rasterGrid,
                         contentBounds, destination, outputWidth, coverage, content.Geometries[0].Polygon.IsEvenOdd, content.ClipKind == SvgClipContentKind.BinaryExclusion, budget, options.Limits.MaximumWorkUnits - workUnits, cancellationToken);
                 }
                 else foreach (SvgGeometry geometry in content.Geometries) RasterizeGeometry(geometry, destination);
@@ -3035,6 +3041,7 @@ public static partial class SvgConverter
                 activeConstructionCoverage = previousConstructionCoverage;
                 activeViewportClip = previousClip; activeViewportBounds = previousBounds; activeViewportCoverage = previousCoverage;
                 foldedOpacity = previousOpacity; collectingViewportClip = previousCollector; root = previousRoot;
+                activeViewportDrawMap = previousDrawMap;
                 horizontalScale = previousScaleX; verticalScale = previousScaleY; horizontalOffset = previousOffsetX; verticalOffset = previousOffsetY;
                 layerBounds = previousLayer;
                 maskClipAntialiased = previousMaskClip;
@@ -3061,6 +3068,25 @@ public static partial class SvgConverter
                 // when its parent is binary. Reuse its existing boundary rule.
                 return SvgAnalyticRectangleClip.Classify(left, top, right, bottom, bitmap, SvgClipAntialiasing.All) == SvgAnalyticPaintClip.Binary;
             }
+        }
+
+        SvgAffineTransform MapSourceTransform(SvgAffineTransform output, SvgAffineTransform target)
+        {
+            if (activeViewportDrawMap is not {} viewport) return output.ComposeChecked(target);
+            cancellationToken.ThrowIfCancellationRequested();
+            const long mapWork = 8;
+            if (mapWork > options.Limits.MaximumWorkUnits - workUnits)
+                throw new SvgException(SvgErrorCode.LimitExceeded, "Viewport draw mapping exceeds the configured limit.");
+            workUnits += mapWork;
+            return viewport.Prepare(output, target);
+        }
+
+        SvgAffineTransform? NativeViewportReference(SvgAffineTransform target)
+        {
+            if (activeViewportDrawMap is null) return null;
+            SvgAffineTransform output = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
+            if (sourcePlacement != SvgAffineTransform.Identity) output = output.ComposeChecked(sourcePlacement);
+            return MapSourceTransform(output, target);
         }
 
         void RasterizeGeometry(SvgGeometry geometry, byte[] destination)
@@ -3504,7 +3530,7 @@ public static partial class SvgConverter
                 if (coordinateSpace == PathCoordinateSpace.User && sourcePlacement != SvgAffineTransform.Identity)
                     outputMap = outputMap.ComposeChecked(sourcePlacement);
                 authoredMap = frame?.NativeCapturePlacement is {} nativeCapture
-                    ? nativeCapture.ComposeNative(replay.SceneMap) : outputMap.ComposeChecked(replay.SceneMap);
+                    ? nativeCapture.ComposeNative(replay.SceneMap) : MapSourceTransform(outputMap, replay.SceneMap);
                 // Recorded source drawings already belong to the filter layer.
                 // Clip geometry keeps its own native concatenation; fitted glyphs
                 // already use device coordinates rather than this recording map.
@@ -3901,7 +3927,8 @@ public static partial class SvgConverter
             SvgLinearGradient definition = outline.Gradient;
             SvgRectangle box = outline.Box;
             bool constantFactory = SvgShaderCoordinates.IsConstantFactory(definition);
-            SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateLinear(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, null, sourcePlacement);
+            SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateLinear(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, null, sourcePlacement,
+                definition.SourcePaint?.Data is { IsMapped: true } viewportSourcePaint ? NativeViewportReference(viewportSourcePaint.Referencing) : null);
             using SvgGradientRamp ramp = constantFactory ? default : PrepareGradientRamp(definition.Stops, definition.Spread);
             SvgShaderSampler shader = constantFactory
                 ? SvgShaderSampler.Constant(PrepareGradientFactory(definition.Stops, definition.Spread, out _), ShaderAlpha(outline.Opacity))
@@ -3960,7 +3987,8 @@ public static partial class SvgConverter
             SvgRadialGradient definition = outline.Gradient;
             SvgRectangle box = outline.Box;
             bool constantFactory = SvgShaderCoordinates.IsConstantFactory(definition);
-            SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateRadial(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, sourcePlacement);
+            SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateRadial(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, sourcePlacement,
+                definition.NativePaintMatrices is {} matrices ? NativeViewportReference(matrices.Referencing) : null);
             if (definition.Radius < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Radial gradient radii must not be negative.");
             using SvgGradientRamp ramp = constantFactory ? default : PrepareGradientRamp(definition.Stops, definition.Spread);
 
@@ -4368,7 +4396,8 @@ public static partial class SvgConverter
         void RasterizeGradientArea(SvgLinearGradient definition, SvgRectangle box, SvgRectangle area, byte opacity, bool paint, byte[] destination)
         {
             bool constantFactory = SvgShaderCoordinates.IsConstantFactory(definition);
-            SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateLinear(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, null, sourcePlacement);
+            SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateLinear(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, null, sourcePlacement,
+                definition.SourcePaint?.Data is { IsMapped: true } viewportSourcePaint ? NativeViewportReference(viewportSourcePaint.Referencing) : null);
             if (definition.Stops.Length > 0 && constantFactory)
             {
                 RasterizeConstantGradient(definition.Stops, definition.Spread, area, opacity, paint, destination);
@@ -4433,7 +4462,8 @@ public static partial class SvgConverter
         void RasterizeRadialArea(SvgRadialGradient definition, SvgRectangle box, SvgRectangle area, byte opacity, bool paint, byte[] destination)
         {
             bool constantFactory = SvgShaderCoordinates.IsConstantFactory(definition);
-            SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateRadial(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, sourcePlacement);
+            SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateRadial(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, sourcePlacement,
+                definition.NativePaintMatrices is {} matrices ? NativeViewportReference(matrices.Referencing) : null);
             if (definition.Stops.Length > 0 && constantFactory)
             {
                 RasterizeConstantGradient(definition.Stops, definition.Spread, area, opacity, paint, destination);

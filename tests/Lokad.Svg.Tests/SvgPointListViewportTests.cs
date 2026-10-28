@@ -28,8 +28,26 @@ public sealed class SvgPointListViewportTests
         SvgUseReference reference = new("s", 4, 0, 24, 32, parent,
             SvgAffineTransform.Identity, 255, true, null, null, null);
         SvgAffineViewportClip clip = SvgReferenceResolver.SymbolViewport(box, reference, null);
-        Assert.Equal(new SvgAffineTransform(1.3125, 0, 0, 0.875, -22020088, 1), clip.Map);
-        Assert.Equal(new SvgDevicePoint(6, 4.5), SvgAuthoredPath.MapPoint(clip.Map, new(16777215, 4), new(0, 0)));
+        Assert.Equal(new SvgAffineTransform(1.3125, 0, 0, 0.875, -22020089.1875, 1), clip.Map);
+        SvgViewportDrawMap stage = Assert.IsType<SvgViewportDrawMap>(clip.DrawMap);
+        Assert.Equal(clip.Map, stage.Source);
+        SvgAffineTransform device = stage.Prepare(SvgAffineTransform.Identity, clip.Map);
+        Assert.Equal(new SvgAffineTransform(1.3125, 0, 0, 0.875, -22020088, 1), device);
+        Assert.Equal(new SvgDevicePoint(6, 4.5), SvgAuthoredPath.MapPoint(device, new(16777215, 4), new(0, 0)));
+    }
+
+    [Theory]
+    [InlineData(0.5, 0.35f, 2.4f, 1.9f)]
+    [InlineData(1.5, 1.05f, 7.2f, 5.7f)]
+    public void Output_placement_precedes_viewbox_rounding(double outputScale, float expectedScale, float expectedX, float expectedY)
+    {
+        SvgViewBox box = new(-4, -4, 40, 40, SvgViewBoxAlignment.None, SvgViewBoxAlignment.None, SvgViewBoxFit.None);
+        SvgUseReference reference = new("s", 2, 1, 28, 28, SvgAffineTransform.Identity,
+            SvgAffineTransform.Identity, 255, true, null, null, null);
+        SvgAffineViewportClip clip = SvgReferenceResolver.SymbolViewport(box, reference, null);
+        SvgViewportDrawMap stage = Assert.IsType<SvgViewportDrawMap>(clip.DrawMap);
+        SvgAffineTransform actual = stage.Prepare(SvgAffineTransform.FromScale(outputScale, outputScale), clip.Map);
+        Assert.Equal(new SvgAffineTransform(expectedScale, 0, 0, expectedScale, expectedX, expectedY), actual);
     }
 
     [Fact]

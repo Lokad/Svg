@@ -1,0 +1,150 @@
+{
+  "commit": "558dd28a6eaeae173c550a32db236efbe6ce8117",
+  "policy": "Each unchanged input compared with its own healthy native captures. Premature scene-map rounding loses four previously exact outcomes per host.",
+  "cases": [
+    {
+      "id": "stroke-control-failure-00-direct",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-00-direct",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-00-symbol",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 20,
+      "alphaChangedPixels": 19,
+      "sum": 389
+    },
+    {
+      "id": "stroke-control-failure-00-symbol",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 20,
+      "alphaChangedPixels": 19,
+      "sum": 389
+    },
+    {
+      "id": "stroke-control-failure-03-direct",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-03-direct",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-03-symbol",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 29,
+      "alphaChangedPixels": 22,
+      "sum": 123
+    },
+    {
+      "id": "stroke-control-failure-03-symbol",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 29,
+      "alphaChangedPixels": 22,
+      "sum": 123
+    },
+    {
+      "id": "stroke-control-failure-05-direct",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-05-direct",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-05-symbol",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 20,
+      "alphaChangedPixels": 19,
+      "sum": 390
+    },
+    {
+      "id": "stroke-control-failure-05-symbol",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 20,
+      "alphaChangedPixels": 19,
+      "sum": 390
+    },
+    {
+      "id": "stroke-control-failure-08-direct",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-08-direct",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-08-symbol",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 29,
+      "alphaChangedPixels": 22,
+      "sum": 125
+    },
+    {
+      "id": "stroke-control-failure-08-symbol",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 29,
+      "alphaChangedPixels": 22,
+      "sum": 125
+    }
+  ]
+}

@@ -10,6 +10,7 @@ internal enum SvgClipContentKind { AffineViewport, ClipPath, OvalClipPath, Binar
 internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineTransform Map)
 {
     internal bool IsBinary { get; init; }
+    internal SvgViewportDrawMap? DrawMap { get; init; }
     internal bool IsExclusion { get; init; }
     /// <summary>Borrows disjoint rectangular exclusions until the parser emits one bounded compound clip.</summary>
     internal ReadOnlyMemory<SvgClipBox> ExcludedBoxes { get; init; }
@@ -21,13 +22,13 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
             using BudgetedParserList<int> ends = new(state.Budget, SvgMemoryCategory.Geometry, work, token);
             if (!IsExclusion) Append(Box, vertices, ends);
             foreach (SvgClipBox hole in ExcludedBoxes.Span) Append(hole, vertices, ends);
-            return RegisterContour(vertices.AsSpan(), ends.AsSpan(), Map, IsExclusion ? SvgClipContentKind.BinaryExclusion : IsBinary ? SvgClipContentKind.BinaryViewport : SvgClipContentKind.AffineViewport, null, null, true, state, scene, work, token);
+            return RegisterContour(vertices.AsSpan(), ends.AsSpan(), Map, IsExclusion ? SvgClipContentKind.BinaryExclusion : IsBinary ? SvgClipContentKind.BinaryViewport : SvgClipContentKind.AffineViewport, null, null, true, state, scene, work, token, DrawMap);
         }
         float left = (float)Box.X, top = (float)Box.Y, right = (float)(Box.X + Box.Width), bottom = (float)(Box.Y + Box.Height);
         // Native rectangles start at top-left. A clipped closing edge must remain adjacent
         // to the preceding vertical piece so the existing edge builder can combine them.
         ReadOnlySpan<SvgDevicePoint> points = stackalloc SvgDevicePoint[] { new(left, top), new(right, top), new(right, bottom), new(left, bottom) };
-        return RegisterContour(points, [points.Length], Map, IsBinary ? SvgClipContentKind.BinaryViewport : SvgClipContentKind.AffineViewport, null, null, false, state, scene, work, token);
+        return RegisterContour(points, [points.Length], Map, IsBinary ? SvgClipContentKind.BinaryViewport : SvgClipContentKind.AffineViewport, null, null, false, state, scene, work, token, DrawMap);
 
         static void Append(SvgClipBox box, BudgetedParserList<SvgDevicePoint> vertices, BudgetedParserList<int> ends)
         {
@@ -43,6 +44,10 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
     /// success; failure releases all temporary storage. Generic path clips retain raw classification.</remarks>
     internal static (SvgClipBox Bounds, int ContentIndex) RegisterContour(ReadOnlySpan<SvgDevicePoint> source, ReadOnlySpan<int> sourceEnds,
         SvgAffineTransform map, SvgClipContentKind kind, SvgAuthoredPath? sourcePath, SvgPaintBounds? resourceBounds, bool isEvenOdd, SvgDocumentState state, SvgSceneBuilder scene, ParserWorkCounter work, CancellationToken token)
+        => RegisterContour(source, sourceEnds, map, kind, sourcePath, resourceBounds, isEvenOdd, state, scene, work, token, null);
+
+    internal static (SvgClipBox Bounds, int ContentIndex) RegisterContour(ReadOnlySpan<SvgDevicePoint> source, ReadOnlySpan<int> sourceEnds,
+        SvgAffineTransform map, SvgClipContentKind kind, SvgAuthoredPath? sourcePath, SvgPaintBounds? resourceBounds, bool isEvenOdd, SvgDocumentState state, SvgSceneBuilder scene, ParserWorkCounter work, CancellationToken token, SvgViewportDrawMap? drawMap)
     {
         if (source.Length < 3) throw new ArgumentOutOfRangeException(nameof(source));
         if (sourceEnds.IsEmpty || sourceEnds[^1] != source.Length) throw new ArgumentOutOfRangeException(nameof(sourceEnds));
@@ -127,7 +132,7 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
                 catch { owned.Dispose(); throw; }
             }
             using RenderBudget.BudgetReservation array = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(1), SvgMemoryCategory.Parser);
-            int contentIndex = scene.AddMaskContent(new([geometry], 255, true) { ClipKind = kind, BoundsClipContentIndex = boundsClipContentIndex });
+            int contentIndex = scene.AddMaskContent(new([geometry], 255, true) { ClipKind = kind, BoundsClipContentIndex = boundsClipContentIndex, DrawMap = drawMap });
             return (new(x1, y1, x2 - x1, y2 - y1), contentIndex);
         }
         finally { geometry.Dispose(); }

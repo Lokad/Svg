@@ -14,7 +14,8 @@ internal static class SvgBinaryViewportCoverage
 
     private readonly record struct Edge(long X, long Step, int First, int Last, int Winding);
 
-    internal static long Rasterize(SvgAuthoredPath source, SvgAffineTransform outputMap, SvgCpuRasterGrid grid,
+    /// <summary>Consumes a complete source-to-device map prepared by the shared viewport mapper.</summary>
+    internal static long Rasterize(SvgAuthoredPath source, SvgAffineTransform map, SvgCpuRasterGrid grid,
         SvgAnalyticClipBounds bounds, byte[] destination, int width, SvgCpuClipCoverage coverage,
         bool evenOdd, bool inverse, RenderBudget budget, long maximumWork, CancellationToken token)
     {
@@ -42,7 +43,6 @@ internal static class SvgBinaryViewportCoverage
         int count = 0;
         foreach (SvgAuthoredPathCommand command in source.Commands)
             if (command.Verb is SvgAuthoredPathVerb.Move or SvgAuthoredPathVerb.Line) corners[count++] = command.First;
-        SvgAffineTransform map = outputMap.ComposeChecked(source.SceneMap);
         foreach (SvgCpuRasterContext context in grid.GetContexts(bounds))
         {
             Charge(1 + 2L * cornerCount);

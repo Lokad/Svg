@@ -2399,6 +2399,262 @@
           ]
         }
       }
+    },
+    {
+      "id": "stroke-control-failure-00-direct",
+      "input": "inputs/stroke-control-failure-00-direct.svg",
+      "sourceSha256": "d203f8cd0a4e0382dfd9a1f0d470d8ea004b818b85d68737092bf30a2dc9bdde",
+      "scale": 1.5,
+      "font": false,
+      "platforms": {
+        "windows": {
+          "reference": "references/bb736d1f005ac58f8929084f6dc0763c006fa10c0360186e4b29070a73193cc8.png",
+          "referenceSha256": "bb736d1f005ac58f8929084f6dc0763c006fa10c0360186e4b29070a73193cc8",
+          "rgbaSha256": "1dcc9f10bb647045b06444c0798f194fb8d6ee081cb9ac33e9d7fb0899afbe96",
+          "captureSha256": [
+            "bb736d1f005ac58f8929084f6dc0763c006fa10c0360186e4b29070a73193cc8",
+            "bb736d1f005ac58f8929084f6dc0763c006fa10c0360186e4b29070a73193cc8",
+            "bb736d1f005ac58f8929084f6dc0763c006fa10c0360186e4b29070a73193cc8"
+          ]
+        },
+        "linux": {
+          "reference": "references/bb736d1f005ac58f8929084f6dc0763c006fa10c0360186e4b29070a73193cc8.png",
+          "referenceSha256": "bb736d1f005ac58f8929084f6dc0763c006fa10c0360186e4b29070a73193cc8",
+          "rgbaSha256": "1dcc9f10bb647045b06444c0798f194fb8d6ee081cb9ac33e9d7fb0899afbe96",
+          "captureSha256": [
+            "bb736d1f005ac58f8929084f6dc0763c006fa10c0360186e4b29070a73193cc8",
+            "bb736d1f005ac58f8929084f6dc0763c006fa10c0360186e4b29070a73193cc8",
+            "bb736d1f005ac58f8929084f6dc0763c006fa10c0360186e4b29070a73193cc8"
+          ]
+        }
+      },
+      "captureInput": "capture-inputs/stroke-control-failure-00-direct.svg",
+      "captureInputSha256": "6196da697427dffb390fa203d9b7920135ccc780c26d61904c5622588ff492f5",
+      "captureStrategy": "An outer 48x48 SVG with viewBox 0 0 32 32 scales the unchanged authored SVG and retains its viewport and percentage bases."
+    },
+    {
+      "id": "stroke-control-failure-00-symbol",
+      "input": "inputs/stroke-control-failure-00-symbol.svg",
+      "sourceSha256": "22cd90852a498a3685c2264b312e7d9ce710cb77c395ca048755a0ddd2c5bed8",
+      "scale": 1.5,
+      "font": false,
+      "platforms": {
+        "windows": {
+          "reference": "references/bb736d1f005ac58f8929084f6dc0763c006fa10c0360186e4b29070a73193cc8.png",
+          "referenceSha256": "bb736d1f005ac58f8929084f6dc0763c006fa10c0360186e4b29070a73193cc8",
+          "rgbaSha256": "1dcc9f10bb647045b06444c0798f194fb8d6ee081cb9ac33e9d7fb0899afbe96",
+          "captureSha256": [
+            "bb736d1f005ac58f8929084f6dc0763c006fa10c0360186e4b29070a73193cc8",
+            "bb736d1f005ac58f8929084f6dc0763c006fa10c0360186e4b29070a73193cc8",
+            "bb736d1f005ac58f8929084f6dc0763c006fa10c0360186e4b29070a73193cc8"
+          ]
+        },
+        "linux": {
+          "reference": "references/bb736d1f005ac58f8929084f6dc0763c006fa10c0360186e4b29070a73193cc8.png",
+          "referenceSha256": "bb736d1f005ac58f8929084f6dc0763c006fa10c0360186e4b29070a73193cc8",
+          "rgbaSha256": "1dcc9f10bb647045b06444c0798f194fb8d6ee081cb9ac33e9d7fb0899afbe96",
+          "captureSha256": [
+            "bb736d1f005ac58f8929084f6dc0763c006fa10c0360186e4b29070a73193cc8",
+            "bb736d1f005ac58f8929084f6dc0763c006fa10c0360186e4b29070a73193cc8",
+            "bb736d1f005ac58f8929084f6dc0763c006fa10c0360186e4b29070a73193cc8"
+          ]
+        }
+      },
+      "captureInput": "capture-inputs/stroke-control-failure-00-symbol.svg",
+      "captureInputSha256": "f89f61d5992ef18e8b0640d31be74f02053c5158899c21f9d1bea4ec63cfb062",
+      "captureStrategy": "An outer 48x48 SVG with viewBox 0 0 32 32 scales the unchanged authored SVG and retains its viewport and percentage bases."
+    },
+    {
+      "id": "stroke-control-failure-03-direct",
+      "input": "inputs/stroke-control-failure-03-direct.svg",
+      "sourceSha256": "b1e17aedf5276e72beb2e2be135b66cfbb0a25df5c894a6a0f9d1912e294079d",
+      "scale": 1.5,
+      "font": false,
+      "platforms": {
+        "windows": {
+          "reference": "references/5cd5e42246791f08b85ed237fc53aa2690084038bfbaf37193346dbf160e559c.png",
+          "referenceSha256": "5cd5e42246791f08b85ed237fc53aa2690084038bfbaf37193346dbf160e559c",
+          "rgbaSha256": "e007e59b8b01884e0d36be97a636e8e17ea792bc17065375433a56f6a809e2d7",
+          "captureSha256": [
+            "5cd5e42246791f08b85ed237fc53aa2690084038bfbaf37193346dbf160e559c",
+            "5cd5e42246791f08b85ed237fc53aa2690084038bfbaf37193346dbf160e559c",
+            "5cd5e42246791f08b85ed237fc53aa2690084038bfbaf37193346dbf160e559c"
+          ]
+        },
+        "linux": {
+          "reference": "references/5cd5e42246791f08b85ed237fc53aa2690084038bfbaf37193346dbf160e559c.png",
+          "referenceSha256": "5cd5e42246791f08b85ed237fc53aa2690084038bfbaf37193346dbf160e559c",
+          "rgbaSha256": "e007e59b8b01884e0d36be97a636e8e17ea792bc17065375433a56f6a809e2d7",
+          "captureSha256": [
+            "5cd5e42246791f08b85ed237fc53aa2690084038bfbaf37193346dbf160e559c",
+            "5cd5e42246791f08b85ed237fc53aa2690084038bfbaf37193346dbf160e559c",
+            "5cd5e42246791f08b85ed237fc53aa2690084038bfbaf37193346dbf160e559c"
+          ]
+        }
+      },
+      "captureInput": "capture-inputs/stroke-control-failure-03-direct.svg",
+      "captureInputSha256": "30b85216167432830c355d0467291f0df529eece6155eebbb4da260c4fad7a32",
+      "captureStrategy": "An outer 48x48 SVG with viewBox 0 0 32 32 scales the unchanged authored SVG and retains its viewport and percentage bases."
+    },
+    {
+      "id": "stroke-control-failure-03-symbol",
+      "input": "inputs/stroke-control-failure-03-symbol.svg",
+      "sourceSha256": "ce4db7b8f8ad821066f9d5256561b1eeae06900823907d382c94834972d7c209",
+      "scale": 1.5,
+      "font": false,
+      "platforms": {
+        "windows": {
+          "reference": "references/5cd5e42246791f08b85ed237fc53aa2690084038bfbaf37193346dbf160e559c.png",
+          "referenceSha256": "5cd5e42246791f08b85ed237fc53aa2690084038bfbaf37193346dbf160e559c",
+          "rgbaSha256": "e007e59b8b01884e0d36be97a636e8e17ea792bc17065375433a56f6a809e2d7",
+          "captureSha256": [
+            "5cd5e42246791f08b85ed237fc53aa2690084038bfbaf37193346dbf160e559c",
+            "5cd5e42246791f08b85ed237fc53aa2690084038bfbaf37193346dbf160e559c",
+            "5cd5e42246791f08b85ed237fc53aa2690084038bfbaf37193346dbf160e559c"
+          ]
+        },
+        "linux": {
+          "reference": "references/5cd5e42246791f08b85ed237fc53aa2690084038bfbaf37193346dbf160e559c.png",
+          "referenceSha256": "5cd5e42246791f08b85ed237fc53aa2690084038bfbaf37193346dbf160e559c",
+          "rgbaSha256": "e007e59b8b01884e0d36be97a636e8e17ea792bc17065375433a56f6a809e2d7",
+          "captureSha256": [
+            "5cd5e42246791f08b85ed237fc53aa2690084038bfbaf37193346dbf160e559c",
+            "5cd5e42246791f08b85ed237fc53aa2690084038bfbaf37193346dbf160e559c",
+            "5cd5e42246791f08b85ed237fc53aa2690084038bfbaf37193346dbf160e559c"
+          ]
+        }
+      },
+      "captureInput": "capture-inputs/stroke-control-failure-03-symbol.svg",
+      "captureInputSha256": "01ab5c2e9e55ef578823002886de19e6446d18795f1e0eb219365a5c81136f4f",
+      "captureStrategy": "An outer 48x48 SVG with viewBox 0 0 32 32 scales the unchanged authored SVG and retains its viewport and percentage bases."
+    },
+    {
+      "id": "stroke-control-failure-05-direct",
+      "input": "inputs/stroke-control-failure-05-direct.svg",
+      "sourceSha256": "724787b5482115321e003eba9c97b9883bddfb80597cabc3755bd12f066c5419",
+      "scale": 1.5,
+      "font": false,
+      "platforms": {
+        "windows": {
+          "reference": "references/9361b2ea466ea36fee304f8877f077ea890eacfb79854d89bfdac1a530619f2f.png",
+          "referenceSha256": "9361b2ea466ea36fee304f8877f077ea890eacfb79854d89bfdac1a530619f2f",
+          "rgbaSha256": "60d3f498d170da153907590e47e4072ebb1dae2ab3ab7ce2fda8dc7377954e1e",
+          "captureSha256": [
+            "9361b2ea466ea36fee304f8877f077ea890eacfb79854d89bfdac1a530619f2f",
+            "9361b2ea466ea36fee304f8877f077ea890eacfb79854d89bfdac1a530619f2f",
+            "9361b2ea466ea36fee304f8877f077ea890eacfb79854d89bfdac1a530619f2f"
+          ]
+        },
+        "linux": {
+          "reference": "references/9361b2ea466ea36fee304f8877f077ea890eacfb79854d89bfdac1a530619f2f.png",
+          "referenceSha256": "9361b2ea466ea36fee304f8877f077ea890eacfb79854d89bfdac1a530619f2f",
+          "rgbaSha256": "60d3f498d170da153907590e47e4072ebb1dae2ab3ab7ce2fda8dc7377954e1e",
+          "captureSha256": [
+            "9361b2ea466ea36fee304f8877f077ea890eacfb79854d89bfdac1a530619f2f",
+            "9361b2ea466ea36fee304f8877f077ea890eacfb79854d89bfdac1a530619f2f",
+            "9361b2ea466ea36fee304f8877f077ea890eacfb79854d89bfdac1a530619f2f"
+          ]
+        }
+      },
+      "captureInput": "capture-inputs/stroke-control-failure-05-direct.svg",
+      "captureInputSha256": "faab6e2d7d4c4bf5e14b1e258f8c90ad6377398c203b8497bd61557b295fb987",
+      "captureStrategy": "An outer 48x48 SVG with viewBox 0 0 32 32 scales the unchanged authored SVG and retains its viewport and percentage bases."
+    },
+    {
+      "id": "stroke-control-failure-05-symbol",
+      "input": "inputs/stroke-control-failure-05-symbol.svg",
+      "sourceSha256": "e582e23965e8270fa63e723b1ebc2bce4051dd277158848be681b013c0f3b828",
+      "scale": 1.5,
+      "font": false,
+      "platforms": {
+        "windows": {
+          "reference": "references/9361b2ea466ea36fee304f8877f077ea890eacfb79854d89bfdac1a530619f2f.png",
+          "referenceSha256": "9361b2ea466ea36fee304f8877f077ea890eacfb79854d89bfdac1a530619f2f",
+          "rgbaSha256": "60d3f498d170da153907590e47e4072ebb1dae2ab3ab7ce2fda8dc7377954e1e",
+          "captureSha256": [
+            "9361b2ea466ea36fee304f8877f077ea890eacfb79854d89bfdac1a530619f2f",
+            "9361b2ea466ea36fee304f8877f077ea890eacfb79854d89bfdac1a530619f2f",
+            "9361b2ea466ea36fee304f8877f077ea890eacfb79854d89bfdac1a530619f2f"
+          ]
+        },
+        "linux": {
+          "reference": "references/9361b2ea466ea36fee304f8877f077ea890eacfb79854d89bfdac1a530619f2f.png",
+          "referenceSha256": "9361b2ea466ea36fee304f8877f077ea890eacfb79854d89bfdac1a530619f2f",
+          "rgbaSha256": "60d3f498d170da153907590e47e4072ebb1dae2ab3ab7ce2fda8dc7377954e1e",
+          "captureSha256": [
+            "9361b2ea466ea36fee304f8877f077ea890eacfb79854d89bfdac1a530619f2f",
+            "9361b2ea466ea36fee304f8877f077ea890eacfb79854d89bfdac1a530619f2f",
+            "9361b2ea466ea36fee304f8877f077ea890eacfb79854d89bfdac1a530619f2f"
+          ]
+        }
+      },
+      "captureInput": "capture-inputs/stroke-control-failure-05-symbol.svg",
+      "captureInputSha256": "91d1a362e2c54a2faa761a8b66eca71c8ff489d6fed1ddbe375488b1815671a9",
+      "captureStrategy": "An outer 48x48 SVG with viewBox 0 0 32 32 scales the unchanged authored SVG and retains its viewport and percentage bases."
+    },
+    {
+      "id": "stroke-control-failure-08-direct",
+      "input": "inputs/stroke-control-failure-08-direct.svg",
+      "sourceSha256": "9d3a9b243e65b7908b4cf1e1580d6d30b87c6b5bd8bd6e1832f924fe30818954",
+      "scale": 1.5,
+      "font": false,
+      "platforms": {
+        "windows": {
+          "reference": "references/639eb63101eac1ae7f6f6da4b948dc003374eb13b17a6c66cc44e7331807a084.png",
+          "referenceSha256": "639eb63101eac1ae7f6f6da4b948dc003374eb13b17a6c66cc44e7331807a084",
+          "rgbaSha256": "929b648a4e3d2e98068320e6a6382f5e88cf7ed5c0808917360b79eb7587aea1",
+          "captureSha256": [
+            "639eb63101eac1ae7f6f6da4b948dc003374eb13b17a6c66cc44e7331807a084",
+            "639eb63101eac1ae7f6f6da4b948dc003374eb13b17a6c66cc44e7331807a084",
+            "639eb63101eac1ae7f6f6da4b948dc003374eb13b17a6c66cc44e7331807a084"
+          ]
+        },
+        "linux": {
+          "reference": "references/639eb63101eac1ae7f6f6da4b948dc003374eb13b17a6c66cc44e7331807a084.png",
+          "referenceSha256": "639eb63101eac1ae7f6f6da4b948dc003374eb13b17a6c66cc44e7331807a084",
+          "rgbaSha256": "929b648a4e3d2e98068320e6a6382f5e88cf7ed5c0808917360b79eb7587aea1",
+          "captureSha256": [
+            "639eb63101eac1ae7f6f6da4b948dc003374eb13b17a6c66cc44e7331807a084",
+            "639eb63101eac1ae7f6f6da4b948dc003374eb13b17a6c66cc44e7331807a084",
+            "639eb63101eac1ae7f6f6da4b948dc003374eb13b17a6c66cc44e7331807a084"
+          ]
+        }
+      },
+      "captureInput": "capture-inputs/stroke-control-failure-08-direct.svg",
+      "captureInputSha256": "6605ec600a29cd77f2906ce2b8ed23890264ba89c711236e016422fd318bd84b",
+      "captureStrategy": "An outer 48x48 SVG with viewBox 0 0 32 32 scales the unchanged authored SVG and retains its viewport and percentage bases."
+    },
+    {
+      "id": "stroke-control-failure-08-symbol",
+      "input": "inputs/stroke-control-failure-08-symbol.svg",
+      "sourceSha256": "7c3d0c15b6668e861241240f5a5b646f2818c042c329d68b58820ccdd8c1c9d9",
+      "scale": 1.5,
+      "font": false,
+      "platforms": {
+        "windows": {
+          "reference": "references/639eb63101eac1ae7f6f6da4b948dc003374eb13b17a6c66cc44e7331807a084.png",
+          "referenceSha256": "639eb63101eac1ae7f6f6da4b948dc003374eb13b17a6c66cc44e7331807a084",
+          "rgbaSha256": "929b648a4e3d2e98068320e6a6382f5e88cf7ed5c0808917360b79eb7587aea1",
+          "captureSha256": [
+            "639eb63101eac1ae7f6f6da4b948dc003374eb13b17a6c66cc44e7331807a084",
+            "639eb63101eac1ae7f6f6da4b948dc003374eb13b17a6c66cc44e7331807a084",
+            "639eb63101eac1ae7f6f6da4b948dc003374eb13b17a6c66cc44e7331807a084"
+          ]
+        },
+        "linux": {
+          "reference": "references/639eb63101eac1ae7f6f6da4b948dc003374eb13b17a6c66cc44e7331807a084.png",
+          "referenceSha256": "639eb63101eac1ae7f6f6da4b948dc003374eb13b17a6c66cc44e7331807a084",
+          "rgbaSha256": "929b648a4e3d2e98068320e6a6382f5e88cf7ed5c0808917360b79eb7587aea1",
+          "captureSha256": [
+            "639eb63101eac1ae7f6f6da4b948dc003374eb13b17a6c66cc44e7331807a084",
+            "639eb63101eac1ae7f6f6da4b948dc003374eb13b17a6c66cc44e7331807a084",
+            "639eb63101eac1ae7f6f6da4b948dc003374eb13b17a6c66cc44e7331807a084"
+          ]
+        }
+      },
+      "captureInput": "capture-inputs/stroke-control-failure-08-symbol.svg",
+      "captureInputSha256": "3c219af76199ac4f6743a639f20de7db4a305393799f28c528f4e8eb15d09021",
+      "captureStrategy": "An outer 48x48 SVG with viewBox 0 0 32 32 scales the unchanged authored SVG and retains its viewport and percentage bases."
     }
   ]
 }

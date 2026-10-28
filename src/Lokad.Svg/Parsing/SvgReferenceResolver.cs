@@ -498,14 +498,10 @@ internal static class SvgReferenceResolver
         (double sx, double sy, double ox, double oy) = SvgGeometrySyntax.MapViewBox(box, reference.Width.Value, reference.Height.Value);
         if (reference.IsMarker) { sx = (float)sx; sy = (float)sy; ox = (float)ox; oy = (float)oy; }
         SvgAffineTransform offset = SvgAffineTransform.FromScaleOffset(sx, sy, ox + reference.X, oy + reference.Y);
-        if (!reference.HasInverseStrokePose) reference.Transform.ComposeChecked(offset);
-        SvgAffineTransform placement = reference.HasInverseStrokePose ? reference.Transform.Compose(offset)
-            : reference.Transform.ComposeChecked(SvgAffineTransform.FromTranslation(reference.X, reference.Y))
-                .ComposeNative(SvgAffineTransform.FromScaleOffset(sx, sy, ox, oy));
+        SvgAffineTransform placement = reference.HasInverseStrokePose ? reference.Transform.Compose(offset) : reference.Transform.ComposeChecked(offset);
         if (frame is not {} viewport) return placement;
         SvgAffineTransform parent = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY);
-        if (!reference.HasInverseStrokePose) parent.ComposeChecked(placement);
-        return reference.HasInverseStrokePose ? parent.Compose(placement) : parent.ComposeNative(placement);
+        return reference.HasInverseStrokePose ? parent.Compose(placement) : parent.ComposeChecked(placement);
     }
 
     /// <summary>Retains the viewport in local viewBox coordinates before native clipping.</summary>
@@ -515,17 +511,19 @@ internal static class SvgReferenceResolver
     {
         if (reference.Width is null || reference.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol placement requires known instance dimensions.");
         SvgAffineTransform view = SvgAffineTransform.FromTranslation(reference.X, reference.Y);
+        SvgAffineTransform localMap = SvgAffineTransform.Identity;
         if (box is {} viewBox)
         {
             (double sx, double sy, double ox, double oy) = SvgGeometrySyntax.MapViewBox(viewBox, reference.Width.Value, reference.Height.Value);
-            view = view.ComposeChecked(SvgAffineTransform.FromScaleOffset(sx, sy, ox, oy));
+            localMap = SvgAffineTransform.FromScaleOffset(sx, sy, ox, oy);
+            view = view.ComposeChecked(localMap);
         }
         if (!view.TryInvert(out SvgAffineTransform inverse)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Viewport clipping requires an invertible viewBox map.");
         SvgClipBox local = inverse.Apply(new SvgClipBox(reference.X, reference.Y, reference.Width.Value, reference.Height.Value));
         float left = (float)local.X, top = (float)local.Y;
         float right = (float)(local.X + local.Width), bottom = (float)(local.Y + local.Height);
         SvgAffineTransform map = box is {} sourceBox ? SymbolInstancePlacement(sourceBox, reference, frame) : PlainInstancePlacement(reference, frame);
-        return new(new(left, top, right - left, bottom - top), map) { IsBinary = reference.IsMarker };
+        return new(new(left, top, right - left, bottom - top), map) { IsBinary = reference.IsMarker, DrawMap = reference.IsMarker ? null : new(PlainInstancePlacement(reference, frame), localMap, map) };
     }
 
     /// <summary>Reserves mapped point/curve scratch before allocation; an empty contour owns no scratch.</summary>

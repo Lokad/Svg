@@ -374,12 +374,15 @@ internal static class SvgOrthogonalShapeParser
             {
                 // Retain source bounds before placement; mapped endpoints can
                 // round to a different extent even for an axis-aligned map.
-                SvgAuthoredPath path = source.Geometries[0].AuthoredPath
-                    ?? throw new InvalidOperationException("Mapped point-list fills require retained source commands.");
-                bool userSpace = linear ? gradient.IsUserSpace : circle.IsUserSpace;
-                SvgRectangle sourceBox = userSpace ? default : SvgPathBounds.Compute(path.Commands, context.WorkCounter, context.CancellationToken);
-                if (linear) gradient = SvgGradientSyntax.BindLinearSourceMap(gradient, sourceBox, path.SceneMap, state, context.WorkCounter, context.CancellationToken);
-                else circle = SvgGradientSyntax.BindRadialSourceMap(circle, sourceBox, path.SceneMap, context.WorkCounter, context.CancellationToken);
+                if (source.Geometries[0].AuthoredPath is {} path)
+                {
+                    bool userSpace = linear ? gradient.IsUserSpace : circle.IsUserSpace;
+                    SvgRectangle sourceBox = userSpace ? default : SvgPathBounds.Compute(path.Commands, context.WorkCounter, context.CancellationToken);
+                    if (linear) gradient = SvgGradientSyntax.BindLinearSourceMap(gradient, sourceBox, path.SceneMap, state, context.WorkCounter, context.CancellationToken);
+                    else circle = SvgGradientSyntax.BindRadialSourceMap(circle, sourceBox, path.SceneMap, context.WorkCounter, context.CancellationToken);
+                }
+                else if (source.Geometries[0].Polygon.HasFill || !transform.IsAxisAligned)
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Mapped point-list fills require retained source commands.");
             }
             SvgAffineTransform patternMap = SvgViewportFrame.MapGeometry(transform, frame);
             if (pattern)

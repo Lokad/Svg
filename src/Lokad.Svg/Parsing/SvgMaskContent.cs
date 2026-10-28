@@ -27,6 +27,8 @@ internal readonly record struct SvgMaskContent(SvgGeometry[] Geometries, byte Lu
 
     /// <summary>Retains native clip origin/classification independently of ordinary mask content.</summary>
     internal SvgClipContentKind? ClipKind { get; init; }
+    /// <summary>Retains the ordinary viewport canvas stage independently of source and clip bounds.</summary>
+    internal SvgViewportDrawMap? DrawMap { get; init; }
 
     /// <summary>Borrows an earlier scene-owned rectangle clip; that rectangle has no further bounds clip.</summary>
     internal int BoundsClipContentIndex { get; init; } = -1;

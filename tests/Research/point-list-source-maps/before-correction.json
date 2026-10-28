@@ -1477,6 +1477,150 @@
       "changedPixels": 40,
       "alphaChangedPixels": 40,
       "sum": 16554
+    },
+    {
+      "id": "stroke-control-failure-00-direct",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-00-direct",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-00-symbol",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-00-symbol",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-03-direct",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-03-direct",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-03-symbol",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-03-symbol",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-05-direct",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-05-direct",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-05-symbol",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-05-symbol",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-08-direct",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-08-direct",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-08-symbol",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "stroke-control-failure-08-symbol",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
     }
   ]
 }

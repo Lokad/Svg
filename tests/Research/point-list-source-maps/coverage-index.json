@@ -1,6 +1,6 @@
 {
-  "originalRoles": 82,
-  "tests": 82,
+  "originalRoles": 90,
+  "tests": 90,
   "roles": [
     {
       "role": "original-range-0001-candidate",
@@ -411,6 +411,46 @@
       "role": "acceptance-radial-pattern",
       "test": "acceptance-radial-pattern",
       "reason": "Independent native input."
+    },
+    {
+      "role": "stroke-control-failure-00-direct",
+      "test": "stroke-control-failure-00-direct",
+      "reason": "Independent exact native control for output placement before viewBox rounding."
+    },
+    {
+      "role": "stroke-control-failure-00-symbol",
+      "test": "stroke-control-failure-00-symbol",
+      "reason": "Independent exact native control for output placement before viewBox rounding."
+    },
+    {
+      "role": "stroke-control-failure-03-direct",
+      "test": "stroke-control-failure-03-direct",
+      "reason": "Independent exact native control for output placement before viewBox rounding."
+    },
+    {
+      "role": "stroke-control-failure-03-symbol",
+      "test": "stroke-control-failure-03-symbol",
+      "reason": "Independent exact native control for output placement before viewBox rounding."
+    },
+    {
+      "role": "stroke-control-failure-05-direct",
+      "test": "stroke-control-failure-05-direct",
+      "reason": "Independent exact native control for output placement before viewBox rounding."
+    },
+    {
+      "role": "stroke-control-failure-05-symbol",
+      "test": "stroke-control-failure-05-symbol",
+      "reason": "Independent exact native control for output placement before viewBox rounding."
+    },
+    {
+      "role": "stroke-control-failure-08-direct",
+      "test": "stroke-control-failure-08-direct",
+      "reason": "Independent exact native control for output placement before viewBox rounding."
+    },
+    {
+      "role": "stroke-control-failure-08-symbol",
+      "test": "stroke-control-failure-08-symbol",
+      "reason": "Independent exact native control for output placement before viewBox rounding."
     }
   ]
 }
