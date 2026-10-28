@@ -1551,7 +1551,7 @@ internal sealed class SvgSceneBuilder : IDisposable
     {
         if (_built) throw new InvalidOperationException("The SVG scene has already been built.");
         if (_hasAuthoredGroupScopes) RemoveEmptyGroups();
-        if (_filters is { HasGroupSources: true } filters) ResolveGroupSources(filters);
+        if (_filters is { HasBindings: true } filters) ResolveGroupSources(filters);
         _filters?.Seal();
         _built = true;
         SvgSceneStorage storage = SvgSceneStorage.Create(_geometries, _commands, _paintReservations, _maskContents, _maskReservations, _recordedPaintValues, _recordedPaintOwner ?? throw new InvalidOperationException("Paint arena has already transferred."), _vectorContents, _filters);
@@ -1572,7 +1572,7 @@ internal sealed class SvgSceneBuilder : IDisposable
                 {
                     depth++;
                     if (command.RegionKind == SvgLayerRegionKind.Filter)
-                        sources.Add(new(command.MaskContentIndex, depth, null, null));
+                        sources.Add(new(command.MaskContentIndex, depth, null, null, null));
                 }
                 else if (command.Kind == SvgDrawCommandKind.EndGroup)
                 {
@@ -1580,9 +1580,9 @@ internal sealed class SvgSceneBuilder : IDisposable
                     {
                         SvgFilterSourceScope source = sources[^1];
                         sources.RemoveLast();
-                        if (filters.IsGroupSource(source.Binding))
-                            filters.SetGroupBounds(source.Binding, source.ObjectBounds ?? default, source.VisualBounds ?? source.ObjectBounds ?? default);
-                        if (source.ObjectBounds is {} box) Include(box, source.VisualBounds ?? box);
+                        filters.SetSourceBounds(source.Binding, source.ObjectBounds ?? default, source.VisualBounds ?? source.ObjectBounds ?? default, source.ParameterObjectBounds);
+                        if (source.ObjectBounds is {} box) Include(box, source.VisualBounds ?? box,
+                            source.ParameterObjectBounds is {} localBox ? new(localBox, filters.SourceTransformAt(source.Binding)) : null);
                     }
                     depth--;
                 }
@@ -1592,19 +1592,25 @@ internal sealed class SvgSceneBuilder : IDisposable
                     SvgRecordedPaintValue paint = GetRecordedPaintValue(geometry.RecordedPaint);
                     if (paint.IsEffectAnchor && paint.ObjectBounds is null) continue;
                     if (paint.ObjectBounds is not {} box) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group filter descendants require retained source bounds.");
-                    Include(paint.IsMarkerContent ? null : box, paint.IsEffectAnchor ? null : paint.VisualBounds ?? box);
+                    Include(paint.IsMarkerContent ? null : box, paint.IsEffectAnchor ? null : paint.VisualBounds ?? box, paint.IsMarkerContent ? null : paint.SourceObjectBounds);
                 }
             }
             if (sources.Count > 0 || depth != 0) throw new SvgException(SvgErrorCode.MalformedInput, "Filter group source is unbalanced.");
 
-            void Include(SvgPaintBounds? box, SvgPaintBounds? visual)
+            void Include(SvgPaintBounds? box, SvgPaintBounds? visual, SvgSourceObjectBounds? authored)
             {
                 if (sources.Count == 0) return;
                 SvgFilterSourceScope parent = sources[^1];
+                SvgPaintBounds? parameter = null;
+                if (filters.SourceTransformAt(parent.Binding).TryInvert(out SvgAffineTransform inverse))
+                    parameter = authored is {} sourceBox
+                        ? sourceBox.Bounds.MapLayout(inverse.Compose(sourceBox.SceneMap), _workCounter, _cancellationToken)
+                        : box?.MapLayout(inverse, _workCounter, _cancellationToken);
                 sources[^1] = parent with
                 {
                     ObjectBounds = box is {} objects ? Union(parent.ObjectBounds, objects) : parent.ObjectBounds,
-                    VisualBounds = visual is {} painted ? Union(parent.VisualBounds, painted) : parent.VisualBounds
+                    VisualBounds = visual is {} painted ? Union(parent.VisualBounds, painted) : parent.VisualBounds,
+                    ParameterObjectBounds = parameter is {} local ? Union(parent.ParameterObjectBounds, local) : parent.ParameterObjectBounds
                 };
             }
 
@@ -1656,7 +1662,7 @@ internal sealed class SvgSceneBuilder : IDisposable
 }
 
 /// <summary>Retains one bounded filter source while scene commands aggregate descendant geometry.</summary>
-internal readonly record struct SvgFilterSourceScope(int Binding, int Depth, SvgPaintBounds? ObjectBounds, SvgPaintBounds? VisualBounds);
+internal readonly record struct SvgFilterSourceScope(int Binding, int Depth, SvgPaintBounds? ObjectBounds, SvgPaintBounds? VisualBounds, SvgPaintBounds? ParameterObjectBounds);
 
 /// <summary>Identifies the parallel retained-scene entries reserved for a deferred reference.</summary>
 internal readonly record struct SvgSceneSlot(int GeometryIndex, int CommandIndex);

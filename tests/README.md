@@ -29,6 +29,10 @@ classes migrated to these responsibilities; they are not a complete suite index.
 The [point-list source maps](Research/point-list-source-maps/README.md) separate
 90 independent native inputs, twelve viewport mechanisms and two selected ownership
 cases; their numerical boundaries do not repeat the full API matrix.
+The [filter-region controls](Research/filter-region-coordinates/README.md) retain
+65 independent native inputs, 27 direct mechanisms and one selected ownership
+witness. Their source/image coordinate interactions retain the existing tests;
+the rendering bank uses one canonical conversion path.
 The [embedded-image source views](Research/image-source-views/README.md) retain
 120 canonical images for 126 original/acceptance roles, 39 direct mechanism cases
 and three selected allocation paths with raw/prepared ownership checks. They

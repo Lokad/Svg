@@ -322,7 +322,7 @@ internal static class SvgGeometrySyntax
             values[valueCount++] = ParseTransformCoordinate(value, workCounter, cancellationToken);
         }
         if (valueCount is < 1 or > 2) throw new SvgException(SvgErrorCode.MalformedInput, "Transforms require one or two coordinates.");
-        return SvgAffineTransform.FromScaleOffset(1, 1, values[0], valueCount == 2 ? values[1] : 0);
+        return SvgAffineTransform.FromScaleOffset(1, 1, SvgCssLength.NormalizeFixed(values[0]), valueCount == 2 ? SvgCssLength.NormalizeFixed(values[1]) : 0);
     }
 
     private static double ParseTransformCoordinate(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)

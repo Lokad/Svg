@@ -25,8 +25,9 @@ negative large coordinates, direct/use/symbol gradient maps, output scaling,
 reflection, nested viewports, opacity, alpha masks, patterns and user-space/radial
 paints. Source geometry, paint-local bounds and viewport clips retain their own
 coordinates through placement. Earlier scene-space rounding cannot trim the
-device clip. Large-coordinate marker poses and own-filter regions remain open
-correctness areas; this collection does not claim to close them.
+device clip. The own-filter cases have dedicated
+[region controls](../filter-region-coordinates/README.md). Large-coordinate marker
+poses remain an open correctness area.
 
 Twelve [mechanism cases](../../Lokad.Svg.Tests/SvgPointListViewportTests.cs) exercise
 source endpoint rounding, viewBox concatenation and the existing transform limit

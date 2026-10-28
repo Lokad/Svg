@@ -1,0 +1,1 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='objectBoundingBox' x='33554432' y='0' width='16' height='16'><feFlood flood-color='green'/></filter></defs><g transform='translate(-67108848 0)' filter='url(#f)'><rect width='2' height='2' fill='red'/></g></svg>

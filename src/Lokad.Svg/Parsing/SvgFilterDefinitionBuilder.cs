@@ -258,7 +258,7 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
         if (percent) token = token[..^1];
         else if (token.EndsWith("px", StringComparison.Ordinal)) token = token[..^2];
         if (!token.IsEmpty && SvgCssWhitespace.Is(token[^1])) throw new SvgException(SvgErrorCode.MalformedInput, "Filter length units must follow their number without a gap.");
-        return new(Number(token), percent);
+        return new(percent ? Number(token) : SvgCssLength.NormalizeFixed(Number(token)), percent);
     }
 
     private static double Number(ReadOnlySpan<char> token)

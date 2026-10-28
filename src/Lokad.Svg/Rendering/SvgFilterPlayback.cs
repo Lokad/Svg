@@ -54,6 +54,8 @@ internal readonly record struct SvgFilterRegionContext(SvgAffineTransform Coordi
     internal bool PictureOutput { get; init; }
     /// <summary>Retains native matrix arithmetic for image transforms after affine source capture.</summary>
     internal SvgFilterNativeMapping? NativeMapping { get; init; }
+    /// <summary>Maps authored primitive regions into the padded filter grid independently of source-image transforms.</summary>
+    internal SvgFilterNativeMapping? NativeRegionMapping { get; init; }
     /// <summary>Allows the terminal dynamic source image to retain its offset for an affine consumer.</summary>
     internal bool DeferFinalOffset { get; init; }
 }
@@ -377,13 +379,15 @@ internal static class SvgFilterPlayback
         {
             if (authored is not {} region) return defaults;
             for (int component = 0; component < 4; component++) work.Consume(token);
-            double x = region.X is {} rx ? Position(rx, context.LengthBases.Width, context.Coordinates.A, context.Coordinates.E) : defaults.Left;
-            double y = region.Y is {} ry ? Position(ry, context.LengthBases.Height, context.Coordinates.D, context.Coordinates.F) : defaults.Top;
+            double x = region.X is {} rx ? Position(rx, context.LengthBases.Width, context.Coordinates.A, context.Coordinates.E, context.NativeRegionMapping, true) : defaults.Left;
+            double y = region.Y is {} ry ? Position(ry, context.LengthBases.Height, context.Coordinates.D, context.Coordinates.F, context.NativeRegionMapping, false) : defaults.Top;
             double authoredWidth = region.Width is {} rw ? Length(rw, context.LengthBases.Width) : defaults.Right - defaults.Left;
             double authoredHeight = region.Height is {} rh ? Length(rh, context.LengthBases.Height) : defaults.Bottom - defaults.Top;
             if (authoredWidth <= 0 || authoredHeight <= 0) return default;
-            double w = region.Width is not null ? authoredWidth * context.Coordinates.A : authoredWidth;
-            double h = region.Height is not null ? authoredHeight * context.Coordinates.D : authoredHeight;
+            double w = region.Width is not null ? context.NativeRegionMapping is {} mx
+                ? (float)authoredWidth * mx.Coordinates.ScaleX : authoredWidth * context.Coordinates.A : authoredWidth;
+            double h = region.Height is not null ? context.NativeRegionMapping is {} my
+                ? (float)authoredHeight * my.Coordinates.ScaleY : authoredHeight * context.Coordinates.D : authoredHeight;
             if (w < 0) { x += w; w = -w; }
             if (h < 0) { y += h; h = -h; }
             if (Math.Abs(x) > float.MaxValue || Math.Abs(y) > float.MaxValue || Math.Abs(x + w) > float.MaxValue || Math.Abs(y + h) > float.MaxValue
@@ -392,7 +396,16 @@ internal static class SvgFilterPlayback
             return new((float)Math.Max(x, context.FilterRegion.Left), (float)Math.Max(y, context.FilterRegion.Top),
                 (float)Math.Min(x + w, context.FilterRegion.Right), (float)Math.Min(y + h, context.FilterRegion.Bottom));
 
-            static double Position(SvgFilterLength length, double? basis, double scale, double offset) => Length(length, basis) * scale + offset;
+            static double Position(SvgFilterLength length, double? basis, double scale, double offset, SvgFilterNativeMapping? native, bool horizontal)
+            {
+                if (native is {} mapping)
+                {
+                    SvgShaderMatrix coordinates = mapping.Coordinates;
+                    return horizontal ? MathF.FusedMultiplyAdd((float)Length(length, basis), coordinates.ScaleX, coordinates.TranslateX) + mapping.Origin.X
+                        : MathF.FusedMultiplyAdd((float)Length(length, basis), coordinates.ScaleY, coordinates.TranslateY) + mapping.Origin.Y;
+                }
+                return Length(length, basis) * scale + offset;
+            }
             static double Length(SvgFilterLength length, double? basis) => length.Percentage
                 ? length.Value * (basis ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Primitive percentages require known viewport extents.")) / 100 : length.Value;
         }

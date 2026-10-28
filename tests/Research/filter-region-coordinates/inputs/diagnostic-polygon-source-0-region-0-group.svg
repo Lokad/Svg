@@ -1,0 +1,1 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='green'/></filter></defs><g transform='' filter='url(#f)'><polygon points='4 4 28 4 28 24 4 24' fill='red'/></g></svg>

@@ -407,8 +407,8 @@ public static partial class SvgConverter
         {
             if (!resource.IsAvailable) return default;
             SvgFilterRegion region = resource.Region;
-            SvgPaintBounds box = binding.ObjectBounds;
             bool objectUnits = region.Units == SvgFilterUnits.ObjectBoundingBox;
+            SvgPaintBounds box = objectUnits ? binding.ParameterObjectBounds ?? binding.ObjectBounds : binding.ObjectBounds;
             double basisX = objectUnits ? box.Right - box.Left : binding.LengthBases.Width ?? width;
             double basisY = objectUnits ? box.Bottom - box.Top : binding.LengthBases.Height ?? height;
             double x = Length(region.X, basisX), y = Length(region.Y, basisY);
@@ -416,7 +416,7 @@ public static partial class SvgConverter
             if (w <= 0 || h <= 0) return default;
             SvgAffineTransform map = output;
             if (objectUnits) { x += box.Left; y += box.Top; }
-            else map = map.ComposeChecked(binding.Transform);
+            if (!objectUnits || binding.ParameterObjectBounds is not null) map = map.ComposeChecked(binding.Transform);
             SvgPaintBounds bounds = new SvgPaintBounds((float)x, (float)y, (float)(x + w), (float)(y + h)).Map(map, counter, cancellationToken);
             return bounds;
 
@@ -709,6 +709,8 @@ public static partial class SvgConverter
             double frameLeft = Math.Floor(Math.Min(left, requestedLeft - replayPaddingX)), frameTop = Math.Floor(Math.Min(top, requestedTop - replayPaddingY));
             double frameWidth = Math.Ceiling(Math.Max(right, requestedRight + replayPaddingX)) - frameLeft;
             double frameHeight = Math.Ceiling(Math.Max(bottom, requestedBottom + replayPaddingY)) - frameTop;
+            frameLeft -= 1; frameTop -= 1;
+            frameWidth += 2; frameHeight += 2;
             if (!double.IsFinite(frameWidth) || !double.IsFinite(frameHeight) || frameWidth > options.Limits.MaximumDimension || frameHeight > options.Limits.MaximumDimension
                 || frameWidth * frameHeight > options.Limits.MaximumPixels || frameWidth * frameHeight > int.MaxValue / 4)
                 throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source and halo exceed the configured surface limits.");
@@ -745,12 +747,46 @@ public static partial class SvgConverter
                     (float)(left - frameLeft + sourceContentClip.Right - 1), (float)(top - frameTop + sourceContentClip.Bottom - 1)) } };
             RasterFrame captureFrame = new(sw + 2, sh + 2, horizontalScale, horizontalOffset - left + 1, verticalScale, verticalOffset - top + 1)
             { SingleBitmap = true, ContentClip = sourceContentClip, ParentOrigin = new(0, 0), CaptureOrigin = new((int)left - 1, (int)top - 1), ImageShaderOrigin = imageShaderOrigin, SourcePlacement = sourcePlacement, NativeSourceBounds = frame?.NativeSourceBounds, FilterSourceMap = frame?.FilterSourceMap, NativeCapturePlacement = PlaceNativeSource(new((int)left - 1, (int)top - 1)) };
-            // Object-box distances already use the placed bounding coordinates.
-            // Only user-space primitives conjugate the authored source transform.
-            if (!objectPrimitiveUnits && captureFrame.NativeCapturePlacement is {} nativePlacement && primitiveMap.Regions is {} nativeRegions)
+            // Region coordinates belong to the padded filter bitmap; sampled
+            // source-image transforms retain their separate capture domain.
+            if (primitiveMap.Regions is {} nativeRegions)
             {
+                // Primitive parameters belong to the filter bitmap. Source draws
+                // retain their own recording placement and canvas stages.
+                SvgAffineTransform nativePlacement = captureFrame.NativeCapturePlacement
+                    ?? SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset - left + 1, verticalOffset - top + 1);
                 SvgAffineTransform parameters = nativePlacement.ComposeNative(arena.BindingAt(command.MaskContentIndex).Transform);
-                primitiveMap = primitiveMap with { Regions = nativeRegions with { NativeMapping = new(new((float)parameters.A, (float)parameters.C, (float)parameters.E, (float)parameters.B, (float)parameters.D, (float)parameters.F), new((int)(left - 1 - frameLeft), (int)(top - 1 - frameTop))) } };
+                SvgCpuBitmapOrigin nativeOrigin = new((int)(left - 1 - frameLeft), (int)(top - 1 - frameTop));
+                ParserWorkCounter nativeRegionWork = new(options.Limits.MaximumWorkUnits - workUnits);
+                SvgPaintBounds parameterObjects = binding.ParameterObjectBounds ?? default;
+                nativeRegionWork.Consume(cancellationToken);
+                if (binding.Transform.TryInvert(out SvgAffineTransform inverseRegion))
+                {
+                    SvgFilterBinding parameterBinding = binding with { Transform = SvgAffineTransform.Identity,
+                        ObjectBounds = binding.ObjectBounds.Map(inverseRegion, nativeRegionWork, cancellationToken) };
+                    parameterObjects = parameterBinding.ParameterObjectBounds ?? parameterBinding.ObjectBounds;
+                    gridRegion = FilterRegion(parameterBinding, resource, nativeRegionWork, parameters)
+                        .Map(SvgAffineTransform.FromTranslation(nativeOrigin.X, nativeOrigin.Y), nativeRegionWork, cancellationToken);
+                    region = new((float)(gridRegion.Left + frameLeft), (float)(gridRegion.Top + frameTop),
+                        (float)(gridRegion.Right + frameLeft), (float)(gridRegion.Bottom + frameTop));
+                    requestedLeft = Math.Max(layerBounds.Left, gridRegion.Left + frameLeft);
+                    requestedTop = Math.Max(layerBounds.Top, gridRegion.Top + frameTop);
+                    requestedRight = Math.Min(layerBounds.Right, gridRegion.Right + frameLeft);
+                    requestedBottom = Math.Min(layerBounds.Bottom, gridRegion.Bottom + frameTop);
+                    if (activeViewportBounds is {} nativeClip)
+                    {
+                        requestedLeft = Math.Max(requestedLeft, nativeClip.Left); requestedTop = Math.Max(requestedTop, nativeClip.Top);
+                        requestedRight = Math.Min(requestedRight, nativeClip.Right); requestedBottom = Math.Min(requestedBottom, nativeClip.Bottom);
+                    }
+                }
+                workUnits += nativeRegionWork.Used;
+                SvgAffineTransform primitiveParameters = objectPrimitiveUnits
+                    ? parameters.ComposeNative(SvgAffineTransform.FromScaleOffset(parameterObjects.Right - parameterObjects.Left,
+                        parameterObjects.Bottom - parameterObjects.Top, parameterObjects.Left, parameterObjects.Top)) : parameters;
+                SvgFilterNativeMapping regionMapping = new(new((float)primitiveParameters.A, (float)primitiveParameters.C, (float)primitiveParameters.E,
+                    (float)primitiveParameters.B, (float)primitiveParameters.D, (float)primitiveParameters.F), nativeOrigin);
+                primitiveMap = primitiveMap with { Regions = nativeRegions with { FilterRegion = gridRegion, NativeRegionMapping = regionMapping,
+                    NativeMapping = !objectPrimitiveUnits && captureFrame.NativeCapturePlacement is not null ? regionMapping : nativeRegions.NativeMapping } };
             }
             using RasterizedSurface captured = Rasterize(borrowed, sourceOptions, budget, RasterSurfaceMode.PremultipliedFilter, captureFrame, cancellationToken);
             workUnits += captured.WorkUnits;

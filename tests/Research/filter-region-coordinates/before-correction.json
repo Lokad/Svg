@@ -1,0 +1,1058 @@
+{
+  "commit": "ab2b3bfbf9b7dd084e08915f7a37da7ea68dd144",
+  "admittedExact": 11,
+  "admittedInexact": 54,
+  "retainedRestrictions": 10,
+  "cases": [
+    {
+      "id": "original-effects-0003-candidate",
+      "sourceSha256": "a2d0c3ad91701ed38abfa2944fe255780e8e2e3b9be114961f432beea4ead812",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "original-effects-0003-control",
+      "sourceSha256": "4a970172284ee1b7a3d5e04994ea723cccaf298d262fa2081bcd376faad7a6de",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "original-effects-0009-candidate",
+      "sourceSha256": "9fdae75ef27a5585b1a6972366710441e506b7b37324d132f91e0f5cc025c721",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "original-effects-0009-control",
+      "sourceSha256": "e6f8c3bba40b74028a853f3f8d1cf515e95de3d5e8b0a755b292a7efdba463ac",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "original-effects-0015-candidate",
+      "sourceSha256": "79208d7d47ab55e532cfa7997f2d3aab8eece44993cf5b67c6787a0a23abc0b4",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "original-effects-0015-control",
+      "sourceSha256": "5fb7eb8c90aa39017f3526eb74a9cc7e7001eff743e11260f75e94182877eb4a",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "original-effects-0021-candidate",
+      "sourceSha256": "1dce0398ce33bf773f102c54e14266b1da7952923a2fc5b74a49886dabe63738",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "original-effects-0021-control",
+      "sourceSha256": "88220935b70be88163747b3cb3ff72f82b349cfea322815bbe77f6e192130a33",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "original-effects-0027-candidate",
+      "sourceSha256": "47c59fedc6b27e07446366d2b71918f2a407c7287dccdeb7d94808b5adf02394",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "original-effects-0027-control",
+      "sourceSha256": "c3c064914582694af1a6dff97e842979a5d6b66cd5c56e3ae0ae31872634433b",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "original-effects-0033-candidate",
+      "sourceSha256": "630da70e61ba7a9edffad91e18b33cfb068d53d70d2e625e74acc53cccf79cec",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "original-effects-0033-control",
+      "sourceSha256": "78ca276fb509fddb00e162705d2b49213e25867aeecc90fed3e2ece2dff16917",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "original-effects-0039-candidate",
+      "sourceSha256": "24c36f24eae4c10ad57cef0a2b3df46b4c9f52fc728fea90ef35a7c18d4fd500",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "original-effects-0039-control",
+      "sourceSha256": "2d150d04039261efd851de69e49a1ce1cf57e7875a21379ecfcb43b133cdb47d",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "original-effects-0045-candidate",
+      "sourceSha256": "7e6c90a3c18fde0bec07a632d2966fb16f97f3158550598cd3da9c7e62bc663c",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "original-effects-0045-control",
+      "sourceSha256": "29cd4463ec5de312d7539b3dcfe3447f31561aaa63dd11f42fa7f3636ea666ee",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "diagnostic-polygon-source-0-region-0-own",
+      "sourceSha256": "153ffc4364a3b929c12c620b3eebc6ff1740d96891c3bc359e161c729b01a6cc",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "error": null
+        },
+        "linux": {
+          "exact": true,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "diagnostic-polygon-source-0-region-0-group",
+      "sourceSha256": "14af07fc28986a5650c01e492ccdbff3cc81fecb41d9748e00bb769c5b8d658a",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "error": null
+        },
+        "linux": {
+          "exact": true,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "diagnostic-polygon-source-0-region-1-own",
+      "sourceSha256": "4af4f9294571a93c486c455c36a837964df4e8487b31cd1d92ffde6c2b4fbef0",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "diagnostic-polygon-source-0-region-1-group",
+      "sourceSha256": "372ac0484242c053bbb1d0e5a677b9dab9e9612706db45938f120e551b9242b5",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "diagnostic-polygon-source-1-region-0-own",
+      "sourceSha256": "83e545dfd10b9fad67a7aa97a95e1a92272ebbb2e4cb3f79c97a80be151334a0",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": "LimitExceeded: Polygon fill coordinates exceed the admitted numeric range."
+        },
+        "linux": {
+          "exact": false,
+          "error": "LimitExceeded: Polygon fill coordinates exceed the admitted numeric range."
+        }
+      }
+    },
+    {
+      "id": "diagnostic-polygon-source-1-region-0-group",
+      "sourceSha256": "c7bccf32d42da43853754aa1bc929bd9371dc53082fa1264ae25f05238a7f91c",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": "LimitExceeded: Polygon fill coordinates exceed the admitted numeric range."
+        },
+        "linux": {
+          "exact": false,
+          "error": "LimitExceeded: Polygon fill coordinates exceed the admitted numeric range."
+        }
+      }
+    },
+    {
+      "id": "diagnostic-polygon-source-1-region-1-own",
+      "sourceSha256": "60e1573ba617542b89223382078a92aff142904b5537598fcc67bdd85b9fd850",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "diagnostic-polygon-source-1-region-1-group",
+      "sourceSha256": "8105f54105785c3cff9c4cbb7178bb80f3c6fbbaf9b23aa95519d1213c8ad521",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "diagnostic-rect-source-0-region-0-own",
+      "sourceSha256": "de84e84b878e0b4006995a2baa9fe7f7faed3454af954c50c04478d50fcb3881",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "error": null
+        },
+        "linux": {
+          "exact": true,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "diagnostic-rect-source-0-region-0-group",
+      "sourceSha256": "bdc2ad9fca28c1c3fa4d7cf1ef6796eb3bc69d5b3cd0d73dba2b330d0031fdca",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "error": null
+        },
+        "linux": {
+          "exact": true,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "diagnostic-rect-source-0-region-1-own",
+      "sourceSha256": "df8c2df8c12b22d1665b944b4188c78bab0403ee718cc8cc5681dfcf4e326c7b",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "diagnostic-rect-source-0-region-1-group",
+      "sourceSha256": "50e7a0d8d2c1660236ca1123b8a3112876a53a7bd8fb907e0c13a80cc5ad62d7",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "diagnostic-rect-source-1-region-0-own",
+      "sourceSha256": "792cbdb0175b65f6ae2c1861e830874f4f6dbde79c6532c1cd3e5108addb4b8a",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": "UnsupportedFeature: Rectangle coordinates must be finite bounded numbers."
+        },
+        "linux": {
+          "exact": false,
+          "error": "UnsupportedFeature: Rectangle coordinates must be finite bounded numbers."
+        }
+      }
+    },
+    {
+      "id": "diagnostic-rect-source-1-region-0-group",
+      "sourceSha256": "a79346a2c7d33305e6408bd42149c0f4eb2eabd62908186ae8d1854bca82facc",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": "UnsupportedFeature: Rectangle coordinates must be finite bounded numbers."
+        },
+        "linux": {
+          "exact": false,
+          "error": "UnsupportedFeature: Rectangle coordinates must be finite bounded numbers."
+        }
+      }
+    },
+    {
+      "id": "diagnostic-rect-source-1-region-1-own",
+      "sourceSha256": "7f4a3518900a9d489ae7e321cb78d021ea1d89ab37c3027af1e41689634e7264",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": "UnsupportedFeature: Rectangle coordinates must be finite bounded numbers."
+        },
+        "linux": {
+          "exact": false,
+          "error": "UnsupportedFeature: Rectangle coordinates must be finite bounded numbers."
+        }
+      }
+    },
+    {
+      "id": "diagnostic-rect-source-1-region-1-group",
+      "sourceSha256": "3ca240efd8721275c0b59d9320a869369d47c7e939b24c59da55b4e849d04a4f",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": "UnsupportedFeature: Rectangle coordinates must be finite bounded numbers."
+        },
+        "linux": {
+          "exact": false,
+          "error": "UnsupportedFeature: Rectangle coordinates must be finite bounded numbers."
+        }
+      }
+    },
+    {
+      "id": "diagnostic-path-source-0-region-0-own",
+      "sourceSha256": "0ab79f0d1c1d93dc1d6cf6d185de0b82b71dede7c1fc2a11d58d620a35b50eb0",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "error": null
+        },
+        "linux": {
+          "exact": true,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "diagnostic-path-source-0-region-0-group",
+      "sourceSha256": "7852835e1606c8aae2e85885a33a3a305cdb766794acad24037584a404af557a",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "error": null
+        },
+        "linux": {
+          "exact": true,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "diagnostic-path-source-0-region-1-own",
+      "sourceSha256": "fb7c8bbe5416b2a4d6c18f262e2bdcc1d3887f10982d9ace47ccb705a957a7e9",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "diagnostic-path-source-0-region-1-group",
+      "sourceSha256": "764ddbc8e35e7d3e398f7cf394f9a2cdd580d547b191c51eaa7d6e23f81ff737",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "diagnostic-path-source-1-region-0-own",
+      "sourceSha256": "6f0a40b582c81d84889e3c7ecccb47da5f7aca51e0af31863bca777507759d6e",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": "UnsupportedFeature: Only integer rectangle coordinates are implemented."
+        },
+        "linux": {
+          "exact": false,
+          "error": "UnsupportedFeature: Only integer rectangle coordinates are implemented."
+        }
+      }
+    },
+    {
+      "id": "diagnostic-path-source-1-region-0-group",
+      "sourceSha256": "d6d85206f0b85d5a54e6f8d65a6616a75896e6a30600a9ff21e71a2eaaabffba",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": "UnsupportedFeature: Only integer rectangle coordinates are implemented."
+        },
+        "linux": {
+          "exact": false,
+          "error": "UnsupportedFeature: Only integer rectangle coordinates are implemented."
+        }
+      }
+    },
+    {
+      "id": "diagnostic-path-source-1-region-1-own",
+      "sourceSha256": "fd9b17dd897c29446e425f0a4b4f3696981b6c16a4377a244050d7789c554488",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": "UnsupportedFeature: Only integer rectangle coordinates are implemented."
+        },
+        "linux": {
+          "exact": false,
+          "error": "UnsupportedFeature: Only integer rectangle coordinates are implemented."
+        }
+      }
+    },
+    {
+      "id": "diagnostic-path-source-1-region-1-group",
+      "sourceSha256": "261f8bc4b144910cb22fd4224f9977eb739cb88c2116bcc44f979cbb94b70405",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": "UnsupportedFeature: Only integer rectangle coordinates are implemented."
+        },
+        "linux": {
+          "exact": false,
+          "error": "UnsupportedFeature: Only integer rectangle coordinates are implemented."
+        }
+      }
+    },
+    {
+      "id": "positive-cross-x",
+      "sourceSha256": "e1cee2328227b52d39729db91906d3b9b62befbf99a09bb2cd7d633e9cd1d43f",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "positive-cross-y",
+      "sourceSha256": "43e389615b64c2b937ac7fb96a6558fc7c438036832d2e7f6acd118b29607e13",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "positive-inside-x",
+      "sourceSha256": "53b14dfa2613c851505561b0fd8244e2458770858b15d72b3668250360dd2963",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "positive-inside-y",
+      "sourceSha256": "50cecc811a39b18e1e5118188aaa5b394170f7e48a311686ea285debedebc014",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "negative-cross-x",
+      "sourceSha256": "66cd952627fcc75582d4efcc6ff3ba762dc5684750c0e5c53ba407b6a543e9af",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "negative-cross-y",
+      "sourceSha256": "3f1510a4f405d7509abff20155fb6a64c8f3c84d7e01d40bbe5d9a7889f631ce",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "negative-inside-x",
+      "sourceSha256": "c54a492d91069d300bb81f04852ef65aee990c999d12b3800f542375bc867b4c",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "negative-inside-y",
+      "sourceSha256": "3e2ee1bccf631c1d44dcea7023f2a61c24c22b078e350a32ce44e422319aa375",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "positive-outside-x",
+      "sourceSha256": "906caae3bb4702fdf5f597e4ac1ae8168012ef3657663952965a241469409b99",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "positive-outside-y",
+      "sourceSha256": "462153fe94591a9e2d0c054437f3969d0b40a6a0315c18c04ea011594ef2ecc3",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "wide-centered-x",
+      "sourceSha256": "ee575ab7ae026de5075b3580b02431618fd1c4e897dedeb492fd285df51103ef",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "wide-centered-y",
+      "sourceSha256": "48d006d80145dbc5f3076b2798fc533ec79ada6386912f98d3e63013c1af0d3a",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "positive-33554428",
+      "sourceSha256": "a6991cb5ca4f59c6b7e7d7217c7067ceacb0192549b20105aff1ba3cf1a8b591",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "positive-33554429",
+      "sourceSha256": "f5385d507deff08346654ef2e8e941f451213beda0c2d9809372e968c48e19d0",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "positive-33554430",
+      "sourceSha256": "62b069bab457c93a6412be4aa24aa2d7186a48904ddf95ab0114bb3a81eb0e32",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "positive-33554431",
+      "sourceSha256": "f7d0ac045457d1a077f65c59a62ff1c0e60aba866c51cb34158f6f309dd9ce77",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "positive-33554432",
+      "sourceSha256": "963b74d5024c220737b55376f33b62f4cd989b60c94556fc150001d3c193730b",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "negative-33554428",
+      "sourceSha256": "11a2ecf51a38e89001290f062da50fb6e805f1d97e02f2054e371f660139241a",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "negative-33554429",
+      "sourceSha256": "c7064bfa69258ac105bbd3a18dac32b99db149295a407016d50e2157c3feaf99",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "negative-33554430",
+      "sourceSha256": "ca1a4040e5ca4f9a93462fd5248f1e4c1d52627c7b54a2397d5ef2b920e29421",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "negative-33554431",
+      "sourceSha256": "01a08e6c2ef1cae5dd8bad47e2e854d098a6432ec28714789022721dcf27eb98",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "error": null
+        },
+        "linux": {
+          "exact": true,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "negative-33554432",
+      "sourceSha256": "6ec22e1031ea6dad97f3c222b0c0b532485ac4b49f0e2257771068b6b83a09cb",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "error": null
+        },
+        "linux": {
+          "exact": true,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "pixel-unit",
+      "sourceSha256": "b5c19d93d6ead32c5310e85e7ff58d37ed90612aad7b22cabb9a7e6bf9e0bf0f",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "primitive-fixed",
+      "sourceSha256": "08d3e59ea2275d40202edf37cf0523de1b506f9b577a6a0e1427633fb33a147e",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "object-before-basis",
+      "sourceSha256": "ac0753bdaf44a8a7e9c2bf8c89b32566a06c9ae6ebc9de67fe6427af225c4eca",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "error": null
+        },
+        "linux": {
+          "exact": true,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "percentage-separate",
+      "sourceSha256": "d3c21e24306499464a7392453b98da673a9d07e59f7afc54661d03cdfdca93c3",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "matrix-positive-33554428",
+      "sourceSha256": "bc237344b55d6423c5b7259a4cd707bf992f380a376f05d7f560b68971a58feb",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "matrix-negative-33554432",
+      "sourceSha256": "1a10fea25a84cfbc3475460b984744497e6bba208b36307eaa1d07041faacba5",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "matrix-percentage-separate",
+      "sourceSha256": "9c27db60b2b75588f6e574e8792b7a868ef0e79c2fe0551482f96caf24b38286",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "matrix-object-before-basis",
+      "sourceSha256": "435579cbe807a346c83060c89379b88d5232d9b17a8fa3c6cdbec8771ff22d1a",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "unfiltered-rect",
+      "sourceSha256": "5cc423c2273190f78db27d9d983db5d42b9a81e38429a4828dd2da48da72450d",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "error": null
+        },
+        "linux": {
+          "exact": true,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "unfiltered-path",
+      "sourceSha256": "0733c1a806b2923dca8183b5acdf6363a040e0ea67c782fcdd4d4340626ed815",
+      "platforms": {
+        "windows": {
+          "exact": true,
+          "error": null
+        },
+        "linux": {
+          "exact": true,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "object-primitives-default-region",
+      "sourceSha256": "e5ca1212872fcbca22ee90f67a86dff80db2d35020d1c7584bb5d7b510fc024f",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "object-region-object-primitives",
+      "sourceSha256": "3f7dc7f0f88c2ec19671ed842d85b40326ca807cce0b2381ec2307a354db3dcc",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "object-primitive-explicit-region",
+      "sourceSha256": "4c0622d7b2328ea8bc3980531f167f4ec57282c4b61209ce025101c75f1703fe",
+      "platforms": {
+        "windows": {
+          "exact": false,
+          "error": null
+        },
+        "linux": {
+          "exact": false,
+          "error": null
+        }
+      }
+    }
+  ]
+}

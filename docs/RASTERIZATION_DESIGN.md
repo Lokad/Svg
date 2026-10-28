@@ -270,6 +270,16 @@ retain device-coordinate placement.
 The [recording-coordinate controls](../tests/Research/filter-source-recording-map/README.md)
 retain ellipse and curve coverage with separate allocation and sampling bounds.
 
+Fixed filter lengths and translate arguments resolve within the native CSS
+layout range before placement. Matrix numbers and percentages retain their own
+domains. Authored object boxes compose into the owning filter's parameter space
+before float enclosure, preserving nonzero boxes whose placed endpoints coincide.
+Filter and primitive regions map through the padded filter bitmap before
+restoration. This region map is independent of source drawing stages and the
+post-capture image transforms used by sampled offsets. The
+[region controls](../tests/Research/filter-region-coordinates/README.md) retain
+both unit systems and the earlier source-image interaction regressions.
+
 ## Supplied fonts
 
 Rendering consumes verified immutable font bytes supplied by the host. Shared

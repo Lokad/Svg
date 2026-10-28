@@ -7,6 +7,35 @@ namespace Lokad.Svg.Tests;
 /// <summary>Checks raster scratch lifetime while borrowing an already parsed scene and its font/options owners.</summary>
 internal static class SvgRasterOwnershipAssertions
 {
+    internal static void ParsesAndReleasesAfterFailures(byte[] input, SvgRenderOptions options, long maximumBytes, int expectedGeometryCount, string expectedRgbaSha256)
+    {
+        byte[] unchanged = input.ToArray();
+        RenderBudget parser = new(maximumBytes);
+        long parserWork;
+        using (SvgRoot scene = SvgRootParser.Parse(input, options.Limits, parser, options.FontSnapshot, CancellationToken.None))
+        {
+            parserWork = scene.ParserWorkUnits;
+            ReleasesAfterFailures(scene, options, maximumBytes, expectedRgbaSha256);
+        }
+        Assert.Equal(0, parser.Snapshot().CurrentBytes);
+        RenderBudget deniedMemory = new(parser.Snapshot().PeakBytes - 1);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+        {
+            using SvgRoot attempt = SvgRootParser.Parse(input, options.Limits, deniedMemory, options.FontSnapshot, CancellationToken.None);
+        }).ErrorCode);
+        Assert.Equal(0, deniedMemory.Snapshot().CurrentBytes);
+        RenderBudget deniedWork = new(maximumBytes);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+        {
+            using SvgRoot attempt = SvgRootParser.Parse(input, options.Limits, deniedWork, options.FontSnapshot, new(parserWork - 1), CancellationToken.None);
+        }).ErrorCode);
+        Assert.Equal(0, deniedWork.Snapshot().CurrentBytes);
+        using (SvgRoot retry = SvgRootParser.Parse(input, options.Limits, parser, options.FontSnapshot, CancellationToken.None))
+            Assert.Equal(expectedGeometryCount, retry.Geometries.Length);
+        Assert.Equal(0, parser.Snapshot().CurrentBytes);
+        Assert.Equal(unchanged, input);
+    }
+
     internal static void ReleasesAfterFailures(SvgRoot scene, SvgRenderOptions options, long maximumBytes, string expectedRgbaSha256)
     {
         RenderBudget measured = new(maximumBytes);

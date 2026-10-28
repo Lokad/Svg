@@ -142,8 +142,10 @@ original fill contours through placement and paints; see the
 Linear/radial fills and symbol viewport clips retain source bounds through
 placement, output scaling and nested viewports; the
 [native controls](../tests/Research/point-list-source-maps/README.md) preserve
-independent references. Large-coordinate marker poses and own-filter regions
-still have known rendering discrepancies; this correction does not close them.
+independent references. Fixed filter lengths resolve before placement, while
+authored object boxes and padded primitive-region maps retain their coordinate
+domains; see the [filter-region controls](../tests/Research/filter-region-coordinates/README.md).
+Large-coordinate marker poses retain known rendering discrepancies.
 Polygon/polyline point coordinates are bare SVG numbers; CSS length units such
 as px are unsupported in these numeric lists. Coordinates use native float place
 values; overflow (including excessive integer padding) discards the entire point

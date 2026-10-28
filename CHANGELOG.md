@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Resolve fixed filter and translate lengths before placement, retain authored
+  object boxes, and map primitive crops in padded bitmap coordinates. This
+  corrects large-coordinate own-filter output while preserving source-image
+  transform and numerical admission contracts. See the
+  [native controls](tests/Research/filter-region-coordinates/README.md).
+
 - Share source bounds and instance maps between point-list geometry and its
   linear/radial paints. Retain symbol viewport clips through native viewBox
   concatenation and output placement, correcting large-coordinate clipping

@@ -38,6 +38,7 @@ internal readonly record struct SvgFilterBinding(string? ReferenceId, int Resour
     SvgPaintBounds VisualBounds, SvgAffineTransform Transform, SvgViewportLengthBases LengthBases)
 {
     internal bool GroupSource { get; init; }
+    internal SvgPaintBounds? ParameterObjectBounds { get; init; }
     internal string? ClipReferenceId { get; init; }
     /// <summary>Borrows a parser-owned output clip until command emission; sealing clears the reference.</summary>
     internal SvgLeafMaskBinding? OutputClip { get; init; }
@@ -74,7 +75,7 @@ internal sealed class SvgFilterArena : IDisposable
     private bool _disposed;
     private bool _hasPendingClips;
     private SvgFilterArena? _resourceSource;
-    internal bool HasGroupSources { get; private set; }
+    internal bool HasBindings => _bindings.Count != 0;
 
     private SvgFilterArena(RenderBudget budget, ParserWorkCounter work, CancellationToken token, RenderBudget.BudgetReservation owner)
     {
@@ -114,7 +115,6 @@ internal sealed class SvgFilterArena : IDisposable
         int index = _bindings.Count;
         _bindings.Add(new(strings.Copy(id), -1, objectBounds, visualBounds, transform, lengthBases)
         { GroupSource = groupSource, ClipReferenceId = clipId is null ? null : strings.Copy(clipId) });
-        HasGroupSources |= groupSource;
         _hasPendingClips |= clipId is not null;
         return index;
     }
@@ -127,7 +127,6 @@ internal sealed class SvgFilterArena : IDisposable
             return AddBinding(id, binding.ObjectBounds, binding.VisualBounds, binding.Transform, binding.LengthBases, true, null);
         int index = _bindings.Count;
         _bindings.Add(binding with { GroupSource = true, ClipReferenceId = null, OutputClip = null });
-        HasGroupSources = true;
         return index;
     }
 
@@ -245,15 +244,21 @@ internal sealed class SvgFilterArena : IDisposable
         return _bindings[index].OutputClip;
     }
 
-    /// <summary>Identifies a source boundary while the owning scene finalizes its drawing ranges.</summary>
-    internal bool IsGroupSource(int index) => _bindings[index].GroupSource;
+    /// <summary>Borrows the source map while this scene finalizes parameter bounds before sealing.</summary>
+    internal SvgAffineTransform SourceTransformAt(int index)
+    {
+        if (_sealed || _disposed || (uint)index >= (uint)_bindings.Count) throw new InvalidOperationException("Filter source transform is unavailable.");
+        return _bindings[index].Transform;
+    }
 
-    /// <summary>Completes a group source's aggregate bounds before immutable resources are sealed.</summary>
-    internal void SetGroupBounds(int index, SvgPaintBounds objectBounds, SvgPaintBounds visualBounds)
+    /// <summary>Completes each source's parameter bounds, and group aggregates, before sealing.</summary>
+    internal void SetSourceBounds(int index, SvgPaintBounds objectBounds, SvgPaintBounds visualBounds, SvgPaintBounds? parameterObjectBounds)
     {
         if (_sealed || _disposed) throw new InvalidOperationException("Filter construction is closed.");
         _work.Consume(_token);
-        _bindings[index] = _bindings[index] with { ObjectBounds = objectBounds, VisualBounds = visualBounds };
+        SvgFilterBinding binding = _bindings[index];
+        _bindings[index] = binding with { ObjectBounds = binding.GroupSource ? objectBounds : binding.ObjectBounds,
+            VisualBounds = binding.GroupSource ? visualBounds : binding.VisualBounds, ParameterObjectBounds = parameterObjectBounds };
     }
 
     /// <summary>Validates a borrowed local resource ID before sealing, charging work/cancellation without creating a binding.</summary>
