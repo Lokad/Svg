@@ -1,16 +1,14 @@
 # Documentation
 
-Start with the repository [README](../README.md) for installation, API overview
-and build commands. Each document below owns one subject.
+The repository [README](../README.md) covers installation and the API overview.
 
-| Document | Subject |
+| Document | Responsibility |
 | --- | --- |
-| [SVG support](SUPPORT_MATRIX.md) | Public behavior, supported syntax, restrictions, diagnostics and resource policy. |
-| [Rasterization design](RASTERIZATION_DESIGN.md) | Internal pipeline, ownership and numerical invariants. |
-| [Benchmarks](BENCHMARKS.md) | Dated measurements and reproduction conditions. |
+| [SVG support](SUPPORT_MATRIX.md) | Current accepted syntax, restrictions, diagnostics and resource contract. |
+| [Rasterization design](RASTERIZATION_DESIGN.md) | Internal stages, ownership, coordinate domains and numerical invariants. |
+| [Benchmarks](BENCHMARKS.md) | Workloads, measurement method and reproduction. |
 
-Test collections and admission rules live in [tests/README.md](../tests/README.md).
-Capture commands, pixel comparison and the research workflow live in
-[tools/README.md](../tools/README.md); contributor rules live in
-[AGENTS.md](../AGENTS.md). Asset-specific facts stay with test manifests/READMEs;
-release history lives in [CHANGELOG.md](../CHANGELOG.md).
+[Test guidance](../tests/README.md) owns qualification and reference provenance.
+[Developer tools](../tools/README.md) owns capture and probe procedures.
+[AGENTS.md](../AGENTS.md) owns contributor rules; [CHANGELOG.md](../CHANGELOG.md)
+owns release history. Feature evidence stays beside its test collection.

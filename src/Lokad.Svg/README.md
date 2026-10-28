@@ -1,8 +1,8 @@
 # Lokad.Svg
 
 Lokad.Svg converts static SVG to PNG on .NET 10, on Windows and Linux, without
-runtime package dependencies. This development preview implements a bounded SVG
-subset rather than full browser conformance.
+runtime package dependencies. The renderer implements a bounded SVG subset;
+it does not claim full browser conformance.
 
 ```csharp
 using System;

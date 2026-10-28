@@ -7,17 +7,13 @@ and masks, embedded PNGs, static CSS, markers, selected filters and supplied-fon
 labels/text paths. See [supported SVG](docs/SUPPORT_MATRIX.md#supported-svg-subset)
 for the exact boundaries and unsupported outcomes.
 
-Install [Lokad.Svg from NuGet](https://www.nuget.org/packages/Lokad.Svg/0.2.0):
+Install [Lokad.Svg from NuGet](https://www.nuget.org/packages/Lokad.Svg):
 
 ```powershell
-dotnet add package Lokad.Svg --version 0.2.0
+dotnet add package Lokad.Svg --version 0.3.0
 ```
 
 [CHANGELOG](CHANGELOG.md) records release notes.
-
-The development tree targets 0.3.0-preview.1. Ordered font-family lists,
-host-defined generics and expanded TrueType compatibility require that build;
-they are not part of published 0.2.0.
 
 `SvgConverter` provides synchronous and asynchronous output to independently
 owned memory, caller memory or a writable stream. `SvgPreparedDocument` supports
@@ -32,10 +28,12 @@ Qualification covers the [26 upstream documents](tests/Research/upstream-static-
 and focused regressions against frozen Windows/Linux references, plus
 [package and installed-consumer checks](.github/workflows/ci.yml).
 These results establish the declared outputs, not general SVG completeness.
-See [qualification](tests/README.md#qualification) for font evidence and the
-remaining private deployment gate.
+See [qualification](tests/README.md#qualification) for font evidence and
+host-specific deployment checks.
 
 ## Development
+
+Use the SDK pinned in [global.json](global.json).
 
 ```powershell
 dotnet restore --locked-mode
@@ -47,9 +45,7 @@ dotnet pack src/Lokad.Svg/Lokad.Svg.csproj -c Release
 Packages are written to `artifacts/nuget/`. Non-Release packaging is rejected
 unless explicitly enabled for troubleshooting.
 
-Normal build plus complete tests took about one minute on Windows and four on
-Linux in the qualified local runs. Tests, browser tooling and benchmarks are
-used only for development.
+Tests, browser tooling and benchmarks are used only for development.
 
 Run allocation and throughput benchmarks with:
 
@@ -57,7 +53,7 @@ Run allocation and throughput benchmarks with:
 dotnet run -c Release --project benchmarks/Lokad.Svg.Benchmarks
 ```
 
-[BENCHMARKS](docs/BENCHMARKS.md) records measured results and reproduction conditions.
+[BENCHMARKS](docs/BENCHMARKS.md) describes workloads and measurement conditions.
 [RASTERIZATION_DESIGN](docs/RASTERIZATION_DESIGN.md) explains the renderer;
 [Tests and provenance](tests/README.md) describes regression collections and admission.
 The [documentation index](docs/README.md) maps the remaining guides.

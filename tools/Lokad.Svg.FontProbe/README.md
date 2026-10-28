@@ -30,8 +30,7 @@ generic-family mappings supply `SvgFontSelectionPolicy` explicitly when creating
 a font snapshot or prepared document. The probe does not discover mappings or
 read an adjacent host-policy file automatically. Family lists retain authored
 order; coverage-based selection uses only supplied programs.
-Ordered family lists, generic mappings and the expanded TrueType behavior here
-describe the 0.3.0-preview.1 development build; use its matching host and library.
+Use the probe built with the same Lokad.Svg library as your application.
 Programs follow the renderer's [bounded text/font subset](../../docs/SUPPORT_MATRIX.md#text-and-fonts),
 including admitted pair lookup/GDEF filters; actual mark positioning remains unsupported.
 Catalog aliases do not enable another program's source-font raster policies.

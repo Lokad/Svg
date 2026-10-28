@@ -1,757 +1,361 @@
 # SVG support
 
-Lokad.Svg renders a subset of static SVG to PNG on .NET 10, on Windows and Linux,
-without runtime package dependencies. This document describes the current
-implementation. It does not claim full SVG or browser conformance.
-
-This matrix covers the 0.3.0-preview.1 development tree. Published 0.2.0 has a
-narrower font boundary; see [release notes](../CHANGELOG.md).
-
-Scripts/events, animation, a mutable DOM, foreignObject HTML and arbitrary external
-documents are unsupported. Rendering does not discover filesystem/network resources.
+Lokad.Svg converts a bounded subset of static SVG to PNG on .NET 10, on Windows
+and Linux, without runtime package dependencies. This is the current support
+contract; it does not imply full SVG, CSS or browser conformance.
 
 ## Supported SVG subset
 
-| Area | Supported behavior |
+| Area | Accepted features |
 | --- | --- |
-| Documents and instances | Root/nested `svg`, `g`, `a`, `defs`, `symbol` and local `use`; forward definitions, aliases, inherited presentation, viewBox/aspect maps and viewport clipping. |
-| Conditional groups | `switch` selects its first child without `systemLanguage` under an empty locale set; selection ends with that switch. `requiredFeatures` and `requiredExtensions` are unsupported. |
-| Geometry | Rectangles and rounded rectangles, circles/ellipses, lines, polygons/polylines, and line/quadratic/cubic/arc paths; nonzero/even-odd compound fills. |
-| Transforms | Composed translation, rotation, skew, reflection and nonuniform affine scaling through groups, viewports and local instances. |
-| Strokes | Solid, linear/radial-gradient and pattern strokes; fractional widths, ordinary/non-scaling strokes, caps/joins, miter limits, finite dashes/offsets and pathLength normalization. |
-| Paints | Solid colors, linear/radial gradients and bounded repeating patterns; independent fill/stroke opacity and paint order. |
-| Composition | Nested element/group opacity, clip paths and alpha/luminance masks; local/forward references, resource transforms and object-box/user-space units. |
-| Embedded images | Base64 data-URI PNGs, affine placement, aspect alignment, clipping, masking and opacity. |
-| Static CSS | Embedded stylesheets, presentation attributes and inline styles; the selector/property subset below, cascade, inheritance and `!important`. |
-| Markers | Local start/mid/end markers on lines, point lists, paths and instances, with vector/group/use content and inherited presentation. |
-| Filters | Blur, offset, flood, over/in composite, merge, normal/multiply/screen blend and drop shadow, with bounded intermediate surfaces. |
-| Text | Supplied-font labels, nested spans and text paths; positioning, anchors, spacing, fitted glyphs, fill/stroke paints and solid decorations. |
+| Structure | Root/nested `svg`, `g`, `a`, `defs`, `symbol`, local `use`, forward references and conditional `switch`. |
+| Geometry | Rectangles/rounded rectangles, circles/ellipses, lines, polygons/polylines, line/quadratic/cubic/arc paths and compound fills. |
+| Placement | Translation, rotation, skew, reflection, nonuniform affine maps, viewBox/aspect maps and viewport clips. |
+| Paint | Solid colors, linear/radial gradients, bounded repeating patterns, fill/stroke opacity and paint order. |
+| Composition | Group opacity, clip paths, alpha/luminance masks, markers and the filter primitives below. |
+| Content | Embedded base64 PNGs, static CSS and supplied-font labels/spans/text paths. |
 
-The restrictions below are part of this support boundary. Supported elements do
-not imply that every SVG attribute, CSS property or resource combination is
-implemented. Unsupported visible behavior reports `UnsupportedFeature`;
-malformed input, unresolved resources and exceeded limits have separate
-[error categories](../src/Lokad.Svg/SvgErrorCode.cs).
+Scripts/events, animation, a mutable DOM, `foreignObject` HTML, perspective and
+arbitrary external documents are unsupported. Conversion does not fetch resources
+or discover machine fonts. Unsupported visible behavior reports
+`UnsupportedFeature`; malformed input, unresolved references and exceeded limits
+have distinct [error categories](../src/Lokad.Svg/SvgErrorCode.cs).
 
 ### Diagnostics
 
-`SvgException.SourceDiagnostic` identifies the element/ID, offending attribute or
-property/value and one-based XML line/column where captured. Retained text keeps
-its original location; direct local text instances also identify the referencing
-element ID. Unavailable fields are empty/null, and diagnostic strings are bounded
-to 256 UTF-16 code units. Errors retain their existing categories and report one
-failure; this is not a whole-document validation API.
+`SvgException.SourceDiagnostic` carries available element/ID, attribute or property,
+value and one-based XML location. Retained text keeps its source location; direct
+text instances also identify their referencing element. Unavailable fields are
+empty/null; strings are bounded to 256 UTF-16 code units. One failure is reported.
 
-`FontDiagnostic` includes requested family/weight/italic, selected face and
-fallback status when known. Missing glyphs identify the Unicode scalar and its
-zero-based scalar index in the normalized layout run before ligature substitution.
-That index is independent of UTF-16 indices and original XML character positions.
-Explicit snapshots still require prepared requests; catalog selection and
-caller-controlled fallback retain their existing behavior.
+`FontDiagnostic` identifies the requested family/weight/style, selected face and
+fallback when known. Missing-glyph indices count Unicode scalars in normalized
+layout text, independently of UTF-16 and original XML character indices.
 
 ### Document sizing and inspection
 
-`SvgConverter.InspectDimensions` reports the CSS-resolved width/height, viewBox
-and aspect mapping, logical viewport and dimension/fallback provenance. It reads
-bounded XML/CSS without preparing fonts, geometry, images or raster surfaces.
-Inspection does not assert that every drawing feature is supported. Output scale
-and raster caps do not restrict logical metadata; parsing limits still apply.
+Root lengths accept numbers, px/in/cm/mm/pt/pc and percentages. With neither
+dimension, the default is 300×150, including with a viewBox. One dimension uses
+the viewBox ratio, or the other axis's default without a viewBox. Percentages use
+the caller viewport or the corresponding 300/150 base. A caller viewport replaces
+absent/absolute root dimensions. Supported CSS, including later rules, participates
+in sizing; winning root `auto`/`inherit` dimensions resolve as 100%.
 
-`SvgRasterBounds`, supplied through the six-argument `SvgRenderOptions`
-constructor, opts into maximum raster width, height and/or pixel count. At least
-one positive bound is required. `GetRasterSize(outputScale, bounds, limits)` plans
-the same output without fonts or raster allocation. A uniform scale no greater
-than `OutputScale` fits those bounds and the hard raster limits; logical sizing,
-percentages, viewBox and clipping remain unchanged. Bounds never request upscaling.
-OutputScale changes raster density; changing SVG width/viewBox changes layout.
-Integer dimensions use nearest rounding away from zero, at least one pixel per
-axis, with conservative scale reduction when the rounded product exceeds a cap.
-An empty physical viewport clip still paints no content in that minimum canvas.
-Without bounds, existing excessive-output failures remain. Memory/work and
-intermediate/output limits remain failures rather than triggering a smaller retry.
+Child percentages use the logical viewport, or viewBox user-space dimensions.
+Nested viewports keep their own percentage bases, aspect mapping and physical
+clips. Raster scaling does not change logical layout or those bases.
 
-Root dimensions accept bare numbers, px/in/cm/mm/pt/pc and percentages. Both
-missing dimensions use 300×150, including with a viewBox. A single dimension uses
-the viewBox ratio when present, or the other axis's default when absent. Percentages
-use an explicit viewport or the corresponding 300/150 fallback base. The existing
-caller viewport overrides absent/absolute root dimensions. Supported CSS applies
-before this resolution, including later embedded rules. Winning root CSS `auto`
-and `inherit` dimensions resolve as 100%, replacing XML dimensions. Unsupported
-sizing units fail rather than silently defaulting.
+`InspectDimensions` reads bounded XML/CSS and returns resolved dimensions,
+viewBox/aspect mapping and sizing provenance without preparing fonts, geometry or
+images. It does not validate every drawing feature. Its `GetRasterSize` method
+plans output using the same sizing rules.
 
-Child percentage lengths use the resolved logical viewport when there is no
-viewBox, including when a caller viewport overrides root dimensions. A viewBox
-supplies its own user-space percentage bases; raster scaling does not change them.
+`SvgRasterBounds` optionally caps raster width, height and/or pixels. At least one
+bound must be positive. Bounds can reduce `OutputScale` uniformly; they do not
+change layout or retry memory/work failures at a smaller size. Pixel dimensions
+round to nearest, away from zero, with a one-pixel minimum and conservative cap
+enforcement. An empty physical clip still paints nothing. Excessive output without
+bounds, and excessive intermediate surfaces, fail explicitly.
 
 ### Geometry and strokes
 
-Geometry retains authored curves through affine placement and stroke construction.
-Fill and stroke paints may differ. Butt/round/square caps, miter/round/bevel joins,
-dash phase and non-scaling widths apply through admitted local instances.
-Dashed non-scaling strokes on lines, circles and curved paths do not support
-rotation or shear. Dashed gradient line strokes require uniform scaling; ordinary
-solid dashed strokes retain their separate affine support.
-All-zero dash lists render as solid strokes; zero-length dashes with positive
-gaps retain their ordinary cap-dependent behavior.
-Dash placement follows authored endpoint order on horizontal and vertical lines.
-Rectangular clips and viewports clip the full painted width of lines, including
-strokes whose centerline lies just beyond an edge.
-Rectangles support dashed solid/gradient/pattern strokes; zero-size rectangles
-paint nothing. Line endpoints accept finite fractional bare-number/px values;
-percentage endpoints and other endpoint units are unsupported.
-Retained rectangle shader strokes preserve the direct frame coverage through
-fractional widths, instance placement and output scaling. Shared lowering keeps
-fill/stroke coordinates and clip/mask/filter composition; see the
-[instance](../tests/Lokad.Svg.Tests/SvgRectangleShaderInstanceTests.cs) and
-[context](../tests/Lokad.Svg.Tests/SvgRectangleShaderContextsTests.cs) regressions.
-Sharp rectangle fills keep native rectangle coverage beside shader strokes;
-retained rectangle drawing bounds round in source space before opacity-layer
-placement. [Overlap regressions](../tests/Lokad.Svg.Tests/SvgRectanglePaintOverlapTests.cs)
-and [native references](../tests/Research/rectangle-paint-overlap/capture.json)
-cover combined paints, instances, opacity and masks.
-Single-zero-radius rectangles retain their path start and primitive drawing
-bounds. Symbol linear paints compose retained source and instance maps; see
-the [paint cases](../tests/Lokad.Svg.Tests/SvgZeroRadiusPaintTests.cs) and
-[native references](../tests/Research/zero-radius-paints/capture.json).
-Thin gradient and pattern path strokes share the native hairline traversal with
-solid strokes while retaining shader sampling and blend arithmetic. The
-[material regressions](../tests/Lokad.Svg.Tests/SvgShaderHairlineTests.cs) and
-[browser references](../tests/Research/shader-hairlines/capture.json) cover
-alpha conversion, curves, instances, masks and CPU bitmap seams.
-Inherited and own rectangular clips surround isolated opacity groups; inner
-clips retain their separate child-paint ordering. Forward rectangular clips preserve
-partial-opacity layers through a bounded command rebuild. The
-[composition regressions](../tests/Lokad.Svg.Tests/SvgInheritedClipIsolationTests.cs)
-and [native images](../tests/Research/inherited-clip-isolation/capture.json)
-cover overlapping fills/strokes, own clips, instances and masks.
-The [own-clip cases](../tests/Lokad.Svg.Tests/SvgOwnClipIsolationTests.cs) and
-[native images](../tests/Research/own-clip-isolation/capture.json) cover definition
-order, partial opacity and large finite axis bounds without increasing output limits.
-Mask-owned layers retain this clip boundary at full group opacity, including
-single paints and gradient grids. See the [mask cases](../tests/Lokad.Svg.Tests/SvgMaskClipIsolationTests.cs)
-and [native images](../tests/Research/mask-clip-isolation/capture.json).
-Clips containing the complete destination preserve the existing bitmap and
-child-mask shader origins; see the [regressions](../tests/Lokad.Svg.Tests/SvgContainedClipIsolationTests.cs)
-and [native images](../tests/Research/contained-mask-clips/capture.json).
-Omitted circle radii and path data paint nothing. An ellipse with one omitted
-radius copies the other resolved radius; omitting both paints nothing.
-Omitted/empty point lists paint nothing. Repeated and closing vertices, and
-one/two-point lists, follow the same fill/stroke rules for all numeric spellings;
-markers retain the authored vertices. Integer and fractional point lists keep
-original fill contours through placement and paints; see the
-[coverage regressions](../tests/Lokad.Svg.Tests/SvgPointListCoverageTests.cs).
-Linear/radial fills and symbol viewport clips retain source bounds through
-placement, output scaling and nested viewports; the
-[native controls](../tests/Research/point-list-source-maps/README.md) preserve
-independent references. Fixed filter lengths resolve before placement, while
-authored object boxes and padded primitive-region maps retain their coordinate
-domains; see the [filter-region controls](../tests/Research/filter-region-coordinates/README.md).
-Marker poses retain their native canvas stage through source/use transforms,
-viewport clips, opacity and output placement; see the
-[marker controls](../tests/Research/marker-canvas-stages/README.md).
-Polygon/polyline point coordinates are bare SVG numbers; CSS length units such
-as px are unsupported in these numeric lists. Coordinates use native float place
-values; overflow (including excessive integer padding) discards the entire point
-list, including markers and its own filter. Enclosing filters can still process
-transparent child input. Authored syntax and resource limits remain checked; see
-the [numeric regressions](../tests/Lokad.Svg.Tests/SvgPointListNumberTests.cs).
-Point-list drawing bounds follow native integer saturation before enclosing
-placement; [bounds regressions](../tests/Lokad.Svg.Tests/SvgPointListDrawingBoundsTests.cs)
-also cover cached instance and resource controls.
-Path numbers retain explicit signs and equivalent decimal/exponent spellings
-through integer and general geometry routes.
-Numeric syntax recovery retains completed path/clip-path segments; unsupported
-clip commands still reject. ASCII SVG whitespace and contextual commas do not
-erase missing coordinates.
-Polygon/polyline lists reject leading, repeated and trailing commas.
+Fills support nonzero/even-odd winding. Strokes support butt/round/square caps,
+miter/round/bevel joins, miter limits, finite dash arrays/offsets, `pathLength`,
+independent paints and ordinary/non-scaling widths. Dashed non-scaling line,
+circle and curved-path strokes reject rotation/shear; dashed gradient line
+strokes require uniform scaling. CSS/inherited vector effects are unsupported.
+Nonuniform symbol mapping of gradient/radial/pattern polygon strokes rejects.
 
-Zero-sized symbol and nested SVG viewports have no source pixels and need no child
-font programs. Ordinary `use` targets retain their geometry when use dimensions
-are zero. Filters on a use instance or ancestor may generate paint from empty
-sources; masks on that output still need their fonts. See the
-[empty-viewport regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.EmptyViewports.cs).
-Root and nested viewports preserve their own percentage bases, aspect maps and
-physical clips. Instance presentation follows authored/inherited precedence;
-referencing an alias excludes the source's ancestors. Missing/cyclic references
-have categorized failures. Perspective transforms are unsupported.
-Symbol viewport clips preserve glyph coverage through fractional placement;
-see the [supplied-font regressions](../tests/Lokad.Svg.VisualTests/SvgGlyphViewportClipTests.cs).
-Zero scale factors and singular pattern transforms report `UnsupportedFeature`.
-Root and direct nested viewports support omitted/hidden overflow. Nested SVGs
-reject inline `style` attributes; stylesheets can supply supported declarations.
-Symbols reject the XML `overflow` attribute but accept CSS `overflow:hidden`.
-Nested SVGs inside retained symbol/pattern content are unsupported.
-Named shader sources copied outside hidden ancestors inherit visibility from
-their instance; their own visibility declarations still apply. See the
-[source replay tests](../tests/Lokad.Svg.Tests/SvgSourceVisibilityTests.cs).
-An omitted or empty href leaves a use element without source geometry; an empty
-href takes precedence over xlink:href. Its own filter can still generate output
-over transparent input. Placement lengths and actual child content retain the
-ordinary validation and limits.
-Percentage rectangle positions, dimensions and corner radii resolve in each
-instance's viewport, including nested viewBox and symbol instances.
-An owning use clip follows its x/y placement and enclosing transforms. It binds
-after the instance supplies its real geometry bounds; see the
-[placement regressions](../tests/Lokad.Svg.Tests/SvgUseClipPlacementTests.cs).
-Transform lists accept whitespace or comma separators between functions.
-Length numbers and units form one contiguous token; SVG transform arguments are
-bare numbers and do not accept CSS length units. Coordinates must remain finite
-after native float parsing; failures retain the offending element and attribute.
-See [transform boundary tests](../tests/Lokad.Svg.Tests/SvgTransformBoundaryTests.cs).
-SVG transform function names and SVG-specific enumeration values, including
-spreadMethod and preserveAspectRatio, retain their literal case.
-ViewBox, transform, text-position and dash lists retain required values around
-commas; leading, repeated and trailing commas reject during tokenization.
+All-zero dash lists use a solid stroke; zero-length dashes with positive gaps
+retain cap behavior. Dash placement follows authored endpoint order. Zero-size
+rectangles paint nothing. Missing circle radii/path data and empty point lists
+paint nothing; an ellipse copies its one supplied radius to the missing axis.
+Repeated/closing vertices and one/two-point lists retain ordinary stroke/marker
+rules. Whitespace-only paths remain subject to input/work limits.
 
-For rendered groups referenced by `use`, source-group opacity isolation, clips
-or masks on the referenced group, and nested viewport content are unsupported.
+Line endpoints accept fractional numbers/px, not percentages or other units.
+Polygon/polyline coordinates and transform arguments are bare SVG numbers.
+Point-list native-float overflow discards the whole list, its markers and its own
+filter; ancestor filters can still process transparent input. Syntax and resource
+limits remain checked. Path numeric recovery retains completed segments;
+unsupported clip commands reject. Missing coordinates and invalid commas do not
+become valid through whitespace normalization.
+
+### Documents and instances
+
+Local references exclude the source's ancestors and preserve instance inheritance.
+
+`switch` uses an empty locale set and selects its first child without
+`systemLanguage`; selection is local to that switch. `requiredFeatures` and
+`requiredExtensions` reject.
+
+Missing/cyclic references fail explicitly. An absent/empty `href` supplies no use
+geometry; empty `href` takes precedence over `xlink:href`, while its own filter can
+still generate output. Zero use dimensions preserve ordinary geometry targets;
+zero symbol/nested-viewport dimensions remove source pixels and child font needs.
+
+Root/direct nested viewports accept omitted/hidden overflow. Nested SVG rejects
+inline styles; stylesheets may supply supported declarations. Symbols reject the
+XML `overflow` attribute but accept CSS `overflow:hidden`. Nested SVG inside
+retained symbol/pattern content is unsupported. Rendered group `use` sources do
+not support source-group opacity isolation, clip/mask bindings or nested viewports.
+Zero scale factors and singular pattern transforms reject.
 
 ### Gradients and patterns
 
-Pattern aliases with local element children use that local content, including
-empty, descriptive and foreign elements. Childless aliases and aliases containing
-only text nodes or comments inherit their parent's content. Sources selected only
-through an overridden template need no font programs; see the
-[override regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.PatternOverrides.cs).
+Gradients accept object-box/user-space units, affine maps, local templates,
+pad/repeat/reflect spread and sRGB interpolation. Stops retain hard/flat ranges
+and syntax-dependent alpha precision. Degenerate paints use terminal pad colors
+or periodic mean colors. Empty paint servers suppress only their own channel;
+independent strokes, markers and effects remain active.
 
-Linear and radial gradients support objectBoundingBox/userSpaceOnUse units,
-affine gradient transforms, local templates, pad/repeat/reflect spread and sRGB
-color interpolation. Degenerate factories use terminal pad colors and periodic
-mean colors, including flat stop offsets; see the
-[factory controls](../tests/Research/gradient-factory-colors/README.md).
-Normal gradients also support coincident and flat stop ranges, preserving hard
-color boundaries and native float stop preparation; see the
-[stop controls](../tests/Research/gradient-stop-preparation/README.md).
-Solid and gradient paints retain syntax-dependent native alpha precision alongside
-their byte colors. [Color controls](../tests/Research/gradient-color-alpha/README.md)
-and [solid-paint controls](../tests/Research/solid-paint-alpha/README.md) retain
-exact cases and remaining differences. Text element opacity encloses its glyph,
-stroke and decoration drawing, including clipped and deferred text-path runs.
-Radial paints include contained focal circles and zero-radius
-foci on the outer circle; outside foci and tangential nonzero focal circles remain
-unsupported. Gradient
-templates inherit coordinates independently of units, spread and the local map;
-a child's transform replaces the parent's map before placement. Cross-kind
-templates share stops and common attributes; the child's kind supplies its default
-vector. Declared radial focal fields survive replacement of the center/radius;
-focal coordinates absent throughout the chain follow the effective center. These
-rules apply to shape/text fills and strokes and admitted resource/instance replay; see the
-[template regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.GradientTemplateMaps.cs).
-Circle, ellipse and rounded-rectangle fills retain their linear paint's source
-coordinates through affine shape and gradient maps, including resource and local
-instance placement; see the [shape source-map controls](../tests/Research/linear-shape-source-maps/README.md).
-Radial paints retain reflected source axes in both unit systems through shape, instance
-and resource placement; see the [radial axis controls](../tests/Research/radial-axis-source-maps/README.md).
-CSS `display:none` on a gradient or its defining `defs` makes its local stops
-unavailable. An alias with local stops can still paint; an alias borrowing those
-unavailable stops stays empty. Gradient coordinates remain available for attribute
-inheritance. Empty fills retain independent strokes and effects.
-Patterns support both tile/content unit
-systems, viewBox/aspect maps, fractional origins and sizes, affine placement and
-bounded repetition. Tile content may include
-ordered vectors, groups, local uses, opacity, gradients, embedded PNGs, admitted
-filters and supplied-font text.
-Pattern x/y/width/height accept bare numbers and px, with percentages unsupported
-in either unit system. Opacity applies to tile children; the pattern container
-accepts only opacity 1. XML overflow accepts hidden/visible;
-CSS overflow supports hidden only.
-CSS `display:none` on a pattern or its defining `defs` makes the template
-unavailable. A hidden outer group does not disable it. Hidden templates supply no
-inherited dimensions or content; an alias can still paint local children when it
-supplies the required dimensions itself. An alias's own hidden display suppresses
-borrowed visible content too.
-Visible aliases with their own children replace the template content. Inherited paint and visibility
-still apply to tile content; `display:none` on rendered children suppresses them.
-Font preparation uses the same resource display rules for supplied-font tile text.
-Template content, including images, effects and supplied-font text, survives zero
-or omitted base tile dimensions when an alias supplies nonzero effective dimensions.
-Pattern fills/strokes share retained content through instances, fractional
-placement and output scaling, including single-rectangle tiles.
-Pattern sampling retains clip/mask/opacity recording boundaries. Authored
-viewBox transforms and external output scaling can produce distinct native
-pixels; see the [independent comparisons](../tests/Research/pattern-recording/capture.json).
-Nested viewports keep outer opacity separate from their source paints; opacity
-inside the viewport retains its own [native shader behavior](../tests/Research/viewport-recording/capture.json).
-Patterns whose effective tile size stays zero remain inert.
-Empty gradients and inert patterns suppress only their own paint operation.
-The independent fill/stroke, markers and effects remain; validation and source
-bounds still apply through admitted instances and resources. See the
-[paint-independence regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.InertPaintServers.cs)
-and [supplied-text checks](../tests/Lokad.Svg.VisualTests/SvgSuppliedFontLabelTests.cs).
-Unavailable paint resources also need no text fonts when no glyph advance or
-enclosing filter depends on their metrics. Solid span overrides, independent
-strokes/decorations and subsequent text keep their font dependencies. See the
-[inactive-text regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.InactiveTextPaint.cs).
-Local instances resolve paint resources independently of source/use/resource
-declaration order, including paints inherited from the consuming container. See
-the [ordering regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.InstancePaintOrder.cs).
-Pattern fills/strokes authored on zero-sized rectangles, circles or ellipses and
-empty paths do not activate tile fonts; live consumers of the same paint still do.
-See the [empty-target tests](../tests/Lokad.Svg.Tests/OpenTypeFontTests.EmptyPatternTargets.cs).
-A primitive's explicitly zero fill/stroke opacity or stroke width also leaves
-that pattern channel inactive. Live sibling channels and inherited overrides
-retain their fonts; see the [channel tests](../tests/Lokad.Svg.Tests/OpenTypeFontTests.InactivePatternChannels.cs).
-A primitive's own zero opacity, hidden display or hidden visibility also leaves
-its pattern paints inactive. Fill-only lines and linear contours with at most
-two vertices need no tile fonts; strokes and potentially filled contours remain
-independent. See the [primitive tests](../tests/Lokad.Svg.Tests/OpenTypeFontTests.InactivePatternPrimitives.cs).
-Whitespace-only path data draws nothing, retaining authored input/work limits.
-Empty contours remain empty through instance placement; see the
-[mapping regressions](../tests/Lokad.Svg.Tests/SvgEmptyContourMappingTests.cs).
+Radial focal circles must be contained; zero-radius foci may lie on the outer
+circle. Outside foci and tangential nonzero focal circles reject. Templates retain
+declared focal coordinates; absent foci follow the effective center. A child's
+transform replaces its parent's; cross-kind templates share stops/common attributes
+but use the child's default vector.
 
-Current restrictions:
+Gradient restrictions:
 
-- Percentage coordinates in userSpaceOnUse gradients are unsupported, including
-  inherited focal percentages when units change. This includes omitted linear x2
-  (initially 100%) and radial cx/cy/r (initially 50%) unless a same-kind template
-  supplies numeric values. Object-box defaults and complete numeric vectors work.
-- Partial radial center/radius overrides and focal-only template overrides are
-  unsupported. Linear partial vectors cannot override units or borrow another
-  gradient kind's vector; unit overrides without replacement vectors are unsupported.
-- Gradient stops accept literal color/opacity attributes and stop inline styles,
-  with per-property `!important` priority and source order.
-  Stylesheet `stop-color`/`stop-opacity`, gradient resource/stop `currentColor`
-  and gradient-container `color` are unsupported.
-- Gradient interpolation in linearRGB is unsupported; filter operating color
-  spaces have their own rules below.
-- Nested pattern paints and recursive paint/resource dependencies are unsupported.
+- User-space percentages reject, including inherited focal percentages after a
+  unit change. Omitted linear x2 and radial cx/cy/r therefore need numeric values
+  or a same-kind numeric template. Object-box defaults are accepted.
+- Partial radial center/radius and focal-only overrides reject. Partial linear
+  vectors cannot override units or borrow another kind's vector; units cannot
+  change without replacement vectors.
+- Stop color/opacity attributes and inline styles support property priority/order.
+  Stylesheet stop declarations, resource/stop `currentColor`, gradient-container
+  `color` and linearRGB gradient interpolation reject.
+
+Patterns support tile/content unit systems, viewBox/aspect maps, affine placement
+and bounded repetition of vectors, groups, uses, opacity, gradients, PNGs, admitted
+filters and supplied text. Tile x/y/width/height accept numbers/px, not percentages.
+The pattern container accepts only opacity 1; children retain opacity. XML overflow
+accepts hidden/visible; CSS accepts hidden only. Recursive/nested pattern paints reject.
+
+Aliases with local element children use those children, including empty,
+descriptive or foreign elements. Childless/comment/text-only aliases inherit
+content. An alias can replace zero/omitted template dimensions; effective-zero
+tiles remain inert. A hidden template supplies no dimensions/content, while a
+visible alias may supply its own. An alias's own hidden display suppresses borrowing.
 
 ### Clips, masks and composition
 
-Clip paths support rectangles (including rounded rectangles), paths, circles,
-ellipses and restricted local uses, ordered child unions, compound fills,
-user-space/object-box coordinates and affine maps. Clip bindings resolve through
-local instances and forward definitions. Rectangular leaf clips follow the
-target's own and inherited transforms in both definition orders.
-Child unions preserve authored operand order, native winding and cyclic contour
-starts. More than 42 children use painted clip replay with a separate enclosing
-clip, including admitted affine placement. Rectangle children retain rectangle
-paint coverage; equivalent authored paths keep their own coverage. See the
-[native controls](../tests/Research/ordered-clip-coverage/README.md).
-Direct line, polygon, polyline and text children of clip paths are unsupported;
-use equivalent admitted path geometry where applicable.
-Group children and XML transform/fill/opacity attributes on the clipPath container
-are unsupported; admitted child geometry retains its own transforms and clip rules.
-Alpha/luminance masks support ordered vector/text content, clipping, local uses,
-both region/content unit systems and transformed finite regions.
-Text content enters masks through groups or local uses; direct text children
-of a mask are unsupported.
-Unused mask text and explicitly empty mask regions need no font programs; see the
-[reachability regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskReachability.cs).
-Grouped mask text inherits the resource's text style; explicit child declarations
-still override it. See the [inheritance regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskTextInheritance.cs).
-SVG-driven font preparation follows referenced mask text in its resource context;
-see the [discovery regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskDiscovery.cs).
-Declared zero-sized primitives, empty paths, and disabled groups/uses need no mask
-font programs. Visibility overrides and filters that produce output retain their
-mask dependencies; see the [target regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskTargets.cs).
-Self-closing empty groups validate local mask references without constructing mask
-content. Filters on the group can still produce masked output; see the
-[empty-group regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.EmptyGroupMasks.cs).
-Balanced groups containing no source geometry, zero-sized primitives or hidden
-rectangle children also need no mask fonts. A group's own
-filter can generate masked output; an empty filtered descendant supplies no
-geometry bounds to the masked ancestor. Strokes and visible descendants remain
-live; see the [group-source regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.EmptyGroupSources.cs).
-Object-box mask regions require bare-number fractions; user-space regions also
-accept viewport percentages.
-Explicit regions follow uniform masks through instance placement. Source paint
-clips retain fractional poses after enclosure; see the
-[mask-region tests](../tests/Lokad.Svg.Tests/SvgFractionalMaskRegionTests.cs) and
-[browser evidence](../tests/Research/fractional-mask-regions/capture.json).
-For axis-aligned shape targets, spatial mask content must cover an explicit
-object-box region. A smaller content box reports `UnsupportedFeature`.
+Clip paths accept rectangles/rounded rectangles, paths, circles, ellipses,
+restricted uses, ordered child unions, compound winding, both resource units and
+affine maps. Container groups, direct line/point-list/text children and XML
+transform/fill/opacity on `clipPath` reject. A clip-resource `use` must reference
+one contour; plain rectangles and empty/compound sources through that use reject.
+Direct rectangles and compound paths remain supported.
 
-Hidden clip children do not contribute to the silhouette; visibility inherits
-from the resource's own ancestors and can be overridden by a child. Display on
-outer groups does not disable the resource. CSS `display:none` on the clipPath or
-its defining `defs` makes its references contribute no clipping; an empty or hidden
-child instead contributes an empty silhouette. Fill/stroke paint and
-opacity do not suppress raw clip geometry.
-Contained unrounded rectangles retain the containing rectangle's coverage through
-admitted instances/resources and either resource-unit system; see the
-[containment regressions](../tests/Lokad.Svg.Tests/SvgRectangleClipUnionTests.cs).
-Retained group instances bind object-box clips after replay supplies their geometry
-bounds, including when both the group and clip were defined before the instance.
-Likewise, a mask's own CSS `display:none` removes its binding and region; a hidden
-outer group leaves it available. CSS `display:none` on its defining `defs` also
-removes the binding. An empty or hidden mask child remains
-an empty mask, suppressing its target rather than removing the binding.
+Alpha/luminance masks accept ordered vector content, grouped/instanced text,
+clipping, local uses and transformed finite regions. Direct text/image mask
+children reject. Object-box regions require bare fractions; user-space regions
+also accept viewport percentages. Spatial content for an axis-aligned shape must
+cover an explicit object-box region; smaller content boxes reject.
 
-IDs on clip rectangles, rounded rectangles, paths, circles and ellipses remain
-available to ordinary local instances, with authored paint/stroke independent of
-the clip.
-Geometric leaves, local uses and gradient stops accept self-closing or balanced
-XML forms, including inert comments/descriptions. Drawing children remain
-unsupported on those leaves.
+For each element the order is **filter → mask → clip → opacity**. Child clips
+remain inside ancestor effects; group opacity isolates the composed children.
+Object boxes are measured independently of visual/stroke enclosures and clipping.
+Mask text styles come from the resource context, with explicit child overrides.
+Inactive sources need no mask fonts unless layout or generated filter output
+depends on them.
 
-For one element, composition follows **filter → mask → clip → opacity**. A child
-clip remains inside an ancestor's effect. Group opacity isolates the composed
-children rather than multiplying each child's opacity independently.
-Masks on use children inside symbols retain instance placement. Masks on retained
-group containers inside symbols remain unsupported.
-Masked rectangle/path sources require axis-aligned instance placement, including
-inside symbols; a mask on the live rectangle/path `use` supports affine placement.
-Direct masked text, masks on a text `use`, and references to text that already
-carries its mask are admitted. See the
-[mask boundary tests](../tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskBoundaries.cs).
-Explicit `clip-path="none"` and `mask="none"` omit that element's binding; ancestor
-clips and masks still apply.
-At admitted attribute locations, `initial` and `unset` report `UnsupportedFeature`
-for both properties; `mask="inherit"` also rejects. `clip-path="inherit"` uses
-the immediate container's clip or the initial value. Neither property is admitted
-in inline styles or stylesheets. See the
-[subset contracts](../tests/Lokad.Svg.Tests/OpenTypeFontTests.SubsetContracts.cs).
+Masks on uses inside symbols preserve placement, but masks on retained symbol
+group containers reject. Masked rectangle/path sources require axis-aligned
+instance placement; masks on live rectangle/path uses permit affine placement.
+Direct masked text, masked text uses and references to already-masked text work.
 
-Resource attribute/declaration locations have distinct boundaries:
+`clip-path`/`mask` bindings are presentation attributes, not inline/stylesheet
+properties. Explicit `none` removes that element's binding, retaining ancestors.
+`initial`/`unset` reject; mask `inherit` rejects, while clip `inherit` copies the
+immediate container or its initial value. `clip-path` on `clipPath` itself rejects;
+admitted resource children may have their own clips.
 
-- `clip-path` presentation attributes work on admitted rendered/resource children,
-  including path/rectangle children of a clip resource. `clip-path` on the
-  `clipPath` container itself is unsupported.
-- A `use` child inside `clipPath` supports one referenced contour. Plain rectangle
-  instances and empty/compound sources are unsupported; direct rectangles and
-  compound clip paths work.
-- Embedded image targets can be clipped/masked and patterns can contain images,
-  but an `image` child inside a mask is unsupported.
+Resource display is distinct from hidden content:
+
+| Resource with CSS `display:none`, including on defining `defs` | Effect |
+| --- | --- |
+| Gradient | Local stops are unavailable; visible aliases may supply their own. Coordinate inheritance remains. |
+| Pattern | Template dimensions/content are unavailable. |
+| Clip or mask | The binding is omitted; empty/hidden children instead produce empty coverage. |
+| Filter | Filtered output, including SourceGraphic, is suppressed. |
+
+Hidden outer groups do not disable named paint/clip/mask resources. Clip visibility
+inherits through its resource ancestors and admits child overrides; paint/stroke
+opacity does not suppress raw clip geometry. IDs on clip leaves remain usable as
+ordinary painted instances. Geometry leaves, uses and stops allow balanced or
+self-closing XML with inert descriptions/comments, not drawing children.
 
 ### Embedded PNGs
 
-PNG decoding supports non-interlaced 8-bit RGB, RGBA, grayscale, grayscale-alpha
-and indexed images, including tRNS and sBIT when every channel retains eight
-significant bits. Chunk names/reserved bits, ordering, palette/transparency
-relationships, CRCs and bounded decompression are validated. IDAT chunks must be
-consecutive; transparency must precede image data and follow any palette.
-Image placement supports finite geometry/viewBox percentages, meet/slice
-alignments, `preserveAspectRatio="none"` and general affine maps.
-Slice sampling retains its source-pixel window independently of destination
-clipping. Minification preserves decoded-view and picture-sampling precision;
-the [source-view regressions](../tests/Research/image-source-views/README.md)
-cover fractional crops, odd dimensions, alpha and resource consumers.
-Images with absent or empty href values paint nothing.
-Percentages resolve in each instance's viewport, including nested viewBox and
-symbol instances. Omitted image dimensions use the PNG's intrinsic size; if one
-side is specified, the omitted side follows its intrinsic aspect ratio.
-Images ignore inherited and CSS fill/stroke paint; display, visibility and
-element/group opacity still apply.
-Uniform PNGs keep bitmap alpha arithmetic through groups and instances; see the
-[image-opacity regressions](../tests/Lokad.Svg.Tests/SvgUniformImageOpacityTests.cs).
-Affine image edges retain the enclosing viewport's native coverage route; see the
-[symbol-image regressions](../tests/Lokad.Svg.Tests/SvgAffineImageClipTests.cs).
-Referenced images retain source opacity, clips, masks and filters through viewport
-clipping; filters can move source pixels into the viewport before output is clipped.
-Affine filter replay for image sources remains unsupported; ordinary affine image
-placement, clipping and masking are admitted.
+Images accept base64 data-URI, non-interlaced, 8-bit RGB/RGBA/grayscale/gray-alpha/
+indexed PNGs, including valid tRNS and full-eight-bit sBIT. Chunk names/order,
+palette/transparency relationships, CRCs and bounded decompression are validated.
+IDAT chunks must be consecutive; transparency precedes image data and follows
+any palette. Other formats, interlacing, 16-bit/reduced-significance data,
+color-management/orientation conversion and external fetching reject.
 
-Unsupported: interlaced/16-bit PNG, reduced-significance sBIT, color-management or
-orientation conversion, JPEG/GIF/WebP and external image fetching.
+Placement accepts finite viewport-relative percentages, affine maps, meet/slice
+and `preserveAspectRatio=none`. Missing/empty href paints nothing; omitted
+dimensions use intrinsic size/aspect. Fill/stroke do not paint images;
+display/visibility/opacity, clips, masks and source filters still apply. Patterns
+can contain images; masks cannot. Affine filter replay for image sources rejects,
+independently of supported ordinary affine image placement.
 
 ### Static CSS
 
-Selectors include bounded unescaped ASCII SVG element names, IDs and classes,
-id/class presence or exact-equality attribute selectors, selector lists,
-element+ID/class, descendants and children. CSS separators use ASCII whitespace;
-other Unicode characters are retained in identifiers and rejected when outside
-this selector subset. Rules apply through admitted
-root, group, symbol, nested-SVG and resource trees. Specificity, source order,
-inline priority, inheritance and `!important` are implemented.
-Empty, whitespace-only and comment-only stylesheets are no-ops. XML namespace
-declarations on `style` and `defs` elements are accepted.
-CSS comments work in embedded, inline and gradient-stop styles, preserving token
-boundaries and literal text inside quoted strings.
+Selectors include bounded unescaped ASCII element/ID/class names, their presence or
+exact-equality attribute selectors, lists, element+ID/class, descendants and
+children. Specificity, source order, inline priority, inheritance and `!important`
+apply. Empty/comment-only stylesheets are no-ops. Comments preserve token boundaries
+and quoted text; namespace declarations on style/defs are accepted.
 
-Declarations cover color/fill/stroke and their opacity, stroke width/caps/joins/
-miter/dashes, display/visibility/opacity, fill-rule/clip-rule, paint-order, filter,
-marker properties, overflow, root width/height and the text/font properties
-listed below. Each property retains its target/value restrictions; this is not a
-general CSS declaration parser. `paint-order` accepts normal or distinct
-fill/stroke/markers lists, appending omitted operations.
-`pathLength` is an XML number attribute, not a CSS property; declarations in
-inline styles or stylesheets report `UnsupportedFeature`.
-CSS width/height declarations on rectangles and embedded images report
-`UnsupportedFeature`; use XML dimension attributes on these elements. Dimension
-declarations on nonapplicable targets do not affect rendering.
-Declaration admission depends on its target and location; see the
-[location contracts](../tests/Lokad.Svg.Tests/OpenTypeFontTests.SupportLocations.cs).
-On root/group/symbol/pattern containers, XML `color-interpolation-filters` is
-unsupported; CSS accepts only the inert default linearRGB. Set filter operating
-color spaces on the filter or its primitives.
-Solid colors and paint keywords ignore surrounding ASCII whitespace in attributes and
-CSS; literal color limits apply to the authored token before normalization.
-Non-ASCII whitespace remains part of scalar tokens; unsupported values reject
-instead of becoming different colors, numbers or keywords, including font
-presentation attributes and gradient-stop declarations. Unquoted family identifiers,
-quoted family names and local references retain their Unicode characters; family
-names containing non-ASCII whitespace do not become CSS global keywords.
-Filter-region lengths and marker orientations check the complete authored value
-against the 256-character scalar limit before trimming padding or units.
-Local `url(...)` function names and the filter `none` keyword ignore ASCII case;
-referenced identifiers keep their case.
-Local URL and href fragments decode UTF-8 percent escapes once, including template
-references, text paths and font-resource discovery. Literal Unicode remains
-unchanged; malformed escapes, invalid UTF-8 and encoded ASCII whitespace reject.
-Gradient templates select the same escaped IDs before and after target declarations;
-see the [deferred-reference regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.DeferredFragments.cs).
-Local URLs accept surrounding padding and trailing ASCII URI whitespace. Leading
-whitespace inside a quoted URI and ASCII whitespace within its fragment reject;
-they do not bind a different identifier after trimming.
-Comma-separated RGB/RGBA channels must use either numbers or percentages
-throughout; modern space-separated channels may mix them. Modern RGB/RGBA and
-HSL/HSLA function aliases accept an optional slash-separated alpha value.
-`color:currentColor` uses the inherited color. Fill/stroke `currentColor` resolves
-against each element's own color, including after inheritance and local instancing.
+Properties cover paint/color/opacity, strokes/dashes, fill/clip rules, display/
+visibility, paint order, filter, markers, overflow, root sizing and the typography
+below. Admission depends on target/location; [location contracts](../tests/Lokad.Svg.Tests/OpenTypeFontTests.SupportLocations.cs)
+define those exceptions. `pathLength` is XML-only. Rectangle/image CSS width/height
+reject; use XML attributes. Container XML `color-interpolation-filters` rejects;
+container CSS accepts only inert default linearRGB. Filter/primitive declarations
+select operating spaces.
 
-`display` accepts inline, block, none and explicit inherit. Inherit copies the
-logical parent's own display, including during local source replay; an omitted
-display, initial or unset uses inline. Ancestor suppression remains cumulative.
-The root inherits inline. Marker definitions retain their own display for child
-inheritance even though their own display does not suppress marker painting.
-Existing element/attribute location restrictions still apply; see the
-[display regressions](../tests/Lokad.Svg.Tests/SvgDisplayInheritanceTests.cs) and
-[prepared text checks](../tests/Lokad.Svg.Tests/OpenTypeFontTests.DisplayInheritance.cs).
+`paint-order` accepts normal or distinct fill/stroke/markers lists, appending
+omitted operations. `display` accepts inline/block/none/inherit; omitted/initial/
+unset use inline, ancestor suppression is cumulative, and root inherit is inline.
+`currentColor` resolves against each element's effective color; `color:currentColor`
+uses inherited color. Comma RGB/RGBA channels must all be numbers or percentages;
+space syntax may mix them. RGB(A)/HSL(A) aliases accept slash alpha.
 
-Unsupported: imports, media/supports rules, pseudo-classes/elements, sibling
-selectors, layout, variables, animation and web fonts. The resource declaration
-exceptions above also apply. `vector-effect="non-scaling-stroke"` is an SVG
-attribute; CSS/inherited vector effects are unsupported.
+Token rules:
+
+- SVG separators/padding use ASCII whitespace; non-ASCII characters retain their
+  meaning and cannot normalize into another number, keyword or family.
+- Length numbers and units form contiguous tokens. Lists retain required values
+  around commas and reject leading/repeated/trailing commas. Transform functions
+  may be comma/whitespace separated; SVG function/enumeration names retain case.
+- Scalars and inline property values have a 256-character authored bound, checked
+  before trimming. Gradient stop/color limits retain their authored tokens.
+- Local href/URL fragments decode UTF-8 percent escapes once; malformed escapes,
+  invalid UTF-8 and encoded ASCII whitespace reject. URL function names and filter
+  `none` ignore ASCII case; identifiers do not. Surrounding/trailing URI padding is
+  accepted, but leading whitespace inside quoted URIs and fragment whitespace reject.
+
+Imports, media/supports rules, pseudo selectors, sibling selectors, layout,
+variables, animation and CSS web-font acquisition are unsupported.
 
 ### Markers and filters
 
-Markers support userSpaceOnUse/strokeWidth units, refX/refY, finite dimensions,
+Markers accept user-space/stroke-width units, refX/refY, finite dimensions,
 viewBox/aspect maps, fixed/auto/auto-start-reverse orientation and hidden/visible
 overflow. Lengths include absolute units, known-axis percentages and em/ex from
-supplied font metrics. Paint/visibility and stroke presentation inherit through
-marker content. Local gradient and pattern paints may follow the marker and its
-rendered host; deferred children retain inherited fills. See the
-[binding regressions](../tests/Lokad.Svg.Tests/SvgMarkerPaintBindingTests.cs) and
-[browser evidence](../tests/Research/marker-paint-binding/capture.json).
-A marker's display property does not suppress its content;
-a symbol's `display:none` does suppress its instances. CSS `display:none` on a
-marker's defining `defs` prevents its activation, including ex metric requests.
-Ordinary local use targets remain available inside hidden `defs`.
-strokeWidth markers honor non-scaling strokes through instance and viewport
-placement; pattern tiles retain their separate source coordinates. At extreme
-transforms, these drawings can paint nothing when native visual bounds collapse.
-Their object bounds and eligibility for source-independent filters remain. See the
-[marker sizing regressions](../tests/Lokad.Svg.Tests/SvgNonScalingMarkerTests.cs).
-Unstroked lines still paint their start/end markers through instances and resource
-content. Marker definitions may follow retained symbol paths and local uses; fragment
-identifiers decode once. See the
-[line-marker regressions](../tests/Lokad.Svg.Tests/SvgLineMarkerTests.cs) and
-[captured inputs](../tests/Research/line-marker-instances/capture.json).
+supplied metrics. Content inherits paint/stroke/visibility and may use local
+gradient/pattern paints. Unstroked lines still paint markers. A marker's own
+display does not suppress its content; display-none defining defs prevents
+activation. Symbol display-none suppresses instances. Extreme transforms may
+collapse visual bounds without removing object bounds/filter eligibility.
 
-Supported filter primitives are `feGaussianBlur`, `feOffset`, `feFlood`,
-`feComposite` over/in, `feMerge`, `feBlend` normal/multiply/screen and
-`feDropShadow`. Filters support SourceGraphic, SourceAlpha, earlier local results,
-filter/primitive regions, both unit systems, sRGB/linearRGB operating spaces and
-local CSS filter references. Intermediate surfaces and primitive work are bounded.
-Floods retain functional-color alpha separately from the public byte-color value
-and combine it with flood opacity before graph evaluation. Uniform paint,
-sampled images and final color transfer preserve their separate rounding stages;
-[native controls](../tests/Research/filter-uniform-precision/README.md) cover
-graph arithmetic, crops, opacity and affine restoration, preserving historical
-captures separately from their current resolution status. Enclosing opacity
-layers apply alpha after sampling/crop coverage and retain their own destination
-bounds; [focused controls](../tests/Research/filter-opacity-sampling/README.md)
-cover those boundaries and active instance consumers.
-Requested source-image sampling bounds remain separate from scratch allocation
-and captured content. Retained image transforms preserve operating-space changes;
-merge draws apply color transfer before edge coverage and use their destination
-clip. [Source/composition controls](../tests/Research/filter-merge-image-draw/README.md)
-cover affine, fractional, supplied-font and resource consumers, while the
-[historical corpus](../tests/Research/filter-source-composition/README.md) retains
-individual periodic checks with unchanged native references.
-User-space source drawings share their owning filter's layer transform; clip
-geometry and fitted device-space glyphs retain their separate maps. The
-[recording controls](../tests/Research/filter-source-recording-map/README.md)
-retain neutral and fractional ellipse coverage alongside transformed curves.
-[Source coverage controls](../tests/Research/filter-source-coverage/README.md)
-distinguish cropped aliases, effective-zero axes, small-blur materialization and
-source-image hint rounding before fractional displacement.
-Graph evaluation retains requested image subsets, captured source and native image
-hints separately from available storage. Nested capture includes child output;
-rescaled kernels use the captured subset.
-Pending color and sampled offsets survive image-free aliases; crops and blur
-materialization resolve them at their consuming stage. Shader sampling and image
-drawing retain separate edge coverage. The
-[stage boundary controls](../tests/Research/filter-stage-boundaries/README.md)
-cover these distinctions and preserve naturally unequal compact/expanded shadows.
-CSS `display:none` on the filter or its defining `defs` suppresses the filtered
-output, including its source. It does not restore the unfiltered drawing.
-See the [definition display tests](../tests/Lokad.Svg.Tests/SvgDefinitionDisplayTests.cs)
-and [font acquisition checks](../tests/Lokad.Svg.Tests/OpenTypeFontTests.DefinitionDisplay.cs).
-An element suppressed by its own or an ancestor's `display:none` does not activate
-filters. Visible elements with no fill or transparent paint can still produce
-filter output, such as a flood.
-Zero-sized rectangles/circles/ellipses and images without a usable source suppress
-their own filters. An enclosing group or use can still filter transparent child input.
-Empty groups also run their filters over transparent input, including self-closing
-groups; display suppression and zero object-box filter regions still paint nothing.
-Paintless paths, lines and nonempty point lists retain source bounds for ancestor
-filters, including move-only paths and zero-length lines. Zero-sized basic shapes
-and images without a usable source do not enlarge ancestor object boxes.
-A referenced filter with no primitives produces empty output. This differs from
-an absent/none filter, which preserves the source graphic.
-Offscreen source geometry does not suppress visible output generated by a filter.
-Filtered lines retain their full stroke bounds through target placement and local
-instances.
-`feDropShadow` supports deviations up to 135 device pixels on each axis after
-mapping and float rounding; transforms and output scale affect this limit.
-Larger shadow deviations fail with `UnsupportedFeature`. `feGaussianBlur` uses
-rescaling for larger deviations and saturates at 532 device pixels per axis.
+Filters accept `feGaussianBlur`, `feOffset`, `feFlood`, `feComposite` over/in,
+`feMerge`, `feBlend` normal/multiply/screen and `feDropShadow`. Inputs are
+SourceGraphic, SourceAlpha or earlier exact result names. Both unit systems,
+primitive/filter regions, local CSS references and sRGB/linearRGB spaces work.
+Result/input names retain case and whitespace; missing/forward/cyclic references
+fail explicitly. Intermediate surfaces and work are bounded.
 
-Unsupported: backdrop inputs, external filter images, displacement, turbulence,
-lighting, morphology, convolution, arithmetic composite, other blends,
-backdrop-filter and CSS filter-function lists. Recursive effects and
-forward/missing result names have categorized failures.
-Filter result/input names retain exact case and whitespace. Only built-in inputs
-and earlier exact result names resolve; unmatched names are unsupported.
+Flood color alpha combines with flood opacity. Cropping, image sampling, color
+transfer and enclosing opacity retain separate numerical stages. Offscreen source
+geometry can generate visible output. A filter without primitives paints nothing;
+an absent/none filter retains its source. Display suppression disables effects.
+Zero-size basic shapes and images without usable sources suppress their own
+filters; enclosing groups/uses can still filter transparent input. Empty groups
+run their filters. Paintless paths/lines/nonempty point lists retain source bounds
+for ancestor effects; empty basic shapes and absent images do not enlarge them.
+
+Drop shadows admit mapped/rounded deviations through 135 device pixels per axis;
+larger deviations reject. Gaussian blur rescales larger deviations and saturates
+at 532 device pixels per axis. Backdrop/external-image inputs, displacement,
+turbulence, lighting, morphology, convolution, arithmetic composite, other blend
+modes and CSS filter-function lists are unsupported.
 
 ### Text and fonts
 
-Fonts are explicit host-supplied manifest/catalog/provider resources. The host
-owns acquisition, credentials, retries and caches; rendering does not discover
-machine fonts or synthesize styles. Required unavailable/corrupt programs and
-missing glyphs fail explicitly. [FontProbe](../tools/Lokad.Svg.FontProbe/README.md)
-shows local/HTTP usage.
+Fonts come from explicit host manifests/catalogs/providers. Hosts own acquisition,
+credentials, retries and caches. Required unavailable/corrupt programs and missing
+glyphs fail; conversion neither discovers fonts nor synthesizes styles.
+[FontProbe](../tools/Lokad.Svg.FontProbe/README.md) demonstrates host acquisition.
 
-SVG-based font preparation follows pattern consumers through instances, masks
-and markers. Dormant definitions and overridden inherited paints do not activate
-a tile's fonts. Inherited image paints, empty point lists and move-only paths do
-not sample pattern paint; closed zero-length paths can still paint caps. Selected
-text may need advances or effect bounds. Masks and markers retain declaration
-context; local uses inherit instance context. [Selection controls](../tests/Research/pattern-source-selection/README.md)
-cover both source orders and live copies outside suppressed ancestors.
-
-`SvgFontFaceRequest.FromCss` preserves ordered named/generic families, quoting,
-escapes and inheritance; punctuation inside quotes remains literal, including
-quoted "serif". `SvgFontSelectionPolicy` supplies host generic mappings and ordered
-fallback restrictions for snapshots/prepared documents. Missing authored families
-are skipped before host fallback. SVG-based preparation lazily acquires later
-families for missing admitted scalars, selecting one program per covered interval.
-Kerning/ligatures stay within a selected face; spans, positioning and text paths
-retain their layout. Missing-everywhere requests keep scalar/index/source
-diagnostics. Request-only snapshot creation has no coverage to inspect and keeps
-first-face selection; callers may supply prepared alternatives explicitly. Raw
-conversion uses only its supplied snapshot. After style matching, CSS requests
-use [directional weight fallback](https://www.w3.org/TR/css-fonts-4/#font-style-matching),
-including the 400–500 range. Literal `SvgFontFaceRequest` constructor requests
-retain nearest-weight selection and existing fallback behavior.
-
-CSS family requests admit at most 256 families and 1,024 UTF-16 code units per
-decoded name. Both authored and canonical list text must fit 4,096 code units;
-normalization that exceeds this bound fails immediately with `LimitExceeded`.
-SVG scalar attributes and inline property values retain their 256-character bound.
-SVG font-weight values accept integers from 1 through 1000, normal and bold;
-other numeric/relative forms reject. Explicit public font request objects keep
-their documented positive-weight catalog selection contract.
-
-At admitted text-style locations, font sizes must be positive; zero sizes,
-including signed, decimal, exponent and px spellings, report `UnsupportedFeature`
-before font acquisition. Omitted properties inherit. Explicit `inherit`, `initial`
-and `unset` work for `font-family`, but reject for `font-weight`, `font-style`,
-`font-size`, `letter-spacing`, `word-spacing` and CSS `white-space`. Geometry
-typography remains inert. The [subset contracts](../tests/Lokad.Svg.Tests/OpenTypeFontTests.SubsetContracts.cs)
-check conversion, discovery, preparation and neighboring admitted values.
-
-| Area | Supported boundary |
+| Area | Accepted boundary |
 | --- | --- |
-| Programs | Standalone static TrueType, face index 0, including composites and bounded hinting. Other executed instructions fail explicitly. |
-| Characters | Horizontal LTR ASCII, tested precomposed Latin and covered supplementary scalars; no bidi/joining/complex-script or mark shaping. |
-| Layout | Text/CDATA/whitespace order, nested `tspan`, inherited/per-span family/size/weight/style/paint/visibility, scalar/list x/y/dx/dy/rotate, start/middle/end anchors, letter/word spacing, explicit lines, textLength spacing/spacingAndGlyphs and alphabetic/middle/hanging baselines. |
-| Paint | Affine glyph solid/gradient/pattern fills and strokes, dashes, non-scaling strokes and paint order; solid underline/overline/line-through decorations. |
-| Text paths | One local open/closed geometry path per run, transformed/curved paths, supplied advances/kerning, length/percentage startOffset, anchors/tangents, `method="align"`, `spacing="exact"` and mixed direct/path text. |
-| Ligatures | Default Latin/DFLT Basic Latin, one unfiltered type-4 lookup, format-1 subtables, coverage 1/2 and two to eight components in font order. Nonzero spacing, face/paint changes and absolute positions prevent merging; relative offsets and rotation entries retain clusters. |
+| Programs | Standalone static TrueType, face index 0, composites and bounded hinting; unsupported executed instructions fail. |
+| Characters | Horizontal LTR ASCII, tested precomposed Latin and covered supplementary scalars; no bidi/joining/complex-script/mark shaping. |
+| Layout | Ordered text/CDATA/whitespace, nested spans, inherited/per-span styles, scalar/list x/y/dx/dy/rotate, anchors, spacing, explicit lines, textLength spacing/spacingAndGlyphs and alphabetic/middle/hanging baselines. |
+| Painting | Affine solid/gradient/pattern fills and strokes, dashes/non-scaling widths/paint order and solid underline/overline/line-through. |
+| Text paths | One local open/closed geometry path per run, transformed/curved paths, advances/kerning, length/percentage startOffset, anchors/tangents, align/exact spacing and mixed direct/path text. |
+| Ligatures | Default Latin/DFLT Basic Latin, one unfiltered type-4 lookup, format-1 subtables, coverage 1/2 and 2–8 components in font order. |
 
-Text, spans and text paths admit inert `title`, `desc` and `metadata` subtrees.
-Their content uses no rendered-text character allowance; XML node/depth/attribute,
-input, memory and work limits still apply. See the
-[descriptive-text regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.DescriptiveText.cs).
-Text nodes retain native fragment width rounding through comments, descriptions,
-CDATA and span boundaries, while kerning and ligatures may continue across nodes.
-Scaled text follows native element boundaries when shaping spans. Relative list
-entries inside a ligature advance the source cursor without dividing the glyph.
-Text-node items retain source ranges even when their glyph belongs to a prior node;
-fitting and anchors include these cursor positions before painting.
-Mixed ordinary/path nodes share shaping and source positions under the same face,
-spacing and absolute-position rules. After a nonempty path, unpositioned text
-resumes at its authored endpoint; startOffset places path glyphs independently.
-Empty paths do not move the cursor. All ranges share one object paint box,
-including unpainted path characters; drawing enclosures remain local. See the
-[shared-layout controls](../tests/Research/text-paint-bounds/README.md).
-Text filter sources keep recorded owner bounds separate from the element visual
-box and tight ink capture. Stroke overrides, layout-only text and reflected
-placement retain native source-image origins; the
-[filter-source controls](../tests/Research/text-paint-bounds/filter-source-images.json)
-use independent exact references.
-Source text object boxes remain separate from visual paint enclosures through
-groups, use, symbols, patterns and masks. Identity groups avoid an unnecessary
-offscreen image; real opacity still isolates. The
-[instance-composition controls](../tests/Research/text-instance-composition/README.md)
-retain mask-mode, source/owning clip and density/viewport distinctions. Their
-ordinary fractional strokes match the original native references. The
-[stroke controls](../tests/Research/fractional-text-strokes/README.md) cover guard
-sampling, vertical-baseline rounding, outline alignment and resource replay;
-dimension limits apply to the allocated sample plane.
-[Fragment controls](../tests/Research/text-node-boundaries/README.md) cover scaling,
-fitting and resource replay, retaining the recorded Windows fitting residual separately.
+`SvgFontFaceRequest.FromCss` preserves family order, quoting, escapes and named/
+generic identity. `SvgFontSelectionPolicy` supplies host generic mappings and
+fallback restrictions. CSS requests use directional weight fallback, including
+400–500; literal constructor requests retain nearest-weight selection. SVG-based
+preparation acquires later families lazily for uncovered admitted scalars, one
+program per interval. Request-only creation has no coverage to inspect and selects
+the first face; raw conversion uses only supplied prepared snapshot requests.
+Kerning/ligatures stay within selected faces.
 
-Pair positioning selects the default Latin language system before DFLT, sharing
-selection with ligatures. Feature tags repeated in other language systems do not
-invalidate it. Selected GPOS kerning, including zero adjustments, supersedes legacy
-kern without parsing unused legacy contents; all SFNT table ranges remain validated.
-Required legacy kerning admits one horizontal format-0 subtable.
+CSS requests admit 256 families, 1,024 UTF-16 units per decoded name and 4,096 units
+for both authored/canonical lists. SVG weights accept integers 1–1000, normal/bold;
+public request objects retain their positive-weight contract. Font sizes must be
+positive. Family inherit/initial/unset work; those keywords reject for weight,
+style, size, spacing and white-space. Typography on geometry remains inert.
 
-Type-2 pair lookups admit RIGHT_TO_LEFT (irrelevant for that type), IgnoreBaseGlyphs
-and IgnoreLigatures with bounded GDEF classes. Each lookup selects its next eligible
-partner within a font/size/absolute-position chunk. IgnoreMarks, mark attachment
-classes and format-1 mark-filtering sets admit non-mark label runs with validated
-GDEF metadata; actual mark positioning is unsupported. Reserved flags, invalid
-classes/set indices and table ranges fail explicitly.
+Nonzero spacing, face/paint changes and absolute positions prevent ligature
+merging. Relative positions/rotation retain clusters and advance source cursors.
+Comments/descriptions/CDATA retain fragment metrics; shaping may cross nodes,
+while scaled element boundaries follow native font selection. Inert title/desc/
+metadata text does not consume rendered-text allowance; XML/input/work limits apply.
+Anchors include relative advances/backtracking. Ordinary/path ranges share shaping
+and object paint boxes, including unpainted characters. Text after a nonempty path
+resumes at its authored endpoint; empty paths do not move the cursor. Zero
+textLength retains natural layout; spacing with one inline item retains natural
+metrics, while positive spacingAndGlyphs scales it.
 
-Ordinary shaped text preserves fractional offsets when scaled and rounds paint
-origins after absolute span resets. Text paths and fitted-spacing text use their
-own character-metric rules. Anchors include relative advances and backtracking;
-see the [positioned-anchor regressions](../tests/Lokad.Svg.Tests/OpenTypeFontTests.TextAnchors.cs).
-Text paint object boxes join fitted glyph ink with source fragment line rectangles,
-preserving fractional coordinates before paint-origin truncation. See the
-[native box regressions](../tests/Lokad.Svg.Tests/SvgTextPaintBoundsTests.cs).
-Fitting/coverage matches platform-specific numerical
-rules; the exact embedded family `Courier New` enables its Windows one-cell span
-policy, which a catalog alias to another program cannot enable. See
-[font rasterization](RASTERIZATION_DESIGN.md#supplied-fonts) for internal invariants
-and [font qualification](../tests/README.md#qualification) for evidence.
-Zero textLength preserves natural layout. Spacing adjustment also preserves
-natural metrics and anchoring when layout leaves only one inline item; positive
-spacingAndGlyphs still scales that glyph.
+Pair positioning chooses default Latin before DFLT. Selected GPOS kerning,
+including zero adjustments, supersedes legacy kern; required legacy kern permits
+one horizontal format-0 subtable. Type-2 pairs admit RIGHT_TO_LEFT, IgnoreBaseGlyphs
+and IgnoreLigatures with validated GDEF. IgnoreMarks, mark attachment and format-1
+filter sets admit non-mark runs; actual mark positioning rejects. Other reserved
+flags/types/formats and invalid metadata reject.
 
-Unsupported: wrapping, vertical text, language-specific/general GSUB/GPOS, other
-lookup flags/types/formats, path stretch/auto spacing, variable/color/bitmap fonts,
-CFF/CFF2 and WOFF/WOFF2.
+Font discovery follows live pattern/mask/marker uses in their resource context.
+Dormant/overridden/inactive paint does not require programs unless layout advances
+or effect bounds need them. Glyph masks retain platform-specific fitting, filter
+guards and baseline rounding. The embedded family `Courier New` selects its
+Windows one-cell span policy; catalog aliases cannot enable another program's
+policy. [Native font references](../tests/README.md#qualification) record exactness
+and platform distinctions.
+
+Wrapping, vertical text, general/language-specific GSUB/GPOS, path stretch/auto
+spacing, variable/color/bitmap fonts, CFF/CFF2 and WOFF/WOFF2 are unsupported.
 
 ## Resource limits and memory accounting
 
-[SvgRenderLimits](../src/Lokad.Svg/SvgRenderLimits.cs) bounds input/output size,
-dimensions, pixels, XML structure, path commands, accounted storage and shared
-work. Cancellation and deterministic cleanup apply through preparation, parsing,
-rasterization and encoding. Supplied font/source bytes remain immutable and valid
-for their documented borrowed lifetime. Caller streams stay open; hosts own
-transactional output handling.
+`SvgRenderLimits` independently bounds input/output, dimensions/pixels, XML
+structure, path commands, accounted storage and shared work. Cancellation and
+deterministic cleanup span discovery/preparation, parsing, rasterization and
+encoding. Intermediate surfaces also consume limits. Caller streams stay open;
+the host owns transactional output. Supplied font/source bytes remain immutable
+and valid for their documented borrowed lifetimes. A prepared document permits
+one conversion; independently owned PNG outputs outlive the operation.
 
-Memory accounting is approximate: directionally no more than **20% of
-conversion-attributable live memory** should be unaccounted for across
-representative workloads. This is an engineering target, not an exact guarantee
-at every instant. Shared runtime/host overhead and borrowed storage are identified
-separately. Conservative estimates and aggregate allowances cover pixel buffers,
-decoded images, intermediate surfaces, geometry, glyph data and large collections,
-while avoiding excessive overcharging.
-
-Ownership audits follow material memory impact. Byte-exact small-object accounting,
-individual metadata receipts, GC-round retirement proofs and precise accounting of
-bookkeeping machinery are not requirements. Existing representative normal and
-adversarial checks cover limits, cancellation/retry, cleanup and output integrity.
+Memory accounting is approximate: the engineering target is no more than **20%
+of conversion-attributable live memory** unaccounted for across representative
+workloads, not an instantaneous heap cap. Borrowed storage and runtime/host
+overhead are separate. Reservations cover dominant pixel/image/scene/glyph
+storage and aggregate overhead; byte-exact small-object bookkeeping is not a
+contract. Representative limit, cancellation, cleanup and retry checks protect it.
 
 ## Qualification
 
-[Tests and provenance](../tests/README.md#qualification) defines platform reference
-coverage and the remaining private deployment gate. [Benchmarks](BENCHMARKS.md)
-records dated performance measurements.
+[Tests and provenance](../tests/README.md) owns platform references, known
+differences, exclusions and qualification commands. Accepted syntax alone does
+not establish browser equivalence for every combination. [Benchmarks](BENCHMARKS.md)
+defines performance measurement separately from correctness.

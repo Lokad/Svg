@@ -1,409 +1,172 @@
 # Rasterization design
 
-Lokad.Svg lowers static SVG into an owned scene, rasterizes it in managed code,
-and encodes PNG output. It targets exact decoded pixels from the pinned Chrome
-software renderer within the [supported subset](SUPPORT_MATRIX.md#supported-svg-subset).
-Native numerical behavior is reproduced by managed kernels; no browser, native
-rasterizer or machine-font service participates in conversion.
-
-The [support matrix](SUPPORT_MATRIX.md) owns public boundaries;
-[tests](../tests/README.md) and [benchmarks](BENCHMARKS.md) own validation and measurements.
+Lokad.Svg lowers static SVG into an owned scene, rasterizes it with managed
+kernels and encodes PNG. The [support contract](SUPPORT_MATRIX.md) owns public
+syntax/restrictions; [test guidance](../tests/README.md) owns validation. Numerical
+kernels reproduce pinned software-renderer behavior without a runtime browser,
+native rasterizer or machine-font service.
 
 ## Pipeline and ownership
 
-| Stage | Responsibility | Main implementation |
+| Stage | Responsibility | Implementation |
 | --- | --- | --- |
-| Parse and resolve | Validate XML/CSS, compute inherited presentation, register definitions and resolve local references. | [SvgRootParser](../src/Lokad.Svg/Parsing/SvgRootParser.cs), [SvgResourceUseReplay](../src/Lokad.Svg/Parsing/SvgResourceUseReplay.cs) |
-| Retain scene | Own geometry, ordered draw commands and resource bindings; preserve authored curves and replayable source. | [SvgRoot](../src/Lokad.Svg/Parsing/SvgRoot.cs), [SvgAuthoredPath](../src/Lokad.Svg/Parsing/SvgAuthoredPath.cs) |
-| Rasterize | Map geometry and paints, build bounded coverage, replay layers and composite pixels. | [SvgConverter](../src/Lokad.Svg/SvgConverter.cs) |
-| Encode | Write PNG to owned memory, caller memory or a writable stream. | [PngEncoder](../src/Lokad.Svg/Encoding/PngEncoder.cs) |
+| Prepare | Read bounded XML/CSS, resolve sizing and inherited declarations, index definitions and select required fonts. | [Document preparation](../src/Lokad.Svg/Parsing/SvgDocumentPreparation.cs), [root parser](../src/Lokad.Svg/Parsing/SvgRootParser.cs) |
+| Retain | Own geometry, source curves, ordered commands, resource bindings and replay dependencies. | [Scene](../src/Lokad.Svg/Parsing/SvgRoot.cs), [authored paths](../src/Lokad.Svg/Parsing/SvgAuthoredPath.cs) |
+| Rasterize | Prepare mappings/coverage, render effects and layers, sample paints and composite pixels. | [Converter](../src/Lokad.Svg/SvgConverter.cs) |
+| Encode | Produce independently owned PNG memory, caller-memory output or stream output. | [Encoder](../src/Lokad.Svg/Encoding/PngEncoder.cs) |
 
-Forward definitions resolve after registration. Resource references borrow their
-owning scene; sealed child scenes retain the storage needed after parser staging
-is released. Partial construction and conversion failure release owned storage.
-Anonymous pattern teardown drops its deferred entries before disposing staging.
-Open groups retain their deferred clip/mask indices and close those entries directly.
-Gradient and pattern templates wake their dependents when ready. Deferred paint,
-text and tile-use commands replace their placeholders in batches; existing scope
-boundaries and scopes created during replay map separately into final draw order.
-Deferred paint and text replay emit into their recorded scenes and map only
-their retained source ranges. Tile paints, text and uses expand together after
-definitions resolve and before pattern group binding;
-clip-only markers compact once afterward.
-Gradient definitions retain original vectors separately from local paint maps;
-aliases resolve their attributes before mapping. Scene-owned radial metadata also
-retains focal declaration presence/units. Vector-free aliases share it while
-inheriting the local map.
-Expanded tile paints, including glyph shaders, are validated before scene sealing.
-[Document preparation](../src/Lokad.Svg/Parsing/SvgDocumentPreparation.cs) shares
-reader workspace and collected styles across sizing, output mapping and scene
-lowering. Metadata traversal consumes the same work allowance as conversion;
-font acquisition retains its separate discovery lifetime.
-Font-bearing pattern selection shares the existing bounded source index with
-font discovery and scene lowering. Consumers determine which tile sources are
-needed; masks and markers retain declaration context while local uses inherit
-their instance context. Alias headers remain in the pattern index. Font-free
-patterns keep the header-only path; source visits share work and cancellation.
-Rendered leaves prepare their cascaded declarations once and reuse that value
-through deferred paints, filters, markers, recording and geometry lowering.
-Local uses share one inline parse and authored style across reference, resource
-and retained-group preparation, preserving their existing admission rules.
-Instance inheritance and deferred opacity apply afterward, so retained sources
-can bind independently for each replay.
-[SvgPreparedDocument](../src/Lokad.Svg/SvgPreparedDocument.cs) retains one prepared
-scene/font operation and permits one conversion. Caller-owned font bytes remain
-immutable and valid for the documented snapshot lifetime.
+Definitions register before forward references resolve. Deferred paints, text,
+tiles and uses replace recorded placeholders in batches, retaining their source
+ranges and scope boundaries. Declarations are prepared once; instance inheritance
+and deferred opacity bind at replay. Resource references borrow their scene;
+sealed child scenes retain storage after parser staging ends. Partial construction
+and failure release owners deterministically.
 
-Scene geometry keeps inline primitive values and one typed reference payload,
-rather than a reference slot for every paint/geometry variant. The payload owns
-its resource reservations; authored-path ownership remains separate.
-
-Marker paints borrow a shared scene-owned native canvas stage independently of
-whether their viewport clips. Its source/parent maps stay separate from the
-rounded pose until device preparation; contours and shaders consume the same
-prepared mapping. Rectangle source corners survive deferred paint construction.
-Allocation bounds enclose ink, while physical clips retain their own rounding.
-Culled markers discard inner drawing scopes so ancestor filters remain eligible.
-The [marker controls](../tests/Research/marker-canvas-stages/README.md) cover these
-interactions alongside direct mechanisms and selected ownership paths.
+Geometry uses inline primitive values plus one typed reference payload. That
+payload owns its reservations; authored paths retain separate ownership. Prepared
+documents retain one scene/font operation for one conversion. Font programs remain
+immutable for their borrowed lifetime; independent operations own their scratch.
 
 ## Geometry and native raster routes
 
-Preserve directed line, quadratic, cubic and rational-conic commands until the
-relevant transform and stroke construction are known. Curve offsets, joins, caps
-and dashes share [native path stroke construction](../src/Lokad.Svg/Rendering/SvgNativePathStroke.cs).
-Flattening too early changes curvature, bounds and fringe coverage.
+Retain directed lines, quadratics, cubics and rational conics until transforms
+and [stroke construction](../src/Lokad.Svg/Rendering/SvgNativePathStroke.cs) are known.
+Early flattening changes offset curves, joins, dashes, bounds and fringe coverage.
 
-[Analytic coverage](../src/Lokad.Svg/Rendering/SvgAnalyticCoverage.cs) walks edges
-with winding intervals and native fixed-point advancement. Convex, compound and
-clipped paths retain their own eligibility checks. Rectangle, frame, hairline and
-fallback routes remain where their numerical behavior differs.
+[Analytic coverage](../src/Lokad.Svg/Rendering/SvgAnalyticCoverage.cs) walks winding
+intervals using native fixed-point advancement. Rectangle/frame, hairline,
+convex/compound and fallback routes have distinct eligibility and arithmetic.
+Whole-path bounds choose direct/run versus mask painting; clipped bounds limit
+storage. Direct events and pending additive runs preserve their order.
 
-Finite source coordinates and fixed-point edge coordinates have separate
-admission rules. Clipped construction validates every emitted endpoint and
-control in both bitmap-local and translated canvas space before edge allocation;
-uncut construction retains its fixed-range gate. Retained raw controls determine
-curve convexity directly, including source and placed-control checks. Flattened
-samples cannot veto that classification. See the
-[clipped stroke controls](../tests/Research/clipped-stroke-preparation/README.md).
-
-[Polygon traversal](../src/Lokad.Svg/SvgConverter.PolygonRaster.cs) shares analytic/
-fallback preparation, row work, fringe bounds and scratch ownership across solid,
-linear, radial and pattern paints. Sampling and paint arithmetic stay specialized.
-
-Whole-path bounds select mask versus direct/run painting; clipped bitmap bounds
-limit storage. Direct paint events and pending additive runs remain distinct.
-Do not replace these routes with blanket supersampling, independently painted
-triangles or a mathematically equivalent union without proving pixel equivalence.
+Finite source coordinates and emitted fixed-point edges have different admission
+rules. Clipped construction validates endpoints/controls in bitmap-local and
+translated canvas space before allocating edges; uncut construction retains its
+range gate. Convexity uses authored controls after float placement. Flattened
+samples cannot veto that classification. [Polygon traversal](../src/Lokad.Svg/SvgConverter.PolygonRaster.cs)
+shares preparation, row work and scratch across paint kinds without merging their
+sampling/blend semantics.
 
 ## Coordinates and bounds
 
-Compose root, viewport, group, instance and leaf transforms while retaining each
-stage's percentage base and physical viewport clip. Local aliases exclude source
-ancestors. Forward replay preserves authored/inherited paint and source order.
+| Domain | Invariant |
+| --- | --- |
+| Logical viewport/viewBox | Own percentage bases and layout; output density does not resize them. |
+| Source/instance map | Preserve authored placement and resource inheritance; local aliases exclude source ancestors. |
+| Object box | Measures pre-clip geometry/layout for normalized paints/resources. |
+| Visual/drawing enclosure | Includes painted stroke/effect extents and source-space enclosure before placement. |
+| Construction/dispatch bounds | Decide edge admission and raster route independently of clipped storage. |
+| Captured/sampled image | Retain requested subsets, content clips, image hints, color space and origin even when storage is cropped. |
 
-Keep geometry/object bounds, visual stroke bounds, construction clips, dispatch
-bounds and stored bitmap bounds distinct. Object-box paints/resources bind to
-pre-clip geometry. Cropping storage must preserve the logical device origin.
-Filter graphs keep per-node output requests, source content clips, captured subsets
-and native image hints separate from physical scratch grids. Parent filters take
-their children's filtered output as input. Rescaled kernels read captured subsets;
-image consumers retain native hints and their separate rounding. Pending nearest
-images retain a borrowed source reference,
-forward map and layer crop through compatible aliases. Shader consumers sample
-that view; image drawing retains its separate edge coverage. A consuming crop or
-materialization resolves pending pixels in the required color space. The
-[stage boundary controls](../tests/Research/filter-stage-boundaries/README.md)
-exercise those distinctions without equating compact and expanded graphs.
-Nested viewports keep the parent affine map outside their local viewBox map.
+Nested viewports retain the parent map outside their local viewBox map. Ordinary
+drawing bounds use native integer saturation/culling; resource pictures keep local
+visual bounds. Culled drawings retain inert anchors when ancestor effects can
+generate pixels from transparent input. Markers share a scene-owned canvas stage
+across contours and paints, independently of viewport clipping.
 
-[Non-scaling drawing bounds](../src/Lokad.Svg/Parsing/SvgNativeVisualBounds.cs)
-retain native source-dimension clamping, integer recording bounds and physical
-viewport projection. Resource pictures use local visual bounds without document
-drawing-record culling. Culled drawings keep inert anchors for object-box resources
-and filters that can generate pixels from transparent input.
+Mask paint clips enclose the union of the resource region and target visual bounds
+in source space. Instance replay transfers local visual bounds and materialized
+clip dependencies into the final scene owner without changing the source paint
+arena. Alpha masks consume that clip during replay; luminance pictures preserve
+their color context and clip at restore.
 
-Mask paint clips enclose the union of the mask region and target visual bounds
-before source placement. Normalized resources retain separate object boxes.
-Instance replay carries local visual bounds and materialized clip dependencies
-without changing their source paint arena. Alpha masks consume the paint clip
-during replay; luminance pictures retain their color context and clip at restore.
-
-Sizing inspection and conversion share root CSS/unit resolution.
-Opt-in raster bounds choose one uniform output scale before lowering, leaving
-the logical viewport and percentage bases intact. Logical picture font sizing
-precedes the separate native raster strike transform. Integer canvas rounding
-does not enlarge the physical viewport clip, including a minimum one-pixel canvas.
-Raster density and changing SVG width/viewBox are distinct capture contexts; see
-the [native controls](../tests/Research/text-instance-composition/README.md).
-
-Glyph mask bounds retain horizontal filter guards outside the four-times sample
-image. Sampling origins, allocation, limits and filter indices use its interior
-domain. Vertical baselines snap device X to an integer; fills and strokes share
-that rounding and the quarter-turn outline-alignment predicate. Shaping and
-logical layout precede these raster choices. See the
-[stroke controls](../tests/Research/fractional-text-strokes/README.md).
-
-[Shader coordinates](../src/Lokad.Svg/Rendering/SvgShaderCoordinates.cs) preserve
-separate local, reference and bitmap mappings. Gradient, image and glyph consumers
-round at different native stages; combining their arithmetic can move samples or
-change dithering even when the real-valued transform is equivalent.
-Vector patterns rasterize one source image. Outer compositor tile boundaries
-do not split that paint device or reset its shader/dither origins.
+Glyph mask bounds include horizontal filter guards outside the image sampled at
+four times resolution. Its origin, allocation, limits and filter indices share
+the interior domain. Strike transforms retain recorded font size separately from
+the relaxed device matrix. Vertical baselines snap device X to an integer; fills
+and strokes share that rule and axial-outline classification.
 
 ## Paint and compositing
 
-Resolve inherited stroke paint before selecting a leaf's lowering route. Path
-gradients bind to the undashed centerline's native curve bounds, including open
-paths with no fill; flattened fill bounds and stroke extents are separate.
-Resolved empty servers affect only their own element-local paint. Recording and
-lowering share that availability, while unknown resources retain deferred lookup
-and authored values retain validation. Empty text strokes emit no outline: an
-invisible outline can enlarge a native layer and shift another paint's bitmap origin.
-Point lists keep native source floats and authored fill verbs through solid and
-shader lowering. Coordinate spelling does not select rectangle-band coverage.
-Linear and radial point-list paints bind to authored bounds and the same instance
-map as their contours. Symbol viewport clips retain the inverse viewBox rectangle
-in source floats; unrounded scene maps retain a separate viewBox canvas stage
-until device placement. Clip classification, binary/antialiased coverage and
-mapped paints share that forward preparation.
-Radial matrices expressed in an object bounding box convert to scene coordinates
-before this preparation. Clip coverage is constructed in device space, without
-trimming it using earlier rounded scene bounds. See the
-[source-map controls](../tests/Research/point-list-source-maps/README.md).
-Pattern fills and strokes share a definition-owned replay scene; rectangle content
-must retain its target map before instance and viewport placement.
-Paint-filled paths and point lists compose ordinary fill and stroke lowering;
-recording applies opacity and paint order once. Affine linear/radial strokes and
-fractional pattern fills retain source commands, local bounds and composed paint
-maps. Rectangle strokes reuse native construction for dashes, non-scaling widths,
-joins and fractional shader edges. Sharp-rectangle dashes begin at the top-left
-corner; zero-size rectangles paint nothing.
+Resolve each fill/stroke independently, then apply paint order and element opacity
+once. Empty servers suppress only their own operation. Text/curve strokes bind
+paints to their source geometry; undashed curve bounds, object boxes and visual
+stroke bounds are distinct. Point lists retain source float coordinates and
+authored verbs regardless of numeric spelling.
 
-[Analytic paint](../src/Lokad.Svg/Rendering/SvgAnalyticPaint.cs) separates solid,
-shader, mask and direct/run consumers. Preserve their byte premultiplication,
-coverage scaling, source-over order and rounding boundaries. Alpha-only, binary,
-antialiased and luminance coverage are distinct inputs.
+[Shader coordinates](../src/Lokad.Svg/Rendering/SvgShaderCoordinates.cs) retain local,
+reference and bitmap mappings. [Analytic paint](../src/Lokad.Svg/Rendering/SvgAnalyticPaint.cs)
+keeps solid, constant-shader, general-shader, mask, direct/run and fringe-pair
+consumers distinct. Premultiplication, coverage scaling, color transfer,
+source-over and byte storage round at their actual stages. Continuous geometric
+equivalence does not establish identical pixels.
 
-Gradients retain float stop/ramp evaluation and ordered dithering in the logical
-source bitmap's coordinates. Conical visibility masks precede ramp spreading and
-survive single-color replay. Uniform ramps need no segment array; their color
-also survives nonfinite tile coordinates at the cone boundary.
-Linear and radial spreading share native float operation order, followed by
-absolute stop padding and ramp normalization. Partial stop ranges preserve the
-full repeat period; see the [periodic controls](../tests/Research/linear-periodic-stops/README.md).
-Normal ramp preparation and glyph representative colors share a borrowed,
-bounded canonical stop sequence. It inserts implicit endpoints, detects nearly
-uniform float positions and canonicalizes duplicate groups. Uniform coefficients
-use fixed gap counts; arbitrary coefficients preserve constant terminal padding.
-Flat ranges retain their first/last boundary colors. The
-[stop controls](../tests/Research/gradient-stop-preparation/README.md) include
-native glyph and 256-stop references. Factory means retain original source stops.
-Stop paints retain source alpha separately from byte colors. Native numeric
-fast parsing and full functional-color parsing preserve different precision;
-RGB/hex byte division and HSL fast-path normalization also remain distinct.
-The [color-alpha controls](../tests/Research/gradient-color-alpha/README.md)
-cover spellings, byte midpoints, glyphs and resource replay.
-Nonconstant cone padding retains terminal arithmetic; normalized shader lanes
-clamp before coverage and source-over, including unordered native float values.
-One-stop paints retain their shader identity and dithering. Native constant
-factories are classified from definition coordinates before placement, using
-the inclusive float threshold `1/32768`. Pad takes the terminal stop;
-repeat/reflect integrate straight RGBA over stop intervals, then premultiply.
-Their constant-paint replay is shared by rectangles, paths and glyphs, including
-glyph luminance. See the [factory controls](../tests/Research/gradient-factory-colors/README.md).
-Images retain their own sampling matrix, clipping
-and alpha rules. [Pattern tiles](../src/Lokad.Svg/Rendering/SvgPatternTileCache.cs)
-reuse bounded scene rendering and repeat sampling. Optional tile retention needs
-matching source, maps, sampling and paint; declining it preserves rendering.
+Gradient preparation preserves float stop order, hard/flat boundaries, duplicate
+groups, implicit endpoints and periodic normalization. Factory means use authored
+stops; conical visibility is applied before spreading. Alpha precision depends on
+the authored color syntax. Dithering belongs to the logical source bitmap, not
+compositor tiles. Pattern scenes retain their own source maps, recording scopes
+and bounded repetition; optional tile reuse requires matching sampling and paint.
+
+## Embedded images
+
+Decoded storage, fractional source windows and destination clips stay separate.
+Integer sampling views enclose the source window while retaining decoded stride.
+Recorded draws use ceil-sized decoded levels and Q15 source replacement; picture
+draws use floor-sized mips and float interpolation. Strict subsets clamp sampling.
+Reduction reserves scratch, charges samples and releases intermediate levels on
+failure. Image alpha/edges retain their own rules even for uniform colors.
 
 ## Resources and effects
 
-Viewport clips draw into the parent bitmap through owned clip frames, preserving
-its shader origin. Inherited clipping around filter output keeps a separate
-recorded region kind so it does not change the filter input context.
+Element composition follows [filter → mask → clip → opacity](SUPPORT_MATRIX.md#clips-masks-and-composition).
+Ancestor clips surround child filter output; source-local clips remain inside
+the filter. Group isolation/restore applies each clip and opacity once. Identity
+groups avoid unnecessary offscreen images; real opacity isolates.
 
-Clips retain child winding, mapped source curves and resource units. Resolve
-original child operands once when the definition closes; convex operands share
-native winding normalization, while other unions retain ordered bounded boundary
-operations. Deferred collinear lines preserve the cyclic start. Straight paths
-and curves both classify authored controls after float placement.
-More than 42 children replay through an owned painted-clip scene, preserving
-each child's authored paint kind. Its enclosing clip applies during source
-painting, before mask multiplication, and is consumed once. Ordinary mask
-children composite in source order before alpha/luminance conversion. Retained
-clips/masks bind in the final scene owner, including nested instances and pattern
-content. The [clip controls](../tests/Research/ordered-clip-coverage/README.md)
-separate these mechanisms from canonical rendering and selected ownership paths.
+Clip unions retain ordered original operands, winding and cyclic starts. Convex
+operands share native normalization; other unions use bounded boundary operations.
+More than 42 children use painted replay, preserving each child's authored paint
+kind and a separate enclosing clip. Ordinary masks composite children in source
+order before alpha/luminance conversion.
 
-Effects obey the [composition contract](SUPPORT_MATRIX.md#clips-masks-and-composition).
-Isolation and restoration must apply each clip/opacity once.
+[Filter playback](../src/Lokad.Svg/Rendering/SvgFilterPlayback.cs) retains result
+dependencies, primitive regions, operating spaces and source placement. Requested
+output, native image hints, captured content, cropped storage and padded scratch
+are separate. Parent capture includes filtered child output. Rescaled kernels read
+the captured subset; offsets/aliases can retain deferred sampled images until a
+consumer requires pixels.
 
-Embedded images retain decoded storage, the fractional source window and the
-destination clip independently. Integer sampling views enclose the source window;
-their coordinates are local to that view while texels retain the decoded stride.
-Recorded draws choose ceil-sized decoded levels from rounded device requests,
-then use the existing Q15 source-replacement sampler. Picture draws keep their
-floor-sized mips and float level interpolation; strict source subsets retain
-clamped sampling. Reduction reserves scratch before allocation, charges each
-sample and releases intermediate levels on failure. The
-[source-view controls](../tests/Research/image-source-views/README.md) protect these
-stage boundaries without multiplying every image across API destinations.
+Fixed lengths and translate arguments resolve within native CSS layout range
+before placement. Object boxes compose into filter parameter space before float
+enclosure. Regions map through the padded bitmap; owning source draws use the
+recorded layer map. Clip geometry and fitted glyphs retain their own concatenation.
 
-[Filter playback](../src/Lokad.Svg/Rendering/SvgFilterPlayback.cs) retains primitive
-regions, result dependencies, operating color spaces and source-bitmap placement.
-Padded source capture, cropped storage, intermediate image subsets and restoration
-into a parent bitmap remain separate. Preserve source origins when translating
-or bounding blur work; source capture and final painting must use the same maps.
-Filter sources preserve native rectangle coverage and layer-bound rounding.
-Object-box output clips index balanced source ranges once before measuring targets.
-sRGB and linear-RGB image sampling retain their distinct precision. Resource
-clips enclose group isolation, applying coverage once when opacity restores.
-Ancestor clips also surround child filter output; source-local clips stay inside
-the filter. Balanced group ranges preserve that order in direct and pattern
-scenes. Offset captures keep source ink separate from image hints, and each
-compositor bitmap supplies its own clipped output request. The
-[ownership controls](../tests/Research/filter-clip-ownership/README.md) retain
-independent native evidence for those paths.
-Opaque offset restoration keeps color-transfer samples unquantized through clip
-coverage. Non-unit opacity first materializes the converted image, then applies
-packed image alpha; pattern destinations retain their constant-shader path.
-Single-input merges keep their own operating space, and unused branches do not
-introduce a transfer. Zero clip coverage leaves the destination intact. The
-[restoration controls](../tests/Research/filter-restoration/README.md) preserve
-independently unequal linear-RGB/sRGB references and nontransparent backdrops.
-Solid paint and inherited currentColor retain validated source alpha through
-shape, instance, mask and glyph construction. Text element opacity encloses the
-ordered fill, stroke and decoration commands, including deferred paint slots.
-
-Uniform filter paint retains source alpha and pipeline precision until sampled.
-Deferred uniform images retain their finite coverage and known texel independently
-of compact storage. Affine frames identify their stored color space so final
-transfer follows sampling. Virtual SVG output bounds and sampled source-image
-bounds round in their respective coordinate systems; output admission keeps
-replaced source geometry from enlarging an opacity layer.
-Terminal uniform nearest-image draws retain packed texels and finite edge coverage
-separately; sprite-admitted translations omit image-edge antialiasing. Bitmap
-coverage combines source and backdrop products before the final packed shift.
-An enclosing opacity layer first materializes sampling, color transfer and crop
-coverage, then applies global bitmap alpha. Its painted extent bounds restoration
-and clip construction; stored-image extents remain independent. Dynamic source
-hints enclose their parameter-space capture before graph propagation, while
-source-free uniform paint retains its logical extent. The
-[opacity and sampling controls](../tests/Research/filter-opacity-sampling/README.md)
-retain actual-input browser references and representative ownership checks.
-
-Source-image requests intersect native hints before enclosure; their sampling
-extent remains separate from the capture allocation, transparent guards and
-finite captured content. Owned source devices share content-clip construction.
-Retained offset transforms carry their operating space and compose only within
-that space. Merge consumes them as images: color transfer precedes edge coverage
-and source-over, and the image draw uses the destination clip. Shader consumers
-retain their separate sampling rules. The
-[source/composition controls](../tests/Research/filter-merge-image-draw/README.md)
-preserve these distinctions, including platform-specific glyph image bounds.
-User-space source drawings recorded in their owning filter's map use its layer transform;
-independently rounded inverse/source products must not reconstruct that map.
-Clip geometry retains its own native concatenation, and fitted glyph outlines
-retain device-coordinate placement.
-The [recording-coordinate controls](../tests/Research/filter-source-recording-map/README.md)
-retain ellipse and curve coverage with separate allocation and sampling bounds.
-
-Fixed filter lengths and translate arguments resolve within the native CSS
-layout range before placement. Matrix numbers and percentages retain their own
-domains. Authored object boxes compose into the owning filter's parameter space
-before float enclosure, preserving nonzero boxes whose placed endpoints coincide.
-Filter and primitive regions map through the padded filter bitmap before
-restoration. This region map is independent of source drawing stages and the
-post-capture image transforms used by sampled offsets. The
-[region controls](../tests/Research/filter-region-coordinates/README.md) retain
-both unit systems and the earlier source-image interaction regressions.
+Uniform flood alpha stays at pipeline precision through graph evaluation.
+Operating color space travels with stored/deferred images; composing compatible
+transforms cannot erase a required transfer. Image drawing transfers color before
+edge coverage and uses destination clipping. Shader consumers retain separate
+sampling rules. Enclosing opacity first materializes sampling/color/crop coverage,
+then applies bitmap alpha; its painted extent bounds restoration.
 
 ## Supplied fonts
 
-Rendering consumes verified immutable font bytes supplied by the host. Shared
-bounded layout preserves text/span order, metrics, positioning, admitted shaping
-and paint. Composite replay retains component placement and metric origins.
-Chunk anchors use the extrema of positioned advance edges, including backtracking.
-Ordinary fragment origins and anchor shifts truncate separately; merging those
-steps loses half-grid middle anchoring. Zero shifts avoid a redundant glyph pass.
-Windows uses matched TrueType/LCD coverage and preblend; Linux uses matched Latin
-light fitting and grayscale coverage. Exact references are platform-specific.
+Shared bounded layout preserves source text/span ranges, font/paint selection,
+positioning and admitted shaping. Reader chunks add no boundaries. Comments can
+preserve shaping; element boundaries may select distinct scaled fonts. Ligature
+prefixes retain their source items even without their own glyphs.
 
-Text paint boxes use canonical fitted ink and source fragment rectangles before
-paint-origin truncation. Windows measures nonzero raw LCD coverage at the contour
-perimeter; Linux rounds light-path bounds outward. Local budget-owned metric reuse
-avoids refitting repeated glyphs across parser runs, and all paints in a run share its measured box.
-Fragment transforms and inverse font scaling preserve native float operations.
-The extracted-run owner retains normalized text-node boundaries and element
-identity for fragment metrics. Comments preserve shaping; element changes stop
-it when native screen font scaling makes the compared fonts differ. Reader
-chunks create no boundaries. Fitted glyphs compose truncated physical origins
-and stretching at float precision, including zero-angle text paths.
-The existing fragment owner also retains each item's UTF-16 source range,
-including nodes with no glyphs and prefixes consumed by a preceding ligature.
-Cursor layout applies relative offsets, fitting, absolute positions and anchors
-in that order. Source boxes retain physical float coordinates. Paint truncates the
-final anchored rectangle; baseline positions and inverse-scale displacements retain
-their metric precision. Natural fitting bounds are computed only for fitting requests.
-Ordinary text drawing rectangles enclose source bounds before placement/output
-mapping, preserving isolated-layer shader origins. Equal run paints share one
-scene record; generic font routes and filter capture bounds remain independent.
-Path source maps retain original coordinates before paint truncation, glyph stretch
-and output placement.
-Mixed direct/path text shapes once. Scoped glyph views borrow the parent storage
-and own only rebased fragment arrays; the parent outlives every view. Source ranges
-select direct/path metric and anchor rules without dividing shaping clusters.
-Object-box paints measure the whole element before emission, retaining invisible
-source boxes while preserving local drawing enclosures. Deferred own-filter
-wrappers move only their appended command slots and clip/mask ranges.
-Path character widths include fixed-point spacing before fragment rounding;
-kerning stops at spacing changes. Signed advances position characters while
-rotated fragment rectangles clamp their painted width to zero.
-Source boxes retain fractional character widths after `textLength` scaling.
-Deferred text and instances retain their enclosing filter recording context;
-glyphs and decorations record source bounds before filter construction.
-Nonpainting effect anchors contribute object bounds without enlarging painted bounds.
-Path glyphs compose general parent poses; the translation shortcut requires unchanged axes.
-Zero-angle path glyphs retain the same fragment-origin truncation as rotated glyphs.
-Glyphs and decorations share enclosed source drawing bounds and recorded paint context.
-Straight paths retain scalar source queries separately from fitted glyph placement.
-Rectangle fast paints intersect their iteration bounds with the current isolated layer.
-Glyph caches retain the recorded font size and relax the remaining device matrix separately.
+Cursor layout applies relative offsets, fitting, absolute positions and anchors.
+Chunk anchors measure extrema of positioned advance edges, including backtracking.
+Fragment origins and anchor shifts truncate separately. Text boxes join fitted
+ink and physical source rectangles; drawing enclosures remain local. Mixed
+direct/path text shares parent shaping storage, with scoped views owning only
+rebased fragment arrays. Unpainted characters may still contribute layout bounds.
 
-The bounded interpreter keeps projection/freedom vectors and physical/hint grids
-separate. Windows font-unit conversion retains floating-point scale precision
-before signed rounding; other targets retain their fixed-point scales. Font-selected
-unfitted ranges retain scanner effects without painting fitted point movements.
-Linux light fitting retains standard-stem edge separation, non-base classification,
-pending-edge collapse bounds and relative serif offsets.
-
-Windows natural/symmetric LCD modes follow bounded gasp data at actual raster
-size. Ordinary fill, smart dropout profiles, span ownership and stub continuation
-keep distinct crossing/rounding rules. Preserve implied half-unit points, six-bit
-profiles, scan direction, turning/flat-tangent subdivisions and full/half-scan
-endpoint ownership. Rounding bounds must preserve thin strokes. Do not combine
-these numerical stages merely because their continuous geometry is equivalent.
-The `SvgGlyphLcdCoverageTests.*` controls in [core tests](../tests/Lokad.Svg.Tests/)
-protect these distinctions; feature-specific font manifests retain native evidence.
+Windows uses matched TrueType/LCD fitting, scanning and preblend; Linux uses light
+fitting/grayscale coverage, with axial and unhinted routes chosen separately.
+Projection/freedom vectors, hint grids, implied points, scan direction, endpoint
+ownership and dropout modes keep their numerical boundaries. Font-selected
+unfitted ranges retain scanner effects without fitted point movements. Metric
+reuse is operation-local and budget-owned; it does not create shared mutable font
+state. [Font qualification](../tests/README.md#qualification) owns the evidence.
 
 ## Limits and cancellation
 
-[RenderBudget](../src/Lokad.Svg/Rendering/RenderBudget.cs) reserves dominant owned
-storage before allocation; [render limits](../src/Lokad.Svg/SvgRenderLimits.cs)
-bound input/output size, dimensions and shared work. Temporary and retained owners
-release deterministically. Tile/effect work consumes the enclosing conversion's
-remaining allowance. Check cancellation inside bounded parsing, geometry, raster
-and encoding loops, including growth/copy paths.
-
-Memory estimates follow the [approximate accounting policy](SUPPORT_MATRIX.md#resource-limits-and-memory-accounting).
-Caller streams remain open; hosts own transactional output. Cancellation or
-failure must preserve cleanup, borrowed-storage validity and output contracts.
-
-## Maintaining fidelity
-
-Use unchanged SVG/options/fonts and frozen platform references. Reduce a mismatch
-to an independent control, correct the shared mechanism and preserve established
-exact results. [Research and comparison procedures](../tools/README.md#research-probes)
-define the workflow. Keep experiment logs out of this architectural guide.
-Adapted algorithms retain source notices and [third-party notices](../THIRD_PARTY_NOTICES.txt).
+[RenderBudget](../src/Lokad.Svg/Rendering/RenderBudget.cs) reserves dominant storage
+before allocation. Parser, scene, glyph, tile, filter and encoder work share the
+conversion allowance; font discovery has its documented acquisition lifetime.
+Growth/copy loops also observe cancellation. Failure releases private owners and
+leaves borrowed inputs unchanged. Caller streams remain open and can contain
+partial output; hosts own transactional handling. Memory estimates follow the
+[accounting policy](SUPPORT_MATRIX.md#resource-limits-and-memory-accounting).
