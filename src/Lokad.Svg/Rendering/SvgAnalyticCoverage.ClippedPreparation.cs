@@ -112,7 +112,10 @@ internal ref partial struct SvgAnalyticCoverage
                                 ChargeClippedSetupWork(ref setupWork, 1, maximumWork, token);
                                 if (pass == 0)
                                 {
-                                    // Each clipped monotonic piece owns one live edge.
+                                    // Validate every endpoint/control before reserving or constructing fixed edges.
+                                    ChargeClippedSetupWork(ref setupWork, (int)piece.Kind, maximumWork, token);
+                                    if (!InFixedRange(piece, origin)) return default;
+                                    // Each admitted clipped monotonic piece owns one live edge.
                                     maximumEdges++;
                                     continue;
                                 }
@@ -181,6 +184,18 @@ internal ref partial struct SvgAnalyticCoverage
             return new(edges, head, tail, row, temp, alphas, xStart, width, Math.Min(yEnd, clip.Bottom), skipIntersect, isEvenOdd, convex, rawBox, useRunBlitter, usesHorizontalClip, paintClip, new(clip.Left, clip.Right), budget, scratch);
         }
         catch { scratch?.Dispose(); throw; }
+
+        static bool InFixedRange(SvgAnalyticClipPiece piece, SvgCpuBitmapOrigin origin)
+        {
+            return Point(piece.First, origin) && Point(piece.Second, origin)
+                && (piece.Kind == SvgAnalyticClipKind.Line || Point(piece.Third, origin))
+                && (piece.Kind != SvgAnalyticClipKind.Cubic || Point(piece.Fourth, origin));
+
+            // Construction is bitmap-local; translated edge state must also fit its canvas.
+            static bool Point(SvgAnalyticClipPoint point, SvgCpuBitmapOrigin origin) => float.IsFinite(point.X) && float.IsFinite(point.Y)
+                && MathF.Abs(point.X) <= MaxRange && MathF.Abs(point.Y) <= MaxRange
+                && Math.Abs((double)point.X + origin.X) <= MaxRange && Math.Abs((double)point.Y + origin.Y) <= MaxRange;
+        }
 
         static void ChargeClippedSetupWork(scoped ref long work, long units, long maximumWork, CancellationToken token)
         {

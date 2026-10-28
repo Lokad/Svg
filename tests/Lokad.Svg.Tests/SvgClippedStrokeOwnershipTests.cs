@@ -1,0 +1,22 @@
+using System.Text.Json;
+
+namespace Lokad.Svg.Tests;
+
+[Trait("Layer", "Contracts")]
+public sealed class SvgClippedStrokeOwnershipTests
+{
+    [Theory]
+    [InlineData("source-opacity-layer")]
+    [InlineData("nested-viewport-origin")]
+    public void Clipped_strokes_release_after_refusal_cancellation_and_retry(string identity)
+    {
+        string folder = Path.Combine(AppContext.BaseDirectory, "TestData", "clipped-stroke-preparation");
+        using JsonDocument capture = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder, "capture.json")));
+        JsonElement row = capture.RootElement.GetProperty("cases").EnumerateArray()
+            .Single(item => item.GetProperty("id").GetString() == identity);
+        byte[] input = File.ReadAllBytes(Path.Combine(folder, row.GetProperty("input").GetString() ?? throw new InvalidDataException()));
+        string expected = row.GetProperty("platforms").GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux")
+            .GetProperty("rgbaSha256").GetString() ?? throw new InvalidDataException();
+        SvgRasterOwnershipAssertions.ParsesAndReleasesAfterFailures(input, SvgRenderOptions.Default, 2_000_000, 1, expected);
+    }
+}

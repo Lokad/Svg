@@ -83,9 +83,19 @@ public sealed class SvgCpuRasterContextTests
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, firstSetup, budget, out secondSetup, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
         }
-        int points = polygon.Points.Length;
-        long pointCountWork = polygon.ContourEnds.Length + 2L * (polygon.QuadSpans.Length + polygon.CubicSpans.Length);
-        Assert.Equal(points + polygon.ContourEnds.Length + polygon.QuadSpans.Length + 2L * polygon.CubicSpans.Length + (long)points * (points - 1) / 2 + points + pointCountWork, firstSetup - secondSetup);
+        Assert.True(secondSetup < firstSetup);
+        // Reusing classification removes work once, independently of its internal algorithm.
+        {
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, secondSetup, budget, out long repeatedSetup, out bool eligible, CancellationToken.None);
+            Assert.True(eligible);
+            Assert.Equal(secondSetup, repeatedSetup);
+        }
+        SvgAnalyticContourPreparation fresh = new(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, new(24, 24, 612, 278), 640, 320);
+        {
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref fresh, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, firstSetup, budget, out long freshSetup, out bool eligible, CancellationToken.None);
+            Assert.True(eligible);
+            Assert.Equal(firstSetup, freshSetup);
+        }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         // A narrow storage interval still uses the whole path's run dispatch.
         using SvgAnalyticCoverage narrow = SvgAnalyticCoverage.Prepare(ref preparation, 254, 270, 24, 278, new(254, 270), new(new(254, 0, 270, 256)), SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool narrowEligible, CancellationToken.None);

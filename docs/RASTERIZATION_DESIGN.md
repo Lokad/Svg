@@ -79,6 +79,14 @@ with winding intervals and native fixed-point advancement. Convex, compound and
 clipped paths retain their own eligibility checks. Rectangle, frame, hairline and
 fallback routes remain where their numerical behavior differs.
 
+Finite source coordinates and fixed-point edge coordinates have separate
+admission rules. Clipped construction validates every emitted endpoint and
+control in both bitmap-local and translated canvas space before edge allocation;
+uncut construction retains its fixed-range gate. Retained raw controls determine
+curve convexity directly, including source and placed-control checks. Flattened
+samples cannot veto that classification. See the
+[clipped stroke controls](../tests/Research/clipped-stroke-preparation/README.md).
+
 [Polygon traversal](../src/Lokad.Svg/SvgConverter.PolygonRaster.cs) shares analytic/
 fallback preparation, row work, fringe bounds and scratch ownership across solid,
 linear, radial and pattern paints. Sampling and paint arithmetic stay specialized.

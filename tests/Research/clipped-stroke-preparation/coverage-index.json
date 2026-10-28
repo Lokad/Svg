@@ -1,0 +1,202 @@
+{
+  "originalStrokeRoles": 12,
+  "boundaryAndInteractionControls": 16,
+  "roles": [
+    {
+      "id": "miter-bounds-00",
+      "kind": "remaining-original",
+      "purpose": null,
+      "sourceSha256": "1f9b2bf7d7d001b7de457a4faf798d62a3a8d2e9764964718dbd93f1a75b18f2",
+      "scale": 1
+    },
+    {
+      "id": "miter-bounds-01",
+      "kind": "remaining-original",
+      "purpose": null,
+      "sourceSha256": "2ec11857ed194132c999c42411ff6cab868a5c9142d3f35d967ff0543ca006f2",
+      "scale": 1
+    },
+    {
+      "id": "miter-bounds-02",
+      "kind": "exact-boundary-control",
+      "purpose": null,
+      "sourceSha256": "3a92073e206b0072e6819b0bfae877f44ac21227d6cd4bbaff46a608d4bff6f8",
+      "scale": 1
+    },
+    {
+      "id": "miter-bounds-03",
+      "kind": "remaining-original",
+      "purpose": null,
+      "sourceSha256": "02b4f136d5bf6e58d0409e2b6cca298f77d6916fe2d356d25d9207e852cea149",
+      "scale": 1
+    },
+    {
+      "id": "miter-bounds-04",
+      "kind": "exact-boundary-control",
+      "purpose": null,
+      "sourceSha256": "442a1a9a614f5f74132b1dfcd2f7089893b86884395b637c834faf8864bcfa89",
+      "scale": 1
+    },
+    {
+      "id": "miter-bounds-05",
+      "kind": "remaining-original",
+      "purpose": null,
+      "sourceSha256": "d010a592698a01e14a3ff4e5dbdab9383b5f7664dddb3e7f908bfaebe072c38b",
+      "scale": 1
+    },
+    {
+      "id": "miter-bounds-06",
+      "kind": "exact-boundary-control",
+      "purpose": null,
+      "sourceSha256": "b7daaeb264066e5dc22179e6be6948a4d62b754de5ae3a74b56cf2d8ccb515e0",
+      "scale": 1
+    },
+    {
+      "id": "miter-bounds-07",
+      "kind": "remaining-original",
+      "purpose": null,
+      "sourceSha256": "d0d2e7df905c2573782175840ff963a83de4232a15995bfb235f44625f1fde7b",
+      "scale": 1
+    },
+    {
+      "id": "miter-bounds-08",
+      "kind": "exact-boundary-control",
+      "purpose": null,
+      "sourceSha256": "b3933e20374d5e5d1b44f2fbf2d732b6f1c075f86e87b1729f53ffc99a020b56",
+      "scale": 1
+    },
+    {
+      "id": "miter-bounds-09",
+      "kind": "remaining-original",
+      "purpose": null,
+      "sourceSha256": "81936ad7d10b3d6bda64e0a43818131fbd8891b2d045af3922bf79bd5b4acf32",
+      "scale": 1
+    },
+    {
+      "id": "miter-bounds-10",
+      "kind": "exact-boundary-control",
+      "purpose": null,
+      "sourceSha256": "1d02ffbb5fd3416efb7c977d618c7028d48b9e5404c01dd744489c4461fef0bc",
+      "scale": 1
+    },
+    {
+      "id": "miter-bounds-11",
+      "kind": "remaining-original",
+      "purpose": null,
+      "sourceSha256": "2178ae49373239d39deabe1a688c50161db4e1dc3711ad7baa10c753b490b219",
+      "scale": 1
+    },
+    {
+      "id": "positive-32762",
+      "kind": "interaction",
+      "purpose": "Signed fixed-range neighbors including round-cap extent",
+      "sourceSha256": "d8c44bcec4ea69b8c96b5a9a33154b288a25255cd5213da04bb5527564c00d16",
+      "scale": 1
+    },
+    {
+      "id": "positive-32763",
+      "kind": "interaction",
+      "purpose": "Signed fixed-range neighbors including round-cap extent",
+      "sourceSha256": "262635931f90c9fefea265de737455af1b325dd8a587958b4d6ca298d0723482",
+      "scale": 1
+    },
+    {
+      "id": "positive-32764",
+      "kind": "interaction",
+      "purpose": "Signed fixed-range neighbors including round-cap extent",
+      "sourceSha256": "ea3acd96cb226dfe2c2a18c00a43fa118c7116540cc4bc06180029d47d95458f",
+      "scale": 1
+    },
+    {
+      "id": "negative-32762",
+      "kind": "interaction",
+      "purpose": "Signed fixed-range neighbors including round-cap extent",
+      "sourceSha256": "6bfcd1fada417367e1423e689f477dd1be4c3a8d92c5b55b16d2369727dfd322",
+      "scale": 1
+    },
+    {
+      "id": "negative-32763",
+      "kind": "interaction",
+      "purpose": "Signed fixed-range neighbors including round-cap extent",
+      "sourceSha256": "1ed72571dcf2221e17821479775b54ef72c01d9a3fe4a021ace328ee2d01e4dd",
+      "scale": 1
+    },
+    {
+      "id": "negative-32764",
+      "kind": "interaction",
+      "purpose": "Signed fixed-range neighbors including round-cap extent",
+      "sourceSha256": "5589c6f6c3b42679fbff8419528aab5534b9915216bf3a175801ee602563db33",
+      "scale": 1
+    },
+    {
+      "id": "positive-scaling-stroke",
+      "kind": "interaction",
+      "purpose": "Ordinary scaling stroke with the same clipped source extent",
+      "sourceSha256": "5cdef40e47c0652f1ffa7258cbd5d7bbdf62f467ecb471d104cece8fa68492e0",
+      "scale": 1
+    },
+    {
+      "id": "positive-vertical",
+      "kind": "interaction",
+      "purpose": "Vertical fixed-range clipping",
+      "sourceSha256": "90969ecd47315b12db00999aa21e9c8ef20bfc55bfdf3f89ccb0b147add39cfb",
+      "scale": 1
+    },
+    {
+      "id": "negative-scaling-stroke",
+      "kind": "interaction",
+      "purpose": "Ordinary scaling stroke with the same clipped source extent",
+      "sourceSha256": "1418ad81f0fe40d5794f3abb2fa4cd9f81896838c58278e877a9cda2e0f579a0",
+      "scale": 1
+    },
+    {
+      "id": "negative-vertical",
+      "kind": "interaction",
+      "purpose": "Vertical fixed-range clipping",
+      "sourceSha256": "00ac1b168c655f5c98870857fcf722964f783a010f050d2fbd11c4cb228b0775",
+      "scale": 1
+    },
+    {
+      "id": "fractional-source-placement",
+      "kind": "interaction",
+      "purpose": "Fractional source map before bitmap clipping",
+      "sourceSha256": "1cf09d46316ab2a48b3db5f6cd1c3befa3a872df13aa3200574ade224539338e",
+      "scale": 1
+    },
+    {
+      "id": "source-opacity-layer",
+      "kind": "interaction",
+      "purpose": "Owning opacity layer and byte alpha",
+      "sourceSha256": "f140589bb3506cbd6b1e6856904a286f8582deb9e6b724cbf50bd2346a46c7e9",
+      "scale": 1
+    },
+    {
+      "id": "nested-viewport-origin",
+      "kind": "interaction",
+      "purpose": "Independent viewport clip and bitmap origin",
+      "sourceSha256": "1c15169a137680d83ba38c116cf5c92b983858cf81054ae58a99c50fd2412de2",
+      "scale": 1
+    },
+    {
+      "id": "quadratic-source",
+      "kind": "interaction",
+      "purpose": "Retained quadratic graph under the same range condition",
+      "sourceSha256": "3a6bd5dfe19d77365eb83d7361ad420fa4f2de50c87bb0adbc7dcbbf7b89cdd4",
+      "scale": 1
+    },
+    {
+      "id": "cap-width-7-5",
+      "kind": "interaction",
+      "purpose": "Conic subdivision neighbors with unchanged device tolerance",
+      "sourceSha256": "e4faba0d0018b10d82e654bf251691b2b3ae560f1ec318490d452e08c1f1091e",
+      "scale": 1
+    },
+    {
+      "id": "cap-width-8-5",
+      "kind": "interaction",
+      "purpose": "Conic subdivision neighbors with unchanged device tolerance",
+      "sourceSha256": "996385154842c0ec0daeb14e1bfbde4fcaa0a74a7b1241746833145f43e85900",
+      "scale": 1
+    }
+  ]
+}

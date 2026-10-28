@@ -2,6 +2,9 @@ namespace Lokad.Svg.Rendering;
 
 using Lokad.Svg.Parsing;
 
+/// <summary>Separates finite source coordinates from coordinates admitted for uncut fixed-point edges.</summary>
+internal enum SvgAnalyticCoordinateRange : byte { NonFinite, Finite, Fixed }
+
 /// <summary>Borrows one immutable mapped fill and caches its clip-independent classifications.</summary>
 /// <remarks>The caller keeps the same points, contours, votes and retained verbs alive and unchanged throughout this single-threaded scope. No storage is allocated or owned here. Source classifications are charged once by Prepare; unknown placed convexity is charged per bitmap origin. Each raster context charges and owns its edge construction and row state. The preparation cannot escape into a returned walker.</remarks>
 internal ref struct SvgAnalyticContourPreparation
@@ -30,7 +33,7 @@ internal ref struct SvgAnalyticContourPreparation
     /// <summary>Raw points represented by admitted retained verbs, cached independently of the construction clip.</summary>
     internal long? NativePointCount;
     internal bool BasicChecked;
-    internal bool PointValuesEligible;
+    internal SvgAnalyticCoordinateRange CoordinateRange;
     internal bool PointsFitCanvas;
     internal int? KeptContours;
     internal bool? HasArea;

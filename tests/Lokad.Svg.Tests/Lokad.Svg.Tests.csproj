@@ -1,5 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/clipped-stroke-preparation/capture.json" Link="TestData/clipped-stroke-preparation/capture.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/clipped-stroke-preparation/inputs/source-opacity-layer.svg" Link="TestData/clipped-stroke-preparation/inputs/source-opacity-layer.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/clipped-stroke-preparation/inputs/nested-viewport-origin.svg" Link="TestData/clipped-stroke-preparation/inputs/nested-viewport-origin.svg" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="../Research/marker-canvas-stages/capture.json" Link="TestData/marker-canvas-stages/capture.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/marker-canvas-stages/inputs/use-source-opacity.svg" Link="TestData/marker-canvas-stages/inputs/use-source-opacity.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/marker-canvas-stages/inputs/use-gradient-content.svg" Link="TestData/marker-canvas-stages/inputs/use-gradient-content.svg" CopyToOutputDirectory="PreserveNewest" />

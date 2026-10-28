@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Admit finite stroke geometry after bitmap clipping, validating emitted fixed
+  edges before allocation. Classify retained curve controls directly to preserve
+  round-cap coverage across large extents, fractional placement and opacity. See
+  the [native controls](tests/Research/clipped-stroke-preparation/README.md).
+
 - Preserve marker canvas stages independently of clipping and paint kind through
   source transforms, use replay and output scaling. Retain local rectangle
   contours, enclose opacity-layer allocations, and keep culled marker scopes

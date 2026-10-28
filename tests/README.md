@@ -37,6 +37,10 @@ The [marker canvas controls](Research/marker-canvas-stages/README.md) retain 37
 independent native inputs, five mechanisms and two selected opacity/shader
 ownership paths. Existing culling and inverse-stroke resource regressions remain
 independently asserted.
+The [clipped stroke controls](Research/clipped-stroke-preparation/README.md)
+retain 28 native inputs, fourteen direct mechanism cases and two selected
+opacity/viewport ownership paths. Signed coordinate boundaries are tested
+directly; each original path graph keeps its own canonical rendering regression.
 The [embedded-image source views](Research/image-source-views/README.md) retain
 120 canonical images for 126 original/acceptance roles, 39 direct mechanism cases
 and three selected allocation paths with raw/prepared ownership checks. They

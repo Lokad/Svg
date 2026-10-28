@@ -1425,10 +1425,13 @@ internal ref partial struct SvgAnalyticCoverage
             preparation.LeftWithControls = leftWithControls;
             preparation.RightWithControls = rightWithControls;
             preparation.BasicChecked = true;
-            preparation.PointValuesEligible = maxAbs <= MaxRange;
+            preparation.CoordinateRange = maxAbs <= MaxRange ? SvgAnalyticCoordinateRange.Fixed : SvgAnalyticCoordinateRange.Finite;
             preparation.PointsFitCanvas = Math.Floor(minX) >= 0 && Math.Floor(minY) >= 0 && Math.Ceiling(maxX) <= outputWidth && Math.Ceiling(maxY) <= outputHeight;
         }
-        if (ends.Length < 1 || points.Length < 3 || xEnd <= xStart || !preparation.PointValuesEligible || (constructionClip is null && !preparation.PointsFitCanvas)) return default;
+        // Source coordinates must remain finite. A clipped path proves fixed-point admission
+        // from its emitted pieces; uncut construction retains the original fixed-range gate.
+        if (ends.Length < 1 || points.Length < 3 || xEnd <= xStart || preparation.CoordinateRange == SvgAnalyticCoordinateRange.NonFinite
+            || (constructionClip is null && (preparation.CoordinateRange != SvgAnalyticCoordinateRange.Fixed || !preparation.PointsFitCanvas))) return default;
         cancellationToken.ThrowIfCancellationRequested();
         if (preparation.RectangleFrame is {} frame)
         {
@@ -1656,8 +1659,10 @@ internal ref partial struct SvgAnalyticCoverage
             // Native shape builders cache convexity for source ovals and rounded rectangles.
             // Non-axis placement invalidates that cache: float controls must be classified again.
             bool knownConvex = preparation.Source?.IsKnownConvex == true && preparation.SourceMap.IsAxisAligned;
-            bool convexRing = knownConvex || IsConvexRing(points, cancellationToken) && structure == SvgContourFlags.None;
             bool retained = CurveSpansEligible(ends, quadSpans, cubicSpans, isEvenOdd, mapping, structure, cancellationToken);
+            // Sampled vertices cannot veto native convexity of retained controls.
+            // Source and placed raw controls below still reject concavity and reversals.
+            bool convexRing = knownConvex || retained || IsConvexRing(points, cancellationToken) && structure == SvgContourFlags.None;
             setupWork += points.Length;
             if (convexRing && !knownConvex && preparation.Source is {} source)
             {
