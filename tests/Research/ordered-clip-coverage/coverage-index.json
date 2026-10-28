@@ -1,0 +1,1817 @@
+{
+  "logicalRoles": 104,
+  "uniqueInputOptions": 91,
+  "sourceIdenticalAliases": 13,
+  "aliasPolicy": "Only byte-identical SVG and identical options share a canonical record. All original and interaction role names remain indexed.",
+  "roles": [
+    {
+      "id": "clip-geometric-content-0330-candidate",
+      "canonicalId": "clip-geometric-content-0330-candidate",
+      "sourceSha256": "fee1e58e9f1c507dcc7ffacdb14e8bb880e1f626d03e096fd5adeb1fc45cbaab",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-geometric-content-0330-control",
+      "canonicalId": "clip-geometric-content-0330-control",
+      "sourceSha256": "44979b57aeda48a7500a0d7f3c6d0ed40353d7e838ae3ff7e48cb1c7ebe3c508",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-geometric-content-0335-candidate",
+      "canonicalId": "clip-geometric-content-0335-candidate",
+      "sourceSha256": "60eb946cc4d92b2c2ee3534d197a8d9438723250e696bf8852f0ebc5bd38390f",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-geometric-content-0335-control",
+      "canonicalId": "clip-geometric-content-0335-control",
+      "sourceSha256": "9aa20b85bee1d0eb4be66dce5a4b48a9d90eaeacd5b9aab84ca7632e27e36892",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-geometric-content-0355-candidate",
+      "canonicalId": "clip-geometric-content-0355-candidate",
+      "sourceSha256": "1732b4e37808b2957465d480f01c891b1eaa8e4f980b458c08a2c51060297022",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-geometric-content-0355-control",
+      "canonicalId": "clip-geometric-content-0355-control",
+      "sourceSha256": "f0767e899447419c55437b62b920673bac5c5ff4ff8c853bc9082a97d1bb8d9f",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-geometric-content-0360-candidate",
+      "canonicalId": "clip-geometric-content-0360-candidate",
+      "sourceSha256": "1ab24dca950051b8e653fea7dd236a16b596fb7fdd8f38a113e640ef29aa7ecd",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-geometric-content-0360-control",
+      "canonicalId": "clip-geometric-content-0360-control",
+      "sourceSha256": "a2c2780da4a2b06e84ede774c1f81aae546e82d0530e945fd570255248ecf10c",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-union-expansion-0043-candidate",
+      "canonicalId": "clip-union-expansion-0043-candidate",
+      "sourceSha256": "22cdd2f7896045a93bb038f4cb7c14157b3cde437b74f8d2e5a8620c32602ec4",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-union-expansion-0043-control",
+      "canonicalId": "clip-union-expansion-0043-control",
+      "sourceSha256": "885288b1fd990c381d3eb7328b40ce896febdb9ee0980fd67698e846dca0983b",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-union-expansion-0044-candidate",
+      "canonicalId": "clip-union-expansion-0044-candidate",
+      "sourceSha256": "11edc3f867bdc8ec2e92da3af46f1fb51673d1730a8ec2302cdef5bc6791dc6b",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-union-expansion-0044-control",
+      "canonicalId": "clip-union-expansion-0044-control",
+      "sourceSha256": "e007fd85133ab19e0393539fb5647ff5c1a6e85545df29bd1bedb6595c9a6161",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-union-expansion-0144-candidate",
+      "canonicalId": "clip-union-expansion-0144-candidate",
+      "sourceSha256": "812d743e9de4629ed3675d2651ee8bb710e897d05e5b9ea6c78cd7d20e2d5eed",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-union-expansion-0144-control",
+      "canonicalId": "clip-union-expansion-0144-control",
+      "sourceSha256": "d05089af4a1e42c8c9dd5a61115e3bc4613d59f6858a0a1947cce31f996195ee",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-union-expansion-0258-candidate",
+      "canonicalId": "clip-union-expansion-0258-candidate",
+      "sourceSha256": "0a21239ed5677ac69a7d3f9a36a56dfa79ef7fcc91669ee671d905ba1db9fe28",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": 15
+    },
+    {
+      "id": "clip-union-expansion-0258-control",
+      "canonicalId": "clip-union-expansion-0258-control",
+      "sourceSha256": "9be89f940dd0c9ee80e8de178fec37dfe7eb10616bc1942803f741bf302988f8",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-union-expansion-0366-candidate",
+      "canonicalId": "clip-union-expansion-0366-candidate",
+      "sourceSha256": "9f9dedd4d2e57112a34ab01145bbfe089a297c8a0cc7280ab3ac38af33bce33c",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-union-expansion-0366-control",
+      "canonicalId": "clip-union-expansion-0258-control",
+      "sourceSha256": "9be89f940dd0c9ee80e8de178fec37dfe7eb10616bc1942803f741bf302988f8",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-union-expansion-0114-candidate",
+      "canonicalId": "clip-union-expansion-0114-candidate",
+      "sourceSha256": "52a87a0200415705dffd945fdbc4eba0a709f6e198d51b07d7edc4556ea770b4",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": 15
+    },
+    {
+      "id": "clip-union-expansion-0114-control",
+      "canonicalId": "clip-union-expansion-0258-control",
+      "sourceSha256": "9be89f940dd0c9ee80e8de178fec37dfe7eb10616bc1942803f741bf302988f8",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-union-expansion-0120-candidate",
+      "canonicalId": "clip-union-expansion-0120-candidate",
+      "sourceSha256": "8c69c0cc637dedd976cad8d166e606d6c46a9f0e99d84dc3fc817c1ea6782d17",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": 50
+    },
+    {
+      "id": "clip-union-expansion-0120-control",
+      "canonicalId": "clip-union-expansion-0120-control",
+      "sourceSha256": "2b710a12c424419dc18c83db0d93478f011f8d02131ca2b3350dd7118408bcd3",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-union-expansion-0138-candidate",
+      "canonicalId": "clip-union-expansion-0138-candidate",
+      "sourceSha256": "39d39ca05b1c687e473e9b4cd9cb3e5ab295cf040681a9f223642326d8a3cc43",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": 38
+    },
+    {
+      "id": "clip-union-expansion-0138-control",
+      "canonicalId": "clip-union-expansion-0138-control",
+      "sourceSha256": "0a903a00fe65872c31bd3208380c3f7c23b88487a40f64533f1beaac0886b9f1",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-union-expansion-0222-candidate",
+      "canonicalId": "clip-union-expansion-0222-candidate",
+      "sourceSha256": "45c4891895020e36467f5a025cc1277403ad7e3ddd146ebc5c4b85e9f85c9b37",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": 15
+    },
+    {
+      "id": "clip-union-expansion-0222-control",
+      "canonicalId": "clip-union-expansion-0258-control",
+      "sourceSha256": "9be89f940dd0c9ee80e8de178fec37dfe7eb10616bc1942803f741bf302988f8",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-union-expansion-0228-candidate",
+      "canonicalId": "clip-union-expansion-0228-candidate",
+      "sourceSha256": "bc69a6b87d3d559e5435b340185adecc5ce9190b574cba18e24eecd81b43a074",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": 46
+    },
+    {
+      "id": "clip-union-expansion-0228-control",
+      "canonicalId": "clip-union-expansion-0120-control",
+      "sourceSha256": "2b710a12c424419dc18c83db0d93478f011f8d02131ca2b3350dd7118408bcd3",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-union-expansion-0246-candidate",
+      "canonicalId": "clip-union-expansion-0246-candidate",
+      "sourceSha256": "fc16838ffabe85b7ef835bb18dbbfe051035650b7f0a66707b6c352ed0955c0e",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": 32
+    },
+    {
+      "id": "clip-union-expansion-0246-control",
+      "canonicalId": "clip-union-expansion-0138-control",
+      "sourceSha256": "0a903a00fe65872c31bd3208380c3f7c23b88487a40f64533f1beaac0886b9f1",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-union-expansion-0330-candidate",
+      "canonicalId": "clip-union-expansion-0330-candidate",
+      "sourceSha256": "dccef08db2cf33eb934de54bb97dee18cbaeeda2933322f714f9f4b70b39705c",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-union-expansion-0330-control",
+      "canonicalId": "clip-union-expansion-0258-control",
+      "sourceSha256": "9be89f940dd0c9ee80e8de178fec37dfe7eb10616bc1942803f741bf302988f8",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-union-expansion-0078-candidate",
+      "canonicalId": "clip-union-expansion-0078-candidate",
+      "sourceSha256": "186156e2bdbcf6728ae9c4d09440c9d77350957093756be108afe922283f4e56",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-union-expansion-0078-control",
+      "canonicalId": "clip-union-expansion-0258-control",
+      "sourceSha256": "9be89f940dd0c9ee80e8de178fec37dfe7eb10616bc1942803f741bf302988f8",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "clip-union-expansion-0294-candidate",
+      "canonicalId": "clip-union-expansion-0294-candidate",
+      "sourceSha256": "e0b650271ff75993d93151683779cc89e7fd9c19f79d6109c7344cc1bfb71aa4",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": 15
+    },
+    {
+      "id": "clip-union-expansion-0294-control",
+      "canonicalId": "clip-union-expansion-0258-control",
+      "sourceSha256": "9be89f940dd0c9ee80e8de178fec37dfe7eb10616bc1942803f741bf302988f8",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0024-candidate",
+      "canonicalId": "contained-matrix-0024-candidate",
+      "sourceSha256": "f2fcfae4007a317e2fc71f93e71d68207e787b61c590c2ac3e8532a7a1977691",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0024-control",
+      "canonicalId": "contained-matrix-0024-control",
+      "sourceSha256": "d1cc10132f947ef68f3b54631546e32b53f4438eb8baa716c8b84cd49907b9a6",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0025-candidate",
+      "canonicalId": "contained-matrix-0025-candidate",
+      "sourceSha256": "e83ee69106d65f7da2d1d49c87b5a1d2ff9334e4c3d78ef098a610e72e0758cb",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0025-control",
+      "canonicalId": "contained-matrix-0024-control",
+      "sourceSha256": "d1cc10132f947ef68f3b54631546e32b53f4438eb8baa716c8b84cd49907b9a6",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0028-candidate",
+      "canonicalId": "contained-matrix-0028-candidate",
+      "sourceSha256": "0fab44b082b4571f6b131b8559dd15d821576523d4ed4719bcd5db3b8a446f1e",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0028-control",
+      "canonicalId": "contained-matrix-0028-control",
+      "sourceSha256": "3ced39dd89a995bccb5414ec959245d78cf8c14a5190026994e6f306505f3551",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0032-candidate",
+      "canonicalId": "contained-matrix-0032-candidate",
+      "sourceSha256": "24e13827f75901f22e993b8e30aa34a1b6148acc849826d2896a435ea0fd9510",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0032-control",
+      "canonicalId": "contained-matrix-0032-control",
+      "sourceSha256": "668fa5d21086cd171bddc4888a44ca715459513923b819c5ec1c2989cf02414d",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0036-candidate",
+      "canonicalId": "contained-matrix-0036-candidate",
+      "sourceSha256": "67e9251cc856a77e16a982baadb85f6a32d0c84b5acd262081efab19161a360d",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0036-control",
+      "canonicalId": "contained-matrix-0036-control",
+      "sourceSha256": "3bbf3d3be46b055b67faebf68365a3ce18f17041a4c8001c6c729307a687494d",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0040-candidate",
+      "canonicalId": "contained-matrix-0040-candidate",
+      "sourceSha256": "4743172ca84928a0bb4e042c86277a0cf2a1ef669f4a4183f79aecf9bbe15824",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0040-control",
+      "canonicalId": "contained-matrix-0040-control",
+      "sourceSha256": "15d734a3d260924868e92bfe944010fc0917fafba4cd564fa56502ed9da64549",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0044-candidate",
+      "canonicalId": "contained-matrix-0044-candidate",
+      "sourceSha256": "728e9ef1d42c434a661fc6b280c3606dc5c33f7730e16abb1e2eee8fc630ca8d",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0044-control",
+      "canonicalId": "contained-matrix-0044-control",
+      "sourceSha256": "a01fdc6412b701a4a19eaa0a0fcb9c62cbcd496a4f08e4811bf5bfc8effe4f69",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0060-candidate",
+      "canonicalId": "contained-matrix-0060-candidate",
+      "sourceSha256": "e15887e6d9468d2d691347a5014dba0ba4cde3e30754ee182751ea7711fe9a7e",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0060-control",
+      "canonicalId": "contained-matrix-0060-control",
+      "sourceSha256": "23be87204d970bb99521cb1036baaa5bab340664779727a1b46d3652d048fb1a",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0120-candidate",
+      "canonicalId": "contained-matrix-0120-candidate",
+      "sourceSha256": "71e26bd991e9d52aaa35cc8bad252b126e3a3899ab23ffd006c2dde1419c8a79",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0120-control",
+      "canonicalId": "contained-matrix-0120-control",
+      "sourceSha256": "044c9bc99fa8b93baffc47cc0309c3e27554aa1d7c21a8fe2ffaec9eb6450ac4",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0132-candidate",
+      "canonicalId": "contained-matrix-0132-candidate",
+      "sourceSha256": "e33da4396cb0cb825f25f1a9874196dc3b5d11874f16cdec8c7cdfd8536278ab",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0132-control",
+      "canonicalId": "contained-matrix-0132-control",
+      "sourceSha256": "4ea42adc01486a85594c3fb62e6b9c11ea5f5145146294c049a48a1ee40bd904",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0136-candidate",
+      "canonicalId": "contained-matrix-0136-candidate",
+      "sourceSha256": "bfffa02172a3175112c0fe4901b163de6f41d3a6b4a38546fca07cd13332f7cf",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0136-control",
+      "canonicalId": "contained-matrix-0136-control",
+      "sourceSha256": "699b6ae3dd5c58c22bfd0620a2a358258c0a87d6f4e97869bd4865f77fdb63f8",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0140-candidate",
+      "canonicalId": "contained-matrix-0140-candidate",
+      "sourceSha256": "a654495715c735eb7ba19308a1be91539a095c239cea6cfd2055f25e6ee943e1",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0140-control",
+      "canonicalId": "contained-matrix-0140-control",
+      "sourceSha256": "b5a730a1474dd7dc5e27c22a1cdf921533be0100238d63050e357e9e6ba0929b",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0156-candidate",
+      "canonicalId": "contained-matrix-0156-candidate",
+      "sourceSha256": "9f9f732d0dfa127fb1d2484fa189c0b9e23e1892daa8e67c8415def2ff4f44c0",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0156-control",
+      "canonicalId": "contained-matrix-0156-control",
+      "sourceSha256": "ce13e52cbd676ad4f6482885a5c6972d1fee9f00e08eb547ca2fdb3da8e92620",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-count-0416-candidate",
+      "canonicalId": "contained-count-0416-candidate",
+      "sourceSha256": "1ef0ed7a225cd86a0c83f479fccab8c68dee4d18bc7a0a4a04247786413456ed",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-count-0416-control",
+      "canonicalId": "contained-matrix-0024-control",
+      "sourceSha256": "d1cc10132f947ef68f3b54631546e32b53f4438eb8baa716c8b84cd49907b9a6",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-count-0422-candidate",
+      "canonicalId": "contained-count-0422-candidate",
+      "sourceSha256": "761e48b250cda6ab450961d47960f095e28dfb89dd46ad96d60a27c9f6abdb8c",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": 58
+    },
+    {
+      "id": "contained-count-0422-control",
+      "canonicalId": "contained-matrix-0024-control",
+      "sourceSha256": "d1cc10132f947ef68f3b54631546e32b53f4438eb8baa716c8b84cd49907b9a6",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-count-0424-candidate",
+      "canonicalId": "contained-count-0424-candidate",
+      "sourceSha256": "b8483baeb0d59c016441f99af82665e0646b8bcf2351db9258c604463628484c",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-count-0424-control",
+      "canonicalId": "contained-count-0424-control",
+      "sourceSha256": "57bbe757a6700e5f8644e4048aa6d9d3c583414c79feaa6be9972bcf76d53c0b",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-count-0430-candidate",
+      "canonicalId": "contained-count-0430-candidate",
+      "sourceSha256": "66c5114445c9defdab51e9b95283eac9bcb75351c9f30acd5fc63bdb3bd48f3e",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-count-0430-control",
+      "canonicalId": "contained-count-0424-control",
+      "sourceSha256": "57bbe757a6700e5f8644e4048aa6d9d3c583414c79feaa6be9972bcf76d53c0b",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0124-candidate",
+      "canonicalId": "contained-matrix-0124-candidate",
+      "sourceSha256": "8ce0f593bc0712f4c80a6855782cc8f3a0da137a0bf762c12fd098ad7f160b96",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0124-control",
+      "canonicalId": "contained-matrix-0124-control",
+      "sourceSha256": "6289873cada331db468cbd124e27d303a28db02bc1a7d23a73c297b500c261ab",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0152-candidate",
+      "canonicalId": "contained-matrix-0152-candidate",
+      "sourceSha256": "aeb8e7ee09cbe713c57869c8904aba2d208b19ef82c9954b2a16ec7a32ac995c",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0152-control",
+      "canonicalId": "contained-matrix-0152-control",
+      "sourceSha256": "f9fd44ca2141aab1290dc9f9db23798d2898349a447729f137ac473079d0d426",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0176-candidate",
+      "canonicalId": "contained-matrix-0176-candidate",
+      "sourceSha256": "c9306d7d1e9bcfa06322cee0b9c36663db5641fb4f1e12de64f5aafcc59da8a3",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "contained-matrix-0176-control",
+      "canonicalId": "contained-matrix-0176-control",
+      "sourceSha256": "b2ac631a295fc8447ef4b55ccfb3ef3319c2a14a8b88ab5ec8d358ce28ebc2f3",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "object-use-rect-candidate",
+      "canonicalId": "object-use-rect-candidate",
+      "sourceSha256": "547f7273d56e62dc8739d0c8bfac0fb73d9e7b9b640a385cfec2aba2e2970a12",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "object-use-rect-control",
+      "canonicalId": "object-use-rect-control",
+      "sourceSha256": "a90e9f705c459a8cf65efa971301432286ed966fccf8549d429bb9a6a7b7f566",
+      "scale": 1,
+      "origin": "original-r62",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "forward-0",
+      "canonicalId": "forward-0",
+      "sourceSha256": "8199a0afbde6ac6ab5582ed566c93c30cc9ccd190b7e652f28b36a2b1ed3a504",
+      "scale": 1,
+      "origin": "r244-clip-path-order",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "forward-1",
+      "canonicalId": "forward-1",
+      "sourceSha256": "6027ca500ca331761caebdbe0aed50d059b8b7c7684ab6373bf2fe8c6de2ef61",
+      "scale": 1,
+      "origin": "r244-clip-path-order",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "forward-2",
+      "canonicalId": "forward-2",
+      "sourceSha256": "2632c4f4154ec247e2839525d3df59fbd5bf80a4aaf608bdee6e403e4797a3c5",
+      "scale": 1,
+      "origin": "r244-clip-path-order",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "forward-3",
+      "canonicalId": "forward-3",
+      "sourceSha256": "1ab0d245be74495104aa9c5d6e52823d1de246d6c12c16b05473c1d7ad13eaa4",
+      "scale": 1,
+      "origin": "r244-clip-path-order",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "reverse-0",
+      "canonicalId": "reverse-0",
+      "sourceSha256": "928a752582514729ade1a89968391f89d614b4b4ebceb9b821f793f1204c52d2",
+      "scale": 1,
+      "origin": "r244-clip-path-order",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "reverse-1",
+      "canonicalId": "reverse-1",
+      "sourceSha256": "4b629cd8c184104959748c1c7b2785aaa89ae2c0921e4577aa0883da5b2b4187",
+      "scale": 1,
+      "origin": "r244-clip-path-order",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "reverse-2",
+      "canonicalId": "reverse-2",
+      "sourceSha256": "fbd468c582e4ff19e98462fa9616a5ee415dc5f701bec04ff42b6c589c1b1900",
+      "scale": 1,
+      "origin": "r244-clip-path-order",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "reverse-3",
+      "canonicalId": "reverse-3",
+      "sourceSha256": "95a1b0b135100d340953ac3202d769f177d9150a0afa2afe70b6af663dc33531",
+      "scale": 1,
+      "origin": "r244-clip-path-order",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "explicit-close",
+      "canonicalId": "explicit-close",
+      "sourceSha256": "f1de6b00e41e313f1335edd2ead040ed69f6db649b7175675293e9ea8cc01e13",
+      "scale": 1,
+      "origin": "r244-clip-path-order",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "collinear-start",
+      "canonicalId": "collinear-start",
+      "sourceSha256": "548cef00eee7acec7c95b2118eb194c8a7b7b7b51cde6dc78ba3e53f93bfd7ec",
+      "scale": 1,
+      "origin": "r244-clip-path-order",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "compound-forward",
+      "canonicalId": "compound-forward",
+      "sourceSha256": "55edce79624745e5eaecc4d0f86252e30f4fa7212bfada4dcf93de42b3a1617b",
+      "scale": 1,
+      "origin": "r244-clip-path-order",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "compound-reverse",
+      "canonicalId": "compound-reverse",
+      "sourceSha256": "1688cdd0a0e91606d23ae3fd8c3b8633daa05b5194eadcefb5e58a552326244b",
+      "scale": 1,
+      "origin": "r244-clip-path-order",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "overlap-three-shear",
+      "canonicalId": "overlap-three-shear",
+      "sourceSha256": "89661e9ab1f1bffae39126c89e25e1bdd0680499e845b3eaf38a2fc6bbffd469",
+      "scale": 1,
+      "origin": "r247-ordered-clip-controls",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "overlap-three-reordered",
+      "canonicalId": "overlap-three-reordered",
+      "sourceSha256": "11bc4b2b11b5a7e634d2699e2b38ac062478dba4c0171e8c77a9afcc3c3aa34f",
+      "scale": 1,
+      "origin": "r247-ordered-clip-controls",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "adjacent-three-shear",
+      "canonicalId": "adjacent-three-shear",
+      "sourceSha256": "d908d1440d3ecfbb006a7925793787f01e6fff30faa138c1ae45a41a46351f71",
+      "scale": 1,
+      "origin": "r247-ordered-clip-controls",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "disjoint-three-shear",
+      "canonicalId": "disjoint-three-shear",
+      "sourceSha256": "b9a603aa5e2c9654c62ea1db26270bdee81876379edfe6fc7b8f4f759fbf93dd",
+      "scale": 1,
+      "origin": "r247-ordered-clip-controls",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "overlap-three-rotate",
+      "canonicalId": "overlap-three-rotate",
+      "sourceSha256": "574b3f13c7196026c8de19b3a1076f5a6d3eb64f5ccc18f444185821455cef28",
+      "scale": 1,
+      "origin": "r247-ordered-clip-controls",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "overlap-three-reflect",
+      "canonicalId": "overlap-three-reflect",
+      "sourceSha256": "8ff142b1d6ba036c63addc44e9943a35b7cded679d4d7288c6686798c598f4c5",
+      "scale": 1,
+      "origin": "r247-ordered-clip-controls",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "fallback-rectangle-path",
+      "canonicalId": "fallback-rectangle-path",
+      "sourceSha256": "dcc6333eee1f99bec3ccaa93c7023275cbb5e88b6ebb0df79609c9f95f087ad0",
+      "scale": 1,
+      "origin": "r247-ordered-clip-controls",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "count42-overlap",
+      "canonicalId": "count42-overlap",
+      "sourceSha256": "f31137b7842225f30892856cfd76aa96715d6a88cdb250c26ccf7b51d2e74b16",
+      "scale": 1,
+      "origin": "r247-ordered-clip-controls",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "count43-shear",
+      "canonicalId": "contained-count-0424-candidate",
+      "sourceSha256": "b8483baeb0d59c016441f99af82665e0646b8bcf2351db9258c604463628484c",
+      "scale": 1,
+      "origin": "r247-ordered-clip-controls",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "fallback-opacity",
+      "canonicalId": "fallback-opacity",
+      "sourceSha256": "803905602a96204696195b1c0569a94d235801dd4b65696afd7c6bda6da9c93e",
+      "scale": 1,
+      "origin": "r247-ordered-clip-controls",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "fallback-use",
+      "canonicalId": "fallback-use",
+      "sourceSha256": "cd79c2b61917e5b59f118b05686fc09c5c7fe60af31666ea31be425089fa9656",
+      "scale": 1,
+      "origin": "r247-ordered-clip-controls",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "fallback-two-paints",
+      "canonicalId": "fallback-two-paints",
+      "sourceSha256": "5359a180cdee31f2cd5787f94b9439e4821f062d3d5ecaa62235ab09e7a2c416",
+      "scale": 1,
+      "origin": "r247-ordered-clip-controls",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "fallback-output-origin",
+      "canonicalId": "fallback-output-origin",
+      "sourceSha256": "ebd4f8b6cbdbe8669a251071f0287dc9235bcb636ddd85cb22e8df5839c1eb2c",
+      "scale": 1,
+      "origin": "r247-ordered-clip-controls",
+      "originalResidualPixels": null
+    },
+    {
+      "id": "fallback-object-box",
+      "canonicalId": "fallback-object-box",
+      "sourceSha256": "fb06dc5c4d418436ad120f97d0aebcbee740086fa39264684fb27f1ed1ab7125",
+      "scale": 1,
+      "origin": "r247-ordered-clip-controls",
+      "originalResidualPixels": null
+    }
+  ],
+  "purposes": [
+    {
+      "id": "clip-geometric-content-0330-candidate",
+      "purposes": [
+        {
+          "id": "clip-geometric-content-0330-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-geometric-content-0330-control",
+      "purposes": [
+        {
+          "id": "clip-geometric-content-0330-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-geometric-content-0335-candidate",
+      "purposes": [
+        {
+          "id": "clip-geometric-content-0335-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-geometric-content-0335-control",
+      "purposes": [
+        {
+          "id": "clip-geometric-content-0335-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-geometric-content-0355-candidate",
+      "purposes": [
+        {
+          "id": "clip-geometric-content-0355-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-geometric-content-0355-control",
+      "purposes": [
+        {
+          "id": "clip-geometric-content-0355-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-geometric-content-0360-candidate",
+      "purposes": [
+        {
+          "id": "clip-geometric-content-0360-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-geometric-content-0360-control",
+      "purposes": [
+        {
+          "id": "clip-geometric-content-0360-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-union-expansion-0043-candidate",
+      "purposes": [
+        {
+          "id": "clip-union-expansion-0043-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-union-expansion-0043-control",
+      "purposes": [
+        {
+          "id": "clip-union-expansion-0043-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-union-expansion-0044-candidate",
+      "purposes": [
+        {
+          "id": "clip-union-expansion-0044-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-union-expansion-0044-control",
+      "purposes": [
+        {
+          "id": "clip-union-expansion-0044-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-union-expansion-0144-candidate",
+      "purposes": [
+        {
+          "id": "clip-union-expansion-0144-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-union-expansion-0144-control",
+      "purposes": [
+        {
+          "id": "clip-union-expansion-0144-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-union-expansion-0258-candidate",
+      "purposes": [
+        {
+          "id": "clip-union-expansion-0258-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-union-expansion-0258-control",
+      "purposes": [
+        {
+          "id": "clip-union-expansion-0258-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        },
+        {
+          "id": "clip-union-expansion-0366-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        },
+        {
+          "id": "clip-union-expansion-0114-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        },
+        {
+          "id": "clip-union-expansion-0222-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        },
+        {
+          "id": "clip-union-expansion-0330-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        },
+        {
+          "id": "clip-union-expansion-0078-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        },
+        {
+          "id": "clip-union-expansion-0294-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-union-expansion-0366-candidate",
+      "purposes": [
+        {
+          "id": "clip-union-expansion-0366-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-union-expansion-0114-candidate",
+      "purposes": [
+        {
+          "id": "clip-union-expansion-0114-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-union-expansion-0120-candidate",
+      "purposes": [
+        {
+          "id": "clip-union-expansion-0120-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-union-expansion-0120-control",
+      "purposes": [
+        {
+          "id": "clip-union-expansion-0120-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        },
+        {
+          "id": "clip-union-expansion-0228-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-union-expansion-0138-candidate",
+      "purposes": [
+        {
+          "id": "clip-union-expansion-0138-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-union-expansion-0138-control",
+      "purposes": [
+        {
+          "id": "clip-union-expansion-0138-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        },
+        {
+          "id": "clip-union-expansion-0246-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-union-expansion-0222-candidate",
+      "purposes": [
+        {
+          "id": "clip-union-expansion-0222-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-union-expansion-0228-candidate",
+      "purposes": [
+        {
+          "id": "clip-union-expansion-0228-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-union-expansion-0246-candidate",
+      "purposes": [
+        {
+          "id": "clip-union-expansion-0246-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-union-expansion-0330-candidate",
+      "purposes": [
+        {
+          "id": "clip-union-expansion-0330-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-union-expansion-0078-candidate",
+      "purposes": [
+        {
+          "id": "clip-union-expansion-0078-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "clip-union-expansion-0294-candidate",
+      "purposes": [
+        {
+          "id": "clip-union-expansion-0294-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0024-candidate",
+      "purposes": [
+        {
+          "id": "contained-matrix-0024-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0024-control",
+      "purposes": [
+        {
+          "id": "contained-matrix-0024-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        },
+        {
+          "id": "contained-matrix-0025-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        },
+        {
+          "id": "contained-count-0416-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        },
+        {
+          "id": "contained-count-0422-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0025-candidate",
+      "purposes": [
+        {
+          "id": "contained-matrix-0025-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0028-candidate",
+      "purposes": [
+        {
+          "id": "contained-matrix-0028-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0028-control",
+      "purposes": [
+        {
+          "id": "contained-matrix-0028-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0032-candidate",
+      "purposes": [
+        {
+          "id": "contained-matrix-0032-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0032-control",
+      "purposes": [
+        {
+          "id": "contained-matrix-0032-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0036-candidate",
+      "purposes": [
+        {
+          "id": "contained-matrix-0036-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0036-control",
+      "purposes": [
+        {
+          "id": "contained-matrix-0036-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0040-candidate",
+      "purposes": [
+        {
+          "id": "contained-matrix-0040-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0040-control",
+      "purposes": [
+        {
+          "id": "contained-matrix-0040-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0044-candidate",
+      "purposes": [
+        {
+          "id": "contained-matrix-0044-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0044-control",
+      "purposes": [
+        {
+          "id": "contained-matrix-0044-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0060-candidate",
+      "purposes": [
+        {
+          "id": "contained-matrix-0060-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0060-control",
+      "purposes": [
+        {
+          "id": "contained-matrix-0060-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0120-candidate",
+      "purposes": [
+        {
+          "id": "contained-matrix-0120-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0120-control",
+      "purposes": [
+        {
+          "id": "contained-matrix-0120-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0132-candidate",
+      "purposes": [
+        {
+          "id": "contained-matrix-0132-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0132-control",
+      "purposes": [
+        {
+          "id": "contained-matrix-0132-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0136-candidate",
+      "purposes": [
+        {
+          "id": "contained-matrix-0136-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0136-control",
+      "purposes": [
+        {
+          "id": "contained-matrix-0136-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0140-candidate",
+      "purposes": [
+        {
+          "id": "contained-matrix-0140-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0140-control",
+      "purposes": [
+        {
+          "id": "contained-matrix-0140-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0156-candidate",
+      "purposes": [
+        {
+          "id": "contained-matrix-0156-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0156-control",
+      "purposes": [
+        {
+          "id": "contained-matrix-0156-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-count-0416-candidate",
+      "purposes": [
+        {
+          "id": "contained-count-0416-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-count-0422-candidate",
+      "purposes": [
+        {
+          "id": "contained-count-0422-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-count-0424-candidate",
+      "purposes": [
+        {
+          "id": "contained-count-0424-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        },
+        {
+          "id": "count43-shear",
+          "purpose": "Separate painted-mask path beyond the native child limit",
+          "origin": "r247-ordered-clip-controls"
+        }
+      ]
+    },
+    {
+      "id": "contained-count-0424-control",
+      "purposes": [
+        {
+          "id": "contained-count-0424-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        },
+        {
+          "id": "contained-count-0430-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-count-0430-candidate",
+      "purposes": [
+        {
+          "id": "contained-count-0430-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0124-candidate",
+      "purposes": [
+        {
+          "id": "contained-matrix-0124-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0124-control",
+      "purposes": [
+        {
+          "id": "contained-matrix-0124-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0152-candidate",
+      "purposes": [
+        {
+          "id": "contained-matrix-0152-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0152-control",
+      "purposes": [
+        {
+          "id": "contained-matrix-0152-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0176-candidate",
+      "purposes": [
+        {
+          "id": "contained-matrix-0176-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "contained-matrix-0176-control",
+      "purposes": [
+        {
+          "id": "contained-matrix-0176-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "object-use-rect-candidate",
+      "purposes": [
+        {
+          "id": "object-use-rect-candidate",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "object-use-rect-control",
+      "purposes": [
+        {
+          "id": "object-use-rect-control",
+          "purpose": "Original R62 actual-input acceptance and independent paired control.",
+          "origin": "original-r62"
+        }
+      ]
+    },
+    {
+      "id": "forward-0",
+      "purposes": [
+        {
+          "id": "forward-0",
+          "purpose": "Single native path: cyclic start and direction before affine placement",
+          "origin": "r244-clip-path-order"
+        }
+      ]
+    },
+    {
+      "id": "forward-1",
+      "purposes": [
+        {
+          "id": "forward-1",
+          "purpose": "Single native path: cyclic start and direction before affine placement",
+          "origin": "r244-clip-path-order"
+        }
+      ]
+    },
+    {
+      "id": "forward-2",
+      "purposes": [
+        {
+          "id": "forward-2",
+          "purpose": "Single native path: cyclic start and direction before affine placement",
+          "origin": "r244-clip-path-order"
+        }
+      ]
+    },
+    {
+      "id": "forward-3",
+      "purposes": [
+        {
+          "id": "forward-3",
+          "purpose": "Single native path: cyclic start and direction before affine placement",
+          "origin": "r244-clip-path-order"
+        }
+      ]
+    },
+    {
+      "id": "reverse-0",
+      "purposes": [
+        {
+          "id": "reverse-0",
+          "purpose": "Single native path: cyclic start and direction before affine placement",
+          "origin": "r244-clip-path-order"
+        }
+      ]
+    },
+    {
+      "id": "reverse-1",
+      "purposes": [
+        {
+          "id": "reverse-1",
+          "purpose": "Single native path: cyclic start and direction before affine placement",
+          "origin": "r244-clip-path-order"
+        }
+      ]
+    },
+    {
+      "id": "reverse-2",
+      "purposes": [
+        {
+          "id": "reverse-2",
+          "purpose": "Single native path: cyclic start and direction before affine placement",
+          "origin": "r244-clip-path-order"
+        }
+      ]
+    },
+    {
+      "id": "reverse-3",
+      "purposes": [
+        {
+          "id": "reverse-3",
+          "purpose": "Single native path: cyclic start and direction before affine placement",
+          "origin": "r244-clip-path-order"
+        }
+      ]
+    },
+    {
+      "id": "explicit-close",
+      "purposes": [
+        {
+          "id": "explicit-close",
+          "purpose": "Explicit closing line and close verb",
+          "origin": "r244-clip-path-order"
+        }
+      ]
+    },
+    {
+      "id": "collinear-start",
+      "purposes": [
+        {
+          "id": "collinear-start",
+          "purpose": "Collinear native contour start",
+          "origin": "r244-clip-path-order"
+        }
+      ]
+    },
+    {
+      "id": "compound-forward",
+      "purposes": [
+        {
+          "id": "compound-forward",
+          "purpose": "Two adjacent contours in one winding path, independent of SVG child union",
+          "origin": "r244-clip-path-order"
+        }
+      ]
+    },
+    {
+      "id": "compound-reverse",
+      "purposes": [
+        {
+          "id": "compound-reverse",
+          "purpose": "Reversed adjacent contours in one winding path",
+          "origin": "r244-clip-path-order"
+        }
+      ]
+    },
+    {
+      "id": "overlap-three-shear",
+      "purposes": [
+        {
+          "id": "overlap-three-shear",
+          "purpose": "Ordered native builder with three overlapping operands",
+          "origin": "r247-ordered-clip-controls"
+        }
+      ]
+    },
+    {
+      "id": "overlap-three-reordered",
+      "purposes": [
+        {
+          "id": "overlap-three-reordered",
+          "purpose": "Distinct source order for the same three operands",
+          "origin": "r247-ordered-clip-controls"
+        }
+      ]
+    },
+    {
+      "id": "adjacent-three-shear",
+      "purposes": [
+        {
+          "id": "adjacent-three-shear",
+          "purpose": "Three adjacent operands and preserved cyclic closure",
+          "origin": "r247-ordered-clip-controls"
+        }
+      ]
+    },
+    {
+      "id": "disjoint-three-shear",
+      "purposes": [
+        {
+          "id": "disjoint-three-shear",
+          "purpose": "Three disjoint contours with legitimate native coverage",
+          "origin": "r247-ordered-clip-controls"
+        }
+      ]
+    },
+    {
+      "id": "overlap-three-rotate",
+      "purposes": [
+        {
+          "id": "overlap-three-rotate",
+          "purpose": "Ordered union through rotation",
+          "origin": "r247-ordered-clip-controls"
+        }
+      ]
+    },
+    {
+      "id": "overlap-three-reflect",
+      "purposes": [
+        {
+          "id": "overlap-three-reflect",
+          "purpose": "Reflected affine placement after ordered source construction",
+          "origin": "r247-ordered-clip-controls"
+        }
+      ]
+    },
+    {
+      "id": "fallback-rectangle-path",
+      "purposes": [
+        {
+          "id": "fallback-rectangle-path",
+          "purpose": "Authored path paint remains distinct from primitive rectangle paint",
+          "origin": "r247-ordered-clip-controls"
+        }
+      ]
+    },
+    {
+      "id": "count42-overlap",
+      "purposes": [
+        {
+          "id": "count42-overlap",
+          "purpose": "Resolved-path boundary at the native child limit",
+          "origin": "r247-ordered-clip-controls"
+        }
+      ]
+    },
+    {
+      "id": "fallback-opacity",
+      "purposes": [
+        {
+          "id": "fallback-opacity",
+          "purpose": "Enclosing clip outside an existing isolated source",
+          "origin": "r247-ordered-clip-controls"
+        }
+      ]
+    },
+    {
+      "id": "fallback-use",
+      "purposes": [
+        {
+          "id": "fallback-use",
+          "purpose": "Retained use source and clip-mask ownership",
+          "origin": "r247-ordered-clip-controls"
+        }
+      ]
+    },
+    {
+      "id": "fallback-two-paints",
+      "purposes": [
+        {
+          "id": "fallback-two-paints",
+          "purpose": "Ordered multiple paints under one painted clip",
+          "origin": "r247-ordered-clip-controls"
+        }
+      ]
+    },
+    {
+      "id": "fallback-output-origin",
+      "purposes": [
+        {
+          "id": "fallback-output-origin",
+          "purpose": "Fractional source and bounded bitmap origin",
+          "origin": "r247-ordered-clip-controls"
+        }
+      ]
+    },
+    {
+      "id": "fallback-object-box",
+      "purposes": [
+        {
+          "id": "fallback-object-box",
+          "purpose": "Direct object-box consumer of the clip registration",
+          "origin": "r247-ordered-clip-controls"
+        }
+      ]
+    }
+  ]
+}

@@ -316,16 +316,19 @@ internal static class SvgClipPathSyntax
                         // replacing them with a geometric intersection of flattened vertices.
                         SvgAffineTransform map = pending.Transform;
                         if (parent is {} viewport) map = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(map);
-                        (SvgClipBox bounds, int contentIndex) = clipPolygon.NestedClipId is not null
-                            ? RegisterNestedResourceMask(pending.ClipId, clipPolygon, map, state.Scene, state, workCounter, cancellationToken)
-                            : clipPolygon.Register(map, clipPolygon.UsesNativeReplay, state, state.Scene, workCounter, cancellationToken);
+                        SvgClipRegistration registration;
+                        if (clipPolygon.NestedClipId is not null)
+                        {
+                            (SvgClipBox nestedBounds, int nestedIndex) = RegisterNestedResourceMask(pending.ClipId, clipPolygon, map, state.Scene, state, workCounter, cancellationToken);
+                            registration = new(nestedBounds, nestedIndex, -1);
+                        }
+                        else registration = clipPolygon.Register(map, clipPolygon.UsesNativeReplay, state, state.Scene, workCounter, cancellationToken);
+                        SvgClipBox bounds = registration.Bounds;
                         SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
                         operation.Resolved = true;
                         operation.Value = 255;
-                        operation.Region = bounds;
-                        operation.ContentIndex = contentIndex;
-                        operation.RegionKind = clipPolygon.NestedClipId is not null || clipPolygon.UsesMaskFallback ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.AffineViewport;
-                        if (clipPolygon.NestedClipId is not null || clipPolygon.UsesMaskFallback) operation.Region = null;
+                        registration.Bind(operation, state);
+                        if (clipPolygon.NestedClipId is not null) { operation.RegionKind = SvgLayerRegionKind.Mask; operation.Region = null; }
                         SvgLeafMaskOperation? contentBounds = null;
                         if (clipPolygon.NestedClipId is not null)
                         {
@@ -829,23 +832,24 @@ internal static class SvgClipPathSyntax
                     SvgAffineTransform map = pending.Transform;
                     if (parent is {} viewport)
                         map = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(map);
-                    (SvgClipBox bounds, int contentIndex) = polygon.NestedClipId is not null
-                        ? RegisterNestedResourceMask(pending.ClipId, polygon, map, state.Scene, state, workCounter, cancellationToken)
-                        : polygon.Register(map, polygon.UsesNativeReplay, state, state.Scene, workCounter, cancellationToken);
-                    if (ContainsIsolatedLayer(pending))
+                    SvgClipRegistration registration;
+                    if (polygon.NestedClipId is not null)
                     {
-                        bool mask = polygon.NestedClipId is not null || polygon.UsesMaskFallback;
-                        SvgDrawCommand begin = new(SvgDrawCommandKind.BeginGroup, -1, 255, mask ? null : bounds, contentIndex, 255)
-                        { RegionKind = mask ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.AffineViewport };
-                        QueueScope(pending, begin);
-                        continue;
+                        (SvgClipBox nestedBounds, int nestedIndex) = RegisterNestedResourceMask(pending.ClipId, polygon, map, state.Scene, state, workCounter, cancellationToken);
+                        registration = new(nestedBounds, nestedIndex, -1);
                     }
+                    else registration = polygon.Register(map, polygon.UsesNativeReplay, state, state.Scene, workCounter, cancellationToken);
+                    SvgClipBox bounds = registration.Bounds;
                     SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
                     operation.Resolved = true;
                     operation.Value = 255;
-                    operation.Region = polygon.NestedClipId is not null || polygon.UsesMaskFallback ? null : bounds;
-                    operation.ContentIndex = contentIndex;
-                    operation.RegionKind = polygon.NestedClipId is not null || polygon.UsesMaskFallback ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.AffineViewport;
+                    registration.Bind(operation, state);
+                    if (polygon.NestedClipId is not null) { operation.Region = null; operation.RegionKind = SvgLayerRegionKind.Mask; }
+                    if (ContainsIsolatedLayer(pending))
+                    {
+                        WrapOperation(pending, operation);
+                        continue;
+                    }
                     for (int commandIndex = pending.FirstCommandIndex; commandIndex < pending.EndCommandIndex; commandIndex++)
                     {
                         workCounter.Consume(cancellationToken);
@@ -882,6 +886,9 @@ internal static class SvgClipPathSyntax
         {
             if (operation.AffineViewport is {} clip)
                 (operation.Region, operation.ContentIndex) = clip.Register(state, pending.Scene, workCounter, cancellationToken);
+            if (operation.EnclosingClip is {} enclosing)
+                QueueScope(pending, new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, enclosing.RecordingScope.Value,
+                    enclosing.SourceOpacity, enclosing.Region, enclosing.ContentIndex, enclosing.Value) { RegionKind = enclosing.RegionKind });
             QueueScope(pending, new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, operation.RecordingScope.Value,
                 operation.SourceOpacity, operation.Region, operation.ContentIndex, operation.Value) { RegionKind = operation.RegionKind });
         }
@@ -905,7 +912,7 @@ internal static class SvgClipPathSyntax
             {
                 workCounter.Consume(cancellationToken);
                 if (pending.Scene.CommandAt(index) is { Kind: SvgDrawCommandKind.BeginGroup } command
-                    && (command.SourceOpacity.Value != 1 || command.RegionKind is SvgLayerRegionKind.Mask or SvgLayerRegionKind.Filter)) return true;
+                    && (command.SourceOpacity.Value != 1 || command.RegionKind is SvgLayerRegionKind.Mask or SvgLayerRegionKind.ClipMask or SvgLayerRegionKind.Filter)) return true;
             }
             return false;
         }

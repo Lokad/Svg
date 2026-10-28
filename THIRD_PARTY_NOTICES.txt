@@ -49,6 +49,7 @@ and src/utils/SkFloatUtils.h at that revision (Copyright 2012 Google Inc.).
 Source revision: f8b66b7597c4cc859d3ed190e9c6872241e6721c
 Source files: src/core/SkEdgeClipper.cpp, src/core/SkLineClipper.cpp, src/core/SkEdgeBuilder.cpp,
 src/pathops/SkPathOpsConic.cpp, src/pathops/SkOpEdgeBuilder.cpp,
+src/pathops/SkOpBuilder.cpp, src/pathops/SkPathWriter.cpp,
 src/core/SkGeometry.cpp, src/core/SkCubics.cpp, src/core/SkQuads.cpp,
 src/core/SkBezierCurves.cpp, src/core/SkFloatingPoint.cpp, src/core/SkEdge.cpp, src/core/SkScan_Path.cpp,
 src/core/SkStrokerPriv.cpp, src/core/SkStroke.cpp, src/core/SkPathBuilder.cpp,

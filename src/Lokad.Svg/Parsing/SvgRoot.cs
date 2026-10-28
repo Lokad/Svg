@@ -1042,7 +1042,7 @@ internal readonly record struct SvgSymbolFillBinding(bool IsInherited, SvgPaintO
 internal enum SvgDrawCommandKind { Geometry, BeginGroup, EndGroup }
 
 /// <summary>Separates filter-output clipping, mask allocation regions and geometric viewport clips at layer restore.</summary>
-internal enum SvgLayerRegionKind : byte { Mask, Viewport, AffineViewport, Bounds, Filter, FilterOutputClip }
+internal enum SvgLayerRegionKind : byte { Mask, Viewport, AffineViewport, Bounds, Filter, FilterOutputClip, ClipMask }
 
 /// <summary>References retained geometry or marks an isolated layer; mask alpha applies before the separate outer opacity.</summary>
 internal readonly record struct SvgDrawCommand(SvgDrawCommandKind Kind, int GeometryIndex, SvgPaintOpacity SourceOpacity, SvgClipBox? MaskRegion, int MaskContentIndex, byte MaskAlpha)

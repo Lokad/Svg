@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Resolve clip unions once from ordered original children, preserving native
+  winding and contour starts. Reclassify straight controls after float placement
+  and retain enclosing clips and authored paint coverage in large-child replay.
+  See the [native controls](tests/Research/ordered-clip-coverage/README.md).
+
 - Admit finite stroke geometry after bitmap clipping, validating emitted fixed
   edges before allocation. Classify retained curve controls directly to preserve
   round-cap coverage across large extents, fractional placement and opacity. See

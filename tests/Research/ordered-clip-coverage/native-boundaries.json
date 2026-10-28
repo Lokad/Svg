@@ -1,0 +1,108 @@
+{
+  "browser": "Chromium 153.0.8010.52",
+  "method": "CDP Page.printToPDF; decoded clip path stream normalized from PDF scale to SVG user coordinates. Separate enclosing rectangular clip retained. Raster reference images independently test the complete rendering result.",
+  "vectors": [
+    {
+      "id": "clip-union-expansion-0120-candidate",
+      "input": "inputs/clip-union-expansion-0120-candidate.svg",
+      "sourceSha256": "8c69c0cc637dedd976cad8d166e606d6c46a9f0e99d84dc3fc817c1ea6782d17",
+      "children": 2,
+      "isEvenOdd": true,
+      "points": [
+        [
+          16,
+          24
+        ],
+        [
+          8,
+          24
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          24,
+          8
+        ],
+        [
+          24,
+          24
+        ],
+        [
+          16,
+          24
+        ]
+      ],
+      "closed": true
+    },
+    {
+      "id": "overlap-three-shear",
+      "input": "inputs/overlap-three-shear.svg",
+      "sourceSha256": "89661e9ab1f1bffae39126c89e25e1bdd0680499e845b3eaf38a2fc6bbffd469",
+      "children": 3,
+      "isEvenOdd": true,
+      "points": [
+        [
+          12,
+          24
+        ],
+        [
+          8,
+          24
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          24,
+          8
+        ],
+        [
+          24,
+          24
+        ],
+        [
+          12,
+          24
+        ]
+      ],
+      "closed": true
+    },
+    {
+      "id": "overlap-three-reordered",
+      "input": "inputs/overlap-three-reordered.svg",
+      "sourceSha256": "11bc4b2b11b5a7e634d2699e2b38ac062478dba4c0171e8c77a9afcc3c3aa34f",
+      "children": 3,
+      "isEvenOdd": true,
+      "points": [
+        [
+          12,
+          24
+        ],
+        [
+          8,
+          24
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          24,
+          8
+        ],
+        [
+          24,
+          24
+        ],
+        [
+          12,
+          24
+        ]
+      ],
+      "closed": true
+    }
+  ]
+}

@@ -1,8 +1,13 @@
+// Ordered convex union and deferred lines adapt SkOpBuilder.cpp / SkPathWriter.cpp.
 // Native pre-intersection conic splitting adapts pinned SkOpEdgeBuilder.cpp / SkGeometry.cpp.
-// Copyright 2012 Google Inc.; 2006 The Android Open Source Project. See THIRD_PARTY_NOTICES.txt.
+// Copyright 2012, 2014 Google Inc.; 2006 The Android Open Source Project. See THIRD_PARTY_NOTICES.txt.
 using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
+
+/// <summary>Owns one resolved path until its caller adopts it; parity belongs to the native boundary operation.</summary>
+internal readonly record struct SvgClipUnionResult(SvgAuthoredPath Path, bool IsEvenOdd);
+internal enum SvgClipUnionMode : byte { Pairwise, ConvexBuilder }
 
 internal static partial class SvgClipUnion
 {
@@ -26,9 +31,108 @@ internal static partial class SvgClipUnion
     internal static SvgAuthoredPath ResolveNativeUnion(SvgAuthoredPath first, bool firstEvenOdd,
         SvgAuthoredPath second, bool secondEvenOdd, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
-        using RenderBudget.BudgetReservation allowance = budget.Reserve(512, SvgMemoryCategory.Geometry);
         using BudgetedParserList<CurveEdge> edges = new(budget, SvgMemoryCategory.Geometry, work, token);
-        AppendSource(first, 0, edges, work, token); AppendSource(second, 1, edges, work, token);
+        AppendSource(first, 0, edges, work, token);
+        AppendSource(second, 1, edges, work, token);
+        return ResolveBoundary(edges, firstEvenOdd, secondEvenOdd, SvgClipUnionMode.Pairwise, budget, work, token);
+    }
+
+    /// <summary>Resolves original operands once, preserving native convex-builder normalization and source order.</summary>
+    /// <remarks>Input paths remain borrowed. Source preparation, convexity, copies and boundary visits charge work/token. Temporary owners release on failure; success transfers the returned path owner. All source directions must be nondegenerate and convex for common-winding construction; other inputs retain ordered pairwise operations.</remarks>
+    internal static SvgClipUnionResult ResolveOrdered(ReadOnlySpan<SvgClipChild> children, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    {
+        if (children.Length < 2 || children.Length > 42) throw new ArgumentOutOfRangeException(nameof(children));
+        using RenderBudget.BudgetReservation allowance = budget.Reserve(512, SvgMemoryCategory.Geometry);
+        Span<SvgConvexDirection> directions = stackalloc SvgConvexDirection[children.Length];
+        bool allConvex = true;
+        for (int index = 0; index < children.Length; index++)
+        {
+            work.Consume(token);
+            using SvgPreparedPathContours prepared = children[index].Path.Prepare(SvgAffineTransform.Identity, children[index].IsEvenOdd, budget, work, token);
+            long classification = prepared.Points.Length + (long)prepared.QuadSpans.Length + 2L * prepared.CubicSpans.Length;
+            for (long visit = 0; visit < classification; visit++) work.Consume(token);
+            directions[index] = prepared.ContourEnds.Length == 1
+                ? SvgRawContourConvexity.Direction(prepared.Points, prepared.QuadSpans, prepared.CubicSpans, token)
+                : SvgConvexDirection.Unknown;
+            if (directions[index] == SvgConvexDirection.Unknown) { allConvex = false; break; }
+        }
+        if (!allConvex)
+        {
+            SvgAuthoredPath result = children[0].Path.Copy(SvgAffineTransform.Identity, budget, work, token);
+            bool parity = children[0].IsEvenOdd;
+            try
+            {
+                for (int index = 1; index < children.Length; index++)
+                {
+                    SvgAuthoredPath next = ResolveNativeUnion(result, parity, children[index].Path, children[index].IsEvenOdd, budget, work, token);
+                    result.Dispose();
+                    result = next;
+                    parity = false;
+                }
+                return new(result, false);
+            }
+            catch { result.Dispose(); throw; }
+        }
+        using BudgetedParserList<CurveEdge> edges = new(budget, SvgMemoryCategory.Geometry, work, token);
+        for (int index = 0; index < children.Length; index++)
+        {
+            int first = edges.Count;
+            AppendSource(children[index].Path, index, edges, work, token);
+            if (directions[index] == SvgConvexDirection.Clockwise)
+                ReverseOperand(children[index].Path, first, edges.Count, edges, work, token);
+        }
+        return new(ResolveBoundary(edges, false, false, SvgClipUnionMode.ConvexBuilder, budget, work, token), true);
+
+        static void ReverseOperand(SvgAuthoredPath source, int first, int end, BudgetedParserList<CurveEdge> edges, ParserWorkCounter work, CancellationToken token)
+        {
+            SvgDevicePoint last = default;
+            foreach (SvgAuthoredPathCommand command in source.Commands)
+            {
+                work.Consume(token);
+                SvgDevicePoint? endpoint = command.Verb switch
+                {
+                    SvgAuthoredPathVerb.Move or SvgAuthoredPathVerb.Line => command.First,
+                    SvgAuthoredPathVerb.Quadratic or SvgAuthoredPathVerb.Conic => command.Second,
+                    SvgAuthoredPathVerb.Cubic or SvgAuthoredPathVerb.Arc => command.Third,
+                    _ => null
+                };
+                if (endpoint is {} point) last = SvgAuthoredPath.MapPoint(source.SceneMap, point, new(0, 0));
+            }
+            for (int left = first, right = end - 1; left <= right; left++, right--)
+            {
+                work.Consume(token);
+                CurveEdge a = edges[left], b = edges[right];
+                edges[left] = Reverse(b);
+                edges[right] = Reverse(a);
+            }
+            int rotate = -1;
+            for (int index = first; index < end; index++)
+            {
+                work.Consume(token);
+                if (edges[index].Curve.Start == last) { rotate = index - first; break; }
+            }
+            if (rotate < 0) throw new InvalidOperationException("Native reversed source start is missing.");
+            for (int count = 0; count < rotate; count++)
+            {
+                CurveEdge initial = edges[first];
+                for (int index = first; index + 1 < end; index++) { work.Consume(token); edges[index] = edges[index + 1]; }
+                edges[end - 1] = initial;
+            }
+
+            static CurveEdge Reverse(CurveEdge edge)
+            {
+                SvgClipCurve curve = edge.Curve;
+                return edge with { Curve = curve with { Start = curve.End, End = curve.Start,
+                    First = curve.Kind == SvgMeasuredCurveKind.Cubic ? curve.Second : curve.First,
+                    Second = curve.Kind == SvgMeasuredCurveKind.Cubic ? curve.First : curve.Second } };
+            }
+        }
+    }
+
+    private static SvgAuthoredPath ResolveBoundary(BudgetedParserList<CurveEdge> edges, bool firstEvenOdd, bool secondEvenOdd,
+        SvgClipUnionMode mode, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    {
+        using RenderBudget.BudgetReservation allowance = budget.Reserve(512, SvgMemoryCategory.Geometry);
         using BudgetedParserList<CurveCut> cuts = new(budget, SvgMemoryCategory.Geometry, work, token);
         for (int index = 0; index < edges.Count; index++)
         {
@@ -39,6 +143,7 @@ internal static partial class SvgClipUnion
             for (int right = left + 1; right < edges.Count; right++)
             {
                 work.Consume(token);
+                if (mode == SvgClipUnionMode.ConvexBuilder && edges[left].Child == edges[right].Child) continue;
                 Intersections(edges[left].Curve, edges[right].Curve, left, right, cuts, work, token);
             }
         cuts.Sort(work, token);
@@ -107,11 +212,30 @@ internal static partial class SvgClipUnion
             SvgDevicePoint start = boundary[seed].Start;
             output.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, start, default, default));
             int current = seed;
+            SvgDevicePoint deferredStart = start, deferredEnd = default;
+            bool hasDeferredLine = false;
             while (true)
             {
                 work.Consume(token);
                 CurveBoundary part = boundary[current]; boundary[current] = part with { Emitted = true }; remaining--;
-                output.Add(edges[part.Edge].Curve.Cut(part.First, part.Last, part.End));
+                if (edges[part.Edge].Curve.Kind == SvgMeasuredCurveKind.Line)
+                {
+                    if (hasDeferredLine && ChangedSlopes(deferredStart, deferredEnd, part.End, work, token))
+                    {
+                        output.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, deferredEnd, default, default));
+                        deferredStart = deferredEnd;
+                    }
+                    deferredEnd = part.End;
+                    hasDeferredLine = true;
+                }
+                else
+                {
+                    if (hasDeferredLine)
+                        output.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, deferredEnd, default, default));
+                    output.Add(edges[part.Edge].Curve.Cut(part.First, part.Last, part.End));
+                    deferredStart = part.End;
+                    hasDeferredLine = false;
+                }
                 if (part.End == start) break;
                 int next = -1;
                 for (int index = 0; index < boundary.Count; index++)
@@ -122,99 +246,113 @@ internal static partial class SvgClipUnion
                 if (next < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The native curve clip union boundary could not be linked.");
                 current = next;
             }
+            if (hasDeferredLine)
+                output.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, deferredEnd, default, default));
             output.Add(new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
         }
         OwnedParserArray<SvgAuthoredPathCommand> owned = output.Detach();
         try { return SvgAuthoredPath.Create(owned, SvgAffineTransform.Identity, budget); }
         catch { owned.Dispose(); throw; }
 
+
+
+        static bool ChangedSlopes(SvgDevicePoint first, SvgDevicePoint middle, SvgDevicePoint last, ParserWorkCounter work, CancellationToken token)
+        {
+            work.Consume(token);
+            float ax = (float)middle.X - (float)first.X, ay = (float)middle.Y - (float)first.Y;
+            float bx = (float)last.X - (float)middle.X, by = (float)last.Y - (float)middle.Y;
+            return ax * by != ay * bx;
+        }
+
         static bool Filled(int winding, bool parity) => parity ? (winding & 1) != 0 : winding != 0;
 
-        static void AppendSource(SvgAuthoredPath source, int child, BudgetedParserList<CurveEdge> edges, ParserWorkCounter work, CancellationToken token)
-        {
-            SvgDevicePoint current = default, first = default;
-            bool active = false;
-            Span<SvgEndpointConic> arcs = stackalloc SvgEndpointConic[SvgEndpointArc.MaximumConicCount];
-            foreach (SvgAuthoredPathCommand command in source.Commands)
-            {
-                work.Consume(token);
-                if (command.Verb == SvgAuthoredPathVerb.Move)
-                {
-                    if (active && current != first) Add(new(SvgMeasuredCurveKind.Line, current, default, default, first, 1), source.SceneMap, child, edges, work, token);
-                    current = first = command.First; active = true; continue;
-                }
-                if (command.Verb is SvgAuthoredPathVerb.End or SvgAuthoredPathVerb.Close)
-                {
-                    if (active && current != first) Add(new(SvgMeasuredCurveKind.Line, current, default, default, first, 1), source.SceneMap, child, edges, work, token);
-                    current = first; active = false; continue;
-                }
-                if (command.Verb == SvgAuthoredPathVerb.Arc)
-                {
-                    for (int phase = 0; phase <= SvgEndpointArc.MaximumConicCount; phase++) work.Consume(token);
-                    int count = SvgEndpointArc.Convert(current, command.First.X, command.First.Y, command.Second.X,
-                        (command.ArcFlags & SvgAuthoredArcFlags.Large) != 0, (command.ArcFlags & SvgAuthoredArcFlags.Sweep) != 0, command.Third, arcs, token);
-                    if (count == 0) Add(new(SvgMeasuredCurveKind.Line, current, default, default, command.Third, 1), source.SceneMap, child, edges, work, token);
-                    else for (int index = 0; index < count; index++)
-                    {
-                        Add(new(SvgMeasuredCurveKind.Conic, current, arcs[index].Control, default, arcs[index].End, arcs[index].Weight), source.SceneMap, child, edges, work, token);
-                        current = arcs[index].End;
-                    }
-                    current = command.Third; continue;
-                }
-                SvgClipCurve curve = command.Verb switch
-                {
-                    SvgAuthoredPathVerb.Line => new(SvgMeasuredCurveKind.Line, current, default, default, command.First, 1),
-                    SvgAuthoredPathVerb.Quadratic => new(SvgMeasuredCurveKind.Quadratic, current, command.First, default, command.Second, 1),
-                    SvgAuthoredPathVerb.Conic => new(SvgMeasuredCurveKind.Conic, current, command.First, default, command.Second, (float)command.Third.X),
-                    SvgAuthoredPathVerb.Cubic => new(SvgMeasuredCurveKind.Cubic, current, command.First, command.Second, command.Third, 1),
-                    _ => throw new InvalidOperationException("Invalid native clip curve verb.")
-                };
-                Add(curve, source.SceneMap, child, edges, work, token); current = curve.End;
-            }
-            if (active && current != first) Add(new(SvgMeasuredCurveKind.Line, current, default, default, first, 1), source.SceneMap, child, edges, work, token);
 
-            // Native path-ops splits a conic at the float quadratic-curvature
-            // parameter before intersection construction, even if no other edge cuts it.
-            static void Add(SvgClipCurve curve, SvgAffineTransform map, int child, BudgetedParserList<CurveEdge> edges, ParserWorkCounter work, CancellationToken token)
+    }
+
+    private static void AppendSource(SvgAuthoredPath source, int child, BudgetedParserList<CurveEdge> edges, ParserWorkCounter work, CancellationToken token)
+    {
+        SvgDevicePoint current = default, first = default;
+        bool active = false;
+        Span<SvgEndpointConic> arcs = stackalloc SvgEndpointConic[SvgEndpointArc.MaximumConicCount];
+        foreach (SvgAuthoredPathCommand command in source.Commands)
+        {
+            work.Consume(token);
+            if (command.Verb == SvgAuthoredPathVerb.Move)
             {
-                for (int phase = 0; phase < 4; phase++) work.Consume(token);
-                curve = curve with { Start = SvgAuthoredPath.MapPoint(map, curve.Start, new(0, 0)), First = SvgAuthoredPath.MapPoint(map, curve.First, new(0, 0)), Second = SvgAuthoredPath.MapPoint(map, curve.Second, new(0, 0)), End = SvgAuthoredPath.MapPoint(map, curve.End, new(0, 0)) };
-                if (curve.Kind == SvgMeasuredCurveKind.Cubic)
+                if (active && current != first) Add(new(SvgMeasuredCurveKind.Line, current, default, default, first, 1), source.SceneMap, child, edges, work, token);
+                current = first = command.First; active = true; continue;
+            }
+            if (command.Verb is SvgAuthoredPathVerb.End or SvgAuthoredPathVerb.Close)
+            {
+                if (active && current != first) Add(new(SvgMeasuredCurveKind.Line, current, default, default, first, 1), source.SceneMap, child, edges, work, token);
+                current = first; active = false; continue;
+            }
+            if (command.Verb == SvgAuthoredPathVerb.Arc)
+            {
+                for (int phase = 0; phase <= SvgEndpointArc.MaximumConicCount; phase++) work.Consume(token);
+                int count = SvgEndpointArc.Convert(current, command.First.X, command.First.Y, command.Second.X,
+                    (command.ArcFlags & SvgAuthoredArcFlags.Large) != 0, (command.ArcFlags & SvgAuthoredArcFlags.Sweep) != 0, command.Third, arcs, token);
+                if (count == 0) Add(new(SvgMeasuredCurveKind.Line, current, default, default, command.Third, 1), source.SceneMap, child, edges, work, token);
+                else for (int index = 0; index < count; index++)
                 {
-                    double dx = curve.End.X - curve.Start.X, dy = curve.End.Y - curve.Start.Y;
-                    if ((dx != 0 || dy != 0)
-                        && (curve.First.X - curve.Start.X) * dy == (curve.First.Y - curve.Start.Y) * dx
-                        && (curve.Second.X - curve.Start.X) * dy == (curve.Second.Y - curve.Start.Y) * dx)
-                        curve = new(SvgMeasuredCurveKind.Line, curve.Start, default, default, curve.End, 1);
-                    else if (curve.End.X + 3 * (curve.First.X - curve.Second.X) - curve.Start.X == 0
-                        && curve.End.Y + 3 * (curve.First.Y - curve.Second.Y) - curve.Start.Y == 0)
-                        curve = new(SvgMeasuredCurveKind.Quadratic, curve.Start,
-                            SvgClipCurve.Narrow(new(1.5 * curve.First.X - .5 * curve.Start.X, 1.5 * curve.First.Y - .5 * curve.Start.Y)), default, curve.End, 1);
+                    Add(new(SvgMeasuredCurveKind.Conic, current, arcs[index].Control, default, arcs[index].End, arcs[index].Weight), source.SceneMap, child, edges, work, token);
+                    current = arcs[index].End;
                 }
-                if (curve.Kind == SvgMeasuredCurveKind.Line && curve.Start == curve.End) return;
-                if (curve.Kind is SvgMeasuredCurveKind.Conic or SvgMeasuredCurveKind.Quadratic)
+                current = command.Third; continue;
+            }
+            SvgClipCurve curve = command.Verb switch
+            {
+                SvgAuthoredPathVerb.Line => new(SvgMeasuredCurveKind.Line, current, default, default, command.First, 1),
+                SvgAuthoredPathVerb.Quadratic => new(SvgMeasuredCurveKind.Quadratic, current, command.First, default, command.Second, 1),
+                SvgAuthoredPathVerb.Conic => new(SvgMeasuredCurveKind.Conic, current, command.First, default, command.Second, (float)command.Third.X),
+                SvgAuthoredPathVerb.Cubic => new(SvgMeasuredCurveKind.Cubic, current, command.First, command.Second, command.Third, 1),
+                _ => throw new InvalidOperationException("Invalid native clip curve verb.")
+            };
+            Add(curve, source.SceneMap, child, edges, work, token); current = curve.End;
+        }
+        if (active && current != first) Add(new(SvgMeasuredCurveKind.Line, current, default, default, first, 1), source.SceneMap, child, edges, work, token);
+
+        // Native path-ops splits a conic at the float quadratic-curvature
+        // parameter before intersection construction, even if no other edge cuts it.
+        static void Add(SvgClipCurve curve, SvgAffineTransform map, int child, BudgetedParserList<CurveEdge> edges, ParserWorkCounter work, CancellationToken token)
+        {
+            for (int phase = 0; phase < 4; phase++) work.Consume(token);
+            curve = curve with { Start = SvgAuthoredPath.MapPoint(map, curve.Start, new(0, 0)), First = SvgAuthoredPath.MapPoint(map, curve.First, new(0, 0)), Second = SvgAuthoredPath.MapPoint(map, curve.Second, new(0, 0)), End = SvgAuthoredPath.MapPoint(map, curve.End, new(0, 0)) };
+            if (curve.Kind == SvgMeasuredCurveKind.Cubic)
+            {
+                double dx = curve.End.X - curve.Start.X, dy = curve.End.Y - curve.Start.Y;
+                if ((dx != 0 || dy != 0)
+                    && (curve.First.X - curve.Start.X) * dy == (curve.First.Y - curve.Start.Y) * dx
+                    && (curve.Second.X - curve.Start.X) * dy == (curve.Second.Y - curve.Start.Y) * dx)
+                    curve = new(SvgMeasuredCurveKind.Line, curve.Start, default, default, curve.End, 1);
+                else if (curve.End.X + 3 * (curve.First.X - curve.Second.X) - curve.Start.X == 0
+                    && curve.End.Y + 3 * (curve.First.Y - curve.Second.Y) - curve.Start.Y == 0)
+                    curve = new(SvgMeasuredCurveKind.Quadratic, curve.Start,
+                        SvgClipCurve.Narrow(new(1.5 * curve.First.X - .5 * curve.Start.X, 1.5 * curve.First.Y - .5 * curve.Start.Y)), default, curve.End, 1);
+            }
+            if (curve.Kind == SvgMeasuredCurveKind.Line && curve.Start == curve.End) return;
+            if (curve.Kind is SvgMeasuredCurveKind.Conic or SvgMeasuredCurveKind.Quadratic)
+            {
+                float ax = (float)curve.First.X - (float)curve.Start.X, ay = (float)curve.First.Y - (float)curve.Start.Y;
+                float cx = (float)curve.End.X - (float)curve.First.X, cy = (float)curve.End.Y - (float)curve.First.Y;
+                float bx = (float)curve.Start.X - (float)curve.First.X - (float)curve.First.X + (float)curve.End.X;
+                float by = (float)curve.Start.Y - (float)curve.First.Y - (float)curve.First.Y + (float)curve.End.Y;
+                float numerator = -(ax * bx + ay * by), denominator = bx * bx + by * by;
+                if (ax * cx + ay * cy < 0 && numerator > 0 && numerator < denominator)
                 {
-                    float ax = (float)curve.First.X - (float)curve.Start.X, ay = (float)curve.First.Y - (float)curve.Start.Y;
-                    float cx = (float)curve.End.X - (float)curve.First.X, cy = (float)curve.End.Y - (float)curve.First.Y;
-                    float bx = (float)curve.Start.X - (float)curve.First.X - (float)curve.First.X + (float)curve.End.X;
-                    float by = (float)curve.Start.Y - (float)curve.First.Y - (float)curve.First.Y + (float)curve.End.Y;
-                    float numerator = -(ax * bx + ay * by), denominator = bx * bx + by * by;
-                    if (ax * cx + ay * cy < 0 && numerator > 0 && numerator < denominator)
+                    float t = numerator / denominator;
+                    Span<SvgDevicePoint> points = stackalloc SvgDevicePoint[3] { curve.Start, curve.First, curve.End };
+                    Span<SvgDevicePoint> left = stackalloc SvgDevicePoint[4], right = stackalloc SvgDevicePoint[4];
+                    if (SvgCurveMeasure.Cut(curve.Kind, points, curve.Weight, 0, t, left, out _, out float leftWeight, work, token)
+                        && SvgCurveMeasure.Cut(curve.Kind, points, curve.Weight, t, 1, right, out _, out float rightWeight, work, token))
                     {
-                        float t = numerator / denominator;
-                        Span<SvgDevicePoint> points = stackalloc SvgDevicePoint[3] { curve.Start, curve.First, curve.End };
-                        Span<SvgDevicePoint> left = stackalloc SvgDevicePoint[4], right = stackalloc SvgDevicePoint[4];
-                        if (SvgCurveMeasure.Cut(curve.Kind, points, curve.Weight, 0, t, left, out _, out float leftWeight, work, token)
-                            && SvgCurveMeasure.Cut(curve.Kind, points, curve.Weight, t, 1, right, out _, out float rightWeight, work, token))
-                        {
-                            edges.Add(new(new(curve.Kind, left[0], left[1], default, left[2], leftWeight), child));
-                            edges.Add(new(new(curve.Kind, left[2], right[1], default, right[2], rightWeight), child));
-                            return;
-                        }
+                        edges.Add(new(new(curve.Kind, left[0], left[1], default, left[2], leftWeight), child));
+                        edges.Add(new(new(curve.Kind, left[2], right[1], default, right[2], rightWeight), child));
+                        return;
                     }
                 }
-                edges.Add(new(curve, child));
             }
+            edges.Add(new(curve, child));
         }
     }
 

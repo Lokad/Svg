@@ -1,5 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/ordered-clip-coverage/capture.json" Link="TestData/ordered-clip-coverage/capture.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/ordered-clip-coverage/native-boundaries.json" Link="TestData/ordered-clip-coverage/native-boundaries.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/ordered-clip-coverage/inputs/contained-count-0424-candidate.svg" Link="TestData/ordered-clip-coverage/inputs/contained-count-0424-candidate.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/ordered-clip-coverage/inputs/fallback-opacity.svg" Link="TestData/ordered-clip-coverage/inputs/fallback-opacity.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/ordered-clip-coverage/inputs/fallback-object-box.svg" Link="TestData/ordered-clip-coverage/inputs/fallback-object-box.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/ordered-clip-coverage/inputs/fallback-use.svg" Link="TestData/ordered-clip-coverage/inputs/fallback-use.svg" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="../Research/clipped-stroke-preparation/capture.json" Link="TestData/clipped-stroke-preparation/capture.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/clipped-stroke-preparation/inputs/source-opacity-layer.svg" Link="TestData/clipped-stroke-preparation/inputs/source-opacity-layer.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/clipped-stroke-preparation/inputs/nested-viewport-origin.svg" Link="TestData/clipped-stroke-preparation/inputs/nested-viewport-origin.svg" CopyToOutputDirectory="PreserveNewest" />

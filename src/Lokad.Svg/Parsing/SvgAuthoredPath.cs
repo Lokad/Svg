@@ -247,6 +247,17 @@ internal sealed class SvgAuthoredPath : IDisposable
 
     /// <summary>Copies both command owners with bounded work and cancellation, composing an additional scene map.</summary>
     internal SvgAuthoredPath Copy(SvgAffineTransform placement, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => Copy(placement, _fillShape, budget, workCounter, cancellationToken);
+
+    /// <summary>Copies a retained clip rectangle as its authored fill operation for painted-mask replay.</summary>
+    /// <remarks>The caller supplies an authored rectangle, independently of geometric path recognition. The result owns both copies; work, mapping, cancellation and cleanup match ordinary copying.</remarks>
+    internal SvgAuthoredPath CopyRectangleFill(SvgAffineTransform placement, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        if (StrokeStyle is not null) throw new InvalidOperationException("A clip rectangle paint cannot carry a stroke.");
+        return Copy(placement, SvgAuthoredFillShape.Rectangle, budget, workCounter, cancellationToken);
+    }
+
+    private SvgAuthoredPath Copy(SvgAffineTransform placement, SvgAuthoredFillShape fillShape, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, workCounter, cancellationToken);
         foreach (SvgAuthoredPathCommand command in Commands) commands.Add(command);
@@ -270,7 +281,7 @@ internal sealed class SvgAuthoredPath : IDisposable
             }
             copiedOutline = _strokeOutline?.Copy(placement, budget, workCounter, cancellationToken);
             // Scene placement is finite metadata; the completed output map owns device admission.
-            return Create(owned, placement.Compose(SceneMap), copiedStyle, copiedOutline, _fillShape, budget);
+            return Create(owned, placement.Compose(SceneMap), copiedStyle, copiedOutline, fillShape, budget);
         }
         catch { owned.Dispose(); copiedOutline?.Dispose(); throw; }
     }

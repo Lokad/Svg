@@ -5,23 +5,34 @@ using Lokad.Svg.Parsing;
 
 namespace Lokad.Svg.Rendering;
 
+/// <summary>Native direction of one nondegenerate convex raw contour in device coordinates.</summary>
+internal enum SvgConvexDirection : sbyte { Unknown, Clockwise, CounterClockwise = -1 }
+
 /// <summary>Classifies the raw control polygon represented by one admitted retained contour.</summary>
 internal static class SvgRawContourConvexity
 {
     /// <summary>Checks float direction signs, turns and reversals including implicit closure.</summary>
     /// <remarks>The caller borrows immutable points and validated ordered, non-overlapping retained spans for one contour, and charges the complete traversal before calling. No storage is allocated or retained. State is local to this call; cancellation is checked at entry and every 1,024 raw points. This reproduces the pinned single-contour Convexicator, not native transformed-cache or multi-contour admission.</remarks>
     internal static bool IsConvex(ReadOnlySpan<SvgDevicePoint> points, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, CancellationToken cancellationToken)
-        => IsConvex(points, quadSpans, cubicSpans, null, new(0, 0), cancellationToken);
+        => IsConvex(points, quadSpans, cubicSpans, null, new(0, 0), out _, cancellationToken);
+
+    /// <summary>Returns direction only after the same raw controls pass convexity, turns and closure.</summary>
+    /// <remarks>The caller charges raw traversal and retains immutable mapped controls; this allocates nothing and preserves cancellation.</remarks>
+    internal static SvgConvexDirection Direction(ReadOnlySpan<SvgDevicePoint> points, SvgQuadSpan[] quads, SvgCubicSpan[] cubics, CancellationToken token)
+    {
+        return IsConvex(points, quads, cubics, null, new(0, 0), out SvgConvexDirection direction, token) ? direction : SvgConvexDirection.Unknown;
+    }
 
     /// <summary>Classifies retained source controls after their bitmap-local float placement.</summary>
     /// <remarks>The caller charges traversal and point mapping before entry and retains immutable
     /// source storage. Mapping allocates nothing; cancellation and direction checks share the source classifier.</remarks>
     internal static bool IsConvexAfterPlacement(SvgPreparedPathContours source, SvgAffineTransform map, SvgCpuBitmapOrigin origin, CancellationToken token)
-        => IsConvex(source.Points, source.QuadSpans, source.CubicSpans, map, origin, token);
+        => IsConvex(source.Points, source.QuadSpans, source.CubicSpans, map, origin, out _, token);
 
     private static bool IsConvex(ReadOnlySpan<SvgDevicePoint> points, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans,
-        SvgAffineTransform? map, SvgCpuBitmapOrigin origin, CancellationToken cancellationToken)
+        SvgAffineTransform? map, SvgCpuBitmapOrigin origin, out SvgConvexDirection direction, CancellationToken cancellationToken)
     {
+        direction = SvgConvexDirection.Unknown;
         cancellationToken.ThrowIfCancellationRequested();
         if (points.IsEmpty) return true;
         TurnState state = new(Map(points[0]), cancellationToken);
@@ -43,7 +54,9 @@ internal static class SvgRawContourConvexity
                 index = span.EndIndex - 1;
             }
         }
-        return state.Close();
+        bool convex = state.Close();
+        if (convex) direction = state.Direction;
+        return convex;
 
         SvgDevicePoint Map(SvgDevicePoint point) => map is {} placement ? SvgAuthoredPath.MapPoint(placement, point, origin) : point;
     }
@@ -64,6 +77,9 @@ internal static class SvgRawContourConvexity
         private int changesX;
         private int changesY;
         private int visits;
+
+        internal readonly SvgConvexDirection Direction => expectedTurn > 0 ? SvgConvexDirection.Clockwise
+            : expectedTurn < 0 ? SvgConvexDirection.CounterClockwise : SvgConvexDirection.Unknown;
 
         internal TurnState(SvgDevicePoint first, CancellationToken cancellationToken)
         {

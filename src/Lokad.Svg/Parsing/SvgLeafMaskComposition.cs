@@ -43,6 +43,8 @@ internal sealed class SvgLeafMaskOperation : IDisposable
     internal SvgRetainedMask? NativeMask { get; set; }
     internal SvgRetainedFilter? Filter { get; set; }
     internal int ContentIndex { get; set; } = -1;
+    /// <summary>Borrows an enclosing native clip operation owned by this document registry.</summary>
+    internal SvgLeafMaskOperation? EnclosingClip { get; set; }
     /// <summary>Releases this metadata reservation without disposing borrowed operations or observing cancellation.</summary>
     /// <remarks>Only the conversion owner disposes this single-threaded value; budget release is idempotent.</remarks>
     public void Dispose() => _reservation.Dispose();
@@ -152,7 +154,7 @@ internal static class SvgLeafMaskComposition
     internal static SvgLeafMaskOperation NewOperation(SvgDocumentState state, SvgLeafMaskOperation? source, SvgAffineTransform map)
     {
         // Aggregate allowance includes retained resource/target metadata and its scalar coverage.
-        RenderBudget.BudgetReservation reservation = state.Budget.Reserve(392, SvgMemoryCategory.Parser);
+        RenderBudget.BudgetReservation reservation = state.Budget.Reserve(400, SvgMemoryCategory.Parser);
         try
         {
             SvgLeafMaskOperation operation = new(reservation, source, map);
@@ -384,8 +386,7 @@ internal static class SvgLeafMaskComposition
                         (_, operation.ContentIndex) = SvgClipPathSyntax.RegisterNestedResourceMask(nativeClip.Id, content, nativeClip.Map, scene, state, work, token);
                         operation.Region = null;
                     }
-                    else (operation.Region, operation.ContentIndex) = content.Register(nativeClip.Map, content.UsesNativeReplay, state, scene, work, token);
-                    if (content.UsesMaskFallback) { operation.Region = null; operation.RegionKind = SvgLayerRegionKind.Mask; }
+                    else content.Register(nativeClip.Map, content.UsesNativeReplay, state, scene, work, token).Bind(operation, state);
                 }
                 if (operation.NativeMask is {} nativeMask && operation.ContentIndex < 0)
                 {
@@ -421,6 +422,7 @@ internal static class SvgLeafMaskComposition
                         finally { state.DefinitionReplayScene = previous; }
                     }
                 }
+                if (operation.EnclosingClip is {} enclosing) desired.Add(new(enclosing));
                 if (operation.PreservesIsolation || operation.Value != 255 || operation.Region is not null || operation.ContentIndex >= 0 || operation.SourceOpacity.Value != 1) desired.Add(new(operation));
             }
         }

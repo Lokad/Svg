@@ -1660,9 +1660,11 @@ internal ref partial struct SvgAnalyticCoverage
             // Non-axis placement invalidates that cache: float controls must be classified again.
             bool knownConvex = preparation.Source?.IsKnownConvex == true && preparation.SourceMap.IsAxisAligned;
             bool retained = CurveSpansEligible(ends, quadSpans, cubicSpans, isEvenOdd, mapping, structure, cancellationToken);
-            // Sampled vertices cannot veto native convexity of retained controls.
+            // Authored controls determine native convexity for straight paths and curves.
             // Source and placed raw controls below still reject concavity and reversals.
-            bool convexRing = knownConvex || retained || IsConvexRing(points, cancellationToken) && structure == SvgContourFlags.None;
+            bool hasRawControls = retained || preparation.Source is not null;
+            bool convexRing = knownConvex || hasRawControls
+                || IsConvexRing(points, cancellationToken) && structure == SvgContourFlags.None;
             setupWork += points.Length;
             if (convexRing && !knownConvex && preparation.Source is {} source)
             {
@@ -1678,7 +1680,7 @@ internal ref partial struct SvgAnalyticCoverage
                 }
                 convexRing = preparation.SourceConvex.Value;
             }
-            if (convexRing && retained && !knownConvex)
+            if (convexRing && !knownConvex && hasRawControls)
             {
                 // Raw controls can reverse a turn that flattened samples omit. Reserve the
                 // complete traversal before classifying; contexts in the same bitmap reuse the decision.

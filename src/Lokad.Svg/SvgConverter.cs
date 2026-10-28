@@ -2325,7 +2325,7 @@ public static partial class SvgConverter
                         continue;
                     }
                     // Eliding constant mask content must preserve its spatial contribution.
-                    if (value.RegionKind == SvgLayerRegionKind.Mask && value.MaskRegion is {} spatialRegion)
+                    if (value.RegionKind is (SvgLayerRegionKind.Mask or SvgLayerRegionKind.ClipMask) && value.MaskRegion is {} spatialRegion)
                         IncludeBox(new(spatialRegion.X, spatialRegion.Y, spatialRegion.Width, spatialRegion.Height, default, false, null), outputMap, 0);
                     depth++; continue;
                 }
@@ -2607,6 +2607,7 @@ public static partial class SvgConverter
                         }
                         bool affineMaskTarget = command.MaskContentIndex >= 0 && root.SceneStorage is {} maskStorage
                             && (uint)command.MaskContentIndex < (uint)maskStorage.MaskContents.Length && maskStorage.MaskContents[command.MaskContentIndex].UsesAffineTarget;
+                        bool paintedClipMask = command.RegionKind == SvgLayerRegionKind.ClipMask;
                         SvgAnalyticClipBounds layer = affineViewportClip ? previousLayer : LayerPaintBounds(index, previousLayer, viewportClip ? null : command.MaskRegion, command.RegionKind);
                         if (activeViewportBounds is {} inheritedBounds)
                         {
@@ -2748,9 +2749,9 @@ public static partial class SvgConverter
                         byte[] parentViewportClip = activeViewportClip;
                         // A native layer can restore as a sprite when its entire
                         // bitmap lies inside opaque runs of an otherwise AA clip.
-                        bool parentRequiresShader = parentViewportClip.Length != 0 && !activeViewportIsBinary
+                        bool parentRequiresShader = !paintedClipMask && parentViewportClip.Length != 0 && !activeViewportIsBinary
                             && !IsOpaqueClipRectangle(parentViewportClip, layer);
-                        activeViewportClip = [];
+                        activeViewportClip = paintedClipMask ? parentViewportClip : [];
                         layerBounds = layer;
                         // An inner isolated surface paints before its parent's clip;
                         // folded single paints keep the existing consumer instead.
@@ -2786,7 +2787,7 @@ public static partial class SvgConverter
                         // (Copyright 2006 The Android Open Source Project; see THIRD_PARTY_NOTICES.txt);
                         // half-pixel ties move toward positive infinity on both sides.
                         // Allocation bounds enclose ink; physical mask/viewport clips keep nearest-edge rounding.
-                        SvgAnalyticClipBounds maskBounds = command.RegionKind == SvgLayerRegionKind.Bounds
+                        SvgAnalyticClipBounds maskBounds = command.RegionKind is SvgLayerRegionKind.Bounds or SvgLayerRegionKind.ClipMask
                             ? new(ClampFloor(regionLeft, outputWidth), ClampFloor(regionTop, outputHeight), ClampCeiling(regionRight, outputWidth), ClampCeiling(regionBottom, outputHeight))
                             : new(ClampFloor(regionLeft + 0.5, outputWidth), ClampFloor(regionTop + 0.5, outputHeight),
                                 ClampFloor(regionRight + 0.5, outputWidth), ClampFloor(regionBottom + 0.5, outputHeight));
@@ -2851,7 +2852,7 @@ public static partial class SvgConverter
                                 if (x < maskBounds.Left || x >= maskBounds.Right || y < maskBounds.Top || y >= maskBounds.Bottom)
                                     maskAlpha = 0;
                             }
-                            if (parentViewportClip.Length != 0)
+                            if (parentViewportClip.Length != 0 && !paintedClipMask)
                                 clipAlpha = (byte)((clipAlpha * parentViewportClip[offset + 3] + 127) / 255);
                             if (extra == 0 || maskAlpha == 0 || clipAlpha == 0 || groupPixels[offset + 3] == 0) continue;
                             // A binary viewport permits the native sprite restore;

@@ -37,6 +37,11 @@ The [marker canvas controls](Research/marker-canvas-stages/README.md) retain 37
 independent native inputs, five mechanisms and two selected opacity/shader
 ownership paths. Existing culling and inverse-stroke resource regressions remain
 independently asserted.
+The [ordered clip controls](Research/ordered-clip-coverage/README.md) retain 91
+unique input/options records covering 104 original and interaction roles, nine
+direct mechanisms and five selected ownership/replay cases. Identical source
+aliases share records; unequal graphs keep independent native references.
+Existing 42/43-child work-limit checks and the general API matrix remain separate.
 The [clipped stroke controls](Research/clipped-stroke-preparation/README.md)
 retain 28 native inputs, fourteen direct mechanism cases and two selected
 opacity/viewport ownership paths. Signed coordinate boundaries are tested

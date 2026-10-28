@@ -119,11 +119,8 @@ internal struct SvgObjectBoundingClip
             operation.RegionKind = SvgLayerRegionKind.AffineViewport;
             return operation;
         }
-        (SvgClipBox region, int contentIndex) = content.Register(map, true, state, state.Scene, work, token);
         operation.Value = 255;
-        operation.Region = content.UsesMaskFallback ? null : region;
-        operation.ContentIndex = contentIndex;
-        operation.RegionKind = content.UsesMaskFallback ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.AffineViewport;
+        content.Register(map, true, state, state.Scene, work, token).Bind(operation, state);
         return operation;
     }
 }

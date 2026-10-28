@@ -322,6 +322,11 @@ ellipses and restricted local uses, ordered child unions, compound fills,
 user-space/object-box coordinates and affine maps. Clip bindings resolve through
 local instances and forward definitions. Rectangular leaf clips follow the
 target's own and inherited transforms in both definition orders.
+Child unions preserve authored operand order, native winding and cyclic contour
+starts. More than 42 children use painted clip replay with a separate enclosing
+clip, including admitted affine placement. Rectangle children retain rectangle
+paint coverage; equivalent authored paths keep their own coverage. See the
+[native controls](../tests/Research/ordered-clip-coverage/README.md).
 Direct line, polygon, polyline and text children of clip paths are unsupported;
 use equivalent admitted path geometry where applicable.
 Group children and XML transform/fill/opacity attributes on the clipPath container

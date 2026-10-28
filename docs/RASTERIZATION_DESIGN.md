@@ -208,11 +208,18 @@ Viewport clips draw into the parent bitmap through owned clip frames, preserving
 its shader origin. Inherited clipping around filter output keeps a separate
 recorded region kind so it does not change the filter input context.
 
-Clips retain child winding, mapped source curves and resource units. Curve unions
-use bounded intersections and boundary linking; larger clip content can replay
-through an owned mask scene. Mask children composite in source order before
-alpha/luminance conversion. Retained clips/masks bind in the final scene owner,
-including nested instances and pattern content.
+Clips retain child winding, mapped source curves and resource units. Resolve
+original child operands once when the definition closes; convex operands share
+native winding normalization, while other unions retain ordered bounded boundary
+operations. Deferred collinear lines preserve the cyclic start. Straight paths
+and curves both classify authored controls after float placement.
+More than 42 children replay through an owned painted-clip scene, preserving
+each child's authored paint kind. Its enclosing clip applies during source
+painting, before mask multiplication, and is consumed once. Ordinary mask
+children composite in source order before alpha/luminance conversion. Retained
+clips/masks bind in the final scene owner, including nested instances and pattern
+content. The [clip controls](../tests/Research/ordered-clip-coverage/README.md)
+separate these mechanisms from canonical rendering and selected ownership paths.
 
 Effects obey the [composition contract](SUPPORT_MATRIX.md#clips-masks-and-composition).
 Isolation and restoration must apply each clip/opacity once.

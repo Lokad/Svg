@@ -1,0 +1,1 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><clipPath id='c'><rect x='8' y='8' width='16' height='16'/></clipPath><rect id='q' x='4' y='4' width='24' height='24' fill='red'/></defs><g transform='translate(.5 .25)'><use href='#q' clip-path='url(#c)'/></g></svg>
