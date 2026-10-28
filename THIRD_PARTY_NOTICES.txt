@@ -127,6 +127,10 @@ cc/paint/draw_image.cc, cc/paint/paint_op.cc and cc/paint/paint_flags.cc
 at the same release tag.
 It has no Chromium runtime dependency.
 
+SVG viewport clips retain the inverse viewBox rectangle described by
+third_party/blink/renderer/core/paint/paint_property_tree_builder.cc
+at the same release tag. Copyright 2015 The Chromium Authors.
+
 Source release tag: 153.0.8010.52
 Source files: cc/layers/tile_size_calculator.cc, cc/base/tiling_data.cc,
 cc/trees/layer_tree_settings.cc, cc/tiles/picture_layer_tiling.h and

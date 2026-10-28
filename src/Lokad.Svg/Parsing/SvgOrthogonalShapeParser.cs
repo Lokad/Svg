@@ -370,25 +370,16 @@ internal static class SvgOrthogonalShapeParser
             SvgPatternTile tile = default;
             bool pattern = !linear && !radial && state.Patterns.TryGetValue(id, out tile);
             if (!linear && !radial && !pattern) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local paint references are implemented.");
-            if (linear)
+            if (linear || radial)
             {
-                if ((!transform.IsAxisAligned || gradient.RequiresSourceMap) && source.Geometries.Length > 0)
-                {
-                    SvgAuthoredPath path = source.Geometries[0].AuthoredPath ?? throw new InvalidOperationException("Mapped point-list fills require retained source commands.");
-                    SvgRectangle sourceBox = gradient.IsUserSpace ? default : SvgPathBounds.Compute(path.Commands, context.WorkCounter, context.CancellationToken);
-                    gradient = SvgGradientSyntax.BindLinearSourceMap(gradient, sourceBox, path.SceneMap, state, context.WorkCounter, context.CancellationToken);
-                }
-                else gradient = SvgGradientSyntax.MirrorBoundingBoxVector(transform, SvgGradientSyntax.MapUserSpaceVector(transform, gradient, frame));
-            }
-            if (radial)
-            {
-                if (!transform.IsAxisAligned && source.Geometries.Length > 0)
-                {
-                    SvgAuthoredPath path = source.Geometries[0].AuthoredPath ?? throw new InvalidOperationException("Mapped point-list fills require retained source commands.");
-                    SvgRectangle sourceBox = circle.IsUserSpace ? default : SvgPathBounds.Compute(path.Commands, context.WorkCounter, context.CancellationToken);
-                    circle = SvgGradientSyntax.BindRadialSourceMap(circle, sourceBox, path.SceneMap, context.WorkCounter, context.CancellationToken);
-                }
-                else circle = SvgGradientSyntax.MapRadialReference(transform, circle, frame);
+                // Retain source bounds before placement; mapped endpoints can
+                // round to a different extent even for an axis-aligned map.
+                SvgAuthoredPath path = source.Geometries[0].AuthoredPath
+                    ?? throw new InvalidOperationException("Mapped point-list fills require retained source commands.");
+                bool userSpace = linear ? gradient.IsUserSpace : circle.IsUserSpace;
+                SvgRectangle sourceBox = userSpace ? default : SvgPathBounds.Compute(path.Commands, context.WorkCounter, context.CancellationToken);
+                if (linear) gradient = SvgGradientSyntax.BindLinearSourceMap(gradient, sourceBox, path.SceneMap, state, context.WorkCounter, context.CancellationToken);
+                else circle = SvgGradientSyntax.BindRadialSourceMap(circle, sourceBox, path.SceneMap, context.WorkCounter, context.CancellationToken);
             }
             SvgAffineTransform patternMap = SvgViewportFrame.MapGeometry(transform, frame);
             if (pattern)

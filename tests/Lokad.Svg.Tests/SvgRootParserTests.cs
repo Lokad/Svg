@@ -2569,7 +2569,7 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientPolygon, geometry.Kind);
-        SvgRectangle box = geometry.GradientPolygon.Box;
+        SvgRectangle box = MappedPointListBox(geometry, new(1, 1, 6, 6, default, true, null), SvgAffineTransform.Identity);
         Assert.Equal((1d, 1d, 6d, 6d), (box.X, box.Y, box.Width, box.Height));
         Assert.Equal(7, Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath).Commands.Length);
     }
@@ -2581,7 +2581,7 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientPolygon, geometry.Kind);
-        SvgRectangle box = geometry.GradientPolygon.Box;
+        SvgRectangle box = MappedPointListBox(geometry, new(0, 0, 8, 8, default, true, null), SvgAffineTransform.FromTranslation(8, 0));
         Assert.Equal((8d, 0d, 8d, 8d), (box.X, box.Y, box.Width, box.Height));
         SvgAuthoredPath source = Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath);
         Assert.Equal(SvgAffineTransform.FromTranslation(8, 0), source.SceneMap);
@@ -2593,13 +2593,16 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><symbol id='s' viewBox='0 0 4 4'><polygon points='0,0 4,0 4,2 2,2 2,4 0,4' fill='url(#g)'/></symbol></defs><use href='#s' width='8' height='8' opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        SvgRecordedPaintAssertions.ElementOpacity(root, new(128, 0.5f));
+        Assert.Equal(5, root.Commands.Length);
+        SvgRecordedPaintAssertions.OpacityScope(root.Commands[0], new(128, 0.5f));
+        SvgLeafMaskAssertions.ViewportScope(root, 1, new(0, 0, 4, 4), SvgAffineTransform.FromScale(2, 2));
+        Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255), root.Commands[4]);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientPolygon, geometry.Kind);
-        SvgRectangle box = geometry.GradientPolygon.Box;
+        SvgRectangle box = MappedPointListBox(geometry, new(0, 0, 4, 4, default, true, null), SvgAffineTransform.FromScale(2, 2));
         Assert.Equal((0d, 0d, 8d, 8d), (box.X, box.Y, box.Width, box.Height));
         Assert.Equal(255, geometry.GradientPolygon.Opacity);
-        Assert.Equal(new SvgClipBox(0, 0, 8, 8), geometry.GradientPolygon.Clip);
+        Assert.Null(geometry.GradientPolygon.Clip);
         Assert.Equal(SvgAffineTransform.FromScale(2, 2), Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath).SceneMap);
     }
 
@@ -5000,7 +5003,7 @@ public sealed class SvgRootParserTests
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
         Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.Polygon.Color);
-        SvgLeafMaskAssertions.UniformScope(root, 128, null);
+        SvgLeafMaskAssertions.UniformScopeWithViewport(root, 128, null, new(0, 0, 8, 8), SvgAffineTransform.Identity);
     }
 
     [Fact]
@@ -6047,13 +6050,18 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Admits_nonuniform_userspace_radial_polygon_fills_through_recorded_scales()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><g transform='scale(2,1)'><polygon points='0,0 8,0 0,8' fill='url(#g)'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><g transform='scale(2,1)'><polygon points='0,0 8,0 0,8' fill='url(#g)'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.RadialPolygon, geometry.Kind);
         Assert.True(geometry.RadialPolygon.HasFill);
-        Assert.Equal(2, geometry.RadialPolygon.Gradient.ReferenceScaleX);
-        Assert.Equal(1, geometry.RadialPolygon.Gradient.ReferenceScaleY);
+        SvgRadialGradient gradient = geometry.RadialPolygon.Gradient;
+        SvgGradientPaintMatrices matrices = Assert.IsType<SvgGradientPaintMatrices>(gradient.NativePaintMatrices);
+        Assert.Equal(new(1, 0, 0, 0, 1, 0), matrices.Local);
+        Assert.Equal(SvgAffineTransform.FromScale(2, 1), matrices.Referencing);
+        Assert.Equal(new(.5, 0, 0, 1, 0, 0), gradient.Inverse);
+        Assert.Equal((4d, 4d, 4d), (gradient.CenterX, gradient.CenterY, gradient.Radius));
+        Assert.Equal(matrices.Referencing, Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath).SceneMap);
     }
 
     [Fact]
@@ -6930,23 +6938,30 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Lowers_diagonal_gradient_polygons_as_gradient_fills()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><polygon points='0,0 8,0 0,8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><polygon points='0,0 8,0 0,8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientPolygon, geometry.Kind);
         Assert.True(geometry.GradientPolygon.HasFill);
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null), geometry.GradientPolygon.Box);
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null),
+            MappedPointListBox(geometry, new(0, 0, 8, 8, default, true, null), SvgAffineTransform.Identity));
     }
 
     [Fact]
     public void Lowers_diagonal_radial_polygons_as_radial_fills()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><polygon points='0,0 8,0 0,8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><polygon points='0,0 8,0 0,8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.RadialPolygon, geometry.Kind);
         Assert.True(geometry.RadialPolygon.HasFill);
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null), geometry.RadialPolygon.Box);
+        SvgAuthoredPath path = Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath);
+        SvgRectangle bounds = SvgPathBounds.Compute(path.Commands, new(int.MaxValue), CancellationToken.None);
+        Assert.Equal((0d, 0d, 8d, 8d), (bounds.X, bounds.Y, bounds.Width, bounds.Height));
+        SvgGradientPaintMatrices matrices = Assert.IsType<SvgGradientPaintMatrices>(geometry.RadialPolygon.Gradient.NativePaintMatrices);
+        Assert.Equal(new(8, 0, 0, 0, 8, 0), matrices.Local);
+        Assert.Equal(SvgAffineTransform.Identity, matrices.Referencing);
+        Assert.Equal(matrices.Referencing, path.SceneMap);
     }
 
     [Fact]
@@ -7337,9 +7352,8 @@ public sealed class SvgRootParserTests
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
         Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.Polygon.Color);
-        Assert.True(geometry.Polygon.Clip.HasValue);
-        Assert.Equal(new SvgClipBox(0, 0, 8, 8), geometry.Polygon.Clip.Value);
-        SvgLeafMaskAssertions.UniformScope(root, 128, new(2, 2, 4, 4));
+        Assert.Null(geometry.Polygon.Clip);
+        SvgLeafMaskAssertions.UniformScopeWithViewport(root, 128, new(2, 2, 4, 4), new(0, 0, 8, 8), SvgAffineTransform.Identity);
     }
 
     [Fact]
@@ -7853,6 +7867,20 @@ public sealed class SvgRootParserTests
             }
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    private static SvgRectangle MappedPointListBox(SvgGeometry geometry, SvgRectangle expectedSource, SvgAffineTransform expectedMap)
+    {
+        SvgAuthoredPath path = Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath);
+        SvgRectangle bounds = SvgPathBounds.Compute(path.Commands, new(int.MaxValue), CancellationToken.None);
+        Assert.Equal((expectedSource.X, expectedSource.Y, expectedSource.Width, expectedSource.Height),
+            (bounds.X, bounds.Y, bounds.Width, bounds.Height));
+        Assert.Equal(expectedMap, path.SceneMap);
+        SvgLinearPaintMap paint = Assert.IsType<SvgLinearPaintMap>(geometry.GradientPolygon.Gradient.SourcePaint);
+        Assert.True(paint.Data.IsMapped);
+        Assert.Equal(new(expectedSource.Width, 0, 0, expectedSource.Height, expectedSource.X, expectedSource.Y), paint.Data.Local);
+        Assert.Equal(expectedMap, paint.Data.Referencing);
+        return path.SceneMap.Apply(bounds with { HasFill = geometry.GradientPolygon.HasFill });
     }
 
     private static SvgRectangle NativePatternRectangle(SvgVectorContent content)

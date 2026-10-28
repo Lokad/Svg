@@ -1035,11 +1035,15 @@ public sealed class SvgUseInstanceTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><defs><symbol id='s' viewBox='0 0 8 8' preserveAspectRatio='none'><polygon points='0,0 8,0 8,8 0,8' fill='url(#g)'/></symbol></defs><use href='#s' width='16' height='8'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.True(root.Geometries.Length >= 1);
-        Assert.Equal(SvgGeometryKind.RadialPolygon, root.Geometries[0].Kind);
-        Assert.Equal(2, root.Geometries[0].RadialPolygon.Gradient.ReferenceScaleX);
-        Assert.Equal(1, root.Geometries[0].RadialPolygon.Gradient.ReferenceScaleY);
-        Assert.Equal(8, root.Geometries[0].RadialPolygon.Gradient.CenterX);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.RadialPolygon, geometry.Kind);
+        SvgRadialGradient gradient = geometry.RadialPolygon.Gradient;
+        SvgGradientPaintMatrices matrices = Assert.IsType<SvgGradientPaintMatrices>(gradient.NativePaintMatrices);
+        Assert.Equal(new(1, 0, 0, 0, 1, 0), matrices.Local);
+        Assert.Equal(SvgAffineTransform.FromScale(2, 1), matrices.Referencing);
+        Assert.Equal(new(0.5, 0, 0, 1, 0, 0), gradient.Inverse);
+        Assert.Equal((4d, 4d, 4d), (gradient.CenterX, gradient.CenterY, gradient.Radius));
+        Assert.Equal(matrices.Referencing, Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath).SceneMap);
     }
 
     [Fact]

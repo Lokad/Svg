@@ -2582,11 +2582,17 @@ public static partial class SvgConverter
                             const long clipSetupWork = 8;
                             if (clipSetupWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Viewport clip setup exceeds the configured limit.");
                             workUnits += clipSetupWork;
-                            int left = Math.Max(layer.Left, ClampFloor(regionLeft, outputWidth));
-                            int top = Math.Max(layer.Top, ClampFloor(regionTop, outputHeight));
-                            int right = Math.Min(layer.Right, ClampCeiling(regionRight, outputWidth));
-                            int bottom = Math.Min(layer.Bottom, ClampCeiling(regionBottom, outputHeight));
-                            layer = new(left, top, Math.Max(left, right), Math.Max(top, bottom));
+                            // A retained affine clip owns source coordinates and its map.
+                            // Scene-space bounds rounded before output placement cannot safely
+                            // trim its device bitmap: native concatenation can move an edge.
+                            if (!affineViewportClip)
+                            {
+                                int left = Math.Max(layer.Left, ClampFloor(regionLeft, outputWidth));
+                                int top = Math.Max(layer.Top, ClampFloor(regionTop, outputHeight));
+                                int right = Math.Min(layer.Right, ClampCeiling(regionRight, outputWidth));
+                                int bottom = Math.Min(layer.Bottom, ClampCeiling(regionBottom, outputHeight));
+                                layer = new(left, top, Math.Max(left, right), Math.Max(top, bottom));
+                            }
                             var bounds = (Left: regionLeft, Top: regionTop, Right: regionRight, Bottom: regionBottom);
                             SvgClipAntialiasing antialiasing = command.MaskRegion.GetValueOrDefault().Antialiasing;
                             // SkDraw::clipHandlesSprite permits the direct image blitter for a BW

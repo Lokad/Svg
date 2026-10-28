@@ -18,7 +18,7 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
     {
         Dictionary<(string Folder, string Id), JsonElement> cases = new();
         HashSet<(string Folder, string Id)> resolvedCases = new();
-        foreach (string folder in new[] { "image-source-views", "offset-merge-inputs", "filter-merge-image-draw", "filter-source-recording-map", "filter-source-composition", "linear-shape-source-maps", "radial-axis-source-maps", "gradient-spread-stages", "gradient-paint-replay", "gradient-factory-colors", "linear-periodic-stops", "gradient-stop-preparation", "gradient-color-alpha", "filter-uniform-precision", "solid-paint-alpha", "pattern-source-selection", "text-node-boundaries", "hairline-clip-rounding" })
+        foreach (string folder in new[] { "point-list-source-maps", "image-source-views", "offset-merge-inputs", "filter-merge-image-draw", "filter-source-recording-map", "filter-source-composition", "linear-shape-source-maps", "radial-axis-source-maps", "gradient-spread-stages", "gradient-paint-replay", "gradient-factory-colors", "linear-periodic-stops", "gradient-stop-preparation", "gradient-color-alpha", "filter-uniform-precision", "solid-paint-alpha", "pattern-source-selection", "text-node-boundaries", "hairline-clip-rounding" })
         {
             using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(folder), "capture.json")));
             foreach (JsonElement row in data.RootElement.GetProperty("cases").EnumerateArray())

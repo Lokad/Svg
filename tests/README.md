@@ -26,6 +26,9 @@ dotnet test -c Release --no-build --filter 'Category!=Research'
 Only the explicitly selected extended matrix has this category; it does not
 exclude the other native research-reference tests. `Layer` traits identify the
 classes migrated to these responsibilities; they are not a complete suite index.
+The [point-list source maps](Research/point-list-source-maps/README.md) separate
+82 independent native inputs, six viewport mechanisms and two selected ownership
+cases; their numerical boundaries do not repeat the full API matrix.
 The [embedded-image source views](Research/image-source-views/README.md) retain
 120 canonical images for 126 original/acceptance roles, 39 direct mechanism cases
 and three selected allocation paths with raw/prepared ownership checks. They

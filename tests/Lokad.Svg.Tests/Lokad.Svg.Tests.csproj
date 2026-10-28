@@ -225,6 +225,9 @@
     <None Include="../Research/effects-marker-sheet/*.svg" Link="TestData/effects-marker-sheet/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/pattern-tile-sheet/*.svg" Link="TestData/pattern-tile-sheet/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/paint-recording/pattern-tile-tile-fill-stroke-element.svg" Link="TestData/paint-recording/pattern-tile-tile-fill-stroke-element.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/point-list-source-maps/capture.json" Link="TestData/point-list-source-maps/capture.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/point-list-source-maps/inputs/acceptance-gradient-direct-source.svg" Link="TestData/point-list-source-maps/inputs/acceptance-gradient-direct-source.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/point-list-source-maps/inputs/acceptance-symbol-nested-viewport.svg" Link="TestData/point-list-source-maps/inputs/acceptance-symbol-nested-viewport.svg" CopyToOutputDirectory="PreserveNewest" />
     <ProjectReference Include="../../src/Lokad.Svg/Lokad.Svg.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />

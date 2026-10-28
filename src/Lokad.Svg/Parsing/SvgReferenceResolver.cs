@@ -498,10 +498,34 @@ internal static class SvgReferenceResolver
         (double sx, double sy, double ox, double oy) = SvgGeometrySyntax.MapViewBox(box, reference.Width.Value, reference.Height.Value);
         if (reference.IsMarker) { sx = (float)sx; sy = (float)sy; ox = (float)ox; oy = (float)oy; }
         SvgAffineTransform offset = SvgAffineTransform.FromScaleOffset(sx, sy, ox + reference.X, oy + reference.Y);
-        SvgAffineTransform placement = reference.HasInverseStrokePose ? reference.Transform.Compose(offset) : reference.Transform.ComposeChecked(offset);
+        if (!reference.HasInverseStrokePose) reference.Transform.ComposeChecked(offset);
+        SvgAffineTransform placement = reference.HasInverseStrokePose ? reference.Transform.Compose(offset)
+            : reference.Transform.ComposeChecked(SvgAffineTransform.FromTranslation(reference.X, reference.Y))
+                .ComposeNative(SvgAffineTransform.FromScaleOffset(sx, sy, ox, oy));
         if (frame is not {} viewport) return placement;
         SvgAffineTransform parent = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY);
-        return reference.HasInverseStrokePose ? parent.Compose(placement) : parent.ComposeChecked(placement);
+        if (!reference.HasInverseStrokePose) parent.ComposeChecked(placement);
+        return reference.HasInverseStrokePose ? parent.Compose(placement) : parent.ComposeNative(placement);
+    }
+
+    /// <summary>Retains the viewport in local viewBox coordinates before native clipping.</summary>
+    /// <remarks>No storage is owned here; the caller registers the clip under its scene budget.
+    /// Inverse mapping rounds source corners before the existing recorded clip map is applied.</remarks>
+    internal static SvgAffineViewportClip SymbolViewport(SvgViewBox? box, SvgUseReference reference, SvgViewportFrame? frame)
+    {
+        if (reference.Width is null || reference.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol placement requires known instance dimensions.");
+        SvgAffineTransform view = SvgAffineTransform.FromTranslation(reference.X, reference.Y);
+        if (box is {} viewBox)
+        {
+            (double sx, double sy, double ox, double oy) = SvgGeometrySyntax.MapViewBox(viewBox, reference.Width.Value, reference.Height.Value);
+            view = view.ComposeChecked(SvgAffineTransform.FromScaleOffset(sx, sy, ox, oy));
+        }
+        if (!view.TryInvert(out SvgAffineTransform inverse)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Viewport clipping requires an invertible viewBox map.");
+        SvgClipBox local = inverse.Apply(new SvgClipBox(reference.X, reference.Y, reference.Width.Value, reference.Height.Value));
+        float left = (float)local.X, top = (float)local.Y;
+        float right = (float)(local.X + local.Width), bottom = (float)(local.Y + local.Height);
+        SvgAffineTransform map = box is {} sourceBox ? SymbolInstancePlacement(sourceBox, reference, frame) : PlainInstancePlacement(reference, frame);
+        return new(new(left, top, right - left, bottom - top), map) { IsBinary = reference.IsMarker };
     }
 
     /// <summary>Reserves mapped point/curve scratch before allocation; an empty contour owns no scratch.</summary>
@@ -856,7 +880,7 @@ internal static class SvgReferenceResolver
         SvgRectangle mapped = MapSymbolBox(box, symbolBox, reference.Width.Value, reference.Height.Value);
         SvgRectangle placed = TranslateRectangle(mapped, reference.X, reference.Y);
         SvgClipBox localViewport = new(reference.X, reference.Y, reference.Width.Value, reference.Height.Value);
-        SvgRectangle transformed = reference.Transform.Apply(localViewport.ClipRectangle(placed));
+        SvgRectangle transformed = reference.Transform.Apply(reference.IsMarker ? localViewport.ClipRectangle(placed) : placed);
         transformed = transformed with { Color = new SvgColor(transformed.Color.Red, transformed.Color.Green, transformed.Color.Blue, MultiplyAlpha(transformed.Color.Alpha, reference.Opacity)), HasFill = transformed.HasFill && reference.IsPainted };
         SvgClipBox viewport = reference.Transform.Apply(new SvgClipBox(reference.X, reference.Y, reference.Width.Value, reference.Height.Value));
         if (frame is not null)
@@ -865,7 +889,8 @@ internal static class SvgReferenceResolver
             viewport = new SvgClipBox(viewport.X + frame.Value.OffsetX, viewport.Y + frame.Value.OffsetY, viewport.Width, viewport.Height);
             viewport = viewport.Intersect(frame.Value.Clip);
         }
-        SvgRectangle clipped = viewport.ClipRectangle(transformed);
+        SvgRectangle clipped = reference.IsMarker ? viewport.ClipRectangle(transformed)
+            : frame is {} parent ? parent.Clip.ClipRectangle(transformed) : transformed;
         return isBand ? SvgGeometry.FromOrthogonalBand(clipped) : SvgGeometry.FromRectangle(clipped) with { SolidPaint = reference.AllowsSolidPaintAnalysis ? geometry.SolidPaint : null };
 
 
@@ -895,27 +920,21 @@ internal static class SvgReferenceResolver
                 if (!double.IsFinite(placedX) || !double.IsFinite(placedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
                 mapped[index] = new SvgDevicePoint(placedX, placedY);
             }
-            SvgClipBox viewport = instance.Transform.Apply(new SvgClipBox(instance.X, instance.Y, instance.Width.Value, instance.Height.Value));
-            if (viewportFrame is not null)
-            {
-                viewport = new SvgClipBox(viewport.X + viewportFrame.Value.OffsetX, viewport.Y + viewportFrame.Value.OffsetY, viewport.Width, viewport.Height);
-                viewport = viewport.Intersect(viewportFrame.Value.Clip);
-            }
-            SvgClipBox clip;
-            if (source.Clip is null) clip = viewport;
+            SvgClipBox? clip;
+            if (source.Clip is null) clip = viewportFrame?.Clip;
             else
             {
                 SvgClipBox content = source.Clip.Value;
                 SvgClipBox shifted = new(content.X * scaleX + offsetX + instance.X, content.Y * scaleY + offsetY + instance.Y, content.Width * scaleX, content.Height * scaleY) { Antialiasing = content.Antialiasing };
                 SvgClipBox placed = instance.Transform.Apply(shifted);
                 if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height) { Antialiasing = placed.Antialiasing };
-                clip = placed.Intersect(viewport);
+                clip = viewportFrame is {} parent ? placed.Intersect(parent.Clip) : placed;
             }
             SvgColor color = new(source.Color.Red, source.Color.Green, source.Color.Blue, MultiplyAlpha(source.Color.Alpha, instance.Opacity));
             SvgQuadSpan[] quadSpans = MapSymbolQuadSpans(source.QuadSpans, scaleX, scaleY, offsetX, offsetY, instance, viewportFrame, workCounter, cancellationToken);
             SvgCubicSpan[] cubicSpans = MapSymbolCubicSpans(source.CubicSpans, scaleX, scaleY, offsetX, offsetY, instance, viewportFrame, workCounter, cancellationToken);
             SvgGeometry result = SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, source.ContourEnds, source.Signs, quadSpans, cubicSpans, color, source.HasFill && instance.IsPainted, source.IsEvenOdd, source.Mapping, clip, null, document.Budget));
-            SvgAffineTransform placement = PlainInstancePlacement(instance, viewportFrame).ComposeChecked(SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX, offsetY));
+            SvgAffineTransform placement = SymbolInstancePlacement(viewBox, instance, viewportFrame);
             return geometry.CopyAuthoredPathTo(result, placement, document.Budget, workCounter, cancellationToken);
         }
 
@@ -1351,6 +1370,8 @@ internal static class SvgReferenceResolver
                         }
                     }
                 }
+                SvgPaintRecording.WrapInstance(applied.AsMutableSpan(), SvgPaintOpacity.Opaque, state.NewRecordingScope(),
+                    null, SymbolViewport(symbolBox, reference, frame), state, workCounter, cancellationToken);
                 return RetainInstanceBatch(applied.AsSpan(), state, workCounter, cancellationToken);
             }
             catch { foreach (SvgGeometry geometry in applied.AsSpan()) geometry.Dispose(); throw; }
@@ -1416,7 +1437,7 @@ internal static class SvgReferenceResolver
                 mapped[index] = new SvgDevicePoint(placedX, placedY);
             }
             SvgLinearGradient vector = source.Gradient;
-            SvgAffineTransform placement = PlainInstancePlacement(instance, viewportFrame).ComposeChecked(SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX, offsetY));
+            SvgAffineTransform placement = SymbolInstancePlacement(viewBox, instance, viewportFrame);
             SvgRectangle box;
             if (vector.SourcePaint?.Data is { IsMapped: true } data)
             {
@@ -1433,21 +1454,15 @@ internal static class SvgReferenceResolver
                 vector = SvgGradientSyntax.MapUserSpaceVector(instance.Transform, vector, viewportFrame);
                 vector = SvgGradientSyntax.MirrorBoundingBoxVector(instance.Transform, vector);
             }
-            SvgClipBox viewport = instance.Transform.Apply(new SvgClipBox(instance.X, instance.Y, instance.Width.Value, instance.Height.Value));
-            if (viewportFrame is not null)
-            {
-                viewport = new SvgClipBox(viewport.X + viewportFrame.Value.OffsetX, viewport.Y + viewportFrame.Value.OffsetY, viewport.Width, viewport.Height);
-                viewport = viewport.Intersect(viewportFrame.Value.Clip);
-            }
-            SvgClipBox clip;
-            if (source.Clip is null) clip = viewport;
+            SvgClipBox? clip;
+            if (source.Clip is null) clip = viewportFrame?.Clip;
             else
             {
                 SvgClipBox content = source.Clip.Value;
                 SvgClipBox shifted = new(content.X * scaleX + offsetX + instance.X, content.Y * scaleY + offsetY + instance.Y, content.Width * scaleX, content.Height * scaleY) { Antialiasing = content.Antialiasing };
                 SvgClipBox placed = instance.Transform.Apply(shifted);
                 if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height) { Antialiasing = placed.Antialiasing };
-                clip = placed.Intersect(viewport);
+                clip = viewportFrame is {} parent ? placed.Intersect(parent.Clip) : placed;
             }
             byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);
             SvgGeometry result = SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(mapped, source.ContourEnds, source.Signs, vector, box, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, null, document.Budget));
@@ -1535,25 +1550,19 @@ internal static class SvgReferenceResolver
             SvgRectangle box = instance.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + instance.X, contentBox.Y * scaleY + offsetY + instance.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));
             if (viewportFrame is not null) box = viewportFrame.Value.Shift(box);
             circle = SvgGradientSyntax.MapRadialReference(instance.Transform, circle, viewportFrame);
-            SvgClipBox viewport = instance.Transform.Apply(new SvgClipBox(instance.X, instance.Y, instance.Width.Value, instance.Height.Value));
-            if (viewportFrame is not null)
-            {
-                viewport = new SvgClipBox(viewport.X + viewportFrame.Value.OffsetX, viewport.Y + viewportFrame.Value.OffsetY, viewport.Width, viewport.Height);
-                viewport = viewport.Intersect(viewportFrame.Value.Clip);
-            }
-            SvgClipBox clip;
-            if (source.Clip is null) clip = viewport;
+            SvgClipBox? clip;
+            if (source.Clip is null) clip = viewportFrame?.Clip;
             else
             {
                 SvgClipBox content = source.Clip.Value;
                 SvgClipBox shifted = new(content.X * scaleX + offsetX + instance.X, content.Y * scaleY + offsetY + instance.Y, content.Width * scaleX, content.Height * scaleY) { Antialiasing = content.Antialiasing };
                 SvgClipBox placed = instance.Transform.Apply(shifted);
                 if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height) { Antialiasing = placed.Antialiasing };
-                clip = placed.Intersect(viewport);
+                clip = viewportFrame is {} parent ? placed.Intersect(parent.Clip) : placed;
             }
             byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);
             SvgGeometry result = SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(mapped, source.ContourEnds, source.Signs, circle, box, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, null, document.Budget));
-            SvgAffineTransform placement = PlainInstancePlacement(instance, viewportFrame).ComposeChecked(SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX, offsetY));
+            SvgAffineTransform placement = SymbolInstancePlacement(viewBox, instance, viewportFrame);
             return geometry.CopyAuthoredPathTo(result, placement, document.Budget, workCounter, cancellationToken);
         }
 
@@ -1594,24 +1603,18 @@ internal static class SvgReferenceResolver
             double gridContentHeight = source.Content.Height * scaleY;
             if (!IsIntegerGrid(gridOriginX) || !IsIntegerGrid(gridOriginY) || !IsIntegerGrid(gridTileWidth) || !IsIntegerGrid(gridTileHeight) || !IsIntegerGrid(gridContentX) || !IsIntegerGrid(gridContentY) || !IsIntegerGrid(gridContentWidth) || !IsIntegerGrid(gridContentHeight)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer-mapped symbol-held pattern tiles are implemented.");
             SvgRectangle content = new(gridContentX, gridContentY, gridContentWidth, gridContentHeight, source.Content.Color, source.Content.HasFill, source.Content.Stroke);
-            SvgClipBox viewport = instance.Transform.Apply(new SvgClipBox(instance.X, instance.Y, instance.Width.Value, instance.Height.Value));
-            if (viewportFrame is not null)
-            {
-                viewport = new SvgClipBox(viewport.X + viewportFrame.Value.OffsetX, viewport.Y + viewportFrame.Value.OffsetY, viewport.Width, viewport.Height);
-                viewport = viewport.Intersect(viewportFrame.Value.Clip);
-            }
-            SvgClipBox clip;
-            if (source.Clip is null) clip = viewport;
+            SvgClipBox? clip;
+            if (source.Clip is null) clip = viewportFrame?.Clip;
             else
             {
                 SvgClipBox shiftedSource = source.Clip.Value;
                 SvgClipBox shifted = new(shiftedSource.X * scaleX + offsetX + instance.X, shiftedSource.Y * scaleY + offsetY + instance.Y, shiftedSource.Width * scaleX, shiftedSource.Height * scaleY) { Antialiasing = shiftedSource.Antialiasing };
                 SvgClipBox placed = instance.Transform.Apply(shifted);
                 if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height) { Antialiasing = placed.Antialiasing };
-                clip = placed.Intersect(viewport);
+                clip = viewportFrame is {} parent ? placed.Intersect(parent.Clip) : placed;
             }
             byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);
-            SvgAffineTransform placement = PlainInstancePlacement(instance, viewportFrame).ComposeChecked(SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX, offsetY));
+            SvgAffineTransform placement = SymbolInstancePlacement(viewBox, instance, viewportFrame);
             SvgGeometry result = SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(mapped, source.ContourEnds, source.Signs, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), content, source.ContentPaint, source.VectorContent is null ? (int)gridOriginX : source.OriginX, source.VectorContent is null ? (int)gridOriginY : source.OriginY, source.VectorContent is null ? (int)gridTileWidth : source.TileWidth, source.VectorContent is null ? (int)gridTileHeight : source.TileHeight, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, source.VectorContent, source.VectorContent is null ? SvgAffineTransform.Identity : placement.ComposeChecked(source.ShaderPlacement), source.ContentViewBox, source.Coordinates, source.PaintMatrices?.Place(placement), document.Budget));
             return geometry.CopyAuthoredPathTo(result, placement, document.Budget, workCounter, cancellationToken);
 

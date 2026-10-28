@@ -130,6 +130,11 @@ and authored values retain validation. Empty text strokes emit no outline: an
 invisible outline can enlarge a native layer and shift another paint's bitmap origin.
 Point lists keep native source floats and authored fill verbs through solid and
 shader lowering. Coordinate spelling does not select rectangle-band coverage.
+Linear and radial point-list paints bind to authored bounds and the same instance
+map as their contours. Symbol viewport clips retain the inverse viewBox rectangle
+in source floats; use placement precedes native viewBox concatenation. Clip coverage
+is constructed in device space, without trimming it using earlier rounded scene
+bounds. See the [source-map controls](../tests/Research/point-list-source-maps/README.md).
 Pattern fills and strokes share a definition-owned replay scene; rectangle content
 must retain its target map before instance and viewport placement.
 Paint-filled paths and point lists compose ordinary fill and stroke lowering;

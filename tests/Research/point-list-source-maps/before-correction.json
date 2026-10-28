@@ -1,0 +1,1482 @@
+{
+  "commit": "5abd93d0195fa42005a59471334a9568f2afa4ec",
+  "policy": "Exact per-input comparisons against unchanged native images, independently of API/pair agreement.",
+  "cases": [
+    {
+      "id": "original-range-0001-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0001-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0001-control",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0001-control",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0002-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 20400
+    },
+    {
+      "id": "original-range-0002-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 20400
+    },
+    {
+      "id": "original-range-0002-control",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 20400
+    },
+    {
+      "id": "original-range-0002-control",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 20400
+    },
+    {
+      "id": "original-range-0008-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 498,
+      "alphaChangedPixels": 0,
+      "sum": 2603
+    },
+    {
+      "id": "original-range-0008-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 498,
+      "alphaChangedPixels": 0,
+      "sum": 2603
+    },
+    {
+      "id": "original-range-0008-control",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 498,
+      "alphaChangedPixels": 0,
+      "sum": 2603
+    },
+    {
+      "id": "original-range-0008-control",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 498,
+      "alphaChangedPixels": 0,
+      "sum": 2603
+    },
+    {
+      "id": "original-range-0009-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 520,
+      "alphaChangedPixels": 0,
+      "sum": 5200
+    },
+    {
+      "id": "original-range-0009-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 520,
+      "alphaChangedPixels": 0,
+      "sum": 5200
+    },
+    {
+      "id": "original-range-0009-control",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 520,
+      "alphaChangedPixels": 0,
+      "sum": 5200
+    },
+    {
+      "id": "original-range-0009-control",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 520,
+      "alphaChangedPixels": 0,
+      "sum": 5200
+    },
+    {
+      "id": "original-range-0010-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 20400
+    },
+    {
+      "id": "original-range-0010-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 20400
+    },
+    {
+      "id": "original-range-0010-control",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 20400
+    },
+    {
+      "id": "original-range-0010-control",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 20400
+    },
+    {
+      "id": "original-range-0025-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 0,
+      "sum": 5100
+    },
+    {
+      "id": "original-range-0025-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 0,
+      "sum": 5100
+    },
+    {
+      "id": "original-range-0025-control",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 0,
+      "sum": 5100
+    },
+    {
+      "id": "original-range-0025-control",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 0,
+      "sum": 5100
+    },
+    {
+      "id": "original-range-0032-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0032-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0032-control",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0032-control",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0056-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 417,
+      "alphaChangedPixels": 0,
+      "sum": 2489
+    },
+    {
+      "id": "original-range-0056-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 417,
+      "alphaChangedPixels": 0,
+      "sum": 2489
+    },
+    {
+      "id": "original-range-0056-control",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 417,
+      "alphaChangedPixels": 0,
+      "sum": 2489
+    },
+    {
+      "id": "original-range-0056-control",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 417,
+      "alphaChangedPixels": 0,
+      "sum": 2489
+    },
+    {
+      "id": "original-range-0072-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 630,
+      "alphaChangedPixels": 0,
+      "sum": 10200
+    },
+    {
+      "id": "original-range-0072-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 630,
+      "alphaChangedPixels": 0,
+      "sum": 10200
+    },
+    {
+      "id": "original-range-0072-control",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 630,
+      "alphaChangedPixels": 0,
+      "sum": 10200
+    },
+    {
+      "id": "original-range-0072-control",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 630,
+      "alphaChangedPixels": 0,
+      "sum": 10200
+    },
+    {
+      "id": "original-range-0082-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 80,
+      "alphaChangedPixels": 80,
+      "sum": 40800
+    },
+    {
+      "id": "original-range-0082-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 80,
+      "alphaChangedPixels": 80,
+      "sum": 40800
+    },
+    {
+      "id": "original-range-0082-control",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 80,
+      "alphaChangedPixels": 80,
+      "sum": 40800
+    },
+    {
+      "id": "original-range-0082-control",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 80,
+      "alphaChangedPixels": 80,
+      "sum": 40800
+    },
+    {
+      "id": "original-range-0089-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 0,
+      "sum": 19550
+    },
+    {
+      "id": "original-range-0089-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 0,
+      "sum": 19550
+    },
+    {
+      "id": "original-range-0089-control",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 0,
+      "sum": 19550
+    },
+    {
+      "id": "original-range-0089-control",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 0,
+      "sum": 19550
+    },
+    {
+      "id": "original-range-0090-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 80,
+      "sum": 74800
+    },
+    {
+      "id": "original-range-0090-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 80,
+      "sum": 74800
+    },
+    {
+      "id": "original-range-0090-control",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 80,
+      "sum": 74800
+    },
+    {
+      "id": "original-range-0090-control",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 80,
+      "sum": 74800
+    },
+    {
+      "id": "original-range-0096-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0096-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0096-control",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0096-control",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0192-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0192-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0192-control",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0192-control",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0216-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 390,
+      "alphaChangedPixels": 0,
+      "sum": 4853
+    },
+    {
+      "id": "original-range-0216-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 390,
+      "alphaChangedPixels": 0,
+      "sum": 4853
+    },
+    {
+      "id": "original-range-0216-control",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 390,
+      "alphaChangedPixels": 0,
+      "sum": 4853
+    },
+    {
+      "id": "original-range-0216-control",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 390,
+      "alphaChangedPixels": 0,
+      "sum": 4853
+    },
+    {
+      "id": "original-range-0224-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0224-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0224-control",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0224-control",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0288-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0288-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0288-control",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0288-control",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-range-0322-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 20400
+    },
+    {
+      "id": "original-range-0322-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 20400
+    },
+    {
+      "id": "original-range-0322-control",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 20400
+    },
+    {
+      "id": "original-range-0322-control",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 20400
+    },
+    {
+      "id": "original-range-0328-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 498,
+      "alphaChangedPixels": 0,
+      "sum": 2603
+    },
+    {
+      "id": "original-range-0328-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 498,
+      "alphaChangedPixels": 0,
+      "sum": 2603
+    },
+    {
+      "id": "original-range-0328-control",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 498,
+      "alphaChangedPixels": 0,
+      "sum": 2603
+    },
+    {
+      "id": "original-range-0328-control",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 498,
+      "alphaChangedPixels": 0,
+      "sum": 2603
+    },
+    {
+      "id": "original-range-0329-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 520,
+      "alphaChangedPixels": 0,
+      "sum": 5200
+    },
+    {
+      "id": "original-range-0329-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 520,
+      "alphaChangedPixels": 0,
+      "sum": 5200
+    },
+    {
+      "id": "original-range-0329-control",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 520,
+      "alphaChangedPixels": 0,
+      "sum": 5200
+    },
+    {
+      "id": "original-range-0329-control",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 520,
+      "alphaChangedPixels": 0,
+      "sum": 5200
+    },
+    {
+      "id": "original-range-0330-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 20400
+    },
+    {
+      "id": "original-range-0330-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 20400
+    },
+    {
+      "id": "original-range-0330-control",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 20400
+    },
+    {
+      "id": "original-range-0330-control",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 20400
+    },
+    {
+      "id": "original-range-0345-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 0,
+      "sum": 5100
+    },
+    {
+      "id": "original-range-0345-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 0,
+      "sum": 5100
+    },
+    {
+      "id": "original-range-0345-control",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 0,
+      "sum": 5100
+    },
+    {
+      "id": "original-range-0345-control",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 0,
+      "sum": 5100
+    },
+    {
+      "id": "original-range-0376-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 417,
+      "alphaChangedPixels": 0,
+      "sum": 2489
+    },
+    {
+      "id": "original-range-0376-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 417,
+      "alphaChangedPixels": 0,
+      "sum": 2489
+    },
+    {
+      "id": "original-range-0376-control",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 417,
+      "alphaChangedPixels": 0,
+      "sum": 2489
+    },
+    {
+      "id": "original-range-0376-control",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 417,
+      "alphaChangedPixels": 0,
+      "sum": 2489
+    },
+    {
+      "id": "original-range-0392-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 630,
+      "alphaChangedPixels": 0,
+      "sum": 10200
+    },
+    {
+      "id": "original-range-0392-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 630,
+      "alphaChangedPixels": 0,
+      "sum": 10200
+    },
+    {
+      "id": "original-range-0392-control",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 630,
+      "alphaChangedPixels": 0,
+      "sum": 10200
+    },
+    {
+      "id": "original-range-0392-control",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 630,
+      "alphaChangedPixels": 0,
+      "sum": 10200
+    },
+    {
+      "id": "original-range-0402-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 80,
+      "alphaChangedPixels": 80,
+      "sum": 40800
+    },
+    {
+      "id": "original-range-0402-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 80,
+      "alphaChangedPixels": 80,
+      "sum": 40800
+    },
+    {
+      "id": "original-range-0402-control",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 80,
+      "alphaChangedPixels": 80,
+      "sum": 40800
+    },
+    {
+      "id": "original-range-0402-control",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 80,
+      "alphaChangedPixels": 80,
+      "sum": 40800
+    },
+    {
+      "id": "original-range-0409-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 0,
+      "sum": 19550
+    },
+    {
+      "id": "original-range-0409-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 0,
+      "sum": 19550
+    },
+    {
+      "id": "original-range-0409-control",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 0,
+      "sum": 19550
+    },
+    {
+      "id": "original-range-0409-control",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 0,
+      "sum": 19550
+    },
+    {
+      "id": "original-range-0410-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 80,
+      "sum": 74800
+    },
+    {
+      "id": "original-range-0410-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 80,
+      "sum": 74800
+    },
+    {
+      "id": "original-range-0410-control",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 80,
+      "sum": 74800
+    },
+    {
+      "id": "original-range-0410-control",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 480,
+      "alphaChangedPixels": 80,
+      "sum": 74800
+    },
+    {
+      "id": "original-range-0536-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 390,
+      "alphaChangedPixels": 0,
+      "sum": 4853
+    },
+    {
+      "id": "original-range-0536-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 390,
+      "alphaChangedPixels": 0,
+      "sum": 4853
+    },
+    {
+      "id": "original-range-0536-control",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 390,
+      "alphaChangedPixels": 0,
+      "sum": 4853
+    },
+    {
+      "id": "original-range-0536-control",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 390,
+      "alphaChangedPixels": 0,
+      "sum": 4853
+    },
+    {
+      "id": "original-effects-0001-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-effects-0001-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-effects-0001-control",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-effects-0001-control",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-effects-0002-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-effects-0002-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-effects-0002-control",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-effects-0002-control",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-effects-0004-candidate",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-effects-0004-candidate",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-effects-0004-control",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "original-effects-0004-control",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-symbol-output-half",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 10,
+      "alphaChangedPixels": 10,
+      "sum": 5080
+    },
+    {
+      "id": "acceptance-symbol-output-half",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 10,
+      "alphaChangedPixels": 10,
+      "sum": 5080
+    },
+    {
+      "id": "acceptance-symbol-output-large",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 120,
+      "alphaChangedPixels": 120,
+      "sum": 60960
+    },
+    {
+      "id": "acceptance-symbol-output-large",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 120,
+      "alphaChangedPixels": 120,
+      "sum": 60960
+    },
+    {
+      "id": "acceptance-symbol-reflection",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 20320
+    },
+    {
+      "id": "acceptance-symbol-reflection",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 20320
+    },
+    {
+      "id": "acceptance-symbol-nested-viewport",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 74,
+      "alphaChangedPixels": 74,
+      "sum": 25841
+    },
+    {
+      "id": "acceptance-symbol-nested-viewport",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 74,
+      "alphaChangedPixels": 74,
+      "sum": 25841
+    },
+    {
+      "id": "acceptance-symbol-group-opacity",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 16960
+    },
+    {
+      "id": "acceptance-symbol-group-opacity",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 16960
+    },
+    {
+      "id": "acceptance-symbol-alpha-mask",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 18320
+    },
+    {
+      "id": "acceptance-symbol-alpha-mask",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 18320
+    },
+    {
+      "id": "acceptance-symbol-pattern",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 20320
+    },
+    {
+      "id": "acceptance-symbol-pattern",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 20320
+    },
+    {
+      "id": "acceptance-symbol-nonzero-viewbox-y",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 20320
+    },
+    {
+      "id": "acceptance-symbol-nonzero-viewbox-y",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 20320
+    },
+    {
+      "id": "acceptance-symbol-negative-large",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-symbol-negative-large",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-symbol-negative-output",
+      "host": "windows",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-symbol-negative-output",
+      "host": "linux",
+      "error": null,
+      "exact": true,
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "sum": 0
+    },
+    {
+      "id": "acceptance-gradient-output",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 1200,
+      "alphaChangedPixels": 120,
+      "sum": 78494
+    },
+    {
+      "id": "acceptance-gradient-output",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 1200,
+      "alphaChangedPixels": 120,
+      "sum": 78494
+    },
+    {
+      "id": "acceptance-gradient-reflection",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 16570
+    },
+    {
+      "id": "acceptance-gradient-reflection",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 16570
+    },
+    {
+      "id": "acceptance-gradient-opacity-background",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 0,
+      "sum": 3390
+    },
+    {
+      "id": "acceptance-gradient-opacity-background",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 0,
+      "sum": 3390
+    },
+    {
+      "id": "acceptance-gradient-mask",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 14640
+    },
+    {
+      "id": "acceptance-gradient-mask",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 14640
+    },
+    {
+      "id": "acceptance-gradient-pattern",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 16550
+    },
+    {
+      "id": "acceptance-gradient-pattern",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 16550
+    },
+    {
+      "id": "acceptance-gradient-direct-source",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 461,
+      "alphaChangedPixels": 0,
+      "sum": 2629
+    },
+    {
+      "id": "acceptance-gradient-direct-source",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 461,
+      "alphaChangedPixels": 0,
+      "sum": 2629
+    },
+    {
+      "id": "acceptance-gradient-userspace",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 520,
+      "alphaChangedPixels": 40,
+      "sum": 31149
+    },
+    {
+      "id": "acceptance-gradient-userspace",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 520,
+      "alphaChangedPixels": 40,
+      "sum": 31149
+    },
+    {
+      "id": "acceptance-gradient-userspace-direct",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 500,
+      "alphaChangedPixels": 0,
+      "sum": 10519
+    },
+    {
+      "id": "acceptance-gradient-userspace-direct",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 500,
+      "alphaChangedPixels": 0,
+      "sum": 10519
+    },
+    {
+      "id": "acceptance-radial-source",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 16554
+    },
+    {
+      "id": "acceptance-radial-source",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 16554
+    },
+    {
+      "id": "acceptance-radial-pattern",
+      "host": "windows",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 16554
+    },
+    {
+      "id": "acceptance-radial-pattern",
+      "host": "linux",
+      "error": null,
+      "exact": false,
+      "changedPixels": 40,
+      "alphaChangedPixels": 40,
+      "sum": 16554
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 using Lokad.Svg.Parsing;
+using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
@@ -27,6 +28,41 @@ internal static class SvgLeafMaskAssertions
 
     internal static void UniformGroupScope(SvgRoot root, byte value, SvgClipBox? region)
         => UniformScope(root, value, region, new(1));
+
+    internal static void UniformScopeWithViewport(SvgRoot root, byte value, SvgClipBox? region,
+        SvgClipBox sourceViewport, SvgAffineTransform map)
+    {
+        Assert.Equal(5, root.Commands.Length);
+        SvgDrawCommand begin = root.Commands[0];
+        Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, begin.MaskRegion, -1, value), begin);
+        if (region is {} explicitRegion) Assert.Equal(explicitRegion, begin.MaskRegion);
+        else Assert.IsType<SvgClipBox>(begin.MaskRegion);
+        Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255), root.Commands[4]);
+        ViewportScope(root, 1, sourceViewport, map);
+    }
+
+    internal static void ViewportScope(SvgRoot root, int start, SvgClipBox sourceViewport, SvgAffineTransform map)
+    {
+        SvgDrawCommand begin = root.Commands[start];
+        Assert.Equal(SvgDrawCommandKind.BeginGroup, begin.Kind);
+        Assert.True(begin.RecordingScope.Value >= 0);
+        Assert.Equal(SvgPaintOpacity.Opaque, begin.SourceOpacity);
+        Assert.Equal(255, begin.MaskAlpha);
+        Assert.Equal(SvgLayerRegionKind.AffineViewport, begin.RegionKind);
+        Assert.IsType<SvgClipBox>(begin.MaskRegion);
+        SvgSceneStorage storage = Assert.IsType<SvgSceneStorage>(root.SceneStorage);
+        Assert.InRange(begin.MaskContentIndex, 0, storage.MaskContents.Length - 1);
+        SvgMaskContent content = storage.MaskContents[begin.MaskContentIndex];
+        Assert.Equal(SvgClipContentKind.AffineViewport, content.ClipKind);
+        SvgAuthoredPath path = Assert.IsType<SvgAuthoredPath>(Assert.Single(content.Geometries).AuthoredPath);
+        SvgRectangle bounds = SvgPathBounds.Compute(path.Commands, new(int.MaxValue), CancellationToken.None);
+        Assert.Equal((sourceViewport.X, sourceViewport.Y, sourceViewport.Width, sourceViewport.Height),
+            (bounds.X, bounds.Y, bounds.Width, bounds.Height));
+        Assert.Equal(map, path.SceneMap);
+        Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255), root.Commands[start + 1]);
+        Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255), root.Commands[start + 2]);
+        Assert.Null(Assert.Single(root.Geometries).LeafMask);
+    }
 
     private static void UniformScope(SvgRoot root, byte value, SvgClipBox? region, SvgRecordingScope recordingScope)
     {

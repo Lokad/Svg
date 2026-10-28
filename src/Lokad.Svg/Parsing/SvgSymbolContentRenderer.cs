@@ -169,19 +169,23 @@ internal static class SvgSymbolContentRenderer
         if ((definition.EstablishesViewport || definition.SymbolViewBox is not null || reference.IsMarker) && (!reference.IsMarker || definition.Marker is { ClipsViewport: true }))
         {
             if (reference.Width is null || reference.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol placement requires known instance dimensions.");
-            SvgClipBox sourceViewport = new(reference.X, reference.Y, reference.Width.Value, reference.Height.Value);
-            if (!reference.IsMarker || !reference.Transform.IsAxisAligned)
-            {
-                SvgAffineTransform clipMap = reference.Transform;
-                if (frame is {} parent) clipMap = SvgAffineTransform.FromScaleOffset(parent.ScaleX, parent.ScaleY, parent.OffsetX, parent.OffsetY).ComposeChecked(clipMap);
-                affineClip = new(sourceViewport, clipMap) { IsBinary = reference.IsMarker };
-            }
+            if (!reference.IsMarker) affineClip = SvgReferenceResolver.SymbolViewport(definition.SymbolViewBox, reference, frame);
             else
             {
-                SvgClipBox local = reference.Transform.Apply(sourceViewport);
-                if (frame is {} viewport) local = new(local.X * viewport.ScaleX + viewport.OffsetX, local.Y * viewport.ScaleY + viewport.OffsetY, local.Width * viewport.ScaleX, local.Height * viewport.ScaleY);
-                if (reference.IsMarker) local = local with { Antialiasing = SvgClipAntialiasing.Binary };
-                clip = clip is {} parent ? local.Intersect(parent) : local;
+                SvgClipBox sourceViewport = new(reference.X, reference.Y, reference.Width.Value, reference.Height.Value);
+                if (!reference.Transform.IsAxisAligned)
+                {
+                    SvgAffineTransform clipMap = reference.Transform;
+                    if (frame is {} parent) clipMap = SvgAffineTransform.FromScaleOffset(parent.ScaleX, parent.ScaleY, parent.OffsetX, parent.OffsetY).ComposeChecked(clipMap);
+                    affineClip = new(sourceViewport, clipMap) { IsBinary = reference.IsMarker };
+                }
+                else
+                {
+                    SvgClipBox local = reference.Transform.Apply(sourceViewport);
+                    if (frame is {} viewport) local = new(local.X * viewport.ScaleX + viewport.OffsetX, local.Y * viewport.ScaleY + viewport.OffsetY, local.Width * viewport.ScaleX, local.Height * viewport.ScaleY);
+                    if (reference.IsMarker) local = local with { Antialiasing = SvgClipAntialiasing.Binary };
+                    clip = clip is {} parent ? local.Intersect(parent) : local;
+                }
             }
         }
         return new(reference.FillOverride ?? reference.InheritedFill, reference.PaintServerId, reference.PaintServerFill, reference.InheritedStrokeOpacity, reference.InheritedStroke, reference.InheritedFillRule, map, clip, displayed, visible) { RecordingTransform = reference.RecordingTransform, HasInverseStrokePose = reference.HasInverseStrokePose, TextStyle = reference.InheritedTextStyle, LengthBases = definition.InstanceLengthBases(reference), TextMetrics = reference.TextMetrics, OwnOpacity = reference.ElementParentOpacity, ElementDisplay = reference.ElementParentDisplay, Markers = reference.InheritedMarkers, PaintOrder = reference.InheritedPaintOrder };

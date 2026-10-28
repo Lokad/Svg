@@ -60,7 +60,7 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
             for (int index = 0; index < source.Length; index++)
             {
                 work.Consume(token);
-                SvgDevicePoint point = map.Apply(source[index].X, source[index].Y);
+                SvgDevicePoint point = SvgAuthoredPath.MapPoint(map, source[index], new(0, 0));
                 if (!double.IsFinite(point.X) || !double.IsFinite(point.Y) || Math.Abs(point.X) > int.MaxValue || Math.Abs(point.Y) > int.MaxValue)
                     throw new SvgException(SvgErrorCode.LimitExceeded, "Clip coordinates exceed the admitted numeric range.");
                 points[index] = point;

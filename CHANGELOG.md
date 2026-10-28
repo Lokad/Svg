@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Share source bounds and instance maps between point-list geometry and its
+  linear/radial paints. Retain symbol viewport clips through native viewBox
+  concatenation and output placement, correcting large-coordinate clipping
+  without widening numerical admission. See the
+  [native controls](tests/Research/point-list-source-maps/README.md).
+
 - Preserve requested source-image bounds independently of capture storage, and
   retain image operating spaces through offset aliases. Merge draws transfer
   sampled color before coverage and use their destination clip. This corrects

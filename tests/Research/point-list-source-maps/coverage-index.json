@@ -1,0 +1,416 @@
+{
+  "originalRoles": 82,
+  "tests": 82,
+  "roles": [
+    {
+      "role": "original-range-0001-candidate",
+      "test": "original-range-0001-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0001-control",
+      "test": "original-range-0001-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0002-candidate",
+      "test": "original-range-0002-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0002-control",
+      "test": "original-range-0002-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0008-candidate",
+      "test": "original-range-0008-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0008-control",
+      "test": "original-range-0008-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0009-candidate",
+      "test": "original-range-0009-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0009-control",
+      "test": "original-range-0009-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0010-candidate",
+      "test": "original-range-0010-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0010-control",
+      "test": "original-range-0010-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0025-candidate",
+      "test": "original-range-0025-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0025-control",
+      "test": "original-range-0025-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0032-candidate",
+      "test": "original-range-0032-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0032-control",
+      "test": "original-range-0032-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0056-candidate",
+      "test": "original-range-0056-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0056-control",
+      "test": "original-range-0056-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0072-candidate",
+      "test": "original-range-0072-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0072-control",
+      "test": "original-range-0072-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0082-candidate",
+      "test": "original-range-0082-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0082-control",
+      "test": "original-range-0082-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0089-candidate",
+      "test": "original-range-0089-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0089-control",
+      "test": "original-range-0089-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0090-candidate",
+      "test": "original-range-0090-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0090-control",
+      "test": "original-range-0090-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0096-candidate",
+      "test": "original-range-0096-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0096-control",
+      "test": "original-range-0096-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0192-candidate",
+      "test": "original-range-0192-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0192-control",
+      "test": "original-range-0192-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0216-candidate",
+      "test": "original-range-0216-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0216-control",
+      "test": "original-range-0216-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0224-candidate",
+      "test": "original-range-0224-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0224-control",
+      "test": "original-range-0224-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0288-candidate",
+      "test": "original-range-0288-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0288-control",
+      "test": "original-range-0288-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0322-candidate",
+      "test": "original-range-0322-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0322-control",
+      "test": "original-range-0322-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0328-candidate",
+      "test": "original-range-0328-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0328-control",
+      "test": "original-range-0328-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0329-candidate",
+      "test": "original-range-0329-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0329-control",
+      "test": "original-range-0329-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0330-candidate",
+      "test": "original-range-0330-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0330-control",
+      "test": "original-range-0330-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0345-candidate",
+      "test": "original-range-0345-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0345-control",
+      "test": "original-range-0345-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0376-candidate",
+      "test": "original-range-0376-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0376-control",
+      "test": "original-range-0376-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0392-candidate",
+      "test": "original-range-0392-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0392-control",
+      "test": "original-range-0392-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0402-candidate",
+      "test": "original-range-0402-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0402-control",
+      "test": "original-range-0402-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0409-candidate",
+      "test": "original-range-0409-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0409-control",
+      "test": "original-range-0409-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0410-candidate",
+      "test": "original-range-0410-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0410-control",
+      "test": "original-range-0410-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0536-candidate",
+      "test": "original-range-0536-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-range-0536-control",
+      "test": "original-range-0536-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-effects-0001-candidate",
+      "test": "original-effects-0001-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-effects-0001-control",
+      "test": "original-effects-0001-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-effects-0002-candidate",
+      "test": "original-effects-0002-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-effects-0002-control",
+      "test": "original-effects-0002-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-effects-0004-candidate",
+      "test": "original-effects-0004-candidate",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "original-effects-0004-control",
+      "test": "original-effects-0004-control",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-symbol-output-half",
+      "test": "acceptance-symbol-output-half",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-symbol-output-large",
+      "test": "acceptance-symbol-output-large",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-symbol-reflection",
+      "test": "acceptance-symbol-reflection",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-symbol-nested-viewport",
+      "test": "acceptance-symbol-nested-viewport",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-symbol-group-opacity",
+      "test": "acceptance-symbol-group-opacity",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-symbol-alpha-mask",
+      "test": "acceptance-symbol-alpha-mask",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-symbol-pattern",
+      "test": "acceptance-symbol-pattern",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-symbol-nonzero-viewbox-y",
+      "test": "acceptance-symbol-nonzero-viewbox-y",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-symbol-negative-large",
+      "test": "acceptance-symbol-negative-large",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-symbol-negative-output",
+      "test": "acceptance-symbol-negative-output",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-gradient-output",
+      "test": "acceptance-gradient-output",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-gradient-reflection",
+      "test": "acceptance-gradient-reflection",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-gradient-opacity-background",
+      "test": "acceptance-gradient-opacity-background",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-gradient-mask",
+      "test": "acceptance-gradient-mask",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-gradient-pattern",
+      "test": "acceptance-gradient-pattern",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-gradient-direct-source",
+      "test": "acceptance-gradient-direct-source",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-gradient-userspace",
+      "test": "acceptance-gradient-userspace",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-gradient-userspace-direct",
+      "test": "acceptance-gradient-userspace-direct",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-radial-source",
+      "test": "acceptance-radial-source",
+      "reason": "Independent native input."
+    },
+    {
+      "role": "acceptance-radial-pattern",
+      "test": "acceptance-radial-pattern",
+      "reason": "Independent native input."
+    }
+  ]
+}

@@ -139,6 +139,11 @@ one/two-point lists, follow the same fill/stroke rules for all numeric spellings
 markers retain the authored vertices. Integer and fractional point lists keep
 original fill contours through placement and paints; see the
 [coverage regressions](../tests/Lokad.Svg.Tests/SvgPointListCoverageTests.cs).
+Linear/radial fills and symbol viewport clips retain source bounds through
+placement, output scaling and nested viewports; the
+[native controls](../tests/Research/point-list-source-maps/README.md) preserve
+independent references. Large-coordinate marker poses and own-filter regions
+still have known rendering discrepancies; this correction does not close them.
 Polygon/polyline point coordinates are bare SVG numbers; CSS length units such
 as px are unsupported in these numeric lists. Coordinates use native float place
 values; overflow (including excessive integer padding) discards the entire point
