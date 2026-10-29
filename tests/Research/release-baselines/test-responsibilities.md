@@ -441,3 +441,43 @@ this adds required lifetime cleanup and establishes no validation speedup.
 The full .NET 11 core suite passes 34,054 cases per host; 970 affected .NET 10
 checks pass per host. Five visual diagnostics pass on each runtime/host pair,
 including their unchanged coverage-stage evidence. Both builds are warning-free.
+
+
+## Point-list boundaries, instances and parser ownership
+
+The source before this pass is `8f1220541`. All 2,317 original focused case IDs
+remain; twelve complete PNG representatives are added. Source audits retain every
+original data enumeration, document builder and shader input expression.
+
+- [Point-list numbers](../../Lokad.Svg.Tests/SvgPointListNumberTests.cs) keep all
+  360 padded-coordinate and 112 signed/exponent/fraction combinations, including
+  source eligibility through markers, filters, instances, patterns and masks.
+  Three malformed-tail cases now exercise the parser directly. The four
+  enclosing-versus-own flood cases retain their exact alpha assertions.
+- [Point-list coverage](../../Lokad.Svg.Tests/SvgPointListCoverageTests.cs) keeps all
+  448 placement rows, including the sixteen unsupported nested-pattern pairs,
+  and the independent bilinear stripe-alpha assertion.
+- [Shader instances](../../Lokad.Svg.Tests/SvgRectangleShaderInstanceTests.cs) keep
+  all 360 frame rows and both definition orders. The nine clip and 36 degenerate
+  or oversized-stroke cases retain their complete PNG assertions.
+
+The 1,624 bulk rendering pairs compare production capture dimensions and exact
+canonical RGBA bytes through the existing raster seam. Six numerical, three
+point-list placement and three shader-frame PNG representatives retain encoding
+interactions; each belongs to the original matrix. Independent browser references,
+prepared companions, tolerances and input restrictions are unchanged.
+
+The [parser lifecycle helper](../../Lokad.Svg.Tests/SvgParseOwnershipAssertions.cs)
+extracts one byte-identical sequence from three callers: twenty cases retain
+success, borrowed storage, caller cancellation, retry, peak-minus-one refusal and
+cleanup. Expanding the helper restores each original method body exactly. The
+[culled-bound](../../Lokad.Svg.Tests/SvgPointListDrawingBoundsTests.cs) sequence
+and marker tests have different operations and remain separate. Mixed classes use
+method traits; 1,432 original cases gain a responsibility without changing identity.
+
+Three fresh sequential Windows .NET 11 processes measure 8.46/8.50 seconds median,
+including discovery/host/TRX and excluding build. There is no material validation
+speedup. The benefit is separated rendering/transport responsibilities and shared
+ownership assertions. All 2,329 affected cases and 100 independent point-list/shader
+reference checks pass on Windows/Linux under both supported runtimes. Both affected
+builds are warning-free. Production and the text-layout implementation are unchanged.

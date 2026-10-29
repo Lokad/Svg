@@ -17,13 +17,13 @@ public sealed class SvgPointListCoverageTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [MemberData(nameof(Placements))]
     public void Point_lists_keep_authored_coverage_paint_and_placement(string shape, string consumer, string paint, string map, bool stroke, double scale)
     {
         // Actual SVG point/path pairs are independently calibrated, including
         // output-only scaling. Nested pattern paints retain their restriction.
-        byte[] points = TextEncoding.UTF8.GetBytes(Document(shape, consumer, paint, map, stroke, false));
-        byte[] path = TextEncoding.UTF8.GetBytes(Document(shape, consumer, paint, map, stroke, true));
+        var (path, points) = CoverageInputs(shape, consumer, paint, map, stroke);
         SvgRenderOptions options = new(null, scale, SvgColor.Transparent, SvgRenderLimits.Default);
         if (consumer == "pattern" && paint == "url(#p)")
         {
@@ -31,11 +31,11 @@ public sealed class SvgPointListCoverageTests
                 Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, options, CancellationToken.None)).ErrorCode);
             return;
         }
-        Assert.Equal(SvgConverter.ConvertToPng(path, options, CancellationToken.None).ToArray(),
-            SvgConverter.ConvertToPng(points, options, CancellationToken.None).ToArray());
+        SvgRasterTestHelper.AssertPixelsEqual(path, points, options);
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_pattern_translation_preserves_native_bilinear_stripe_alpha()
     {
         byte[] input = TextEncoding.UTF8.GetBytes(Document("polygon", "direct", "url(#p)", "translate(.5 .5)", false, false));
@@ -49,6 +49,7 @@ public sealed class SvgPointListCoverageTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("direct")]
     [InlineData("use")]
     [InlineData("symbol")]
@@ -59,26 +60,23 @@ public sealed class SvgPointListCoverageTests
     {
         string paint = consumer == "pattern" ? "url(#l)" : "url(#p)";
         byte[] input = TextEncoding.UTF8.GetBytes(Document("polygon", consumer, paint, "translate(.5 .5)", true, false));
-        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
-        long peak;
-        using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
-        {
-            using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None)) { peak = budget.Snapshot().PeakBytes; }
-            Assert.Equal(73, budget.Snapshot().CurrentBytes);
-            using CancellationTokenSource cancellation = new(); cancellation.Cancel();
-            Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, cancellation.Token)).CancellationToken);
-            using (SvgRoot retry = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)) { }
-            Assert.Equal(73, budget.Snapshot().CurrentBytes);
-        }
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new RenderBudget(new HostMemoryBudget(peak - 1));
-        using (RenderBudget.BudgetReservation borrowed = denied.Reserve(73, SvgMemoryCategory.Scene))
-        {
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
-            Assert.Equal(73, denied.Snapshot().CurrentBytes);
-        }
-        Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        SvgParseOwnershipAssertions.PreservesBorrowedStorageOnDenialCancellationAndRetry(input);
     }
+
+    [Theory]
+    [Trait("Layer", "Rendering")]
+    [InlineData("polygon", "direct", "url(#p)", "translate(.5 .5)", false, 1.125)]
+    [InlineData("polyline", "mask", "url(#r)", "translate(2 3) scale(.75)", true, 1)]
+    [InlineData("polygon", "use", "url(#l)", "translate(.5 .5)", true, 1)]
+    public void Complete_png_point_lists_preserve_paint_and_placement(string shape, string consumer, string paint, string map, bool stroke, double scale)
+    {
+        var (control, input) = CoverageInputs(shape, consumer, paint, map, stroke);
+        SvgRasterTestHelper.AssertPngEqual(control, input, new(null, scale, SvgColor.Transparent, SvgRenderLimits.Default));
+    }
+
+    private static (byte[] Control, byte[] Input) CoverageInputs(string shape, string consumer, string paint, string map, bool stroke)
+        => (TextEncoding.UTF8.GetBytes(Document(shape, consumer, paint, map, stroke, true)),
+            TextEncoding.UTF8.GetBytes(Document(shape, consumer, paint, map, stroke, false)));
 
     private static string Document(string shape, string consumer, string paint, string map, bool stroke, bool path)
     {

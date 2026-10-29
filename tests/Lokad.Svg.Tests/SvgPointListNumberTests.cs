@@ -17,17 +17,12 @@ public sealed class SvgPointListNumberTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [MemberData(nameof(PaddedCoordinates))]
     public void Nonfinite_native_coordinate_discards_the_entire_list(string shape, int slot, int zeroes, string paint, string consumer)
     {
-        string[] coordinates = ["4", "4", "24", "4", "24", "24", "4", "24"];
-        string ordinary = string.Join(' ', coordinates);
-        int digits = coordinates[slot * 2].Length;
-        coordinates[slot * 2] = new string('0', zeroes) + coordinates[slot * 2];
-        // Independently captured actual SVGs establish the float-place boundary:
-        // 39 integer digits are finite; a 40th overflows even when it is zero.
-        string expected = zeroes + digits <= 39 ? ordinary : string.Empty;
-        Assert.Equal(Render(Document(shape, expected, paint, consumer)), Render(Document(shape, string.Join(' ', coordinates), paint, consumer)));
+        var (control, input) = PaddedInputs(shape, slot, zeroes, paint, consumer);
+        SvgRasterTestHelper.AssertPixelsEqual(control, input, SvgRenderOptions.Default);
     }
 
     public static IEnumerable<object[]> NumericForms()
@@ -43,15 +38,16 @@ public sealed class SvgPointListNumberTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [MemberData(nameof(NumericForms))]
     public void Signed_exponent_and_fraction_forms_keep_native_source_eligibility(string shape, string consumer, string token, string expected)
     {
-        string points = "4 4 24 4 " + token + " 24 4 24";
-        string control = expected.Length == 0 ? string.Empty : "4 4 24 4 " + expected + " 24 4 24";
-        Assert.Equal(Render(Document(shape, control, "flood", consumer)), Render(Document(shape, points, "flood", consumer)));
+        var (control, input) = NumericInputs(shape, consumer, token, expected);
+        SvgRasterTestHelper.AssertPixelsEqual(control, input, SvgRenderOptions.Default);
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("direct", 0)]
     [InlineData("use", 0)]
     [InlineData("group", 1024)]
@@ -73,6 +69,7 @@ public sealed class SvgPointListNumberTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("direct")]
     [InlineData("use")]
     [InlineData("group")]
@@ -81,28 +78,11 @@ public sealed class SvgPointListNumberTests
     public void Invalid_source_releases_staging_and_preserves_borrowed_storage_on_denial_and_retry(string consumer)
     {
         byte[] input = TextEncoding.UTF8.GetBytes(Document("polygon", "4 4 24 4 " + new string('0', 39) + "24 24 4 24", "markers", consumer));
-        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
-        long peak;
-        using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
-        {
-            using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None)) { peak = budget.Snapshot().PeakBytes; }
-            Assert.Equal(73, budget.Snapshot().CurrentBytes);
-            using CancellationTokenSource cancellation = new(); cancellation.Cancel();
-            Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, cancellation.Token)).CancellationToken);
-            using (SvgRoot retry = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)) { }
-            Assert.Equal(73, budget.Snapshot().CurrentBytes);
-        }
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new RenderBudget(new HostMemoryBudget(peak - 1));
-        using (RenderBudget.BudgetReservation borrowed = denied.Reserve(73, SvgMemoryCategory.Scene))
-        {
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
-            Assert.Equal(73, denied.Snapshot().CurrentBytes);
-        }
-        Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        SvgParseOwnershipAssertions.PreservesBorrowedStorageOnDenialCancellationAndRetry(input);
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("4 4 24 4 {invalid} 24 4 24 9", SvgErrorCode.MalformedInput)]
     [InlineData("4 4 24 4 {invalid} 24 bad 24", SvgErrorCode.MalformedInput)]
     [InlineData("4 4 24 4 {invalid} 24 {long} 24", SvgErrorCode.LimitExceeded)]
@@ -110,10 +90,53 @@ public sealed class SvgPointListNumberTests
     {
         string points = template.Replace("{invalid}", new string('0', 39) + "4", StringComparison.Ordinal)
             .Replace("{long}", new string('0', 257) + "4", StringComparison.Ordinal);
-        Assert.Equal(error, Assert.Throws<SvgException>(() => Render(Document("polygon", points, "fill", "direct"))).ErrorCode);
+        byte[] input = TextEncoding.UTF8.GetBytes(Document("polygon", points, "fill", "direct"));
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        Assert.Equal(error, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
     }
 
-    private static byte[] Render(string document) => SvgConverter.ConvertToPng(TextEncoding.UTF8.GetBytes(document), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+    [Theory]
+    [Trait("Layer", "Rendering")]
+    [InlineData("polygon", 0, 38, "fill", "direct")]
+    [InlineData("polyline", 2, 38, "markers", "use")]
+    [InlineData("polygon", 3, 40, "flood", "pattern")]
+    public void Complete_png_padded_coordinates_preserve_source_eligibility(string shape, int slot, int zeroes, string paint, string consumer)
+    {
+        var (control, input) = PaddedInputs(shape, slot, zeroes, paint, consumer);
+        SvgRasterTestHelper.AssertPngEqual(control, input, SvgRenderOptions.Default);
+    }
+
+    [Theory]
+    [Trait("Layer", "Rendering")]
+    [InlineData("polygon", "use-flood", "4e-50", "0")]
+    [InlineData("polyline", "mask", "4e39", "")]
+    [InlineData("polygon", "symbol", "0e39", "")]
+    public void Complete_png_numeric_forms_preserve_source_eligibility(string shape, string consumer, string token, string expected)
+    {
+        var (control, input) = NumericInputs(shape, consumer, token, expected);
+        SvgRasterTestHelper.AssertPngEqual(control, input, SvgRenderOptions.Default);
+    }
+
+    private static (byte[] Control, byte[] Input) PaddedInputs(string shape, int slot, int zeroes, string paint, string consumer)
+    {
+        string[] coordinates = ["4", "4", "24", "4", "24", "24", "4", "24"];
+        string ordinary = string.Join(' ', coordinates);
+        int digits = coordinates[slot * 2].Length;
+        coordinates[slot * 2] = new string('0', zeroes) + coordinates[slot * 2];
+        // Independently captured actual SVGs establish the float-place boundary:
+        // 39 integer digits are finite; a 40th overflows even when it is zero.
+        string expected = zeroes + digits <= 39 ? ordinary : string.Empty;
+        return (TextEncoding.UTF8.GetBytes(Document(shape, expected, paint, consumer)),
+            TextEncoding.UTF8.GetBytes(Document(shape, string.Join(' ', coordinates), paint, consumer)));
+    }
+
+    private static (byte[] Control, byte[] Input) NumericInputs(string shape, string consumer, string token, string expected)
+    {
+        string points = "4 4 24 4 " + token + " 24 4 24";
+        string control = expected.Length == 0 ? string.Empty : "4 4 24 4 " + expected + " 24 4 24";
+        return (TextEncoding.UTF8.GetBytes(Document(shape, control, "flood", consumer)),
+            TextEncoding.UTF8.GetBytes(Document(shape, points, "flood", consumer)));
+    }
 
     private static string Document(string shape, string points, string paint, string consumer)
     {

@@ -30,6 +30,7 @@ public sealed class SvgPointListDrawingBoundsTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [MemberData(nameof(SaturatedBounds))]
     public void Saturated_native_drawing_bounds_remain_empty_after_a_compensating_map(string origin, string width, string map, string shape, bool gradient, bool decimalSpelling)
     {
@@ -43,6 +44,7 @@ public sealed class SvgPointListDrawingBoundsTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("polygon", "use")]
     [InlineData("polyline", "use")]
     [InlineData("polygon", "pattern")]
@@ -76,6 +78,7 @@ public sealed class SvgPointListDrawingBoundsTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData(false)]
     [InlineData(true)]
     public void Culled_native_storage_is_released_after_success_denial_and_retry(bool gradient)

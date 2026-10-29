@@ -1,5 +1,6 @@
 namespace Lokad.Svg.Tests;
 
+[Trait("Layer", "Rendering")]
 public sealed class SvgRectangleShaderInstanceTests
 {
     [Theory]
@@ -73,29 +74,46 @@ public sealed class SvgRectangleShaderInstanceTests
     [MemberData(nameof(UniformStrokeInstances))]
     public void Rectangle_shader_strokes_retain_native_frame_coverage(string paint, string width, string transform, string opacity, string consumer)
     {
+        byte[] control = StrokeInput(paint, width, transform, opacity, consumer, false, false);
+        byte[] expected = SvgRasterTestHelper.RenderPixels(control, out int expectedWidth, out int expectedHeight);
+        foreach (bool forward in new[] { false, true })
+        {
+            byte[] input = StrokeInput(paint, width, transform, opacity, consumer, true, forward);
+            byte[] actual = SvgRasterTestHelper.RenderPixels(input, out int actualWidth, out int actualHeight);
+            Assert.Equal((expectedWidth, expectedHeight), (actualWidth, actualHeight));
+            Assert.Equal(expected, actual);
+        }
+    }
+
+    [Theory]
+    [InlineData("linear", ".5", "", "1", "direct")]
+    [InlineData("radial", "1.5", "translate(.75 .75)", ".5", "use")]
+    [InlineData("pattern", "3", "translate(.5 .25)", "1", "symbol")]
+    public void Complete_png_shader_strokes_preserve_native_frame_coverage(string paint, string width, string transform, string opacity, string consumer)
+    {
+        byte[] control = StrokeInput(paint, width, transform, opacity, consumer, false, false);
+        foreach (bool forward in new[] { false, true })
+            SvgRasterTestHelper.AssertPngEqual(control, StrokeInput(paint, width, transform, opacity, consumer, true, forward), SvgRenderOptions.Default);
+    }
+
+    private static byte[] StrokeInput(string paint, string width, string transform, string opacity, string consumer, bool shader, bool forward)
+    {
         string resource = paint switch
         {
             "linear" => "<linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient>",
             "radial" => "<radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient>",
             _ => "<pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern>"
         };
-        byte[] expected = SvgConverter.ConvertToPng(Input(false, false), SvgRenderOptions.Default, CancellationToken.None).ToArray();
-        foreach (bool forward in new[] { false, true })
-            Assert.Equal(expected, SvgConverter.ConvertToPng(Input(true, forward), SvgRenderOptions.Default, CancellationToken.None).ToArray());
-
-        byte[] Input(bool shader, bool forward)
+        string shape = "<rect x='4' y='4' width='20' height='20' fill='none' stroke='" + (shader ? "url(#p)" : "blue")
+            + "' stroke-width='" + width + "' stroke-opacity='" + opacity + "'/>";
+        string map = transform.Length == 0 ? "" : " transform='" + transform + "'";
+        string body = consumer switch
         {
-            string shape = "<rect x='4' y='4' width='20' height='20' fill='none' stroke='" + (shader ? "url(#p)" : "blue")
-                + "' stroke-width='" + width + "' stroke-opacity='" + opacity + "'/>";
-            string map = transform.Length == 0 ? "" : " transform='" + transform + "'";
-            string body = consumer switch
-            {
-                "use" => "<defs>" + shape.Replace("/>", " id='source'/>", StringComparison.Ordinal) + "</defs><use href='#source'" + map + "/>",
-                "symbol" => "<defs><symbol id='source' viewBox='0 0 32 32'>" + shape + "</symbol></defs><use href='#source' width='32' height='32'" + map + "/>",
-                _ => "<g" + map + ">" + shape + "</g>"
-            };
-            string resources = "<defs>" + resource + "</defs>";
-            return System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + (forward ? body + resources : resources + body) + "</svg>");
-        }
+            "use" => "<defs>" + shape.Replace("/>", " id='source'/>", StringComparison.Ordinal) + "</defs><use href='#source'" + map + "/>",
+            "symbol" => "<defs><symbol id='source' viewBox='0 0 32 32'>" + shape + "</symbol></defs><use href='#source' width='32' height='32'" + map + "/>",
+            _ => "<g" + map + ">" + shape + "</g>"
+        };
+        string resources = "<defs>" + resource + "</defs>";
+        return System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + (forward ? body + resources : resources + body) + "</svg>");
     }
 }
