@@ -14,7 +14,7 @@ public sealed class SvgDescriptionTests
     {
         string description = "<" + element + "><rect id='unused' width='invalid' transform='invalid'/><text font-family='Unused'>ignored</text></" + element + ">";
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g>" + description + "<rect id='unused' width='8' height='8'/></g></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             Assert.False(root.HasUnsupportedChild);

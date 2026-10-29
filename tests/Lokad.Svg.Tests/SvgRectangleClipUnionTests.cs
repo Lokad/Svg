@@ -59,7 +59,7 @@ public sealed class SvgRectangleClipUnionTests
         {
             byte[] input = Document(true, forward);
             Assert.Equal(expected, SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
-            RenderBudget budget = new(1_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
             using (SvgConverter.RasterizedSurface raster = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
                 Assert.Equal((byte)255, raster.Pixels[(16 * 32 + 16) * 4 + 3]);
@@ -88,7 +88,7 @@ public sealed class SvgRectangleClipUnionTests
             string inner = string.Concat(Enumerable.Repeat("<rect x='12' y='12' width='4' height='4'/>", count - 1));
             byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><clipPath id='c'>"
                 + (outerFirst ? outer + inner : inner + outer) + "</clipPath></defs><rect width='32' height='32' fill='red' clip-path='url(#c)'/></svg>");
-            RenderBudget budget = new(1_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             long parserPeak;
             using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
             {
@@ -109,7 +109,7 @@ public sealed class SvgRectangleClipUnionTests
                 Assert.Equal(73, budget.Snapshot().CurrentBytes);
             }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
-            RenderBudget denied = new(parserPeak - 1);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(parserPeak - 1));
             using (RenderBudget.BudgetReservation borrowed = denied.Reserve(73, SvgMemoryCategory.Scene))
             {
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input,

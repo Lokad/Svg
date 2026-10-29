@@ -21,7 +21,7 @@ public sealed class SvgRectanglePathStrokeTests
             string[] columns = row.TrimEnd('\r').Split(',');
             SvgAuthoredPathCommand[] source = Rectangle(Number(columns[0]), Number(columns[1]), Number(columns[2]), Number(columns[3]), columns[7] == "1");
             uint[][] expected = columns[8].Split(';').Select(value => value.Split(':').Select(v => uint.Parse(v, CultureInfo.InvariantCulture)).ToArray()).ToArray();
-            RenderBudget budget = new(1_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             using (BudgetedParserList<SvgStrokeOutlineCommand> output = new(budget, SvgMemoryCategory.Geometry))
             {
                 SvgNativePathStroke.Build(source, Number(columns[4]), Number(columns[5]), SvgStrokeCap.Butt,
@@ -51,13 +51,13 @@ public sealed class SvgRectanglePathStrokeTests
         SvgStrokeJoin join = (SvgStrokeJoin)joinValue;
         SvgAuthoredPathCommand[] source = Rectangle(4.5f, 6.25f, 25.5f, 23.5f, true);
         SvgAuthoredPathCommand[] original = source.ToArray();
-        RenderBudget baseline = new(1_000_000);
+        RenderBudget baseline = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (BudgetedParserList<SvgStrokeOutlineCommand> output = new(baseline, SvgMemoryCategory.Geometry, CancellationToken.None))
             Build(source, join, SvgAffineTransform.Identity, output, baseline, CancellationToken.None);
         Assert.Equal(0, baseline.Snapshot().CurrentBytes);
         for (long limit = 1; limit < baseline.Snapshot().PeakBytes; limit++)
         {
-            RenderBudget budget = new(limit);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(limit));
             using (BudgetedParserList<SvgStrokeOutlineCommand> output = new(budget, SvgMemoryCategory.Geometry))
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Build(source, join, SvgAffineTransform.Identity, output, budget, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -79,7 +79,7 @@ public sealed class SvgRectanglePathStrokeTests
         SvgAffineTransform map = new(a, b, c, d, e, f);
         SvgAuthoredPathCommand[] mapped = source.Select(command => command.Verb is SvgAuthoredPathVerb.Move or SvgAuthoredPathVerb.Line
             ? command with { First = SvgNativePathStroke.MapPoint(map, command.First) } : command).ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (BudgetedParserList<SvgStrokeOutlineCommand> first = new(budget, SvgMemoryCategory.Geometry))
         using (BudgetedParserList<SvgStrokeOutlineCommand> second = new(budget, SvgMemoryCategory.Geometry))
         {
@@ -93,7 +93,7 @@ public sealed class SvgRectanglePathStrokeTests
     [Fact]
     public void Cancelled_rectangle_construction_publishes_nothing_and_can_retry()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using CancellationTokenSource cancellation = new(); cancellation.Cancel();
         using (BudgetedParserList<SvgStrokeOutlineCommand> output = new(budget, SvgMemoryCategory.Geometry))
         {

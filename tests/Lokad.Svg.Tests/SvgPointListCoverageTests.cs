@@ -39,7 +39,7 @@ public sealed class SvgPointListCoverageTests
     public void Fractional_pattern_translation_preserves_native_bilinear_stripe_alpha()
     {
         byte[] input = TextEncoding.UTF8.GetBytes(Document("polygon", "direct", "url(#p)", "translate(.5 .5)", false, false));
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
         using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None);
         // Independent native capture: half-covered outer edges multiply the
@@ -59,7 +59,7 @@ public sealed class SvgPointListCoverageTests
     {
         string paint = consumer == "pattern" ? "url(#l)" : "url(#p)";
         byte[] input = TextEncoding.UTF8.GetBytes(Document("polygon", consumer, paint, "translate(.5 .5)", true, false));
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         long peak;
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
@@ -72,7 +72,7 @@ public sealed class SvgPointListCoverageTests
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new(peak - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(peak - 1));
         using (RenderBudget.BudgetReservation borrowed = denied.Reserve(73, SvgMemoryCategory.Scene))
         {
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);

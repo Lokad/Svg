@@ -15,7 +15,7 @@ public sealed class SvgRoundedRectSourceTests
             + paint + " transform='" + transform + "'/>";
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='48' height='40'>" + source + "</svg>");
         byte[] instanced = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='48' height='40'><defs>" + source + "</defs><use href='#source'/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgAuthoredPath path = Assert.IsType<SvgAuthoredPath>(scene.Geometries[0].AuthoredPath);
@@ -26,7 +26,7 @@ public sealed class SvgRoundedRectSourceTests
                 SvgConverter.ConvertToPng(instanced, SvgRenderOptions.Default, CancellationToken.None).ToArray());
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new(budget.Snapshot().PeakBytes / 2);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes / 2));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
             SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
@@ -44,7 +44,7 @@ public sealed class SvgRoundedRectSourceTests
         string corners = "rx='" + rx.ToString("R", CultureInfo.InvariantCulture) + "' ry='" + ry.ToString("R", CultureInfo.InvariantCulture) + "'";
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='41' height='35'>"
             + "<rect x='4.25' y='6.5' width='25.5' height='19' " + corners + " fill='#2168ad'/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgAuthoredPath source = Assert.IsType<SvgAuthoredPath>(Assert.Single(scene.Geometries).AuthoredPath);
@@ -67,7 +67,7 @@ public sealed class SvgRoundedRectSourceTests
     [InlineData(true)]
     public void Copies_and_transfers_preserve_shape_classification_and_release_both_stroke_owners(bool stroke)
     {
-        RenderBudget sceneBudget = new(1_000_000), copyBudget = new(1_000_000), prepareBudget = new(1_000_000);
+        RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(1_000_000)), copyBudget = new RenderBudget(new HostMemoryBudget(1_000_000)), prepareBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         SvgRoot scene = SvgRootParser.Parse(Input(stroke), SvgRenderLimits.Default, sceneBudget, null, CancellationToken.None);
         try
         {
@@ -98,14 +98,14 @@ public sealed class SvgRoundedRectSourceTests
     [InlineData(true)]
     public void Partial_source_construction_releases_storage_after_memory_or_cancellation_denial(bool stroke)
     {
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRootParser.Parse(Input(stroke), SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget tight = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget tight = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         SvgException memory = Assert.Throws<SvgException>(() => SvgRootParser.Parse(Input(stroke), SvgRenderLimits.Default, tight, null, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, memory.ErrorCode);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
-        RenderBudget workBudget = new(1_000_000);
+        RenderBudget workBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(0, workBudget.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
@@ -119,15 +119,15 @@ public sealed class SvgRoundedRectSourceTests
     [InlineData(true)]
     public void Partial_source_copy_and_replay_leave_no_owned_storage_on_denial(bool stroke)
     {
-        RenderBudget sceneBudget = new(1_000_000), measured = new(1_000_000);
+        RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(1_000_000)), measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(Input(stroke), SvgRenderLimits.Default, sceneBudget, null, CancellationToken.None))
         {
             SvgAuthoredPath source = Assert.IsType<SvgAuthoredPath>(scene.Geometries.Single(static geometry => geometry.AuthoredPath is not null).AuthoredPath);
             using (source.Copy(SvgAffineTransform.Identity, measured, CancellationToken.None)) { }
-            RenderBudget tight = new(measured.Snapshot().PeakBytes - 1);
+            RenderBudget tight = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => source.Copy(SvgAffineTransform.Identity, tight, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, tight.Snapshot().CurrentBytes);
-            RenderBudget denied = new(1_000_000);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(1_000_000));
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
             SvgAuthoredPath filled = stroke ? Assert.IsType<SvgAuthoredPath>(source.StrokeOutline) : source;
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
@@ -148,12 +148,12 @@ public sealed class SvgRoundedRectSourceTests
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='41' height='35'>"
             + "<rect x='4.25' y='6.5' width='25.5' height='19' rx='5' ry='9.5' " + paint + "/></svg>");
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         for (long limit = 256; limit < measured.Snapshot().PeakBytes; limit += 256)
         {
-            RenderBudget denied = new(limit);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
             SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, CancellationToken.None));
             Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
@@ -167,11 +167,11 @@ public sealed class SvgRoundedRectSourceTests
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='41' height='35'>"
             + "<rect x='4.25' y='6.5' width='25.5' height='19' rx='5' ry='9.5' " + paint + "/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
             Assert.NotEmpty(scene.Geometries);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new(budget.Snapshot().PeakBytes / 2);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes / 2));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
             SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);

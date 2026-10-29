@@ -16,7 +16,7 @@ public sealed class LatinLightHintingTests
             .. Box(350, 1200, 1140, 1349), new(100, 586, true), new(250, 1000, true), new(400, 586, true)];
         LatinAlignmentZone[] zones = [new(0, -20, 1370, -20, false, false), new(1349, 1370, 1370, -20, true, false),
             new(1082, 1102, 1102, -20, true, true)];
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
 
         LatinLightHinting.Hint(points, [3, 7, 11, 14], zones, 2048, 8, new(0, 0), budget, CancellationToken.None);
 
@@ -32,7 +32,7 @@ public sealed class LatinLightHintingTests
             .. Box(300, 900, 920, 1102), new(200, 774, true), new(350, 1050, true), new(500, 774, true)];
         LatinAlignmentZone[] zones = [new(0, -20, 1370, -20, false, false), new(1349, 1370, 1370, -20, true, false),
             new(1082, 1102, 1102, -20, true, true)];
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
 
         LatinLightHinting.Hint(points, [3, 7, 11, 14], zones, 2048, 4, new(0, 0), budget, CancellationToken.None);
 
@@ -52,7 +52,7 @@ public sealed class LatinLightHintingTests
         OpenTypeGlyphPoint[] points = [.. Box(0, 300, 0, 200), .. Box(500, 800, 416, 488),
             .. Box(250, 1000, 800, 1000), new(100, spurY, true), new(200, 700, true), new(300, spurY, true)];
         LatinAlignmentZone[] zones = [new(0, 0, 1000, 0, false, false), new(1000, 1000, 1000, 0, true, false)];
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
 
         LatinLightHinting.Hint(points, [3, 7, 11, 14], zones, 2048, 8, new(0, 0), budget, CancellationToken.None);
 
@@ -72,7 +72,7 @@ public sealed class LatinLightHintingTests
         OpenTypeGlyphPoint[] points = [new(0, 0, true), new(0, 20, true), new(300, 20, true), new(300, 0, true),
             new(500, 0, true), new(500, 80, true), new(800, 80, true), new(800, 0, true)];
         OpenTypeGlyphPoint[] unchanged = points.ToArray();
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
 
         LatinStemWidths widths = LatinLightHinting.MeasureStemWidths(points, [3, 7], 2048, budget, CancellationToken.None);
 
@@ -89,7 +89,7 @@ public sealed class LatinLightHintingTests
     public void Keeps_coincident_near_only_contours_bounded(int count)
     {
         OpenTypeGlyphPoint[] points = Enumerable.Repeat(new OpenTypeGlyphPoint(3, 7, true), count).ToArray();
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
 
         LatinLightHinting.Hint(points, [(ushort)(count - 1)], [], 1000, 16, budget, CancellationToken.None);
 
@@ -103,7 +103,7 @@ public sealed class LatinLightHintingTests
         OpenTypeGlyphPoint[] points = [new(0, 300, true), new(0, 303, true), new(3, 303, true), new(3, 300, true)];
         OpenTypeGlyphPoint[] expected = [new(0, 307, true), new(0, 310, true), new(3, 310, true), new(3, 307, true)];
         LatinAlignmentZone[] zones = [new(0, 0, 700, 0, false, false), new(700, 700, 700, 0, true, false)];
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
 
         LatinLightHinting.Hint(points, [3], zones, 1000, 16, budget, CancellationToken.None);
 
@@ -117,7 +117,7 @@ public sealed class LatinLightHintingTests
         OpenTypeGlyphPoint[] forward = [new(0, 0, true), new(0, 700, true), new(300, 700, true), new(300, 0, true)];
         OpenTypeGlyphPoint[] backward = forward.Reverse().ToArray();
         LatinAlignmentZone[] zones = [new(0, 0, 700, 0, false, false), new(700, 700, 700, 0, true, false)];
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         LatinLightHinting.Hint(forward, [3], zones, 1000, 16, budget, CancellationToken.None);
         LatinLightHinting.Hint(backward, [3], zones, 1000, 16, budget, CancellationToken.None);
 
@@ -130,7 +130,7 @@ public sealed class LatinLightHintingTests
     public void Scales_without_edges_when_the_face_has_no_Latin_alignment_samples()
     {
         OpenTypeGlyphPoint[] points = [new(-100, 0, true), new(0, 700, true), new(100, 0, true)];
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
 
         LatinLightHinting.Hint(points, [2], [], 1000, 16, budget, CancellationToken.None);
 
@@ -143,7 +143,7 @@ public sealed class LatinLightHintingTests
     {
         OpenTypeGlyphPoint[] points = [new(0, 0, true), new(0, 700, true), new(300, 700, true), new(300, 0, true)];
         LatinAlignmentZone[] zones = [new(700, 700, 700, 0, true, true)];
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
 
         LatinLightHinting.Hint(points, [3], zones, 1000, 0.001, budget, CancellationToken.None);
 
@@ -159,7 +159,7 @@ public sealed class LatinLightHintingTests
     [InlineData(32768)]
     public void Rejects_out_of_range_device_sizes_before_allocation(double size)
     {
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         SvgException exception = Assert.Throws<SvgException>(() => LatinLightHinting.Hint([], [], [], 1000, size, budget, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
@@ -175,7 +175,7 @@ public sealed class LatinLightHintingTests
     {
         OpenTypeGlyphPoint[] points = [new(0, 0, true), new(0, 700, true), new(300, 700, true), new(300, 0, true)];
         LatinAlignmentZone[] zones = [new(0, 0, 700, 0, false, false), new(700, 700, 700, 0, true, false)];
-        var budget = new RenderBudget(maximumBytes);
+        var budget = new RenderBudget(new HostMemoryBudget(maximumBytes));
 
         SvgException exception = Assert.Throws<SvgException>(() => LatinLightHinting.Hint(points, [3], zones, 1000, 16, budget, CancellationToken.None));
 
@@ -189,7 +189,7 @@ public sealed class LatinLightHintingTests
     {
         using var cancellation = new CancellationTokenSource();
         cancellation.Cancel();
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
 
         Assert.ThrowsAny<OperationCanceledException>(() => LatinLightHinting.Hint([new(0, 0, true)], [0], [new(0, 0, 0, 0, false, false)], 1000, 16, budget, cancellation.Token));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

@@ -14,7 +14,7 @@ public sealed partial class OpenTypeFontTests
     public async Task Shared_glyph_view_disposal_preserves_parent_storage_and_offset_metadata()
     {
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         SvgTextStyle style = new(new("Example", 400, false), 100, 0, 3, 0, 0, 0, SvgTextAnchor.Start, "");
         SvgTextGlyphPaint red = new(new(new(255, 0, 0, 255), 1), true);
         SvgTextGlyphPaint blue = new(new(new(0, 0, 255, 255), 1), true);
@@ -53,7 +53,7 @@ public sealed partial class OpenTypeFontTests
             for (int index = 0; index < count; index++)
                 xml.Append("<text font-family='Example' font-size='100' filter='url(#f)' y='3'>A<textPath href='#p'>A</textPath>A</text>");
             xml.Append("</svg>");
-            RenderBudget budget = new(20_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(20_000_000));
             long allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
             using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(xml.ToString()), SvgRenderLimits.Default, budget, fonts, CancellationToken.None)) { }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -81,12 +81,12 @@ public sealed partial class OpenTypeFontTests
     {
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
         (byte[] input, _) = SharedFilterDocuments(SharedFilterScope.Both);
-        RenderBudget budget = new(2_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, fonts, CancellationToken.None)) { }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         foreach (long limit in new[] { 256L, budget.Snapshot().PeakBytes / 2, budget.Snapshot().PeakBytes - 1 })
         {
-            RenderBudget denied = new(limit);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
                 SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, fonts, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);

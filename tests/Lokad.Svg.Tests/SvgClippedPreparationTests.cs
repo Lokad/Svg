@@ -17,7 +17,7 @@ public sealed class SvgClippedPreparationTests
     {
         string definitions = "<defs><linearGradient id='linear'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><radialGradient id='radial'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient><pattern id='pattern' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='red'/></pattern></defs>";
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>" + definitions + "<path d='" + Curve + "' fill='" + (material == "solid" ? "#003478" : "url(#" + material + ")") + "'/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface image = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
         {
@@ -36,7 +36,7 @@ public sealed class SvgClippedPreparationTests
         SvgDevicePoint[] points = [new(2, 2), new(12, 2), new(6, 12)];
         SvgAnalyticContourPreparation preparation = new(points, [3], [], false, null, SvgPolygonMapping.QuarterEdges, [], [], new(int.MinValue, int.MinValue, int.MaxValue, int.MaxValue), 16, 16);
         Assert.True(preparation.UsesRunBlitter);
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 16, 0, 16, new(0, 16), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None))
         {
             Assert.True(eligible);
@@ -53,7 +53,7 @@ public sealed class SvgClippedPreparationTests
     public void Opposite_projected_verticals_cancel_without_flattened_fallback()
     {
         SvgDevicePoint[] points = [new(-4, 4), new(-2, 4), new(-2, 12), new(-4, 12)];
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [4], [], false, null, SvgPolygonMapping.FiniteEdges, [], [], 0, 16, 0, 16, 16, 16, new(0, 16), new(new(8, 0, 16, 16)), budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
@@ -72,7 +72,7 @@ public sealed class SvgClippedPreparationTests
         var polygon = Assert.Single(root.Geometries).Polygon;
         Assert.Contains(polygon.CubicSpans, span => span.SecondControl.Y > 128);
         Assert.All(polygon.Points, point => Assert.InRange(point.Y, 0, 128));
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 128, 0, 128, 128, 128, new(0, 128), new(new(0, 0, 128, 128)), budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
@@ -91,14 +91,14 @@ public sealed class SvgClippedPreparationTests
     {
         using SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(ScaledInput), SvgRenderLimits.Default, CancellationToken.None);
         var polygon = Assert.Single(root.Geometries).Polygon;
-        RenderBudget success = new(1_000_000);
+        RenderBudget success = new RenderBudget(new HostMemoryBudget(1_000_000));
         long storage;
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 128, 0, 128, 128, 128, new(0, 128), new(new(0, 0, 128, 128)), success, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             storage = success.Snapshot().CurrentBytes;
         }
-        RenderBudget denied = new(storage - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(storage - 1));
         SvgException exception = Assert.Throws<SvgException>(() =>
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 128, 0, 128, 128, 128, new(0, 128), new(new(0, 0, 128, 128)), denied, out bool _, CancellationToken.None);
@@ -114,7 +114,7 @@ public sealed class SvgClippedPreparationTests
     {
         using SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(ScaledInput), SvgRenderLimits.Default, CancellationToken.None);
         var polygon = Assert.Single(root.Geometries).Polygon;
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using CancellationTokenSource source = new();
         source.Cancel();
         OperationCanceledException exception = Assert.Throws<OperationCanceledException>(() =>

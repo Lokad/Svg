@@ -51,7 +51,7 @@ public sealed class SvgAnalyticPaintClipTests
     public void Tiny_path_dispatch_is_context_local_and_does_not_contaminate_cached_geometry()
     {
         SvgAnalyticContourPreparation preparation = new(Triangle, [3], [], false, null, SvgPolygonMapping.QuarterEdges, [], [], new(0, 0, 32, 32), 96, 80);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         long binaryBytes;
         {
             using SvgAnalyticCoverage warm = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 96), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
@@ -87,7 +87,7 @@ public sealed class SvgAnalyticPaintClipTests
     public void Forced_run_link_memory_refusal_releases_prepared_owners()
     {
         SvgAnalyticContourPreparation preparation = new(Triangle, [3], [], false, null, SvgPolygonMapping.QuarterEdges, [], [], new(0, 0, 32, 32), 96, 80);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         long bytes;
         {
             using SvgAnalyticCoverage warm = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 96), null, SvgAnalyticPaintClip.Antialiased, budget, out bool _, CancellationToken.None);
@@ -97,7 +97,7 @@ public sealed class SvgAnalyticPaintClipTests
             Assert.True(eligible);
             bytes = budget.Snapshot().CurrentBytes;
         }
-        RenderBudget denied = new(bytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(bytes - 1));
         try
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 96), null, SvgAnalyticPaintClip.Antialiased, denied, out bool _, CancellationToken.None);
@@ -112,7 +112,7 @@ public sealed class SvgAnalyticPaintClipTests
     [Fact]
     public void Tiny_forced_run_cancellation_during_replay_preserves_token_and_ownership()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using CancellationTokenSource source = new();
         int replayCalls = 0;
         using IDisposable probe = SvgAnalyticPaintProbe.Arm((phase, _) =>

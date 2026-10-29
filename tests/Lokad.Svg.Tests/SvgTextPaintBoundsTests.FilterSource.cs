@@ -29,7 +29,7 @@ public sealed partial class SvgTextPaintBoundsTests
         JsonElement expected = row.GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux");
         byte[] input = TextEncoding.UTF8.GetBytes(row.GetProperty("source").GetString() ?? throw new InvalidDataException("Missing source document."));
         using SvgFontSnapshot fonts = await CreateSnapshotAsync();
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, fonts, CancellationToken.None))
         {
             SvgSceneStorage scene = root.SceneStorage ?? throw new InvalidDataException("Missing source paint records.");
@@ -58,7 +58,7 @@ public sealed partial class SvgTextPaintBoundsTests
     public async Task Recording_scope_copy_releases_after_refusal_and_partial_failure_then_retries_and_borrows()
     {
         using SvgFontSnapshot fonts = await CreateSnapshotAsync();
-        RenderBudget runBudget = new(1_000_000), metadata = new(1_000_000), denied = new(1);
+        RenderBudget runBudget = new RenderBudget(new HostMemoryBudget(1_000_000)), metadata = new RenderBudget(new HostMemoryBudget(1_000_000)), denied = new RenderBudget(new HostMemoryBudget(1));
         using (SvgTextRun run = CreateRun("Aj", fonts, runBudget))
         {
             SvgTextRecordingScope[] scopes = [new(0, 1, 0, 4, false), new(1, 2, 1, 2, false)];
@@ -96,7 +96,7 @@ public sealed partial class SvgTextPaintBoundsTests
     public async Task Recording_box_scratch_releases_after_denial_cancellation_then_retries()
     {
         using SvgFontSnapshot fonts = await CreateSnapshotAsync();
-        RenderBudget runBudget = new(1_000_000), scratch = new(1_000_000), denied = new(256);
+        RenderBudget runBudget = new RenderBudget(new HostMemoryBudget(1_000_000)), scratch = new RenderBudget(new HostMemoryBudget(1_000_000)), denied = new RenderBudget(new HostMemoryBudget(256));
         using (SvgTextRun run = CreateRun("Aj", fonts, runBudget))
         {
             run.RetainRecordingScopes([new(0, 2, 0, 4, false)], SvgTextRecordingStroke.None, runBudget, CancellationToken.None);

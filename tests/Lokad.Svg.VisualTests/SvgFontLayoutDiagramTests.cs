@@ -37,13 +37,13 @@ public sealed class SvgFontLayoutDiagramTests
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "font-pack.json")), "public-noto-layout");
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, new Provider(), CancellationToken.None);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
-        RenderBudget sceneBudget = new(16_000_000);
+        RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(16_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, snapshot, CancellationToken.None))
         {
-            RenderBudget accepted = new(16_000_000);
+            RenderBudget accepted = new RenderBudget(new HostMemoryBudget(16_000_000));
             byte[] expected = SvgConverter.ConvertToPng(scene, options, accepted, CancellationToken.None).ToArray();
             Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-            RenderBudget denied = new(Math.Max(1024, accepted.Snapshot().PeakBytes / 2));
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(Math.Max(1024, accepted.Snapshot().PeakBytes / 2)));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(scene, options, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();
@@ -64,13 +64,13 @@ public sealed class SvgFontLayoutDiagramTests
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(catalog, [new("Example", 400, false)], new Provider(), CancellationToken.None);
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "remaining-label-path-sheet", "stroke-modes.svg"));
         byte[] unchanged = input.ToArray();
-        RenderBudget sceneBudget = new(16_000_000);
+        RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(16_000_000));
         using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, snapshot, CancellationToken.None);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
-        RenderBudget accepted = new(16_000_000);
+        RenderBudget accepted = new RenderBudget(new HostMemoryBudget(16_000_000));
         byte[] expected = SvgConverter.ConvertToPng(scene, options, accepted, CancellationToken.None).ToArray();
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-        RenderBudget denied = new(400_000);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(400_000));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(scene, options, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
@@ -93,7 +93,7 @@ public sealed class SvgFontLayoutDiagramTests
         SvgTextGlyphPaint paint = new(new(new(20, 40, 80, 255), 1), true);
         paint = paint with { Decoration = new(SvgTextDecorationLine.Underline, paint) };
         SvgTextPositionAdjustment[] positions = [new(2, 40, null, 0, 0), new(3, 70, null, 0, 0)];
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         using (SvgTextRun run = SvgTextRunBuilder.Create(style, "fiAB", [], positions, [], paint, null, snapshot, budget, CancellationToken.None))
         {
             Assert.Equal(3, run.Glyphs.Length);
@@ -121,12 +121,12 @@ public sealed class SvgFontLayoutDiagramTests
         byte[] affineStroked = System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(stroked).Replace("<g stroke", "<g transform='rotate(7 160 80)' stroke", StringComparison.Ordinal));
         foreach (byte[] input in new[] { original, affine, stroked, affineStroked })
         {
-            RenderBudget accepted = new(32_000_000);
+            RenderBudget accepted = new RenderBudget(new HostMemoryBudget(32_000_000));
             Run(input, snapshot, accepted, CancellationToken.None);
             long peak = accepted.Snapshot().PeakBytes;
             foreach (long limit in new[] { 1, peak / 2 })
             {
-                RenderBudget denied = new(limit);
+                RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(input, snapshot, denied, CancellationToken.None)).ErrorCode);
                 Assert.Equal(0, denied.Snapshot().CurrentBytes);
             }
@@ -164,7 +164,7 @@ public sealed class SvgFontLayoutDiagramTests
         foreach (byte[] input in new[] { original, affine }.Concat(pathInputs))
         {
             byte[] unchangedInput = input.ToArray();
-            RenderBudget parsed = new(16_000_000);
+            RenderBudget parsed = new RenderBudget(new HostMemoryBudget(16_000_000));
             using (SvgRoot measured = SvgRootParser.Parse(input, SvgRenderLimits.Default, parsed, snapshot, CancellationToken.None))
                 Assert.NotEmpty(measured.Geometries.ToArray());
             Assert.Equal(0, parsed.Snapshot().CurrentBytes);
@@ -176,13 +176,13 @@ public sealed class SvgFontLayoutDiagramTests
                         SvgRootParser.Parse(input, SvgRenderLimits.Default, parsed, snapshot, parseCancellation.Token)).CancellationToken);
                 Assert.Equal(0, parsed.Snapshot().CurrentBytes);
             }
-            RenderBudget sceneBudget = new(16_000_000);
+            RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(16_000_000));
             using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, snapshot, CancellationToken.None))
             {
-                RenderBudget accepted = new(16_000_000);
+                RenderBudget accepted = new RenderBudget(new HostMemoryBudget(16_000_000));
                 byte[] expected = SvgConverter.ConvertToPng(scene, options, accepted, CancellationToken.None).ToArray();
                 Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-                RenderBudget denied = new(accepted.Snapshot().PeakBytes / 2);
+                RenderBudget denied = new RenderBudget(new HostMemoryBudget(accepted.Snapshot().PeakBytes / 2));
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(scene, options, denied, CancellationToken.None)).ErrorCode);
                 Assert.Equal(0, denied.Snapshot().CurrentBytes);
                 using CancellationTokenSource cancellation = new();
@@ -204,7 +204,7 @@ public sealed class SvgFontLayoutDiagramTests
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "font-pack.json")), "public-noto-layout");
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(catalog, [new("Example", 400, false)], new Provider(), CancellationToken.None);
         SvgTextStyle style = new(new("Example", 400, false), 18, 0, 24, 0, 0, 0, SvgTextAnchor.Start, string.Empty);
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         using (SvgTextRun ordinary = SvgTextRunBuilder.Create(style, "fi A\u00a0B\u2002C", snapshot, budget, CancellationToken.None))
         using (SvgTextRun spaced = SvgTextRunBuilder.Create(style with { WordSpacing = 5 }, "fi A\u00a0B\u2002C", snapshot, budget, CancellationToken.None))
         {
@@ -227,7 +227,7 @@ public sealed class SvgFontLayoutDiagramTests
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(catalog, [new("Example", 400, false)], new Provider(), CancellationToken.None);
         SvgTextStyle style = new(new("Example", 400, false), 18, 0, 24, 0, 0, 0, SvgTextAnchor.Start, string.Empty);
         SvgTextPositionAdjustment[] positions = [new(2, null, null, 0, 0) { Rotation = 10 }, new(3, null, null, 0, 0) { Rotation = 20 }];
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         using (SvgTextRun run = SvgTextRunBuilder.Create(style, "fiAB", [], positions, snapshot, budget, CancellationToken.None))
         {
             Assert.Equal(3, run.Glyphs.Length);
@@ -276,13 +276,13 @@ public sealed class SvgFontLayoutDiagramTests
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
         OpenTypeQuadraticSegment[] expected = data.GetProperty("segments").EnumerateArray()
             .Select(segment => new OpenTypeQuadraticSegment(Point(segment[0]), Point(segment[1]), Point(segment[2]))).ToArray();
-        RenderBudget budget = new(1_000_000);         using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetLatinLightContours(bytes, data.GetProperty("glyphIndex").GetUInt16(), metrics, data.GetProperty("fontSize").GetDouble(), budget, CancellationToken.None))
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));         using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetLatinLightContours(bytes, data.GetProperty("glyphIndex").GetUInt16(), metrics, data.GetProperty("fontSize").GetDouble(), budget, CancellationToken.None))
         {
             Assert.Equal(expected, contours.Segments.ToArray());
             Assert.Equal(data.GetProperty("contourEnds").EnumerateArray().Select(end => end.GetInt32()), contours.ContourEnds.ToArray());
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new(budget.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
             OpenTypeFont.GetLatinLightContours(bytes, data.GetProperty("glyphIndex").GetUInt16(), metrics, data.GetProperty("fontSize").GetDouble(), denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
@@ -314,11 +314,11 @@ public sealed class SvgFontLayoutDiagramTests
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, new Provider(), CancellationToken.None);
         Assert.Single(snapshot.Fonts);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
-        RenderBudget accepted = new(32_000_000);         byte[] expected = Run(accepted, CancellationToken.None);
+        RenderBudget accepted = new RenderBudget(new HostMemoryBudget(32_000_000));         byte[] expected = Run(accepted, CancellationToken.None);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
         foreach (long maximum in new[] { 1L, accepted.Snapshot().PeakBytes / 2 })
         {
-            RenderBudget denied = new(maximum);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(maximum));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }
@@ -503,11 +503,11 @@ public sealed class SvgFontLayoutDiagramTests
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, Required(manifest.RootElement, "fontPack"))), Required(manifest.RootElement, "fontPackId"));
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, new Provider(), CancellationToken.None);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
-        RenderBudget accepted = new(32_000_000);         byte[] expected = Run(accepted, CancellationToken.None);
+        RenderBudget accepted = new RenderBudget(new HostMemoryBudget(32_000_000));         byte[] expected = Run(accepted, CancellationToken.None);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
         foreach (long maximum in new[] { 1L, accepted.Snapshot().PeakBytes / 2 })
         {
-            RenderBudget denied = new(maximum);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(maximum));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }

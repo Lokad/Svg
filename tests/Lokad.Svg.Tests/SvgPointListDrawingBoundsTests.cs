@@ -34,7 +34,7 @@ public sealed class SvgPointListDrawingBoundsTests
     public void Saturated_native_drawing_bounds_remain_empty_after_a_compensating_map(string origin, string width, string map, string shape, bool gradient, bool decimalSpelling)
     {
         byte[] input = TextEncoding.UTF8.GetBytes(Document(origin, width, map, shape, gradient, decimalSpelling));
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
         using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None);
         // Independently captured whole SVGs are transparent: native drawing
@@ -81,7 +81,7 @@ public sealed class SvgPointListDrawingBoundsTests
     public void Culled_native_storage_is_released_after_success_denial_and_retry(bool gradient)
     {
         byte[] input = TextEncoding.UTF8.GetBytes(Document("2147483648", "1024", "0.0234375 0 0 1 -50331644 0", "polygon", gradient, false));
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         long peak;
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
@@ -92,7 +92,7 @@ public sealed class SvgPointListDrawingBoundsTests
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new(peak - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(peak - 1));
         using (RenderBudget.BudgetReservation borrowed = denied.Reserve(73, SvgMemoryCategory.Scene))
         {
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);

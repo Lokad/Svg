@@ -39,7 +39,7 @@ public sealed partial class OpenTypeFontTests
         }
         byte[] expected = SvgConverter.ConvertToPng(control, SvgRenderOptions.Default, CancellationToken.None).ToArray();
         byte[] unchanged = input.ToArray();
-        RenderBudget budget = new(4_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(4_000_000));
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
             using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
@@ -164,7 +164,7 @@ public sealed partial class OpenTypeFontTests
     public void Empty_instances_preserve_own_reference_validation(string attributes)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><symbol id='s' viewBox='0 0 32 32'><rect width='32' height='32'/></symbol></defs><use " + attributes + "/></svg>");
-        RenderBudget budget = new(4_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(4_000_000));
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
             Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
@@ -192,12 +192,12 @@ public sealed partial class OpenTypeFontTests
     {
         string text = "<text font-family='Unavailable'>" + new string('A', 8192) + "</text>";
         byte[] input = EmptyViewportDocument("width='0' height='32'", "xMidYMid meet", "alias", text, "");
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
             Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, CancellationToken.None));
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
-            RenderBudget denied = new(budget.Snapshot().PeakBytes * 3 / 4);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes * 3 / 4));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
             Assert.Equal(73, budget.Snapshot().CurrentBytes);

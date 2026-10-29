@@ -15,7 +15,7 @@ public sealed class SvgRotatedEllipseTests
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "offset-merge-document", identity + ".svg"));
         byte[] unchanged = input.ToArray();
-        RenderBudget measured = new(8_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         {
             Assert.Contains(scene.Geometries, geometry => geometry.AuthoredPath is {} source && !source.SceneMap.IsAxisAligned);
@@ -36,7 +36,7 @@ public sealed class SvgRotatedEllipseTests
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         foreach (long limit in new[] { 1, measured.Snapshot().PeakBytes / 2 })
         {
-            RenderBudget denied = new(limit);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
             {
                 using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None);

@@ -11,7 +11,7 @@ public sealed partial class TrueTypeHintingTests
     [Fact]
     public void Anisotropic_control_writes_and_size_queries_follow_the_selected_axis()
     {
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         TrueTypeHintTarget target = Target with { HorizontalRatio = 2 };
         using (TrueTypeHinting machine = TrueTypeHinting.Create(new(16, 8, 0, 0), [64], [], [], 16, new(65536, 131072), target, budget, CancellationToken.None))
         {
@@ -26,7 +26,7 @@ public sealed partial class TrueTypeHintingTests
     public void Original_horizontal_distance_uses_its_independently_rounded_scale()
     {
         TrueTypeHintPoint[] points = [new(0, 0, 554, 0), new(0, 0, 0, 0)];
-        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 1, 0, 0), [], points, [1], 18, new(75497, 173482), Target with { HorizontalRatio = 2.2978515625 }, new(long.MaxValue), CancellationToken.None);
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 1, 0, 0), [], points, [1], 18, new(75497, 173482), Target with { HorizontalRatio = 2.2978515625 }, new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         machine.Run(Convert.FromHexString("B20000014A42"), TrueTypeHintProgramKind.Glyph);
         Assert.Equal(1467, machine.Storage[0]);
     }
@@ -38,7 +38,7 @@ public sealed partial class TrueTypeHintingTests
     [InlineData(double.PositiveInfinity)]
     public void Invalid_axis_ratios_reject_before_scratch_is_reserved(double ratio)
     {
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => TrueTypeHinting.Create(new(8, 1, 0, 0), [], [], [], 16, new(65536, 65536), Target with { HorizontalRatio = ratio }, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().PeakBytes);
     }
@@ -57,7 +57,7 @@ public sealed partial class TrueTypeHintingTests
     [InlineData(4607, 4, 48, 0, false)]
     public void Glyph_reports_enabled_smart_dropout_policy(int control, byte scanType, int ppem, int query, bool expected)
     {
-        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], [], [], ppem, new(65536, 65536), Target with { QueryFlags = (TrueTypeHintQueryFlags)query }, new(long.MaxValue), CancellationToken.None);
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], [], [], ppem, new(65536, 65536), Target with { QueryFlags = (TrueTypeHintQueryFlags)query }, new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         machine.Prepare(new byte[] { 0xB8, (byte)(control >> 8), (byte)control, 0x85, 0xB0, scanType, 0x8D }, Target with { QueryFlags = (TrueTypeHintQueryFlags)query });
         machine.Run(ReadOnlyMemory<byte>.Empty, TrueTypeHintProgramKind.Glyph);
         Assert.Equal(expected, machine.GlyphSmartDropouts);
@@ -69,7 +69,7 @@ public sealed partial class TrueTypeHintingTests
     [InlineData(5)]
     public void Child_scan_policy_is_restored_before_parent_and_next_glyph(byte scanType)
     {
-        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], [], [], 16, new(65536, 65536), Target, new(long.MaxValue), CancellationToken.None);
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], [], [], 16, new(65536, 65536), Target, new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         machine.Prepare(new byte[] { 0xB8, 1, 255, 0x85, 0xB0, scanType, 0x8D }, Target);
         TrueTypeHintPoint[] points = [new(0, 0, 0, 0), default, default, default, default];
         machine.HintGlyph(Convert.FromHexString("B0028D"), points, [0], false);
@@ -98,7 +98,7 @@ public sealed partial class TrueTypeHintingTests
     [InlineData(4096, (int)TrueTypeHintQueryFlags.ClearTypeGrayscale)]
     public void Getinfo_keeps_each_query_in_its_declared_result_bit(int selector, int expected)
     {
-        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 8, 0, 0), [], [], [], 48, new(65536, 65536), Target with { Version = 42, QueryFlags = TrueTypeHintQueryFlags.All }, new(long.MaxValue), CancellationToken.None);
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 8, 0, 0), [], [], [], 48, new(65536, 65536), Target with { Version = 42, QueryFlags = TrueTypeHintQueryFlags.All }, new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         machine.Run(new byte[] { 0xB8, (byte)(selector >> 8), (byte)selector, 0x88, 0xB0, 0, 0x23, 0x42 }, TrueTypeHintProgramKind.Glyph);
         Assert.Equal((int)expected, machine.Storage[0]);
     }
@@ -106,7 +106,7 @@ public sealed partial class TrueTypeHintingTests
     [Fact]
     public void Getinfo_combines_only_selected_supported_bits_and_requested_version()
     {
-        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 8, 0, 0), [], [], [], 48, new(65536, 65536), Target with { Version = 42, QueryFlags = TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned | TrueTypeHintQueryFlags.Symmetric }, new(long.MaxValue), CancellationToken.None);
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 8, 0, 0), [], [], [], 48, new(65536, 65536), Target with { Version = 42, QueryFlags = TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned | TrueTypeHintQueryFlags.Symmetric }, new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         machine.Run(Convert.FromHexString("B8184188B0002342B00088B0012342"), TrueTypeHintProgramKind.Glyph);
         Assert.Equal(42 | (int)(TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.Symmetric), machine.Storage[0]);
         Assert.Equal(0, machine.Storage[1]);
@@ -115,7 +115,7 @@ public sealed partial class TrueTypeHintingTests
     [Fact]
     public void Rejects_unknown_target_flags_before_scratch_allocation()
     {
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => TrueTypeHinting.Create(new(8, 8, 0, 0), [], [], [], 48, new(65536, 65536), Target with { QueryFlags = (TrueTypeHintQueryFlags)(1 << 20) }, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().PeakBytes);
     }
@@ -127,7 +127,7 @@ public sealed partial class TrueTypeHintingTests
     [InlineData("B101032350B0002342", 0)] // SWAP makes 3 < 1 false.
     public void Keeps_signed_push_arithmetic_and_stack_order(string program, int expected)
     {
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (TrueTypeHinting machine = Create([], [], [0], budget, CancellationToken.None))
         {
             machine.Run(Convert.FromHexString(program), TrueTypeHintProgramKind.Glyph);
@@ -140,7 +140,7 @@ public sealed partial class TrueTypeHintingTests
     public void Distinguishes_fitted_and_original_distances_after_point_rounding()
     {
         TrueTypeHintPoint[] points = [new(40, 0, 40, 0), new(100, 0, 100, 0)];
-        using TrueTypeHinting machine = Create(points, [1], [], new(long.MaxValue), CancellationToken.None);
+        using TrueTypeHinting machine = Create(points, [1], [], new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
 
         machine.Run(Convert.FromHexString("B0002FB0012FB1000149B0002342B100014AB0012342"), TrueTypeHintProgramKind.Glyph);
 
@@ -155,7 +155,7 @@ public sealed partial class TrueTypeHintingTests
     [Fact]
     public void Initializes_twilight_originals_from_cvt_before_rounding()
     {
-        using TrueTypeHinting machine = Create([], [], [80], new(long.MaxValue), CancellationToken.None);
+        using TrueTypeHinting machine = Create([], [], [80], new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         machine.Run(Convert.FromHexString("00B00013B101003FB00015B00147B0002342B00146B0012342"), TrueTypeHintProgramKind.Preparation);
 
         Assert.Equal(80, machine.Storage[0]);
@@ -167,7 +167,7 @@ public sealed partial class TrueTypeHintingTests
     {
         TrueTypeHintPoint[] points = [new(300, 0, 300, 0), new(150, 0, 150, 0), new(0, 0, 0, 0), new(-50, 0, -50, 0), new(350, 0, 350, 0)];
         points[0].X = 320; points[0].TouchedX = points[2].TouchedX = true;
-        using TrueTypeHinting machine = Create(points, [4], [], new(long.MaxValue), CancellationToken.None);
+        using TrueTypeHinting machine = Create(points, [4], [], new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
 
         machine.Run(new byte[] { 0x31 }, TrueTypeHintProgramKind.Glyph);
 
@@ -187,7 +187,7 @@ public sealed partial class TrueTypeHintingTests
         TrueTypeHintPoint[] points = [new(0, 871, 0, 756), new(0, 785, 0, 681), new(0, 698, 0, 606)];
         points[0].Y = 883; points[2].Y = 704;
         points[0].TouchedY = points[2].TouchedY = true;
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         TrueTypeHintTarget target = new(42, symmetric ? TrueTypeHintQueryFlags.Symmetric : TrueTypeHintQueryFlags.None,
             TrueTypeHintControlScale.FullPrecision, TrueTypeHintPreparation.Single);
         using (TrueTypeHinting machine = TrueTypeHinting.Create(new(0, 0, 0, 0), [], points, [2], 18, new(75497, 75497), target, budget, CancellationToken.None))
@@ -203,7 +203,7 @@ public sealed partial class TrueTypeHintingTests
     [Fact]
     public void Preparation_restores_cvt_but_retains_storage_functions_and_explicit_queries()
     {
-        using TrueTypeHinting machine = Create([], [], [64], new(long.MaxValue), CancellationToken.None);
+        using TrueTypeHinting machine = Create([], [], [64], new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         machine.Run(Convert.FromHexString("B0002CB020882D"), TrueTypeHintProgramKind.Font);
         byte[] prep = Convert.FromHexString("B00043B00160B0002342B00045B00160B0002344B0002BB0012342");
         machine.Prepare(prep, Target with { QueryFlags = TrueTypeHintQueryFlags.None });
@@ -224,7 +224,7 @@ public sealed partial class TrueTypeHintingTests
     [InlineData("B00158B10704421B4002585959", 4)]
     public void Skips_nested_conditionals_without_treating_push_data_as_instructions(string program, int expected)
     {
-        using TrueTypeHinting machine = Create([], [], [], new(long.MaxValue), CancellationToken.None);
+        using TrueTypeHinting machine = Create([], [], [], new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         machine.Run(Convert.FromHexString(program), TrueTypeHintProgramKind.Glyph);
         Assert.Equal(expected, machine.Storage[7]);
     }
@@ -235,7 +235,7 @@ public sealed partial class TrueTypeHintingTests
     public void Instruction_control_restores_default_glyph_rounding_when_requested(bool reset, int expected)
     {
         TrueTypeHintPoint[] points = [new(32, 0, 32, 0)];
-        using TrueTypeHinting machine = Create(points, [0], [], new(long.MaxValue), CancellationToken.None);
+        using TrueTypeHinting machine = Create(points, [0], [], new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         machine.Prepare(reset ? Convert.FromHexString("19B102028E") : new byte[] { 0x19 }, Target);
         machine.Run(Convert.FromHexString("B0002F"), TrueTypeHintProgramKind.Glyph);
         Assert.Equal(expected, points[0].X);
@@ -244,7 +244,7 @@ public sealed partial class TrueTypeHintingTests
     [Fact]
     public void Instruction_control_inhibits_glyph_execution()
     {
-        using TrueTypeHinting machine = Create([], [], [], new(long.MaxValue), CancellationToken.None);
+        using TrueTypeHinting machine = Create([], [], [], new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         machine.Prepare(Convert.FromHexString("B101018E"), Target);
         machine.Run(new byte[] { 0x06 }, TrueTypeHintProgramKind.Glyph);
     }
@@ -292,7 +292,7 @@ public sealed partial class TrueTypeHintingTests
     [InlineData("B8FFFC1C")]
     public void Categorizes_invalid_operands_and_flow_without_leaking_scratch(string program)
     {
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (TrueTypeHinting machine = Create([new(0, 0, 0, 0)], [0], [0], budget, CancellationToken.None))
             Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => machine.Run(Convert.FromHexString(program), TrueTypeHintProgramKind.Glyph)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -304,7 +304,7 @@ public sealed partial class TrueTypeHintingTests
     [InlineData("2D")]
     public void Rejects_unterminated_nested_or_stray_function_definitions(string program)
     {
-        using TrueTypeHinting machine = Create([], [], [], new(long.MaxValue), CancellationToken.None);
+        using TrueTypeHinting machine = Create([], [], [], new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => machine.Run(Convert.FromHexString(program), TrueTypeHintProgramKind.Font)).ErrorCode);
     }
 
@@ -312,7 +312,7 @@ public sealed partial class TrueTypeHintingTests
     [InlineData("89")]
     public void Executed_unimplemented_instructions_remain_explicit(string program)
     {
-        using TrueTypeHinting machine = Create([], [], [], new(long.MaxValue), CancellationToken.None);
+        using TrueTypeHinting machine = Create([], [], [], new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => machine.Run(Convert.FromHexString(program), TrueTypeHintProgramKind.Glyph)).ErrorCode);
     }
 
@@ -326,7 +326,7 @@ public sealed partial class TrueTypeHintingTests
     public void Min_and_max_compare_signed_distances_and_consume_only_the_two_operands(byte opcode, int first, int second, int expected)
     {
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 2, 0, 0), [], [], [], 16,
-            new(65536, 65536), Target, new(long.MaxValue), CancellationToken.None);
+            new(65536, 65536), Target, new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         machine.Run(new byte[] { 0xB0, 73, 0xB9, (byte)(first >> 8), (byte)first, (byte)(second >> 8), (byte)second,
             opcode, 0xB0, 0, 0x23, 0x42, 0xB0, 1, 0x23, 0x42 }, TrueTypeHintProgramKind.Glyph);
         Assert.Equal(expected, machine.Storage[0]); Assert.Equal(73, machine.Storage[1]);
@@ -336,14 +336,14 @@ public sealed partial class TrueTypeHintingTests
     public void Rejects_vertical_phantom_access_without_inventing_metrics()
     {
         TrueTypeHintPoint[] points = [new(0, 0, 0, 0) { Unavailable = true }];
-        using TrueTypeHinting machine = Create(points, [], [], new(long.MaxValue), CancellationToken.None);
+        using TrueTypeHinting machine = Create(points, [], [], new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => machine.Run(Convert.FromHexString("B00046"), TrueTypeHintProgramKind.Glyph)).ErrorCode);
     }
 
     [Fact]
     public void Cancels_backward_jumps_and_bounds_recursive_calls_by_depth()
     {
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (CancellationTokenSource cancellation = new())
         using (TrueTypeHinting machine = Create([], [], [], budget, cancellation.Token))
         {
@@ -363,7 +363,7 @@ public sealed partial class TrueTypeHintingTests
     [Fact]
     public void Allows_empty_function_repetition_and_bounds_program_bytes()
     {
-        using TrueTypeHinting machine = Create([], [], [], new(long.MaxValue), CancellationToken.None);
+        using TrueTypeHinting machine = Create([], [], [], new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         machine.Run(Convert.FromHexString("B0002C2D"), TrueTypeHintProgramKind.Font);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => machine.Run(new byte[65536], TrueTypeHintProgramKind.Glyph)).ErrorCode);
         machine.Run(Convert.FromHexString("B87FFFB0002A"), TrueTypeHintProgramKind.Glyph);
@@ -372,7 +372,7 @@ public sealed partial class TrueTypeHintingTests
     [Fact]
     public void Enforces_declared_stack_capacity_during_a_push()
     {
-        using TrueTypeHinting machine = Create([], [], [], new(long.MaxValue), CancellationToken.None);
+        using TrueTypeHinting machine = Create([], [], [], new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         byte[] push = new byte[19]; push[0] = 0x40; push[1] = 17;
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => machine.Run(push, TrueTypeHintProgramKind.Glyph)).ErrorCode);
     }
@@ -380,7 +380,7 @@ public sealed partial class TrueTypeHintingTests
     [Fact]
     public void Rejects_unknown_query_policies_and_changes_to_the_creation_scale()
     {
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => TrueTypeHinting.Create(new(16, 8, 4, 8), [], [], [], 16, new(65536, 65536), Target with { Version = 256 }, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().PeakBytes);
         using TrueTypeHinting machine = Create([], [], [], budget, CancellationToken.None);
@@ -393,7 +393,7 @@ public sealed partial class TrueTypeHintingTests
     [InlineData(500)]
     public void Reserves_machine_arrays_before_allocation(long maximumBytes)
     {
-        var budget = new RenderBudget(maximumBytes);
+        var budget = new RenderBudget(new HostMemoryBudget(maximumBytes));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Create([], [], [0], budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(1, budget.Snapshot().DeniedReservationCount);
@@ -403,7 +403,7 @@ public sealed partial class TrueTypeHintingTests
     public void Observes_cancellation_before_allocation_and_on_empty_or_inhibited_programs()
     {
         using var cancellation = new CancellationTokenSource();
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (TrueTypeHinting machine = Create([], [], [], budget, cancellation.Token))
         {
             machine.Prepare(Convert.FromHexString("B101018E"), Target);
@@ -422,7 +422,7 @@ public sealed partial class TrueTypeHintingTests
     [InlineData(16, 0, 0, 4097)]
     public void Rejects_excess_declared_storage_before_reserving(int stack, int storage, int functions, int twilight)
     {
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => TrueTypeHinting.Create(new(stack, storage, functions, twilight), [], [], [], 16, new(65536, 65536), Target, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().PeakBytes);
     }
@@ -430,7 +430,7 @@ public sealed partial class TrueTypeHintingTests
     [Fact]
     public void An_empty_program_can_declare_zero_stack_storage()
     {
-        using TrueTypeHinting machine = TrueTypeHinting.Create(new(0, 0, 0, 0), [], [], [], 16, new(65536, 65536), Target, new(long.MaxValue), CancellationToken.None);
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(0, 0, 0, 0), [], [], [], 16, new(65536, 65536), Target, new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         machine.Run(ReadOnlyMemory<byte>.Empty, TrueTypeHintProgramKind.Glyph);
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => machine.Run(Convert.FromHexString("B000"), TrueTypeHintProgramKind.Glyph)).ErrorCode);
     }
@@ -441,7 +441,7 @@ public sealed partial class TrueTypeHintingTests
     [InlineData(0, 2)]
     public void Rejects_disordered_or_out_of_range_contour_ends(ushort first, ushort last)
     {
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => Create([new(0, 0, 0, 0), new(1, 0, 1, 0)], [first, last], [], budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().PeakBytes);
     }
@@ -449,7 +449,7 @@ public sealed partial class TrueTypeHintingTests
     [Fact]
     public void Disposal_releases_program_borrows_and_rejects_reuse()
     {
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         TrueTypeHinting machine = Create([], [], [], budget, CancellationToken.None);
         machine.Run(Convert.FromHexString("B0002C2D"), TrueTypeHintProgramKind.Font);
         machine.Dispose(); machine.Dispose();

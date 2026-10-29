@@ -19,7 +19,7 @@ public sealed class SvgStructuralAdmissionTests
             Assert.True(reader.Read());
         }
 
-        SvgRenderLimits limits = new(1024, 1024, 16, 16, 1024, 100, 100, maximumXmlDepth, maximumAttributesPerElement);
+        SvgRenderLimits limits = new(1024, 16, 16, 1024, 100, 100, maximumXmlDepth, maximumAttributesPerElement);
         if (throws)
         {
             SvgException exception = Assert.Throws<SvgException>(() => SvgStructuralAdmission.ValidateElementStructure(reader, limits));

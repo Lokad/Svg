@@ -36,14 +36,14 @@ public sealed class SvgFontCoverageDiscoveryTests
     [Fact]
     public void Coverage_storage_denial_releases_the_parser_owner()
     {
-        RenderBudget denied = new(1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(1));
         using (SvgFontCoverageDiscovery coverage = new(denied, CancellationToken.None))
         {
             coverage.BeginText(); coverage.SetFont(SvgInheritedTextStyle.Default);
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => coverage.Observe("A", SvgTextWhitespaceMode.Default)).ErrorCode);
         }
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgFontCoverageDiscovery coverage = new(budget, CancellationToken.None))
         {
             coverage.BeginText(); coverage.SetFont(SvgInheritedTextStyle.Default);

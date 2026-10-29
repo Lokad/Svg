@@ -18,7 +18,7 @@ public sealed class SvgTextReplayRangeTests
     public async Task Retained_text_work_does_not_scan_unrelated_document_ranges(int count, string kind)
     {
         using SvgFontSnapshot fonts = await CreateFonts();
-        RenderBudget budget = new(40_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(40_000_000));
         using (SvgRoot root = SvgRootParser.Parse(Input(count, true, kind), SvgRenderLimits.Default, budget, fonts, CancellationToken.None)) { }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -38,7 +38,7 @@ public sealed class SvgTextReplayRangeTests
     {
         using SvgFontSnapshot fonts = await CreateFonts();
         byte[] input = Input(2, true, "clip");
-        RenderBudget measured = new(2_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, fonts, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         long peak = measured.Snapshot().PeakBytes;
@@ -46,13 +46,13 @@ public sealed class SvgTextReplayRangeTests
         DenyMemory(peak - 1);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget cancelled = new(2_000_000);
+        RenderBudget cancelled = new RenderBudget(new HostMemoryBudget(2_000_000));
         Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, fonts, cancellation.Token)).CancellationToken);
         Assert.Equal(0, cancelled.Snapshot().CurrentBytes);
 
         void DenyMemory(long limit)
         {
-            RenderBudget denied = new(limit);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, fonts, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }

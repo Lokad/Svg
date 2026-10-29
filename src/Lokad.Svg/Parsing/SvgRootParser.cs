@@ -162,7 +162,7 @@ internal static class SvgRootParser
         ["rebeccapurple"] = new(102, 51, 153, 255),
     };
     internal static SvgRoot Parse(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, CancellationToken cancellationToken)
-        => Parse(svg, limits, new RenderBudget(long.MaxValue), cancellationToken);
+        => Parse(svg, limits, new RenderBudget(), cancellationToken);
 
     internal static SvgRoot Parse(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, CancellationToken cancellationToken)
         => Parse(svg, limits, budget, null, cancellationToken);

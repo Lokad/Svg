@@ -26,7 +26,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Rejects_root_attributes_above_the_configured_limit()
     {
-        SvgRenderLimits limits = new(1024, 1024, 16, 16, 1024, 16, 16, 16, 2);
+        SvgRenderLimits limits = new(1024, 16, 16, 1024, 16, 16, 16, 2);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), limits, CancellationToken.None));
 
@@ -36,7 +36,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Rejects_child_attributes_above_the_configured_limit()
     {
-        SvgRenderLimits limits = new(1024, 1024, 16, 16, 1024, 16, 16, 16, 2);
+        SvgRenderLimits limits = new(1024, 16, 16, 1024, 16, 16, 16, 2);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), limits, CancellationToken.None));
 
@@ -285,9 +285,9 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Deep_namedview_exceeds_nesting_limit()
     {
-        SvgRenderLimits limits = new(16_385, 1024, 16, 16, 1024, 1024, 1024, 3, 256);
+        SvgRenderLimits limits = new(1024, 16, 16, 1024, 1024, 1024, 3, 256);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' xmlns:sodipodi='http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd'><sodipodi:namedview><sodipodi:namedview><sodipodi:namedview/></sodipodi:namedview></sodipodi:namedview></svg>"u8.ToArray(), limits, new RenderBudget(16_385), CancellationToken.None));
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' xmlns:sodipodi='http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd'><sodipodi:namedview><sodipodi:namedview><sodipodi:namedview/></sodipodi:namedview></sodipodi:namedview></svg>"u8.ToArray(), limits, new RenderBudget(new HostMemoryBudget(16_385)), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, rejected.ErrorCode);
     }
@@ -295,9 +295,9 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Namedview_subtree_exhausts_node_budget()
     {
-        SvgRenderLimits limits = new(16_385, 1024, 16, 16, 1024, 3, 1024, 256, 256);
+        SvgRenderLimits limits = new(1024, 16, 16, 1024, 3, 1024, 256, 256);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' xmlns:sodipodi='http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd'><sodipodi:namedview><sodipodi:guide/><sodipodi:guide/></sodipodi:namedview></svg>"u8.ToArray(), limits, new RenderBudget(16_385), CancellationToken.None));
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' xmlns:sodipodi='http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd'><sodipodi:namedview><sodipodi:guide/><sodipodi:guide/></sodipodi:namedview></svg>"u8.ToArray(), limits, new RenderBudget(new HostMemoryBudget(16_385)), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, rejected.ErrorCode);
     }
@@ -879,7 +879,7 @@ public sealed class SvgRootParserTests
     public void Shader_filled_circles_keep_their_independent_solid_stroke(string paint)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12'><defs><" + paint + " id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></" + paint + "></defs><circle cx='6' cy='6' r='4' fill='url(#g)' stroke='#00ff00' stroke-width='2'/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
         {
@@ -1323,7 +1323,7 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(SvgGeometryKind.EmbeddedImage, Assert.Single(root.Geometries).Kind);
         using SvgConverter.RasterizedSurface output = SvgConverter.Rasterize(root,
-            new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), new RenderBudget(1_000_000), CancellationToken.None);
+            new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), new RenderBudget(new HostMemoryBudget(1_000_000)), CancellationToken.None);
         for (int offset = 0; offset < output.Pixels.Length; offset += 4)
             Assert.Equal(new byte[] { 255, 0, 0, 128 }, output.Pixels.AsSpan(offset, 4).ToArray());
     }
@@ -2188,7 +2188,7 @@ public sealed class SvgRootParserTests
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
         Assert.False(root.HasUnsupportedChild);
         Assert.Equal(SvgGeometryKind.PolygonFill, Assert.Single(root.Geometries).Kind);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None);
         Assert.Equal(255, surface.Pixels[0]);
         Assert.True(surface.Pixels[3] > 0);
@@ -2321,7 +2321,7 @@ public sealed class SvgRootParserTests
 
         Assert.False(root.HasUnsupportedChild);
         Assert.False(Assert.Single(root.Geometries).GradientPolygon.HasFill);
-        RenderBudget rasterBudget = new(1_000_000);
+        RenderBudget rasterBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root,
             new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), rasterBudget, CancellationToken.None))
             Assert.All(surface.Pixels, component => Assert.Equal((byte)0, component));
@@ -2506,7 +2506,7 @@ public sealed class SvgRootParserTests
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='2' height='2' patternUnits='userSpaceOnUse'><rect width='1' height='1' fill='red'/></pattern></defs><rect width='4' height='4' fill='url(#p)' transform='scale(-1,1)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.False(root.HasUnsupportedChild);
-        RenderBudget rasterBudget = new(1_000_000);
+        RenderBudget rasterBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root,
             new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), rasterBudget, CancellationToken.None))
             Assert.All(surface.Pixels, component => Assert.Equal((byte)0, component));
@@ -3103,7 +3103,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Crops_partially_covering_mask_content()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='2' height='2' fill='#ffffff'/></mask></defs><rect x='0' y='0' width='8' height='8' fill='red' mask='url(#m)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
         {
@@ -3116,7 +3116,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Crops_transformed_mask_content()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#ffffff' transform='translate(2,0) scale(2,1)'/></mask></defs><rect x='0' y='0' width='8' height='8' fill='red' mask='url(#m)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
         {
@@ -3129,7 +3129,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Crops_partially_covering_mask_content_on_bands()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='2' height='2' fill='#ffffff'/></mask></defs><path d='M0,0 H8 V8 H0 Z' fill='red' mask='url(#m)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
         {
@@ -3144,7 +3144,7 @@ public sealed class SvgRootParserTests
     {
         byte[] backward = "<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/><mask id='m'><rect x='0' y='0' width='2' height='2' fill='#ffffff'/></mask></defs><use href='#r' mask='url(#m)'/></svg>"u8.ToArray();
         byte[] forward = "<svg xmlns='http://www.w3.org/2000/svg'><use href='#r' mask='url(#m)'/><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/><mask id='m'><rect x='0' y='0' width='2' height='2' fill='#ffffff'/></mask></defs></svg>"u8.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         byte[] expected;
         SvgRenderOptions options = new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default);
         using (SvgRoot root = SvgRootParser.Parse(backward, SvgRenderLimits.Default, budget, CancellationToken.None))
@@ -3163,7 +3163,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Crops_mask_content_inside_its_custom_region()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='8' height='8'><rect x='0' y='0' width='2' height='2' fill='#ffffff'/></mask></defs><rect x='0' y='0' width='8' height='8' fill='red' mask='url(#m)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
         {
@@ -3562,7 +3562,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Enforces_the_path_command_limit_before_expanding_polygon_storage()
     {
-        SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 1, 1);
+        SvgRenderLimits limits = new(1024, 10, 100, 1024, 1, 1);
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><polygon points='0,0 3,0 3,1 1,1 1,3 0,3'/></svg>"u8.ToArray(), limits, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
@@ -3571,7 +3571,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Enforces_the_path_command_limit_across_supported_path_elements()
     {
-        SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 16, 9);
+        SvgRenderLimits limits = new(1024, 10, 100, 1024, 16, 9);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0,0 H 1 V 1 H 0 Z'/><path d='M 2,0 H 3 V 1 H 2 Z'/></svg>"u8.ToArray(), limits, CancellationToken.None));
 
@@ -3650,7 +3650,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Enforces_the_node_limit_before_expanding_rectangle_storage()
     {
-        SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 1, 1);
+        SvgRenderLimits limits = new(1024, 10, 100, 1024, 1, 1);
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' fill='#ff0000'/><rect width='1' height='1' fill='#ff0000'/></svg>"u8.ToArray(), limits, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
@@ -3658,7 +3658,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Enforces_the_node_limit_for_inert_definition_descendants()
     {
-        SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 1, 1);
+        SvgRenderLimits limits = new(1024, 10, 100, 1024, 1, 1);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><g/></defs></svg>"u8.ToArray(), limits, CancellationToken.None));
 
@@ -3679,7 +3679,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Uses_the_configured_XML_nesting_limit_before_expanding_group_storage()
     {
-        SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 16, 16, 2);
+        SvgRenderLimits limits = new(1024, 10, 100, 1024, 16, 16, 2);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g><rect/></g></svg>"u8.ToArray(), limits, CancellationToken.None));
 
@@ -3689,7 +3689,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Enforces_the_structural_limit_while_expanding_stylesheet_selectors()
     {
-        SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 2, 16);
+        SvgRenderLimits limits = new(1024, 10, 100, 1024, 2, 16);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect, #one, .two { fill: red; }</style></svg>"u8.ToArray(), limits, CancellationToken.None));
 
@@ -3701,15 +3701,15 @@ public sealed class SvgRootParserTests
     {
         string stylesheet = "/**/" + new string(' ', 512) + "rect { fill: red; }";
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><style>" + stylesheet + "</style><rect width='1'/></svg>");
-        SvgRenderLimits limits = new(1_000_000, 1_024, 16, 16, 1_024, 16, 16);
-        RenderBudget measured = new(limits.MaximumAccountedBytes);
+        SvgRenderLimits limits = new(1_024, 16, 16, 1_024, 16, 16);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRootParser.Parse(svg, limits, measured, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget insufficient = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget insufficient = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, limits, insufficient, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, insufficient.Snapshot().CurrentBytes);
-        using SvgRoot root = SvgRootParser.Parse(svg, limits, new RenderBudget(measured.Snapshot().PeakBytes), CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse(svg, limits, new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes)), CancellationToken.None);
         Assert.Single(root.Rectangles);
     }
 
@@ -3769,7 +3769,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Parser_collection_sorting_orders_retained_values()
     {
-        using BudgetedParserList<int> values = new(new RenderBudget(1_000), SvgMemoryCategory.Geometry);
+        using BudgetedParserList<int> values = new(new RenderBudget(new HostMemoryBudget(1_000)), SvgMemoryCategory.Geometry);
         values.Add(3);
         values.Add(1);
         values.Add(2);
@@ -3782,7 +3782,7 @@ public sealed class SvgRootParserTests
     public void Scene_transfer_preserves_geometry()
     {
         SvgRectangle rectangle = new(0, 0, 1, 1, new SvgColor(0, 0, 0, 255), true, null);
-        using SvgSceneBuilder accepted = new(new RenderBudget(10_000), CancellationToken.None);
+        using SvgSceneBuilder accepted = new(new RenderBudget(new HostMemoryBudget(10_000)), CancellationToken.None);
         accepted.AddGeometries([SvgGeometry.FromRectangle(rectangle)]);
         using SvgSceneStorage storage = accepted.Build();
         Assert.Equal([rectangle], storage.Rectangles);
@@ -3791,7 +3791,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Scene_growth_reserves_replacement_geometry_before_releasing_its_previous_capacity()
     {
-        RenderBudget budget = new(10_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
         SvgRectangle rectangle = new(0, 0, 1, 1, new SvgColor(0, 0, 0, 255), true, null);
         using var scene = new SvgSceneBuilder(budget, CancellationToken.None);
         for (int index = 0; index < 4; index++) scene.AddGeometry(SvgGeometry.FromRectangle(rectangle));
@@ -3807,14 +3807,14 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Parser_collection_transfer_preserves_values()
     {
-        RenderBudget budget = new(1_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000));
         using (BudgetedParserList<int> limited = new(budget, SvgMemoryCategory.Parser, CancellationToken.None))
         {
             for (int value = 0; value < 5; value++) limited.Add(value);
         }
         Assert.Equal(0, budget.Snapshot().BytesByCategory[(int)SvgMemoryCategory.Parser]);
 
-        using BudgetedParserList<int> accepted = new(new RenderBudget(1_000), SvgMemoryCategory.Parser, CancellationToken.None);
+        using BudgetedParserList<int> accepted = new(new RenderBudget(new HostMemoryBudget(1_000)), SvgMemoryCategory.Parser, CancellationToken.None);
         for (int value = 0; value < 5; value++) accepted.Add(value);
         using OwnedParserArray<int> storage = accepted.Detach();
         Assert.Equal([0, 1, 2, 3, 4], storage.Items);
@@ -3915,12 +3915,12 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Reserves_secondary_parser_collections_before_they_allocate()
     {
-        SvgRenderLimits limits = new(16_385, 1024, 16, 16, 1024, 16, 16);
+        SvgRenderLimits limits = new(1024, 16, 16, 1024, 16, 16);
 
-        SvgException group = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g></g></svg>"u8.ToArray(), limits, new RenderBudget(16_385), CancellationToken.None));
-        SvgException stylesheet = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: red; }</style></svg>"u8.ToArray(), limits, new RenderBudget(16_385), CancellationToken.None));
-        SvgException definitions = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='sample'/></defs></svg>"u8.ToArray(), limits, new RenderBudget(16_385), CancellationToken.None));
-        SvgException pendingUse = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><use href='#sample'/></svg>"u8.ToArray(), new SvgRenderLimits(17_023, 1024, 16, 16, 1024, 16, 16), new RenderBudget(17_023), CancellationToken.None));
+        SvgException group = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g></g></svg>"u8.ToArray(), limits, new RenderBudget(new HostMemoryBudget(16_385)), CancellationToken.None));
+        SvgException stylesheet = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: red; }</style></svg>"u8.ToArray(), limits, new RenderBudget(new HostMemoryBudget(16_385)), CancellationToken.None));
+        SvgException definitions = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='sample'/></defs></svg>"u8.ToArray(), limits, new RenderBudget(new HostMemoryBudget(16_385)), CancellationToken.None));
+        SvgException pendingUse = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><use href='#sample'/></svg>"u8.ToArray(), new SvgRenderLimits(1024, 16, 16, 1024, 16, 16), new RenderBudget(new HostMemoryBudget(17_023)), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, group.ErrorCode);
         Assert.Equal(SvgErrorCode.LimitExceeded, stylesheet.ErrorCode);
@@ -3932,11 +3932,11 @@ public sealed class SvgRootParserTests
     public void Reserves_xml_reader_workspace_from_the_input_and_attribute_limits_before_parsing()
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><metadata>" + new string('x', 9_000) + "</metadata></svg>");
-        SvgRenderLimits limits = new(100_000, 100_000, 16, 16, 1024, 16, 16);
+        SvgRenderLimits limits = new(100_000, 16, 16, 1024, 16, 16);
         const long workspace = 256L * 512;
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, limits, new RenderBudget(workspace - 1), CancellationToken.None));
-        using SvgRoot root = SvgRootParser.Parse(svg, limits, new RenderBudget(workspace + SvgSceneBuilder.RecordedPaintOwnerBytes), CancellationToken.None);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, limits, new RenderBudget(new HostMemoryBudget(workspace - 1)), CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse(svg, limits, new RenderBudget(new HostMemoryBudget(workspace + SvgSceneBuilder.RecordedPaintOwnerBytes)), CancellationToken.None);
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Empty(root.Rectangles);
@@ -3945,12 +3945,12 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Reserves_xml_reader_attribute_workspace_from_the_configured_limit_before_parsing()
     {
-        SvgRenderLimits limits = new(200_000, 1024, 16, 16, 1024, 16, 16, 128, 257);
+        SvgRenderLimits limits = new(1024, 16, 16, 1024, 16, 16, 128, 257);
         const long workspace = 257L * 512;
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray();
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, limits, new RenderBudget(workspace - 1), CancellationToken.None));
-        using SvgRoot root = SvgRootParser.Parse(svg, limits, new RenderBudget(workspace), CancellationToken.None);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, limits, new RenderBudget(new HostMemoryBudget(workspace - 1)), CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse(svg, limits, new RenderBudget(new HostMemoryBudget(workspace)), CancellationToken.None);
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Empty(root.Rectangles);
@@ -3963,7 +3963,7 @@ public sealed class SvgRootParserTests
         using System.Xml.XmlReader reader = System.Xml.XmlReader.Create(new System.IO.StringReader("<svg xmlns='http://www.w3.org/2000/svg'><rect class='" + classValue + "'/></svg>"));
         Assert.True(reader.Read());
         Assert.True(reader.Read());
-        RenderBudget budget = new(10_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
         using SvgDocumentState state = new(budget, CancellationToken.None);
         state.StyleRules.Add(new CssRule(".selected", new(0, 1, 0), default, false));
         SvgRootAttributes root = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, null, null, null, null);
@@ -3982,7 +3982,7 @@ public sealed class SvgRootParserTests
         Assert.True(reader.Read());
         Assert.True(reader.Read());
         CssRule rule = new(".selected", new(0, 1, 0), default, false);
-        RenderBudget budget = new(10_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
         using BudgetedParserList<CssRule> rules = new(budget, SvgMemoryCategory.Parser, CancellationToken.None);
         using SvgCssAncestorContext ancestors = new(rules, budget, CancellationToken.None);
 
@@ -3998,9 +3998,9 @@ public sealed class SvgRootParserTests
     {
         string identifier = new('a', SvgSyntaxLimits.MaximumIdentifierCharacters);
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><style>#" + identifier + " { fill: red; }</style><rect id='" + identifier + "' width='1' height='1'/></svg>");
-        SvgRenderLimits limits = new(18_384, 4_096, 16, 256, 1_024, 16, 16, 16, 1);
+        SvgRenderLimits limits = new(4_096, 16, 256, 1_024, 16, 16, 16, 1);
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, limits, new RenderBudget(limits.MaximumAccountedBytes), CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, limits, new RenderBudget(new HostMemoryBudget(18_384)), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
@@ -4010,9 +4010,9 @@ public sealed class SvgRootParserTests
     {
         string identifier = new('a', SvgSyntaxLimits.MaximumIdentifierCharacters);
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='" + identifier + "' width='1' height='1'/></defs></svg>");
-        SvgRenderLimits limits = new(18_384, 4_096, 16, 256, 1_024, 16, 16, 16, 1);
+        SvgRenderLimits limits = new(4_096, 16, 256, 1_024, 16, 16, 16, 1);
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, limits, new RenderBudget(limits.MaximumAccountedBytes), CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, limits, new RenderBudget(new HostMemoryBudget(18_384)), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
@@ -4020,7 +4020,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Reserves_the_definition_dictionary_prime_capacity_before_allocating()
     {
-        using BudgetedParserDictionary<string, int> definitions = new(new RenderBudget(2_000), SvgMemoryCategory.Parser, 256);
+        using BudgetedParserDictionary<string, int> definitions = new(new RenderBudget(new HostMemoryBudget(2_000)), SvgMemoryCategory.Parser, 256);
 
         SvgException exception = Assert.Throws<SvgException>(() => definitions.TryAdd("id", 1));
 
@@ -4030,7 +4030,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Reserves_geometry_collection_capacity_before_allocation()
     {
-        RenderBudget budget = new(63);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(63));
         using BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry);
 
         SvgException exception = Assert.Throws<SvgException>(() => points.Add(new SvgPoint(0, 0)));
@@ -4041,7 +4041,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Releases_transient_parser_collection_reservations_after_scene_construction()
     {
-        RenderBudget budget = new(300_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(300_000));
 
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: red; }</style><defs><rect id='sample'/></defs><use href='#sample'/></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None);
 
@@ -4051,7 +4051,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Releases_transient_orthogonal_geometry_reservations_after_scene_construction()
     {
-        RenderBudget budget = new(300_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(300_000));
 
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0 0 H 2 V 2 H 0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None);
 
@@ -4069,10 +4069,10 @@ public sealed class SvgRootParserTests
         }
         discs.Append("</svg>");
         byte[] svg = System.Text.Encoding.UTF8.GetBytes(discs.ToString());
-        RenderBudget budget = new(100_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000_000));
         using SvgRoot root = SvgRootParser.Parse(svg, SvgRenderLimits.Default, budget, CancellationToken.None);
         long peak = budget.Snapshot().PeakBytes;
-        RenderBudget denied = new(peak - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(peak - 1));
         SvgException exception = Assert.Throws<SvgException>(() =>
         {
             using SvgRoot deniedRoot = SvgRootParser.Parse(svg, SvgRenderLimits.Default, denied, CancellationToken.None);
@@ -4140,7 +4140,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Keeps_a_stroked_rect_use_fully_inside_its_nested_viewport()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' x='10' y='10' width='4' height='4' fill='red' stroke='blue' stroke-width='2'/></defs><svg x='8' y='8' width='32' height='32'><use href='#r'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(32, 32), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
         {
@@ -4159,7 +4159,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Clips_a_stroked_rect_use_crossing_a_nested_viewport_boundary()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2'/></defs><svg x='8' y='8' width='4' height='4'><use href='#r'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(16, 16), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
         {
@@ -4178,7 +4178,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Original_stroke_crossing_viewport_preserves_source_and_physical_clip()
     {
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot scene = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><svg x='8' y='8' width='32' height='32'><rect width='64' height='64' fill='red' stroke='blue' stroke-width='2'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
         {
@@ -4312,7 +4312,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Forward_group_masks_compose_after_nested_opacity()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g mask='url(#later)'><g opacity='0.5'><rect x='0' y='0' width='8' height='8' fill='red'/></g></g><defs><mask id='later'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
         {
@@ -4337,7 +4337,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Crops_forward_masks_on_groups_with_uncovered_children()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g mask='url(#later)'><rect x='0' y='0' width='8' height='8' fill='red'/></g><defs><mask id='later'><rect x='0' y='0' width='2' height='2' fill='#ffffff'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
         {
@@ -5020,7 +5020,7 @@ public sealed class SvgRootParserTests
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='window'><rect x='4' y='4' width='4' height='4'/><rect x='8' y='8' width='4' height='4'/></clipPath></defs><g clip-path='url(#window)'><rect width='8' height='8' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         Assert.False(root.HasUnsupportedChild);
         using SvgConverter.RasterizedSurface raster = SvgConverter.Rasterize(root,
-            new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), new(1_000_000), CancellationToken.None);
+            new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), new RenderBudget(new HostMemoryBudget(1_000_000)), CancellationToken.None);
         Assert.Equal(8, raster.Width);
         Assert.Equal(8, raster.Height);
         for (int y = 0; y < 8; y++)
@@ -5180,7 +5180,7 @@ public sealed class SvgRootParserTests
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientTransform='" + transform + "'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>");
         byte[] equivalent = System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(input).Replace(transform, matrix, StringComparison.Ordinal));
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
             Assert.True(Assert.Single(root.Geometries).Gradient.Gradient.RequiresSourceMap);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -6464,7 +6464,7 @@ public sealed class SvgRootParserTests
 
         Assert.False(root.HasUnsupportedChild);
         Assert.False(Assert.Single(root.Geometries).RadialPolygon.HasFill);
-        RenderBudget rasterBudget = new(1_000_000);
+        RenderBudget rasterBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root,
             new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), rasterBudget, CancellationToken.None))
             Assert.All(surface.Pixels, component => Assert.Equal((byte)0, component));
@@ -6610,7 +6610,7 @@ public sealed class SvgRootParserTests
         // coverage independently from the old single-rectangle storage shortcut.
         foreach (SvgRoot scene in new[] { userSpace, boundingBox })
         {
-            RenderBudget budget = new(1_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene,
                 new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
                 for (int y = 0; y < 8; y++) for (int x = 0; x < 8; x++)
@@ -6630,7 +6630,7 @@ public sealed class SvgRootParserTests
 
         SvgGeometry fadedGeometry = Assert.Single(faded.Geometries);
         Assert.NotNull(fadedGeometry.Pattern.VectorContent);
-        RenderBudget fadedBudget = new(1_000_000);
+        RenderBudget fadedBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(faded,
             new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), fadedBudget, CancellationToken.None))
             for (int y = 0; y < 8; y++)
@@ -6645,7 +6645,7 @@ public sealed class SvgRootParserTests
 
         using SvgRoot stroked = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect x='1' y='1' width='2' height='2' fill='red' stroke='blue' stroke-width='2'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        RenderBudget rasterBudget = new(1_000_000);
+        RenderBudget rasterBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(stroked,
             new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), rasterBudget, CancellationToken.None))
             for (int at = 0; at < surface.Pixels.Length; at += 4)
@@ -6657,7 +6657,7 @@ public sealed class SvgRootParserTests
     public void Original_pattern_tile_mask_renders_and_releases_sources()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect width='8' height='8' fill='#808080'/></mask><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red' mask='url(#m)'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray();
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
         {
@@ -6713,7 +6713,7 @@ public sealed class SvgRootParserTests
     public void Positive_axis_pattern_maps_preserve_the_content_edge_and_transparent_gap(string transform, int scale)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><pattern id='tiles' width='16' height='16' patternUnits='userSpaceOnUse' patternTransform='" + transform + "'><rect width='8' height='8' fill='red'/></pattern></defs><rect width='32' height='32' fill='url(#tiles)'/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
         {
@@ -7179,7 +7179,7 @@ public sealed class SvgRootParserTests
     public void Original_object_box_mask_content_preserves_gray_coverage_and_cleanup()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='window' maskContentUnits='objectBoundingBox'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><rect width='8' height='8' fill='red' mask='url(#window)'/></svg>"u8.ToArray();
-        RenderBudget sceneBudget = new(1_000_000), rasterBudget = new(1_000_000);
+        RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(1_000_000)), rasterBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), rasterBudget, CancellationToken.None))
             for (int pixel = 0; pixel < 64; pixel++)
@@ -7241,7 +7241,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Original_chromatic_mask_preserves_nonoverlapping_empty_output_and_releases_sources()
     {
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='8' y='8' width='48' height='48' fill='#ff0000'/></mask></defs><rect width='8' height='8' fill='red' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
             Assert.All(surface.Pixels, value => Assert.Equal(0, value));
@@ -7308,7 +7308,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Crops_masked_groups_with_partial_mask_content()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='4' height='8' fill='#808080'/></mask></defs><g mask='url(#m)'><rect x='0' y='0' width='4' height='4' fill='red'/><rect x='4' y='4' width='4' height='4' fill='blue'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
         {
@@ -7339,7 +7339,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Crops_masked_groups_with_forward_uses_outside_mask_content()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='4' height='4' fill='#808080'/></mask></defs><g mask='url(#m)'><use href='#r'/></g><defs><rect id='r' x='0' y='0' width='8' height='8'/></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
         {
@@ -7352,7 +7352,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Crops_masked_groups_with_strokes_outside_mask_content()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='4' height='4' fill='#808080'/></mask></defs><g mask='url(#m)'><rect x='0' y='0' width='4' height='4' fill='red' stroke='blue' stroke-width='2'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
         {
@@ -7365,7 +7365,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Empty_mask_intersection_preserves_nested_opacity_cleanup()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='8' y='8' width='48' height='48' fill='#808080'/></mask></defs><g mask='url(#fade)'><g opacity='0.5'><rect width='8' height='8' fill='red'/></g></g></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
         {
@@ -7696,7 +7696,7 @@ public sealed class SvgRootParserTests
 
         static byte[] Render(byte[] source)
         {
-            RenderBudget budget = new(8_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
             byte[] png;
             using (SvgRoot root = SvgRootParser.Parse(source, SvgRenderLimits.Default, budget, CancellationToken.None))
                 png = SvgConverter.ConvertToPng(root, SvgRenderOptions.Default, budget, CancellationToken.None).ToArray();
@@ -7707,7 +7707,7 @@ public sealed class SvgRootParserTests
 
     private static void AssertSolidRectanglePixels(byte[] input, SvgRectangle visible, int width, int height)
     {
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
         {

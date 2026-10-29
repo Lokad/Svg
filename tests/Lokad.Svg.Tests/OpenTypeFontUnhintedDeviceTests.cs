@@ -39,12 +39,12 @@ public sealed partial class OpenTypeFontTests
         WriteInt16(bytes, range.Offset + 16, -4);
         byte[] unchanged = bytes.ToArray();
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetUnhintedDeviceContours(bytes, 2, metrics, 20.48, budget, CancellationToken.None))
             Assert.NotEmpty(contours.Segments);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(unchanged, bytes);
-        RenderBudget denied = new(budget.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => OpenTypeFont.GetUnhintedDeviceContours(bytes, 2, metrics, 20.48, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();

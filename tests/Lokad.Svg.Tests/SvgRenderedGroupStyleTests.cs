@@ -21,7 +21,7 @@ public sealed class SvgRenderedGroupStyleTests
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "rendered-group-styles", identity + ".svg"));
         // Round dashed curves retain native outlines and replay scratch above one MiB.
-        RenderBudget measured = new(8_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(8_000_000));
         byte[] expected;
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None))
@@ -32,7 +32,7 @@ public sealed class SvgRenderedGroupStyleTests
         DenyMemory(peak - 1);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget canceled = new(8_000_000);
+        RenderBudget canceled = new RenderBudget(new HostMemoryBudget(8_000_000));
         Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, canceled, null, cancellation.Token)).CancellationToken);
         Assert.Equal(0, canceled.Snapshot().CurrentBytes);
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, canceled, null, CancellationToken.None))
@@ -45,7 +45,7 @@ public sealed class SvgRenderedGroupStyleTests
 
         void DenyMemory(long limit)
         {
-            RenderBudget budget = new(limit);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
             {
                 using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None);

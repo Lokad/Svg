@@ -10,7 +10,7 @@ public sealed class SvgNativeDashPathTests
     {
         SvgAuthoredPathCommand[] commands = CurvedPath();
         SvgAuthoredPathCommand[] original = commands.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using CancellationTokenSource cancelled = new(); cancelled.Cancel();
         OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() => Run(cancelled.Token));
         Assert.Equal(cancelled.Token, error.CancellationToken);
@@ -37,7 +37,7 @@ public sealed class SvgNativeDashPathTests
     [InlineData(4096)]
     public void Filter_memory_denial_releases_all_temporary_and_output_owners(int bytes)
     {
-        RenderBudget budget = new(bytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(bytes));
         SvgException denied = Assert.Throws<SvgException>(() =>
         {
             using OwnedParserArray<SvgAuthoredPathCommand> result = SvgNativeDashPath.Filter(CurvedPath(), [5, 3], .75, null,
@@ -51,7 +51,7 @@ public sealed class SvgNativeDashPathTests
     public void Closed_contour_appends_initial_dash_to_final_dash_through_the_original_seam()
     {
         SvgAuthoredPathCommand[] commands = [Move(0, 0), Line(5, 0), Line(5, 4), Line(0, 4), Close()];
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         using (OwnedParserArray<SvgAuthoredPathCommand> result = SvgNativeDashPath.Filter(commands, [5, 3], 0, null,
             SvgAffineTransform.Identity, 1, budget, CancellationToken.None))
         {
@@ -69,7 +69,7 @@ public sealed class SvgNativeDashPathTests
     public void Zero_on_intervals_emit_cap_dots_and_negative_phase_wraps_in_float_units()
     {
         SvgAuthoredPathCommand[] commands = [Move(0, 0), Line(9, 0), End()];
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         using (OwnedParserArray<SvgAuthoredPathCommand> dots = SvgNativeDashPath.Filter(commands, [0, 3], 0, null,
             SvgAffineTransform.Identity, 1, budget, CancellationToken.None))
         {
@@ -91,7 +91,7 @@ public sealed class SvgNativeDashPathTests
     public void Path_length_scales_each_contours_intervals_from_the_total_path_distance()
     {
         SvgAuthoredPathCommand[] commands = [Move(0, 0), Line(8, 0), End(), Move(0, 2), Line(8, 2), End()];
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         using (OwnedParserArray<SvgAuthoredPathCommand> result = SvgNativeDashPath.Filter(commands, [2, 2], 0, 8,
             SvgAffineTransform.Identity, 1, budget, CancellationToken.None))
         {
@@ -115,7 +115,7 @@ public sealed class SvgNativeDashPathTests
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path fill='none' stroke='#eb1c23' stroke-width='" + width + "' stroke-linecap='" + cap + "' stroke-dasharray='5 3' stroke-dashoffset='.75' d='" + path + "'/></svg>");
         byte[] expected = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
         SvgRenderLimits defaults = SvgRenderLimits.Default;
-        SvgRenderLimits limits = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
+        SvgRenderLimits limits = new(defaults.MaximumInputBytes, defaults.MaximumDimension,
             defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
             defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
@@ -133,13 +133,13 @@ public sealed class SvgNativeDashPathTests
         Assert.Equal(expected.Length, await SvgConverter.ConvertToPngAsync(input, asyncStream, options, CancellationToken.None));
         Assert.Equal(expected, asyncStream.ToArray());
 
-        RenderBudget budget = new(defaults.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = SvgRootParser.Parse(input, defaults, budget, null, CancellationToken.None))
         {
             SvgAuthoredPath retained = Assert.IsType<SvgAuthoredPath>(Assert.Single(root.Geometries).AuthoredPath);
             SvgAuthoredPathCommand[] original = retained.Commands.ToArray();
             long owned = budget.Snapshot().CurrentBytes;
-            using (budget.Reserve(defaults.MaximumAccountedBytes - owned - 1024, SvgMemoryCategory.Surface))
+            using (budget.Reserve(268_435_456L - owned - 1024, SvgMemoryCategory.Surface))
             {
                 long padded = budget.Snapshot().CurrentBytes;
                 SvgException memory = Assert.Throws<SvgException>(() => { using var denied = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None); });

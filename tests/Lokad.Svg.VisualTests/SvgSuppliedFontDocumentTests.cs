@@ -126,7 +126,7 @@ public sealed class SvgSuppliedFontDocumentTests
         byte[] input = File.ReadAllBytes(Path.Combine(DirectoryPath, "svg-translate-textpath.svg"));
         using SvgFontSnapshot snapshot = await Prepare(input);
         Assert.Single(snapshot.Fonts);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
         {
             Assert.False(scene.HasUnsupportedChild);

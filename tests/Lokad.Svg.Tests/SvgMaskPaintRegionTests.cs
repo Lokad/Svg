@@ -14,7 +14,7 @@ public sealed class SvgMaskPaintRegionTests
     public void Paint_enclosure_uses_separate_object_and_visual_bounds(
         double objectX, double objectWidth, double visualX, double visualWidth, double translation, double expectedX, double expectedWidth)
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgDocumentState state = new(budget, CancellationToken.None))
         {
             state.MaskRegions.TryAdd("mask", new(0, 0, 7, 8));
@@ -31,7 +31,7 @@ public sealed class SvgMaskPaintRegionTests
     [Fact]
     public void Retained_region_surface_is_accounted_and_memory_refusal_leaves_the_scene_replayable()
     {
-        RenderBudget scene = new(1_000_000), measured = new(1_000_000), refused = new(512), retry = new(1_000_000);
+        RenderBudget scene = new RenderBudget(new HostMemoryBudget(1_000_000)), measured = new RenderBudget(new HostMemoryBudget(1_000_000)), refused = new RenderBudget(new HostMemoryBudget(512)), retry = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = Create(scene))
         {
             byte[] expected;
@@ -54,7 +54,7 @@ public sealed class SvgMaskPaintRegionTests
     [Fact]
     public void Retained_region_cancellation_releases_every_owner_before_retry()
     {
-        RenderBudget scene = new(1_000_000), raster = new(1_000_000);
+        RenderBudget scene = new RenderBudget(new HostMemoryBudget(1_000_000)), raster = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = Create(scene))
         {
             byte[] expected;

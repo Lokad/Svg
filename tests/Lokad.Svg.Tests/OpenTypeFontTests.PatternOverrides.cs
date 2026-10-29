@@ -78,7 +78,7 @@ public sealed partial class OpenTypeFontTests
     public async Task Unselected_pattern_sources_preserve_reference_and_geometry_validation(string child)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'>" + child + "</pattern><pattern id='a' href='#p'><title>inert</title></pattern></defs><rect width='32' height='32' fill='url(#a)'/></svg>");
-        RenderBudget budget = new(4_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(4_000_000));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         (var catalog, var provider, _) = CreateExamplePack(CreateTriangleFont());
@@ -103,13 +103,13 @@ public sealed partial class OpenTypeFontTests
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><mask id='m'><rect width='32' height='32' fill='white'/></mask><filter id='f'><feFlood flood-color='blue'/></filter><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><g mask='url(#m)' filter='url(#f)'><text font-family='Unavailable'>" + new string('A', 8192) + "</text></g></pattern><pattern id='a' href='#p'><title>inert</title></pattern></defs><rect width='32' height='32' fill='url(#a)'/></svg>");
         byte[] unchanged = input.ToArray();
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
             Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, CancellationToken.None));
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
-            RenderBudget tight = new(budget.Snapshot().PeakBytes - 74);
+            RenderBudget tight = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes - 74));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, tight, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, tight.Snapshot().CurrentBytes);
             using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))

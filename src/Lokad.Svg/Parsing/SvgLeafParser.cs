@@ -250,7 +250,6 @@ internal static class SvgLeafParser
         ArgumentNullException.ThrowIfNull(budget);
         ReadOnlySpan<char> encoded = href.AsSpan(Prefix.Length);
         long maxDecoded = ((long)encoded.Length + 3) / 4 * 3;
-        if (maxDecoded > limits.MaximumAccountedBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded image data exceeds the configured accounting limit.");
         if (maxDecoded > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded image data exceeds the configured accounting limit.");
         using RenderBudget.BudgetReservation? reservation = maxDecoded > 0 ? budget.Reserve(maxDecoded, SvgMemoryCategory.Parser) : null;
         cancellationToken.ThrowIfCancellationRequested();

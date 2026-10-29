@@ -19,7 +19,7 @@ public sealed partial class OpenTypeFontTests
     public void Latin_glyph_styles_preserve_native_scale_stems_and_nonbase_alignment(string file, ushort glyph, double size, double left, double bottom, double right, double top)
     {
         byte[] bytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "latin-nonbase", file)), unchanged = bytes.ToArray();
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetLatinLightContours(bytes, glyph, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), size, budget, CancellationToken.None))
         {
             OpenTypeOutlinePoint[] points = [new(left, bottom), new(left, top), new(right, top), new(right, bottom)];
@@ -36,7 +36,7 @@ public sealed partial class OpenTypeFontTests
     {
         byte[] bytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "latin-nonbase", "Base.ttf")), unchanged = bytes.ToArray();
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using CancellationTokenSource cancellation = new();
         int lookups = 0;
         using IDisposable probe = CmapLookupProbe.Arm(() => { if (++lookups == 5) cancellation.Cancel(); });

@@ -38,13 +38,13 @@ public sealed class SvgNativePathStrokeTests
         {
             SvgAuthoredPathCommand[] shortPath = [move, duplicate, .. tail];
             SvgAuthoredPathCommand[] longPath = [move, .. Enumerable.Repeat(duplicate, 15_000), .. tail];
-            RenderBudget budget = new(1_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             using (BudgetedParserList<SvgStrokeOutlineCommand> expected = new(budget, SvgMemoryCategory.Geometry))
             using (BudgetedParserList<SvgStrokeOutlineCommand> actual = new(budget, SvgMemoryCategory.Geometry))
             {
                 SvgNativePathStroke.Build(shortPath, 1, 4, cap, SvgStrokeJoin.Miter, 1, map, expected, budget, CancellationToken.None);
                 SvgNativePathStroke.Build(longPath, 1, 4, cap, SvgStrokeJoin.Miter, 1, map, actual, budget,
-CancellationToken.None);
+                    CancellationToken.None);
                 Assert.Equal(expected.AsSpan().ToArray(), actual.AsSpan().ToArray());
             }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -73,7 +73,7 @@ CancellationToken.None);
         SvgAuthoredPathCommand end = first with { First = new(6, 2) };
         SvgAuthoredPathCommand[] shortPath = [move, first, second, end];
         SvgAuthoredPathCommand[] longPath = [move, .. Enumerable.Repeat(first, 8000), .. Enumerable.Repeat(second, 8000), end];
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (BudgetedParserList<SvgStrokeOutlineCommand> expected = new(budget, SvgMemoryCategory.Geometry))
         using (BudgetedParserList<SvgStrokeOutlineCommand> actual = new(budget, SvgMemoryCategory.Geometry))
         {
@@ -93,7 +93,7 @@ CancellationToken.None);
             .. Enumerable.Repeat(new SvgAuthoredPathCommand(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(2, 2), default, default), 15_000),
             new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(6, 2), default, default)
         ];
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (BudgetedParserList<SvgStrokeOutlineCommand> output = new(budget, SvgMemoryCategory.Geometry))
         {
             Assert.Equal(0, output.Count);
@@ -121,7 +121,7 @@ CancellationToken.None);
             SvgAuthoredPathCommand[] source = columns[6].Split(';').Select(ParseCommand).ToArray();
             uint[][] expected = columns[7].Length == 0 ? [] : columns[7].Split(';')
                 .Select(value => value.Split(':').Select(v => uint.Parse(v, CultureInfo.InvariantCulture)).ToArray()).ToArray();
-            RenderBudget budget = new(16_777_216);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(16_777_216));
             using (BudgetedParserList<SvgStrokeOutlineCommand> output = new(budget, SvgMemoryCategory.Geometry))
             {
                 SvgNativePathStroke.BuildGeneric(source, Number(columns[1]), Number(columns[2]), (SvgStrokeCap)int.Parse(columns[4], CultureInfo.InvariantCulture),
@@ -164,7 +164,7 @@ CancellationToken.None);
     [InlineData(1200)]
     public void Construction_reserves_private_storage_before_allocation(long limit)
     {
-        RenderBudget budget = new(limit);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(limit));
         using (BudgetedParserList<SvgStrokeOutlineCommand> output = new(budget, SvgMemoryCategory.Geometry))
         {
             SvgException denied = Assert.Throws<SvgException>(() => Build(CurvedPath(), output, budget, CancellationToken.None));
@@ -176,7 +176,7 @@ CancellationToken.None);
     [Fact]
     public void Cancelled_construction_publishes_nothing_and_can_retry()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using CancellationTokenSource source = new(); source.Cancel();
         using (BudgetedParserList<SvgStrokeOutlineCommand> output = new(budget, SvgMemoryCategory.Geometry))
         {
@@ -200,7 +200,7 @@ CancellationToken.None);
             Second = SvgNativePathStroke.MapPoint(map, command.Second),
             Third = SvgNativePathStroke.MapPoint(map, command.Third)
         }).ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (BudgetedParserList<SvgStrokeOutlineCommand> first = new(budget, SvgMemoryCategory.Geometry))
         using (BudgetedParserList<SvgStrokeOutlineCommand> second = new(budget, SvgMemoryCategory.Geometry))
         {

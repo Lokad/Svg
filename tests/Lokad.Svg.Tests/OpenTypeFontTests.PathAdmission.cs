@@ -64,11 +64,11 @@ public sealed partial class OpenTypeFontTests
     public void Repeated_closes_keep_original_command_limits_work_and_storage_lifetimes()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><path d='M8 8H24V24H8Z" + new string('Z', 100) + "'/></svg>");
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) Assert.False(root.HasUnsupportedChild);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         SvgRenderLimits d = SvgRenderLimits.Default;
-        SvgRenderLimits limits = new(d.MaximumAccountedBytes, d.MaximumInputBytes, d.MaximumDimension, d.MaximumPixels,
+        SvgRenderLimits limits = new(d.MaximumInputBytes, d.MaximumDimension, d.MaximumPixels,
             d.MaximumEncodedPngBytes, d.MaximumNodes, 8, d.MaximumXmlDepth, d.MaximumAttributesPerElement);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, measured, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);

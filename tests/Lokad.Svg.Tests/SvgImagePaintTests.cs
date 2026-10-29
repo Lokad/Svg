@@ -63,14 +63,14 @@ public sealed partial class OpenTypeFontTests
     {
         byte[] input = ImagePaintDocument(varied, affine, "group", "fill:none;stroke:red", "");
         byte[] original = input.ToArray();
-        RenderBudget sceneBudget = new(1_000_000);
+        RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, CancellationToken.None))
         {
             long retained = sceneBudget.Snapshot().CurrentBytes;
-            RenderBudget conversionBudget = new(1_000_000);
+            RenderBudget conversionBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
             byte[] expected = SvgConverter.ConvertToPng(scene, SvgRenderOptions.Default, conversionBudget, CancellationToken.None).ToArray();
             Assert.Equal(0, conversionBudget.Snapshot().CurrentBytes);
-            RenderBudget denied = new(1);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(1));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
                 SvgConverter.ConvertToPng(scene, SvgRenderOptions.Default, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
@@ -94,7 +94,7 @@ public sealed partial class OpenTypeFontTests
     {
         string document = System.Text.Encoding.UTF8.GetString(ImagePaintDocument(false, false, "inline", "", ""));
         byte[] input = System.Text.Encoding.UTF8.GetBytes(document.Replace("<image ", "<image " + attribute + "='none' ", StringComparison.Ordinal));
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);

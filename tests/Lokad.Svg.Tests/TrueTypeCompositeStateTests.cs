@@ -12,7 +12,7 @@ public sealed class TrueTypeCompositeStateTests
     [InlineData(33, false)]
     public void Windows_default_tip_dropout_boundary_yields_to_explicit_scanner_controls(int ppem, bool expected)
     {
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         TrueTypeHintTarget target = new(42, TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned | TrueTypeHintQueryFlags.Symmetric, TrueTypeHintControlScale.FullPrecision, TrueTypeHintPreparation.Single);
         using (TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], [], [], ppem, new(65536, 65536), target, budget, CancellationToken.None))
         {
@@ -33,7 +33,7 @@ public sealed class TrueTypeCompositeStateTests
     [Fact]
     public void Composite_original_distances_use_device_coordinates_and_CVT_writes_keep_font_units()
     {
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 4, 0, 0), [0], [], [], 32, new(131072, 131072), Target, budget, CancellationToken.None))
         {
             TrueTypeHintPoint[] points = [new(0, 0, 0, 0), new(64, 0, 64, 0), default, default, default, default];
@@ -53,7 +53,7 @@ public sealed class TrueTypeCompositeStateTests
     [Fact]
     public void Component_calls_preserve_control_and_storage_changes_and_restore_prepared_rounding()
     {
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 4, 0, 0), [0], [], [], 32, new(65536, 65536), Target, budget, CancellationToken.None))
         {
             machine.Prepare(ReadOnlyMemory<byte>.Empty, Target);
@@ -70,7 +70,7 @@ public sealed class TrueTypeCompositeStateTests
     [Fact]
     public void Failed_component_unbinds_points_and_restores_prepared_graphics_state()
     {
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 4, 0, 0), [], [], [], 32, new(65536, 65536), Target, budget, CancellationToken.None))
         {
             Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => machine.HintGlyph(new byte[] { 0x7A, 0x4C }, [new(35, 0, 35, 0), default, default, default, default], [0], true)).ErrorCode);

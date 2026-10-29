@@ -39,7 +39,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
         SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[segments.Length * 2];
         SvgGlyphRgbCoverage expected = new(red, green, blue);
         Assert.Equal(expected, SvgGlyphLcdCoverage.GetCoverage(segments, x, y, scratch, bounds, CancellationToken.None));
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgGlyphLcdCoverage.ScanStorage rows = SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, budget, CancellationToken.None) ?? throw new InvalidOperationException("The native control must fit."))
         {
             Span<int> counts = stackalloc int[10];
@@ -201,7 +201,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
         SvgGlyphLcdCoverage.DropoutBounds bounds = SvgGlyphLcdCoverage.PrepareBounds(segments, dropouts, CancellationToken.None);
         SvgGlyphLcdCoverage.Crossing[] originalScratch = new SvgGlyphLcdCoverage.Crossing[segments.Length * 2];
         SvgGlyphLcdCoverage.Crossing[] preparedScratch = new SvgGlyphLcdCoverage.Crossing[segments.Length * 2];
-        using SvgGlyphLcdCoverage.ScanStorage rowStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, new RenderBudget(long.MaxValue), CancellationToken.None) ?? throw new InvalidOperationException("Row preparation should fit.");
+        using SvgGlyphLcdCoverage.ScanStorage rowStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None) ?? throw new InvalidOperationException("Row preparation should fit.");
         int[] counts = new int[10];
         for (int y = -1; y <= 1; y++)
         {
@@ -230,7 +230,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     [Fact]
     public void Row_storage_refusal_preserves_the_live_owner_and_releases_its_aggregate_allowance()
     {
-        RenderBudget budget = new(10_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
         OpenTypeQuadraticSegment[] segments = Rectangle(0, 0, 6, 6);
         using (SvgGlyphLcdCoverage.ScanStorage storage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, budget, CancellationToken.None) ?? throw new InvalidOperationException("Row preparation should fit."))
         {

@@ -20,7 +20,7 @@ public sealed class SvgPolygonOutputParityTests
         // exercises the solid, linear, radial and pattern rasterizers.
         byte[] svg = System.Text.Encoding.UTF8.GetBytes(ComboSvg);
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget budget = new(limits.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using SvgRoot root = SvgRootParser.Parse(svg, limits, budget, CancellationToken.None);
 
         Assert.Equal(4, root.Geometries.Length);

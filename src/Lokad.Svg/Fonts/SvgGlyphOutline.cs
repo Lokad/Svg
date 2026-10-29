@@ -29,7 +29,7 @@ internal static class SvgGlyphOutline
 
     internal static SvgGlyphQuadraticContour[] GetContours(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, CancellationToken cancellationToken)
     {
-        using SvgGlyphContourStorage storage = GetContourStorage(font, glyph, fontSize, new RenderBudget(long.MaxValue), cancellationToken);
+        using SvgGlyphContourStorage storage = GetContourStorage(font, glyph, fontSize, new RenderBudget(), cancellationToken);
         return storage.Contours;
     }
 

@@ -14,11 +14,11 @@ public sealed class SvgTransformedRectangleTests
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "transformed-rectangle-fills", identity + ".svg"));
         SvgRenderOptions options = SvgRenderOptions.Default;
-        RenderBudget discovery = new(8_000_000);
+        RenderBudget discovery = new RenderBudget(new HostMemoryBudget(8_000_000));
         Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, discovery, CancellationToken.None));
         Assert.Equal(0, discovery.Snapshot().CurrentBytes);
         // Source commands and contour storage transfer through the existing bounded owners.
-        RenderBudget measured = new(8_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None, 1, 1, options.Viewport))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, options, measured, CancellationToken.None))
             {}
@@ -28,7 +28,7 @@ public sealed class SvgTransformedRectangleTests
         DenyMemory(peak - 1);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget canceled = new(8_000_000);
+        RenderBudget canceled = new RenderBudget(new HostMemoryBudget(8_000_000));
         Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, canceled, null, cancellation.Token, 1, 1, options.Viewport)).CancellationToken);
         Assert.Equal(0, canceled.Snapshot().CurrentBytes);
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, canceled, null, CancellationToken.None, 1, 1, options.Viewport))
@@ -40,7 +40,7 @@ public sealed class SvgTransformedRectangleTests
 
         void DenyMemory(long limit)
         {
-            RenderBudget budget = new(limit);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
             {
                 using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None, 1, 1, options.Viewport);
@@ -54,7 +54,7 @@ public sealed class SvgTransformedRectangleTests
     public void Complete_heart_releases_partial_source_owners_at_late_denials_and_retries()
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "illustrator-heart.svg"));
-        RenderBudget measured = new(8_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, measured, CancellationToken.None))
         {
@@ -62,7 +62,7 @@ public sealed class SvgTransformedRectangleTests
             Assert.Equal(401, surface.Height);
         }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget memory = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget memory = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, memory, null, CancellationToken.None);
@@ -71,7 +71,7 @@ public sealed class SvgTransformedRectangleTests
         Assert.Equal(0, memory.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget retry = new(8_000_000);
+        RenderBudget retry = new RenderBudget(new HostMemoryBudget(8_000_000));
         Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, retry, null, cancellation.Token)).CancellationToken);
         Assert.Equal(0, retry.Snapshot().CurrentBytes);
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, retry, null, CancellationToken.None))
@@ -84,7 +84,7 @@ public sealed class SvgTransformedRectangleTests
     public void Transformed_leaf_clip_boundary_renders_without_retaining_owners()
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "transformed-rectangle-fills", "clip-crossing.svg"));
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
         {

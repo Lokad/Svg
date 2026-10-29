@@ -21,7 +21,7 @@ public sealed class SvgStyleSheetTests
             Assert.Equal(SvgConverter.ConvertToPng(expected, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
                 SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
             Assert.Equal(new SvgViewport(8, 8), SvgConverter.InspectDimensions(input, SvgRenderOptions.Default, CancellationToken.None).LogicalViewport);
-            RenderBudget budget = new(1_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             Assert.Empty(Lokad.Svg.Fonts.SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, CancellationToken.None));
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }
@@ -47,7 +47,7 @@ public sealed class SvgStyleSheetTests
             Assert.Equal(SvgConverter.ConvertToPng(control, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
                 SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
             Assert.Equal(new SvgViewport(4, 4), SvgConverter.InspectDimensions(input, SvgRenderOptions.Default, CancellationToken.None).LogicalViewport);
-            RenderBudget budget = new(1_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             Assert.Empty(Lokad.Svg.Fonts.SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, CancellationToken.None));
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }
@@ -336,7 +336,7 @@ public sealed class SvgStyleSheetTests
         using XmlReader reader = XmlReader.Create(new StringReader("<style>" + new string(' ', 4_096) + "</style>"));
         Assert.True(reader.Read());
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgStyleSheet.ReadElementText(reader, new RenderBudget(8_223), CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgStyleSheet.ReadElementText(reader, new RenderBudget(new HostMemoryBudget(8_223)), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
@@ -370,7 +370,7 @@ public sealed class SvgStyleSheetTests
     [Fact]
     public void Partial_late_stylesheet_rejection_releases_parser_storage()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'><rect id='box' width='8' height='8'/><style>#box{fill:blue}.box:hover{fill:red}</style></svg>"u8.ToArray();
         SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);

@@ -16,7 +16,7 @@ public sealed class SvgMarkerSyntaxTests
     public void Invalid_marker_container_presentation_rejects_without_retaining_sources(string attributes, SvgErrorCode category)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes($"<svg xmlns='http://www.w3.org/2000/svg' width='32' height='24'><defs><marker id='m' {attributes}><path d='M0 0L3 2L0 4Z'/></marker></defs><path d='M4 12H24' stroke='blue' marker-end='url(#m)'/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(category, Assert.Throws<SvgException>(() =>
             SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -50,7 +50,7 @@ public sealed class SvgMarkerSyntaxTests
     {
         using StringReader input = new("<path xmlns='http://www.w3.org/2000/svg' d='M24 27L24 27L78 27L78 66L24 66L24 66Z'/>");
         using XmlReader reader = XmlReader.Create(input); reader.MoveToContent();
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         using (SvgDocumentState state = new(budget, CancellationToken.None))
         using (BudgetedParserList<SvgMarkerPosition> positions = SvgMarkerVertices.Read(reader, 100, state, CancellationToken.None))
         {

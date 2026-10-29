@@ -93,7 +93,7 @@ public sealed class SvgPatternDeferredPaintTests
         xml.Append("<defs>");
         for (int index = 0; index < count; index++) xml.Append(Pattern("p" + index, "<rect width='4' height='4' fill='url(#g)'/>"));
         xml.Append(Gradient(false)).Append(Resources).Append("</defs><rect width='16' height='8' fill='url(#p0)'/>");
-        RenderBudget budget = new(40_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(40_000_000));
         using (SvgRoot root = SvgRootParser.Parse(Input(xml.ToString()), SvgRenderLimits.Default, budget, null, CancellationToken.None)) { }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -104,7 +104,7 @@ public sealed class SvgPatternDeferredPaintTests
     public void Missing_and_nested_pattern_paints_keep_their_public_error_categories(string resource, SvgErrorCode expected)
     {
         byte[] input = Input("<defs>" + Pattern("p", "<rect width='4' height='4' fill='url(#g)'/>") + resource + "</defs>" + Output);
-        RenderBudget budget = new(2_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
         Assert.Equal(expected, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(expected, Assert.Throws<SvgException>(() => Render(input)).ErrorCode);
@@ -114,7 +114,7 @@ public sealed class SvgPatternDeferredPaintTests
     public void Tile_paint_replay_releases_owners_on_memory_denial_and_cancellation()
     {
         byte[] input = Mixed(true);
-        RenderBudget measured = new(2_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         long peak = measured.Snapshot().PeakBytes;
@@ -122,13 +122,13 @@ public sealed class SvgPatternDeferredPaintTests
         DenyMemory(peak - 1);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget cancelled = new(2_000_000);
+        RenderBudget cancelled = new RenderBudget(new HostMemoryBudget(2_000_000));
         Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, null, cancellation.Token)).CancellationToken);
         Assert.Equal(0, cancelled.Snapshot().CurrentBytes);
 
         void DenyMemory(long limit)
         {
-            RenderBudget denied = new(limit);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }

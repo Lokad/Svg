@@ -342,7 +342,9 @@ spacing, variable/color/bitmap fonts, CFF/CFF2 and WOFF/WOFF2 are unsupported.
 ## Resource limits and memory accounting
 
 `SvgRenderLimits` independently bounds input/output, dimensions/pixels, XML
-structure, path commands and accounted storage. Cancellation and
+structure and path commands. `SvgRenderOptions.WithMemoryBudget` borrows a host
+allowance for inspection, preparation, rendering and encoding; absent a budget,
+convenience calls are explicitly ungoverned. Cancellation and
 deterministic cleanup span discovery/preparation, parsing, rasterization and
 encoding. Intermediate surfaces also consume limits. Caller streams stay open;
 the host owns transactional output. PNG encoding checks encoded size and memory
@@ -355,9 +357,14 @@ one conversion; independently owned PNG outputs outlive the operation.
 Memory accounting estimates dominant retained capacity and temporary peaks.
 Roughly 20% unaccounted small objects/metadata is an intentional allowance, not a
 per-workload coverage proof or instantaneous heap cap. Borrowed storage and
-runtime/host overhead are separate. [HTTP-prepared documents](HTTP_FONTS.md) share
-the host's allowance across cache, execution and retained output; refunds follow
-their real ownership lifetimes. Admission refusal ends the operation rather than
+runtime/host overhead are separate. Library-owned snapshot metadata remains
+charged through snapshot disposal; caller-owned font bytes are borrowed.
+`ConvertToOwnedPng`/`ConvertToOwnedPngAsync` return disposable PNG storage whose
+sibling scope survives conversion cleanup. Governed bare-memory output rejects;
+caller-memory/stream destinations account only library-owned scratch.
+[HTTP-prepared documents](HTTP_FONTS.md) share the allowance across cache, execution
+and output; an options budget must share that resolver root. Refunds follow real
+ownership lifetimes. Admission refusal ends the operation rather than
 selecting an alternate rendering/storage route. Representative refusal,
 cancellation, cleanup and retry checks protect these contracts.
 

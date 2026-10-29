@@ -15,7 +15,7 @@ public sealed class SvgEvenOddCrossingTests
             : [new(1, 1), new(7, 7), new(7, 1), new(1, 7)];
         int[] ends = multiple ? [4, 8] : [4];
         int[] votes = multiple ? [1, 1] : [1];
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, ends, votes, true, null, SvgPolygonMapping.FiniteEdges, [], [], 0, 16, 0, 16, 16, 16, new(0, 16), null, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
@@ -34,14 +34,14 @@ public sealed class SvgEvenOddCrossingTests
     public void Crossing_preparation_memory_refusal_and_cancellation_release_ownership()
     {
         SvgDevicePoint[] points = [new(1, 1), new(7, 7), new(7, 1), new(1, 7), new(9, 1), new(15, 7), new(15, 1), new(9, 7)];
-        RenderBudget success = new(1_000_000);
+        RenderBudget success = new RenderBudget(new HostMemoryBudget(1_000_000));
         long storage;
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [4, 8], [1, 1], true, null, SvgPolygonMapping.FiniteEdges, [], [], 0, 16, 0, 16, 16, 16, new(0, 16), new(new(0, 0, 16, 16)), success, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             storage = success.Snapshot().CurrentBytes;
         }
-        RenderBudget memoryDenied = new(storage - 1);
+        RenderBudget memoryDenied = new RenderBudget(new HostMemoryBudget(storage - 1));
         SvgException memory = Assert.Throws<SvgException>(() =>
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [4, 8], [1, 1], true, null, SvgPolygonMapping.FiniteEdges, [], [], 0, 16, 0, 16, 16, 16, new(0, 16), new(new(0, 0, 16, 16)), memoryDenied, out bool _, CancellationToken.None);
@@ -50,7 +50,7 @@ public sealed class SvgEvenOddCrossingTests
         Assert.Equal(0, memoryDenied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget cancelled = new(1_000_000);
+        RenderBudget cancelled = new RenderBudget(new HostMemoryBudget(1_000_000));
         OperationCanceledException exception = Assert.Throws<OperationCanceledException>(() =>
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [4, 8], [1, 1], true, null, SvgPolygonMapping.FiniteEdges, [], [], 0, 16, 0, 16, 16, 16, new(0, 16), new(new(0, 0, 16, 16)), cancelled, out bool _, cancellation.Token);

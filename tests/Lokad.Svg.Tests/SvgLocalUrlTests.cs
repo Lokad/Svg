@@ -1,3 +1,4 @@
+using Lokad.Svg.Rendering;
 using Lokad.Svg.Parsing;
 
 namespace Lokad.Svg.Tests;
@@ -68,10 +69,10 @@ public sealed class SvgLocalUrlTests
         string oversized = fragment + "a";
         Assert.False(SvgLocalUrl.TryParseId("url(#" + oversized + ")", out _));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgLocalUrl.ParseFragment(oversized)).ErrorCode);
-        Lokad.Svg.Rendering.RenderBudget budget = new(1_000_000);
+        Lokad.Svg.Rendering.RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (BudgetedParserStringStore strings = new(budget)) Assert.Equal(decoded, SvgLocalUrl.CopyFragment(fragment, strings));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        Lokad.Svg.Rendering.RenderBudget denied = new(1);
+        Lokad.Svg.Rendering.RenderBudget denied = new RenderBudget(new HostMemoryBudget(1));
         using (BudgetedParserStringStore strings = new(denied)) Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgLocalUrl.CopyFragment(fragment, strings)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
     }

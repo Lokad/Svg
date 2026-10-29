@@ -12,7 +12,7 @@ public sealed class SvgDescriptiveTextStorageTests
     [InlineData(100, 64, 1)]
     public void Ignored_descendants_still_obey_node_depth_and_attribute_limits(int nodes, int depth, int attributes)
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
             using StringReader input = new("<text xmlns='http://www.w3.org/2000/svg'>A<metadata a='1' b='2'><g/></metadata>A</text>");
@@ -30,10 +30,10 @@ public sealed class SvgDescriptiveTextStorageTests
     public void Work_and_memory_denials_release_text_owners_and_allow_retry()
     {
         string document = "<text xmlns='http://www.w3.org/2000/svg'>A<metadata>" + string.Concat(Enumerable.Repeat("<g/>", 128)) + "</metadata>A</text>";
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         using (StringReader input = new(document)) Assert.Equal("AA", Read(input, budget, 200, 64, 64, CancellationToken.None));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new(budget.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes - 1));
         using (StringReader input = new(document))
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Read(input, denied, 200, 64, 64, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
@@ -45,7 +45,7 @@ public sealed class SvgDescriptiveTextStorageTests
     public void Cancellation_while_consuming_ignored_text_releases_storage_without_disposing_the_borrower()
     {
         string document = "<text xmlns='http://www.w3.org/2000/svg'>A<metadata>" + new string('x', 16_384) + "</metadata>A</text>";
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         using (CancellationTokenSource cancellation = new())
         {
@@ -67,7 +67,7 @@ public sealed class SvgDescriptiveTextStorageTests
     [InlineData("<title xmlns='urn:other'>ignored</title>")]
     public void Descriptions_do_not_admit_unsupported_markup_or_ordinary_drawing_children(string child)
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         using StringReader input = new("<text xmlns='http://www.w3.org/2000/svg'>A" + child + "A</text>");
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => Read(input, budget, 100, 64, 64, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -76,7 +76,7 @@ public sealed class SvgDescriptiveTextStorageTests
     [Fact]
     public void An_unclosed_description_preserves_xml_failure_and_releases_partial_text()
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         using StringReader input = new("<text xmlns='http://www.w3.org/2000/svg'>A<metadata><g></metadata></text>");
         Assert.Throws<XmlException>(() => Read(input, budget, 100, 64, 64, CancellationToken.None));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

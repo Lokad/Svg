@@ -106,7 +106,7 @@ public sealed partial class OpenTypeFontTests
     public void Disabled_clip_storage_releases_on_denial_and_preserves_duplicate_id_errors()
     {
         byte[] input = Document("<defs><clipPath id='c' style='display:none'><path d='M0 0H4V8H0Z'/><circle cx='4' cy='4' r='3'/></clipPath></defs><rect width='8' height='8' clip-path='url(#c)'/>");
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) Assert.False(root.HasUnsupportedChild);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         byte[] duplicate = Document("<defs><clipPath id='c' style='display:none'/><clipPath id='c'><rect width='8' height='8'/></clipPath></defs>");

@@ -70,13 +70,13 @@ public sealed class SvgRootAutoSizingTests
     {
         byte[] input = Document("width='32' height='16'", "width:auto;height:auto", "");
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default);
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(new SvgViewport(300, 150), SvgDocumentSizing.Inspect(input, options, measured, CancellationToken.None).LogicalViewport);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgDocumentSizing.Inspect(input, options, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        RenderBudget workDenied = new(1_000_000);
+        RenderBudget workDenied = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();

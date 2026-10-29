@@ -16,7 +16,7 @@ public sealed class SvgQuadSpanWalkerTests
 
     private static byte[] WalkRows(SvgDevicePoint[] points, int[] ends, int[]? signs, SvgQuadSpan[] spans, bool isEvenOdd, int firstRow, int pastLastRow, out bool eligible)
     {
-        RenderBudget budget = new(10_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000_000));
         ReadOnlySpan<int> votes = signs is int[] roles ? roles : Array.Empty<int>();
         using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, ends, votes, isEvenOdd, signs, SvgPolygonMapping.FlattenedCurves, spans, 0, 64, 0, 64, 64, 64, budget, out eligible, CancellationToken.None);
         List<byte> rows = new();

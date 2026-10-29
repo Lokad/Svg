@@ -13,7 +13,7 @@ public sealed class SvgViewportClipStorageTests
     public void Fractional_viewport_chains_render_without_recursive_clip_calls(int depth)
     {
         byte[] input = Chain(depth, "0.0001");
-        RenderBudget budget = new(20_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(20_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
         {
@@ -29,7 +29,7 @@ public sealed class SvgViewportClipStorageTests
     public void Scoped_clip_denials_preserve_borrowed_storage_and_retry(string shift)
     {
         byte[] input = Chain(12, shift), unchanged = input.ToArray();
-        RenderBudget budget = new(2_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
             using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
@@ -42,7 +42,7 @@ public sealed class SvgViewportClipStorageTests
                 long retained = budget.Snapshot().CurrentBytes;
                 foreach (long available in new[] { 1L, 1024, 2048, 4096, 8192 })
                 {
-                    using (RenderBudget.BudgetReservation pressure = budget.Reserve(budget.AvailableBytes - available, SvgMemoryCategory.Surface))
+                    using (RenderBudget.BudgetReservation pressure = budget.Reserve((2_000_000L - budget.Snapshot().CurrentBytes) - available, SvgMemoryCategory.Surface))
                     {
                         long held = budget.Snapshot().CurrentBytes;
                         try { using SvgConverter.RasterizedSurface attempted = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None); }
@@ -64,7 +64,7 @@ public sealed class SvgViewportClipStorageTests
     public void Cancellation_during_clip_replay_unwinds_owners_and_restores_the_borrowed_scene()
     {
         byte[] input = Chain(12, "0.375");
-        RenderBudget budget = new(2_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
             using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))

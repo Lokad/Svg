@@ -29,7 +29,7 @@ public sealed partial class SvgTextPaintBoundsTests
             text.Append(markup.ValueKind == JsonValueKind.String ? markup.GetString() : row.GetProperty("text").GetString());
             text.Append("</text>");
             byte[] input = TextEncoding.UTF8.GetBytes(Document(text.ToString()));
-            RenderBudget budget = new(8_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
             using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
             {
                 SvgTextLinearShader shader = Assert.IsType<SvgTextLinearShader>(root.Geometries.ToArray()
@@ -60,7 +60,7 @@ public sealed partial class SvgTextPaintBoundsTests
         foreach (JsonElement row in vectors.RootElement.EnumerateArray())
         {
             byte[] input = TextEncoding.UTF8.GetBytes(row.GetProperty("source").GetString() ?? throw new InvalidDataException("Missing source path document."));
-            RenderBudget budget = new(8_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
             using (SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(input, SvgRenderLimits.Default, budget, CancellationToken.None))
             {
                 SvgRenderOptions options = preparation.ResolveRasterOptions(new(null, outputScale, SvgColor.Transparent, SvgRenderLimits.Default, snapshot));
@@ -93,7 +93,7 @@ public sealed partial class SvgTextPaintBoundsTests
             SvgTextStyle style = new(new("serif", 400, false), row.GetProperty("fontSize").GetDouble(), 0, 0, 0, 0,
                 row.GetProperty("letterSpacing").GetDouble(), SvgTextAnchor.Start, "") { WordSpacing = row.GetProperty("wordSpacing").GetDouble() };
             SvgGlyphDeviceMetrics metrics = new(scale, OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, true);
-            RenderBudget budget = new(1_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             using (SvgTextRun run = SvgTextRunBuilder.Create(style, row.GetProperty("text").GetString() ?? throw new InvalidDataException("Missing spacing text."),
                 [], [], [], new(new(new(0, 0, 0, 255), 1), true), metrics, snapshot, budget, CancellationToken.None))
             {
@@ -114,17 +114,17 @@ public sealed partial class SvgTextPaintBoundsTests
     public async Task Metric_scratch_releases_after_denial_cancellation_and_retry()
     {
         using SvgFontSnapshot snapshot = await CreateSnapshotAsync();
-        RenderBudget runBudget = new(1_000_000);
+        RenderBudget runBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgTextRun run = CreateRun("AVj", snapshot, runBudget))
         {
             foreach (long limit in new long[] { 1, 256 })
             {
-                RenderBudget denied = new(limit);
+                RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
                     SvgTextLayoutBounds.Measure(run, [], SvgAffineTransform.Identity, denied, CancellationToken.None)).ErrorCode);
                 Assert.Equal(0, denied.Snapshot().CurrentBytes);
             }
-            RenderBudget scratch = new(1_000_000);
+            RenderBudget scratch = new RenderBudget(new HostMemoryBudget(1_000_000));
             Assert.Equal(0, scratch.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();
@@ -142,11 +142,11 @@ public sealed partial class SvgTextPaintBoundsTests
     public async Task Repeated_glyphs_reuse_canonical_metrics_without_growing_scratch_per_letter()
     {
         using SvgFontSnapshot snapshot = await CreateSnapshotAsync();
-        RenderBudget runBudget = new(4_000_000);
+        RenderBudget runBudget = new RenderBudget(new HostMemoryBudget(4_000_000));
         using (SvgTextRun single = CreateRun("A", snapshot, runBudget))
         using (SvgTextRun repeated = CreateRun(new string('A', 1_000), snapshot, runBudget))
         {
-            RenderBudget singleScratch = new(1_000_000), repeatedScratch = new(1_000_000);
+            RenderBudget singleScratch = new RenderBudget(new HostMemoryBudget(1_000_000)), repeatedScratch = new RenderBudget(new HostMemoryBudget(1_000_000));
             SvgTextLayoutBounds.Measure(single, [], SvgAffineTransform.Identity, singleScratch, CancellationToken.None);
             SvgTextLayoutBounds.Measure(repeated, [], SvgAffineTransform.Identity, repeatedScratch, CancellationToken.None);
             Assert.Equal(singleScratch.Snapshot().PeakBytes, repeatedScratch.Snapshot().PeakBytes);
@@ -160,7 +160,7 @@ public sealed partial class SvgTextPaintBoundsTests
     public async Task Parser_metric_cache_reuses_distinct_runs_and_retains_only_owned_values_after_cancellation()
     {
         using SvgFontSnapshot snapshot = await CreateSnapshotAsync();
-        RenderBudget runBudget = new(1_000_000), scratch = new(1_000_000);
+        RenderBudget runBudget = new RenderBudget(new HostMemoryBudget(1_000_000)), scratch = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgTextRun first = CreateRun("A", snapshot, runBudget))
         using (SvgTextRun second = CreateRun("A", snapshot, runBudget))
         using (SvgTextLayoutBounds.MetricCache cache = SvgTextLayoutBounds.MetricCache.Create(scratch))
@@ -183,7 +183,7 @@ public sealed partial class SvgTextPaintBoundsTests
     {
         using SvgFontSnapshot snapshot = await CreateSnapshotAsync();
         byte[] input = TextEncoding.UTF8.GetBytes(Document("<text x='4' y='24' font-family='serif' font-size='24'>" + new string('A', 1_000) + "</text>"));
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
         {
             Assert.Equal(1_000, root.Geometries.Length);
@@ -202,7 +202,7 @@ public sealed partial class SvgTextPaintBoundsTests
     {
         using SvgFontSnapshot snapshot = await CreateSnapshotAsync();
         byte[] input = TextEncoding.UTF8.GetBytes(Document("<text x='4' y='24' font-family='serif' font-size='24' textLength='4000' fill='url(#g)' stroke='url(#g)' stroke-width='.25'>" + new string('A', 128) + "</text>"));
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
             Assert.Equal(256, root.Geometries.Length);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

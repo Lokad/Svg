@@ -242,7 +242,7 @@ public sealed class SvgStaticCssImageTests
     {
         string source = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "TestData", "effects-marker-sheet", "image-filter-clip.svg"));
         byte[] input = System.Text.Encoding.UTF8.GetBytes(source.Replace("clip-path=\"url(#effectCircle)\"", "clip-path='url(#missing)'", StringComparison.Ordinal));
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         using MemoryStream output = new();
@@ -266,7 +266,7 @@ public sealed class SvgStaticCssImageTests
     public void Image_filter_bounds_and_work_denial_preserve_the_prepared_source_for_retry()
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "effects-marker-sheet", "image-filter-source.svg"));
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
@@ -285,7 +285,7 @@ public sealed class SvgStaticCssImageTests
     private static void AssertResourceLifecycle(byte[] input)
     {
         byte[] unchanged = input.ToArray();
-        RenderBudget measured = new(8_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(8_000_000));
         byte[] expected;
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, CancellationToken.None))
         using (SvgConverter.RasterizedSurface output = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None))
@@ -293,7 +293,7 @@ public sealed class SvgStaticCssImageTests
         Assert.Contains(expected, value => value != 0);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
 
-        RenderBudget denied = new(Math.Max(1, measured.Snapshot().PeakBytes - 1));
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(Math.Max(1, measured.Snapshot().PeakBytes - 1)));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None);
@@ -326,7 +326,7 @@ public sealed class SvgStaticCssImageTests
 
     private static void AssertActiveRasterLifecycle(byte[] input)
     {
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             byte[] expected;
@@ -364,7 +364,7 @@ public sealed class SvgStaticCssImageTests
             ? original.Replace("</svg>", "<rect width='invalid'/></svg>", StringComparison.Ordinal)
             : original.Replace("xMidYMid meet", "invalid", StringComparison.Ordinal);
         byte[] input = System.Text.Encoding.UTF8.GetBytes(invalid);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);

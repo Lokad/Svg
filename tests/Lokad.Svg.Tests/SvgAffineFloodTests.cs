@@ -127,7 +127,7 @@ public sealed class SvgAffineFloodTests
     public void Terminal_floods_preserve_native_mapped_region_coverage(string map, string region, string color, string opacity, string source, bool previous, string expectedHash)
     {
         byte[] input = Input(map, region, color, opacity, source, previous);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
             Assert.Equal(expectedHash, Convert.ToHexString(SHA256.HashData(surface.Pixels)));
@@ -154,15 +154,15 @@ public sealed class SvgAffineFloodTests
     private static void AssertRestorationLimits(byte[] input)
     {
         byte[] unchanged = input.ToArray();
-        RenderBudget parser = new(1_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None))
         {
             byte[] expected;
-            RenderBudget measured = new(1_000_000);
+            RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
             using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None))
             { expected = surface.Pixels.ToArray(); }
             Assert.Equal(0, measured.Snapshot().CurrentBytes);
-            RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(scene, SvgRenderOptions.Default, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
             Assert.Equal(0, measured.Snapshot().CurrentBytes);
@@ -204,7 +204,7 @@ public sealed class SvgAffineFloodTests
             _ => throw new ArgumentException("Unknown resource consumer.", nameof(context))
         };
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg[..start] + content + "</svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
             Assert.Equal(expectedHash, Convert.ToHexString(SHA256.HashData(surface.Pixels)));

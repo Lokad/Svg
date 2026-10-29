@@ -40,7 +40,7 @@ public sealed class SvgGroupUseClipTests
     public void Group_use_and_polygon_clip_release_storage_at_work_and_memory_boundaries()
     {
         byte[] input = Input("<g id='g'><rect width='2' height='2' fill='blue'/></g><use href='#g' x='100'/><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/>");
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         long peak = measured.Snapshot().PeakBytes;
@@ -49,7 +49,7 @@ public sealed class SvgGroupUseClipTests
 
         void DenyMemory(long limit)
         {
-            RenderBudget denied = new(limit);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }

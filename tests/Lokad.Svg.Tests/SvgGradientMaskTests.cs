@@ -41,10 +41,10 @@ public sealed class SvgGradientMaskTests
     public void Mask_scenes_release_owners_at_parser_memory_and_raster_work_boundaries(string identity, string family)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", family, identity + ".svg"));
-        RenderBudget discovery = new(8_000_000);
+        RenderBudget discovery = new RenderBudget(new HostMemoryBudget(8_000_000));
         Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, discovery, CancellationToken.None));
         Assert.Equal(0, discovery.Snapshot().CurrentBytes);
-        RenderBudget measured = new(8_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None))
             {}
@@ -55,7 +55,7 @@ public sealed class SvgGradientMaskTests
 
         void DenyMemory(long limit)
         {
-            RenderBudget budget = new(limit);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
             {
                 using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None);
@@ -74,7 +74,7 @@ public sealed class SvgGradientMaskTests
     public void Mask_presentation_preserves_value_admission_and_cleanup(string attributes, SvgErrorCode? expected)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><mask id='m' " + attributes + "><rect width='8' height='8'/></mask><rect width='8' height='8' fill='red' mask='url(#m)'/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         if (expected is null)
         {
             using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
@@ -90,7 +90,7 @@ public sealed class SvgGradientMaskTests
     public void Canceled_rasterization_preserves_the_borrowed_mask_scene_and_allows_retry()
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "gradient-masks", "gradient-circle-mask.svg"));
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             long retained = budget.Snapshot().CurrentBytes;
@@ -119,7 +119,7 @@ public sealed class SvgGradientMaskTests
         // Circle-specific attributes are not valid on rectangles, and vice versa.
         svg = shape == "circle" ? svg.Replace(" width='8' height='8' " + paint, " " + paint, StringComparison.Ordinal)
             : svg.Replace(" cx='4' cy='4' r='3'", "", StringComparison.Ordinal);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
         if (following.Length != 0 && id.Length != 0)
             Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
@@ -139,12 +139,12 @@ public sealed class SvgGradientMaskTests
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", inputName));
         SvgRenderOptions options = new(new(width, height), 1, SvgColor.Transparent, SvgRenderLimits.Default);
-        RenderBudget measured = new(64_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(64_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, options, measured, CancellationToken.None))
             Assert.Equal(width, surface.Width);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget peakDenied = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget peakDenied = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, peakDenied, CancellationToken.None);

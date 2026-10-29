@@ -19,7 +19,7 @@ public sealed class SvgIdentityGroupTests
 
         static (byte[], long) Render(SvgPaintOpacity? opacity)
         {
-            RenderBudget sceneBudget = new(1_000_000), rasterBudget = new(1_000_000);
+            RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(1_000_000)), rasterBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
             byte[] pixels;
             using (SvgSceneBuilder builder = new(sceneBudget, CancellationToken.None))
             {

@@ -10,7 +10,7 @@ public sealed class SvgUniformGroupMaskTests
     [InlineData(true)]
     public void Deferred_mask_scopes_follow_expanded_children_without_absorbing_siblings(bool forward)
     {
-        RenderBudget budget = new(10_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(Input(forward), SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgLeafMaskAssertions.CommandSequence([
@@ -33,13 +33,13 @@ public sealed class SvgUniformGroupMaskTests
     [InlineData(true)]
     public void Partial_mask_resolution_releases_scene_storage_on_memory_and_token_denial(bool forward)
     {
-        RenderBudget measured = new(10_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(10_000_000));
         using (SvgRootParser.Parse(Input(forward), SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget tight = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget tight = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(Input(forward), SvgRenderLimits.Default, tight, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
-        RenderBudget denied = new(10_000_000);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(10_000_000));
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
@@ -53,15 +53,15 @@ public sealed class SvgUniformGroupMaskTests
     [InlineData(true)]
     public void Isolated_mask_surfaces_release_storage_on_memory_and_token_denial(bool forward)
     {
-        RenderBudget sceneBudget = new(10_000_000), measured = new(10_000_000);
+        RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(10_000_000)), measured = new RenderBudget(new HostMemoryBudget(10_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(Input(forward), SvgRenderLimits.Default, sceneBudget, null, CancellationToken.None))
         {
             using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None)) {}
             Assert.Equal(0, measured.Snapshot().CurrentBytes);
-            RenderBudget tight = new(measured.Snapshot().PeakBytes - 1);
+            RenderBudget tight = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(scene, SvgRenderOptions.Default, tight, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, tight.Snapshot().CurrentBytes);
-            RenderBudget denied = new(10_000_000);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(10_000_000));
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();

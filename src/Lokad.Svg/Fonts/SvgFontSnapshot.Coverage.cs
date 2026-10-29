@@ -1,23 +1,27 @@
 namespace Lokad.Svg.Fonts;
 
 using Lokad.Svg.Parsing;
+using Lokad.Svg.Rendering;
 
 public sealed partial class SvgFontSnapshot
 {
     private readonly record struct CoverageProgram(ISvgFontProgramSource Source, ReadOnlyMemory<byte> Bytes, OpenTypeFontMetrics Metrics);
 
     private static async ValueTask<SvgFontSnapshot> CreateWithCoverageAsync(SvgFontPackCatalog catalog, SvgFontCoverageRequest[] requests,
-        ISvgFontProgramSourceProvider provider, SvgFontSelectionPolicy? policy, CancellationToken token)
+        ISvgFontProgramSourceProvider provider, SvgFontSelectionPolicy? policy, RenderBudget budget, CancellationToken token)
     {
+        RenderBudget.BudgetReservation retained = budget.Reserve(0, SvgMemoryCategory.Resource);
         var programs = new Dictionary<string, CoverageProgram>(StringComparer.Ordinal);
         var prepared = new List<SvgPreparedFont>();
         SvgFontSnapshotLease lease = new();
         long totalBytes = 0;
         try
         {
+            using RenderBudget.BudgetReservation scratch = budget.Reserve(512, SvgMemoryCategory.Temporary);
             foreach (SvgFontCoverageRequest item in requests)
             {
                 token.ThrowIfCancellationRequested();
+                using RenderBudget.BudgetReservation scalarScratch = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<bool>(item.Scalars.Length), SvgMemoryCategory.Temporary);
                 bool[] remaining = new bool[item.Scalars.Length];
                 int needed = 0;
                 for (int index = 0; index < remaining.Length; index++)
@@ -41,6 +45,7 @@ public sealed partial class SvgFontSnapshot
                     {
                         if (programs.Count == MaximumFaces || selection.Face.File.ByteSize > MaximumBorrowedBytes - totalBytes)
                             throw new SvgException(SvgErrorCode.LimitExceeded, "Examined font programs exceed the snapshot face or byte bound.");
+                        scratch.Grow(2048);
                         ISvgFontProgramSource? source;
                         try { source = await provider.GetSourceAsync(selection.Face.File, token).ConfigureAwait(false); }
                         catch (SvgException exception) { throw SvgFontSourceFailures.Create(selection, exception); }
@@ -49,7 +54,7 @@ public sealed partial class SvgFontSnapshot
                         SvgFontProgramResolution bound = catalog.Bind(selection, source, token);
                         // Reuse the existing integrity/format loader. Its temporary lease
                         // owns no bytes; the final snapshot retains its own independent lease.
-                        using SvgFontSnapshot loaded = await CreateAsync([bound], token).ConfigureAwait(false);
+                        using SvgFontSnapshot loaded = await CreatePreparedAsync([bound], budget, token).ConfigureAwait(false);
                         SvgPreparedFont font = loaded.Fonts[0];
                         program = new(source, font.Bytes, font.Metrics);
                         programs.Add(identity, program);
@@ -65,6 +70,7 @@ public sealed partial class SvgFontSnapshot
                     if (contributes)
                     {
                         if (prepared.Count == MaximumFaces) throw new SvgException(SvgErrorCode.LimitExceeded, "Selected font faces exceed the snapshot bound.");
+                        retained.Grow(GetSnapshotStorageBytes(prepared.Count + 1) - GetSnapshotStorageBytes(prepared.Count));
                         prepared.Add(new(catalog.Bind(selection, program.Source, token), program.Bytes, program.Metrics, lease));
                     }
                     first = false;
@@ -74,9 +80,9 @@ public sealed partial class SvgFontSnapshot
                 // Missing scalars retain the primary face. Layout reports the
                 // original element and normalized scalar index before any output.
             }
-            return new(prepared.ToArray(), lease);
+            return new(prepared.ToArray(), lease, retained);
         }
-        catch { lease.Dispose(); throw; }
+        catch { lease.Dispose(); retained.Dispose(); throw; }
     }
 
     /// <summary>Checks for distinct prepared programs of one request without consulting font bytes.</summary>

@@ -8,9 +8,32 @@ public sealed class SvgViewportContextStorageTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
+    public void Context_allowance_covers_renderer_allocation_without_host_bookkeeping(bool realViewport)
+    {
+        RenderBudget budget = new();
+        using SvgDocumentState state = new(budget, CancellationToken.None);
+        SvgInheritedContainer? inherited = realViewport
+            ? new(new(default, true, true, SvgAffineTransform.Identity), SvgInheritedTextStyle.Default, null, 255, SvgInheritedStrokeStyle.Default)
+            : null;
+        SvgAffineViewportClip viewport = new(new(0, 0, 32, 32), SvgAffineTransform.Identity);
+        _ = SvgViewportTextContext.Create(state, inherited, SvgAffineTransform.Identity, viewport);
+        long retained = budget.Snapshot().CurrentBytes;
+        long before = GC.GetAllocatedBytesForCurrentThread();
+        _ = SvgViewportTextContext.Create(state, inherited, SvgAffineTransform.Identity, viewport);
+        long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+        long charged = budget.Snapshot().CurrentBytes - retained;
+        Assert.True(allocated > 0);
+        Assert.True(charged >= allocated, $"Charged {charged} bytes for {allocated} renderer allocated bytes.");
+        state.Dispose();
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
     public void Context_allowance_covers_its_allocation_and_releases_failed_registration(bool realViewport)
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using CancellationTokenSource cancellation = new();
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
@@ -24,14 +47,11 @@ public sealed class SvgViewportContextStorageTests
                 // Warm construction and owner-list capacity before measuring the
                 // independently retained context and its reservation token.
                 long retained = budget.Snapshot().CurrentBytes;
-                long allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
                 _ = SvgViewportTextContext.Create(state, inherited, SvgAffineTransform.Identity, viewport);
-                long allocated = GC.GetAllocatedBytesForCurrentThread() - allocatedBefore;
                 long charged = budget.Snapshot().CurrentBytes - retained;
-                Assert.True(allocated > 0);
-                Assert.True(charged >= allocated, $"Charged {charged} bytes for {allocated} allocated bytes.");
+                Assert.True(charged > 0);
                 retained = budget.Snapshot().CurrentBytes;
-                using (RenderBudget.BudgetReservation pressure = budget.Reserve(budget.AvailableBytes - allocated + 1, SvgMemoryCategory.Surface))
+                using (RenderBudget.BudgetReservation pressure = budget.Reserve((1_000_000L - budget.Snapshot().CurrentBytes) - charged + 1, SvgMemoryCategory.Surface))
                 {
                     long held = budget.Snapshot().CurrentBytes;
                     Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>

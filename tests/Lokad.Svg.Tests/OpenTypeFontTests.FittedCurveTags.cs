@@ -18,7 +18,7 @@ public sealed partial class OpenTypeFontTests
         byte[] expected = MakeFont(opcode == 0x81, 0, stage);
         byte[] unchanged = actual.ToArray();
         ushort glyph = stage == 0 ? (ushort)1 : (ushort)2;
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         TrueTypeHintTarget target = new(40, TrueTypeHintQueryFlags.None, TrueTypeHintControlScale.FullPrecision, TrueTypeHintPreparation.Single);
         using (OpenTypeGlyphContourStorage fitted = OpenTypeFont.GetTrueTypeContours(actual, glyph, OpenTypeFont.ParseMetrics(actual, CancellationToken.None), 15.625, target, budget, CancellationToken.None))
         using (OpenTypeGlyphContourStorage authored = OpenTypeFont.GetTrueTypeContours(expected, glyph, OpenTypeFont.ParseMetrics(expected, CancellationToken.None), 15.625, target, budget, CancellationToken.None))

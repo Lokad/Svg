@@ -1,3 +1,4 @@
+using Lokad.Svg.Rendering;
 using Lokad.Svg.Fonts;
 
 namespace Lokad.Svg.Tests;
@@ -10,7 +11,7 @@ public sealed partial class TrueTypeHintingTests
     public void Windows_arithmetic_does_not_invent_the_symmetric_getinfo_bit(bool windows, int odd)
     {
         TrueTypeHintTarget target = Target with { WindowsArithmetic = windows, QueryFlags = TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned, Grid = TrueTypeHintGrid.ClearType };
-        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 2, 0, 0), [], [], [], 48, new(98304, 98304), target, new(long.MaxValue), CancellationToken.None);
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 2, 0, 0), [], [], [], 48, new(98304, 98304), target, new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         machine.Run(Convert.FromHexString("B05876B02856B0002342B8080088B0012342"), TrueTypeHintProgramKind.Glyph);
         Assert.Equal(odd, machine.Storage[0]);
         Assert.Equal(0, machine.Storage[1]);
@@ -48,7 +49,7 @@ public sealed partial class TrueTypeHintingTests
                 Grid = symmetric ? TrueTypeHintGrid.ClearType : TrueTypeHintGrid.Physical
             };
             using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 2, 0, 0), [], [], [], 48,
-                new(98304, 98304), target, new(long.MaxValue), CancellationToken.None);
+                new(98304, 98304), target, new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
             byte[] prefix = Convert.FromHexString(rounding);
             byte[] program = new byte[prefix.Length + 16];
             prefix.CopyTo(program, 0);

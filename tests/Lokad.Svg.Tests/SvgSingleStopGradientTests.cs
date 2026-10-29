@@ -16,7 +16,7 @@ public sealed class SvgSingleStopGradientTests
     [InlineData(true, true, true)]
     public void A_single_stop_keeps_browser_alpha_and_gradient_factory_dither(bool radial, bool instance, bool degenerate)
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(Input(radial, instance, degenerate), SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
         {
@@ -41,7 +41,7 @@ public sealed class SvgSingleStopGradientTests
     public void A_single_stop_releases_owners_on_memory_and_cancellation_denial(bool radial, bool instance)
     {
         byte[] input = Input(radial, instance, false);
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, measured, CancellationToken.None))
             {}
@@ -49,7 +49,7 @@ public sealed class SvgSingleStopGradientTests
         long peak = measured.Snapshot().PeakBytes;
         for (long limit = 1; limit < peak; limit += 1024)
         {
-            RenderBudget budget = new(limit);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(limit));
             SvgException denied = Assert.Throws<SvgException>(() =>
             {
                 using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
@@ -60,7 +60,7 @@ public sealed class SvgSingleStopGradientTests
         }
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget canceled = new(1_000_000);
+        RenderBudget canceled = new RenderBudget(new HostMemoryBudget(1_000_000));
         OperationCanceledException exception = Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, canceled, cancellation.Token));
         Assert.Equal(cancellation.Token, exception.CancellationToken);
         Assert.Equal(0, canceled.Snapshot().CurrentBytes);

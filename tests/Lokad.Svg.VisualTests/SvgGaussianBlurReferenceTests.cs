@@ -47,7 +47,7 @@ public sealed class SvgGaussianBlurReferenceTests
                 color.CopyTo(source.AsSpan((y * width + x) * 4, 4));
         float[] deviation = item.GetProperty("deviation").EnumerateArray().Select(value => value.GetSingle()).ToArray();
         byte[] destination = new byte[source.Length];
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         SvgGaussianBlur.Apply(source, destination, width, height, new(deviation[0], deviation[1]), budget, CancellationToken.None);
         Assert.Equal(expected, destination);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

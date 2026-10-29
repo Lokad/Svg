@@ -1,3 +1,4 @@
+using Lokad.Svg.Rendering;
 namespace Lokad.Svg.Tests;
 
 public sealed partial class OpenTypeFontTests
@@ -15,7 +16,7 @@ public sealed partial class OpenTypeFontTests
         })
         {
             byte[] input = Input(resource);
-            Lokad.Svg.Rendering.RenderBudget budget = new(1_000_000);
+            Lokad.Svg.Rendering.RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Lokad.Svg.Parsing.SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
             using (Lokad.Svg.Parsing.SvgRoot root = Lokad.Svg.Parsing.SvgRootParser.Parse(Input(""), SvgRenderLimits.Default, budget, CancellationToken.None)) Assert.False(root.HasUnsupportedChild);

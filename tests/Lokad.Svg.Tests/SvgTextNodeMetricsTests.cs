@@ -73,7 +73,7 @@ public sealed class SvgTextNodeMetricsTests
         Assert.Equal(1, provider.Requests);
         double outputScale = row.GetProperty("scale").GetDouble();
         SvgRenderOptions options = new(null, outputScale, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
-        RenderBudget parser = new(8_000_000), raster = new(8_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(8_000_000)), raster = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(input, options.Limits, parser, CancellationToken.None))
         {
             SvgRenderOptions rasterOptions = preparation.ResolveRasterOptions(options);
@@ -101,12 +101,12 @@ public sealed class SvgTextNodeMetricsTests
         byte[] input = ReadInput(Rows[id]);
         FontProvider provider = new();
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(input, Catalog, provider, CancellationToken.None);
-        RenderBudget measured = new(8_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, fonts, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         foreach (long limit in new[] { 1, measured.Snapshot().PeakBytes / 2 })
         {
-            RenderBudget denied = new(Math.Max(1, limit));
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(Math.Max(1, limit)));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, fonts, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }

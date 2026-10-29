@@ -98,7 +98,7 @@ public sealed class SvgRectanglePaintTests
     {
         SvgRectangle source = new(0, 0, 8, 8, new(255, 0, 0, 255), true, null) { Clip = new(1, 2, 3, 4) };
         SvgDefinition definition = new([SvgGeometry.FromRectangle(source)], false, null, null);
-        using SvgDocumentState state = new(new RenderBudget(10_000), CancellationToken.None);
+        using SvgDocumentState state = new(new RenderBudget(new HostMemoryBudget(10_000)), CancellationToken.None);
         SvgUseReference reference = new("r", 10, 12, null, null, SvgAffineTransform.Identity, SvgAffineTransform.Identity, 255, true, null, null, null);
         SvgRectangle rectangle = Assert.Single(SvgReferenceResolver.Apply(definition, reference, null, state, CancellationToken.None)).Rectangle;
         Assert.Equal((10, 12, 8, 8), (rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height));
@@ -130,11 +130,11 @@ public sealed class SvgRectanglePaintTests
     [Fact]
     public void Parser_denial_releases_storage_for_the_retained_rectangle_clip()
     {
-        RenderBudget measured = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = SvgRootParser.Parse(Input("solid"), SvgRenderLimits.Default, measured, CancellationToken.None))
             Assert.Single(root.Geometries);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(Input("solid"), SvgRenderLimits.Default, denied, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
@@ -144,7 +144,7 @@ public sealed class SvgRectanglePaintTests
     public void Raster_memory_denial_retains_no_surface_storage()
     {
         using SvgRoot root = SvgRootParser.Parse(Input("solid"), SvgRenderLimits.Default, CancellationToken.None);
-        RenderBudget denied = new(1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(1));
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, denied, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
@@ -154,7 +154,7 @@ public sealed class SvgRectanglePaintTests
     public void Cancellation_during_surface_initialization_releases_rectangle_storage()
     {
         using SvgRoot root = SvgRootParser.Parse(Input("solid"), SvgRenderLimits.Default, CancellationToken.None);
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using CancellationTokenSource cancellation = new();
         using IDisposable probe = BackgroundInitializationProbe.Arm(cancellation.Cancel, static () => { });
         SvgRenderOptions options = new(null, 1, new SvgColor(1, 2, 3, 255), SvgRenderLimits.Default);

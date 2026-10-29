@@ -24,7 +24,7 @@ public sealed class SvgUniformFilterOwnershipTests
         byte[] input = File.ReadAllBytes(Path.Combine(folder, inputPath));
         byte[] unchanged = input.ToArray();
         SvgRenderOptions options = new(null, row.GetProperty("scale").GetDouble(), SvgColor.Transparent, SvgRenderLimits.Default);
-        RenderBudget parser = new(1_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, options.Limits, parser, CancellationToken.None))
         {
             SvgRasterOwnershipAssertions.ReleasesAfterFailures(scene, options, 1_000_000, expected);

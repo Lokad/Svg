@@ -108,15 +108,15 @@ public sealed partial class OpenTypeFontTests
         string definition = "<defs><mask id='m' " + (ancestor ? "" : "style='display:none'") + "><g><path d='M0 0H8V8H0Z' fill='white'/></g></mask></defs>";
         if (ancestor) definition = "<g display='none'>" + definition + "</g>";
         byte[] input = Document(definition + "<rect width='8' height='8' fill='red' mask='url(#m)'/>");
-        RenderBudget baseline = new(1_000_000);
+        RenderBudget baseline = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, baseline, null, CancellationToken.None)) { }
         Assert.Equal(0, baseline.Snapshot().CurrentBytes);
-        RenderBudget denied = new(baseline.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(baseline.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget cancelled = new(1_000_000);
+        RenderBudget cancelled = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, cancellation.Token));
         Assert.Equal(0, cancelled.Snapshot().CurrentBytes);
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => Render(Document(definition + "<defs><mask id='m'/></defs>"))).ErrorCode);

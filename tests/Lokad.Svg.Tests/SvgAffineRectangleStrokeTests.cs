@@ -15,11 +15,11 @@ public sealed class SvgAffineRectangleStrokeTests
         byte[] expected = Render(source);
         Assert.Equal(expected, Render(named));
         Assert.Equal(expected, Render("<defs>" + named + "</defs><use href='#source'/>"));
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(Input(named), SvgRenderLimits.Default, budget, CancellationToken.None))
             Assert.NotEmpty(scene.Geometries.ToArray());
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new(budget.Snapshot().PeakBytes / 2);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes / 2));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
             SvgRootParser.Parse(Input(named), SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
@@ -43,7 +43,7 @@ public sealed class SvgAffineRectangleStrokeTests
     public void Invalid_mapped_stroke_widths_reject_and_release(string width)
     {
         byte[] input = Input("<rect x='12' y='12' width='32' height='24' fill='none' stroke='red' stroke-width='" + width + "' transform='matrix(1 .25 -.3 1 8 2)'/>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -54,7 +54,7 @@ public sealed class SvgAffineRectangleStrokeTests
     public void Rectangular_clip_maps_preserve_unit_outcomes_and_release(string units)
     {
         byte[] input = Input("<defs><clipPath id='c' clipPathUnits='" + units + "'><rect width='1' height='1'/></clipPath></defs><rect width='32' height='24' stroke='red' transform='rotate(17)' clip-path='url(#c)'/>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             if (units == "userSpaceOnUse")
@@ -112,7 +112,7 @@ public sealed class SvgAffineRectangleStrokeTests
     public void Affine_rectangle_clipping_keeps_native_vertical_piece_combination()
     {
         byte[] input = Input("<svg x='8' y='6' width='64' height='56' viewBox='0 0 32 28'><g transform='translate(2.25 1.5)'><rect x='-1' y='1' width='18' height='18' fill='#d53847' transform='matrix(1 .2 -.3 1 3 2)'/></g></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
         {
@@ -129,11 +129,11 @@ public sealed class SvgAffineRectangleStrokeTests
     {
         byte[] input = Input("<g transform='translate(2.25 1.5)'><rect x='12' y='12' width='32' height='24' fill='orange' stroke='blue' stroke-width='3.75' transform='matrix(1 .25 -.3 1 8 2)'/></g>");
         byte[] expected = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
             Assert.NotEmpty(root.Geometries.ToArray());
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget tight = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget tight = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();

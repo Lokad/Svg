@@ -10,13 +10,13 @@ internal static class SvgRasterOwnershipAssertions
     internal static void ParsesAndReleasesAfterFailures(byte[] input, SvgRenderOptions options, long maximumBytes, int expectedGeometryCount, string expectedRgbaSha256)
     {
         byte[] unchanged = input.ToArray();
-        RenderBudget parser = new(maximumBytes);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(maximumBytes));
         using (SvgRoot scene = SvgRootParser.Parse(input, options.Limits, parser, options.FontSnapshot, CancellationToken.None))
         {
             ReleasesAfterFailures(scene, options, maximumBytes, expectedRgbaSha256);
         }
         Assert.Equal(0, parser.Snapshot().CurrentBytes);
-        RenderBudget deniedMemory = new(parser.Snapshot().PeakBytes - 1);
+        RenderBudget deniedMemory = new RenderBudget(new HostMemoryBudget(parser.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot attempt = SvgRootParser.Parse(input, options.Limits, deniedMemory, options.FontSnapshot, CancellationToken.None);
@@ -30,14 +30,14 @@ internal static class SvgRasterOwnershipAssertions
 
     internal static void ReleasesAfterFailures(SvgRoot scene, SvgRenderOptions options, long maximumBytes, string expectedRgbaSha256)
     {
-        RenderBudget measured = new(maximumBytes);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(maximumBytes));
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, options, measured, CancellationToken.None))
         {
             Assert.Equal(expectedRgbaSha256, Convert.ToHexStringLower(SHA256.HashData(surface.Pixels)));
         }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
 
-        RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(scene, options, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
 

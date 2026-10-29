@@ -11,13 +11,13 @@ public sealed partial class OpenTypeFontTests
         using SvgFilterResource resource = new(new(new(0, false), new(0, false), new(8, false), new(8, false), SvgFilterUnits.UserSpace),
             SvgFilterUnits.UserSpace, SvgFilterColorSpace.Srgb, new([], null), null);
         byte[] source = [255, 0, 0, 255];
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, 1, 1, resource, new(1, 1), budget, CancellationToken.None))
         {
             Assert.Equal(new byte[4], result.Pixels);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget tight = new(budget.Snapshot().PeakBytes - 1);
+        RenderBudget tight = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFilterPlayback.ApplyFullFrame(source, 1, 1, resource, new(1, 1), tight, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
         using CancellationTokenSource cancelled = new();

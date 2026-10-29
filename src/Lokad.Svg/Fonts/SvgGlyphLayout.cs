@@ -16,7 +16,7 @@ internal static class SvgGlyphLayout
 
     internal static SvgPositionedGlyph[] Layout(SvgPreparedFont font, string text, double fontSize, double originX, double originY, SvgTextAnchor anchor, CancellationToken cancellationToken)
     {
-        using SvgPositionedGlyphStorage storage = CreateStorage(font, text, fontSize, originX, originY, anchor, new RenderBudget(long.MaxValue), cancellationToken);
+        using SvgPositionedGlyphStorage storage = CreateStorage(font, text, fontSize, originX, originY, anchor, new RenderBudget(), cancellationToken);
         return storage.Glyphs.ToArray();
     }
 
@@ -656,7 +656,7 @@ internal static class SvgGlyphLayout
         static float PositionFragments(SvgPositionedGlyph[] glyphs, BudgetedParserList<SvgTextPaintFragment> fragments,
             string text, ReadOnlySpan<SvgTextPositionAdjustment> adjustments, double[] rotations,
             ReadOnlySpan<SvgTextPlacementRange> placementRanges, SvgTextAnchor anchor, SvgGlyphDeviceMetrics metrics, SvgTextFitting? fitting, double originX, double originY,
-CancellationToken token)
+            CancellationToken token)
         {
             float screen = (float)metrics.Scale;
             double baselineY = originY, relativeY = 0;

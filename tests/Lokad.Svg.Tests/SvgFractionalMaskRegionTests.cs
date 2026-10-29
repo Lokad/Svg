@@ -48,7 +48,7 @@ public sealed class SvgFractionalMaskRegionTests
     [MemberData(nameof(MaskRegions))]
     public void Fractional_mask_regions_preserve_native_source_coverage(string shape, string alpha, string consumer, bool expanded, string kind, string expectedHash)
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(Document(shape, alpha, consumer, expanded, kind), SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
             Assert.Equal(expectedHash, Convert.ToHexString(SHA256.HashData(surface.Pixels)));
@@ -91,7 +91,7 @@ public sealed class SvgFractionalMaskRegionTests
         byte[] expected = Input(mask + content + "<g transform='" + map + "'>" + content + "</g>");
         byte[] input = Input(mask + "<g id='q'>" + content + "</g><use href='#q' transform='" + map + "'/>");
         Assert.Equal(Render(expected), Render(input));
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
         using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None);
         Assert.Equal(nativeHash, Convert.ToHexString(SHA256.HashData(surface.Pixels)));
@@ -109,15 +109,15 @@ public sealed class SvgFractionalMaskRegionTests
     {
         byte[] input = Document("curve", "0.25", consumer, false, kind);
         byte[] unchanged = input.ToArray();
-        RenderBudget parser = new(1_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None))
         {
-            RenderBudget measured = new(1_000_000);
+            RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
             byte[] expected;
             using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None))
             { expected = surface.Pixels.ToArray(); }
             Assert.Equal(0, measured.Snapshot().CurrentBytes);
-            RenderBudget denied = new(measured.Snapshot().PeakBytes + 72);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes + 72));
             using (denied.Reserve(73, SvgMemoryCategory.Parser))
             {
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(scene, SvgRenderOptions.Default, denied, CancellationToken.None)).ErrorCode);

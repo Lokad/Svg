@@ -17,7 +17,7 @@ public sealed class SvgColoredFilterTests
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "colored-effects-markers", identity + ".svg"));
         byte[] unchanged = input.ToArray();
-        RenderBudget measured = new(2_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(2_000_000));
         byte[] expected;
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None))
@@ -25,7 +25,7 @@ public sealed class SvgColoredFilterTests
         Assert.Contains(expected, value => value != 0);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
 
-        RenderBudget tight = new(Math.Max(1, measured.Snapshot().PeakBytes - 1));
+        RenderBudget tight = new RenderBudget(new HostMemoryBudget(Math.Max(1, measured.Snapshot().PeakBytes - 1)));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, CancellationToken.None);
@@ -67,20 +67,20 @@ public sealed class SvgColoredFilterTests
         byte[] input = Document("<feFlood flood-color='#c89c35' flood-opacity='.5' result='tint'/>"
             + "<feComposite in='tint' in2='SourceAlpha' operator='in' result='cut'/>"
             + "<feBlend in='SourceGraphic' in2='cut' mode='multiply'/>", colorSpace);
-        RenderBudget parser = new(1_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None))
         {
             SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
             SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
             byte[] source = [100, 40, 20, 128];
             byte[] unchanged = source.ToArray();
-            RenderBudget budget = new(1_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             byte[] expected;
             using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, 1, 1, resource, new(1, 1), budget, CancellationToken.None))
             { expected = result.Pixels.ToArray(); }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
-            RenderBudget tight = new(Math.Max(1, budget.Snapshot().PeakBytes - 1));
+            RenderBudget tight = new RenderBudget(new HostMemoryBudget(Math.Max(1, budget.Snapshot().PeakBytes - 1)));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
                 SvgFilterPlayback.ApplyFullFrame(source, 1, 1, resource, new(1, 1), tight, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, tight.Snapshot().CurrentBytes);
@@ -101,7 +101,7 @@ public sealed class SvgColoredFilterTests
     public void Unsupported_binary_graphs_publish_no_output_and_release_parser_owners(string graph)
     {
         byte[] input = Document(graph, "sRGB");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
             SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -118,7 +118,7 @@ public sealed class SvgColoredFilterTests
     {
         byte[] input = Document("<feDropShadow dx='" + dx + "' dy='" + dy + "' stdDeviation='" + deviation
             + "' flood-color='#65377a' flood-opacity='.625'/>", "linearRGB");
-        RenderBudget parser = new(1_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None))
         {
             SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
@@ -127,12 +127,12 @@ public sealed class SvgColoredFilterTests
             for (int offset = 0; offset < source.Length; offset += 4)
             { source[offset] = 40; source[offset + 1] = 70; source[offset + 2] = 100; source[offset + 3] = 160; }
             byte[] unchanged = source.ToArray();
-            RenderBudget budget = new(2_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
             byte[] expected;
             using (SvgFilterResult result = Run(budget, CancellationToken.None))
             { expected = result.Pixels.ToArray(); }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
-            RenderBudget denied = new(budget.Snapshot().PeakBytes / 2);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes / 2));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);

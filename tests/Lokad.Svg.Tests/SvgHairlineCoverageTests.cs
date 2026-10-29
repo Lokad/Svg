@@ -24,7 +24,7 @@ public sealed class SvgHairlineCoverageTests
             byte[] destination = new byte[64 * 64 * 4];
             SvgHairlineCoverage walker = new(destination, 64, 64, SvgAnalyticPaint.Solid(new(255, 0, 0, 208)),
                 null, SvgClipAntialiasing.None, mask, binary, new(new(0, 0, 64, 64), new(0, 0, 64, 64)),
-CancellationToken.None);
+                CancellationToken.None);
             SvgDevicePoint[] corners = [new(13.410023945401651, 53.04681908123335), new(19.327956946071712, 48.14011700656239),
                 new(20.093880441919556, 49.06389103300366), new(14.175947441249495, 53.97059310767462)];
             for (int index = 0; index < corners.Length; index++) walker.DrawLine(corners[index], corners[(index + 1) % corners.Length]);
@@ -121,7 +121,7 @@ CancellationToken.None);
     [InlineData(true)]
     public void Stroke_owner_preserves_explicit_closure_and_independent_width_maps_through_copy_and_transfer(bool nonScaling)
     {
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         byte[] svg = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path transform='scale(2)' " + (nonScaling ? "vector-effect='non-scaling-stroke' " : "") + "fill='none' stroke='red' stroke-width='.5' d='M4,4H60V60H4Z M8,8H16'/></svg>");
         using (SvgRoot root = SvgRootParser.Parse(svg, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
@@ -139,7 +139,7 @@ CancellationToken.None);
             SvgException overflow = Assert.Throws<SvgException>(() => original.Copy(SvgAffineTransform.FromScale(float.MaxValue, float.MaxValue), budget, CancellationToken.None));
             Assert.Equal(SvgErrorCode.UnsupportedFeature, overflow.ErrorCode);
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
-            using (budget.Reserve(SvgRenderLimits.Default.MaximumAccountedBytes - retained - 100, SvgMemoryCategory.Surface))
+            using (budget.Reserve(268_435_456L - retained - 100, SvgMemoryCategory.Surface))
             {
                 long padded = budget.Snapshot().CurrentBytes;
                 SvgException denied = Assert.Throws<SvgException>(() => original.Copy(SvgAffineTransform.Identity, budget, CancellationToken.None));

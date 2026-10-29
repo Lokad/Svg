@@ -10,7 +10,7 @@ public sealed class SvgClipUnionTests
     {
         // y = x^3 and y = (3-x)^3 cross at (1.5, 3.375).
         // Their union keeps the lower half of each cubic, with exact dyadic controls.
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgAuthoredPath a = Source(false, false, budget))
         using (SvgAuthoredPath b = Source(true, false, budget))
         {
@@ -52,7 +52,7 @@ public sealed class SvgClipUnionTests
     [Fact]
     public void Native_curve_union_preserves_conics_and_releases_owners_on_denial_and_retry()
     {
-        RenderBudget sources = new(1_000_000), budget = new(1_000_000);
+        RenderBudget sources = new RenderBudget(new HostMemoryBudget(1_000_000)), budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgAuthoredPath circle = Ellipse(82, 76, 52, 52, SvgAffineTransform.Identity, sources))
         using (SvgAuthoredPath oval = Ellipse(151, 83, 68, 43, SvgAffineTransform.FromRotationDegrees(11, 151, 83), sources))
         {
@@ -70,7 +70,7 @@ public sealed class SvgClipUnionTests
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
             foreach (long limit in new[] { 1, budget.Snapshot().PeakBytes / 2 })
             {
-                RenderBudget denied = new(limit);
+                RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
                     SvgClipUnion.ResolveNativeUnion(circle, false, oval, false, denied, CancellationToken.None)).ErrorCode);
                 Assert.Equal(0, denied.Snapshot().CurrentBytes);
@@ -132,7 +132,7 @@ public sealed class SvgClipUnionTests
     public void Clip_child_unions_preserve_expected_square_and_release_owners(string children)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'>" + children + "</clipPath></defs><rect width='8' height='8' fill='red' clip-path='url(#c)'/></svg>");
-        RenderBudget sceneBudget = new(1_000_000), rasterBudget = new(1_000_000);
+        RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(1_000_000)), rasterBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface raster = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, rasterBudget, CancellationToken.None))
             for (int y = 0; y < 8; y++) for (int x = 0; x < 8; x++)
@@ -159,7 +159,7 @@ public sealed class SvgClipUnionTests
             new(108, 41.400001525878906), new(212, 55), new(172, 136),
             new(108, 117.26829528808594), new(108, 122)
         ];
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgAuthoredPath output = Assert.IsType<SvgAuthoredPath>(SvgClipUnion.ResolveCrossings(input, budget, CancellationToken.None)))
         {
             Assert.Equal(expected, output.Commands.ToArray().Where(command => command.Verb != SvgAuthoredPathVerb.Close).Select(command => command.First));
@@ -169,7 +169,7 @@ public sealed class SvgClipUnionTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         foreach (long limit in new[] { 1, budget.Snapshot().PeakBytes / 2 })
         {
-            RenderBudget denied = new(limit);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
                 SvgClipUnion.ResolveCrossings(input, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
@@ -189,7 +189,7 @@ public sealed class SvgClipUnionTests
     public void Disjoint_union_keeps_existing_normalization_and_releases_scratch()
     {
         SvgClipPolygon input = new([new(0, 0), new(0, 4), new(4, 0), new(8, 0), new(8, 4), new(12, 0)], [3, 6]);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Null(SvgClipUnion.ResolveCrossings(input, budget, CancellationToken.None));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

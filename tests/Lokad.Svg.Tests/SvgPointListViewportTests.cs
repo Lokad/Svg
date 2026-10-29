@@ -84,7 +84,7 @@ public sealed class SvgPointListViewportTests
     public void Large_parent_and_small_viewbox_render_through_output_scaling()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><symbol id='s' viewBox='0 0 32 32'><rect width='32' height='32' fill='red'/></symbol></defs><use href='#s' width='.000000032' height='.000000032' transform='scale(1000000000)'/></svg>"u8.ToArray();
-        RenderBudget budget = new(2_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(null, 3, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
         {

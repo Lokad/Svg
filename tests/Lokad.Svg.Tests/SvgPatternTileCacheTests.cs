@@ -8,7 +8,7 @@ public sealed class SvgPatternTileCacheTests
     [Fact]
     public void Cache_borrows_matching_tiles_across_destination_rectangles_and_releases_owners()
     {
-        RenderBudget budget = new(10_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
         SvgPatternGeometry source = Pattern(new(0, 0, 4, 4, new(0, 0, 0, 255), true, null), "same");
         SvgConverter.RasterizedSurface surface = Surface(budget);
         using (SvgPatternTileCache cache = SvgPatternTileCache.Retain(source, source, surface, budget))
@@ -40,7 +40,7 @@ public sealed class SvgPatternTileCacheTests
     [InlineData("opacity")]
     public void Different_effective_tile_inputs_do_not_share(string change)
     {
-        RenderBudget budget = new(10_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
         SvgRectangle fill = new(0, 0, 8, 8, new(0, 0, 0, 255), true, null);
         SvgPatternGeometry source = Pattern(fill, "same"), changed = Pattern(fill, change);
         using SvgPatternTileCache cache = SvgPatternTileCache.Retain(source, source, Surface(budget), budget);
@@ -51,7 +51,7 @@ public sealed class SvgPatternTileCacheTests
     [Fact]
     public void Different_vector_content_owners_do_not_share_even_with_matching_geometry()
     {
-        RenderBudget budget = new(10_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
         using SvgVectorContent first = SvgVectorContent.CreatePending(budget);
         using SvgVectorContent second = SvgVectorContent.CreatePending(budget);
         SvgRectangle fill = new(0, 0, 8, 8, new(0, 0, 0, 255), true, null);
@@ -65,7 +65,7 @@ public sealed class SvgPatternTileCacheTests
     [Fact]
     public void Refused_retention_leaves_the_surface_with_its_original_owner()
     {
-        RenderBudget budget = new(200);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(200));
         SvgPatternGeometry source = Pattern(default, "same");
         SvgConverter.RasterizedSurface surface = Surface(budget);
         SvgException refusal = Assert.Throws<SvgException>(() => SvgPatternTileCache.Retain(source, source, surface, budget));
@@ -80,7 +80,7 @@ public sealed class SvgPatternTileCacheTests
     public void Rectangle_bands_refuse_storage_without_evicting_and_remain_reusable()
     {
         using SvgRoot root = BandRoot();
-        RenderBudget normal = new(10_000), tight = new(384);
+        RenderBudget normal = new RenderBudget(new HostMemoryBudget(10_000)), tight = new RenderBudget(new HostMemoryBudget(384));
         SvgException refusal = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, tight, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, refusal.ErrorCode);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
@@ -100,7 +100,7 @@ public sealed class SvgPatternTileCacheTests
         using SvgRoot root = BandRoot();
         SvgGeometry original = root.Geometries[1];
         root.Geometries[1] = SvgGeometry.FromPatternFill(Pattern(original.Pattern.Fill with { Width = double.PositiveInfinity }, "same"));
-        RenderBudget budget = new(10_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
         SvgException error = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -116,7 +116,7 @@ public sealed class SvgPatternTileCacheTests
         using SvgRoot root = BandRoot();
         for (int index = 0; index < root.Geometries.Length; index++)
             root.Geometries[index] = SvgGeometry.FromPatternFill(Pattern(root.Geometries[index].Pattern.Fill, index % 2 == 0 ? "same" : "width"));
-        RenderBudget normal = new(10_000), tight = new(512);
+        RenderBudget normal = new RenderBudget(new HostMemoryBudget(10_000)), tight = new RenderBudget(new HostMemoryBudget(512));
         using (SvgConverter.RasterizedSurface current = SvgConverter.Rasterize(root, SvgRenderOptions.Default, normal, CancellationToken.None))
         using (SvgConverter.RasterizedSurface original = SvgConverter.Rasterize(root, SvgRenderOptions.Default, tight, CancellationToken.None))
         {
@@ -140,7 +140,7 @@ public sealed class SvgPatternTileCacheTests
         SvgDrawCommand inert = new(SvgDrawCommandKind.Geometry, geometries.Length, 255, null, -1, 255);
         SvgDrawCommand[] controlCommands = commands.SelectMany(command => new[] { command, inert }).ToArray();
         using SvgRoot control = new(new(8, false), new(8, false), null, controlGeometries, controlCommands, false, null);
-        RenderBudget normal = new(10_000), unretained = new(10_000);
+        RenderBudget normal = new RenderBudget(new HostMemoryBudget(10_000)), unretained = new RenderBudget(new HostMemoryBudget(10_000));
         using (SvgConverter.RasterizedSurface current = SvgConverter.Rasterize(root, SvgRenderOptions.Default, normal, CancellationToken.None))
         using (SvgConverter.RasterizedSurface original = SvgConverter.Rasterize(control, SvgRenderOptions.Default, unretained, CancellationToken.None))
         {

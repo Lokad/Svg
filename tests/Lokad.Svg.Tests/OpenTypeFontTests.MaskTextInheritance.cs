@@ -24,7 +24,7 @@ public sealed partial class OpenTypeFontTests
         using SvgFontSnapshot fonts = await CreateMaskStyleFont();
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
         byte[] input = Document(false), control = Document(true), unchanged = input.ToArray();
-        RenderBudget budget = new(4_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(4_000_000));
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
             byte[] expected;

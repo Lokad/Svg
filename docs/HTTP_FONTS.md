@@ -24,6 +24,11 @@ using SvgPngResult png = await document.ConvertToOwnedPngAsync(cancellationToken
 await destination.WriteAsync(png.Memory, cancellationToken);
 ```
 
+The document uses `renderOptions.MemoryBudget` when supplied, otherwise the
+resolver budget. The host must supply owners sharing one root; the library neither
+infers ancestry nor copies a remaining balance. Keep that document/result owner
+alive until borrowers finish.
+
 Use `renderOptions.WithFontSelectionPolicy` for explicit generic mappings and
 ordered fallback restrictions. Catalogs, selection and TrueType validation share
 the existing supplied-font implementation. [Text support](SUPPORT_MATRIX.md#text-and-fonts)

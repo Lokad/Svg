@@ -55,13 +55,13 @@ public sealed class SvgVectorEffectTests
     {
         byte[] input = TextEncoding.UTF8.GetBytes(Document("viewBox='0 0 4 4'", "<defs><path id='p' vector-effect='inherit' d='M1 1C1 3 3 3 3 1' fill='none' stroke='red' stroke-width='.5'/></defs><use href='#p' transform='scale(1.1)' vector-effect='non-scaling-stroke'/>"));
         SvgRenderOptions options = SvgRenderOptions.Default;
-        RenderBudget measured = new(8_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(8_000_000));
         SvgAffineTransform outputMap = SvgPreparationTestHelper.GetOutputMap(input, options, measured, CancellationToken.None);
         byte[] expected;
         using (SvgRoot root = SvgRootParser.Parse(input, options.Limits, measured, null, CancellationToken.None, outputMap, null))
             expected = SvgConverter.ConvertToPng(root, options, measured, CancellationToken.None).ToArray();
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget memory = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget memory = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot root = SvgRootParser.Parse(input, options.Limits, memory, null, CancellationToken.None, outputMap, null);
@@ -75,7 +75,7 @@ public sealed class SvgVectorEffectTests
     public void Canceled_host_stroke_replay_preserves_scene_and_retry()
     {
         byte[] input = TextEncoding.UTF8.GetBytes(Document("viewBox='0 0 4 4'", "<path d='M1 1C1 3 3 3 3 1' fill='none' stroke='red' stroke-width='.5' vector-effect='non-scaling-stroke'/>"));
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         SvgRenderOptions options = SvgRenderOptions.Default;
         SvgAffineTransform outputMap = SvgPreparationTestHelper.GetOutputMap(input, options, budget, CancellationToken.None);
         using (SvgRoot root = SvgRootParser.Parse(input, options.Limits, budget, null, CancellationToken.None, outputMap, null))

@@ -16,7 +16,7 @@ public sealed class SvgStyleSheetStorageTests
         string css = "rect{fill:red}" + new string(' ', length - 14);
         using XmlReader reader = XmlReader.Create(new StringReader("<root><style>" + css + "</style><next/></root>"));
         Assert.True(reader.ReadToFollowing("style"));
-        RenderBudget budget = new(4L * length + 256);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(4L * length + 256));
         using (OwnedStyleSheetText text = SvgStyleSheet.ReadElementText(reader, budget, CancellationToken.None))
             Assert.Equal(css, text.Value);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -38,11 +38,11 @@ public sealed class SvgStyleSheetStorageTests
         using (XmlReader warm = XmlReader.Create(new StringReader(xml)))
         {
             Assert.True(warm.ReadToFollowing("style"));
-            SvgRootStyleSheetParser.Consume(warm, new(16_384), CancellationToken.None);
+            SvgRootStyleSheetParser.Consume(warm, new RenderBudget(new HostMemoryBudget(16_384)), CancellationToken.None);
         }
         using XmlReader reader = XmlReader.Create(new StringReader(xml));
         Assert.True(reader.ReadToFollowing("style"));
-        RenderBudget budget = new(16_384);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(16_384));
         long before = GC.GetAllocatedBytesForCurrentThread();
         SvgRootStyleSheetParser.Consume(reader, budget, CancellationToken.None);
         long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
@@ -62,7 +62,7 @@ public sealed class SvgStyleSheetStorageTests
         {
             using XmlReader reader = XmlReader.Create(new StringReader(xml));
             Assert.True(reader.Read());
-            RenderBudget budget = new(100_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
             Assert.Throws<XmlException>(() => Read(CancellationToken.None));
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
 
@@ -76,7 +76,7 @@ public sealed class SvgStyleSheetStorageTests
         Assert.True(cancelled.Read());
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget cancelledBudget = new(100_000);
+        RenderBudget cancelledBudget = new RenderBudget(new HostMemoryBudget(100_000));
         OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() =>
         {
             if (collect) { using OwnedStyleSheetText text = SvgStyleSheet.ReadElementText(cancelled, cancelledBudget, cancellation.Token); }

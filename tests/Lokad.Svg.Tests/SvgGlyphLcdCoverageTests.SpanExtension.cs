@@ -25,7 +25,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
         SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[8];
         SvgGlyphRgbCoverage expected = new(red, green, blue);
         Assert.Equal(expected, SvgGlyphLcdCoverage.GetCoverage(segments, x, 254, scratch, bounds, CancellationToken.None));
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgGlyphLcdCoverage.ScanStorage storage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, mode, budget, CancellationToken.None) ?? throw new InvalidOperationException())
         {
             Span<int> counts = stackalloc int[10];

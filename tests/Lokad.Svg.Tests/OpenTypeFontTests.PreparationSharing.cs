@@ -12,12 +12,12 @@ public sealed partial class OpenTypeFontTests
     public void Discovery_uses_the_preparation_budget_and_recovers_after_refused_temporary_storage()
     {
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'><text class='label'>A</text><style>.label { font-family: Example; }</style></svg>"u8.ToArray();
-        var budget = new RenderBudget(8 * 1024 * 1024);
+        var budget = new RenderBudget(new HostMemoryBudget(8 * 1024 * 1024));
         using (SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, SvgRenderLimits.Default,
             budget, CancellationToken.None))
         {
             long retained = budget.Snapshot().CurrentBytes;
-            using (RenderBudget.BudgetReservation competing = budget.Reserve(budget.AvailableBytes, SvgMemoryCategory.Parser))
+            using (RenderBudget.BudgetReservation competing = budget.Reserve((8L * 1024 * 1024 - budget.Snapshot().CurrentBytes), SvgMemoryCategory.Parser))
             {
                 SvgException refusal = Assert.Throws<SvgException>(() => preparation.DiscoverFontRequests());
                 Assert.Equal(SvgErrorCode.LimitExceeded, refusal.ErrorCode);

@@ -146,7 +146,7 @@ public sealed class SvgTextSyntaxTests
     public void Root_lists_follow_normalized_scalar_boundaries_and_descendant_precedence()
     {
         SvgTextPositionLists lists = new("8 24 40", "28", "0 1", null, "0 10 -10");
-        RenderBudget budget = new(10_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
         using (OwnedParserArray<SvgTextPositionAdjustment> positions = lists.Build("A😀B", [new(3, 50, null, 2, -1)], budget, CancellationToken.None))
         {
             Assert.Equal(new SvgTextPositionAdjustment(0, 8, 28, 0, 0) { Rotation = 0 }, positions.Items[0]);
@@ -179,10 +179,10 @@ public sealed class SvgTextSyntaxTests
     public void Denied_or_cancelled_list_preparation_releases_partial_storage()
     {
         SvgTextPositionLists lists = new("1 2 3 4 5", null, null, null, "0 10");
-        RenderBudget denied = new(1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => lists.Build("ABCDE", [], denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        RenderBudget workDenied = new(10_000);
+        RenderBudget workDenied = new RenderBudget(new HostMemoryBudget(10_000));
         Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
         Assert.Throws<OperationCanceledException>(() => lists.Build("ABCDE", [], workDenied, new CancellationToken(true)));
         Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
@@ -311,7 +311,7 @@ public sealed class SvgTextSyntaxTests
         using XmlReader reader = XmlReader.Create(new StringReader($"<tspan {axis}='{value}'/>"));
         reader.Read();
         Assert.True(SvgTextSyntax.TryParseTspanStyle(reader, new(SvgTextWhitespaceMode.Default, 0), default,
-CancellationToken.None, out SvgTextSpanStyle style));
+            CancellationToken.None, out SvgTextSpanStyle style));
         Assert.Equal(value, axis == "x" ? style.PositionLists.X : style.PositionLists.Y);
     }
 

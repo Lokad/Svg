@@ -15,7 +15,8 @@ public static partial class SvgConverter
     public static SvgDocumentDimensions InspectDimensions(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
     {
         ValidateInvocation(svg, options, cancellationToken);
-        RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
+        using IMemoryScope? scope = options.MemoryBudget?.CreateScope();
+        RenderBudget budget = scope is null ? new() : new(scope);
         try { return SvgDocumentSizing.Inspect(svg, options, budget, cancellationToken); }
         catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
     }
@@ -79,9 +80,31 @@ public static partial class SvgConverter
     /// <summary>Converts SVG bytes to an independently owned PNG result.</summary>
     public static ReadOnlyMemory<byte> ConvertToPng(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
     {
-        using RasterizedConversion conversion = PrepareRasterization(svg, options, cancellationToken);
+        ValidateInvocation(svg, options, cancellationToken);
+        if (options.MemoryBudget is not null) throw new InvalidOperationException("Governed output requires ConvertToOwnedPng, caller memory or a stream.");
+        using RasterizedConversion conversion = PrepareRasterizationCore(svg, options, cancellationToken);
         return PngEncoder.Encode(conversion.Surface.Width, conversion.Surface.Height, conversion.Surface.Pixels, conversion.Budget, options.Limits.MaximumEncodedPngBytes, cancellationToken);
     }
+
+    /// <summary>Converts SVG bytes to PNG storage owned by the disposable result.</summary>
+    /// <remarks>The optional host budget is borrowed. A governed result owns a sibling scope created before preparation; its charge survives operation cleanup until result disposal. Finish readers before disposing the result.</remarks>
+    public static SvgPngResult ConvertToOwnedPng(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
+    {
+        ValidateInvocation(svg, options, cancellationToken);
+        IMemoryScope? owner = options.MemoryBudget?.CreateScope();
+        try
+        {
+            using RasterizedConversion conversion = PrepareRasterizationCore(svg, options, cancellationToken);
+            byte[] png = PngEncoder.Encode(conversion.Surface.Width, conversion.Surface.Height, conversion.Surface.Pixels,
+                conversion.Budget, owner, options.Limits.MaximumEncodedPngBytes, cancellationToken);
+            return new(png, owner);
+        }
+        catch { owner?.Dispose(); throw; }
+    }
+
+    /// <summary>Schedules one owned-result conversion on the thread pool; its scope stays alive through result disposal.</summary>
+    public static Task<SvgPngResult> ConvertToOwnedPngAsync(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
+        => Task.Run(() => ConvertToOwnedPng(svg, options, cancellationToken), cancellationToken);
 
     /// <summary>Schedules one conversion on the thread pool.</summary>
     public static Task<ReadOnlyMemory<byte>> ConvertToPngAsync(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
@@ -134,7 +157,7 @@ public static partial class SvgConverter
     }
 
     /// <summary>Encodes a retained scene while the caller's sibling scope owns the returned PNG storage and charge.</summary>
-    internal static byte[] ConvertToOwnedPng(SvgRoot root, SvgRenderOptions options, RenderBudget budget, IMemoryScope outputScope, CancellationToken cancellationToken)
+    internal static byte[] ConvertToOwnedPng(SvgRoot root, SvgRenderOptions options, RenderBudget budget, IMemoryScope? outputScope, CancellationToken cancellationToken)
     {
         ValidatePreparedInvocation(options, budget, cancellationToken);
         using RasterizedSurface surface = Rasterize(root, options, budget, cancellationToken);
@@ -207,25 +230,27 @@ public static partial class SvgConverter
 
     private static RasterizedConversion PrepareRasterizationCore(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
     {
-        RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
-        SvgRoot root;
+        IMemoryScope? scope = options.MemoryBudget?.CreateScope();
+        RenderBudget budget = scope is null ? new() : new(scope);
+        SvgRoot root = default;
         try
         {
-            using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, options.Limits, budget, cancellationToken);
-            options = preparation.ResolveRasterOptions(options);
-            SvgAffineTransform outputMap = preparation.GetOutputMap(options);
-            root = SvgRootParser.ParsePrepared(svg, options.Limits, budget, options.FontSnapshot, cancellationToken,
-                outputMap, options.Viewport, options.OutputScale, preparation);
-        }
-        catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
-        try
-        {
+            try
+            {
+                using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, options.Limits, budget, cancellationToken);
+                options = preparation.ResolveRasterOptions(options);
+                SvgAffineTransform outputMap = preparation.GetOutputMap(options);
+                root = SvgRootParser.ParsePrepared(svg, options.Limits, budget, options.FontSnapshot, cancellationToken,
+                    outputMap, options.Viewport, options.OutputScale, preparation);
+            }
+            catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
             if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.", null, root.UnsupportedDiagnostic);
-            return new RasterizedConversion(budget, root, Rasterize(root, options, budget, cancellationToken));
+            return new RasterizedConversion(budget, root, Rasterize(root, options, budget, cancellationToken), scope);
         }
         catch
         {
             root.Dispose();
+            scope?.Dispose();
             throw;
         }
     }
@@ -5190,12 +5215,14 @@ public static partial class SvgConverter
     private sealed class RasterizedConversion : IDisposable
     {
         private readonly SvgRoot _root;
+        private readonly IMemoryScope? _scope;
 
-        internal RasterizedConversion(RenderBudget budget, SvgRoot root, RasterizedSurface surface)
+        internal RasterizedConversion(RenderBudget budget, SvgRoot root, RasterizedSurface surface, IMemoryScope? scope)
         {
             Budget = budget;
             _root = root;
             Surface = surface;
+            _scope = scope;
         }
 
         internal RenderBudget Budget { get; }
@@ -5206,6 +5233,7 @@ public static partial class SvgConverter
         {
             Surface.Dispose();
             _root.Dispose();
+            _scope?.Dispose();
         }
     }
 }

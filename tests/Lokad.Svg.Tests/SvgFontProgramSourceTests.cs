@@ -113,7 +113,7 @@ public sealed class SvgFontProgramSourceTests
     {
         SvgFontPackCatalog catalog = CreateCatalog([1, 2, 3, 4]);
         var provider = new RecordingProvider(new Dictionary<string, ISvgFontProgramSource>());
-        SvgRenderLimits limits = new(200_000, 1_024, 16, 16, 1, 16, 16);
+        SvgRenderLimits limits = new(1_024, 16, 16, 1, 16, 16);
         SvgRenderOptions options = new(new SvgViewport(1, 1), 1, SvgColor.Transparent, limits);
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray();
         byte[] destination = new byte[1_024];
@@ -160,7 +160,7 @@ public sealed class SvgFontProgramSourceTests
     {
         SvgFontPackCatalog catalog = CreateCatalog([1, 2, 3, 4]);
         var provider = new RecordingProvider(new Dictionary<string, ISvgFontProgramSource>());
-        SvgRenderLimits limits = new(200_000, 1_024, 16, 16, 1_024, 16, 16);
+        SvgRenderLimits limits = new(1_024, 16, 16, 1_024, 16, 16);
         SvgRenderOptions options = new(new SvgViewport(1, 1), 1, SvgColor.Transparent, limits);
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' fill='url(#missing)'/></svg>"u8.ToArray();
 

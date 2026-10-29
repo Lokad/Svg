@@ -21,7 +21,7 @@ public sealed class SvgEllipseDashSourceTests
         foreach (string placement in new[] { "direct", "group", "use" })
         {
             byte[] input = System.Text.Encoding.UTF8.GetBytes(Document(shape, placement));
-            RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
             using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
             {
                 SvgAuthoredPath centerline = Assert.IsType<SvgAuthoredPath>(Assert.Single(scene.Geometries, value => value.AuthoredPath?.StrokeStyle is not null).AuthoredPath);
@@ -54,7 +54,7 @@ public sealed class SvgEllipseDashSourceTests
     public void Zero_radius_dashed_ovals_paint_nothing_and_release_owners(string shape)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'>" + shape + " fill='none' stroke='blue' stroke-width='2' stroke-dasharray='3 2'/></svg>");
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
             Assert.All(surface.Pixels, value => Assert.Equal((byte)0, value));

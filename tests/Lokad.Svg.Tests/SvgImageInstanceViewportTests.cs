@@ -99,15 +99,15 @@ public sealed class SvgImageInstanceViewportTests
     {
         string image = Image(true, "width='50%' height='50%'");
         byte[] input = Input("<defs>" + image + " id='s'/></defs><svg width='16' height='16'><use href='#s'/></svg>");
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget cancelled = new(1_000_000);
+        RenderBudget cancelled = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, cancellation.Token)).CancellationToken);
         Assert.Equal(0, cancelled.Snapshot().CurrentBytes);
         Assert.Equal(Render("<svg width='16' height='16'>" + image + "/></svg>"), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());

@@ -83,7 +83,7 @@ public sealed class SvgInertPresentationTests
                     SvgConverter.ConvertToPng(Wrap(body), SvgRenderOptions.Default, CancellationToken.None).ToArray());
                 continue;
             }
-            RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
             SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(Wrap(body), SvgRenderLimits.Default,
                 budget, null, CancellationToken.None));
             Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
@@ -112,7 +112,7 @@ public sealed class SvgInertPresentationTests
             Wrap("<style>.paint{enable-background:" + value + "}</style>" + Shape.Replace("<path ", "<path class='paint' ")),
         })
         {
-            RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
             SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default,
                 budget, null, CancellationToken.None));
             Assert.Equal(SvgErrorCode.MalformedInput, error.ErrorCode);
@@ -170,10 +170,10 @@ public sealed class SvgInertPresentationTests
     {
         byte[] input = Input(context);
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget normal = new(limits.MaximumAccountedBytes);
+        RenderBudget normal = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = SvgRootParser.Parse(input, limits, normal, null, CancellationToken.None)) { }
         Assert.Equal(0, normal.Snapshot().CurrentBytes);
-        RenderBudget memoryBudget = new(normal.Snapshot().PeakBytes - 1);
+        RenderBudget memoryBudget = new RenderBudget(new HostMemoryBudget(normal.Snapshot().PeakBytes - 1));
         SvgException memoryDenied = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, memoryBudget, null, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, memoryDenied.ErrorCode);
         Assert.Equal(0, memoryBudget.Snapshot().CurrentBytes);

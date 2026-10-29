@@ -64,7 +64,7 @@ public sealed partial class OpenTypeFontTests
         int subtable = lookup + BinaryPrimitives.ReadUInt16BigEndian(covered.AsSpan(lookup + 6));
         WriteUInt16(covered, subtable + 16, 1);
         using SvgFontSnapshot coveredSnapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(covered)], CancellationToken.None);
-        RenderBudget budget = new(1_024);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_024));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgGlyphLayout.CreateStorage(Assert.Single(coveredSnapshot.Fonts), "A", 100, 0, 3, SvgTextAnchor.Start, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Single(SvgGlyphLayout.Layout(prepared, "A", 100, 0, 3, CancellationToken.None));

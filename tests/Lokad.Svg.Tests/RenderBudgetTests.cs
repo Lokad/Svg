@@ -8,9 +8,44 @@ using Lokad.Svg.Fonts;
 public sealed class RenderBudgetTests
 {
     [Fact]
+    public void Borrowed_admission_accepts_zero_and_failed_growth_preserves_the_charge()
+    {
+        using var host = new HostMemoryBudget(10);
+        using IMemoryScope scope = host.CreateScope();
+        RenderBudget budget = new(scope);
+        using RenderBudget.BudgetReservation storage = budget.Reserve(0, SvgMemoryCategory.Scene);
+        storage.Grow(0);
+        Assert.Equal(0, host.Reserved);
+        Assert.Throws<ArgumentOutOfRangeException>(() => budget.Reserve(-1, SvgMemoryCategory.Scene));
+        Assert.Throws<ArgumentOutOfRangeException>(() => storage.Grow(-1));
+        storage.Grow(10);
+        Assert.Equal(10, host.Reserved);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => storage.Grow(1)).ErrorCode);
+        Assert.Equal(10, host.Reserved);
+        Assert.Equal(10, budget.Snapshot().CurrentBytes);
+        storage.Dispose();
+        Assert.Equal(0, host.Reserved);
+        Assert.False(host.Disposed);
+    }
+
+    [Fact]
+    public void Disposed_borrowed_scope_rejects_even_zero_admission_and_resize()
+    {
+        using var host = new HostMemoryBudget(10);
+        using IMemoryScope scope = host.CreateScope();
+        RenderBudget budget = new(scope);
+        using RenderBudget.BudgetReservation storage = budget.Reserve(0, SvgMemoryCategory.Scene);
+        scope.Dispose();
+        Assert.Throws<ObjectDisposedException>(() => budget.Reserve(0, SvgMemoryCategory.Scene));
+        Assert.Throws<ObjectDisposedException>(() => storage.Grow(0));
+        Assert.Equal(0, host.Reserved);
+        Assert.False(host.Disposed);
+    }
+
+    [Fact]
     public void Borrowed_scopes_share_admission_and_failed_growth_preserves_both_charges()
     {
-        using var host = new Lokad.Svg.Testing.TestMemoryBudget(500);
+        using var host = new HostMemoryBudget(500);
         using IMemoryScope firstScope = host.CreateScope();
         using IMemoryScope secondScope = host.CreateScope();
         var first = new RenderBudget(firstScope);
@@ -37,7 +72,7 @@ public sealed class RenderBudgetTests
         // The first dictionary growth selects seven entries. Even their tile
         // values alone exceed this budget; buckets, keys and headers cost more.
         long tileValues = 7L * System.Runtime.CompilerServices.Unsafe.SizeOf<SvgPatternTile>();
-        RenderBudget budget = new(tileValues - 1);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(tileValues - 1));
         using SvgDocumentState state = new(budget, CancellationToken.None);
         long retainedBytes = budget.Snapshot().CurrentBytes;
 
@@ -54,7 +89,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Cancellation_after_the_first_solid_canvas_row_releases_the_surface_and_preserves_the_token()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using CancellationTokenSource cancellation = new();
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><rect width='4' height='4' fill='red' fill-opacity='0.5'/><rect width='4' height='4' fill='blue' fill-opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, null, CancellationToken.None);
         long preparedBytes = budget.Snapshot().CurrentBytes;
@@ -80,7 +115,7 @@ public sealed class RenderBudgetTests
     {
         // Three 176-byte edges plus two sentinels, rows and reference arrays
         // cannot fit 1,000 bytes. The pre-live-state 80-byte estimate admitted it.
-        RenderBudget budget = new(1_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000));
         SvgException denied = Assert.Throws<SvgException>(() => PrepareTriangle(budget));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
@@ -97,12 +132,12 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Parser_lists_charge_their_runtime_value_size_for_geometry_and_stylesheet_rules()
     {
-        RenderBudget geometryBudget = new(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4));
+        RenderBudget geometryBudget = new RenderBudget(new HostMemoryBudget(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4)));
         using var geometries = new BudgetedParserList<SvgGeometry>(geometryBudget, SvgMemoryCategory.Geometry);
         geometries.Add(SvgGeometry.FromRectangle(new SvgRectangle(0, 0, 1, 1, SvgColor.Transparent, false, null)));
         RenderBudgetSnapshot geometrySnapshot = geometryBudget.Snapshot();
 
-        RenderBudget stylesheetBudget = new(ParserCollectionMemory.GetArrayByteCount<CssRule>(4));
+        RenderBudget stylesheetBudget = new RenderBudget(new HostMemoryBudget(ParserCollectionMemory.GetArrayByteCount<CssRule>(4)));
         using var stylesheetRules = new BudgetedParserList<CssRule>(stylesheetBudget, SvgMemoryCategory.Parser);
         stylesheetRules.Add(default);
         RenderBudgetSnapshot stylesheetSnapshot = stylesheetBudget.Snapshot();
@@ -116,7 +151,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Rasterization_releases_the_surface_reservation_when_background_cancellation_throws()
     {
-        RenderBudget budget = new(4);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(4));
         using CancellationTokenSource cancellation = new();
         using IDisposable probe = BackgroundInitializationProbe.Arm(cancellation.Cancel, static () => { });
         SvgRoot root = new(new SvgRootLength(1, false), new SvgRootLength(1, false), null, [], [], false, null);
@@ -130,7 +165,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Rasterization_releases_the_surface_reservation_when_scene_validation_throws()
     {
-        RenderBudget budget = new(8);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8));
         SvgRoot root = new(new SvgRootLength(1, false), new SvgRootLength(1, false), null, [], [new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, null, -1, 255)], false, null);
         var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, Limits());
 
@@ -143,7 +178,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Rasterization_rejects_an_unresolved_default_geometry_placeholder()
     {
-        RenderBudget budget = new(8);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8));
         SvgRoot root = new(new SvgRootLength(1, false), new SvgRootLength(1, false), null, [default], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
         var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, Limits());
 
@@ -156,7 +191,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Prepared_glyph_releases_storage_after_rendering()
     {
-        RenderBudget budget = new(10_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(GlyphRoot(), new SvgRenderOptions(null, 1, SvgColor.Transparent, PreparedGlyphLimits()), budget, CancellationToken.None))
         {
             Assert.Equal(new byte[] { 0, 0, 0, 255 }, surface.Pixels);
@@ -177,7 +212,7 @@ public sealed class RenderBudgetTests
             SvgGlyphQuadraticSegment segment = contour.Segments[index];
             contour.Segments[index] = new(new(segment.Start.X + 2, segment.Start.Y + 2), new(segment.Control.X + 2, segment.Control.Y + 2), new(segment.End.X + 2, segment.End.Y + 2));
         }
-        RenderBudget budget = new(10_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, PreparedGlyphLimits()), budget, CancellationToken.None))
         {
             Assert.Equal(new byte[] { 0, 0, 0, 0 }, surface.Pixels);
@@ -189,7 +224,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Prepared_glyph_cancellation_at_coverage_releases_subdivision_storage()
     {
-        RenderBudget budget = new(10_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
         using CancellationTokenSource cancellation = new();
         bool started = false;
         using IDisposable probe = GlyphCoverageProbe.Arm(() => { started = true; cancellation.Cancel(); });
@@ -201,7 +236,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Glyph_rasterization_observes_cancellation_at_coverage_entry()
     {
-        RenderBudget budget = new(10_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
         using CancellationTokenSource cancellation = new();
         bool coverageStarted = false;
         using IDisposable probe = GlyphCoverageProbe.Arm(() => { coverageStarted = true; cancellation.Cancel(); });
@@ -215,7 +250,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Reservation_tracks_current_peak_and_category_bytes()
     {
-        RenderBudget budget = new(100);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100));
 
         using (budget.Reserve(30, SvgMemoryCategory.Parser))
         using (budget.Reserve(50, SvgMemoryCategory.Surface))
@@ -235,7 +270,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Over_budget_reservation_fails_without_changing_live_bytes()
     {
-        RenderBudget budget = new(100);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100));
         using RenderBudget.BudgetReservation reservation = budget.Reserve(80, SvgMemoryCategory.Scene);
 
         SvgException exception = Assert.Throws<SvgException>(() => budget.Reserve(21, SvgMemoryCategory.Geometry));
@@ -251,7 +286,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Reservation_dispose_is_idempotent()
     {
-        RenderBudget budget = new(10);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10));
         RenderBudget.BudgetReservation reservation = budget.Reserve(10, SvgMemoryCategory.Output);
 
         reservation.Dispose();
@@ -263,7 +298,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Arithmetic_does_not_overflow_at_large_limits()
     {
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using RenderBudget.BudgetReservation reservation = budget.Reserve(long.MaxValue, SvgMemoryCategory.Temporary);
 
         SvgException exception = Assert.Throws<SvgException>(() => budget.Reserve(1, SvgMemoryCategory.Temporary));
@@ -275,7 +310,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Pattern_tile_blit_preserves_content_pixels_and_retained_surface()
     {
-        RenderBudget budget = new(1_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000));
 
         using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(PatternRoot(), new SvgRenderOptions(null, 1, SvgColor.Transparent, PatternLimits()), budget, CancellationToken.None);
         Assert.Equal(new byte[] { 255, 0, 0, 255 }, surface.Pixels[0..4]);
@@ -285,7 +320,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Pattern_tile_blit_observes_cancellation()
     {
-        RenderBudget budget = new(1_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000));
         var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, PatternLimits());
 
         Assert.Throws<OperationCanceledException>(() => SvgConverter.Rasterize(PatternRoot(), options, budget, new CancellationToken(true)));
@@ -301,7 +336,7 @@ public sealed class RenderBudgetTests
         return new SvgRoot(new SvgRootLength(2, false), new SvgRootLength(2, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
     }
 
-    private static SvgRenderLimits PatternLimits() => new(1_000, 1_000, 64, 4_096, 1_000, 64, 64);
+    private static SvgRenderLimits PatternLimits() => new(1_000, 64, 4_096, 1_000, 64, 64);
     private static SvgRoot GlyphRoot()
     {
         SvgGlyphQuadraticContour contour = new([
@@ -316,7 +351,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Scene_builder_transfers_one_reservation_per_distinct_gradient_stop_array()
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         using SvgSceneBuilder scene = new(budget, CancellationToken.None);
         SvgGradientStop[] sharedStops = [new SvgGradientStop(0, new SvgColor(255, 0, 0, 255)), new SvgGradientStop(1, new SvgColor(0, 0, 255, 255))];
         SvgGradientStop[] otherStops = [new SvgGradientStop(0, new SvgColor(0, 0, 0, 255)), new SvgGradientStop(0.5, new SvgColor(0, 255, 0, 255)), new SvgGradientStop(1, new SvgColor(0, 0, 255, 255))];
@@ -347,7 +382,7 @@ public sealed class RenderBudgetTests
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes(EightStopGradientSvg());
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget budget = new(limits.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using SvgRoot root = SvgRootParser.Parse(svg, limits, budget, CancellationToken.None);
         Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientFill, root.Geometries[0].Kind);
@@ -359,7 +394,7 @@ public sealed class RenderBudgetTests
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,0 L8,0 L8,8 Z' fill='red'/></svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget budget = new(limits.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using SvgRoot root = SvgRootParser.Parse(svg, limits, budget, CancellationToken.None);
         Assert.Single(root.Geometries);
         Assert.True(budget.Snapshot().PeakBytes < 500_000, "Straight paths must not reserve curve-sized scratch.");
@@ -369,7 +404,7 @@ public sealed class RenderBudgetTests
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><circle cx='32' cy='32' r='20' fill='red'/></svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget budget = new(limits.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using SvgRoot root = SvgRootParser.Parse(svg, limits, budget, CancellationToken.None);
         Assert.Single(root.Geometries);
         Assert.True(budget.Snapshot().PeakBytes < 500_000, "Shape sampling must scale with loops and segments, not global limits.");
@@ -379,7 +414,7 @@ public sealed class RenderBudgetTests
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,4 C2,2 6,2 8,4' fill='red'/></svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget budget = new(limits.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using SvgRoot root = SvgRootParser.Parse(svg, limits, budget, CancellationToken.None);
         Assert.Single(root.Geometries);
         Assert.True(budget.Snapshot().PeakBytes < 500_000, "Curve scratch must scale with commands, not global limits.");
@@ -393,10 +428,10 @@ public sealed class RenderBudgetTests
         for (int index = 0; index < 20; index++) manyDocument.Append(curve);
         manyDocument.Append("</svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget singleBudget = new(limits.MaximumAccountedBytes);
+        RenderBudget singleBudget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'>" + curve + "</svg>"), limits, singleBudget, CancellationToken.None)) { }
         long singlePeak = singleBudget.Snapshot().PeakBytes;
-        RenderBudget manyBudget = new(limits.MaximumAccountedBytes);
+        RenderBudget manyBudget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(manyDocument.ToString()), limits, manyBudget, CancellationToken.None)) { }
         long manyPeak = manyBudget.Snapshot().PeakBytes;
         Assert.True(manyPeak < 500_000, "Twenty curves must not reserve global-maximum scratch.");
@@ -413,10 +448,10 @@ public sealed class RenderBudgetTests
         for (int index = 0; index < 8; index++) wordmark.Append("<g transform='translate(").Append(index * 10).Append(",0)'>").Append(glyph).Append("</g>");
         wordmark.Append("</svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget singleBudget = new(limits.MaximumAccountedBytes);
+        RenderBudget singleBudget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'>" + glyph + "</svg>"), limits, singleBudget, CancellationToken.None)) { }
         long singlePeak = singleBudget.Snapshot().PeakBytes;
-        RenderBudget manyBudget = new(limits.MaximumAccountedBytes);
+        RenderBudget manyBudget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(wordmark.ToString()), limits, manyBudget, CancellationToken.None);
         Assert.Equal(8, root.Geometries.Length);
         long manyPeak = manyBudget.Snapshot().PeakBytes;
@@ -429,7 +464,7 @@ public sealed class RenderBudgetTests
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='1' height='1'/></clipPath></defs><path d='M0,8 Q4,-4 8,8' fill='red' clip-path='url(#window)'/></svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget budget = new(limits.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using SvgRoot root = SvgRootParser.Parse(svg, limits, budget, CancellationToken.None);
         Assert.Single(root.Geometries);
         Assert.True(budget.Snapshot().PeakBytes < 500_000, "Clip-bounds flattening must scale with commands, not global limits.");
@@ -440,11 +475,11 @@ public sealed class RenderBudgetTests
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,4 C2,2 6,2 8,4 Z' fill='red'/></svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget probe = new(limits.MaximumAccountedBytes);
+        RenderBudget probe = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRootParser.Parse(svg, limits, probe, CancellationToken.None)) { }
         long peak = probe.Snapshot().PeakBytes;
-        SvgRenderLimits deniedLimits = new(peak - 1, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
-        RenderBudget deniedBudget = new(deniedLimits.MaximumAccountedBytes);
+        SvgRenderLimits deniedLimits = new(limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+        RenderBudget deniedBudget = new RenderBudget(new HostMemoryBudget(peak - 1));
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, deniedLimits, deniedBudget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
@@ -455,14 +490,14 @@ public sealed class RenderBudgetTests
     {
         // Mapping charges three polygon points and two geometry copies into the
         // retained instance batch; denial cannot skip either bounded loop.
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
         int[] ends = [3];
         SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, null, budget);
         try
         {
             SvgDefinition definition = new([SvgGeometry.FromPolygonFill(fill), SvgGeometry.FromRectangle(new SvgRectangle(0, 0, 1, 1, SvgColor.Transparent, false, null))], false, null, null);
-            using SvgDocumentState state = new(new RenderBudget(100_000), CancellationToken.None);
+            using SvgDocumentState state = new(new RenderBudget(new HostMemoryBudget(100_000)), CancellationToken.None);
             SvgGeometry[] applied = SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 0, 0, 0, 0, SvgAffineTransform.Identity, SvgAffineTransform.Identity, 255, true, null, null, null), null, state, CancellationToken.None);
             try
             {
@@ -479,14 +514,14 @@ public sealed class RenderBudgetTests
     {
         // Per-loop charging observes cancellation inside the mapping loop,
         // so a cancelled resolve stops before scene transfer.
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
         int[] ends = [3];
         SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, null, budget);
         try
         {
             SvgDefinition definition = new([SvgGeometry.FromPolygonFill(fill)], false, null, null);
-            using SvgDocumentState state = new(new RenderBudget(100_000), CancellationToken.None);
+            using SvgDocumentState state = new(new RenderBudget(new HostMemoryBudget(100_000)), CancellationToken.None);
             using CancellationTokenSource cancelled = new();
             cancelled.Cancel();
             Assert.Throws<OperationCanceledException>(() => SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 0, 0, 0, 0, SvgAffineTransform.Identity, SvgAffineTransform.Identity, 255, true, null, null, null), null, state, cancelled.Token));
@@ -500,11 +535,11 @@ public sealed class RenderBudgetTests
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><polygon id='p' points='0,0 8,0 0,8' fill='red'/></defs><use href='#p'/></svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget probe = new(limits.MaximumAccountedBytes);
+        RenderBudget probe = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRootParser.Parse(svg, limits, probe, CancellationToken.None)) { }
         long peak = probe.Snapshot().PeakBytes;
-        SvgRenderLimits deniedLimits = new(peak - 1, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
-        RenderBudget deniedBudget = new(deniedLimits.MaximumAccountedBytes);
+        SvgRenderLimits deniedLimits = new(limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+        RenderBudget deniedBudget = new RenderBudget(new HostMemoryBudget(peak - 1));
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, deniedLimits, deniedBudget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
@@ -515,7 +550,7 @@ public sealed class RenderBudgetTests
     {
         byte[] probeSvg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><polygon id='p' points='0,0 8,0 0,8' fill='red'/></defs><use href='#p'/></svg>");
         SvgRenderLimits probeLimits = SvgRenderLimits.Default;
-        RenderBudget probeBudget = new(probeLimits.MaximumAccountedBytes);
+        RenderBudget probeBudget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRootParser.Parse(probeSvg, probeLimits, probeBudget, CancellationToken.None)) { }
         Assert.Equal(0, probeBudget.Snapshot().CurrentBytes);
     }
@@ -525,9 +560,9 @@ public sealed class RenderBudgetTests
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L0,8 Z' fill='red'/></svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget parseBudget = new(limits.MaximumAccountedBytes);
+        RenderBudget parseBudget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using SvgRoot root = SvgRootParser.Parse(svg, limits, parseBudget, CancellationToken.None);
-        RenderBudget rasterBudget = new(300);
+        RenderBudget rasterBudget = new RenderBudget(new HostMemoryBudget(300));
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, rasterBudget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
@@ -536,7 +571,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Polygon_rasterization_releases_geometry_and_surface_storage()
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
         int[] ends = [3];
         SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, null, budget);
@@ -544,7 +579,7 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(new SvgRootLength(8, false), new SvgRootLength(8, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16);
+            SvgRenderLimits limits = new(8_192, 16, 4_096, 4_096, 16, 16);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
         }
         finally { fill.Dispose(); }
@@ -559,9 +594,9 @@ public sealed class RenderBudgetTests
         // the same.
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><radialGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient></defs><polygon points='0,0 8,0 0,8' fill='url(#g)'/></svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget parseBudget = new(limits.MaximumAccountedBytes);
+        RenderBudget parseBudget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using SvgRoot root = SvgRootParser.Parse(svg, limits, parseBudget, CancellationToken.None);
-        RenderBudget rasterBudget = new(300);
+        RenderBudget rasterBudget = new RenderBudget(new HostMemoryBudget(300));
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, rasterBudget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
@@ -573,9 +608,9 @@ public sealed class RenderBudgetTests
         // share the polygon mapping path and must deny before work all the same.
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><polygon points='0,0 8,0 0,8' fill='url(#g)'/></svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget parseBudget = new(limits.MaximumAccountedBytes);
+        RenderBudget parseBudget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using SvgRoot root = SvgRootParser.Parse(svg, limits, parseBudget, CancellationToken.None);
-        RenderBudget rasterBudget = new(300);
+        RenderBudget rasterBudget = new RenderBudget(new HostMemoryBudget(300));
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, rasterBudget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
@@ -588,9 +623,9 @@ public sealed class RenderBudgetTests
         // the same.
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='red'/></pattern></defs><polygon points='0,0 8,0 0,8' fill='url(#p)'/></svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget parseBudget = new(limits.MaximumAccountedBytes);
+        RenderBudget parseBudget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using SvgRoot root = SvgRootParser.Parse(svg, limits, parseBudget, CancellationToken.None);
-        RenderBudget rasterBudget = new(300);
+        RenderBudget rasterBudget = new RenderBudget(new HostMemoryBudget(300));
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, rasterBudget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
@@ -602,9 +637,9 @@ public sealed class RenderBudgetTests
         // curved fills flatten through budgeted scratch before painting.
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q8,0 8,8 L0,8 Z' fill='red'/></svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget parseBudget = new(limits.MaximumAccountedBytes);
+        RenderBudget parseBudget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using SvgRoot root = SvgRootParser.Parse(svg, limits, parseBudget, CancellationToken.None);
-        RenderBudget rasterBudget = new(300);
+        RenderBudget rasterBudget = new RenderBudget(new HostMemoryBudget(300));
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, rasterBudget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
@@ -617,9 +652,9 @@ public sealed class RenderBudgetTests
         // gradient fills flatten through budgeted scratch before repainting.
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"red\"/><stop offset=\"1\" stop-color=\"blue\"/></linearGradient></defs><path d=\"M0,0 Q8,0 8,8 L0,8 Z\" fill=\"url(#g)\"/></svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget parseBudget = new(limits.MaximumAccountedBytes);
+        RenderBudget parseBudget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using SvgRoot root = SvgRootParser.Parse(svg, limits, parseBudget, CancellationToken.None);
-        RenderBudget rasterBudget = new(300);
+        RenderBudget rasterBudget = new RenderBudget(new HostMemoryBudget(300));
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, rasterBudget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
@@ -629,11 +664,11 @@ public sealed class RenderBudgetTests
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"red\"/><stop offset=\"1\" stop-color=\"blue\"/></linearGradient></defs><path d=\"M0,0 Q8,0 8,8 L0,8 Z\" fill=\"url(#g)\"/></svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget probe = new(limits.MaximumAccountedBytes);
+        RenderBudget probe = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRootParser.Parse(svg, limits, probe, CancellationToken.None)) { }
         long peak = probe.Snapshot().PeakBytes;
-        SvgRenderLimits deniedLimits = new(peak - 1, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
-        RenderBudget deniedBudget = new(deniedLimits.MaximumAccountedBytes);
+        SvgRenderLimits deniedLimits = new(limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+        RenderBudget deniedBudget = new RenderBudget(new HostMemoryBudget(peak - 1));
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, deniedLimits, deniedBudget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
@@ -642,7 +677,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Polygon_rasterization_observes_cancellation_during_vertex_mapping()
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         SvgDevicePoint[] points = [new(100, 100), new(108, 100), new(100, 108)];
         int[] ends = [3];
         SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, null, budget);
@@ -650,7 +685,7 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(new SvgRootLength(8, false), new SvgRootLength(8, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16);
+            SvgRenderLimits limits = new(8_192, 16, 4_096, 4_096, 16, 16);
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();
             Assert.Throws<OperationCanceledException>(() => SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, cancellation.Token));
@@ -662,7 +697,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Polygon_rasterization_emits_analytic_rows_without_fan_per_contour()
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
         int[] ends = [3];
         SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, null, budget);
@@ -670,7 +705,7 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(new SvgRootLength(8, false), new SvgRootLength(8, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16);
+            SvgRenderLimits limits = new(8_192, 16, 4_096, 4_096, 16, 16);
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
@@ -683,7 +718,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Polygon_rasterization_emits_analytic_rows_without_fan_under_evenodd_roles()
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
         int[] ends = [3];
         int[] signs = [1];
@@ -692,7 +727,7 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(new SvgRootLength(8, false), new SvgRootLength(8, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16);
+            SvgRenderLimits limits = new(8_192, 16, 4_096, 4_096, 16, 16);
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
@@ -705,7 +740,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Polygon_rasterization_emits_analytic_rows_without_fan_under_nonzero_roles()
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
         int[] ends = [3];
         int[] roles = [1];
@@ -714,7 +749,7 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(new SvgRootLength(8, false), new SvgRootLength(8, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16);
+            SvgRenderLimits limits = new(8_192, 16, 4_096, 4_096, 16, 16);
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
@@ -729,11 +764,11 @@ public sealed class RenderBudgetTests
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes(EightStopGradientSvg());
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget probe = new(limits.MaximumAccountedBytes);
+        RenderBudget probe = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRootParser.Parse(svg, limits, probe, CancellationToken.None)) { }
         long peak = probe.Snapshot().PeakBytes;
-        SvgRenderLimits deniedLimits = new(peak - 1, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
-        RenderBudget deniedBudget = new(deniedLimits.MaximumAccountedBytes);
+        SvgRenderLimits deniedLimits = new(limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+        RenderBudget deniedBudget = new RenderBudget(new HostMemoryBudget(peak - 1));
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, deniedLimits, deniedBudget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
@@ -747,11 +782,11 @@ public sealed class RenderBudgetTests
         // exceeding the remaining budget with nothing retained.
         byte[] svg = System.Text.Encoding.UTF8.GetBytes(EightStopRadialGradientSvg());
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget probe = new(limits.MaximumAccountedBytes);
+        RenderBudget probe = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRootParser.Parse(svg, limits, probe, CancellationToken.None)) { }
         long peak = probe.Snapshot().PeakBytes;
-        SvgRenderLimits deniedLimits = new(peak - 1, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
-        RenderBudget deniedBudget = new(deniedLimits.MaximumAccountedBytes);
+        SvgRenderLimits deniedLimits = new(limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+        RenderBudget deniedBudget = new RenderBudget(new HostMemoryBudget(peak - 1));
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, deniedLimits, deniedBudget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
@@ -760,7 +795,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Scene_builder_transfers_one_reservation_per_distinct_radial_stop_array()
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         using SvgSceneBuilder scene = new(budget, CancellationToken.None);
         SvgGradientStop[] sharedStops = [new SvgGradientStop(0, new SvgColor(255, 0, 0, 255)), new SvgGradientStop(1, new SvgColor(0, 0, 255, 255))];
         SvgGradientStop[] otherStops = [new SvgGradientStop(0, new SvgColor(0, 0, 0, 255)), new SvgGradientStop(0.5, new SvgColor(0, 255, 0, 255)), new SvgGradientStop(1, new SvgColor(0, 0, 255, 255))];
@@ -820,9 +855,9 @@ public sealed class RenderBudgetTests
 
     private static string EightStopGradientSvg() => "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"0.15\" stop-color=\"#ff8000\"/><stop offset=\"0.3\" stop-color=\"#ffff00\"/><stop offset=\"0.45\" stop-color=\"#00ff00\"/><stop offset=\"0.6\" stop-color=\"#00ffff\"/><stop offset=\"0.75\" stop-color=\"#0000ff\"/><stop offset=\"0.9\" stop-color=\"#8000ff\"/><stop offset=\"1\" stop-color=\"#ff00ff\"/></linearGradient></defs><rect x=\"0\" y=\"0\" width=\"16\" height=\"16\" fill=\"url(#g)\"/></svg>";
 
-    private static SvgRenderLimits Limits() => new(8, 8, 1, 1, 8, 8, 8);
+    private static SvgRenderLimits Limits() => new(8, 1, 1, 8, 8, 8);
 
-    private static SvgRenderLimits PreparedGlyphLimits() => new(8, 8, 1, 1, 10_000, 8, 8);
+    private static SvgRenderLimits PreparedGlyphLimits() => new(8, 1, 1, 10_000, 8, 8);
 
     private static void AssertBudgetReleased(RenderBudget budget)
     {
@@ -837,7 +872,7 @@ public sealed class RenderBudgetTests
         // The scene pre-reservation precedes retained copies and stays
         // held while the split lists grow, so a budget sized for mapping,
         // retention and split points but not split ends fails at the split.
-        RenderBudget roomyBudget = new(100_000);
+        RenderBudget roomyBudget = new RenderBudget(new HostMemoryBudget(100_000));
         using BudgetedParserList<SvgPoint> points = new(roomyBudget, SvgMemoryCategory.Geometry, CancellationToken.None);
         points.Add(new SvgPoint(0, 0));
         points.Add(new SvgPoint(8, 8));
@@ -845,7 +880,7 @@ public sealed class RenderBudgetTests
         points.Add(new SvgPoint(0, 8));
         using BudgetedParserList<int> ends = new(roomyBudget, SvgMemoryCategory.Geometry, CancellationToken.None);
         ends.Add(4);
-        RenderBudget tightBudget = new(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) + ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) + ParserCollectionMemory.GetArrayByteCount<int>(1) + ParserCollectionMemory.GetArrayByteCount<int>(1) + ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) + ParserCollectionMemory.GetArrayByteCount<int>(4) - 1);
+        RenderBudget tightBudget = new RenderBudget(new HostMemoryBudget(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) + ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) + ParserCollectionMemory.GetArrayByteCount<int>(1) + ParserCollectionMemory.GetArrayByteCount<int>(1) + ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) + ParserCollectionMemory.GetArrayByteCount<int>(4) - 1));
 
         SvgException denied = Assert.Throws<SvgException>(() =>
         {
@@ -861,7 +896,7 @@ public sealed class RenderBudgetTests
     {
         // The scene pre-reservation precedes retained copies, so a budget
         // sized near the mapped input fails at the pre-reserve with full release.
-        RenderBudget roomyBudget = new(100_000);
+        RenderBudget roomyBudget = new RenderBudget(new HostMemoryBudget(100_000));
         using BudgetedParserList<SvgPoint> points = new(roomyBudget, SvgMemoryCategory.Geometry, CancellationToken.None);
         points.Add(new SvgPoint(0, 0));
         points.Add(new SvgPoint(6, 6));
@@ -870,7 +905,7 @@ public sealed class RenderBudgetTests
         points.Add(new SvgPoint(6, 8));
         using BudgetedParserList<int> ends = new(roomyBudget, SvgMemoryCategory.Geometry, CancellationToken.None);
         ends.Add(5);
-        RenderBudget tightBudget = new(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(6) + ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(6) + ParserCollectionMemory.GetArrayByteCount<int>(6) - 1);
+        RenderBudget tightBudget = new RenderBudget(new HostMemoryBudget(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(6) + ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(6) + ParserCollectionMemory.GetArrayByteCount<int>(6) - 1));
 
         SvgException denied = Assert.Throws<SvgException>(() =>
         {
@@ -887,14 +922,14 @@ public sealed class RenderBudgetTests
     {
         // The scene pre-reservation precedes retained copies, so a budget
         // sized for mapping but not retention fails before allocating copies.
-        RenderBudget roomyBudget = new(100_000);
+        RenderBudget roomyBudget = new RenderBudget(new HostMemoryBudget(100_000));
         using BudgetedParserList<SvgPoint> points = new(roomyBudget, SvgMemoryCategory.Geometry, CancellationToken.None);
         points.Add(new SvgPoint(0, 0));
         points.Add(new SvgPoint(8, 0));
         points.Add(new SvgPoint(0, 8));
         using BudgetedParserList<int> ends = new(roomyBudget, SvgMemoryCategory.Geometry, CancellationToken.None);
         ends.Add(3);
-        RenderBudget tightBudget = new(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) + ParserCollectionMemory.GetArrayByteCount<int>(1) + ParserCollectionMemory.GetArrayByteCount<int>(1) - 1);
+        RenderBudget tightBudget = new RenderBudget(new HostMemoryBudget(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) + ParserCollectionMemory.GetArrayByteCount<int>(1) + ParserCollectionMemory.GetArrayByteCount<int>(1) - 1));
 
         SvgException denied = Assert.Throws<SvgException>(() =>
         {
@@ -911,14 +946,14 @@ public sealed class RenderBudgetTests
     {
         // Gradient retention shares the pre-reserved contour boundary, so
         // the same mapping-sized budget fails before allocating copies.
-        RenderBudget roomyBudget = new(100_000);
+        RenderBudget roomyBudget = new RenderBudget(new HostMemoryBudget(100_000));
         using BudgetedParserList<SvgPoint> points = new(roomyBudget, SvgMemoryCategory.Geometry, CancellationToken.None);
         points.Add(new SvgPoint(0, 0));
         points.Add(new SvgPoint(8, 0));
         points.Add(new SvgPoint(0, 8));
         using BudgetedParserList<int> ends = new(roomyBudget, SvgMemoryCategory.Geometry, CancellationToken.None);
         ends.Add(3);
-        RenderBudget tightBudget = new(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) + ParserCollectionMemory.GetArrayByteCount<int>(1) + ParserCollectionMemory.GetArrayByteCount<int>(1) - 1);
+        RenderBudget tightBudget = new RenderBudget(new HostMemoryBudget(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) + ParserCollectionMemory.GetArrayByteCount<int>(1) + ParserCollectionMemory.GetArrayByteCount<int>(1) - 1));
         SvgLinearGradient gradient = new(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 1, 0, 1, false, false, SvgGradientSpread.Pad, [new SvgGradientStop(0, new SvgColor(255, 0, 0, 255)), new SvgGradientStop(1, new SvgColor(0, 0, 255, 255))], 1, 1, false);
         SvgRectangle box = new(0, 0, 8, 8, default, true, null);
 
@@ -937,14 +972,14 @@ public sealed class RenderBudgetTests
     {
         // Radial retention shares the pre-reserved contour boundary, so
         // the same mapping-sized budget fails before allocating copies.
-        RenderBudget roomyBudget = new(100_000);
+        RenderBudget roomyBudget = new RenderBudget(new HostMemoryBudget(100_000));
         using BudgetedParserList<SvgPoint> points = new(roomyBudget, SvgMemoryCategory.Geometry, CancellationToken.None);
         points.Add(new SvgPoint(0, 0));
         points.Add(new SvgPoint(8, 0));
         points.Add(new SvgPoint(0, 8));
         using BudgetedParserList<int> ends = new(roomyBudget, SvgMemoryCategory.Geometry, CancellationToken.None);
         ends.Add(3);
-        RenderBudget tightBudget = new(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) + ParserCollectionMemory.GetArrayByteCount<int>(1) + ParserCollectionMemory.GetArrayByteCount<int>(1) - 1);
+        RenderBudget tightBudget = new RenderBudget(new HostMemoryBudget(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) + ParserCollectionMemory.GetArrayByteCount<int>(1) + ParserCollectionMemory.GetArrayByteCount<int>(1) - 1));
         SvgRadialGradient circle = new(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0.5, 0.5, 0.5, 0.5, 0.5, 0, 0, 1, false, false, SvgGradientSpread.Pad, [new SvgGradientStop(0, new SvgColor(255, 0, 0, 255)), new SvgGradientStop(1, new SvgColor(0, 0, 255, 255))], 1, 1, false, SvgGradientTransform.Identity, false);
         SvgRectangle box = new(0, 0, 8, 8, default, true, null);
 
@@ -964,7 +999,7 @@ public sealed class RenderBudgetTests
         // The adopted pre-reservation single-counts retained arrays, so a
         // successful lowering holds scene points/ends/signs plus original fill
         // commands and their conservatively accounted owner in Scene.
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         using (BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, CancellationToken.None))
         using (BudgetedParserList<int> ends = new(budget, SvgMemoryCategory.Geometry, CancellationToken.None))
         {
@@ -989,20 +1024,19 @@ public sealed class RenderBudgetTests
     {
         // Stroke retention shares the pre-reserved boundary, so a budget
         // sized for mapping and outlining but not retention fails before copying.
-        RenderBudget roomyBudget = new(100_000);
+        RenderBudget roomyBudget = new RenderBudget(new HostMemoryBudget(100_000));
         using BudgetedParserList<SvgPoint> points = new(roomyBudget, SvgMemoryCategory.Geometry, CancellationToken.None);
         points.Add(new SvgPoint(0, 0));
         points.Add(new SvgPoint(8, 0));
         using BudgetedParserList<int> ends = new(roomyBudget, SvgMemoryCategory.Geometry, CancellationToken.None);
         ends.Add(2);
-        RenderBudget tightBudget = new(
-            ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) +
+        RenderBudget tightBudget = new RenderBudget(new HostMemoryBudget(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) +
             ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(16) +
             2 * ParserCollectionMemory.GetArrayByteCount<int>(1) +
             ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) +
             ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) +
             ParserCollectionMemory.GetArrayByteCount<int>(1) +
-            ParserCollectionMemory.GetArrayByteCount<int>(1) - 1);
+            ParserCollectionMemory.GetArrayByteCount<int>(1) - 1));
         SvgException denied = Assert.Throws<SvgException>(() =>
         {
             using SvgOrthogonalGeometryLowering lowering = new(points, ends, "polyline", false, false, 100_000, roomyBudget, CancellationToken.None);
@@ -1015,7 +1049,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Disjoint_twin_triangles_take_analytic_rows_without_fan()
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8), new(8, 8), new(16, 8), new(8, 16)];
         int[] ends = [3, 6];
         int[] roles = [1, 1];
@@ -1024,7 +1058,7 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(new SvgRootLength(16, false), new SvgRootLength(16, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16);
+            SvgRenderLimits limits = new(8_192, 16, 4_096, 4_096, 16, 16);
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
@@ -1037,7 +1071,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Nested_counter_takes_analytic_rows_without_fan()
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         SvgDevicePoint[] points = [new(0, 0), new(16, 0), new(16, 16), new(0, 16), new(12, 4), new(12, 12), new(4, 12), new(4, 4)];
         int[] ends = [4, 8];
         int[] roles = [1, -1];
@@ -1046,7 +1080,7 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(new SvgRootLength(16, false), new SvgRootLength(16, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16);
+            SvgRenderLimits limits = new(8_192, 16, 4_096, 4_096, 16, 16);
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
@@ -1059,7 +1093,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Evenodd_twin_takes_analytic_rows_without_fan()
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8), new(8, 8), new(16, 8), new(8, 16)];
         int[] ends = [3, 6];
         int[] signs = [1, 1];
@@ -1068,7 +1102,7 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(new SvgRootLength(16, false), new SvgRootLength(16, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16);
+            SvgRenderLimits limits = new(8_192, 16, 4_096, 4_096, 16, 16);
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
@@ -1081,7 +1115,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Edge_sharing_multi_keeps_fan_path()
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8), new(8, 0), new(8, 8), new(0, 8)];
         int[] ends = [3, 6];
         int[] roles = [1, 1];
@@ -1090,7 +1124,7 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(new SvgRootLength(16, false), new SvgRootLength(16, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16);
+            SvgRenderLimits limits = new(8_192, 16, 4_096, 4_096, 16, 16);
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
@@ -1103,7 +1137,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Overlapping_multi_keeps_fan_path()
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8), new(4, 0), new(12, 0), new(4, 8)];
         int[] ends = [3, 6];
         int[] roles = [1, 1];
@@ -1112,7 +1146,7 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(new SvgRootLength(16, false), new SvgRootLength(16, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16);
+            SvgRenderLimits limits = new(8_192, 16, 4_096, 4_096, 16, 16);
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
@@ -1125,7 +1159,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Multi_contour_preparation_charges_set_scan_and_reports_eligibility()
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         SvgDevicePoint[] twin = [new(0, 0), new(8, 0), new(0, 8), new(8, 8), new(16, 8), new(8, 16)];
         using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(twin, [3, 6], [], false, [1, 1], SvgPolygonMapping.QuarterEdges, 0, 16, 0, 16, 16, 16, budget, out bool twinEligible, CancellationToken.None))
         {
@@ -1147,7 +1181,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Shared_vertex_multi_keeps_fan_path()
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         SvgDevicePoint[] lobes = [new(2, 2), new(4, 3), new(8, 4), new(8, 8), new(2, 8), new(4, 4), new(4, 2), new(4, 0), new(2, 2), new(0, 4), new(0, 0), new(2, 2)];
         int[] ends = [5, 9, 12];
         using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(lobes, ends, [], false, null, SvgPolygonMapping.QuarterEdges, 0, 16, 0, 16, 16, 16, budget, out bool eligible, CancellationToken.None))
@@ -1160,7 +1194,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Self_touching_curve_multi_takes_analytic_path()
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         SvgDevicePoint[] loops = [new(0, 0), new(8, 0), new(0, 8), new(16, 0), new(24, 8), new(24, 0), new(20, 4)];
         int[] ends = [3, 7];
         using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(loops, ends, [], false, null, SvgPolygonMapping.FlattenedCurves, 0, 32, 0, 16, 32, 16, budget, out bool eligible, CancellationToken.None))
@@ -1175,7 +1209,7 @@ public sealed class RenderBudgetTests
     {
         // Straight-edge loops meeting only in transversal crossings union through
         // signed-winding intervals on any mapping; touches and coincident spans keep the fan path.
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         SvgDevicePoint[] bands = [new(0, 0), new(4, 0), new(4, 4), new(0, 4), new(2, 2), new(6, 2), new(6, 6), new(2, 6)];
         int[] ends = [4, 8];
         using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(bands, ends, [], false, [1, 1], SvgPolygonMapping.FiniteEdges, 0, 8, 0, 8, 8, 8, budget, out bool eligible, CancellationToken.None))
@@ -1191,7 +1225,7 @@ public sealed class RenderBudgetTests
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M1,0 C4,0 7,1 7,4 C7,7 4,8 1,8 C0,8 0,7 0,4 C0,1 0,0 1,0 Z' fill='red'/></svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget budget = new(limits.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using SvgRoot root = SvgRootParser.Parse(svg, limits, budget, CancellationToken.None);
         Assert.True(budget.Snapshot().PeakBytes < 260_000, "Curve contour arrays must scale with commands, not curve expansion.");
     }

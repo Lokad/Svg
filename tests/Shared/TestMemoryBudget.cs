@@ -1,3 +1,5 @@
+global using HostMemoryBudget = Lokad.Svg.Testing.TestMemoryBudget;
+
 using System.Diagnostics.CodeAnalysis;
 
 namespace Lokad.Svg.Testing;
@@ -8,9 +10,10 @@ internal sealed class TestMemoryBudget : IMemoryScope
     private sealed class State(long limit) { internal readonly object Gate = new(); internal long Limit = limit; internal long Reserved; }
     private readonly State _state;
     private readonly TestMemoryBudget? _parent;
-    private readonly List<TestMemoryBudget> _children = [];
-    private readonly List<Reservation> _reservations = [];
+    private readonly HashSet<TestMemoryBudget> _children = [];
+    private readonly HashSet<Reservation> _reservations = [];
     internal bool Disposed { get; private set; }
+    internal int ActiveScopeCount { get { lock (_state.Gate) return _children.Count; } }
     internal long Reserved { get { lock (_state.Gate) return _state.Reserved; } }
     internal long Limit { set { lock (_state.Gate) _state.Limit = value; } }
     internal TestMemoryBudget(long limit) { _state = new(limit); }
@@ -41,8 +44,9 @@ internal sealed class TestMemoryBudget : IMemoryScope
         lock (_state.Gate)
         {
             if (Disposed) return;
-            foreach (TestMemoryBudget child in _children) child.Dispose();
-            foreach (Reservation reservation in _reservations) reservation.Dispose();
+            foreach (TestMemoryBudget child in _children.ToArray()) child.Dispose();
+            foreach (Reservation reservation in _reservations.ToArray()) reservation.Dispose();
+            _parent?._children.Remove(this);
             Disposed = true;
         }
     }
@@ -70,6 +74,7 @@ internal sealed class TestMemoryBudget : IMemoryScope
             {
                 if (_disposed) return;
                 owner._state.Reserved -= _bytes; _bytes = 0; _disposed = true;
+                owner._reservations.Remove(this);
             }
         }
     }

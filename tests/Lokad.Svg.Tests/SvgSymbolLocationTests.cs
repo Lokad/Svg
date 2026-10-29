@@ -15,7 +15,7 @@ public sealed class SvgSymbolLocationTests
     [InlineData("<symbol id='s'/><g id='s'><circle r='3'/></g>")]
     public void Authored_ids_remain_unique_across_symbol_locations(string content)
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(Input(content), SvgRenderLimits.Default, budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -57,8 +57,8 @@ public sealed class SvgSymbolLocationTests
     public void Descriptive_symbol_nodes_observe_the_same_structural_limit_in_lowering_and_discovery(int maximumNodes, bool admitted)
     {
         byte[] input = Input("<symbol id='s'><title>Shape</title><desc>Original control</desc><metadata><m:note xmlns:m='urn:sample'/></metadata><rect width='4' height='4'/></symbol><use href='#s'/>");
-        SvgRenderLimits limits = new(1_000_000, 8192, 32, 1024, 4096, maximumNodes, 128, 16, 32);
-        RenderBudget budget = new(limits.MaximumAccountedBytes);
+        SvgRenderLimits limits = new(8192, 32, 1024, 4096, maximumNodes, 128, 16, 32);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         if (admitted)
         {
             using (SvgRoot root = SvgRootParser.Parse(input, limits, budget, CancellationToken.None)) Assert.Single(root.Geometries);
@@ -78,12 +78,12 @@ public sealed class SvgSymbolLocationTests
     public void Symbol_discovery_denial_and_retry_preserve_later_font_requests(string content)
     {
         byte[] input = Input(content + "<use href='#s'/><text font-family='Example'>A</text>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal("Example", Assert.Single(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, CancellationToken.None)).Family);
         long peak = budget.Snapshot().PeakBytes;
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new(peak - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(peak - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();

@@ -27,7 +27,7 @@ public sealed class SvgShaderStrokePathTests
         byte[] input = Document(Definitions, MixedPath(paint));
         byte[] unchanged = input.ToArray();
         SvgRenderOptions options = new(null, 4, SvgColor.Transparent, SvgRenderLimits.Default);
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             byte[] expected;
@@ -53,7 +53,7 @@ public sealed class SvgShaderStrokePathTests
             Assert.Equal(expected, retry.Pixels);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget tight = new(Math.Max(1, budget.Snapshot().PeakBytes - 1_024));
+        RenderBudget tight = new RenderBudget(new HostMemoryBudget(Math.Max(1, budget.Snapshot().PeakBytes - 1_024)));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, CancellationToken.None);

@@ -152,6 +152,8 @@ and [the test guide](../tests/README.md) only for collection/admission changes.
 
 ## Smoke checks and CI evidence
 
+The memory probe supplies a host budget with `--memory-budget-bytes`; it does not
+configure a renderer-private cap. Owned output keeps its charge through the write.
 The memory smoke cancels synchronously when background initialization starts
 (`--cancel-after-background-start-ms 0`), so its phase assertion is independent
 of timer scheduling. Positive delays remain available for manual diagnostics;

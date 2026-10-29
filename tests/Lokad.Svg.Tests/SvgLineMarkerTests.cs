@@ -36,14 +36,14 @@ public sealed class SvgLineMarkerTests
         byte[] input = Document(false, consumer, "none", true, false, "end", true);
         byte[] original = input.ToArray();
         byte[] expected = Render(Document(true, consumer, "none", true, false, "end", false));
-        RenderBudget measured = new(2_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         for (long limit = 1; limit < measured.Snapshot().PeakBytes; limit += 512) DenyMemory(limit);
         DenyMemory(measured.Snapshot().PeakBytes - 1);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget canceled = new(2_000_000);
+        RenderBudget canceled = new RenderBudget(new HostMemoryBudget(2_000_000));
         Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() =>
             SvgRootParser.Parse(input, SvgRenderLimits.Default, canceled, null, cancellation.Token)).CancellationToken);
         Assert.Equal(0, canceled.Snapshot().CurrentBytes);
@@ -71,7 +71,7 @@ public sealed class SvgLineMarkerTests
 
         void DenyMemory(long limit)
         {
-            RenderBudget denied = new(limit + 73);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit + 73));
             using RenderBudget.BudgetReservation borrower = denied.Reserve(73, SvgMemoryCategory.Parser);
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
                 SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, CancellationToken.None)).ErrorCode);
@@ -89,7 +89,7 @@ public sealed class SvgLineMarkerTests
         string xml = System.Text.Encoding.UTF8.GetString(Document(false, "use", "none", true, false, "end", true));
         const string use = "<use href='#s'/>";
         xml = xml.Replace(use, string.Concat(Enumerable.Repeat(use, count)), StringComparison.Ordinal);
-        RenderBudget budget = new(10_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000_000));
         using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(xml), SvgRenderLimits.Default, budget, null, CancellationToken.None)) { }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

@@ -78,15 +78,15 @@ public sealed class SvgLineClipCoverageTests
     public void Denial_and_cancellation_release_clipped_line_storage_and_allow_retry()
     {
         byte[] input = Input("<svg x='8' y='8' width='16' height='16'><line x1='0' y1='-1' x2='16' y2='-1' stroke='red' stroke-width='4'/></svg>");
-        RenderBudget measured = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget cancelled = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget cancelled = new RenderBudget(new HostMemoryBudget(268_435_456L));
         Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, cancellation.Token)).CancellationToken);
         Assert.Equal(0, cancelled.Snapshot().CurrentBytes);
         Assert.Equal(Render("<rect x='8' y='8' width='16' height='1' fill='red'/>"), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());

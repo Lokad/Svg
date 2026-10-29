@@ -13,14 +13,14 @@ public sealed class SvgAffineArcTests
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path transform='" + transform + "' d='M32 20 A12 7 17 1 1 8 20 A12 7 17 1 1 32 20 Z'/></svg>");
         SvgRenderLimits defaults = SvgRenderLimits.Default;
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, defaults, measured, null, CancellationToken.None))
             Assert.NotEmpty(Assert.Single(root.Geometries.ToArray()).Polygon.QuadSpans);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         long peak = measured.Snapshot().PeakBytes;
         for (long limit = 1; limit < peak; limit += 256) DenyMemory(limit);
         DenyMemory(peak - 1);
-        RenderBudget retry = new(1_000_000);
+        RenderBudget retry = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, defaults, retry, null, CancellationToken.None))
         {
             SvgAuthoredPath source = Assert.Single(root.Geometries.ToArray()).AuthoredPath ?? throw new InvalidOperationException("Missing source arc commands.");
@@ -52,7 +52,7 @@ public sealed class SvgAffineArcTests
 
         void DenyMemory(long limit)
         {
-            RenderBudget denied = new(limit);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, defaults, denied, null, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }
@@ -70,7 +70,7 @@ public sealed class SvgAffineArcTests
     public void Empty_line_verbs_count_for_native_dispatch_without_duplicate_classification_vertices()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M1.5 1.5 L12.5 1.5 L12.5 1.5 L12.5 12.5 L1.5 12.5 Z'/></svg>"u8.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgAuthoredPath source = Assert.Single(root.Geometries.ToArray()).AuthoredPath ?? throw new InvalidOperationException();
@@ -86,7 +86,7 @@ public sealed class SvgAffineArcTests
     public void Mapped_zero_radius_arc_keeps_its_line_fallback_and_releases_storage()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><path transform='matrix(1 .3 .45 1 3 4)' d='M4 4 A0 3 17 1 1 14 4 L8 12 Z'/></svg>"u8.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgGeometry geometry = Assert.Single(root.Geometries.ToArray());

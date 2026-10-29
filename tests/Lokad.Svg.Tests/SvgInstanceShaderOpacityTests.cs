@@ -22,7 +22,7 @@ public sealed class SvgInstanceShaderOpacityTests
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "instance-shader-opacity", identity + ".svg"));
         // Shader source reconstruction and mapped tile scratch share the existing renderer budget.
-        RenderBudget measured = new(8_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None))
             {}
@@ -32,7 +32,7 @@ public sealed class SvgInstanceShaderOpacityTests
         DenyMemory(peak - 1);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget canceled = new(8_000_000);
+        RenderBudget canceled = new RenderBudget(new HostMemoryBudget(8_000_000));
         Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, canceled, null, cancellation.Token)).CancellationToken);
         Assert.Equal(0, canceled.Snapshot().CurrentBytes);
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, canceled, null, CancellationToken.None))
@@ -44,7 +44,7 @@ public sealed class SvgInstanceShaderOpacityTests
 
         void DenyMemory(long limit)
         {
-            RenderBudget budget = new(limit);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
             {
                 using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None);

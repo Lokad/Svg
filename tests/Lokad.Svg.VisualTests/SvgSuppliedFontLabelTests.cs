@@ -259,7 +259,7 @@ public sealed class SvgSuppliedFontLabelTests
         using SvgFontSnapshot snapshot = await Prepare(input);
         SvgPreparedFont font = Assert.Single(snapshot.Fonts);
         byte[] original = font.Bytes.ToArray();
-        var budget = new RenderBudget(200);
+        var budget = new RenderBudget(new HostMemoryBudget(200));
         using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, new(36, 8, 48, 30.672), 48, budget))
         {
             long retained = budget.Snapshot().CurrentBytes;
@@ -270,7 +270,7 @@ public sealed class SvgSuppliedFontLabelTests
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(original, font.Bytes.ToArray());
-        var retryBudget = new RenderBudget(long.MaxValue);
+        var retryBudget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         SvgGlyphRasterSource retry = SvgGlyphRasterSource.Create(font, new(36, 8, 48, 30.672), 48, retryBudget);
         long retryRetained = retryBudget.Snapshot().CurrentBytes;
         using (SvgAuthoredPath path = retry.CreateLatinLightPath(1, 0, 1, 0, retryBudget, CancellationToken.None)) Assert.True(path.Commands.Length > 0);

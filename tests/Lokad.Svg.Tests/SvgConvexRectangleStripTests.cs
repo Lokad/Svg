@@ -16,7 +16,7 @@ public sealed class SvgConvexRectangleStripTests
         // states or the original path with native mapping and clipped construction.
         SvgDevicePoint[] points = [new(457.6119857788086, 571.416015625), new(754.5080047607422, 400.01598358154297), new(457.6119857788086, 228.6132049560547)];
         SvgAnalyticContourPreparation preparation = new(points, [3], [], false, null, SvgPolygonMapping.QuarterEdges, [], [], new(457, 228, 755, 572), 1144, 800);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 457, 510, 254, 510, new(254, 510), new(new(254, 254, 510, 510)), paintClip, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
@@ -35,7 +35,7 @@ public sealed class SvgConvexRectangleStripTests
     {
         SvgDevicePoint[] points = [new(3.609375, 2.25), new(28.5, 2.25), new(28.5, 30.25), new(3.609375, 30.25)];
         SvgAnalyticContourPreparation preparation = new(points, [4], [], false, null, SvgPolygonMapping.QuarterEdges, [], [], new(3, 2, 29, 31), 32, 32);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 3, 29, 2, 31, new(0, 32), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);

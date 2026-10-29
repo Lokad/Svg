@@ -35,7 +35,7 @@ public sealed class SvgMarkerCanvasTests
     [Fact]
     public void Retained_path_metadata_allows_inverse_intermediates_until_complete_device_admission()
     {
-        RenderBudget budget = new(2_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><rect width='2' height='2' transform='matrix(1 0 .25 1 0 0)'/></svg>"u8.ToArray(),
             SvgRenderLimits.Default, budget, CancellationToken.None))
         {

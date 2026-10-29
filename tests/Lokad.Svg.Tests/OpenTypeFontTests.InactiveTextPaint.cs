@@ -219,12 +219,12 @@ public sealed partial class OpenTypeFontTests
     public void Inactive_text_paint_discovery_releases_budget_on_denial(string paint)
     {
         byte[] input = InactiveTextDocument("<defs>" + InactiveTextResource(paint, "class='hidden'") + "</defs><text x='1' y='14' " + (paint == "filter" ? "fill='blue' filter='url(#r)'" : "fill='url(#r)'") + ">A</text>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, CancellationToken.None));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         foreach (long limit in new long[] { 1, budget.Snapshot().PeakBytes - 1 })
         {
-            RenderBudget denied = new(limit);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }

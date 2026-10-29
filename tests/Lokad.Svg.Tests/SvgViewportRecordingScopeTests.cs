@@ -28,7 +28,7 @@ public sealed class SvgViewportRecordingScopeTests
         foreach (bool forward in new[] { false, true })
         {
             byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + (forward ? body + definitions : definitions + body) + "</svg>");
-            RenderBudget budget = new(2_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
             using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
             using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(null, scale, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
                 Assert.Equal(new byte[] { red, green, blue, alpha }, surface.Pixels.AsSpan((6 * surface.Width + 6) * 4, 4).ToArray());
@@ -44,7 +44,7 @@ public sealed class SvgViewportRecordingScopeTests
         const string definitions = "<defs><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs>";
         const string body = "<g opacity='.5'><svg width='32' height='32'><rect x='4' y='4' width='20' height='20' fill='url(#p)'/></svg></g>";
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + (forward ? body + definitions : definitions + body) + "</svg>");
-        RenderBudget scene = new(2_000_000), raster = new(2_000_000);
+        RenderBudget scene = new RenderBudget(new HostMemoryBudget(2_000_000)), raster = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (RenderBudget.BudgetReservation borrowed = scene.Reserve(73, SvgMemoryCategory.Scene))
         {
             using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, scene, CancellationToken.None))
@@ -52,7 +52,7 @@ public sealed class SvgViewportRecordingScopeTests
                 byte[] expected;
                 using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, raster, CancellationToken.None)) expected = surface.Pixels.ToArray();
                 Assert.Equal(0, raster.Snapshot().CurrentBytes);
-                RenderBudget denied = new(raster.Snapshot().PeakBytes - 1);
+                RenderBudget denied = new RenderBudget(new HostMemoryBudget(raster.Snapshot().PeakBytes - 1));
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, denied, CancellationToken.None)).ErrorCode);
                 Assert.Equal(0, denied.Snapshot().CurrentBytes);
                 using CancellationTokenSource cancellation = new();

@@ -9,7 +9,7 @@ public sealed class SvgAffinePaintReplayTests
     public void Patterns_share_native_content_across_ordinary_reflected_and_rotated_placement()
     {
         byte[] input = Document(Pattern + "<path d='M2 2H16V16H2Z' fill='url(#p)' transform='translate(35 0) scale(-1 1)'/><path d='M2 2H16V16H2Z' fill='url(#p)' transform='rotate(19 20 20)'/><path d='M2 2H16V16H2Z' fill='url(#p)'/>");
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             SvgPatternPolygon[] paints = scene.Geometries.Where(geometry => geometry.Kind == SvgGeometryKind.PatternPolygon).Select(geometry => geometry.PatternPolygon).ToArray();
@@ -33,7 +33,7 @@ public sealed class SvgAffinePaintReplayTests
             : Document("<defs><linearGradient id='p' gradientUnits='userSpaceOnUse' x2='40' gradientTransform='matrix(1 .2 .3 2 0 0)'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><path id='s' d='M2 3L20 1 22 20 3 22Z' fill='url(#p)'/></defs><use href='#s' transform='translate(4.25 2.375) rotate(19)'/>");
         byte[] unchanged = input.ToArray();
         SvgRenderOptions options = new(null, 8, SvgColor.Transparent, SvgRenderLimits.Default);
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             byte[] expected;
@@ -55,7 +55,7 @@ public sealed class SvgAffinePaintReplayTests
             Assert.Equal(expected, retry.Pixels);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget deniedMemory = new(Math.Max(1, budget.Snapshot().PeakBytes - 1_024));
+        RenderBudget deniedMemory = new RenderBudget(new HostMemoryBudget(Math.Max(1, budget.Snapshot().PeakBytes - 1_024)));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, deniedMemory, CancellationToken.None);

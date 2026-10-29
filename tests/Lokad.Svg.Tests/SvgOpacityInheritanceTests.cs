@@ -132,7 +132,7 @@ public sealed class SvgOpacityInheritanceTests
     public void Nested_viewport_layers_close_at_their_own_boundaries_and_restore_siblings()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='8'><svg width='8' height='8' opacity='.5'><g opacity='.5'><rect width='8' height='8' fill='red'/></g><svg width='4' height='4' opacity='.5'><rect width='4' height='4' fill='blue'/></svg></svg><rect x='8' width='8' height='8' fill='red'/><svg x='16' width='8' height='8' opacity='.5'><rect width='8' height='8' fill='red'/></svg></svg>"u8.ToArray();
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
         {

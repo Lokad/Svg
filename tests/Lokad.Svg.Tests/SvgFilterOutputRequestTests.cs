@@ -22,7 +22,7 @@ public sealed class SvgFilterOutputRequestTests
     public void Materialized_blur_retains_the_downstream_requested_subset(double dx, double dy,
         float left, float top, float right, float bottom, float imageLeft, float imageTop, float imageRight, float imageBottom)
     {
-        RenderBudget parser = new(1_000_000), scratch = new(1_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000)), scratch = new RenderBudget(new HostMemoryBudget(1_000_000));
         string x = dx.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
         string y = dy.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
         byte[] document = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs>"
@@ -65,7 +65,7 @@ public sealed class SvgFilterOutputRequestTests
     public void Pending_uniform_color_resolves_before_a_transform_crosses_its_input_crop(double dx, double dy,
         float left, float top, float right, float bottom, bool materialized)
     {
-        RenderBudget parser = new(1_000_000), scratch = new(1_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000)), scratch = new RenderBudget(new HostMemoryBudget(1_000_000));
         string x = dx.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
         string y = dy.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
         byte[] document = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs>"
@@ -109,7 +109,7 @@ public sealed class SvgFilterOutputRequestTests
     public void Composition_samples_a_pending_offset_while_a_draw_keeps_image_edge_coverage(byte alpha,
         double dx, double dy, int column, int row, byte sampledAlpha, byte drawCoverage)
     {
-        RenderBudget parser = new(1_000_000), scratch = new(1_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000)), scratch = new RenderBudget(new HostMemoryBudget(1_000_000));
         string x = dx.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
         string y = dy.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
         string offset = "<feOffset in='SourceAlpha' dx='" + x + "' dy='" + y + "' result='b'/>";

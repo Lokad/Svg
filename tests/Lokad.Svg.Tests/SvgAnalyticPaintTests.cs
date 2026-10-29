@@ -41,7 +41,7 @@ public sealed class SvgAnalyticPaintTests
         const int width = 4096;
         long preparedBytes = SvgAnalyticCoverage.ScratchByteCount(4, width, 0) + 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintLink>(width);
         long spanBufferBytes = 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintSpan>(16);
-        RenderBudget budget = new(preparedBytes + spanBufferBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(preparedBytes + spanBufferBytes));
         SvgDevicePoint[] points = [new(0, 0), new(width, 0), new(width, 4), new(0, 4)];
         using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [4], [], false, null, SvgPolygonMapping.QuarterEdges, [], [], 0, width, 0, 4, width, 4, budget, out bool eligible, CancellationToken.None))
         {
@@ -58,7 +58,7 @@ public sealed class SvgAnalyticPaintTests
     [Fact]
     public void Cancellation_before_span_growth_preserves_token_and_releases_owners()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using CancellationTokenSource source = new();
         using IDisposable probe = SvgAnalyticPaintProbe.Arm((phase, _) =>
         {
@@ -74,7 +74,7 @@ public sealed class SvgAnalyticPaintTests
     {
         long preparedBytes = SvgAnalyticCoverage.ScratchByteCount(4, 64, 0) + 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintLink>(64);
         long spanBufferBytes = 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintSpan>(16);
-        RenderBudget budget = new(preparedBytes + spanBufferBytes - 1);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(preparedBytes + spanBufferBytes - 1));
         int growthCalls = 0;
         using IDisposable probe = SvgAnalyticPaintProbe.Arm((phase, _) =>
         {
@@ -93,7 +93,7 @@ public sealed class SvgAnalyticPaintTests
         long preparedBytes = SvgAnalyticCoverage.ScratchByteCount(4, 64, 0) + 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintLink>(64);
         long firstBuffer = 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintOperation>(16);
         long replacementBuffer = 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintOperation>(32);
-        RenderBudget budget = new(preparedBytes + firstBuffer + replacementBuffer - 1);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(preparedBytes + firstBuffer + replacementBuffer - 1));
         int deniedGrowthCount = -1;
         using IDisposable probe = SvgAnalyticPaintProbe.Arm((phase, count) =>
         {
@@ -109,7 +109,7 @@ public sealed class SvgAnalyticPaintTests
     [Fact]
     public void Cancellation_during_operation_growth_preserves_token_and_releases_owners()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using CancellationTokenSource source = new();
         int lastGrowth = -1;
         using IDisposable probe = SvgAnalyticPaintProbe.Arm((phase, count) =>
@@ -136,7 +136,7 @@ public sealed class SvgAnalyticPaintTests
             source.Cancel();
         });
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='64' height='4'><polygon points='0,0 64,0 0,4' fill='#003478'/></svg>"u8.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgRoot root = SvgRootParser.Parse(svg, SvgRenderLimits.Default, budget, null, CancellationToken.None);
         long preparedBytes = budget.Snapshot().CurrentBytes;
         OperationCanceledException exception = Assert.Throws<OperationCanceledException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, source.Token));

@@ -21,7 +21,7 @@ internal static class SvgFontRequestDiscovery
     internal static SvgFontFaceRequest[] Discover(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(limits);
-        RenderBudget budget = new(limits.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget();
         return Discover(svg, limits, budget, cancellationToken);
     }
 
@@ -39,7 +39,7 @@ internal static class SvgFontRequestDiscovery
     /// <summary>Shares request discovery and whitespace normalization while retaining bounded scalar needs for selective acquisition.</summary>
     internal static SvgFontCoverageDiscovery DiscoverWithCoverage(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, CancellationToken cancellationToken)
     {
-        RenderBudget budget = new(limits.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget();
         using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, limits, budget, cancellationToken);
         return DiscoverWithCoverage(svg, limits, budget, preparation, cancellationToken);
     }
@@ -472,18 +472,29 @@ internal static class SvgFontRequestDiscovery
                 if (!filterIds.TryGetValue(reference.Id, out _))
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "A text filter requires a defined local filter.");
             }
-            var result = new SvgFontFaceRequest[requestKeys.Count];
-            for (int index = 0; index < result.Length; index++)
+            if (preparation.FontRequests is {} cached) return cached;
+            if (requestKeys.Count == 0) return Array.Empty<SvgFontFaceRequest>();
+            RenderBudget.BudgetReservation requestStorage = budget.Reserve(checked(32L + (long)IntPtr.Size * requestKeys.Count), SvgMemoryCategory.Resource);
+            try
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                TextRequestKey key = requestKeys[index];
-                if (key.Family is not string family)
+                var result = new SvgFontFaceRequest[requestKeys.Count];
+                for (int index = 0; index < result.Length; index++)
                 {
-                    throw new SvgException(SvgErrorCode.MalformedInput, "The discovered font request is missing its family.");
+                    cancellationToken.ThrowIfCancellationRequested();
+                    TextRequestKey key = requestKeys[index];
+                    if (key.Family is not string family)
+                    {
+                        throw new SvgException(SvgErrorCode.MalformedInput, "The discovered font request is missing its family.");
+                    }
+                    // One coarse request owner covers the canonical text, decoded names,
+                    // candidate references and bounded wrappers created by family parsing.
+                    requestStorage.Grow(checked(512L + 8L * family.Length + 64L * Math.Min(family.Length, SvgFontFamilySyntax.MaximumFamilies)));
+                    result[index] = SvgFontFaceRequest.FromCss(family, key.Weight, key.Italic, key.SourceContext, cancellationToken);
                 }
-                result[index] = SvgFontFaceRequest.FromCss(family, key.Weight, key.Italic, key.SourceContext, cancellationToken);
+                preparation.RetainFontRequests(result, requestStorage);
+                return result;
             }
-            return result;
+            catch { requestStorage.Dispose(); throw; }
 
             static SvgInheritedContainer SourceContext(TextStyle style)
                 => new(new(style.Paint, style.IsDisplayed, style.IsVisible, SvgAffineTransform.Identity)

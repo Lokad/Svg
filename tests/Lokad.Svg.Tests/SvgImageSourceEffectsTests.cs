@@ -64,13 +64,13 @@ public sealed class SvgImageSourceEffectsTests
     {
         string image = Image(true, "opacity='.5' clip-path='url(#c)' mask='url(#m)' filter='url(#f)'");
         byte[] input = Input(Resources + "<defs>" + image + " id='s'/></defs><svg width='16' height='16'><use href='#s'/></svg>");
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        RenderBudget workDenied = new(1_000_000);
+        RenderBudget workDenied = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new(); cancellation.Cancel();
         Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, workDenied, cancellation.Token)).CancellationToken);

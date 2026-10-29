@@ -33,7 +33,7 @@ public sealed class SvgObjectBoundingClipTests
         string explicitClip = "<defs><clipPath id='c'><circle cx='16' cy='16' r='9.6'/></clipPath></defs>";
         string placed = lines.Replace("<g stroke=", "<g transform='translate(.125 0)' stroke=", StringComparison.Ordinal);
         Assert.Equal(Render(explicitClip + placed), Render(placed + normalized));
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgRoot root = SvgRootParser.Parse(Input(lines + normalized), SvgRenderLimits.Default, budget, CancellationToken.None);
         SvgSceneStorage storage = root.SceneStorage ?? throw new InvalidOperationException("Missing scene storage.");
         SvgAuthoredPath oval = Assert.Single(storage.MaskContents.SelectMany(mask => mask.Geometries).Select(geometry => geometry.AuthoredPath).OfType<SvgAuthoredPath>());
@@ -67,7 +67,7 @@ public sealed class SvgObjectBoundingClipTests
     public void Referencing_maps_preserve_local_bounds_or_reject_singular_maps_and_release_sources(string transform)
     {
         byte[] input = Input("<defs><clipPath id='c' clipPathUnits='objectBoundingBox'><circle cx='.5' cy='.5' r='.4'/></clipPath></defs><g transform='" + transform + "' clip-path='url(#c)'><rect width='24' height='24'/></g>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         if (transform == "scale(0 1)")
             Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None)).ErrorCode);
         else
@@ -89,10 +89,10 @@ public sealed class SvgObjectBoundingClipTests
     public void Group_replay_and_bounds_observe_limits_and_release_on_denial(string clip)
     {
         byte[] input = Input("<use href='#source' x='1.25' clip-path='url(#c)'/><defs><clipPath id='c' clipPathUnits='objectBoundingBox'>" + clip + "</clipPath><g id='source' stroke='red' stroke-width='6'><line x1='16' y1='4' x2='16' y2='28'/><line x1='4' y1='16' x2='28' y2='16'/></g></defs>");
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) Assert.NotEmpty(root.Geometries.ToArray());
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget tight = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget tight = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
@@ -119,7 +119,7 @@ public sealed class SvgObjectBoundingClipTests
     [InlineData("<g id='source'/><g id='source'/>")]
     public void Duplicate_dormant_group_ids_reject_and_release(string definitions)
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         byte[] input = Input("<defs>" + definitions + "</defs>");
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

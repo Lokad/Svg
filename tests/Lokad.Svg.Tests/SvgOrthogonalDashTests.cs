@@ -32,7 +32,7 @@ public sealed class SvgOrthogonalDashTests
     [Fact]
     public void Coincident_orthogonal_edges_preserve_the_native_one_byte_fringe()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgAnalyticCoverage walker = Prepare(budget, false, out bool eligible);
             Assert.True(eligible);
@@ -48,7 +48,7 @@ public sealed class SvgOrthogonalDashTests
     public void Orthogonal_classification_is_cached_across_raster_contexts()
     {
         SvgAnalyticContourPreparation preparation = new(Points(), [4, 8, 12], [], false, [1, 1, 1], SvgPolygonMapping.FiniteEdges, [], [], new(4, 2, 55, 10), 64, 16);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgAnalyticCoverage first = SvgAnalyticCoverage.Prepare(ref preparation, 4, 55, 2, 10, new(4, 55), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None))
             Assert.True(eligible);
         Assert.True(preparation.OrthogonalUnion);
@@ -62,7 +62,7 @@ public sealed class SvgOrthogonalDashTests
     [Fact]
     public void Coincident_evenodd_contours_keep_their_existing_fallback()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgAnalyticCoverage walker = Prepare(budget, true, out bool eligible);
         Assert.False(eligible);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -93,7 +93,7 @@ public sealed class SvgOrthogonalDashTests
     [Fact]
     public void Memory_denial_releases_newly_admitted_walker_storage()
     {
-        RenderBudget budget = new(1);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1));
         SvgException exception = Assert.Throws<SvgException>(() =>
         {
             using SvgAnalyticCoverage walker = Prepare(budget, false, out bool _);
@@ -106,7 +106,7 @@ public sealed class SvgOrthogonalDashTests
     [Fact]
     public void Cancellation_after_preparation_releases_newly_admitted_walker_storage()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using CancellationTokenSource source = new();
         {
             using SvgAnalyticCoverage walker = Prepare(budget, false, out bool eligible);

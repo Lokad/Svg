@@ -34,7 +34,7 @@ public sealed class SvgCssGeometryDimensionTests
         Assert.Equal("12px", source.AttributeValue);
         Assert.Equal(2, source.LineNumber);
 
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

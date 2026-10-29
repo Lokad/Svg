@@ -16,7 +16,7 @@ public sealed class SvgPaintOrderTests
     public void Invalid_order_has_an_explicit_outcome_and_releases_owners(string attributes)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48'><circle cx='24' cy='24' r='14' " + attributes + "/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -31,7 +31,7 @@ public sealed class SvgPaintOrderTests
     {
         string definition = "<pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse' " + attributes + (empty ? "/>" : "><rect width='4' height='8'/></pattern>");
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48'><defs>" + definition + "</defs><rect width='48' height='48' fill='url(#p)'/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(expected, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -44,7 +44,7 @@ public sealed class SvgPaintOrderTests
         byte[] input = identity == "pattern-circle"
             ? System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48'><defs><pattern id='p' width='48' height='48' patternUnits='userSpaceOnUse' paint-order='stroke'><circle cx='24' cy='24' r='14' fill='#39c' stroke='#c43' stroke-width='8'/></pattern></defs><rect width='48' height='48' fill='url(#p)'/></svg>")
             : File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "paint-order", identity + ".svg"));
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             byte[] expected;

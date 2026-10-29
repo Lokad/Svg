@@ -16,7 +16,7 @@ public sealed class SvgResourceUseReplayTests
     public void Rejected_resource_references_release_partial_owners(string resource, SvgErrorCode code)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><defs><path id='s' d='M2 3L20 1 22 20 3 22Z'/>" + resource + "</defs><rect width='24' height='24'/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(code, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -25,7 +25,7 @@ public sealed class SvgResourceUseReplayTests
     public void Anonymous_resource_references_remain_unused_and_release_retained_attributes()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><defs><path id='s' d='M2 3L20 1 22 20 3 22Z'/><mask><use href='#s'/></mask><clipPath><use href='#s'/></clipPath></defs><rect width='24' height='24'/></svg>"u8.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)) Assert.Single(root.Geometries);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -36,7 +36,7 @@ public sealed class SvgResourceUseReplayTests
     public void General_linear_paint_combinations_preserve_admission_and_cleanup(string target, string message)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><defs><linearGradient id='p' gradientUnits='userSpaceOnUse' x2='24' gradientTransform='matrix(1 .2 .3 2 0 0)'><stop/><stop offset='1' stop-color='white'/></linearGradient></defs>" + target + "</svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         if (message == "placed geometry references")
         {
             using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))

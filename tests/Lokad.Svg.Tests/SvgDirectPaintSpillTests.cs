@@ -11,7 +11,7 @@ public sealed class SvgDirectPaintSpillTests
     [Fact]
     public void Direct_fringe_paints_beyond_path_storage_without_expanding_coverage_rows()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgRoot root = SvgRootParser.Parse(Source, SvgRenderLimits.Default, CancellationToken.None);
         SvgPolygonFill polygon = Assert.Single(root.Geometries).Polygon;
         using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans,
@@ -34,7 +34,7 @@ public sealed class SvgDirectPaintSpillTests
     [InlineData(true)]
     public void Cancellation_at_link_growth_or_subsequent_replay_releases_all_owners(bool afterGrowth)
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using CancellationTokenSource cancellation = new();
         bool observedGrowth = false;
         using IDisposable probe = SvgAnalyticPaintProbe.Arm((phase, _) =>
@@ -59,7 +59,7 @@ public sealed class SvgDirectPaintSpillTests
     [Fact]
     public void Link_growth_reserves_old_and_replacement_storage_together()
     {
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         long liveAtGrowth = 0;
         using (SvgAnalyticPaintProbe.Arm((phase, _) =>
         {
@@ -68,7 +68,7 @@ public sealed class SvgDirectPaintSpillTests
         Assert.True(liveAtGrowth > 0);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         long replacementBytes = 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintLink>(85);
-        RenderBudget denied = new(liveAtGrowth + replacementBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(liveAtGrowth + replacementBytes - 1));
         int growthCalls = 0;
         using IDisposable probe = SvgAnalyticPaintProbe.Arm((phase, _) =>
         {

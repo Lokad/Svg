@@ -30,7 +30,7 @@ public sealed class SvgPaintFillStrokeOwnershipTests
             </defs>
             <path d='M6,25 Q21,3 36,25 Z'
             """ + " fill='" + fill + "' stroke='" + stroke + "' stroke-width='2'/></svg>");
-        RenderBudget success = new(1_000_000);
+        RenderBudget success = new RenderBudget(new HostMemoryBudget(1_000_000));
         long parserWork;
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, success, null, CancellationToken.None))
         {
@@ -40,7 +40,7 @@ public sealed class SvgPaintFillStrokeOwnershipTests
         Assert.Equal(0, success.Snapshot().CurrentBytes);
         for (long limit = 0; limit < parserWork; limit++)
         {
-            RenderBudget denied = new(1_000_000);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(1_000_000));
             SvgException error = Assert.Throws<SvgException>(() =>
             {
                 using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, CancellationToken.None);

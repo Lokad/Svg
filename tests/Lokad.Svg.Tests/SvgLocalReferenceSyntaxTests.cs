@@ -13,7 +13,7 @@ public sealed class SvgLocalReferenceSyntaxTests
     public void Local_offsets_retain_finite_native_length_scalars(string value, double expected)
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<use href='#tile' x='" + value + "px'/>"));
-        using BudgetedParserStringStore strings = new(new RenderBudget(1_000));
+        using BudgetedParserStringStore strings = new(new RenderBudget(new HostMemoryBudget(1_000)));
         Assert.True(reader.Read());
         SvgLocalReferenceSyntax syntax = Assert.IsType<SvgLocalReferenceSyntax>(SvgLocalReferenceSyntax.Parse(reader, strings, null, null, CancellationToken.None));
         Assert.Equal(expected, syntax.X);
@@ -24,7 +24,7 @@ public sealed class SvgLocalReferenceSyntaxTests
     public void Parses_and_retains_bounded_local_use_syntax_before_style_resolution()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<use href='#tile' x='2.25' y='3' transform='translate(4, 5)'/>"));
-        using BudgetedParserStringStore strings = new(new RenderBudget(1_000));
+        using BudgetedParserStringStore strings = new(new RenderBudget(new HostMemoryBudget(1_000)));
         Assert.True(reader.Read());
 
         SvgLocalReferenceSyntax syntax = Assert.IsType<SvgLocalReferenceSyntax>(SvgLocalReferenceSyntax.Parse(reader, strings, null, null, CancellationToken.None));
@@ -40,7 +40,7 @@ public sealed class SvgLocalReferenceSyntaxTests
     public void Validates_local_use_coordinates_before_retaining_the_identifier()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<use href='#tile' x='not-a-coordinate'/>"));
-        RenderBudget budget = new(1_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000));
         using BudgetedParserStringStore strings = new(budget);
         Assert.True(reader.Read());
 
@@ -54,7 +54,7 @@ public sealed class SvgLocalReferenceSyntaxTests
     public void Resolves_legacy_xlink_href_use_references()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<use xmlns:xlink='http://www.w3.org/1999/xlink' xlink:href='#tile' x='2'/>"));
-        using BudgetedParserStringStore strings = new(new RenderBudget(1_000));
+        using BudgetedParserStringStore strings = new(new RenderBudget(new HostMemoryBudget(1_000)));
         Assert.True(reader.Read());
 
         SvgLocalReferenceSyntax syntax = Assert.IsType<SvgLocalReferenceSyntax>(SvgLocalReferenceSyntax.Parse(reader, strings, null, null, CancellationToken.None));

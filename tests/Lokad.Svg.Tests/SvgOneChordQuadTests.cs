@@ -22,7 +22,7 @@ public sealed class SvgOneChordQuadTests
         foreach (SvgQuadSpan span in polygon.QuadSpans) Assert.Equal(1, span.EndIndex - span.StartIndex);
         int[] votes = Enumerable.Repeat(1, polygon.ContourEnds.Length).ToArray();
         SvgAnalyticContourPreparation preparation = new(polygon.Points, polygon.ContourEnds, votes, evenOdd, null, SvgPolygonMapping.NativeFillEdges, polygon.QuadSpans, [], new(x, 8, pair ? 45 : 9, 31), 72, 48);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 72, 8, 31, new(0, 72), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
@@ -40,7 +40,7 @@ public sealed class SvgOneChordQuadTests
     {
         SvgDevicePoint[] points = [new(4.125, 8.125), new(5.725, 8.555), new(5.725, 24.125), new(8.125, 24.125), new(8.125, 30.125), new(4.125, 30.125)];
         SvgAnalyticContourPreparation preparation = new(points, [6], [], false, null, SvgPolygonMapping.NativeFillEdges, [new(0, 0, 1, new(5.015, 8.295))], [], new(4, 8, 9, 31), 72, 48);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         long bytes;
         {
             using SvgAnalyticCoverage warm = SvgAnalyticCoverage.Prepare(ref preparation, 0, 72, 8, 31, new(0, 72), null, SvgAnalyticPaintClip.Antialiased, budget, out bool eligible, CancellationToken.None);
@@ -52,7 +52,7 @@ public sealed class SvgOneChordQuadTests
             bytes = budget.Snapshot().CurrentBytes;
         }
         Assert.True(bytes > 0);
-        RenderBudget denied = new(bytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(bytes - 1));
         try
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 72, 8, 31, new(0, 72), null, SvgAnalyticPaintClip.Antialiased, denied, out bool _, CancellationToken.None);

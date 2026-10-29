@@ -47,7 +47,7 @@ public sealed class SvgTransformListTests
     {
         foreach (string target in new[] { "shape", "linear", "radial", "pattern" })
         {
-            RenderBudget budget = new(1_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(Input(target, transform), SvgRenderLimits.Default, budget, CancellationToken.None));
             Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -71,9 +71,9 @@ public sealed class SvgTransformListTests
         foreach (string target in new[] { "shape", "linear", "radial", "pattern" })
         {
             byte[] input = Input(target, "translate(2 2),scale(.8 .9)");
-            RenderBudget budget = new(1_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
-            RenderBudget denied = new(1);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(1));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();

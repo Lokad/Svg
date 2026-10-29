@@ -27,7 +27,7 @@ public sealed class SvgAffineImageClipTests
     public void Symbol_images_keep_native_run_coverage_at_both_fringe_extremes(byte alpha, string opacity, byte expected, bool uniform, string map, bool forward)
     {
         byte[] input = Document(Image(alpha, uniform), map, "symbol", opacity, forward);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
         using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None);
         (int x, int y, int oppositeX, int oppositeY) = map switch
@@ -55,7 +55,7 @@ public sealed class SvgAffineImageClipTests
     public void Other_native_image_routes_retain_their_independent_small_coverage(string consumer, string map, int x, int y, byte expected)
     {
         byte[] input = Document(Image(255, true), map, consumer, "1", false);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
         using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None);
         Assert.Equal(expected, surface.Pixels[(y * 32 + x) * 4 + 3]);
@@ -71,7 +71,7 @@ public sealed class SvgAffineImageClipTests
     {
         byte[] input = Document(Image(191, uniform), "rotate(15 16 16)", consumer, ".75", true);
         byte[] unchanged = input.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
             using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
@@ -89,11 +89,11 @@ public sealed class SvgAffineImageClipTests
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget deniedMemory = new(1_000_000);
+        RenderBudget deniedMemory = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (RenderBudget.BudgetReservation borrowed = deniedMemory.Reserve(73, SvgMemoryCategory.Scene))
         {
             using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, deniedMemory, CancellationToken.None))
-            using (RenderBudget.BudgetReservation pressure = deniedMemory.Reserve(deniedMemory.AvailableBytes - 32 * 32 * 4, SvgMemoryCategory.Surface))
+            using (RenderBudget.BudgetReservation pressure = deniedMemory.Reserve((1_000_000L - deniedMemory.Snapshot().CurrentBytes) - 32 * 32 * 4, SvgMemoryCategory.Surface))
             {
                 // Leave room for the output, denying subsequent coverage scratch.
                 long retained = deniedMemory.Snapshot().CurrentBytes;

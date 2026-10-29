@@ -12,7 +12,7 @@ public sealed class SvgPolygonFillTests
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
         int[] ends = [3];
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.QuarterEdges, null, null, budget);
 
         SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
@@ -1495,7 +1495,7 @@ public sealed class SvgPolygonFillTests
     [Fact]
     public void Split_vertical_edge_walks_like_unsplit_edge()
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         SvgDevicePoint[] split = [new(0, 0), new(0, 4), new(0, 8), new(8, 0)];
         SvgDevicePoint[] whole = [new(0, 0), new(0, 8), new(8, 0)];
         using (SvgAnalyticCoverage splitWalker = SvgAnalyticCoverage.Prepare(split, [4], [], false, null, SvgPolygonMapping.QuarterEdges, 0, 16, 0, 16, 16, 16, budget, out bool splitEligible, CancellationToken.None))
@@ -1619,7 +1619,7 @@ public sealed class SvgPolygonFillTests
         SvgGeometry geometry = Assert.Single(root.Geometries);
         SvgAuthoredPath authored = Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath);
         using SvgPreparedPathContours mapped = authored.Prepare(SvgAffineTransform.Identity, false,
-            new(SvgRenderLimits.Default.MaximumAccountedBytes), CancellationToken.None);
+            new RenderBudget(new HostMemoryBudget(268_435_456L)), CancellationToken.None);
         Assert.Equal(2, mapped.ContourEnds.Length);
         Assert.NotEmpty(mapped.QuadSpans);
         Assert.True(SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).Length > 0);

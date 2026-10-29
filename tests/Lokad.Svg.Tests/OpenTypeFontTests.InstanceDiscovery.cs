@@ -85,9 +85,9 @@ public sealed partial class OpenTypeFontTests
     public void Instance_font_graph_releases_storage_after_material_denial_and_retry()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><use href='#label'/><defs><g id='label' font-family='Example'><text>" + new string('A', 8192) + "<tspan dx='3'>A</tspan></text></g></defs></svg>");
-        RenderBudget accepted = new(8_000_000);         Assert.Single(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, accepted, CancellationToken.None));
+        RenderBudget accepted = new RenderBudget(new HostMemoryBudget(8_000_000));         Assert.Single(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, accepted, CancellationToken.None));
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-        RenderBudget denied = new(accepted.Snapshot().PeakBytes * 3 / 4);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(accepted.Snapshot().PeakBytes * 3 / 4));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);

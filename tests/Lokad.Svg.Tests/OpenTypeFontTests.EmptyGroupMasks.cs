@@ -91,13 +91,13 @@ public sealed partial class OpenTypeFontTests
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + string.Concat(Enumerable.Repeat("<g mask='url(#m)'/>", 256)) + "<defs><mask id='m'><g><text font-family='Unavailable'>A</text></g></mask></defs></svg>");
         byte[] unchanged = input.ToArray();
-        RenderBudget budget = new(4_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(4_000_000));
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
             using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
                 Assert.Empty(scene.Geometries);
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
-            RenderBudget tight = new(budget.Snapshot().PeakBytes - 74);
+            RenderBudget tight = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes - 74));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, null, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, tight.Snapshot().CurrentBytes);
             Assert.Equal(73, budget.Snapshot().CurrentBytes);

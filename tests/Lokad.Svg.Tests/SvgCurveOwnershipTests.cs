@@ -49,7 +49,7 @@ public sealed class SvgCurveOwnershipTests
     {
         Assert.NotEmpty(identity);
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
-        RenderBudget measured = new(10_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(10_000_000));
         Assert.Equal(rejected ? SvgErrorCode.UnsupportedFeature : null, Parse(measured));
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         long peak = measured.Snapshot().PeakBytes;
@@ -57,7 +57,7 @@ public sealed class SvgCurveOwnershipTests
         for (long limit = 2048; limit < peak; limit += 2048) memoryLimits.Add(limit);
         foreach (long limit in memoryLimits)
         {
-            RenderBudget budget = new(limit);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(limit < peak ? SvgErrorCode.LimitExceeded : rejected ? SvgErrorCode.UnsupportedFeature : null, Parse(budget));
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }

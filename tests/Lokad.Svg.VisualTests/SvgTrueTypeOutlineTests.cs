@@ -29,7 +29,7 @@ public sealed class SvgTrueTypeOutlineTests
         byte[] bytes = Font();
         byte[] original = bytes.ToArray();
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetTrueTypeContours(bytes, item.GetProperty("glyphIndex").GetUInt16(), metrics, item.GetProperty("deviceSize").GetDouble(), Target with { Version = interpreterVersion }, budget, CancellationToken.None))
         {
             Assert.Equal(item.GetProperty("contourEnds").EnumerateArray().Select(end => end.GetInt32()), contours.ContourEnds);
@@ -55,7 +55,7 @@ public sealed class SvgTrueTypeOutlineTests
     {
         byte[] bytes = Font(); byte[] original = bytes.ToArray();
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
-        var budget = new RenderBudget(maximumBytes);
+        var budget = new RenderBudget(new HostMemoryBudget(maximumBytes));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => OpenTypeFont.GetTrueTypeContours(bytes, 36, metrics, 48, Target, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(original, bytes);
@@ -71,7 +71,7 @@ public sealed class SvgTrueTypeOutlineTests
     {
         byte[] bytes = Font();
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => OpenTypeFont.GetTrueTypeContours(bytes, 36, metrics, size, Target, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().PeakBytes);
     }
@@ -83,7 +83,7 @@ public sealed class SvgTrueTypeOutlineTests
         int head = checked((int)BinaryPrimitives.ReadUInt32BigEndian(bytes.AsSpan(TableEntry(bytes, 0x68656164) + 8)));
         BinaryPrimitives.WriteUInt16BigEndian(bytes.AsSpan(head + 18), 16);
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => OpenTypeFont.GetTrueTypeContours(bytes, 36, metrics, 32767, Target, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().PeakBytes);
     }
@@ -94,7 +94,7 @@ public sealed class SvgTrueTypeOutlineTests
         byte[] bytes = Font();
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
         using var cancellation = new CancellationTokenSource(); cancellation.Cancel();
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         Assert.ThrowsAny<OperationCanceledException>(() => OpenTypeFont.GetTrueTypeContours(bytes, 36, metrics, 48, Target, budget, cancellation.Token));
         Assert.Equal(0, budget.Snapshot().PeakBytes);
     }
@@ -122,7 +122,7 @@ public sealed class SvgTrueTypeOutlineTests
             case 5: ExtendTable(0x63767420, 8194); break;
             case 6: ExtendTable(0x6670676D, 65536); break;
         }
-        byte[] original = bytes.ToArray(); var budget = new RenderBudget(long.MaxValue);
+        byte[] original = bytes.ToArray(); var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         Assert.Equal(expected, Assert.Throws<SvgException>(() => OpenTypeFont.GetTrueTypeContours(bytes, 36, metrics, 48, Target, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(original, bytes);
@@ -153,7 +153,7 @@ public sealed class SvgTrueTypeOutlineTests
             instructions[0] = 0xB0; instructions[1] = checked((byte)(structure.ContourEndpoints[^1] + 3)); instructions[2] = 0x46;
         }
         else instructions[0] = instructionKind == 0 ? (byte)0x0A : (byte)0x89;
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         Assert.Equal(expected, Assert.Throws<SvgException>(() => OpenTypeFont.GetTrueTypeContours(bytes, 36, metrics, 48, Target, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -164,14 +164,14 @@ public sealed class SvgTrueTypeOutlineTests
         byte[] bytes = Font();
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
         ushort glyph = OpenTypeFont.GetGlyphIndex(bytes, 'é', metrics, CancellationToken.None);
-        RenderBudget baseline = new(long.MaxValue);
+        RenderBudget baseline = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         OpenTypeQuadraticSegment[] expected;
         using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetTrueTypeContours(bytes, glyph, metrics, 28, Target, baseline, CancellationToken.None)) expected = contours.Segments.ToArray();
         Assert.Equal(0, baseline.Snapshot().CurrentBytes);
         OpenTypeTableRange range = OpenTypeFont.GetGlyphDataRange(bytes, glyph, CancellationToken.None);
         ushort flags = BinaryPrimitives.ReadUInt16BigEndian(bytes.AsSpan(range.Offset + 10));
         BinaryPrimitives.WriteUInt16BigEndian(bytes.AsSpan(range.Offset + 10), (ushort)(flags | 2048));
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         byte[] unchanged = bytes.ToArray();
         using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetTrueTypeContours(bytes, glyph, metrics, 28, Target, budget, CancellationToken.None)) Assert.Equal(expected, contours.Segments);
         Assert.Equal(unchanged, bytes);

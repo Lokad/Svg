@@ -51,9 +51,9 @@ public sealed class SvgPointListAdmissionTests
     public void Repeated_vertices_still_consume_authored_limits_and_release_storage()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><polygon points='" + string.Join(' ', Enumerable.Repeat("1 1", 100)) + "'/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         SvgRenderLimits defaults = SvgRenderLimits.Default;
-        SvgRenderLimits limits = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
+        SvgRenderLimits limits = new(defaults.MaximumInputBytes, defaults.MaximumDimension,
             defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, 4, defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

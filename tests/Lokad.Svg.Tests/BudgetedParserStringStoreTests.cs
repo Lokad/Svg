@@ -9,7 +9,7 @@ public sealed class BudgetedParserStringStoreTests
     [Fact]
     public void Existing_immutable_strings_are_retained_once_by_reference_identity()
     {
-        RenderBudget budget = new(4_096);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(4_096));
         using BudgetedParserStringStore strings = new(budget);
         string value = new('a', 32), equal = new('a', 32);
         Assert.Same(value, strings.Copy(value));
@@ -24,7 +24,7 @@ public sealed class BudgetedParserStringStoreTests
     [Fact]
     public void Span_sources_are_copied_and_the_result_is_already_retained()
     {
-        RenderBudget budget = new(4_096);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(4_096));
         using BudgetedParserStringStore strings = new(budget);
         char[] source = "from-buffer".ToCharArray();
         string copy = strings.Copy(source.AsSpan());
@@ -38,7 +38,7 @@ public sealed class BudgetedParserStringStoreTests
     [Fact]
     public void Retained_reader_values_survive_reader_disposal()
     {
-        using BudgetedParserStringStore strings = new(new(4_096));
+        using BudgetedParserStringStore strings = new(new RenderBudget(new HostMemoryBudget(4_096)));
         string value;
         using (XmlReader reader = XmlReader.Create(new StringReader("<rect id='source-value'/>")))
         {
@@ -54,7 +54,7 @@ public sealed class BudgetedParserStringStoreTests
     [Fact]
     public void Aggregate_growth_denial_preserves_existing_strings_and_disposal_releases_storage()
     {
-        RenderBudget budget = new(512);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(512));
         BudgetedParserStringStore strings = new(budget);
         string value = strings.Copy("small");
         long retained = budget.Snapshot().CurrentBytes;
@@ -70,7 +70,7 @@ public sealed class BudgetedParserStringStoreTests
     [Fact]
     public void Growing_a_reservation_enforces_the_shared_bound_and_releases_the_entire_owner()
     {
-        RenderBudget budget = new(300);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(300));
         RenderBudget.BudgetReservation owner = budget.Reserve(100, SvgMemoryCategory.Parser);
         owner.Grow(200);
         Assert.Equal(300, budget.Snapshot().CurrentBytes);

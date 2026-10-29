@@ -70,7 +70,7 @@ public class SvgTextBenchmarks
     [GlobalSetup(Target = nameof(ConvertFallbackLabel))]
     public void VerifyFallbackRoute()
     {
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget();
         using SvgRoot root = SvgRootParser.Parse(_fallbackSvg, SvgRenderLimits.Default, budget, _state.Snapshot, CancellationToken.None);
         SvgGeometry geometry = root.Geometries.Single();
         SvgGlyphRasterSource source = geometry.Glyph.Source ?? throw new InvalidOperationException("Expected a supplied-font glyph source.");
@@ -96,7 +96,7 @@ public class SvgTextBenchmarks
     [Benchmark]
     public int LowerStyledText()
     {
-        using SvgRoot root = SvgRootParser.Parse(_state.Svg, SvgRenderLimits.Default, new RenderBudget(1_048_576), _state.Snapshot, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse(_state.Svg, SvgRenderLimits.Default, new RenderBudget(), _state.Snapshot, CancellationToken.None);
         return root.Geometries.Length;
     }
 
@@ -110,21 +110,21 @@ public class SvgTextBenchmarks
     [Benchmark]
     public int DecodeGlyphContours()
     {
-        using OpenTypeGlyphContourStorage decoded = OpenTypeFont.GetGlyphContours(_state.Font.Bytes, _state.Glyph.GlyphIndex, _state.Font.Metrics, new RenderBudget(long.MaxValue), CancellationToken.None);
+        using OpenTypeGlyphContourStorage decoded = OpenTypeFont.GetGlyphContours(_state.Font.Bytes, _state.Glyph.GlyphIndex, _state.Font.Metrics, new RenderBudget(), CancellationToken.None);
         return decoded.Segments.Length;
     }
 
     [Benchmark]
     public int TransformAndCopyContours()
     {
-        using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(_state.Font, _state.Glyph, 16, _state.Decoded, new RenderBudget(long.MaxValue), CancellationToken.None);
+        using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(_state.Font, _state.Glyph, 16, _state.Decoded, new RenderBudget(), CancellationToken.None);
         return contours.Contours.Length;
     }
 
     [Benchmark]
     public int DecodeTransformAndCopyContours()
     {
-        using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(_state.Font, _state.Glyph, 16, new RenderBudget(long.MaxValue), CancellationToken.None);
+        using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(_state.Font, _state.Glyph, 16, new RenderBudget(), CancellationToken.None);
         return contours.Contours.Length;
     }
 
@@ -165,7 +165,7 @@ public class SvgTextBenchmarks
             SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default);
             SvgPreparedFont face = snapshot.Fonts[0];
             SvgPositionedGlyph glyph = SvgGlyphLayout.Layout(face, "A", 16, 0, 0, CancellationToken.None)[0];
-            OpenTypeGlyphContourStorage decoded = OpenTypeFont.GetGlyphContours(face.Bytes, glyph.GlyphIndex, face.Metrics, new RenderBudget(long.MaxValue), CancellationToken.None);
+            OpenTypeGlyphContourStorage decoded = OpenTypeFont.GetGlyphContours(face.Bytes, glyph.GlyphIndex, face.Metrics, new RenderBudget(), CancellationToken.None);
             return new TextBenchmarkState(svgBytes, catalog, provider, snapshot, options, face, glyph, decoded);
         }
     }

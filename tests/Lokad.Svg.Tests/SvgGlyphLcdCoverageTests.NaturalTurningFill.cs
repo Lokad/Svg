@@ -34,7 +34,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
         const int columns = 10, rows = 7;
         Assert.Equal(columns * rows * 3, expected.Length);
         int left = (int)Math.Floor(originX) - 2, top = originY - 4;
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         SvgGlyphLcdCoverage.DropoutBounds bounds = SvgGlyphLcdCoverage.PrepareBounds(segments, false, false, false,
             SvgGlyphLcdMode.Natural, CancellationToken.None);
         SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[segments.Length * 2];

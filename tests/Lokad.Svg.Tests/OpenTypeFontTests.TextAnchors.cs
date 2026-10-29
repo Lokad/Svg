@@ -18,7 +18,7 @@ public sealed partial class OpenTypeFontTests
         // Three 60-unit advances. The initial dx moves the anchor origin;
         // subsequent dx values extend or contract the chunk's 180-unit advance.
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
-        RenderBudget budget = new(1_024);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_024));
         using (SvgPositionedGlyphStorage positions = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), "AAA", 100, 200, 3, 0, [],
             [new(0, direction * 10, 0), new(1, direction * 20, 0), new(2, direction * 30, 0)], (SvgTextAnchor)anchor, budget, string.Empty, CancellationToken.None))
         {
@@ -37,7 +37,7 @@ public sealed partial class OpenTypeFontTests
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
         using SvgPositionedGlyphStorage positions = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), "AAA", 100, 200, 3, 0, [],
-            [new(1, -250, 0)], (SvgTextAnchor)anchor, new RenderBudget(1_024), string.Empty, CancellationToken.None);
+            [new(1, -250, 0)], (SvgTextAnchor)anchor, new RenderBudget(new HostMemoryBudget(1_024)), string.Empty, CancellationToken.None);
         Assert.Equal(first, positions.Glyphs[0].X);
         Assert.Equal(second, positions.Glyphs[1].X);
         Assert.Equal(third, positions.Glyphs[2].X);

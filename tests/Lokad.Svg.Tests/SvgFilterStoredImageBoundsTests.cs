@@ -19,7 +19,7 @@ public sealed class SvgFilterStoredImageBoundsTests
     public void Materializing_source_alpha_keeps_native_shader_coverage_rounding(byte alpha, double offset, byte coverage)
     {
         string dx = offset.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
-        RenderBudget parser = new(1_000_000), scratch = new(1_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000)), scratch = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = Parse("<feOffset in='SourceAlpha' dx='" + dx + "' dy='0' result='a'/><feOffset in='a' dx='.5' dy='0'/>", parser))
         {
             byte[] source = Source(alpha), unchanged = source.ToArray();
@@ -46,12 +46,12 @@ public sealed class SvgFilterStoredImageBoundsTests
     public void Final_nearest_offset_retains_its_input_image_extent_instead_of_the_filter_region(string inputGraph,
         float left, float top, float right, float bottom)
     {
-        RenderBudget parser = new(1_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = Parse(inputGraph + "<feOffset in='a' dx='.5' dy='0'/>", parser))
         {
             byte[] source = Source(128);
             byte[] unchanged = source.ToArray();
-            RenderBudget scratch = new(1_000_000);
+            RenderBudget scratch = new RenderBudget(new HostMemoryBudget(1_000_000));
             using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, 8, 8, Resource(scene), Map, scratch, CancellationToken.None))
             {
                 SvgFilterDeferredImage image = Assert.IsType<SvgFilterDeferredImage>(result.DeferredImage);

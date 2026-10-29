@@ -13,20 +13,20 @@ public sealed class SvgClipIntersectionTests
     public void Bounds_stencils_and_mapped_source_clips_release_owners_on_sampled_denial(string identity)
     {
         byte[] input = Read(identity);
-        RenderBudget measured = new(8_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(8_000_000));
         byte[] expected;
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, measured, CancellationToken.None))
             expected = surface.Pixels.ToArray();
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget memory = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget memory = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, memory, CancellationToken.None);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, memory, CancellationToken.None);
         }).ErrorCode);
         Assert.Equal(0, memory.Snapshot().CurrentBytes);
-        RenderBudget retry = new(8_000_000);
+        RenderBudget retry = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, retry, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, retry, CancellationToken.None))
             Assert.Equal(expected, surface.Pixels);
@@ -36,7 +36,7 @@ public sealed class SvgClipIntersectionTests
     [Fact]
     public void Canceling_stencil_replay_preserves_owned_source_and_identical_retry()
     {
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(Read("nested-oval-intersection"), SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             byte[] expected;
@@ -80,7 +80,7 @@ public sealed class SvgClipIntersectionTests
     public void Invalid_instance_rule_rejects_even_when_the_source_authors_its_own_rule()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><path id='p' d='M0 0H8V8H0Z' fill-rule='nonzero'/></defs><use href='#p' fill-rule='bogus'/></svg>"u8.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -90,7 +90,7 @@ public sealed class SvgClipIntersectionTests
     {
         string source = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='a'><path d='M0 0H8V8H0Z'/></clipPath><clipPath id='c'><circle cx='4' cy='4' r='3' clip-path='url(#a)'/></clipPath></defs><g clip-path='url(#c)'><rect width='8' height='8'/></g></svg>";
         byte[] expected = SvgConverter.ConvertToPng(TextEncoding.UTF8.GetBytes(source.Replace(" clip-path='url(#a)'", "", StringComparison.Ordinal)), SvgRenderOptions.Default, CancellationToken.None).ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(TextEncoding.UTF8.GetBytes(source), SvgRenderLimits.Default, budget, CancellationToken.None))
             Assert.Equal(expected, SvgConverter.ConvertToPng(root, SvgRenderOptions.Default, budget, CancellationToken.None).ToArray());
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -102,7 +102,7 @@ public sealed class SvgClipIntersectionTests
     public void Unsupported_nested_resource_units_and_cycles_reject_with_cleanup(string units, string target, string nested, SvgErrorCode expected)
     {
         byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='a'><path d='M0 0H8V8H0Z'/></clipPath><clipPath id='c'" + units + "><circle cx='4' cy='4' r='3' clip-path='url(#" + nested + ")'/></clipPath></defs>" + target + "</svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(expected, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

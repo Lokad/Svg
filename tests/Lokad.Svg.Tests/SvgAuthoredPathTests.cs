@@ -84,7 +84,7 @@ public sealed class SvgAuthoredPathTests
     [Fact]
     public void Contained_bitmap_mapping_denial_releases_scratch_and_preserves_source_curves()
     {
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='792' height='806'><path d='M640.137 350.319C635.619 343.137 661.913 341.619 671.813 368.319L644.137 377.619Z'/></svg>");
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
@@ -107,7 +107,7 @@ public sealed class SvgAuthoredPathTests
                 SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None)) Assert.True(eligible);
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
-            RenderBudget tight = new(storage - 1);
+            RenderBudget tight = new RenderBudget(new HostMemoryBudget(storage - 1));
             try
             {
                 using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 635, 672, 341, 378, new(508, 764), new(508, 254), null,
@@ -135,7 +135,7 @@ public sealed class SvgAuthoredPathTests
     [Fact]
     public void Denied_bitmap_curve_construction_releases_scratch_and_preserves_borrowed_sources()
     {
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'><path d='M19.137 37.319 C451.619 11.137 23.913 419.619 591.813 537.319 L41.137 521.619 Z'/></svg>");
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
@@ -165,7 +165,7 @@ public sealed class SvgAuthoredPathTests
                 storage = budget.Snapshot().CurrentBytes - retained;
             }
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
-            RenderBudget tight = new(storage - 1);
+            RenderBudget tight = new RenderBudget(new HostMemoryBudget(storage - 1));
             try
             {
                 using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 0, 256, 0, 600, new(0, 256), clip, SvgAnalyticPaintClip.Binary,
@@ -197,12 +197,12 @@ public sealed class SvgAuthoredPathTests
     [InlineData(true)]
     public void Integer_contact_replay_preserves_contours_with_a_small_scratch_budget(bool isEvenOdd)
     {
-        RenderBudget sceneBudget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = Parse("<path fill-rule='" + (isEvenOdd ? "evenodd" : "nonzero") + "' d='M1 1H29V29H1Z M12 1V8H6 M18 22H26V29'/>", sceneBudget))
         {
             SvgAuthoredPath path = Assert.IsType<SvgAuthoredPath>(Assert.Single(root.Geometries).AuthoredPath);
             SvgAuthoredPathCommand[] commands = path.Commands.ToArray();
-            RenderBudget replayBudget = new(16 * 1024);
+            RenderBudget replayBudget = new RenderBudget(new HostMemoryBudget(16 * 1024));
             using (SvgPreparedPathContours mapped = path.Prepare(SvgAffineTransform.Identity, isEvenOdd, replayBudget, CancellationToken.None))
             {
                 Assert.Equal(3, mapped.ContourEnds.Length);
@@ -249,7 +249,7 @@ public sealed class SvgAuthoredPathTests
         byte[] expected = SvgConverter.ConvertToPng(TextEncoding.UTF8.GetBytes(prefix + direct + "</svg>"), SvgRenderOptions.Default, CancellationToken.None).ToArray();
         byte[] input = TextEncoding.UTF8.GetBytes(prefix + instance + "</svg>");
         Assert.Equal(expected, SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgGeometry stroke = Assert.Single(root.Geometries.ToArray(), geometry => geometry.Kind == SvgGeometryKind.PolygonFill && geometry.Polygon.HasFill);
@@ -270,7 +270,7 @@ public sealed class SvgAuthoredPathTests
     {
         const string first = "M4 4 C4 1 20 1 20 4 L20 20 C20 23 4 23 4 20 Z";
         string second = reverse ? "M4 4 L4 20 C4 23 20 23 20 20 L20 4 C20 1 4 1 4 4 Z" : first;
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = Parse("<path fill-rule='" + (isEvenOdd ? "evenodd" : "nonzero") + "' d='" + first + " " + second + "'/>", budget))
         {
             SvgPolygonFill polygon = Assert.Single(root.Geometries).Polygon;
@@ -329,10 +329,10 @@ public sealed class SvgAuthoredPathTests
             : "<path fill-rule='" + (isEvenOdd ? "evenodd" : "nonzero") + "' d='" + Contact + "'/>";
         byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + body + "</svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget normal = new(limits.MaximumAccountedBytes);
+        RenderBudget normal = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = SvgRootParser.Parse(input, limits, normal, null, CancellationToken.None)) { }
         Assert.Equal(0, normal.Snapshot().CurrentBytes);
-        RenderBudget memoryBudget = new(normal.Snapshot().PeakBytes - 1);
+        RenderBudget memoryBudget = new RenderBudget(new HostMemoryBudget(normal.Snapshot().PeakBytes - 1));
         SvgException memoryDenied = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, memoryBudget, null, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, memoryDenied.ErrorCode);
         Assert.Equal(0, memoryBudget.Snapshot().CurrentBytes);
@@ -351,7 +351,7 @@ public sealed class SvgAuthoredPathTests
     [InlineData(true)]
     public void Crossing_replay_keeps_original_curves_without_scene_surgery(bool isEvenOdd)
     {
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = Parse("<path fill-rule='" + (isEvenOdd ? "evenodd" : "nonzero") + "' d='M0,0 C2,2 6,6 8,8 L8,0 C6,2 2,6 0,8 Z'/>", budget))
         {
             SvgGeometry geometry = Assert.Single(root.Geometries);
@@ -377,7 +377,7 @@ public sealed class SvgAuthoredPathTests
     [InlineData(true)]
     public void Even_odd_replay_keeps_all_authored_contours_including_crossings(bool isEvenOdd)
     {
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = Parse("<path fill-rule='" + (isEvenOdd ? "evenodd" : "nonzero") + "' d='M0,0 C2,2 6,6 8,8 L8,0 C6,2 2,6 0,8 Z M10,0 C12,2 16,6 18,8 L18,0 C16,2 12,6 10,8 Z'/>", budget))
         {
             SvgAuthoredPath authored = Assert.IsType<SvgAuthoredPath>(Assert.Single(root.Geometries).AuthoredPath);
@@ -400,7 +400,7 @@ public sealed class SvgAuthoredPathTests
     [Fact]
     public void Cancelled_even_odd_replay_releases_storage_and_preserves_the_token()
     {
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = Parse("<path fill-rule='evenodd' d='M1,1 Q15,1 15,15 L1,15 Z M5,5 Q11,5 11,11 L5,11 Z'/>", budget))
         {
             SvgAuthoredPath authored = Assert.IsType<SvgAuthoredPath>(Assert.Single(root.Geometries).AuthoredPath);
@@ -419,12 +419,12 @@ public sealed class SvgAuthoredPathTests
     [Fact]
     public void Denied_crossing_replay_keeps_its_authored_owner_and_releases_scratch()
     {
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = Parse("<path fill-rule='evenodd' d='M0,0 C2,2 6,6 8,8 L8,0 C6,2 2,6 0,8 Z'/>", budget))
         {
             SvgAuthoredPath authored = Assert.IsType<SvgAuthoredPath>(Assert.Single(root.Geometries).AuthoredPath);
             long retained = budget.Snapshot().CurrentBytes;
-            using (budget.Reserve(SvgRenderLimits.Default.MaximumAccountedBytes - retained - 100, SvgMemoryCategory.Surface))
+            using (budget.Reserve(268_435_456L - retained - 100, SvgMemoryCategory.Surface))
             {
                 long padded = budget.Snapshot().CurrentBytes;
                 SvgException denied = Assert.Throws<SvgException>(() => authored.Prepare(SvgAffineTransform.Identity, true, budget, CancellationToken.None));
@@ -445,7 +445,7 @@ public sealed class SvgAuthoredPathTests
     [InlineData("<defs><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><symbol id='p' viewBox='0 0 16 16'><path fill='url(#g)' d='M1.137 2.319 C3.913 1.137 6.619 2.137 7.813 5.319 L2.137 7.619 Z'/></symbol></defs><use href='#p' width='16' height='16'/><use href='#p' width='16' height='16' x='1'/>")]
     public void Repeated_instances_keep_independent_authored_storage_and_release_it(string body)
     {
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = Parse(body, budget))
         {
             SvgGeometry[] visible = root.Geometries.Where(g => g.Kind != SvgGeometryKind.Invalid).ToArray();
@@ -463,7 +463,7 @@ public sealed class SvgAuthoredPathTests
     [Fact]
     public void Object_bounding_box_paint_keeps_scene_coordinates_during_authored_replay()
     {
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = Parse("<defs><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><g transform='scale(2)'><path fill='url(#g)' d='M1.137 2.319 C3.913 1.137 6.619 2.137 7.813 5.319 L2.137 7.619 Z'/></g>", budget))
         {
             SvgGeometry geometry = Assert.Single(root.Geometries);
@@ -482,14 +482,14 @@ public sealed class SvgAuthoredPathTests
     [Fact]
     public void Denied_authored_copy_releases_its_replacement_and_preserves_the_source()
     {
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = Parse(Path, budget))
         {
             SvgGeometry source = Assert.Single(root.Geometries);
             long retained = budget.Snapshot().CurrentBytes;
             SvgPolygonFill polygon = source.Polygon;
             SvgGeometry replacement = SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.Color, polygon.HasFill, polygon.IsEvenOdd, polygon.Mapping, polygon.Clip, null, budget));
-            using (budget.Reserve(SvgRenderLimits.Default.MaximumAccountedBytes - budget.Snapshot().CurrentBytes, SvgMemoryCategory.Surface))
+            using (budget.Reserve(268_435_456L - budget.Snapshot().CurrentBytes, SvgMemoryCategory.Surface))
             {
                 SvgException denied = Assert.Throws<SvgException>(() => source.CopyAuthoredPathTo(replacement, SvgAffineTransform.Identity, budget, CancellationToken.None));
                 Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
@@ -503,12 +503,12 @@ public sealed class SvgAuthoredPathTests
     [Fact]
     public void Denied_endpoint_arc_replay_releases_scratch_and_can_retry()
     {
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = Parse("<path d='M12,4 A8,8 0 1 1 20,12 Z'/>", budget))
         {
             SvgAuthoredPath authored = Assert.IsType<SvgAuthoredPath>(Assert.Single(root.Geometries).AuthoredPath);
             long retained = budget.Snapshot().CurrentBytes;
-            using (budget.Reserve(SvgRenderLimits.Default.MaximumAccountedBytes - retained - 100, SvgMemoryCategory.Surface))
+            using (budget.Reserve(268_435_456L - retained - 100, SvgMemoryCategory.Surface))
             {
                 long padded = budget.Snapshot().CurrentBytes;
                 SvgException denied = Assert.Throws<SvgException>(() => authored.Prepare(SvgAffineTransform.Identity, false, budget, CancellationToken.None));

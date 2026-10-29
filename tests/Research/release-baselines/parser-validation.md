@@ -5,8 +5,8 @@ PNG decoding. `ParserWorkCounter`, its arguments and retained parser totals are
 gone. Cancellation checks remain in actual traversal loops. Structural limits,
 checked storage sizes and numerical domains remain independent contracts.
 Raster quota plumbing, remaining-fuel algorithm choices and MaximumWorkUnits are
-also removed. The private memory-cap migration remains separate; this record does
-not close shared memory governance.
+also removed. Shared memory admission is mapped separately below; fuel removal
+does not by itself prove retained ownership.
 
 | Removed expectation | Retained responsibility |
 | --- | --- |
@@ -57,3 +57,14 @@ exact retry pixels. Mixed clipping, mask, filter and shader tests retain real
 memory refusal, cancellation and cleanup while their quota-only branches are gone.
 The ligature lifecycle tests no longer repeat the same post-quota call 120 times;
 they exercise the longer input once with a live storage charge, then verify release.
+
+Shared admission replaces private caps at the same reservation sites. The
+[host implementation](../../Shared/TestMemoryBudget.cs) supplies the allowance;
+[governed contracts](../../Lokad.Svg.Tests/OpenTypeFontTests.SharedMemory.cs) retain
+a representative raw/prepared, sync/async and owned/memory/stream matrix. They
+also protect overlapping output, retained-result competition, snapshot metadata,
+borrowed program bytes, canceled acquisition, cleanup and immediate root reuse.
+Zero admission/growth and invalidated scopes are tested directly in the budget
+contracts. The viewport context tests measure renderer allocation separately from
+the test host's bookkeeping, retaining exact allocation comparisons and distinct
+real refusal/registration/cancellation checks. No native references are rewritten.

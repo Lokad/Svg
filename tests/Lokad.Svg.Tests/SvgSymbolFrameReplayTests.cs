@@ -15,14 +15,14 @@ public sealed class SvgSymbolFrameReplayTests
         byte[] input = Input(identity);
         byte[] unchanged = input.ToArray();
         SvgRenderOptions options = new(null, 2, SvgColor.Transparent, SvgRenderLimits.Default);
-        RenderBudget measured = new(8_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(8_000_000));
         byte[] expected;
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, options, measured, CancellationToken.None))
             expected = surface.Pixels.ToArray();
         Assert.Contains(expected, value => value != 0);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget tight = new(Math.Max(1, measured.Snapshot().PeakBytes - 4_096));
+        RenderBudget tight = new RenderBudget(new HostMemoryBudget(Math.Max(1, measured.Snapshot().PeakBytes - 4_096)));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, CancellationToken.None);

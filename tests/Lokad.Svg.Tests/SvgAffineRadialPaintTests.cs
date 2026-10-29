@@ -10,7 +10,7 @@ public sealed class SvgAffineRadialPaintTests
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='620' height='620' viewBox='0 0 100 100'><defs><clipPath id='c'><path d='M10 75 A40 40 0 0 1 90 75'/></clipPath></defs><g transform='rotate(20 90 75)' clip-path='url(#c)'><circle cx='50%' cy='75%' r='40%' fill='#eee'/></g></svg>"u8.ToArray();
         const long maximumBytes = 20_000_000;
-        RenderBudget budget = new(maximumBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(maximumBytes));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             long owned = budget.Snapshot().CurrentBytes;
@@ -63,14 +63,14 @@ public sealed class SvgAffineRadialPaintTests
     public void Affine_paint_and_clip_replay_releases_owners_on_denial_and_preserves_source_for_retry(string definitions, string shape)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs>" + definitions + "</defs>" + shape + "</svg>");
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
             Assert.NotEmpty(root.Geometries.ToArray());
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         long peak = measured.Snapshot().PeakBytes;
         for (long limit = 1; limit < peak; limit += 256) DenyMemory(limit);
         DenyMemory(peak - 1);
-        RenderBudget retry = new(1_000_000);
+        RenderBudget retry = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, retry, null, CancellationToken.None))
         {
             SvgAuthoredPath[] paths = root.Geometries.ToArray().Select(geometry => geometry.AuthoredPath).OfType<SvgAuthoredPath>().ToArray();
@@ -106,7 +106,7 @@ public sealed class SvgAffineRadialPaintTests
 
         void DenyMemory(long limit)
         {
-            RenderBudget denied = new(limit);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }
@@ -118,7 +118,7 @@ public sealed class SvgAffineRadialPaintTests
     public void Empty_affine_paint_and_disjoint_curved_clip_remain_transparent(string shape)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><radialGradient id='p' fx='31%' fy='42%'><stop stop-color='#eee'/><stop offset='1' stop-color='#aaa'/></radialGradient><clipPath id='c'><path d='M5 24 A11 11 0 0 1 27 24'/></clipPath></defs>" + shape + "</svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
             Assert.All(surface.Pixels, value => Assert.Equal(0, value));

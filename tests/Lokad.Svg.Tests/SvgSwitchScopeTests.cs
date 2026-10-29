@@ -46,7 +46,7 @@ public sealed class SvgSwitchScopeTests
         Assert.True(SvgConverter.ConvertToPng(direct, options, CancellationToken.None).Span.SequenceEqual(
             SvgConverter.ConvertToPng(input, options, CancellationToken.None).Span), name);
 
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, options.Limits, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, options, budget, CancellationToken.None))
             Assert.False(scene.HasUnsupportedChild);

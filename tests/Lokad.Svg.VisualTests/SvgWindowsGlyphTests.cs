@@ -22,7 +22,7 @@ public sealed class SvgWindowsGlyphTests
         using SvgFontSnapshot snapshot = await Prepare();
         SvgPreparedFont font = Assert.Single(snapshot.Fonts);
         byte[] original = font.Bytes.ToArray();
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         JsonElement origin = item.GetProperty("origin");
         using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, new(item.GetProperty("glyph").GetUInt16(), origin[0].GetDouble(), origin[1].GetDouble(), 0), item.GetProperty("deviceSize").GetDouble(), budget))
         using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, CancellationToken.None))
@@ -45,7 +45,7 @@ public sealed class SvgWindowsGlyphTests
         using SvgFontSnapshot snapshot = await Prepare();
         SvgPreparedFont font = Assert.Single(snapshot.Fonts);
         byte[] original = font.Bytes.ToArray();
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         JsonElement origin = item.GetProperty("origin");
         using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, new(item.GetProperty("glyph").GetUInt16(), origin[0].GetDouble(), origin[1].GetDouble(), 0), item.GetProperty("deviceSize").GetDouble(), budget))
         using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, CancellationToken.None))
@@ -79,7 +79,7 @@ public sealed class SvgWindowsGlyphTests
         using SvgFontSnapshot snapshot = await Prepare();
         SvgPreparedFont font = Assert.Single(snapshot.Fonts);
         byte[] original = font.Bytes.ToArray();
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         JsonElement matrix = item.GetProperty("map"), bounds = item.GetProperty("coverageBounds");
         SvgAffineTransform map = new(matrix[0].GetDouble(), matrix[1].GetDouble(), matrix[2].GetDouble(), matrix[3].GetDouble(), matrix[4].GetDouble(), matrix[5].GetDouble());
         int ox = (int)Math.Floor(map.E), oy = (int)Math.Floor(map.F);
@@ -92,7 +92,7 @@ public sealed class SvgWindowsGlyphTests
             using RenderBudget.BudgetReservation reservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGlyphLcdCoverage.Crossing>(contours.Segments.Length * 2), SvgMemoryCategory.Temporary);
             SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[contours.Segments.Length * 2];
             SvgGlyphLcdCoverage.DropoutBounds scanBounds = SvgGlyphLcdCoverage.PrepareBounds(contours.Segments, contours.SmartDropouts, CancellationToken.None);
-            using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(contours.Segments, new RenderBudget(long.MaxValue), CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
+            using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(contours.Segments, new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
             int[] rowCounts = new int[10];
             for (int y = top - 1; y <= bottom; y++)
             {
@@ -121,7 +121,7 @@ public sealed class SvgWindowsGlyphTests
     {
         OpenTypeQuadraticSegment[] segments = [new(new(1, 1), new(18, -3), new(2, 20))];
         using OpenTypeGlyphContourStorage original = new(segments, [1], null, null);
-        RenderBudget budget = new(boundary == 0 ? 100 : long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(boundary == 0 ? 100 : long.MaxValue));
         using CancellationTokenSource cancellation = new();
         bool observed = false;
         using (GlyphDecoderBudgetProbe.Arm((phase, _) =>
@@ -138,7 +138,7 @@ public sealed class SvgWindowsGlyphTests
         Assert.Equal(boundary == 2, observed);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(new(new(1, 1), new(18, -3), new(2, 20)), original.Segments[0]);
-        RenderBudget retryBudget = new(long.MaxValue);
+        RenderBudget retryBudget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (OpenTypeGlyphContourStorage retry = SvgWindowsGlyphCurves.Prepare(original, retryBudget, CancellationToken.None))
             Assert.True(retry.Segments.Length > original.Segments.Length);
         Assert.Equal(0, retryBudget.Snapshot().CurrentBytes);
@@ -185,7 +185,7 @@ public sealed class SvgWindowsGlyphTests
         Assert.Equal(6, native.RootElement.GetProperty("suppliedFontCases").GetArrayLength());
         foreach (JsonElement item in native.RootElement.GetProperty("suppliedFontCases").EnumerateArray())
         {
-            var budget = new RenderBudget(long.MaxValue);
+            var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
             JsonElement origin = item.GetProperty("origin");
             using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(Assert.Single(snapshot.Fonts), new(item.GetProperty("glyph").GetUInt16(), origin[0].GetDouble(), origin[1].GetDouble(), 0), item.GetProperty("deviceSize").GetDouble(), budget))
             using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, CancellationToken.None))
@@ -203,7 +203,7 @@ public sealed class SvgWindowsGlyphTests
         if (!OperatingSystem.IsWindows()) return;
         using SvgFontSnapshot snapshot = await PrepareMono();
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-documents", "scalar-x-reset.svg"));
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
         {
             long baseline = budget.Snapshot().CurrentBytes;
@@ -221,7 +221,7 @@ public sealed class SvgWindowsGlyphTests
     public async Task Computed_windows_outline_and_rgb_mask_match_independent_native_measurements()
     {
         using SvgFontSnapshot snapshot = await Prepare();
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(Assert.Single(snapshot.Fonts), new(36, 8, 48, 30.672), 48, budget))
         using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, CancellationToken.None))
         {
@@ -236,7 +236,7 @@ public sealed class SvgWindowsGlyphTests
             using RenderBudget.BudgetReservation scratchReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGlyphLcdCoverage.Crossing>(contours.Segments.Length * 2), SvgMemoryCategory.Temporary);
             SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[contours.Segments.Length * 2];
             SvgGlyphLcdCoverage.DropoutBounds scanBounds = SvgGlyphLcdCoverage.PrepareBounds(contours.Segments, contours.SmartDropouts, CancellationToken.None);
-            using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(contours.Segments, new RenderBudget(long.MaxValue), CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
+            using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(contours.Segments, new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
             int[] rowCounts = new int[10];
             for (int y = 0; y < reference.Height; y++)
             {
@@ -264,7 +264,7 @@ public sealed class SvgWindowsGlyphTests
             .Concat(native.RootElement.GetProperty("smartDropoutCases").EnumerateArray())
             .Concat(native.RootElement.GetProperty("directedBoundaryCases").EnumerateArray()))
         {
-            var budget = new RenderBudget(long.MaxValue);
+            var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
             JsonElement origin = item.GetProperty("origin"), bounds = item.GetProperty("coverageBounds");
             using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(Assert.Single(snapshot.Fonts), new(item.GetProperty("glyph").GetUInt16(), origin[0].GetDouble(), origin[1].GetDouble(), 0), item.GetProperty("deviceSize").GetDouble(), budget))
             using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, CancellationToken.None))
@@ -277,7 +277,7 @@ public sealed class SvgWindowsGlyphTests
                 int left = bounds[0].GetInt32(), top = bounds[1].GetInt32(), right = bounds[2].GetInt32(), bottom = bounds[3].GetInt32();
                 Assert.Equal(right - left, reference.Width); Assert.Equal(bottom - top, reference.Height);
                 SvgGlyphLcdCoverage.DropoutBounds scanBounds = SvgGlyphLcdCoverage.PrepareBounds(contours.Segments, contours.SmartDropouts, CancellationToken.None);
-                using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(contours.Segments, new RenderBudget(long.MaxValue), CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
+                using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(contours.Segments, new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
                 int[] rowCounts = new int[10];
                 for (int y = top - 1; y <= bottom; y++)
                 {
@@ -333,7 +333,7 @@ public sealed class SvgWindowsGlyphTests
             OpenTypeQuadraticSegment[] outline = segments.ToArray();
             SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[outline.Length * 2];
             SvgGlyphLcdCoverage.DropoutBounds scanBounds = SvgGlyphLcdCoverage.PrepareBounds(outline, true, CancellationToken.None);
-            using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(outline, new RenderBudget(long.MaxValue), CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
+            using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(outline, new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
             int[] rowCounts = new int[10];
             for (int y = top - 1; y <= bottom; y++)
             {
@@ -393,7 +393,7 @@ public sealed class SvgWindowsGlyphTests
             int left = bounds[0].GetInt32(), top = bounds[1].GetInt32(), right = bounds[2].GetInt32(), bottom = bounds[3].GetInt32();
             Assert.Equal((right - left) * (bottom - top) * 3, bytes.Length);
             SvgGlyphLcdCoverage.DropoutBounds scanBounds = SvgGlyphLcdCoverage.PrepareBounds(outline, false, CancellationToken.None);
-            using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(outline, new RenderBudget(long.MaxValue), CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
+            using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(outline, new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
             int[] rowCounts = new int[10];
             for (int y = top - 1; y <= bottom; y++)
             {
@@ -419,7 +419,7 @@ public sealed class SvgWindowsGlyphTests
         using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-documents", "diagnostics", "windows-glyph-coverage.json")));
         foreach (JsonElement item in native.RootElement.GetProperty("impliedMidpointCases").EnumerateArray())
         {
-            var budget = new RenderBudget(long.MaxValue);
+            var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
             JsonElement origin = item.GetProperty("origin"), points = item.GetProperty("nativeFittedF26Points");
             using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(Assert.Single(snapshot.Fonts), new(item.GetProperty("glyph").GetUInt16(), origin[0].GetDouble(), origin[1].GetDouble(), 0), item.GetProperty("deviceSize").GetDouble(), budget))
             using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, CancellationToken.None))
@@ -440,11 +440,11 @@ public sealed class SvgWindowsGlyphTests
         using SvgFontSnapshot snapshot = await Prepare();
         SvgPreparedFont font = Assert.Single(snapshot.Fonts);
         byte[] original = font.Bytes.ToArray();
-        var budget = new RenderBudget(boundary == 0 ? 200 : long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(boundary == 0 ? 200 : long.MaxValue));
         using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, new(36, 8, 48, 30.672), 48, budget))
         {
             long retained = budget.Snapshot().CurrentBytes;
-            Assert.True(source.HasTrueTypePrograms(new(long.MaxValue), CancellationToken.None));
+            Assert.True(source.HasTrueTypePrograms(new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => source.CreateWindowsContours(boundary == 2 ? double.PositiveInfinity : 1, 0, 1, 0, budget, CancellationToken.None)).ErrorCode);
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
         }
@@ -460,7 +460,7 @@ public sealed class SvgWindowsGlyphTests
         Assert.Equal((right - left) * (bottom - top) * 3, expectedBytes.Length);
         SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[segments.Length * 2];
         SvgGlyphLcdCoverage.DropoutBounds scanBounds = SvgGlyphLcdCoverage.PrepareBounds(segments, dropouts, CancellationToken.None);
-        using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, new RenderBudget(long.MaxValue), CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
+        using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
         int[] rowCounts = new int[10];
         for (int y = top - 1; y <= bottom; y++)
         {

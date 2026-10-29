@@ -39,7 +39,7 @@ public sealed class FordForwardTrajectoryTests
         byte[] oracleBytes = File.ReadAllBytes(Path.Combine(research, "references", "cubic-twin-100x100.png"));
         RgbaImage reference = PngRgbaDecoder.Decode(oracleBytes, 100 * 100);
         SvgRenderOptions options = SvgRenderOptions.Default;
-        RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         (double horizontalScale, double verticalScale) = SvgPreparationTestHelper.GetOutputScales(svg, options, budget, CancellationToken.None);
         SvgRoot root = SvgRootParser.Parse(svg, options.Limits, budget, null, CancellationToken.None, horizontalScale, verticalScale, options.Viewport);
         int fills = 0;
@@ -53,7 +53,7 @@ public sealed class FordForwardTrajectoryTests
             Assert.False(polygon.IsEvenOdd);
             Assert.Empty(polygon.QuadSpans);
             Assert.Equal(8, polygon.CubicSpans.Length);
-            RenderBudget walkBudget = new(10_000_000);
+            RenderBudget walkBudget = new RenderBudget(new HostMemoryBudget(10_000_000));
             ReadOnlySpan<int> votes = polygon.Signs is int[] roles ? roles : Array.Empty<int>();
             using SvgAnalyticCoverage live = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 100, 0, 100, 100, 100, walkBudget, out bool liveEligible, CancellationToken.None);
             using SvgAnalyticCoverage flat = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), 0, 100, 0, 100, 100, 100, walkBudget, out bool flatEligible, CancellationToken.None);
@@ -108,7 +108,7 @@ public sealed class FordForwardTrajectoryTests
     {
         byte[] svg = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "candidates", "inv-002.svg"));
         SvgRenderOptions options = new(new SvgViewport(500, 200), 1, SvgColor.Transparent, SvgRenderLimits.Default);
-        RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         (double horizontalScale, double verticalScale) = SvgPreparationTestHelper.GetOutputScales(svg, options, budget, CancellationToken.None);
         SvgRoot root = SvgRootParser.Parse(svg, options.Limits, budget, null, CancellationToken.None, horizontalScale, verticalScale, options.Viewport);
         List<string> fills = new();
@@ -182,7 +182,7 @@ public sealed class FordForwardTrajectoryTests
 
     private static (int FirstRow, long DifferingBytes, long LiveMass, long FlatMass, bool LiveEligible, bool FlatEligible) WalkLiveVersusFlat(SvgDevicePoint[] points, int[] ends, int[]? signs, bool isEvenOdd, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, int width, int height, SvgColor paint)
     {
-        RenderBudget budget = new(10_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000_000));
         ReadOnlySpan<int> votes = signs is int[] roles ? roles : Array.Empty<int>();
         using SvgAnalyticCoverage live = SvgAnalyticCoverage.Prepare(points, ends, votes, isEvenOdd, signs, mapping, quadSpans, cubicSpans, 0, width, 0, height, width, height, budget, out bool liveEligible, CancellationToken.None);
         using SvgAnalyticCoverage flat = SvgAnalyticCoverage.Prepare(points, ends, votes, isEvenOdd, signs, mapping, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), 0, width, 0, height, width, height, budget, out bool flatEligible, CancellationToken.None);
@@ -218,7 +218,7 @@ public sealed class FordForwardTrajectoryTests
         byte[] oracleBytes = File.ReadAllBytes(Path.Combine(research, "references", "cubic-twin-100x100.png"));
         RgbaImage reference = PngRgbaDecoder.Decode(oracleBytes, 100 * 100);
         SvgRenderOptions options = SvgRenderOptions.Default;
-        RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         (double horizontalScale, double verticalScale) = SvgPreparationTestHelper.GetOutputScales(svg, options, budget, CancellationToken.None);
         SvgRoot root = SvgRootParser.Parse(svg, options.Limits, budget, null, CancellationToken.None, horizontalScale, verticalScale, options.Viewport);
         int fills = 0;
@@ -257,7 +257,7 @@ public sealed class FordForwardTrajectoryTests
 
     private static (byte[] Rows, bool Eligible) WalkCoverageRows(SvgDevicePoint[] points, int[] ends, int[]? signs, bool isEvenOdd, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, int width, int height, SvgColor paint)
     {
-        RenderBudget walkBudget = new(10_000_000);
+        RenderBudget walkBudget = new RenderBudget(new HostMemoryBudget(10_000_000));
         ReadOnlySpan<int> votes = signs is int[] roles ? roles : Array.Empty<int>();
         using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, ends, votes, isEvenOdd, signs, mapping, quadSpans, cubicSpans, 0, width, 0, height, width, height, walkBudget, out bool eligible, CancellationToken.None);
         List<byte> rows = new(width * height);

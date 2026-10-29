@@ -14,6 +14,7 @@ internal sealed class SvgDocumentPreparation : IDisposable
     private readonly SvgRenderLimits _limits;
     private readonly RenderBudget _budget;
     private readonly CancellationToken _token;
+    private RenderBudget.BudgetReservation? _fontRequestsStorage;
     private readonly RenderBudget.BudgetReservation _workspace;
     private SvgRootSyntax? _root;
     private bool _structureInspected;
@@ -23,7 +24,7 @@ internal sealed class SvgDocumentPreparation : IDisposable
     private bool _paintResourcesCollected;
 
     private SvgDocumentPreparation(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget,
-CancellationToken token, RenderBudget.BudgetReservation workspace, XmlReaderSettings settings)
+        CancellationToken token, RenderBudget.BudgetReservation workspace, XmlReaderSettings settings)
     {
         _svg = svg; _limits = limits; _budget = budget; _token = token;
         _workspace = workspace; Settings = settings;
@@ -34,6 +35,28 @@ CancellationToken token, RenderBudget.BudgetReservation workspace, XmlReaderSett
     internal XmlReaderSettings Settings { get; }
     internal BudgetedParserList<CssRule> Rules { get; }
     internal BudgetedParserStringStore Strings { get; }
+
+    /// <summary>Borrows the active preparation owner for font acquisition; callers keep this preparation alive until acquisition finishes.</summary>
+    internal RenderBudget Budget => _budget;
+
+    /// <summary>Borrows immutable requests within this single preparation; discovery/scalar collection may reuse them until disposal.</summary>
+    internal SvgFontFaceRequest[]? FontRequests { get; private set; }
+
+    /// <summary>Commits one completely constructed request array and its coarse owner; failures leave both with the caller.</summary>
+    internal void RetainFontRequests(SvgFontFaceRequest[] requests, RenderBudget.BudgetReservation storage)
+    {
+        if (FontRequests is not null) throw new InvalidOperationException("This preparation already owns its font requirements.");
+        FontRequests = requests;
+        _fontRequestsStorage = storage;
+    }
+
+    /// <summary>Transfers request storage after acquisition; disposal no longer refunds the transferred live arrays.</summary>
+    internal RenderBudget.BudgetReservation? DetachFontRequestsStorage()
+    {
+        RenderBudget.BudgetReservation? storage = _fontRequestsStorage;
+        _fontRequestsStorage = null;
+        return storage;
+    }
 
     internal static SvgDocumentPreparation Create(ReadOnlyMemory<byte> svg, SvgRenderLimits limits,
         RenderBudget budget, CancellationToken token)
@@ -145,6 +168,9 @@ CancellationToken token, RenderBudget.BudgetReservation workspace, XmlReaderSett
 
     public void Dispose()
     {
+        _fontRequestsStorage?.Dispose();
+        _fontRequestsStorage = null;
+        FontRequests = null;
         _fontInstances?.Dispose();
         _paintResources?.Dispose();
         Rules.Dispose();

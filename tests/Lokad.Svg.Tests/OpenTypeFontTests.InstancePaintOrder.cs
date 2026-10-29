@@ -82,7 +82,7 @@ public sealed partial class OpenTypeFontTests
     {
         byte[] input = InstancePaintDocument("<defs><path id='s' d='M4 4H20V20H4Z' fill='url(#p)'/><clipPath id='c'><rect width='28' height='28'/></clipPath></defs><g clip-path='url(#c)'><use href='#s'/><rect x='8' y='8' width='8' height='8' fill='red'/></g><defs>" + InstancePaintResource(paint) + "</defs>");
         byte[] unchanged = input.ToArray();
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
             Assert.NotEmpty(root.Geometries.ToArray());
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
@@ -90,7 +90,7 @@ public sealed partial class OpenTypeFontTests
         DenyMemory(measured.Snapshot().PeakBytes - 1);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget canceled = new(1_000_000);
+        RenderBudget canceled = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, canceled, cancellation.Token)).CancellationToken);
         Assert.Equal(0, canceled.Snapshot().CurrentBytes);
         using (SvgRoot retry = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
@@ -101,7 +101,7 @@ public sealed partial class OpenTypeFontTests
 
         void DenyMemory(long limit)
         {
-            RenderBudget denied = new(limit + 73);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit + 73));
             using RenderBudget.BudgetReservation borrower = denied.Reserve(73, SvgMemoryCategory.Parser);
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, CancellationToken.None)).ErrorCode);
             Assert.Equal(73, denied.Snapshot().CurrentBytes);
@@ -122,7 +122,7 @@ public sealed partial class OpenTypeFontTests
         {
             string source = "<defs><rect id='s' width='16' height='16' " + paint + "/></defs><use href='#s'/>";
             byte[] input = InstancePaintDocument(forward ? source + "<defs>" + resource + "</defs>" : "<defs>" + resource + "</defs>" + source);
-            RenderBudget budget = new(1_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }

@@ -56,14 +56,27 @@ public sealed class SvgRenderOptions
     {
         ArgumentNullException.ThrowIfNull(policy);
         return new(Viewport, OutputScale, BackgroundColor, Limits, FontSnapshot, RasterBounds)
-            { ResolvedRasterSize = ResolvedRasterSize, FontSelectionPolicy = policy };
+            { ResolvedRasterSize = ResolvedRasterSize, FontSelectionPolicy = policy, MemoryBudget = MemoryBudget };
+    }
+
+    /// <summary>Gets the borrowed host budget, or null for explicitly ungoverned conversion.</summary>
+    /// <remarks>The host keeps this owner alive through prepared documents, font snapshots and PNG results using it. The library disposes only scopes and reservations it creates.</remarks>
+    public IMemoryBudget? MemoryBudget { get; private init; }
+
+    /// <summary>Returns options whose preparation, rendering and encoding share the borrowed host allowance.</summary>
+    /// <remarks>Use an owned PNG result, caller memory or a stream for governed output. For HTTP preparation this owner must share the resolver's root allowance; the host is responsible for that association.</remarks>
+    public SvgRenderOptions WithMemoryBudget(IMemoryBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(budget);
+        return new(Viewport, OutputScale, BackgroundColor, Limits, FontSnapshot, RasterBounds)
+            { ResolvedRasterSize = ResolvedRasterSize, FontSelectionPolicy = FontSelectionPolicy, MemoryBudget = budget };
     }
 
     internal SvgRasterSize? ResolvedRasterSize { get; private init; }
 
     internal SvgRenderOptions WithRasterSize(SvgRasterSize size)
-        => new(Viewport, size.OutputScale, BackgroundColor, Limits, FontSnapshot, RasterBounds) { ResolvedRasterSize = size, FontSelectionPolicy = FontSelectionPolicy };
+        => new(Viewport, size.OutputScale, BackgroundColor, Limits, FontSnapshot, RasterBounds) { ResolvedRasterSize = size, FontSelectionPolicy = FontSelectionPolicy, MemoryBudget = MemoryBudget };
 
     internal SvgRenderOptions WithFontSnapshot(SvgFontSnapshot snapshot)
-        => new(Viewport, OutputScale, BackgroundColor, Limits, snapshot, RasterBounds) { ResolvedRasterSize = ResolvedRasterSize, FontSelectionPolicy = FontSelectionPolicy };
+        => new(Viewport, OutputScale, BackgroundColor, Limits, snapshot, RasterBounds) { ResolvedRasterSize = ResolvedRasterSize, FontSelectionPolicy = FontSelectionPolicy, MemoryBudget = MemoryBudget };
 }

@@ -54,7 +54,7 @@ public sealed class SvgUsePaintTests
             "<defs><pattern id='t' width='8' height='8' patternUnits='userSpaceOnUse'><use href='#p' style='" + declarations + "'/></pattern></defs>"
         })
         {
-            RenderBudget budget = new(1_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(Input("<defs><rect id='p' width='8' height='8'/></defs>" + body), SvgRenderLimits.Default, budget, CancellationToken.None));
             Assert.Equal(expected, error.ErrorCode);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -65,7 +65,7 @@ public sealed class SvgUsePaintTests
     public void Use_paint_context_and_source_stroke_roles_preserve_distinct_alphas_and_release_owners()
     {
         byte[] input = Input("<defs><rect id='p' x='4' y='4' width='12' height='10' fill='currentColor' stroke='currentColor' stroke-width='2' stroke-opacity='.625'/></defs><use href='#p' color='#297fb3' fill-opacity='.375'/>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             SvgGeometry geometry = Assert.Single(scene.Geometries);
@@ -89,7 +89,7 @@ public sealed class SvgUsePaintTests
     public void Invalid_use_paint_values_are_malformed_and_release_parser_owners(string attributes)
     {
         byte[] input = Input("<defs><rect id='p' width='12' height='10'/></defs><use href='#p' " + attributes + "/>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

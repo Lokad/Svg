@@ -13,11 +13,11 @@ public sealed class SvgNativeFillReplayTests
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", fileName));
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget measured = new(limits.MaximumAccountedBytes);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = SvgRootParser.Parse(input, limits, measured, null, CancellationToken.None))
             Assert.NotEmpty(root.Geometries);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget memoryDenied = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget memoryDenied = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, memoryDenied, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, memoryDenied.Snapshot().CurrentBytes);
         using (SvgRoot root = SvgRootParser.Parse(input, limits, measured, null, CancellationToken.None))
@@ -38,14 +38,14 @@ public sealed class SvgNativeFillReplayTests
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'>" + content + "</svg>");
         SvgRenderLimits defaults = SvgRenderLimits.Default;
-        RenderBudget measured = new(defaults.MaximumAccountedBytes);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = SvgRootParser.Parse(input, defaults, measured, null, CancellationToken.None))
             Assert.Contains(root.Geometries, geometry => geometry.AuthoredPath is not null);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         long peak = measured.Snapshot().PeakBytes;
         for (long limit = 1; limit < peak; limit += 256) DenyMemory(limit);
         DenyMemory(peak - 1);
-        RenderBudget retry = new(defaults.MaximumAccountedBytes);
+        RenderBudget retry = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = SvgRootParser.Parse(input, defaults, retry, null, CancellationToken.None))
         {
             SvgAuthoredPath[] sources = root.Geometries.Select(geometry => geometry.AuthoredPath).OfType<SvgAuthoredPath>().ToArray();
@@ -58,7 +58,7 @@ public sealed class SvgNativeFillReplayTests
                 expected = surface.Pixels.ToArray();
             }
             Assert.Equal(owned, retry.Snapshot().CurrentBytes);
-            using (retry.Reserve(defaults.MaximumAccountedBytes - owned - 1024, SvgMemoryCategory.Surface))
+            using (retry.Reserve(268_435_456L - owned - 1024, SvgMemoryCategory.Surface))
             {
                 long padded = retry.Snapshot().CurrentBytes;
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
@@ -82,7 +82,7 @@ public sealed class SvgNativeFillReplayTests
 
         void DenyMemory(long limit)
         {
-            RenderBudget denied = new(limit);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, defaults, denied, null, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }
@@ -93,7 +93,7 @@ public sealed class SvgNativeFillReplayTests
     [InlineData("<ellipse cx='1e8' cy='1e8' rx='1' ry='2'/>")]
     public void Oval_bounds_collapsing_in_native_float_enclose_no_area(string content)
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'>" + content + "</svg>");
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {

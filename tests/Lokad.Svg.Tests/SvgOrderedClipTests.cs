@@ -14,7 +14,7 @@ public sealed class SvgOrderedClipTests
     [InlineData(3, true)]
     public void Ordered_original_operands_preserve_native_cyclic_start_and_deferred_lines(int count, bool reorder)
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgAuthoredPath first = Rectangle(8, 20, budget))
         using (SvgAuthoredPath second = Rectangle(16, 24, budget))
         using (SvgAuthoredPath third = Rectangle(12, 20, budget))
@@ -54,7 +54,7 @@ public sealed class SvgOrderedClipTests
     [Fact]
     public void Straight_native_controls_are_reclassified_after_float_placement()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgAuthoredPath path = Boundary(budget))
         using (SvgPreparedPathContours source = path.PrepareSource(SvgAffineTransform.Identity, false, budget, CancellationToken.None))
         {
@@ -94,7 +94,7 @@ public sealed class SvgOrderedClipTests
         for (int index = 0; index < 42; index++) input.Append("<rect x='12' y='12' width='4' height='4'/>");
         input.Append(outerPath ? "<path d='M8 8H24V24H8Z'/>" : "<rect x='8' y='8' width='16' height='16'/>");
         input.Append("</clipPath></defs><g clip-path='url(#c)' transform='translate(.5 .25)'><path d='M4 26Q16 -4 28 26Z'/></g></svg>");
-        RenderBudget budget = new(2_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(input.ToString()), SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgDrawCommand[] scopes = root.Commands.Where(command => command.Kind == SvgDrawCommandKind.BeginGroup).ToArray();

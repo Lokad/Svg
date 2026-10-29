@@ -148,13 +148,13 @@ public sealed partial class OpenTypeFontTests
         string resources = target == "visibility" ? EmptyPatternResources("solid") : EmptyPatternResources("text");
         byte[] input = EmptyPatternDocument(resources + body);
         byte[] unchanged = input.ToArray();
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
             Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, CancellationToken.None));
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
-            RenderBudget denied = new(budget.Snapshot().PeakBytes - 74);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes - 74));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
             using (SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None)) { }

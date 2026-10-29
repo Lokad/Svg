@@ -8,7 +8,7 @@ public sealed class BudgetedTextBufferTests
     [Fact]
     public void Collapsed_spaces_keep_the_first_span_owner_and_trim_only_the_final_separator()
     {
-        RenderBudget budget = new(20_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(20_000));
         SvgInheritedTextStyle font = new("Example", 400, false, 18, SvgTextWhitespaceMode.Default, 1, SvgTextAnchor.Start) { WordSpacing = 5 };
         using (SvgTextPaintOutput output = new(budget, 1, SvgTextPaintStyle.Default, font, CancellationToken.None))
         {
@@ -35,7 +35,7 @@ public sealed class BudgetedTextBufferTests
     [Fact]
     public void Nested_lists_count_normalized_scalars_across_chunks_and_resume_ancestor_values()
     {
-        RenderBudget budget = new(20_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(20_000));
         using SvgTextLayoutBuffer buffer = new(budget, 0, CancellationToken.None);
         buffer.Append("A", 0, 0, 20, CancellationToken.None);
         buffer.EnterPositioningSpan(new SvgTextPositionLists("10 20 30 40", null, null, null, "5 10"), 1, CancellationToken.None);
@@ -61,12 +61,12 @@ public sealed class BudgetedTextBufferTests
     [Fact]
     public void Scoped_list_denial_and_cancellation_release_active_and_detached_storage()
     {
-        RenderBudget accepted = new(100_000);
+        RenderBudget accepted = new RenderBudget(new HostMemoryBudget(100_000));
         Run(accepted, CancellationToken.None, null);
         long peak = accepted.Snapshot().PeakBytes;
         foreach (long limit in new[] { 1, peak / 2, peak - 1 })
         {
-            RenderBudget denied = new(limit);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(denied, CancellationToken.None, null)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }
@@ -91,7 +91,7 @@ public sealed class BudgetedTextBufferTests
     [Fact]
     public void Transfers_the_final_string_charge_and_releases_it_with_the_consumer()
     {
-        RenderBudget budget = new(1_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000));
         using (var buffer = new BudgetedTextBuffer(budget))
         {
             buffer.Append("A", 10, CancellationToken.None);
@@ -107,7 +107,7 @@ public sealed class BudgetedTextBufferTests
     [Fact]
     public void Reserves_replacement_character_storage_before_growth()
     {
-        RenderBudget budget = new(1_500);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_500));
         using var buffer = new BudgetedTextBuffer(budget);
         buffer.Append(new string('A', 256), 512, CancellationToken.None);
 
@@ -120,7 +120,7 @@ public sealed class BudgetedTextBufferTests
     [Fact]
     public void Normalizes_direct_text_whitespace_across_reader_chunks_without_bypassing_the_source_limit()
     {
-        RenderBudget budget = new(1_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000));
         using var buffer = new BudgetedTextBuffer(budget);
         var normalizer = new SvgTextWhitespaceNormalizer();
 
@@ -130,7 +130,7 @@ public sealed class BudgetedTextBufferTests
 
         Assert.Equal("A A", text.Value);
         Assert.Equal(9, normalizer.SourceCharacterCount);
-        using var preservedBuffer = new BudgetedTextBuffer(new RenderBudget(1_000));
+        using var preservedBuffer = new BudgetedTextBuffer(new RenderBudget(new HostMemoryBudget(1_000)));
         var preserved = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Preserve);
         preserved.Append(" \tA\r", preservedBuffer, 16, CancellationToken.None);
         preserved.Append("\n A  ", preservedBuffer, 16, CancellationToken.None);
@@ -139,7 +139,7 @@ public sealed class BudgetedTextBufferTests
         Assert.Equal("  A   A  ", preservedText.Value);
         Assert.Equal(9, preserved.SourceCharacterCount);
         var denied = new SvgTextWhitespaceNormalizer();
-        using var deniedBuffer = new BudgetedTextBuffer(new RenderBudget(1_000));
+        using var deniedBuffer = new BudgetedTextBuffer(new RenderBudget(new HostMemoryBudget(1_000)));
         SvgException exception = Assert.Throws<SvgException>(() => denied.Append("     ", deniedBuffer, 4, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
@@ -148,7 +148,7 @@ public sealed class BudgetedTextBufferTests
     [Fact]
     public void Retains_only_normalized_letter_spacing_intervals_that_differ_from_the_parent_text()
     {
-        RenderBudget budget = new(2_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000));
         using var buffer = new SvgTextLayoutBuffer(budget, 0, CancellationToken.None);
         var parent = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 0);
         var spaced = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 5);
@@ -168,7 +168,7 @@ public sealed class BudgetedTextBufferTests
     [Fact]
     public void Retains_a_positioned_span_offset_for_its_first_descendant_character()
     {
-        RenderBudget budget = new(2_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000));
         using var buffer = new SvgTextLayoutBuffer(budget, 0, CancellationToken.None);
         var descendant = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 0, 2, false);
 
@@ -187,7 +187,7 @@ public sealed class BudgetedTextBufferTests
     [Fact]
     public void Lets_a_nearer_zero_position_offset_override_an_outer_span()
     {
-        RenderBudget budget = new(2_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000));
         using var buffer = new SvgTextLayoutBuffer(budget, 0, CancellationToken.None);
         var descendant = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 0, 2, true);
 
@@ -205,7 +205,7 @@ public sealed class BudgetedTextBufferTests
     [Fact]
     public void Resolves_each_position_offset_axis_from_its_nearest_span()
     {
-        RenderBudget budget = new(2_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000));
         using var buffer = new SvgTextLayoutBuffer(budget, 0, CancellationToken.None);
         var descendant = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 0, 2, true);
 
@@ -223,7 +223,7 @@ public sealed class BudgetedTextBufferTests
     [Fact]
     public void Retains_absolute_zero_and_resolves_coordinates_separately_from_relative_offsets()
     {
-        RenderBudget budget = new(2_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000));
         using var buffer = new SvgTextLayoutBuffer(budget, 0, CancellationToken.None);
         var descendant = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 0, 2, true);
 
@@ -243,7 +243,7 @@ public sealed class BudgetedTextBufferTests
     [Fact]
     public void Empty_absolute_position_scopes_do_not_reposition_later_parent_text()
     {
-        RenderBudget budget = new(2_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000));
         using var buffer = new SvgTextLayoutBuffer(budget, 0, CancellationToken.None);
         var empty = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 0, 1, true);
         var parent = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 0);

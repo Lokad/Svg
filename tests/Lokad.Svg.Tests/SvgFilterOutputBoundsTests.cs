@@ -36,7 +36,7 @@ public sealed class SvgFilterOutputBoundsTests
     [InlineData(-100_000)]
     public void Unused_remote_source_bounds_do_not_enlarge_the_filter_capture(int position)
     {
-        SvgRenderLimits limits = new(1_000_000, 16_384, 64, 4096, 16_384, 64, 64);
+        SvgRenderLimits limits = new(16_384, 64, 4096, 16_384, 64, 64);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
         const string red = "<rect width='32' height='32' fill='red'/>";
         Assert.Equal(Render(red, options), Render(Filter("<feFlood flood-color='red'/>") + Shape("rect", position, position), options));
@@ -61,15 +61,15 @@ public sealed class SvgFilterOutputBoundsTests
     public void Source_independent_filter_playback_releases_on_memory_refusal_and_retry()
     {
         byte[] input = Input(Filter("<feFlood flood-color='red'/><feOffset dx='1' dy='1'/>") + Shape("rect", 64, 64));
-        RenderBudget parser = new(1_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None))
         {
             byte[] expected;
-            RenderBudget measured = new(1_000_000);
+            RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
             using (SvgConverter.RasterizedSurface result = SvgConverter.Rasterize(root, SvgRenderOptions.Default, measured, CancellationToken.None))
             { expected = result.Pixels.ToArray(); }
             Assert.Equal(0, measured.Snapshot().CurrentBytes);
-            RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
             Assert.Equal(0, measured.Snapshot().CurrentBytes);

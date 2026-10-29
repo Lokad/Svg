@@ -19,7 +19,7 @@ public sealed partial class OpenTypeFontTests
         const string expected = "<text font-family='Example' font-size='100' y='3'>A</text><text font-family='Example' font-size='100'><textPath href='#p'>A</textPath></text><text font-family='Example' font-size='100' x='8' y='3'>A</text>";
         byte[] reference = System.Text.Encoding.UTF8.GetBytes(prefix + definition + expected + "</svg>");
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
             Assert.Equal(SvgConverter.ConvertToPng(reference, options, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(root, options, budget, CancellationToken.None).ToArray());
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -33,7 +33,7 @@ public sealed partial class OpenTypeFontTests
         byte[] input = System.Text.Encoding.UTF8.GetBytes(source), unchanged = input.ToArray();
         string reference = source.Replace("<text font-family='Example' font-size='100' y='3' mask='url(#m)'>A<textPath href='#p'>A</textPath></text>", "<g mask='url(#m)'><text font-family='Example' font-size='100' y='3'>A</text><text font-family='Example' font-size='100'><textPath href='#p'>A</textPath></text></g>", StringComparison.Ordinal);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
             Assert.Equal(SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(reference), options, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(root, options, budget, CancellationToken.None).ToArray());
         Assert.Equal(0, budget.Snapshot().CurrentBytes); Assert.Equal(unchanged, input);
@@ -43,7 +43,7 @@ public sealed partial class OpenTypeFontTests
     public void Continuation_coordinate_lists_consume_prior_scalars_and_keep_rotation_repetition()
     {
         SvgTextPositionLists lists = new("1 2 3 4", "10 20 30 40", "0 1 2 3", null, "5 15") { CharacterOffset = 2 };
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         using (OwnedParserArray<SvgTextPositionAdjustment> positions = lists.Build("AA", [], budget, CancellationToken.None))
         {
             Assert.Equal(2, positions.Items.Length);

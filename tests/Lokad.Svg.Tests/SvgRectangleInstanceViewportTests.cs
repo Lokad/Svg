@@ -79,7 +79,7 @@ public sealed class SvgRectangleInstanceViewportTests
     [InlineData("width='50%' height='2' stroke='red' stroke-width='1em'", SvgErrorCode.UnsupportedFeature)]
     public void Unused_percentage_sources_keep_existing_geometry_admission(string attributes, SvgErrorCode code)
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(code, Assert.Throws<SvgException>(() => SvgRootParser.Parse(Input("<defs><rect id='s' " + attributes + "/></defs>"), SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -103,15 +103,15 @@ public sealed class SvgRectangleInstanceViewportTests
         const string source = "<defs><rect id='s' width='50%' height='50%' rx='10%' fill='red'/></defs>";
         string content = source + Nested("<use href='#s'/>", "width='16' height='16'");
         byte[] input = Input(content);
-        RenderBudget baseline = new(1_000_000);
+        RenderBudget baseline = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, baseline, null, CancellationToken.None)) { }
         Assert.Equal(0, baseline.Snapshot().CurrentBytes);
-        RenderBudget denied = new(baseline.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(baseline.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget cancelled = new(1_000_000);
+        RenderBudget cancelled = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, cancellation.Token));
         Assert.Equal(0, cancelled.Snapshot().CurrentBytes);
         Assert.Equal(Render(Nested("<rect width='50%' height='50%' rx='10%' fill='red'/>", "width='16' height='16'")), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());

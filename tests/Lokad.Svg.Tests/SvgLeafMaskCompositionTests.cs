@@ -11,7 +11,7 @@ public sealed class SvgLeafMaskCompositionTests
     [InlineData(true)]
     public void Copied_leaf_masks_keep_fill_stroke_together_and_separate_sibling_and_instance_values(bool forward)
     {
-        RenderBudget budget = new(10_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(Input(forward), SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             Assert.Equal(6, scene.Geometries.Length);
@@ -37,7 +37,7 @@ public sealed class SvgLeafMaskCompositionTests
     public void Copied_regions_move_with_the_source_mask_without_turning_into_geometry_clips()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='49' height='43'><defs><mask id='m' maskUnits='userSpaceOnUse' x='9' y='10' width='17' height='13'><rect width='79' height='73' fill='#808080'/></mask></defs><g id='g'><rect x='4.375' y='5.25' width='29.125' height='23.5' rx='5.25' fill='#267eb5' mask='url(#m)'/></g><use href='#g' x='5' y='4'/></svg>"u8.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgDrawCommand[] scopes = scene.Commands.Where(c => c.Kind == SvgDrawCommandKind.BeginGroup).ToArray();
@@ -75,13 +75,13 @@ public sealed class SvgLeafMaskCompositionTests
     public void Partial_mapping_and_command_rewrite_release_owners_on_memory_and_token_denial(bool forward)
     {
         byte[] input = Input(forward);
-        RenderBudget measured = new(10_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(10_000_000));
         using (SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget tight = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget tight = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
-        RenderBudget denied = new(10_000_000);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(10_000_000));
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
@@ -95,15 +95,15 @@ public sealed class SvgLeafMaskCompositionTests
     [InlineData(true)]
     public void Masked_fill_stroke_surfaces_release_storage_on_memory_and_token_denial(bool forward)
     {
-        RenderBudget sceneBudget = new(10_000_000), measured = new(10_000_000);
+        RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(10_000_000)), measured = new RenderBudget(new HostMemoryBudget(10_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(Input(forward), SvgRenderLimits.Default, sceneBudget, null, CancellationToken.None))
         {
             using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None)) {}
             Assert.Equal(0, measured.Snapshot().CurrentBytes);
-            RenderBudget tight = new(measured.Snapshot().PeakBytes - 1);
+            RenderBudget tight = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(scene, SvgRenderOptions.Default, tight, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, tight.Snapshot().CurrentBytes);
-            RenderBudget denied = new(10_000_000);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(10_000_000));
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();
@@ -120,7 +120,7 @@ public sealed class SvgLeafMaskCompositionTests
     public void Deep_instance_chains_preserve_scope_counts_and_release_every_reserved_owner(int depth)
     {
         byte[] input = Chain(depth);
-        RenderBudget budget = new(10_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             int scopes = (depth + 1) * (depth + 2) / 2;
@@ -131,7 +131,7 @@ public sealed class SvgLeafMaskCompositionTests
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new(16_384);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(16_384));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
     }
@@ -152,12 +152,12 @@ public sealed class SvgLeafMaskCompositionTests
         const string instance = "<use href='#p' x='2' y='3' mask='url(#m)'/>";
         string source = nested ? nestedGroup : unbake ? group : "<defs>" + rectangle + "</defs>";
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><defs>" + mask + "</defs>" + (forward ? instance + source : source + instance) + "</svg>");
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         for (long maximum = 256; maximum < measured.Snapshot().PeakBytes; maximum += 256)
         {
-            RenderBudget budget = new(maximum);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(maximum));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }

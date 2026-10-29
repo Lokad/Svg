@@ -122,7 +122,7 @@ public sealed class SvgCurveFillTests
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8' viewBox='0 0 8 8' preserveAspectRatio='none'><path d='M0,8 Q4,0 8,8 Z' fill='red'/></svg>"u8.ToArray();
         byte[] unchanged = input.ToArray();
-        RenderBudget budget = new(4_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(4_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             long retained = budget.Snapshot().CurrentBytes;
@@ -192,7 +192,7 @@ public sealed class SvgCurveFillTests
     [Fact]
     public void Curve_command_count_exceeds_small_limit()
     {
-        SvgRenderLimits limits = new(268435456, 16777216, 16384, 16777216, 134217728, 100000, 3);
+        SvgRenderLimits limits = new(16777216, 16384, 16777216, 134217728, 100000, 3);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits, null);
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q1,0 2,2 Q3,3 4,4 Z' fill='red'/></svg>");
 
@@ -204,7 +204,7 @@ public sealed class SvgCurveFillTests
     [Fact]
     public void Flattened_expansion_beyond_capacity_stays_bounded()
     {
-        SvgRenderLimits limits = new(268435456, 16777216, 16384, 16777216, 134217728, 100000, 3000);
+        SvgRenderLimits limits = new(16777216, 16384, 16777216, 134217728, 100000, 3000);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits, null);
         string d = string.Join(" ", Enumerable.Repeat("M0,0 C4000,0 4000,4000 0,4000", 1000));
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='" + d + "' fill='red'/></svg>");

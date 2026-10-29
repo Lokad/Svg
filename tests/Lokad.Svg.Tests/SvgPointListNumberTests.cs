@@ -59,7 +59,7 @@ public sealed class SvgPointListNumberTests
     public void Enclosing_flood_can_paint_over_an_invalid_child_while_the_childs_own_flood_cannot(string consumer, int paintedPixels)
     {
         byte[] input = TextEncoding.UTF8.GetBytes(Document("polygon", "4 4 24 4 " + new string('0', 39) + "24 24 4 24", "flood", consumer));
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
         using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None);
         int opaque = 0;
@@ -81,7 +81,7 @@ public sealed class SvgPointListNumberTests
     public void Invalid_source_releases_staging_and_preserves_borrowed_storage_on_denial_and_retry(string consumer)
     {
         byte[] input = TextEncoding.UTF8.GetBytes(Document("polygon", "4 4 24 4 " + new string('0', 39) + "24 24 4 24", "markers", consumer));
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         long peak;
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
@@ -94,7 +94,7 @@ public sealed class SvgPointListNumberTests
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new(peak - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(peak - 1));
         using (RenderBudget.BudgetReservation borrowed = denied.Reserve(73, SvgMemoryCategory.Scene))
         {
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);

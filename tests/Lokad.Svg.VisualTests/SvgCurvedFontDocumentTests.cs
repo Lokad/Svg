@@ -23,7 +23,7 @@ public sealed class SvgCurvedFontDocumentTests
         byte[] input = Document("<text>" + text + "</text>", string.Empty);
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "font-pack.json")), "public-noto-sans");
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, Provider(), CancellationToken.None);
-        using SvgPositionedGlyphStorage positions = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), text, 20, 0, 0, new RenderBudget(10_000), CancellationToken.None);
+        using SvgPositionedGlyphStorage positions = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), text, 20, 0, 0, new RenderBudget(new HostMemoryBudget(10_000)), CancellationToken.None);
         SvgPositionedGlyph glyph = Assert.Single(positions.Glyphs.ToArray());
         Assert.Equal(expectedGlyph, glyph.GlyphIndex);
         Assert.Equal(expectedAdvance * .02, glyph.Advance);
@@ -273,7 +273,7 @@ public sealed class SvgCurvedFontDocumentTests
         using SvgFontSnapshot snapshot = await Prepare(input);
         byte[] font = Assert.Single(snapshot.Fonts).Bytes.ToArray();
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         byte[] expected;
         using (SvgRoot root = SvgRootParser.Parse(input, options.Limits, budget, snapshot, CancellationToken.None))
         {
@@ -286,7 +286,7 @@ public sealed class SvgCurvedFontDocumentTests
             Assert.Equal(expected, SvgConverter.ConvertToPng(root, options, budget, CancellationToken.None).ToArray());
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new(budget.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot root = SvgRootParser.Parse(input, options.Limits, denied, snapshot, CancellationToken.None);
@@ -305,7 +305,7 @@ public sealed class SvgCurvedFontDocumentTests
         byte[] input = File.ReadAllBytes(Path.Combine(DirectoryPath, "curved-midpoint.svg"));
         using SvgFontSnapshot snapshot = await Prepare(input);
         byte[] unchangedFont = Assert.Single(snapshot.Fonts).Bytes.ToArray();
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
         {
             SvgGlyphRasterSource source = Assert.Single(root.Geometries).Glyph.Source ?? throw new InvalidDataException("Missing mapped glyph source.");
@@ -355,10 +355,10 @@ public sealed class SvgCurvedFontDocumentTests
         byte[] input = File.ReadAllBytes(Path.Combine(DirectoryPath, Required(item, "input")));
         using SvgFontSnapshot snapshot = await Prepare(input);
         Assert.Single(snapshot.Fonts);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None)) Assert.NotEmpty(root.Geometries);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new(budget.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, snapshot, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         SvgRenderOptions options = new(new SvgViewport(item.GetProperty("width").GetInt32(), item.GetProperty("height").GetInt32()), 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
@@ -371,14 +371,14 @@ public sealed class SvgCurvedFontDocumentTests
         byte[] input = File.ReadAllBytes(Path.Combine(DirectoryPath, "curved-midpoint.svg"));
         using SvgFontSnapshot snapshot = await Prepare(input);
         byte[] original = Assert.Single(snapshot.Fonts).Bytes.ToArray();
-        RenderBudget accounting = new(long.MaxValue);
+        RenderBudget accounting = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, accounting, snapshot, CancellationToken.None))
         {
             Assert.True(accounting.Snapshot().CurrentBytes > 0);
             Assert.True(Assert.Single(root.Geometries).Glyph.Source is {} source && source.HasGlyphMap);
         }
         Assert.Equal(0, accounting.Snapshot().CurrentBytes);
-        RenderBudget denied = new(accounting.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(accounting.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, snapshot, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         SvgRenderOptions options = new(new SvgViewport(128, 96), 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
@@ -400,7 +400,7 @@ public sealed class SvgCurvedFontDocumentTests
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
         byte[] equivalent = Document("<defs><path id='p' d='M8 48 H56'/></defs><text><textPath href='#p' startOffset='16'>A</textPath></text>", "");
         Assert.Equal(SvgConverter.ConvertToPng(equivalent, options, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
             Assert.True(Assert.Single(root.Geometries).Glyph.Source is {} source && !source.HasGlyphMap);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -445,7 +445,7 @@ public sealed class SvgCurvedFontDocumentTests
         byte[] input = Document("<defs><path id='p' d='M0 48 H64'/></defs><text><textPath href='#p'>A</textPath>" + sibling + "</text>", "");
         // Discovery may reject an unsupported child before preparing a font; the admitted control prepares the same caller-owned face.
         using SvgFontSnapshot snapshot = await Prepare(Document("<text>A</text>", ""));
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         Assert.Equal(category, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -460,7 +460,7 @@ public sealed class SvgCurvedFontDocumentTests
         byte[] original = Assert.Single(snapshot.Fonts).Bytes.ToArray();
         byte[] reference = Document("<defs><path id='p' d='M0 48 H64'/></defs><text><textPath href='#p'>A</textPath></text><text x='64' y='48'>A</text>", "");
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
             Assert.Equal(SvgConverter.ConvertToPng(reference, options, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(root, options, budget, CancellationToken.None).ToArray());
         Assert.Equal(0, budget.Snapshot().CurrentBytes); Assert.Equal(original, Assert.Single(snapshot.Fonts).Bytes.ToArray());
@@ -472,10 +472,10 @@ public sealed class SvgCurvedFontDocumentTests
         byte[] input = File.ReadAllBytes(Path.Combine(DirectoryPath, "two-path-runs.svg"));
         using SvgFontSnapshot snapshot = await Prepare(input);
         byte[] original = Assert.Single(snapshot.Fonts).Bytes.ToArray();
-        RenderBudget accounting = new(long.MaxValue);
+        RenderBudget accounting = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, accounting, snapshot, CancellationToken.None)) Assert.True(accounting.Snapshot().CurrentBytes > 0);
         Assert.Equal(0, accounting.Snapshot().CurrentBytes);
-        RenderBudget denied = new(accounting.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(accounting.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, snapshot, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         using SvgRoot retried = SvgRootParser.Parse(input, SvgRenderLimits.Default, accounting, snapshot, CancellationToken.None);
@@ -488,7 +488,7 @@ public sealed class SvgCurvedFontDocumentTests
         string characters = new('A', SvgTextLimits.MaximumCharacters / 2 + 1);
         byte[] input = Document("<text><textPath href='#p'>" + characters + "</textPath><textPath href='#p'>" + characters + "</textPath></text><defs><path id='p' d='M0 48 H64'/></defs>", "");
         using SvgFontSnapshot snapshot = await Prepare(Document("<text>A</text>", ""));
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

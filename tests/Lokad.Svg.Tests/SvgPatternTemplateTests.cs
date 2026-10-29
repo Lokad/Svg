@@ -34,10 +34,10 @@ public sealed class SvgPatternTemplateTests
     public void Template_scenes_release_owners_at_parser_memory_and_raster_work_boundaries(string family, string identity)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", family, identity + ".svg"));
-        RenderBudget discovery = new(8_000_000);
+        RenderBudget discovery = new RenderBudget(new HostMemoryBudget(8_000_000));
         Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, discovery, CancellationToken.None));
         Assert.Equal(0, discovery.Snapshot().CurrentBytes);
-        RenderBudget measured = new(8_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None))
             {}
@@ -48,7 +48,7 @@ public sealed class SvgPatternTemplateTests
 
         void DenyMemory(long limit)
         {
-            RenderBudget budget = new(limit);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
             {
                 using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None);
@@ -68,7 +68,7 @@ public sealed class SvgPatternTemplateTests
     public void Rejected_template_graphs_release_owners(string definitions, SvgErrorCode expected)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs>" + definitions + "</defs><rect width='8' height='8' fill='url(#p)'/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(expected, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -80,7 +80,7 @@ public sealed class SvgPatternTemplateTests
         for (int index = 0; index < 1024; index++) text.Append("<pattern id='p").Append(index).Append("' href='#p").Append(index + 1).Append("'/>");
         text.Append("<pattern id='p1024' width='8' height='8' patternUnits='userSpaceOnUse'><circle cx='4' cy='4' r='2' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#p0)'/></svg>");
         // The retained contexts now include independently resolved element opacity.
-        RenderBudget budget = new(10_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000_000));
         using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(text.ToString()), SvgRenderLimits.Default, budget, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
             Assert.Equal(new byte[] { 255, 0, 0, 255 }, surface.Pixels.AsSpan((4 * 8 + 4) * 4, 4).ToArray());
@@ -91,7 +91,7 @@ public sealed class SvgPatternTemplateTests
     public void Aliases_borrow_one_promoted_rectangle_scene_with_independent_grids()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='8'><defs><pattern id='base' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='red'/></pattern><pattern id='p' href='#base'/><pattern id='q' href='#base' width='12'/></defs><rect width='8' height='8' fill='url(#p)'/><rect x='12' width='12' height='8' fill='url(#q)'/></svg>"u8.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             SvgPatternGeometry[] paints = root.Geometries.Where(g => g.Kind == SvgGeometryKind.PatternFill).Select(g => g.Pattern).ToArray();
@@ -116,12 +116,12 @@ public sealed class SvgPatternTemplateTests
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", identity + ".svg"));
         SvgRenderOptions options = explicitHeight == 0 ? SvgRenderOptions.Default : new(new(width, explicitHeight), 1, SvgColor.Transparent, SvgRenderLimits.Default);
-        RenderBudget measured = new(8_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, options, measured, CancellationToken.None))
             Assert.Equal(width, surface.Width);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget deniedMemory = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget deniedMemory = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, deniedMemory, CancellationToken.None);
@@ -135,7 +135,7 @@ public sealed class SvgPatternTemplateTests
     public void Oversized_tile_mapping_releases_scratch_without_disposing_borrowed_content()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='50000.5' height='8' patternUnits='userSpaceOnUse'><circle cx='4' cy='4' r='2'/></pattern></defs><rect width='8' height='8' fill='url(#p)'/></svg>"u8.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             long retained = budget.Snapshot().CurrentBytes;
@@ -151,7 +151,7 @@ public sealed class SvgPatternTemplateTests
     public void Singular_pattern_maps_reject_and_release_partial_owners(string transform)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><pattern id='prior' width='4' height='4' patternUnits='userSpaceOnUse'><circle cx='2' cy='2' r='1'/></pattern><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse' patternTransform='" + transform + "'><circle cx='2' cy='2' r='1'/></pattern><rect width='8' height='8' fill='url(#p)'/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
         Assert.Equal("Only nonsingular finite matrix() transforms are implemented.", error.Message);
@@ -165,7 +165,7 @@ public sealed class SvgPatternTemplateTests
     public void Oversized_pattern_transform_denies_and_allows_retry_with_the_same_borrowed_scene(string transform)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse' patternTransform='" + transform + "'><circle cx='2' cy='2' r='1' fill='red'/></pattern><rect width='8' height='8' fill='url(#p)'/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             long retained = budget.Snapshot().CurrentBytes;

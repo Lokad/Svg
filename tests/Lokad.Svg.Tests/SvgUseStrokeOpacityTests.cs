@@ -12,7 +12,7 @@ public sealed class SvgUseStrokeOpacityTests
     public void Source_stroke_opacity_wins_independently_of_fill_opacity(string authored, float alpha, int colorAlpha)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='24'><defs><rect id='p' x='4' y='4' width='12' height='10' fill='#297fb3' stroke='#bc9334' stroke-width='2' " + authored + "/></defs><use href='#p' fill-opacity='.75' stroke-opacity='.375'/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             SvgGeometry geometry = Assert.Single(scene.Geometries);
@@ -37,7 +37,7 @@ public sealed class SvgUseStrokeOpacityTests
     public void Instance_opacity_and_unpainted_centerlines_release_all_owners_on_denial_and_cancellation(string identity)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "use-stroke-opacity", identity + ".svg"));
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None))
             {}
@@ -47,7 +47,7 @@ public sealed class SvgUseStrokeOpacityTests
         DenyMemory(peak - 1);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget canceled = new(1_000_000);
+        RenderBudget canceled = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, canceled, null, cancellation.Token)).CancellationToken);
         Assert.Equal(0, canceled.Snapshot().CurrentBytes);
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, canceled, null, CancellationToken.None))
@@ -59,7 +59,7 @@ public sealed class SvgUseStrokeOpacityTests
 
         void DenyMemory(long limit)
         {
-            RenderBudget budget = new(limit);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
             {
                 using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None);

@@ -12,15 +12,15 @@ public sealed class SvgPatternDeviceTests
     {
         byte[] input = Input();
         byte[] unchanged = input.ToArray();
-        RenderBudget parser = new(64_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(64_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None))
         {
-            RenderBudget budget = new(64_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(64_000_000));
             byte[] expected;
             using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
                 expected = surface.Pixels.ToArray();
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
-            RenderBudget tight = new(budget.Snapshot().PeakBytes - 1);
+            RenderBudget tight = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes - 1));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
             {
                 using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, tight, CancellationToken.None);

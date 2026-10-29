@@ -25,7 +25,7 @@ public sealed class SvgIntegerPointListTests
             string path = "<path id='mark' d='M0,0 L8,8 L8,0 L0,8" + (closed ? " Z" : "") + "'" + style + "/>";
             byte[] input = System.Text.Encoding.UTF8.GetBytes(Document(points, definitions, placement));
             byte[] equivalent = System.Text.Encoding.UTF8.GetBytes(Document(path, definitions, placement));
-            RenderBudget budget = new(1_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
             {
                 SvgAuthoredPath source = Assert.IsType<SvgAuthoredPath>(Assert.Single(scene.Geometries).AuthoredPath);

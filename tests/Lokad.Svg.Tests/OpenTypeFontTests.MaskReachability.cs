@@ -31,7 +31,7 @@ public sealed partial class OpenTypeFontTests
         (var catalog, var provider, _) = CreateExamplePack(CreateTriangleFont());
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(catalog, new[] { new SvgFontFaceRequest("Example", 400, false) }, provider, CancellationToken.None);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
-        RenderBudget budget = new(4_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(4_000_000));
         byte[] expected;
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
@@ -44,7 +44,7 @@ public sealed partial class OpenTypeFontTests
                     Assert.Contains(expected, value => value != 0);
                 }
                 Assert.Equal(retained, budget.Snapshot().CurrentBytes);
-                using (RenderBudget.BudgetReservation pressure = budget.Reserve(budget.AvailableBytes - 1, SvgMemoryCategory.Surface))
+                using (RenderBudget.BudgetReservation pressure = budget.Reserve((4_000_000L - budget.Snapshot().CurrentBytes) - 1, SvgMemoryCategory.Surface))
                     Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, options, budget, CancellationToken.None)).ErrorCode);
                 Assert.Equal(retained, budget.Snapshot().CurrentBytes);
                 using SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(root, options, budget, CancellationToken.None);

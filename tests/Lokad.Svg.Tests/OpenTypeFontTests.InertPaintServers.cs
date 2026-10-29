@@ -157,14 +157,14 @@ public sealed partial class OpenTypeFontTests
     {
         byte[] input = Document("<defs><mask id='m' mask-type='alpha'><rect x='1' y='1' width='6' height='6' rx='2' fill='url(#live)' stroke='url(#empty)' stroke-width='2'/></mask><linearGradient id='live'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><pattern id='empty' patternUnits='userSpaceOnUse' width='4' height='4'/></defs><rect width='8' height='8' mask='url(#m)'/>");
         byte[] unchanged = input.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Parser);
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             Assert.False(root.HasUnsupportedChild);
         }
         Assert.Equal(73, budget.Snapshot().CurrentBytes);
-        RenderBudget tight = new(budget.Snapshot().PeakBytes - 1);
+        RenderBudget tight = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes - 1));
         using RenderBudget.BudgetReservation tightBorrowed = tight.Reserve(73, SvgMemoryCategory.Parser);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, CancellationToken.None)).ErrorCode);
         Assert.Equal(73, tight.Snapshot().CurrentBytes);

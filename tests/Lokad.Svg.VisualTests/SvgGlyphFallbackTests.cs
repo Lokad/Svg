@@ -22,7 +22,7 @@ public sealed partial class SvgGlyphFallbackTests
         Assert.Equal(new[] { "fonts/Primary.ttf", "fonts/Secondary.ttf" }, provider.Acquisitions);
         Assert.Equal(2, snapshot.Fonts.Count);
         Assert.All(snapshot.Fonts, font => Assert.False(font.Resolution.Resolution.IsFallback));
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         SvgTextStyle style = new(SvgFontFaceRequest.FromCss("FallbackPrimary, FallbackSecondary", 400, false), 40, 16, 56, 0, 0, 0, SvgTextAnchor.Start, "ordinary");
         using (SvgTextRun run = SvgTextRunBuilder.Create(style, "AéA", snapshot, budget, CancellationToken.None))
         {

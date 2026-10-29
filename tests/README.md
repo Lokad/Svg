@@ -10,7 +10,7 @@ each other:
 | Layer | Purpose | Examples |
 | --- | --- | --- |
 | Mechanisms | Exercise parsing, numerical boundaries, geometry, shaping and rounding directly. Keep useful exhaustive boundaries here. | [Alpha boundaries](Lokad.Svg.Tests/SvgAlphaBoundaryMechanismTests.cs), parser and OpenType tests. |
-| API and ownership | Cover distinct execution/allocation paths, destinations, prepared documents, cancellation, refusal, cleanup and retry with representative inputs. | [API forms](Lokad.Svg.Tests/SvgConversionApiContractTests.cs), [text replay/ownership](Lokad.Svg.Tests/SvgTextNodeMetricsTests.cs), public-contract and destination-overlap tests. |
+| API and ownership | Cover distinct execution/allocation paths, destinations, prepared documents, cancellation, refusal, cleanup and retry with representative inputs. | [API forms](Lokad.Svg.Tests/SvgConversionApiContractTests.cs), [shared admission](Lokad.Svg.Tests/OpenTypeFontTests.SharedMemory.cs), [text replay/ownership](Lokad.Svg.Tests/SvgTextNodeMetricsTests.cs), public-contract and destination-overlap tests. |
 | Rendering | Compare each input with its own independent browser reference through canonical owned synchronous conversion. Keep platform differences and specific replay interactions. | [Native paint inputs](Lokad.Svg.VisualTests/SvgPaintInputReferenceTests.cs), fixture and research-reference tests. |
 
 The pinned .NET 11 RC SDK is the development default. Install both .NET 11 and

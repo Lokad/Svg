@@ -17,7 +17,7 @@ public sealed partial class OpenTypeFontTests
         WriteInt16(bytes, range.Offset + 16, 0);
         Assert.Equal(OpenTypeFont.GetGlyphContours(bytes, 1, CancellationToken.None), OpenTypeFont.GetGlyphContours(bytes, 2, CancellationToken.None));
         byte[] unchanged = bytes.ToArray();
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         Assert.True(OpenTypeFont.NeedsCompositeDeviceFitting(bytes, 2, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), budget, CancellationToken.None));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(unchanged, bytes);
@@ -39,7 +39,7 @@ public sealed partial class OpenTypeFontTests
         OpenTypeQuadraticSegment source = OpenTypeFont.GetGlyphContours(bytes, 1, CancellationToken.None)[0];
         Assert.Equal(source.Start.X + 3, first.Start.X);
         Assert.Equal(source.Start.Y - 4, first.Start.Y);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         Assert.True(OpenTypeFont.NeedsCompositeDeviceFitting(bytes, 2, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), budget, CancellationToken.None));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -54,7 +54,7 @@ public sealed partial class OpenTypeFontTests
         WriteUInt16(bytes, range.Offset + 12, 2);
         WriteInt16(bytes, range.Offset + 14, 0);
         WriteInt16(bytes, range.Offset + 16, 0);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => OpenTypeFont.GetLatinLightContours(bytes, 2, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), 32, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -87,7 +87,7 @@ public sealed partial class OpenTypeFontTests
         WriteInt16(bytes, cmap + 12 + 24, -63); // A maps to the admitted composite.
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
         SvgPreparedFont font = Assert.Single(snapshot.Fonts);
-        var budget = new RenderBudget(10_000);
+        var budget = new RenderBudget(new HostMemoryBudget(10_000));
         using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, new(2, 0, 3, 0), 100, budget))
             Assert.False(source.HasSimpleOutline(CancellationToken.None));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

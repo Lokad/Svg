@@ -13,7 +13,7 @@ public sealed class SvgGroupMaskCropTests
     public void Spatial_fallback_and_arc_strokes_release_owners_on_sampled_denial(string identity)
     {
         byte[] input = Read(identity);
-        RenderBudget measured = new(8_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(8_000_000));
         byte[] expected;
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, measured, CancellationToken.None))
@@ -23,7 +23,7 @@ public sealed class SvgGroupMaskCropTests
             Assert.All(storage.MaskContents, mask => Assert.Null(mask.UniformSource));
         }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget memory = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget memory = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, memory, CancellationToken.None);
@@ -31,10 +31,10 @@ public sealed class SvgGroupMaskCropTests
         }).ErrorCode);
         Assert.Equal(0, memory.Snapshot().CurrentBytes);
         SvgRenderLimits defaults = SvgRenderLimits.Default;
-        SvgRenderLimits limits = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
+        SvgRenderLimits limits = new(defaults.MaximumInputBytes, defaults.MaximumDimension,
             defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
             defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
-        RenderBudget raster = new(8_000_000);
+        RenderBudget raster = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, limits, raster, null, CancellationToken.None))
         {
             long retained = raster.Snapshot().CurrentBytes;
@@ -48,7 +48,7 @@ public sealed class SvgGroupMaskCropTests
     [Fact]
     public void Covering_uniform_mask_keeps_the_scalar_route()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(Read("covering-uniform-preserved"), SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             SvgSceneStorage storage = root.SceneStorage ?? throw new InvalidOperationException("Missing scene storage.");
@@ -86,7 +86,7 @@ public sealed class SvgGroupMaskCropTests
     public void Meaningful_or_invalid_exporter_values_reject_without_owners(string declaration, SvgErrorCode expected)
     {
         byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect width='8' height='8' style='" + declaration + "'/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(expected, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -98,7 +98,7 @@ public sealed class SvgGroupMaskCropTests
     public void Instance_and_width_admission_preserves_output_and_cleanup(string geometry)
     {
         byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><rect width='4' height='8' fill='white'/></mask><rect id='r' width='8' height='8'/></defs>" + geometry + "</svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
             using SvgConverter.RasterizedSurface output = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None);
@@ -110,7 +110,7 @@ public sealed class SvgGroupMaskCropTests
     [Fact]
     public void Cancellation_preserves_the_borrowed_spatial_scene_and_retry_pixels()
     {
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(Read("nested-crop"), SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             byte[] expected;

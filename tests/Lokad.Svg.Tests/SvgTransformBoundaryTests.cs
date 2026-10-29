@@ -54,7 +54,7 @@ public sealed class SvgTransformBoundaryTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
             SvgConverter.ConvertToPng(input, destination, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
         Assert.Equal(new byte[] { 73 }, destination.ToArray());
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
             SvgException parsing = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None));

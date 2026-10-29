@@ -109,13 +109,13 @@ public sealed class SvgHairlineCurveTests
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path fill='none' stroke='#eb1c23' stroke-width='.5' d='M6 40 C-12 -12 76 80 58 12'/></svg>"u8.ToArray();
         SvgRenderLimits defaults = SvgRenderLimits.Default;
-        RenderBudget budget = new(defaults.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = SvgRootParser.Parse(input, defaults, budget, null, CancellationToken.None))
         {
             SvgAuthoredPath path = Assert.IsType<SvgAuthoredPath>(Assert.Single(root.Geometries).AuthoredPath);
             SvgAuthoredPathCommand[] commands = path.Commands.ToArray();
             long retained = budget.Snapshot().CurrentBytes;
-            using (budget.Reserve(defaults.MaximumAccountedBytes - retained - 1024, SvgMemoryCategory.Surface))
+            using (budget.Reserve(268_435_456L - retained - 1024, SvgMemoryCategory.Surface))
             {
                 long padded = budget.Snapshot().CurrentBytes;
                 SvgException memory = Assert.Throws<SvgException>(() => { using var denied = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None); });

@@ -25,7 +25,7 @@ public sealed class SvgFilterLengthTests
     [InlineData("-1e300", -33_554_430)]
     public void Fixed_region_and_primitive_lengths_are_bounded_before_coordinate_resolution(string token, double expected)
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgFilterResource resource = Read(token, budget))
         {
             SvgFilterLength length = new(expected, false);
@@ -42,7 +42,7 @@ public sealed class SvgFilterLengthTests
     [InlineData("1e300%", 1e300)]
     public void Percentage_lengths_keep_their_viewport_relative_domain(string token, double expected)
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgFilterResource resource = Read(token, budget))
         {
             SvgFilterLength length = new(expected, true);
@@ -75,7 +75,7 @@ public sealed class SvgFilterLengthTests
             : "<g" + placement + "><rect width='2' height='2'/></g>";
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>"
             + "<defs><filter id='f'><feFlood flood-color='green'/></filter></defs>" + shape + "</svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             SvgDrawCommand filter = Assert.Single(scene.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.RegionKind == SvgLayerRegionKind.Filter);

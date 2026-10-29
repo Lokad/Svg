@@ -9,11 +9,25 @@ ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.
 ReadOnlySpan<byte> pngSignature = [137, 80, 78, 71, 13, 10, 26, 10];
 if (png.Length < pngSignature.Length || !png.Span[..pngSignature.Length].SequenceEqual(pngSignature)) throw new InvalidOperationException("The installed Lokad.Svg package did not produce a PNG.");
 
+using (TestMemoryBudget sharedBudget = new(1_000_000))
+{
+    SvgRenderOptions governedOptions = SvgRenderOptions.Default.WithMemoryBudget(sharedBudget);
+    using (SvgPngResult retained = SvgConverter.ConvertToOwnedPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), governedOptions, CancellationToken.None))
+    {
+        if (sharedBudget.Reserved != retained.Memory.Length) throw new InvalidOperationException("The installed result lost its retained charge.");
+        sharedBudget.Limit = sharedBudget.Reserved;
+        try { using SvgPngResult refused = SvgConverter.ConvertToOwnedPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), governedOptions, CancellationToken.None); throw new InvalidOperationException("The shared root did not refuse overlapping storage."); }
+        catch (SvgException exception) when (exception.ErrorCode == SvgErrorCode.LimitExceeded) { }
+    }
+    if (sharedBudget.Reserved != 0 || sharedBudget.Disposed) throw new InvalidOperationException("Result cleanup did not preserve the borrowed budget.");
+}
+Console.WriteLine("Installed package shared admission and retained-result ownership passed.");
+
 byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='2' height='1'/>"u8.ToArray();
 byte[] storage = new byte[1_024];
 svg.CopyTo(storage, 0);
 byte[] original = (byte[])storage.Clone();
-SvgRenderLimits limits = new(200_000, 1_024, 1, 16, 1_024, 16, 16);
+SvgRenderLimits limits = new(1_024, 1, 16, 1_024, 16, 16);
 SvgRenderOptions limitedOptions = new(null, 1, SvgColor.Transparent, limits);
 foreach (bool asynchronous in new[] { false, true })
 {

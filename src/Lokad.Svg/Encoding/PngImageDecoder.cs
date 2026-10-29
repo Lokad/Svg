@@ -110,7 +110,7 @@ internal static class PngImageDecoder
                 if (length > 0)
                 {
                     long requiredLength = compressed.Length + length;
-                    if (requiredLength > limits.MaximumAccountedBytes || requiredLength > Array.MaxLength) throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded PNG data exceeds the configured storage limit.");
+                    if (requiredLength > Array.MaxLength) throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded PNG data exceeds the configured storage limit.");
                     storage.EnsureCompressedCapacity(compressed, (int)requiredLength);
                 }
                 compressed.Write(data);
@@ -182,7 +182,7 @@ internal static class PngImageDecoder
         if (position != png.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data has trailing bytes.");
         long rowBytes = (long)width * channels;
         long pixelBytes = checked((rowBytes + 1) * height);
-        if (pixelBytes > limits.MaximumAccountedBytes || rowBytes > limits.MaximumAccountedBytes / 2 || pixelBytes > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded PNG pixel storage exceeds the configured accounting limit.");
+        if (pixelBytes > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded PNG pixel storage exceeds the configured accounting limit.");
         using RenderBudget.BudgetReservation reservation = budget.Reserve(checked(pixelBytes + 2 * rowBytes), SvgMemoryCategory.Parser);
         byte[] pixels = new byte[(int)pixelBytes];
         compressed.Position = 0;

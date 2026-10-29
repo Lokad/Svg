@@ -378,7 +378,7 @@ internal static class SvgInlineStyleParser
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Initial paint values are not implemented for this property.");
     }
 
-    /// <summary>Streams declarations, preserving quoted/escaped semicolons and charging each 4 KiB scan checkpoint once.</summary>
+    /// <summary>Streams declarations, preserving quoted/escaped semicolons and checking cancellation at 4 KiB scan checkpoints.</summary>
     internal ref struct SvgInlineDeclarationReader
     {
         private readonly ReadOnlySpan<char> _value;

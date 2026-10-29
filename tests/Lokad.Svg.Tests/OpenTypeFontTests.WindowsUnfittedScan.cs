@@ -16,7 +16,7 @@ public sealed partial class OpenTypeFontTests
         // Independent native controls retain SCANCTRL/SCANTYPE with fitting
         // disabled. Mode 2 removes thin stripes; modes 4/5 retain them.
         byte[] bytes = CreateUnfittedScannerFont([0xB8, 1, 255, 0x85, 0xB0, scanType, 0x8D], []);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetWindowsUnfittedContours(bytes, 1, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), 8, budget, CancellationToken.None))
         {
             Assert.Equal(smart, contours.SmartDropouts);
@@ -34,7 +34,7 @@ public sealed partial class OpenTypeFontTests
         // Native disabled/default analyses retain the original outline while
         // the explicitly fitted analysis paints the moved band.
         byte[] bytes = CreateUnfittedScannerFont([0x00, 0xB0, 0, 0xB8, 1, 0, 0x48], [0xB8, 1, 255, 0x85, 0xB0, 4, 0x8D]);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
         using (OpenTypeGlyphContourStorage expected = OpenTypeFont.GetWindowsUnfittedContours(plain, 1, OpenTypeFont.ParseMetrics(plain, CancellationToken.None), 8, budget, CancellationToken.None))
         using (OpenTypeGlyphContourStorage actual = OpenTypeFont.GetWindowsUnfittedContours(bytes, 1, metrics, 8, budget, CancellationToken.None))
@@ -53,7 +53,7 @@ public sealed partial class OpenTypeFontTests
         // MPS remains irrelevant to this outline. Scanner-looking operand
         // bytes must not make the unsupported instruction necessary.
         byte[] bytes = CreateUnfittedScannerFont([0x4C, 0x40, 3, 0x85, 0x8D, 0x4C, 0x21], []);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetWindowsUnfittedContours(bytes, 1, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), 8, budget, CancellationToken.None))
             Assert.NotEmpty(contours.Segments);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -63,7 +63,7 @@ public sealed partial class OpenTypeFontTests
     public void Windows_unfitted_scanner_denial_releases_temporary_storage()
     {
         byte[] bytes = CreateUnfittedScannerFont([0xB8, 1, 255, 0x85, 0xB0, 4, 0x8D], []);
-        RenderBudget budget = new(256);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(256));
         SvgException error = Assert.Throws<SvgException>(() => OpenTypeFont.GetWindowsUnfittedContours(bytes, 1, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), 8, budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

@@ -70,7 +70,7 @@ public sealed class SvgCpuRasterContextTests
         using SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(Input), SvgRenderLimits.Default, CancellationToken.None);
         var polygon = Assert.Single(root.Geometries).Polygon;
         SvgAnalyticContourPreparation preparation = new(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, new(24, 24, 612, 278), 640, 320);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
@@ -104,7 +104,7 @@ public sealed class SvgCpuRasterContextTests
         using SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(Input), SvgRenderLimits.Default, CancellationToken.None);
         var polygon = Assert.Single(root.Geometries).Polygon;
         SvgAnalyticContourPreparation preparation = new(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, new(24, 24, 612, 278), 640, 320);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
@@ -115,7 +115,7 @@ public sealed class SvgCpuRasterContextTests
             storage = budget.Snapshot().CurrentBytes;
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new(storage - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(storage - 1));
         try
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, denied, out bool _, CancellationToken.None);

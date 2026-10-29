@@ -30,7 +30,7 @@ public sealed class SvgScanlineCoverageTests
             long allocated = long.MaxValue;
             for (int sample = 0; sample < 3; sample++)
             {
-                RenderBudget budget = new(1);
+                RenderBudget budget = new RenderBudget(new HostMemoryBudget(1));
                 SvgException? failure = null;
                 long before = GC.GetAllocatedBytesForCurrentThread();
                 try
@@ -55,7 +55,7 @@ public sealed class SvgScanlineCoverageTests
         SvgDevicePoint[] points = [new SvgDevicePoint(2, 2), new SvgDevicePoint(14, 2), new SvgDevicePoint(2, 14)];
         int[] ends = [3];
         int[] roles = [1];
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, roles, false, roles, -2, 18, budget, CancellationToken.None);
 
         int culled = 0;
@@ -78,7 +78,7 @@ public sealed class SvgScanlineCoverageTests
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(16, 0), new SvgDevicePoint(16, 16), new SvgDevicePoint(0, 16), new SvgDevicePoint(5, 5), new SvgDevicePoint(11, 5), new SvgDevicePoint(11, 11), new SvgDevicePoint(5, 11)];
         int[] ends = [4, 8];
         int[] signs = [1, -1];
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, signs, true, signs, -2, 18, budget, CancellationToken.None);
 
         int evaluatedHole = 0;
@@ -103,7 +103,7 @@ public sealed class SvgScanlineCoverageTests
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), shared, new SvgDevicePoint(16, 16), new SvgDevicePoint(8, 16), shared];
         int[] ends = [3, 6];
         int[] roles = [1, 1];
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, roles, false, roles, -2, 18, budget, CancellationToken.None);
 
         for (int y = -2; y < 18; y++)
@@ -126,7 +126,7 @@ public sealed class SvgScanlineCoverageTests
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(2, 2), new SvgDevicePoint(2, 14), new SvgDevicePoint(14, 14), new SvgDevicePoint(14, 2)];
         int[] ends = [4];
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, [], false, null, -2, 18, budget, CancellationToken.None);
 
         for (int y = -2; y < 18; y++)
@@ -146,7 +146,7 @@ public sealed class SvgScanlineCoverageTests
         SvgDevicePoint[] points = [new SvgDevicePoint(2, 2), new SvgDevicePoint(14, 2), new SvgDevicePoint(2, 14), new SvgDevicePoint(30, 30), new SvgDevicePoint(40, 40)];
         int[] ends = [3, 5];
         int[] roles = [1, 1];
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, roles, false, roles, -2, 44, budget, CancellationToken.None);
 
         scan.PrepareRow(32, CancellationToken.None);
@@ -159,7 +159,7 @@ public sealed class SvgScanlineCoverageTests
         SvgDevicePoint[] points = [new SvgDevicePoint(2, 2), new SvgDevicePoint(14, 2), new SvgDevicePoint(double.NaN, 14)];
         int[] ends = [3];
         int[] roles = [1];
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, roles, false, roles, -2, 18, budget, CancellationToken.None);
 
         scan.PrepareRow(4, CancellationToken.None);
@@ -172,7 +172,7 @@ public sealed class SvgScanlineCoverageTests
     {
         SvgDevicePoint[] points = [];
         int[] ends = [];
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, [], false, null, 0, 8, budget, CancellationToken.None);
 
         scan.PrepareRow(4, CancellationToken.None);
@@ -185,7 +185,7 @@ public sealed class SvgScanlineCoverageTests
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8)];
         int[] ends = [3];
         int[] roles = [1, 1];
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
 
         Assert.Throws<ArgumentOutOfRangeException>(() => SvgScanlineCoverage.Prepare(points, ends, roles, false, roles, 0, 8, budget, CancellationToken.None));
         Assert.Throws<ArgumentOutOfRangeException>(() => SvgPolygonCoverage.GetWindingCoverage(points, ends, roles, 0, 0, CancellationToken.None));
@@ -198,7 +198,7 @@ public sealed class SvgScanlineCoverageTests
         SvgDevicePoint[] points = [new SvgDevicePoint(2.8778955729143845, 13.478852130680574), new SvgDevicePoint(8.877895572914385, 2.4788521306805733), new SvgDevicePoint(7.004106793532296, 1.9094642539574815), new SvgDevicePoint(6.004106793532296, 12.90946425395748), new SvgDevicePoint(7.995893206467704, 13.09053574604252), new SvgDevicePoint(8.995893206467704, 2.0905357460425185), new SvgDevicePoint(7.122104427085616, 1.5211478693194267), new SvgDevicePoint(1.1221044270856155, 12.521147869319426)];
         int[] ends = [8];
         int[] roles = [1];
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using SvgScanlineCoverage plain = SvgScanlineCoverage.Prepare(points, ends, [], false, null, 0, 16, budget, CancellationToken.None);
         using SvgScanlineCoverage voted = SvgScanlineCoverage.Prepare(points, ends, roles, false, roles, 0, 16, budget, CancellationToken.None);
 

@@ -50,7 +50,7 @@ public sealed class SvgPatternFontReachabilityTests
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(input, Catalog, provider, CancellationToken.None);
         Assert.Equal(expectedPrograms, provider.Requests);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
-        RenderBudget parser = new(8_000_000), raster = new(8_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(8_000_000)), raster = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, options.Limits, parser, fonts, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, options, raster, CancellationToken.None))
             Assert.Equal(NativeHash(row), Convert.ToHexStringLower(SHA256.HashData(surface.Pixels)));
@@ -76,10 +76,10 @@ public sealed class SvgPatternFontReachabilityTests
         byte[] input = ReadInput(row);
         FontProvider provider = new();
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(input, Catalog, provider, CancellationToken.None);
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, fonts, CancellationToken.None)) { }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new(Math.Max(1, budget.Snapshot().PeakBytes / 2));
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(Math.Max(1, budget.Snapshot().PeakBytes / 2)));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, fonts, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

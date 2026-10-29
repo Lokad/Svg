@@ -106,10 +106,10 @@ public sealed partial class OpenTypeFontTests
     {
         byte[] input = PatternFontInput("<defs>" + PatternFontDefinition(PatternFontSize, PatternFontText) + "</defs>" + PatternFontTarget);
         byte[] unchanged = input.ToArray();
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Single(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, measured, CancellationToken.None));
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         (SvgFontPackCatalog catalog, CountingFontProvider provider, _) = PatternFontPack(false);

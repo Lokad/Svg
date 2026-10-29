@@ -18,7 +18,7 @@ public sealed class SvgAnalyticClipPaintTests
         Assert.Equal("f8b66b7597c4cc859d3ed190e9c6872241e6721c", metadata.RootElement.GetProperty("sourceRevision").GetString());
         string[] rows = File.ReadAllLines(Path.Combine(directory, "analytic-clip-pair-native.csv"));
         Assert.Equal(3072, rows.Length);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         SvgAnalyticPaint paint = SvgAnalyticPaint.Solid(new(0, 52, 120, 255));
         foreach (JsonElement nativeCase in metadata.RootElement.GetProperty("cases").EnumerateArray())
         {

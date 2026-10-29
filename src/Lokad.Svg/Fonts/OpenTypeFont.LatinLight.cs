@@ -67,7 +67,7 @@ internal static partial class OpenTypeFont
         return new(0, metrics.UnitsPerEm * 50 / 2048 / 5);
     }
 
-    /// <summary>Samples at most six Latin alignment zones into caller-owned storage, borrowing one face and charging each decoded glyph.</summary>
+    /// <summary>Samples at most six Latin alignment zones into caller-owned storage, borrowing one face and reserving decoded glyph storage.</summary>
     internal static int GetLatinAlignmentZones(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, Span<LatinAlignmentZone> zones, RenderBudget budget, CancellationToken cancellationToken)
     {
         if (zones.Length < LatinAlignmentSamples.Length) throw new ArgumentException("The alignment buffer must hold every Latin zone.", nameof(zones));

@@ -11,7 +11,7 @@ public sealed class SvgOrderedClipOwnershipTests
     [Fact]
     public void Ordered_union_borrows_sources_and_releases_scratch_after_denial_cancellation_and_retry()
     {
-        RenderBudget sources = new(1_000_000), scratch = new(1_000_000);
+        RenderBudget sources = new RenderBudget(new HostMemoryBudget(1_000_000)), scratch = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgAuthoredPath first = SvgOrderedClipTests.Rectangle(8, 20, sources))
         using (SvgAuthoredPath second = SvgOrderedClipTests.Rectangle(16, 24, sources))
         using (SvgAuthoredPath third = SvgOrderedClipTests.Rectangle(12, 20, sources))
@@ -22,7 +22,7 @@ public sealed class SvgOrderedClipOwnershipTests
             using (SvgAuthoredPath result = SvgClipUnion.ResolveOrdered(children, scratch, CancellationToken.None).Path)
                 expected = result.Commands.ToArray();
             Assert.Equal(0, scratch.Snapshot().CurrentBytes);
-            RenderBudget denied = new(scratch.Snapshot().PeakBytes - 1);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(scratch.Snapshot().PeakBytes - 1));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgClipUnion.ResolveOrdered(children, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();

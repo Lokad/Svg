@@ -26,7 +26,7 @@ public sealed class SvgLatinLightOutlineTests
         byte[] bytes = File.ReadAllBytes(Path.Combine(DirectoryPath, "fonts", "NotoSans-Regular.ttf"));
         byte[] original = bytes.ToArray();
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
-        var budget = new RenderBudget(long.MaxValue);
+        var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetLatinLightContours(bytes, item.GetProperty("glyphIndex").GetUInt16(), metrics, item.GetProperty("deviceSize").GetDouble(), budget, CancellationToken.None))
         {
             JsonElement.ArrayEnumerator commands = item.GetProperty("commands").EnumerateArray();
@@ -72,7 +72,7 @@ public sealed class SvgLatinLightOutlineTests
         byte[] bytes = File.ReadAllBytes(Path.Combine(DirectoryPath, "fonts", "NotoSans-Regular.ttf"));
         byte[] original = bytes.ToArray();
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
-        var budget = new RenderBudget(maximumBytes);
+        var budget = new RenderBudget(new HostMemoryBudget(maximumBytes));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => OpenTypeFont.GetLatinLightContours(bytes, 36, metrics, 48, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

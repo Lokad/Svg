@@ -30,7 +30,7 @@ public sealed class SvgPatternContentTests
     private static byte[] RenderTile(string definitions)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs>" + definitions + "</defs><rect width='16' height='16' fill='url(#p)'/><rect y='14' width='16' height='2' fill='blue'/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         byte[] result;
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
             result = SvgConverter.ConvertToPng(root, SvgRenderOptions.Default, budget, CancellationToken.None).ToArray();
@@ -42,7 +42,7 @@ public sealed class SvgPatternContentTests
     public void Anonymous_masked_tile_releases_deferred_bindings()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' mask='url(#m)' clip-path='url(#c)'/></pattern><mask id='m'><rect width='8' height='8' fill='white'/></mask><clipPath id='c'><rect width='8' height='8'/></clipPath></defs><rect width='8' height='8' fill='blue'/></svg>"u8.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
             for (int offset = 0; offset < surface.Pixels.Length; offset += 4)
@@ -59,7 +59,7 @@ public sealed class SvgPatternContentTests
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='4'><style>.tile{fill:blue" + priority
             + "} #p{fill:yellow}</style><defs><pattern id='p' class='tile' patternUnits='userSpaceOnUse' width='4' height='4' fill='black' style='fill:green'>"
             + "<rect width='2' height='4'/><rect x='2' width='2' height='4' fill='red'/></pattern></defs><rect width='8' height='4' fill='url(#p)'/></svg>");
-        RenderBudget sceneBudget = new(1_000_000), rasterBudget = new(1_000_000);
+        RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(1_000_000)), rasterBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, rasterBudget, CancellationToken.None))
             for (int y = 0; y < 4; y++) for (int x = 0; x < 8; x++)
@@ -90,7 +90,7 @@ public sealed class SvgPatternContentTests
     public void Extended_tile_failures_release_partial_scenes(string leaf, SvgErrorCode expected)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><circle cx='4' cy='4' r='3'/>" + leaf + "</pattern></defs><rect width='16' height='16' fill='url(#p)'/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(expected, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -99,7 +99,7 @@ public sealed class SvgPatternContentTests
     public void Extended_pattern_leaves_preserve_unsupported_child_admission()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><filter id='f'><feGaussianBlur stdDeviation='1'/></filter><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='4' height='4' filter='url(#f)'><animate attributeName='x'/></rect></pattern></defs><rect width='16' height='16' fill='url(#p)'/></svg>"u8.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
             Assert.True(root.HasUnsupportedChild);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -110,7 +110,7 @@ public sealed class SvgPatternContentTests
     public void Nested_tile_opacity_ends_before_siblings_and_empty_groups()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><g opacity='.5'><g opacity='.5'><rect width='4' height='4' fill='red'/></g><rect x='4' width='4' height='4' fill='blue'/></g><g opacity='0'/><rect y='4' width='8' height='4' fill='#00ff00'/></pattern></defs><rect width='8' height='8' fill='url(#p)'/></svg>"u8.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
         {
@@ -132,10 +132,10 @@ public sealed class SvgPatternContentTests
     public void Tile_scenes_release_owners_at_parser_memory_and_raster_work_boundaries(string identity)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "pattern-vector-content", identity + ".svg"));
-        RenderBudget discovery = new(8_000_000);
+        RenderBudget discovery = new RenderBudget(new HostMemoryBudget(8_000_000));
         Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, discovery, CancellationToken.None));
         Assert.Equal(0, discovery.Snapshot().CurrentBytes);
-        RenderBudget measured = new(8_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None))
             {}
@@ -146,7 +146,7 @@ public sealed class SvgPatternContentTests
 
         void DenyMemory(long limit)
         {
-            RenderBudget budget = new(limit);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
             {
                 using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None);
@@ -168,7 +168,7 @@ public sealed class SvgPatternContentTests
         if (grouped) content = "<g transform='translate(2 -3)'><g transform='scale(0.75)'>" + content + "</g></g>";
         string definition = "<pattern id='p' width='256' height='256' patternUnits='userSpaceOnUse' patternTransform='" + transform + "'>" + content + "</pattern>";
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'>" + (rootLocal ? definition : "<defs>" + definition + "</defs>") + "<rect width='256' height='256' fill='url(#p)'/></svg>");
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             long retained = budget.Snapshot().CurrentBytes;
@@ -194,20 +194,20 @@ public sealed class SvgPatternContentTests
     public void Grouped_tiles_release_material_storage_at_tight_limits(string identity)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "pattern-vector-content", identity + ".svg"));
-        RenderBudget measured = new(8_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, measured, CancellationToken.None))
             {}
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
 
-        RenderBudget tight = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget tight = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, CancellationToken.None);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, tight, CancellationToken.None);
         }).ErrorCode);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             long retained = budget.Snapshot().CurrentBytes;
@@ -223,7 +223,7 @@ public sealed class SvgPatternContentTests
     public void Anonymous_and_unused_tiles_release_promoted_sources(string identifier)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern " + identifier + " width='16' height='16' patternUnits='userSpaceOnUse'><rect width='4' height='4'/><circle cx='8' cy='8' r='4'/></pattern></defs><rect width='8' height='8' fill='red'/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
             Assert.Equal(new byte[] { 255, 0, 0, 255 }, surface.Pixels[..4]);
@@ -239,7 +239,7 @@ public sealed class SvgPatternContentTests
     public void Rejected_tile_content_and_duplicate_ids_release_partial_scenes(string content, SvgErrorCode expected)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs>" + content + "</defs><rect width='16' height='16' fill='url(#p)'/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(expected, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -250,7 +250,7 @@ public sealed class SvgPatternContentTests
         const string content = "<pattern id='p' width='16' height='16' patternUnits='userSpaceOnUse'><rect width='16' height='16'/><g opacity='0.6'><circle cx='8' cy='8' r='4'/></g></pattern>";
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs>" + content + "</defs><rect width='16' height='16' fill='url(#p)'/></svg>");
         byte[] unchanged = input.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
             Assert.Equal((byte)255, surface.Pixels[3]);

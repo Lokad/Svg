@@ -3,6 +3,7 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../../tests/Shared/TestMemoryBudget.cs" Link="TestMemoryBudget.cs" />
     <ProjectReference Include="../../src/Lokad.Svg/Lokad.Svg.csproj" />
   </ItemGroup>
 </Project>

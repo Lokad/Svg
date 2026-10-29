@@ -13,7 +13,7 @@ public sealed class SvgForwardUseExpansionTests
     [InlineData(1024)]
     public void Clipped_forward_uses_stay_within_linear_work(int count)
     {
-        RenderBudget budget = new(50_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(50_000_000));
         using (SvgRoot root = SvgRootParser.Parse(Repeated(count, true), SvgRenderLimits.Default, budget, null, CancellationToken.None)) { }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -29,7 +29,7 @@ public sealed class SvgForwardUseExpansionTests
     [Fact]
     public void Expansion_remaps_command_boundaries_only_for_the_owning_scene()
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         using (SvgDocumentState state = new(budget, CancellationToken.None))
         using (SvgSceneBuilder foreign = new(budget, CancellationToken.None))
         {
@@ -69,7 +69,7 @@ public sealed class SvgForwardUseExpansionTests
     public void Batch_expansion_releases_storage_on_memory_denial_and_cancellation()
     {
         byte[] input = Mixed(true);
-        RenderBudget measured = new(2_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         long peak = measured.Snapshot().PeakBytes;
@@ -77,14 +77,14 @@ public sealed class SvgForwardUseExpansionTests
         DenyMemory(peak - 1);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget cancelled = new(2_000_000);
+        RenderBudget cancelled = new RenderBudget(new HostMemoryBudget(2_000_000));
         OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, null, cancellation.Token));
         Assert.Equal(cancellation.Token, error.CancellationToken);
         Assert.Equal(0, cancelled.Snapshot().CurrentBytes);
 
         void DenyMemory(long limit)
         {
-            RenderBudget denied = new(limit);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }

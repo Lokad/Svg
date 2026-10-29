@@ -131,7 +131,7 @@ public sealed class SvgCssSelectorTests
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' id='root' width='10' height='10' viewBox='0 0 10 10' style='width:30px'><rect width='10' height='10' fill='red'/><style>#root{width:20px!important;height:40px}</style></svg>"u8.ToArray();
         byte[] expected = "<svg xmlns='http://www.w3.org/2000/svg' width='20' height='40' viewBox='0 0 10 10'><rect width='10' height='10' fill='red'/></svg>"u8.ToArray();
         Assert.Equal(SvgConverter.ConvertToPng(expected, SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         SvgAffineTransform map = SvgPreparationTestHelper.GetOutputMap(input, SvgRenderOptions.Default, budget, CancellationToken.None);
         Assert.Equal(SvgAffineTransform.FromScaleOffset(2, 2, 0, 10), map);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

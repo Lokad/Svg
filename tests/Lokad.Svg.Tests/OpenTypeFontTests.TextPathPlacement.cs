@@ -22,7 +22,7 @@ public sealed partial class OpenTypeFontTests
         byte[] program = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "text-paint-bounds", "sans.ttf"));
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(program)], CancellationToken.None);
         byte[] input = GeneralTextPathPoseDocument(path, pose, "AVj");
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, fonts, CancellationToken.None))
             Assert.Contains(root.Geometries, geometry => geometry.Kind == SvgGeometryKind.GlyphContours);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -36,10 +36,10 @@ public sealed partial class OpenTypeFontTests
     {
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
         byte[] input = GeneralTextPathPoseDocument(path, pose, "A");
-        RenderBudget budget = new(2_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, fonts, CancellationToken.None)) { }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget memoryDenied = new(256);
+        RenderBudget memoryDenied = new RenderBudget(new HostMemoryBudget(256));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, memoryDenied, fonts, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, memoryDenied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();

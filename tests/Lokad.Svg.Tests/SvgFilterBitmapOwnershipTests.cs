@@ -32,10 +32,10 @@ public sealed class SvgFilterBitmapOwnershipTests
         JsonElement references = row.TryGetProperty("references", out JsonElement stageReferences) ? stageReferences : row.GetProperty("platforms");
         string expected = references.GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux")
             .GetProperty("rgbaSha256").GetString() ?? throw new InvalidDataException("Missing native pixel hash.");
-        RenderBudget parser = new(1_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None))
             SvgRasterOwnershipAssertions.ReleasesAfterFailures(scene, SvgRenderOptions.Default,
-                SvgRenderLimits.Default.MaximumAccountedBytes, expected);
+                268_435_456L, expected);
         Assert.Equal(0, parser.Snapshot().CurrentBytes);
         Assert.Equal(unchanged, input);
     }

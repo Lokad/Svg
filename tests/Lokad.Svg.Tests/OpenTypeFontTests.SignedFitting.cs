@@ -24,7 +24,7 @@ public sealed partial class OpenTypeFontTests
             windows ? TrueTypeHintQueryFlags.Symmetric | TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned : TrueTypeHintQueryFlags.Grayscale,
             TrueTypeHintControlScale.FullPrecision, TrueTypeHintPreparation.Single)
             { Grid = windows ? TrueTypeHintGrid.ClearType : TrueTypeHintGrid.Physical };
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetTrueTypeContours(bytes, composite ? (ushort)2 : (ushort)1,
             OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), 24, target, budget, CancellationToken.None))
         {

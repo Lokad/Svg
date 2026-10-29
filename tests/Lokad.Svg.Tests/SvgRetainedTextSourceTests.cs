@@ -9,7 +9,7 @@ public sealed class SvgRetainedTextSourceTests
     [Fact]
     public void Subtree_readers_preserve_namespaces_chunks_and_parent_position()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgDocumentState state = new(budget, CancellationToken.None))
         using (StringReader input = new("<text xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xml:space='preserve'> A<![CDATA[ <B> ]]><tspan x='3'>C</tspan><textPath xlink:href='#p'>D</textPath> E</text>"))
         using (XmlReader live = XmlReader.Create(input))
@@ -61,7 +61,7 @@ public sealed class SvgRetainedTextSourceTests
     [InlineData(1_000_000L, true)]
     public void Capture_releases_storage_on_denial_or_cancellation(long maximumBytes, bool cancel)
     {
-        RenderBudget budget = new(maximumBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(maximumBytes));
         using CancellationTokenSource cancellation = new();
         if (cancel) cancellation.Cancel();
         try
@@ -81,9 +81,9 @@ public sealed class SvgRetainedTextSourceTests
     public void Material_capture_failure_releases_arrays_and_strings_after_partial_growth()
     {
         string svg = "<text xmlns='http://www.w3.org/2000/svg'><tspan>" + new string('A', 8192) + "</tspan><tspan dx='3'>" + new string('B', 8192) + "</tspan></text>";
-        RenderBudget accepted = new(1_000_000);         Capture(accepted);
+        RenderBudget accepted = new RenderBudget(new HostMemoryBudget(1_000_000));         Capture(accepted);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-        RenderBudget denied = new(accepted.Snapshot().PeakBytes * 3 / 4);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(accepted.Snapshot().PeakBytes * 3 / 4));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Capture(denied)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
@@ -101,7 +101,7 @@ public sealed class SvgRetainedTextSourceTests
     [Fact]
     public void Canceled_replay_does_not_mutate_source_or_prevent_an_independent_retry()
     {
-        RenderBudget budget = new(1_000_000);         using (SvgDocumentState state = new(budget, CancellationToken.None))
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));         using (SvgDocumentState state = new(budget, CancellationToken.None))
         using (StringReader input = new("<text xmlns='http://www.w3.org/2000/svg'>ABC</text>"))
         using (XmlReader live = XmlReader.Create(input))
         {

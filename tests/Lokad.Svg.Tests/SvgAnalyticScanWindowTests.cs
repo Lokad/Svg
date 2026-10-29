@@ -16,8 +16,8 @@ public sealed class SvgAnalyticScanWindowTests
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><path d='" + FirstCircle + " " + SecondCircle + "' fill='#003478'/></svg>");
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
         var polygon = Assert.Single(root.Geometries).Polygon;
-        RenderBudget canvasBudget = new(1_000_000);
-        RenderBudget tightBudget = new(1_000_000);
+        RenderBudget canvasBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
+        RenderBudget tightBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgAnalyticCoverage canvas = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 16, 84, 34, 66, canvasWidth, 100, new(0, canvasWidth), canvasBudget, out bool canvasEligible, CancellationToken.None);
         using SvgAnalyticCoverage tight = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 16, 84, 34, 66, 100, 100, new(16, 84), tightBudget, out bool tightEligible, CancellationToken.None);
         Assert.True(canvasEligible && tightEligible);
@@ -41,7 +41,7 @@ public sealed class SvgAnalyticScanWindowTests
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><path d='" + FirstCircle + "' fill='#003478'/></svg>");
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
         var polygon = Assert.Single(root.Geometries).Polygon;
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgAnalyticCoverage canvas = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 16, 48, 34, 66, 100, 100, new(0, 100), budget, out bool canvasEligible, CancellationToken.None);
         using SvgAnalyticCoverage tight = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 16, 48, 34, 66, 100, 100, new(16, 48), budget, out bool tightEligible, CancellationToken.None);
         Assert.True(canvasEligible && tightEligible);

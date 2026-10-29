@@ -22,7 +22,7 @@ public sealed class SvgPreparedGlyphCoverageTests
             new([Line(.75, .75, .75, 1.25), Line(.75, 1.25, 1.25, 1.25), Line(1.25, 1.25, 1.25, .75), Line(1.25, .75, .75, .75)])
         ];
         SvgGlyphQuadraticSegment[][] original = contours.Select(c => c.Segments.ToArray()).ToArray();
-        RenderBudget budget = new(10_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
         using (SvgGlyphCoverage.PreparedContours prepared = SvgGlyphCoverage.PreparedContours.TryCreate(contours, budget, CancellationToken.None) ?? throw new InvalidOperationException("Preparation should fit."))
         {
             for (int y = -2; y <= 3; y++)
@@ -42,7 +42,7 @@ public sealed class SvgPreparedGlyphCoverageTests
     public void Preparation_refusal_fails_without_an_unaccounted_alternative_route()
     {
         SvgGlyphQuadraticContour[] contours = [new([Line(0, 0, 2, 0), Line(2, 0, 2, 2), Line(2, 2, 0, 2), Line(0, 2, 0, 0)])];
-        RenderBudget budget = new(500);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(500));
         SvgException refusal = Assert.Throws<SvgException>(() => SvgGlyphCoverage.PreparedContours.TryCreate(contours, budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, refusal.ErrorCode);
         Assert.Equal(255, SvgGlyphCoverage.GetCoverage(contours, 0, 0, 4, CancellationToken.None));
@@ -56,7 +56,7 @@ public sealed class SvgPreparedGlyphCoverageTests
     public void Preparation_cancellation_disposal_and_retry_release_the_owner()
     {
         SvgGlyphQuadraticContour[] contours = [new([Line(0, 0, 2, 0), Line(2, 0, 2, 2), Line(2, 2, 0, 2), Line(0, 2, 0, 0)])];
-        RenderBudget budget = new(10_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
         using (SvgGlyphCoverage.PreparedContours prepared = SvgGlyphCoverage.PreparedContours.TryCreate(contours, budget, CancellationToken.None) ?? throw new InvalidOperationException("Preparation should fit."))
         {
             Assert.True(budget.Snapshot().CurrentBytes > 0);
@@ -77,7 +77,7 @@ public sealed class SvgPreparedGlyphCoverageTests
     [Fact]
     public void Prepared_extreme_curves_keep_numeric_rejection_and_cleanup()
     {
-        RenderBudget budget = new(10_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
         SvgGlyphQuadraticContour[] overflow = [new([new(new(0, 0), new(double.PositiveInfinity, 1), new(2, 0))])];
         SvgException preparation = Assert.Throws<SvgException>(() => SvgGlyphCoverage.PreparedContours.TryCreate(overflow, budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, preparation.ErrorCode);

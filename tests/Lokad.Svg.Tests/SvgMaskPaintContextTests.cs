@@ -29,7 +29,7 @@ public sealed class SvgMaskPaintContextTests
     private static byte[] Rasterize(string identity)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "text-instance-composition", identity + ".svg"));
-        RenderBudget sceneBudget = new(2_000_000), rasterBudget = new(2_000_000);
+        RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(2_000_000)), rasterBudget = new RenderBudget(new HostMemoryBudget(2_000_000));
         byte[] pixels;
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, rasterBudget, CancellationToken.None))

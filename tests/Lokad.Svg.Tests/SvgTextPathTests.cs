@@ -66,7 +66,7 @@ public sealed class SvgTextPathTests
     [InlineData("M8 48 H16 L", "", 8, 48, 8)]
     public void Reuses_authored_commands_maps_and_renderable_prefix(string data, string attributes, double x, double y, double length)
     {
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgDocumentState state = new(budget, CancellationToken.None))
         {
             SvgDefinitionLeafSource source = Capture(data, attributes, state);
@@ -84,7 +84,7 @@ public sealed class SvgTextPathTests
     [InlineData("M8 48 H56", "pathLength='0'")]
     public void Unimplemented_contours_and_calibration_release_temporary_commands(string data, string attributes)
     {
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using SvgDocumentState state = new(budget, CancellationToken.None);
         SvgDefinitionLeafSource source = Capture(data, attributes, state);
         long retained = budget.Snapshot().CurrentBytes;
@@ -99,7 +99,7 @@ public sealed class SvgTextPathTests
     [InlineData("M0 0 C0 0 10 0 10 0", 10, 5, 0, 1, 0)]
     public void Open_lines_and_polynomial_curves_place_the_advance_midpoint(string data, double length, double x, double y, double a, double b)
     {
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgDocumentState state = new(budget, CancellationToken.None))
         {
             SvgDefinitionLeafSource source = Capture(data, "", state);
@@ -122,7 +122,7 @@ public sealed class SvgTextPathTests
     [Fact]
     public void Closing_edge_retains_its_tangent_and_composes_character_rotation()
     {
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgDocumentState state = new(budget, CancellationToken.None))
         {
             SvgDefinitionLeafSource source = Capture("M8 48 H56 Z", "", state);
@@ -148,7 +148,7 @@ public sealed class SvgTextPathTests
     {
         // Chrome 153.0.8010.52, intended Noto Sans face proven by CSS.getPlatformFontsForNode.
         // Original 128x96 curved-midpoint control; full native measurements are retained beside its references.
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using SvgDocumentState state = new(budget, CancellationToken.None);
         SvgDefinitionLeafSource source = Capture("M8 72 C24 8 104 8 120 72", "", state);
         using SvgMeasuredTextPath path = SvgTextPathLayout.ReadMeasured(source, 100, budget, CancellationToken.None);
@@ -167,7 +167,7 @@ public sealed class SvgTextPathTests
     [Fact]
     public void Curve_measurement_and_lookup_preserve_owned_storage()
     {
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using SvgDocumentState state = new(budget, CancellationToken.None);
         SvgDefinitionLeafSource source = Capture("M8 72 C24 8 104 8 120 72", "pathLength='320'", state);
         long retained = budget.Snapshot().CurrentBytes;
@@ -185,7 +185,7 @@ public sealed class SvgTextPathTests
     [Fact]
     public void Nonfinite_curve_evaluation_is_categorized_and_releases_measurement_storage()
     {
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using SvgDocumentState state = new(budget, CancellationToken.None);
         SvgDefinitionLeafSource source = Capture("M0 0 C2e38 0 2.5e38 0 3e38 0", "", state);
         long retained = budget.Snapshot().CurrentBytes;
@@ -197,7 +197,7 @@ public sealed class SvgTextPathTests
     [Fact]
     public void Command_work_denial_and_cancellation_release_scratch_and_allow_retry()
     {
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using SvgDocumentState state = new(budget, CancellationToken.None);
         SvgDefinitionLeafSource source = Capture("M8 48 H16 H24 H56", "", state);
         long retained = budget.Snapshot().CurrentBytes;
@@ -215,7 +215,7 @@ public sealed class SvgTextPathTests
     [InlineData("transform='translate(8 0) scale(2)' pathLength='96'", 1)]
     public void Positive_path_calibration_scales_offsets_in_composed_coordinates(string attributes, double scale)
     {
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgDocumentState state = new(budget, CancellationToken.None))
         {
             SvgDefinitionLeafSource source = Capture("M8 48 H56", attributes, state);

@@ -20,7 +20,7 @@ public sealed partial class OpenTypeFontTests
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
         const double scale = 512d / 600;
         SvgTextPositionAdjustment[] positions = [new(13, originX, null, 0, 40)];
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(snapshot.Fonts[0], new string('A', 26), 18, originX, 80, 0, [], positions,
             SvgTextAnchor.Start, new(scale, SvgGlyphMetricTarget.Windows, false), budget, string.Empty, CancellationToken.None))
         {
@@ -49,7 +49,7 @@ public sealed partial class OpenTypeFontTests
         int hmtx = FindTableOffset(bytes, 0x686D7478);
         WriteUInt16(bytes, hmtx + 4, 1229);
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(snapshot.Fonts[0], new string('A', 23), 24, 12.25, 32, 0, [], [], SvgTextAnchor.Start,
             new(1, SvgGlyphMetricTarget.Windows, textPath), budget, string.Empty, CancellationToken.None))
         {
@@ -72,7 +72,7 @@ public sealed partial class OpenTypeFontTests
         const double scale = 512d / 600;
         // A 600/1000 advance at this viewport scale occupies 9.21875 physical
         // pixels on the path grid. Inverting a rounded scalar scale accumulates drift.
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(snapshot.Fonts[0], new string('A', 27), 18, 0, 0, 0, 0, true,
             [], [], [], [], SvgTextAnchor.Start, new(scale, target == "windows" ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, true),
             budget, string.Empty, CancellationToken.None))

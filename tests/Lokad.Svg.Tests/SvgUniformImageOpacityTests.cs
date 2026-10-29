@@ -20,7 +20,7 @@ public sealed class SvgUniformImageOpacityTests
     {
         string image = Image(new(255, 0, 0, alpha));
         byte[] input = TextEncoding.UTF8.GetBytes(Document(image, opacity, consumer));
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
         using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None);
         // Actual native integer placements use bitmap paint's byte scale,
@@ -35,7 +35,7 @@ public sealed class SvgUniformImageOpacityTests
     public void Uniform_image_color_uses_bitmap_opacity_before_unpremultiplication()
     {
         byte[] input = TextEncoding.UTF8.GetBytes(Document(Image(new(85, 160, 220, 173)), ".68", "use"));
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
         using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None);
         Assert.Equal(new byte[] { 85, 161, 220, 117 }, surface.Pixels.AsSpan((12 * 32 + 12) * 4, 4).ToArray());

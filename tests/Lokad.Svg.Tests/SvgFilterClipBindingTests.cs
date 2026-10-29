@@ -12,7 +12,7 @@ public sealed class SvgFilterClipBindingTests
     [InlineData(2048)]
     public void Separate_filtered_object_clips_keep_linear_parser_work(int count)
     {
-        RenderBudget budget = new(40_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(40_000_000));
         using (SvgRoot root = SvgRootParser.Parse(Repeated(count, true), SvgRenderLimits.Default, budget, null, CancellationToken.None)) { }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -39,7 +39,7 @@ public sealed class SvgFilterClipBindingTests
     public void Clip_binding_releases_scratch_on_memory_denial_and_cancellation()
     {
         byte[] input = Mixed(true, true);
-        RenderBudget measured = new(2_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         long peak = measured.Snapshot().PeakBytes;
@@ -47,13 +47,13 @@ public sealed class SvgFilterClipBindingTests
         DenyMemory(peak - 1);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget cancelled = new(2_000_000);
+        RenderBudget cancelled = new RenderBudget(new HostMemoryBudget(2_000_000));
         Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, null, cancellation.Token)).CancellationToken);
         Assert.Equal(0, cancelled.Snapshot().CurrentBytes);
 
         void DenyMemory(long limit)
         {
-            RenderBudget denied = new(limit);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }

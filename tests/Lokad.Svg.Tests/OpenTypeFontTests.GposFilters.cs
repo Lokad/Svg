@@ -46,7 +46,7 @@ public sealed partial class OpenTypeFontTests
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(ReadKerningFlagFont(family))], CancellationToken.None);
         SvgPreparedFont font = Assert.Single(snapshot.Fonts);
-        RenderBudget budget = new(16_384);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(16_384));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgGlyphLayout.CreateStorage(font, "a", 32, 0, 40, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(3, SvgGlyphLayout.Layout(font, "AVW", 32, 0, 40, CancellationToken.None).Length);
@@ -67,7 +67,7 @@ public sealed partial class OpenTypeFontTests
             ? [new(0, 2, new(font, 32)), new(2, 3, new(boundary == "font" ? otherFont : font, boundary == "size" ? 16 : 32)), new(3, 4, new(font, 32))]
             : [];
         SvgTextPositionAdjustment[] adjustments = boundary == "absolute" ? [new(3, 96, null, 0, 0)] : [];
-        RenderBudget budget = new(16_384);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(16_384));
         using (SvgPositionedGlyphStorage storage = SvgGlyphLayout.CreateStorage(font, "AVTW", 32, 16, 40, 0, [], adjustments, [], spans, SvgTextAnchor.Start, null, budget, "label", CancellationToken.None))
         {
             Assert.Equal(middleX, storage.Glyphs[1].X);
@@ -107,7 +107,7 @@ public sealed partial class OpenTypeFontTests
     public async Task Gpos_filtered_partners_observe_scaled_element_boundaries(double scale, bool changesElement, int offset, double middleX, double lastX)
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(ReadKerningFlagFont("GposSkipBase"))], CancellationToken.None);
-        RenderBudget budget = new(16_384);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(16_384));
         var layout = SvgGlyphLayout.CreateStorageAndMetrics(Assert.Single(snapshot.Fonts), "AVTW", 32, 16, 40, 0, 0, false,
             [], [], [], [], [new(offset, changesElement)], SvgTextAnchor.Start,
             new(scale, SvgGlyphMetricTarget.Windows, false), budget, "label", CancellationToken.None);
@@ -135,7 +135,7 @@ public sealed partial class OpenTypeFontTests
         font = AppendTestFontTable(font, 0x47444546, [1, 0, 12, 0, 0, 0, 1, 0, 3, 1, 1, 2]);
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(font)], CancellationToken.None);
         SvgTextPositionAdjustment[] adjustments = [new(3, 0, 0), absolute ? new(4, 100, null, 0, 0) : new(4, 0, 0)];
-        RenderBudget budget = new(16_384);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(16_384));
         using (SvgPositionedGlyphStorage positions = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), "AAAAAAA", 20, 10, 40, 0, [], adjustments, SvgTextAnchor.Start, budget, string.Empty, CancellationToken.None))
         {
             // The selected GSUB graph prefers triples. Only the absolute reset
@@ -161,7 +161,7 @@ public sealed partial class OpenTypeFontTests
         font = AppendTestFontTable(font, 0x47444546, [1, 0, 12, 0, 0, 0, 1, 0, 3, 1, 1, 2]);
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(font)], CancellationToken.None);
         SvgTextPositionAdjustment[] adjustments = absolute ? [new(2, 100, null, 0, 0)] : [];
-        using SvgPositionedGlyphStorage positions = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), "😀😀😀", 32, 10, 40, 0, [], adjustments, SvgTextAnchor.Start, new(16_384), string.Empty, CancellationToken.None);
+        using SvgPositionedGlyphStorage positions = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), "😀😀😀", 32, 10, 40, 0, [], adjustments, SvgTextAnchor.Start, new RenderBudget(new HostMemoryBudget(16_384)), string.Empty, CancellationToken.None);
         Assert.Equal(3, positions.Glyphs.Length);
         Assert.Equal(absolute ? 100 : 24.75, positions.Glyphs[1].X);
         Assert.Equal(absolute ? 114.75 : 39.5, positions.Glyphs[2].X);
@@ -247,7 +247,7 @@ public sealed partial class OpenTypeFontTests
         SvgPreparedFont prepared = Assert.Single(snapshot.Fonts);
         SvgPositionedGlyph[] glyphs = SvgGlyphLayout.Layout(prepared, "AVVVW", 32, 0, 40, CancellationToken.None);
         Assert.Equal(-128, OpenTypeFont.GetPairAdjustment(font, glyphs, metrics, CancellationToken.None));
-        RenderBudget budget = new(16_384);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(16_384));
         using (SvgGlyphLayout.CreateStorage(prepared, "AVVVW", 32, 0, 40, SvgTextAnchor.Start, budget, CancellationToken.None)) { }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         using CancellationTokenSource cancelled = new();

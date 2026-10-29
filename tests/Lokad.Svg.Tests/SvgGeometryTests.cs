@@ -36,13 +36,13 @@ public sealed class SvgGeometryTests
     [Fact]
     public void Sizes_scene_lists_from_their_element_type()
     {
-        RenderBudget geometryBudget = new(long.MaxValue);
+        RenderBudget geometryBudget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (BudgetedSceneList<SvgGeometry> geometries = new(geometryBudget, CancellationToken.None))
         {
             for (int index = 0; index < 4; index++) geometries.Add(SvgGeometry.FromRectangle(new SvgRectangle(0, 0, 1, 1, SvgColor.Transparent, false, null)));
             Assert.Equal(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4), geometryBudget.Snapshot().PeakBytes);
         }
-        RenderBudget commandBudget = new(long.MaxValue);
+        RenderBudget commandBudget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (BudgetedSceneList<SvgDrawCommand> commands = new(commandBudget, CancellationToken.None))
         {
             for (int index = 0; index < 4; index++) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, index, 255, null, -1, 255));

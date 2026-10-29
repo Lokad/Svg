@@ -17,7 +17,7 @@ public sealed class SvgMaskContentReplayTests
             + "<rect id='r' width='8' height='4' fill='red'/><mask id='m' maskContentUnits='objectBoundingBox'>"
             + "<rect width='50%' height='100%' fill='white'/></mask></defs>" + target
             + "<rect x='22' y='10' width='2' height='2' fill='blue'/></svg>");
-        RenderBudget sceneBudget = new(1_000_000), rasterBudget = new(1_000_000);
+        RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(1_000_000)), rasterBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, rasterBudget, CancellationToken.None))
             for (int y = 0; y < 12; y++) for (int x = 0; x < 24; x++)
@@ -35,7 +35,7 @@ public sealed class SvgMaskContentReplayTests
     public void Canceled_ordered_mask_replay_preserves_source_curves_and_identical_retry()
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "mask-content-order", "two-reference-mask-leaves.svg"));
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             SvgSceneStorage scene = Assert.IsType<SvgSceneStorage>(root.SceneStorage);
@@ -82,7 +82,7 @@ public sealed class SvgMaskContentReplayTests
     public void Anonymous_or_unused_ordered_masks_release_retained_children(string identifier)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask " + identifier + "><rect width='8' height='8' fill='white'/><path d='M0 0H4V8H0Z' fill='black'/></mask></defs><rect width='8' height='8' fill='red'/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
             for (int offset = 0; offset < surface.Pixels.Length; offset += 4)
@@ -96,7 +96,7 @@ public sealed class SvgMaskContentReplayTests
     public void Duplicate_ordered_mask_ids_release_partial_owners(string preceding, string following)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs>" + preceding + "<mask id='m'><rect width='8' height='8' fill='white'/><circle cx='4' cy='4' r='3' fill='black'/></mask>" + following + "</defs></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -107,7 +107,7 @@ public sealed class SvgMaskContentReplayTests
     public void Unsupported_mask_content_releases_the_promoted_scene(string finalChild)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><rect width='8' height='8' fill='white'/><path d='M0 0H2V8H0Z' fill='black'/>" + finalChild + "</mask></defs><rect width='8' height='8' fill='red' mask='url(#m)'/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -116,7 +116,7 @@ public sealed class SvgMaskContentReplayTests
     public void Nested_mask_groups_replay_in_order_and_release_retained_children()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><rect width='8' height='8' fill='white'/><path d='M0 0H2V8H0Z' fill='black'/><g><path d='M0 0H4V8H0Z' fill='black'/></g></mask></defs><rect width='8' height='8' fill='red' mask='url(#m)'/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
         {
@@ -142,7 +142,7 @@ public sealed class SvgMaskContentReplayTests
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "mask-group-documents", identity + ".svg"));
         byte[] unchanged = input.ToArray();
-        RenderBudget measured = new(8_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None, 1, 1, null))
         {
             long retained = measured.Snapshot().CurrentBytes;
@@ -161,7 +161,7 @@ public sealed class SvgMaskContentReplayTests
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         foreach (long limit in new[] { 16_383, measured.Snapshot().PeakBytes / 2 })
         {
-            RenderBudget denied = new(limit);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
             {
                 using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None);
@@ -178,7 +178,7 @@ public sealed class SvgMaskContentReplayTests
     public void Invalid_mask_group_reference_graphs_release_partial_source_owners(string children)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'>" + children + "</mask></defs></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -189,7 +189,7 @@ public sealed class SvgMaskContentReplayTests
     public void Placed_spatial_mask_regions_map_their_authored_unit_mode(string region)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><mask id='m' " + region + "><g><rect width='16' height='16' fill='white'/></g></mask></defs><g transform='translate(5 7)'><rect width='16' height='16' fill='red' mask='url(#m)'/></g></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
             for (int y = 0; y < 32; y++)

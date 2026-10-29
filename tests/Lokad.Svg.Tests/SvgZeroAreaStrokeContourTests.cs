@@ -17,7 +17,7 @@ public sealed class SvgZeroAreaStrokeContourTests
             ? [new(0, 0), new(8, 8), new(8, 0), new(0, 8), new(12, 1), new(16, 1), new(16, 5), new(12, 5)]
             : [new(0, 0), new(8, 8), new(8, 0), new(0, 8)];
         int[] ends = multiple ? [4, 8] : [4];
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, ends, [], false, null, SvgPolygonMapping.NativeStrokeEdges,
             [], [], 0, 16, 0, 16, 16, 16, new(0, 16), clipped ? new(new(0, 0, 16, 16)) : null,
             budget, out bool eligible, CancellationToken.None))

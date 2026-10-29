@@ -52,7 +52,7 @@ public sealed class SvgFilterPlaybackTests
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'>" + content + "</svg>");
         byte[] unchanged = input.ToArray();
-        RenderBudget budget = new(2_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
         Assert.Equal(expected, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
@@ -77,14 +77,14 @@ public sealed class SvgFilterPlaybackTests
     public void Source_layer_bounds_match_the_native_two_blur_hint_and_release_temporary_owners()
     {
         byte[] input = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='1.125'/><feGaussianBlur stdDeviation='1.125'/></filter></defs><rect width='4' height='4' filter='url(#f)'/>");
-        RenderBudget parser = new(1_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None))
         {
             SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
             SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
             SvgFilterRegionContext context = new(SvgAffineTransform.Identity, new(144, 108), new(-100, -100, 200, 200));
             SvgPaintBounds source = new(7.25f, 19.5f, 61.75f, 84.75f);
-            RenderBudget budget = new(1_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             SvgPaintBounds hint = SvgFilterPlayback.SourceLayerBounds(resource, new(1, 1), context, source, budget, CancellationToken.None);
             // The retained native command trace records [0,12,69,92].
             Assert.Equal((0d, 12d, 69d, 92d), (Math.Floor(hint.Left), Math.Floor(hint.Top), Math.Ceiling(hint.Right), Math.Ceiling(hint.Bottom)));
@@ -103,7 +103,7 @@ public sealed class SvgFilterPlaybackTests
     public void Primitive_color_spaces_inherit_independently_and_keep_their_declared_override()
     {
         byte[] input = Document("<defs><filter id='f' color-interpolation-filters='sRGB'><feGaussianBlur stdDeviation='1' color-interpolation-filters='linearRGB'/><feOffset/><feMerge color-interpolation-filters='linearRGB'><feMergeNode in='SourceGraphic'/></feMerge></filter></defs><rect width='4' height='4' filter='url(#f)'/>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
@@ -121,13 +121,13 @@ public sealed class SvgFilterPlaybackTests
         byte[] input = Document("<defs><filter id='f' filterUnits='userSpaceOnUse' x='-100' y='-100' width='200' height='200'>"
             + "<feGaussianBlur stdDeviation='1' result='b'/><feOffset in='b' dx='5' dy='-3' result='m'/>"
             + "<feMerge><feMergeNode in='SourceGraphic'/><feMergeNode in='m'/></feMerge></filter></defs><rect width='4' height='4' filter='url(#f)'/>");
-        RenderBudget parser = new(1_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None))
         {
             SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
             SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
             SvgFilterRegionContext context = new(SvgAffineTransform.Identity, new(200, 200), new(-100, -100, 100, 100));
-            RenderBudget budget = new(1_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             // The direct branch needs [10,20,30,40]. The shifted blur needs
             // [5,23,25,43] expanded by its native three-sigma radius of 3.
             Assert.Equal(new SvgPaintBounds(2, 20, 30, 46), SvgFilterPlayback.RequiredSourceBounds(resource,
@@ -147,7 +147,7 @@ public sealed class SvgFilterPlaybackTests
     public void Rescaled_blur_keeps_offscreen_intermediate_pixels_needed_by_a_later_offset()
     {
         const int width = 128, height = 96;
-        RenderBudget parserBudget = new(1_000_000);
+        RenderBudget parserBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         byte[] input = Document("<defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='128' height='96'>"
             + "<feGaussianBlur stdDeviation='144'/><feOffset dx='-64'/></filter></defs><rect width='4' height='4' filter='url(#f)'/>");
         using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parserBudget, CancellationToken.None);
@@ -163,7 +163,7 @@ public sealed class SvgFilterPlaybackTests
                 RasterPlacement = new(new(0, 0), new(32, height), new(0, 0, 32, height))
             }
         };
-        RenderBudget rasterBudget = new(1_000_000);
+        RenderBudget rasterBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, width, height, resource, map, rasterBudget, CancellationToken.None))
             Assert.True(result.Pixels[(48 * width) * 4 + 3] > 0);
         Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
@@ -187,7 +187,7 @@ public sealed class SvgFilterPlaybackTests
         byte[] input = Document(css + "<g " + attributes + " opacity='.5'><rect width='4' height='4' fill='red'/><rect width='4' height='4' fill='blue'/></g><defs><filter id='f'><feGaussianBlur stdDeviation='0'/></filter></defs>");
         SvgRenderOptions options = new(null, 1, new(255, 255, 255, 255), SvgRenderLimits.Default);
         byte[] png = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         DecodedPngImage image = PngImageDecoder.Decode(png, options.Limits, budget, CancellationToken.None);
         Assert.Null(image.Raster);
         Assert.Equal(new SvgColor(126, 126, 255, 255), image.Color);
@@ -209,7 +209,7 @@ public sealed class SvgFilterPlaybackTests
     public void Pending_filter_group_combinations_reject_without_output_and_release_parser_owners(string content)
     {
         byte[] input = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='3'/></filter></defs>" + content);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         using MemoryStream stream = new();
@@ -223,7 +223,7 @@ public sealed class SvgFilterPlaybackTests
     public void Missing_filtered_source_references_reject_without_output_and_release_owners(string source)
     {
         byte[] input = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='1'/></filter></defs><g filter='url(#f)'>" + source + "</g>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         using MemoryStream stream = new();
@@ -236,7 +236,7 @@ public sealed class SvgFilterPlaybackTests
     {
         byte[] input = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='1'/></filter></defs><g filter='url(#f)'>"
             + "<svg width='4' height='4'><rect width='4' height='4'/></svg></g>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface result = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
             Assert.Contains(result.Pixels, value => value != 0);
@@ -248,7 +248,7 @@ public sealed class SvgFilterPlaybackTests
     {
         byte[] input = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='1'/></filter></defs>"
             + "<g transform='matrix(1 .15 .2 1 2 3)' filter='url(#f)'><g filter='url(#f)'><path d='M1 1H7V7H1Z'/></g></g>");
-        RenderBudget budget = new(2_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
         byte[] expected;
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
             expected = SvgConverter.ConvertToPng(root, SvgRenderOptions.Default, budget, CancellationToken.None).ToArray();
@@ -264,7 +264,7 @@ public sealed class SvgFilterPlaybackTests
         byte[] input = Document("<defs><filter id='f'><feOffset/></filter>"
             + "<marker id='m' markerUnits='userSpaceOnUse' markerWidth='20' markerHeight='20'><path d='M0 0H20V20Z'/></marker></defs>"
             + "<g filter='url(#f)'><path d='M1 1H3V3Z' marker-start='url(#m)'/></g>");
-        RenderBudget budget = new(2_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             SvgFilterArena arena = root.SceneStorage?.Filters ?? throw new InvalidOperationException();
@@ -281,7 +281,7 @@ public sealed class SvgFilterPlaybackTests
             + "<defs><filter id='f' filterUnits='userSpaceOnUse' x='30.5' y='20.25' width='40.5' height='38.75' color-interpolation-filters='sRGB'><feOffset dx='1.25' dy='.75'/></filter></defs>"
             + "<g transform='matrix(1 .15 .2 1 1.25 .5)' filter='url(#f)'><path d='M13 19Q38 2 70 15L88 58Q48 83 16 62Z' fill='#244a77' fill-opacity='.75'/></g></svg>");
         byte[] unchanged = input.ToArray();
-        RenderBudget accepted = new(8_000_000);
+        RenderBudget accepted = new RenderBudget(new HostMemoryBudget(8_000_000));
         int replayCount = 0;
         byte[] expected;
         using (SvgAnalyticPaintProbe.Arm((phase, _) => { if (phase == SvgAnalyticPaintPhase.BeforeReplay) replayCount++; }))
@@ -289,7 +289,7 @@ public sealed class SvgFilterPlaybackTests
         Assert.True(replayCount > 2);
         Assert.Contains(expected, value => value != 0);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-        RenderBudget denied = new(accepted.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(accepted.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(denied, SvgRenderLimits.Default, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         SvgRenderLimits limits = SvgRenderLimits.Default;
@@ -319,7 +319,7 @@ public sealed class SvgFilterPlaybackTests
             + "<filter id='tile' color-interpolation-filters='sRGB'><feOffset dx='.5' dy='.25'/></filter></defs>"
             + "<rect x='144' y='116' width='16' height='12' filter='url(#outer)'/><rect width='144' height='116' fill='url(#p)'/></svg>");
         byte[] unchanged = input.ToArray();
-        RenderBudget accepted = new(8_000_000);
+        RenderBudget accepted = new RenderBudget(new HostMemoryBudget(8_000_000));
         int replayCount = 0;
         byte[] expected;
         using (SvgAnalyticPaintProbe.Arm((phase, _) => { if (phase == SvgAnalyticPaintPhase.BeforeReplay) replayCount++; }))
@@ -327,7 +327,7 @@ public sealed class SvgFilterPlaybackTests
         Assert.True(replayCount > 2);
         Assert.Contains(expected, value => value != 0);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-        RenderBudget denied = new(Math.Max(1024, accepted.Snapshot().PeakBytes / 2));
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(Math.Max(1024, accepted.Snapshot().PeakBytes / 2)));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(denied, SvgRenderLimits.Default, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         SvgRenderLimits limits = SvgRenderLimits.Default;
@@ -354,7 +354,7 @@ public sealed class SvgFilterPlaybackTests
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='96' height='80'>"
             + "<defs><filter id='f' filterUnits='userSpaceOnUse' primitiveUnits='objectBoundingBox' x='0' y='0' width='96' height='80' color-interpolation-filters='sRGB'><feOffset dx='.5'/></filter></defs>"
             + "<g transform='matrix(1 .15 .2 1 0 0)' filter='url(#f)'><path d='M20 20H60V50H20Z' fill='red'/></g></svg>");
-        RenderBudget budget = new(4_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(4_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
         {
@@ -369,7 +369,7 @@ public sealed class SvgFilterPlaybackTests
     {
         byte[] input = Document("<defs><filter id='f'><feOffset/></filter><clipPath id='c' clipPathUnits='objectBoundingBox'><rect width='1' height='1'/></clipPath></defs>"
             + "<g filter='url(#f)' clip-path='url(#c)'><path d='M2 0V4' fill='none' stroke='red'/></g>");
-        RenderBudget budget = new(2_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
             Assert.All(surface.Pixels, value => Assert.Equal((byte)0, value));
@@ -382,7 +382,7 @@ public sealed class SvgFilterPlaybackTests
         // Retains the original nested-source rejection input as positive acceptance.
         byte[] input = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='3'/></filter></defs>"
             + "<g filter='url(#f)'><rect width='4' height='4' filter='url(#f)'/></g>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
@@ -420,7 +420,7 @@ public sealed class SvgFilterPlaybackTests
         byte[] input = Document("<rect width='4' height='4' fill='red' " + style + "/><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='4' height='4'><feGaussianBlur stdDeviation='0' result='a'/><feOffset in='a' dx='0' dy='0'/></filter></defs>");
         SvgRenderOptions options = new(null, 1, new(255, 255, 255, 255), SvgRenderLimits.Default);
         byte[] png = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         DecodedPngImage image = PngImageDecoder.Decode(png, options.Limits, budget, CancellationToken.None);
         Assert.Null(image.Raster);
         Assert.Equal(new SvgColor(255, 126, 126, 255), image.Color);
@@ -450,7 +450,7 @@ public sealed class SvgFilterPlaybackTests
     public void Referenced_graph_errors_release_partial_parser_owners(string definition, SvgErrorCode code)
     {
         byte[] input = Document("<rect width='4' height='4' filter='url(#f)'/><defs>" + definition + "</defs>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(code, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -460,7 +460,7 @@ public sealed class SvgFilterPlaybackTests
     [InlineData(true)]
     public void Graph_limits_release_intermediates_preserve_source_and_allow_exact_retry(bool merge)
     {
-        RenderBudget parserBudget = new(1_000_000);
+        RenderBudget parserBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         string graph = "<feDropShadow stdDeviation='3' dx='1' dy='1' flood-opacity='.5' result='a'/>"
             + (merge ? "<feMerge><feMergeNode in='a'/><feMergeNode in='SourceAlpha'/><feMergeNode in='SourceGraphic'/></feMerge>" : "");
         using SvgRoot root = SvgRootParser.Parse(Document("<defs><filter id='f'>" + graph + "</filter></defs><rect width='4' height='4' filter='url(#f)'/>"), SvgRenderLimits.Default, parserBudget, CancellationToken.None);
@@ -469,7 +469,7 @@ public sealed class SvgFilterPlaybackTests
         byte[] source = new byte[13 * 9 * 4];
         source[(4 * 13 + 6) * 4] = source[(4 * 13 + 6) * 4 + 3] = 255;
         byte[] before = (byte[])source.Clone();
-        RenderBudget accepted = new(1_000_000);
+        RenderBudget accepted = new RenderBudget(new HostMemoryBudget(1_000_000));
         byte[] expected;
         using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, 13, 9, resource, new(1, 1), accepted, CancellationToken.None))
         { expected = (byte[])result.Pixels.Clone(); }
@@ -477,7 +477,7 @@ public sealed class SvgFilterPlaybackTests
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
         foreach (long allowedBytes in new[] { 1, 256, peak / 2, peak - 1 })
         {
-            RenderBudget budget = new(allowedBytes);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(allowedBytes));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFilterPlayback.ApplyFullFrame(source, 13, 9, resource, new(1, 1), budget, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }
@@ -510,7 +510,7 @@ public sealed class SvgFilterPlaybackTests
             + "<g" + placement + "><rect width='4' height='4' fill='red' filter='url(#f)'/></g>");
         byte[] unchanged = input.ToArray();
         SvgRenderOptions options = new(null, outputScale, SvgColor.Transparent, SvgRenderLimits.Default);
-        RenderBudget budget = new(2_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             long retained = budget.Snapshot().CurrentBytes;
@@ -569,7 +569,7 @@ public sealed class SvgFilterPlaybackTests
         byte[] expected = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
         Assert.True(SvgConverter.ConvertToPng(input, stream, SvgRenderOptions.Default, CancellationToken.None) > 0);
         Assert.Equal(expected, stream.ToArray());
-        RenderBudget budget = new(2_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
             Assert.Contains(Enumerable.Range(0, surface.Width * surface.Height), pixel => surface.Pixels[pixel * 4 + 3] > 128);
@@ -622,7 +622,7 @@ public sealed class SvgFilterPlaybackTests
         byte[] dormant = Document("<defs><filter id='f'>" + graph + "</filter></defs><rect width='4' height='4'/>");
         Assert.Equal(SvgConverter.ConvertToPng(plain, SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(dormant, SvgRenderOptions.Default, CancellationToken.None).ToArray());
         byte[] active = Document("<defs><filter id='f'>" + graph + "</filter></defs><rect width='4' height='4' filter='url(#f)'/>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(active, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         using MemoryStream output = new();
@@ -635,7 +635,7 @@ public sealed class SvgFilterPlaybackTests
     {
         string nodes = string.Concat(Enumerable.Repeat("<feMergeNode in='SourceGraphic'/>", 257));
         byte[] input = Document("<defs><filter id='f'><feMerge>" + nodes + "</feMerge></filter></defs><rect width='4' height='4' filter='url(#f)'/>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -644,7 +644,7 @@ public sealed class SvgFilterPlaybackTests
     public void Offset_source_cancellation_releases_the_partial_bitmap_and_allows_retry()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='800' height='700'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='800' height='700'><feOffset dx='315' dy='450' result='a'/><feMerge><feMergeNode in='SourceGraphic'/><feMergeNode in='a'/></feMerge></filter></defs><g filter='url(#f)' transform='translate(0 0)'><ellipse cx='48' cy='48' rx='45' ry='28' fill='none' stroke='blue' stroke-width='2'/></g></svg>");
-        RenderBudget budget = new(16_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(16_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             long retained = budget.Snapshot().CurrentBytes;
@@ -666,7 +666,7 @@ public sealed class SvgFilterPlaybackTests
                 Assert.Contains(retry.Pixels, value => value != 0);
                 pixels = retry.Pixels.ToArray();
             }
-            RenderBudget tight = new(budget.Snapshot().PeakBytes - retained - 1_024);
+            RenderBudget tight = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes - retained - 1_024));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
             {
                 using SvgConverter.RasterizedSurface denied = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, tight, CancellationToken.None);
@@ -680,14 +680,14 @@ public sealed class SvgFilterPlaybackTests
 
     private static byte[] Apply(string graph, byte[] source, int width)
     {
-        RenderBudget parserBudget = new(1_000_000);
+        RenderBudget parserBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         byte[] input = Document("<defs><filter id='f' color-interpolation-filters='sRGB'>" + graph + "</filter></defs><rect width='4' height='4' filter='url(#f)'/>");
         byte[] pixels;
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parserBudget, CancellationToken.None))
         {
             SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
             SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
-            RenderBudget rasterBudget = new(1_000_000);
+            RenderBudget rasterBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
             using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, width, 1, resource, new(1, 1), rasterBudget, CancellationToken.None)) pixels = result.Pixels.ToArray();
             Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
         }

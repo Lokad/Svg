@@ -12,7 +12,7 @@ public sealed class SvgLocalReferencePresentationResolverTests
         SvgInheritedPresentation inherited = new(new SvgPaint(new(new SvgColor(1, 2, 3, 255), 1), true, new SvgPaintOpacity(128, 128 / 255f), new(new SvgColor(4, 5, 6, 255), 1), false), true, false, SvgAffineTransform.Identity);
         SvgComputedStyle style = new(null, "blue", null, null, "none", "visible", "0.5", null);
 
-        SvgResolvedLocalReferencePresentation presentation = SvgLocalReferencePresentationResolver.Resolve(style, inherited, namedColors, new BudgetedParserStringStore(new RenderBudget(10_000)));
+        SvgResolvedLocalReferencePresentation presentation = SvgLocalReferencePresentationResolver.Resolve(style, inherited, namedColors, new BudgetedParserStringStore(new RenderBudget(new HostMemoryBudget(10_000))));
 
         Assert.Equal((byte)128, presentation.Opacity);
         Assert.False(presentation.IsPainted);
@@ -24,7 +24,7 @@ public sealed class SvgLocalReferencePresentationResolverTests
     {
         SvgComputedStyle style = new(null, "url(#g)", null, null, null, null, null, null);
 
-        SvgResolvedLocalReferencePresentation presentation = SvgLocalReferencePresentationResolver.Resolve(style, new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), new Dictionary<string, SvgColor>(), new BudgetedParserStringStore(new RenderBudget(10_000)));
+        SvgResolvedLocalReferencePresentation presentation = SvgLocalReferencePresentationResolver.Resolve(style, new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), new Dictionary<string, SvgColor>(), new BudgetedParserStringStore(new RenderBudget(new HostMemoryBudget(10_000))));
 
         Assert.Null(presentation.FillOverride);
         Assert.Equal("g", presentation.PaintServerId);
@@ -34,7 +34,7 @@ public sealed class SvgLocalReferencePresentationResolverTests
     public void Resolves_use_color_and_fill_opacity_independently_of_stroke_opacity()
     {
         SvgComputedStyle style = new("#297fb3", "currentColor", ".375", "currentColor", null, null, null, null);
-        SvgResolvedLocalReferencePresentation resolved = SvgLocalReferencePresentationResolver.Resolve(style, new(SvgPaint.Default, true, true, SvgAffineTransform.Identity), new Dictionary<string, SvgColor>(), new BudgetedParserStringStore(new RenderBudget(10_000)));
+        SvgResolvedLocalReferencePresentation resolved = SvgLocalReferencePresentationResolver.Resolve(style, new(SvgPaint.Default, true, true, SvgAffineTransform.Identity), new Dictionary<string, SvgColor>(), new BudgetedParserStringStore(new RenderBudget(new HostMemoryBudget(10_000))));
         Assert.Equal(new SvgColor(41, 127, 179, 255), resolved.Paint.CurrentColor);
         Assert.Equal(.375f, resolved.Paint.FillOpacity.Value);
         Assert.Equal(resolved.Paint, resolved.FillOverride);
@@ -47,7 +47,7 @@ public sealed class SvgLocalReferencePresentationResolverTests
     public void Valid_instance_fill_rule_preserves_its_resolved_paint()
     {
         SvgComputedStyle style = new(null, null, null, null, null, null, null, "evenodd");
-        RenderBudget budget = new(10_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
         using BudgetedParserStringStore strings = new(budget);
         SvgInheritedPresentation inherited = new(SvgPaint.Default, true, true, SvgAffineTransform.Identity);
         Dictionary<string, SvgColor> colors = new();
@@ -62,7 +62,7 @@ public sealed class SvgLocalReferencePresentationResolverTests
         SvgComputedStyle style = new(null, null, null, "#ff0000", null, null, null, null) { Width = "5.165", Linejoin = "round" };
         IReadOnlyDictionary<string, SvgColor> namedColors = new Dictionary<string, SvgColor>(StringComparer.OrdinalIgnoreCase);
 
-        SvgResolvedLocalReferencePresentation presentation = SvgLocalReferencePresentationResolver.Resolve(style, new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), namedColors, new BudgetedParserStringStore(new RenderBudget(10_000)));
+        SvgResolvedLocalReferencePresentation presentation = SvgLocalReferencePresentationResolver.Resolve(style, new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), namedColors, new BudgetedParserStringStore(new RenderBudget(new HostMemoryBudget(10_000))));
 
         Assert.Null(presentation.FillOverride);
         Assert.NotNull(presentation.StrokeOverride);
@@ -77,7 +77,7 @@ public sealed class SvgLocalReferencePresentationResolverTests
     {
         SvgComputedStyle style = new(null, null, null, "#ff0000", null, null, null, null) { Dasharray = "4 4" };
 
-        SvgResolvedLocalReferencePresentation resolved = SvgLocalReferencePresentationResolver.Resolve(style, new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), new Dictionary<string, SvgColor>(), new BudgetedParserStringStore(new RenderBudget(10_000)));
+        SvgResolvedLocalReferencePresentation resolved = SvgLocalReferencePresentationResolver.Resolve(style, new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), new Dictionary<string, SvgColor>(), new BudgetedParserStringStore(new RenderBudget(new HostMemoryBudget(10_000))));
         Assert.Equal(new SvgColor(255, 0, 0, 255), Assert.IsType<SvgUseStrokeOverride>(resolved.StrokeOverride).Paint.FillColor);
     }
 
@@ -85,7 +85,7 @@ public sealed class SvgLocalReferencePresentationResolverTests
     public void Defers_local_paint_server_use_strokes_to_retained_source_replay()
     {
         SvgComputedStyle painted = new(null, null, null, "url(#g)", null, null, null, null);
-        RenderBudget budget = new(10_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
         using BudgetedParserStringStore strings = new(budget);
         SvgResolvedLocalReferencePresentation resolved = SvgLocalReferencePresentationResolver.Resolve(painted,
             new(SvgPaint.Default, true, true, SvgAffineTransform.Identity), new Dictionary<string, SvgColor>(), strings);
@@ -99,7 +99,7 @@ public sealed class SvgLocalReferencePresentationResolverTests
     public void Resolves_use_stroke_opacity_without_requiring_a_stroke_color(string? strokeColor)
     {
         SvgComputedStyle translucent = new(null, null, ".625", strokeColor, null, null, null, null) { StrokeOpacity = ".375" };
-        SvgResolvedLocalReferencePresentation resolved = SvgLocalReferencePresentationResolver.Resolve(translucent, new(SvgPaint.Default, true, true, SvgAffineTransform.Identity), new Dictionary<string, SvgColor>(), new BudgetedParserStringStore(new RenderBudget(10_000)));
+        SvgResolvedLocalReferencePresentation resolved = SvgLocalReferencePresentationResolver.Resolve(translucent, new(SvgPaint.Default, true, true, SvgAffineTransform.Identity), new Dictionary<string, SvgColor>(), new BudgetedParserStringStore(new RenderBudget(new HostMemoryBudget(10_000))));
         Assert.Equal(.375f, resolved.StrokeOpacity.Value);
         Assert.Equal(.625f, resolved.Paint.FillOpacity.Value);
         if (strokeColor is null) Assert.Null(resolved.StrokeOverride);

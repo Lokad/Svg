@@ -60,7 +60,7 @@ public sealed partial class OpenTypeFontTests
     public async Task Varying_paints_preserve_one_continuous_glyph_layout_and_release_owned_storage()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         SvgTextStyle style = new(new SvgFontFaceRequest("Example", 400, false), 100, 0, 3, 0, 0, 0, SvgTextAnchor.Middle, "");
         SvgTextGlyphPaint red = new(new(new SvgColor(255, 0, 0, 255), 1), true);
         SvgTextGlyphPaint blue = new(new(new SvgColor(0, 0, 255, 255), 1), true);
@@ -131,12 +131,12 @@ public sealed partial class OpenTypeFontTests
         SvgTextGlyphPaint blue = new(new(new SvgColor(0, 0, 255, 255), 1), true);
         SvgTextPaintSpan[] paints = Enumerable.Range(0, 128).Select(index => new SvgTextPaintSpan(index, index + 1, index % 2 == 0 ? red : blue)).ToArray();
         string text = new('A', 128);
-        RenderBudget normal = new(100_000);
+        RenderBudget normal = new RenderBudget(new HostMemoryBudget(100_000));
         using (SvgTextRun run = SvgTextRunBuilder.Create(style, text, [], [], paints, red, null, snapshot, normal, CancellationToken.None))
             Assert.Equal(128, run.Glyphs.Length);
         Assert.Equal(0, normal.Snapshot().CurrentBytes);
 
-        RenderBudget denied = new(4_500);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(4_500));
         SvgException failure = Assert.Throws<SvgException>(() => SvgTextRunBuilder.Create(style, text, [], [], paints, red, null, snapshot, denied, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, failure.ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
@@ -167,14 +167,14 @@ public sealed partial class OpenTypeFontTests
         SvgInheritedTextStyle large = new("Example", 400, false, 100, SvgTextWhitespaceMode.Default, 0, SvgTextAnchor.Start);
         SvgInheritedTextStyle small = new("Example", 400, false, 50, SvgTextWhitespaceMode.Default, 0, SvgTextAnchor.Start);
         SvgTextFontSpan[] fonts = [new(0, 1, large), new(1, 2, small), new(2, 3, large)];
-        RenderBudget budget = new(1_000_000);         using (SvgTextRun run = SvgTextRunBuilder.Create(style, "AAA", [], [], [], fonts, null, null, snapshot, budget, CancellationToken.None))
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));         using (SvgTextRun run = SvgTextRunBuilder.Create(style, "AAA", [], [], [], fonts, null, null, snapshot, budget, CancellationToken.None))
         {
             Assert.Equal(new[] { 0d, 60, 90 }, run.Glyphs.ToArray().Select(glyph => glyph.X));
             Assert.Equal(new[] { 28d, 15.5, 28 }, run.Glyphs.ToArray().Select(glyph => glyph.Y));
             Assert.Equal(new[] { 100d, 50, 100 }, Enumerable.Range(0, 3).Select(index => run.GetGlyphFont(index).FontSize));
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget memory = new(budget.Snapshot().PeakBytes - 1);
+        RenderBudget memory = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
             SvgTextRunBuilder.Create(style, "AAA", [], [], [], fonts, null, null, snapshot, memory, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, memory.Snapshot().CurrentBytes);
@@ -193,7 +193,7 @@ public sealed partial class OpenTypeFontTests
     [Fact]
     public void Paint_interval_cancellation_releases_partial_layout_and_scopes()
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         using CancellationTokenSource cancellation = new();
         using (SvgTextPaintOutput output = new(budget, 0, SvgTextPaintStyle.Default, cancellation.Token))
         {

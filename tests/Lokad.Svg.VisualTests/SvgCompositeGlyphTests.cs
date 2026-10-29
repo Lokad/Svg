@@ -27,7 +27,7 @@ public sealed class SvgCompositeGlyphTests
         JsonElement item = witnesses.RootElement.GetProperty("cases").EnumerateArray().Single(c => c.GetProperty("id").GetString() == identity);
         byte[] bytes = Font(), unchanged = bytes.ToArray();
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (OpenTypeGlyphContourStorage contours = Fit(bytes, metrics, item, budget, CancellationToken.None))
         {
             Assert.Equal(item.GetProperty("contourEnds").EnumerateArray().Select(c => c.GetInt32()), contours.ContourEnds);
@@ -57,12 +57,12 @@ public sealed class SvgCompositeGlyphTests
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
         if (maximumBytes == 0)
         {
-            RenderBudget baseline = new(long.MaxValue);
+            RenderBudget baseline = new RenderBudget(new HostMemoryBudget(long.MaxValue));
             using (OpenTypeGlyphContourStorage contours = FitParent(bytes, metrics, light, baseline, CancellationToken.None)) Assert.NotEmpty(contours.Segments);
             Assert.Equal(0, baseline.Snapshot().CurrentBytes);
             maximumBytes = baseline.Snapshot().PeakBytes - 1;
         }
-        RenderBudget budget = new(maximumBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(maximumBytes));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => FitParent(bytes, metrics, light, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(unchanged, bytes);
@@ -75,7 +75,7 @@ public sealed class SvgCompositeGlyphTests
     {
         byte[] bytes = Font();
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using CancellationTokenSource cancellation = new(); cancellation.Cancel();
         Assert.ThrowsAny<OperationCanceledException>(() => FitParent(bytes, metrics, light, budget, cancellation.Token));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -94,7 +94,7 @@ public sealed class SvgCompositeGlyphTests
         Assert.True(integerMetrics.ForceIntegerHintingSize);
         Assert.False(fractionalMetrics.ForceIntegerHintingSize);
         Assert.Equal(integerMetrics.UnitsPerEm, fractionalMetrics.UnitsPerEm);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (OpenTypeGlyphContourStorage a = OpenTypeFont.GetTrueTypeContours(bytes, 11, integerMetrics, 18.25, Target, budget, CancellationToken.None))
         using (OpenTypeGlyphContourStorage b = OpenTypeFont.GetTrueTypeContours(bytes, 11, integerMetrics, 18, Target, budget, CancellationToken.None))
         using (OpenTypeGlyphContourStorage c = OpenTypeFont.GetTrueTypeContours(fractional, 11, fractionalMetrics, 18.25, Target, budget, CancellationToken.None))
@@ -109,7 +109,7 @@ public sealed class SvgCompositeGlyphTests
     [Fact]
     public void Integer_hinting_size_collapse_returns_an_empty_glyph()
     {
-        byte[] bytes = Font(); RenderBudget budget = new(long.MaxValue);
+        byte[] bytes = Font(); RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetTrueTypeContours(bytes, 12, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), .25, Target, budget, CancellationToken.None)) Assert.Empty(contours.Segments);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

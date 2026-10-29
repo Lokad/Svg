@@ -55,15 +55,15 @@ public sealed class SvgZeroDashTests
     public void Denial_and_cancellation_release_zero_list_geometry_and_allow_retry()
     {
         byte[] input = Input("<circle cx='16' cy='16' r='10' fill='none' stroke='red' stroke-width='2' stroke-dasharray='0 0'/>");
-        RenderBudget measured = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget cancelled = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget cancelled = new RenderBudget(new HostMemoryBudget(268_435_456L));
         Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, cancellation.Token)).CancellationToken);
         Assert.Equal(0, cancelled.Snapshot().CurrentBytes);
         Assert.Equal(Render("<circle cx='16' cy='16' r='10' fill='none' stroke='red' stroke-width='2'/>"), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());

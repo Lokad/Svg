@@ -50,7 +50,7 @@ public sealed partial class OpenTypeFontTests
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateLigatureFont(false))], CancellationToken.None);
         SvgTextStyle style = new(new("Example", 400, false), 37.25, 16, 24, 0, 0, 0, SvgTextAnchor.Middle, "label") { TextLength = 24 };
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         SvgGlyphDeviceMetrics metrics = new(1.5, SvgGlyphMetricTarget.Windows, false);
         using (SvgTextRun natural = SvgTextRunBuilder.Create(style with { TextLength = null }, text, [], [], metrics, snapshot, budget, CancellationToken.None))
         using (SvgTextRun actual = SvgTextRunBuilder.Create(style, text, [], [], metrics, snapshot, budget, CancellationToken.None))

@@ -66,7 +66,7 @@ public sealed class SvgGradientTemplateAttributeTests
         foreach (string target in new[] { "missing", "g" })
         {
             byte[] input = Document("<" + kind + " id='g' href='#" + target + "' " + coordinates + ">" + Stops + "</" + kind + ">");
-            RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
             Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }
@@ -78,15 +78,15 @@ public sealed class SvgGradientTemplateAttributeTests
     public void Template_resolution_releases_owners_on_denial_and_cancellation(string kind)
     {
         var documents = Documents(kind, "transform", true, true, true);
-        RenderBudget measured = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = SvgRootParser.Parse(documents.Actual, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(documents.Actual, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget cancelled = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget cancelled = new RenderBudget(new HostMemoryBudget(268_435_456L));
         Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(documents.Actual, SvgRenderLimits.Default, cancelled, cancellation.Token)).CancellationToken);
         Assert.Equal(0, cancelled.Snapshot().CurrentBytes);
         Assert.Equal(Render(documents.Expected), Render(documents.Actual));
@@ -97,7 +97,7 @@ public sealed class SvgGradientTemplateAttributeTests
     {
         const string definitions = "<radialGradient id='base' cx='.4' cy='.5' r='.3' fx='.35' gradientTransform='matrix(1 0 .5 1 0 0)'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient><radialGradient id='alias' href='#base'/><radialGradient id='g' href='#alias' gradientTransform='translate(.1 0)'/>";
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs>" + definitions + "</defs><rect width='8' height='8' fill='url(#base)'/><rect x='8' width='8' height='8' fill='url(#alias)'/><rect x='16' width='8' height='8' fill='url(#g)'/></svg>");
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             Assert.Equal(3, root.Geometries.Length);
@@ -114,7 +114,7 @@ public sealed class SvgGradientTemplateAttributeTests
     [Fact]
     public void Denied_radial_definition_storage_preserves_the_scene_owner()
     {
-        RenderBudget budget = new(SvgSceneBuilder.RecordedPaintOwnerBytes + SvgRadialGradientSource.RetainedStorageBytes - 1);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(SvgSceneBuilder.RecordedPaintOwnerBytes + SvgRadialGradientSource.RetainedStorageBytes - 1));
         using (SvgSceneBuilder scene = new(budget, CancellationToken.None))
         {
             long before = budget.Snapshot().CurrentBytes;

@@ -35,19 +35,24 @@ public sealed class SvgPreparedDocument : IDisposable
         ArgumentNullException.ThrowIfNull(provider);
         ArgumentNullException.ThrowIfNull(options);
         if (options.FontSnapshot is not null) throw new ArgumentException("Prepared document options must not supply a separate font snapshot.", nameof(options));
-        RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
-        using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, options.Limits, budget, cancellationToken);
-        options = preparation.ResolveRasterOptions(options);
-        SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(preparation, catalog, provider, options.FontSelectionPolicy, cancellationToken).ConfigureAwait(false);
+        IMemoryScope? execution = options.MemoryBudget?.CreateScope();
+        SvgFontSnapshot? snapshot = null;
+        SvgRoot root = default;
         try
         {
+            RenderBudget budget = execution is null ? new() : new(execution);
+            using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, options.Limits, budget, cancellationToken);
+            options = preparation.ResolveRasterOptions(options);
+            snapshot = await SvgFontSnapshot.CreateAsync(preparation, catalog, provider, options.FontSelectionPolicy, cancellationToken).ConfigureAwait(false);
             SvgRenderOptions preparedOptions = options.WithFontSnapshot(snapshot);
-            SvgRoot root = LowerPrepared(svg, preparedOptions, budget, preparation, cancellationToken);
-            return new SvgPreparedDocument(preparedOptions, snapshot, root, budget, null, null, null);
+            root = LowerPrepared(svg, preparedOptions, budget, preparation, cancellationToken);
+            return new(preparedOptions, snapshot, root, budget, execution, null, options.MemoryBudget);
         }
         catch
         {
-            snapshot.Dispose();
+            root.Dispose();
+            snapshot?.Dispose();
+            execution?.Dispose();
             throw;
         }
     }
@@ -59,6 +64,8 @@ public sealed class SvgPreparedDocument : IDisposable
     /// Acquired programs stay pinned until conversion/disposal. Use owned PNG output,
     /// caller memory or a stream; governed bare-memory output cannot retain its charge.
     /// The caller keeps SVG input immutable until this asynchronous preparation ends.
+    /// An options budget supplies the document owner and must share the resolver cache
+    /// root; the host is responsible for that association, without identity inspection.
     /// </remarks>
     public static async ValueTask<SvgPreparedDocument> CreateAsync(ReadOnlyMemory<byte> svg,
         SvgHttpFontPackResolver resolver, SvgRenderOptions options, CancellationToken cancellationToken)
@@ -66,6 +73,7 @@ public sealed class SvgPreparedDocument : IDisposable
         ArgumentNullException.ThrowIfNull(resolver);
         ArgumentNullException.ThrowIfNull(options);
         if (options.FontSnapshot is not null) throw new ArgumentException("Prepared document options must not supply a separate font snapshot.", nameof(options));
+        IMemoryBudget memoryBudget = options.MemoryBudget ?? resolver.Budget;
         SvgHttpFontPackResolver.Operation? sources = null;
         IMemoryScope? execution = null;
         SvgFontSnapshot? snapshot = null;
@@ -73,14 +81,14 @@ public sealed class SvgPreparedDocument : IDisposable
         try
         {
             sources = resolver.OpenOperation();
-            execution = resolver.Budget.CreateScope();
+            execution = memoryBudget.CreateScope();
             RenderBudget budget = new(execution);
             using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, options.Limits, budget, cancellationToken);
             options = preparation.ResolveRasterOptions(options);
             using SvgFontCoverageDiscovery coverage = preparation.DiscoverFontCoverage();
             SvgFontCoverageRequest[] requirements = coverage.Requests;
             if (requirements.Length == 0)
-                snapshot = await SvgFontSnapshot.CreateAsync(Array.Empty<SvgFontProgramResolution>(), cancellationToken).ConfigureAwait(false);
+                snapshot = await SvgFontSnapshot.CreatePreparedAsync(Array.Empty<SvgFontProgramResolution>(), budget, cancellationToken).ConfigureAwait(false);
             else
             {
                 SvgFontPackCatalog catalog;
@@ -92,11 +100,12 @@ public sealed class SvgPreparedDocument : IDisposable
                         new(exception.FontDiagnostic?.Stage ?? SvgFontFailureStage.Source, first.Family, string.Empty, string.Empty,
                             string.Empty, first.Weight, first.Italic, null, null, null), first.SourceContext?.Describe(string.Empty, string.Empty));
                 }
-                snapshot = await SvgFontSnapshot.CreateAsync(catalog, requirements, sources, options.FontSelectionPolicy, cancellationToken).ConfigureAwait(false);
+                snapshot = await SvgFontSnapshot.CreateAsync(catalog, requirements, sources, options.FontSelectionPolicy, budget, cancellationToken).ConfigureAwait(false);
             }
+            snapshot.AdoptDiscoveredRequests(preparation);
             SvgRenderOptions preparedOptions = options.WithFontSnapshot(snapshot);
             root = LowerPrepared(svg, preparedOptions, budget, preparation, cancellationToken);
-            return new(preparedOptions, snapshot, root, budget, execution, sources, resolver.Budget);
+            return new(preparedOptions, snapshot, root, budget, execution, sources, memoryBudget);
         }
         catch
         {
@@ -109,7 +118,7 @@ public sealed class SvgPreparedDocument : IDisposable
     }
 
     private static SvgRoot LowerPrepared(ReadOnlyMemory<byte> svg, SvgRenderOptions options, RenderBudget budget,
-SvgDocumentPreparation preparation, CancellationToken token)
+        SvgDocumentPreparation preparation, CancellationToken token)
     {
         SvgAffineTransform outputMap = preparation.GetOutputMap(options);
         SvgRoot root = SvgRootParser.ParsePrepared(svg, options.Limits, budget, options.FontSnapshot, token,
@@ -136,19 +145,17 @@ SvgDocumentPreparation preparation, CancellationToken token)
         return ConvertAsync(cancellationToken);
     }
 
-    /// <summary>Converts a governed document once; the returned PNG retains its own sibling scope until disposal.</summary>
+    /// <summary>Converts this document once; a governed PNG retains its own sibling scope until result disposal.</summary>
     public SvgPngResult ConvertToOwnedPng(CancellationToken cancellationToken)
     {
-        RequireGovernedOutput();
         BeginConversion();
         try { return EncodeOwned(cancellationToken); }
         finally { Release(); }
     }
 
-    /// <summary>Schedules one governed conversion on the thread pool, retaining output charges until result disposal.</summary>
+    /// <summary>Schedules one owned-result conversion on the thread pool, retaining any output charge until result disposal.</summary>
     public Task<SvgPngResult> ConvertToOwnedPngAsync(CancellationToken cancellationToken)
     {
-        RequireGovernedOutput();
         BeginConversion();
         return ConvertOwnedAsync(cancellationToken);
     }
@@ -158,16 +165,11 @@ SvgDocumentPreparation preparation, CancellationToken token)
         if (_memoryBudget is not null) throw new InvalidOperationException("A governed document requires ConvertToOwnedPng, caller memory or a stream.");
     }
 
-    private void RequireGovernedOutput()
-    {
-        if (_memoryBudget is null) throw new InvalidOperationException("Owned governed output requires a document prepared with a shared memory budget.");
-    }
-
     private SvgPngResult EncodeOwned(CancellationToken token)
     {
-        IMemoryScope owner = (_memoryBudget ?? throw new InvalidOperationException("No shared memory budget.")).CreateScope();
+        IMemoryScope? owner = _memoryBudget?.CreateScope();
         try { return new(SvgConverter.ConvertToOwnedPng(_root, _options, _budget, owner, token), owner); }
-        catch { owner.Dispose(); throw; }
+        catch { owner?.Dispose(); throw; }
     }
 
     private async Task<SvgPngResult> ConvertOwnedAsync(CancellationToken token)

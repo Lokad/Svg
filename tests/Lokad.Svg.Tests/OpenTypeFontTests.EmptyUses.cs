@@ -84,11 +84,11 @@ public sealed partial class OpenTypeFontTests
     public void Empty_use_descriptions_keep_structural_work_and_storage_limits()
     {
         byte[] input = Document("<use><title>caption</title><metadata><item xmlns='urn:review'/></metadata></use>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)) Assert.False(root.HasUnsupportedChild);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         SvgRenderLimits d = SvgRenderLimits.Default;
-        SvgRenderLimits limits = new(d.MaximumAccountedBytes, d.MaximumInputBytes, d.MaximumDimension, d.MaximumPixels,
+        SvgRenderLimits limits = new(d.MaximumInputBytes, d.MaximumDimension, d.MaximumPixels,
             d.MaximumEncodedPngBytes, 3, d.MaximumPathCommands, d.MaximumXmlDepth, d.MaximumAttributesPerElement);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

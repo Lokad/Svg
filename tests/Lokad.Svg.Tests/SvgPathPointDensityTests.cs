@@ -14,7 +14,7 @@ public sealed class SvgPathPointDensityTests
     public void Raw_verb_count_is_cached_across_clipped_and_uncut_contexts()
     {
         SvgAnalyticContourPreparation preparation = new(Points, [7], [], false, null, SvgPolygonMapping.FlattenedCurves, [], Cubics, new(0, 0, 64, 64), 64, 64);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
@@ -39,13 +39,13 @@ public sealed class SvgPathPointDensityTests
     public void Cancelled_preparation_preserves_the_uncached_count_and_allows_retry()
     {
         SvgAnalyticContourPreparation preparation = new(Points, [7], [], false, null, SvgPolygonMapping.FlattenedCurves, [], Cubics, new(0, 0, 64, 64), 64, 64);
-        RenderBudget success = new(1_000_000);
+        RenderBudget success = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, success, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
         }
         preparation.NativePointCount = null;
-        RenderBudget denied = new(1_000_000);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(1_000_000));
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
         try
@@ -80,7 +80,7 @@ public sealed class SvgPathPointDensityTests
         };
         bool parity = reason == "parity";
         SvgAnalyticContourPreparation preparation = new(Points, [7], parity ? [1] : [], parity, null, reason == "mapping" ? SvgPolygonMapping.FiniteEdges : SvgPolygonMapping.FlattenedCurves, [], spans, new(0, 0, 64, 64), 64, 64);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);

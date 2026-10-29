@@ -19,7 +19,7 @@ public sealed class SvgFilterSourceCoverageTests
     [Trait("Layer", "Mechanism")]
     public void Gaussian_deviations_retain_native_float_place_values(string token, int horizontalBits, int verticalBits)
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgRoot scene = Parse("<feGaussianBlur stdDeviation='" + token + "'/>", budget);
         SvgFilterPrimitive primitive = Resource(scene).Primitives.Items[0];
         Assert.Equal(horizontalBits, BitConverter.SingleToInt32Bits((float)primitive.SigmaX));
@@ -39,7 +39,7 @@ public sealed class SvgFilterSourceCoverageTests
     [Trait("Layer", "Mechanism")]
     public void Materialized_bounds_distinguish_effective_zero_axes_from_identity_pixel_kernels(string sigma, int radiusX, int radiusY)
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgRoot scene = Parse("<feGaussianBlur stdDeviation='" + sigma + "'/>", budget);
         SvgFilterRegionContext context = new(SvgAffineTransform.Identity, new(100, 100), new(-100, -100, 100, 100));
         SvgPaintBounds stored = SvgFilterPlayback.SourceLayerBounds(Resource(scene), new(1.5, 1.5), context,
@@ -62,7 +62,7 @@ public sealed class SvgFilterSourceCoverageTests
     [Trait("Layer", "Mechanism")]
     public void Negative_deviations_retain_rejection_before_float_underflow(string sigma)
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot scene = Parse("<feGaussianBlur stdDeviation='" + sigma + "'/>", budget);
@@ -87,14 +87,14 @@ public sealed class SvgFilterSourceCoverageTests
     [Trait("Layer", "Contract")]
     public void Aliased_source_memory_refusal_cancellation_and_retry_release_temporary_owners(bool materialized)
     {
-        RenderBudget parser = new(1_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000));
         string graph = materialized ? "<feGaussianBlur stdDeviation='.4 0'/><feOffset dy='.5'/>"
             : "<feGaussianBlur stdDeviation='0'/><feMerge result='i'><feMergeNode/></feMerge><feOffset in='i' dy='.5'/>";
         using (SvgRoot scene = Parse(graph, parser))
         {
             SvgFilterResource resource = Resource(scene);
             byte[] source = [253, 0, 1, 255, 253, 0, 1, 255];
-            RenderBudget budget = new(1_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             byte[] expected;
             using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, 1, 2, resource, new(1, 1), budget, CancellationToken.None))
             {
@@ -105,7 +105,7 @@ public sealed class SvgFilterSourceCoverageTests
             Assert.Equal(255, expected[7]);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
-            RenderBudget tight = new(budget.Snapshot().PeakBytes - 1);
+            RenderBudget tight = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes - 1));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
                 SvgFilterPlayback.ApplyFullFrame(source, 1, 2, resource, new(1, 1), tight, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, tight.Snapshot().CurrentBytes);

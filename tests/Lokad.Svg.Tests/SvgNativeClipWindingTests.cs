@@ -12,7 +12,7 @@ public sealed class SvgNativeClipWindingTests
     {
         byte[] source = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "native-clip-winding", "bowtie-ordered-group.svg"));
         byte[] input = isEvenOdd ? System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(source).Replace("<clipPath id=\"c\">", "<clipPath id=\"c\" clip-rule=\"evenodd\">", StringComparison.Ordinal)) : source;
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             long retained = budget.Snapshot().CurrentBytes;
@@ -50,7 +50,7 @@ public sealed class SvgNativeClipWindingTests
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "non-ionizing-warning.svg"));
         SvgRenderOptions options = new(new SvgViewport(616, 540), 1, SvgColor.Transparent, SvgRenderLimits.Default);
-        RenderBudget measured = new(20_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(20_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, options, measured, CancellationToken.None))
         {
@@ -58,7 +58,7 @@ public sealed class SvgNativeClipWindingTests
             Assert.Equal(540, surface.Height);
         }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget deniedMemory = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget deniedMemory = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, deniedMemory, CancellationToken.None);
@@ -72,7 +72,7 @@ public sealed class SvgNativeClipWindingTests
     public void Multi_contour_parity_preserves_holes_and_releases_definition_staging()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><clipPath id='c' clip-rule='evenodd'><path d='M0 0H32V32H0Z M4 4H28V28H4Z'/></clipPath><rect width='32' height='32' clip-path='url(#c)'/></svg>"u8.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
         {
@@ -80,7 +80,7 @@ public sealed class SvgNativeClipWindingTests
             Assert.Equal((byte)255, surface.Pixels[(2 * 32 + 2) * 4 + 3]);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new(budget.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None);

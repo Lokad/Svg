@@ -181,22 +181,22 @@ public sealed class SvgSymbolInstanceReferenceTests
         {
             byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", sample.Family, sample.Name + ".svg"));
             byte[] unchanged = input.ToArray();
-            RenderBudget sceneBudget = new(16_000_000);
+            RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(16_000_000));
             using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, null, CancellationToken.None))
             {
                 foreach (long limit in new[] { 1, sceneBudget.Snapshot().PeakBytes / 2 })
                 {
-                    RenderBudget denied = new(limit);
+                    RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
                     Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
                         SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
                     Assert.Equal(0, denied.Snapshot().CurrentBytes);
                 }
-                RenderBudget workDenied = new(16_000_000);
+                RenderBudget workDenied = new RenderBudget(new HostMemoryBudget(16_000_000));
                 Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
-                RenderBudget accepted = new(16_000_000);
+                RenderBudget accepted = new RenderBudget(new HostMemoryBudget(16_000_000));
                 byte[] expected = SvgConverter.ConvertToPng(scene, SvgRenderOptions.Default, accepted, CancellationToken.None).ToArray();
                 Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-                RenderBudget rasterDenied = new(accepted.Snapshot().PeakBytes / 2);
+                RenderBudget rasterDenied = new RenderBudget(new HostMemoryBudget(accepted.Snapshot().PeakBytes / 2));
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
                     SvgConverter.ConvertToPng(scene, SvgRenderOptions.Default, rasterDenied, CancellationToken.None)).ErrorCode);
                 Assert.Equal(0, rasterDenied.Snapshot().CurrentBytes);
@@ -223,22 +223,22 @@ public sealed class SvgSymbolInstanceReferenceTests
         {
             byte[] input = File.ReadAllBytes(Path.Combine(directory, name + ".svg"));
             byte[] unchanged = input.ToArray();
-            RenderBudget sceneBudget = new(16_000_000);
+            RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(16_000_000));
             using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, null, CancellationToken.None))
             {
                 foreach (long limit in new[] { 1, sceneBudget.Snapshot().PeakBytes / 2 })
                 {
-                    RenderBudget denied = new(limit);
+                    RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
                     Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
                         SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
                     Assert.Equal(0, denied.Snapshot().CurrentBytes);
                 }
-                RenderBudget workDenied = new(16_000_000);
+                RenderBudget workDenied = new RenderBudget(new HostMemoryBudget(16_000_000));
                 Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
-                RenderBudget accepted = new(16_000_000);
+                RenderBudget accepted = new RenderBudget(new HostMemoryBudget(16_000_000));
                 byte[] expected = SvgConverter.ConvertToPng(scene, SvgRenderOptions.Default, accepted, CancellationToken.None).ToArray();
                 Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-                RenderBudget rasterDenied = new(accepted.Snapshot().PeakBytes / 2);
+                RenderBudget rasterDenied = new RenderBudget(new HostMemoryBudget(accepted.Snapshot().PeakBytes / 2));
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
                     SvgConverter.ConvertToPng(scene, SvgRenderOptions.Default, rasterDenied, CancellationToken.None)).ErrorCode);
                 Assert.Equal(0, rasterDenied.Snapshot().CurrentBytes);
@@ -266,22 +266,22 @@ public sealed class SvgSymbolInstanceReferenceTests
         {
             byte[] input = File.ReadAllBytes(Path.Combine(directory, name + ".svg"));
             byte[] unchanged = input.ToArray();
-            RenderBudget sceneBudget = new(16_000_000);
+            RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(16_000_000));
             using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, null, CancellationToken.None))
             {
                 foreach (long limit in new[] { 1, sceneBudget.Snapshot().PeakBytes / 2 })
                 {
-                    RenderBudget denied = new(limit);
+                    RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
                     Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
                         SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
                     Assert.Equal(0, denied.Snapshot().CurrentBytes);
                 }
-                RenderBudget workDenied = new(16_000_000);
+                RenderBudget workDenied = new RenderBudget(new HostMemoryBudget(16_000_000));
                 Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
-                RenderBudget accepted = new(16_000_000);
+                RenderBudget accepted = new RenderBudget(new HostMemoryBudget(16_000_000));
                 byte[] expected = SvgConverter.ConvertToPng(scene, SvgRenderOptions.Default, accepted, CancellationToken.None).ToArray();
                 Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-                RenderBudget rasterDenied = new(accepted.Snapshot().PeakBytes / 2);
+                RenderBudget rasterDenied = new RenderBudget(new HostMemoryBudget(accepted.Snapshot().PeakBytes / 2));
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
                     SvgConverter.ConvertToPng(scene, SvgRenderOptions.Default, rasterDenied, CancellationToken.None)).ErrorCode);
                 Assert.Equal(0, rasterDenied.Snapshot().CurrentBytes);
@@ -310,22 +310,22 @@ public sealed class SvgSymbolInstanceReferenceTests
         {
             byte[] input = File.ReadAllBytes(Path.Combine(directory, name + ".svg"));
             byte[] unchanged = input.ToArray();
-            RenderBudget sceneBudget = new(16_000_000);
+            RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(16_000_000));
             using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, null, CancellationToken.None))
             {
                 foreach (long limit in new[] { 1, sceneBudget.Snapshot().PeakBytes / 2 })
                 {
-                    RenderBudget denied = new(limit);
+                    RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
                     Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
                         SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
                     Assert.Equal(0, denied.Snapshot().CurrentBytes);
                 }
-                RenderBudget workDenied = new(16_000_000);
+                RenderBudget workDenied = new RenderBudget(new HostMemoryBudget(16_000_000));
                 Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
-                RenderBudget accepted = new(16_000_000);
+                RenderBudget accepted = new RenderBudget(new HostMemoryBudget(16_000_000));
                 byte[] expected = SvgConverter.ConvertToPng(scene, SvgRenderOptions.Default, accepted, CancellationToken.None).ToArray();
                 Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-                RenderBudget rasterDenied = new(accepted.Snapshot().PeakBytes / 2);
+                RenderBudget rasterDenied = new RenderBudget(new HostMemoryBudget(accepted.Snapshot().PeakBytes / 2));
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
                     SvgConverter.ConvertToPng(scene, SvgRenderOptions.Default, rasterDenied, CancellationToken.None)).ErrorCode);
                 Assert.Equal(0, rasterDenied.Snapshot().CurrentBytes);

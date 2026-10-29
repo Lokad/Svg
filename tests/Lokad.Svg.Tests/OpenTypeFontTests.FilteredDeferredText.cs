@@ -36,10 +36,10 @@ public sealed partial class OpenTypeFontTests
     {
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
         byte[] input = DeferredFilterTextDocument(consumer, context, true);
-        RenderBudget accepted = new(2_000_000);
+        RenderBudget accepted = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, accepted, fonts, CancellationToken.None)) { }
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-        RenderBudget memoryDenied = new(256);
+        RenderBudget memoryDenied = new RenderBudget(new HostMemoryBudget(256));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, memoryDenied, fonts, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, memoryDenied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();

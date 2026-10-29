@@ -15,13 +15,13 @@ public sealed class SvgViewportOpacityTests
         const string end = "<rect x='72' y='4' width='4' height='4' fill='blue'/></g></svg>";
         byte[] expected = System.Text.Encoding.UTF8.GetBytes(start + "<g transform='" + transform + "'>" + viewport + "</g>" + end);
         byte[] input = System.Text.Encoding.UTF8.GetBytes(start + viewport.Replace("<svg ", "<svg transform='" + transform + "' ", StringComparison.Ordinal) + end);
-        RenderBudget sceneBudget = new(1_000_000), renderBudget = new(1_000_000);
+        RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(1_000_000)), renderBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, CancellationToken.None))
         {
             byte[] actual = SvgConverter.ConvertToPng(scene, SvgRenderOptions.Default, renderBudget, CancellationToken.None).ToArray();
             Assert.Equal(SvgConverter.ConvertToPng(expected, SvgRenderOptions.Default, CancellationToken.None).ToArray(), actual);
             Assert.Equal(0, renderBudget.Snapshot().CurrentBytes);
-            RenderBudget denied = new(renderBudget.Snapshot().PeakBytes / 2);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(renderBudget.Snapshot().PeakBytes / 2));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
                 SvgConverter.ConvertToPng(scene, SvgRenderOptions.Default, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
@@ -34,7 +34,7 @@ public sealed class SvgViewportOpacityTests
     public void Inherited_viewport_clip_restores_the_group_once_and_leaves_source_ink_uncut()
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "symbol-viewport-opacity", "right-bottom-transparent.svg"));
-        RenderBudget budget = new(10_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             SvgDrawCommand[] groups = scene.Commands.Where(command => command.Kind == SvgDrawCommandKind.BeginGroup).ToArray();

@@ -10,7 +10,7 @@ public sealed class SvgCubicSpanWalkerTests
     {
         SvgDevicePoint[] points = [new(8, 48), new(32, 8), new(56, 48)];
         SvgCubicSpan[] spans = [new(0, 0, 2, new(8, 0), new(56, 0))];
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [3], [], false, null, SvgPolygonMapping.FlattenedCurves, [], spans, 0, 64, 0, 64, 64, 64, budget, out bool eligible, CancellationToken.None);
 
         Assert.True(eligible);
@@ -33,7 +33,7 @@ public sealed class SvgCubicSpanWalkerTests
         SvgGeometry geometry = Assert.Single(root.Geometries);
         var polygon = geometry.Polygon;
         Assert.Equal(convex ? 1 : 2, polygon.CubicSpans.Length);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         ReadOnlySpan<int> votes = polygon.Signs is int[] roles ? roles : Array.Empty<int>();
         SvgAnalyticClipContext? clip = clipped ? new(new(10, 0, 48, 64)) : null;
         using SvgAnalyticCoverage sequential = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 64, 0, 64, 64, 64, new(0, 64), clip, budget, out bool sequentialEligible, CancellationToken.None);
@@ -70,7 +70,7 @@ public sealed class SvgCubicSpanWalkerTests
         SvgDevicePoint[] points = [new(8, 48), new(32, 8), new(56, 48)];
         SvgCubicSpan[] spans = [new(0, 0, 2, new(8, 0), new(56, 0))];
         SvgAnalyticContourPreparation preparation = new(points, [3], [], false, null, SvgPolygonMapping.FlattenedCurves, [], spans, new(0, 0, 64, 64), 64, 64);
-        RenderBudget budget = new(deniedPhase == "storage" ? 1_000 : 1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(deniedPhase == "storage" ? 1_000 : 1_000_000));
         using CancellationTokenSource cancellation = new();
         if (deniedPhase == "cancel") cancellation.Cancel();
         try
@@ -85,7 +85,7 @@ public sealed class SvgCubicSpanWalkerTests
         }
         catch (OperationCanceledException) { Assert.Equal("cancel", deniedPhase); }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget retryBudget = new(1_000_000);
+        RenderBudget retryBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgAnalyticCoverage retry = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, retryBudget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
@@ -106,7 +106,7 @@ public sealed class SvgCubicSpanWalkerTests
 
     private static byte[] WalkRows(SvgDevicePoint[] points, int[] ends, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, bool isEvenOdd, int firstRow, int pastLastRow, out bool eligible)
     {
-        RenderBudget budget = new(10_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000_000));
         ReadOnlySpan<int> votes = signs is int[] roles ? roles : Array.Empty<int>();
         using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, ends, votes, isEvenOdd, signs, SvgPolygonMapping.FlattenedCurves, quadSpans, cubicSpans, 0, 64, 0, 64, 64, 64, budget, out eligible, CancellationToken.None);
         List<byte> rows = new();

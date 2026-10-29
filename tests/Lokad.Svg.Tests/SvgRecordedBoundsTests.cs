@@ -17,7 +17,7 @@ public sealed class SvgRecordedBoundsTests
     public void Default_mask_bounds_exclude_rectangle_stroke_and_keep_a_hard_boundary(bool forward, bool group, bool copy)
     {
         byte[] input = MaskedRectangle(forward, group, copy);
-        RenderBudget budget = new(10_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgDrawCommand mask = Assert.Single(scene.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup);
@@ -32,7 +32,7 @@ public sealed class SvgRecordedBoundsTests
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         using SvgRoot parsed = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
-        using SvgConverter.RasterizedSurface image = SvgConverter.Rasterize(parsed, SvgRenderOptions.Default, new(10_000_000), CancellationToken.None);
+        using SvgConverter.RasterizedSurface image = SvgConverter.Rasterize(parsed, SvgRenderOptions.Default, new RenderBudget(new HostMemoryBudget(10_000_000)), CancellationToken.None);
         // These boundary and interior values come from the retained browser capture.
         Assert.Equal(new byte[] { 0, 0, 0, 0 }, image.Pixels.AsSpan((16 * image.Width + 12) * 4, 4).ToArray());
         Assert.Equal(new byte[] { 255, 0, 0, 128 }, image.Pixels.AsSpan((16 * image.Width + 13) * 4, 4).ToArray());
@@ -50,7 +50,7 @@ public sealed class SvgRecordedBoundsTests
     [InlineData(true, 6, true)]
     public void Square_dash_recording_keeps_object_and_visual_bounds_separate(bool radial, int width, bool copy)
     {
-        RenderBudget budget = new(10_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(DashedLine(radial, width, copy), SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgSceneStorage storage = Assert.IsType<SvgSceneStorage>(scene.SceneStorage);
@@ -78,18 +78,18 @@ public sealed class SvgRecordedBoundsTests
     public void Recorded_bounds_release_on_memory_denial_and_cancellation(bool radial)
     {
         byte[] input = DashedLine(radial, 6, true);
-        RenderBudget measured = new(10_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(10_000_000));
         using (SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         foreach (long maximum in new[] { measured.Snapshot().PeakBytes - 1, measured.Snapshot().PeakBytes })
         {
-            RenderBudget budget = new(maximum);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(maximum));
             if (maximum < measured.Snapshot().PeakBytes)
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None)).ErrorCode);
             else using (SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None)) { }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }
-        RenderBudget denied = new(10_000_000);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(10_000_000));
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();

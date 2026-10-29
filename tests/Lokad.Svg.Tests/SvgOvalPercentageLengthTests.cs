@@ -17,7 +17,7 @@ public sealed class SvgOvalPercentageLengthTests
     public void Rejected_oval_lengths_release_all_partial_owners(string content, SvgErrorCode error)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='32'><rect width='3' height='4'/>" + content + "</svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(error, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         byte[] valid = "<svg xmlns='http://www.w3.org/2000/svg' width='64' height='32'><circle cx='50%' cy='50%' r='20%'/></svg>"u8.ToArray();

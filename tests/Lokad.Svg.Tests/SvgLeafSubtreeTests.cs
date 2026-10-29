@@ -1,3 +1,4 @@
+using Lokad.Svg.Rendering;
 using System.Xml;
 using Lokad.Svg.Parsing;
 
@@ -17,8 +18,8 @@ public sealed class SvgLeafSubtreeTests
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><" + resource + " id='r'><" + child + "><title><x " + attributes + "/></title></" + child + "></" + resource + "></defs></svg>");
         foreach ((int nodes, int depth, int attributeLimit) in new[] { (5, 128, 256), (100, 5, 256), (100, 128, 8) })
         {
-            SvgRenderLimits limits = new(1_000_000, 100_000, 1024, 1_000_000, 1_000_000, nodes, 1000, depth, attributeLimit);
-            Lokad.Svg.Rendering.RenderBudget budget = new(1_000_000);
+            SvgRenderLimits limits = new(100_000, 1024, 1_000_000, 1_000_000, nodes, 1000, depth, attributeLimit);
+            Lokad.Svg.Rendering.RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, budget, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }
@@ -49,7 +50,7 @@ public sealed class SvgLeafSubtreeTests
     {
         using XmlReader reader = XmlReader.Create(new StringReader(input));
         reader.Read();
-        SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, nodes, 16, depth, attributes);
+        SvgRenderLimits limits = new(1_024, 16, 256, 1_024, nodes, 16, depth, attributes);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgStructuralAdmission.ConsumeLeafSubtree(reader, limits, 1, CancellationToken.None));
 

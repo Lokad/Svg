@@ -35,7 +35,7 @@ public sealed partial class TrueTypeHintingTests
     {
         TrueTypeHintTarget target = new OpenTypeWindowsGlyphProfile(SvgGlyphLcdMode.Symmetric, true).CreateHintTarget(ratio);
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 1, 0, 0), [backing], [], [], 12,
-            DeviceScale(12, ratio, 1000), target, new(long.MaxValue), CancellationToken.None);
+            DeviceScale(12, ratio, 1000), target, new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         byte[] program = [axisOpcode, 0xB0, 0, 0x45, 0xB0, 0, 0x23, 0x42];
         machine.Run(program, TrueTypeHintProgramKind.Glyph);
         Assert.Equal(native, machine.Storage[0]);
@@ -51,7 +51,7 @@ public sealed partial class TrueTypeHintingTests
     {
         TrueTypeHintTarget target = new OpenTypeWindowsGlyphProfile(SvgGlyphLcdMode.Symmetric, true).CreateHintTarget(ratio);
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 1, 0, 0), [0], [], [], 12,
-            DeviceScale(12, ratio, 1000), target, new(long.MaxValue), CancellationToken.None);
+            DeviceScale(12, ratio, 1000), target, new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         ushort encoded = unchecked((ushort)value);
         byte[] program = [writeAxisOpcode, 0xB9, 0, 0, (byte)(encoded >> 8), (byte)encoded, 0x44,
             readAxisOpcode, 0xB0, 0, 0x45, 0xB0, 0, 0x23, 0x42];

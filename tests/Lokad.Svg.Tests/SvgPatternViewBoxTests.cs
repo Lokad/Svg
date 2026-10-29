@@ -12,7 +12,7 @@ public sealed class SvgPatternViewBoxTests
     public void Invalid_pattern_view_boxes_reject_and_release(string viewBox, SvgErrorCode expected)
     {
         byte[] input = Input("<defs><pattern id='p' patternUnits='userSpaceOnUse' width='8' height='8' viewBox='" + viewBox + "'><rect width='8' height='8'/></pattern></defs><rect width='64' height='48' fill='url(#p)'/>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(expected, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -42,7 +42,7 @@ public sealed class SvgPatternViewBoxTests
     [InlineData("<pattern id='p' href='#q' viewBox='0 0 8 8'/><pattern id='q' href='#p' preserveAspectRatio='none'/>")]
     public void Invalid_view_box_template_graphs_reject_and_release(string patterns)
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         byte[] input = Input("<defs>" + patterns + "</defs><rect width='64' height='48' fill='url(#p)'/>");
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -52,11 +52,11 @@ public sealed class SvgPatternViewBoxTests
     public void View_box_alias_replay_observes_work_storage_and_cancellation()
     {
         byte[] input = Input("<defs><pattern id='alias' href='#p' viewBox='0 2 8 8'/><pattern id='p' patternUnits='userSpaceOnUse' width='12' height='10' viewBox='0 0 8 8'><rect y='-4' width='8' height='8' fill='red'/><rect y='4' width='8' height='8' fill='blue'/></pattern></defs><rect width='64' height='48' fill='url(#alias)'/>");
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
             Assert.NotEmpty(root.Geometries.ToArray());
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget tight = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget tight = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();

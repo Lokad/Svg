@@ -28,11 +28,11 @@ public sealed class SvgFilterAlphaStageMechanismTests
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><defs><filter id='f' color-interpolation-filters='sRGB'>"
             + graph + "</filter></defs><g filter='url(#f)'><rect width='1' height='1'/></g></svg>");
-        RenderBudget parser = new(1_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None);
         SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
         SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
-        RenderBudget raster = new(1_000_000);
+        RenderBudget raster = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame([32, 64, 96, 160], 1, 1, resource, new(1, 1), raster, CancellationToken.None);
         Assert.Equal(retained ? SvgFilterDeferredColorFilter.SourceAlpha : SvgFilterDeferredColorFilter.None, result.SamplingColorFilter);
     }

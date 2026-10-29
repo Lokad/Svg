@@ -50,7 +50,7 @@ public sealed class SvgGeometryDefaultsTests
             string attributes = "fill='" + paint + "' stroke='" + paint + "' clip-path='url(#c)'";
             Assert.Equal(Render(definitions), Render(definitions + "<path " + attributes + "/>"));
         }
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><path/></svg>"), SvgRenderLimits.Default, budget, CancellationToken.None)) { }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

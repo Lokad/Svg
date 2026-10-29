@@ -46,7 +46,7 @@ public sealed class SvgPaintableElementContextTests
         Assert.True(reader.Read());
         Assert.True(reader.Read());
         Assert.True(reader.Read());
-        using SvgDocumentState state = new(new RenderBudget(10_000), CancellationToken.None);
+        using SvgDocumentState state = new(new RenderBudget(new HostMemoryBudget(10_000)), CancellationToken.None);
         SvgInheritedPresentation rootPresentation = new(new SvgPaint(new(new SvgColor(1, 2, 3, 255), 1), false, SvgPaintOpacity.Opaque, new(new SvgColor(4, 5, 6, 255), 1), false), true, true, SvgAffineTransform.Identity);
         SvgRootAttributes root = new(rootPresentation, SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, null, null, null, null);
 

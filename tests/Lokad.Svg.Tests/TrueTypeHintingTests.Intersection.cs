@@ -28,7 +28,7 @@ public sealed partial class TrueTypeHintingTests
         TrueTypeHintPoint[] points = [new(17, 23, 17, 23), new(values[0], values[1], 1, 2),
             new(values[2], values[3], 3, 4), new(values[4], values[5], 5, 6), new(values[6], values[7], 7, 8)];
         TrueTypeHintPoint[] unchanged = points.ToArray();
-        using TrueTypeHinting machine = Create(points, [4], [], new(long.MaxValue), CancellationToken.None);
+        using TrueTypeHinting machine = Create(points, [4], [], new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         machine.Run(Convert.FromHexString("00B400010203040F"), TrueTypeHintProgramKind.Glyph);
         Assert.Equal(x, points[0].X); Assert.Equal(y, points[0].Y);
         Assert.True(points[0].TouchedX); Assert.True(points[0].TouchedY);
@@ -40,7 +40,7 @@ public sealed partial class TrueTypeHintingTests
     public void Intersection_reads_distinct_zones_and_keeps_twilight_originals()
     {
         TrueTypeHintPoint[] points = [new(0, 64, 0, 64), new(128, 64, 128, 64)];
-        using TrueTypeHinting machine = Create(points, [1], [], new(long.MaxValue), CancellationToken.None);
+        using TrueTypeHinting machine = Create(points, [1], [], new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         // Initialize two twilight points to (64,0) / (64,128), then intersect
         // that line with the glyph line into independent twilight slot 2.
         machine.Run(Convert.FromHexString("B0001501B1004048B101404800B90001008048B00013B402000100010F01B00246B000234200B00246B001234201B00247B0022342"), TrueTypeHintProgramKind.Glyph);
@@ -60,7 +60,7 @@ public sealed partial class TrueTypeHintingTests
     {
         TrueTypeHintPoint[] points = [new(17, 23, 17, 23), new(0, 64, 0, 64), new(128, 64, 128, 64), new(64, 0, 64, 0), new(64, 128, 64, 128)];
         TrueTypeHintPoint[] unchanged = points.ToArray();
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (TrueTypeHinting machine = Create(points, [4], [], budget, CancellationToken.None))
             Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => machine.Run(Convert.FromHexString(program), TrueTypeHintProgramKind.Glyph)).ErrorCode);
         Assert.Equal(unchanged, points);
@@ -71,7 +71,7 @@ public sealed partial class TrueTypeHintingTests
     public void Intersection_handles_aliased_destination_and_preserves_cancellation_bounds()
     {
         TrueTypeHintPoint[] points = [new(0, 64, 0, 64), new(128, 64, 128, 64), new(64, 0, 64, 0), new(64, 128, 64, 128)];
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         byte[] program = Convert.FromHexString("B400000102030F");
         using (TrueTypeHinting machine = Create(points, [3], [], budget, CancellationToken.None))
             machine.Run(program, TrueTypeHintProgramKind.Glyph);

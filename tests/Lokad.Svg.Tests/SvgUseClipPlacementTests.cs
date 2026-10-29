@@ -31,7 +31,7 @@ public sealed class SvgUseClipPlacementTests
     public void Fractional_owning_clip_multiplies_native_edge_and_corner_coverage()
     {
         byte[] input = TextEncoding.UTF8.GetBytes(Document("rect", "rect", true, "", false, false, false, false));
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
         using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None);
         Assert.Equal(16, surface.Pixels[(6 * 32 + 7) * 4 + 3]);
@@ -49,7 +49,7 @@ public sealed class SvgUseClipPlacementTests
     {
         byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><use href='#s' width='24' height='24' x='4' y='4' fill='red' clip-path='url(#c)'/><defs><clipPath id='c' clipPathUnits='objectBoundingBox'><rect width='.75' height='.75'/></clipPath><symbol id='s' viewBox='0 0 32 32'>" + source + "</symbol></defs></svg>");
         SvgRenderOptions options = new(null, 1.125, SvgColor.Transparent, SvgRenderLimits.Default);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
         using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, options, budget, CancellationToken.None);
         Assert.Equal(36, surface.Width);
@@ -63,7 +63,7 @@ public sealed class SvgUseClipPlacementTests
     public void One_vector_paint_folds_opacity_through_its_clip_without_changing_color_rounding()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><rect id='s' width='32' height='32' fill='#55a0dc'/><clipPath id='c'><rect x='4.5' y='5.5' width='10' height='10'/></clipPath></defs><use href='#s' x='3.5' y='2.5' opacity='.68' clip-path='url(#c)'/></svg>"u8.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
         using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None);
         Assert.Equal(new byte[] { 85, 161, 220, 173 }, surface.Pixels.AsSpan((12 * 32 + 12) * 4, 4).ToArray());
@@ -73,7 +73,7 @@ public sealed class SvgUseClipPlacementTests
     public void Multiple_paints_keep_isolated_opacity_inside_an_owning_clip()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><g id='s'><rect width='20' height='20' fill='red'/><rect x='8' width='20' height='20' fill='blue'/></g><clipPath id='c'><rect width='32' height='32'/></clipPath></defs><use href='#s' opacity='.68' clip-path='url(#c)'/></svg>"u8.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
         using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None);
         Assert.Equal(new byte[] { 255, 0, 0, 173 }, surface.Pixels.AsSpan((12 * 32 + 4) * 4, 4).ToArray());
@@ -94,7 +94,7 @@ public sealed class SvgUseClipPlacementTests
     {
         byte[] input = TextEncoding.UTF8.GetBytes(Document("curve", clip, true, "scale(.75)", symbol, filter, true, false));
         byte[] unchanged = input.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         long peak;
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
@@ -107,7 +107,7 @@ public sealed class SvgUseClipPlacementTests
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new(peak - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(peak - 1));
         using (RenderBudget.BudgetReservation borrowed = denied.Reserve(73, SvgMemoryCategory.Scene))
         {
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);

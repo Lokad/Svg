@@ -72,7 +72,7 @@ public sealed class SvgNativeStrokeOutlineTests
         SvgStrokeOutline.StrokeNativeOpenPolyline([new(8, 40), new(32, 8), new(56, 40)], 8, 10, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None);
         SvgDevicePoint[] points = builder.GetContour(0).ToArray();
         SvgAnalyticContourPreparation preparation = new(points, [points.Length], [], false, null, SvgPolygonMapping.NativeStrokeEdges, [], [], new(4, 1, 60, 43), 64, 64);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
@@ -97,7 +97,7 @@ public sealed class SvgNativeStrokeOutlineTests
         SvgPolygonMapping mapping = Enum.Parse<SvgPolygonMapping>(mappingName);
         SvgDevicePoint[] points = [new(8, 4), new(14, 12), new(2, 12), new(12, 4), new(4, 12)];
         SvgAnalyticContourPreparation preparation = new(points, [5], [], false, null, mapping, [], [], new(0, 0, 16, 16), 16, 16);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 16, 0, 16, new(0, 16), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
         Assert.False(eligible);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -136,7 +136,7 @@ public sealed class SvgNativeStrokeOutlineTests
         SvgStrokeOutline.StrokeNativeOpenPolyline([new(8, 40), new(32, 8), new(56, 40)], 8, 10, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None);
         SvgDevicePoint[] points = builder.GetContour(0).ToArray();
         SvgAnalyticContourPreparation preparation = new(points, [points.Length], [], false, null, SvgPolygonMapping.NativeStrokeEdges, [], [], new(4, 1, 60, 43), 64, 64);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         long storage;
         {
             using SvgAnalyticCoverage warm = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
@@ -149,7 +149,7 @@ public sealed class SvgNativeStrokeOutlineTests
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget tight = new(storage - 1);
+        RenderBudget tight = new RenderBudget(new HostMemoryBudget(storage - 1));
         try
         {
             using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, tight, out bool _, CancellationToken.None);
@@ -176,7 +176,7 @@ public sealed class SvgNativeStrokeOutlineTests
         (SvgDevicePoint[] points, int[] ends, int width) = RingGrid(gridSize);
         SvgAnalyticContourPreparation preparation = new(points, ends, [], false, null,
             SvgPolygonMapping.NativeStrokeEdges, [], [], new(0, 0, width, width), width, width);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, width, 0, width,
                 new(0, width), null, SvgAnalyticPaintClip.Binary, budget,
@@ -211,7 +211,7 @@ public sealed class SvgNativeStrokeOutlineTests
         int[] signs = evenOdd ? Enumerable.Repeat(1, ends.Length).ToArray() : [];
         SvgAnalyticContourPreparation preparation = new(points, ends, signs, evenOdd, null,
             Enum.Parse<SvgPolygonMapping>(mappingName), [], [], new(0, 0, width, width), width, width);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, width, 0, width,
                 new(0, width), null, SvgAnalyticPaintClip.Binary, budget,

@@ -14,7 +14,7 @@ public class PngBufferBenchmarks
     private byte[] _lowCallerDestination = [];
     private MemoryStream _stream = new();
     private MemoryStream _lowStream = new();
-    private RenderBudget _encodeBudget = new(long.MaxValue);
+    private RenderBudget _encodeBudget = new RenderBudget();
     private int _highLength;
     private int _lowLength;
 
@@ -74,7 +74,7 @@ public class PngBufferBenchmarks
     [Benchmark]
     public long HighEntropyOwnedPeak()
     {
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget();
         PngEncoder.Encode(512, 512, _highEntropy, budget, int.MaxValue, CancellationToken.None);
         return budget.Snapshot().PeakBytes;
     }
@@ -82,7 +82,7 @@ public class PngBufferBenchmarks
     [Benchmark]
     public long HighEntropyStreamPeak()
     {
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget();
         ResetStream(_stream);
         PngEncoder.EncodeTo(512, 512, _highEntropy, _stream, budget, int.MaxValue, CancellationToken.None);
         return budget.Snapshot().PeakBytes;
@@ -91,7 +91,7 @@ public class PngBufferBenchmarks
     [Benchmark]
     public long LowEntropyOwnedPeak()
     {
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget();
         PngEncoder.Encode(512, 512, _lowEntropy, budget, int.MaxValue, CancellationToken.None);
         return budget.Snapshot().PeakBytes;
     }
@@ -99,7 +99,7 @@ public class PngBufferBenchmarks
     [Benchmark]
     public long LowEntropyStreamPeak()
     {
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget();
         ResetStream(_lowStream);
         PngEncoder.EncodeTo(512, 512, _lowEntropy, _lowStream, budget, int.MaxValue, CancellationToken.None);
         return budget.Snapshot().PeakBytes;

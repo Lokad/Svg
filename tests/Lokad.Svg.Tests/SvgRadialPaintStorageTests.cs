@@ -9,11 +9,11 @@ public sealed class SvgRadialPaintStorageTests
     [Fact]
     public void Radial_fill_denies_before_retaining_paint_and_transfers_ownership_through_clip_and_mask()
     {
-        RenderBudget deniedBudget = new(SvgRadialGradient.RetainedStorageBytes - 1);
+        RenderBudget deniedBudget = new RenderBudget(new HostMemoryBudget(SvgRadialGradient.RetainedStorageBytes - 1));
         SvgException denied = Assert.Throws<SvgException>(() => Fill(deniedBudget));
         Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
         Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
-        RenderBudget budget = new(SvgRadialGradient.RetainedStorageBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(SvgRadialGradient.RetainedStorageBytes));
         SvgRadialGeometry source = Fill(budget);
         SvgRadialGeometry clipped = source.ClipTo(new(0, 0, 2, 2));
         SvgRadialGeometry masked = clipped.Stamped(127);
@@ -32,17 +32,17 @@ public sealed class SvgRadialPaintStorageTests
         SvgDevicePoint[] points = [new(0, 0), new(2, 0), new(0, 2)];
         int[] ends = [3];
         long arrays = ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(ends.Length);
-        RenderBudget deniedArrays = new(SvgRadialGradient.RetainedStorageBytes + arrays - 1);
+        RenderBudget deniedArrays = new RenderBudget(new HostMemoryBudget(SvgRadialGradient.RetainedStorageBytes + arrays - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Polygon(deniedArrays, null)).ErrorCode);
         Assert.Equal(0, deniedArrays.Snapshot().CurrentBytes);
-        RenderBudget deniedPaint = new(arrays + SvgRadialGradient.RetainedStorageBytes - 1);
+        RenderBudget deniedPaint = new RenderBudget(new HostMemoryBudget(arrays + SvgRadialGradient.RetainedStorageBytes - 1));
         using (RenderBudget.BudgetReservation callerArrays = deniedPaint.Reserve(arrays, SvgMemoryCategory.Scene))
         {
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Polygon(deniedPaint, callerArrays)).ErrorCode);
             Assert.Equal(arrays, deniedPaint.Snapshot().CurrentBytes);
         }
         Assert.Equal(0, deniedPaint.Snapshot().CurrentBytes);
-        RenderBudget budget = new(arrays + SvgRadialGradient.RetainedStorageBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(arrays + SvgRadialGradient.RetainedStorageBytes));
         SvgRadialPolygon original = Polygon(budget, null);
         SvgRadialPolygon masked = original.Stamped(127, new(0, 0, 2, 2));
         original.Dispose();
@@ -61,7 +61,7 @@ public sealed class SvgRadialPaintStorageTests
     {
         long paintBytes = SvgRadialGradient.RetainedStorageBytes;
         long arrayBytes = ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4);
-        RenderBudget budget = new(detach ? paintBytes + arrayBytes : paintBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(detach ? paintBytes + arrayBytes : paintBytes));
         using (BudgetedGeometryBuilder builder = new(budget, SvgMemoryCategory.Geometry, CancellationToken.None))
         {
             if (detach)
@@ -81,7 +81,7 @@ public sealed class SvgRadialPaintStorageTests
     [Fact]
     public void Rejected_stroked_radial_mask_keeps_the_source_reservation_for_cleanup()
     {
-        RenderBudget budget = new(SvgRadialGradient.RetainedStorageBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(SvgRadialGradient.RetainedStorageBytes));
         SvgRectangle box = new(0, 0, 2, 2, default, true, null);
         using (SvgRadialGeometry fill = SvgRadialGeometry.Create(Gradient(), box, box, 255, new(new SvgColor(0, 0, 0, 255), 2), budget))
         {
@@ -100,13 +100,13 @@ public sealed class SvgRadialPaintStorageTests
     {
         byte[] svg = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='16' cy='16' r='20' gradientTransform='matrix(1.173 .227 -.313 .897 3.7 9.3)'><stop stop-color='#656f71'/><stop offset='1' stop-color='#d3d4cf'/></radialGradient></defs>" + shape + "</svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget roomy = new(limits.MaximumAccountedBytes);
+        RenderBudget roomy = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRootParser.Parse(svg, limits, roomy, CancellationToken.None)) { }
         long peak = roomy.Snapshot().PeakBytes;
         Assert.Equal(0, roomy.Snapshot().CurrentBytes);
         for (long maximum = peak - 1; maximum > peak - 4096; maximum -= 128)
         {
-            RenderBudget budget = new(maximum);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(maximum));
             try { using SvgRoot parsed = SvgRootParser.Parse(svg, limits, budget, CancellationToken.None); }
             catch (SvgException denied) { Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode); }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);

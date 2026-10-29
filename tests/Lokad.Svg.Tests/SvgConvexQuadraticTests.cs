@@ -14,7 +14,7 @@ public sealed class SvgConvexQuadraticTests
         SvgPolygonFill polygon = Assert.Single(root.Geometries).Polygon;
         SvgAnalyticContourPreparation preparation = new(polygon.Points, polygon.ContourEnds, [], false, null, SvgPolygonMapping.NativeFillEdges, polygon.QuadSpans, [], new(2, 7, 14, 12), 16, 16);
         SvgAnalyticClipContext? construction = clipped ? new(new(0, 0, 16, 16)) : null;
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 16, 0, 16, new(0, 16), construction, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);

@@ -15,11 +15,11 @@ public sealed class SvgIChingTests
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "iching-library", identity + ".svg"));
         SvgRenderOptions options = SvgRenderOptions.Default;
-        RenderBudget discovery = new(8_000_000);
+        RenderBudget discovery = new RenderBudget(new HostMemoryBudget(8_000_000));
         Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, discovery, CancellationToken.None));
         Assert.Equal(0, discovery.Snapshot().CurrentBytes);
         // Prefix, source commands, clip tapes and isolated layers share bounded owners.
-        RenderBudget measured = new(8_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None, 1, 1, options.Viewport))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, options, measured, CancellationToken.None))
             {}
@@ -29,7 +29,7 @@ public sealed class SvgIChingTests
         DenyMemory(peak - 1);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget canceled = new(8_000_000);
+        RenderBudget canceled = new RenderBudget(new HostMemoryBudget(8_000_000));
         Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, canceled, null, cancellation.Token, 1, 1, options.Viewport)).CancellationToken);
         Assert.Equal(0, canceled.Snapshot().CurrentBytes);
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, canceled, null, CancellationToken.None, 1, 1, options.Viewport))
@@ -41,7 +41,7 @@ public sealed class SvgIChingTests
 
         void DenyMemory(long limit)
         {
-            RenderBudget budget = new(limit);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
             {
                 using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None, 1, 1, options.Viewport);
@@ -55,7 +55,7 @@ public sealed class SvgIChingTests
     public void Complete_I_Ching_releases_partial_source_owners_at_late_denials_and_retries()
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "iching-library.svg"));
-        RenderBudget measured = new(8_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, measured, CancellationToken.None))
         {
@@ -63,7 +63,7 @@ public sealed class SvgIChingTests
             Assert.Equal(720, surface.Height);
         }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget memory = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget memory = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, memory, null, CancellationToken.None);
@@ -72,7 +72,7 @@ public sealed class SvgIChingTests
         Assert.Equal(0, memory.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget retry = new(8_000_000);
+        RenderBudget retry = new RenderBudget(new HostMemoryBudget(8_000_000));
         Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, retry, null, cancellation.Token)).CancellationToken);
         Assert.Equal(0, retry.Snapshot().CurrentBytes);
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, retry, null, CancellationToken.None))
@@ -86,7 +86,7 @@ public sealed class SvgIChingTests
     public void Cancellation_during_clipped_native_replay_releases_scratch_and_allows_retry()
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "iching-library", "rotated-symbol-opacity.svg"));
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             long retained = budget.Snapshot().CurrentBytes;

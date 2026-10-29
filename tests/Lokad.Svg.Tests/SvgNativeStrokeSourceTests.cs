@@ -31,7 +31,7 @@ public sealed class SvgNativeStrokeSourceTests
     [Fact]
     public void Copied_and_transferred_outlines_survive_the_original_scene_and_release_both_owners()
     {
-        RenderBudget sceneBudget = new(1_000_000), copyBudget = new(1_000_000), preparationBudget = new(1_000_000);
+        RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(1_000_000)), copyBudget = new RenderBudget(new HostMemoryBudget(1_000_000)), preparationBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         SvgRoot scene = SvgRootParser.Parse(Input(), SvgRenderLimits.Default, sceneBudget, null, CancellationToken.None);
         try
         {
@@ -63,17 +63,17 @@ public sealed class SvgNativeStrokeSourceTests
     [Fact]
     public void Partial_outline_copies_release_storage_after_memory_or_cancellation_denial()
     {
-        RenderBudget sceneBudget = new(1_000_000), measuredBudget = new(1_000_000);
+        RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(1_000_000)), measuredBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(Input(), SvgRenderLimits.Default, sceneBudget, null, CancellationToken.None))
         {
             SvgAuthoredPath source = Assert.IsType<SvgAuthoredPath>(Assert.Single(scene.Geometries).AuthoredPath);
             using (source.Copy(SvgAffineTransform.Identity, measuredBudget, CancellationToken.None)) { }
             Assert.Equal(0, measuredBudget.Snapshot().CurrentBytes);
-            RenderBudget tight = new(measuredBudget.Snapshot().PeakBytes - 1);
+            RenderBudget tight = new RenderBudget(new HostMemoryBudget(measuredBudget.Snapshot().PeakBytes - 1));
             SvgException memory = Assert.Throws<SvgException>(() => source.Copy(SvgAffineTransform.Identity, tight, CancellationToken.None));
             Assert.Equal(SvgErrorCode.LimitExceeded, memory.ErrorCode);
             Assert.Equal(0, tight.Snapshot().CurrentBytes);
-            RenderBudget workBudget = new(1_000_000);
+            RenderBudget workBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
             Assert.Equal(0, workBudget.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();
@@ -90,10 +90,10 @@ public sealed class SvgNativeStrokeSourceTests
     public void Source_outline_scene_storage_is_bounded_and_released_after_partial_parse()
     {
         byte[] input = Input();
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget tight = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget tight = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         SvgException memory = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, null, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, memory.ErrorCode);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);

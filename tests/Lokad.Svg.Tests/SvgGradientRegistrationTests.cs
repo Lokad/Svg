@@ -19,7 +19,7 @@ public sealed class SvgGradientRegistrationTests
             string first = Definition(firstKind, firstPending), second = Definition(secondKind, secondPending);
             string separator = split ? "</defs><defs>" : string.Empty;
             byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><defs>" + first + separator + second + "</defs><rect width='4' height='4' fill='url(#g)'/></svg>");
-            RenderBudget budget = new(1_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None));
             Assert.Equal(SvgErrorCode.MalformedInput, error.ErrorCode);
             Assert.Equal("SVG gradient ids must be unique.", error.Message);

@@ -12,7 +12,7 @@ public sealed class SvgSymbolContentTests
     [InlineData("visibility='collapse'")]
     public void Invalid_symbol_presentation_releases_retained_sources(string presentation)
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         byte[] input = Input("<symbol id='s' " + presentation + "><rect width='4' height='4'/></symbol><use href='#s'/>");
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
@@ -31,7 +31,7 @@ public sealed class SvgSymbolContentTests
     [InlineData("<symbol><g id='a'><rect id='a' width='4' height='4'/></g></symbol>", SvgErrorCode.MalformedInput)]
     public void Invalid_graphs_and_duplicate_ids_release_retained_sources(string content, SvgErrorCode error)
     {
-        RenderBudget budget = new(10_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000_000));
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(Input(content), SvgRenderLimits.Default, budget, CancellationToken.None));
         Assert.Equal(error, exception.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -71,7 +71,7 @@ public sealed class SvgSymbolContentTests
         for (int index = 0; index < 24; index++)
             content.Append("<symbol id='s").Append(index).Append("'><use href='#s").Append(index + 1).Append("'/><use href='#s").Append(index + 1).Append("'/></symbol>");
         content.Append("<symbol id='s24'><circle r='3'/></symbol>");
-        RenderBudget budget = new(100_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000_000));
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(Input(content.ToString()), SvgRenderLimits.Default, budget, null, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -86,7 +86,7 @@ public sealed class SvgSymbolContentTests
     [InlineData(5)]
     public void Cancellation_during_content_sealing_preserves_sources_for_retry(int checkpoint)
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         SvgSymbolPresentation presentation = new(SvgPaint.Default, SvgInheritedStrokeStyle.Default, null, false, null, null, SvgPaintOpacity.Opaque);
         using (SvgDocumentState state = new(budget, CancellationToken.None))
         using (SvgSymbolDefinitionBuilder builder = SvgSymbolDefinitionBuilder.Create(budget, CancellationToken.None, presentation))
@@ -121,7 +121,7 @@ public sealed class SvgSymbolContentTests
     [Fact]
     public void Nested_nonrendering_groups_preserve_font_discovery_and_late_stylesheets()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         byte[] input = Input("<symbol id='s'><g font-family='Unused'><g><circle r='3'/></g></g></symbol><use href='#s'/><text font-family='Example'>A</text>");
         Assert.Equal("Example", Assert.Single(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, CancellationToken.None)).Family);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

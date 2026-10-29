@@ -99,7 +99,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     {
         SvgGlyphLcdCoverage.DropoutBounds bounds = SvgGlyphLcdCoverage.PrepareBounds(segments, !simple, simple, excludeStubs, SvgGlyphLcdMode.Natural, CancellationToken.None);
         SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[segments.Length * 2];
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgGlyphLcdCoverage.ScanStorage storage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, SvgGlyphLcdMode.Natural, budget, CancellationToken.None) ?? throw new InvalidOperationException())
         {
             Span<int> counts = stackalloc int[2];
@@ -129,7 +129,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
         OpenTypeQuadraticSegment[] segments = [.. Rectangle(20, 70.5625, 26.25, 70.75), .. Rectangle(35, 64, 36, 65)];
         SvgGlyphLcdCoverage.DropoutBounds bounds = SvgGlyphLcdCoverage.PrepareBounds(segments, true, false, excludeStubs, SvgGlyphLcdMode.Natural, CancellationToken.None);
         SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[segments.Length * 2];
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgGlyphLcdCoverage.ScanStorage storage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, SvgGlyphLcdMode.Natural, budget, CancellationToken.None) ?? throw new InvalidOperationException())
         {
             Span<int> counts = stackalloc int[2];
@@ -154,7 +154,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
             .Select(index => new OpenTypeQuadraticSegment(points[index], points[(index + 1) % points.Length], points[(index + 1) % points.Length])).ToArray();
         SvgGlyphLcdCoverage.DropoutBounds bounds = SvgGlyphLcdCoverage.PrepareBounds(segments, true, false, false, SvgGlyphLcdMode.Natural, CancellationToken.None);
         SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[8];
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgGlyphLcdCoverage.ScanStorage storage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, SvgGlyphLcdMode.Natural, budget, CancellationToken.None) ?? throw new InvalidOperationException())
         {
             Span<int> counts = stackalloc int[2];
@@ -211,7 +211,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
             : [new(P(0, 0), P(0, 48), P(0, 48)), new(P(0, 48), P(208, 114), P(384, 224)), new(P(384, 224), P(384, 176), P(384, 176)), new(P(384, 176), P(208, 66), P(0, 0))];
         byte[] expected = Convert.FromBase64String(rgb);
         Assert.Equal(width * height * 3, expected.Length);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         SvgGlyphLcdMode mode = symmetric ? SvgGlyphLcdMode.Symmetric : SvgGlyphLcdMode.Natural;
         SvgGlyphLcdCoverage.DropoutBounds bounds = SvgGlyphLcdCoverage.PrepareBounds(segments, true, false, true, mode, CancellationToken.None);
         SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[segments.Length * 2];
@@ -233,7 +233,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
             }
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, mode, new(1), CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, mode, new RenderBudget(new HostMemoryBudget(1)), CancellationToken.None)).ErrorCode);
 
         static OpenTypeOutlinePoint P(int x, int y) => new(20 + x / 64d, 80 - y / 64d);
     }
@@ -242,7 +242,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     public void Natural_row_storage_releases_denied_work_and_preserves_cancellation()
     {
         OpenTypeQuadraticSegment[] segments = Rectangle(0, 0, 1, 1);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new(); cancellation.Cancel();
         OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() => SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, SvgGlyphLcdMode.Natural, budget, cancellation.Token));

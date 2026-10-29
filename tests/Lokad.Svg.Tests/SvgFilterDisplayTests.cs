@@ -91,7 +91,7 @@ public sealed class SvgFilterDisplayTests
     [InlineData("<defs><mask id='m' mask-type='alpha' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><rect width='8' height='8' display='none' filter='url(#f)'/></mask></defs><rect width='32' height='32' fill='red' mask='url(#m)'/>", SvgErrorCode.UnsupportedFeature)]
     public void Hidden_targets_keep_geometry_and_filter_syntax_admission(string content, SvgErrorCode code)
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(code, Assert.Throws<SvgException>(() => SvgRootParser.Parse(Input(content), SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -101,15 +101,15 @@ public sealed class SvgFilterDisplayTests
     {
         const string content = "<use href='#s' display='none' filter='url(#f)'/><defs><rect id='s' width='8' height='8' filter='url(#f)'/></defs>" + Sibling;
         byte[] input = Input(content);
-        RenderBudget baseline = new(1_000_000);
+        RenderBudget baseline = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, baseline, null, CancellationToken.None)) { }
         Assert.Equal(0, baseline.Snapshot().CurrentBytes);
-        RenderBudget denied = new(baseline.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(baseline.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget cancelled = new(1_000_000);
+        RenderBudget cancelled = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, cancellation.Token));
         Assert.Equal(0, cancelled.Snapshot().CurrentBytes);
         Assert.Equal(Render(Sibling), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());

@@ -54,7 +54,7 @@ public sealed class SvgDoctypeTests
     public void Long_declaration_tokens_reserve_storage_before_the_encoding_probe()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<?xml version='1.0' encoding='" + new string('x', 10_000) + "'?>" + RedSvg);
-        RenderBudget budget = new(32 * 1024);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(32 * 1024));
         SvgException denied = Assert.Throws<SvgException>(() => SvgXmlReaderPolicy.Create(input,
             SvgRenderLimits.Default, budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
@@ -96,7 +96,7 @@ public sealed class SvgDoctypeTests
     public void Root_discovery_render_and_scale_probe_share_the_encoding_and_declaration_policy(string document, string encoding, bool admitted)
     {
         byte[] input = Encode(document, encoding, true);
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         if (admitted)
         {
             using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)) Assert.Single(root.Rectangles);
@@ -137,8 +137,8 @@ public sealed class SvgDoctypeTests
     public void Inert_declaration_preserves_input_and_structure_limits(string limit)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<!DOCTYPE svg><svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><g><rect width='2' height='2'/></g></svg>");
-        SvgRenderLimits limits = new(1_048_576, limit == "input" ? input.Length - 1 : 1024, 16, 256, 1024, limit == "nodes" ? 1 : 16, 16, limit == "depth" ? 1 : 16, limit == "attributes" ? 1 : 16);
-        RenderBudget budget = new(limits.MaximumAccountedBytes);
+        SvgRenderLimits limits = new(limit == "input" ? input.Length - 1 : 1024, 16, 256, 1024, limit == "nodes" ? 1 : 16, 16, limit == "depth" ? 1 : 16, limit == "attributes" ? 1 : 16);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_048_576));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, limits, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -221,7 +221,7 @@ public sealed class SvgDoctypeTests
     public void Long_prolog_work_denial_and_cancellation_release_all_owned_storage(bool discovery)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<!--" + new string('x', 100_000) + "--><!DOCTYPE svg>" + RedSvg);
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         int checkpoint = -1;
@@ -252,7 +252,7 @@ public sealed class SvgDoctypeTests
     public void Padded_declaration_work_denial_and_cancellation_release_storage(bool discovery)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<?xml version='1.0'" + new string(' ', 100_000) + "?>" + RedSvg);
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         int checkpoint = -1;
@@ -281,7 +281,7 @@ public sealed class SvgDoctypeTests
     public void Prolog_workspace_is_reserved_before_allocation_and_released_on_denial(bool discovery)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<!DOCTYPE svg>" + RedSvg);
-        RenderBudget budget = new(SvgRootParser.GetXmlReaderWorkspaceBytes(input.Length, SvgRenderLimits.Default.MaximumAttributesPerElement));
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(SvgRootParser.GetXmlReaderWorkspaceBytes(input.Length, SvgRenderLimits.Default.MaximumAttributesPerElement)));
         SvgException denied = Assert.Throws<SvgException>(() =>
         {
             if (discovery) SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, CancellationToken.None);
@@ -297,7 +297,7 @@ public sealed class SvgDoctypeTests
     [InlineData(true)]
     public void Guard_allocation_is_bounded_for_long_prolog_padding(bool declaration)
     {
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         byte[] small = System.Text.Encoding.UTF8.GetBytes((declaration ? "<?xml version='1.0' ?>" : "<!--x--><!DOCTYPE svg SYSTEM 'uri'>") + RedSvg);
         byte[] large = System.Text.Encoding.UTF8.GetBytes((declaration ? "<?xml version='1.0'" + new string(' ', 1_000_000) + "?>"
             : "<!--" + new string('x', 1_000_000) + "--><!DOCTYPE svg SYSTEM '" + new string('y', 1_000_000) + "'>") + RedSvg);

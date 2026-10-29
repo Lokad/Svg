@@ -33,22 +33,22 @@ public sealed class SvgShaderHairlineOwnershipTests
         };
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + resources + body + "</svg>");
         byte[] unchanged = input.ToArray();
-        RenderBudget parser = new(8_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (RenderBudget.BudgetReservation borrower = parser.Reserve(73, SvgMemoryCategory.Scene))
         {
             using (SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, null, CancellationToken.None)) { }
             Assert.Equal(73, parser.Snapshot().CurrentBytes);
             Assert.Equal(73, parser.Snapshot().CurrentBytes);
-            RenderBudget denied = new(parser.Snapshot().PeakBytes - 74);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(parser.Snapshot().PeakBytes - 74));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
             using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None);
-            RenderBudget raster = new(8_000_000);
+            RenderBudget raster = new RenderBudget(new HostMemoryBudget(8_000_000));
             SvgRenderOptions options = new(null, 1.5, SvgColor.Transparent, SvgRenderLimits.Default);
             byte[] expected;
             using (SvgConverter.RasterizedSurface first = SvgConverter.Rasterize(root, options, raster, CancellationToken.None)) expected = first.Pixels.ToArray();
             Assert.Equal(0, raster.Snapshot().CurrentBytes);
-            RenderBudget rasterDenied = new(raster.Snapshot().PeakBytes - 1);
+            RenderBudget rasterDenied = new RenderBudget(new HostMemoryBudget(raster.Snapshot().PeakBytes - 1));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, options, rasterDenied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, rasterDenied.Snapshot().CurrentBytes);
             using CancellationTokenSource canceled = new(); canceled.Cancel();

@@ -8,7 +8,7 @@ public sealed partial class OpenTypeFontTests
     public async Task Clip_prefix_recovery_keeps_the_full_authored_command_limit(string error)
     {
         SvgRenderLimits standard = SvgRenderLimits.Default;
-        SvgRenderLimits limits = new(standard.MaximumAccountedBytes, standard.MaximumInputBytes, standard.MaximumDimension,
+        SvgRenderLimits limits = new(standard.MaximumInputBytes, standard.MaximumDimension,
             standard.MaximumPixels, standard.MaximumEncodedPngBytes, standard.MaximumNodes, 5);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
         (var catalog, var provider, _) = CreateExamplePack(CreateTriangleFont());

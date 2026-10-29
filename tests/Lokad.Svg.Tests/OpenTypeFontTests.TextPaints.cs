@@ -40,7 +40,7 @@ public sealed partial class OpenTypeFontTests
         SvgTextStyle style = new(new("Example", 400, false), 24.37, 12, 32, 0, 0, 0, SvgTextAnchor.Start, "");
         SvgTextGlyphPaint paint = new(new(new(255, 255, 255, 255), 1), true) { FillServer = "url(#g)" };
         SvgGlyphDeviceMetrics metrics = new(1, OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, false);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgTextRun run = SvgTextRunBuilder.Create(style, "AAA", [], [], [], paint, metrics, snapshot, budget, CancellationToken.None))
         {
             Assert.Single(run.PaintFragments.ToArray());
@@ -94,7 +94,7 @@ public sealed partial class OpenTypeFontTests
         byte[] separate = TextEncoding.UTF8.GetBytes(prefix + "<text y='5'>A</text><text><textPath href='#p'>A</textPath></text><text x='200' y='5'>A</text>" + suffix);
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
-        RenderBudget budget = new(4_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(4_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
             Assert.Equal(SvgConverter.ConvertToPng(separate, options, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(root, options, budget, CancellationToken.None).ToArray());
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -114,7 +114,7 @@ public sealed partial class OpenTypeFontTests
         byte[] ordered = TextEncoding.UTF8.GetBytes(prefix + "<defs>" + gradient + path + "</defs>" + label + instance + "</svg>");
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
-        RenderBudget budget = new(4_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(4_000_000));
         byte[] expected = SvgConverter.ConvertToPng(ordered, options, CancellationToken.None).ToArray();
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
             Assert.Equal(expected, SvgConverter.ConvertToPng(root, options, budget, CancellationToken.None).ToArray());
@@ -136,7 +136,7 @@ public sealed partial class OpenTypeFontTests
     public void Live_dormant_geometry_keeps_missing_paint_failure_and_releases_partial_source_owners()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' fill='url(#missing)'><use href='#p'/><defs><path id='p' d='M0 0H8V8Z'/></defs></svg>"u8.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

@@ -48,7 +48,7 @@ public sealed class SvgInertTypographyTests
     public void Unadmitted_typography_rejects_without_retaining_partial_owners(string declaration, SvgErrorCode code)
     {
         byte[] input = Wrap("<path style='" + declaration + "' d='M2 2H30V30H2Z'/>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(code, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -69,7 +69,7 @@ public sealed class SvgInertTypographyTests
     [InlineData("font-stretch", "0%")]
     public void Presentation_attributes_share_scalar_validation(string property, string value)
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgRootParser.Parse(Wrap("<rect width='16' height='16' " + property + "='" + value + "'/>"), SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -78,7 +78,7 @@ public sealed class SvgInertTypographyTests
     public void Typography_scans_observe_cancellation_and_release_owners()
     {
         byte[] input = Wrap("<path style='font-family:Missing Family;font-size:22px;text-align:center' d='M2 2H30V30H2Z'/>");
-        RenderBudget accepted = new(1_000_000);
+        RenderBudget accepted = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, accepted, CancellationToken.None)) Assert.Single(root.Geometries);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();

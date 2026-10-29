@@ -63,7 +63,7 @@ public sealed class SvgMaskClipIsolationTests
             string body = own ? "<g clip-path='url(#c)' mask='url(#m)'>" + paints + "</g>"
                 : "<g clip-path='url(#c)'><g mask='url(#m)'>" + paints + "</g></g>";
             byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + (forward ? body + definitions : definitions + body) + "</svg>");
-            RenderBudget budget = new(2_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
             using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
             using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
                 Assert.Equal(new byte[] { red, green, blue, opacity }, surface.Pixels.AsSpan((y * 32 + x) * 4, 4).ToArray());

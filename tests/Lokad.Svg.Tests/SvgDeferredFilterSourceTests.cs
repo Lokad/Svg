@@ -13,7 +13,7 @@ public sealed class SvgDeferredFilterSourceTests
     public void Paintless_sources_extend_filter_object_bounds_without_extending_painted_bounds(bool instance, bool mapped)
     {
         byte[] input = Build(true);
-        RenderBudget budget = new(2_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgFilterArena filters = root.FilterResources ?? throw new InvalidDataException("Missing filter resources.");

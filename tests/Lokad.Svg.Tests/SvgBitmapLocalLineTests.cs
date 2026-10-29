@@ -35,7 +35,7 @@ public sealed class SvgBitmapLocalLineTests
         // The SVG clip starts inside the owning bitmap. Its left/top cannot
         // replace the bitmap origin when preparing local line intersections.
         SvgAnalyticClipContext clip = new(new(279, 63, 510, 256), new(254, 0));
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         long storage;
         {
             using SvgAnalyticCoverage warm = SvgAnalyticCoverage.Prepare(ref preparation, 279, 510, 31, 362, new(279, 510), clip, SvgAnalyticPaintClip.Antialiased, budget, out bool eligible, CancellationToken.None);
@@ -52,7 +52,7 @@ public sealed class SvgBitmapLocalLineTests
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget tight = new(storage - 1);
+        RenderBudget tight = new RenderBudget(new HostMemoryBudget(storage - 1));
         try
         {
             using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 279, 510, 31, 362, new(279, 510), clip, SvgAnalyticPaintClip.Antialiased, tight, out bool _, CancellationToken.None);

@@ -8,7 +8,7 @@ public sealed class SvgSceneTransferTests
     [Fact]
     public void Materialized_content_rebinds_bounds_and_enclosing_clips_without_changing_sources_or_sibling_sharing()
     {
-        RenderBudget budget = new(2_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (SvgDocumentState state = new(budget, CancellationToken.None))
         using (SvgSceneBuilder destination = new(budget, CancellationToken.None))
         {
@@ -47,7 +47,7 @@ public sealed class SvgSceneTransferTests
     [Fact]
     public void Cancelled_transfer_releases_scratch_and_preserves_source_for_retry()
     {
-        RenderBudget budget = new(2_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (SvgDocumentState state = new(budget, CancellationToken.None))
         using (SvgSceneBuilder destination = new(budget, CancellationToken.None))
         {

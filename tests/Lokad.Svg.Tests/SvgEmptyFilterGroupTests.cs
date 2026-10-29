@@ -156,7 +156,7 @@ public sealed class SvgEmptyFilterGroupTests
     public void Empty_filtered_group_owners_release_on_denial_cancellation_and_retry()
     {
         byte[] input = Input(Filter + "<g filter='url(#f)'/>");
-        RenderBudget measured = new(1_000_000);         long parserPeak;
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));         long parserPeak;
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         {
             parserPeak = measured.Snapshot().PeakBytes;
@@ -169,7 +169,7 @@ public sealed class SvgEmptyFilterGroupTests
             Assert.All(Enumerable.Range(0, 1024), index => Assert.Equal((byte)255, retry.Pixels[index * 4 + 3]));
         }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget denied = new(parserPeak - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(parserPeak - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         Assert.Equal(Render(Red), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());

@@ -11,10 +11,10 @@ internal static class FontDiscoveryProbe
     private const int StubProgramBytes = 1024;
 
     /// <summary>Discovers requests on an explicit ledger, then prepares a snapshot that serves every request from generated pack bytes.</summary>
-    internal static async Task<FontDiscoveryMeasurement> MeasureAsync(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, CancellationToken cancellationToken)
+    internal static async Task<FontDiscoveryMeasurement> MeasureAsync(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, IMemoryBudget memoryBudget, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(limits);
-        RenderBudget budget = new(limits.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(memoryBudget);
         SvgFontFaceRequest[]? requests = null;
         SvgErrorCode? discoveryError = null;
         try
@@ -41,7 +41,7 @@ internal static class FontDiscoveryProbe
         SvgErrorCode? snapshotError = null;
         try
         {
-            using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(svg, catalog, provider, limits, cancellationToken).ConfigureAwait(false);
+            using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(svg, catalog, provider, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits).WithMemoryBudget(memoryBudget), cancellationToken).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
         {

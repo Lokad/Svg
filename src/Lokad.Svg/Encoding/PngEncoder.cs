@@ -21,7 +21,7 @@ internal static class PngEncoder
         => Encode(width, height, rgba, int.MaxValue, cancellationToken);
 
     internal static byte[] Encode(int width, int height, ReadOnlySpan<byte> rgba, int maximumEncodedPngBytes, CancellationToken cancellationToken)
-        => Encode(width, height, rgba, new RenderBudget(long.MaxValue), maximumEncodedPngBytes, cancellationToken);
+        => Encode(width, height, rgba, new RenderBudget(), maximumEncodedPngBytes, cancellationToken);
 
     internal static byte[] Encode(int width, int height, ReadOnlySpan<byte> rgba, RenderBudget budget, int maximumEncodedPngBytes, CancellationToken cancellationToken)
         => Encode(width, height, rgba, budget, null, maximumEncodedPngBytes, cancellationToken);
@@ -52,10 +52,10 @@ internal static class PngEncoder
     }
 
     internal static int EncodeInto(int width, int height, ReadOnlySpan<byte> rgba, Memory<byte> destination, CancellationToken cancellationToken)
-        => EncodeInto(width, height, rgba, destination, new RenderBudget(long.MaxValue), int.MaxValue, cancellationToken);
+        => EncodeInto(width, height, rgba, destination, new RenderBudget(), int.MaxValue, cancellationToken);
 
     internal static int EncodeInto(int width, int height, ReadOnlySpan<byte> rgba, Memory<byte> destination, int maximumEncodedPngBytes, CancellationToken cancellationToken)
-        => EncodeInto(width, height, rgba, destination, new RenderBudget(long.MaxValue), maximumEncodedPngBytes, cancellationToken);
+        => EncodeInto(width, height, rgba, destination, new RenderBudget(), maximumEncodedPngBytes, cancellationToken);
 
     internal static int EncodeInto(int width, int height, ReadOnlySpan<byte> rgba, Memory<byte> destination, RenderBudget budget, int maximumEncodedPngBytes, CancellationToken cancellationToken)
     {

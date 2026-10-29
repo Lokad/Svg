@@ -20,7 +20,7 @@ public sealed class SvgDefinitionNamespaceTests
         Assert.Equal(SvgConverter.ConvertToPng(expected, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
             SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
         Assert.Equal(new SvgViewport(16, 16), SvgConverter.InspectDimensions(input, SvgRenderOptions.Default, CancellationToken.None).LogicalViewport);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, CancellationToken.None));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -39,11 +39,11 @@ public sealed class SvgDefinitionNamespaceTests
     public void Namespace_declarations_still_count_against_structural_attribute_limits()
     {
         SvgRenderLimits defaults = SvgRenderLimits.Default;
-        SvgRenderLimits limits = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
+        SvgRenderLimits limits = new(defaults.MaximumInputBytes, defaults.MaximumDimension,
             defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
             defaults.MaximumXmlDepth, 1);
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'><defs xmlns:metadata='urn:metadata' id='definitions'/></svg>"u8.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

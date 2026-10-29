@@ -98,7 +98,7 @@ public sealed class SvgConicTests
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><ellipse cx='32' cy='32' rx='24' ry='16' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgPolygonFill polygon = Assert.Single(root.Geometries).Polygon;
         SvgAnalyticContourPreparation preparation = new(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, [], new(8, 16, 56, 48), 64, 64);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         SvgAnalyticClipContext? clip = clipped ? new(new(0, 0, 64, 64)) : null;
         using (SvgAnalyticCoverage first = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), clip, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None))
         {
@@ -110,7 +110,7 @@ public sealed class SvgConicTests
         using (SvgAnalyticCoverage cached = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), clip, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None))
         { Assert.True(eligible); }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget tight = new(1);
+        RenderBudget tight = new RenderBudget(new HostMemoryBudget(1));
         try
         {
             using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), clip, SvgAnalyticPaintClip.Binary, tight, out bool _, CancellationToken.None);

@@ -17,7 +17,7 @@ public sealed class SvgOneChordCubicTests
         var polygon = Assert.Single(root.Geometries).Polygon;
         Assert.Equal(pair ? 2 : 1, polygon.CubicSpans.Length);
         foreach (SvgCubicSpan span in polygon.CubicSpans) Assert.Equal(1, span.EndIndex - span.StartIndex);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 8, pair ? 48 : 16, 8, 24, 64, 64, new(0, 64), budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);

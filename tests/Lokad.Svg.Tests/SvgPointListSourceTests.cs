@@ -30,7 +30,7 @@ public sealed class SvgPointListSourceTests
     [Fact]
     public void Point_list_instance_storage_survives_the_original_scene_and_releases_on_disposal()
     {
-        RenderBudget sceneBudget = new(1_000_000), copyBudget = new(1_000_000), outputBudget = new(1_000_000);
+        RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(1_000_000)), copyBudget = new RenderBudget(new HostMemoryBudget(1_000_000)), outputBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         SvgRoot scene = SvgRootParser.Parse(Input(), SvgRenderLimits.Default, sceneBudget, null, CancellationToken.None);
         try
         {
@@ -51,14 +51,14 @@ public sealed class SvgPointListSourceTests
     [Fact]
     public void Partial_point_list_source_retention_releases_memory_on_memory_and_cancellation_denial()
     {
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRootParser.Parse(Input(), SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget tight = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget tight = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         SvgException memory = Assert.Throws<SvgException>(() => SvgRootParser.Parse(Input(), SvgRenderLimits.Default, tight, null, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, memory.ErrorCode);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
-        RenderBudget workBudget = new(1_000_000);
+        RenderBudget workBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(0, workBudget.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();

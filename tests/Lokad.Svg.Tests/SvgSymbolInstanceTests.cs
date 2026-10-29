@@ -16,7 +16,7 @@ public sealed class SvgSymbolInstanceTests
     public void Duplicate_authored_ids_are_malformed_and_release_symbol_owners(string content)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'>" + content + "</svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -25,7 +25,7 @@ public sealed class SvgSymbolInstanceTests
     [Fact]
     public void Cancelled_symbol_assembly_preserves_children_for_retry_and_releases_owners()
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgDocumentState state = new(budget, CancellationToken.None))
         using (SvgSymbolDefinitionBuilder builder = SvgSymbolDefinitionBuilder.Create(budget, CancellationToken.None,
             new(SvgPaint.Default, SvgInheritedStrokeStyle.Default, null, false, null, null, SvgPaintOpacity.Opaque)))

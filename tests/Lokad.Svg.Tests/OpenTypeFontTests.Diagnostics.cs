@@ -10,7 +10,7 @@ public sealed partial class OpenTypeFontTests
     public async Task Missing_scalar_index_counts_original_run_scalars_after_a_ligature_and_releases_scratch()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateLigatureFont(false))], CancellationToken.None);
-        RenderBudget budget = new(4_096);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(4_096));
         SvgException error = Assert.Throws<SvgException>(() => SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts),
             "AAAé", 20, 0, 30, SvgTextAnchor.Start, budget, CancellationToken.None));
         SvgFontDiagnostic font = Assert.IsType<SvgFontDiagnostic>(error.FontDiagnostic);

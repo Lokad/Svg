@@ -42,7 +42,7 @@ public sealed class SvgGradientStopStyleTests
     [InlineData("stop-opacity:NaN!important;stop-opacity:1", SvgErrorCode.MalformedInput)]
     public void Invalid_winning_values_keep_their_errors_and_release_storage(string style, SvgErrorCode code)
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(Input("linearGradient", style), SvgRenderLimits.Default, budget, CancellationToken.None));
         Assert.Equal(code, error.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

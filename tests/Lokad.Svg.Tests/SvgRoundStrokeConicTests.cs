@@ -120,7 +120,7 @@ public sealed class SvgRoundStrokeConicTests
         SvgPolygonFill polygon = Assert.Single(root.Geometries).Polygon;
         SvgAnalyticContourPreparation preparation = new(polygon.Points, polygon.ContourEnds, polygon.Signs ?? [], false, polygon.Signs, polygon.Mapping, polygon.QuadSpans, [], new(6, 6, 26, 10), 32, 16);
         SvgAnalyticClipContext? clip = clipped ? new(new(0, 0, 32, 16)) : null;
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgAnalyticCoverage first = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 16, new(0, 16), clip, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None))
         {
             Assert.True(eligible);
@@ -130,7 +130,7 @@ public sealed class SvgRoundStrokeConicTests
         using (SvgAnalyticCoverage cached = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 16, new(0, 16), clip, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None))
         { Assert.True(eligible); }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget tight = new(1);
+        RenderBudget tight = new RenderBudget(new HostMemoryBudget(1));
         try
         {
             using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 16, new(0, 16), clip, SvgAnalyticPaintClip.Binary, tight, out bool _, CancellationToken.None);
@@ -159,7 +159,7 @@ public sealed class SvgRoundStrokeConicTests
         SvgPolygonFill polygon = Assert.Single(root.Geometries).Polygon;
         Assert.NotEmpty(polygon.QuadSpans);
         SvgAnalyticContourPreparation preparation = new(polygon.Points, polygon.ContourEnds, polygon.Signs ?? [], false, polygon.Signs, polygon.Mapping, polygon.QuadSpans, [], new(0, 12, 32, 20), 32, 32);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgAnalyticCoverage coverage = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 32), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);

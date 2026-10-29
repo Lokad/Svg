@@ -122,7 +122,7 @@ public sealed class SvgGradientStopPrecisionTests
     public void Cancellation_between_shader_events_releases_replay_storage(string paint)
     {
         using SvgRoot root = SvgRootParser.Parse(Polygon(paint), SvgRenderLimits.Default, CancellationToken.None);
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using CancellationTokenSource cancellation = new();
         using IDisposable probe = SvgAnalyticPaintProbe.Arm((phase, _) =>
         {

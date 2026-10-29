@@ -12,7 +12,7 @@ public sealed class SvgRenderablePathTests
     public void Invalid_tail_cannot_hide_full_input_command_limits(string error)
     {
         string value = "M0 0H8V8H0Z" + error + string.Concat(Enumerable.Repeat("M0 0", 20));
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         SvgException commands = Assert.Throws<SvgException>(() => SvgRenderablePathData.Read(value, 5, budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, commands.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -22,7 +22,7 @@ public sealed class SvgRenderablePathTests
     public void Prefix_storage_is_temporary_and_denial_leaves_no_owner()
     {
         const string valid = "M0 0H8V8H0Z";
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRenderablePathData original = SvgRenderablePathData.Read(valid, 10, budget, CancellationToken.None))
         {
             Assert.Same(valid, original.Value);
@@ -34,7 +34,7 @@ public sealed class SvgRenderablePathTests
             Assert.True(budget.Snapshot().CurrentBytes > 0);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new(budget.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRenderablePathData.Read(valid + "0", 10, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
     }
@@ -44,7 +44,7 @@ public sealed class SvgRenderablePathTests
     {
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgRenderablePathData.Read("M0 0H8V8H0Z0", 10, budget, cancellation.Token)).CancellationToken);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

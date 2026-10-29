@@ -44,7 +44,7 @@ public sealed class SvgRasterSizingTests
         Assert.Equal(600, BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(16, 4)));
         Assert.Equal(300, BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(20, 4)));
         Assert.Equal(SvgConverter.ConvertToPng(svg, new(null, .125, SvgColor.Transparent, SvgRenderLimits.Default), CancellationToken.None).ToArray(), png.ToArray());
-        RenderBudget budget = new(32_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(32_000_000));
         DecodedPngImage decoded = PngImageDecoder.Decode(png, SvgRenderLimits.Default, budget, CancellationToken.None);
         using (DecodedPngRaster pixels = Assert.IsType<DecodedPngRaster>(decoded.Raster))
         {
@@ -58,7 +58,7 @@ public sealed class SvgRasterSizingTests
     public void Hard_limits_still_reject_without_fitting_and_constrain_an_enabled_fit()
     {
         SvgRenderLimits d = SvgRenderLimits.Default;
-        SvgRenderLimits limits = new(d.MaximumAccountedBytes, d.MaximumInputBytes, 128, 16_384,
+        SvgRenderLimits limits = new(d.MaximumInputBytes, 128, 16_384,
             d.MaximumEncodedPngBytes, d.MaximumNodes, d.MaximumPathCommands);
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='4800' height='2400'/>"u8.ToArray();
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(svg,
@@ -81,7 +81,7 @@ public sealed class SvgRasterSizingTests
     public void Fit_pixel_caps_use_wide_products_and_do_not_bypass_rgba_storage_limits()
     {
         SvgRenderLimits d = SvgRenderLimits.Default;
-        SvgRenderLimits limits = new(d.MaximumAccountedBytes, d.MaximumInputBytes, int.MaxValue, int.MaxValue,
+        SvgRenderLimits limits = new(d.MaximumInputBytes, int.MaxValue, int.MaxValue,
             d.MaximumEncodedPngBytes, d.MaximumNodes, d.MaximumPathCommands);
         SvgRasterSize result = SvgRasterSizing.Resolve(new(1_000_000, 1_000_000), 1,
             new(int.MaxValue, int.MaxValue, long.MaxValue), limits);
@@ -118,11 +118,11 @@ public sealed class SvgRasterSizingTests
     {
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='4800' height='2400'/>"u8.ToArray();
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, null, new(80, 60, null));
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         SvgRenderOptions resolved = ResolveRasterOptions(svg, options, budget, CancellationToken.None);
         Assert.Equal(new SvgRasterSize(80, 40, 1d / 60), resolved.ResolvedRasterSize);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new(1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => ResolveRasterOptions(svg, options, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -157,7 +157,7 @@ public sealed class SvgRasterSizingTests
             await SvgConverter.ConvertToPngAsync(svg, stream, options, cancellation.Token))).CancellationToken);
         Assert.Equal(expected, stream.ToArray());
         SvgRenderLimits d = SvgRenderLimits.Default;
-        SvgRenderLimits limits = new(d.MaximumAccountedBytes, d.MaximumInputBytes, d.MaximumDimension, d.MaximumPixels,
+        SvgRenderLimits limits = new(d.MaximumInputBytes, d.MaximumDimension, d.MaximumPixels,
             1, d.MaximumNodes, d.MaximumPathCommands);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(svg, stream,
             new(null, 1, SvgColor.Transparent, limits, null, bounds), CancellationToken.None)).ErrorCode);

@@ -9,16 +9,16 @@ public sealed class SvgSceneTransferMemoryTests
     [Fact]
     public void Memory_refusal_during_content_transfer_releases_every_owner_and_allows_a_fresh_retry()
     {
-        RenderBudget measured = new(2_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(2_000_000));
         Transfer(measured, out bool measuredTransfer);
         Assert.True(measuredTransfer);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         bool enteredTransfer = false;
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Transfer(denied, out enteredTransfer)).ErrorCode);
         Assert.True(enteredTransfer);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        RenderBudget retry = new(2_000_000);
+        RenderBudget retry = new RenderBudget(new HostMemoryBudget(2_000_000));
         Transfer(retry, out bool retriedTransfer);
         Assert.True(retriedTransfer);
         Assert.Equal(0, retry.Snapshot().CurrentBytes);

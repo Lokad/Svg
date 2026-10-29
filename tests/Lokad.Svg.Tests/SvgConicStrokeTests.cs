@@ -17,7 +17,7 @@ public sealed class SvgConicStrokeTests
         {
             string[] fields = row.Split(',');
             float[] p = fields[5].Split(':').Select(Number).ToArray();
-            RenderBudget budget = new(16_777_216);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(16_777_216));
             using (BudgetedParserList<SvgStrokeCurveSegment> output = new(budget, SvgMemoryCategory.Geometry))
             {
                 SvgCurveStroke.Append(new(p[0], p[1]), new(p[2], p[3]), new(p[4], p[5]), Number(fields[1]), Number(fields[2]), Number(fields[3]),
@@ -50,7 +50,7 @@ public sealed class SvgConicStrokeTests
     [Fact]
     public void Cancellation_releases_private_output_before_retry()
     {
-        RenderBudget budget = new(16_777_216);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(16_777_216));
         using CancellationTokenSource source = new();
         source.Cancel();
         using (BudgetedParserList<SvgStrokeCurveSegment> output = new(budget, SvgMemoryCategory.Geometry))
@@ -82,7 +82,7 @@ public sealed class SvgConicStrokeTests
     [Fact]
     public void Output_growth_reserves_memory_before_allocation()
     {
-        RenderBudget budget = new(1);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1));
         using BudgetedParserList<SvgStrokeCurveSegment> output = new(budget, SvgMemoryCategory.Geometry);
         SvgException error = Assert.Throws<SvgException>(() => SvgCurveStroke.Append(new(80, 48), new(80, 65), new(48, 65),
             SvgRationalQuadratic.QuarterCircleWeight, 5, 1, SvgStrokeSide.Outer, output, CancellationToken.None));
@@ -110,7 +110,7 @@ public sealed class SvgConicStrokeTests
             int[] ends = multiple ? [outline.Length, points.Length] : [points.Length];
             SvgQuadSpan[] quads = [new(0, 0, dense ? 2 : 1, new(32, 8))];
             SvgAnalyticContourPreparation preparation = new(points, ends, [], false, null, SvgPolygonMapping.NativeStrokeEdges, quads, [], new(8, 8, 56, 48), 64, 64);
-            RenderBudget budget = new(1_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             byte[] output = new byte[64 * 64 * 4];
             SvgAnalyticClipContext? clip = clipped ? new(new(12, 0, 52, 64)) : null;
             using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), clip,
@@ -150,7 +150,7 @@ public sealed class SvgConicStrokeTests
         Assert.Equal(expected, asyncStream.ToArray());
 
         SvgRenderLimits defaults = SvgRenderLimits.Default;
-        RenderBudget budget = new(defaults.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = SvgRootParser.Parse(input, defaults, budget, null, CancellationToken.None))
         {
             SvgGeometry geometry = Assert.Single(root.Geometries.ToArray(), value => value.Kind == SvgGeometryKind.PolygonFill && value.Polygon.Mapping == SvgPolygonMapping.NativeStrokeEdges);
@@ -163,7 +163,7 @@ public sealed class SvgConicStrokeTests
             SvgAuthoredPath outline = source.StrokeOutline ?? throw new InvalidOperationException("Missing oval source outline.");
             SvgAuthoredPathCommand[] originalOutline = outline.Commands.ToArray();
             long owned = budget.Snapshot().CurrentBytes;
-            using (budget.Reserve(defaults.MaximumAccountedBytes - owned - 1024, SvgMemoryCategory.Surface))
+            using (budget.Reserve(268_435_456L - owned - 1024, SvgMemoryCategory.Surface))
             {
                 long padded = budget.Snapshot().CurrentBytes;
                 SvgException memory = Assert.Throws<SvgException>(() => { using var denied = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None); });
@@ -206,7 +206,7 @@ public sealed class SvgConicStrokeTests
         Assert.Equal(SvgConverter.ConvertToPng(direct, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
             SvgConverter.ConvertToPng(instance, SvgRenderOptions.Default, CancellationToken.None).ToArray());
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget budget = new(limits.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = SvgRootParser.Parse(instance, limits, budget, null, CancellationToken.None))
             Assert.True(root.Geometries.Length > 0);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

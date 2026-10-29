@@ -104,7 +104,7 @@ public sealed class SvgGradientTemplateUnitTests
 
     private static void AssertPercentageRejected(byte[] input)
     {
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
         Assert.Contains("Percentage userSpaceOnUse", error.Message, StringComparison.Ordinal);

@@ -37,7 +37,7 @@ public sealed class SvgRawContourConvexityTests
         using SvgRoot scene = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M4 4C4 0 28 0 28 4V28C28 32 4 32 4 28Z' fill='#46596d'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         var polygon = Assert.Single(scene.Geometries).Polygon;
         SvgAnalyticContourPreparation preparation = new(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, new(0, 0, 64, 64), 64, 64);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), new(new(0, 0, 64, 64)), SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
@@ -51,7 +51,7 @@ public sealed class SvgRawContourConvexityTests
     public void Classification_work_is_charged_once_and_cached_across_contexts()
     {
         SvgAnalyticContourPreparation preparation = new(SampledRing, [6], [], false, null, SvgPolygonMapping.FlattenedCurves, [], Cubics, new(0, 0, 64, 64), 64, 64);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
@@ -79,13 +79,13 @@ public sealed class SvgRawContourConvexityTests
     public void Cancelled_preparation_leaves_raw_classification_uncached_and_allows_retry()
     {
         SvgAnalyticContourPreparation preparation = new(SampledRing, [6], [], false, null, SvgPolygonMapping.FlattenedCurves, [], Cubics, new(0, 0, 64, 64), 64, 64);
-        RenderBudget success = new(1_000_000);
+        RenderBudget success = new RenderBudget(new HostMemoryBudget(1_000_000));
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, success, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
         }
         preparation.Convex = null;
-        RenderBudget denied = new(1_000_000);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(1_000_000));
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
         try

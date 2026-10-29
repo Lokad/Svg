@@ -25,7 +25,11 @@ The opt-in [HTTP font-pack resolver](docs/HTTP_FONTS.md) supplies host-configure
 acquisition and caching, with shared memory admission and disposable PNG results.
 Font-selected fitting/scanning and pair kerning follow the [documented subset](docs/SUPPORT_MATRIX.md#text-and-fonts).
 Size and structural limits, cancellation and borrowed-storage lifetimes apply throughout.
-Memory accounting follows the [approximate resource policy](docs/SUPPORT_MATRIX.md#resource-limits-and-memory-accounting).
+`SvgRenderOptions.WithMemoryBudget` borrows the host's shared allowance; convenience
+calls without it are ungoverned. Use `ConvertToOwnedPng`/`ConvertToOwnedPngAsync` for
+governed retained output, and dispose the result after readers finish. Caller-memory
+and stream output borrow their destinations. Memory accounting follows the
+[resource policy](docs/SUPPORT_MATRIX.md#resource-limits-and-memory-accounting).
 
 Qualification covers the [26 upstream documents](tests/Research/upstream-static-documents/README.md)
 and focused regressions against frozen Windows/Linux references, plus
@@ -77,7 +81,7 @@ tools/test-package.ps1 -PackageDirectory artifacts/nuget -ResultsDirectory artif
 For an isolated conversion and optional budget/cancellation controls:
 
 ```powershell
-dotnet run -c Release --framework net11.0 --project tools/Lokad.Svg.MemoryProbe -- tests/Fixtures/original/solid-red.svg artifacts/probe.png --maximum-accounted-bytes 1048576
+dotnet run -c Release --framework net11.0 --project tools/Lokad.Svg.MemoryProbe -- tests/Fixtures/original/solid-red.svg artifacts/probe.png --memory-budget-bytes 1048576
 ```
 
 [FontProbe](tools/Lokad.Svg.FontProbe/README.md) documents explicit local/HTTP font

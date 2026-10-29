@@ -23,7 +23,7 @@ public sealed class SvgUseStrokeSourceTests
         }
         byte[] source = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='41' height='35'><defs><path id='p' d='M4 5 H35 V29 H4 Z'/></defs>" + instance + "</svg>");
         byte[] twin = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='41' height='35'>" + direct + "</svg>");
-        RenderBudget budget = new(1_000_000), twinBudget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000)), twinBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(source, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgRoot directScene = SvgRootParser.Parse(twin, SvgRenderLimits.Default, twinBudget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface rendered = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
@@ -43,7 +43,7 @@ public sealed class SvgUseStrokeSourceTests
     public void Retained_instance_stroke_sources_release_owners_on_parser_and_raster_denial(string join)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='41' height='35'><defs><path id='p' d='M4 5 H35 V29 H4 Z'/></defs><use href='#p' fill='none' stroke='#5689c1' stroke-width='2' stroke-linejoin='" + join + "'/></svg>");
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None))
             {}
@@ -51,7 +51,7 @@ public sealed class SvgUseStrokeSourceTests
         long peak = measured.Snapshot().PeakBytes;
         for (long limit = 1; limit < peak; limit += 4096)
         {
-            RenderBudget budget = new(limit);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(limit));
             SvgException denied = Assert.Throws<SvgException>(() =>
             {
                 using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None);
@@ -60,7 +60,7 @@ public sealed class SvgUseStrokeSourceTests
             Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }
-        RenderBudget edge = new(peak - 1);
+        RenderBudget edge = new RenderBudget(new HostMemoryBudget(peak - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, edge, null, CancellationToken.None);
@@ -69,7 +69,7 @@ public sealed class SvgUseStrokeSourceTests
         Assert.Equal(0, edge.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget canceledBudget = new(1_000_000);
+        RenderBudget canceledBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         OperationCanceledException canceled = Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, canceledBudget, null, cancellation.Token));
         Assert.Equal(cancellation.Token, canceled.CancellationToken);
         Assert.Equal(0, canceledBudget.Snapshot().CurrentBytes);

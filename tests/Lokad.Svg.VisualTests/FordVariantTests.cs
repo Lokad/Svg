@@ -83,7 +83,7 @@ public sealed class FordVariantTests
         using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "inv-002-recorded-native-paths.json")));
         Assert.Equal(evidence.RootElement.GetProperty("inputSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(input)));
         SvgRenderOptions options = new(new SvgViewport(1000, 400), 1, SvgColor.Transparent, SvgRenderLimits.Default);
-        RenderBudget parsing = new(options.Limits.MaximumAccountedBytes);
+        RenderBudget parsing = new RenderBudget(new HostMemoryBudget(268_435_456L));
         (double scaleX, double scaleY) = SvgPreparationTestHelper.GetOutputScales(input, options, parsing, CancellationToken.None);
         using SvgRoot scene = SvgRootParser.Parse(input, options.Limits, parsing, null, CancellationToken.None, scaleX, scaleY, options.Viewport);
         RgbaImage output = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(input, options, CancellationToken.None), 400_000);
@@ -99,7 +99,7 @@ public sealed class FordVariantTests
             // Counting is clip-independent. This ordinary preparation proves
             // retained metadata reconstructs the recorded native path count.
             SvgAnalyticContourPreparation preparation = new(polygon.Points, polygon.ContourEnds, [], false, polygon.Signs, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, new(0, 0, 1000, 400), 1000, 400);
-            RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
             {
                 using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 1000, 0, 400, new(0, 1000), new(new(0, 0, 1000, 400)), SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
                 Assert.True(eligible);
@@ -186,7 +186,7 @@ public sealed class FordVariantTests
         SvgAnalyticClipBounds constructionBounds = new(clip.GetProperty("left").GetInt32(), clip.GetProperty("top").GetInt32(), clip.GetProperty("right").GetInt32(), clip.GetProperty("bottom").GetInt32());
         int row = witness.GetProperty("row").GetInt32();
         SvgRenderOptions options = new(new SvgViewport(1000, 400), 1, SvgColor.Transparent, SvgRenderLimits.Default);
-        RenderBudget parsing = new(options.Limits.MaximumAccountedBytes);
+        RenderBudget parsing = new RenderBudget(new HostMemoryBudget(268_435_456L));
         (double scaleX, double scaleY) = SvgPreparationTestHelper.GetOutputScales(input, options, parsing, CancellationToken.None);
         using SvgRoot root = SvgRootParser.Parse(input, options.Limits, parsing, null, CancellationToken.None, scaleX, scaleY, options.Viewport);
         var polygon = root.Geometries.Where(geometry => geometry.Kind == SvgGeometryKind.PolygonFill).ElementAt(1).Polygon;
@@ -198,7 +198,7 @@ public sealed class FordVariantTests
         int top = Math.Max(0, (int)Math.Floor(points.Min(point => point.Y)));
         int bottom = Math.Min(400, (int)Math.Ceiling(points.Max(point => point.Y)));
         ReadOnlySpan<int> votes = polygon.Signs is int[] signs ? signs : [];
-        RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests", "References", "inventory", "inv-002-1000x400-transparent.png")), 400_000);
         RgbaImage rendered = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(input, options, CancellationToken.None), 400_000);
         {

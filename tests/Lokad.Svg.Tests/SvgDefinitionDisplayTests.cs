@@ -141,18 +141,18 @@ public sealed class SvgDefinitionDisplayTests
             + "<path d='M0 0H28' stroke='black' fill='url(#g)' mask='url(#m)' marker-start='url(#mark)' filter='url(#f)'/><use href='#box'/></svg>");
         byte[] unchanged = input.ToArray();
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        RenderBudget parser = new(1_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (RenderBudget.BudgetReservation held = parser.Reserve(73, SvgMemoryCategory.Parser))
         {
             Assert.Equal(73, parser.Snapshot().CurrentBytes);
             using (SvgRoot scene = SvgRootParser.Parse(input, limits, parser, CancellationToken.None))
             {
-                RenderBudget measured = new(1_000_000);
+                RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
                 byte[] reference;
                 using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None))
                 { reference = surface.Pixels.ToArray(); }
                 Assert.Equal(0, measured.Snapshot().CurrentBytes);
-                RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
+                RenderBudget denied = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(scene, SvgRenderOptions.Default, denied, CancellationToken.None)).ErrorCode);
                 Assert.Equal(0, denied.Snapshot().CurrentBytes);
                 Assert.Equal(0, measured.Snapshot().CurrentBytes);

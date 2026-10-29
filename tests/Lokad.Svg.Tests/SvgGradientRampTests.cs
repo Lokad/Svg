@@ -18,7 +18,7 @@ public sealed class SvgGradientRampTests
             1 => [new(.1, start) { Alpha = .27f }],
             _ => [new(0, start) { Alpha = .27f }, new(1, end) { Alpha = .81f }]
         };
-        RenderBudget budget = new(1);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1));
         using SvgGradientRamp ramp = SvgGradientRamp.Create(stops, SvgGradientSpread.Pad, budget, CancellationToken.None);
         foreach (double position in new[] { -1d, -0d, 0d, .1, .5, .8, 1d, 2d })
         foreach (float opacity in new[] { 0f, .37f, 1f })
@@ -48,7 +48,7 @@ public sealed class SvgGradientRampTests
             [new(.5, first), new(double.BitIncrement(.5), second), new(double.BitIncrement(double.BitIncrement(.5)), third)]
         })
         {
-            RenderBudget budget = new(10_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
             using (SvgGradientRamp ramp = SvgGradientRamp.Create(stops, SvgGradientSpread.Pad, budget, CancellationToken.None))
             {
                 foreach (double position in new[] { -.25, 0d, .125, double.BitDecrement(.375), .375, double.BitIncrement(.375), .5, .875, 1d, 1.25 })
@@ -65,7 +65,7 @@ public sealed class SvgGradientRampTests
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop stop-color='red'/><stop offset='.5' stop-color='green'/><stop offset='1' stop-color='blue'/></linearGradient></defs><rect x='100' y='100' width='4' height='4' fill='url(#g)'/></svg>"u8.ToArray();
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
-        RenderBudget budget = new(8 * 8 * 4);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8 * 8 * 4));
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
             Assert.All(surface.Pixels, value => Assert.Equal(0, value));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -75,7 +75,7 @@ public sealed class SvgGradientRampTests
     public void Preparation_observes_memory_and_cancellation_and_releases_partial_storage()
     {
         SvgGradientStop[] stops = [new(0, new(0, 0, 0, 255)), new(.5, new(255, 0, 0, 255)), new(1, new(255, 255, 255, 255))];
-        RenderBudget budget = new(10_000), tight = new(1);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000)), tight = new RenderBudget(new HostMemoryBudget(1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgGradientRamp.Create(stops, SvgGradientSpread.Pad, tight, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
@@ -98,7 +98,7 @@ public sealed class SvgGradientRampTests
     {
         SvgColor color = new(192, 64, 128, 255);
         SvgGradientStop[] stops = Enumerable.Range(0, 256).Select(index => new SvgGradientStop(index / 255d, color) { Alpha = .65f }).ToArray();
-        RenderBudget budget = new(1);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1));
         using (SvgGradientRamp ramp = SvgGradientRamp.Create(stops, SvgGradientSpread.Pad, budget, CancellationToken.None))
         {
             SvgShaderPaint expected = ramp.SampleAbsolute(.5, .7f, 32);

@@ -29,7 +29,7 @@ public sealed partial class SvgTextPaintBoundsTests
         byte[] input = System.Text.Encoding.UTF8.GetBytes(row.GetProperty("source").GetString() ?? throw new InvalidDataException("Missing box source."));
         Assert.Equal(row.GetProperty("sourceSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(input)));
         double[] expected = row.GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux").EnumerateArray().Select(value => value.GetDouble()).ToArray();
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, fonts, CancellationToken.None))
         {
             int paintedGlyphs = 0;

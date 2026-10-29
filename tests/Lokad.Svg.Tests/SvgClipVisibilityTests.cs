@@ -118,7 +118,7 @@ public sealed class SvgClipVisibilityTests
     [InlineData("<path d='M0 0X1 1' display='none'/>")]
     public void Hidden_content_keeps_existing_unsupported_admission_and_releases_owners(string child)
     {
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(Input(Clipped(child, "")), SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -140,15 +140,15 @@ public sealed class SvgClipVisibilityTests
         const string visible = "<rect x='1' y='1' width='3' height='3'/><path d='M1 1C2 0 6 0 7 1V7H1Z'/>";
         string content = Clipped(visible + "<path d='M8 1C12 0 14 4 8 8Z' visibility='hidden'/>", "");
         byte[] input = Input(content);
-        RenderBudget baseline = new(1_000_000);
+        RenderBudget baseline = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, baseline, null, CancellationToken.None)) { }
         Assert.Equal(0, baseline.Snapshot().CurrentBytes);
-        RenderBudget denied = new(baseline.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(baseline.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget cancelled = new(1_000_000);
+        RenderBudget cancelled = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, cancellation.Token));
         Assert.Equal(0, cancelled.Snapshot().CurrentBytes);
         Assert.Equal(Render(Clipped(visible, "")), Render(content));

@@ -135,7 +135,7 @@ public sealed class SvgNonScalingMarkerTests
     public void Culled_drawing_preserves_borrowed_budget_on_denial_cancellation_and_retry(bool ancestor, bool flood)
     {
         byte[] input = FilteredBoundary("1e9", ancestor, flood);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         long peak;
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
@@ -156,7 +156,7 @@ public sealed class SvgNonScalingMarkerTests
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new(peak - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(peak - 1));
         using (RenderBudget.BudgetReservation borrowed = denied.Reserve(73, SvgMemoryCategory.Scene))
         {
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input,
@@ -240,7 +240,7 @@ public sealed class SvgNonScalingMarkerTests
     public void Native_control_bounds_keep_path_miters_distinct_from_single_lines(string scale, string path, int expectedPixels)
     {
         byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g transform='translate(16 16) scale(" + scale + ")'><path d='" + path + "' fill='none' stroke='blue' stroke-width='8' stroke-linecap='round' vector-effect='non-scaling-stroke'/></g></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
         using SvgConverter.RasterizedSurface raster = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None);
         int pixels = 0;
@@ -268,7 +268,7 @@ public sealed class SvgNonScalingMarkerTests
     public void Marker_replay_releases_owners_on_denial_cancellation_and_retry(string consumer)
     {
         byte[] input = Document("path", consumer, "mid", true, false);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         long parserPeak;
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
@@ -289,7 +289,7 @@ public sealed class SvgNonScalingMarkerTests
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new(parserPeak - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(parserPeak - 1));
         using (RenderBudget.BudgetReservation borrowed = denied.Reserve(73, SvgMemoryCategory.Scene))
         {
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input,

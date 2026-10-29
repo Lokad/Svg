@@ -21,7 +21,7 @@ public sealed class SvgInheritedClipIsolationTests
                 source.Append("<g clip-path='url(#c)'><g " + effect + "><rect width='24' height='24' fill='red'/><rect x='1' y='1' width='24' height='24' fill='blue'/></g></g><g><rect width='2' height='2' fill='green'/></g>");
             string clip = curvedFilter ? "<ellipse cx='16' cy='16' rx='12.5' ry='10.5'/>" : "<rect x='5.25' y='3.75' width='19.5' height='22'/>";
             source.Append("<defs><clipPath id='c'>" + clip + "</clipPath><filter id='f'><feOffset dx='1' dy='1'/></filter></defs></svg>");
-            RenderBudget budget = new(40_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(40_000_000));
             long allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
             using (SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(source.ToString()), SvgRenderLimits.Default, budget, null, CancellationToken.None)) { }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -33,7 +33,7 @@ public sealed class SvgInheritedClipIsolationTests
     public void An_ancestor_clip_excluding_all_filter_output_keeps_a_transparent_surface()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><clipPath id='c'><circle cx='90' cy='90' r='5'/></clipPath><filter id='f'><feOffset dx='1' dy='1'/></filter></defs><g clip-path='url(#c)'><g filter='url(#f)'><rect width='24' height='24' fill='red'/></g></g></svg>");
-        RenderBudget budget = new(4_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(4_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
             Assert.All(surface.Pixels, value => Assert.Equal((byte)0, value));
@@ -55,7 +55,7 @@ public sealed class SvgInheritedClipIsolationTests
             string clip = "<" + container + " clip-path='url(#c)'>", group = "<g opacity='" + opacity + "'>";
             string body = (outer ? clip + group : group + clip) + paints + (outer ? "</g></" + container + ">" : "</" + container + "></g>");
             byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + (forward ? body + definitions : definitions + body) + "<rect width='2' height='2' fill='green'/></svg>");
-            RenderBudget budget = new(1_000_000);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
             using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
             {
@@ -100,25 +100,25 @@ public sealed class SvgInheritedClipIsolationTests
         string ownerOpacity = effect == "opaque-mask" ? "1" : ".5";
         string body = "<g clip-path='url(#c)'><g opacity='" + ownerOpacity + "'" + attributes + "><path d='M4 4H24V24H4Z' fill='red'/><path d='M3 3Q25 3 25 25H3Z' clip-path='url(#inner)' fill='blue' fill-opacity='.25'/></g></g>";
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + (forward ? body + definitions : definitions + body) + "</svg>"), unchanged = input.ToArray();
-        RenderBudget parser = new(8_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (RenderBudget.BudgetReservation borrowed = parser.Reserve(73, SvgMemoryCategory.Scene))
         {
             using (SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, null, CancellationToken.None)) { }
             Assert.Equal(73, parser.Snapshot().CurrentBytes);
             Assert.Equal(73, parser.Snapshot().CurrentBytes);
-            RenderBudget deniedParse = new(parser.Snapshot().PeakBytes - 74);
+            RenderBudget deniedParse = new RenderBudget(new HostMemoryBudget(parser.Snapshot().PeakBytes - 74));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, deniedParse, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, deniedParse.Snapshot().CurrentBytes);
             using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None))
             {
-                RenderBudget raster = new(8_000_000);
+                RenderBudget raster = new RenderBudget(new HostMemoryBudget(8_000_000));
                 byte[] expected;
                 using (SvgConverter.RasterizedSurface first = SvgConverter.Rasterize(root, SvgRenderOptions.Default, raster, CancellationToken.None))
                 {
                     expected = first.Pixels.ToArray();
                 }
                 Assert.Equal(0, raster.Snapshot().CurrentBytes);
-                RenderBudget deniedRaster = new(raster.Snapshot().PeakBytes - 1);
+                RenderBudget deniedRaster = new RenderBudget(new HostMemoryBudget(raster.Snapshot().PeakBytes - 1));
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, deniedRaster, CancellationToken.None)).ErrorCode);
                 Assert.Equal(0, deniedRaster.Snapshot().CurrentBytes);
                 Assert.Equal(0, raster.Snapshot().CurrentBytes);

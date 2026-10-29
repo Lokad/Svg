@@ -51,11 +51,11 @@ public sealed class SvgOrthogonalClipTests
     public void Parser_memory_denial_releases_contour_and_scene_storage()
     {
         byte[] input = Input("path");
-        RenderBudget measured = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, CancellationToken.None))
             Assert.Single(root.Geometries);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(1, denied.Snapshot().DeniedReservationCount);
@@ -67,7 +67,7 @@ public sealed class SvgOrthogonalClipTests
     {
         using SvgRoot root = SvgRootParser.Parse(Input("path"), SvgRenderLimits.Default, CancellationToken.None);
         SvgPolygonFill polygon = Assert.Single(root.Geometries).Polygon;
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using CancellationTokenSource source = new();
         {
             SvgAnalyticContourPreparation preparation = new(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, new(-2, -2, 43, 35), 40, 32);

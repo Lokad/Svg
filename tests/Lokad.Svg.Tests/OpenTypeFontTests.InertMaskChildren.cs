@@ -64,10 +64,10 @@ public sealed partial class OpenTypeFontTests
     public void Inert_mask_replay_observes_denial_cancellation_and_owner_cleanup()
     {
         byte[] input = Document("<defs><mask id='m'><circle r='0' fill='white'/><rect width='8' height='8' visibility='hidden' fill='white'/></mask></defs><rect width='8' height='8' mask='url(#m)'/>");
-        RenderBudget measured = new(1_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) Assert.False(root.HasUnsupportedChild);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        RenderBudget tight = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget tight = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new(); cancellation.Cancel();

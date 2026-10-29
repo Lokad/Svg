@@ -173,7 +173,11 @@ state. [Font qualification](../tests/README.md#qualification) owns the evidence.
 
 [RenderBudget](../src/Lokad.Svg/Rendering/RenderBudget.cs) reserves dominant storage
 before allocation. Parser, scene, glyph, tile, filter and encoder storage share the
-conversion allowance; font discovery has its documented acquisition lifetime.
+borrowed host allowance when supplied; no private cap or available-balance policy
+remains. Inspection and all output APIs share execution cleanup. Font discovery
+retains requirements through awaited acquisition and transfers them to the snapshot;
+metadata and scene charges follow their owners. Governed PNG output has a sibling
+scope retained by SvgPngResult until disposal.
 Growth/copy loops also observe cancellation. Failure releases private owners and
 leaves borrowed inputs unchanged. Caller streams remain open and can contain
 partial output; hosts own transactional handling. Memory estimates follow the

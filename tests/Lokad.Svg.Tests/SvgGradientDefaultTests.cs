@@ -39,7 +39,7 @@ public sealed class SvgGradientDefaultTests
     public void Nonzero_initial_user_space_percentages_retain_the_explicit_percentage_boundary(string gradients)
     {
         byte[] svg = Input("<defs>" + gradients + "</defs><rect width='32' height='32' fill='url(#p)'/>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, SvgRenderLimits.Default, budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

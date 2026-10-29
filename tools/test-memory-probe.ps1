@@ -112,12 +112,12 @@ function Assert-XmlReaderMeasurements {
 }
 
 $successOutput = Join-Path $ResultsDirectory "$runId-success.png"
-$success = Invoke-Probe -Name 'success' -InputPath $fixture -Output $successOutput -ExpectedExitCode 0 -ExtraArguments @('--maximum-accounted-bytes', '1048576')
+$success = Invoke-Probe -Name 'success' -InputPath $fixture -Output $successOutput -ExpectedExitCode 0 -ExtraArguments @('--memory-budget-bytes', '1048576')
 if ($success['outcome'] -ne 'success' -or -not (Test-Path -LiteralPath $successOutput)) { throw 'The successful probe did not produce its expected PNG.' }
 if (-not $success.ContainsKey('conversionManagedAllocatedBytes') -or [long]$success['conversionManagedAllocatedBytes'] -le 0) { throw 'The successful probe did not report managed conversion allocation.' }
 
 $limitOutput = Join-Path $ResultsDirectory "$runId-limit.png"
-$limit = Invoke-Probe -Name 'limit' -InputPath $fixture -Output $limitOutput -ExpectedExitCode 1 -ExtraArguments @('--maximum-accounted-bytes', '1')
+$limit = Invoke-Probe -Name 'limit' -InputPath $fixture -Output $limitOutput -ExpectedExitCode 1 -ExtraArguments @('--memory-budget-bytes', '1')
 if ($limit['outcome'] -ne 'svg-error' -or $limit['svgErrorCode'] -ne 'LimitExceeded' -or (Test-Path -LiteralPath $limitOutput)) { throw 'The limited probe did not reject before output.' }
 if (-not $limit.ContainsKey('conversionManagedAllocatedBytes') -or [long]$limit['conversionManagedAllocatedBytes'] -le 0) { throw 'The limited probe did not report managed conversion allocation.' }
 
@@ -131,7 +131,7 @@ if ($image['outcome'] -ne 'success' -or $image['inputBytes'] -ne $imageBytes.ToS
 if (-not $image.ContainsKey('conversionManagedAllocatedBytes') -or [long]$image['conversionManagedAllocatedBytes'] -le 0) { throw 'The embedded-image probe did not report managed conversion allocation.' }
 
 $imageDeniedOutput = Join-Path $ResultsDirectory "$runId-image-denied.png"
-$imageDenied = Invoke-Probe -Name 'image-denied' -InputPath $imageInput -Output $imageDeniedOutput -ExpectedExitCode 1 -ExtraArguments @('--maximum-accounted-bytes', '131122')
+$imageDenied = Invoke-Probe -Name 'image-denied' -InputPath $imageInput -Output $imageDeniedOutput -ExpectedExitCode 1 -ExtraArguments @('--memory-budget-bytes', '131122')
 if ($imageDenied['outcome'] -ne 'svg-error' -or $imageDenied['svgErrorCode'] -ne 'LimitExceeded' -or $imageDenied['inputBytes'] -ne $imageBytes.ToString() -or (Test-Path -LiteralPath $imageDeniedOutput)) { throw 'The storage-denied embedded-image probe did not reject before output.' }
 
 $patternInput = Join-Path $ResultsDirectory "$runId-pattern.svg"
@@ -143,7 +143,7 @@ if ($pattern['outcome'] -ne 'success' -or $pattern['inputBytes'] -ne $patternByt
 if (-not $pattern.ContainsKey('conversionManagedAllocatedBytes') -or [long]$pattern['conversionManagedAllocatedBytes'] -le 0) { throw 'The pattern tile probe did not report managed conversion allocation.' }
 
 $patternDeniedOutput = Join-Path $ResultsDirectory "$runId-pattern-memory-denied.png"
-$patternDenied = Invoke-Probe -Name 'pattern-memory-denied' -InputPath $patternInput -Output $patternDeniedOutput -ExpectedExitCode 1 -ExtraArguments @('--maximum-accounted-bytes', '200000')
+$patternDenied = Invoke-Probe -Name 'pattern-memory-denied' -InputPath $patternInput -Output $patternDeniedOutput -ExpectedExitCode 1 -ExtraArguments @('--memory-budget-bytes', '200000')
 if ($patternDenied['outcome'] -ne 'svg-error' -or $patternDenied['svgErrorCode'] -ne 'LimitExceeded' -or $patternDenied['inputBytes'] -ne $patternBytes.ToString() -or (Test-Path -LiteralPath $patternDeniedOutput)) { throw 'The memory-denied pattern tile probe did not reject before output.' }
 
 $xmlWorkspaceInput = Join-Path $ResultsDirectory "$runId-xml-workspace.svg"
@@ -152,7 +152,7 @@ $xmlWorkspacePayload = New-Object string('x', 64KB)
 $xmlWorkspaceBytes = [IO.FileInfo]::new($xmlWorkspaceInput).Length
 $xmlWorkspaceBudget = [long]$xmlWorkspaceBytes * 4 - 1
 $xmlWorkspaceOutput = Join-Path $ResultsDirectory "$runId-xml-workspace.png"
-$xmlWorkspace = Invoke-Probe -Name 'xml-workspace' -InputPath $xmlWorkspaceInput -Output $xmlWorkspaceOutput -ExpectedExitCode 1 -ExtraArguments @('--maximum-accounted-bytes', $xmlWorkspaceBudget.ToString())
+$xmlWorkspace = Invoke-Probe -Name 'xml-workspace' -InputPath $xmlWorkspaceInput -Output $xmlWorkspaceOutput -ExpectedExitCode 1 -ExtraArguments @('--memory-budget-bytes', $xmlWorkspaceBudget.ToString())
 if ($xmlWorkspace['outcome'] -ne 'svg-error' -or $xmlWorkspace['svgErrorCode'] -ne 'LimitExceeded' -or $xmlWorkspace['inputBytes'] -ne $xmlWorkspaceBytes.ToString() -or (Test-Path -LiteralPath $xmlWorkspaceOutput)) { throw 'The XML workspace probe did not deny the input reservation before output.' }
 Assert-XmlReaderMeasurements -Name 'xml-reader-text' -InputPath $xmlWorkspaceInput -MinimumTouchedCharacters 0 -MinimumTextNodes 1
 
@@ -161,7 +161,7 @@ $xmlAttributes = (0..254 | ForEach-Object { " data-a$_=`"x`"" }) -join ''
 [IO.File]::WriteAllText($xmlAttributeInput, '<svg xmlns="http://www.w3.org/2000/svg"' + $xmlAttributes + '/>', [Text.UTF8Encoding]::new($false))
 $xmlAttributeBytes = [IO.FileInfo]::new($xmlAttributeInput).Length
 $xmlAttributeOutput = Join-Path $ResultsDirectory "$runId-xml-attributes.png"
-$xmlAttributesProbe = Invoke-Probe -Name 'xml-attributes' -InputPath $xmlAttributeInput -Output $xmlAttributeOutput -ExpectedExitCode 1 -ExtraArguments @('--maximum-accounted-bytes', '131071')
+$xmlAttributesProbe = Invoke-Probe -Name 'xml-attributes' -InputPath $xmlAttributeInput -Output $xmlAttributeOutput -ExpectedExitCode 1 -ExtraArguments @('--memory-budget-bytes', '131071')
 if ($xmlAttributesProbe['outcome'] -ne 'svg-error' -or $xmlAttributesProbe['svgErrorCode'] -ne 'LimitExceeded' -or $xmlAttributesProbe['inputBytes'] -ne $xmlAttributeBytes.ToString() -or (Test-Path -LiteralPath $xmlAttributeOutput)) { throw 'The XML attribute workspace probe did not deny the input reservation before output.' }
 
 Assert-XmlReaderMeasurements -Name 'xml-reader' -InputPath $xmlAttributeInput -MinimumTouchedCharacters 1
@@ -199,7 +199,7 @@ $deepGroups = Invoke-Probe -Name 'font-discovery-deep-groups' -InputPath $discov
 if ($deepGroups['outcome'] -ne 'success' -or $deepGroups['discoveryRequestCount'] -ne '0' -or $deepGroups['providerCalls'] -ne '0' -or $deepGroups['discoveryCurrentBytes'] -ne '0' -or [long]$deepGroups['discoveryPeakBytes'] -le 0 -or $deepGroups['discoveryDeniedReservations'] -ne '0' -or (Test-Path -LiteralPath $discoveryDeepGroupsOutput)) { throw 'The deep-group font-discovery probe did not report an empty request set with a released ledger and no output.' }
 
 $discoveryDeniedOutput = Join-Path $ResultsDirectory "$runId-font-discovery-deep-groups-denied.png"
-$deepGroupsDenied = Invoke-Probe -Name 'font-discovery-deep-groups-denied' -InputPath $discoveryDeepGroupsInput -Output $discoveryDeniedOutput -ExpectedExitCode 1 -ExtraArguments @('--mode', 'font-discovery', '--maximum-accounted-bytes', '600')
+$deepGroupsDenied = Invoke-Probe -Name 'font-discovery-deep-groups-denied' -InputPath $discoveryDeepGroupsInput -Output $discoveryDeniedOutput -ExpectedExitCode 1 -ExtraArguments @('--mode', 'font-discovery', '--memory-budget-bytes', '600')
 if ($deepGroupsDenied['outcome'] -ne 'svg-error' -or $deepGroupsDenied['svgErrorCode'] -ne 'LimitExceeded' -or $deepGroupsDenied.ContainsKey('discoveryRequestCount') -or $deepGroupsDenied['providerCalls'] -ne '0' -or $deepGroupsDenied['discoveryCurrentBytes'] -ne '0' -or [long]$deepGroupsDenied['discoveryDeniedReservations'] -lt 1 -or (Test-Path -LiteralPath $discoveryDeniedOutput)) { throw 'The denied font-discovery probe did not fail with a ledger denial, no retained reservation, and no output.' }
 
 $discoveryEmptyTextsInput = Join-Path $ResultsDirectory "$runId-font-discovery-empty-texts.svg"

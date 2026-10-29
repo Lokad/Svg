@@ -13,7 +13,7 @@ public sealed class SvgPatternScopeBindingTests
     [InlineData(1024)]
     public void Separate_tile_group_clips_keep_linear_parser_work(int count)
     {
-        RenderBudget budget = new(30_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(30_000_000));
         using (SvgRoot root = SvgRootParser.Parse(Repeated(count, true), SvgRenderLimits.Default, budget, null, CancellationToken.None)) { }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -33,7 +33,7 @@ public sealed class SvgPatternScopeBindingTests
         for (int index = 0; index < count; index++)
             xml.Append("<pattern id='p").Append(index).Append("' patternUnits='userSpaceOnUse' width='8' height='8'><g clip-path='url(#c)'><rect width='4' height='4' fill='red'/></g></pattern>");
         xml.Append("<clipPath id='c'><rect width='8' height='8'/></clipPath></defs><rect width='8' height='8' fill='url(#p0)'/></svg>");
-        RenderBudget budget = new(40_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(40_000_000));
         using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(xml.ToString()), SvgRenderLimits.Default, budget, null, CancellationToken.None)) { }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -63,7 +63,7 @@ public sealed class SvgPatternScopeBindingTests
     public void Scope_binding_releases_owners_on_memory_denial_and_cancellation()
     {
         byte[] input = Mixed(true);
-        RenderBudget measured = new(2_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         long peak = measured.Snapshot().PeakBytes;
@@ -71,13 +71,13 @@ public sealed class SvgPatternScopeBindingTests
         DenyMemory(peak - 1);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget cancelled = new(2_000_000);
+        RenderBudget cancelled = new RenderBudget(new HostMemoryBudget(2_000_000));
         Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, null, cancellation.Token)).CancellationToken);
         Assert.Equal(0, cancelled.Snapshot().CurrentBytes);
 
         void DenyMemory(long limit)
         {
-            RenderBudget denied = new(limit);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }

@@ -63,7 +63,7 @@ public sealed partial class OpenTypeFontTests
             WriteInt16(bytes, range.Offset + 16, 10);
         }
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         ushort glyph = composite ? (ushort)2 : (ushort)1;
         using (OpenTypeGlyphContourStorage fractional = OpenTypeFont.GetWindowsUnfittedContours(bytes, glyph, metrics, 5.75, budget, CancellationToken.None))
         using (OpenTypeGlyphContourStorage integral = OpenTypeFont.GetWindowsUnfittedContours(bytes, glyph, metrics, 6, budget, CancellationToken.None))
@@ -91,7 +91,7 @@ public sealed partial class OpenTypeFontTests
         bytes[glyph.Offset + 14] = 0x4C; // Valid but unsupported MPS, reached only in fitted ranges.
         byte[] unchanged = bytes.ToArray();
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(Assert.Single(snapshot.Fonts), new(1, 0, 0, 0), 8, new(1, 0, 0, 1, translation, 0), budget))
         {
             using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(scale, 0, scale, 0, budget, CancellationToken.None))
@@ -114,7 +114,7 @@ public sealed partial class OpenTypeFontTests
         WriteInt16(bytes, glyph.Offset + 8, 0);
         WriteInt16(bytes, FindTableOffset(bytes, 0x686D7478) + 6, 10);
         bytes[glyph.Offset + 14] = 0x17; // First point (10,-10), then (20,-10) and (10,0).
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetWindowsUnfittedContours(bytes, 1, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), 8, budget, CancellationToken.None))
         {
             Assert.Equal(3, contours.Segments[0].Start.X);
@@ -138,7 +138,7 @@ public sealed partial class OpenTypeFontTests
         WriteUInt16(bytes, parent.Offset + 12, 1);
         WriteInt16(bytes, parent.Offset + 14, 10);
         WriteInt16(bytes, parent.Offset + 16, 0);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetWindowsUnfittedContours(bytes, 2, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), 8, budget, CancellationToken.None))
         {
             // Placed point 20 -> 5; inherited metric origin (10-4) -> 2.
@@ -157,7 +157,7 @@ public sealed partial class OpenTypeFontTests
     public void Windows_unfitted_horizontal_scale_keeps_numeric_limits(double ratio)
     {
         byte[] bytes = CreateWindowsProfileFont(Convert.FromHexString("00010001FFFF000A"), true);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => OpenTypeFont.GetWindowsUnfittedContours(bytes, 1, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), 8, ratio, null, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -168,11 +168,11 @@ public sealed partial class OpenTypeFontTests
         byte[] bytes = CreateWindowsProfileFont(Convert.FromHexString("00010001FFFF000A"), true);
         WriteUInt16(bytes, FindTableOffset(bytes, 0x68656164) + 16, 8);
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetWindowsUnfittedContours(bytes, 1, metrics, 8, budget, CancellationToken.None))
             Assert.NotEmpty(contours.Segments);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new(budget.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => OpenTypeFont.GetWindowsUnfittedContours(bytes, 1, metrics, 8, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new(); cancellation.Cancel();

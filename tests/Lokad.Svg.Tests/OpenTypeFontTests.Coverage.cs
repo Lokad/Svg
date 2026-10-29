@@ -22,7 +22,7 @@ public sealed partial class OpenTypeFontTests
         (SvgFontPackCatalog catalog, StackFontProvider provider) = CreateCoveragePack(primary, secondary);
         byte[] svg = """<svg xmlns="http://www.w3.org/2000/svg"><text font-family="First,Second">ABAA</text></svg>"""u8.ToArray();
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(svg, catalog, provider, CancellationToken.None);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         SvgTextStyle style = new(SvgFontFaceRequest.FromCss("First,Second", 400, false), 20, 0, 30, 0, 0, 0, SvgTextAnchor.Start, "label");
         using (SvgTextRun run = SvgTextRunBuilder.Create(style, "ABAA", snapshot, budget, CancellationToken.None))
         {
@@ -43,7 +43,7 @@ public sealed partial class OpenTypeFontTests
         (SvgFontPackCatalog catalog, StackFontProvider provider) = CreateCoveragePack(CreateTriangleFont(), CreateFormat12Font());
         byte[] svg = """<svg xmlns="http://www.w3.org/2000/svg"><text font-family="First,Second">A😀A</text></svg>"""u8.ToArray();
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(svg, catalog, provider, CancellationToken.None);
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         SvgTextStyle style = new(SvgFontFaceRequest.FromCss("First,Second", 400, false), 20, 0, 30, 0, 0, 0, SvgTextAnchor.Start, "supplementary");
         using (SvgTextRun run = SvgTextRunBuilder.Create(style, "A😀A", snapshot, budget, CancellationToken.None))
         {

@@ -59,13 +59,13 @@ public sealed class SvgFilterSourceHintTests
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>"
             + "<defs><filter id='f' filterUnits='userSpaceOnUse' x='-100' y='-100' width='200' height='200'>"
             + "<feOffset in='SourceAlpha' dx='" + dx + "' dy='" + dy + "'/></filter></defs><rect width='4' height='4' filter='url(#f)'/></svg>");
-        RenderBudget parser = new(1_000_000);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None))
         {
             SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
             SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
             SvgFilterRegionContext context = new(SvgAffineTransform.Identity, new(32, 32), new(-100, -100, 100, 100));
-            RenderBudget scratch = new(1_000_000);
+            RenderBudget scratch = new RenderBudget(new HostMemoryBudget(1_000_000));
             SvgPaintBounds hint = SvgFilterPlayback.SourceLayerBounds(resource, new(1, 1), context, new(6, 11, 26, 22),
                 scratch, CancellationToken.None);
             // Native source capture encloses both source and shifted output in

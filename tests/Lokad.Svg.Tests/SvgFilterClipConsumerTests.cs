@@ -13,7 +13,7 @@ public sealed class SvgFilterClipConsumerTests
     public void Filter_capture_retains_clip_and_authored_paint_coverage_as_distinct_consumers(string identity, int nativeAlpha)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "text-instance-composition", identity + ".svg"));
-        RenderBudget sceneBudget = new(2_000_000), rasterBudget = new(2_000_000);
+        RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(2_000_000)), rasterBudget = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, rasterBudget, CancellationToken.None))
         {

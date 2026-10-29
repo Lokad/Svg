@@ -51,7 +51,7 @@ public sealed class SvgFatRectangleTests
     {
         SvgDevicePoint[] points = [new(2.125, 2.13), new(9.938, 2.13), new(9.938, 9.997), new(2.125, 9.997)];
         SvgAnalyticContourPreparation preparation = new(points, [4], [], false, null, SvgPolygonMapping.NativeFillEdges, [], [], new(2, 2, 10, 10), 32, 32);
-        RenderBudget budget = new(1);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1));
         using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 2, 10, 2, 10, new(0, 32), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None))
         {
             Assert.True(eligible);

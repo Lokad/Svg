@@ -16,7 +16,7 @@ public sealed class SvgCompoundClipAdmissionTests
     public void Invalid_percentage_rectangles_release_parser_owners(string attributes, SvgErrorCode error)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><rect " + attributes + "/></svg>");
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(error, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -51,13 +51,13 @@ public sealed class SvgCompoundClipAdmissionTests
             input.Append("<path d='M0 0L2 0L1 2Z' transform='translate(").Append(index * 5).Append(" 8) rotate(3)'/>");
         input.Append("</clipPath></defs><rect width='256' height='32' clip-path='url(#c)'/></svg>");
         byte[] bytes = System.Text.Encoding.UTF8.GetBytes(input.ToString());
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot root = SvgRootParser.Parse(bytes, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             Assert.NotEmpty(root.Geometries.ToArray());
             SvgSceneStorage storage = Assert.IsType<SvgSceneStorage>(root.SceneStorage);
             Assert.Equal(maskFallback, storage.MaskContents.Any(content => content.VectorContent is not null));
-            RenderBudget rasterBudget = new(8_000_000);
+            RenderBudget rasterBudget = new RenderBudget(new HostMemoryBudget(8_000_000));
             using (SvgConverter.RasterizedSurface output = SvgConverter.Rasterize(root, SvgRenderOptions.Default, rasterBudget, CancellationToken.None))
             {
                 Assert.Equal(256, output.Width);
@@ -103,7 +103,7 @@ public sealed class SvgCompoundClipAdmissionTests
     public void Overlapping_transformed_children_preserve_coverage_and_release_owners()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><clipPath id='c'><path d='M3 3H22V22H3Z' transform='rotate(3 16 16)'/><path d='M12 12V29H29V12Z'/></clipPath></defs><rect width='32' height='32' clip-path='url(#c)'/></svg>"u8.ToArray();
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         byte[] expected;
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface output = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))

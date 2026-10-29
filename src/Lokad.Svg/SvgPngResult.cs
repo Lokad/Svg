@@ -12,7 +12,7 @@ public sealed class SvgPngResult : IDisposable
     private byte[]? _png;
     private IMemoryScope? _owner;
 
-    internal SvgPngResult(byte[] png, IMemoryScope owner) { _png = png; _owner = owner; }
+    internal SvgPngResult(byte[] png, IMemoryScope? owner) { _png = png; _owner = owner; }
 
     /// <summary>Gets the PNG bytes borrowed until this result is disposed.</summary>
     public ReadOnlyMemory<byte> Memory => _png ?? throw new ObjectDisposedException(nameof(SvgPngResult));

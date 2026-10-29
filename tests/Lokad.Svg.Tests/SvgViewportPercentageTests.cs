@@ -14,7 +14,7 @@ public sealed class SvgViewportPercentageTests
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>"
             + "<g transform='skewX(20)'><svg x='4' y='4' " + dimensions + "><rect width='12' height='12' fill='blue'/></svg></g>"
             + "<rect x='24' y='24' width='4' height='4' fill='red'/></svg>");
-        RenderBudget sceneBudget = new(1_000_000), rasterBudget = new(1_000_000);
+        RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(1_000_000)), rasterBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface raster = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, rasterBudget, CancellationToken.None))
             for (int y = 0; y < 32; y++) for (int x = 0; x < 32; x++)
@@ -70,7 +70,7 @@ public sealed class SvgViewportPercentageTests
     public void Discovery_keeps_later_font_requests_after_a_percentage_viewport()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 48'><svg width='50%' height='50%'><rect width='8' height='8'/></svg><text font-family='After' font-size='12' y='12'>A</text></svg>"u8.ToArray();
-        RenderBudget budget = new(8_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         Assert.Equal("After", Assert.Single(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, CancellationToken.None)).Family);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -90,11 +90,11 @@ public sealed class SvgViewportPercentageTests
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "viewport-percentage-bases", identity + ".svg"));
         SvgRenderOptions options = identity.StartsWith("root-viewbox-only-", StringComparison.Ordinal)
             ? new(new SvgViewport(128, 96), 1, SvgColor.Transparent, SvgRenderLimits.Default) : SvgRenderOptions.Default;
-        RenderBudget discovery = new(8_000_000);
+        RenderBudget discovery = new RenderBudget(new HostMemoryBudget(8_000_000));
         Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, discovery, CancellationToken.None));
         Assert.Equal(0, discovery.Snapshot().CurrentBytes);
         // Percentage resolution adds no owners; native instance replay and image storage use the existing budget.
-        RenderBudget measured = new(8_000_000);
+        RenderBudget measured = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None, 1, 1, options.Viewport))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, options, measured, CancellationToken.None))
             {}
@@ -104,7 +104,7 @@ public sealed class SvgViewportPercentageTests
         DenyMemory(peak - 1);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        RenderBudget canceled = new(8_000_000);
+        RenderBudget canceled = new RenderBudget(new HostMemoryBudget(8_000_000));
         Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, canceled, null, cancellation.Token, 1, 1, options.Viewport)).CancellationToken);
         Assert.Equal(0, canceled.Snapshot().CurrentBytes);
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, canceled, null, CancellationToken.None, 1, 1, options.Viewport))
@@ -116,7 +116,7 @@ public sealed class SvgViewportPercentageTests
 
         void DenyMemory(long limit)
         {
-            RenderBudget budget = new(limit);
+            RenderBudget budget = new RenderBudget(new HostMemoryBudget(limit));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
             {
                 using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None, 1, 1, options.Viewport);

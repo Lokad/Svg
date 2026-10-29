@@ -76,7 +76,7 @@ public sealed partial class OpenTypeFontTests
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(positive, catalog, provider, CancellationToken.None);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, options, CancellationToken.None)).ErrorCode);
-        RenderBudget budget = new(1_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, options.Limits, budget, fonts, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         byte[] expected = SvgConverter.ConvertToPng(positive, options, CancellationToken.None).ToArray();

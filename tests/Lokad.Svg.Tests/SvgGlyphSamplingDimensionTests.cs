@@ -22,7 +22,7 @@ public sealed class SvgGlyphSamplingDimensionTests
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "text-node-boundaries", "font-pack.json")), "public-noto-sans");
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(input, catalog, new Programs(bytes), CancellationToken.None);
         SvgRenderLimits d = SvgRenderLimits.Default;
-        SvgRenderLimits limits = new(d.MaximumAccountedBytes, d.MaximumInputBytes, 32, d.MaximumPixels, d.MaximumEncodedPngBytes, d.MaximumNodes, d.MaximumPathCommands, d.MaximumXmlDepth, d.MaximumAttributesPerElement);
+        SvgRenderLimits limits = new(d.MaximumInputBytes, 32, d.MaximumPixels, d.MaximumEncodedPngBytes, d.MaximumNodes, d.MaximumPathCommands, d.MaximumXmlDepth, d.MaximumAttributesPerElement);
         SvgRenderOptions normal = new(null, 1, SvgColor.Transparent, d, fonts);
         SvgRenderOptions bounded = new(null, 1, SvgColor.Transparent, limits, fonts);
         byte[] expected = SvgConverter.ConvertToPng(input, normal, CancellationToken.None).ToArray();

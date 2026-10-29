@@ -20,7 +20,7 @@ public sealed partial class OpenTypeFontTests
         byte[] bytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "windows-font-unit-scaling", file)), unchanged = bytes.ToArray();
         TrueTypeHintTarget target = new(42, TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned | TrueTypeHintQueryFlags.Symmetric,
             TrueTypeHintControlScale.FullPrecision, TrueTypeHintPreparation.Single) { Grid = TrueTypeHintGrid.ClearType, WindowsArithmetic = true };
-        RenderBudget budget = new(long.MaxValue);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetTrueTypeContours(bytes, glyph, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), size, target, budget, CancellationToken.None))
         {
             // The original program amplifies each coordinate unit to a pixel

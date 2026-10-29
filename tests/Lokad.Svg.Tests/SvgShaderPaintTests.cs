@@ -64,7 +64,7 @@ public sealed class SvgShaderPaintTests
     public void Raster_memory_denial_releases_shader_storage(string paint)
     {
         using SvgRoot root = SvgRootParser.Parse(Input(paint), SvgRenderLimits.Default, CancellationToken.None);
-        RenderBudget denied = new(1);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(1));
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, denied, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
@@ -77,7 +77,7 @@ public sealed class SvgShaderPaintTests
     public void Cancellation_during_initialization_releases_shader_storage(string paint)
     {
         using SvgRoot root = SvgRootParser.Parse(Input(paint), SvgRenderLimits.Default, CancellationToken.None);
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         using CancellationTokenSource cancellation = new();
         using IDisposable probe = BackgroundInitializationProbe.Arm(cancellation.Cancel, static () => { });
         SvgRenderOptions options = new(null, 1, new SvgColor(1, 2, 3, 255), SvgRenderLimits.Default);

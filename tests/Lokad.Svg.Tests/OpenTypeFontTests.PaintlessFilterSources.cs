@@ -63,7 +63,7 @@ public sealed partial class OpenTypeFontTests
     public void Source_less_filtered_use_releases_parser_owners_after_cancellation_and_retry()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><use filter='url(#f)'><title>caption</title></use><defs><filter id='f' filterUnits='userSpaceOnUse' width='32' height='32'><feFlood flood-color='red'/></filter></defs></svg>");
-        RenderBudget budget = new(10_000_000);
+        RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             Assert.False(root.HasUnsupportedChild);

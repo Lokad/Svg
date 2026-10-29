@@ -127,13 +127,13 @@ public sealed partial class OpenTypeFontTests
         byte[] input = StrokeDocument("<g opacity='.5'><text font-family='Example' font-size='48' x='8' y='64' fill='none' stroke='red' stroke-width='8'>A</text></g>");
         byte[] unchanged = (byte[])input.Clone();
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
-        RenderBudget sceneBudget = new(1_000_000);
+        RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, snapshot, CancellationToken.None);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
-        RenderBudget accepted = new(1_000_000);
+        RenderBudget accepted = new RenderBudget(new HostMemoryBudget(1_000_000));
         byte[] expected = SvgConverter.ConvertToPng(root, options, accepted, CancellationToken.None).ToArray();
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-        RenderBudget denied = new(40_000);
+        RenderBudget denied = new RenderBudget(new HostMemoryBudget(40_000));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(root, options, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
