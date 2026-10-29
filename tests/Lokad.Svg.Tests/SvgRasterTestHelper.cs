@@ -18,9 +18,15 @@ internal static class SvgRasterTestHelper
             svg, options, CancellationToken.None);
         width = capture.Surface.Width;
         height = capture.Surface.Height;
+        return CopyCanonicalPixels(capture.Surface);
+    }
+
+    /// <summary>Borrows a straight-alpha capture while copying; the caller owns the canonical pixel copy.</summary>
+    internal static byte[] CopyCanonicalPixels(SvgConverter.RasterizedSurface surface)
+    {
         // Tests own this copy after the scene/surface owner is released. Match
         // encoded PNG's zero-alpha RGB rule without changing other color lanes.
-        byte[] pixels = capture.Surface.Pixels.ToArray();
+        byte[] pixels = surface.Pixels.ToArray();
         for (int offset = 0; offset < pixels.Length; offset += 4)
             if (pixels[offset + 3] == 0) pixels.AsSpan(offset, 3).Clear();
         return pixels;

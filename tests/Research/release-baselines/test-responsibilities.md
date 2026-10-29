@@ -548,3 +548,42 @@ for the core selection, including discovery/host/TRX and excluding build. This i
 a small validation-cost difference, not a material renderer speedup.
 All 470 affected cases, 71 native-image checks and two provenance checks pass on
 Windows/Linux under both runtimes. Both affected builds are warning-free.
+
+## Point-list source, admission and viewport responsibilities
+
+The source before this pass is `8e9f0637d`. All 71 original case IDs remain;
+seven complete PNG representatives make 78 cases: twelve Mechanism, 62 Rendering
+and four Contract. The source, viewport and structural-limit statements remain;
+the stale `workBudget` variable is renamed for its cancellation operation.
+
+The [source contracts](../../Lokad.Svg.Tests/SvgPointListSourceTests.cs) retain both
+fractional fixtures through all six outputs, deliberate original-scene disposal,
+copied-source survival, refusal and cancellation. The
+[viewport tests](../../Lokad.Svg.Tests/SvgPointListViewportTests.cs) retain eleven
+direct map/rounding/admission cases and the separate 96-by-96 rendering check.
+
+All 48 [integer-crossing contexts](../../Lokad.Svg.Tests/SvgIntegerPointListTests.cs)
+retain source commands, contour tape, native alpha 127/144 and cleanup assertions.
+A temporary audit kept the original PNG comparisons and independently decoded
+public PNG output to compare with each existing scene capture; all 48 match on
+Windows/Linux under .NET 11. The final comparison reuses that capture, avoiding
+48 redundant actual-input parse/raster calls. Its four original-matrix PNG
+representatives retain paints, winding and direct/group/use playback.
+
+The [admission bank](../../Lokad.Svg.Tests/SvgPointListAdmissionTests.cs) keeps all
+42 point/spelling rows, eight paint/style pairs per row and six omitted-empty
+comparisons: 342 pairs use canonical pixels and exact dimensions. The four marker
+rows keep all eight complete PNG comparisons. Three further original-row PNG
+representatives retain empty pattern paint, radial strokes and repeated-vertex
+linear fill. The authored command limit and release assertion remain direct.
+Source recipes, loop axes and controls are preserved, independent of equal images.
+
+The existing canonical-copy loop moves intact into one shared helper used by
+captures and these comparisons. It copies while the surface owner is live and
+clears only zero-alpha RGB; inlining restores every original helper fingerprint.
+No production, native reference, tolerance, pixel convention or text-layout change
+is made. Three fresh sequential Windows .NET 11 processes measure 6.89/6.79 seconds
+median, including discovery/host/TRX and excluding build; no material speedup is
+established. All 78 focused cases, 98 native-image checks, two provenance checks
+and six capture-format/ownership contracts pass on each host/runtime pair. Both
+affected builds are warning-free.

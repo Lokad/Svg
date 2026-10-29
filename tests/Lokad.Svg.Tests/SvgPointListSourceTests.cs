@@ -4,6 +4,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
+[Trait("Layer", "Contract")]
 public sealed class SvgPointListSourceTests
 {
     [Theory]
@@ -58,13 +59,13 @@ public sealed class SvgPointListSourceTests
         SvgException memory = Assert.Throws<SvgException>(() => SvgRootParser.Parse(Input(), SvgRenderLimits.Default, tight, null, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, memory.ErrorCode);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
-        RenderBudget workBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
-        Assert.Equal(0, workBudget.Snapshot().CurrentBytes);
+        RenderBudget cancellationBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
+        Assert.Equal(0, cancellationBudget.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        OperationCanceledException canceled = Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(Input(), SvgRenderLimits.Default, workBudget, null, cancellation.Token));
+        OperationCanceledException canceled = Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(Input(), SvgRenderLimits.Default, cancellationBudget, null, cancellation.Token));
         Assert.Equal(cancellation.Token, canceled.CancellationToken);
-        Assert.Equal(0, workBudget.Snapshot().CurrentBytes);
+        Assert.Equal(0, cancellationBudget.Snapshot().CurrentBytes);
     }
 
     private static byte[] Input() => TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='137' height='83' viewBox='0 0 80 48'><g transform='translate(.375 .625)'>"

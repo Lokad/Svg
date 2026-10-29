@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgPointListViewportTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(16777215, 16, 16777215, 17)]
     [InlineData(2147483648, 1024, 2147483648, 1024)]
     [InlineData(-2147483519, 1024, -2147483520, 1024)]
@@ -21,6 +22,7 @@ public sealed class SvgPointListViewportTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Nested_symbol_placement_rounds_the_viewbox_map_before_canvas_concatenation()
     {
         SvgViewBox box = new(16777215, 0, 16, 32, SvgViewBoxAlignment.None, SvgViewBoxAlignment.None, SvgViewBoxFit.None);
@@ -37,6 +39,7 @@ public sealed class SvgPointListViewportTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0.5, 0.35f, 2.4f, 1.9f)]
     [InlineData(1.5, 1.05f, 7.2f, 5.7f)]
     public void Output_placement_precedes_viewbox_rounding(double outputScale, float expectedScale, float expectedX, float expectedY)
@@ -51,6 +54,7 @@ public sealed class SvgPointListViewportTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Source_viewport_retention_keeps_the_existing_transform_admission_limit()
     {
         SvgViewBox box = new(2147483648, 0, 16, 32, SvgViewBoxAlignment.None, SvgViewBoxAlignment.None, SvgViewBoxFit.None);
@@ -61,6 +65,7 @@ public sealed class SvgPointListViewportTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(1, 3)]
     [InlineData(3, 1)]
     public void Finite_intermediate_maps_can_exceed_the_complete_map_admission_range(double placement, double outputScale)
@@ -72,6 +77,7 @@ public sealed class SvgPointListViewportTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Complete_viewport_draw_maps_keep_the_existing_range_limit()
     {
         SvgAffineTransform source = SvgAffineTransform.FromScale(1_000_000_000, 1_000_000_000);
@@ -81,6 +87,7 @@ public sealed class SvgPointListViewportTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Large_parent_and_small_viewbox_render_through_output_scaling()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><symbol id='s' viewBox='0 0 32 32'><rect width='32' height='32' fill='red'/></symbol></defs><use href='#s' width='.000000032' height='.000000032' transform='scale(1000000000)'/></svg>"u8.ToArray();
