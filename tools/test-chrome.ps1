@@ -5,7 +5,9 @@ param(
     [string] $ResultsDirectory,
     [string] $PinPath = (Join-Path $PSScriptRoot 'chrome-for-testing.json'),
     [int] $CaptureRuns = 3,
-    [int] $CaptureTimeoutMilliseconds = 120000
+    [int] $CaptureTimeoutMilliseconds = 120000,
+    [ValidateSet('net11.0', 'net10.0')]
+    [string] $TargetFramework = 'net11.0'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -19,8 +21,8 @@ $offlineExecutable = & $setupChrome -CacheDirectory $CacheDirectory -PinPath $Pi
 if ($offlineExecutable -ne $executable) { throw 'Offline Chrome provisioning resolved a different executable.' }
 $executableVersion = (Get-Item -LiteralPath $executable).VersionInfo.ProductVersion
 if (-not [string]::IsNullOrWhiteSpace($executableVersion) -and -not $executableVersion.Contains($pin.version, [StringComparison]::Ordinal)) { throw "Pinned Chrome executable version does not match its pin: $executableVersion" }
-$chromeTool = Join-Path $PSScriptRoot 'Lokad.Svg.Chrome/bin/Release/net10.0/Lokad.Svg.Chrome.dll'
-$diffTool = Join-Path $PSScriptRoot 'Lokad.Svg.VisualDiff/bin/Release/net10.0/Lokad.Svg.VisualDiff.dll'
+$chromeTool = Join-Path $PSScriptRoot "Lokad.Svg.Chrome/bin/Release/$TargetFramework/Lokad.Svg.Chrome.dll"
+$diffTool = Join-Path $PSScriptRoot "Lokad.Svg.VisualDiff/bin/Release/$TargetFramework/Lokad.Svg.VisualDiff.dll"
 $fixture = Join-Path $PSScriptRoot '../tests/Fixtures/original/solid-red.svg'
 $reference = Join-Path $PSScriptRoot '../tests/References/original-solid-red.png'
 if (-not (Test-Path -LiteralPath $chromeTool)) { throw "Chrome tool is not built: $chromeTool" }
@@ -28,7 +30,7 @@ if (-not (Test-Path -LiteralPath $diffTool)) { throw "Visual-diff tool is not bu
 $captureToolRuntimeLines = @( & dotnet $chromeTool --runtime )
 if ($LASTEXITCODE -ne 0 -or $captureToolRuntimeLines.Count -ne 1 -or [string]::IsNullOrWhiteSpace($captureToolRuntimeLines[0])) { throw 'The capture tool did not report its runtime.' }
 $captureToolRuntime = [string]$captureToolRuntimeLines[0]
-$dotnetRuntimes = @(& dotnet --list-runtimes 2>$null | ForEach-Object { if ($_ -match '^Microsoft\.NETCore\.App (\d+\.\d+\.\d+) ') { $Matches[1] } } | Sort-Object -Unique)
+$dotnetRuntimes = @(& dotnet --list-runtimes 2>$null | ForEach-Object { if ($_ -match '^Microsoft\.NETCore\.App (\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?) ') { $Matches[1] } } | Sort-Object -Unique)
 if ($dotnetRuntimes.Count -eq 0) { throw 'The dotnet host reported no .NETCore runtimes.' }
 New-Item -ItemType Directory -Force -Path $ResultsDirectory | Out-Null
 

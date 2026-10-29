@@ -5,14 +5,16 @@ param(
     [Parameter(Mandatory = $true)] [int] $Width,
     [Parameter(Mandatory = $true)] [int] $Height,
     [Parameter(Mandatory = $true)] [string] $Background,
-    [Parameter(Mandatory = $true)] [int] $CaptureTimeoutMilliseconds
+    [Parameter(Mandatory = $true)] [int] $CaptureTimeoutMilliseconds,
+    [ValidateSet('net11.0', 'net10.0')]
+    [string] $TargetFramework = 'net11.0'
 )
 # Internal process wrapper. The caller authenticates Chrome through setup-chrome.ps1;
 # one batch can reuse that installation while every capture owns a fresh process/profile.
 $ErrorActionPreference = 'Stop'
 if ($Width -le 0 -or $Height -le 0 -or $CaptureTimeoutMilliseconds -le 0) { throw 'Capture dimensions and timeout must be positive.' }
 if ($InputFile -eq $OutputFile) { throw 'Capture must not overwrite its SVG input.' }
-$chromeTool = Join-Path $PSScriptRoot 'Lokad.Svg.Chrome/bin/Release/net10.0/Lokad.Svg.Chrome.dll'
+$chromeTool = Join-Path $PSScriptRoot "Lokad.Svg.Chrome/bin/Release/$TargetFramework/Lokad.Svg.Chrome.dll"
 if (-not (Test-Path -LiteralPath $chromeTool)) { throw "Chrome tool is not built: $chromeTool" }
 New-Item -ItemType Directory -Force -Path ([IO.Path]::GetDirectoryName($OutputFile)) | Out-Null
 $staging = $OutputFile + '.' + [Guid]::NewGuid().ToString('N') + '.tmp'

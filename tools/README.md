@@ -1,6 +1,10 @@
 # Developer tools and research
 
-Run commands from the repository root after a Release build. Keep caches, captures
+Run commands from the repository root after a Release build with the pinned
+.NET 11 RC SDK. Tools default to `net11.0`; smoke/capture/validation scripts accept
+`-TargetFramework net10.0` after an explicit .NET 10 build. Install both runtimes.
+`test-package.ps1` checks and executes both targets against one isolated package
+restore; no runtime roll-forward is required. Keep caches, captures
 and reports under ignored `artifacts/`. Browser tooling is development-only;
 conversion has no browser dependency. [Tests and provenance](../tests/README.md)
 defines collection membership and fixture admission.

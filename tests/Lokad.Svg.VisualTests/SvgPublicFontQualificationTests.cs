@@ -104,7 +104,10 @@ public sealed class SvgPublicFontQualificationTests
             }
             string output = Path.Combine(temporary, "output.png");
             ProcessStartInfo start = new("dotnet") { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true };
-            string tool = Path.Combine(FindRepository(), "tools", "Lokad.Svg.FontProbe", "bin", "Release", "net10.0", "Lokad.Svg.FontProbe.dll");
+            System.Runtime.Versioning.TargetFrameworkAttribute framework = System.Reflection.CustomAttributeExtensions.GetCustomAttribute<System.Runtime.Versioning.TargetFrameworkAttribute>(typeof(SvgPublicFontQualificationTests).Assembly)
+                ?? throw new InvalidOperationException("The test assembly has no target framework.");
+            string targetFramework = "net" + new System.Runtime.Versioning.FrameworkName(framework.FrameworkName).Version.ToString(2);
+            string tool = Path.Combine(FindRepository(), "tools", "Lokad.Svg.FontProbe", "bin", "Release", targetFramework, "Lokad.Svg.FontProbe.dll");
             foreach (string argument in new[] { tool, "--manifest", Path.Combine(DirectoryPath, "font-pack.json"), "--pack-id", "public-standalone-fonts", "--font-root", temporary, "--svg", Path.GetFullPath(Path.Combine(sourceDirectory, Required(visual, "input"))), "--output", output })
                 start.ArgumentList.Add(argument);
             using Process process = Process.Start(start) ?? throw new InvalidOperationException("The public font host did not start.");

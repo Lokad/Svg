@@ -1,9 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <ProjectReference Include="../../src/Lokad.Svg/Lokad.Svg.csproj" />
-    <ProjectReference Include="../../tools/Lokad.Svg.Chrome/Lokad.Svg.Chrome.csproj" />
-    <ProjectReference Include="../../tools/Lokad.Svg.VisualDiff/Lokad.Svg.VisualDiff.csproj" />
-    <ProjectReference Include="../../tools/Lokad.Svg.FontProbe/Lokad.Svg.FontProbe.csproj" ReferenceOutputAssembly="false" />
+    <!-- Tool references follow the test runtime, including explicit net10.0 compatibility builds. -->
+    <ProjectReference Include="../../tools/Lokad.Svg.Chrome/Lokad.Svg.Chrome.csproj">
+      <SetTargetFramework Condition="'$(TargetFramework)' == 'net10.0'">TargetFramework=net10.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Include="../../tools/Lokad.Svg.VisualDiff/Lokad.Svg.VisualDiff.csproj">
+      <SetTargetFramework Condition="'$(TargetFramework)' == 'net10.0'">TargetFramework=net10.0</SetTargetFramework>
+    </ProjectReference>
+    <ProjectReference Include="../../tools/Lokad.Svg.FontProbe/Lokad.Svg.FontProbe.csproj" ReferenceOutputAssembly="false">
+      <SetTargetFramework Condition="'$(TargetFramework)' == 'net10.0'">TargetFramework=net10.0</SetTargetFramework>
+    </ProjectReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio">

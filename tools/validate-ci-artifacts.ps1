@@ -6,7 +6,9 @@ param(
     [string] $ChromeDirectory,
     [Parameter(Mandatory = $true)]
     [string] $MemoryDirectory,
-    [switch] $RequireCurrentHost
+    [switch] $RequireCurrentHost,
+    [ValidateSet('net11.0', 'net10.0')]
+    [string] $TargetFramework = 'net11.0'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -81,7 +83,7 @@ function Test-ChromeArtifact
         Assert-Equal (Get-RequiredProperty $pin $name 'Chrome pin') (Get-RequiredProperty $fingerprint $fingerprintName 'Chrome fingerprint') "Chrome $name"
     }
 
-    $comparisonTool = Join-Path $PSScriptRoot 'Lokad.Svg.VisualDiff/bin/Release/net10.0/Lokad.Svg.VisualDiff.dll'
+    $comparisonTool = Join-Path $PSScriptRoot "Lokad.Svg.VisualDiff/bin/Release/$TargetFramework/Lokad.Svg.VisualDiff.dll"
     $fixture = Join-Path $PSScriptRoot '../tests/Fixtures/original/solid-red.svg'
     $reference = Join-Path $PSScriptRoot '../tests/References/original-solid-red.png'
     Assert-Hash (Get-RequiredProperty $fingerprint 'fixtureSha256' 'Chrome fingerprint') (Get-Hash $fixture) 'Chrome fixture hash'
@@ -91,7 +93,7 @@ function Test-ChromeArtifact
     Assert-HostRuntime (Get-RequiredProperty $fingerprint 'hostRuntimeFramework' 'Chrome fingerprint') 'Chrome host runtime framework'
     $chromeRuntimes = @(Get-RequiredProperty $fingerprint 'dotnetRuntimes' 'Chrome fingerprint')
     if ($chromeRuntimes.Count -eq 0) { Fail 'Chrome fingerprint lists no .NET runtimes.' }
-    foreach ($runtimeVersion in $chromeRuntimes) { if ([string]$runtimeVersion -notmatch '^\d+\.\d+\.\d+$') { Fail "Chrome fingerprint lists a malformed runtime version: $runtimeVersion" } }
+    foreach ($runtimeVersion in $chromeRuntimes) { if ([string]$runtimeVersion -notmatch '^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$') { Fail "Chrome fingerprint lists a malformed runtime version: $runtimeVersion" } }
     $captureToolFramework = [string](Get-RequiredProperty $fingerprint 'captureToolRuntimeFramework' 'Chrome fingerprint')
     $captureToolVersion = $captureToolFramework -replace '^\.NET\s+', ''
     if ($chromeRuntimes -cnotcontains $captureToolVersion) { Fail "Chrome capture-tool runtime $captureToolFramework is not among the recorded dotnet runtimes." }
@@ -171,7 +173,7 @@ function Test-MemoryArtifact([object] $ChromeFingerprint)
     Assert-Equal $ChromeFingerprint.hostRuntimeFramework $hostFramework 'Memory host runtime framework'
     $dotnetRuntimes = @(Get-RequiredProperty $summary 'dotnetRuntimes' 'Memory summary')
     if ($dotnetRuntimes.Count -eq 0) { Fail 'Memory summary lists no .NET runtimes.' }
-    foreach ($runtimeVersion in $dotnetRuntimes) { if ([string]$runtimeVersion -notmatch '^\d+\.\d+\.\d+$') { Fail "Memory summary lists a malformed runtime version: $runtimeVersion" } }
+    foreach ($runtimeVersion in $dotnetRuntimes) { if ([string]$runtimeVersion -notmatch '^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$') { Fail "Memory summary lists a malformed runtime version: $runtimeVersion" } }
     $childFramework = [string](Get-RequiredProperty $runtimeFingerprint 'runtimeFramework' 'Memory summary')
     $childVersion = $childFramework -replace '^\.NET\s+', ''
     if ($dotnetRuntimes -cnotcontains $childVersion) { Fail "Memory child runtime $childFramework is not among the recorded dotnet runtimes." }

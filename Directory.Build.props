@@ -1,6 +1,8 @@
 <Project>
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <!-- Restore both test/tool targets; build and test net11.0 unless explicitly selected. -->
+    <TargetFrameworks>net11.0;net10.0</TargetFrameworks>
+    <TargetFramework Condition="'$(TargetFramework)' == '' and '$(MSBuildProjectName)' != 'Lokad.Svg'">net11.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>

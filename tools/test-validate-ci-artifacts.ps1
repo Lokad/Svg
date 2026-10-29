@@ -3,7 +3,9 @@ param(
     [string] $ResultsDirectory,
     [ValidateSet('Windows', 'Linux')]
     [string] $Platform = 'Windows',
-    [int] $TimeoutMilliseconds = 120000
+    [int] $TimeoutMilliseconds = 120000,
+    [ValidateSet('net11.0', 'net10.0')]
+    [string] $TargetFramework = 'net11.0'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -11,12 +13,12 @@ $ErrorActionPreference = 'Stop'
 if ($TimeoutMilliseconds -le 0) { throw 'TimeoutMilliseconds must be positive.' }
 
 $validator = Join-Path $PSScriptRoot 'validate-ci-artifacts.ps1'
-$comparisonTool = Join-Path $PSScriptRoot 'Lokad.Svg.VisualDiff/bin/Release/net10.0/Lokad.Svg.VisualDiff.dll'
-$probeTool = Join-Path $PSScriptRoot 'Lokad.Svg.MemoryProbe/bin/Release/net10.0/Lokad.Svg.MemoryProbe.dll'
+$comparisonTool = Join-Path $PSScriptRoot "Lokad.Svg.VisualDiff/bin/Release/$TargetFramework/Lokad.Svg.VisualDiff.dll"
+$probeTool = Join-Path $PSScriptRoot "Lokad.Svg.MemoryProbe/bin/Release/$TargetFramework/Lokad.Svg.MemoryProbe.dll"
 $fixture = Join-Path $PSScriptRoot '../tests/Fixtures/original/solid-red.svg'
 $reference = Join-Path $PSScriptRoot '../tests/References/original-solid-red.png'
 $pinPath = Join-Path $PSScriptRoot $(if ($Platform -eq 'Windows') { 'chrome-for-testing.json' } else { 'chrome-for-testing.linux64.json' })
-$chromeTool = Join-Path $PSScriptRoot 'Lokad.Svg.Chrome/bin/Release/net10.0/Lokad.Svg.Chrome.dll'
+$chromeTool = Join-Path $PSScriptRoot "Lokad.Svg.Chrome/bin/Release/$TargetFramework/Lokad.Svg.Chrome.dll"
 foreach ($required in @($validator, $comparisonTool, $chromeTool, $probeTool, $fixture, $reference, $pinPath)) {
     if (-not (Test-Path -LiteralPath $required)) { throw "Validator fixture dependency is missing: $required" }
 }
@@ -29,7 +31,7 @@ function Invoke-Tool([string] $Tool, [string[]] $ToolArguments, [string] $Contex
 
 $chromeToolRuntime = @( & dotnet $chromeTool --runtime )
 if ($LASTEXITCODE -ne 0 -or $chromeToolRuntime.Count -ne 1 -or [string]::IsNullOrWhiteSpace($chromeToolRuntime[0])) { throw 'The capture tool did not report its runtime.' }
-$hostDotnetRuntimes = @(& dotnet --list-runtimes 2>$null | ForEach-Object { if ($_ -match '^Microsoft\.NETCore\.App (\d+\.\d+\.\d+) ') { $Matches[1] } } | Sort-Object -Unique)
+$hostDotnetRuntimes = @(& dotnet --list-runtimes 2>$null | ForEach-Object { if ($_ -match '^Microsoft\.NETCore\.App (\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?) ') { $Matches[1] } } | Sort-Object -Unique)
 if ($hostDotnetRuntimes.Count -eq 0) { throw 'The dotnet host reported no .NETCore runtimes.' }
 
 function Write-Fingerprint([string] $Directory, [string] $RunId, [string[]] $CandidateNames, [string[]] $CandidateHashes) {
@@ -81,7 +83,7 @@ function Write-Fingerprint([string] $Directory, [string] $RunId, [string[]] $Can
 }
 
 function Invoke-Validator([string] $ChromeDirectory, [string] $MemoryDirectory, [switch] $RequireCurrentHost) {
-    return & $validator -Platform $Platform -ChromeDirectory $ChromeDirectory -MemoryDirectory $MemoryDirectory -RequireCurrentHost:$RequireCurrentHost 2>&1
+    return & $validator -Platform $Platform -ChromeDirectory $ChromeDirectory -MemoryDirectory $MemoryDirectory -RequireCurrentHost:$RequireCurrentHost -TargetFramework $TargetFramework 2>&1
 }
 
 $runId = [Guid]::NewGuid().ToString('N')
@@ -98,7 +100,7 @@ try { Invoke-Tool $comparisonTool @($reference, $variantPng) 'Negative fixture p
 catch { if ($_.Exception.Message -like 'The pixel-mismatch fixture*') { throw }; if ($LASTEXITCODE -eq 0) { throw 'The pixel comparison did not reject its mismatch fixture.' } }
 
 $memoryDirectory = Join-Path $runDirectory 'memory'
-& (Join-Path $PSScriptRoot 'test-memory-probe.ps1') -ResultsDirectory $memoryDirectory | Out-Null
+& (Join-Path $PSScriptRoot 'test-memory-probe.ps1') -ResultsDirectory $memoryDirectory -TargetFramework $TargetFramework | Out-Null
 
 $goodDirectory = Join-Path $runDirectory 'chrome-good'
 New-Item -ItemType Directory -Force -Path $goodDirectory | Out-Null

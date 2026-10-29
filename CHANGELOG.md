@@ -4,6 +4,8 @@
 
 Development targets 0.4.0. Published 0.3.0 and its source tag remain unchanged.
 
+- Multi-target .NET 10 and .NET 11; use the pinned .NET 11 RC SDK for development
+  and extensive qualification, with explicit .NET 10 compatibility checks.
 - Add opt-in host-configured HTTP font packs with coalesced acquisition, verified
   program caching, structured failures and shared memory admission. Retain one
   document preparation and dispose governed PNG results to release their charges.

@@ -6,6 +6,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+$targetFrameworks = @('net11.0', 'net10.0')
 
 if (-not (Test-Path -LiteralPath $PackageDirectory)) { throw "Package directory does not exist: $PackageDirectory" }
 $PackageDirectory = (Resolve-Path -LiteralPath $PackageDirectory).Path
@@ -22,7 +23,11 @@ Add-Type -AssemblyName System.IO.Compression
 $archive = [IO.Compression.ZipFile]::OpenRead($package.FullName)
 try {
     $entries = @($archive.Entries | ForEach-Object FullName)
-    foreach ($required in @('LICENSE.txt', 'THIRD_PARTY_NOTICES.txt', 'README.md', 'CHANGELOG.md', 'lib/net10.0/Lokad.Svg.dll', 'lib/net10.0/Lokad.Svg.xml'))
+    $requiredEntries = @('LICENSE.txt', 'THIRD_PARTY_NOTICES.txt', 'README.md', 'CHANGELOG.md')
+    foreach ($framework in $targetFrameworks) {
+        $requiredEntries += @("lib/$framework/Lokad.Svg.dll", "lib/$framework/Lokad.Svg.xml")
+    }
+    foreach ($required in $requiredEntries)
     {
         if ($entries -cnotcontains $required) { throw "Package is missing required entry: $required" }
     }
@@ -54,7 +59,9 @@ finally { $archive.Dispose() }
 $symbolArchive = [IO.Compression.ZipFile]::OpenRead($symbolPackage.FullName)
 try {
     $symbolEntries = @($symbolArchive.Entries | ForEach-Object FullName)
-    if ($symbolEntries -notcontains 'lib/net10.0/Lokad.Svg.pdb') { throw 'Symbol package is missing the net10.0 Lokad.Svg PDB.' }
+    foreach ($framework in $targetFrameworks) {
+        if ($symbolEntries -cnotcontains "lib/$framework/Lokad.Svg.pdb") { throw "Symbol package is missing the $framework Lokad.Svg PDB." }
+    }
     if ($symbolEntries | Where-Object { $_.StartsWith('runtimes/', [StringComparison]::OrdinalIgnoreCase) }) { throw 'Symbol package must not contain runtime-specific assets.' }
     if ($symbolEntries | Where-Object { $_.EndsWith('.svg', [StringComparison]::OrdinalIgnoreCase) }) { throw 'Symbol package must not contain SVG fixtures.' }
 }
@@ -80,10 +87,12 @@ $env:NUGET_PACKAGES = $packageCache
 try {
     & dotnet restore $consumerProject --source $PackageDirectory --ignore-failed-sources -p:RestoreNoCache=true "-p:LokadSvgPackageVersion=$version"
     if ($LASTEXITCODE -ne 0) { throw 'Could not restore the clean installed-package consumer.' }
-    & dotnet build $consumerProject -c Release --no-restore "-p:LokadSvgPackageVersion=$version"
-    if ($LASTEXITCODE -ne 0) { throw 'Could not build the clean installed-package consumer.' }
-    & dotnet run --project $consumerProject -c Release --no-build "-p:LokadSvgPackageVersion=$version"
-    if ($LASTEXITCODE -ne 0) { throw 'The clean installed-package consumer failed.' }
+    foreach ($framework in $targetFrameworks) {
+        & dotnet build $consumerProject -c Release --framework $framework --no-restore "-p:LokadSvgPackageVersion=$version"
+        if ($LASTEXITCODE -ne 0) { throw "Could not build the clean $framework installed-package consumer." }
+        & dotnet run --project $consumerProject -c Release --framework $framework --no-build "-p:LokadSvgPackageVersion=$version"
+        if ($LASTEXITCODE -ne 0) { throw "The clean $framework installed-package consumer failed." }
+    }
 }
 finally { $env:NUGET_PACKAGES = $previousPackageCache }
 

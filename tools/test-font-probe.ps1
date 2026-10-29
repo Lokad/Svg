@@ -1,14 +1,16 @@
 param(
     [Parameter(Mandatory = $true)]
     [string] $ResultsDirectory,
-    [int] $TimeoutMilliseconds = 120000
+    [int] $TimeoutMilliseconds = 120000,
+    [ValidateSet('net11.0', 'net10.0')]
+    [string] $TargetFramework = 'net11.0'
 )
 
 $ErrorActionPreference = 'Stop'
 
 if ($TimeoutMilliseconds -le 0) { throw 'TimeoutMilliseconds must be positive.' }
 
-$probeTool = Join-Path $PSScriptRoot 'Lokad.Svg.FontProbe/bin/Release/net10.0/Lokad.Svg.FontProbe.dll'
+$probeTool = Join-Path $PSScriptRoot "Lokad.Svg.FontProbe/bin/Release/$TargetFramework/Lokad.Svg.FontProbe.dll"
 if (-not (Test-Path -LiteralPath $probeTool)) { throw "Font probe is not built: $probeTool" }
 
 $runDirectory = Join-Path $ResultsDirectory ([Guid]::NewGuid().ToString('N'))

@@ -1,5 +1,6 @@
 using System.Xml;
 using Lokad.Svg.Parsing;
+using ReadOnlyMemoryStream = Lokad.Svg.Parsing.ReadOnlyMemoryStream;
 
 namespace Lokad.Svg.MemoryProbe;
 

@@ -1,6 +1,7 @@
 using System.Xml;
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
+using ReadOnlyMemoryStream = Lokad.Svg.Parsing.ReadOnlyMemoryStream;
 
 namespace Lokad.Svg.Fonts;
 

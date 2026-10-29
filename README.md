@@ -1,7 +1,8 @@
 # Lokad.Svg
 
-Lokad.Svg is a pure-managed .NET 10 library that converts a documented subset of
-static SVG to PNG on Windows and Linux, with no runtime package dependencies.
+Lokad.Svg is a pure-managed library for .NET 10 and .NET 11 that converts a
+documented subset of static SVG to PNG on Windows and Linux, with no runtime
+package dependencies. The .NET 11 target currently uses the pinned RC SDK/runtime.
 It supports affine geometry and local instances, gradients and patterns, clips
 and masks, embedded PNGs, static CSS, markers, selected filters and supplied-font
 labels/text paths. See [supported SVG](docs/SUPPORT_MATRIX.md#supported-svg-subset)
@@ -35,7 +36,10 @@ host-specific deployment checks.
 
 ## Development
 
-Use the SDK pinned in [global.json](global.json).
+Use the .NET 11 RC SDK pinned in [global.json](global.json). Install the .NET 10
+SDK/runtime alongside it for compatibility and installed-package checks. Builds,
+tests and tools default to .NET 11; the library package includes both targets.
+See [test selections](tests/README.md) for explicit .NET 10 and full release runs.
 
 ```powershell
 dotnet restore --locked-mode
@@ -49,7 +53,7 @@ unless explicitly enabled for troubleshooting.
 
 Tests, browser tooling and benchmarks are used only for development.
 
-Run allocation and throughput benchmarks with:
+On the dedicated quiet benchmark VM, run allocation and throughput benchmarks with:
 
 ```powershell
 dotnet run -c Release --project benchmarks/Lokad.Svg.Benchmarks

@@ -5,6 +5,11 @@
       "lokad.svg": {
         "type": "Project"
       }
+    },
+    "net11.0": {
+      "lokad.svg": {
+        "type": "Project"
+      }
     }
   }
 }

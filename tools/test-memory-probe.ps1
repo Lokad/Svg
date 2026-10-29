@@ -2,7 +2,9 @@ param(
     [Parameter(Mandatory = $true)]
     [string] $ResultsDirectory,
     [int] $TimeoutMilliseconds = 120000,
-    [int] $XmlReaderProbeRuns = 3
+    [int] $XmlReaderProbeRuns = 3,
+    [ValidateSet('net11.0', 'net10.0')]
+    [string] $TargetFramework = 'net11.0'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -10,7 +12,7 @@ $ErrorActionPreference = 'Stop'
 if ($TimeoutMilliseconds -le 0) { throw 'TimeoutMilliseconds must be positive.' }
 if ($XmlReaderProbeRuns -le 0) { throw 'XmlReaderProbeRuns must be positive.' }
 
-$probeTool = Join-Path $PSScriptRoot 'Lokad.Svg.MemoryProbe/bin/Release/net10.0/Lokad.Svg.MemoryProbe.dll'
+$probeTool = Join-Path $PSScriptRoot "Lokad.Svg.MemoryProbe/bin/Release/$TargetFramework/Lokad.Svg.MemoryProbe.dll"
 $rendererAssembly = Join-Path (Split-Path -Parent $probeTool) 'Lokad.Svg.dll'
 $fixture = Join-Path $PSScriptRoot '../tests/Fixtures/original/solid-red.svg'
 if (-not (Test-Path -LiteralPath $probeTool)) { throw "Memory probe is not built: $probeTool" }
@@ -225,7 +227,7 @@ $discoveryCancelled = Invoke-Probe -Name 'font-discovery-cancelled' -InputPath $
 if ($discoveryCancelled['outcome'] -ne 'cancelled' -or $discoveryCancelled.ContainsKey('discoveryRequestCount') -or $discoveryCancelled['providerCalls'] -ne '0' -or $discoveryCancelled['discoveryCurrentBytes'] -ne '0' -or (Test-Path -LiteralPath $discoveryCancelledOutput)) { throw 'The cancelled font-discovery probe completed, acquired a program, retained a reservation, or wrote output.' }
 
 $hostRuntimeFramework = [System.Runtime.InteropServices.RuntimeInformation]::FrameworkDescription
-$dotnetRuntimes = @(& dotnet --list-runtimes 2>$null | ForEach-Object { if ($_ -match '^Microsoft\.NETCore\.App (\d+\.\d+\.\d+) ') { $Matches[1] } } | Sort-Object -Unique)
+$dotnetRuntimes = @(& dotnet --list-runtimes 2>$null | ForEach-Object { if ($_ -match '^Microsoft\.NETCore\.App (\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?) ') { $Matches[1] } } | Sort-Object -Unique)
 if ($dotnetRuntimes.Count -eq 0) { throw 'The dotnet host reported no .NETCore runtimes.' }
 $fingerprints = @($reports | ForEach-Object { $_.report.operatingSystem + '|' + $_.report.processArchitecture + '|' + $_.report.runtimeFramework } | Sort-Object -Unique)
 if ($fingerprints.Count -ne 1) { throw 'The child-process reports do not share one runtime/platform fingerprint.' }
