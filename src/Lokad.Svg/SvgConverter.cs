@@ -378,6 +378,9 @@ public static partial class SvgConverter
             if (options.BackgroundColor != SvgColor.Transparent)
             {
                 BackgroundInitializationProbe.Started();
+                byte backgroundRed = MultiplyAlpha(options.BackgroundColor.Red, options.BackgroundColor.Alpha);
+                byte backgroundGreen = MultiplyAlpha(options.BackgroundColor.Green, options.BackgroundColor.Alpha);
+                byte backgroundBlue = MultiplyAlpha(options.BackgroundColor.Blue, options.BackgroundColor.Alpha);
                 for (int pixel = 0; pixel < pixelCount; pixel++)
                 {
                     if ((pixel & 4_095) == 0 && cancellationToken.IsCancellationRequested)
@@ -386,9 +389,9 @@ public static partial class SvgConverter
                         cancellationToken.ThrowIfCancellationRequested();
                     }
                     int offset = pixel * 4;
-                    pixels[offset] = options.BackgroundColor.Red;
-                    pixels[offset + 1] = options.BackgroundColor.Green;
-                    pixels[offset + 2] = options.BackgroundColor.Blue;
+                    pixels[offset] = backgroundRed;
+                    pixels[offset + 1] = backgroundGreen;
+                    pixels[offset + 2] = backgroundBlue;
                     pixels[offset + 3] = options.BackgroundColor.Alpha;
                 }
             }

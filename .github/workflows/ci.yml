@@ -28,7 +28,7 @@ jobs:
       - name: .NET 10 API, ownership and numerical compatibility
         run: dotnet test tests/Lokad.Svg.Tests -c Release --framework net10.0 --no-restore --filter "FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~OwnershipTests|FullyQualifiedName~SvgSceneTransferMemoryTests|FullyQualifiedName~SvgViewportContextStorageTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgFilterSpriteMechanismTests"
       - name: .NET 10 representative native rendering compatibility
-        run: dotnet test tests/Lokad.Svg.VisualTests -c Release --framework net10.0 --no-restore --filter "FullyQualifiedName~FixtureManifestTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgGlyphViewportClipTests|FullyQualifiedName~SvgPublicFontQualificationTests"
+        run: dotnet test tests/Lokad.Svg.VisualTests -c Release --framework net10.0 --no-restore --filter "FullyQualifiedName~FixtureManifestTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgGlyphViewportClipTests|FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~RasterCaptureContractTests|FullyQualifiedName~SvgBackgroundColorTests|FullyQualifiedName~Representative_complete_png_paths"
       - name: .NET 10 font host compatibility
         run: dotnet test tests/Lokad.Svg.FontProbe.Tests -c Release --framework net10.0 --no-restore
       - shell: pwsh

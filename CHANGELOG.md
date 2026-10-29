@@ -21,6 +21,8 @@ Development targets 0.4.0. Published 0.3.0 and its source tag remain unchanged.
   The memory probe uses `--memory-budget-bytes` and removes the former quota options.
 - Fail memory admission rather than selecting storage-pressure rendering paths;
   retain direct numerical routes and independent native references.
+- Correct partially transparent backgrounds and prevent zero-alpha background
+  RGB from tinting rendered content.
 
 ## 0.3.0 - 2026-10-28
 

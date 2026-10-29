@@ -115,8 +115,8 @@ dotnet test Lokad.Svg.slnx -c Release --framework net10.0 --no-build
 ```
 
 Package checks inspect DLL/XML/PDB assets, restore one isolated consumer and execute
-each target on its installed runtime. Allocation gates retain their fixed warmed
-batches and semantic/ownership assertions; changing suite layout does not relax
-their thresholds. Frozen Windows/Linux references establish declared outputs,
+each target on its installed runtime. Allocation gates retain the minimum of three fixed
+warmed batches, with semantic/ownership checks outside measured intervals; changing
+suite layout does not relax their thresholds. Frozen Windows/Linux references establish declared outputs,
 without implying general browser completeness. Benchmark timing belongs on the
 separate quiet VM; test/setup measurements are validation costs.

@@ -145,3 +145,20 @@ The affected milestone passes 45,933 visual checks per host on .NET 11, 783 sele
 visual checks per host on .NET 10 and 294 API/budget/codec checks on each runtime/host
 combination. Both solution builds are warning-free. The main test guide now links
 these responsibility/provenance records instead of repeating collection narratives.
+
+## Background initialization
+
+[Background contracts](../../Lokad.Svg.VisualTests/SvgBackgroundColorTests.cs)
+retain seven public PNG cases. Five fail before the shared initialization fix:
+partial-alpha backgrounds are brightened, zero-alpha RGB tints later source-over,
+and background options disagree with the same painted underlay. Transparent and
+opaque controls remain exact. Empty RGBA(10,20,30,128) now captures as that color,
+with the existing RGBA8 premultiply/unpremultiply quantization at very low alpha.
+The fix computes three premultiplied background lanes once before initialization,
+using the existing alpha multiply. No new rendering branch or reference is added.
+
+Background qualification passes 45,940 visual checks per .NET 11 host and the
+expanded 817-case .NET 10 native/format/background selection per host. The 294
+API/budget/codec checks pass on all runtime/host combinations. Both solution
+builds are warning-free; unchanged inputs/references and opaque/transparent
+controls preserve the existing rendering baseline.
